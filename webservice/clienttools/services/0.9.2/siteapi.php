@@ -559,21 +559,18 @@ class siteapi extends client_service{
     	 *
     	 * NOTE there may be address formats missed by this expression which were added in later RFC documents.
     	 *      If we find addresses not matching then we can modify the query to accept them.
-    	 *      This was the most comprehensive expression I could find and should match the vast majority of valid addresses.
+    	 *      This was the most comprehensive expression (for RFC 2822) that I could find and should match
+    	 *      the vast majority of common valid addresses.
     	 */
         $regex = "[a-z0-9!#\$%&'\*\+\/=\?\^_`{\|}~\-]+(?:\.[a-z0-9!#\$%&'\*\+\/=\?\^_`{\|}~\-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?";
         $matches = array();
         preg_match_all("/$regex/i", $params['addresses'], $matches);
-
         // Check against DB to ensure uniqueness
         $emailList = array_unique($matches[0]);
+		// Send invite email
+        $response = KTUserUtil::inviteUsersByEmail($emailList, $params['group'], $params['userType'], $params['sharedData']);
 
-        $response = KTUserUtil::inviteUsersByEmail($emailList, $params['group']);
-
-        $default->log->error("Invited response: " . print_r($response, true));
-
-        // not used
-        /*$retUsers = array();*/
+        $default->log->debug("Invited response: " . print_r($response, true));
 
         $this->addResponse('invitedUsers', json_encode($response));
     }

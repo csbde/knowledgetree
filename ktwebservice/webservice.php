@@ -95,7 +95,7 @@ define('KTWS_ERR_DB_PROBLEM',				99);
 
 if (!defined('LATEST_WEBSERVICE_VERSION'))
 {
-	define('LATEST_WEBSERVICE_VERSION', 2);
+	define('LATEST_WEBSERVICE_VERSION', 3);
 }
 
 function bool2str($bool)
@@ -112,33 +112,30 @@ function bool2str($bool)
 	return (strtolower($bool) == 'true')?'true':'false';
 }
 
-class KTWebService
-{
+class KTWebService {
+    
 	/**
 	 * Defines functions, parameters, and return values.
 	 *
 	 * @var array
 	 */
-    var $__dispatch_map = array();
-
+    public $__dispatch_map = array();
     /**
      * Defines the structures that are used by web service functions.
      *
      * @var array
      */
-    var $__typedef = array();
-
+    public $__typedef = array();
     /**
      * This is the namespace used by the web service.
      *
-     * @var unknown_type
+     * @var string
      */
-
-    var $namespace;
-
-    var $mustDebug;
-    var $version;
-    var $ktapi;
+    private $namespace;
+    private $mustDebug;
+    private $version;
+    private $ktapi;
+    private $args;
 
     function KTWebService()
     {
@@ -146,1154 +143,180 @@ class KTWebService
 
     	$config = &KTConfig::getSingleton();
     	$this->version = $config->get('webservice/version', LATEST_WEBSERVICE_VERSION);
+
+    	//for testing!
+    	//$this->version = 3;
+
     	$this->mustDebug = $config->get('webservice/debug', 0);
     	$this->ktapi = null;
-
     	$this->namespace = 'KnowledgeTree';
+    	$this->setTypeDefinitions();
+    	/* methods */
+        $this->setDispatchMap();
+    }
 
-    	$this->__typedef["{urn:$this->namespace}kt_response"] =
-         	array(
-		        'status_code' => 'int',
-                'message' => 'string'
-         	);
+    /**
+     * This runs the web service
+     *
+     * @static
+     * @access public
+     */
+    function run()
+    {
+    	if (defined('JSON_WEBSERVICE'))
+		{
+			$this->runJSON();
+			return;
+		}
 
-    	$this->__typedef["{urn:$this->namespace}kt_folder_detail"] =
-         	array(
-         		'status_code' => 'int',
-         		'message' => 'string',
-				'id' => 'int',
-        		'folder_name' => 'string',
-        		'parent_id' => 'int',
-        		'full_path' => 'string',
-         		'permissions' => 'string'
-         	);
+    	ob_start();
+    	$server = new SOAP_Server();
 
-         if ($this->version >= 2)
-         {
-         	$this->__typedef["{urn:$this->namespace}kt_folder_detail"]['created_by'] = 'string';
-         }
-         if ($this->version >= 3){
-         	$this->__typedef["{urn:$this->namespace}kt_folder_detail"]['linked_folder_id'] = 'int';
-         }
+    	$server->addObjectMap($this, 'http://schemas.xmlsoap.org/soap/envelope/');
+    	$request = 'Not Set';
 
-    	$this->__typedef["{urn:$this->namespace}kt_folder_item"] =
-         	array(
-		        'id' => 'int',
-        		'item_type' => 'string',
-                'title' => 'string',
-                'creator' => 'string',
-                'checked_out_by' => 'string',
-                'modified_by' => 'string',
-                'filename' => 'string',
-                'size' => 'string',
-                'major_version' => 'string',
-                'minor_version' => 'string',
-                'storage_path' => 'string',
-                'mime_type' => 'string',
-                'mime_icon_path' => 'string',
-                'mime_display' => 'string',
-                'workflow' => 'string',
-                'workflow_state' => 'string',
-                'items' =>"{urn:$this->namespace}kt_folder_items"
-         	);
+    	if (isset($_SERVER['REQUEST_METHOD'])  && $_SERVER['REQUEST_METHOD'] =='POST')
+    	{
+    		$request = file_get_contents("php://input");
+    		$server->service($request);
+    	}
+    	else
+    	{
+    		// Create the DISCO server
+    		$disco = new SOAP_DISCO_Server($server, $this->namespace);
+    		header("Content-type: text/xml");
+    		if (isset($_SERVER['QUERY_STRING']) && strcasecmp($_SERVER['QUERY_STRING'], 'wsdl') == 0)
+    		{
+    			echo $disco->getWSDL();
+    		}
+    		else
+    		{
+    			echo $disco->getDISCO();
+    		}
+    	}
+    	
+    	$capture = ob_get_flush();
+		$this->debug($request, 'request', 5);
+    	$this->debug($capture, 'response', 5);
+    	global $_KT_starttime;
+    	$time = number_format(KTUtil::getBenchmarkTime() - $_KT_starttime, 2);
+    	$this->debug($time, 'time from start', 4);
+    }
 
-        if ($this->version >= 2)
-         {
-         	$this->__typedef["{urn:$this->namespace}kt_folder_item"] =
-         	array(
-		        'id' => 'int',
-        		'item_type' => 'string',
+	/**
+	 * The main json request processing function.
+	 *
+	 * The method name of the method to be called must be $_POST['_method'].
+	 * All parameters may be set in any order, as long as the names correspond with the wdsl names.
+	 *
+	 * TODO JSON support for app declaration
+	 */
+	function runJSON()
+	{
+		// Let us check that all the POST variables that are expected are set
+		if ($_SERVER['REQUEST_METHOD'] != 'POST')
+		{
+			print json_encode(array('msg' => 'Post request must be made!'));
+			return;
+		}
+		$method = '';
+		if (array_key_exists('_method', $_POST))
+		{
+			$method = $_POST['_method'];
+		}
+		if ($method == '' || !array_key_exists($method, $this->__dispatch_map))
+		{
+			print json_encode(array('msg' => 'Method must exist!'));
+			return;
+		}
 
-                'custom_document_no' => 'string',
-                'oem_document_no' => 'string',
+		// let us check that we have all the variables for the method to be called.
+		$dispatcher = $this->__dispatch_map[$method];
+		$params = array();
+		foreach($dispatcher['in'] as $var => $type)
+		{
+			$param = array('var' => $var,  'set'=>0);
+			if (array_key_exists($var, $_POST))
+			{
+				$param['set'] = 1;
+				// if it looks json like we should decode it
+				if ((substr($_POST[$var],0,1) == '{') && (substr($_POST[$var], -1) == '}'))
+				{
+					$original = $_POST[$var];
+					$decoded = json_decode($original);
 
-        		'title' => 'string',
-		        'document_type' => 'string',
-                'filename' => 'string',
-                'filesize' => 'string',
+					$_POST[$var] = is_null($decoded) ? $original : $decoded;
+					unset($original);
+					unset($decoded);
+				}
+			}
 
-                'created_by' => 'string',
-                'created_date' => 'string',
+			$params[] = $param;
+		}
 
-                'checked_out_by' => 'string',
-                'checked_out_date' => 'string',
+		// prepare the parameters and call the method
+		// by passing references to $POST we hopefully save some memory
 
-                'modified_by' => 'string',
-                'modified_date' => 'string',
+		$paramstr = '';
+		foreach($params as $param)
+		{
+			$var = $param['var'];
+			if ($param['set'] == 0)
+			{
+				print json_encode(array('msg' => "'$var' is not set!"));
+				return;
+			}
+			
+			if ($paramstr != '') { $paramstr .= ', '; }
 
-                'owned_by' => 'string',
+			$paramstr .= "\$_POST['$var']";
+		}
 
-                'version' => 'string',
+		$result = eval("return \$this->$method($paramstr);");
 
-                'is_immutable' => 'string',
-                'permissions' => 'string',
+		// return the json encoded result
+		print json_encode(KTWebService::decodeSOAPValue($result));
+	}
 
-                'workflow' => 'string',
-                'workflow_state' => 'string',
+	/**
+	 * Returns a decoded soap value structure.
+	 *
+	 * @param SOAP_Value $value
+	 * @return mixed
+	 */
+	function decodeSOAPValue($value)
+	{
+		if ($value instanceof SOAP_Value)
+		{
+			$x = new stdClass();
+			$v = & $value->value;
+			$vars = array_keys($v);
 
-                'mime_type' => 'string',
-                'mime_icon_path' => 'string',
-                'mime_display' => 'string',
+			foreach($vars as $var)
+			{
+				$x->$var = KTWebService::decodeSOAPValue($v[$var]);
+			}
 
-                'full_path' => 'string',
+			return $x;
+		}
+		else
+		{
+			return $value;
+		}
+	}
 
-         		'storage_path' => 'string',
-
-         	);
-
-         	if ($this->version>=3){
-         		$this->__typedef["{urn:$this->namespace}kt_folder_item"]['linked_folder_id'] = 'int';
-         	}
-
-         	$this->__typedef["{urn:$this->namespace}kt_folder_item"]['items'] = "{urn:$this->namespace}kt_folder_items";
-         }
-
-        $this->__typedef["{urn:$this->namespace}kt_folder_items"] =
-			array(
-            	array(
-                        'item' => "{urn:$this->namespace}kt_folder_item"
-                  )
-            );
-
-    	$this->__typedef["{urn:$this->namespace}kt_folder_contents"] =
-         	array(
-				'status_code' => 'int',
-				'message' => 'string',
-				'folder_id' => 'int',
-        		'folder_name' => 'string' ,
-        		'full_path' => 'string' ,
-        		'items' => "{urn:$this->namespace}kt_folder_items",
-         	);
-
-    	$this->__typedef["{urn:$this->namespace}kt_folder_tree"] =
-         	array(
-				'status_code' => 'int',
-				'message' => 'string',
-				'folder_id' => 'int',
-        		'folder_name' => 'string' ,
-        		'full_path' => 'string' ,
-        		'items' => "{urn:$this->namespace}kt_folder_items",
-         	);
-
-         $this->__typedef["{urn:$this->namespace}kt_document_detail"] =
-         	array(
-         		'status_code' => 'int',
-         		'message' => 'string',
-        		'title' => 'string',
-		        'document_type' => 'string',
-		        'version' => 'string',
-	   		    'filename' => 'string',
-	   	        'created_date' => 'string',
-        	   	'created_by' => 'string',
-        	   	'updated_date' => 'string',
- 			   	'updated_by' => 'string',
-  			   	'document_id' => 'int',
-   			   	'folder_id' => 'int',
-        	   	'workflow' => 'string',
-        	   	'workflow_state' => 'string',
-        	   	'checkout_by' => 'string',
-        	   	'full_path' => 'string',
-         	);
-
-         if ($this->version >= 2)
-         {
-         	$this->__typedef["{urn:$this->namespace}kt_document_detail"] =
-         	array(
-         		'status_code' => 'int',
-         		'message' => 'string',
-
-  			   	'document_id' => 'int',
-
-                'custom_document_no' => 'string',
-                'oem_document_no' => 'string',
-
-        		'title' => 'string',
-		        'document_type' => 'string',
-        	   	'full_path' => 'string',
-	   		    'filename' => 'string',
-	   		    'filesize' => 'int',
-   			   	'folder_id' => 'int',
-
-        	   	'created_by' => 'string',
-	   	        'created_date' => 'string',
-
-        	   	'checked_out_by' => 'string',
-        	   	'checked_out_date' => 'string',
-
- 			   	'modified_by' => 'string',
-        	   	'modified_date' => 'string',
-
-        	   	'owned_by' => 'string',
-
-        	   	'version' => 'float',
-
-        	   	'is_immutable' => 'boolean',
-        	   	'permissions' => 'string',
-
-        	   	'workflow' => 'string',
-        	   	'workflow_state' => 'string',
-
-				'mime_type' => 'string',
-                'mime_icon_path' => 'string',
-                'mime_display' => 'string',
-
-                'storage_path' => 'string',
-
-
-        	   	'metadata' => "{urn:$this->namespace}kt_metadata_fieldsets",
-	         	'links' => "{urn:$this->namespace}kt_linked_documents",
-    	     	'transitions' => "{urn:$this->namespace}kt_workflow_transitions",
-        	 	'version_history' => "{urn:$this->namespace}kt_document_version_history",
-         		'transaction_history' => "{urn:$this->namespace}kt_document_transaction_history",
-         	);
-
-         	if ($this->version>=3){
-         		$this->__typedef["{urn:$this->namespace}kt_document_detail"]['linked_document_id'] = 'int';
-         	}
-         }
-
-        if (defined('HAS_SEARCH_FUNCTIONALITY'))
+    function __dispatch($methodname)
+    {
+        if (isset($this->__dispatch_map[$methodname]))
         {
-
-        $this->__typedef["{urn:$this->namespace}kt_search_result_item"] =
-         	array(
-				'document_id' => 'int',
-
-				'custom_document_no' => 'string',
-                'oem_document_no' => 'string',
-
-				'relevance' => 'float',
-        		'text' => 'string',
-
-				'title' => 'string',
-				'document_type' => 'string',
-        		'fullpath' => 'string',
-				'filename' => 'string',
-				'filesize' => 'int',
-        		'folder_id' => 'int',
-
-        		'created_by' => 'string',
-        		'created_date' => 'string',
-
-        		'checked_out_by' => 'string',
-        		'checked_out_date' => 'string',
-
-        		'modified_by' => 'string',
-        		'modified_date' => 'string',
-
-        		'owned_by' => 'string',
-
-        		'version' => 'float',
-        		'is_immutable' => 'boolean',
-        		'permissions' => 'string',
-
-        		'workflow' => 'string',
-        		'workflow_state' => 'string',
-
-				'mime_type' => 'string',
-                'mime_icon_path' => 'string',
-                'mime_display' => 'string',
-
-                'storage_path' => 'string',
-
-        		'status' => 'string',
-         	);
-
-    	$this->__typedef["{urn:$this->namespace}kt_search_results"] =
-         	array(
-				array(
-                        'item' => "{urn:$this->namespace}kt_search_result_item"
-                  )
-         	);
-
-    	$this->__typedef["{urn:$this->namespace}kt_search_response"] =
-         	array(
-				'status_code' => 'int',
-				'message' => 'string',
-        		'hits' => "{urn:$this->namespace}kt_search_results" ,
-         	);
+        	return $this->__dispatch_map[$methodname];
         }
-
-         if ($this->version >= 2)
-         {
-
-    	$this->__typedef["{urn:$this->namespace}kt_sysdata_item"] =
-         	array(
-				'name' => 'string',
-				'value' => 'string'
-         	);
-
-		$this->__typedef["{urn:$this->namespace}kt_sysdata"] =
-         	array(
-				array(
-                        'item' => "{urn:$this->namespace}kt_sysdata_item"
-                  )
-         	);
-         }
-
-    	$this->__typedef["{urn:$this->namespace}kt_metadata_selection_item"] =
-         	array(
-				'id' => 'int',
-				'name' => 'string',
-				'value' => 'string',
-        		'parent_id' => 'int'
-         	);
-
-    	$this->__typedef["{urn:$this->namespace}kt_metadata_selection"] =
-         	array(
-				array(
-                        'item' => "{urn:$this->namespace}kt_metadata_selection_item"
-                  )
-         	);
-
-    $this->__typedef["{urn:$this->namespace}kt_metadata_options"] =
-         	array(
-				'ishtml' => 'string',
-        		'maxlength' => 'string'
-         	);
-
-    	$this->__typedef["{urn:$this->namespace}kt_metadata_field"] =
-         	array(
-				'name' => 'string',
-        		'required' => 'boolean' ,
-        		'value' => 'string' ,
-        		'description' => 'string' ,
-        		'control_type' => 'string' ,
-        		'selection' => "{urn:$this->namespace}kt_metadata_selection",
-                'options' => "{urn:$this->namespace}kt_metadata_options"
-         	);
-
-        $this->__typedef["{urn:$this->namespace}kt_metadata_fields"] =
-			array(
-            	array(
-                        'field' => "{urn:$this->namespace}kt_metadata_field"
-                  )
-            );
-
-    	$this->__typedef["{urn:$this->namespace}kt_metadata_fieldset"] =
-         	array(
-				'fieldset' => 'string',
-				'description' => 'string',
-        		'fields' => "{urn:$this->namespace}kt_metadata_fields" ,
-         	);
-
-        $this->__typedef["{urn:$this->namespace}kt_metadata_fieldsets"] =
-			array(
-            	array(
-                        'fieldset' => "{urn:$this->namespace}kt_metadata_fieldset"
-                  )
-            );
-
-    	$this->__typedef["{urn:$this->namespace}kt_metadata_response"] =
-         	array(
-				'status_code' => 'int',
-				'message' => 'string',
-        		'metadata' => "{urn:$this->namespace}kt_metadata_fieldsets" ,
-         	);
-
-        $this->__typedef["{urn:$this->namespace}kt_workflow_transitions"] =
-			array(
-            	array(
-                        'transition' => 'string'
-                  )
-            );
-
-    	$this->__typedef["{urn:$this->namespace}kt_workflow_transitions_response"] =
-         	array(
-         		'status_code' => 'int',
-         		'message' => 'string',
-         		'transitions' => "{urn:$this->namespace}kt_workflow_transitions"
-         		);
-
- 		$this->__typedef["{urn:$this->namespace}kt_workflows_array"] =
-			array(
-            	array(
-                        'workflow' => 'string'
-                  )
-            );
-
-		$this->__typedef["{urn:$this->namespace}kt_workflows_response"] =
-         	array(
-            	'status_code' => 'int',
-            	'message' => 'string',
-            	'workflows' => "{urn:$this->namespace}kt_workflows_array"
-            );
-
-    	$this->__typedef["{urn:$this->namespace}kt_document_transaction_history_item"] =
-         	array(
-         		'transaction_name' => 'string',
-         		'username' => 'string',
-         		'version' => 'string',
-         		'comment' => 'string',
-         		'datetime' => 'string'
-         		);
-
-        if ($this->version >= 2)
-         {
-         	$this->__typedef["{urn:$this->namespace}kt_document_transaction_history_item"] =
-         	array(
-         		'transaction_name' => 'string',
-         		'username' => 'string',
-         		'version' => 'float',
-         		'comment' => 'string',
-         		'datetime' => 'string'
-         		);
-         }
-
-    	$this->__typedef["{urn:$this->namespace}kt_linked_document"] =
-         	array(
-         		'document_id' => 'int',
-                'custom_document_no' => 'string',
-                'oem_document_no' => 'string',
-                'title' => 'string',
-         		'document_type' => 'string',
-         		'filesize' => 'int',
-         		'version' => 'float',
-         		'workflow' => 'string',
-         		'workflow_state' => 'string',
-         		'link_type' => 'string'
-         		);
-
-        $this->__typedef["{urn:$this->namespace}kt_linked_documents"] =
-			array(
-            	array(
-                        'links' => "{urn:$this->namespace}kt_linked_document"
-                  )
-            );
-
-    	$this->__typedef["{urn:$this->namespace}kt_linked_document_response"] =
-         	array(
-         		'status_code' => 'int',
-         		'message' => 'string',
-         		'parent_document_id' => 'int',
-         		'links' => "{urn:$this->namespace}kt_linked_documents"
-         		);
-
-        $this->__typedef["{urn:$this->namespace}kt_document_transaction_history"] =
-			array(
-            	array(
-                        'history' => "{urn:$this->namespace}kt_document_transaction_history_item"
-                  )
-            );
-         if ($this->version >= 3){
-	        $this->__typedef["{urn:$this->namespace}kt_document_shortcut"] =
-	         	array(
-	         		'id' => 'int',
-        	   	'full_path' => 'string',
-   			   	'folder_id' => 'int',
-        	   	'creator_id' => 'string',
-	   	        'created' => 'string',
-        	   	'owner_id' => 'string',
-        	   	'permission_object_id' => 'string',
-	         	'permission_lookup_id' => 'string',
-				'linked_document_id' => 'int',
-	         		);
-
-	        $this->__typedef["{urn:$this->namespace}kt_document_shortcuts"] =
-				array(
-	            	array(
-	                        'shortcuts' => "{urn:$this->namespace}kt_document_shortcut"
-	                  )
-	            );
-
-	        $this->__typedef["{urn:$this->namespace}kt_document_shortcut_response"] =
-				array(
-	            	'status_code' => 'int',
-	         		'message' => 'string',
-	         		'shortcuts' => "{urn:$this->namespace}kt_document_shortcuts"
-	            );
-
-	        $this->__typedef["{urn:$this->namespace}kt_folder_shortcut"] =
-	         	array(
-	         		'id' => 'int',
-	         	'name' => 'string',
-	         	'parent_id' => 'string',
-        	   	'full_path' => 'string',
-   			   	'folder_id' => 'int',
-        	   	'creator_id' => 'string',
-	   	        'created' => 'string',
-        	   	'permission_object_id' => 'string',
-	         	'permission_lookup_id' => 'string',
-				'linked_folder_id' => 'int',
-	         		);
-
-	        $this->__typedef["{urn:$this->namespace}kt_folder_shortcuts"] =
-				array(
-	            	array(
-	                        'shortcuts' => "{urn:$this->namespace}kt_folder_shortcut"
-	                  )
-	            );
-
-	        $this->__typedef["{urn:$this->namespace}kt_folder_shortcut_response"] =
-				array(
-	            	'status_code' => 'int',
-	         		'message' => 'string',
-	         		'shortcuts' => "{urn:$this->namespace}kt_folder_shortcuts"
-	            );
-         }
-
-    	$this->__typedef["{urn:$this->namespace}kt_document_transaction_history_response"] =
-         	array(
-         		'status_code' => 'int',
-         		'message' => 'string',
-         		'history' => "{urn:$this->namespace}kt_document_transaction_history"
-         		);
-
-    	$this->__typedef["{urn:$this->namespace}kt_document_version_history_item"] =
-         	array(
-         		'user' => 'string',
-         		'metadata_version' => 'string',
-         		'content_version' => 'string',
-         		);
-
-         if ($this->version >= 2)
-         {
-         	$this->__typedef["{urn:$this->namespace}kt_document_version_history_item"] =
-         	array(
-         		'user' => 'string',
-         		'metadata_version' => 'int',
-         		'content_version' => 'float',
-         		);
-         }
-
-        $this->__typedef["{urn:$this->namespace}kt_document_collection"] =
-			array(
-            	array(
-                        'item' =>  "{urn:$this->namespace}kt_document_detail"
-                  )
-            );
-
-         $this->__typedef["{urn:$this->namespace}kt_document_collection_response"] =
-			array(
-            	'status_code' => 'int',
-            	'message' => 'string',
-            	'collection' => "{urn:$this->namespace}kt_document_collection"
-            );
-
-        $this->__typedef["{urn:$this->namespace}kt_folder_collection"] =
-			array(
-            	array(
-                        'item' =>  "{urn:$this->namespace}kt_folder_detail"
-                  )
-            );
-
-         $this->__typedef["{urn:$this->namespace}kt_folder_collection_response"] =
-			array(
-            	'status_code' => 'int',
-            	'message' => 'string',
-            	'collection' => "{urn:$this->namespace}kt_folder_collection"
-            );
-
-        $this->__typedef["{urn:$this->namespace}kt_document_version_history"] =
-			array(
-            	array(
-                        'history' =>  "{urn:$this->namespace}kt_document_version_history_item"
-                  )
-            );
-
-    	$this->__typedef["{urn:$this->namespace}kt_document_version_history_response"] =
-         	array(
-         		'status_code' => 'int',
-         		'message' => 'string',
-         		'history' => "{urn:$this->namespace}kt_document_version_history"
-         		);
-
-           $this->__typedef["{urn:$this->namespace}kt_document_types_array"] =
-			array(
-            	array(
-                        'document_type' => 'string'
-                  )
-            );
-
-        $this->__typedef["{urn:$this->namespace}kt_document_types_response"] =
-			array(
-            	'status_code' => 'int',
-            	'message' => 'string',
-            	'document_types' => "{urn:$this->namespace}kt_document_types_array"
-            );
-
-           $this->__typedef["{urn:$this->namespace}kt_client_policy"] =
-				array(
-					'name' => 'string',
-					'value' => 'string',
-					'type' => 'string',
-			);
-
-           $this->__typedef["{urn:$this->namespace}kt_client_policies_array"] =
-			array(
-				array(
-					 'policies' => "{urn:$this->namespace}kt_client_policy"
-				)
-			);
-
-	$this->__typedef["{urn:$this->namespace}kt_client_policies_response"] =
-			array(
-            	'status_code' => 'int',
-            	'message' => 'string',
-            	'policies' => "{urn:$this->namespace}kt_client_policies_array"
-            );
-
-         /* methods */
-        if (defined('HAS_SEARCH_FUNCTIONALITY'))
-        {
-        	$this->__dispatch_map['search'] = array(
-        					'in' => array('session_id' => 'string', 'search' => 'string' , 'options' => 'string'),
-                  			'out' => array('return' => "{urn:$this->namespace}kt_search_response" ),
-            			);
-        }
-
-         // login
-         $this->__dispatch_map['login'] =
-            array('in' => array('username' => 'string', 'password' => 'string', 'ip' => 'string'),
-                  'out' => array('return' => "{urn:$this->namespace}kt_response" ),
-            );
-
-         // anonymous_login
-         $this->__dispatch_map['anonymous_login'] =
-            array('in' => array('ip' => 'string'),
-                  'out' => array('return' => "{urn:$this->namespace}kt_response" ),
-            );
-
-         // logout
-         $this->__dispatch_map['logout'] =
-            array('in' => array('session_id' => 'string' ),
-             'out' => array('return' => "{urn:$this->namespace}kt_response"  ),
-            );
-
-         // get_folder_detail
-         $this->__dispatch_map['get_folder_detail'] =
-            array('in' => array('session_id' => 'string', 'folder_id' => 'int' ),
-             'out' => array('return' => "{urn:$this->namespace}kt_folder_detail"),
-            );
-
-         if ($this->version >=3)
-         {
-         	 $this->__dispatch_map['get_folder_detail']['in'] = array('session_id' => 'string', 'folder_id' => 'int', 'create' => 'boolean' );
-         }
-
-         // get_documents_by_oem_no
-         $this->__dispatch_map['get_documents_by_oem_no'] =
-            array('in' => array('session_id' => 'string', 'oem_no' => 'string', 'detail' => 'string'),
-             'out' => array('return' => "{urn:$this->namespace}kt_document_collection_response"),
-            );
-
-         // get_folder_detail_by_name
-         $this->__dispatch_map['get_folder_detail_by_name'] =
-            array('in' => array('session_id' => 'string', 'folder_name' => 'string'),
-             'out' => array('return' => "{urn:$this->namespace}kt_folder_detail"),
-            );
-
-         if ($this->version >=3)
-         {
-             // NOTE that there was a bug: folder_id should be folder_name and be of type int - this is fixed in the second version below
-             //      additionally the function has no "create" parameter
-         	 //$this->__dispatch_map['get_folder_detail_by_name']['in'] = array('session_id' => 'string', 'folder_id' => 'int', 'create' => 'boolean' );
-             // now
-         	 $this->__dispatch_map['get_folder_detail_by_name']['in'] = array('session_id' => 'string', 'folder_name' => 'string', 'parent_id' => 'int' );
-         }
-
-         // get_folder_contents
-         $this->__dispatch_map['get_folder_contents'] =
-            array('in' => array('session_id' => 'string', 'folder_id' => 'int', 'depth' => 'int', 'what' => 'string'),
-             'out' => array('return' => "{urn:$this->namespace}kt_folder_contents"),
-            );
-
-         // create_folder
-         $this->__dispatch_map['create_folder'] =
-            array('in' => array('session_id' => 'string', 'folder_id' => 'int', 'folder_name' =>'string'),
-             'out' => array('return' => "{urn:$this->namespace}kt_folder_detail"),
-            );
-
-         if ($this->version >=2)
-         {
-         // get_folder_tree
-         $this->__dispatch_map['get_folder_tree'] =
-            array('in' => array('session_id' => 'string', 'folder_id' => 'int', 'what' => 'string'),
-             'out' => array('return' => "{urn:$this->namespace}kt_folder_tree"),
-            );
-            
-         // create_folder
-         $this->__dispatch_map['add_folder'] =
-            array('in' => array('session_id' => 'string', 'folder_id' => 'int', 'folder_name' =>'string'),
-             'out' => array('return' => "{urn:$this->namespace}kt_folder_detail"),
-             'alias' => 'create_folder'
-            );
-         }
-
-         // delete_folder
-         $this->__dispatch_map['delete_folder'] =
-            array('in' => array('session_id' => 'string', 'folder_id' => 'int', 'reason' =>'string'),
-             'out' => array('return' => "{urn:$this->namespace}kt_response" ),
-            );
-
-         // rename_folder
-         $this->__dispatch_map['rename_folder'] =
-            array('in' => array('session_id' => 'string', 'folder_id' => 'int', 'newname' =>'string'),
-             'out' => array('return' => "{urn:$this->namespace}kt_response"),
-            );
-
- 		// get_document_links
-         $this->__dispatch_map['get_document_links'] =
-            array('in' => array('session_id' => 'string', 'document_id' => 'int'),
-             'out' => array('return' => "{urn:$this->namespace}kt_linked_document_response"  ),
-            );
-
-         // link_documents
-         $this->__dispatch_map['link_documents'] =
-            array('in' => array('session_id' => 'string', 'parent_document_id' => 'int', 'child_document_id' => 'int', 'type' => 'string'),
-             'out' => array('return' => "{urn:$this->namespace}kt_response"  ),
-            );
-
-         // unlink_documents
-         $this->__dispatch_map['unlink_documents'] =
-            array('in' => array('session_id' => 'string', 'parent_document_id' => 'int', 'child_document_id' => 'int'),
-             'out' => array('return' => "{urn:$this->namespace}kt_response"  ),
-            );
-
-
-            // copy_folder
-         $this->__dispatch_map['copy_folder'] =
-            array('in' => array('session_id' => 'string', 'source_id' => 'int', 'target_id' => 'int', 'reason' =>'string'),
-             'out' => array('return' => "{urn:$this->namespace}kt_response"  ),
-            );
-
-         if ($this->version >= 2)
-            {
-            	 $this->__dispatch_map['copy_folder']['out'] = array('return' => "{urn:$this->namespace}kt_folder_detail" );
-            }
-
-         // move_folder
-         $this->__dispatch_map['move_folder'] =
-            array('in' => array('session_id' => 'string', 'source_id' => 'int', 'target_id' => 'int', 'reason' =>'string'),
-             'out' => array('return' => "{urn:$this->namespace}kt_response" ),
-            );
-
-         if ($this->version >= 2)
-            {
-            	 $this->__dispatch_map['move_folder']['out'] = array('return' => "{urn:$this->namespace}kt_folder_detail" );
-            }
-
-
-		// get_document_detail
-         $this->__dispatch_map['get_document_detail'] = array(
-         		'in' => array('session_id' => 'string', 'document_id' => 'int' ),
-            	'out' => array('return' => "{urn:$this->namespace}kt_document_detail"),
-            );
-
-		 if ($this->version >= 2)
-            {
-            	$this->__dispatch_map['get_document_detail']['in'] = array('session_id' => 'string', 'document_id' => 'int', 'detail' => 'string' );
-            }
-
-          //  checkin_document
-         $this->__dispatch_map['checkin_document'] =
-            array('in' => array('session_id' => 'string', 'document_id' => 'int', 'filename' => 'string', 'reason' =>'string', 'tempfilename' =>'string', 'major_update' => 'boolean' ),
-             'out' => array( 'return' => "{urn:$this->namespace}kt_document_detail" ),
-            );
-
-          //  checkin_small_document
-         $this->__dispatch_map['checkin_small_document'] =
-            array('in' => array('session_id' => 'string', 'document_id' => 'int', 'filename' => 'string', 'reason' =>'string', 'base64' =>'string', 'major_update' => 'boolean' ),
-             'out' => array( 'return' => "{urn:$this->namespace}kt_document_detail" ),
-            );
-
-          //  checkin_base64_document
-         $this->__dispatch_map['checkin_base64_document'] =
-            array('in' => array('session_id' => 'string', 'document_id' => 'int', 'filename' => 'string', 'reason' =>'string', 'base64' =>'string', 'major_update' => 'boolean' ),
-             'out' => array( 'return' => "{urn:$this->namespace}kt_document_detail" ),
-              'alias' => 'checkin_small_document'
-            );
-
-         if ($this->version >= 2)
-         {
- 	        $this->__dispatch_map['checkin_base64_document_with_metadata'] =
-	    	        array('in' => array('session_id' => 'string', 'document_id' => 'int', 'filename' => 'string', 'reason' =>'string', 'base64' =>'string', 'major_update' => 'boolean', 'metadata'=>"{urn:$this->namespace}kt_metadata_fieldsets", 'sysdata'=>"{urn:$this->namespace}kt_sysdata" ),
-	        	     'out' => array( 'return' => "{urn:$this->namespace}kt_document_detail" ),
-        	     'alias' => 'checkin_small_document_with_metadata'
-            	);
- 	        $this->__dispatch_map['checkin_document_with_metadata'] =
-	    	        array('in' => array('session_id' => 'string', 'document_id' => 'int', 'filename' => 'string', 'reason' =>'string', 'tempfilename' =>'string', 'major_update' => 'boolean', 'metadata'=>"{urn:$this->namespace}kt_metadata_fieldsets", 'sysdata'=>"{urn:$this->namespace}kt_sysdata" ),
-	        	     'out' => array( 'return' => "{urn:$this->namespace}kt_document_detail" )
-            	);
-         }
-
-
-         if ($this->version >= 3){
-         	//add folder shortcut
-         	$this->__dispatch_map['create_folder_shortcut'] = array('in'=>array('session_id' => 'string', 'target_folder_id' => 'int', 'source_folder_id' => 'int'),
-         	'out'=>array('return' => "{urn:$this->namespace}kt_folder_detail" ));
-
-         	//add document shortcut
-         	$this->__dispatch_map['create_document_shortcut'] = array('in'=>array('session_id' => 'string', 'target_folder_id' => 'int', 'source_document_id' => 'int'),
-         	'out'=>array('return' => "{urn:$this->namespace}kt_document_detail" ));
-
-         	//get document shortcuts
-         	$this->__dispatch_map['get_document_shortcuts'] = array('in'=>array('session_id' => 'string', 'document_id' => 'int'),
-         	'out'=>array('return' => "{urn:$this->namespace}kt_document_shortcuts" ));
-
-         	//get folder shortcuts
-         	$this->__dispatch_map['get_folder_shortcuts'] = array('in'=>array('session_id' => 'string', 'folder_id' => 'int'),
-         	'out'=>array('return' => "{urn:$this->namespace}kt_folder_shortcuts" ));
-         }
-
-         // add_document
-         $this->__dispatch_map['add_document'] =
-            array('in' => array('session_id' => 'string', 'folder_id' => 'int', 'title' => 'string', 'filename' => 'string', 'documentype' =>'string', 'tempfilename' =>'string' ),
-             'out' => array( 'return' => "{urn:$this->namespace}kt_document_detail" ),
-            );
-
-         // add_small_document
-         $this->__dispatch_map['add_small_document'] =
-            array('in' => array('session_id' => 'string', 'folder_id' => 'int', 'title' => 'string', 'filename' => 'string', 'documentype' =>'string', 'base64' =>'string' ),
-             'out' => array( 'return' => "{urn:$this->namespace}kt_document_detail" ),
-            );
-
-         // add_base64_document
-         $this->__dispatch_map['add_base64_document'] =
-            array('in' => array('session_id' => 'string', 'folder_id' => 'int', 'title' => 'string', 'filename' => 'string', 'documentype' =>'string', 'base64' =>'string' ),
-             'out' => array( 'return' => "{urn:$this->namespace}kt_document_detail" ),
-             'alias' => 'add_small_document'
-
-            );
-
-         if ($this->version >= 2)
-         {
- 	        $this->__dispatch_map['add_base64_document_with_metadata'] =
-    	        array('in' => array('session_id' => 'string', 'folder_id' => 'int', 'title' => 'string', 'filename' => 'string', 'documentype' =>'string', 'base64' =>'string', 'metadata'=>"{urn:$this->namespace}kt_metadata_fieldsets", 'sysdata'=>"{urn:$this->namespace}kt_sysdata" ),
-        	     'out' => array( 'return' => "{urn:$this->namespace}kt_document_detail" ),
-        	     'alias' => 'add_small_document_with_metadata'
-            	);
-
- 	        $this->__dispatch_map['add_document_with_metadata'] =
-    	        array('in' => array('session_id' => 'string', 'folder_id' => 'int', 'title' => 'string', 'filename' => 'string', 'documentype' =>'string', 'tempfilename' =>'string', 'metadata'=>"{urn:$this->namespace}kt_metadata_fieldsets", 'sysdata'=>"{urn:$this->namespace}kt_sysdata" ),
-        	     'out' => array( 'return' => "{urn:$this->namespace}kt_document_detail" )
-            	);
-         }
-
-         if ($this->version >= 2)
-         {
-             // add_document
-             $this->__dispatch_map['add_document'] =
-                array('in' => array('session_id' => 'string', 'folder_id' => 'int', 'title' => 'string', 'filename' => 'string', 'documentype' =>'string', 'tempfilename' =>'string'),
-                 'out' => array( 'return' => "{urn:$this->namespace}kt_document_detail" ),
-                );
-
- 	        $this->__dispatch_map['add_document_with_metadata'] =
-    	        array('in' => array('session_id' => 'string', 'folder_id' => 'int', 'title' => 'string', 'filename' => 'string', 'documentype' =>'string', 'tempfilename' =>'string', 'metadata'=>"{urn:$this->namespace}kt_metadata_fieldsets", 'sysdata'=>"{urn:$this->namespace}kt_sysdata"),
-        	     'out' => array( 'return' => "{urn:$this->namespace}kt_document_detail" )
-            	);
-         }
-
-         if ($this->version >= 2)
-         {
-             // add_document
-             $this->__dispatch_map['add_document_with_key'] =
-                array('in' => array('session_id' => 'string', 'folder_id' => 'int', 'title' => 'string', 'filename' => 'string', 'documentype' =>'string', 'tempfilename' =>'string', 'unique_file_id' => 'string' ),
-                 'out' => array( 'return' => "{urn:$this->namespace}kt_document_detail" ),
-                );
-
- 	        $this->__dispatch_map['add_document_with_key_with_metadata'] =
-    	        array('in' => array('session_id' => 'string', 'folder_id' => 'int', 'title' => 'string', 'filename' => 'string', 'documentype' =>'string', 'tempfilename' =>'string', 'metadata'=>"{urn:$this->namespace}kt_metadata_fieldsets", 'sysdata'=>"{urn:$this->namespace}kt_sysdata", 'unique_file_id' => 'string' ),
-        	     'out' => array( 'return' => "{urn:$this->namespace}kt_document_detail" )
-            	);
-         }
-
-         // get_document_detail_by_name
-         $this->__dispatch_map['get_document_detail_by_name'] =
-            array('in' => array('session_id' => 'string', 'document_name' => 'string', 'what' => 'string' ),
-             'out' => array('return' => "{urn:$this->namespace}kt_document_detail"),
-            );
-
-            if ($this->version >= 2)
-            {
-            	$this->__dispatch_map['get_document_detail_by_name']['in'] = array('session_id' => 'string', 'folder_id' => 'int', 'document_name' => 'string', 'what' => 'string', 'detail' => 'string' );
-
-            	$this->__dispatch_map['get_document_detail_by_title'] = array(
-            			'in' => array('session_id' => 'string', 'folder_id' => 'int', 'title' => 'string', 'detail' => 'string' ),
-            			'out' => array('return' => "{urn:$this->namespace}kt_document_detail"),
-            		);
-
-            	$this->__dispatch_map['get_document_detail_by_filename'] = array(
-            			'in' => array('session_id' => 'string', 'folder_id' => 'int', 'filename' => 'string', 'detail' => 'string' ),
-            			'out' => array('return' => "{urn:$this->namespace}kt_document_detail"),
-            		);
-            }
-
-          // checkout_document
-           $this->__dispatch_map['checkout_document'] =
-            array('in' => array('session_id' => 'string', 'document_id' => 'int', 'reason' =>'string'),
-             'out' => array('return' => "{urn:$this->namespace}kt_response" ),
-            );
-
-            if ($this->version >= 2)
-            {
-            	 $this->__dispatch_map['checkout_document'] =
-            array('in' => array('session_id' => 'string', 'document_id' => 'int', 'reason' =>'string', 'download' => 'boolean'),
-             'out' => array('return' => "{urn:$this->namespace}kt_document_detail" ),
-            );
-            }
-
-          // checkout_small_document
-           $this->__dispatch_map['checkout_small_document'] =
-            array('in' => array('session_id' => 'string', 'document_id' => 'int', 'reason' =>'string', 'download' => 'boolean'),
-             'out' => array('return' => "{urn:$this->namespace}kt_response" ),
-            );
-
-            if ($this->version >= 2)
-            {
-            	 $this->__dispatch_map['checkout_small_document']['out'] = array('return' => "{urn:$this->namespace}kt_document_detail" );
-            }
-
-          // checkout_base64_document
-           $this->__dispatch_map['checkout_base64_document'] =
-            array('in' => array('session_id' => 'string', 'document_id' => 'int', 'reason' =>'string', 'download' => 'boolean'),
-             'out' => array('return' => "{urn:$this->namespace}kt_response" ),
-              'alias' => 'checkout_small_document'
-            );
-
-            if ($this->version >= 2)
-            {
-            	 $this->__dispatch_map['checkout_base64_document']['out'] = array('return' => "{urn:$this->namespace}kt_document_detail" );
-            }
-
-            // undo_document_checkout
-            $this->__dispatch_map['undo_document_checkout'] =
-            array('in' => array('session_id' => 'string', 'document_id' => 'int', 'reason' =>'string'),
-             'out' => array('return' => "{urn:$this->namespace}kt_response" ),
-            );
-
-            if ($this->version >= 2)
-            {
-            	 $this->__dispatch_map['undo_document_checkout']['out'] = array('return' => "{urn:$this->namespace}kt_document_detail" );
-            }
-
-            // download_document
-            $this->__dispatch_map['download_document'] =
-            array('in' => array('session_id' => 'string', 'document_id' => 'int' ),
-             'out' => array('return' => "{urn:$this->namespace}kt_response" ),
-            );
-
-            // download_small_document
-            $this->__dispatch_map['download_small_document'] =
-            array('in' => array('session_id' => 'string', 'document_id' => 'int' ),
-             'out' => array('return' => "{urn:$this->namespace}kt_response" ),
-            );
-
-            // download_base64_document
-            $this->__dispatch_map['download_base64_document'] =
-            array('in' => array('session_id' => 'string', 'document_id' => 'int' ),
-             'out' => array('return' => "{urn:$this->namespace}kt_response" ),
-              'alias' => 'download_small_document'
-            );
-
-            if ($this->version >= 3)
-            {
-            	$this->__dispatch_map['download_document']['in'] = array('session_id' => 'string', 'document_id' => 'int', 'version' => 'string' );
-            	$this->__dispatch_map['download_small_document']['in'] = array('session_id' => 'string', 'document_id' => 'int', 'version' => 'string' );
-            	$this->__dispatch_map['download_base64_document']['in'] = array('session_id' => 'string', 'document_id' => 'int', 'version' => 'string' );
-            }
-
-            // delete_document
-			$this->__dispatch_map['delete_document'] =
-            array('in' => array('session_id' => 'string', 'document_id' => 'int', 'reason' => 'string'),
-             'out' => array( 'return' => "{urn:$this->namespace}kt_response" ),
-            );
-
-            // change_document_owner
-			$this->__dispatch_map['change_document_owner'] =
-            array('in' => array('session_id' => 'string', 'document_id' => 'int', 'username' => 'string', 'reason' => 'string'),
-             'out' => array( 'return' => "{urn:$this->namespace}kt_response" ),
-            );
-
-            if ($this->version >= 2)
-            {
-            	$this->__dispatch_map['change_document_owner']['out'] = array( 'return' => "{urn:$this->namespace}kt_document_detail" );
-            }
-
-            // copy_document
-			$this->__dispatch_map['copy_document'] =
-            array('in' => array('session_id' => 'string', 'document_id' => 'int', 'folder_id' => 'int', 'reason' => 'string', 'newtitle' => 'string', 'newfilename' => 'string'),
-             'out' => array( 'return' => "{urn:$this->namespace}kt_response" ),
-            );
-            if ($this->version >= 2)
-            {
-            	$this->__dispatch_map['copy_document'] =
-            		array('in' => array('session_id' => 'string', 'document_id' => 'int', 'folder_id' => 'int', 'reason' => 'string', 'options' => 'string' ),
-             				'out' => array( 'return' => "{urn:$this->namespace}kt_document_detail" ),
-            			);
-            }
-
-            // move_document
-			$this->__dispatch_map['move_document'] =
-            array('in' => array('session_id' => 'string', 'document_id' => 'int', 'folder_id' => 'int', 'reason' => 'string', 'newtitle' => 'string', 'newfilename' => 'string'),
-             'out' => array( 'return' => "{urn:$this->namespace}kt_response" ),
-            );
-            if ($this->version >= 2)
-            {
-            	$this->__dispatch_map['move_document'] =
-		            array('in' => array('session_id' => 'string', 'document_id' => 'int', 'folder_id' => 'int', 'reason' => 'string', 'options' => 'string'),
-        			     'out' => array( 'return' => "{urn:$this->namespace}kt_document_detail" ),
-            		);
-            }
-
-			// rename_document_title
-            $this->__dispatch_map['rename_document_title'] =
-            array('in' => array('session_id' => 'string', 'document_id' => 'int', 'newtitle' => 'string' ),
-             'out' => array( 'return' => "{urn:$this->namespace}kt_response" ),
-            );
-			if ($this->version >= 2)
-            {
-            	$this->__dispatch_map['rename_document_title']['out'] = array( 'return' => "{urn:$this->namespace}kt_document_detail" );
-            }
-            // rename_document_filename
-            $this->__dispatch_map['rename_document_filename'] =
-            array('in' => array('session_id' => 'string', 'document_id' => 'int', 'newfilename' => 'string' ),
-             'out' => array( 'return' => "{urn:$this->namespace}kt_response" ),
-            );
-			if ($this->version >= 2)
-            {
-            	$this->__dispatch_map['rename_document_filename']['out'] = array( 'return' => "{urn:$this->namespace}kt_document_detail" );
-            }
-
-            // change_document_type
-			$this->__dispatch_map['change_document_type'] =
-            array('in' => array('session_id' => 'string', 'document_id' => 'int', 'documenttype' => 'string' ),
-             'out' => array( 'return' => "{urn:$this->namespace}kt_response" ),
-            );
-
-            if ($this->version >= 2)
-            {
-            	$this->__dispatch_map['change_document_type']['out'] = array( 'return' => "{urn:$this->namespace}kt_document_detail" );
-            }
-
-            // start_document_workflow
-            $this->__dispatch_map['start_document_workflow'] =
-            array('in' => array('session_id' => 'string', 'document_id' => 'int', 'workflow' => 'string' ),
-             'out' => array( 'return' => "{urn:$this->namespace}kt_response" ),
-            );
-
-            if ($this->version >= 2)
-            {
-            	$this->__dispatch_map['start_document_workflow']['out'] = array( 'return' => "{urn:$this->namespace}kt_document_detail" );
-            }
-
-            // delete_document_workflow
-            $this->__dispatch_map['delete_document_workflow'] =
-            array('in' => array('session_id' => 'string', 'document_id' => 'int'  ),
-             'out' => array( 'return' => "{urn:$this->namespace}kt_response" )
-            );
-
-			if ($this->version >= 2)
-            {
-            	$this->__dispatch_map['delete_document_workflow']['out'] = array( 'return' => "{urn:$this->namespace}kt_document_detail" );
-
-            	// stop_document_workflow
-	            $this->__dispatch_map['stop_document_workflow'] =
-    		        array('in' => array('session_id' => 'string', 'document_id' => 'int'  ),
-       	    	        'out' => array( 'return' => "{urn:$this->namespace}kt_document_detail" ),
-       	    	        'alias' => 'delete_document_workflow'
-            		);
-            }
-
-            // perform_document_workflow_transition
-            $this->__dispatch_map['perform_document_workflow_transition'] =
-            array('in' => array('session_id' => 'string', 'document_id' => 'int', 'transition' => 'string', 'reason' => 'string'  ),
-             'out' => array( 'return' => "{urn:$this->namespace}kt_response" ),
-            );
-
-            if ($this->version >= 2)
-            {
-            	$this->__dispatch_map['perform_document_workflow_transition']['out'] = array( 'return' => "{urn:$this->namespace}kt_document_detail" );
-            }
-
-            // get_document_metadata
-            $this->__dispatch_map['get_document_metadata'] =
-            array('in' => array('session_id' => 'string', 'document_id' => 'int'   ),
-             'out' => array( 'return' => "{urn:$this->namespace}kt_metadata_response" ),
-            );
-
-            if ($this->version >= 3)
-            {
-            	 $this->__dispatch_map['get_document_metadata']['in'] = array('session_id' => 'string', 'document_id' => 'int', 'version' => 'string');
-            }
-
-            // get_document_type_metadata
-            $this->__dispatch_map['get_document_type_metadata'] =
-            array('in' => array('session_id' => 'string', 'document_type' => 'string'   ),
-             'out' => array( 'return' => "{urn:$this->namespace}kt_metadata_response" ),
-            );
-            //update_document_metadata
-            $this->__dispatch_map['update_document_metadata'] =
-            array('in' => array('session_id' => 'string', 'document_id' => 'int', 'metadata'=>"{urn:$this->namespace}kt_metadata_fieldsets" ),
-             'out' => array( 'return' => "{urn:$this->namespace}kt_response" ),
-            );
-
-             if ($this->version >= 2)
-            {
-            	$this->__dispatch_map['update_document_metadata'] =
-            array('in' => array('session_id' => 'string', 'document_id' => 'int', 'metadata'=>"{urn:$this->namespace}kt_metadata_fieldsets", 'sysdata'=>"{urn:$this->namespace}kt_sysdata"  ),
-             'out' => array( 'return' => "{urn:$this->namespace}kt_document_detail" )
-            );
-
-            }
-
-            //get_document_workflow_transitions
-            $this->__dispatch_map['get_document_workflow_transitions'] =
-            array('in' => array('session_id' => 'string', 'document_id' => 'int' ),
-             'out' => array( 'return' => "{urn:$this->namespace}kt_workflow_transitions_response" ),
-            );
-
-            //get_document_workflow_state
-            $this->__dispatch_map['get_document_workflow_state'] =
-            array('in' => array('session_id' => 'string', 'document_id' => 'int' ),
-             'out' => array( 'return' => "{urn:$this->namespace}kt_response" ),
-            );
-
-            // get_document_transaction_history
-            $this->__dispatch_map['get_document_transaction_history'] =
-            array('in' => array('session_id' => 'string', 'document_id' => 'int'   ),
-             'out' => array( 'return' => "{urn:$this->namespace}kt_document_transaction_history_response" ),
-            );
-
-            // get_document_version_history
-            $this->__dispatch_map['get_document_version_history'] =
-            array('in' => array('session_id' => 'string', 'document_id' => 'int'   ),
-             'out' => array( 'return' => "{urn:$this->namespace}kt_document_version_history_response" ),
-            );
-
-         // get_document_types
-         $this->__dispatch_map['get_document_types'] =
-            array('in' => array('session_id' => 'string' ),
-             'out' => array( 'return' => "{urn:$this->namespace}kt_document_types_response" ),
-            );
-
-         // get_workflows
-         $this->__dispatch_map['get_workflows'] =
-            array('in' => array('session_id' => 'string' ),
-             'out' => array( 'return' => "{urn:$this->namespace}kt_workflows_response" ),
-            );
-
-         // get_document_link_types
-         $this->__dispatch_map['get_document_link_types'] =
-            array('in' => array('session_id' => 'string' ),
-             'out' => array( 'return' => "{urn:$this->namespace}kt_document_types_response" ),
-            );
-
-         // get_client_policies
-         $this->__dispatch_map['get_client_policies'] =
-            array('in' => array('session_id' => 'string' ),
-             'out' => array( 'return' => "{urn:$this->namespace}kt_client_policies_response" ),
-            );
-
-          if ($this->version >= 2)
-            {
-            	$this->__dispatch_map['get_client_policies']['in'] = array('session_id' => 'string', 'client' => 'string');
-            }
+        return null;
     }
 
     function debug($msg, $function = null, $level=0)
     {
-    	if ($this->mustDebug == 0) return;
+    	if ($this->mustDebug == 0) { return; }
     	if ($this->mustDebug >= $level)
     	{
     		global $default;
@@ -1318,12 +341,13 @@ class KTWebService
     	}
     }
 
-    function _status($code, $message='')
+    function _status($code, $message = '')
     {
     	if (PEAR::isError($message))
     	{
     		$message = $message->getMessage();
     	}
+    	
 		return array('status_code' => $code, 'message' => $message);
     }
 
@@ -1340,15 +364,17 @@ class KTWebService
     		return $this->ktapi;
     	}
 
-    	$kt = new KTAPI();
-
-    	$session = $kt->get_active_session($session_id, null);
+    	$kt = new KTAPI($this->version);
+    	// NOTE app is hardcoded to identify all requests as the 'ws' app
+    	$session = $kt->get_active_session($session_id, null, 'ws');
 
     	if ( PEAR::isError($session))
     	{
             return KTWebService::_status(KTWS_ERR_INVALID_SESSION, $session);
     	}
+    	
     	$this->ktapi = $kt;
+    	
     	return $kt;
     }
 
@@ -1358,11 +384,11 @@ class KTWebService
      * @param string $ip
      * @return kt_response
      */
-    function anonymous_login($ip=null)
+    function anonymous_login($ip = null)
     {
     	$response = KTWebService::_status(KTWS_ERR_AUTHENTICATION_ERROR);
 
-    	$kt = new KTAPI();
+    	$kt = new KTAPI($this->version);
 
     	$session = $kt->start_anonymous_session($ip);
 
@@ -1390,13 +416,13 @@ class KTWebService
      * @param string $ip
      * @return kt_response
      */
-    function login($username, $password, $ip=null)
+    function login($username, $password, $ip = null, $app = null)
     {
     	$response = KTWebService::_status(KTWS_ERR_AUTHENTICATION_ERROR);
 
-    	$kt = new KTAPI();
+    	$kt = new KTAPI($this->version);
 
-    	$session = $kt->start_session($username, $password, $ip);
+    	$session = $kt->start_session($username, $password, $ip, $app);
 
     	if (PEAR::isError($session))
     	{
@@ -1440,7 +466,7 @@ class KTWebService
     	}
     	$session->logout();
 
-    	$response['status_code']=KTWS_SUCCESS;
+    	$response['status_code'] = KTWS_SUCCESS;
 
     	return new SOAP_Value('return', "{urn:$this->namespace}kt_response", $response);
     }
@@ -1470,8 +496,8 @@ class KTWebService
     	}
 
     	$detail = $folder->get_detail();
-    	$detail['status_code']=KTWS_SUCCESS;
-    	$detail['message']='';
+    	$detail['status_code'] = KTWS_SUCCESS;
+    	$detail['message'] = '';
 
     	return new SOAP_Value('return', "{urn:$this->namespace}kt_folder_detail", $detail);
     }
@@ -1484,7 +510,7 @@ class KTWebService
      * @access private
      * @static
 	 */
-	function _encode_folder_shortcuts($shortcuts, $name='shortcuts')
+	function _encode_folder_shortcuts($shortcuts, $name = 'shortcuts')
 	{
 		foreach($shortcuts as $key => $item)
 		{
@@ -1502,7 +528,7 @@ class KTWebService
 	 * @return kt_document_shortcuts. status_code can be KTWS_ERR_INVALID_SESSION, KTWS_ERR_INVALID_DOCUMENT or KTWS_SUCCESS
      *
      */
-    function get_folder_shortcuts($session_id, $folder_id){
+    function get_folder_shortcuts($session_id, $folder_id) {
     	$kt = &$this->get_ktapi($session_id );
     	if (is_array($kt))
     	{
@@ -1510,7 +536,7 @@ class KTWebService
     	}
 
     	$folder = $kt->get_folder_by_id($folder_id);
-    	if (PEAR::isError($folder)){
+    	if (PEAR::isError($folder)) {
     		$response=array(
     			'status_code'=>KTWS_ERR_INVALID_FOLDER,
     			'message' => $folder->getMessage()
@@ -1521,7 +547,7 @@ class KTWebService
     	}
 
     	$shortcuts = $folder->get_shortcuts();
-    	if (PEAR::isError($shortcuts)){
+    	if (PEAR::isError($shortcuts)) {
     		$response = KTWebService::_status(KTWS_ERR_INVALID_FOLDER, $shortcuts);
     		$this->debug("get_folder_shortcuts - cannot retrieve shortcuts linking to $folder_id - "  . $shortcuts->getMessage(), $session_id);
 
@@ -1562,8 +588,8 @@ class KTWebService
     	}
 
     	$detail = $folder->get_detail();
-    	$detail['status_code']=KTWS_SUCCESS;
-    	$detail['message']='';
+    	$detail['status_code'] = KTWS_SUCCESS;
+    	$detail['message'] = '';
 
     	return new SOAP_Value('return', "{urn:$this->namespace}kt_folder_detail", $detail);
     }
@@ -1619,12 +645,12 @@ class KTWebService
     	$listing = $folder->get_listing($depth, $what);
 
     	$contents = array(
-    		'status_code'=>KTWS_SUCCESS,
+    		'status_code' => KTWS_SUCCESS,
     		'message' => '',
     		'folder_id' => $folder_id + 0,
     		'folder_name' => $folder->get_folder_name(),
     		'full_path' => $folder->get_full_path(),
-    		'items'=>KTWebService::_encode_folder_items($listing)
+    		'items' => KTWebService::_encode_folder_items($listing)
     	);
 
     	return new SOAP_Value($name, "{urn:$this->namespace}kt_folder_contents", $contents);
@@ -1633,9 +659,9 @@ class KTWebService
     /**
      * Returns the contents of a folder - list of contained documents and folders.
      * Unlike get_folder_contents this function has a default of folders only, and no depth parameter.
-     * 
+     *
      * The main purpose is to return a navigable tree view of the repository.
-     * 
+     *
      * This function does not accept a depth parameter.
      *
 	 * @author KnowledgeTree Team
@@ -1713,8 +739,8 @@ class KTWebService
     	}
 
     	$detail = $newfolder->get_detail();
-    	$detail['status_code']=KTWS_SUCCESS;
-    	$detail['message']='';
+    	$detail['status_code'] = KTWS_SUCCESS;
+    	$detail['message'] = '';
 
     	return new SOAP_Value('return', "{urn:$this->namespace}kt_folder_detail", $detail);
     }
@@ -1727,7 +753,7 @@ class KTWebService
      * @param int $source_folder_id Folder to create the shortcut to
      * @return kt_folder_detail. status_code can be KTWS_ERR_INVALID_SESSION, KTWS_ERR_INVALID_FOLDER or KTWS_SUCCESS
      */
-    function create_folder_shortcut($session_id, $target_folder_id, $source_folder_id){
+    function create_folder_shortcut($session_id, $target_folder_id, $source_folder_id) {
     	$this->debug("create_folder_shortcut('$session_id', $target_folder_id, ' $source_folder_id')");
 
     	$kt = &$this->get_ktapi($session_id );
@@ -1766,8 +792,8 @@ class KTWebService
     	}
 
     	$detail = $shortcut->get_detail();
-    	$detail['status_code']=KTWS_SUCCESS;
-    	$detail['message']='';
+    	$detail['status_code'] = KTWS_SUCCESS;
+    	$detail['message'] = '';
 
     	return new SOAP_Value('return', "{urn:$this->namespace}kt_folder_detail", $detail);
     }
@@ -1780,7 +806,7 @@ class KTWebService
      * @param int $source_document_id Document to create the shortcut to
      * @return kt_document_detail. status_code can be KTWS_ERR_INVALID_SESSION, KTWS_ERR_INVALID_FOLDER,KTWS_ERR_INVALID_DOCUMENT  or KTWS_SUCCESS
      */
-    function create_document_shortcut($session_id, $target_folder_id, $source_document_id){
+    function create_document_shortcut($session_id, $target_folder_id, $source_document_id) {
     	$this->debug("create_document_shortcut('$session_id', $target_folder_id, '$source_document_id')");
 
     	$kt = &$this->get_ktapi($session_id );
@@ -1818,10 +844,9 @@ class KTWebService
     		return new SOAP_Value('return', "{urn:$this->namespace}kt_document_detail", $response);
     	}
 
-
     	$detail = $shortcut->get_detail();
-    	$detail['status_code']=KTWS_SUCCESS;
-    	$detail['message']='';
+    	$detail['status_code'] = KTWS_SUCCESS;
+    	$detail['message'] = '';
 
     	return new SOAP_Value('return', "{urn:$this->namespace}kt_document_detail", $detail);
     }
@@ -1889,7 +914,7 @@ class KTWebService
     	$folder = &$kt->get_folder_by_id($folder_id);
 		if (PEAR::isError($folder))
     	{
-			$response['message']= $folder->getMessage();
+			$response['message'] = $folder->getMessage();
 			$this->debug("rename_folder - cannot get folderid $folder_id - "  . $folder->getMessage(), $session_id);
     		return new SOAP_Value('return', "{urn:$this->namespace}kt_response", $response);
     	}
@@ -1903,7 +928,7 @@ class KTWebService
     		return new SOAP_Value('return', "{urn:$this->namespace}kt_response", $response);
     	}
 
-    	$response['status_code']= KTWS_SUCCESS;
+    	$response['status_code'] = KTWS_SUCCESS;
 
     	return new SOAP_Value('return', "{urn:$this->namespace}kt_response", $response);
     }
@@ -1951,7 +976,7 @@ class KTWebService
     		return new SOAP_Value('return', "{urn:$this->namespace}$responseType", $response);
     	}
 
-    	$result= $src_folder->copy($tgt_folder, $reason);
+    	$result = $src_folder->copy($tgt_folder, $reason);
     	if (PEAR::isError($result))
     	{
     		$response['status_code'] = KTWS_ERR_PROBLEM;
@@ -1971,7 +996,7 @@ class KTWebService
     		return $response;
     	}
 
-    	$response['status_code']= KTWS_SUCCESS;
+    	$response['status_code'] = KTWS_SUCCESS;
 
     	return new SOAP_Value('return', "{urn:$this->namespace}$responseType", $response);
     }
@@ -2028,13 +1053,11 @@ class KTWebService
 
     	if ($this->version >=2)
     	{
-
 	    	$response = $this->get_folder_detail($session_id, $source_id);
-
     		return $response;
     	}
 
-    	$response['status_code']= KTWS_SUCCESS;
+    	$response['status_code'] = KTWS_SUCCESS;
 
     	return new SOAP_Value('return', "{urn:$this->namespace}$responseType", $response);
     }
@@ -2059,14 +1082,14 @@ class KTWebService
     	$result = $kt->get_documenttypes();
     	if (PEAR::isError($result))
     	{
-    	    $response['message']= $result->getMessage();
+    	    $response['message'] = $result->getMessage();
     		$this->debug("get_document_types - "  . $result->getMessage(), $session_id);
 
     		return new SOAP_Value('return', "{urn:$this->namespace}kt_document_types_response", $response);
     	}
 
-   		$response['status_code']= KTWS_SUCCESS;
-   		$response['document_types']= $result;
+   		$response['status_code'] = KTWS_SUCCESS;
+   		$response['document_types'] = $result;
 
     	return new SOAP_Value('return', "{urn:$this->namespace}kt_document_types_response", $response);
 
@@ -2086,14 +1109,14 @@ class KTWebService
     	$result = $kt->get_document_link_types();
     	if (PEAR::isError($result))
     	{
-    	    $response['message']= $result->getMessage();
+    	    $response['message'] = $result->getMessage();
     	    $this->debug("get_document_link_types - "  . $result->getMessage(), $session_id);
 
     		return new SOAP_Value('return', "{urn:$this->namespace}kt_document_types_response", $response);
     	}
 
-   		$response['status_code']= KTWS_SUCCESS;
-   		$response['document_types']= $result;
+   		$response['status_code'] = KTWS_SUCCESS;
+   		$response['document_types'] = $result;
 
     	return new SOAP_Value('return', "{urn:$this->namespace}kt_document_types_response", $response);
 
@@ -2137,8 +1160,8 @@ class KTWebService
     		return new SOAP_Value('return', "{urn:$this->namespace}kt_document_detail", $response);
     	}
 
-    	$detail['status_code']=KTWS_SUCCESS;
-    	$detail['message']='';
+    	$detail['status_code'] = KTWS_SUCCESS;
+    	$detail['message'] = '';
 
     	if ($this->version >= 2)
     	{
@@ -2218,7 +1241,6 @@ class KTWebService
     	return $this->get_document_detail_by_name($session_id, $folder_id,  $title, 'T', $detail);
     }
 
-
     /**
      * Returns document detail given a document name which could include a full path.
      *
@@ -2252,8 +1274,9 @@ class KTWebService
     		return new SOAP_Value('return', "{urn:$this->namespace}kt_document_detail", $kt);
     	}
 
-    	if ($folder_id < 1) $folder_id = 1;
+    	if ($folder_id < 1) { $folder_id = 1; }
     	$root = &$kt->get_folder_by_id($folder_id);
+    	
     	if (PEAR::isError($root))
     	{
     		$this->debug("get_document_detail_by_name - cannot get root folder - folder_id = $folder_id - "  . $root->getMessage(), $session_id);
@@ -2269,6 +1292,7 @@ class KTWebService
     	{
     		$document = &$root->get_document_by_filename($document_name);
     	}
+    	
     	if (PEAR::isError($document))
     	{
     		$response=array(
@@ -2291,7 +1315,7 @@ class KTWebService
      * @access private
      * @static
 	 */
-	function _encode_document_shortcuts($shortcuts, $name='shortcuts')
+	function _encode_document_shortcuts($shortcuts, $name = 'shortcuts')
 	{
 		foreach($shortcuts as $key => $item)
 		{
@@ -2309,7 +1333,8 @@ class KTWebService
 	 * @return kt_document_shortcuts. status_code can be KTWS_ERR_INVALID_SESSION, KTWS_ERR_INVALID_DOCUMENT or KTWS_SUCCESS
      *
      */
-    function get_document_shortcuts($session_id, $document_id){
+    function get_document_shortcuts($session_id, $document_id)
+    {
     	$kt = &$this->get_ktapi($session_id );
     	if (is_array($kt))
     	{
@@ -2317,7 +1342,7 @@ class KTWebService
     	}
 
     	$document = $kt->get_document_by_id($document_id);
-    	if (PEAR::isError($document)){
+    	if (PEAR::isError($document)) {
     		$response=array(
     			'status_code'=>KTWS_ERR_INVALID_DOCUMENT,
     			'message' => $document->getMessage()
@@ -2328,7 +1353,7 @@ class KTWebService
     	}
 
     	$shortcuts = $document->get_shortcuts();
-    	if (PEAR::isError($shortcuts)){
+    	if (PEAR::isError($shortcuts)) {
     		$response = KTWebService::_status(KTWS_ERR_INVALID_DOCUMENT, $shortcuts);
     		$this->debug("get_document_shortcuts - cannot retrieve shortcuts linking to $document_id - "  . $shortcuts->getMessage(), $session_id);
 
@@ -2339,12 +1364,11 @@ class KTWebService
     	$response['history'] = KTWebService::_encode_document_shortcuts($shortcuts);
 
     	return new SOAP_Value('return', "{urn:$this->namespace}kt_document_shortcuts", $response);
-
     }
 
     function add_document_with_key($session_id, $folder_id,  $title, $filename, $documenttype, $tempfilename, $unique_file_id = null)
     {
-        if (empty($tempfilename) && !empty($unique_file_id)){
+        if (empty($tempfilename) && !empty($unique_file_id)) {
             $upload_manager = new KTUploadManager();
             $tempfilename = $upload_manager->get_tempfile_from_unique_id($unique_file_id);
 
@@ -2410,6 +1434,9 @@ class KTWebService
 			return new SOAP_Value('return', "{urn:$this->namespace}kt_document_detail", $response);
 		}
 
+		//add the document to the User History
+		$document->addDocumentToUserHistory();
+
     	$detail = $document->get_detail();
     	$detail['status_code'] = KTWS_SUCCESS;
 		$detail['message'] = '';
@@ -2459,7 +1486,7 @@ class KTWebService
 
     function add_document_with_key_with_metadata($session_id, $folder_id,  $title, $filename, $documenttype, $tempfilename, $metadata, $sysdata, $unique_file_id = null)
     {
-        if (empty($tempfilename) && !empty($unique_file_id)){
+        if (empty($tempfilename) && !empty($unique_file_id)) {
             $upload_manager = new KTUploadManager();
             $tempfilename = $upload_manager->get_tempfile_from_unique_id($unique_file_id);
 
@@ -2506,7 +1533,6 @@ class KTWebService
 			// not much we can do, maybe just log!
 		}
 
-
 		$result = $document->mergeWithLastMetadataVersion();
 		if (PEAR::isError($result))
 		{
@@ -2515,7 +1541,6 @@ class KTWebService
 
 		return $update_result;
     }
-
 
     /**
      * Find documents matching the document oem (integration) no
@@ -2745,7 +1770,6 @@ class KTWebService
        	return $update_result;
 	}
 
-
     /**
      * Does a document checkin.
      *
@@ -2843,6 +1867,9 @@ class KTWebService
     		return new SOAP_Value('return', "{urn:$this->namespace}$responseType", $response);
     	}
 
+    	//add document to User History
+    	$document->addDocumentToUserHistory();
+
     	$session = &$kt->get_session();
 
     	$url = '';
@@ -2911,6 +1938,9 @@ class KTWebService
     		return new SOAP_Value('return', "{urn:$this->namespace}$responseType", $response);
     	}
 
+    	//add document to User History
+    	$document->addDocumentToUserHistory();
+
     	$content='';
     	if ($download)
     	{
@@ -2919,14 +1949,14 @@ class KTWebService
     		$oStorage = KTStorageManagerUtil::getSingleton();
             $filename = $oStorage->temporaryFile($document);
 
-    		$fp = $oStorage->fopen($filename, 'rb');    		
+    		$fp = $oStorage->fopen($filename, 'rb');
     		if ($fp === false)
     		{
     			$response['message'] = 'The file is not in the storage system. Please contact an administrator!';
 	    		$this->debug("checkout_small_document - cannot write $filename ", $session_id);
     			return new SOAP_Value('return', "{urn:$this->namespace}$responseType", $response);
     		}
-    		
+
     		$content = $oStorage->readfile($filename, 'rb', $oStorage->fileSize($filename));
     		$content = base64_encode($content);
     	}
@@ -3031,13 +2061,13 @@ class KTWebService
     	}
 
     	$content_version_id = null;
-    	if (!empty($version)){
+    	if (!empty($version)) {
     		// Get the content version id for the given document version
     		$content_version_id = $document->get_content_version_id_from_version($version);
     		if (PEAR::isError($content_version_id))
         	{
-        		$response['message'] = $result->getMessage();
-        		$this->debug("download_document - cannot get version $version - "  . $result->getMessage(), $session_id);
+        		$response['message'] = $content_version_id->getMessage();
+        		$this->debug("download_document - cannot get version $version - "  . $content_version_id->getMessage(), $session_id);
         		return new SOAP_Value('return', "{urn:$this->namespace}kt_response", $response);
         	}
     	}
@@ -3049,6 +2079,9 @@ class KTWebService
     		$this->debug("download_document - cannot download (version $version) - "  . $result->getMessage(), $session_id);
     		return new SOAP_Value('return', "{urn:$this->namespace}kt_response", $response);
     	}
+
+    	//add document to User History
+    	$document->addDocumentToUserHistory();
 
     	$session = &$kt->get_session();
     	$download_manager = new KTDownloadManager();
@@ -3091,7 +2124,7 @@ class KTWebService
     	}
 
     	$content_version_id = null;
-    	if (!empty($version)){
+    	if (!empty($version)) {
     		// Get the content version id for the given document version
     		$content_version_id = $document->get_content_version_id_from_version($version);
     		if (PEAR::isError($content_version_id))
@@ -3110,14 +2143,17 @@ class KTWebService
     		return new SOAP_Value('return', "{urn:$this->namespace}kt_response", $response);
     	}
 
+    	//add document to User History
+    	$document->addDocumentToUserHistory();
+
     	$content = '';
     	$oStorage = KTStorageManagerUtil::getSingleton();
 
     	// for a specified version
-    	if (is_numeric($content_version_id)){
+    	if (is_numeric($content_version_id)) {
     	    $filename = $oStorage->temporaryFileForVersion($content_version_id);
 
-    	    if (!$filename){
+    	    if (!$filename) {
     			$response['message'] = 'The file is not in the storage system. Please contact an administrator!';
     			$this->debug("download_small_document - $filename cannot be found in the storage system", $session_id);
     			return new SOAP_Value('return', "{urn:$this->namespace}kt_response", $response);
@@ -3290,7 +2326,9 @@ class KTWebService
     		$this->debug("copy_document - cannot copy - "  . $result->getMessage(), $session_id);
     		return new SOAP_Value('return', "{urn:$this->namespace}$responseType", $response);
     	}
+    	
     	$response['status_code'] = KTWS_SUCCESS;
+    	
     	if ($this->version >= 2)
     	{
     		$new_document_id = $result->documentid;
@@ -3337,24 +2375,23 @@ class KTWebService
 
     	if ($document->ktapi_folder->folderid != $folder_id)
     	{
-		// we only have to do something if the source and target folders are different
+    	    // we only have to do something if the source and target folders are different
+    	    $tgt_folder = &$kt->get_folder_by_id($folder_id);
+    	    if (PEAR::isError($tgt_folder))
+    	    {
+    	        $response['status_code'] = KTWS_ERR_INVALID_FOLDER;
+    	        $response['message'] = $tgt_folder->getMessage();
+    	        $this->debug("move_document - cannot get folderid $folder_id - "  . $tgt_folder->getMessage(), $session_id);
+    	        return new SOAP_Value('return', "{urn:$this->namespace}$responseType", $response);
+    	    }
 
-    	$tgt_folder = &$kt->get_folder_by_id($folder_id);
-		if (PEAR::isError($tgt_folder))
-    	{
-    		$response['status_code'] = KTWS_ERR_INVALID_FOLDER;
-    		$response['message'] = $tgt_folder->getMessage();
-    		$this->debug("move_document - cannot get folderid $folder_id - "  . $tgt_folder->getMessage(), $session_id);
-    		return new SOAP_Value('return', "{urn:$this->namespace}$responseType", $response);
-    	}
-
-    	$result = $document->move($tgt_folder, $reason, $newtitle, $newfilename);
-		if (PEAR::isError($result))
-    	{
-    		$response['message'] = $result->getMessage();
-    		$this->debug("move_document - cannot move - "  . $result->getMessage(), $session_id);
-    		return new SOAP_Value('return', "{urn:$this->namespace}$responseType", $response);
-    	}
+    	    $result = $document->move($tgt_folder, $reason, $newtitle, $newfilename);
+    	    if (PEAR::isError($result))
+    	    {
+    	        $response['message'] = $result->getMessage();
+    	        $this->debug("move_document - cannot move - "  . $result->getMessage(), $session_id);
+    	        return new SOAP_Value('return', "{urn:$this->namespace}$responseType", $response);
+    	    }
     	}
 
     	$response['status_code'] = KTWS_SUCCESS;
@@ -3717,7 +2754,7 @@ class KTWebService
      * @access private
      * @static
      */
-    function _encode_metadata_fieldset($fieldset, $name='fieldset')
+    function _encode_metadata_fieldset($fieldset, $name = 'fieldset')
     {
     	if (!empty($fieldset['fields']))
     	{
@@ -3735,7 +2772,7 @@ class KTWebService
      * @access private
      * @static
      */
-    function _encode_metadata_fieldsets($fieldsets, $name='metadata')
+    function _encode_metadata_fieldsets($fieldsets, $name = 'metadata')
     {
     	$encoded=array();
     	foreach($fieldsets as $fieldset)
@@ -3758,7 +2795,7 @@ class KTWebService
      * @access private
      * @static
      */
-    function _encode_metadata_response($response, $name='return')
+    function _encode_metadata_response($response, $name = 'return')
     {
         if (empty($response['metadata']))
         {
@@ -3829,7 +2866,6 @@ class KTWebService
     	return KTWebService::_encode_metadata_response($response);
 	}
 
-
     /**
      * Returns the metadata on a document.
      *
@@ -3849,9 +2885,9 @@ class KTWebService
 
     	$response = KTWebService::_status(KTWS_ERR_INVALID_DOCUMENT);
 
-    	if (is_numeric($version)){
+    	if (is_numeric($version)) {
             $document = &$kt->get_document_by_metadata_version($document_id, $version);
-    	}else {
+    	} else {
     	    $document = &$kt->get_document_by_id($document_id);
     	}
 
@@ -3862,24 +2898,27 @@ class KTWebService
     		return new SOAP_Value('return', "{urn:$this->namespace}kt_metadata_response", $response);
     	}
 
+    	//trigger the User History
+    	$document->addDocumentToUserHistory();
+
     	$metadata = $document->get_metadata();
 
-		$num_metadata=count($metadata);
-		for($i=0;$i<$num_metadata;$i++)
+		$num_metadata = count($metadata);
+		for ($i = 0; $i < $num_metadata; $i++)
 		{
 			$num_fields = count($metadata[$i]['fields']);
-			for($j=0;$j<$num_fields;$j++)
+			for ($j = 0; $j < $num_fields; $j++)
 			{
-				$selection=$metadata[$i]['fields'][$j]['selection'];
+				$selection = $metadata[$i]['fields'][$j]['selection'];
 				$new = array();
 
-				foreach($selection as $item)
+				foreach ($selection as $item)
 				{
 					$new[] = array(
-						'id'=>null,
+						'id' => null,
 						'name' => $item,
 						'value' => $item,
-						'parent_id'=>null
+						'parent_id' => null
 					);
 				}
 				$metadata[$i]['fields'][$j]['selection'] = $new;
@@ -3948,6 +2987,7 @@ class KTWebService
 
     		return $this->get_document_detail($session_id, $document_id, 'M');
     	}
+    	
     	$response['status_code'] = KTWS_SUCCESS;
 
     	return new SOAP_Value('return', "{urn:$this->namespace}$responseType", $response);
@@ -3973,14 +3013,14 @@ class KTWebService
 		$result = $kt->get_workflows();
     	if (PEAR::isError($result))
     	{
-    	    $response['message']= $result->getMessage();
+    	    $response['message'] = $result->getMessage();
     		$this->debug("get_workflows - "  . $result->getMessage(), $session_id);
 
     		return new SOAP_Value('return', "{urn:$this->namespace}kt_workflows_response", $response);
     	}
 
-   		$response['status_code']= KTWS_SUCCESS;
-   		$response['workflows']= $result;
+   		$response['status_code'] = KTWS_SUCCESS;
+   		$response['workflows'] = $result;
 
     	return new SOAP_Value('return', "{urn:$this->namespace}kt_workflows_response", $response);
 	}
@@ -4025,7 +3065,7 @@ class KTWebService
     	return new SOAP_Value('return', "{urn:$this->namespace}kt_workflow_transitions_response", $response);
 	}
 
-	function _encode_document_workflow_transitions($transitions, $name='transitions')
+	function _encode_document_workflow_transitions($transitions, $name = 'transitions')
 	{
 		return new SOAP_Value($name, "{urn:$this->namespace}kt_workflow_transitions", $transitions);
 	}
@@ -4080,7 +3120,7 @@ class KTWebService
      * @access private
      * @static
 	 */
-	function _encode_transaction_history($history, $name='history')
+	function _encode_transaction_history($history, $name = 'history')
 	{
 		foreach($history as $key => $item)
 		{
@@ -4138,12 +3178,13 @@ class KTWebService
      * @access private
      * @static
 	 */
-	function _encode_version_history($history, $name='history')
+	function _encode_version_history($history, $name = 'history')
 	{
 		foreach($history as $key => $item)
 		{
 			$history[$key] = new SOAP_Value('item', "{urn:$this->namespace}kt_document_version_history_item", $item);
 		}
+		
 		return new SOAP_Value($name, "{urn:$this->namespace}kt_document_version_history", $history);
 	}
 
@@ -4163,6 +3204,7 @@ class KTWebService
     	{
     		return new SOAP_Value('return', "{urn:$this->namespace}kt_document_version_history_response", $kt);
     	}
+    	
 		$response = KTWebService::_status(KTWS_ERR_INVALID_DOCUMENT);
 
     	$document = &$kt->get_document_by_id($document_id);
@@ -4183,7 +3225,7 @@ class KTWebService
     	}
 
     	$response['status_code'] = KTWS_SUCCESS;
-    	$response['history'] =KTWebService::_encode_version_history($result);
+    	$response['history'] = KTWebService::_encode_version_history($result);
 
     	return new SOAP_Value('return', "{urn:$this->namespace}kt_document_version_history_response", $response);
 	}
@@ -4228,7 +3270,7 @@ class KTWebService
 		return new SOAP_Value('return', "{urn:$this->namespace}kt_linked_document_response", $response);
 	}
 
-	function _encode_document_links($links, $name='links')
+	function _encode_document_links($links, $name = 'links')
 	{
 		foreach($links as $key => $link)
 		{
@@ -4461,162 +3503,1379 @@ class KTWebService
 
 		return new SOAP_Value('return', "{urn:$this->namespace}kt_search_response", $response);
 	}
-
+	
 	/**
-	 * The main json request processing function.
+	 * Encode an array as kt_document_comments
 	 *
-	 * The method name of the method to be called must be $_POST['_method'].
-	 * All parameters may be set in any order, as long as the names correspond with the wdsl names.
-	 *
-	 */
-	function runJSON()
-	{
-		// Let us check that all the POST variables that are expected are set
-		if ($_SERVER['REQUEST_METHOD'] != 'POST')
-		{
-			print json_encode(array('msg' => 'Post request must be made!'));
-			return;
-		}
-		$method = '';
-		if (array_key_exists('_method', $_POST))
-		{
-			$method = $_POST['_method'];
-		}
-		if ($method == '' || !array_key_exists($method, $this->__dispatch_map))
-		{
-			print json_encode(array('msg' => 'Method must exist!'));
-			return;
-		}
-
-		// let us check that we have all the variables for the method to be called.
-		$dispatcher = $this->__dispatch_map[$method];
-		$params = array();
-		foreach($dispatcher['in'] as $var => $type)
-		{
-			$param = array('var' => $var,  'set'=>0);
-			if (array_key_exists($var, $_POST))
-			{
-				$param['set'] = 1;
-				// if it looks json like we should decode it
-				if (substr($_POST[$var],0,1) == '{' && substr($_POST[$var],-1) == '}')
-				{
-					$original = $_POST[$var];
-					$decoded = json_decode($original);
-
-					$_POST[$var] = is_null($decoded)?$original:$decoded;
-					unset($original);
-					unset($decoded);
-				}
-			}
-
-			$params[] = $param;
-		}
-
-		// prepare the parameters and call the method
-		// by passing references to $POST we hopefully save some memory
-
-		$paramstr = '';
-		foreach($params as $param)
-		{
-			$var = $param['var'];
-			if ($param['set'] == 0)
-			{
-				print json_encode(array('msg'=>"'$var' is not set!"));
-				return;
-			}
-			if ($paramstr != '') $paramstr .= ', ';
-
-			$paramstr .= "\$_POST['$var']";
-		}
-
-		$result = eval("return \$this->$method($paramstr);");
-
-		// return the json encoded result
-		print json_encode(KTWebService::decodeSOAPValue($result));
-	}
-
-	/**
-	 * Returns a decoded soap value structure.
-	 *
-	 * @param SOAP_Value $value
-	 * @return mixed
-	 */
-	function decodeSOAPValue($value)
-	{
-		if ($value instanceof SOAP_Value)
-		{
-			$x = new stdClass();
-			$v = & $value->value;
-			$vars = array_keys($v);
-
-			foreach($vars as $var)
-			{
-				$x->$var = KTWebService::decodeSOAPValue($v[$var]);
-			}
-
-			return $x;
-		}
-		else
-		{
-			return $value;
-		}
-	}
-
-    /**
-     * This runs the web service
-     *
+	 * @param array $comments
+	 * @param string $name
+	 * @return SOAP_Value of kt_document_commments
+     * @access private
      * @static
-     * @access public
-     */
-    function run()
-    {
-    	if (defined('JSON_WEBSERVICE'))
+	 */
+	function _encode_document_comments($comments, $name = 'results')
+	{
+		foreach($comments as $key => $item)
 		{
-			$this->runJSON();
-			return;
+			$comments[$key] = new SOAP_Value('item', "{urn:$this->namespace}kt_document_comment", $item);
+		}
+		return new SOAP_Value($name, "{urn:$this->namespace}kt_document_comments", $comments);
+	}
+
+	/**
+	 * Gets the comments associated with a document
+	 *
+	 * @param string $session_id
+	 * @param int $document_id
+	 * @param int $order
+	 * @return kt_document_comments_response
+	 */
+	function get_document_comments($session_id, $document_id, $order = 'DESC')
+	{
+		//$GLOBALS['default']->log->debug("webservice get_document_comments('$session_id', $document_id, '$order')");
+		$this->debug("get_document_comments('$session_id', $document_id, '$order')");
+
+    	$kt = &$this->get_ktapi($session_id);
+    	if (is_array($kt))
+    	{
+    		return new SOAP_Value('return', "{urn:$this->namespace}kt_response", $kt);
+    	}
+
+		try
+		{
+			$comments = &$kt->get_comments($document_id, $order);
+
+			$this->debug("webservice get_document_comments comments " . print_r($comments, true));
+
+			if ($comments['status_code'] === 0)
+			{
+                $response = KTWebService::_status(KTWS_SUCCESS);
+	    	    $response['results'] = KTWebService::_encode_document_comments($comments['results']);
+			}
+			else
+			{
+			    $response  = KTWebService::_status(KTWS_ERR_INVALID_DOCUMENT, $response['message']);
+			}
+
+	    	return new SOAP_Value('return', "{urn:$this->namespace}kt_document_comments_response", $response);
+		}
+		catch (Exception $e)
+		{
+			$this->error("get_document_comments - cannot get comments for document $document_id  - {$e->getMessage()}");
+			$response = KTWebService::_status(KTWS_ERR_INVALID_DOCUMENT, $e->getMessage());
+			return new SOAP_Value('return', "{urn:$this->namespace}kt_response", $response);
+		}
+	}
+
+	/**
+	 * Adds a comment to a document
+	 *
+	 * @param string $session_id
+	 * @param int $document_id
+	 * @param int $comment
+	 * @return kt_response
+	 */
+	function add_document_comment($session_id, $document_id, $comment)
+	{
+		//$GLOBALS['default']->log->debug("webservice add_document_comment('$session_id', $document_id, '$comment')");
+		$this->debug("add_document_comment('$session_id', $document_id, '$comment')");
+
+    	$kt = &$this->get_ktapi($session_id );
+    	if (is_array($kt))
+    	{
+    		return new SOAP_Value('return', "{urn:$this->namespace}kt_response", $kt);
+    	}
+
+		try
+		{
+			$result = &$kt->add_comment($document_id, $comment);
+
+			$this->debug("webservice add_document_comment result ".print_r($result, true));
+
+			if ($result['status_code'] === 0)
+			{
+			    $response = KTWebService::_status(KTWS_SUCCESS, "Added comment for document $document_id");
+			}
+			else
+			{
+			    $response = KTWebService::_status(KTWS_ERR_INVALID_DOCUMENT, $result['message']);
+			}
+
+	    	return new SOAP_Value('return', "{urn:$this->namespace}kt_response", $response);
+		}
+		catch (Exception $e)
+		{
+			$this->error("add_document_comment - cannot add comment $comment for document $document_id  - "  . $e->getMessage());
+
+			$response = KTWebService::_status(KTWS_ERR_INVALID_DOCUMENT, $e->getMessage());
+
+    		return new SOAP_Value('return', "{urn:$this->namespace}kt_response", $response);
+		}
+	}
+
+	/**
+	 * Gets the user's recently viewed documents
+	 *
+	 * @param string $session_id
+	 * @param int $limit
+	 * @return kt_response
+	 */
+	function get_user_document_browse_history($session_id, $limit = -1)
+	{
+		$this->debug("get_user_document_browse_history('$session_id', $limit)");
+
+		$kt = &$this->get_ktapi($session_id );
+		if (is_array($kt))
+    	{
+    		return new SOAP_Value('return', "{urn:$this->namespace}kt_response", $kt);
+    	}
+
+    	$aOptions = null;
+
+    	if ($limit > 0)
+    	{
+    		$aOptions = array();
+    		$aOptions['limit'] = $limit;
+    	}
+
+    	$items = &$kt->getRecentlyViewedDocuments($aOptions);
+
+    	$collection = array();
+
+		foreach ($items as $item)
+		{
+			$detail = $this->get_document_detail($session_id, $item->getDocumentId());
+
+			if ($detail->value['status_code'] != 0)
+			{
+				continue;
+			}
+			$collection[] = $detail->value;
 		}
 
-    	ob_start();
-    	$server = new SOAP_Server();
+		$this->debug("get_user_document_browse_history collection ".print_r($collection, true));
+		$this->debug("get_user_document_browse_history collection size ".count($collection));
 
-    	$server->addObjectMap($this, 'http://schemas.xmlsoap.org/soap/envelope/');
-    	$request = 'Not Set';
+		$response = array();
+    	$response['status_code'] = KTWS_SUCCESS;
+		$response['message'] = empty($collection) ? _kt('No documents were found') : '';
+    	$response['collection'] = new SOAP_Value('collection', "{urn:$this->namespace}kt_document_collection", $collection);
 
-    	if (isset($_SERVER['REQUEST_METHOD'])  && $_SERVER['REQUEST_METHOD']=='POST')
-    	{
-    		$request = file_get_contents("php://input");
-
-    		$server->service($request);
-    	}
-    	else
-    	{
-    		// Create the DISCO server
-    		$disco = new SOAP_DISCO_Server($server, $this->namespace);
-    		header("Content-type: text/xml");
-    		if (isset($_SERVER['QUERY_STRING']) && strcasecmp($_SERVER['QUERY_STRING'], 'wsdl') == 0)
-    		{
-    			echo $disco->getWSDL();
-    		}
-    		else
-    		{
-    			echo $disco->getDISCO();
-    		}
-    	}
-    	$capture = ob_get_flush();
-		$this->debug($request, 'request', 5);
-    	$this->debug($capture, 'response',5);
-    	global $_KT_starttime;
-    	$time = number_format(KTUtil::getBenchmarkTime() - $_KT_starttime,2);
-    	$this->debug($time, 'time from start',4);
-    }
-
-    function __dispatch($methodname)
+    	return new SOAP_Value('return', "{urn:$this->namespace}kt_document_collection_response", $response);
+	}
+    
+    private function setTypeDefinitions()
     {
-        if (isset($this->__dispatch_map[$methodname]))
-        {
-        	return $this->__dispatch_map[$methodname];
+        $this->__typedef["{urn:$this->namespace}kt_response"] =
+         	array(
+		        'status_code' => 'int',
+                'message' => 'string'
+         	);
+
+    	$this->__typedef["{urn:$this->namespace}kt_folder_detail"] =
+         	array(
+         		'status_code' => 'int',
+         		'message' => 'string',
+				'id' => 'int',
+        		'folder_name' => 'string',
+        		'parent_id' => 'int',
+        		'full_path' => 'string',
+         		'permissions' => 'string'
+         	);
+
+         if ($this->version >= 2)
+         {
+         	$this->__typedef["{urn:$this->namespace}kt_folder_detail"]['created_by'] = 'string';
+         }
+         
+         if ($this->version >= 3) {
+         	$this->__typedef["{urn:$this->namespace}kt_folder_detail"]['linked_folder_id'] = 'int';
+
+         	$this->__typedef["{urn:$this->namespace}kt_document_comment"] = array(
+         		'id' => 'int',
+         		'user_id' => 'int',
+         		'comment' => 'string',
+         		'date' => 'string',
+         		'user_name' => 'string',
+         		// action and version are not relevant to comments and are being filtered in ktapi
+         		/*'action' => 'string',
+         		'version' => 'int'*/
+         	);
+
+         	$this->__typedef["{urn:$this->namespace}kt_document_comments"] =
+         	array(
+				array(
+                        'comment' => "{urn:$this->namespace}kt_document_comment"
+                  )
+         	);
+         	
+         	$this->__typedef["{urn:$this->namespace}kt_document_comments_response"] =
+         	array(
+         		'status_code' => 'int',
+         		'message' => 'string',
+         		'results' => "{urn:$this->namespace}kt_document_comments"
+         		);
+         }
+
+    	$this->__typedef["{urn:$this->namespace}kt_folder_item"] =
+         	array(
+		        'id' => 'int',
+        		'item_type' => 'string',
+                'title' => 'string',
+                'creator' => 'string',
+                'checked_out_by' => 'string',
+                'modified_by' => 'string',
+                'filename' => 'string',
+                'size' => 'string',
+                'major_version' => 'string',
+                'minor_version' => 'string',
+                'storage_path' => 'string',
+                'mime_type' => 'string',
+                'mime_icon_path' => 'string',
+                'mime_display' => 'string',
+                'workflow' => 'string',
+                'workflow_state' => 'string',
+                'items' =>"{urn:$this->namespace}kt_folder_items"
+         	);
+
+        if ($this->version >= 2)
+         {
+         	$this->__typedef["{urn:$this->namespace}kt_folder_item"] =
+         	array(
+		        'id' => 'int',
+        		'item_type' => 'string',
+
+                'custom_document_no' => 'string',
+                'oem_document_no' => 'string',
+
+        		'title' => 'string',
+		        'document_type' => 'string',
+                'filename' => 'string',
+                'filesize' => 'string',
+
+                'created_by' => 'string',
+                'created_date' => 'string',
+
+                'checked_out_by' => 'string',
+                'checked_out_date' => 'string',
+
+                'modified_by' => 'string',
+                'modified_date' => 'string',
+
+                'owned_by' => 'string',
+
+                'version' => 'string',
+
+                'is_immutable' => 'string',
+                'permissions' => 'string',
+
+                'workflow' => 'string',
+                'workflow_state' => 'string',
+
+                'mime_type' => 'string',
+                'mime_icon_path' => 'string',
+                'mime_display' => 'string',
+
+                'full_path' => 'string',
+
+         		'storage_path' => 'string',
+
+         	);
+
+         	if ($this->version >= 3) {
+         		$this->__typedef["{urn:$this->namespace}kt_folder_item"]['linked_folder_id'] = 'int';
+         	}
+
+         	$this->__typedef["{urn:$this->namespace}kt_folder_item"]['items'] = "{urn:$this->namespace}kt_folder_items";
+         }
+
+        $this->__typedef["{urn:$this->namespace}kt_folder_items"] =
+			array(
+            	array(
+                        'item' => "{urn:$this->namespace}kt_folder_item"
+                  )
+            );
+
+    	$this->__typedef["{urn:$this->namespace}kt_folder_contents"] =
+         	array(
+				'status_code' => 'int',
+				'message' => 'string',
+				'folder_id' => 'int',
+        		'folder_name' => 'string' ,
+        		'full_path' => 'string' ,
+        		'items' => "{urn:$this->namespace}kt_folder_items",
+         	);
+
+    	$this->__typedef["{urn:$this->namespace}kt_folder_tree"] =
+         	array(
+				'status_code' => 'int',
+				'message' => 'string',
+				'folder_id' => 'int',
+        		'folder_name' => 'string' ,
+        		'full_path' => 'string' ,
+        		'items' => "{urn:$this->namespace}kt_folder_items",
+         	);
+
+         $this->__typedef["{urn:$this->namespace}kt_document_detail"] =
+         	array(
+         		'status_code' => 'int',
+         		'message' => 'string',
+        		'title' => 'string',
+		        'document_type' => 'string',
+		        'version' => 'string',
+	   		    'filename' => 'string',
+	   	        'created_date' => 'string',
+        	   	'created_by' => 'string',
+        	   	'updated_date' => 'string',
+ 			   	'updated_by' => 'string',
+  			   	'document_id' => 'int',
+   			   	'folder_id' => 'int',
+        	   	'workflow' => 'string',
+        	   	'workflow_state' => 'string',
+        	   	'checkout_by' => 'string',
+        	   	'full_path' => 'string',
+         	);
+
+         if ($this->version >= 2)
+         {
+         	$this->__typedef["{urn:$this->namespace}kt_document_detail"] =
+         	array(
+         		'status_code' => 'int',
+         		'message' => 'string',
+
+  			   	'document_id' => 'int',
+
+                'custom_document_no' => 'string',
+                'oem_document_no' => 'string',
+
+        		'title' => 'string',
+		        'document_type' => 'string',
+        	   	'full_path' => 'string',
+	   		    'filename' => 'string',
+	   		    'filesize' => 'int',
+   			   	'folder_id' => 'int',
+
+        	   	'created_by' => 'string',
+	   	        'created_date' => 'string',
+
+        	   	'checked_out_by' => 'string',
+        	   	'checked_out_date' => 'string',
+
+ 			   	'modified_by' => 'string',
+        	   	'modified_date' => 'string',
+
+        	   	'owned_by' => 'string',
+
+        	   	'version' => 'float',
+
+        	   	'is_immutable' => 'boolean',
+        	   	'permissions' => 'string',
+
+        	   	'workflow' => 'string',
+        	   	'workflow_state' => 'string',
+
+				'mime_type' => 'string',
+                'mime_icon_path' => 'string',
+                'mime_display' => 'string',
+
+                'storage_path' => 'string',
+
+
+        	   	'metadata' => "{urn:$this->namespace}kt_metadata_fieldsets",
+	         	'links' => "{urn:$this->namespace}kt_linked_documents",
+    	     	'transitions' => "{urn:$this->namespace}kt_workflow_transitions",
+        	 	'version_history' => "{urn:$this->namespace}kt_document_version_history",
+         		'transaction_history' => "{urn:$this->namespace}kt_document_transaction_history",
+         	);
+
+         	if ($this->version >= 3) {
+         		$this->__typedef["{urn:$this->namespace}kt_document_detail"]['linked_document_id'] = 'int';
+         	}
+         }
+
+        if (defined('HAS_SEARCH_FUNCTIONALITY')) {
+
+        $this->__typedef["{urn:$this->namespace}kt_search_result_item"] =
+         	array(
+				'document_id' => 'int',
+
+				'custom_document_no' => 'string',
+                'oem_document_no' => 'string',
+
+				'relevance' => 'float',
+        		'text' => 'string',
+
+				'title' => 'string',
+				'document_type' => 'string',
+        		'fullpath' => 'string',
+				'filename' => 'string',
+				'filesize' => 'int',
+        		'folder_id' => 'int',
+
+        		'created_by' => 'string',
+        		'created_date' => 'string',
+
+        		'checked_out_by' => 'string',
+        		'checked_out_date' => 'string',
+
+        		'modified_by' => 'string',
+        		'modified_date' => 'string',
+
+        		'owned_by' => 'string',
+
+        		'version' => 'float',
+        		'is_immutable' => 'boolean',
+        		'permissions' => 'string',
+
+        		'workflow' => 'string',
+        		'workflow_state' => 'string',
+
+				'mime_type' => 'string',
+                'mime_icon_path' => 'string',
+                'mime_display' => 'string',
+
+                'storage_path' => 'string',
+
+        		'status' => 'string',
+         	);
+
+    	$this->__typedef["{urn:$this->namespace}kt_search_results"] =
+         	array(
+				array(
+                        'item' => "{urn:$this->namespace}kt_search_result_item"
+                  )
+         	);
+
+    	$this->__typedef["{urn:$this->namespace}kt_search_response"] =
+         	array(
+				'status_code' => 'int',
+				'message' => 'string',
+        		'hits' => "{urn:$this->namespace}kt_search_results" ,
+         	);
         }
-        return NULL;
+
+         if ($this->version >= 2)
+         {
+
+    	$this->__typedef["{urn:$this->namespace}kt_sysdata_item"] =
+         	array(
+				'name' => 'string',
+				'value' => 'string'
+         	);
+
+		$this->__typedef["{urn:$this->namespace}kt_sysdata"] =
+         	array(
+				array(
+                        'item' => "{urn:$this->namespace}kt_sysdata_item"
+                  )
+         	);
+         }
+
+    	$this->__typedef["{urn:$this->namespace}kt_metadata_selection_item"] =
+         	array(
+				'id' => 'int',
+				'name' => 'string',
+				'value' => 'string',
+        		'parent_id' => 'int'
+         	);
+
+    	$this->__typedef["{urn:$this->namespace}kt_metadata_selection"] =
+         	array(
+				array(
+                        'item' => "{urn:$this->namespace}kt_metadata_selection_item"
+                  )
+         	);
+
+    $this->__typedef["{urn:$this->namespace}kt_metadata_options"] =
+         	array(
+				'ishtml' => 'string',
+        		'maxlength' => 'string'
+         	);
+
+    	$this->__typedef["{urn:$this->namespace}kt_metadata_field"] =
+         	array(
+				'name' => 'string',
+        		'required' => 'boolean' ,
+        		'value' => 'string' ,
+        		'description' => 'string' ,
+        		'control_type' => 'string' ,
+        		'selection' => "{urn:$this->namespace}kt_metadata_selection",
+                'options' => "{urn:$this->namespace}kt_metadata_options"
+         	);
+
+        $this->__typedef["{urn:$this->namespace}kt_metadata_fields"] =
+			array(
+            	array(
+                        'field' => "{urn:$this->namespace}kt_metadata_field"
+                  )
+            );
+
+    	$this->__typedef["{urn:$this->namespace}kt_metadata_fieldset"] =
+         	array(
+				'fieldset' => 'string',
+				'description' => 'string',
+        		'fields' => "{urn:$this->namespace}kt_metadata_fields" ,
+         	);
+
+        $this->__typedef["{urn:$this->namespace}kt_metadata_fieldsets"] =
+			array(
+            	array(
+                        'fieldset' => "{urn:$this->namespace}kt_metadata_fieldset"
+                  )
+            );
+
+    	$this->__typedef["{urn:$this->namespace}kt_metadata_response"] =
+         	array(
+				'status_code' => 'int',
+				'message' => 'string',
+        		'metadata' => "{urn:$this->namespace}kt_metadata_fieldsets" ,
+         	);
+
+        $this->__typedef["{urn:$this->namespace}kt_workflow_transitions"] =
+			array(
+            	array(
+                        'transition' => 'string'
+                  )
+            );
+
+    	$this->__typedef["{urn:$this->namespace}kt_workflow_transitions_response"] =
+         	array(
+         		'status_code' => 'int',
+         		'message' => 'string',
+         		'transitions' => "{urn:$this->namespace}kt_workflow_transitions"
+         		);
+
+ 		$this->__typedef["{urn:$this->namespace}kt_workflows_array"] =
+			array(
+            	array(
+                        'workflow' => 'string'
+                  )
+            );
+
+		$this->__typedef["{urn:$this->namespace}kt_workflows_response"] =
+         	array(
+            	'status_code' => 'int',
+            	'message' => 'string',
+            	'workflows' => "{urn:$this->namespace}kt_workflows_array"
+            );
+
+    	$this->__typedef["{urn:$this->namespace}kt_document_transaction_history_item"] =
+         	array(
+         		'transaction_name' => 'string',
+         		'username' => 'string',
+         		'version' => 'string',
+         		'comment' => 'string',
+         		'datetime' => 'string'
+         		);
+
+        if ($this->version >= 2)
+         {
+         	$this->__typedef["{urn:$this->namespace}kt_document_transaction_history_item"] =
+         	array(
+         		'transaction_name' => 'string',
+         		'username' => 'string',
+         		'version' => 'float',
+         		'comment' => 'string',
+         		'datetime' => 'string'
+         		);
+         }
+
+    	$this->__typedef["{urn:$this->namespace}kt_linked_document"] =
+         	array(
+         		'document_id' => 'int',
+                'custom_document_no' => 'string',
+                'oem_document_no' => 'string',
+                'title' => 'string',
+         		'document_type' => 'string',
+         		'filesize' => 'int',
+         		'version' => 'float',
+         		'workflow' => 'string',
+         		'workflow_state' => 'string',
+         		'link_type' => 'string'
+         		);
+
+        $this->__typedef["{urn:$this->namespace}kt_linked_documents"] =
+			array(
+            	array(
+                        'links' => "{urn:$this->namespace}kt_linked_document"
+                  )
+            );
+
+    	$this->__typedef["{urn:$this->namespace}kt_linked_document_response"] =
+         	array(
+         		'status_code' => 'int',
+         		'message' => 'string',
+         		'parent_document_id' => 'int',
+         		'links' => "{urn:$this->namespace}kt_linked_documents"
+         		);
+
+        $this->__typedef["{urn:$this->namespace}kt_document_transaction_history"] =
+			array(
+            	array(
+                        'history' => "{urn:$this->namespace}kt_document_transaction_history_item"
+                  )
+            );
+            
+         if ($this->version >= 3) {
+	        $this->__typedef["{urn:$this->namespace}kt_document_shortcut"] =
+	         	array(
+	         		'id' => 'int',
+        	   	'full_path' => 'string',
+   			   	'folder_id' => 'int',
+        	   	'creator_id' => 'string',
+	   	        'created' => 'string',
+        	   	'owner_id' => 'string',
+        	   	'permission_object_id' => 'string',
+	         	'permission_lookup_id' => 'string',
+				'linked_document_id' => 'int',
+	         		);
+
+	        $this->__typedef["{urn:$this->namespace}kt_document_shortcuts"] =
+				array(
+	            	array(
+	                        'shortcuts' => "{urn:$this->namespace}kt_document_shortcut"
+	                  )
+	            );
+
+	        $this->__typedef["{urn:$this->namespace}kt_document_shortcut_response"] =
+				array(
+	            	'status_code' => 'int',
+	         		'message' => 'string',
+	         		'shortcuts' => "{urn:$this->namespace}kt_document_shortcuts"
+	            );
+
+	        $this->__typedef["{urn:$this->namespace}kt_folder_shortcut"] =
+	         	array(
+	         		'id' => 'int',
+	         	'name' => 'string',
+	         	'parent_id' => 'string',
+        	   	'full_path' => 'string',
+   			   	'folder_id' => 'int',
+        	   	'creator_id' => 'string',
+	   	        'created' => 'string',
+        	   	'permission_object_id' => 'string',
+	         	'permission_lookup_id' => 'string',
+				'linked_folder_id' => 'int',
+	         		);
+
+	        $this->__typedef["{urn:$this->namespace}kt_folder_shortcuts"] =
+				array(
+	            	array(
+	                        'shortcuts' => "{urn:$this->namespace}kt_folder_shortcut"
+	                  )
+	            );
+
+	        $this->__typedef["{urn:$this->namespace}kt_folder_shortcut_response"] =
+				array(
+	            	'status_code' => 'int',
+	         		'message' => 'string',
+	         		'shortcuts' => "{urn:$this->namespace}kt_folder_shortcuts"
+	            );
+         }
+
+    	$this->__typedef["{urn:$this->namespace}kt_document_transaction_history_response"] =
+         	array(
+         		'status_code' => 'int',
+         		'message' => 'string',
+         		'history' => "{urn:$this->namespace}kt_document_transaction_history"
+         		);
+
+    	$this->__typedef["{urn:$this->namespace}kt_document_version_history_item"] =
+         	array(
+         		'user' => 'string',
+         		'metadata_version' => 'string',
+         		'content_version' => 'string',
+         		'datetime' => 'string'
+         		);
+         		
+         if ($this->version >= 2)
+         {
+         	$this->__typedef["{urn:$this->namespace}kt_document_version_history_item"] =
+         	array(
+         		'user' => 'string',
+         		'metadata_version' => 'int',
+         		'content_version' => 'float',
+         		'datetime' => 'string'
+         		);
+         }
+
+        $this->__typedef["{urn:$this->namespace}kt_document_collection"] =
+			array(
+            	array(
+                        'item' =>  "{urn:$this->namespace}kt_document_detail"
+                  )
+            );
+
+         $this->__typedef["{urn:$this->namespace}kt_document_collection_response"] =
+			array(
+            	'status_code' => 'int',
+            	'message' => 'string',
+            	'collection' => "{urn:$this->namespace}kt_document_collection"
+            );
+
+        $this->__typedef["{urn:$this->namespace}kt_folder_collection"] =
+			array(
+            	array(
+                        'item' =>  "{urn:$this->namespace}kt_folder_detail"
+                  )
+            );
+
+         $this->__typedef["{urn:$this->namespace}kt_folder_collection_response"] =
+			array(
+            	'status_code' => 'int',
+            	'message' => 'string',
+            	'collection' => "{urn:$this->namespace}kt_folder_collection"
+            );
+
+        $this->__typedef["{urn:$this->namespace}kt_document_version_history"] =
+			array(
+            	array(
+                        'history' =>  "{urn:$this->namespace}kt_document_version_history_item"
+                  )
+            );
+
+    	$this->__typedef["{urn:$this->namespace}kt_document_version_history_response"] =
+         	array(
+         		'status_code' => 'int',
+         		'message' => 'string',
+         		'history' => "{urn:$this->namespace}kt_document_version_history"
+         		);
+
+           $this->__typedef["{urn:$this->namespace}kt_document_types_array"] =
+			array(
+            	array(
+                        'document_type' => 'string'
+                  )
+            );
+
+        $this->__typedef["{urn:$this->namespace}kt_document_types_response"] =
+			array(
+            	'status_code' => 'int',
+            	'message' => 'string',
+            	'document_types' => "{urn:$this->namespace}kt_document_types_array"
+            );
+
+           $this->__typedef["{urn:$this->namespace}kt_client_policy"] =
+				array(
+					'name' => 'string',
+					'value' => 'string',
+					'type' => 'string',
+			);
+
+           $this->__typedef["{urn:$this->namespace}kt_client_policies_array"] =
+			array(
+				array(
+					 'policies' => "{urn:$this->namespace}kt_client_policy"
+				)
+			);
+
+	$this->__typedef["{urn:$this->namespace}kt_client_policies_response"] =
+			array(
+            	'status_code' => 'int',
+            	'message' => 'string',
+            	'policies' => "{urn:$this->namespace}kt_client_policies_array"
+            );
+    }
+    
+    private function setDispatchMap()
+    {
+        if (defined('HAS_SEARCH_FUNCTIONALITY'))
+        {
+        	$this->__dispatch_map['search'] = array(
+        					'in' => array('session_id' => 'string', 'search' => 'string' , 'options' => 'string'),
+                  			'out' => array('return' => "{urn:$this->namespace}kt_search_response" ),
+            			);
+        }
+
+         // login
+         $this->__dispatch_map['login'] =
+            array('in' => array('username' => 'string', 'password' => 'string', 'ip' => 'string'),
+                  'out' => array('return' => "{urn:$this->namespace}kt_response" ),
+            );
+            
+         if ($this->version >= 3)
+         {
+             $this->__dispatch_map['login'] =
+                array('in' => array('username' => 'string', 'password' => 'string', 'ip' => 'string', 'app' => 'string'),
+                      'out' => array('return' => "{urn:$this->namespace}kt_response" ),
+             );
+         }
+
+         // anonymous_login
+         $this->__dispatch_map['anonymous_login'] =
+            array('in' => array('ip' => 'string'),
+                  'out' => array('return' => "{urn:$this->namespace}kt_response" ),
+            );
+
+         // logout
+         $this->__dispatch_map['logout'] =
+            array('in' => array('session_id' => 'string' ),
+             'out' => array('return' => "{urn:$this->namespace}kt_response"  ),
+            );
+
+         // get_folder_detail
+         $this->__dispatch_map['get_folder_detail'] =
+            array('in' => array('session_id' => 'string', 'folder_id' => 'int' ),
+             'out' => array('return' => "{urn:$this->namespace}kt_folder_detail"),
+            );
+
+         if ($this->version >= 3)
+         {
+         	 // NOTE removed "create" parameter
+         	 //$this->__dispatch_map['get_folder_detail']['in'] = array('session_id' => 'string', 'folder_id' => 'int', 'create' => 'boolean' );
+			 //now
+			 $this->__dispatch_map['get_folder_detail']['in'] = array('session_id' => 'string', 'folder_id' => 'int' );
+         }
+
+         // get_documents_by_oem_no
+         $this->__dispatch_map['get_documents_by_oem_no'] =
+            array('in' => array('session_id' => 'string', 'oem_no' => 'string', 'detail' => 'string'),
+             'out' => array('return' => "{urn:$this->namespace}kt_document_collection_response"),
+            );
+
+         // get_folder_detail_by_name
+         $this->__dispatch_map['get_folder_detail_by_name'] =
+            array('in' => array('session_id' => 'string', 'folder_name' => 'string'),
+             'out' => array('return' => "{urn:$this->namespace}kt_folder_detail"),
+            );
+
+         if ($this->version >= 3)
+         {
+             // NOTE that there was a bug: folder_id should be folder_name and be of type int - this is fixed in the second version below
+             //      additionally the function has no "create" parameter
+         	 //$this->__dispatch_map['get_folder_detail_by_name']['in'] = array('session_id' => 'string', 'folder_id' => 'int', 'create' => 'boolean' );
+             // now
+         	 $this->__dispatch_map['get_folder_detail_by_name']['in'] = array('session_id' => 'string', 'folder_name' => 'string', 'parent_id' => 'int' );
+         }
+
+         // get_folder_contents
+         $this->__dispatch_map['get_folder_contents'] =
+            array('in' => array('session_id' => 'string', 'folder_id' => 'int', 'depth' => 'int', 'what' => 'string'),
+             'out' => array('return' => "{urn:$this->namespace}kt_folder_contents"),
+            );
+
+         // create_folder
+         $this->__dispatch_map['create_folder'] =
+            array('in' => array('session_id' => 'string', 'folder_id' => 'int', 'folder_name' =>'string'),
+             'out' => array('return' => "{urn:$this->namespace}kt_folder_detail"),
+            );
+
+         if ($this->version >=2)
+         {
+         // get_folder_tree
+         $this->__dispatch_map['get_folder_tree'] =
+            array('in' => array('session_id' => 'string', 'folder_id' => 'int', 'what' => 'string'),
+             'out' => array('return' => "{urn:$this->namespace}kt_folder_tree"),
+            );
+
+         // create_folder
+         $this->__dispatch_map['add_folder'] =
+            array('in' => array('session_id' => 'string', 'folder_id' => 'int', 'folder_name' =>'string'),
+             'out' => array('return' => "{urn:$this->namespace}kt_folder_detail"),
+             'alias' => 'create_folder'
+            );
+         }
+
+         // delete_folder
+         $this->__dispatch_map['delete_folder'] =
+            array('in' => array('session_id' => 'string', 'folder_id' => 'int', 'reason' =>'string'),
+             'out' => array('return' => "{urn:$this->namespace}kt_response" ),
+            );
+
+         // rename_folder
+         $this->__dispatch_map['rename_folder'] =
+            array('in' => array('session_id' => 'string', 'folder_id' => 'int', 'newname' =>'string'),
+             'out' => array('return' => "{urn:$this->namespace}kt_response"),
+            );
+
+ 		// get_document_links
+         $this->__dispatch_map['get_document_links'] =
+            array('in' => array('session_id' => 'string', 'document_id' => 'int'),
+             'out' => array('return' => "{urn:$this->namespace}kt_linked_document_response"  ),
+            );
+
+         // link_documents
+         $this->__dispatch_map['link_documents'] =
+            array('in' => array('session_id' => 'string', 'parent_document_id' => 'int', 'child_document_id' => 'int', 'type' => 'string'),
+             'out' => array('return' => "{urn:$this->namespace}kt_response"  ),
+            );
+
+         // unlink_documents
+         $this->__dispatch_map['unlink_documents'] =
+            array('in' => array('session_id' => 'string', 'parent_document_id' => 'int', 'child_document_id' => 'int'),
+             'out' => array('return' => "{urn:$this->namespace}kt_response"  ),
+            );
+
+
+            // copy_folder
+         $this->__dispatch_map['copy_folder'] =
+            array('in' => array('session_id' => 'string', 'source_id' => 'int', 'target_id' => 'int', 'reason' =>'string'),
+             'out' => array('return' => "{urn:$this->namespace}kt_response"  ),
+            );
+
+         if ($this->version >= 2)
+            {
+            	 $this->__dispatch_map['copy_folder']['out'] = array('return' => "{urn:$this->namespace}kt_folder_detail" );
+            }
+
+         // move_folder
+         $this->__dispatch_map['move_folder'] =
+            array('in' => array('session_id' => 'string', 'source_id' => 'int', 'target_id' => 'int', 'reason' =>'string'),
+             'out' => array('return' => "{urn:$this->namespace}kt_response" ),
+            );
+
+         if ($this->version >= 2)
+            {
+            	 $this->__dispatch_map['move_folder']['out'] = array('return' => "{urn:$this->namespace}kt_folder_detail" );
+            }
+
+
+		// get_document_detail
+         $this->__dispatch_map['get_document_detail'] = array(
+         		'in' => array('session_id' => 'string', 'document_id' => 'int' ),
+            	'out' => array('return' => "{urn:$this->namespace}kt_document_detail"),
+            );
+
+		 if ($this->version >= 2)
+            {
+            	$this->__dispatch_map['get_document_detail']['in'] = array('session_id' => 'string', 'document_id' => 'int', 'detail' => 'string' );
+            }
+
+          //  checkin_document
+         $this->__dispatch_map['checkin_document'] =
+            array('in' => array('session_id' => 'string', 'document_id' => 'int', 'filename' => 'string', 'reason' =>'string', 'tempfilename' =>'string', 'major_update' => 'boolean' ),
+             'out' => array( 'return' => "{urn:$this->namespace}kt_document_detail" ),
+            );
+
+          //  checkin_small_document
+         $this->__dispatch_map['checkin_small_document'] =
+            array('in' => array('session_id' => 'string', 'document_id' => 'int', 'filename' => 'string', 'reason' =>'string', 'base64' =>'string', 'major_update' => 'boolean' ),
+             'out' => array( 'return' => "{urn:$this->namespace}kt_document_detail" ),
+            );
+
+          //  checkin_base64_document
+         $this->__dispatch_map['checkin_base64_document'] =
+            array('in' => array('session_id' => 'string', 'document_id' => 'int', 'filename' => 'string', 'reason' =>'string', 'base64' =>'string', 'major_update' => 'boolean' ),
+             'out' => array( 'return' => "{urn:$this->namespace}kt_document_detail" ),
+              'alias' => 'checkin_small_document'
+            );
+
+         if ($this->version >= 2)
+         {
+ 	        $this->__dispatch_map['checkin_base64_document_with_metadata'] =
+	    	        array('in' => array('session_id' => 'string', 'document_id' => 'int', 'filename' => 'string', 'reason' =>'string', 'base64' =>'string', 'major_update' => 'boolean', 'metadata'=>"{urn:$this->namespace}kt_metadata_fieldsets", 'sysdata'=>"{urn:$this->namespace}kt_sysdata" ),
+	        	     'out' => array( 'return' => "{urn:$this->namespace}kt_document_detail" ),
+        	     'alias' => 'checkin_small_document_with_metadata'
+            	);
+ 	        $this->__dispatch_map['checkin_document_with_metadata'] =
+	    	        array('in' => array('session_id' => 'string', 'document_id' => 'int', 'filename' => 'string', 'reason' =>'string', 'tempfilename' =>'string', 'major_update' => 'boolean', 'metadata'=>"{urn:$this->namespace}kt_metadata_fieldsets", 'sysdata'=>"{urn:$this->namespace}kt_sysdata" ),
+	        	     'out' => array( 'return' => "{urn:$this->namespace}kt_document_detail" )
+            	);
+         }
+
+
+         if ($this->version >= 3) {
+         	//add folder shortcut
+         	$this->__dispatch_map['create_folder_shortcut'] = array('in'=>array('session_id' => 'string', 'target_folder_id' => 'int', 'source_folder_id' => 'int'),
+         	'out'=>array('return' => "{urn:$this->namespace}kt_folder_detail" ));
+
+         	//add document shortcut
+         	$this->__dispatch_map['create_document_shortcut'] = array('in'=>array('session_id' => 'string', 'target_folder_id' => 'int', 'source_document_id' => 'int'),
+         	'out'=>array('return' => "{urn:$this->namespace}kt_document_detail" ));
+
+         	//get document shortcuts
+         	$this->__dispatch_map['get_document_shortcuts'] = array('in'=>array('session_id' => 'string', 'document_id' => 'int'),
+         	'out'=>array('return' => "{urn:$this->namespace}kt_document_shortcuts" ));
+
+         	//get folder shortcuts
+         	$this->__dispatch_map['get_folder_shortcuts'] = array('in'=>array('session_id' => 'string', 'folder_id' => 'int'),
+         	'out'=>array('return' => "{urn:$this->namespace}kt_folder_shortcuts" ));
+         }
+
+         //document comments
+         if ($this->version >= 3) {
+         	 // get_document_comments
+         	$this->__dispatch_map['get_document_comments'] =
+            array('in' => array('session_id' => 'string', 'document_id' => 'int', 'order' => 'string'),
+             'out' => array('return' => "{urn:$this->namespace}kt_document_comments_response"),
+            );
+
+             // add_document_comment
+         	$this->__dispatch_map['add_document_comment'] =
+            array('in' => array('session_id' => 'string', 'document_id' => 'int', 'comment' => 'string'),
+             'out' => array('return' => "{urn:$this->namespace}kt_response"),
+            );
+         }
+
+     	//user browse history
+        if ($this->version >= 3) {
+         	//get_user_document_browse_history
+         	$this->__dispatch_map['get_user_document_browse_history'] =
+            array('in' => array('session_id' => 'string', 'limit' => 'string'),
+             'out' => array('return' => "{urn:$this->namespace}kt_response" ),
+            );
+
+            /* NOT IMPLEMENTED YET
+			//get_user_folder_browse_history
+         	$this->__dispatch_map['get_user_folder_browse_history'] =
+            array('in' => array('session_id' => 'string', 'limit' => 'int'),
+             'out' => array('return' => "{urn:$this->namespace}kt_response" ),
+            );*/
+         }
+
+         // add_document
+         $this->__dispatch_map['add_document'] =
+            array('in' => array('session_id' => 'string', 'folder_id' => 'int', 'title' => 'string', 'filename' => 'string', 'documentype' =>'string', 'tempfilename' =>'string' ),
+             'out' => array( 'return' => "{urn:$this->namespace}kt_document_detail" ),
+            );
+
+         // add_small_document
+         $this->__dispatch_map['add_small_document'] =
+            array('in' => array('session_id' => 'string', 'folder_id' => 'int', 'title' => 'string', 'filename' => 'string', 'documentype' =>'string', 'base64' =>'string' ),
+             'out' => array( 'return' => "{urn:$this->namespace}kt_document_detail" ),
+            );
+
+         // add_base64_document
+         $this->__dispatch_map['add_base64_document'] =
+            array('in' => array('session_id' => 'string', 'folder_id' => 'int', 'title' => 'string', 'filename' => 'string', 'documentype' =>'string', 'base64' =>'string' ),
+             'out' => array( 'return' => "{urn:$this->namespace}kt_document_detail" ),
+             'alias' => 'add_small_document'
+
+            );
+
+         if ($this->version >= 2)
+         {
+ 	        $this->__dispatch_map['add_base64_document_with_metadata'] =
+    	        array('in' => array('session_id' => 'string', 'folder_id' => 'int', 'title' => 'string', 'filename' => 'string', 'documentype' =>'string', 'base64' =>'string', 'metadata'=>"{urn:$this->namespace}kt_metadata_fieldsets", 'sysdata'=>"{urn:$this->namespace}kt_sysdata" ),
+        	     'out' => array( 'return' => "{urn:$this->namespace}kt_document_detail" ),
+        	     'alias' => 'add_small_document_with_metadata'
+            	);
+
+ 	        $this->__dispatch_map['add_document_with_metadata'] =
+    	        array('in' => array('session_id' => 'string', 'folder_id' => 'int', 'title' => 'string', 'filename' => 'string', 'documentype' =>'string', 'tempfilename' =>'string', 'metadata'=>"{urn:$this->namespace}kt_metadata_fieldsets", 'sysdata'=>"{urn:$this->namespace}kt_sysdata" ),
+        	     'out' => array( 'return' => "{urn:$this->namespace}kt_document_detail" )
+            	);
+         }
+
+         if ($this->version >= 2)
+         {
+             // add_document
+             $this->__dispatch_map['add_document'] =
+                array('in' => array('session_id' => 'string', 'folder_id' => 'int', 'title' => 'string', 'filename' => 'string', 'documentype' =>'string', 'tempfilename' =>'string'),
+                 'out' => array( 'return' => "{urn:$this->namespace}kt_document_detail" ),
+                );
+
+ 	        $this->__dispatch_map['add_document_with_metadata'] =
+    	        array('in' => array('session_id' => 'string', 'folder_id' => 'int', 'title' => 'string', 'filename' => 'string', 'documentype' =>'string', 'tempfilename' =>'string', 'metadata'=>"{urn:$this->namespace}kt_metadata_fieldsets", 'sysdata'=>"{urn:$this->namespace}kt_sysdata"),
+        	     'out' => array( 'return' => "{urn:$this->namespace}kt_document_detail" )
+            	);
+         }
+
+         if ($this->version >= 2)
+         {
+             // add_document
+             $this->__dispatch_map['add_document_with_key'] =
+                array('in' => array('session_id' => 'string', 'folder_id' => 'int', 'title' => 'string', 'filename' => 'string', 'documentype' =>'string', 'tempfilename' =>'string', 'unique_file_id' => 'string' ),
+                 'out' => array( 'return' => "{urn:$this->namespace}kt_document_detail" ),
+                );
+
+ 	        $this->__dispatch_map['add_document_with_key_with_metadata'] =
+    	        array('in' => array('session_id' => 'string', 'folder_id' => 'int', 'title' => 'string', 'filename' => 'string', 'documentype' =>'string', 'tempfilename' =>'string', 'metadata'=>"{urn:$this->namespace}kt_metadata_fieldsets", 'sysdata'=>"{urn:$this->namespace}kt_sysdata", 'unique_file_id' => 'string' ),
+        	     'out' => array( 'return' => "{urn:$this->namespace}kt_document_detail" )
+            	);
+         }
+
+         // get_document_detail_by_name
+         $this->__dispatch_map['get_document_detail_by_name'] =
+            array('in' => array('session_id' => 'string', 'document_name' => 'string', 'what' => 'string' ),
+             'out' => array('return' => "{urn:$this->namespace}kt_document_detail"),
+            );
+
+            if ($this->version >= 2)
+            {
+            	$this->__dispatch_map['get_document_detail_by_name']['in'] = array('session_id' => 'string', 'folder_id' => 'int', 'document_name' => 'string', 'what' => 'string', 'detail' => 'string' );
+
+            	$this->__dispatch_map['get_document_detail_by_title'] = array(
+            			'in' => array('session_id' => 'string', 'folder_id' => 'int', 'title' => 'string', 'detail' => 'string' ),
+            			'out' => array('return' => "{urn:$this->namespace}kt_document_detail"),
+            		);
+
+            	$this->__dispatch_map['get_document_detail_by_filename'] = array(
+            			'in' => array('session_id' => 'string', 'folder_id' => 'int', 'filename' => 'string', 'detail' => 'string' ),
+            			'out' => array('return' => "{urn:$this->namespace}kt_document_detail"),
+            		);
+            }
+
+          // checkout_document
+           $this->__dispatch_map['checkout_document'] =
+            array('in' => array('session_id' => 'string', 'document_id' => 'int', 'reason' =>'string'),
+             'out' => array('return' => "{urn:$this->namespace}kt_response" ),
+            );
+
+            if ($this->version >= 2)
+            {
+            	 $this->__dispatch_map['checkout_document'] =
+            array('in' => array('session_id' => 'string', 'document_id' => 'int', 'reason' =>'string', 'download' => 'boolean'),
+             'out' => array('return' => "{urn:$this->namespace}kt_document_detail" ),
+            );
+            }
+
+          // checkout_small_document
+           $this->__dispatch_map['checkout_small_document'] =
+            array('in' => array('session_id' => 'string', 'document_id' => 'int', 'reason' =>'string', 'download' => 'boolean'),
+             'out' => array('return' => "{urn:$this->namespace}kt_response" ),
+            );
+
+            if ($this->version >= 2)
+            {
+            	 $this->__dispatch_map['checkout_small_document']['out'] = array('return' => "{urn:$this->namespace}kt_document_detail" );
+            }
+
+          // checkout_base64_document
+           $this->__dispatch_map['checkout_base64_document'] =
+            array('in' => array('session_id' => 'string', 'document_id' => 'int', 'reason' =>'string', 'download' => 'boolean'),
+             'out' => array('return' => "{urn:$this->namespace}kt_response" ),
+              'alias' => 'checkout_small_document'
+            );
+
+            if ($this->version >= 2)
+            {
+            	 $this->__dispatch_map['checkout_base64_document']['out'] = array('return' => "{urn:$this->namespace}kt_document_detail" );
+            }
+
+            // undo_document_checkout
+            $this->__dispatch_map['undo_document_checkout'] =
+            array('in' => array('session_id' => 'string', 'document_id' => 'int', 'reason' =>'string'),
+             'out' => array('return' => "{urn:$this->namespace}kt_response" ),
+            );
+
+            if ($this->version >= 2)
+            {
+            	 $this->__dispatch_map['undo_document_checkout']['out'] = array('return' => "{urn:$this->namespace}kt_document_detail" );
+            }
+
+            // download_document
+            $this->__dispatch_map['download_document'] =
+            array('in' => array('session_id' => 'string', 'document_id' => 'int' ),
+             'out' => array('return' => "{urn:$this->namespace}kt_response" ),
+            );
+
+            // download_small_document
+            $this->__dispatch_map['download_small_document'] =
+            array('in' => array('session_id' => 'string', 'document_id' => 'int' ),
+             'out' => array('return' => "{urn:$this->namespace}kt_response" ),
+            );
+
+            // download_base64_document
+            $this->__dispatch_map['download_base64_document'] =
+            array('in' => array('session_id' => 'string', 'document_id' => 'int' ),
+             'out' => array('return' => "{urn:$this->namespace}kt_response" ),
+              'alias' => 'download_small_document'
+            );
+
+            if ($this->version >= 3)
+            {
+            	$this->__dispatch_map['download_document']['in'] = array('session_id' => 'string', 'document_id' => 'int', 'version' => 'string' );
+            	$this->__dispatch_map['download_small_document']['in'] = array('session_id' => 'string', 'document_id' => 'int', 'version' => 'string' );
+            	$this->__dispatch_map['download_base64_document']['in'] = array('session_id' => 'string', 'document_id' => 'int', 'version' => 'string' );
+            }
+
+            // delete_document
+			$this->__dispatch_map['delete_document'] =
+            array('in' => array('session_id' => 'string', 'document_id' => 'int', 'reason' => 'string'),
+             'out' => array( 'return' => "{urn:$this->namespace}kt_response" ),
+            );
+
+            // change_document_owner
+			$this->__dispatch_map['change_document_owner'] =
+            array('in' => array('session_id' => 'string', 'document_id' => 'int', 'username' => 'string', 'reason' => 'string'),
+             'out' => array( 'return' => "{urn:$this->namespace}kt_response" ),
+            );
+
+            if ($this->version >= 2)
+            {
+            	$this->__dispatch_map['change_document_owner']['out'] = array( 'return' => "{urn:$this->namespace}kt_document_detail" );
+            }
+
+            // copy_document
+			$this->__dispatch_map['copy_document'] =
+            array('in' => array('session_id' => 'string', 'document_id' => 'int', 'folder_id' => 'int', 'reason' => 'string', 'newtitle' => 'string', 'newfilename' => 'string'),
+             'out' => array( 'return' => "{urn:$this->namespace}kt_response" ),
+            );
+            if ($this->version >= 2)
+            {
+            	$this->__dispatch_map['copy_document'] =
+            		array('in' => array('session_id' => 'string', 'document_id' => 'int', 'folder_id' => 'int', 'reason' => 'string', 'options' => 'string' ),
+             				'out' => array( 'return' => "{urn:$this->namespace}kt_document_detail" ),
+            			);
+            }
+
+            // move_document
+			$this->__dispatch_map['move_document'] =
+            array('in' => array('session_id' => 'string', 'document_id' => 'int', 'folder_id' => 'int', 'reason' => 'string', 'newtitle' => 'string', 'newfilename' => 'string'),
+             'out' => array( 'return' => "{urn:$this->namespace}kt_response" ),
+            );
+            if ($this->version >= 2)
+            {
+            	$this->__dispatch_map['move_document'] =
+		            array('in' => array('session_id' => 'string', 'document_id' => 'int', 'folder_id' => 'int', 'reason' => 'string', 'options' => 'string'),
+        			     'out' => array( 'return' => "{urn:$this->namespace}kt_document_detail" ),
+            		);
+            }
+
+			// rename_document_title
+            $this->__dispatch_map['rename_document_title'] =
+            array('in' => array('session_id' => 'string', 'document_id' => 'int', 'newtitle' => 'string' ),
+             'out' => array( 'return' => "{urn:$this->namespace}kt_response" ),
+            );
+			if ($this->version >= 2)
+            {
+            	$this->__dispatch_map['rename_document_title']['out'] = array( 'return' => "{urn:$this->namespace}kt_document_detail" );
+            }
+            // rename_document_filename
+            $this->__dispatch_map['rename_document_filename'] =
+            array('in' => array('session_id' => 'string', 'document_id' => 'int', 'newfilename' => 'string' ),
+             'out' => array( 'return' => "{urn:$this->namespace}kt_response" ),
+            );
+			if ($this->version >= 2)
+            {
+            	$this->__dispatch_map['rename_document_filename']['out'] = array( 'return' => "{urn:$this->namespace}kt_document_detail" );
+            }
+
+            // change_document_type
+			$this->__dispatch_map['change_document_type'] =
+            array('in' => array('session_id' => 'string', 'document_id' => 'int', 'documenttype' => 'string' ),
+             'out' => array( 'return' => "{urn:$this->namespace}kt_response" ),
+            );
+
+            if ($this->version >= 2)
+            {
+            	$this->__dispatch_map['change_document_type']['out'] = array( 'return' => "{urn:$this->namespace}kt_document_detail" );
+            }
+
+            // start_document_workflow
+            $this->__dispatch_map['start_document_workflow'] =
+            array('in' => array('session_id' => 'string', 'document_id' => 'int', 'workflow' => 'string' ),
+             'out' => array( 'return' => "{urn:$this->namespace}kt_response" ),
+            );
+
+            if ($this->version >= 2)
+            {
+            	$this->__dispatch_map['start_document_workflow']['out'] = array( 'return' => "{urn:$this->namespace}kt_document_detail" );
+            }
+
+            // delete_document_workflow
+            $this->__dispatch_map['delete_document_workflow'] =
+            array('in' => array('session_id' => 'string', 'document_id' => 'int'  ),
+             'out' => array( 'return' => "{urn:$this->namespace}kt_response" )
+            );
+
+			if ($this->version >= 2)
+            {
+            	$this->__dispatch_map['delete_document_workflow']['out'] = array( 'return' => "{urn:$this->namespace}kt_document_detail" );
+
+            	// stop_document_workflow
+	            $this->__dispatch_map['stop_document_workflow'] =
+    		        array('in' => array('session_id' => 'string', 'document_id' => 'int'  ),
+       	    	        'out' => array( 'return' => "{urn:$this->namespace}kt_document_detail" ),
+       	    	        'alias' => 'delete_document_workflow'
+            		);
+            }
+
+            // perform_document_workflow_transition
+            $this->__dispatch_map['perform_document_workflow_transition'] =
+            array('in' => array('session_id' => 'string', 'document_id' => 'int', 'transition' => 'string', 'reason' => 'string'  ),
+             'out' => array( 'return' => "{urn:$this->namespace}kt_response" ),
+            );
+
+            if ($this->version >= 2)
+            {
+            	$this->__dispatch_map['perform_document_workflow_transition']['out'] = array( 'return' => "{urn:$this->namespace}kt_document_detail" );
+            }
+
+            // get_document_metadata
+            $this->__dispatch_map['get_document_metadata'] =
+            array('in' => array('session_id' => 'string', 'document_id' => 'int'   ),
+             'out' => array( 'return' => "{urn:$this->namespace}kt_metadata_response" ),
+            );
+
+            if ($this->version >= 3)
+            {
+            	 $this->__dispatch_map['get_document_metadata']['in'] = array('session_id' => 'string', 'document_id' => 'int', 'version' => 'string');
+            }
+
+            // get_document_type_metadata
+            $this->__dispatch_map['get_document_type_metadata'] =
+            array('in' => array('session_id' => 'string', 'document_type' => 'string'   ),
+             'out' => array( 'return' => "{urn:$this->namespace}kt_metadata_response" ),
+            );
+            //update_document_metadata
+            $this->__dispatch_map['update_document_metadata'] =
+            array('in' => array('session_id' => 'string', 'document_id' => 'int', 'metadata'=>"{urn:$this->namespace}kt_metadata_fieldsets" ),
+             'out' => array( 'return' => "{urn:$this->namespace}kt_response" ),
+            );
+
+             if ($this->version >= 2)
+            {
+            	$this->__dispatch_map['update_document_metadata'] =
+            array('in' => array('session_id' => 'string', 'document_id' => 'int', 'metadata'=>"{urn:$this->namespace}kt_metadata_fieldsets", 'sysdata'=>"{urn:$this->namespace}kt_sysdata"  ),
+             'out' => array( 'return' => "{urn:$this->namespace}kt_document_detail" )
+            );
+
+            }
+
+            //get_document_workflow_transitions
+            $this->__dispatch_map['get_document_workflow_transitions'] =
+            array('in' => array('session_id' => 'string', 'document_id' => 'int' ),
+             'out' => array( 'return' => "{urn:$this->namespace}kt_workflow_transitions_response" ),
+            );
+
+            //get_document_workflow_state
+            $this->__dispatch_map['get_document_workflow_state'] =
+            array('in' => array('session_id' => 'string', 'document_id' => 'int' ),
+             'out' => array( 'return' => "{urn:$this->namespace}kt_response" ),
+            );
+
+            // get_document_transaction_history
+            $this->__dispatch_map['get_document_transaction_history'] =
+            array('in' => array('session_id' => 'string', 'document_id' => 'int'   ),
+             'out' => array( 'return' => "{urn:$this->namespace}kt_document_transaction_history_response" ),
+            );
+
+            // get_document_version_history
+            $this->__dispatch_map['get_document_version_history'] =
+            array('in' => array('session_id' => 'string', 'document_id' => 'int'   ),
+             'out' => array( 'return' => "{urn:$this->namespace}kt_document_version_history_response" ),
+            );
+
+         // get_document_types
+         $this->__dispatch_map['get_document_types'] =
+            array('in' => array('session_id' => 'string' ),
+             'out' => array( 'return' => "{urn:$this->namespace}kt_document_types_response" ),
+            );
+
+         // get_workflows
+         $this->__dispatch_map['get_workflows'] =
+            array('in' => array('session_id' => 'string' ),
+             'out' => array( 'return' => "{urn:$this->namespace}kt_workflows_response" ),
+            );
+
+         // get_document_link_types
+         $this->__dispatch_map['get_document_link_types'] =
+            array('in' => array('session_id' => 'string' ),
+             'out' => array( 'return' => "{urn:$this->namespace}kt_document_types_response" ),
+            );
+
+         // get_client_policies
+         $this->__dispatch_map['get_client_policies'] =
+            array('in' => array('session_id' => 'string' ),
+             'out' => array( 'return' => "{urn:$this->namespace}kt_client_policies_response" ),
+            );
+
+          if ($this->version >= 2)
+            {
+            	$this->__dispatch_map['get_client_policies']['in'] = array('session_id' => 'string', 'client' => 'string');
+            }
     }
 
 }

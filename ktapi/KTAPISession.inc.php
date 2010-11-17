@@ -5,7 +5,7 @@
  * KnowledgeTree Community Edition
  * Document Management Made Simple
  * Copyright (C) 2008, 2009, 2010 KnowledgeTree Inc.
- * 
+ *
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License version 3 as published by the
@@ -340,6 +340,23 @@ class KTAPI_UserSession extends KTAPI_Session
 		    {
 		        return $sessionid;
 		    }
+
+		    // Log the login in the history
+		    $time = date("Y-m-d H:i:s", time());
+            $aParams = array(
+                'userid' => $user_id,
+                'datetime' => $time,
+                'actionnamespace' => 'ktcore.user_history.login',
+                'comments' => sprintf('Logged in from %s via webservice: '.$app, $ip),
+                'sessionid' => $sessionid,
+            );
+
+            require_once(KT_LIB_DIR . '/users/userhistory.inc.php');
+            $res = KTUserHistory::createFromArray($aParams);
+
+            // Update the users last login date
+            $user->setLastLogin($time);
+            $user->update();
 		}
 
         return array($session,$sessionid);
@@ -417,9 +434,18 @@ class KTAPI_UserSession extends KTAPI_Session
 	 * @param string $app Optional. The originating application type - Default is ws => webservices | webapp => The web application
 	 * @return KTAPI_Session|PEAR_Error Returns the session object | a PEAR_Error on failure
 	 */
-	function &get_active_session(&$ktapi, $session, $ip, $app='ws')
+	function &get_active_session(&$ktapi, $session, $ip, $app = 'ws')
 	{
-		$sql = "SELECT id, user_id FROM active_sessions WHERE session_id='$session' and apptype='$app'";
+	    if (!empty($app) && ($app != 'webapp') && ($app != 'ws'))
+	    {
+		    $sql = "SELECT id, user_id FROM active_sessions WHERE session_id='$session' and apptype='$app'";
+	    }
+		// else don't check app
+		else
+		{
+		    $sql = "SELECT id, user_id FROM active_sessions WHERE session_id='$session'";
+	    }
+	    
 		if (!empty($ip))
 		{
 			$sql .= " AND ip='$ip'";
@@ -441,7 +467,7 @@ class KTAPI_UserSession extends KTAPI_Session
 			return new KTAPI_Error(KTAPI_ERROR_USER_INVALID, $user);
 		}
 
-        $now=date('Y-m-d H:i:s');
+        $now = date('Y-m-d H:i:s');
         $sql = "UPDATE active_sessions SET lastused='$now' WHERE id=$sessionid";
         DBUtil::runQuery($sql);
 
@@ -451,8 +477,8 @@ class KTAPI_UserSession extends KTAPI_Session
 			$session = new KTAPI_UserSession($ktapi, $user, $session, $sessionid, $ip);
 		return $session;
 	}
-	
-	
+
+
 	public function getCurrentBrowserSession(&$ktapi, $sessionId=NULL){
 		// TODO : Get ip
 		$ip = '';

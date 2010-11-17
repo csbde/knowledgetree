@@ -38,19 +38,19 @@
 
 require_once(KT_LIB_DIR . '/users/User.inc');
 
-class KTUserUtil
-{
+class KTUserUtil {
+
     public static function createUser($username, $name, $password = null, $email_address = null, $email_notifications = false, $mobile_number = null, $max_sessions = 3, $source_id = null, $details = null, $details2 = null, $disabled_flag = 0)
     {
         global $default;
 
         $dupUser =& User::getByUserName($username);
-        if(!PEAR::isError($dupUser)) {
-            $default->log->warn('Couldn\'t create user, duplicate username: '.$dupUser->getMessage());
+        if (!PEAR::isError($dupUser)) {
+            $default->log->warn('Couldn\'t create user, duplicate username.');
             return PEAR::raiseError(_kt("A user with that username already exists"));
         }
 
-        $oUser =& User::createFromArray(array(
+        $user =& User::createFromArray(array(
             "sUsername" => $username,
             "sName" => $name,
             "sPassword" => md5($password),
@@ -67,8 +67,8 @@ class KTUserUtil
             'disabled' => $disabled_flag,
         ));
 
-        if (PEAR::isError($oUser) || ($oUser == false)) {
-            $error = ($oUser === false) ? '' : $oUser->getMessage();
+        if (PEAR::isError($user) || ($user == false)) {
+            $error = ($user === false) ? '' : $user->getMessage();
             $default->log->error('Couldn\'t create user: '. $error);
             return PEAR::raiseError(_kt("failed to create user."));
         }
@@ -81,42 +81,46 @@ class KTUserUtil
             $sTrigger = $aTrigger[0];
             $oTrigger = new $sTrigger;
             $aInfo = array(
-                'user' => $oUser,
+                'user' => $user,
             );
             $oTrigger->setInfo($aInfo);
             $ret = $oTrigger->postValidate();
         }
 
-        return $oUser;
+        return $user;
     }
 
-    public static function getUserField($userId,$fieldName='name'){
-    	if(!is_array($userId)){	$userId=array($userId);	}
-    	$userId=array_unique($userId,SORT_NUMERIC);
-    	if(!is_array($fieldName)){$fieldName=array($fieldName);	}
+    public static function getUserField($userId, $fieldName = 'name')
+    {
+    	if (!is_array($userId)) { $userId = array($userId); }
+    	$userId = array_unique($userId, SORT_NUMERIC);
+    	if (!is_array($fieldName)) { $fieldName = array($fieldName); }
 
 		//TODO: needs some work
-    	$sql="SELECT ".join(',',$fieldName)." FROM users WHERE id IN (".join(',',$userId).")";
-    	$res=DBUtil::getResultArray($sql);
-//    	print_r($res); die;
-    	if(PEAR::isError($res) || empty($res)){
+    	$sql = "SELECT " . join(',', $fieldName) . " FROM users WHERE id IN (" . join(',', $userId) . ")";
+    	$res = DBUtil::getResultArray($sql);
+    	if (PEAR::isError($res) || empty($res)) {
     		return '';
-    	}else{
+    	} else {
     		return $res;
     	}
     }
 
     /**
-     * Takes a list of email addresses and sends invites to them to become licensed users
+     * Takes a list of email addresses and sends invites to them to become KnowledgeTree users.
+     * Users may be either licensed, with full access to the (non-admin) parts of the system,
+     * or they may be unlicensed, with access only to content specifically shared with them.
      *
      * @param array $addressList The list of invitee email addresses
      * @param string $group The initial group to add the invitee's to
+     * @param boolean $type licensed | unlicensed
      * @return array The lists of newly invited users, failed invitations and already existing users
      */
-    public static function inviteUsersByEmail($addressList, $group = null)
+    public static function inviteUsersByEmail($addressList, $group = null, $type = null, $shareContent = null)
     {
-        if(empty($addressList)){
-            $response = array('invited' => 0, 'group' => '', 'check' => 0);
+        if (empty($addressList)) {
+            $response = array('invited' => 0, 'existing' => '', 'failed' => '', 'group' => '', 'type' => '', 'check' => 0);
+            return $response;
         }
 
         global $default;
@@ -127,67 +131,128 @@ class KTUserUtil
         $groupName = '';
 
     	$inSystemList = self::checkUniqueEmail($addressList);
-    	$availableLicenses = (int)BaobabKeyUtil::availableUserLicenses();
+    	/*if ($type == 'invited') {
+    	   $availableLicenses = (int)BaobabKeyUtil::availableUserLicenses();
+    	}*/
 
     	// loop through any addresses that currently exist and unset them in the invitee list
     	$addressList = array_flip($addressList);
-    	foreach ($inSystemList as $item){
-    	    unset($addressList[$item['email']]);
+    	foreach ($inSystemList as $item) {
+//    	    if ($type != 'shared') {
+    	        unset($addressList[$item['email']]);
+//    	    }
     	    $existingUsers[] = $item;
     	}
     	$addressList = array_flip($addressList);
 
     	// Get the group object if a group has been selected
-    	$oGroup = false;
-    	if(is_numeric($group)){
-    	   $oGroup = Group::get($group);
+    	// NOTE There is no need to prevent this for unlicensed users as there will be no group selected
+    	$group = false;
+    	if (is_numeric($group)) {
+    	   $group = Group::get($group);
 
-    	   if(PEAR::isError($oGroup)){
-    	       $default->log->error("Invite users. Error on selected group ({$group}) - {$oGroup->getMessage()}");
-    	       $oGroup = false;
-    	   }else {
-    	       $groupName = $oGroup->getName();
+    	   if (PEAR::isError($group)) {
+    	       $default->log->error("Invite users. Error on selected group ({$group}) - {$group->getMessage()}");
+    	       $group = false;
+    	   } else {
+    	       $groupName = $group->getName();
     	   }
         }
 
     	// loop through remaining emails and add to the users table
-    	// flag as "invited" => disabled = 3
+    	// flag as "invited/shared" => disabled = 3/4
     	// 0 = live; 1 = disabled; 2 = deleted; 3 = invited; 4 = shared
-    	foreach ($addressList as $email){
-            if(empty($email)){
+    	$types = array('live' => 0, 'disabled' => 1, 'deleted' => 2, 'invited' => 3, 'shared' => 4);
+    	foreach ($addressList as $email) {
+            if (empty($email)) {
                 continue;
             }
-            $oUser = self::createUser($email, '', null, $email, true, null, 3, null, null, null, 3);
+            $user = self::createUser($email, '', null, $email, true, null, 3, null, null, null, $types[$type]);
 
-            if(PEAR::isError($oUser)){
-               $default->log->error("Invite users. Error on creating invited user ({$email}) - {$oUser->getMessage()}");
+            if (PEAR::isError($user)) {
+               $default->log->error("Invite users. Error on creating invited user ({$email}) - {$user->getMessage()}");
                $failedUsers[] = $email;
                continue;
             }
-            $invitedUsers[] = array('id' => $oUser->getId(), 'email' => $email);
-
-            if($oGroup !== false){
-               $res = $oGroup->addMember($oUser);
-               if(PEAR::isError($res)){
+			
+            if ($group !== false) {
+               $res = $group->addMember($user);
+               if (PEAR::isError($res)) {
                    $default->log->error("Invite users. Error on adding user ({$email}) to group {$group} - {$res->getMessage()}");
                    continue;
                }
             }
+            
+			if($type == 'shared') {
+				self::addSharedContent($user->getId(), $shareContent['object_id'], $shareContent['object_type'], $shareContent['permission']);
+			}
+            
+            $invitedUsers[] = array('id' => $user->getId(), 'email' => $email);
     	}
 
     	// Send invitation
-    	if(!empty($invitedUsers)){
+    	if (!empty($invitedUsers)) {
     	    self::sendInvitations($invitedUsers);
     	}
 
     	$numInvited = count($invitedUsers);
-    	$check = self::checkUserLicenses($numInvited, $availableLicenses);
 
-    	//$response = array('existing' => $existingUsers, 'failed' => $failedUsers, 'invited' => $invitedUsers, 'group' => $groupName, 'check' => $check, 'licenses' => $availableLicenses);
-    	$response = array('invited' => $numInvited, 'group' => $groupName, 'check' => $check);
+    	$check = 0;
+    	/*if ($type == 'invited') {
+    	   $check = self::checkUserLicenses($numInvited, $availableLicenses);
+    	}*/
+
+    	// Format the list of existing users
+    	$existing = '';
+    	if (!empty($existingUsers)){
+    	    foreach ($existingUsers as $item){
+    	        $existing .= '<li>';
+    	        if (!empty($item['name'])) {
+    	            $existing .= $item['name'] . ' - ';
+    	        }
+
+    	        $existing .= $item['email'] .'</li>';
+    	    }
+    	}
+
+    	// Format the list of failed email addresses
+    	$failed = '';
+    	if (!empty($failedUsers)){
+    	    foreach ($failedUsers as $item){
+    	        $failed .= '<li>'.$item .'</li>';
+    	    }
+    	}
+
+    	$response = array('invited' => $numInvited, 'existing' => $existing, 'failed' => $failed, 'group' => $groupName, 'type' => $type, 'check' => $check);
+    	
+    	// Send invitation
+    	if (($type == 'shared') && !empty($existingUsers)) {    	    
+    	    foreach ($existingUsers as $existingUser) {
+    	        self::addSharedContent($existingUser['id'], $shareContent['object_id'], $shareContent['object_type'], $shareContent['permission']);
+    	    }
+    	    self::sendInvitations($existingUsers);
+    	}
+
     	return $response;
     }
 
+    public static function addSharedContent($user_id, $object_id, $object_type, $permission)
+    {
+    	global $default;
+		// Add shared content entry.
+		require_once(KT_LIB_DIR . '/render_helpers/sharedContent.inc');
+		$object_type = ($object_type == 'F') ? 'folder' : 'document';
+		$oSharedContent = new SharedContent($user_id, $object_id, $object_type, $permission);
+		if(!$oSharedContent->exists())
+		{
+			$res = $oSharedContent->create();
+			if (!$res)
+			{
+				$default->log->error("Failed sharing " . ($object_type == 'F') ? "folder" : " file " . " $object_id with invited user id $user_id.");
+			}
+		}
+		
+    }
     /**
      * Check how many licenses are available in the system.
      *
@@ -196,12 +261,12 @@ class KTUserUtil
      */
     public static function checkUserLicenses($iInvited, $iAvailable)
     {
-        if($iAvailable <= 0){
+        if ($iAvailable <= 0) {
             return 1;
         }
 
         $rem = $iAvailable - (int)$iInvited;
-        if($rem < 0){
+        if ($rem < 0) {
             return 2;
         }
         return 0;
@@ -219,27 +284,27 @@ class KTUserUtil
         // goes into the user array for use in the email
         $oSender = User::get($_SESSION['userID']);
 
-        if(PEAR::isError($oSender) || empty($oSender)){
+        if (PEAR::isError($oSender) || empty($oSender)) {
             $sender = 'KnowledgeTree';
-        }else{
+        } else {
             $sender = $oSender->getName();
         }
 
         $url = KTUtil::kt_url() . '/users/key/';
 
         $list = array();
-        foreach ($emailList as $item){
+        foreach ($emailList as $item) {
             //$key = 'skfjiwefjaldi';
             $user_id = $item['id'];
             //$user = KTUtil::encode($user, $key);
-            $user = '88'.base_convert($user_id, 10, 25);
-
-            $link = $url . $user;
+            $user = (int)$user_id * 354;
+            $user = base_convert($user, 10, 25);
+            $link = $url . '88' . $user;
 
             $list[] = array('name' => '', 'email' => $item['email'], 'sender' => $sender, 'link' => $link);
         }
 
-        if(empty($list)){
+        if (empty($list)) {
             return true;
         }
 
@@ -248,7 +313,7 @@ class KTUserUtil
         $default->log->debug('Invited keys '. json_encode($list));
         $emailFrom = $default->emailFrom;
 
-        if(ACCOUNT_ROUTING_ENABLED){
+        if (ACCOUNT_ROUTING_ENABLED) {
             // dispatch queue event
             require_once(KT_LIVE_DIR . '/sqsqueue/dispatchers/queueDispatcher.php');
 
@@ -275,28 +340,29 @@ class KTUserUtil
      */
     public static function checkUniqueEmail($addresses)
     {
-        if(empty($addresses)){
+        if (empty($addresses)) {
             return false;
         }
 
-        if(is_string($addresses)){
+        if (is_string($addresses)) {
             $addresses = array($addresses);
         }
 
-        if(!is_array($addresses)){
+        if (!is_array($addresses)) {
             return false;
         }
 
         $list = implode("', '", $addresses);
 
-        // Filter out deleted users
+        // Filter out deleted users (2) and shared users (4)
         $sql = "SELECT u.id, u.name, u.email, u.disabled FROM users u
-                WHERE email IN ('{$list}') AND disabled !=2;";
+                WHERE email IN ('{$list}') AND disabled != 2";
 
         $result = DBUtil::getResultArray($sql);
 
         return $result;
     }
+
 }
 
 

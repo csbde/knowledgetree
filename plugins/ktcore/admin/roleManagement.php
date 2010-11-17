@@ -45,7 +45,9 @@ require_once(KT_LIB_DIR . "/roles/Role.inc");
 
 class RoleAdminDispatcher extends KTAdminDispatcher {
 
-    var $sHelpPage = 'ktcore/admin/role administration.html';
+    public $sHelpPage = 'ktcore/admin/role administration.html';
+    public $aCannotView = array('starter', 'professional');
+    
     function check() {
         return true;
     }

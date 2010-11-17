@@ -41,6 +41,7 @@ require_once(KT_LIB_DIR . '/workflow/workflowutil.inc.php');
 require_once(KT_LIB_DIR . '/dispatcher.inc.php');
 require_once(KT_LIB_DIR . '/browse/browseutil.inc.php');
 require_once(KT_LIB_DIR . "/util/sanitize.inc");
+require_once(KT_LIB_DIR . "/users/shareduserutil.inc.php");
 
 /**
  * Base class for document actions within KnowledgeTree
@@ -59,7 +60,10 @@ class KTDocumentAction extends KTStandardDispatcher {
     var $sHelpPage = 'ktcore/browse.html';
 
     var $sSection = 'view_details';
-
+    
+	var $showIfRead = false;
+	var $showIfWrite = false;
+	var $objectPermission = false;
     /**
  	 * The _bMutator variable determines whether the action described by the class is considered a mutator.
      * Mutators may not act on Immutable documents unless overridden in the code
@@ -86,21 +90,25 @@ class KTDocumentAction extends KTStandardDispatcher {
         $this->aBreadcrumbs = array(
             array('action' => 'browse', 'name' => _kt('Browse')),
         );
-
         $this->persistParams('fDocumentId');
-
+		
         parent::KTStandardDispatcher();
     }
 
     function setDocument(&$oDocument) {
         $this->oDocument =& $oDocument;
     }
-
+    
     function setUser(&$oUser) {
         $this->oUser =& $oUser;
     }
 
     function _show() {
+    	// If this is a shared user the object permissions are different.
+    	if(SharedUserUtil::isSharedUser())
+    	{
+    		return $this->shareduser_show();
+    	}
         if (is_null($this->_sShowPermission)) {
             return true;
         }
@@ -227,6 +235,54 @@ class KTDocumentAction extends KTStandardDispatcher {
     function do_main() {
         return _kt('Dispatcher component of action not implemented.');
     }
+    
+    /**
+     * Check permissions on document for shared user
+     *
+     * @return unknown
+     */
+    function shareduser_show()
+    {
+		// Shared user would not have admin mode
+		// Shared user would not be admin
+		// Shared user permissions are stored in shared_content table
+		// Check if deleted or archived document
+        $status = $this->oDocument->getStatusID();
+        if (($status == DELETED) || ($status == ARCHIVED)) { return false; }
+		// Check if actions display for both users
+		if($this->showIfRead && $this->showIfWrite)
+		{
+			return true;
+		}
+		// Check if action does not have to be displayed
+		else if(!$this->showIfRead && !$this->showIfWrite)
+		{
+			return false;
+		}
+		// Check if action needs to be hidden for
+		else if(!$this->showIfRead)
+		{
+			$this->setPermission();
+			if($this->objectPermission == 1)
+			{
+				return true;
+			}
+		}
+		
+		return false;
+    }
+    
+    /**
+     * Set the shared object permission
+     *
+     */
+    function setPermission()
+    {
+		$iUserId = $this->oUser->getID();
+		$iDocumentId = $this->oDocument->getID();
+		$iFolderId = $this->oDocument->getFolderID();
+		$this->objectPermission = SharedContent::getPermissions($iUserId, $iDocumentId, $iFolderId, 'document');
+    }
 }
 
 class JavascriptDocumentAction extends KTDocumentAction
@@ -339,9 +395,6 @@ class JavascriptDocumentAction extends KTDocumentAction
     	$class = get_class($this);
     	return 'js' .  $class. 'Dispatcher()';
     }
-
-
-
 }
 
 class KTDocumentActionUtil {
