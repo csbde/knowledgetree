@@ -180,26 +180,26 @@ class LdapAuthProvider extends KTAuthenticationProvider {
 
 }
 
+require_once(KT_DIR . '/thirdparty/ZendFramework/library/Zend/Ldap.php');
+        
 class LdapAuthenticator extends Authenticator {
     
     private $ldapConnector;
     
     public function __construct($oSource)
-    {
-        require_once(KT_DIR . '/thirdparty/ZendFramework/library/Zend/Ldap.php');
-        
+    {        
         $config = unserialize($oSource->getConfig());
         
         // Connect to LDAP
         // TODO error conditions
         $options = array(
             'host'              => $config['server'],
-            'username'          => $config['searchpwd'],
-            'password'          => $config['searchuser'],
+            'username'          => $config['searchuser'],
+            'password'          => $config['searchpwd'],
             /** according to the Zend documentation, bindRequiresDn is important 
              * when NOT using Active Directory, but it seems to work fine with AD
              */
-            // TODO distinguish between openldap and active directory options, 
+            // TODO distinguish between openldap and active directory options, if possible
             //      see http://framework.zend.com/manual/en/zend.ldap.introduction.html
             'bindRequiresDn'    => true,
             'baseDn'            => $config['basedn'],
@@ -231,7 +231,7 @@ class LdapAuthenticator extends Authenticator {
      * @param string the password to check
      * @return boolean true if the password is correct | false
      */
-    function checkPassword($oUser, $sPassword)
+    public function checkPassword($oUser, $sPassword)
     {
         global $default;
 
