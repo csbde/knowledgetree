@@ -27,7 +27,7 @@ class webAjaxHandler{
 		}
 		$this->ret->location='webajaxhandler';
 
-		$this->remoteIp = (getenv(HTTP_X_FORWARDED_FOR)) ?  getenv(HTTP_X_FORWARDED_FOR)  :  getenv(REMOTE_ADDR);
+		$this->remoteIp = (getenv('HTTP_X_FORWARDED_FOR')) ?  getenv('HTTP_X_FORWARDED_FOR')  :  getenv('REMOTE_ADDR');
 
 		$this->rawRequestObject=isset($_GET['request'])?$_GET['request']:(isset($_POST['request'])?$_POST['request']:'');
 		

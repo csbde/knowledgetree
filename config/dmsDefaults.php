@@ -233,12 +233,10 @@ class KTInit {
 		if (ACCOUNT_ROUTING_ENABLED) {
 
 //		    $oKTConfig = KTConfig::getSingleton();
-//
 //		    // Set up logging so that we can log the error.
 //		    $logDir = $oKTConfig->get('urls/logDirectory', KT_DIR.'/var/log');
 //		    $userId = isset($_SESSION['userID']) ? $_SESSION['userID'] : 'n/a';
 //		    $this->configureLog($logDir, 'ERROR', $userId, ACCOUNT_NAME);
-//
 //		    $logger = LoggerManager::getLogger('default');
 		    $logger = $GLOBALS['default']->log;
 
@@ -277,6 +275,7 @@ class KTInit {
 				}
 			}
 		}
+		
 	}
 
 	/**

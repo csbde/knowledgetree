@@ -296,6 +296,31 @@ div#activationNotice {
 	font-size: 80%;
 }
 
+div#planNotice {
+	background: url('../graphics/newui/notice.png') no-repeat top right;
+	width: 160px;
+	height: 50px;
+	float: right;
+	text-align: left;
+	padding: 5px 30px 0;
+	font-size: 100%;
+}
+
+div#planDetails {
+	width: 200px;
+}
+
+div#planNotice #tag {
+	color: #0074A4;
+	font-size: 90%;
+	font-weight: lighter;
+}
+
+div#planNotice #info {
+	font-size: 95%;
+	font-family: Arial;
+}
+
 div#activationNotice span {
 	color: #0074A4;
 	font-weight: bold;
@@ -362,8 +387,113 @@ div.widgetRow {
 div.widgetItem {
 	position: relative;
 	float: left;
-	/*left: 100%;*/
-	/*border: 1px solid blue;*/
 }
 
+/* Admin Page Landing */
 
+div.menuitems {
+	-moz-border-radius:15px 15px 15px 15px;
+	-moz-box-shadow:0 0 5px #666677;
+	border:1px solid #616161;
+	padding:30px;
+	width:370px;
+	position:relative;
+}
+
+div#leftmenu {
+	left:110px;
+}
+
+div#rightmenu {
+	bottom:309px;
+	left:645px;
+}
+
+div.adminheadings {
+	position:relative;
+	width:220px;
+	height:30px;
+    font-family:"Arial", sans-serif;
+    font-weight:bold;
+    font-style:normal;
+    font-size:24px;
+    color: Gray;
+    z-index:1;
+    background-color:white;
+    text-align:center;
+}
+
+div#headingContents {
+	left:150px;
+	top:20px;
+}
+
+div#headingAccounts {
+	left:690px;
+	bottom:290px;
+}
+
+div#accountSettings {
+	top:180px;
+	left:655px;
+}
+
+div#rightMenu {
+	left:655px;
+}
+
+div#leftMenu {
+	left:110px;
+}
+
+div#usageStats {
+	left:110px;
+	width:250px;
+}
+
+div#upgradePlan {
+	width:700px;
+	left:456px;
+	bottom:392px;
+	overflow:scroll;
+}
+
+div.stats {
+	-moz-border-radius:15px 15px 15px 15px;
+	-moz-box-shadow:0 0 5px #666677;
+	border:1px solid #616161;
+	padding:30px;
+	width:370px;
+	position:relative;
+	height:300px;
+}
+
+div#leftHeading {
+	left:166px;
+	top:17px;
+	width:100px;
+}
+
+div#rightHeading {
+	left:500px;
+	bottom:373px;
+	width:125px;
+}
+
+span.usageHead {
+	color:#5899B9;
+	font-size:20px;
+	font-variant:normal;
+	text-transform:capitalize;
+	border-bottom:1px dotted #E1E0E2;
+	width:235px;
+	font-weight:bold;
+}
+
+span.astat {
+	font-weight:bold;
+}
+
+div#statLine {
+	width:250px;
+}

@@ -84,10 +84,21 @@ class AdminSplashDispatcher extends KTAdminDispatcher {
         } else {
             $oTemplate = $oTemplating->loadTemplate('kt3/admin_categories');
         }
-
+        
+		foreach (array('contentManagement', 'contentSetup', 'contentIndexing') as $leftcat)
+        {
+        	$leftmenu[$leftcat] = $categories[$leftcat];
+        }
+		foreach (array('accountInformation', 'userSetup', 'sysConfig') as $rightcat)
+		{
+			$rightmenu[$rightcat] = $categories[$rightcat];
+		}
+        
         $aTemplateData = array(
               'context' => $this,
               'categories' => $categories,
+              'leftmenu' => $leftmenu,
+              'rightmenu' => $rightmenu,
               'all_items' => $aAllItems,
               'baseurl' => $_SERVER['PHP_SELF'],
         );
