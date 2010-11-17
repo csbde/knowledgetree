@@ -188,6 +188,7 @@ class LdapAuthenticator extends Authenticator {
     
     public function __construct($oSource)
     {        
+        $oSource =& KTUtil::getObject('KTAuthenticationSource', $oSource);
         $config = unserialize($oSource->getConfig());
         
         // Connect to LDAP

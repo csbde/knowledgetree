@@ -47,7 +47,7 @@ class KTAuthenticationUtil {
         {
         	return false;
         }
-        $oAuthenticator = KTAuthenticationUtil::getAuthenticatorForUser($oUser);
+        $oAuthenticator =& KTAuthenticationUtil::getAuthenticatorForUser($oUser);
         return $oAuthenticator->checkPassword($oUser, $sPassword);
     }
 
@@ -67,10 +67,7 @@ class KTAuthenticationUtil {
         return $oProvider->getAuthenticator($oSource);
     }
 
-    // NOTE changed $oSource argument to be passed by reference because with the new
-    //      ldap authenticator it was remaining an id in the calling function and 
-    //      expected to be an object in the new ldap authenticator.
-    function &getAuthenticationProviderForSource(&$oSource) {
+    function &getAuthenticationProviderForSource($oSource) {
         if ($oSource) {
             $oSource =& KTUtil::getObject('KTAuthenticationSource', $oSource);
             $sProvider = $oSource->getAuthenticationProvider();
