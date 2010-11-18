@@ -1,13 +1,13 @@
 <?php
 
 require_once(KT_DIR . '/thirdparty/ZendFramework/library/Zend/Ldap.php');
-        
-class LdapGroupManager {
+
+class LdapManager {
+    public $ldapConnector;
     
-    private $ldapConnector;
-    
-    public function __construct($oSource)
-    {        
+    public function LdapManager($oSource)
+    {
+    	
         $config = unserialize($oSource->getConfig());
         
         // Connect to LDAP
@@ -44,32 +44,6 @@ class LdapGroupManager {
         unset($this->ldapConnector);
     }
     
-    // TODO proper error returns, I suppose these will have to be PEAR errors as that's
-    //      what the rest of the system expects...
-    //      these error returns to replace the "return false;" statements
-    public function searchGroups($filter)
-    {
-        $groups = array();
-        
-        if (!empty($filter)) {
-            $filter = "(cn=*$filter*)";
-        }
-        
-        $attributes = array('cn', 'dn', 'displayName');
-        // NOTE we don't need to get the base dn here:
-        //      If null, it will be automatically used as set in the construction of the ldap connector.
-        
-        try {
-            $groups = $this->ldapConnector->search("(&(objectClass=group)$filter)", null, Zend_Ldap::SEARCH_SCOPE_SUB, $attributes);
-        }
-        catch (Exception $e) {
-            // TODO logging and remove the echo statement
-            echo $e->getMessage() . " [$dn]";
-        }
-        
-        return $groups;
-    }
-
+    
 }
-
 ?>

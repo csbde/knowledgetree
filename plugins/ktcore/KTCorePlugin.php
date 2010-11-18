@@ -286,6 +286,7 @@ class KTCorePlugin extends KTPlugin {
 
 
         // users and groups
+        
         $this->registerAdminPage('users', 'KTUserAdminDispatcher', 'userSetup',
             _kt('Manage Users'), _kt('Add or remove users from the system.'),
             'admin/userManagement.php', null);

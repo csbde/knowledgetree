@@ -41,11 +41,15 @@ require_once(KT_LIB_DIR . '/authentication/Authenticator.inc');
 
 require_once(KT_LIB_DIR . '/widgets/fieldWidgets.php');
 
+//require_once('ldapGroupManager.php');
+//
+
 class LdapAuthProvider extends KTAuthenticationProvider {
     
     public $sName = 'LDAP Authentication Provider';
     public $sNamespace = 'ldap.auth.provider';
     public $sAuthClass = 'LdapAuthenticator';
+    public $oLDAPUser = null;
     private $configMap;
 
     public function __construct()
@@ -152,6 +156,14 @@ class LdapAuthProvider extends KTAuthenticationProvider {
         return new $this->sAuthClass($oSource);
     }
 
+    public function do_addUserFromSource()
+    {
+    	require_once('ldapUserDispatcher.php');
+    	$oLDAPUserDispatcher = new ldapUserDispatcher();
+    	
+    	return $oLDAPUserDispatcher->addUserFromSource();
+    }
+    
     /**
      * Returns the fields to be used for the provider info
      *
@@ -249,6 +261,10 @@ class LdapAuthenticator extends Authenticator {
         }
     }
 
+    public function getConnector()
+    {
+    	return $this->ldapConnector;
+    }
 }
 
 ?>
