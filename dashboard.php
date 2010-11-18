@@ -9,7 +9,7 @@
  * KnowledgeTree Community Edition
  * Document Management Made Simple
  * Copyright (C) 2008, 2009, 2010 KnowledgeTree Inc.
- *  
+ *
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License version 3 as published by the
@@ -67,15 +67,15 @@ class DashboardDispatcher extends KTStandardDispatcher {
         $this->oPage->setShowPortlets(false);
         // retrieve action items for the user.
         // FIXME what is the userid?
-        
-        
+
+
         // This creates a pseudo portlet to get the upload and add a folder button
         // for the root directory to display them on the dashboard
         $oFolder =& Folder::get(1);
         $portlet = new KTActionPortlet(sprintf(_kt('Actions'))); // Usually part of actions
         $aActions = KTFolderActionUtil::getFolderActionsForFolder($oFolder, $this->oUser);
         $portlet->setActions($aActions,null);
-        
+
         $midToolbarButtons = $portlet->showButtons();
 
 
@@ -83,8 +83,9 @@ class DashboardDispatcher extends KTStandardDispatcher {
         $aDashlets = $oDashletRegistry->getDashlets($this->oUser);
 
         $this->sSection = 'dashboard';
-        $this->oPage->setBreadcrumbDetails(_kt('Home'));
-        $this->oPage->title = _kt('Dashboard');
+        //$this->oPage->setBreadcrumbDetails(_kt('Home'));
+        //$this->oPage->title = _kt('Dashboard');
+        $this->oPage->hideSection();
 
         // simplistic improvement over the standard rendering:  float half left
         // and half right.  +Involves no JS -can leave lots of white-space at the bottom.
@@ -146,25 +147,25 @@ class DashboardDispatcher extends KTStandardDispatcher {
               'dashlets_right' => $aDashletsRight,
               'midToolbarButtons' => $midToolbarButtons,
         );
-        
+
 		// TODO : Is this ok?
 		if(file_exists(KT_DIR.DIRECTORY_SEPARATOR.'var'.DIRECTORY_SEPARATOR.'bin'.DIRECTORY_SEPARATOR."firstlogin.lock")) {
 			$this->runFirstLoginWizard($oTemplate, $aTemplateData);
 		}
-		
+
         return $oTemplate->render($aTemplateData);
     }
 
-    // 
+    //
     function runFirstLoginWizard($oTemplate, $aTemplateData) {
     	$this->oPage->requireCSSResource('setup/wizard/resources/css/modal.css');
     	$this->oPage->requireJSResource('setup/wizard/resources/js/jquery-1.4.2.min.js');
     	//$this->oPage->requireJSResource('thirdpartyjs/jquery/jquery-1.3.2.min.js');
     	$this->oPage->requireJSResource('thirdpartyjs/jquery/jquery_noconflict.js');
     	$this->oPage->requireJSResource('setup/wizard/resources/js/firstlogin.js');
-    	
+
     }
-    
+
     // return some kind of ID for each dashlet
     // currently uses the class name
     function _getDashletId($oDashlet) {

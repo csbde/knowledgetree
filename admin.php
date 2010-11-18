@@ -5,7 +5,7 @@
  * KnowledgeTree Community Edition
  * Document Management Made Simple
  * Copyright (C) 2008, 2009, 2010 KnowledgeTree Inc.
- *  
+ *
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License version 3 as published by the
@@ -76,7 +76,7 @@ class AdminSplashDispatcher extends KTAdminDispatcher {
             }
         }
 
-        $this->oPage->title = _kt('Settings') . ': ';
+        $this->oPage->hideSection();
         $oTemplating =& KTTemplating::getSingleton();
 
         if ($condensed_admin) {
@@ -84,7 +84,7 @@ class AdminSplashDispatcher extends KTAdminDispatcher {
         } else {
             $oTemplate = $oTemplating->loadTemplate('kt3/admin_categories');
         }
-        
+
 		foreach (array('contentManagement', 'contentSetup', 'contentIndexing') as $leftcat)
         {
         	$leftmenu[$leftcat] = $categories[$leftcat];
@@ -93,7 +93,7 @@ class AdminSplashDispatcher extends KTAdminDispatcher {
 		{
 			$rightmenu[$rightcat] = $categories[$rightcat];
 		}
-        
+
         $aTemplateData = array(
               'context' => $this,
               'categories' => $categories,
@@ -110,7 +110,7 @@ class AdminSplashDispatcher extends KTAdminDispatcher {
         $category = KTUtil::arrayGet($_REQUEST, 'fCategory', $this->category);
 
         //Removing bad contentSetup/fieldmanagement links from the Document Metadata and Workflow Configuration page.
-		$oPage =& $GLOBALS['main'];	
+		$oPage =& $GLOBALS['main'];
 		if ($category == 'contentSetup') {
 			$aJavascript[] = 'thirdpartyjs/jquery/jquery-1.4.2.js';
 			$oPage->requireJSResources($aJavascript);
@@ -118,14 +118,14 @@ class AdminSplashDispatcher extends KTAdminDispatcher {
 		}
 		$aJavascript[] = 'resources/js/newui/hide_system_links.js';
 		$oPage->requireJSResources($aJavascript);
-	
+
         $oRegistry =& KTAdminNavigationRegistry::getSingleton();
         $aCategory = $oRegistry->getCategory($category);
-		
+
         $aItems = $oRegistry->getItemsForCategory($category);
         asort($aItems);
         $this->aBreadcrumbs[] = array('name' => $aCategory['title'], 'url' => KTUtil::ktLink('admin.php',$category));
-		
+
         $this->oPage->title = _kt('Settings') . ': ' . $aCategory['title'];
         $oTemplating =& KTTemplating::getSingleton();
         $oTemplate = $oTemplating->loadTemplate('kt3/admin_items');
