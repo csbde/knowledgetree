@@ -217,7 +217,6 @@ class KTDispatcher {
     function redirectTo($event, $sQuery = "") {
         // meld persistant options
         $sQuery = $this->meldPersistQuery($sQuery, $event);
-
         $sRedirect = KTUtil::addQueryString($_SERVER['PHP_SELF'], $sQuery);
         $this->oRedirector->redirect($sRedirect);
         exit(0);
@@ -442,6 +441,13 @@ class KTStandardDispatcher extends KTDispatcher {
         	if(in_array($default->plan, $this->aCannotView))
         	{
 				$this->planDenied();
+                exit(0);
+        	}
+        	
+        	$this->oUser =& User::get($_SESSION['userID']);
+        	if(in_array($this->oUser->getDisabled(), $this->aCannotView))
+        	{
+				$this->permissionDenied();
                 exit(0);
         	}
         }

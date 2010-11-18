@@ -58,6 +58,13 @@ class Redirector
             case 'admin': $this->finalizeRun('admin.php'); break;
             case 'preferences': $this->finalizeRun('preferences.php'); break;
         }
+        
+        // external authentication, e.g. OneLogin
+        if ((!empty($_SERVER['HTTP_REFERER']) && preg_match('/onelogin\.com/', $_SERVER['HTTP_REFERER'])) || !empty($_POST['SAMLResponse'])) {
+            // unset referrer to prevent repeats (does not appear to work)
+            unset($_SERVER['HTTP_REFERER']);
+            $this->finalizeRun('auth.php');
+        }
 
 		if (!$this->foundDestination) {
 

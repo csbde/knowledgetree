@@ -136,6 +136,22 @@ kt.api = new function() {
 		}
 	};
 
+	this.hasWrite = function(objectId, objectType, userId, callback, errorCallback) {
+		var params = {};
+		params.objectId = objectId;
+		params.userId = userId;
+		params.objectType = objectType;
+		var synchronous = false;
+		var func = 'siteapi.hasWrite';
+		if (callback === true) {
+			var data = ktjapi.retrieve(func, params, this.cacheTimeout);
+			return data;
+		} else {
+			ktjapi.callMethod(func, params, callback, synchronous, errorCallback, this.cacheTimeout);
+			return;
+		}
+	};
+	
 	/* Template related functions */
 
 	this.preloadFragment = function(fragName, params) {

@@ -115,7 +115,7 @@ class SharedContent extends KTEntity {
     
     public function delete()
     {
-		$sql = "DELETE FROM shared_content WHERE user_id = '{$this->iUserId}' AND object_id = '{$this->iObjectId}' AND type = '{$this->sType}' AND permissions = '{$this->iPermissions}' LIMIT 1";
+		$sql = "DELETE FROM shared_content WHERE user_id = '{$this->iUserId}' AND object_id = '{$this->iObjectId}' AND type = '{$this->sType}' LIMIT 1";
     	$res = DBUtil::runQuery($sql);
     	if (PEAR::isError($res)) { return false; }
     	return (count($res) > 0);

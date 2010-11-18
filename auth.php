@@ -44,77 +44,129 @@ require_once(KT_LIB_DIR . '/session/Session.inc');
 
 class AuthenticationDispatcher extends KTDispatcher {
 
-    function do_main()
+    public function do_main()
     {
         global $default;
-
+        
         // TODO move this code to within the plugin?  may wish to share it between methods if we add more auth methods?
         // dispatch based on received authentication content
         // OneLogin SAML authentication
         if (!empty($_POST['SAMLResponse']) && KTPluginUtil::pluginIsActive('auth.onelogin.plugin')) {
             try {
-				require_once(KTPluginUtil::getPluginPath('auth.onelogin.plugin') . 'SAMLConsumer.inc.php');
+                require_once(KTPluginUtil::getPluginPath('auth.onelogin.plugin') . 'SAMLConsumer.inc.php');
                 $user = null;
-				$consumer = new SAMLConsumer();
-				if ($consumer->authenticate($_POST['SAMLResponse'], $user)) {
-				    // determine user from supplied username
-				    $res = DBUtil::getOneResult("SELECT id FROM users WHERE username = '$user'");
-				    if (PEAR::isError($res) || empty($res['id'])) {
-				        $default->log->error("Error finding user $user (OneLogin SAML authentication)" 
-				                             . (PEAR::isError($res) ? ': ' . $res->getMessage() : ''));
-				        // redirect to login screen with appropriate error
-				        header('Location: login.php?errorMessage=Login+failed.++Please+check+your+onelogin+username+and+try+again.');
-				    }
-				    
-				    // set user as logged in
-				    $user = User::get($res['id']);
-				    if (PEAR::isError($user)) {
-				        $default->log->error("User $user does not exist (OneLogin SAML authentication): " . $user->getMessage());
-				        // redirect to login screen with appropriate error
-				        header('Location: login.php?errorMessage=Login+failed.++Please+check+your+onelogin+username+and+try+again.');
-				    }
-				    $session = new Session();
-				    $sessionID = $session->create($user);
-				    if (PEAR::isError($sessionID)) {
-				        $default->log->error("Error creating session for user $user (OneLogin SAML authentication): " . $sessionID->getMessage());
-				        // redirect to login screen with appropriate error
-				        header('Location: login.php?errorMessage=Login+failed.++Please+check+your+onelogin+username+and+try+again.');
-				    }
-				    
-				    // log authentication method used
-				    $default->log->info('User logged in (OneLogin SAML authentication)');
-				    
+                $consumer = new SAMLConsumer();
+                if ($consumer->authenticate($_POST['SAMLResponse'], $user)) {
+                    // determine user from supplied username
+                    $res = DBUtil::getOneResult("SELECT id FROM users WHERE username = '$user'");
+                    if (PEAR::isError($res) || empty($res['id'])) {
+                        $default->log->error("Error finding user $user (OneLogin SAML authentication)"
+                        . (PEAR::isError($res) ? ': ' . $res->getMessage() : ''));
+                        // redirect to login screen with appropriate error
+                        $this->relocate('login.php?errorMessage=Login+failed.++Please+check+your+onelogin+username+and+try+again.');
+                    }
+
+                    // set user as logged in
+                    $user = User::get($res['id']);
+                    if (PEAR::isError($user)) {
+                        $default->log->error("User $user does not exist (OneLogin SAML authentication): " . $user->getMessage());
+                        // redirect to login screen with appropriate error
+                        $this->relocate('login.php?errorMessage=Login+failed.++Please+check+your+onelogin+username+and+try+again.');
+                    }
+
+                    $session = new Session();
+                    $sessionID = $session->create($user);
+                    if (PEAR::isError($sessionID)) {
+                        $default->log->error("Error creating session for user $user (OneLogin SAML authentication): " . $sessionID->getMessage());
+                        // redirect to login screen with appropriate error
+                        $this->relocate('login.php?errorMessage=Login+failed.++Please+check+your+onelogin+username+and+try+again.');
+                    }
+
+                    // log authentication method used
+                    $default->log->info('User logged in (OneLogin SAML authentication)');
+
                     // add a flag to check for bulk downloads after login is succesful; this will be cleared in the code which checks
-				    $_SESSION['checkBulkDownload'] = true;
+                    $_SESSION['checkBulkDownload'] = true;
 
+                    // DEPRECATED initialise page-level authorisation array
+                    $_SESSION['pageAccess'] = null;
 
-				    // DEPRECATED initialise page-level authorisation array
-				    $_SESSION['pageAccess'] = null;
+                    $redirect = strip_tags(KTUtil::arrayGet($_REQUEST, 'redirect'));
+                    $cookietest = KTUtil::randomString();
+                    setcookie('CookieTestCookie', $cookietest, 0);
 
-				    $redirect = strip_tags(KTUtil::arrayGet($_REQUEST, 'redirect'));
-				    $cookietest = KTUtil::randomString();
-				    setcookie('CookieTestCookie', $cookietest, 0);
-
-				    $this->redirectTo('checkCookie', array(
-				    'cookieVerify' => $cookietest,
-				    'redirect' => $redirect,
-				    ));
-				    
-				    exit(0);
-				}
-				else {
-				    // redirect to login screen with appropriate error
-                    header('Location: login.php?errorMessage=Login+failed.++Please+check+your+onelogin+username+and+try+again.');
-				}
-			}
-			catch (Exception $e) {
-			    // redirect to login screen with appropriate error
-			    header('Location: login.php?errorMessage=Login+failed.++Please+check+your+onelogin+username+and+try+again.');
-			}
+                    // make sure to set referrer to local (does not appear to work)
+                    header("Referer: {$_SERVER['HTTP_HOST']}");
+                    $this->redirectTo('checkCookie', array('cookieVerify' => $cookietest, 'redirect' => $redirect));
+                    exit(0);
+                }
+                else {
+                    // redirect to login screen with appropriate error
+                    $this->relocate('login.php?errorMessage=Login+failed.++Please+check+your+onelogin+username+and+try+again.');
+                }
+            }
+            catch (Exception $e) {
+                // redirect to login screen with appropriate error
+                $this->relocate('login.php?errorMessage=Login+failed.++Please+check+your+onelogin+username+and+try+again.');
+            }
         }
-        
+
         // redirect to main login page
-        header('Location: login.php?errorMessage=Login+failed.++Please+check+your+username+and+password%2C+and+try+again.');
+        $this->relocate('login.php?errorMessage=Login+failed.++Please+check+your+username+and+password%2C+and+try+again.');
+    }
+    
+    function do_checkCookie()
+    {
+        $cookieTest = KTUtil::arrayGet($_COOKIE, "CookieTestCookie", null);
+        $cookieVerify = KTUtil::arrayGet($_REQUEST, 'cookieVerify', null);
+
+        $url = $_SERVER["PHP_SELF"];
+        $queryParams = array();
+        $redirect = strip_tags(KTUtil::arrayGet($_REQUEST, 'redirect'));
+
+        if (!empty($redirect)) {
+            $queryParams[] = 'redirect='. urlencode($redirect);
+        }
+
+        if ($cookieTest !== $cookieVerify) {
+            Session::destroy();
+            $this->simpleRedirectToMain(_kt('You must have cookies enabled to use the document management system.'), $url, $queryParams);
+            exit(0);
+        }
+
+        // check for a location to forward to
+        if (!empty($redirect)) {
+            $url = $redirect;
+            // else redirect to the dashboard if there is none
+        }
+        else {
+            $url = KTUtil::kt_url();
+
+            $config = KTConfig::getSingleton();
+            $redirectToBrowse = $config->get('KnowledgeTree/redirectToBrowse', false);
+            $redirectToDashboardList = $config->get('KnowledgeTree/redirectToBrowseExceptions', '');
+
+            if ($redirectToBrowse) {
+                $exceptionsList = explode(',', str_replace(' ','',$redirectToDashboardList));
+                $user = User::get($_SESSION['userID']);
+                $username = $user->getUserName();
+                $url .= (in_array($username, $exceptionsList))?'/dashboard.php':'/browse.php';
+            }
+            else {
+                $url .=  '/dashboard.php';
+            }
+        }
+
+        exit(redirect($url));
+    }
+
+    private function relocate($location)
+    {
+        // make sure to set referrer to local (does not appear to work)
+        header("Referer: {$_SERVER['HTTP_HOST']}");
+        // TODO use redirectTo instead?
+        header("Location: {$location}");
+        exit(0);
     }
 
 }

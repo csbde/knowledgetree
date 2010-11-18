@@ -61,14 +61,19 @@ class sharedUserBrowseView extends browseView
 	 */
 	public function getFolderContent($folderId, $sortField = 'title', $asc = true)
 	{
-		$oUser = User::get($_SESSION['userID']);
+		$user_id = $_SESSION['userID'];
+		$oUser = User::get($user_id);
+		$disabled = $oUser->getDisabled();
+		
 		$oSharedContent = new SharedContent();
-		$aSharedContent = $oSharedContent->getUsersSharedContents($oUser->getId(), $folderId);
+		$aSharedContent = $oSharedContent->getUsersSharedContents($user_id, $folderId);
 		$ret = array(	'folders' => array(),
 						'documents'=>array()
 					);
 		foreach ($aSharedContent['documents'] as $item)
 		{
+			$item['user_id'] = $user_id;
+			$item['user_disabled'] = $disabled;
 			$item['item_type'] = 'D';
 			$item['version'] = $item['major_version'] . '.' .$item['minor_version'];
 			$ret['documents'][] = $this->browseViewItems($item, $folderId);
@@ -99,9 +104,8 @@ class sharedUserBrowseView extends browseView
 
 	public function renderDocumentItem($item = null, $empty = false, $shortcut = false) {
 	 	$fileNameCutoff = 100;
-	 	$user = User::get($_SESSION['userID']);
 	 	$ns = ' not_supported';
-		$permissions = SharedContent::canAccessDocument($user->getId(), $item['id'], null, 1);
+		$permissions = SharedContent::canAccessDocument($item['user_id'], $item['id'], null, 1);
 		$hasCheckedOut = ($_SESSION['userID'] == $item['checked_out_by']);
 		// Icons
 		$iconFile = 'resources/mimetypes/newui/' . KTMime::getIconPath($item['mimetypeid']) . '.png';
@@ -127,7 +131,7 @@ class sharedUserBrowseView extends browseView
 		    $item['actions.checkin'] = ($item['object_permissions'] == 0) ? $ns : ($item['is_checked_out'] == 0 ? $ns : '');
 			$item['actions.cancel_checkout'] = ($item['object_permissions'] == 0) ? $ns : ($item['is_checked_out'] == 0 ? $ns : '');
 		}
-		else if ($user->getDisabled() == 4) {
+		else if ($item['user_disabled'] == 4) {
 		    // check permissions on parent folder if document not present in shared content for user
 		    $item['actions.checkout'] = ($permissions == false) ? $ns : $item['checked_out_date'] ? '' : $ns;
 		    $item['actions.checkin'] = ($permissions == false) ? $ns : (($item['is_checked_out'] == 0) ? '' : $ns);
@@ -384,7 +388,10 @@ class browseView {
 	 * @return mixed $ret
 	 */
 	public function getFolderContent($folderId, $sortField = 'title', $asc = true) {
-		$oUser = User::get($_SESSION['userID']);
+		$user_id = $_SESSION['userID'];
+		$oUser = User::get($user_id);
+		$disabled = $oUser->getDisabled();
+		
 		$kt = new KTAPI(3);
 		$session=$kt->start_system_session($oUser->getUsername());
 
@@ -397,7 +404,8 @@ class browseView {
 			foreach ($item as $key => $value) {
 				if ($value == 'n/a') { $item[$key] = null; }
 			}
-
+			$item['user_id'] = $user_id;
+			$item['user_disabled'] = $disabled;
 			$item['container_folder_id'] = $folderId;
 
 			switch($item['item_type']) {
@@ -620,11 +628,11 @@ class browseView {
 		$item['separatorE']='';
 		if(!$hasWrite){
 		    $item['actions.change_owner'] = $ns;
+		    $item['actions.share_document'] = $ns;
 			$item['actions.finalize_document'] = $ns;
-			$item['actions.share_document'] = $ns;
 			$item['separatorE']=$ns;
 		}
-
+		
 		$item['separatorA'] = $item['actions.copy'] == '' ? '' : $ns;
 		$item['separatorB'] = $item['actions.download'] == '' || $item['actions.instantview'] == '' ? '' : $ns;
 		$item['separatorC'] = $item['actions.checkout'] == '' || $item['actions.checkin'] == '' || $item['actions.cancel_checkout']== '' ? '' : $ns;
@@ -712,7 +720,7 @@ class browseView {
 								<!-- li class="actionIcon comments"></li -->
 								<li class="actionIcon actions">
 									<ul>
-										<li class="[actions.share_document]"><a href="#" onclick="javascript:kt.app.inviteusers.showInviteWindow([id],\'[item_type]\');">Share This Document</a></li>
+										<li class="[actions.share_document]"><a href="#" onclick="javascript:kt.app.inviteusers.showInviteWindow(\'[id]\',\'[item_type]\',\'[user_id]\');">Share This Document</a></li>
 										<li class="separator[separatorE]"></li>
 										<li class="[actions.download]"><a href="action.php?kt_path_info=ktcore.actions.document.view&fDocumentId=[id]">Download</a></li>
 										<li class="[actions.instant_view]"><a href="[document_link]#preview">Instant View</a></li>
@@ -810,7 +818,7 @@ class browseView {
 						<ul class="folder actionMenu">
 							<li class="actionIcon actions">
 									<ul>
-                                        <li class="[actions.share_folder]"><a href="#" onclick="javascript:kt.app.inviteusers.showInviteWindow([id],\'[item_type]\');">Share This Folder</a></li>
+                                        <li class="[actions.share_folder]"><a href="#" onclick="javascript:kt.app.inviteusers.showInviteWindow(\'[id]\',\'[item_type]\',\'[user_id]\');">Share This Folder</a></li>
                                         <li class="[actions.rename]"><a href="action.php?kt_path_info=ktcore.actions.folder.rename&fFolderId=[id]">Rename Folder</a></li>
                                         <li class="[actions.permissions]"><a href="action.php?kt_path_info=ktcore.actions.folder.permissions&fFolderId=[id]">Permissions</a></li>
                                         <!-- <li class="[actions.subscribe]"><a href="#" onclick=\'alert("JavaScript to be modified")\'>Subscribe to Folder</a></li> -->

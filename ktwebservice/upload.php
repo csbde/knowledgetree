@@ -127,7 +127,7 @@ foreach($_FILES as $key =>$file)
 	$tempfile=$file['tmp_name'];
 
 	$error=$file['error'];
-    $extra = $filename.'-'.$tempfile.'-'.$error;
+    $extra = urlencode($filename).'-'.$tempfile.'-'.$error;
 	if ($error == UPLOAD_ERR_OK)
 	{
 		$result = $upload_manager->uploaded($filename, $tempfile, $action, $unique_file_id);
