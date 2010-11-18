@@ -47,6 +47,12 @@ class LdapGroupManager {
     // TODO proper error returns, I suppose these will have to be PEAR errors as that's
     //      what the rest of the system expects...
     //      these error returns to replace the "return false;" statements
+    /**
+     * Search groups, using the supplied filter
+     *
+     * @param string $filter
+     * @return iterator object $groups
+     */
     public function searchGroups($filter)
     {
         $groups = array();
@@ -67,6 +73,8 @@ class LdapGroupManager {
             echo $e->getMessage() . " [$dn]";
         }
         
+        // NOTE groups (on successful retrieval) is an iterator object and can be used with foreach() or next()
+        //      on failed retrieval it will be an empty array
         return $groups;
     }
 
