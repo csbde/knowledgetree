@@ -69,7 +69,7 @@ class NewUserLoginDispatcher extends KTDispatcher {
         // Get the user status flag
         // 0: live; 1: disabled; 2: deleted; 3: invited; 4: shared
         $disabled = $user->getDisabled();
-        
+
         // Check the number of available licenses (but not for shared users)
         if (KTPluginUtil::pluginIsActive('ktdms.wintools')) {
             $path = KTPluginUtil::getPluginPath('ktdms.wintools');
@@ -85,7 +85,7 @@ class NewUserLoginDispatcher extends KTDispatcher {
 
         $fullname = '';
         $username = isset($_REQUEST['username']) ? $_REQUEST['username'] : $user->getEmail();
-        
+
         // perform specific actions for values other than 3 (3 should go on to use the code following the switch)
         switch ($disabled) {
             case 1:
@@ -101,7 +101,7 @@ class NewUserLoginDispatcher extends KTDispatcher {
                 break;
             }
             case 4: {
-                // check if the user has previously logged in (they will have a user name and password,) 
+                // check if the user has previously logged in (they will have a user name and password,)
                 // if so drop through to default, else break and continue with script
                 if (($user->getName() == '') || ($user->getPassword() == '')) {
                     break;
@@ -185,7 +185,7 @@ class NewUserLoginDispatcher extends KTDispatcher {
             'fullname' => $fullname,
             'username' => $username
         );
-        
+
         return $oTemplate->render($aTemplateData);
     }
 
@@ -212,6 +212,7 @@ class NewUserLoginDispatcher extends KTDispatcher {
 
         $rootUrl = $default->rootUrl;
         $redirect = '/browse.php';
+        /*
         if (KTPluginUtil::pluginIsActive('gettingstarted.plugin')) {
 
             // Set the first login pref to prevent redirecting to getting started again
@@ -224,7 +225,8 @@ class NewUserLoginDispatcher extends KTDispatcher {
             $uri = str_replace(KT_DIR, '', $path);
             $redirect = $uri . 'GettingStarted.php';
         }
-        
+        */
+
         redirect($rootUrl . $redirect);
         exit;
     }
