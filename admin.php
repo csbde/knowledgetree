@@ -121,9 +121,14 @@ class AdminSplashDispatcher extends KTAdminDispatcher {
 
         $oRegistry =& KTAdminNavigationRegistry::getSingleton();
         $aCategory = $oRegistry->getCategory($category);
-
         $aItems = $oRegistry->getItemsForCategory($category);
-        asort($aItems);
+
+        if(count($aItems) == 1){
+            // skip the list of admin pages and go direct to the first / only page
+            $url = KTUtil::ktLink('admin.php', $aItems[0]['fullname']);
+            redirect($url);
+        }
+
         $this->aBreadcrumbs[] = array('name' => $aCategory['title'], 'url' => KTUtil::ktLink('admin.php',$category));
 
         $this->oPage->title = _kt('Settings') . ': ' . $aCategory['title'];
