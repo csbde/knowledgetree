@@ -47,6 +47,7 @@ class AuthenticationDispatcher extends KTDispatcher {
     function do_main()
     {
         global $default;
+        unset($_SERVER['HTTP_REFERER']);
 
         // TODO move this code to within the plugin?  may wish to share it between methods if we add more auth methods?
         // dispatch based on received authentication content
@@ -73,6 +74,7 @@ class AuthenticationDispatcher extends KTDispatcher {
 				        // redirect to login screen with appropriate error
 				        header('Location: login.php?errorMessage=Login+failed.++Please+check+your+onelogin+username+and+try+again.');
 				    }
+				    
 				    $session = new Session();
 				    $sessionID = $session->create($user);
 				    if (PEAR::isError($sessionID)) {
@@ -87,7 +89,6 @@ class AuthenticationDispatcher extends KTDispatcher {
                     // add a flag to check for bulk downloads after login is succesful; this will be cleared in the code which checks
 				    $_SESSION['checkBulkDownload'] = true;
 
-
 				    // DEPRECATED initialise page-level authorisation array
 				    $_SESSION['pageAccess'] = null;
 
@@ -95,11 +96,7 @@ class AuthenticationDispatcher extends KTDispatcher {
 				    $cookietest = KTUtil::randomString();
 				    setcookie('CookieTestCookie', $cookietest, 0);
 
-				    $this->redirectTo('checkCookie', array(
-				    'cookieVerify' => $cookietest,
-				    'redirect' => $redirect,
-				    ));
-				    
+				    $this->redirectTo('checkCookie', array('cookieVerify' => $cookietest, 'redirect' => $redirect));
 				    exit(0);
 				}
 				else {

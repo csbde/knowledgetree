@@ -147,7 +147,6 @@ class AdminSplashDispatcher extends KTAdminDispatcher {
 }
 
 $sub_url = KTUtil::arrayGet($_SERVER, 'PATH_INFO');
-
 $sub_url = trim($sub_url);
 $sub_url= trim($sub_url, '/');
 
