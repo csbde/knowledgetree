@@ -444,6 +444,13 @@ class KTStandardDispatcher extends KTDispatcher {
 				$this->planDenied();
                 exit(0);
         	}
+        	
+        	$this->oUser =& User::get($_SESSION['userID']);
+        	if(in_array($this->oUser->getDisabled(), $this->aCannotView))
+        	{
+				$this->permissionDenied();
+                exit(0);
+        	}
         }
         
         if ($this->check() !== true) {

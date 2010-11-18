@@ -54,9 +54,10 @@ $sectionName = 'dashboard';
 
 class DashboardDispatcher extends KTStandardDispatcher {
 
-    var $notifications = array();
-    var $sHelpPage = 'ktcore/dashboard.html';
-
+    public $notifications = array();
+    public $sHelpPage = 'ktcore/dashboard.html';
+	public $aCannotView = array(4);
+	
     function DashboardDispatcher() {
         $this->aBreadcrumbs = array(
             array('action' => 'dashboard', 'name' => _kt('Dashboard')),
