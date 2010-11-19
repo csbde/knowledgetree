@@ -574,6 +574,13 @@ class siteapi extends client_service{
 
         $this->addResponse('invitedUsers', json_encode($response));
     }
+    
+    public function hasWrite($params)
+    {
+        $response = array('hasWrite'=> 0);
+
+        $this->addResponse('data', json_encode($response));
+    }
 }
 
 ?>

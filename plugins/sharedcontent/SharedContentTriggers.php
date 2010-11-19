@@ -67,7 +67,7 @@ class KTAddSharedContentObjectTrigger {
      * @return unknown
      */
     function postValidate() {
-		$oSharedContent = new SharedContent($this->oUser->getID(), $this->oFolder->getID(), $this->sType, 1);
+		$oSharedContent = new SharedContent($this->oUser->getID(), $_SESSION['userID'], $this->oFolder->getID(), $this->sType, 1);
 		if(!$oSharedContent->exists())
 		{
 			$res = $oSharedContent->create();
@@ -111,7 +111,7 @@ class KTDeleteSharedContentObjectTrigger {
      * @return unknown
      */
     function postValidate() {
-		$oSharedContent = new SharedContent($this->oUser->getID(), $this->oFolder->getID(), $this->sType, 1);
+		$oSharedContent = new SharedContent($this->oUser->getID(), $_SESSION['userID'], $this->oFolder->getID(), $this->sType, 1);
 		if(!$oSharedContent->exists())
 		{
 			$res = $oSharedContent->delete();

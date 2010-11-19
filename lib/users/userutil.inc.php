@@ -242,16 +242,18 @@ class KTUserUtil {
 		// Add shared content entry.
 		require_once(KT_LIB_DIR . '/render_helpers/sharedContent.inc');
 		$object_type = ($object_type == 'F') ? 'folder' : 'document';
-		$oSharedContent = new SharedContent($user_id, $object_id, $object_type, $permission);
-		if(!$oSharedContent->exists())
+		$oSharedContent = new SharedContent($user_id, $_SESSION['userID'], $object_id, $object_type, $permission);
+		// Check for existsing object and delete if it exists.
+		if($oSharedContent->exists())
 		{
-			$res = $oSharedContent->create();
-			if (!$res)
-			{
-				$default->log->error("Failed sharing " . ($object_type == 'F') ? "folder" : " file " . " $object_id with invited user id $user_id.");
-			}
+			$oSharedContent->delete();
 		}
-		
+		$res = $oSharedContent->create();
+		if (!$res)
+		{
+			$default->log->error("Failed sharing " . ($object_type == 'F') ? "folder" : " file " . " $object_id with invited user id $user_id.");
+		}
+
     }
     /**
      * Check how many licenses are available in the system.

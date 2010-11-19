@@ -46,7 +46,7 @@ class KTPlugin {
     var $iOrder = 0;
     var $sFriendlyName = null;
     var $sSQLDir = null;
-    
+
     var $autoRegister = false;
     var $showInAdmin = true;
 
@@ -153,13 +153,13 @@ class KTPlugin {
     }
 
 //registerLocation($sName, $sClass, $sCategory, $sTitle, $sDescription, $sDispatcherFilePath = null, $sURL = null)
-    function registerAdminPage($sName, $sClass, $sCategory, $sTitle, $sDescription, $sFilename) {
+    function registerAdminPage($sName, $sClass, $sCategory, $sTitle, $sDescription, $sFilename, $sURL = null, $order = 0) {
         $sFullname = $sCategory . '/' . $sName;
         $sFilename = $this->_fixFilename($sFilename);
         $this->_aAdminPages[$sFullname] = array($sName, $sClass, $sCategory, $sTitle, $sDescription, $sFilename, null, $this->sNamespace);
 
         // Register helper in DB
-        $params = $sName.'|'.$sClass.'|'.$sCategory.'|'.$sTitle.'|'.$sDescription.'|'.$sFilename.'|'.null.'|'.$this->sNamespace;
+        $params = $sName.'|'.$sClass.'|'.$sCategory.'|'.$sTitle.'|'.$sDescription.'|'.$sFilename.'|'.null.'|'.$this->sNamespace .'|'. $order;
         $this->registerPluginHelper($sFullname, $sClass, $sFilename, $params, 'general', 'admin_page');
     }
 
@@ -320,7 +320,7 @@ class KTPlugin {
         $params = $sClassname.'|'.$sNamespace.'|'.$sPath;
         $this->registerPluginHelper($sNamespace, $sClassname, $sPath, $params, 'process', 'processor');
     }
-    
+
     /**
      * Register search criteria for a plugin
      * See Search2/search/fieldRegistry.inc.php

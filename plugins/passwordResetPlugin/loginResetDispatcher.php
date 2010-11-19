@@ -428,13 +428,14 @@ class loginResetDispatcher extends KTDispatcher {
                 $exceptionsList = explode(',', str_replace(' ','',$redirectToDashboardList));
                 $user = User::get($_SESSION['userID']);
                 $username = $user->getUserName();
-                $url .= (in_array($username, $exceptionsList))?'/dashboard.php':KTUtil::buildUrl('/browse.php');
+                $url .= (in_array($username, $exceptionsList)) ? '/dashboard.php' : KTUtil::buildUrl('/browse.php');
             }
             else
             {
                 $url .=  '/dashboard.php';
             }
         }
+        
         exit(redirect($url));
     }
 
