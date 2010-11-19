@@ -41,6 +41,8 @@ require_once(KT_LIB_DIR . '/database/dbutil.inc');
 require_once(KT_LIB_DIR . '/ktentity.inc');
 require_once(KT_LIB_DIR . '/foldermanagement/Folder.inc');
 require_once(KT_LIB_DIR . '/documentmanagement/Document.inc');
+require_once(KT_LIB_DIR . '/users/User.inc');
+require_once(KT_PLUGIN_DIR . '/comments/comments.php');
 
 class SharedContent extends KTEntity {
     
@@ -52,6 +54,7 @@ class SharedContent extends KTEntity {
 
     public $_aFieldToSelect = array(
         'iUserId' => 'user_id',
+        'iSystemUserId' => 'system_user_id',
         'iObjectId' => 'object_id',
         'sType' => 'type',
         'iPermissions' => 'permissions',
@@ -60,9 +63,10 @@ class SharedContent extends KTEntity {
     
     public $_bUsePearError = true;
     
-	public function __construct($iUserId, $iObjectId, $sType, $iPermissions, $iParentObjectId = null)
+	public function __construct($iUserId, $iSystemUserId, $iObjectId, $sType, $iPermissions, $iParentObjectId = null)
     {
 		$this->iUserId = $iUserId;
+		$this->iSystemUserId = $iSystemUserId;
 		$this->iObjectId = $iObjectId;
 		$this->sType = $sType;
 		$this->iPermissions = $iPermissions;
@@ -96,9 +100,10 @@ class SharedContent extends KTEntity {
     	}
     	// Create shared content object
     	$res = parent::create();
-    	// Check if shared object
     	if($res)
     	{
+    		// If this was a folder object delete all shared documents in that folder,
+    		// As they will inherit permissions from the parent folder
     		if($this->sType == 'folder')
     		{
     			$aDocumentsInFolder = explode(',', Folder::getDocumentIDs($this->iObjectId));
@@ -109,6 +114,15 @@ class SharedContent extends KTEntity {
     					$this->deleteDocument($doc);
     				}
     			}
+    		}
+    		else if($this->sType == 'document')
+    		{
+    			// Add a comment
+    			$oFromUser = User::get($this->iSystemUserId);
+    			$oWithUser = User::get($this->iUserId);
+    			$username = $oFromUser->getUserName();
+    			$sharedname = $oWithUser->getUserName();
+    			Comments::add_comment($this->iObjectId, "$username has shared this document with $sharedname");
     		}
     	}
     }
