@@ -50,6 +50,7 @@ class LdapAuthProvider extends KTAuthenticationProvider {
     public $sNamespace = 'ldap.auth.provider';
     public $sAuthClass = 'LdapAuthenticator';
     public $oLDAPUser = null;
+    public $bGroupSource = true;
     private $configMap;
 
     public function __construct()
@@ -61,6 +62,35 @@ class LdapAuthProvider extends KTAuthenticationProvider {
             'searchuser' => _kt('Search User'),
             'searchpwd' => _kt('Search Password')
         );
+    }
+    
+    public function do_main()
+    {
+        $event = strip_tags($_REQUEST[$this->event_var]);
+        $proposedMethod = sprintf('%s_%s', $this->action_prefix, $event);
+        
+        // attempt to map to an event in one of the associated classes if there is
+        // no method available in the current class.
+        if (method_exists($this, $proposedMethod)) {
+            return $this->$proposedMethod;
+        }
+        
+        $oLDAPDispatcher = null;
+        $checkMethod = preg_replace('/^add|create|delete|edit/i', '', $event);
+        if (preg_match('/^user/i', $checkMethod)) {
+            require_once('ldapUserDispatcher.php');
+            $oLDAPDispatcher = new ldapUserDispatcher();
+        }
+        else if (preg_match('/^group/i', $checkMethod)) {
+            require_once('ldapGroupDispatcher.php');
+            $oLDAPDispatcher = new ldapGroupDispatcher();
+        }
+        
+        if (is_object($oLDAPDispatcher)) {
+            return $oLDAPDispatcher->$proposedMethod();
+        }
+        
+        return null;
     }
 
     /**
@@ -140,7 +170,8 @@ class LdapAuthProvider extends KTAuthenticationProvider {
      * @param KTAuthenticationSource $oSource
      * @return string
      */
-    public function showSource($oSource) {
+    public function showSource($oSource)
+    {
         $config = unserialize($oSource->getConfig());
 
         $output = '';
@@ -152,7 +183,8 @@ class LdapAuthProvider extends KTAuthenticationProvider {
         return $output;
     }
 
-    public function getAuthenticator($oSource) {
+    public function getAuthenticator($oSource)
+    {
         return new $this->sAuthClass($oSource);
     }
 
