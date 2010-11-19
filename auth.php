@@ -115,7 +115,31 @@ class AuthenticationDispatcher extends KTDispatcher {
         $this->relocate('login.php?errorMessage=Login+failed.++Please+check+your+username+and+password%2C+and+try+again.');
     }
     
-    function do_checkCookie()
+    public function check()
+    {
+        $oKTConfig = KTConfig::getSingleton();
+        $this->session = new Session();
+        $sessionStatus = $this->session->verify();
+        if ($sessionStatus === true) { // the session is valid
+            // User is already logged in - get the redirect
+            $redirect = strip_tags(KTUtil::arrayGet($_REQUEST, 'redirect'));
+
+            $cookietest = KTUtil::randomString();
+            setcookie("CookieTestCookie", $cookietest, 0);
+
+            $this->redirectTo('checkCookie', array(
+            'cookieVerify' => $cookietest,
+            'redirect' => $redirect,
+            ));
+            exit(0);
+            // The old way -> doesn't take the redirect into account
+            //exit(redirect(generateControllerLink('dashboard')));
+        }
+
+        return true;
+    }
+    
+    public function do_checkCookie()
     {
         $cookieTest = KTUtil::arrayGet($_COOKIE, "CookieTestCookie", null);
         $cookieVerify = KTUtil::arrayGet($_REQUEST, 'cookieVerify', null);
