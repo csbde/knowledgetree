@@ -53,7 +53,6 @@ class ldapUserDispatcher extends KTStandardDispatcher
 	
 	function setManager($oSource)
 	{
-		
     	$oLDAPAuth = $this->getAuthenticator($oSource);
     	$this->manager = new ldapUserManager($oLDAPAuth);		
 	}

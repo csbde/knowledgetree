@@ -3,9 +3,14 @@ require_once('ldapManager.php');
 
 class LdapUserManager extends LdapManager {
 	
-	public function LdapUserManager($oSource)
+	public function __construct($oSource)
 	{
-		parent::LdapManager($oSource);
+		parent::__construct($oSource);
+	}
+	
+	public function __destruct()
+	{
+	    parent::__destruct();
 	}
 	
     // TODO proper error returns, I suppose these will have to be PEAR errors as that's
