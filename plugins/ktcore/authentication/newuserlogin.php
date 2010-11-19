@@ -176,6 +176,7 @@ class NewUserLoginDispatcher extends KTDispatcher {
 
         $rootUrl = $default->rootUrl;
         $redirect = '/browse.php';
+	/*
         if (KTPluginUtil::pluginIsActive('gettingstarted.plugin')) {
 
             // Set the first login pref to prevent redirecting to getting started again
@@ -188,6 +189,7 @@ class NewUserLoginDispatcher extends KTDispatcher {
             $uri = str_replace(KT_DIR, '', $path);
             $redirect = $uri . 'GettingStarted.php';
         }
+	*/
         redirect($rootUrl . $redirect);
         exit;
     }
