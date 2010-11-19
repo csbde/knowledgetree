@@ -147,7 +147,7 @@ kt.app.inviteusers=new function(){
     // ENTRY POINT: Calling this function will set up the environment, display the dialog,
     //              and hook up the AjaxUploader callbacks to the correct functions.
     // objectId, if set, identifies a share with a non-licensed user for a selected object (folder or document)
-    this.showInviteWindow = function(objectId, objectType) {
+    this.showInviteWindow = function(objectId, objectType, userId) {
         var inviteWin = new Ext.Window({
             id              : 'extinvitewindow',
             layout          : 'fit',
@@ -173,7 +173,8 @@ kt.app.inviteusers=new function(){
         	document.getElementById('object.id').value = objectId;
         	document.getElementById('object.type').value = objectType;
         }
-        
+        // Call to check permissions on object.
+        // kt.api.hasWrite(objectId, objectType, userId, function() {}, function(){});
 	    self.disableInviteButton();
     }
 

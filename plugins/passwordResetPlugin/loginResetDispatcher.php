@@ -125,6 +125,12 @@ class loginResetDispatcher extends KTDispatcher {
             $sDisclaimer = $oPlugin->getLoginDisclaimer();
         }
 
+        $js = array();
+        $css = array();
+        $js[] = '/thirdpartyjs/extjs/adapter/ext/ext-base.js';
+        $js[] = '/thirdpartyjs/extjs/ext-all.js';
+        $css[] = '/thirdpartyjs/extjs/resources/css/ext-all.css';
+
         // Include additional js and css files if plugin
         $oPlugin =& $oRegistry->getPlugin('password.reset.plugin');
 
@@ -422,13 +428,14 @@ class loginResetDispatcher extends KTDispatcher {
                 $exceptionsList = explode(',', str_replace(' ','',$redirectToDashboardList));
                 $user = User::get($_SESSION['userID']);
                 $username = $user->getUserName();
-                $url .= (in_array($username, $exceptionsList))?'/dashboard.php':KTUtil::buildUrl('/browse.php');
+                $url .= (in_array($username, $exceptionsList)) ? '/dashboard.php' : KTUtil::buildUrl('/browse.php');
             }
             else
             {
                 $url .=  '/dashboard.php';
             }
         }
+        
         exit(redirect($url));
     }
 

@@ -51,6 +51,7 @@ require_once(KT_LIB_DIR . "/templating/templating.inc.php");
 require_once(KT_LIB_DIR . "/session/control.inc");
 require_once(KT_LIB_DIR . "/util/ktVar.php");
 require_once(KT_DIR . '/search2/search/search.inc.php');
+require_once(KT_LIB_DIR . "/users/shareduserutil.inc.php");
 
 class KTPage {
     var $hide_section = false;
@@ -176,7 +177,10 @@ class KTPage {
     	$sBaseUrl = KTUtil::kt_url();
 
     	$this->menu = array();
-    	$this->menu['dashboard'] = array('label' => _kt("Dashboard"), 'url' => $sBaseUrl.'/dashboard.php');
+    	if(!SharedUserUtil::isSharedUser())
+    	{
+    		$this->menu['dashboard'] = array('label' => _kt("Dashboard"), 'url' => $sBaseUrl.'/dashboard.php');
+    	}
 		$this->menu['browse'] = array('label' => _kt("Browse All Documents"), 'url' => $sBaseUrl.'/browse.php');
     	if(ACCOUNT_ROUTING_ENABLED) {
     		$sLiveUrl = KTLiveUtil::ktlive_url();

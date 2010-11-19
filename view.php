@@ -1,7 +1,7 @@
 <?php
 /**
  * $Id$
- *
+ *	
  * KnowledgeTree Community Edition
  * Document Management Made Simple
  * Copyright (C) 2008, 2009, 2010 KnowledgeTree Inc.
@@ -67,6 +67,7 @@ class sharedViewDocumentDispatcher extends KTStandardDispatcher
     public $sSection = 'view_details';
     public $sHelpPage = 'ktcore/browse.html';
     public $actions;
+    private $oSharedUserActions = null;
     
 	public function __construct()
 	{
@@ -86,7 +87,6 @@ class sharedViewDocumentDispatcher extends KTStandardDispatcher
         return true;
     }
     
-
     // FIXME identify the current location somehow.
     public function addPortlets($currentaction = null) {
         $currentaction = $this->sName;
@@ -137,7 +137,7 @@ class sharedViewDocumentDispatcher extends KTStandardDispatcher
         {
             $this->oPage->addError(_kt('This document has been deleted.'));
             return $this->do_error();
-        } else if (!SharedContent::canViewDocument($this->oUser->getId(), $document_id, $oDocument->getFolderID())) 
+        } else if (!SharedContent::canAccessDocument($this->oUser->getId(), $document_id, $oDocument->getFolderID())) 
         {
             $this->oPage->addError(_kt('You are not allowed to view this document'));
             return $this->permissionDenied();
@@ -185,8 +185,6 @@ class sharedViewDocumentDispatcher extends KTStandardDispatcher
             $field_values[$oFieldLink->getDocumentFieldID()] = $oFieldLink->getValue();
         }
 
-        //var_dump($field_values);
-
         $document_data['field_values'] = $field_values;
 
         // Fieldset generation.
@@ -227,7 +225,7 @@ class sharedViewDocumentDispatcher extends KTStandardDispatcher
                 }
             }
         }
-
+		$bCanEdit = SharedContent::canAccessDocument($this->oUser->getId(), $document_id, $oDocument->getFolderID());
         // viewlets.
         $aViewlets = array();
         $aViewletActions = KTDocumentActionUtil::getDocumentActionsForDocument($this->oDocument, $this->oUser, 'documentviewlet');
@@ -274,6 +272,7 @@ class sharedViewDocumentDispatcher extends KTStandardDispatcher
 			'sCheckoutUser' => $checkout_user,
 			'isCheckoutUser' => ($this->oUser->getId() == $oDocument->getCheckedOutUserId()),
 			'canCheckin' => $bCanCheckin,
+			'canEdit' => $bCanEdit,
 			'document_id' => $document_id,
 			'document' => $oDocument,
 			'documentName' => $oDocument->getName(),
@@ -538,7 +537,7 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
                 }
             }
         }
-
+		$bCanEdit = true;
         // viewlets.
         $aViewlets = array();
         $aViewletActions = KTDocumentActionUtil::getDocumentActionsForDocument($this->oDocument, $this->oUser, 'documentviewlet');
@@ -585,6 +584,7 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
 			'sCheckoutUser' => $checkout_user,
 			'isCheckoutUser' => ($this->oUser->getId() == $oDocument->getCheckedOutUserId()),
 			'canCheckin' => $bCanCheckin,
+			'bCanEdit' => $bCanEdit,
 			'document_id' => $document_id,
 			'document' => $oDocument,
 			'documentName' => $oDocument->getName(),
@@ -823,29 +823,26 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
  */
 class viewUtil
 {
-    static function getSingleton() 
+    static function getView() 
     {
-    	static $singleton = null;
     	$oUser = User::get($_SESSION['userID']);
     	$userType = $oUser->getDisabled();
     	switch ($userType)
     	{
     		case 0 :
-    			$singleton = new ViewDocumentDispatcher();
+    			return new ViewDocumentDispatcher();
     			break;
     		case 4 :
-    			$singleton = new sharedViewDocumentDispatcher();
+    			return new sharedViewDocumentDispatcher();
     			break;
     		default:
-    			$singleton = new ViewDocumentDispatcher();
+    			return new ViewDocumentDispatcher();
     			break;
     	}
-
-    	return $singleton;
 	}
 }
 
-$oDispatcher = viewUtil::getSingleton();
+$oDispatcher = viewUtil::getView();
 $oDispatcher->dispatch();
 
 ?>

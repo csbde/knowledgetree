@@ -17,7 +17,6 @@ class webAjaxHandler{
 	protected $errors=array();
 
 	public function __construct(&$response=NULL,&$kt){
-		
 		//========================= Preparations
 		// set the response object
 		if(get_class($response)=='jsonResponseObject'){
@@ -26,44 +25,32 @@ class webAjaxHandler{
 			$this->ret=new jsonResponseObject();
 		}
 		$this->ret->location='webajaxhandler';
-
-		$this->remoteIp = (getenv(HTTP_X_FORWARDED_FOR)) ?  getenv(HTTP_X_FORWARDED_FOR)  :  getenv(REMOTE_ADDR);
-
+		$this->remoteIp = (getenv('HTTP_X_FORWARDED_FOR')) ?  getenv('HTTP_X_FORWARDED_FOR')  :  getenv('REMOTE_ADDR');
 		$this->rawRequestObject=isset($_GET['request'])?$_GET['request']:(isset($_POST['request'])?$_POST['request']:'');
-		
 		$this->ret->addDebug("php version",PHP_VERSION);
-		
-		
-		
 		//========================= 1. Parse Json
 		$this->req=new jsonWrapper($this->rawRequestObject);
 		$this->auth=$this->structArray('session,token',$this->req->jsonArray['auth']);
 		$this->request=$this->structArray('service,function,parameters',$this->req->jsonArray['request']);
-		
-
 		$this->ret->addDebug('Raw Request',$this->rawRequestObject);
-
 		//Add additional parameters
 		$add_params=array_merge($_GET,$_POST);
 		unset($add_params['request'],$add_params['datasource']);
 		$this->request['parameters']=array_merge($this->request['parameters'],$add_params);
 		$this->parameters=$this->request['parameters'];
-		
 		if(!$this->auth['debug'])$this->ret->includeDebug=false;
-		
 		$this->ret->setRequest($this->req->jsonArray);
 		$this->ret->setTitle($this->request['service'].'::'.$this->request['function']);
 		$this->ret->setDebug('Server Versions',$this->getServerVersions());
 		$this->ret->setDebug('Using Version',$this->getLatestServiceVersion());
-		
 		if(get_class($kt)=='KTAPI'){
 			$this->kt=&$kt;
 		}else{
 			$this->ret->addError('KnowledgeTree Object not Received in '.__CLASS__.' constructor. Quitting.');
 			return $this->render();
 		}
-
 		$this->dispatch();
+		
 		return $this->render();
 	}
 	

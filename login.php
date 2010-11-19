@@ -57,7 +57,7 @@ class LoginPageDispatcher extends KTDispatcher {
         $this->session = new Session();
         $sessionStatus = $this->session->verify();
         if ($sessionStatus === true) { // the session is valid
-            if ($_SESSION['userID'] == -2 && $oKTConfig->get('allowAnonymousLogin', false)) {
+            if (($_SESSION['userID'] == -2) && ($oKTConfig->get('allowAnonymousLogin', false))) {
                 ; // that's ok - we want to login.
             }
             else {

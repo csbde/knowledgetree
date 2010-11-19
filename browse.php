@@ -128,23 +128,36 @@ class BrowseDispatcher extends KTStandardDispatcher {
 			}
 
 			// check whether the user can edit this folder
-			$oPerm = KTPermission::getByName('ktcore.permissions.write');
-			if (KTPermissionUtil::userHasPermissionOnItem($this->oUser, $oPerm, $oFolder)) {
+			if(SharedUserUtil::isSharedUser())
+			{
 				$this->editable = true;
-			} else {
-				$this->editable = false;
 			}
-
+			else 
+			{
+				$oPerm = KTPermission::getByName('ktcore.permissions.write');
+				if (KTPermissionUtil::userHasPermissionOnItem($this->oUser, $oPerm, $oFolder)) {
+					$this->editable = true;
+				} else {
+					$this->editable = false;
+				}
+			}
+			
 			// set the title and breadcrumbs...
 			$this->oPage->setTitle(_kt('Browse'));
-
-			if (KTPermissionUtil::userHasPermissionOnItem($this->oUser, 'ktcore.permissions.folder_details', $oFolder)) {
-				$this->oPage->setSecondaryTitle($oFolder->getName());
-			} else {
-				if (KTBrowseUtil::inAdminMode($this->oUser, $oFolder)) {
-					$this->oPage->setSecondaryTitle(sprintf('(%s)', $oFolder->getName()));
+			if(SharedUserUtil::isSharedUser())
+			{
+				
+			}
+			else 
+			{
+				if (KTPermissionUtil::userHasPermissionOnItem($this->oUser, 'ktcore.permissions.folder_details', $oFolder)) {
+					$this->oPage->setSecondaryTitle($oFolder->getName());
 				} else {
-					$this->oPage->setSecondaryTitle('...');
+					if (KTBrowseUtil::inAdminMode($this->oUser, $oFolder)) {
+						$this->oPage->setSecondaryTitle(sprintf('(%s)', $oFolder->getName()));
+					} else {
+						$this->oPage->setSecondaryTitle('...');
+					}
 				}
 			}
 
@@ -152,11 +165,11 @@ class BrowseDispatcher extends KTStandardDispatcher {
 			//If we came here from a shortcut, the breadcrumbspath should be relative
 			//to the shortcut folder.
 			$iSymLinkFolderId = KTUtil::arrayGet($_REQUEST, 'fShortcutFolder', null);
-			if(is_numeric($iSymLinkFolderId)){
+			if(is_numeric($iSymLinkFolderId)) {
 				$oBreadcrumbsFolder = Folder::get($iSymLinkFolderId);
 				$this->aBreadcrumbs = kt_array_merge($this->aBreadcrumbs, KTBrowseUtil::breadcrumbsForFolder($oBreadcrumbsFolder,array('final' => false)));
 				$this->aBreadcrumbs[] = array('name'=>$oFolder->getName());
-			}else{
+			} else {
 				$this->aBreadcrumbs = kt_array_merge($this->aBreadcrumbs, KTBrowseUtil::breadcrumbsForFolder($oFolder));
 			}
 			$this->oFolder =& $oFolder;
@@ -180,14 +193,9 @@ class BrowseDispatcher extends KTStandardDispatcher {
 			$aActions = KTFolderActionUtil::getFolderActionsForFolder($oFolder, $this->oUser);
 			$portlet->setActions($aActions,null);
 			$this->oPage->addPortlet($portlet);
-
-
-
 		} else if ($this->browse_mode == 'lookup_value') {
 			// browsing by a lookup value
-
 			$this->editable = false;
-
 			// check the inputs
 			$field = KTUtil::arrayGet($_REQUEST, 'fField', null);
 			$oField = DocumentField::get($field);
@@ -201,12 +209,9 @@ class BrowseDispatcher extends KTStandardDispatcher {
 				$this->errorRedirectToMain('No Value selected.');
 				exit(0);
 			}
-
-
 			$this->oQuery = new ValueBrowseQuery($oField, $oValue);
 			$this->resultURL = KTUtil::addQueryString($_SERVER['PHP_SELF'],
 			sprintf('fBrowseMode=lookup_value&fField=%d&fValue=%d', $field, $value));
-
 			// setup breadcrumbs
 			$this->aBreadcrumbs =
 			array(
@@ -216,13 +221,8 @@ class BrowseDispatcher extends KTStandardDispatcher {
                             'url' => KTUtil::addQueryString($_SERVER['PHP_SELF'], 'action=selectLookup&fField=' . $oField->getId())),
 			array('name' => $oValue->getName(),
                             'url' => KTUtil::addQueryString($_SERVER['PHP_SELF'], sprintf('fBrowseMode=lookup_value&fField=%d&fValue=%d', $field, $value))));
-
-
-
 		} else if ($this->browse_mode == 'document_type') {
 			// browsing by document type
-
-
 			$this->editable = false;
 			$doctype = KTUtil::arrayGet($_REQUEST, 'fType',null);
 			$oDocType = DocumentType::get($doctype);
@@ -250,8 +250,8 @@ class BrowseDispatcher extends KTStandardDispatcher {
 
 	function do_main() {
 		//Client-side pagination options
-		$pageCount=1;
-		$perPage=15;
+		$pageCount = 1;
+		$perPage = 15;
 
 		// Prepare Multi-File Actions
 		$aBulkActions = KTBulkActionUtil::getAllBulkActions();
@@ -273,13 +273,13 @@ class BrowseDispatcher extends KTStandardDispatcher {
 
 		if ($this->oFolder) { // ?don't quite know why this is in here. Someone reports that it is there for search browsing which seem to be disabled
 			// Source the BrowseView Renderer
-			$renderHelper=browseViewUtil::getSingleton();
+			$renderHelper=browseViewUtil::getBrowseView();
 
 			// Add Return folder id for the multi-file actions
 			$aTemplateData['returndata'] = $this->oFolder->getId();
 
 			// Render the Bulk Action Menu
-			$aTemplateData['bulkActionMenu']=$renderHelper->renderBulkActionMenu($aBulkActions);
+			$aTemplateData['bulkActionMenu']=$renderHelper->renderBulkActionMenu($aBulkActions, $this->oFolder);
 
 			// Get all the files/folders in the given folder
 			$folderContentItems=$renderHelper->getFolderContent($this->oFolder->getId());

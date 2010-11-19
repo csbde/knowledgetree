@@ -37,6 +37,7 @@
  */
 
 require_once(KT_LIB_DIR . '/users/User.inc');
+require_once(KT_LIB_DIR . '/util/ktutil.inc');
 
 class KTUserUtil {
 
@@ -138,7 +139,9 @@ class KTUserUtil {
     	// loop through any addresses that currently exist and unset them in the invitee list
     	$addressList = array_flip($addressList);
     	foreach ($inSystemList as $item) {
-    	    unset($addressList[$item['email']]);
+//    	    if ($type != 'shared') {
+    	        unset($addressList[$item['email']]);
+//    	    }
     	    $existingUsers[] = $item;
     	}
     	$addressList = array_flip($addressList);
@@ -222,11 +225,20 @@ class KTUserUtil {
     	}
 
     	$response = array('invited' => $numInvited, 'existing' => $existing, 'failed' => $failed, 'group' => $groupName, 'type' => $type, 'check' => $check);
-
-    	foreach ($existingUsers as $existingUser)
-    	{    		
-    		self::addSharedContent($existingUser['id'], $shareContent['object_id'], $shareContent['object_type'], $shareContent['permission']);
+    	
+    	// Send invitation to existing users
+    	if (($type == 'shared') && !empty($existingUsers)) {
+    	    foreach ($existingUsers as $existingUser) {
+    	        self::addSharedContent($existingUser['id'], $shareContent['object_id'], $shareContent['object_type'], $shareContent['permission']);
+    	    }
+			// Send a sharing notification to existing users.
+			if($shareContent['object_type'] == 'D')
+			{
+				self::sendNotifications($existingUsers, $shareContent['object_id']);
+			}
     	}
+    	
+    	// 
 
     	return $response;
     }
@@ -237,16 +249,18 @@ class KTUserUtil {
 		// Add shared content entry.
 		require_once(KT_LIB_DIR . '/render_helpers/sharedContent.inc');
 		$object_type = ($object_type == 'F') ? 'folder' : 'document';
-		$oSharedContent = new SharedContent($user_id, $object_id, $object_type, $permission);
-		if(!$oSharedContent->exists())
+		$oSharedContent = new SharedContent($user_id, $_SESSION['userID'], $object_id, $object_type, $permission);
+		// Check for existsing object and delete if it exists.
+		if($oSharedContent->exists())
 		{
-			$res = $oSharedContent->create();
-			if (!$res)
-			{
-				$default->log->error("Failed sharing " . ($object_type == 'F') ? "folder" : " file " . " $object_id with invited user id $user_id.");
-			}
+			$oSharedContent->delete();
 		}
-		
+		$res = $oSharedContent->create();
+		if (!$res)
+		{
+			$default->log->error("Failed sharing " . ($object_type == 'F') ? "folder" : " file " . " $object_id with invited user id $user_id.");
+		}
+
     }
     /**
      * Check how many licenses are available in the system.
@@ -267,6 +281,68 @@ class KTUserUtil {
         return 0;
     }
 
+    /**
+     * Create the unique url for the invite and send to the queue
+     *
+     * @param array $emailList Array of email addresses: format $list[] = array('id' => $id, 'email' => $email)
+     * @return bool
+     */
+    public static function sendNotifications($emailList, $docoumentId)
+    {
+        // Use the current user as the "inviter" / sender of the emails
+        // goes into the user array for use in the email
+        $oSender = User::get($_SESSION['userID']);
+
+        if (PEAR::isError($oSender) || empty($oSender)) {
+            $sender = 'KnowledgeTree';
+        } else {
+            $sender = $oSender->getName();
+        }
+
+        $list = array();
+        $server = KTUtil::kt_url();
+        $document_link = KTUtil::buildUrl("view.php", array('fDocumentId'=>$docoumentId));
+        $link = $server . $document_link;
+        require_once(KT_LIB_DIR . '/documentmanagement/Document.inc');
+		$oDocument = Document::get($docoumentId);
+        foreach ($emailList as $item) { 
+            $list[] = array(	'name' => '', 
+            					'email' => $item['email'], 
+            					'sender' => $sender, 
+            					'link' => $link, 
+            					'title'=>$oDocument->getName()
+            				);
+        }
+
+        if (empty($list)) {
+            return true;
+        }
+
+        global $default;
+
+        $default->log->debug('Invited keys '. json_encode($list));
+        $emailFrom = $default->emailFrom;
+
+        if (ACCOUNT_ROUTING_ENABLED) {
+            // dispatch queue event
+            require_once(KT_LIVE_DIR . '/sqsqueue/dispatchers/queueDispatcher.php');
+            $params = array();
+            $params['subject'] = _kt('KnowledgeTree Invitation');
+            $params['content_html'] = 'email/notifications/shared-user-content.html';
+            $params['sender'] = array($emailFrom => 'KnowledgeTree');
+            $params['recipients'] = $list;
+			$params['action'] = 'Send notification';
+			
+            $oQueueDispatcher = new queueDispatcher();
+        	$oQueueDispatcher->addProcess('mailer', $params);
+        	$res = $oQueueDispatcher->sendToQueue();
+
+        	return $res;
+        }
+        
+        return true;
+    }
+    
     /**
      * Create the unique url for the invite and send to the queue
      *
@@ -317,7 +393,8 @@ class KTUserUtil {
             $params['content_html'] = 'email/notifications/invite-user-content.html';
             $params['sender'] = array($emailFrom => 'KnowledgeTree');
             $params['recipients'] = $list;
-
+			$params['action'] = 'Send email invite';
+			
             $oQueueDispatcher = new queueDispatcher();
         	$oQueueDispatcher->addProcess('mailer', $params);
         	$res = $oQueueDispatcher->sendToQueue();
@@ -349,9 +426,9 @@ class KTUserUtil {
 
         $list = implode("', '", $addresses);
 
-        // Filter out deleted users
+        // Filter out deleted users (2) and shared users (4)
         $sql = "SELECT u.id, u.name, u.email, u.disabled FROM users u
-                WHERE email IN ('{$list}') AND disabled !=2;";
+                WHERE email IN ('{$list}') AND disabled != 2";
 
         $result = DBUtil::getResultArray($sql);
 

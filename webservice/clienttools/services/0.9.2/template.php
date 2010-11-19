@@ -7,7 +7,7 @@ define('FRAG_ROOT',realpath(dirname(__FILE__).DS.F_UP.F_UP.F_UP.F_UP.'templates'
 class template extends client_service{
 	
 	public function getFragment($params){
-		$fragment=FRAG_ROOT.DS.($params['name']).".html";
+		$fragment=FRAG_ROOT.DS.(isset($params['name']) ? $params['name'] : '').".html";
 		$content='';
 		if(is_file($fragment)){
 			if(is_readable($fragment)){
@@ -41,7 +41,7 @@ class template extends client_service{
 		$data=isset($params['data']) ? $params['data'] : array();
 		$data=is_array($data) ? $data : array();
 		$content='';
-		$fragment=FRAG_ROOT.DS.($params['name']).".php";
+		$fragment=FRAG_ROOT.DS.(isset($params['name']) ? $params['name'] : '').".php";
 		
 		if(is_file($fragment)){
 			if(is_readable($fragment)){

@@ -279,6 +279,9 @@ class thumbnailGenerator extends BaseProcessor
 class ThumbnailViewlet extends KTDocumentViewlet {
     var $sName = 'thumbnail.viewlets';
 
+	var $showIfWrite = true;
+	var $showIfRead = true;
+	
     public function display_viewlet() {
         // Get the document id
     	$documentId = $this->oDocument->getId();

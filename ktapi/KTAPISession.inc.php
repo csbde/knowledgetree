@@ -241,18 +241,18 @@ class KTAPI_UserSession extends KTAPI_Session
 	 */
 	function resolveIP()
 	{
-		if (getenv("REMOTE_ADDR"))
+		if (getenv('REMOTE_ADDR'))
 		{
-        	$ip = getenv("REMOTE_ADDR");
+        	$ip = getenv('REMOTE_ADDR');
         }
-        elseif (getenv("HTTP_X_FORWARDED_FOR"))
+        elseif (getenv('HTTP_X_FORWARDED_FOR'))
         {
-        	$forwardedip = getenv("HTTP_X_FORWARDED_FOR");
+        	$forwardedip = getenv('HTTP_X_FORWARDED_FOR');
             list($ip,$ip2,$ip3,$ip4)= split (",", $forwardedip);
         }
-        elseif (getenv("HTTP_CLIENT_IP"))
+        elseif (getenv('HTTP_CLIENT_IP'))
         {
-            $ip = getenv("HTTP_CLIENT_IP");
+            $ip = getenv('HTTP_CLIENT_IP');
         }
 
         if ($ip == '')
@@ -480,6 +480,9 @@ class KTAPI_UserSession extends KTAPI_Session
 
 
 	public function getCurrentBrowserSession(&$ktapi, $sessionId=NULL){
+		// TODO : Get ip
+		$ip = '';
+		$session = '';
 		$sessionId=$sessionId?$sessionId:session_id();
 		$sql = "SELECT id, user_id FROM active_sessions WHERE session_id='{$sessionId}'";
 		$row = DBUtil::getOneResult($sql);
@@ -501,7 +504,7 @@ class KTAPI_UserSession extends KTAPI_Session
         $now=date('Y-m-d H:i:s');
         $sql = "UPDATE active_sessions SET lastused='$now' WHERE id=$sessionid";
         DBUtil::runQuery($sql);
-
+		
         if ($user->isAnonymous())
 			$session = new KTAPI_AnonymousSession($ktapi, $user, $session, $sessionid, $ip);
         else

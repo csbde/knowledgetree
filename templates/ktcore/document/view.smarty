@@ -47,7 +47,7 @@
 					
 					<li class="page_properties" title="Properties">
 						<table class="kt_collection" style="clear: both;"><tr><td>
-							{if $hasNotifications}
+							{if ($hasNotifications & bCanEdit)}
 								<div class="notification">
 								
 									{if ($document->getIsCheckedOut() & $canCheckin)}
