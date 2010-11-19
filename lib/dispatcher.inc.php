@@ -217,7 +217,6 @@ class KTDispatcher {
     function redirectTo($event, $sQuery = "") {
         // meld persistant options
         $sQuery = $this->meldPersistQuery($sQuery, $event);
-
         $sRedirect = KTUtil::addQueryString($_SERVER['PHP_SELF'], $sQuery);
         $this->oRedirector->redirect($sRedirect);
         exit(0);
