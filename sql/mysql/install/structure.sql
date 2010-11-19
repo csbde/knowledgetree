@@ -1465,6 +1465,7 @@ CREATE TABLE `search_saved_events` (
 
 CREATE TABLE IF NOT EXISTS `shared_content` (
   `user_id` int(11) NOT NULL,
+  `system_user_id` int(11) NOT NULL,
   `object_id` int(11) NOT NULL,
   `type` enum('folder','document') NOT NULL DEFAULT 'document',
   `permissions` int(1) NOT NULL DEFAULT 0,
