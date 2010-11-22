@@ -45,9 +45,7 @@
 <div class="dropzone" id="datadrop">
 {/if}
 <div class="standardBorder itemContainer" style="min-width: 800px;">
-	{if ($isEditable)}
-		{$bulkActionMenu}
-	{/if}
+	{$bulkActionMenu}
 	{$folderContents}
 	<div style="width:100%; text-align: center">{$pagination}</div>
 </div>

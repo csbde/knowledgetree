@@ -39,7 +39,7 @@ class ajaxHandler{
 		}
 		$this->ret->location='ajaxhandler';
 
-		$this->remoteIp = (getenv(HTTP_X_FORWARDED_FOR)) ?  getenv(HTTP_X_FORWARDED_FOR)  :  getenv(REMOTE_ADDR);
+		$this->remoteIp = (getenv('HTTP_X_FORWARDED_FOR')) ?  getenv('HTTP_X_FORWARDED_FOR')  :  getenv('REMOTE_ADDR');
 
 		$noAuthRequests=is_array($noAuthRequests)?$noAuthRequests:split(',',(string)$noAuthRequests);
 		$this->registerNoAuthRequest($noAuthRequests);

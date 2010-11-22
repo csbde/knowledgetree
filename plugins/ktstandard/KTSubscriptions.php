@@ -113,10 +113,12 @@ class KTSubscriptionPortlet extends KTPortlet {
     }
 
     function render() {
-        if ($this->oDispatcher->oUser->isAnonymous()) {
+    	// TODO : 	This is a cheat.
+    	// 			Should abstract to point where this class is not even instantiated.
+        if ($this->oDispatcher->oUser->isAnonymous() || $this->oDispatcher->oUser->getDisabled() == 4)
+        {
             return null;
         }
-
         if($this->oDispatcher->oDocument){
             $oObject = $this->oDispatcher->oDocument;
             $type = 'documentsubscriptionaction';

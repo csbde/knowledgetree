@@ -40,7 +40,7 @@ class client_service{
 		$this->Response->overwriteData($value);
 	}
 
-	protected function addError($message,$code){
+	protected function addError($message,$code = ''){
 		$this->Response->addError($message,$code);
 	}
 	

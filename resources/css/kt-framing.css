@@ -545,6 +545,7 @@ a.main_nav_item {
     width: auto;
     overflow: hidden;
 	margin: 5px;
+	padding-top: 10px;
 }
 
 #content.view.withviewlets {

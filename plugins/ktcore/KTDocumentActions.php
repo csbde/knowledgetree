@@ -53,7 +53,7 @@ require_once(KT_LIB_DIR . "/util/sanitize.inc");
 // {{{ KTDocumentDetailsAction
 class KTDocumentDetailsAction extends KTDocumentAction {
     var $sName = 'ktcore.actions.document.displaydetails';
-
+	
     function do_main() {
         redirect(generateControllerLink('viewDocument',sprintf(_kt('fDocumentId=%d'),$this->oDocument->getId())));
         exit(0);
@@ -69,7 +69,7 @@ class KTDocumentDetailsAction extends KTDocumentAction {
 // {{{ KTDocumentHistoryAction
 class KTDocumentTransactionHistoryAction extends KTDocumentAction {
     var $sName = 'ktcore.actions.document.transactionhistory';
-
+	
     function getDisplayName() {
         return _kt('Transaction History');
     }
@@ -338,7 +338,9 @@ class KTDocumentVersionHistoryAction extends KTDocumentAction {
 class KTDocumentViewAction extends KTDocumentAction {
     var $sName = 'ktcore.actions.document.view';
     var $sIconClass = 'download';
-
+	var $showIfWrite = true;
+	var $showIfRead = true;
+	
     function getDisplayName() {
         return _kt('Download');
     }
@@ -360,21 +362,6 @@ class KTDocumentViewAction extends KTDocumentAction {
         $aOptions = array();
         $iVersion = KTUtil::arrayGet($_REQUEST, 'version');
         session_write_close();
-        if ($iVersion) {
-            $oVersion = KTDocumentContentVersion::get($iVersion);
-            $aOptions['version'] = sprintf('%d.%d', $oVersion->getMajorVersionNumber(), $oVersion->getMinorVersionNumber());
-            $res = $oStorage->downloadVersion($this->oDocument, $iVersion);
-        } else {
-            $res = $oStorage->download($this->oDocument);
-        }
-
-        if ($res === false) {
-            session_start();
-            $this->addErrorMessage(_kt('The file you requested is not available.'));
-            redirect(generateControllerLink('viewDocument',sprintf(_kt('fDocumentId=%d'),$this->oDocument->getId())));
-            exit(0);
-        }
-
         $oDocumentTransaction = & new DocumentTransaction($this->oDocument, _kt('Document downloaded'), 'ktcore.transactions.download', $aOptions);
         $oDocumentTransaction->create();
 
@@ -401,7 +388,22 @@ class KTDocumentViewAction extends KTDocumentAction {
             $oFolder = Folder::get($this->oDocument->getFolderID());
             $oSubscriptionEvent->DownloadDocument($this->oDocument, $oFolder);
         }
+        
+        if ($iVersion) {
+            $oVersion = KTDocumentContentVersion::get($iVersion);
+            $aOptions['version'] = sprintf('%d.%d', $oVersion->getMajorVersionNumber(), $oVersion->getMinorVersionNumber());
+            $res = $oStorage->downloadVersion($this->oDocument, $iVersion);
+        } else {
+            $res = $oStorage->download($this->oDocument);
+        }
 
+        if ($res === false) {
+            session_start();
+            $this->addErrorMessage(_kt('The file you requested is not available.'));
+            redirect(generateControllerLink('viewDocument',sprintf(_kt('fDocumentId=%d'),$this->oDocument->getId())));
+            exit(0);
+        }
+        
         exit(0);
     }
 }
@@ -417,6 +419,9 @@ class KTDocumentCheckOutAction extends KTDocumentAction {
     var $_bMutationAllowedByAdmin = false;
     var $sIconClass = 'checkout';
 
+	var $showIfWrite = true;
+	var $showIfRead = false;
+	
     function getDisplayName() {
         return _kt('Checkout');
     }
@@ -607,6 +612,9 @@ class KTDocumentCheckInAction extends KTDocumentAction {
     var $_sShowPermission = 'ktcore.permissions.write';
     var $sIconClass = 'checkin';
 
+	var $showIfWrite = true;
+	var $showIfRead = false;
+	
     function getDisplayName() {
         return _kt('Checkin');
     }
@@ -849,7 +857,10 @@ class KTDocumentCancelCheckOutAction extends KTDocumentAction {
     var $bAllowInAdminMode = true;
     var $bInAdminMode = null;
     var $sIconClass = 'cancel_checkout';
-
+    
+	var $showIfWrite = true;
+	var $showIfRead = false;
+	
     function getDisplayName() {
         return _kt('Cancel Checkout');
     }
@@ -1415,7 +1426,7 @@ class KTDocumentCopyAction extends KTDocumentAction {
     var $sName = 'ktcore.actions.document.copy';
 
     var $_sShowPermission = 'ktcore.permissions.read';
-
+	
     function getDisplayName() {
         return _kt('Copy');
     }
@@ -1643,7 +1654,9 @@ class KTDocumentArchiveAction extends KTDocumentAction {
     var $sName = 'ktcore.actions.document.archive';
     var $_sShowPermission = 'ktcore.permissions.write';
     var $_bMutator = false;
-
+	var $showIfWrite = false;
+	var $showIfRead = false;
+	
     function getDisplayName() {
         return _kt('Archive');
     }
@@ -1791,11 +1804,18 @@ class KTDocumentWorkflowAction extends KTDocumentAction {
 
     var $sHelpPage = 'ktcore/user/workflow.html';
 
+	var $showIfWrite = true;
+	var $showIfRead = false;
+	
     function predispatch() {
         $this->persistParams(array('fTransitionId'));
     }
 
     function getDisplayName() {
+        $oUser = User::get($_SESSION['userID']);
+        if (!KTPermissionUtil::userHasPermissionOnItem($oUser, 'ktcore.permissions.workflow', $this->oDocument)) {
+            return '';
+        }
         return _kt('Workflow');
     }
 

@@ -118,7 +118,7 @@ class DocumentTransaction extends KTEntity {
             $this->iUserID = $oUser->getID();
         }
 		$this->dDateTime = getCurrentDateTime();
-		$this->sIP = KTUtil::arrayGet($_SERVER, "REMOTE_ADDR", '0.0.0.0');
+		$this->sIP = KTUtil::arrayGet($_SERVER, 'REMOTE_ADDR', '0.0.0.0');
 
 		$oFolder = Folder::get($oDocument->getFolderID());
 		// head off the certain breakage down the line.

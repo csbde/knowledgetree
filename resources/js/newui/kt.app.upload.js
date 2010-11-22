@@ -440,22 +440,11 @@ kt.app.upload=new function(){
 	}
 	
 	this.unhideProgressWidget = function(){
-
-		//need to hide the license feedback widget
-		/*var activationNotice = document.getElementById('activationNotice');
-		if(activationNotice != null) {
-			activationNotice.style.visibility = 'hidden';
-			activationNotice.style.display = 'none';
-	    }*/		
-		
 		var progress = jQuery('.uploadProgress');
 		progress.removeClass('error');
 		progress.text('Adding files ...');
 		progress.css('display', 'block');
 		progress.css('visibility', 'visible');
-		
-		//jQuery('.uploadProgress .title').text('Adding files ...');
-		
 		progress.append('<img src="/resources/graphics/newui/large-loading.gif" style="float: right;"/>');
 	}
 	

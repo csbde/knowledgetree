@@ -53,8 +53,9 @@ require_once(KT_LIB_DIR . "/authentication/builtinauthenticationprovider.inc.php
 
 class KTGroupAdminDispatcher extends KTAdminDispatcher {
     // {{{ do_main
-    var $sHelpPage = 'ktcore/admin/manage groups.html';
-
+    public $sHelpPage = 'ktcore/admin/manage groups.html';
+	public $aCannotView = array('starter', 'professional');
+	
     function predispatch() {
         $this->aBreadcrumbs[] = array('url' => $_SERVER['PHP_SELF'], 'name' => _kt('Group Management'));
         $this->persistParams(array('old_search'));

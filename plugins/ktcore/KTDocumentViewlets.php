@@ -45,6 +45,9 @@ require_once(KT_DIR . '/plugins/comments/comments.php');
 class KTWorkflowViewlet extends KTDocumentViewlet {
     var $sName = 'ktcore.viewlets.document.workflow';
 
+	var $showIfWrite = true;
+	var $showIfRead = true;
+	
     function display_viewlet() {
         $oKTTemplating =& KTTemplating::getSingleton();
         $oTemplate =& $oKTTemplating->loadTemplate("ktcore/document/viewlets/workflow");
@@ -123,6 +126,9 @@ class KTWorkflowViewlet extends KTDocumentViewlet {
 class KTDocumentActivityFeedAction extends KTDocumentViewlet {
     var $sName = 'ktcore.viewlet.document.activityfeed';
 
+	var $showIfWrite = true;
+	var $showIfRead = true;
+	
     function display_viewlet() {
 
         $aTransactions = array();

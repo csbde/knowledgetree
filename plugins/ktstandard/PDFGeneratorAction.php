@@ -61,6 +61,9 @@ class PDFGeneratorAction extends KTDocumentAction {
             'odp', 'otp', 'sxi', 'sti', 'ppt', 'pot', 'sxd', 'odg',
             'otg', 'std', 'asc');
 
+	var $showIfRead = true;
+	var $showIfWrite = true;
+	
     function getDisplayName()
     {
         global $default;
