@@ -79,7 +79,7 @@ class ldapGroupDispatcher extends KTStandardDispatcher
             return $this->_do_createGroupFromSource();
         }
                 
-        $template = $this->oValidator->validateTemplate('ktstandard/authentication/ldapsearchgroup');
+        $template = $this->oValidator->validateTemplate('ldap_search_group');
 
         $fields = array();
         $fields[] = new KTStringWidget(_kt("Group's name"), _kt("The group's name, or part thereof, to find the group that you wish to add"), 'name', '', $this->oPage, true);
@@ -108,6 +108,7 @@ class ldapGroupDispatcher extends KTStandardDispatcher
     
     private function _do_editGroupFromSource()
     {
+        // TODO move this and other templates into the plugin directory
         $template = $this->oValidator->validateTemplate('ktstandard/authentication/ldapaddgroup');
         $id = KTUtil::arrayGet($_REQUEST, 'id');
         
