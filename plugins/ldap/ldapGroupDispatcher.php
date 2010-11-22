@@ -112,7 +112,12 @@ class ldapGroupDispatcher extends KTStandardDispatcher
         $id = KTUtil::arrayGet($_REQUEST, 'id');
         
         $manager = new LdapGroupManager($this->source);
-        $attributes = $manager->getGroup($id);
+        try {
+            $attributes = $manager->getGroup($id);
+        }
+        catch (Exception $e) {
+            // TODO deal with error conditions
+        }
 
         $fields = array();
         $fields[] = new KTStaticTextWidget(_kt('LDAP DN'), _kt('The location of the group within the LDAP directory.'), 'dn', $attributes['dn'], $this->oPage);
@@ -154,10 +159,9 @@ class ldapGroupDispatcher extends KTStandardDispatcher
             $this->errorRedirectToMain(_kt('failed to create group.'));
             exit(0);
         }
-
-        // TODO group synchronisation
-        /*$authenticator = $this->getAuthenticator($this->source);
-        $authenticator->synchroniseGroup($group);*/
+        
+        $manager = new LdapGroupManager($this->source);
+        $manager->synchroniseGroup($group);
 
         $this->successRedirectToMain(_kt('Created new group') . ': ' . $group->getName());
         exit(0);

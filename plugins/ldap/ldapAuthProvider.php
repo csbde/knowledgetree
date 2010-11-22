@@ -224,16 +224,17 @@ class LdapAuthProvider extends KTAuthenticationProvider {
 
 }
 
-require_once(KT_DIR . '/thirdparty/ZendFramework/library/Zend/Ldap.php');
+require_once('LdapGroupManager.php');
         
 class LdapAuthenticator extends Authenticator {
     
+    private $source;
     private $ldapConnector;
     
     public function __construct($oSource)
     {        
-        $oSource =& KTUtil::getObject('KTAuthenticationSource', $oSource);
-        $config = unserialize($oSource->getConfig());
+        $this->source =& KTUtil::getObject('KTAuthenticationSource', $oSource);
+        $config = unserialize($this->source->getConfig());
         
         // Connect to LDAP
         // TODO error conditions
@@ -291,6 +292,12 @@ class LdapAuthenticator extends Authenticator {
         catch (Exception $e) {
             return false;
         }
+    }
+    
+    public function synchroniseGroup($group)
+    {
+        $manager = new LdapGroupManager($this->source);
+        return $manager->synchroniseGroup($group);
     }
 
     public function getConnector()

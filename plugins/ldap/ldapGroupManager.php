@@ -51,22 +51,53 @@ class LdapGroupManager extends LdapManager {
         return $groups;
     }
     
-    public function getGroup($dn, $attributes = null)
+    public function getGroup($dn, $attributes = null, $throwOnNotFound = true)
     {
         if (empty($attributes)) {
             $attributes = array('cn');
         }
 
         try {
-            // Third argument specifies to throw exception on error, else would return null
-            $attributes = $this->ldapConnector->getEntry($dn, $attributes, true);
+            // Third argument specifies to throw exception on error if true, else would return null
+            $attributes = $this->ldapConnector->getEntry($dn, $attributes, $throwOnNotFound);
         }
         catch (Exception $e) {
-            // TODO wrap in PEAR error for the rest of the system
-            return $e->getMessage();
+            // wrap in PEAR error for the rest of the system which expects that format
+            return new PEAR_Error($e->getMessage());
         }
 
         return $attributes;
+    }
+    
+    public function synchroniseGroup($group)
+    {
+        $group =& KTUtil::getObject('Group', $group);
+        $dn = $group->getAuthenticationDetails();
+        try {
+            $attributes = $this->getGroup($dn, array('member'));
+        }
+        catch (Exception $e) {
+            // wrap in PEAR error for the rest of the system which expects that format
+            return new PEAR_Error($e->getMessage());
+        }
+        
+        $members = KTUtil::arrayGet($attributes, 'member', array());
+        if (!is_array($members)) {
+            $members = array($members);
+        }
+        
+        $userIds = array();
+        foreach ($members as $member) {
+            $userId = User::getByAuthenticationSourceAndDetails($this->oSource, $member, array('ids' => true));
+            if (PEAR::isError($userId)) {
+                continue;
+            }
+            $userIds[] = $userId;
+        }
+        
+        $group->setMembers($userIds);
+        
+        return null;
     }
 
 }
