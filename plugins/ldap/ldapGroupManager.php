@@ -43,6 +43,7 @@ class LdapGroupManager extends LdapManager {
         }
         catch (Exception $e) {
             // TODO logging and remove the echo statement
+            // TODO return which reliably indicates to calling code whether there was an error (empty response is not enough)
             echo $e->getMessage() . " [$dn]";
         }
         
