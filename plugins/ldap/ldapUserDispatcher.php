@@ -47,52 +47,49 @@ require_once(KT_PLUGIN_DIR . '/ktstandard/ldap/ldapauthenticationprovider.inc.ph
 
 require_once('ldapUserManager.php');
 
-class ldapUserDispatcher extends KTStandardDispatcher 
-{
-	public $manager = null;
-	
-	function setManager($oSource)
-	{
-    	$oLDAPAuth = $this->getAuthenticator($oSource);
-    	$this->manager = new ldapUserManager($oLDAPAuth);		
-	}
-	
-    function addUserFromSource() 
+class ldapUserDispatcher extends KTStandardDispatcher {
+
+    private $source;
+
+    public function __construct()
     {
-		$aSearchResults = "";
-		$fields = array();
-		// Get source id
-		$sSourceId = KTUtil::arrayGet($_REQUEST, 'source_id', false);
-		// Get the search query
-		$name = KTUtil::arrayGet($_REQUEST, 'ldap_name');
-		$oSource = KTAuthenticationSource::get($sSourceId);
-		if(!is_null($name))
-		{
-			$this->setManager($oSource);
-			$aSearchResults = $this->manager->search($name);
-		}
+        $this->source = KTAuthenticationSource::get($_REQUEST['source_id']);
+        parent::KTStandardDispatcher();
+    }
+
+    public function do_addUserFromSource()
+    {
+        $searchResults = '';
+        $fields = array();
+        // Get source id
+        $sourceId = KTUtil::arrayGet($_REQUEST, 'source_id', false);
+        // Get the search query
+        $name = KTUtil::arrayGet($_REQUEST, 'ldap_name');
+        $source = KTAuthenticationSource::get($sourceId);
+
+        if(!is_null($name)) {
+            $manager = new LdapUserManager($this->source);
+            $searchResults = $manager->search($name);
+        }
+
         $fields[] = new KTStringWidget(_kt("User's name"), _kt("The user's name, or part thereof, to find the user that you wish to add"), 'ldap_name', '', $this->oPage, true);
-        $fields[] = new KTCheckboxWidget(_kt("Mass import"),
-        _kt("Allow for multiple users to be selected to be added (will not get to manually verify the details if selected)").'.<br>'.
+        $fields[] = new KTCheckboxWidget(_kt('Mass import'),
+        _kt('Allow for multiple users to be selected to be added (will not get to manually verify the details if selected)').'.<br>'.
         _kt('The list may be long and take some time to load if the search is not filtered and there are a number of users in the system.')
         , 'massimport', $isMassImport, $this->oPage, true);
-        
-        $oTemplating = KTTemplating::getSingleton();
-        $oTemplate = $oTemplating->loadTemplate('ldap_search_user');
-        $aTemplateData = array(
-            'context' => $this,
-            'fields' => $fields,
-            'source' => $oSource,
-            'search_results' => $aSearchResults,
+
+        $templating = KTTemplating::getSingleton();
+        $template = $templating->loadTemplate('ldap_search_user');
+        $templateData = array(
+        'context' => $this,
+        'fields' => $fields,
+        'source' => $this->source,
+        'search_results' => $searchResults,
         );
-        
-        return  $oTemplate->render($aTemplateData);
-        
+
+        return  $template->render($templateData);
+
     }
-    
-    function getAuthenticator($oSource) {
-        return new KTLDAPAuthenticator($oSource);
-    }
-    
+
 }
 ?>

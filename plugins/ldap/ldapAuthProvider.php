@@ -187,14 +187,6 @@ class LdapAuthProvider extends KTAuthenticationProvider {
     {
         return new $this->sAuthClass($oSource);
     }
-
-    public function do_addUserFromSource()
-    {
-    	require_once('ldapUserDispatcher.php');
-    	$oLDAPUserDispatcher = new ldapUserDispatcher();
-    	
-    	return $oLDAPUserDispatcher->addUserFromSource();
-    }
     
     /**
      * Returns the fields to be used for the provider info

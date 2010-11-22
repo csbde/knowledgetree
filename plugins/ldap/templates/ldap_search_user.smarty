@@ -44,7 +44,7 @@ begin.{/i18n}</p>
 {else}
         <td><input type="radio" name="id" value="{$potential_user.dn}" /></td>
 {/if}
-	<td>{$potential_user.cn}</td>
+	<td>{$potential_user.cn[0]}</td>
         <td>{$potential_user.dn}</td>
      </tr>
      {/foreach}

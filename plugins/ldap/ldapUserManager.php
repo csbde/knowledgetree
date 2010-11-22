@@ -3,9 +3,9 @@ require_once('ldapManager.php');
 
 class LdapUserManager extends LdapManager {
 	
-	public function __construct($oSource)
+	public function __construct($source)
 	{
-		parent::__construct($oSource);
+		parent::__construct($source);
 	}
 	
 	public function __destruct()
