@@ -57,7 +57,7 @@ class DashboardDispatcher extends KTStandardDispatcher {
     public $notifications = array();
     public $sHelpPage = 'ktcore/dashboard.html';
 	public $aCannotView = array(4);
-	
+
     function DashboardDispatcher() {
         $this->aBreadcrumbs = array(
             array('action' => 'dashboard', 'name' => _kt('Dashboard')),
@@ -84,9 +84,9 @@ class DashboardDispatcher extends KTStandardDispatcher {
         $aDashlets = $oDashletRegistry->getDashlets($this->oUser);
 
         $this->sSection = 'dashboard';
-        //$this->oPage->setBreadcrumbDetails(_kt('Home'));
-        //$this->oPage->title = _kt('Dashboard');
-        $this->oPage->hideSection();
+        $this->oPage->setBreadcrumbDetails(_kt('Home'));
+        $this->oPage->title = _kt('Dashboard');
+        //$this->oPage->hideSection();
 
         // simplistic improvement over the standard rendering:  float half left
         // and half right.  +Involves no JS -can leave lots of white-space at the bottom.
