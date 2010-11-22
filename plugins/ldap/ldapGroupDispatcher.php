@@ -50,32 +50,28 @@ require_once('ldapGroupManager.php');
 class ldapGroupDispatcher extends KTStandardDispatcher 
 {
     private $source;
-	private $manager;
-	
-	/*private function setManager()
-	{
-     	$this->manager = new ldapGroupManager($this->source);
-	}*/
-	
-	/*public function __construct()
-	{
-	    parent::KTStandardDispatcher();
-	}*/
+    
+    public function __construct()
+    {
+        $this->source = KTAuthenticationSource::get($_REQUEST['source_id']);
+        parent::KTStandardDispatcher();
+    }
 	
 	// TODO I think this can stand some more refactoring, because it looks like some stuff is done regardless of which action is chosen
     public function do_addGroupFromSource()
-    {
+    {        
         $submit = KTUtil::arrayGet($_REQUEST, 'submit');
         if (!is_array($submit)) {
             $submit = array();
         }
-        $this->source = KTAuthenticationSource::get($_REQUEST['source_id']);
+        
         if (KTUtil::arrayGet($submit, 'chosen')) {
             $id = KTUtil::arrayGet($_REQUEST, 'id');
             if (!empty($id)) {
                 return $this->_do_editGroupFromSource();
-            } else {
-                $this->oPage->addError(_kt("No valid LDAP group chosen"));
+            }
+            else {
+                $this->oPage->addError(_kt('No valid LDAP group chosen'));
             }
         }
         
@@ -92,7 +88,7 @@ class ldapGroupDispatcher extends KTStandardDispatcher
         if (!empty($name)) {
             $manager = new ldapGroupManager($this->source);
             $searchResults = $manager->searchGroups($name);
-
+            
             if (PEAR::isError($searchResults)) {
                 $this->addErrorMessage($searchResults->getMessage());
                 $searchResults = array();
@@ -113,24 +109,21 @@ class ldapGroupDispatcher extends KTStandardDispatcher
     private function _do_editGroupFromSource()
     {
         $template = $this->oValidator->validateTemplate('ktstandard/authentication/ldapaddgroup');
-        $source =& KTAuthenticationSource::get($_REQUEST['source_id']);
         $id = KTUtil::arrayGet($_REQUEST, 'id');
-
-        $aConfig = unserialize($source->getConfig());
-
-        $authenticator = $this->getAuthenticator($source);
-        $attributes = $authenticator->getGroup($id);
+        
+        $manager = new LdapGroupManager($this->source);
+        $attributes = $manager->getGroup($id);
 
         $fields = array();
         $fields[] = new KTStaticTextWidget(_kt('LDAP DN'), _kt('The location of the group within the LDAP directory.'), 'dn', $attributes['dn'], $this->oPage);
-        $fields[] = new KTStringWidget(_kt('Group Name'), sprintf(_kt('The name the group will enter to gain access to %s.  e.g. <strong>accountants</strong>'), APP_NAME), 'ldap_groupname', $attributes['cn'], $this->oPage, true);
+        $fields[] = new KTStringWidget(_kt('Group Name'), sprintf(_kt('The name the group will enter to gain access to %s.  e.g. <strong>accountants</strong>'), APP_NAME), 'ldap_groupname', $attributes['cn'][0], $this->oPage, true);
         $fields[] = new KTCheckboxWidget(_kt('Unit Administrators'), _kt('Should all the members of this group be given <strong>unit</strong> administration privileges?'), 'is_unitadmin', false, $this->oPage, false);
         $fields[] = new KTCheckboxWidget(_kt('System Administrators'), _kt('Should all the members of this group be given <strong>system</strong> administration privileges?'), 'is_sysadmin', false, $this->oPage, false);
 
         $templateData = array(
             'context' => &$this,
             'fields' => $fields,
-            'source' => $source,
+            'source' => $this->source,
             'search_results' => $searchResults,
             'dn' => $attributes['dn'],
         );
@@ -140,37 +133,35 @@ class ldapGroupDispatcher extends KTStandardDispatcher
     
     private function _do_createGroupFromSource()
     {
-        $source =& KTAuthenticationSource::get($_REQUEST['source_id']);
         $dn = KTUtil::arrayGet($_REQUEST, 'dn');
         $name = KTUtil::arrayGet($_REQUEST, 'ldap_groupname');
-        if (empty($name)) { $this->errorRedirectToMain(_kt('You must specify a name for the group.')); }
+        if (empty($name)) {
+            $this->errorRedirectToMain(_kt('You must specify a name for the group.'));
+        }
 
-        $is_unitadmin = KTUtil::arrayGet($_REQUEST, 'is_unitadmin', false);
-        $is_sysadmin = KTUtil::arrayGet($_REQUEST, 'is_sysadmin', false);
+        $isUnitAdmin = KTUtil::arrayGet($_REQUEST, 'is_unitadmin', false);
+        $isSysAdmin = KTUtil::arrayGet($_REQUEST, 'is_sysadmin', false);
 
         $group =& Group::createFromArray(array(
-            "name" => $name,
-            "isunitadmin" => $is_unitadmin,
-            "issysadmin" => $is_sysadmin,
-            "authenticationdetails" => $dn,
-            "authenticationsourceid" => $source->getId(),
+            'name' => $name,
+            'isunitadmin' => $isUnitAdmin,
+            'issysadmin' => $isSysAdmin,
+            'authenticationdetails' => $dn,
+            'authenticationsourceid' => $this->source->getId(),
         ));
 
         if (PEAR::isError($group) || ($group == false)) {
-            $this->errorRedirectToMain(_kt("failed to create group."));
+            $this->errorRedirectToMain(_kt('failed to create group.'));
             exit(0);
         }
 
-        $authenticator = $this->getAuthenticator($source);
-        $authenticator->synchroniseGroup($group);
+        // TODO group synchronisation
+        /*$authenticator = $this->getAuthenticator($this->source);
+        $authenticator->synchroniseGroup($group);*/
 
         $this->successRedirectToMain(_kt('Created new group') . ': ' . $group->getName());
         exit(0);
     }
-    
-    /*private function getAuthenticator($source) {
-        return new KTLDAPAuthenticator($source);
-    }*/
     
 }
 ?>

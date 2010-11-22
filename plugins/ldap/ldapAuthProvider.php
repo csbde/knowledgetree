@@ -75,19 +75,19 @@ class LdapAuthProvider extends KTAuthenticationProvider {
             return $this->$proposedMethod;
         }
         
-        $oLDAPDispatcher = null;
-        $checkMethod = preg_replace('/^add|create|delete|edit/i', '', $event);
+        $ldapDispatcher = null;
+        $checkMethod = preg_replace('/^add|create|delete|edit|update/i', '', $event);
         if (preg_match('/^user/i', $checkMethod)) {
             require_once('ldapUserDispatcher.php');
-            $oLDAPDispatcher = new ldapUserDispatcher();
+            $ldapDispatcher = new ldapUserDispatcher();
         }
         else if (preg_match('/^group/i', $checkMethod)) {
             require_once('ldapGroupDispatcher.php');
-            $oLDAPDispatcher = new ldapGroupDispatcher();
+            $ldapDispatcher = new ldapGroupDispatcher();
         }
         
-        if (is_object($oLDAPDispatcher)) {
-            return $oLDAPDispatcher->$proposedMethod();
+        if (is_object($ldapDispatcher)) {
+            return $ldapDispatcher->$proposedMethod();
         }
         
         return null;

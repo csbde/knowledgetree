@@ -50,6 +50,24 @@ class LdapGroupManager extends LdapManager {
         //      on failed retrieval it will be an empty array
         return $groups;
     }
+    
+    public function getGroup($dn, $attributes = null)
+    {
+        if (empty($attributes)) {
+            $attributes = array('cn');
+        }
+
+        try {
+            // Third argument specifies to throw exception on error, else would return null
+            $attributes = $this->ldapConnector->getEntry($dn, $attributes, true);
+        }
+        catch (Exception $e) {
+            // TODO wrap in PEAR error for the rest of the system
+            return $e->getMessage();
+        }
+
+        return $attributes;
+    }
 
 }
 

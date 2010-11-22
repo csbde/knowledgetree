@@ -36,7 +36,7 @@ begin.{/i18n}</p>
      {foreach item=potential_group from=$search_results}
      <tr>
         <td><input type="radio" name="id"
-value="{$potential_group.dn}" />{$potential_group.cn}</td>
+value="{$potential_group.dn}" />{$potential_group.cn[0]}</td>
         <td>{$potential_group.dn}</td>
      </tr>
      {/foreach}
