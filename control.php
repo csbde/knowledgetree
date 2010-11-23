@@ -46,7 +46,7 @@ if(!$iu->isSystemInstalled()) {
 }
 // main library routines and defaults
 require_once('config/dmsDefaults.php');
-
+require_once(KT_LIB_DIR . '/util/ktutil.inc');
 /**
  * Controller page -- controls the web application by responding to a set of
  * defined actions.  The controller performs session handling, page-level
@@ -113,14 +113,22 @@ if ($action != 'login') {
 
 // we appear to have some encoding/decoding issues, so we need to force-check for %30 type situations
 $queryString = KTUtil::arrayGet($_REQUEST, 'qs', '');
+$queryStringArray = array();
 if (is_array($queryString)) {
     $aStrings = array();
     foreach ($queryString as $k => $v) {
         $aStrings[] = $k . '=' . $v;
+		$queryStringArray[$k] = $v;
     }
     $queryString = join('&', $aStrings);
 } elseif (count(preg_match('#\%#', $queryString) != 0)) {
     $queryString = urldecode($queryString);
+	
+	$arr = explode('=', $queryString);
+	
+	if (count($arr) > 0) {
+		$queryStringArray[$arr[0]] = $arr[1];
+	}
 }
 
 if (empty($queryString)) {
@@ -158,19 +166,27 @@ if (!$page) {
     // strip querystring from the page returned from the sitemap
     // before setting page authorisation flag (since checkSession checks page level
     // access by checking $_SESSION["pageAccess"][$_SERVER["PHP_SELF"] ie. without querystring(?)
-
-    $paramStart=strpos($page, '?');
-    if ($paramStart !== false) {
-        $accessPage = substr($page, 0, $paramStart);
-    } else {
-        $accessPage = $page;
-    }
-    $_SESSION['pageAccess'][$accessPage] = true;
-    // if we have a querystring add it on
-    if (strlen($queryString) > 0) {
-    	$page .= ($paramStart !== false)?'&':'?';
-    	$page .= $queryString;
-        $default->log->info("control.php: about to redirect to $page");
+	
+	$cleanUrlPages = array("/browse.php", "/view.php");
+	
+	if (in_array($page, $cleanUrlPages)) {
+		$page = KTUtil::buildUrl($page, $queryStringArray);
+		$default->log->info("control.php: about to redirect to $page");
+	} else {
+		$paramStart=strpos($page, '?');
+		if ($paramStart !== false) {
+			$accessPage = substr($page, 0, $paramStart);
+		} else {
+			$accessPage = $page;
+		}
+		$_SESSION['pageAccess'][$accessPage] = true;
+		// if we have a querystring add it on
+		if (strlen($queryString) > 0) {
+			$page .= ($paramStart !== false)?'&':'?';
+			$page .= $queryString;
+			$default->log->info("control.php: about to redirect to $page");
+		}
+		
     }
     redirect($page);
 }
