@@ -281,7 +281,7 @@ class ajaxHandler{
 	}
 	
 	protected function checkCredentials(){
-		$user=$this->auth['user'];
+		$user=strtolower($this->auth['user']);
 		$passHash=$this->auth['passhash'];
 		
 		$kt=$this->kt;
@@ -329,8 +329,7 @@ class ajaxHandler{
 			if (PEAR::isError($userNameObj)) {
 				// Session does not exist, will be created later.
 			} else {
-				
-				if ($userNameObj->getUsername() == $user) {
+				if (strtolower($userNameObj->getUsername()) == $user) {
 					return TRUE;
 				} else {
 					return FALSE;

@@ -282,6 +282,11 @@ class KTPage {
     }
 
     // list the distinct CSS resources.
+    function getCSSExternal() {
+        return array_keys($this->css_external);
+    }
+
+    // list the distinct CSS resources.
     function getThemeCSSResources() {
         return array_keys($this->theme_css_resources);
     }
@@ -296,6 +301,10 @@ class KTPage {
 
     function requireCSSStandalone($sCSS) {
         $this->css_standalone[$sCSS] = 1;
+    }
+
+    function requireCSSExternal($sCSS) {
+        $this->css_external[$sCSS] = 1;
     }
 
     function getCSSStandalone() {
