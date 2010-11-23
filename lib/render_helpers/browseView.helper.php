@@ -716,6 +716,14 @@ class browseView {
 							</div>
 						</td>
 						<td class="doc summary_cell fdebug">
+							
+							<div class="title"><a class="clearLink" href="[document_link]" style="">[title]</a></div>
+
+							<div class="detail"><span class="item">
+								Owner: <span class="user">[owned_by]</span></span><span class="item">Created: <span class="date">[created_date]</span> by <span class="user">[created_by]</span></span><span class="item">Updated: <span class="date">[modified_date]</span> by <span class="user">[modified_by]</span></span>
+							</div>
+						</td>
+						<td>
 							<ul class="doc actionMenu">
 								<!-- li class="actionIcon comments"></li -->
 								<li class="actionIcon actions">
@@ -750,11 +758,6 @@ class browseView {
 									</ul>
 								</li>
 							</ul>
-							<div class="title"><a class="clearLink" href="[document_link]" style="">[title]</a></div>
-
-							<div class="detail"><span class="item">
-								Owner: <span class="user">[owned_by]</span></span><span class="item">Created: <span class="date">[created_date]</span> by <span class="user">[created_by]</span></span><span class="item">Updated: <span class="date">[modified_date]</span> by <span class="user">[modified_by]</span></span>
-							</div>
 						</td>
 					</tr>
 					<tr>
@@ -815,6 +818,10 @@ class browseView {
 						</div>
 					</td>
 					<td class="folder summary_cell">
+						
+						<div class="title"><a class="clearLink" href="[link]">[title]</a></div>
+						<div class="detail"><span class="item">Created by: <span class="creator">[created_by]</span></span></div>
+					</td>
 						<ul class="folder actionMenu">
 							<li class="actionIcon actions">
 									<ul>
@@ -827,8 +834,7 @@ class browseView {
 									</ul>
 							</li>
 						</ul>
-						<div class="title"><a class="clearLink" href="[link]">[title]</a></div>
-						<div class="detail"><span class="item">Created by: <span class="creator">[created_by]</span></span></div>
+					<td>
 					</td>
 				</tr>
 			</table>

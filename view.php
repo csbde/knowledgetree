@@ -573,6 +573,8 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
         $ownerUser=KTUserUtil::getUserField($oDocument->getOwnerID(),'name');
         $creatorUser=KTUserUtil::getUserField($oDocument->getCreatorID(),'name');
         $lastModifierUser=KTUserUtil::getUserField($oDocument->getModifiedUserId(),'name');
+		
+		$FieldsetDisplayHelper = new KTFieldsetDisplay();
         
         $aTemplateData = array(
         	'doc_data'=>array(
@@ -591,7 +593,8 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
 			'document_data' => $document_data,
 			'fieldsets' => $fieldsets,
 			'viewlet_data' => $viewlet_data,
-        	'hasNotifications' => false
+        	'hasNotifications' => false,
+			'fieldsetDisplayHelper' => $FieldsetDisplayHelper
         );
         //Conditionally include live_preview
         if($live_preview)$aTemplateData['live_preview']=$live_preview;
