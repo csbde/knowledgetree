@@ -114,6 +114,7 @@ class KTNavPortlet extends KTPortlet {
 
 class KTActionPortlet extends KTPortlet {
     var $actions = array();
+    // TODO : Add portlet ordering
     var $firstActions = array();
 
     var $bActive = true;
