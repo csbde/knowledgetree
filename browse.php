@@ -130,7 +130,7 @@ class BrowseDispatcher extends KTStandardDispatcher {
 			// check whether the user can edit this folder
 			if(SharedUserUtil::isSharedUser())
 			{
-				$this->editable = true;
+				// TODO : What should we do if it is a shared user.
 			}
 			else 
 			{
@@ -146,7 +146,7 @@ class BrowseDispatcher extends KTStandardDispatcher {
 			$this->oPage->setTitle(_kt('Browse'));
 			if(SharedUserUtil::isSharedUser())
 			{
-				
+				// TODO : What should we do if it is a shared user.
 			}
 			else 
 			{
@@ -173,7 +173,6 @@ class BrowseDispatcher extends KTStandardDispatcher {
 				$this->aBreadcrumbs = kt_array_merge($this->aBreadcrumbs, KTBrowseUtil::breadcrumbsForFolder($oFolder));
 			}
 			$this->oFolder =& $oFolder;
-
 
 			// we now have a folder, and need to create the query.
 			$aOptions = array(
