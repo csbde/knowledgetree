@@ -360,7 +360,7 @@ class SharedContent extends KTEntity {
      * @param string $sType
      * @return mixed
      */
-    static public function getPermissions($iUserId, $iObjectId, $iFolderId = null, $sType = 'document')
+    static public function getPermissions($iUserId, $iObjectId = null, $iFolderId = null, $sType = 'document')
     {
     	// Check if shared object exists
     	$sql = "SELECT sc.permissions FROM shared_content as sc WHERE (user_id = '{$iUserId}' AND object_id = '{$iObjectId}' AND type = '{$sType}')";
@@ -385,7 +385,7 @@ class SharedContent extends KTEntity {
     	return false;
     }
     
-	static private function getDocumentPermissions($iUserId, $iObjectId, $iFolderId = null)
+	static private function getDocumentPermissions($iUserId, $iObjectId = null, $iFolderId = null)
 	{
 		// Check if documents parent folder has been shared with user
 		// If folder id was submitted, use, else query for the parent folder
@@ -406,7 +406,7 @@ class SharedContent extends KTEntity {
 		return false;
 	}
 	
-	static private function getFolderPermissions($iUserId, $iObjectId, $iFolderId = null)
+	static private function getFolderPermissions($iUserId, $iObjectId = null, $iFolderId = null)
 	{
 		// Check if documents parent folder has been shared with user
 		// If folder id was submitted, use, else query for the parent folder
