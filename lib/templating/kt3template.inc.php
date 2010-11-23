@@ -502,8 +502,13 @@ class KTPage {
 
         //TODO: need to refactor - is this the correct way to add this?
 		if (ACCOUNT_ROUTING_ENABLED) {
-			$uploadProgress = new DragDrop();
-			$uploadProgressRendered = $uploadProgress->render();
+			$fFolderId = KTUtil::arrayGet($_REQUEST, 'fFolderId', 1);
+			// Disable drag and drop for shared user landing browse folder view
+			if(!($this->user->getDisabled() == 4 && $fFolderId == 1))
+			{
+				$uploadProgress = new DragDrop();
+				$uploadProgressRendered = $uploadProgress->render();
+			}
 		}
 
         $oTemplating =& KTTemplating::getSingleton();
