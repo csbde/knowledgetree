@@ -38,6 +38,7 @@
  */
 
 require_once(KT_LIB_DIR . '/actions/documentaction.inc.php');
+require_once(KT_LIB_DIR . '/util/ktutil.inc');
 
 class KTBrowseUtil {
     // {{{ folderOrDocument
@@ -295,7 +296,10 @@ class KTBrowseUtil {
         if (KTUtil::arrayGet($_SERVER, 'kt_no_extensions')) {
             $sExt = '';
         }
-        return sprintf('%s/browse%s?fFolderId=%d', $GLOBALS['KTRootUrl'], $sExt, $iFolderId);
+        
+        return KTUtil::buildUrl(sprintf('%s/browse%s', $GLOBALS['KTRootUrl'], $sExt), array('fFolderId'=>$iFolderId));
+        
+        //return sprintf('%s/browse%s?fFolderId=%d', $GLOBALS['KTRootUrl'], $sExt, $iFolderId);
     }
     // }}}
 
@@ -306,7 +310,10 @@ class KTBrowseUtil {
         if (KTUtil::arrayGet($_SERVER, 'kt_no_extensions')) {
             $sExt = '';
         }
-        return sprintf('%s/view%s?fDocumentId=%d', $GLOBALS['KTRootUrl'], $sExt, $iDocumentId);
+        
+        return KTUtil::buildUrl(sprintf('%s/view%s', $GLOBALS['KTRootUrl'], $sExt), array('fDocumentId'=>$iDocumentId));
+        
+        //return sprintf('%s/view%s?fDocumentId=%d', $GLOBALS['KTRootUrl'], $sExt, $iDocumentId);
     }
     // }}}
 
