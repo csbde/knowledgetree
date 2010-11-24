@@ -76,6 +76,7 @@ class MultiDocumentAddAction extends KTFolderAction {
         $btn['arrow_class'] = 'arrow_upload';
         return $btn;
     }
+    
 	/**
 	 * check if document can be added or not
 	 * @return 
