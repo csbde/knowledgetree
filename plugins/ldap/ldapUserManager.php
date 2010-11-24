@@ -63,7 +63,7 @@ class LdapUserManager extends LdapManager {
         }
         catch (Exception $e) {
             // TODO logging and remove the echo statement
-            echo $e->getMessage() . " [$dn]";
+            echo $e->getMessage() . " [$filter]";
         }
         
         return $users;

@@ -1,5 +1,6 @@
 <?php
 
+require_once('LdapUtil.php');
 require_once(KT_DIR . '/thirdparty/ZendFramework/library/Zend/Ldap.php');
 
 class LdapManager {
@@ -10,23 +11,10 @@ class LdapManager {
     public function __construct($source)
     {
     	$this->source = KTUtil::getObject('KTAuthenticationSource', $source);
-        $config = unserialize($this->source->getConfig());
         
         // Connect to LDAP
         // TODO error conditions
-        $options = array(
-            'host'              => $config['server'],
-            'username'          => $config['searchuser'],
-            'password'          => $config['searchpwd'],
-            /** according to the Zend documentation, bindRequiresDn is important 
-             * when NOT using Active Directory, but it seems to work fine with AD
-             */
-            // TODO distinguish between openldap and active directory options, if possible
-            //      see http://framework.zend.com/manual/en/zend.ldap.introduction.html
-            'bindRequiresDn'    => true,
-            'baseDn'            => $config['basedn'],
-        );
-
+        $options = LdapUtil::getConnectionOptions($this->source);
         try {
             $this->ldapConnector = new Zend_Ldap($options);
         }

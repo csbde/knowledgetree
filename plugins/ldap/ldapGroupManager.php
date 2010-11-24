@@ -23,23 +23,20 @@ class LdapGroupManager extends LdapManager {
     /**
      * Search groups, using the supplied filter
      *
-     * @param string $filter
+     * @param string $search
      * @return iterator object $groups
      */
-    public function searchGroups($filter)
+    public function searchGroups($search)
     {
         $groups = array();
-        
-        if (!empty($filter)) {
-            $filter = "(cn=*$filter*)";
-        }
-        
-        $attributes = array('cn', 'dn', 'displayName');
+              
+        $attributes = array('cn', 'dn', 'displayName', 'member');
         // NOTE we don't need to get the base dn here:
         //      If null, it will be automatically used as set in the construction of the ldap connector.
         
         try {
-            $groups = $this->ldapConnector->search("(&(objectClass=group)$filter)", null, Zend_Ldap::SEARCH_SCOPE_SUB, $attributes);
+            // TODO consider adding the group object classes to the config?
+            $groups = $this->ldapConnector->search("(&(|(objectClass=group)(objectClass=posixGroup))(cn=*$search*))", null, Zend_Ldap::SEARCH_SCOPE_SUB, $attributes);
         }
         catch (Exception $e) {
             // TODO logging and remove the echo statement
@@ -74,22 +71,44 @@ class LdapGroupManager extends LdapManager {
     {
         $group =& KTUtil::getObject('Group', $group);
         $dn = $group->getAuthenticationDetails();
+//        $dn = str_replace('CN=Domain Users,', '', $dn);
+//        $dn = 'dom';
+        $dn = 'CN=Jean-Paul Bauer,CN=Users,DC=kt-cpt,DC=internal';
         try {
-            $attributes = $this->getGroup($dn, array('member'));
+            $ldapResult = $this->getGroup($dn, array('memberOf'));
         }
         catch (Exception $e) {
             // wrap in PEAR error for the rest of the system which expects that format
             return new PEAR_Error($e->getMessage());
         }
         
-        $members = KTUtil::arrayGet($attributes, 'member', array());
+        $ldap = ldap_connect("ad.kt-cpt.internal");
+    if ($ldap && $bind = ldap_bind($ldap, 'paul', 'pl4st1kfr0g17!')) {
+        $query = ldap_search($ldap, $dn, "cn=*");
+// Read all results from search
+$data = ldap_get_entries($ldap, $query);
+
+// Loop over 
+for ($i=0; $i < $data['count']; $i++) {
+    print_r($data[$i]['member']);
+    echo "\n\n";    
+}
+        // ldap_search and ldap_get_entries here i guess, but how?
+    }
+exit;
+        
+        echo "LOOKING IN $dn<BR><BR>";
+        $this->iterate($ldapResult);
+        exit;
+        
+        $members = KTUtil::arrayGet($ldapResult, 'member', array());
         if (!is_array($members)) {
             $members = array($members);
         }
         
         $userIds = array();
         foreach ($members as $member) {
-            $userId = User::getByAuthenticationSourceAndDetails($this->oSource, $member, array('ids' => true));
+            $userId = User::getByAuthenticationSourceAndDetails($this->source, $member, array('ids' => true));
             if (PEAR::isError($userId)) {
                 continue;
             }
@@ -99,6 +118,18 @@ class LdapGroupManager extends LdapManager {
         $group->setMembers($userIds);
         
         return null;
+    }
+    
+    private function iterate($result)
+    {
+        foreach ($result as $key => $item) {
+            if (is_array($item)) {
+                echo "<b>$key</b><BR>";
+                $this->iterate($item);
+                continue;
+            }
+            echo "$key => $item<BR>";
+        }
     }
 
 }

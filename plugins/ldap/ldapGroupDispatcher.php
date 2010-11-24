@@ -43,12 +43,11 @@ require_once(KT_LIB_DIR . '/widgets/fieldWidgets.php');
 
 require_once(KT_LIB_DIR . '/authentication/authenticationprovider.inc.php');
 require_once(KT_LIB_DIR . '/authentication/authenticationsource.inc.php');
-require_once(KT_PLUGIN_DIR . '/ktstandard/ldap/ldapauthenticationprovider.inc.php');
 
 require_once('ldapGroupManager.php');
 
-class ldapGroupDispatcher extends KTStandardDispatcher 
-{
+class ldapGroupDispatcher extends KTStandardDispatcher {
+    
     private $source;
     
     public function __construct()
@@ -106,37 +105,6 @@ class ldapGroupDispatcher extends KTStandardDispatcher
         return $template->render($templateData);
     }
     
-    private function _do_editGroupFromSource()
-    {
-        // TODO move this and other templates into the plugin directory
-        $template = $this->oValidator->validateTemplate('ktstandard/authentication/ldapaddgroup');
-        $id = KTUtil::arrayGet($_REQUEST, 'id');
-        
-        $manager = new LdapGroupManager($this->source);
-        try {
-            $attributes = $manager->getGroup($id);
-        }
-        catch (Exception $e) {
-            // TODO deal with error conditions
-        }
-
-        $fields = array();
-        $fields[] = new KTStaticTextWidget(_kt('LDAP DN'), _kt('The location of the group within the LDAP directory.'), 'dn', $attributes['dn'], $this->oPage);
-        $fields[] = new KTStringWidget(_kt('Group Name'), sprintf(_kt('The name the group will enter to gain access to %s.  e.g. <strong>accountants</strong>'), APP_NAME), 'ldap_groupname', $attributes['cn'][0], $this->oPage, true);
-        $fields[] = new KTCheckboxWidget(_kt('Unit Administrators'), _kt('Should all the members of this group be given <strong>unit</strong> administration privileges?'), 'is_unitadmin', false, $this->oPage, false);
-        $fields[] = new KTCheckboxWidget(_kt('System Administrators'), _kt('Should all the members of this group be given <strong>system</strong> administration privileges?'), 'is_sysadmin', false, $this->oPage, false);
-
-        $templateData = array(
-            'context' => &$this,
-            'fields' => $fields,
-            'source' => $this->source,
-            'search_results' => $searchResults,
-            'dn' => $attributes['dn'],
-        );
-        
-        return $template->render($templateData);
-    }
-    
     private function _do_createGroupFromSource()
     {
         $dn = KTUtil::arrayGet($_REQUEST, 'dn');
@@ -166,6 +134,37 @@ class ldapGroupDispatcher extends KTStandardDispatcher
 
         $this->successRedirectToMain(_kt('Created new group') . ': ' . $group->getName());
         exit(0);
+    }
+    
+    private function _do_editGroupFromSource()
+    {
+        // TODO move this and other templates into the plugin directory
+        $template = $this->oValidator->validateTemplate('ktstandard/authentication/ldapaddgroup');
+        $id = KTUtil::arrayGet($_REQUEST, 'id');
+        
+        $manager = new LdapGroupManager($this->source);
+        try {
+            $attributes = $manager->getGroup($id);
+        }
+        catch (Exception $e) {
+            // TODO deal with error conditions
+        }
+
+        $fields = array();
+        $fields[] = new KTStaticTextWidget(_kt('LDAP DN'), _kt('The location of the group within the LDAP directory.'), 'dn', $attributes['dn'], $this->oPage);
+        $fields[] = new KTStringWidget(_kt('Group Name'), sprintf(_kt('The name the group will enter to gain access to %s.  e.g. <strong>accountants</strong>'), APP_NAME), 'ldap_groupname', $attributes['cn'][0], $this->oPage, true);
+        $fields[] = new KTCheckboxWidget(_kt('Unit Administrators'), _kt('Should all the members of this group be given <strong>unit</strong> administration privileges?'), 'is_unitadmin', false, $this->oPage, false);
+        $fields[] = new KTCheckboxWidget(_kt('System Administrators'), _kt('Should all the members of this group be given <strong>system</strong> administration privileges?'), 'is_sysadmin', false, $this->oPage, false);
+
+        $templateData = array(
+            'context' => &$this,
+            'fields' => $fields,
+            'source' => $this->source,
+            'search_results' => $searchResults,
+            'dn' => $attributes['dn'],
+        );
+        
+        return $template->render($templateData);
     }
     
 }
