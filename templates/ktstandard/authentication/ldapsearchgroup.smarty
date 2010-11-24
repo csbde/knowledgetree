@@ -10,7 +10,7 @@ begin.{/i18n}</p>
   {$oWidget->render()}
 {/foreach}
 <div class="form_actions">
-   <input type="submit" value="{i18n}search for groups{/i18n}" />
+   <input type="submit" value="{i18n}Search For Groups{/i18n}" />
 </div>
 </fieldset>
 </form>
