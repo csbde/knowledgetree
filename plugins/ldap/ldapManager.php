@@ -4,12 +4,13 @@ require_once(KT_DIR . '/thirdparty/ZendFramework/library/Zend/Ldap.php');
 
 class LdapManager {
     
+    protected $source;
     protected $ldapConnector;
     
     public function __construct($source)
     {
-    	$source = KTUtil::getObject('KTAuthenticationSource', $source);
-        $config = unserialize($source->getConfig());
+    	$this->source = KTUtil::getObject('KTAuthenticationSource', $source);
+        $config = unserialize($this->source->getConfig());
         
         // Connect to LDAP
         // TODO error conditions

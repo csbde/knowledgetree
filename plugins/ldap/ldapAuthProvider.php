@@ -60,7 +60,8 @@ class LdapAuthProvider extends KTAuthenticationProvider {
             'server' => _kt('LDAP Server Address'),
             'basedn' => _kt('Base DN'),
             'searchuser' => _kt('Search User'),
-            'searchpwd' => _kt('Search Password')
+            'searchpwd' => _kt('Search Password'),
+            'objectclasses' => _kt('Object Classes')
         );
     }
     
@@ -103,9 +104,9 @@ class LdapAuthProvider extends KTAuthenticationProvider {
     {
         $this->oPage->setBreadcrumbDetails(_kt("Configure LDAP"));
 
-        $iSourceId = $_REQUEST['source_id'];
-        $oSource = KTAuthenticationSource::get($iSourceId);
-        $config = unserialize($oSource->getConfig());
+        $sourceId = $_REQUEST['source_id'];
+        $source = KTAuthenticationSource::get($sourceId);
+        $config = unserialize($source->getConfig());
 
         $fields = $this->get_form($config);
 
@@ -113,7 +114,7 @@ class LdapAuthProvider extends KTAuthenticationProvider {
         $aTemplateData = array(
             'context' => &$this,
             'fields' => $fields,
-            'source_id' => $iSourceId,
+            'source_id' => $sourceId,
         );
         return $oTemplate->render($aTemplateData);
     }
@@ -125,54 +126,58 @@ class LdapAuthProvider extends KTAuthenticationProvider {
      */
     public function do_performEditSourceProvider()
     {
-        $iSourceId = $_REQUEST['source_id'];
-        $oSource = KTAuthenticationSource::get($iSourceId);
-        $config = unserialize($oSource->getConfig());
+        $sourceId = $_REQUEST['source_id'];
+        $source = KTAuthenticationSource::get($sourceId);
+        $config = unserialize($source->getConfig());
 
         $config['server'] = $_REQUEST['server'];
         $config['basedn'] = $_REQUEST['basedn'];
         $config['searchuser'] = $_REQUEST['searchuser'];
         $config['searchpwd'] = $_REQUEST['searchpwd'];
+        $config['objectclasses'] = KTUtil::arrayGet($config, 'objectclasses', split(',', 'user,inetOrgPerson,posixAccount'));
 
         if (!empty($config)) {
-            $oSource->setConfig(serialize($config));
-            $res = $oSource->update();
+            $source->setConfig(serialize($config));
+            $res = $source->update();
         }
 
         // store any data entered into the fields
-        // when redirected to the do_editSourceProvider function above the $oSource object will
+        // when redirected to the do_editSourceProvider function above the $source object will
         // now contain the information entered by the user.
         if ($this->bTransactionStarted) {
             $this->commitTransaction();
         }
 
-        $aErrorOptions = array(
-            'redirect_to' => array('editSourceProvider', sprintf('source_id=%d', $oSource->getId())),
+        $errorOptions = array(
+            'redirect_to' => array('editSourceProvider', sprintf('source_id=%d', $source->getId())),
         );
-        $aErrorOptions['message'] = _kt("A server name or ip address is required");
-        $sName = $this->oValidator->validateString($config['server'], $aErrorOptions);
+        $errorOptions['message'] = _kt("A server name or ip address is required");
+        $name = $this->oValidator->validateString($config['server'], $errorOptions);
 
-        $aErrorOptions['message'] = _kt("A Base DN is required for importing users");
-        $sName = $this->oValidator->validateString($config['basedn'], $aErrorOptions);
+        $errorOptions['message'] = _kt("A Base DN is required for importing users");
+        $name = $this->oValidator->validateString($config['basedn'], $errorOptions);
 
-        $aErrorOptions['message'] = _kt("A search user is required for importing users");
-        $sName = $this->oValidator->validateString($config['searchuser'], $aErrorOptions);
+        $errorOptions['message'] = _kt("A search user is required for importing users");
+        $name = $this->oValidator->validateString($config['searchuser'], $errorOptions);
 
-        $aErrorOptions['message'] = _kt("A password is required for the search user");
-        $sName = $this->oValidator->validateString($config['searchpwd'], $aErrorOptions);
+        $errorOptions['message'] = _kt("A password is required for the search user");
+        $name = $this->oValidator->validateString($config['searchpwd'], $errorOptions);
 
-        $this->successRedirectTo('viewsource', _kt("Configuration updated"), 'source_id=' . $oSource->getId());
+        $errorOptions['message'] = _kt("At least one object class is required for searching");
+        $name = $this->oValidator->validateString($config['objectclasses'], $errorOptions);
+
+        $this->successRedirectTo('viewsource', _kt("Configuration updated"), 'source_id=' . $source->getId());
     }
 
     /**
      * Display the configuration
      *
-     * @param KTAuthenticationSource $oSource
+     * @param KTAuthenticationSource $source
      * @return string
      */
-    public function showSource($oSource)
+    public function showSource($source)
     {
-        $config = unserialize($oSource->getConfig());
+        $config = unserialize($source->getConfig());
 
         $output = '';
         foreach ($this->configMap as $key => $item) {
@@ -183,9 +188,9 @@ class LdapAuthProvider extends KTAuthenticationProvider {
         return $output;
     }
 
-    public function getAuthenticator($oSource)
+    public function getAuthenticator($source)
     {
-        return new $this->sAuthClass($oSource);
+        return new $this->sAuthClass($source);
     }
     
     /**
@@ -201,6 +206,7 @@ class LdapAuthProvider extends KTAuthenticationProvider {
         $basedn = (isset($config['basedn'])) ? $config['basedn'] : '';
         $searchuser = (isset($config['searchuser'])) ? $config['searchuser'] : '';
         $searchpwd = (isset($config['searchpwd'])) ? $config['searchpwd'] : '';
+        $objectClasses = (isset($config['objectclasses'])) ? $config['objectclasses'] : '';
 
         $fields = array();
         $fields[] = new KTStringWidget(_kt('Server Address'), _kt('The host name or IP address of the LDAP server'), 'server', $server, $this->oPage, true);
@@ -210,6 +216,8 @@ class LdapAuthProvider extends KTAuthenticationProvider {
         $fields[] = new KTStringWidget(_kt('Search User'), _kt('The user account in the LDAP directory to perform searches in the LDAP directory as (such as CN=searchUser,CN=Users,DC=mycorp,DC=com or searchUser@mycorp.com)'), 'searchuser', $searchuser, $this->oPage, true);
 
         $fields[] = new KTPasswordWidget(_kt('Search Password'), _kt('The password for the user account in the LDAP directory that performs searches'), 'searchpwd', $searchpwd, $this->oPage, true);
+        
+        $fields[] = new KTTextWidget(_kt('Object Classes'), _kt('The LDAP object classes to search for users (one per line, example: <strong>user</strong>, <strong>inetOrgPerson</strong>, <strong>posixAccount</strong>)'), 'objectclasses_nls', $objectClasses, $this->oPage, true, null, null, $aOptions);
 
         return $fields;
     }
@@ -223,9 +231,9 @@ class LdapAuthenticator extends Authenticator {
     private $source;
     private $ldapConnector;
     
-    public function __construct($oSource)
+    public function __construct($source)
     {        
-        $this->source =& KTUtil::getObject('KTAuthenticationSource', $oSource);
+        $this->source =& KTUtil::getObject('KTAuthenticationSource', $source);
         $config = unserialize($this->source->getConfig());
         
         // Connect to LDAP
@@ -296,6 +304,7 @@ class LdapAuthenticator extends Authenticator {
     {
     	return $this->ldapConnector;
     }
+    
 }
 
 ?>
