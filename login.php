@@ -92,11 +92,6 @@ class LoginPageDispatcher extends KTDispatcher {
     }
 
     function performLogin(&$oUser) {
-        if (!($oUser instanceof User)) {
-            #var_dump($oUser);
-            #var_dump(PEAR::raiseError());
-        }
-
         /*
         Removing the code that redirects to the dashboard as it breaks linking in from external documents.
         The fix below doesn't work if the users are behind a proxy server.
@@ -271,7 +266,12 @@ class LoginPageDispatcher extends KTDispatcher {
             if ($oUser instanceof ktentitynoobjects) {
                 $this->handleUserDoesNotExist($username, $password, $aExtra);
             }
-            $this->simpleRedirectToMain(_kt('Login failed.  Please check your username and password, and try again.'), $url, $queryParams);
+			$KTConfig = KTConfig::getSingleton();
+			if($KTConfig->get('user_prefs/useEmailLogin', false))
+            	$message = 'Login failed.  Please check your email address and password, and try again.';
+            else 
+            	$message = 'Login failed.  Please check your username and password, and try again.';
+            $this->simpleRedirectToMain(_kt($message), $url, $queryParams);
             exit(0);
         }
 
@@ -287,7 +287,12 @@ class LoginPageDispatcher extends KTDispatcher {
         }
 
         if ($authenticated !== true) {
-            $this->simpleRedirectToMain(_kt('Login failed.  Please check your username and password, and try again.'), $url, $queryParams);
+			$KTConfig = KTConfig::getSingleton();
+			if($KTConfig->get('user_prefs/useEmailLogin', false))
+            	$message = 'Login failed.  Please check your email address and password, and try again.';
+            else 
+            	$message = 'Login failed.  Please check your username and password, and try again.';
+            $this->simpleRedirectToMain(_kt($message), $url, $queryParams);
             exit(0);
         }
 
