@@ -131,6 +131,14 @@ class BrowseDispatcher extends KTStandardDispatcher {
 			if(SharedUserUtil::isSharedUser())
 			{
 				// TODO : What should we do if it is a shared user.
+				if(SharedContent::getPermissions($this->oUser->getId(), null, $folder_id, 'folder') == 1)
+				{
+					$this->editable = true;
+				}
+				else 
+				{
+					$this->editable = false;
+				}
 			}
 			else 
 			{
