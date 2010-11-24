@@ -61,6 +61,7 @@ class LdapAuthProvider extends KTAuthenticationProvider {
             'basedn' => _kt('Base DN'),
             'searchuser' => _kt('Search User'),
             'searchpwd' => _kt('Search Password'),
+            'searchattributes' => _kt('Search Attributes'),
             'objectclasses' => _kt('Object Classes')
         );
     }
@@ -134,6 +135,7 @@ class LdapAuthProvider extends KTAuthenticationProvider {
         $config['basedn'] = $_REQUEST['basedn'];
         $config['searchuser'] = $_REQUEST['searchuser'];
         $config['searchpwd'] = $_REQUEST['searchpwd'];
+        $config['searchattributes'] = KTUtil::arrayGet($config, 'searchattributes', split(',', 'cn,mail,sAMAccountName'));
         $config['objectclasses'] = KTUtil::arrayGet($config, 'objectclasses', split(',', 'user,inetOrgPerson,posixAccount'));
 
         if (!empty($config)) {
@@ -163,6 +165,9 @@ class LdapAuthProvider extends KTAuthenticationProvider {
         $errorOptions['message'] = _kt("A password is required for the search user");
         $name = $this->oValidator->validateString($config['searchpwd'], $errorOptions);
 
+        $errorOptions['message'] = _kt("At least one search attribute is required for searching");
+        $name = $this->oValidator->validateString($config['searchattributes'], $errorOptions);
+
         $errorOptions['message'] = _kt("At least one object class is required for searching");
         $name = $this->oValidator->validateString($config['objectclasses'], $errorOptions);
 
@@ -176,12 +181,12 @@ class LdapAuthProvider extends KTAuthenticationProvider {
      * @return string
      */
     public function showSource($source)
-    {
+    {        
         $config = unserialize($source->getConfig());
 
         $output = '';
-        foreach ($this->configMap as $key => $item) {
-            $setting = ($key == 'searchpwd') ? '******' : $config[$key];
+        foreach ($this->configMap as $key => $item) {            
+            $setting = ($key == 'searchpwd') ? '******' : (is_array($config[$key]) ? join(', ', $config[$key]) : $config[$key]);
             $output .= $item . ': ' . $setting . '<br />';
         }
 
@@ -206,6 +211,7 @@ class LdapAuthProvider extends KTAuthenticationProvider {
         $basedn = (isset($config['basedn'])) ? $config['basedn'] : '';
         $searchuser = (isset($config['searchuser'])) ? $config['searchuser'] : '';
         $searchpwd = (isset($config['searchpwd'])) ? $config['searchpwd'] : '';
+        $searchAttributes = (isset($config['searchattributes'])) ? $config['searchattributes'] : '';
         $objectClasses = (isset($config['objectclasses'])) ? $config['objectclasses'] : '';
 
         $fields = array();
@@ -217,7 +223,9 @@ class LdapAuthProvider extends KTAuthenticationProvider {
 
         $fields[] = new KTPasswordWidget(_kt('Search Password'), _kt('The password for the user account in the LDAP directory that performs searches'), 'searchpwd', $searchpwd, $this->oPage, true);
         
-        $fields[] = new KTTextWidget(_kt('Object Classes'), _kt('The LDAP object classes to search for users (one per line, example: <strong>user</strong>, <strong>inetOrgPerson</strong>, <strong>posixAccount</strong>)'), 'objectclasses_nls', $objectClasses, $this->oPage, true, null, null, $aOptions);
+        $fields[] = new KTTextWidget(_kt('Search Attributes'), _kt('The LDAP attributes to use to search for users when given their name (one per line, examples: <strong>cn</strong>, <strong>mail</strong>)'), 'searchattributes_nls', join("\n", $searchAttributes), $this->oPage, true, null, null, $aOptions);
+        
+        $fields[] = new KTTextWidget(_kt('Object Classes'), _kt('The LDAP object classes to search for users (one per line, example: <strong>user</strong>, <strong>inetOrgPerson</strong>, <strong>posixAccount</strong>)'), 'objectclasses_nls', join("\n", $objectClasses), $this->oPage, true, null, null, $aOptions);
 
         return $fields;
     }
