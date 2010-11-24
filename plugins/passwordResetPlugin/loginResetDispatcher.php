@@ -253,6 +253,7 @@ class loginResetDispatcher extends KTDispatcher {
      * @return boolean false if the user is logged in
      */
     function check() {
+        global $default;
         $session = new Session();
         $sessionStatus = $session->verify();
 
@@ -435,7 +436,7 @@ class loginResetDispatcher extends KTDispatcher {
                 $url .=  '/dashboard.php';
             }
         }
-        
+
         exit(redirect($url));
     }
 
