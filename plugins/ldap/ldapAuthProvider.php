@@ -41,9 +41,6 @@ require_once(KT_LIB_DIR . '/authentication/Authenticator.inc');
 
 require_once(KT_LIB_DIR . '/widgets/fieldWidgets.php');
 
-//require_once('ldapGroupManager.php');
-//
-
 class LdapAuthProvider extends KTAuthenticationProvider {
     
     public $sName = 'LDAP Authentication Provider';
@@ -66,6 +63,11 @@ class LdapAuthProvider extends KTAuthenticationProvider {
         );
     }
     
+    /**
+     * Runs the appropriate function from either this class or the designated dispatcher
+     *
+     * @return unknown Output depends on the function being called
+     */
     public function do_main()
     {
         $event = strip_tags($_REQUEST[$this->event_var]);
@@ -77,6 +79,7 @@ class LdapAuthProvider extends KTAuthenticationProvider {
             return $this->$proposedMethod;
         }
         
+        // attempt to determine whether the function is to be found in the user or group dispatcher
         $ldapDispatcher = null;
         $checkMethod = preg_replace('/^add|create|delete|edit|update/i', '', $event);
         if (preg_match('/^user/i', $checkMethod)) {
@@ -88,6 +91,7 @@ class LdapAuthProvider extends KTAuthenticationProvider {
             $ldapDispatcher = new ldapGroupDispatcher();
         }
         
+        // if we have manager to find a dispatcher for the requested method
         if (is_object($ldapDispatcher)) {
             return $ldapDispatcher->$proposedMethod();
         }
@@ -117,6 +121,7 @@ class LdapAuthProvider extends KTAuthenticationProvider {
             'fields' => $fields,
             'source_id' => $sourceId,
         );
+        
         return $oTemplate->render($aTemplateData);
     }
 

@@ -9,9 +9,6 @@ class LdapGroupManager extends LdapManager {
         parent::__construct($source);
     }
 
-    /**
-     * Destroy the ldap connector
-     */
     public function __destruct()
     {
         parent::__destruct();
@@ -21,7 +18,7 @@ class LdapGroupManager extends LdapManager {
     //      what the rest of the system expects...
     //      these error returns to replace the "return false;" statements
     /**
-     * Search groups, using the supplied filter
+     * Search groups, using the supplied search string
      *
      * @param string $search
      * @return iterator object $groups
@@ -49,6 +46,14 @@ class LdapGroupManager extends LdapManager {
         return $groups;
     }
     
+    /**
+     * Get a group from the LDAP server
+     *
+     * @param string $dn
+     * @param array $attributes
+     * @param boolean $throwOnNotFound Whether to throw an exception if no results are found
+     * @return iterator object A collection of results
+     */
     public function getGroup($dn, $attributes = null, $throwOnNotFound = true)
     {
         if (empty($attributes)) {
@@ -67,6 +72,12 @@ class LdapGroupManager extends LdapManager {
         return $attributes;
     }
     
+    /**
+     * Synchronise group members from the LDAP server
+     *
+     * @param string $group
+     * @return unknown
+     */
     public function synchroniseGroup($group)
     {
         $group =& KTUtil::getObject('Group', $group);
@@ -120,6 +131,11 @@ exit;
         return null;
     }
     
+    /**
+     * Utility function for testing, remove once in production
+     *
+     * @param iterator object $result
+     */
     private function iterate($result)
     {
         foreach ($result as $key => $item) {

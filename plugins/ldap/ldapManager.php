@@ -1,5 +1,9 @@
 <?php
 
+/**
+ * Base LDAP manager class
+ */
+
 require_once('LdapUtil.php');
 require_once(KT_DIR . '/thirdparty/ZendFramework/library/Zend/Ldap.php');
 
@@ -8,6 +12,11 @@ class LdapManager {
     protected $source;
     protected $ldapConnector;
     
+    /**
+     * Create the connector based on the supplied authentication source
+     *
+     * @param object $source
+     */
     public function __construct($source)
     {
     	$this->source = KTUtil::getObject('KTAuthenticationSource', $source);
@@ -27,7 +36,7 @@ class LdapManager {
     }
     
     /**
-     * Destroy the ldap connector
+     * Destroy the LDAP connector
      */
     public function __destruct()
     {
@@ -35,4 +44,5 @@ class LdapManager {
     }
     
 }
+
 ?>

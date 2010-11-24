@@ -1,4 +1,9 @@
 <?php
+
+/**
+ * Manages user functions for LDAP
+ */
+
 require_once('ldapManager.php');
 
 class LdapUserManager extends LdapManager {
@@ -7,6 +12,12 @@ class LdapUserManager extends LdapManager {
     private $objectClasses;
     private $searchAttributes;
 	
+    /**
+     * Create the manager
+     *
+     * @param object $source
+     * @param array $attributes [optional]
+     */
 	public function __construct($source, $attributes = null)
 	{	    
 		parent::__construct($source);
@@ -35,6 +46,12 @@ class LdapUserManager extends LdapManager {
     // TODO proper error returns, I suppose these will have to be PEAR errors as that's
     //      what the rest of the system expects...
     //      these error returns to replace the "return false;" statements
+    /**
+     * Search the LDAP server for users matching the supplied search string
+     *
+     * @param string $search
+     * @return iterator object A collection of results
+     */
     public function searchUsers($search)
     {
         global $default;
@@ -69,6 +86,14 @@ class LdapUserManager extends LdapManager {
         return $users;
     }
     
+    /**
+     * Get the specified user
+     *
+     * @param string $dn
+     * @param array $attributes
+     * @param boolean $throwOnNotFound Whether to throw an exception if no results are found
+     * @return iterator object A collection of results
+     */
     public function getUser($dn, $attributes = null, $throwOnNotFound = true)
     {
         if (empty($attributes)) {
