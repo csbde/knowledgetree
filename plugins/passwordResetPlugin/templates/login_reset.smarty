@@ -49,9 +49,9 @@
 				   {else}
 					   <label for="username">{i18n}Username{/i18n}</label>
 				   {/if}
-					<input type="text" id="username" name="username" value="{$username}"/>
+					<input type="text" id="username" name="username" value="{$username}" />
 					<label for="password">{i18n}Password{/i18n}</label>
-					<input type="password" id="password" name="password"/>
+					<input type="password" id="password" name="password" />
 
 					{* Disabling language dropdown until translations are finished
 					<label for="language">{i18n}Language{/i18n}</label>
@@ -73,10 +73,19 @@
 		            <form name="forgot_form" action="" method="POST">
 	    	    	<p class="descriptive-text">{i18n}Forgot password{/i18n}</p>
 	    	    	<div id="messages" class="ktErrorMessage"></div>
+	    	    	{if $use_email}
+					<p class="instruction-text">{i18n}Enter your email address. A link will be mailed to you in order to verify your email address.{/i18n}</p>
+					{else}
 					<p class="instruction-text">{i18n}Enter your username and email address. A link will be mailed to you in order to verify your email address.{/i18n}</p>
-	    	    	<label for="reset_username">{i18n}Username{/i18n}</label>
-	    			<input type="text" id="reset_username" name="reset_username" />
-	    			<br />
+					{/if}
+					{if $use_email}
+	    				<input type=hidden id=reset_username name=reset_username value=null />
+	    				
+	    			{else}
+	    	    		<label for="reset_username">{i18n}Username{/i18n}</label>
+	    				<input type="text" id="reset_username" name="reset_username" />
+	    				<br />	    			
+	    			{/if}
 	    			<label for="reset_email">{i18n}Email Address{/i18n}</label>
 	 				<input type="text" id="reset_email" name="reset_email" />
 	 				<br />
@@ -91,22 +100,34 @@
 
     	    	<div id="reset_box" class="reset_box">
 	    	    	<form name="reset_form" action="" method="POST">
-	        	    	<p class="descriptive-text">{i18n}Please enter your username and email address.{/i18n}</p>
-
-	        	    	<label for="new_username">{i18n}Username{/i18n}</label>
-	        			<input type="text" id="new_username" name="new_username" value=""/><br />
-
-	        			<label for="new_email">{i18n}Email Address{/i18n}</label>
-		 				<input type="text" id="new_email" name="new_email" value=""/><br />
+	    	    		{if $use_email}
+	        	    		<p class="descriptive-text">{i18n}Please enter an email address.{/i18n}</p>
+						{else}
+							<p class="descriptive-text">{i18n}Please enter your username and email address.{/i18n}</p>
+						{/if}
+						{if $use_email}
+							<input type="hidden" id="new_email" name="new_email" value={$new_email} />
+						{else}
+		        	    	<label for="new_username">{i18n}Username{/i18n}</label>
+		        			<input type="text" id="new_username" name="new_username" value="" /><br />
+	        				<label for="new_email">{i18n}Email Address{/i18n}</label>
+		 					<input type="text" id="new_email" name="new_email" value=""/><br />
+						{/if}
 
 		 				<label for="new_password">{i18n}New password{/i18n}</label>
-		 				<input type="password" id="new_password" name="new_password" value=""/><br />
-
-		 				<label for="new_password_repeat">{i18n}Confirm new password{/i18n}</label>
-		 				<input type="password" id="new_password_repeat" name="new_password_repeat" value=""/><br />
+		 				<input type="password" id="new_password" name="new_password" value="" />
+		 				
+						{if $use_email}
+							
+						{else}
+							<br />
+			 				<label for="new_password_repeat">{i18n}Confirm new password{/i18n}</label>
+			 				<input type="password" id="new_password_repeat" name="new_password_repeat" value="" />
+			 				<br />
+		 				{/if}
 
 		 				<div class="form-actions">
-		 				    <input type="button" onclick='javascript: resetPassword("{$sUrl}resetPassword");' value="{i18n}Reset password{/i18n}" />
+		 				    <input type="button" onclick='javascript: resetPassword("{$sUrl}resetPassword", "{$sRedirect}");' value="{i18n}Reset password{/i18n}" />
 		 				    <input type="button" onclick="javascript: hideResetBox();" value="{i18n}Cancel{/i18n}" />
 		 				</div>
 	    	    	</form>
