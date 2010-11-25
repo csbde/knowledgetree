@@ -127,7 +127,7 @@
 		 				{/if}
 
 		 				<div class="form-actions">
-		 				    <input type="button" onclick='javascript: resetPassword("{$sUrl}resetPassword");' value="{i18n}Reset password{/i18n}" />
+		 				    <input type="button" onclick='javascript: resetPassword("{$sUrl}resetPassword", "{$sRedirect}");' value="{i18n}Reset password{/i18n}" />
 		 				    <input type="button" onclick="javascript: hideResetBox();" value="{i18n}Cancel{/i18n}" />
 		 				</div>
 	    	    	</form>

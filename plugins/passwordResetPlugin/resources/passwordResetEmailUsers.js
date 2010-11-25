@@ -96,7 +96,8 @@ var sendEmailRequest = function(sUrl) {
 
 /* Check the entered details and use ajax to reset the users password
 on success display the response from the server */
-var resetPassword = function(sUrl) {
+var resetPassword = function(sUrl, redirect) {
+	
     // Check the fields have been filled in
     var email = document.getElementById('new_email');
     var password = document.getElementById('new_password');
@@ -111,13 +112,11 @@ var resetPassword = function(sUrl) {
         password.focus();
         return false;
     }
-
-    Ext.Ajax.request({
+    
+	Ext.Ajax.request({
         url: sUrl,
         success: function(response) {
-            hideResetBox();
-            showMessages();
-            document.getElementById('messages').innerHTML = response.responseText;
+        	window.location.href = redirect;
         },
         failure: function(response) {
             showMessages();

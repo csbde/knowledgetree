@@ -165,7 +165,7 @@ class loginResetDispatcher extends KTDispatcher {
         }
 
         $sUrl = KTUtil::addQueryStringSelf('action=');
-
+       	$sRedirect = ($default->sslEnabled ? 'https' : 'http') .'://' . KTUtil::getServerName() . '/browse.php';
         $oTemplating =& KTTemplating::getSingleton();
         $oTemplate = $oTemplating->loadTemplate('login_reset');
         $aTemplateData = array(
@@ -180,6 +180,7 @@ class loginResetDispatcher extends KTDispatcher {
         'js' => $js,
         'css' => $css,
         'sUrl' => $sUrl,
+        'sRedirect' => $sRedirect,
         'smallVersion' => $default->versionTier,
         'reset_password' => $reset_password,
         'use_email' => $useEmail,
@@ -344,7 +345,7 @@ class loginResetDispatcher extends KTDispatcher {
      * @param unknown_type $oUser
      * @return unknown
      */
-    function performLogin(&$oUser) {
+    function performLogin(&$oUser, $url = '', $doRedirect = true) {
         $session = new Session();
         $sessionID = $session->create($oUser);
         if (PEAR::isError($sessionID)) {
@@ -352,23 +353,20 @@ class loginResetDispatcher extends KTDispatcher {
         }
         // add a flag to check for bulk downloads after login is succesful; this will be cleared in the code which checks
         $_SESSION['checkBulkDownload'] = true;
-        $redirect = strip_tags(KTUtil::arrayGet($_REQUEST, 'redirect'));
+        $redirect = ($url == '') ? strip_tags(KTUtil::arrayGet($_REQUEST, 'redirect')) : $url;
         // DEPRECATED initialise page-level authorisation array
         $_SESSION["pageAccess"] = NULL;
         $cookietest = KTUtil::randomString();
         setcookie("CookieTestCookie", $cookietest, 0);
-        $this->redirectTo('checkCookie', array(
-        'cookieVerify' => $cookietest,
-        'redirect' => $redirect,
-        ));
-        exit(0);
+        if($doRedirect)
+        {
+        	$this->redirectTo('checkCookie', array(	'cookieVerify' => $cookietest,
+        											'redirect' => $redirect,
+        											));
+        	exit(0);
+        }
     }
 
-    function gotoBrowse($oUser)
-    {
-    	
-    }
-    
     function handleUserDoesNotExist($username, $password, $aExtra = null) {
         if (empty($aExtra)) {
             $aExtra = array();
@@ -583,12 +581,13 @@ class loginResetDispatcher extends KTDispatcher {
         // Unset expiry date and key
         KTUtil::setSystemSetting('password_reset_expire-'.$id, '');
         KTUtil::setSystemSetting('password_reset_key-'.$id, '');
+        // Dont send email about password update.
         if($email == false)
         {
         	$oUser = User::get($id);
 	        if ($oUser instanceof User) {
-	            $this->redirectToMain();
-	            exit(0);
+	        	$this->performLogin(User::get($id), '', false);
+	        	return _kt('Your password has been successfully reset, click the link below to login.');
 	        }
         }
         else {
