@@ -616,12 +616,12 @@ class KTDocumentCheckInAction extends KTDocumentAction {
 	var $showIfRead = false;
 	
     function getDisplayName() {
-        return _kt('Checkin');
+        return _kt('Check-in');
     }
 
     function getButton() {
         $btn = array();
-        $btn['display_text'] = _kt('Checkin');
+        $btn['display_text'] = _kt('Check-in');
         $btn['arrow_class'] = 'check_in';
         return $btn;
     }
@@ -673,7 +673,7 @@ class KTDocumentCheckInAction extends KTDocumentAction {
             'actionparams' => 'postExpected=1&fDocumentId='.$this->oDocument->getId(),
             'fail_action' => 'main',
             'cancel_url' => KTBrowseUtil::getUrlForDocument($this->oDocument),
-            'submit_label' => _kt('Checkin'),
+            'submit_label' => _kt('Check-in'),
             'context' => &$this,
             'file_upload' => true,         // otherwise the post is not received.
         ));
@@ -782,7 +782,7 @@ class KTDocumentCheckInAction extends KTDocumentAction {
 
 
     function do_main() {
-        $this->oPage->setBreadcrumbDetails(_kt('Checkin'));
+        $this->oPage->setBreadcrumbDetails(_kt('Check-in'));
         $oTemplate =& $this->oValidator->validateTemplate('ktcore/action/checkin');
 
         $oForm = $this->form_main();
