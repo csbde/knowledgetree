@@ -661,7 +661,7 @@ class SOAPTestCase extends KTUnitTestCase {
 
         // Checkin a new base64 version
         $result = $this->checkinSmallDocument($documentId2, $filename2);
-        $this->assertEqual($result->status_code, 0, 'Checkin base64 document - '.$result->message);
+        $this->assertEqual($result->status_code, 0, 'Check-in base64 document - '.$result->message);
         $checkoutBy = $result->checked_out_by;
         $this->assertTrue(empty($checkoutBy) || $checkoutBy == 'n/a', 'Document should no longer be checked out by anyone - '.$checkoutBy);
 
