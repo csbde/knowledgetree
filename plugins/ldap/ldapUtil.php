@@ -14,8 +14,7 @@ class LdapUtil {
         $config = unserialize($source->getConfig());
         $options = array(
             'host'              => $config['server'],
-//            'port'              => !empty($config['port']) ? $config['port'] : ($config['tls'] ? 636 : 389),
-//            'port'              => 389,
+            'port'              => !empty($config['port']) ? $config['port'] : 389,
             'username'          => $config['searchuser'],
             'password'          => $config['searchpwd'],
             /** according to the Zend documentation, bindRequiresDn is important 
@@ -25,7 +24,7 @@ class LdapUtil {
             //      see http://framework.zend.com/manual/en/zend.ldap.introduction.html
             'bindRequiresDn'    => true,
             'baseDn'            => $config['basedn'],
-//            'useStartTls'       => (bool)$config['tls']
+            'useStartTls'       => (bool)$config['tls']
         );
         
         return $options;
