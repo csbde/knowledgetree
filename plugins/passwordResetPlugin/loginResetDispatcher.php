@@ -598,7 +598,10 @@ class loginResetDispatcher extends KTDispatcher {
 	        $body .= _kt('Your password has been successfully reset, click the link below to login.');
 	        $body .= "</p><p><a href = '$url'>". _kt('Login').'</a></p></dd>';
 	        $oEmail = new Email();
-	        $res = $oEmail->send($email, $subject, $body);        	
+	        $res = $oEmail->send($email, $subject, $body);
+	        if($res === true){
+	            return _kt('Your password has been successfully reset. Proceed to login.');
+	        }
         }
         
         return _kt('An error occurred while sending the email. Please try again.');
