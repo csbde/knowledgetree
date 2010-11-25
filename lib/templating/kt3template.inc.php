@@ -282,6 +282,11 @@ class KTPage {
     }
 
     // list the distinct CSS resources.
+    function getCSSExternal() {
+        return array_keys($this->css_external);
+    }
+
+    // list the distinct CSS resources.
     function getThemeCSSResources() {
         return array_keys($this->theme_css_resources);
     }
@@ -296,6 +301,10 @@ class KTPage {
 
     function requireCSSStandalone($sCSS) {
         $this->css_standalone[$sCSS] = 1;
+    }
+
+    function requireCSSExternal($sCSS) {
+        $this->css_external[$sCSS] = 1;
     }
 
     function getCSSStandalone() {
@@ -492,9 +501,25 @@ class KTPage {
         $userFeedback = new Feedback();
 
         //TODO: need to refactor - is this the correct way to add this?
+        $loadDND = true;
 		if (ACCOUNT_ROUTING_ENABLED) {
-			$uploadProgress = new DragDrop();
-			$uploadProgressRendered = $uploadProgress->render();
+			$fFolderId = KTUtil::arrayGet($_REQUEST, 'fFolderId', 1);
+			// Disable drag and drop for shared user landing browse folder view
+			if($this->user->getDisabled() == 4 && $fFolderId == 1)
+			{
+				$loadDND = false;
+			}
+			if($this->user->getDisabled() == 4 && $loadDND)
+			{
+				require_once(KT_LIB_DIR . '/render_helpers/sharedContent.inc');
+				
+				$loadDND = (SharedContent::getPermissions($this->user->getId(), null, $fFolderId, 'folder') == 0) ? false : true;
+			}
+			if($loadDND)
+			{
+				$uploadProgress = new DragDrop();
+				$uploadProgressRendered = $uploadProgress->render();
+			}
 		}
 
         $oTemplating =& KTTemplating::getSingleton();

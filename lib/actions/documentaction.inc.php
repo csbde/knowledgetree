@@ -63,7 +63,7 @@ class KTDocumentAction extends KTStandardDispatcher {
     
 	var $showIfRead = false;
 	var $showIfWrite = false;
-	var $objectPermission = false;
+
     /**
  	 * The _bMutator variable determines whether the action described by the class is considered a mutator.
      * Mutators may not act on Immutable documents unless overridden in the code
@@ -262,8 +262,7 @@ class KTDocumentAction extends KTStandardDispatcher {
 		// Check if action needs to be hidden for
 		else if(!$this->showIfRead)
 		{
-			$this->setPermission();
-			if($this->objectPermission == 1)
+			if($this->getPermission() == 1)
 			{
 				return true;
 			}
@@ -276,12 +275,12 @@ class KTDocumentAction extends KTStandardDispatcher {
      * Set the shared object permission
      *
      */
-    function setPermission()
+    function getPermission()
     {
 		$iUserId = $this->oUser->getID();
 		$iDocumentId = $this->oDocument->getID();
 		$iFolderId = $this->oDocument->getFolderID();
-		$this->objectPermission = SharedContent::getPermissions($iUserId, $iDocumentId, $iFolderId, 'document');
+		return SharedContent::getPermissions($iUserId, $iDocumentId, $iFolderId, 'document');
     }
 }
 
