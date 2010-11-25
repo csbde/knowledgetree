@@ -1,4 +1,7 @@
 <?php
+
+require_once(KT_LIB_DIR . '/browse/browseutil.inc.php');
+
 class siteapi extends client_service{
 
     function uploadFile($params) {
@@ -170,6 +173,7 @@ class siteapi extends client_service{
 					$item['baseFolderID'] = $baseFolderID;
 					$item['isBulk'] = false;
 					$item['id'] = $oDocument->getId();
+					$item['document_url'] = KTBrowseUtil::getUrlForDocument($oDocument);
 					$item['owned_by'] = $oOwner->getName();
 					$item['created_by'] = $oCreator->getName();
 					$item['modified_by'] = $oModifier->getName();
