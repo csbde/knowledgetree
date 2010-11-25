@@ -111,10 +111,24 @@ class KTFolderAddFolderAction extends KTFolderAction {
 				'id' => 'folder_name'
 				),
             );
-		$aFolderTemplates = $this->folderTemplateOptions(); // Get folder structure creation option
-		if(is_array($aFolderTemplates)) { // Check if any results are returned
-			 $folderWidgets[] = $aFolderTemplates; 
-		}
+        $usertype = '';
+        if($this->oUser instanceof UserProxy)
+        {
+            $usertype = $this->oUser->getDisabled();
+        }
+        else 
+        {
+        	$oUser = User::get($_SESSION['userID']);
+        	$usertype = $oUser->getDisabled();
+        }
+        // Shared users should not see folder template structures
+        if($usertype != 4)
+        {
+			$aFolderTemplates = $this->folderTemplateOptions(); // Get folder structure creation option
+			if(is_array($aFolderTemplates)) { // Check if any results are returned
+				 $folderWidgets[] = $aFolderTemplates; 
+			}
+        }
         
         $oForm->setWidgets($folderWidgets);
 

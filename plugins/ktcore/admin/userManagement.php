@@ -692,6 +692,7 @@ class KTUserAdminDispatcher extends KTAdminDispatcher {
 		$aGroups = GroupUtil::listGroupsForUser($oUser);
 		$MAX_GROUPS = 6;
 		$add_elipsis = false;
+		if($oUser->getDisabled() == 4) {return _kt('Shared users cannot be assigned to groups.'); }
 		if (count($aGroups) == 0) { return _kt('User is currently not a member of any groups.'); }
 		if (count($aGroups) > $MAX_GROUPS) {
 		    $aGroups = array_slice($aGroups, 0, $MAX_GROUPS);

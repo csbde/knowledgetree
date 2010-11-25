@@ -717,7 +717,7 @@ kt.app.upload.uploadStructure=function(options){
 		//make the 'Enter metadata' progress message clickable!
 		if(state == 'ui_meta') {
 			jQuery(e).css("cursor", "pointer");
-			jQuery(e).bind('click', function() {
+			jQuery(e).one('click', function() {
 				self.showMetadataWindow();
 			});
 		} else {
@@ -737,7 +737,7 @@ kt.app.upload.uploadStructure=function(options){
 		
 		//has all the required metadata for the doc been entered?
 		if(self.options.has_required_metadata && !self.options.required_metadata_done){
-			self.setProgress('Enter metadata','ui_meta');
+			self.setProgress('Edit properties','ui_meta');
 		} else {
 			self.setProgress('Ready to add','waiting');
 			//iterate through all the files and check whether they have been uploaded!
@@ -825,7 +825,7 @@ kt.app.upload.uploadStructure=function(options){
 			jQuery.each(self.options.parent.data.files, function(key, value) {
 				if(value.options.has_required_metadata) {
 					if(!value.options.required_metadata_done) {
-						value.setProgress('Enter metadata','ui_meta');
+						value.setProgress('Edit properties','ui_meta');
 						allRequiredMetadataDone = false;
 						return;
 					} else {
