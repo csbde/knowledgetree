@@ -1227,6 +1227,8 @@ class KTWebService {
     		}
 
     	}
+    	
+    	$this->debug('get_document_detail return '.print_r($detail, true));
 
     	return new SOAP_Value('return', "{urn:$this->namespace}kt_document_detail", $detail);
     }
@@ -3123,9 +3125,10 @@ class KTWebService {
 	function _encode_transaction_history($history, $name = 'history')
 	{
 		foreach($history as $key => $item)
-		{
+		{			
 			$history[$key] = new SOAP_Value('item', "{urn:$this->namespace}kt_document_transaction_history_item", $item);
 		}
+		
 		return new SOAP_Value($name, "{urn:$this->namespace}kt_document_transaction_history", $history);
 	}
 
@@ -3164,6 +3167,7 @@ class KTWebService {
     	}
 
     	$response['status_code'] = KTWS_SUCCESS;
+    	$response['message'] = 'success';
     	$response['history'] = KTWebService::_encode_transaction_history($result);
 
     	return new SOAP_Value('return', "{urn:$this->namespace}kt_document_transaction_history_response", $response);
@@ -3532,7 +3536,6 @@ class KTWebService {
 	 */
 	function get_document_comments($session_id, $document_id, $order = 'DESC')
 	{
-		//$GLOBALS['default']->log->debug("webservice get_document_comments('$session_id', $document_id, '$order')");
 		$this->debug("get_document_comments('$session_id', $document_id, '$order')");
 
     	$kt = &$this->get_ktapi($session_id);
@@ -3577,7 +3580,6 @@ class KTWebService {
 	 */
 	function add_document_comment($session_id, $document_id, $comment)
 	{
-		//$GLOBALS['default']->log->debug("webservice add_document_comment('$session_id', $document_id, '$comment')");
 		$this->debug("add_document_comment('$session_id', $document_id, '$comment')");
 
     	$kt = &$this->get_ktapi($session_id );
@@ -3618,7 +3620,7 @@ class KTWebService {
 	 *
 	 * @param string $session_id
 	 * @param int $limit
-	 * @return kt_response
+	 * @return kt_document_collection
 	 */
 	function get_user_document_browse_history($session_id, $limit = -1)
 	{
@@ -3654,16 +3656,51 @@ class KTWebService {
 		}
 
 		$this->debug("get_user_document_browse_history collection ".print_r($collection, true));
-		$this->debug("get_user_document_browse_history collection size ".count($collection));
 
-		$response = array();
-    	$response['status_code'] = KTWS_SUCCESS;
-		$response['message'] = empty($collection) ? _kt('No documents were found') : '';
-    	$response['collection'] = new SOAP_Value('collection', "{urn:$this->namespace}kt_document_collection", $collection);
-
-    	return new SOAP_Value('return', "{urn:$this->namespace}kt_document_collection_response", $response);
+		return new SOAP_Value('collection', "{urn:$this->namespace}kt_document_collection", $collection);
 	}
-    
+	
+	
+	/**
+	 * Gets the user's recently owned documents
+	 *
+	 * @param string $session_id
+	 * @param id $user_id
+	 * @param int $limit
+	 * @return kt_document_collection
+	 */
+	function get_most_recent_documents_owned($session_id, $user_id, $limit = 10)
+	{
+		$this->debug("get_most_recent_documents_owned('$session_id', $user_id, $limit)");
+
+		$kt = &$this->get_ktapi($session_id );
+		if (is_array($kt))
+    	{
+    		return new SOAP_Value('return', "{urn:$this->namespace}kt_response", $kt);
+    	}
+    	
+    	$documents = &$kt->get_most_recent_documents_owned($user_id, $limit);
+    	
+		$collection = array();
+
+		foreach ($documents as $document)
+		{			
+			$detail = $this->get_document_detail($session_id, $document->getId());
+
+			if ($detail->value['status_code'] != 0)
+			{
+				continue;
+			}
+			$collection[] = $detail->value;
+		}
+		
+		$this->debug('get_most_recent_documents_owned collection '.print_r($collection, true));
+    	
+		return new SOAP_Value('collection', "{urn:$this->namespace}kt_document_collection", $collection);
+	}
+	
+	
+	
     private function setTypeDefinitions()
     {
         $this->__typedef["{urn:$this->namespace}kt_response"] =
@@ -3986,11 +4023,17 @@ class KTWebService {
                   )
          	);
 
+         	
     $this->__typedef["{urn:$this->namespace}kt_metadata_options"] =
          	array(
 				'ishtml' => 'string',
         		'maxlength' => 'string'
          	);
+         	
+         	if ($this->version >= 3)
+	         {
+	         	$this->__typedef["{urn:$this->namespace}kt_metadata_options"]['type'] = 'string';
+	         }
 
     	$this->__typedef["{urn:$this->namespace}kt_metadata_field"] =
          	array(
@@ -4512,7 +4555,7 @@ class KTWebService {
          	//get_user_document_browse_history
          	$this->__dispatch_map['get_user_document_browse_history'] =
             array('in' => array('session_id' => 'string', 'limit' => 'string'),
-             'out' => array('return' => "{urn:$this->namespace}kt_response" ),
+             'out' => array('return' => "{urn:$this->namespace}kt_document_collection" ),
             );
 
             /* NOT IMPLEMENTED YET
@@ -4521,6 +4564,15 @@ class KTWebService {
             array('in' => array('session_id' => 'string', 'limit' => 'int'),
              'out' => array('return' => "{urn:$this->namespace}kt_response" ),
             );*/
+         }
+         
+         //most_recent_owned
+    	 if ($this->version >= 3)
+         {
+         	 $this->__dispatch_map['get_most_recent_documents_owned'] =
+         	 	array('in' => array('session_id' => 'string', 'user_id' => 'int', 'limit' => 'int'),
+         	 	'out' => array('return' => "{urn:$this->namespace}kt_document_collection"),
+         	 );
          }
 
          // add_document

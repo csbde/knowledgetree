@@ -65,6 +65,7 @@ require_once(KTAPI_DIR .'/KTAPICollection.inc.php');
 require_once(KTAPI_DIR .'/KTAPIBulkActions.inc.php');
 require_once(KTAPI_DIR .'/KTAPITrigger.inc.php');
 require_once(KTAPI_DIR .'/KTAPIConditionalMetadata.inc.php');
+require_once(KTAPI_DIR .'/KTAPIUser.inc.php');
 
 /**
 * This class defines functions that MUST exist in the inheriting class
@@ -5142,8 +5143,6 @@ class KTAPI
     		}
     		catch (Exception $e) {
     			$GLOBALS['default']->log->error("COMMENTS_API get comments error {$e->getMessage()}");
-    			// while it would be nice to throw an exception here, that probably won't please the REST webservice
-    			/*throw $e;*/
 		        $response['status_code'] = 1;
 		        $response['message'] = $e->getMessage();
     		}
@@ -5172,14 +5171,36 @@ class KTAPI
     		}
     		catch (Exception $e) {
     			$GLOBALS['default']->log->error("COMMENTS_API add comment error {$e->getMessage()}");
-    			// while it would be nice to throw an exception here, that probably won't please the REST webservice
-    			/*throw $e;*/
     			$response['status_code'] = 1;
 		        $response['message'] = $e->getMessage();
     		}
     	}
 
     	return $response;
+    }
+    
+	/**
+     * Returns the most recent document owned by a user
+     *
+     * @param int $user_id
+     * @param int $limit
+     */
+    public function get_most_recent_documents_owned($user_id, $limit = 10)
+    {
+    	$GLOBALS['default']->log->debug("KTAPI get_most_recent_documents_owned $user_id $limit");
+		
+    	$user = KTAPI_User::getById($user_id);
+    	if (is_null($user) || PEAR::isError($user))
+		{
+			$result =  new PEAR_Error(KTAPI_ERROR_USER_INVALID);
+			return $result;
+		}
+		
+    	$documents = $user->mostRecentDocumentsOwned($limit);
+
+    	//$GLOBALS['default']->log->debug('KTAPI get_most_recent_documents_owned items '.print_r($documents, true));
+    	
+		return $documents;
     }
 
 }
