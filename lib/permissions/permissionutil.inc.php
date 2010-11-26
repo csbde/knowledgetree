@@ -496,14 +496,34 @@ class KTPermissionUtil {
      * user, its groups, its roles, or the roles assigned to its groups,
      * and so forth.
      */
-    function userHasPermissionOnItem($oUser, $oPermission, $oFolderOrDocument) {
+    function userHasPermissionOnItem($oUser, $oPermission, $oFolderOrDocument)
+    {
+        KTUtil::startTiming(__FUNCTION__);
+
+        if($oPermission instanceof KTPermission){
+            $oPermission = $oPermission->getName();
+        }
+
+        $lookup_id = $oFolderOrDocument->getPermissionLookupID();
+
+        // Get the users permissions from cache
+	    $cache = PermissionCache::getSingleton();
+	    $check = $cache->checkPermission($lookup_id, $oPermission, $oUser->iId);
+	    KTUtil::logTiming(__FUNCTION__);
+	    return $check;
+
+
+        KTUtil::startTiming(__FUNCTION__);
+
         if (is_string($oPermission)) {
              $oPermission =& KTPermission::getByName($oPermission);
         }
         if (PEAR::isError($oPermission)) {
+            KTUtil::logTiming(__FUNCTION__);
             return false;
         }
         if (PEAR::isError($oFolderOrDocument) || $oFolderOrDocument == null) {
+            KTUtil::logTiming(__FUNCTION__);
             return false;
         }
 
@@ -526,6 +546,7 @@ class KTPermissionUtil {
         if (PEAR::isError($oPLA)) {
             //print $oPL->getID();
             KTPermissionUtil::$permArr[$iPermId][$lookup][$iDocId] = false;
+            KTUtil::logTiming(__FUNCTION__);
             return false;
         }
         $oPD = KTPermissionDescriptor::get($oPLA->getPermissionDescriptorID());
@@ -535,13 +556,26 @@ class KTPermissionUtil {
 
         // check for permissions
         $aGroups = GroupUtil::listGroupsForUserExpand($oUser);
-        if ($oPD->hasRoles(array(-3))) { return true; } // everyone has access.
-        else if ($oPD->hasUsers(array($oUser))) { return true; }
-        else if ($oPD->hasGroups($aGroups)) { return true; }
-        else if ($oPD->hasRoles(array(-4)) && !$oUser->isAnonymous() && $oUser->isLicensed()) { return true; }
+        if ($oPD->hasRoles(array(-3))) {
+            KTUtil::logTiming(__FUNCTION__, 'roles');
+            return true;
+        } // everyone has access.
+        else if ($oPD->hasUsers(array($oUser))) {
+            KTUtil::logTiming(__FUNCTION__, 'everyone');
+            return true;
+        }
+        else if ($oPD->hasGroups($aGroups)) {
+            KTUtil::logTiming(__FUNCTION__, 'groups');
+            return true;
+        }
+        else if ($oPD->hasRoles(array(-4)) && !$oUser->isAnonymous() && $oUser->isLicensed()) {
+            KTUtil::logTiming(__FUNCTION__, 'anon');
+            return true;
+        }
 
         // permission isn't true, set to false
         KTPermissionUtil::$permArr[$iPermId][$lookup][$iDocId] = false;
+        KTUtil::logTiming(__FUNCTION__, 'final');
         return false;
     }
     // }}}

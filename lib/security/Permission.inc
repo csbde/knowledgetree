@@ -43,6 +43,7 @@
 
 require_once(KT_LIB_DIR . '/permissions/permission.inc.php');
 require_once(KT_LIB_DIR . '/permissions/permissionutil.inc.php');
+require_once(KT_LIB_DIR . '/security/PermissionCache.php');
 
 class Permission {
 
@@ -53,7 +54,32 @@ class Permission {
     *
     * @return boolean true if the current user has document write permission, false otherwise and set $_SESSION["errorMessage"]
     */
-    function userHasDocumentWritePermission($oDocument) {
+    function userHasDocumentWritePermission($oDocument)
+    {
+        KTUtil::startTiming(__FUNCTION__);
+
+    	if ($oDocument->getImmutable())
+		{
+			return false;
+		}
+
+		if ($oDocument->getIsCheckedOut())
+		{
+			if ($oDocument->getCheckedOutUserID() != $_SESSION["userID"])
+			{
+				return false;
+			}
+		}
+
+        $lookup_id = $oDocument->getPermissionLookupID();
+
+        // Get the users permissions from cache
+	    $cache = PermissionCache::getSingleton();
+	    $check = $cache->checkPermission($lookup_id, 'ktcore.permissions.write');
+	    KTUtil::logTiming(__FUNCTION__);
+	    return $check;
+
+        KTUtil::startTiming(__FUNCTION__);
 
     	if ($oDocument->getImmutable())
 		{
@@ -71,8 +97,11 @@ class Permission {
         $oUser = User::get($_SESSION["userID"]);
         $oPermission = KTPermission::getByName('ktcore.permissions.write');
 
-        return KTPermissionUtil::userHasPermissionOnItem($oUser,
+        $result = KTPermissionUtil::userHasPermissionOnItem($oUser,
                 $oPermission, $oDocument);
+
+        KTUtil::logTiming(__FUNCTION__);
+        return $result;
     }
 
     /**
@@ -83,12 +112,26 @@ class Permission {
     *
     * @return boolean true if the user has document write permission, false otherwise and set $_SESSION["errorMessage"]
     */
-    function userHasDocumentReadPermission($oDocument) {
+    function userHasDocumentReadPermission($oDocument)
+    {
+        KTUtil::startTiming(__FUNCTION__);
+
+        $lookup_id = $oDocument->getPermissionLookupID();
+
+        // Get the users permissions from cache
+	    $cache = PermissionCache::getSingleton();
+	    $check = $cache->checkPermission($lookup_id, 'ktcore.permissions.read');
+	    KTUtil::logTiming(__FUNCTION__);
+	    return $check;
+
         $oUser = User::get($_SESSION["userID"]);
         $oPermission = KTPermission::getByName('ktcore.permissions.read');
 
-        return KTPermissionUtil::userHasPermissionOnItem($oUser,
+        $result = KTPermissionUtil::userHasPermissionOnItem($oUser,
                 $oPermission, $oDocument);
+
+        KTUtil::logTiming(__FUNCTION__);
+        return $result;
     }
 
     /**
@@ -97,7 +140,18 @@ class Permission {
     * @param $oDocument     Document object to check
     * @return boolean true if the user has delete document permission, false otherwise and set $_SESSION["errorMessage"]
     */
-    function userHasDeleteDocumentPermission($oDocument) {
+    function userHasDeleteDocumentPermission($oDocument)
+    {
+        KTUtil::startTiming(__FUNCTION__);
+
+        $lookup_id = $oDocument->getPermissionLookupID();
+
+        // Get the users permissions from cache
+	    $cache = PermissionCache::getSingleton();
+	    $check = $cache->checkPermission($lookup_id, 'ktcore.permissions.delete');
+	    KTUtil::logTiming(__FUNCTION__);
+	    return $check;
+
         $oUser = User::get($_SESSION["userID"]);
         $oPermission = KTPermission::getByName('ktcore.permissions.delete');
 
@@ -112,7 +166,19 @@ class Permission {
     *
     * @return boolean true if the user has folder write permission, false otherwise and set $_SESSION["errorMessage"]
     */
-    function userHasFolderWritePermission($oFolder) {
+    function userHasFolderWritePermission($oFolder)
+    {
+        KTUtil::startTiming(__FUNCTION__);
+
+        $lookup_id = $oFolder->getPermissionLookupID();
+
+        // Get the users permissions from cache
+	    $cache = PermissionCache::getSingleton();
+	    $check = $cache->checkPermission($lookup_id, 'ktcore.permissions.write');
+	    KTUtil::logTiming(__FUNCTION__);
+	    return $check;
+
+
         $oUser = User::get($_SESSION["userID"]);
         $oPermission = KTPermission::getByName('ktcore.permissions.write');
 
@@ -128,7 +194,19 @@ class Permission {
     *
     * @return boolean true if the user has folder write permission, false otherwise and set $_SESSION["errorMessage"]
     */
-    function userHasFolderReadPermission($oFolder) {
+    function userHasFolderReadPermission($oFolder)
+    {
+        KTUtil::startTiming(__FUNCTION__);
+
+        $lookup_id = $oFolder->getPermissionLookupID();
+
+        // Get the users permissions from cache
+	    $cache = PermissionCache::getSingleton();
+	    $check = $cache->checkPermission($lookup_id, 'ktcore.permissions.read');
+	    KTUtil::logTiming(__FUNCTION__);
+	    return $check;
+
+
         $oUser = User::get($_SESSION["userID"]);
         $oPermission = KTPermission::getByName('ktcore.permissions.read');
 
@@ -143,7 +221,20 @@ class Permission {
     *
     * @return boolean true if the user has add folder permission, false otherwise and set $_SESSION["errorMessage"]
     */
-    function userHasAddFolderPermission($oFolder) {
+    function userHasAddFolderPermission($oFolder)
+    {
+
+        KTUtil::startTiming(__FUNCTION__);
+
+        $lookup_id = $oFolder->getPermissionLookupID();
+
+        // Get the users permissions from cache
+	    $cache = PermissionCache::getSingleton();
+	    $check = $cache->checkPermission($lookup_id, 'ktcore.permissions.addFolder');
+	    KTUtil::logTiming(__FUNCTION__);
+	    return $check;
+
+
         $oUser = User::get($_SESSION["userID"]);
         $oPermission = KTPermission::getByName('ktcore.permissions.addFolder');
 
@@ -157,7 +248,19 @@ class Permission {
     * @param $oFolder     Folder object to check
     * @return boolean true if the user has rename folder permission, false otherwise and set $_SESSION["errorMessage"]
     */
-    function userHasRenameFolderPermission($oFolder) {
+    function userHasRenameFolderPermission($oFolder)
+    {
+        KTUtil::startTiming(__FUNCTION__);
+
+        $lookup_id = $oFolder->getPermissionLookupID();
+
+        // Get the users permissions from cache
+	    $cache = PermissionCache::getSingleton();
+	    $check = $cache->checkPermission($lookup_id, 'ktcore.permissions.folder_rename');
+	    KTUtil::logTiming(__FUNCTION__);
+	    return $check;
+
+
         $oUser = User::get($_SESSION["userID"]);
         $oPermission = KTPermission::getByName('ktcore.permissions.folder_rename');
 
@@ -171,7 +274,19 @@ class Permission {
     * @param $oFolder     Folder object to check
     * @return boolean true if the user has delete folder permission, false otherwise and set $_SESSION["errorMessage"]
     */
-    function userHasDeleteFolderPermission($oFolder) {
+    function userHasDeleteFolderPermission($oFolder)
+    {
+        KTUtil::startTiming(__FUNCTION__);
+
+        $lookup_id = $oFolder->getPermissionLookupID();
+
+        // Get the users permissions from cache
+	    $cache = PermissionCache::getSingleton();
+	    $check = $cache->checkPermission($lookup_id, 'ktcore.permissions.delete');
+	    KTUtil::logTiming(__FUNCTION__);
+	    return $check;
+
+
         $oUser = User::get($_SESSION["userID"]);
         $oPermission = KTPermission::getByName('ktcore.permissions.delete');
 
@@ -185,7 +300,19 @@ class Permission {
     * @param $oFolder     Folder object to check
     * @return boolean true if the user has security folder permission, false otherwise and set $_SESSION["errorMessage"]
     */
-    function userHasSecurityFolderPermission($oFolder) {
+    function userHasSecurityFolderPermission($oFolder)
+    {
+        KTUtil::startTiming(__FUNCTION__);
+
+        $lookup_id = $oFolder->getPermissionLookupID();
+
+        // Get the users permissions from cache
+	    $cache = PermissionCache::getSingleton();
+	    $check = $cache->checkPermission($lookup_id, 'ktcore.permissions.security');
+	    KTUtil::logTiming(__FUNCTION__);
+	    return $check;
+
+
         $oUser = User::get($_SESSION["userID"]);
         $oPermission = KTPermission::getByName('ktcore.permissions.security');
 
