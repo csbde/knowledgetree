@@ -101,7 +101,7 @@
     	    	<div id="reset_box" class="reset_box">
 	    	    	<form name="reset_form" action="" method="POST">
 	    	    		{if $use_email}
-	        	    		<p class="descriptive-text">{i18n}Please enter an email address.{/i18n}</p>
+	        	    		<p class="descriptive-text">{i18n}Please enter a new password.{/i18n}</p>
 						{else}
 							<p class="descriptive-text">{i18n}Please enter your username and email address.{/i18n}</p>
 						{/if}
