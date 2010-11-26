@@ -56,7 +56,6 @@ class ldapGroupDispatcher extends KTStandardDispatcher {
         parent::KTStandardDispatcher();
     }
 	
-	// TODO I think this can stand some more refactoring, because it looks like some stuff is done regardless of which action is chosen
     public function do_addGroupFromSource()
     {        
         $submit = KTUtil::arrayGet($_REQUEST, 'submit');
@@ -138,8 +137,7 @@ class ldapGroupDispatcher extends KTStandardDispatcher {
     
     private function _do_editGroupFromSource()
     {
-        // TODO move this and other templates into the plugin directory
-        $template = $this->oValidator->validateTemplate('ktstandard/authentication/ldapaddgroup');
+        $template = $this->oValidator->validateTemplate('ldap_add_group');
         $id = KTUtil::arrayGet($_REQUEST, 'id');
         
         $manager = new LdapGroupManager($this->source);
@@ -147,7 +145,8 @@ class ldapGroupDispatcher extends KTStandardDispatcher {
             $attributes = $manager->getGroup($id);
         }
         catch (Exception $e) {
-            // TODO deal with error conditions
+            global $default;
+            $default->log->error("There was an error getting the group information from the ldap server: {$e->getMessage()}");
         }
 
         $fields = array();

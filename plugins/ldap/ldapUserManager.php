@@ -43,9 +43,6 @@ class LdapUserManager extends LdapManager {
 	    parent::__destruct();
 	}
 	
-    // TODO proper error returns, I suppose these will have to be PEAR errors as that's
-    //      what the rest of the system expects...
-    //      these error returns to replace the "return false;" statements
     /**
      * Search the LDAP server for users matching the supplied search string
      *
@@ -79,10 +76,11 @@ class LdapUserManager extends LdapManager {
             $users = $this->ldapConnector->search($filter, null, Zend_Ldap::SEARCH_SCOPE_SUB, $attributes);
         }
         catch (Exception $e) {
-            // TODO logging and remove the echo statement
-            echo $e->getMessage() . " [$filter]";
+            return new PEAR_Error("There was a problem executing the search [{$e->getMessage()}]");
         }
         
+        // NOTE groups (on successful retrieval) is an iterator object and can be used with foreach() or next()
+        //      on failed retrieval it will be an empty array
         return $users;
     }
     

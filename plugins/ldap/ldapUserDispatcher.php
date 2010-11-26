@@ -155,8 +155,6 @@ class ldapUserDispatcher extends KTStandardDispatcher {
         $emailNotifications = KTUtil::arrayGet($_REQUEST, 'emailNotifications', false);
         if ($emailNotifications !== false) { $emailNotifications = true; }
         
-        // not used
-        /*$mobileNumber = KTUtil::arrayGet($_REQUEST, 'mobile_number');*/
         $maxSessions = KTUtil::arrayGet($_REQUEST, 'max_sessions', '3');
         // FIXME check for numeric maxSessions... db-error else?
 
@@ -177,14 +175,12 @@ class ldapUserDispatcher extends KTStandardDispatcher {
         $id = KTUtil::arrayGet($_REQUEST, 'id');
 
         $manager = new LdapUserManager($this->source);
-        // TODO/FIXME not sure that this method of sending attributes works since this is not the main dispatcher...
         $results = $manager->getUser($id);
         $errorOptions = array(
             'message' => _kt('Could not find user in LDAP server'),
         );
         $this->oValidator->notError($results);
 
-        // FIXME $this->attributes is not present in this class (or the calling class, need to get it from the auth class)
         $userName = $results[$this->attributes[1]];
 
         // If the SAMAccountName is empty then use the UserPrincipalName (UPN) to find the username.
@@ -223,7 +219,6 @@ class ldapUserDispatcher extends KTStandardDispatcher {
         $manager = new LdapUserManager($this->source);
 
         foreach ($ids as $id) {
-            // TODO/FIXME not sure that this method of sending attributes works since this is not the main dispatcher...
             $results = $manager->getUser($id);
             $dn = $id;
             $userName = $results[$this->attributes[1]];
@@ -233,7 +228,7 @@ class ldapUserDispatcher extends KTStandardDispatcher {
                 $userName = end(explode('=', $dnParts[0]));;
             }
 
-            // TODO/FIXME this may need changing of the auth class name
+            // TODO/FIXME this may need changing of the auth class name??? ($this->sAuthenticatorClass == 'KTLDAPAuthenticator')
             // With LDAP, if the 'uid' is null then try using the 'givenname' instead.
             // See activedirectoryauthenticationprovider.inc.php and ldapauthenticationprovider.inc.php for details.
             if (($this->sAuthenticatorClass == 'KTLDAPAuthenticator') && empty($userName)) {
@@ -247,8 +242,6 @@ class ldapUserDispatcher extends KTStandardDispatcher {
             }
 
             $emailAddress = $results[$this->attributes[4]];
-            // not used
-            /*$mobileNumber = $results[$this->attributes[5]];*/
 
             // If the user already exists append some text so the admin can see the duplicates.
             $appending = true;

@@ -14,9 +14,6 @@ class LdapGroupManager extends LdapManager {
         parent::__destruct();
     }
 
-    // TODO proper error returns, I suppose these will have to be PEAR errors as that's
-    //      what the rest of the system expects...
-    //      these error returns to replace the "return false;" statements
     /**
      * Search groups, using the supplied search string
      *
@@ -36,9 +33,7 @@ class LdapGroupManager extends LdapManager {
             $groups = $this->ldapConnector->search("(&(|(objectClass=group)(objectClass=posixGroup))(cn=*$search*))", null, Zend_Ldap::SEARCH_SCOPE_SUB, $attributes);
         }
         catch (Exception $e) {
-            // TODO logging and remove the echo statement
-            // TODO return which reliably indicates to calling code whether there was an error (empty response is not enough)
-            echo $e->getMessage() . " [$dn]";
+            return new PEAR_Error("There was a problem executing the search [{$e->getMessage()}]");
         }
         
         // NOTE groups (on successful retrieval) is an iterator object and can be used with foreach() or next()
