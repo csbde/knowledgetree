@@ -121,7 +121,7 @@ class sharedUserBrowseView extends browseView
 		$item['document_link'] = KTUtil::buildUrl("view.php", array('fDocumentId'=>$item['id']));
 		$item['filename'] = (strlen($item['filename']) > $fileNameCutoff) ? substr($item['filename'], 0, $fileNameCutoff - 3) . "..." : $item['filename'];
 		$item['has_workflow'] = '';
-		$item['is_immutable'] = ($item['is_immutable'] == 'true') ? true : false;
+		$item['is_immutable'] = ($item['is_immutable'] == 1) ? true : false;
 		$item['is_immutable'] = $item['is_immutable'] ? '' : $ns;
 		$item['is_checkedout'] = $item['checked_out_date'] ? '' : $ns;
 		// Check parent folder if user type is shared (disabled == 4)
