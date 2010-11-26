@@ -136,11 +136,8 @@ kt.api = new function() {
 		}
 	};
 
-	this.hasWrite = function(objectId, objectType, userId, callback, errorCallback) {
+	this.isShared = function(callback, errorCallback) {
 		var params = {};
-		params.objectId = objectId;
-		params.userId = userId;
-		params.objectType = objectType;
 		var synchronous = false;
 		var func = 'siteapi.hasWrite';
 		if (callback === true) {
@@ -168,6 +165,14 @@ kt.api = new function() {
 		var ret = ktjapi.callMethod(func, params, function() {}, false, function() {}, 30000);
 	};
 
+	this.getUserType = function() {
+		params = {};
+		var func = 'siteapi.getUserType';
+		var ret = ktjapi.retrieve(func, params, 30000);
+
+		return ret.data.usertype;
+	};
+	
 	this.getFragment = function(fragName, params) {
 		if (!kt.lib.Object.is_object(params)) { params = {}; }
 		params = kt.lib.Object.extend({name:fragName}, params);
