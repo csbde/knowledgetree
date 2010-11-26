@@ -211,6 +211,11 @@ class sharedUserBrowseView extends browseView
 				}
 			}
 		}
+		if(!is_null($item['checked_out_by']))
+		{
+			$coUser = User::get($item['checked_out_by']);
+			$item['checked_out_by'] = $coUser->getName();
+		}
 		$checkbox = '';
 		$tpl='
 			<span class="doc browseView">
@@ -595,8 +600,7 @@ class browseView {
 		if(get_class($oDocument) == 'Document'){
     		if($hasWrite) {
         		$item['actions.checkout'] = $item['checked_out_date'] ? $ns : '';
-
-                $hasCheckedOut = ($_SESSION['userID'] == $oDocument->getCheckedOutUserID());
+                $hasCheckedOut = ($_SESSION['userID'] == $item['checked_out_by']);
         		$item['actions.checkin'] = ($item['checked_out_date'] && $hasCheckedOut) ? '' : $ns;
         		$item['actions.cancel_checkout'] = ($item['checked_out_date'] && $hasCheckedOut) ? '' : $ns;
 
