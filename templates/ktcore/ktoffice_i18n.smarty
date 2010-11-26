@@ -50,11 +50,15 @@ i18n['Checkout succeeded'] = '{i18n}Checkout succeeded{/i18n}';
 
 i18n['Your document has been checked out.'] = '{i18n}Your document has been checked out.{/i18n}';
 
-i18n['Checkin failed'] = '{i18n}Checkin failed{/i18n}';
+i18n['Checkin failed'] = '{i18n}Check-in failed{/i18n}';
+
+i18n['Check-in failed'] = '{i18n}Check-in failed{/i18n}';
 
 i18n['Your document has not been checked in.'] = '{i18n}Your document has not been checked in.{/i18n}';
 
-i18n['Checkin succeeded'] = '{i18n}Checkin succeeded{/i18n}';
+i18n['Checkin succeeded'] = '{i18n}Check-in succeeded{/i18n}';
+
+i18n['Check-in succeeded'] = '{i18n}Check-in succeeded{/i18n}';
 
 i18n['Your document has been checked in.'] = '{i18n}Your document has been checked in.{/i18n}';
 

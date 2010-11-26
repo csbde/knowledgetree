@@ -132,16 +132,11 @@ class KTUserUtil {
         $groupName = '';
 
     	$inSystemList = self::checkUniqueEmail($addressList);
-    	/*if ($type == 'invited') {
-    	   $availableLicenses = (int)BaobabKeyUtil::availableUserLicenses();
-    	}*/
 
     	// loop through any addresses that currently exist and unset them in the invitee list
     	$addressList = array_flip($addressList);
     	foreach ($inSystemList as $item) {
-//    	    if ($type != 'shared') {
-    	        unset($addressList[$item['email']]);
-//    	    }
+   	        unset($addressList[$item['email']]);
     	    $existingUsers[] = $item;
     	}
     	$addressList = array_flip($addressList);
@@ -197,12 +192,7 @@ class KTUserUtil {
     	}
 
     	$numInvited = count($invitedUsers);
-
     	$check = 0;
-    	/*if ($type == 'invited') {
-    	   $check = self::checkUserLicenses($numInvited, $availableLicenses);
-    	}*/
-
     	// Format the list of existing users
     	$existing = '';
     	if (!empty($existingUsers)){
@@ -211,7 +201,6 @@ class KTUserUtil {
     	        if (!empty($item['name'])) {
     	            $existing .= $item['name'] . ' - ';
     	        }
-
     	        $existing .= $item['email'] .'</li>';
     	    }
     	}
@@ -230,16 +219,11 @@ class KTUserUtil {
     	if (($type == 'shared') && !empty($existingUsers)) {
     	    foreach ($existingUsers as $existingUser) {
     	        self::addSharedContent($existingUser['id'], $shareContent['object_id'], $shareContent['object_type'], $shareContent['permission']);
+    	        // Send a sharing notification to existing users.
+    	        self::sendNotifications($existingUsers, $shareContent['object_id'], $shareContent['object_type']);
     	    }
-			// Send a sharing notification to existing users.
-			if($shareContent['object_type'] == 'D')
-			{
-				self::sendNotifications($existingUsers, $shareContent['object_id']);
-			}
     	}
     	
-    	// 
-
     	return $response;
     }
 
@@ -287,8 +271,25 @@ class KTUserUtil {
      * @param array $emailList Array of email addresses: format $list[] = array('id' => $id, 'email' => $email)
      * @return bool
      */
-    public static function sendNotifications($emailList, $docoumentId)
+    public static function sendNotifications($emailList, $object_id, $object_type = null)
     {
+    	$folderId = null;
+    	$docoumentId = null;
+    	if(is_null($object_type))
+    	{
+    		$docoumentId = $object_id;
+    	}
+    	else 
+    	{
+    		if($object_type == 'D')
+    		{
+    			$docoumentId = $object_id;
+    		}
+    		else if($object_type == 'F')
+    		{
+    			$folderId = $object_id;
+    		}
+    	}
         // Use the current user as the "inviter" / sender of the emails
         // goes into the user array for use in the email
         $oSender = User::get($_SESSION['userID']);
@@ -301,16 +302,29 @@ class KTUserUtil {
 
         $list = array();
         $server = KTUtil::kt_url();
-        $document_link = KTUtil::buildUrl("view.php", array('fDocumentId'=>$docoumentId));
-        $link = $server . $document_link;
-        require_once(KT_LIB_DIR . '/documentmanagement/Document.inc');
-		$oDocument = Document::get($docoumentId);
+        if(is_null($docoumentId))
+        {
+        	$folder_link = KTUtil::buildUrl("browse.php", array('fFolderId'=>$folderId));
+        	$link = $server . $folder_link;
+        	require_once(KT_LIB_DIR . '/foldermanagement/Folder.inc');
+			$oFolder = Folder::get($folderId);
+			$name = $oFolder->getName();
+        }
+        else 
+        {
+	        $document_link = KTUtil::buildUrl("view.php", array('fDocumentId'=>$docoumentId));
+	        $link = $server . $document_link;
+	        require_once(KT_LIB_DIR . '/documentmanagement/Document.inc');
+			$oDocument = Document::get($docoumentId);
+			$name = $oDocument->getName();
+        }
+
         foreach ($emailList as $item) { 
             $list[] = array(	'name' => '', 
             					'email' => $item['email'], 
             					'sender' => $sender, 
             					'link' => $link, 
-            					'title'=>$oDocument->getName()
+            					'title'=> $name,
             				);
         }
 
@@ -327,7 +341,7 @@ class KTUserUtil {
             // dispatch queue event
             require_once(KT_LIVE_DIR . '/sqsqueue/dispatchers/queueDispatcher.php');
             $params = array();
-            $params['subject'] = _kt('KnowledgeTree Invitation');
+            $params['subject'] = _kt('KnowledgeTree Sharing Notification');
             $params['content_html'] = 'email/notifications/shared-user-content.html';
             $params['sender'] = array($emailFrom => 'KnowledgeTree');
             $params['recipients'] = $list;

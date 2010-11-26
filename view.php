@@ -826,7 +826,8 @@ class viewUtil
     static function getView() 
     {
     	$oUser = User::get($_SESSION['userID']);
-    	$userType = $oUser->getDisabled();
+    	if(PEAR::isError($oUser)) { $userType = 0; }
+    	else { $userType = $oUser->getDisabled(); }
     	switch ($userType)
     	{
     		case 0 :
