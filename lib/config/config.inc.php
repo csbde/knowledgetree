@@ -119,7 +119,7 @@ class KTConfig {
         if($server_list == false){
                 return false;
         }
-        $filename = $this->getCacheFilename();
+        //$filename = $this->getCacheFilename();
 
         $server_arr = explode('|', $server_list);
         $servers = array();

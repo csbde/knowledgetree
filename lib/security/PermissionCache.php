@@ -42,11 +42,39 @@
  */
 class PermissionCache
 {
+    /**
+     * The PermissionCache object
+     * @access private
+     * @var PermissionCache
+     */
     private static $permCache;
+
+    /**
+     * The Permission Memcache object
+     * @access private
+     * @var PermissionMemCache
+     */
     private $memcache;
+
+    /**
+     * The name of the cache table
+     * @access private
+     * @var string
+     */
     private $table;
+
+    /**
+     * The mapping of the permission namespace to id
+     * @access private
+     * @var array
+     */
     private $permMap;
 
+    /**
+     * Constructor to set up the permissions mapping and the memcache class
+     *
+     * @access private
+     */
     private function __construct()
     {
         $this->table = 'permission_fast_cache';
@@ -69,6 +97,12 @@ class PermissionCache
         }
     }
 
+    /**
+     * Singleton pattern - get the existing instance of the class or create a new one
+     *
+     * @access public
+     * @return PermissionCache
+     */
     public static function getSingleton()
     {
         if(empty(self::$permCache)){
@@ -77,7 +111,17 @@ class PermissionCache
         return self::$permCache;
     }
 
-    public function checkPermission($lookupId, $permission = 'ktcore.permissions.read', $userId = null)
+    /**
+     * Check whether a user has a given permission on an object.
+     * The check will access memcache to check, if nothing exists then the database will be checked.
+     *
+     * @access public
+     * @param int $lookupId The permission lookup id for the object (folder | document)
+     * @param string $permission The namespace of the permission to check, eg 'ktcore.permissions.read'
+     * @param int $userId The id of the user
+     * @return boolean True if the user has permission | False if not allowed
+     */
+    public function checkPermission($lookupId, $permission, $userId = null)
     {
         if(!is_numeric($lookupId)){
             return false;
@@ -91,21 +135,46 @@ class PermissionCache
 
         $userId = is_numeric($userId) ? $userId : $_SESSION['userID'];
 
+        // Check the permissions in memcache
+        if($this->memcache !== false) {
+            $check = $this->memcache->checkPermission($userId, $lookupId, $permId);
+
+            if(is_bool($check)){
+                return $check;
+            }
+
+            // if the memcache permission check returns anything other than a boolean value then
+            // we use the database to check and reset the memcache key further down
+            $check = false;
+        }
+
         $sql = "select p.id from permission_lookup_assignments p, permission_fast_cache c
                 where p.permission_descriptor_id = c.descriptor_id AND permission_id = {$permId}
                 AND user_id = {$userId} AND permission_lookup_id = {$lookupId}";
 
         $result = DBUtil::getOneResultKey($sql, 'id');
 
-        if(is_numeric($result) && $result > 0){
-            return true;
+        if(is_numeric($result) && $result > 0) {
+            $check = true;
+        } else {
+            // Check system roles
+            $check = $this->checkSystemRoles($permId, $lookupId, $userId);
         }
 
-        // Check system roles
-        $check = $this->checkSystemRoles($permId, $lookupId, $userId);
+        // Set the permission check in memcache
+        if($this->memcache !== false) {
+            $this->memcache->setPermission($userId, $lookupId, $permId, $check);
+        }
+
         return $check;
     }
 
+    /**
+     * Create / renew the permissions cache for a given user
+     *
+     * @access public
+     * @param int $userId The id of the user
+     */
     public function updateCacheForUser($userId = null)
     {
         $userId = is_numeric($userId) ? $userId : $_SESSION['userID'];
@@ -124,12 +193,29 @@ class PermissionCache
         }
     }
 
+    /**
+     * Clear the permissions cache for a given user - deletes all entries
+     *
+     * @access private
+     * @param int $userId The id of the user
+     * @return mixed True on success | PEAR_ERROR on failure
+     */
     private function clearCacheForUser($userId)
     {
         $res = DBUtil::whereDelete($this->table, array('user_id' => $userId));
         return $res;
     }
 
+    /**
+     * Check whether a given permission lookup id includes any system roles
+     * -3: Everyone; -4: Licensed Users
+     *
+     * @access private
+     * @param int $permId The id of the permission to check, eg 1: read permission
+     * @param int $lookupId The permission lookup id for the object (folder | document)
+     * @param int $userId The id of the user
+     * @return boolean True if the system roles give permission | False if not allowed
+     */
     private function checkSystemRoles($permId, $lookupId, $userId)
     {
         $sql = "select role_id from permission_descriptor_roles d, permission_lookup_assignments pl
@@ -149,6 +235,13 @@ class PermissionCache
         return false;
     }
 
+    /**
+     * Fetch all the permission descriptors containing the user or groups of the user
+     *
+     * @access private
+     * @param int $userId The id of the user
+     * @return array The list of descriptor id's
+     */
     private function getDescriptors($userId)
     {
         // for groups
@@ -176,28 +269,172 @@ class PermissionCache
 }
 
 /**
- * Stores and retrieves the users permissions from memcache
+ * Stores and retrieves the users permissions from memcache.
+ * Memcache does not support tags or namespaces. A workaround is to create a namespace and prefix it
+ * to all the keys stored in memcache.
+ * To clear everything associated with the namespace, a new namespace can be created. The old items will expire after
+ * a set period of time.
+ *
+ * For example, when updating the permissions of a given account, to clear the old permissions,
+ * each one would require updating individually, with thousands of these, this will be a slow procedure. Instead we use a
+ * namespace for each one. Clearing them only requires creating a new namespace leaving the old ones to expire.
  */
 class PermissionMemCache
 {
+    /**
+     * The namespace to be used with all permissions in memcache
+     * @access private
+     * @var string
+     */
+    private $namespace;
+
+    /**
+     * The key for accessing the namespace in memcache
+     * @access private
+     * @var string
+     */
+    private $namespaceKey;
+
+    /**
+     * The expiration period for all permissions in memcache
+     * @access private
+     * @var int
+     */
+    private $expiration;
+
+    /**
+     * Initialise the connection to memcache and setup the namespace key.
+     *
+     * @access public
+     */
     public function __construct()
     {
         $enabled = $this->initMemcache();
 
-        if(!$enabled){
+        if(!$enabled) {
             throw new Exception('Memcache cannot be initialised');
         }
+
+        $this->expiration = 60*60*24*14; // 2 weeks - permissions don't get updated too often
+
+        // Create the key for the namespace using the account name
+        $namespaceKey = 'permissions_key';
+        if(ACCOUNT_ROUTING_ENABLED) {
+            $namespaceKey = ACCOUNT_NAME . '_' . $namespaceKey;
+        }
+        $this->namespaceKey = $namespaceKey;
+        $this->namespace = $this->getNamespace();
     }
 
-    public function getItem()
-    {}
+    /**
+     * Create an unique key for the permission based on the user, lookup and permission id and store in memcache
+     * The value is stored in memcache as a 1 / 0. A returned value of false from memcache means the key does not exist.
+     *
+     * @access public
+     * @param int $userId The id of the user
+     * @param int $lookupId The permission lookup id for the object (folder | document)
+     * @param int $permId The id of the permission to check, eg 1: read permission
+     * @param boolean $value True if the user has permission | False if not allowed
+     */
+    public function setPermission($userId, $lookupId, $permId, $value = '')
+    {
+        $key = $this->namespace . '|' . $userId . '|' . $lookupId . '|' . $permId;
+        $value = ($value === true) ? 1 : 0;
+        $this->setItem($key, $value);
+    }
 
-    public function addItem()
-    {}
+    /**
+     * Check whether a user has a given permission on an object.
+     * The check will access memcache to check, if nothing exists then the database will be checked.
+     *
+     * @access public
+     * @param int $userId The id of the user
+     * @param int $lookupId The permission lookup id for the object (folder | document)
+     * @param int $permId The id of the permission to check, eg 1: read permission
+     * @return boolean True if the user has permission | False if not allowed
+     */
+    public function checkPermission($userId, $lookupId, $permId)
+    {
+        $key = $this->namespace . '|' . $userId . '|' . $lookupId . '|' . $permId;
+        $value = $this->getItem($key);
 
-    public function removeItem()
-    {}
+        if($value === false) {
+            return 'Error';
+        }
 
+        $value = ($value === 1) ? true : false;
+        return $value;
+    }
+
+    /**
+     * Get the namespace to be used when storing permissions
+     *
+     * @access private
+     * @return string The namespace
+     */
+    private function getNamespace()
+    {
+        $namespace = $this->getItem($this->namespaceKey);
+
+        // If the key doesn't exist or has expired then set a new one.
+        if(empty($namespace)){
+            $this->setNamespace();
+            $namespace = $this->namespace;
+        }
+        return $namespace;
+    }
+
+    /**
+     * Set a new unique namespace.
+     * The namespace is a combination of the key and the current timestamp to make it unique.
+     *
+     * @access private
+     */
+    private function setNamespace()
+    {
+        $namespace = $this->namespaceKey . '_' . time();
+        $namespace = base64_encode($namespace);
+        $expiration = 60*60*24*28; // 4 weeks - can be a bit longer than the individual permissions
+        $this->setItem($this->namespaceKey, $namespace);
+        $this->namespace = $namespace;
+    }
+
+    /**
+     * Get an item from memcache based on the supplied key.
+     *
+     * @access private
+     * @param string $key The key of the item in memcache
+     * @return mixed
+     */
+    private function getItem($key)
+    {
+        $value = MemCacheUtil::get($key);
+        return $value;
+    }
+
+    /**
+     * Set an item in memcache using a reference key and an expiration date.
+     * The expiration date will default to the one created in the constructor if nothing is supplied.
+     *
+     * @access private
+     * @param string $key The key of the item in memcache
+     * @param mixed $value The value to be stored
+     * @param int $expiration The length of time to keep the item beforing expiring / invalidating it
+     * @return boolean
+     */
+    private function setItem($key, $value, $expiration = null)
+    {
+        $expiration = (is_numeric($expiration)) ? $expiration : $this->expiration;
+        $res = MemCacheUtil::set($key, $value, $expiration);
+        return $res;
+    }
+
+    /**
+     * Initialise the connection to the memcache servers
+     *
+     * @access private
+     * @return boolean True if connected | False if not
+     */
     private function initMemcache()
     {
         if(MemCacheUtil::$enabled){
