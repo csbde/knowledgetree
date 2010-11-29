@@ -732,7 +732,7 @@ class browseView {
 								<!-- li class="actionIcon comments"></li -->
 								<li class="actionIcon actions">
 									<ul>
-										<li class="action_share_document [actions.share_document]"><a href="#" onclick="javascript:kt.app.inviteusers.showInviteWindow(\'[id]\',\'[item_type]\',\'[user_id]\');">Share This Document</a></li>
+										<li class="action_share_document [actions.share_document]"><a href="#" onclick="javascript:kt.app.sharewithusers.shareContentWindow(\'[id]\',\'[item_type]\',\'[user_id]\');">Share This Document</a></li>
 										<li class="separator[separatorE]"></li>
 										<li class="action_download [actions.download]"><a href="action.php?kt_path_info=ktcore.actions.document.view&fDocumentId=[id]">Download</a></li>
 										<li class="action_instant_view [actions.instant_view]"><a href="[document_link]#preview">Instant View</a></li>
@@ -830,7 +830,7 @@ class browseView {
 						<ul class="folder actionMenu">
 							<li class="actionIcon actions">
 									<ul>
-                                        <li class="action_share_folder [actions.share_folder]"><a href="#" onclick="javascript:kt.app.inviteusers.showInviteWindow(\'[id]\',\'[item_type]\',\'[user_id]\');">Share This Folder</a></li>
+                                        <li class="action_share_folder [actions.share_folder]"><a href="#" onclick="javascript:kt.app.sharewithusers.shareContentWindow(\'[id]\',\'[item_type]\',\'[user_id]\');">Share This Folder</a></li>
                                         <li class="action_rename_folder [actions.rename]"><a href="action.php?kt_path_info=ktcore.actions.folder.rename&fFolderId=[id]">Rename Folder</a></li>
                                         <li class="action_folder_permissions [actions.permissions]"><a href="action.php?kt_path_info=ktcore.actions.folder.permissions&fFolderId=[id]">Set Folder Permissions</a></li>
                                         <!-- <li class="[actions.subscribe]"><a href="#" onclick=\'alert("JavaScript to be modified")\'>Subscribe to Folder</a></li> -->
