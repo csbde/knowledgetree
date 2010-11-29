@@ -410,8 +410,12 @@ class siteapi extends client_service{
 		$options = array( 'orderby'=>'name' );
 		$folders = Folder::getList ( array ('parent_id = ?', $folderId ), $options );
 		$subfolders=array();
-		foreach($folders as $folder){
-			$subfolders[$folder->aFieldArr['id']]=$this->filter_array($folder->aFieldArr,$filter,false);
+		foreach($folders as $folder)
+		{
+			if($this->userHasPermissionOnItem(User::get($_SESSION['userID']), 'ktcore.permissions.write', $folder, 'folder'))
+			{
+				$subfolders[$folder->aFieldArr['id']]=$this->filter_array($folder->aFieldArr,$filter,false);
+			}
 		}
 		$this->addResponse('children',$subfolders);
 	}
@@ -421,21 +425,24 @@ class siteapi extends client_service{
 	 * @param $params
 	 * @return unknown_type
 	 */
-	public function getFolderHierarchy($params){
+	public function getFolderHierarchy($params)
+	{
 		$folderId=$params['folderId'];
 		$filter=isset($params['fields']) ? $params['fields'] : '';
 
 		$oFolder = Folder::get($folderId);
 		$ancestors = array();
 
-		if ($oFolder) {
-
-			if ($oFolder->getParentFolderIDs() != '') {
-				$ancestors=($this->ext_explode(",",$oFolder->getParentFolderIDs()));
+		if ($oFolder) 
+		{
+			$parent_ids = $oFolder->getParentFolderIDs();
+			if ($parent_ids != '') 
+			{
+				$ancestors=($this->ext_explode(",",$parent_ids));
 				$ancestors=Folder::getList(array('id IN ('.join(',',$ancestors).')'),array());
 				$parents=array();
-
-				foreach($ancestors as $obj){
+				foreach($ancestors as $obj)
+				{
 					$parents[$obj->getID()]=$this->filter_array($obj->aFieldArr,$filter,false);
 				}
 			}
@@ -542,6 +549,21 @@ class siteapi extends client_service{
         //$response = array('usertype'=> );
         $response = $oUser->getDisabled();
         $this->addResponse('usertype', $response);
+    }
+    
+    private function userHasPermissionOnItem($oUser, $sPermissions, $documentOrFolder, $type)
+    {
+    	// Shared user
+    	if($oUser->getDisabled() == 4 && !is_null($type))
+    	{
+    		require_once(KT_LIB_DIR . '/render_helpers/sharedContent.inc');
+    		return (SharedContent::getPermissions($oUser->getId(), $documentOrFolder->getId(), null, $type) == 1);
+    	}
+    	// System User
+    	else 
+    	{
+    		return KTPermissionUtil::userHasPermissionOnItem($oUser, $sPermissions, $documentOrFolder);
+    	}
     }
 }
 

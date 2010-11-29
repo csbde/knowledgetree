@@ -128,6 +128,11 @@ class KTUtil {
         }
         return $host;
     }
+    
+    static function getServerDateTime()
+    {
+    	return gmdate("c");
+    }
 
     static function kt_url()
 	{
@@ -1376,7 +1381,7 @@ class KTUtil {
 
 	public static function buildUrl($file, $params=null)
 	{
-		$useCleanURL = TRUE;
+		$useCleanURL = FALSE;
 
 		// Convert to Array
 		if ($params == null) {

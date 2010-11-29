@@ -127,9 +127,10 @@ class sharedUserBrowseView extends browseView
 		// Check parent folder if user type is shared (disabled == 4)
 		if (isset($item['object_permissions'])) {
 			// check permissions based on object_permissions, if set, or shared user access if shared user
+			// and check if the user has checkd out the document
 		    $item['actions.checkout'] = ($item['object_permissions'] == 0) ? $ns : ($item['checked_out_date'] ? $ns : '');
-		    $item['actions.checkin'] = ($item['object_permissions'] == 0) ? $ns : ($item['is_checked_out'] == 0 ? $ns : '');
-			$item['actions.cancel_checkout'] = ($item['object_permissions'] == 0) ? $ns : ($item['is_checked_out'] == 0 ? $ns : '');
+		    $item['actions.checkin'] = ($item['object_permissions'] == 0 || !$hasCheckedOut) ? $ns : ($item['is_checked_out'] == 0 ? $ns : '');
+			$item['actions.cancel_checkout'] = ($item['object_permissions'] == 0 || !$hasCheckedOut) ? $ns : ($item['is_checked_out'] == 0 ? $ns : '');
 		}
 		else if ($item['user_disabled'] == 4) {
 		    // check permissions on parent folder if document not present in shared content for user
@@ -603,7 +604,6 @@ class browseView {
                 $hasCheckedOut = ($_SESSION['userID'] == $item['checked_out_by']);
         		$item['actions.checkin'] = ($item['checked_out_date'] && $hasCheckedOut) ? '' : $ns;
         		$item['actions.cancel_checkout'] = ($item['checked_out_date'] && $hasCheckedOut) ? '' : $ns;
-
     			$item['actions.move'] = KTDocumentUtil::canBeMoved($oDocument) ? '' : $ns;
     		}
 
@@ -633,6 +633,15 @@ class browseView {
 		if(!$hasWrite){
 		    $item['actions.change_owner'] = $ns;
 		    $item['actions.share_document'] = $ns;
+		    if($isCheckedOut || $item['actions.finalize_document'])
+		    {
+		    	$oUser = User::get($_SESSION['userID']);
+		    	$sPermissions = 'ktcore.permissions.write';
+		    	if(KTPermissionUtil::userHasPermissionOnItem($oUser, $sPermissions, $oDocument))
+		    	{
+		    		$item['actions.share_document'] = '';
+		    	}
+		    }
 			$item['actions.finalize_document'] = $ns;
 			$item['separatorE']=$ns;
 		}
@@ -732,7 +741,7 @@ class browseView {
 								<!-- li class="actionIcon comments"></li -->
 								<li class="actionIcon actions">
 									<ul>
-										<li class="action_share_document [actions.share_document]"><a href="#" onclick="javascript:kt.app.inviteusers.showInviteWindow(\'[id]\',\'[item_type]\',\'[user_id]\');">Share This Document</a></li>
+										<li class="action_share_document [actions.share_document]"><a href="#" onclick="javascript:kt.app.sharewithusers.shareContentWindow(\'[id]\',\'[item_type]\',\'[user_id]\');">Share This Document</a></li>
 										<li class="separator[separatorE]"></li>
 										<li class="action_download [actions.download]"><a href="action.php?kt_path_info=ktcore.actions.document.view&fDocumentId=[id]">Download</a></li>
 										<li class="action_instant_view [actions.instant_view]"><a href="[document_link]#preview">Instant View</a></li>
@@ -830,7 +839,7 @@ class browseView {
 						<ul class="folder actionMenu">
 							<li class="actionIcon actions">
 									<ul>
-                                        <li class="action_share_folder [actions.share_folder]"><a href="#" onclick="javascript:kt.app.inviteusers.showInviteWindow(\'[id]\',\'[item_type]\',\'[user_id]\');">Share This Folder</a></li>
+                                        <li class="action_share_folder [actions.share_folder]"><a href="#" onclick="javascript:kt.app.sharewithusers.shareContentWindow(\'[id]\',\'[item_type]\',\'[user_id]\');">Share This Folder</a></li>
                                         <li class="action_rename_folder [actions.rename]"><a href="action.php?kt_path_info=ktcore.actions.folder.rename&fFolderId=[id]">Rename Folder</a></li>
                                         <li class="action_folder_permissions [actions.permissions]"><a href="action.php?kt_path_info=ktcore.actions.folder.permissions&fFolderId=[id]">Set Folder Permissions</a></li>
                                         <!-- <li class="[actions.subscribe]"><a href="#" onclick=\'alert("JavaScript to be modified")\'>Subscribe to Folder</a></li> -->

@@ -1341,6 +1341,117 @@ class KTAPI_Document extends KTAPI_FolderItem
 
 		 return $results;
 	}
+	
+	/**
+	 * This returns all tags for the document.
+	 *
+	 *
+	 * @author KnowledgeTree Team
+	 * @access public
+	 * @return array An array of metadata fieldsets for tags
+	 */
+	function get_tag($sTagCloudFieldsetName = 'tag cloud')
+	{
+		$doctypeid = $this->document->getDocumentTypeID();
+		
+		$fieldsets = (array) KTMetadataUtil::fieldsetsByNameForDocument($this->document, $doctypeid, $sTagCloudFieldsetName);
+		
+		 if (is_null($fieldsets) || PEAR::isError($fieldsets))
+		 {
+		     return array();
+		 }
+
+		 $results = array();
+
+		 foreach ($fieldsets as $fieldset)
+		 {
+		    // this line caused conditional metadata to not be present, and it is there when this is commented out;
+		    // if there are problems with conditional metadata in future, check here to make sure this is not the cause
+//		 	if ($fieldset->getIsConditional()) {	/* this is not implemented...*/	continue;	}
+
+		 	$fields = $fieldset->getFields();
+		 	$result = array('fieldset' => $fieldset->getName(),
+		 					'description' => $fieldset->getDescription());
+
+		 	$fieldsresult = array();
+
+            foreach ($fields as $field)
+            {
+                $value = '';
+
+				$fieldvalue = DocumentFieldLink::getByDocumentAndField($this->document, $field);
+                if (!is_null($fieldvalue) && (!PEAR::isError($fieldvalue)))
+                {
+                	$value = $fieldvalue->getValue();
+                }
+
+                // Old
+                //$controltype = 'string';
+                // Replace with true
+                $controltype = strtolower($field->getDataType());
+
+                if ($field->getHasLookup())
+                {
+                	$controltype = 'lookup';
+                    if ($field->getHasLookupTree())
+                    {
+                    	$controltype = 'tree';
+                    }
+                }
+
+                // Options - Required for Custom Properties
+                $options = array();
+
+                if ($field->getInetLookupType() == 'multiwithcheckboxes' || $field->getInetLookupType() == 'multiwithlist') {
+                    $controltype = 'multiselect';
+                }
+
+                switch ($controltype)
+                {
+                	case 'lookup':
+                		$selection = KTAPI::get_metadata_lookup($field->getId());
+                		break;
+                	case 'tree':
+                		$selection = KTAPI::get_metadata_tree($field->getId());
+                		break;
+                    case 'large text':
+                        $options = array(
+                                'ishtml' => $field->getIsHTML(),
+                                'maxlength' => $field->getMaxLength()
+                            );
+                        $selection= array();
+                        break;
+                    case 'multiselect':
+                        $selection = KTAPI::get_metadata_lookup($field->getId());
+                        $options = array(
+                                'type' => $field->getInetLookupType()
+                            );
+                        break;
+                	default:
+                		$selection= array();
+                }
+
+
+                $fieldsresult[] = array(
+                	'fieldid' => $field->getId(),
+                	'name' => $field->getName(),
+                	'required' => $field->getIsMandatory(),
+                    'value' => $value == '' ? 'n/a' : $value,
+                    'blankvalue' => $value=='' ? '1' : '0',
+                    'description' => $field->getDescription(),
+                    'control_type' => $controltype,
+                    'selection' => $selection,
+                    'options' => $options,
+
+                );
+
+            }
+            $result['fields'] = $fieldsresult;
+            $results [] = $result;
+		 }
+
+		 return $results;
+	}
 
 	/**
 	 * Gets a simple array of document metadata fields
@@ -1729,6 +1840,31 @@ class KTAPI_Document extends KTAPI_FolderItem
 				$default->log->error("Problem updating index with value '$value' for document id $this->documentid. Problem with indexer.");
 			}
 		}
+	}
+	
+	/**
+	 * This updates the tag on the document.
+	 *
+	 * @author KnowledgeTree Team
+	 * @access public
+	 * @param string $tag_word The tag to be added
+	 * @return void|PEAR_Error Returns nothing on success | a PEAR_Error on failure
+	 */
+	function update_tag($tag_word)
+	{		
+		$metadata = $this->get_metadata();
+	
+		$num_metadata = count($metadata++);
+		for ($i = 0; $i < $num_metadata; $i++)
+		{	
+			//look for the "Tag Cloud" fieldset		
+			if (strtolower($metadata[$i]['fieldset']) == "tag cloud") 
+			{
+				$metadata[$i]['fields'][0][value] = $tag_word;				
+			}
+		}
+				
+		return ($this->update_metadata($metadata));
 	}
 
 	/**
@@ -2130,6 +2266,14 @@ class KTAPI_Document extends KTAPI_FolderItem
 		}
 		if($wsversion < 3){
 			unset($detail['linked_document_id']);
+		}
+		
+		if ($wsversion >= 3)
+		{	$url = KTBrowseUtil::getUrlForDocument($document);
+		
+			$GLOBALS['default']->log->debug("get_detail $url");
+			
+			$detail['clean_uri'] = $url;
 		}
 
 		return $detail;

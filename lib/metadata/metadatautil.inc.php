@@ -713,6 +713,38 @@ class KTMetadataUtil {
         }
         return $aRet;
     }
+    
+	function fieldsetsByNameForDocument($oDocument, $iTypeOverride = null, $sFieldsetName) {
+        global $default;
+        $oDocument = KTUtil::getObject('Document', $oDocument);
+        $iMetadataVersionId = $oDocument->getMetadataVersionId();
+        $iDocumentTypeId = $oDocument->getDocumentTypeId();
+        if (!is_null($iTypeOverride)) {
+            $iDocumentTypeId = $iTypeOverride;
+        }
+
+        $sQuery = "SELECT DISTINCT F.id AS fieldset_id " .
+            "FROM $default->document_metadata_version_table AS DM INNER JOIN document_fields_link AS DFL ON DM.id = DFL.metadata_version_id " .
+            "INNER JOIN $default->document_fields_table AS DF ON DF.ID = DFL.document_field_id " .
+            "INNER JOIN $default->fieldsets_table AS F ON F.id = DF.parent_fieldset AND f.name = '$sFieldsetName' " .
+            "WHERE DM.id = ?" .
+            "AND F.disabled = false";
+        $aParam = array($iMetadataVersionId);
+        $aDocumentFieldsetIds = DBUtil::getResultArrayKey(array($sQuery, $aParam), 'fieldset_id');
+
+        $aGenericFieldsetIds = KTFieldset::getGenericFieldsets(array('ids' => true));
+        $aSpecificFieldsetIds = KTFieldset::getForDocumentType($iDocumentTypeId, array('ids' => true));
+
+        $aFieldsetIds = kt_array_merge($aDocumentFieldsetIds, $aGenericFieldsetIds, $aSpecificFieldsetIds);
+        $aFieldsetIds = array_unique($aFieldsetIds);
+        sort($aFieldsetIds);
+
+        $aRet = array();
+        foreach ($aFieldsetIds as $iID) {
+            $aRet[] = call_user_func(array('KTFieldset', 'get'), $iID);
+        }
+        return $aRet;
+    }
     // }}}
 }
 
