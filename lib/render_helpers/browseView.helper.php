@@ -633,6 +633,15 @@ class browseView {
 		if(!$hasWrite){
 		    $item['actions.change_owner'] = $ns;
 		    $item['actions.share_document'] = $ns;
+		    if($isCheckedOut || $item['actions.finalize_document'])
+		    {
+		    	$oUser = User::get($_SESSION['userID']);
+		    	$sPermissions = 'ktcore.permissions.write';
+		    	if(KTPermissionUtil::userHasPermissionOnItem($oUser, $sPermissions, $oDocument))
+		    	{
+		    		$item['actions.share_document'] = '';
+		    	}
+		    }
 			$item['actions.finalize_document'] = $ns;
 			$item['separatorE']=$ns;
 		}
