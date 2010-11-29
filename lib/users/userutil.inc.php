@@ -250,7 +250,7 @@ class KTUserUtil {
 	    	// Create shared content
 	        self::addSharedContent($existingUser['id'], $shareContent['object_id'], $shareContent['object_type'], $shareContent['permission']);
 	        // Send a sharing notification to existing users.
-	        //self::sendNotifications($existingUsers, $shareContent['object_id'], $shareContent['object_type'], $shareContent['message']);
+	        self::sendNotifications($existingUsers, $shareContent['object_id'], $shareContent['object_type'], $shareContent['message']);
 	        // Check if system user
 	        if($existingUser['disabled'] != 4)
 	        {
