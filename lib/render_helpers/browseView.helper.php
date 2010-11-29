@@ -127,9 +127,10 @@ class sharedUserBrowseView extends browseView
 		// Check parent folder if user type is shared (disabled == 4)
 		if (isset($item['object_permissions'])) {
 			// check permissions based on object_permissions, if set, or shared user access if shared user
+			// and check if the user has checkd out the document
 		    $item['actions.checkout'] = ($item['object_permissions'] == 0) ? $ns : ($item['checked_out_date'] ? $ns : '');
-		    $item['actions.checkin'] = ($item['object_permissions'] == 0) ? $ns : ($item['is_checked_out'] == 0 ? $ns : '');
-			$item['actions.cancel_checkout'] = ($item['object_permissions'] == 0) ? $ns : ($item['is_checked_out'] == 0 ? $ns : '');
+		    $item['actions.checkin'] = ($item['object_permissions'] == 0 || !$hasCheckedOut) ? $ns : ($item['is_checked_out'] == 0 ? $ns : '');
+			$item['actions.cancel_checkout'] = ($item['object_permissions'] == 0 || !$hasCheckedOut) ? $ns : ($item['is_checked_out'] == 0 ? $ns : '');
 		}
 		else if ($item['user_disabled'] == 4) {
 		    // check permissions on parent folder if document not present in shared content for user
@@ -603,7 +604,6 @@ class browseView {
                 $hasCheckedOut = ($_SESSION['userID'] == $item['checked_out_by']);
         		$item['actions.checkin'] = ($item['checked_out_date'] && $hasCheckedOut) ? '' : $ns;
         		$item['actions.cancel_checkout'] = ($item['checked_out_date'] && $hasCheckedOut) ? '' : $ns;
-
     			$item['actions.move'] = KTDocumentUtil::canBeMoved($oDocument) ? '' : $ns;
     		}
 
@@ -633,6 +633,15 @@ class browseView {
 		if(!$hasWrite){
 		    $item['actions.change_owner'] = $ns;
 		    $item['actions.share_document'] = $ns;
+		    if($isCheckedOut || $item['actions.finalize_document'])
+		    {
+		    	$oUser = User::get($_SESSION['userID']);
+		    	$sPermissions = 'ktcore.permissions.write';
+		    	if(KTPermissionUtil::userHasPermissionOnItem($oUser, $sPermissions, $oDocument))
+		    	{
+		    		$item['actions.share_document'] = '';
+		    	}
+		    }
 			$item['actions.finalize_document'] = $ns;
 			$item['separatorE']=$ns;
 		}
