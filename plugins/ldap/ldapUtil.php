@@ -14,7 +14,7 @@ class LdapUtil {
         $config = unserialize($source->getConfig());
         $options = array(
             'host'              => $config['server'],
-            'port'              => !empty($config['port']) ? $config['port'] : 389,
+            'port'              => !empty($config['port']) ? (int)$config['port'] : 389,
             'username'          => $config['searchuser'],
             'password'          => $config['searchpwd'],
             /** according to the Zend documentation, bindRequiresDn is important 

@@ -18,6 +18,8 @@ class LdapUserManager extends LdapManager {
      * @param object $source
      * @param array $attributes [optional]
      */
+    // TODO ability to send through the objectClasses and searchAttributes values;
+    //      also shared attributes able to be passed through.
 	public function __construct($source, $attributes = null)
 	{	    
 		parent::__construct($source);
@@ -34,7 +36,7 @@ class LdapUserManager extends LdapManager {
         
         $this->searchAttributes = KTUtil::arrayGet($config, 'searchattributes');
         if (empty($this->searchAttributes)) {
-            $this->searchAttributes = array('cn', 'samaccountname');
+            $this->searchAttributes = array('cn', 'mail', 'sAMAccountName');
         }
 	}
 	

@@ -256,7 +256,6 @@ class ldapUserDispatcher extends KTStandardDispatcher {
             }
 
             $user = KTUserUtil::createUser($userName, $name, '', $emailAddress, true, '', 3, $this->source->getId(), $dn, $userName);
-
             $names[] = $name;
         }
         

@@ -49,7 +49,9 @@ class LdapAuthProvider extends KTAuthenticationProvider {
     public $oLDAPUser = null;
     public $bGroupSource = true;
     private $configMap;
-
+    private $defaultSearchAttributes = array('cn', 'mail', 'sAMAccountName');
+    private $defaultObjectClasses = array('user', 'inetOrgPerson', 'posixAccount');
+    
     public function __construct()
     {
         parent::KTAuthenticationProvider();
@@ -112,7 +114,6 @@ class LdapAuthProvider extends KTAuthenticationProvider {
         $sourceId = $_REQUEST['source_id'];
         $source = KTAuthenticationSource::get($sourceId);
         $config = unserialize($source->getConfig());
-
         $fields = $this->get_form($config);
 
         $oTemplate = $this->oValidator->validateTemplate('ldap_config');
@@ -140,10 +141,45 @@ class LdapAuthProvider extends KTAuthenticationProvider {
         $config['basedn'] = $_REQUEST['basedn'];
         $config['searchuser'] = $_REQUEST['searchuser'];
         $config['searchpwd'] = $_REQUEST['searchpwd'];
-        $config['searchattributes'] = KTUtil::arrayGet($config, 'searchattributes', split(',', 'cn,mail,sAMAccountName'));
-        $config['objectclasses'] = KTUtil::arrayGet($config, 'objectclasses', split(',', 'user,inetOrgPerson,posixAccount'));
+        $config['searchattributes'] = KTUtil::arrayGet($config, 'searchattributes', $this->defaultSearchAttributes);
+        $config['objectclasses'] = KTUtil::arrayGet($config, 'objectclasses', $this->defaultObjectClasses);
         // TLS is forced on, not user configurable
         $config['tls'] = true;
+        $config['port'] = !empty($config['port']) ? $config['port'] : 389; // in case port is empty
+        
+        foreach ($this->configMap as $k => $v) {
+            $value = KTUtil::arrayGet($_REQUEST, $k . '_nls');
+            if ($value) {
+                $nls_array = split("\n", $value);
+                
+                $final_array = array();
+                foreach ($nls_array as $nls_item) {
+                    $nls_item = trim($nls_item);
+                    if (empty($nls_item)) {
+                        continue;
+                    }
+                    $final_array[] = $nls_item;
+                }
+                
+                $config[$k] = $final_array;
+                continue;
+            }
+            
+            if (array_key_exists($k . '_bool', $_REQUEST)) {
+                if ($_REQUEST[$k . '_bool']) {
+                    $config[$k] = true;
+                }
+                else {
+                    $config[$k] = false;
+                }
+                continue;
+            }
+            
+            $value = KTUtil::arrayGet($_REQUEST, $k);
+            if ($value) {
+                $config[$k] = $value;
+            }
+        }
 
         if (!empty($config)) {
             $source->setConfig(serialize($config));
@@ -218,8 +254,8 @@ class LdapAuthProvider extends KTAuthenticationProvider {
         $basedn = (isset($config['basedn'])) ? $config['basedn'] : '';
         $searchuser = (isset($config['searchuser'])) ? $config['searchuser'] : '';
         $searchpwd = (isset($config['searchpwd'])) ? $config['searchpwd'] : '';
-        $searchAttributes = (isset($config['searchattributes'])) ? $config['searchattributes'] : '';
-        $objectClasses = (isset($config['objectclasses'])) ? $config['objectclasses'] : '';
+        $searchAttributes = (isset($config['searchattributes'])) ? $config['searchattributes'] : $this->defaultSearchAttributes;
+        $objectClasses = (isset($config['objectclasses'])) ? $config['objectclasses'] : $this->defaultObjectClasses;
 
         $fields = array();
         $fields[] = new KTStringWidget(_kt('Server Address'), _kt('The host name or IP address of the LDAP server'), 'server', $server, $this->oPage, true);
