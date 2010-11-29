@@ -207,6 +207,21 @@ class KTAPI
     {
         return $this->version;
     }
+    
+    /**
+ 	* This returns the current date-time 
+ 	*
+	* @author KnowledgeTree Team
+ 	* @access public
+ 	* @return string UTC Date-Time
+ 	*/
+	public function getServerDateTime()
+    {
+    	$datetime = KTUtil::getServerDateTime();
+    	$GLOBALS['default']->log->debug("getServerTime $datetime");
+    	
+        return $datetime;
+    }
 
  	/**
  	* This returns the current session.
@@ -5182,14 +5197,14 @@ class KTAPI
 	/**
      * Returns the most recent document owned by a user
      *
-     * @param int $user_id
+     * @param int $user_name
      * @param int $limit
      */
-    public function get_most_recent_documents_owned($user_id, $limit = 10)
+    public function get_most_recent_documents_owned($user_name, $limit = 10)
     {
-    	$GLOBALS['default']->log->debug("KTAPI get_most_recent_documents_owned $user_id $limit");
+    	$GLOBALS['default']->log->debug("KTAPI get_most_recent_documents_owned $user_name $limit");
 		
-    	$user = KTAPI_User::getById($user_id);
+    	$user = KTAPI_User::getByUsername($user_name);
     	if (is_null($user) || PEAR::isError($user))
 		{
 			$result =  new PEAR_Error(KTAPI_ERROR_USER_INVALID);
@@ -5198,7 +5213,7 @@ class KTAPI
 		
     	$documents = $user->mostRecentDocumentsOwned($limit);
 
-    	//$GLOBALS['default']->log->debug('KTAPI get_most_recent_documents_owned items '.print_r($documents, true));
+    	$GLOBALS['default']->log->debug('KTAPI get_most_recent_documents_owned items '.print_r($documents, true));
     	
 		return $documents;
     }
@@ -5234,14 +5249,14 @@ class KTAPI
 	/**
      * Gets a user's Gravatar
      *
-     * @param int $user_id
+     * @param int $user_name
      * @param int $limit
      */
-    public function get_user_gravatar($user_id)
+    public function get_user_gravatar($user_name)
 	{
-		$GLOBALS['default']->log->debug("KTAPI get_user_gravatar $user_id");
+		$GLOBALS['default']->log->debug("KTAPI get_user_gravatar $user_name");
 		
-		$oUser = &User::get($user_id);
+		$oUser = &User::getByUserName($user_name);
 		
 		if (is_null($oUser) || PEAR::isError($oUser))
 		{
