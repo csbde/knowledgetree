@@ -1499,6 +1499,31 @@ class KTUtil {
         }
         return $hash;
     }
+
+    public static function startTiming($function)
+    {
+        $microtime_simple = explode(' ', microtime());
+        $time = (float) $microtime_simple[1] + (float) $microtime_simple[0];
+
+        $_SESSION['start_timing'][$function] = $time;
+    }
+
+    public static function logTiming($function, $comment = '')
+    {
+        global $default;
+        $logFile = $default->logDirectory .'/timing-'.date('ymd');
+
+        $microtime_simple = explode(' ', microtime());
+        $time = (float) $microtime_simple[1] + (float) $microtime_simple[0];
+
+        $start = $_SESSION['start_timing'][$function];
+        $end = $time;
+        $diff = $end - $start;
+
+        $msg = date('Y-m-d H:i:s') . ' | ' . $function . ' | ' . $diff .' | '. $comment . "\n";
+
+        error_log($msg, 3, $logFile);
+    }
 }
 
 /**
