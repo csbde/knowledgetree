@@ -57,12 +57,15 @@ class KTCorePlugin extends KTPlugin {
         $oConfig = KTConfig::getSingleton();
         $restrictedEnv = $oConfig->get('ui/restrictedEnv');
 
+		
         $this->registerAction('documentinfo', 'KTDocumentDetailsAction', 'ktcore.actions.document.displaydetails', 'KTDocumentActions.php');
         $this->registerAction('documentviewlet', 'KTDocumentActivityFeedAction', 'ktcore.viewlet.document.activityfeed', 'KTDocumentViewlets.php');
         $this->registerAction('documentaction', 'KTDocumentViewAction', 'ktcore.actions.document.view', 'KTDocumentActions.php');
         $this->registerAction('documentaction', 'KTOwnershipChangeAction', 'ktcore.actions.document.ownershipchange', 'KTDocumentActions.php');
         $this->registerAction('documentaction', 'KTDocumentCheckOutAction', 'ktcore.actions.document.checkout', 'KTDocumentActions.php');
         $this->registerAction('documentaction', 'KTDocumentCancelCheckOutAction', 'ktcore.actions.document.cancelcheckout', 'KTDocumentActions.php');
+        $this->registerAction('documentaction', 'SharedContentDocumentAction', 'ktcore.actions.document.sharecontent', KT_PLUGIN_DIR . '/sharedcontent/SharedContentDocumentAction.php');
+        
         $this->registerAction('documentaction', 'KTDocumentCheckInAction', 'ktcore.actions.document.checkin', 'KTDocumentActions.php');
         $this->registerAction('documentaction', 'KTDocumentEditAction', 'ktcore.actions.document.edit', 'document/edit.php');
         $this->registerAction('documentaction', 'KTDocumentDeleteAction', 'ktcore.actions.document.delete', 'KTDocumentActions.php');
@@ -122,8 +125,10 @@ class KTCorePlugin extends KTPlugin {
             $this->registerDashlet('schedulerDashlet', 'ktcore.schedulerdashlet.plugin', 'scheduler/schedulerDashlet.php');
 
             $this->registerAdminPage('scheduler', 'manageSchedulerDispatcher', 'sysConfig', _kt('Manage Task Scheduler'), _kt('Manage the task scheduler'), 'scheduler/taskScheduler.php');
-            $this->registerAdminPage('authentication', 'KTAuthenticationAdminPage', 'userSetup', _kt('Authentication'), sprintf(_kt('You can use additional lists of users and groups. These will be used as additional sources of authentication data.'), APP_NAME), 'authentication/authenticationadminpage.inc.php');
+
         }
+
+        $this->registerAdminPage('authentication', 'KTAuthenticationAdminPage', 'userSetup', _kt('Authentication'), sprintf(_kt('You can use additional lists of users and groups. These will be used as additional sources of authentication data.'), APP_NAME), 'authentication/authenticationadminpage.inc.php');
 
 		    $this->registerPortlet(array('browse', 'dashboard'),
                 'Search2Portlet', 'ktcore.search2.portlet',
@@ -284,6 +289,7 @@ class KTCorePlugin extends KTPlugin {
 
 
         // users and groups
+        
         $this->registerAdminPage('users', 'KTUserAdminDispatcher', 'userSetup',
             _kt('Manage Users'), _kt('Add or remove users from the system.'),
             'admin/userManagement.php', null, 10);
