@@ -86,7 +86,7 @@ class LdapAuthProvider extends KTAuthenticationProvider {
         $checkMethod = preg_replace('/^add|create|delete|edit|update/i', '', $event);
         if (preg_match('/^user/i', $checkMethod)) {
             require_once('ldapUserDispatcher.php');
-            $ldapDispatcher = new ldapUserDispatcher();
+            $ldapDispatcher = new ldapUserDispatcher($this->sAuthClass);
         }
         else if (preg_match('/^group/i', $checkMethod)) {
             require_once('ldapGroupDispatcher.php');

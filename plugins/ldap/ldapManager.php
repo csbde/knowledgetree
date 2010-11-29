@@ -17,7 +17,7 @@ class LdapManager {
      *
      * @param object $source
      */
-    // TODO allow passing of an existing connector (e.g. from the auth provider class);
+    // TODO allow passing of an existing connector;
     //      if submitted, use instead of constructing a new one.
     public function __construct($source)
     {

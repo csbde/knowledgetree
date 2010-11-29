@@ -18,8 +18,6 @@ class LdapUserManager extends LdapManager {
      * @param object $source
      * @param array $attributes [optional]
      */
-    // TODO ability to send through the objectClasses and searchAttributes values;
-    //      also shared attributes able to be passed through.
 	public function __construct($source, $attributes = null)
 	{	    
 		parent::__construct($source);

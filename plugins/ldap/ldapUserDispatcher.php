@@ -50,9 +50,11 @@ class ldapUserDispatcher extends KTStandardDispatcher {
 
     private $attributes = array ('cn', 'samaccountname', 'givenname', 'sn', 'mail', 'mobile', 'userprincipalname', 'uid');
     private $source;
+    private $authenticatorClass;
 
-    public function __construct()
+    public function __construct($authenticatorClass)
     {
+        $this->authenticatorClass = $authenticatorClass;
         $this->source = KTAuthenticationSource::get($_REQUEST['source_id']);
         parent::KTStandardDispatcher();
     }
@@ -228,10 +230,9 @@ class ldapUserDispatcher extends KTStandardDispatcher {
                 $userName = end(explode('=', $dnParts[0]));;
             }
 
-            // TODO/FIXME this may need changing of the auth class name??? ($this->sAuthenticatorClass == 'KTLDAPAuthenticator')
             // With LDAP, if the 'uid' is null then try using the 'givenname' instead.
             // See activedirectoryauthenticationprovider.inc.php and ldapauthenticationprovider.inc.php for details.
-            if (($this->sAuthenticatorClass == 'KTLDAPAuthenticator') && empty($userName)) {
+            if (($this->authenticatorClass == 'LdapAuthenticator') && empty($userName)) {
                 $userName = strtolower($results[$this->attributes[2]]);
             }
             
