@@ -151,6 +151,7 @@ class KTPage {
         $aJS[] = 'resources/js/newui/kt.lib.js';
         $aJS[] = 'resources/js/newui/kt.api.js';
         $aJS[] = 'resources/js/newui/kt.app.upload.js';
+        $aJS[] = 'resources/js/newui/kt.app.sharewithusers.js';
         $aJS[] = 'resources/js/newui/kt.app.inviteusers.js';
         $aJS[] = 'resources/js/newui/newUIFunctionality.js';
         $aJS[] = 'resources/js/newui/jquery.helper.js';

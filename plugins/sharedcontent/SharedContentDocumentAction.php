@@ -37,18 +37,6 @@
  */
 
 require_once(KT_LIB_DIR . '/actions/documentaction.inc.php');
-require_once(KT_LIB_DIR . '/subscriptions/Subscription.inc');
-require_once(KT_LIB_DIR . '/widgets/fieldWidgets.php');
-require_once(KT_LIB_DIR . '/browse/browseutil.inc.php');
-require_once(KT_LIB_DIR . '/documentmanagement/documentutil.inc.php');
-require_once(KT_LIB_DIR . '/documentmanagement/PhysicalDocumentManager.inc');
-
-require_once(KT_LIB_DIR . '/browse/DocumentCollection.inc.php');
-require_once(KT_LIB_DIR . '/browse/BrowseColumns.inc.php');
-require_once(KT_LIB_DIR . '/browse/PartialQuery.inc.php');
-
-require_once(KT_LIB_DIR . '/widgets/forms.inc.php');
-require_once(KT_LIB_DIR . "/util/sanitize.inc");
 
 // {{{ KTDocumentShareAction
 class SharedContentDocumentAction extends KTDocumentAction {

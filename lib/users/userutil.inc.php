@@ -220,7 +220,7 @@ class KTUserUtil {
     	    foreach ($existingUsers as $existingUser) {
     	        self::addSharedContent($existingUser['id'], $shareContent['object_id'], $shareContent['object_type'], $shareContent['permission']);
     	        // Send a sharing notification to existing users.
-    	        self::sendNotifications($existingUsers, $shareContent['object_id'], $shareContent['object_type']);
+    	        self::sendNotifications($existingUsers, $shareContent['object_id'], $shareContent['object_type'], $shareContent['message']);
     	    }
     	}
     	
@@ -271,10 +271,12 @@ class KTUserUtil {
      * @param array $emailList Array of email addresses: format $list[] = array('id' => $id, 'email' => $email)
      * @return bool
      */
-    public static function sendNotifications($emailList, $object_id, $object_type = null)
+    public static function sendNotifications($emailList, $object_id, $object_type = null, $message = '')
     {
+    	global $default;
     	$folderId = null;
     	$docoumentId = null;
+    	$type = 'Unknown';
     	if(is_null($object_type))
     	{
     		$docoumentId = $object_id;
@@ -309,6 +311,7 @@ class KTUserUtil {
         	require_once(KT_LIB_DIR . '/foldermanagement/Folder.inc');
 			$oFolder = Folder::get($folderId);
 			$name = $oFolder->getName();
+			$type = 'folder';
         }
         else 
         {
@@ -317,22 +320,24 @@ class KTUserUtil {
 	        require_once(KT_LIB_DIR . '/documentmanagement/Document.inc');
 			$oDocument = Document::get($docoumentId);
 			$name = $oDocument->getName();
+			$type = 'document';
         }
 
-        foreach ($emailList as $item) { 
+        foreach ($emailList as $item) 
+        { 
             $list[] = array(	'name' => '', 
             					'email' => $item['email'], 
             					'sender' => $sender, 
             					'link' => $link, 
-            					'title'=> $name,
+            					'title' => $name,
+            					'message' => $message,
+            					'type' => $type,
             				);
         }
 
         if (empty($list)) {
             return true;
         }
-
-        global $default;
 
         $default->log->debug('Invited keys '. json_encode($list));
         $emailFrom = $default->emailFrom;
