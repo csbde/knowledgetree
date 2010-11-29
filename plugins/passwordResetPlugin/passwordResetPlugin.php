@@ -53,7 +53,15 @@ class PasswordResetInterceptor extends KTInterceptor {
 	function takeover() {
 	    $oRegistry =& KTPluginRegistry::getSingleton();
 	    $oPlugin =& $oRegistry->getPlugin('password.reset.plugin');
-        $dispatcherURL = $oPlugin->getURLPath('loginResetDispatcher.php');
+	    $KTConfig = KTConfig::getSingleton();
+	    if($KTConfig->get('user_prefs/useEmailLogin', false))
+	    {
+	    	$dispatcherURL = $oPlugin->getURLPath('loginResetEmailDispatcher.php');
+	    }
+	    else 
+	    {
+	    	$dispatcherURL = $oPlugin->getURLPath('loginResetDispatcher.php');
+	    }
         $queryString = $_SERVER['QUERY_STRING'];
         $redirect = KTUtil::arrayGet($_REQUEST, 'redirect');
         $redirect = urlencode($redirect);
