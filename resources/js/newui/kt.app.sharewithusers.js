@@ -80,7 +80,12 @@ kt.app.sharewithusers=new function(){
 	    var existing = list.existing;
 	    var failed = list.failed;
 	    var userType = list.userType;
-
+	    var hasPermissions = list.hasPermissions;
+	    var noPerms = list.noPerms;
+	    var permMessage = list.permMessage;
+		
+	    console.log(hasPermissions + ' ' + noPerms + ' ' +permMessage);
+	    
         var inviteConfirmWin = new Ext.Window({
             id              : 'extinviteconfirmwindow',
             layout          : 'fit',
@@ -94,7 +99,7 @@ kt.app.sharewithusers=new function(){
             cls             : 'ul_win',
             shadow          : true,
             modal           : true,
-            title           : 'User Invitations Sent',
+            title           : 'Sharing Invitations Sent',
             html            : kt.api.execFragment('users/invite.shared.confirm.dialog')
         });
 
@@ -129,6 +134,22 @@ kt.app.sharewithusers=new function(){
             document.getElementById('invitedGroup').innerHTML = group;
 	    }
 
+	    // display a permission warning
+        if(hasPermissions != false)
+        {
+        	document.getElementById('showNoPerms').style.display = 'none';
+        	document.getElementById('showPermsMessage').style.display = 'none';
+        	console.log('a ' + hasPermissions);
+        }
+        else
+        {
+        	document.getElementById('showNoPerms').style.display = 'block';
+        	document.getElementById('showPermsMessage').style.display = 'block';
+        	document.getElementById('noPerms').innerHTML = noPerms;
+        	document.getElementById('permMessage').innerHTML = permMessage;
+        	console.log('b ' + hasPermissions);
+        }
+            
         if (check != 0) {
             document.getElementById('inviteLicenses').style.display = 'block';
         }
