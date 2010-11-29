@@ -388,11 +388,11 @@ class SharedContent extends KTEntity {
 	static private function getDocumentPermissions($iUserId, $iObjectId = null, $iFolderId = null)
 	{
 		// Check if documents parent folder has been shared with user
-		// If folder id was submitted, use, else query for the parent folder
 		if (empty($iFolderId)) 
 		{
-		    $sql = "SELECT sc.permissions FROM shared_content sc WHERE (sc.user_id = '{$iUserId}' AND sc.object_id = (SELECT d.folder_id FROM documents d WHERE d.id = '{$iDocumentId}') AND sc.type = 'folder')";
+		    $sql = "SELECT sc.permissions FROM shared_content sc WHERE (sc.user_id = '{$iUserId}' AND sc.object_id = (SELECT d.folder_id FROM documents d WHERE d.id = '{$iObjectId}') AND sc.type = 'folder')";
 		}
+		// If folder id was submitted, use, else query for the parent folder
 		else {
 		    $sql = "SELECT sc.permissions FROM shared_content sc WHERE (sc.user_id = '{$iUserId}' AND sc.object_id = '{$iFolderId}' AND sc.type = 'folder')";
 		}
