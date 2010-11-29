@@ -121,7 +121,7 @@ class sharedUserBrowseView extends browseView
 		$item['document_link'] = KTUtil::buildUrl("view.php", array('fDocumentId'=>$item['id']));
 		$item['filename'] = (strlen($item['filename']) > $fileNameCutoff) ? substr($item['filename'], 0, $fileNameCutoff - 3) . "..." : $item['filename'];
 		$item['has_workflow'] = '';
-		$item['is_immutable'] = ($item['is_immutable'] == 'true') ? true : false;
+		$item['is_immutable'] = ($item['is_immutable'] == 1) ? true : false;
 		$item['is_immutable'] = $item['is_immutable'] ? '' : $ns;
 		$item['is_checkedout'] = $item['checked_out_date'] ? '' : $ns;
 		// Check parent folder if user type is shared (disabled == 4)
@@ -210,6 +210,11 @@ class sharedUserBrowseView extends browseView
 					$item['allowdoczohoedit'] = '<li class="action_zoho_document"><a href="javascript:;" onclick="zohoEdit(\'' . $item['id'] . '\')">Edit Document Online</a></li>';
 				}
 			}
+		}
+		if(!is_null($item['checked_out_by']))
+		{
+			$coUser = User::get($item['checked_out_by']);
+			$item['checked_out_by'] = $coUser->getName();
 		}
 		$checkbox = '';
 		$tpl='
@@ -595,8 +600,7 @@ class browseView {
 		if(get_class($oDocument) == 'Document'){
     		if($hasWrite) {
         		$item['actions.checkout'] = $item['checked_out_date'] ? $ns : '';
-
-                $hasCheckedOut = ($_SESSION['userID'] == $oDocument->getCheckedOutUserID());
+                $hasCheckedOut = ($_SESSION['userID'] == $item['checked_out_by']);
         		$item['actions.checkin'] = ($item['checked_out_date'] && $hasCheckedOut) ? '' : $ns;
         		$item['actions.cancel_checkout'] = ($item['checked_out_date'] && $hasCheckedOut) ? '' : $ns;
 
@@ -728,7 +732,7 @@ class browseView {
 								<!-- li class="actionIcon comments"></li -->
 								<li class="actionIcon actions">
 									<ul>
-										<li class="action_share_document [actions.share_document]"><a href="#" onclick="javascript:kt.app.inviteusers.showInviteWindow(\'[id]\',\'[item_type]\',\'[user_id]\');">Share This Document</a></li>
+										<li class="action_share_document [actions.share_document]"><a href="#" onclick="javascript:kt.app.sharewithusers.shareContentWindow(\'[id]\',\'[item_type]\',\'[user_id]\');">Share This Document</a></li>
 										<li class="separator[separatorE]"></li>
 										<li class="action_download [actions.download]"><a href="action.php?kt_path_info=ktcore.actions.document.view&fDocumentId=[id]">Download</a></li>
 										<li class="action_instant_view [actions.instant_view]"><a href="[document_link]#preview">Instant View</a></li>
@@ -826,7 +830,7 @@ class browseView {
 						<ul class="folder actionMenu">
 							<li class="actionIcon actions">
 									<ul>
-                                        <li class="action_share_folder [actions.share_folder]"><a href="#" onclick="javascript:kt.app.inviteusers.showInviteWindow(\'[id]\',\'[item_type]\',\'[user_id]\');">Share This Folder</a></li>
+                                        <li class="action_share_folder [actions.share_folder]"><a href="#" onclick="javascript:kt.app.sharewithusers.shareContentWindow(\'[id]\',\'[item_type]\',\'[user_id]\');">Share This Folder</a></li>
                                         <li class="action_rename_folder [actions.rename]"><a href="action.php?kt_path_info=ktcore.actions.folder.rename&fFolderId=[id]">Rename Folder</a></li>
                                         <li class="action_folder_permissions [actions.permissions]"><a href="action.php?kt_path_info=ktcore.actions.folder.permissions&fFolderId=[id]">Set Folder Permissions</a></li>
                                         <!-- <li class="[actions.subscribe]"><a href="#" onclick=\'alert("JavaScript to be modified")\'>Subscribe to Folder</a></li> -->
