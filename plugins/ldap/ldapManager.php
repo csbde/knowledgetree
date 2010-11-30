@@ -4,7 +4,7 @@
  * Base LDAP manager class
  */
 
-require_once('LdapUtil.php');
+require_once('ldapUtil.php');
 require_once(KT_DIR . '/thirdparty/ZendFramework/library/Zend/Ldap.php');
 
 class LdapManager {

@@ -73,8 +73,6 @@ kt.app.sharewithusers=new function(){
 	    var hasPermissions = list.hasPermissions;
 	    var noPerms = list.noPerms;
 	    var permMessage = list.permMessage;
-		
-	    console.log(hasPermissions + ' ' + noPerms + ' ' +permMessage);
 	    
         var inviteConfirmWin = new Ext.Window({
             id              : 'extinviteconfirmwindow',
