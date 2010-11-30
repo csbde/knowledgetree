@@ -190,7 +190,7 @@ function showUploadWindow()
 
         function loadFolderPath(currentId)
         {
-            console.log('loadFolderPath '+currentId);
+            //console.log('loadFolderPath '+currentId);
             
             html = '<ul id="currentPathStuff">';
             
@@ -203,7 +203,7 @@ function showUploadWindow()
             
             if (currentNode.length == 0) {
                 // NEED TO RELOAD TREE
-                console.log('NEED TO RELOAD TREE');
+                //console.log('NEED TO RELOAD TREE');
             } else {
                 if (currentNode.hasClass('loadedchildren')) {
                     childItems = jQuery('ul#loadedpath li[folderid='+currentId+']>ul');
@@ -221,7 +221,7 @@ function showUploadWindow()
                         });
                     }
                 } else {
-                    console.log('NEED TO LOAD CHILDREN');
+                    //console.log('NEED TO LOAD CHILDREN');
                 }
             }
             
