@@ -325,16 +325,15 @@ class KTConfig {
         // KTEntity is the database-backed base class
         require_once(KT_LIB_DIR . '/ktentity.inc');
 
-        $prefix = defined('USE_DB_ADMIN_USER')?'Admin':'';
-
+        $prefix = defined('USE_DB_ADMIN_USER') ? 'Admin' : '';
 		$sUser = 'db/dbUser';
 		$sPass = 'db/dbPass';
 
-		if ($prefix == 'Admin')
-		{
+		if ($prefix == 'Admin') {
 			$sUser = 'db/dbAdminUser';
 			$sPass = 'db/dbAdminPass';
 		}
+		
 		$dsn = array(
             'phptype'  => $this->flatns['db/dbType'],
             'username' => $this->flatns[$sUser],
@@ -344,7 +343,6 @@ class KTConfig {
             'port' => isset($this->flatns['db/dbPort']) ? $this->flatns['db/dbPort'] : ''
         );
         $default->_db = $dsn;
-
 
         /**
         * Check to see if replication is set to TRUE
@@ -373,10 +371,12 @@ class KTConfig {
                     'port' => isset($this->flatns['db/dbPort']) ? $this->flatns['db/dbPort'] : ''
                     );
             }
+            
             //Set slave connections defined
             $default->_slave = $slave_dns;
             return true;
         }
+        
        return true;
     }
 

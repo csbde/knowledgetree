@@ -236,7 +236,7 @@ class SharedContent extends KTEntity {
 		$document_types_lookup = 'dtl.name AS document_type';
 		$document_content_version = 'dcv.filename AS filename, dcv.storage_path AS storage_path, dcv.has_rendition AS has_rendition, dcv.size AS filesize, dcv.major_version as major_version, dcv.minor_version AS minor_version';
 		$users = 'cu.name as created_by, cu.name AS owned_by, mu.name as modified_by';
-		$documents = 'd.created AS created_date, d.modified AS modified_date, d.immutable AS is_immutable, d.is_checked_out AS is_checked_out, d.checked_out_user_id AS checked_out_by, d.checkedout AS checked_out_date, d.linked_document_id as linked_document_id';
+		$documents = 'd.created AS created_date, d.modified AS modified_date, d.immutable AS is_immutable, d.is_checked_out AS is_checked_out, d.checked_out_user_id AS checked_out_by_id, d.checkedout AS checked_out_date, d.linked_document_id as linked_document_id';
 		$mime_types = 'mt.id AS mimetypeid, mt.mimetypes AS mime_type, mt.icon_path AS mime_icon_path';    	
 		
     	if ($iFolderId == 1)

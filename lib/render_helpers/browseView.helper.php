@@ -31,26 +31,28 @@ class browseViewUtil
 	}
 }
 
+class sharedUserBrowseAsView extends browseView 
+{
+	/**
+	 * Get the shared users
+	 *
+	 * @param string $folderId
+	 * @param string $sortField
+	 * @param string $asc
+	 * @return mixed $ret
+	 */
+	public function getFolderContent($folderId, $sortField = 'title', $asc = true)
+	{
+		
+	}
+}
+
 /**
  * Shared user browse view class
  *
  */
 class sharedUserBrowseView extends browseView
 {
-	public function browseViewItems($item, $folderId)
-	{
-		foreach ($item as $key=>$value)
-		{
-			if ($value=='n/a')
-			{
-				$item[$key]=null;
-			}
-		}
-		$item['container_folder_id']=$folderId;
-
-		return $item;
-	}
-
 	/**
 	 * Get the folder listing
 	 *
@@ -106,7 +108,7 @@ class sharedUserBrowseView extends browseView
 	 	$fileNameCutoff = 100;
 	 	$ns = ' not_supported';
 		$permissions = SharedContent::canAccessDocument($item['user_id'], $item['id'], null, 1);
-		$hasCheckedOut = ($_SESSION['userID'] == $item['checked_out_by']);
+		$hasCheckedOut = ($_SESSION['userID'] == $item['checked_out_by_id']);
 		// Icons
 		$iconFile = 'resources/mimetypes/newui/' . KTMime::getIconPath($item['mimetypeid']) . '.png';
 		$item['icon_exists'] = file_exists(KT_DIR . '/' . $iconFile);
@@ -212,9 +214,9 @@ class sharedUserBrowseView extends browseView
 				}
 			}
 		}
-		if(!is_null($item['checked_out_by']))
+		if(!is_null($item['checked_out_by_id']))
 		{
-			$coUser = User::get($item['checked_out_by']);
+			$coUser = User::get($item['checked_out_by_id']);
 			$item['checked_out_by'] = $coUser->getName();
 		}
 		$checkbox = '';
@@ -239,13 +241,13 @@ class sharedUserBrowseView extends browseView
 								<!-- li class="actionIcon comments"></li -->
 								<li class="actionIcon actions">
 									<ul>
-										<li class="[actions.download]"><a href="action.php?kt_path_info=ktcore.actions.document.view&fDocumentId=[id]">Download</a></li>
-										<li class="[actions.instant_view]"><a href="[document_link]#preview">Instant View</a></li>
+										<li class="actions.download [actions.download]"><a href="action.php?kt_path_info=ktcore.actions.document.view&fDocumentId=[id]">Download</a></li>
+										<li class="actions.instant_view [actions.instant_view]"><a href="[document_link]#preview">Instant View</a></li>
 										[allowdoczohoedit]
 
-										<li class="[actions.checkout]"><a href="action.php?kt_path_info=ktcore.actions.document.checkout&fDocumentId=[id]">Check-out</a></li>
-										<li class="[actions.cancel_checkout]"><a href="action.php?kt_path_info=ktcore.actions.document.cancelcheckout&fDocumentId=[id]">Cancel Check-out</a></li>
-										<li class="[actions.checkin]"><a href="action.php?kt_path_info=ktcore.actions.document.checkin&fDocumentId=[id]">Check-in</a></li>
+										<li class="actions.checkout [actions.checkout]"><a href="action.php?kt_path_info=ktcore.actions.document.checkout&fDocumentId=[id]">Check-out</a></li>
+										<li class="actions.cancel_checkout [actions.cancel_checkout]"><a href="action.php?kt_path_info=ktcore.actions.document.cancelcheckout&fDocumentId=[id]">Cancel Check-out</a></li>
+										<li class="actions.checkin [actions.checkin]"><a href="action.php?kt_path_info=ktcore.actions.document.checkin&fDocumentId=[id]">Check-in</a></li>
 									</ul>
 								</li>
 							</ul>
@@ -301,6 +303,28 @@ class sharedUserBrowseView extends browseView
 		if ($empty) { return '<span class="fragment folder" style="display:none;">' . $tpl . '</span>'; }
 
 		return ktVar::parseString($tpl,$item);
+	}
+	
+	/**
+	 * Sanitize a browse view items attributes
+	 *
+	 * @param array $item
+	 * @param int $folderId
+	 * @return array $item
+	 */
+	
+	private function browseViewItems($item, $folderId)
+	{
+		foreach ($item as $key=>$value)
+		{
+			if ($value=='n/a')
+			{
+				$item[$key]=null;
+			}
+		}
+		$item['container_folder_id']=$folderId;
+
+		return $item;
 	}
 }
 /**
@@ -601,14 +625,13 @@ class browseView {
 		if(get_class($oDocument) == 'Document'){
     		if($hasWrite) {
         		$item['actions.checkout'] = $item['checked_out_date'] ? $ns : '';
-                $hasCheckedOut = ($_SESSION['userID'] == $item['checked_out_by']);
+                $hasCheckedOut = ($_SESSION['userID'] == $item['checked_out_by_id']);
         		$item['actions.checkin'] = ($item['checked_out_date'] && $hasCheckedOut) ? '' : $ns;
         		$item['actions.cancel_checkout'] = ($item['checked_out_date'] && $hasCheckedOut) ? '' : $ns;
     			$item['actions.move'] = KTDocumentUtil::canBeMoved($oDocument) ? '' : $ns;
     		}
 
     		$item['actions.delete'] = (KTDocumentUtil::canBeDeleted($oDocument) && $hasDelete) ? '' : $ns;
-
     		$item['actions.copy'] = KTDocumentUtil::canBeCopied($oDocument) ? '' : $ns;
 		}
 
