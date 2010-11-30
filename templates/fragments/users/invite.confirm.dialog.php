@@ -12,7 +12,7 @@ $contact_url = 'http://www.knowledgetree.com/contact-us';
 
     <tr>
         <td colspan="2" valign="top">
-            Invitations to join KnowledgeTree were sent to: <a href="<?= $users_url; ?>"><span id="sharedUsers"></span> users</a>
+            Invitations to join KnowledgeTree were sent to: <a href="<?= $users_url; ?>"><span id="invitedUsers"></span> users</a>
         </td>
     </tr>
 
