@@ -149,6 +149,5 @@
     {else}
     	<script type="text/javascript">hideResetBox(); document.getElementById("username").focus();</script>
     {/if}
-
 </body>
 </html>
