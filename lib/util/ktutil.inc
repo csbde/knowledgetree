@@ -128,11 +128,6 @@ class KTUtil {
         }
         return $host;
     }
-    
-    static function getServerDateTime()
-    {
-    	return gmdate("c");
-    }
 
     static function kt_url()
 	{

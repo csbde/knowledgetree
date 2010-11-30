@@ -219,7 +219,7 @@ class KTUserUtil {
     						'group' => $groupName, 
     						'type' => $type, 
     						'check' => $check, 
-    						'hasPermissions'=>'', 
+    						'hasPermissions' => '', 
     						'permMessage' => '', 
     						'noPerms' => ''
     					);

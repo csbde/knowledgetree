@@ -31,26 +31,28 @@ class browseViewUtil
 	}
 }
 
+class sharedUserBrowseAsView extends browseView 
+{
+	/**
+	 * Get the shared users
+	 *
+	 * @param string $folderId
+	 * @param string $sortField
+	 * @param string $asc
+	 * @return mixed $ret
+	 */
+	public function getFolderContent($folderId, $sortField = 'title', $asc = true)
+	{
+		
+	}
+}
+
 /**
  * Shared user browse view class
  *
  */
 class sharedUserBrowseView extends browseView
 {
-	public function browseViewItems($item, $folderId)
-	{
-		foreach ($item as $key=>$value)
-		{
-			if ($value=='n/a')
-			{
-				$item[$key]=null;
-			}
-		}
-		$item['container_folder_id']=$folderId;
-
-		return $item;
-	}
-
 	/**
 	 * Get the folder listing
 	 *
@@ -301,6 +303,28 @@ class sharedUserBrowseView extends browseView
 		if ($empty) { return '<span class="fragment folder" style="display:none;">' . $tpl . '</span>'; }
 
 		return ktVar::parseString($tpl,$item);
+	}
+	
+	/**
+	 * Sanitize a browse view items attributes
+	 *
+	 * @param array $item
+	 * @param int $folderId
+	 * @return array $item
+	 */
+	
+	private function browseViewItems($item, $folderId)
+	{
+		foreach ($item as $key=>$value)
+		{
+			if ($value=='n/a')
+			{
+				$item[$key]=null;
+			}
+		}
+		$item['container_folder_id']=$folderId;
+
+		return $item;
 	}
 }
 /**
@@ -601,14 +625,13 @@ class browseView {
 		if(get_class($oDocument) == 'Document'){
     		if($hasWrite) {
         		$item['actions.checkout'] = $item['checked_out_date'] ? $ns : '';
-                $hasCheckedOut = ($_SESSION['userID'] == $item['checked_out_by']);
+                $hasCheckedOut = ($_SESSION['userID'] == $item['checked_out_by_id']);
         		$item['actions.checkin'] = ($item['checked_out_date'] && $hasCheckedOut) ? '' : $ns;
         		$item['actions.cancel_checkout'] = ($item['checked_out_date'] && $hasCheckedOut) ? '' : $ns;
     			$item['actions.move'] = KTDocumentUtil::canBeMoved($oDocument) ? '' : $ns;
     		}
 
     		$item['actions.delete'] = (KTDocumentUtil::canBeDeleted($oDocument) && $hasDelete) ? '' : $ns;
-
     		$item['actions.copy'] = KTDocumentUtil::canBeCopied($oDocument) ? '' : $ns;
 		}
 
