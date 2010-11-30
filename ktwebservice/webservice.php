@@ -471,16 +471,16 @@ class KTWebService {
     	return new SOAP_Value('return', "{urn:$this->namespace}kt_response", $response);
     }
     
-    function get_server_date_time($session_id)
-    {
-    	
-    	$kt = &$this->get_ktapi($session_id);
-    	if (is_array($kt))
-    	{
-    		return new SOAP_Value('return', "{urn:$this->namespace}kt_response", $kt);
-    	}
-    	
-    	$datetime = &$kt->getServerDateTime();
+    /**
+ 	* This returns the current date-time 
+ 	*
+	* @author KnowledgeTree Team
+ 	* @access public
+ 	* @return string UTC Date-Time
+ 	*/
+    function get_server_date_time()
+    {    	
+    	$datetime = gmdate("c");
     	
     	$response['status_code'] = KTWS_SUCCESS;
     	$response['message'] = $datetime;
@@ -4020,6 +4020,7 @@ class KTWebService {
          		'comment' => 'string',
          		'date' => 'string',
          		'user_name' => 'string',
+         		'user_username' => 'string',
          		// action and version are not relevant to comments and are being filtered in ktapi
          		/*'action' => 'string',
          		'version' => 'int'*/
@@ -4214,6 +4215,11 @@ class KTWebService {
          	if ($this->version >= 3) {
          		$this->__typedef["{urn:$this->namespace}kt_document_detail"]['linked_document_id'] = 'int';
          		$this->__typedef["{urn:$this->namespace}kt_document_detail"]['clean_uri'] = 'string';
+         		
+         		$this->__typedef["{urn:$this->namespace}kt_document_detail"]['created_by_user_name'] = 'string';
+         		$this->__typedef["{urn:$this->namespace}kt_document_detail"]['modified_by_user_name'] = 'string';
+         		$this->__typedef["{urn:$this->namespace}kt_document_detail"]['checked_out_by_user_name'] = 'string';
+         		$this->__typedef["{urn:$this->namespace}kt_document_detail"]['owned_by_user_name'] = 'string';
          	}
          }
 
@@ -4408,6 +4414,11 @@ class KTWebService {
          		'comment' => 'string',
          		'datetime' => 'string'
          		);
+         }
+         
+         if ($this->version >= 3)
+         {
+         	$this->__typedef["{urn:$this->namespace}kt_document_transaction_history_item"]['user_username'] = 'string';
          }
 
     	$this->__typedef["{urn:$this->namespace}kt_linked_document"] =
@@ -4657,7 +4668,7 @@ class KTWebService {
     	if ($this->version >= 3)
          {
              $this->__dispatch_map['get_server_date_time'] =
-                array('in' => array('session_id' => 'string'),
+                array('in' => array(),
                       'out' => array('return' => "{urn:$this->namespace}kt_response" ),
              );
          }

@@ -1351,10 +1351,8 @@ class KTAPI_Document extends KTAPI_FolderItem
 	 * @return array An array of metadata fieldsets for tags
 	 */
 	function get_tag($sTagCloudFieldsetName = 'tag cloud')
-	{
-		$doctypeid = $this->document->getDocumentTypeID();
-		
-		$fieldsets = (array) KTMetadataUtil::fieldsetsByNameForDocument($this->document, $doctypeid, $sTagCloudFieldsetName);
+	{		
+		$fieldsets = (array) KTMetadataUtil::fieldsetsByNameForDocument($this->document, $sTagCloudFieldsetName);
 		
 		 if (is_null($fieldsets) || PEAR::isError($fieldsets))
 		 {
@@ -2127,34 +2125,50 @@ class KTAPI_Document extends KTAPI_FolderItem
 
 		// get the creator
 		$userid = $document->getCreatorID();
-		$username='n/a';
+		$user_name = $user_username = 'n/a';
 		if (is_numeric($userid))
 		{
-			$username = '* unknown *';
+			$user_name = $user_username = '* unknown *';
 			$user = User::get($userid);
 			if (!is_null($user) && !PEAR::isError($user))
 			{
-				$username = $user->getName();
+				$user_name = $user->getName();
+				if ($wsversion >= 3)
+				{
+					$user_username = $user->getUserName();
+				}
 			}
 		}
-		$detail['created_by'] = $username;
+		$detail['created_by'] = $user_name;
+		if ($wsversion >= 3)
+		{
+			$detail['created_by_user_name'] = $user_username;
+		}
 
 		// get the creation date
 		$detail['created_date'] = $document->getCreatedDateTime();
 
 		// get the checked out user
 		$userid = $document->getCheckedOutUserID();
-		$username='n/a';
+		$user_name = $user_username = 'n/a';
 		if (is_numeric($userid))
 		{
-			$username = '* unknown *';
+			$user_name = $user_username = '* unknown *';
 			$user = User::get($userid);
 			if (!is_null($user) && !PEAR::isError($user))
 			{
-				$username = $user->getName();
+				$user_name = $user->getName();
+				if ($wsversion >= 3)
+				{
+					$user_username = $user->getUserName();
+				}
 			}
 		}
-		$detail['checked_out_by'] = $username;
+		$detail['checked_out_by'] = $user_name;
+		if ($wsversion >= 3)
+		{
+			$detail['checked_out_by_user_name'] = $user_username;
+		}
 
 		// get the checked out date
 		list($major, $minor, $fix) = explode('.', $default->systemVersion);
@@ -2170,34 +2184,50 @@ class KTAPI_Document extends KTAPI_FolderItem
 
 		// get the modified user
 		$userid = $document->getModifiedUserId();
-		$username='n/a';
+		$user_name = $user_username = 'n/a';
 		if (is_numeric($userid))
 		{
-			$username = '* unknown *';
+			$user_name = $user_username = '* unknown *';
 			$user = User::get($userid);
 			if (!is_null($user) && !PEAR::isError($user))
 			{
-				$username = $user->getName();
+				$user_name = $user->getName();
+				if ($wsversion >= 3)
+				{
+					$user_username = $user->getUserName();
+				}
 			}
 		}
-		$detail['modified_by'] = $detail['updated_by'] = $username;
+		$detail['modified_by'] = $detail['updated_by'] = $user_name;
+		if ($wsversion >= 3)
+		{
+			$detail['modified_by_user_name'] = $user_username;
+		}
 
 		// get the modified date
 		$detail['updated_date'] = $detail['modified_date'] = $document->getLastModifiedDate();
 
 		// get the owner
 		$userid = $document->getOwnerID();
-		$username='n/a';
+		$user_name = $user_username = 'n/a';
 		if (is_numeric($userid))
 		{
-			$username = '* unknown *';
+			$user_name = $user_username = '* unknown *';
 			$user = User::get($userid);
 			if (!is_null($user) && !PEAR::isError($user))
 			{
-				$username = $user->getName();
+				$user_name = $user->getName();
+				if ($wsversion >= 3)
+				{
+					$user_username = $user->getUserName();
+				}
 			}
 		}
-		$detail['owned_by'] = $username;
+		$detail['owned_by'] = $user_name;
+		if ($wsversion >= 3)
+		{
+			$detail['owned_by_user_name'] = $user_username;
+		}
 
 		// get the version
 		$detail['version'] = $document->getVersion();
@@ -2269,10 +2299,9 @@ class KTAPI_Document extends KTAPI_FolderItem
 		}
 		
 		if ($wsversion >= 3)
-		{	$url = KTBrowseUtil::getUrlForDocument($document);
-		
-			$GLOBALS['default']->log->debug("get_detail $url");
-			
+		{	
+			//clean URI
+			$url = KTBrowseUtil::getUrlForDocument($document);			
 			$detail['clean_uri'] = $url;
 		}
 
@@ -2375,7 +2404,7 @@ class KTAPI_Document extends KTAPI_FolderItem
 	 */
 	function get_transaction_history()
 	{
-        $sQuery = 'SELECT DTT.name AS transaction_name, U.name AS username, DT.version AS version, DT.comment AS comment, DT.datetime AS datetime ' .
+        $sQuery = 'SELECT DTT.name AS transaction_name, U.name AS username, U.username AS user_username, DT.version AS version, DT.comment AS comment, DT.datetime AS datetime ' .
             'FROM ' . KTUtil::getTableName('document_transactions') . ' AS DT INNER JOIN ' . KTUtil::getTableName('users') . ' AS U ON DT.user_id = U.id ' .
             'INNER JOIN ' . KTUtil::getTableName('transaction_types') . ' AS DTT ON DTT.namespace = DT.transaction_namespace ' .
             'WHERE DT.document_id = ? ORDER BY DT.datetime DESC';
