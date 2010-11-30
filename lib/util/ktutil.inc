@@ -46,7 +46,7 @@ class KTUtil {
 	const DAY_IN_SECS = 86400;
 	const KB = 1024;
     const MB = 1048576;
-    const GB = 1000000000;
+    const GB = 1073741824;
     const TB = 1099511627776;
     const PB = 1125899906842624;
 
@@ -162,6 +162,7 @@ class KTUtil {
 		{
 			$default->log->debug("kt_url: base url - $base_url");
 		}
+		
 		return $base_url;
 	}
 
