@@ -275,8 +275,8 @@ class LdapAuthProvider extends KTAuthenticationProvider {
 
 }
 
-require_once('LdapUtil.php');
-require_once('LdapGroupManager.php');
+require_once('ldapUtil.php');
+require_once('ldapGroupManager.php');
         
 class LdapAuthenticator extends Authenticator {
     
