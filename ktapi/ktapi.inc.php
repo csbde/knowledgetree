@@ -208,20 +208,6 @@ class KTAPI
         return $this->version;
     }
     
-    /**
- 	* This returns the current date-time 
- 	*
-	* @author KnowledgeTree Team
- 	* @access public
- 	* @return string UTC Date-Time
- 	*/
-	public function getServerDateTime()
-    {
-    	$datetime = KTUtil::getServerDateTime();
-    	$GLOBALS['default']->log->debug("getServerTime $datetime");
-    	
-        return $datetime;
-    }
 
  	/**
  	* This returns the current session.
@@ -5212,8 +5198,6 @@ class KTAPI
 		}
 		
     	$documents = $user->mostRecentDocumentsOwned($limit);
-
-    	$GLOBALS['default']->log->debug('KTAPI get_most_recent_documents_owned items '.print_r($documents, true));
     	
 		return $documents;
     }
