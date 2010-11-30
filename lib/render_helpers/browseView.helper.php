@@ -108,7 +108,7 @@ class sharedUserBrowseView extends browseView
 	 	$fileNameCutoff = 100;
 	 	$ns = ' not_supported';
 		$permissions = SharedContent::canAccessDocument($item['user_id'], $item['id'], null, 1);
-		$hasCheckedOut = ($_SESSION['userID'] == $item['checked_out_by']);
+		$hasCheckedOut = ($_SESSION['userID'] == $item['checked_out_by_id']);
 		// Icons
 		$iconFile = 'resources/mimetypes/newui/' . KTMime::getIconPath($item['mimetypeid']) . '.png';
 		$item['icon_exists'] = file_exists(KT_DIR . '/' . $iconFile);
@@ -214,9 +214,9 @@ class sharedUserBrowseView extends browseView
 				}
 			}
 		}
-		if(!is_null($item['checked_out_by']))
+		if(!is_null($item['checked_out_by_id']))
 		{
-			$coUser = User::get($item['checked_out_by']);
+			$coUser = User::get($item['checked_out_by_id']);
 			$item['checked_out_by'] = $coUser->getName();
 		}
 		$checkbox = '';
