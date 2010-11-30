@@ -79,7 +79,7 @@ class KTUserAdminDispatcher extends KTAdminDispatcher {
         }
 
         $search_fields = array();
-        $search_fields[] =  new KTStringWidget(_kt('Search for Users'), _kt("Enter part of the person's username.  e.g. <strong>ra</strong> will match <strong>brad</strong>."), 'search_name', $name, $this->oPage, true);
+        $search_fields[] =  new KTStringWidget(_kt('Search for Users'), _kt("Enter part of the person's username.  e.g. <strong>ra</strong> will match <strong>brad</strong>."), 'search_name', $name, $this->oPage);
 
         // FIXME handle group search stuff.
         $search_results = null;
