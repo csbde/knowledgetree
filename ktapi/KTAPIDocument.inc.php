@@ -2447,10 +2447,12 @@ class KTAPI_Document extends KTAPI_FolderItem
 
         	$userid = $document->getModifiedUserId();
 			$user = User::get($userid);
-			$username = 'Unknown';
+			$username = $user_username = 'Unknown';
 			if (!PEAR::isError($user))
 			{
 				$username = is_null($user)?'n/a':$user->getName();
+				
+				$user_username = is_null($user)?'n/a':$user->getUserName();
 			}
 
         	$version['user'] = $username;
@@ -2461,6 +2463,11 @@ class KTAPI_Document extends KTAPI_FolderItem
         	{
         		$version['metadata_version'] = (int) $version['metadata_version'];
         		$version['content_version'] = (float) $version['content_version'];
+        	}
+        	
+        	if ($wsversion >= 3)
+        	{
+        		$version['user_username'] = $user_username;	
         	}
 
             $versions[] = $version;
