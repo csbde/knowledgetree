@@ -208,6 +208,7 @@ class KTAPI_User extends KTAPI_Member
     	$sql = "SELECT D.id as document_id FROM documents AS D $sPermissionJoin $sWhere $sOrderBy";
     	
     	$rows = DBUtil::getResultArrayKey(array($sql, $aPermissionParams), 'document_id');
+    	
 		if (is_null($rows) || PEAR::isError($rows))
 		{
 			$results = new KTAPI_Error(KTAPI_ERROR_INTERNAL_ERROR, $rows);
@@ -216,8 +217,8 @@ class KTAPI_User extends KTAPI_Member
 		{
 			$results = array();
 			foreach($rows as $row)
-			{
-				$document = Document::get($row['document_id']);
+			{				
+				$document = Document::get($row);
 				
 				$results[] = $document;
 			}
