@@ -482,3 +482,12 @@ div#upgradePlan {
 span.astat {
 	font-weight:bold;
 }
+
+span.sharingtree {
+	background:url("../graphics/newui/home.png") no-repeat;
+	color:transparent !important;
+	margin:0;
+	overflow:hidden;
+	padding:0;
+	width:25px;
+}
