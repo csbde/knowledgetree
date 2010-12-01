@@ -1,40 +1,45 @@
 <table border="0" cellspacing="5" cellpadding="5px">
     <tr>
         <td colspan="2" valign="top">
-            Enter or copy and paste the email addresses of the user(s) you want to invite to use KnowledgeTree. Each invited user will have their access limited to shared content only.
+            Share with:
         </td>
     </tr>
 
     <tr>
-        <td>&nbsp;</td>
+        <td>
+        	<textarea name="share.emails" id="share.emails" rows="3" cols="45" ></textarea>
+        </td>
     </tr>
 
     <tr>
         <td width="30%" valign="top">
-            Invite Users:
+            Message (Optional):
         </td>
+	</tr>
+	<tr>
         <td width="70%">
-            <textarea name="invite.emails" id="invite.emails" rows="3" cols="46" ></textarea>
+            <textarea name="share.message" id="share.message" rows="3" cols="45" ></textarea>
         </td>
+        
     </tr>
 
     <tr>
         <td width="30%">
         	<label for="read.only">Read-only</label>
-        </td>
-        <td width="70%">
         	<input type="checkbox" name="readonly" id="readonly" class="readonly">
         </td>
     </tr>
     
     <tr>
-        <td width="30%"></td>
-        <td width="70%" align="right">
-            <input id="ul_actions_upload_btn" class="ul_actions_btns" type="button" value="Invite" onClick="kt.app.inviteusers.inviteUsers('shared');" />
+        <td width="30%" align="right">
+			<input id="ul_actions_upload_btn" class="ul_actions_btns" type="button" value="Share" onClick="kt.app.sharewithusers.inviteUsers('shared');" />
             &nbsp;&nbsp;
-            <a class="ul_actions_cancel_link" href="javascript: kt.app.inviteusers.closeWindow();">Cancel</a>
+            <a class="ul_actions_cancel_link" href="javascript: kt.app.sharewithusers.closeWindow();">Cancel</a>
             <input type="hidden" name="object.id" id="object.id" value="">
             <input type="hidden" name="object.type" id="object.type" value="">
+        </td>
+        <td width="70%">
+        
         </td>
     </tr>
 

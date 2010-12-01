@@ -91,7 +91,7 @@ kt.app=new function(){
 		//window.console.dir(d);
 		
 		if(d.errors.hadErrors==1){
-			console.log(d);
+			//console.log(d);
 			var msg=Array();
 			var BR='<br />';
 			for(var idx in d.errors.errors){

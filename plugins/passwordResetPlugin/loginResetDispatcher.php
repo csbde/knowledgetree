@@ -523,7 +523,14 @@ class loginResetDispatcher extends KTDispatcher {
         $user = $_REQUEST['username'];
 		$id = $this->validateCredentials($email, $user);
         if(!is_numeric($id) || $id < 1) {
-            return _kt('Please check that you have entered a valid username and email address.');
+        	if($KTConfig->get('user_prefs/useEmailLogin', false))
+        	{
+        		return _kt('Please check that you have entered a valid email address.');
+        	}
+        	else 
+        	{
+        		return _kt('Please check that you have entered a valid username and email address.');
+        	}
         }
         // Generate a random key that expires after 24 hours
         $expiryDate = time()+86400;
