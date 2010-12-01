@@ -504,11 +504,15 @@ class KTPermissionUtil {
             $oPermission = $oPermission->getName();
         }
 
+        if($oUser instanceof User || $oUser instanceof UserProxy){
+            $oUser = $oUser->iId;
+        }
+
         $lookup_id = $oFolderOrDocument->getPermissionLookupID();
 
         // Get the users permissions from cache
 	    $cache = PermissionCache::getSingleton();
-	    $check = $cache->checkPermission($lookup_id, $oPermission, $oUser->iId);
+	    $check = $cache->checkPermission($lookup_id, $oPermission, $oUser);
 	    KTUtil::logTiming(__FUNCTION__);
 	    return $check;
 

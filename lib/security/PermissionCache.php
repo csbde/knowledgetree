@@ -113,7 +113,6 @@ class PermissionCache
 
     /**
      * Check whether a user has a given permission on an object.
-     * The check will access memcache to check, if nothing exists then the database will be checked.
      *
      * @access public
      * @param int $lookupId The permission lookup id for the object (folder | document)
@@ -135,38 +134,16 @@ class PermissionCache
 
         $userId = is_numeric($userId) ? $userId : $_SESSION['userID'];
 
-        // Check the permissions in memcache
-        if($this->memcache !== false) {
-            $check = $this->memcache->checkPermission($userId, $lookupId, $permId);
-
-            if(is_bool($check)){
-                return $check;
+        // Validate the users permissions
+        // If the userId passed differs from the current user, then validate the cached permissions
+        if($this->memcache !== false){
+            $check = $this->memcache->validateMemcachePermissions();
+            if(!$check || $userId != $_SESSION['userID']){
+                $this->validateCachedPermissions($userId);
             }
-
-            // if the memcache permission check returns anything other than a boolean value then
-            // we use the database to check and reset the memcache key further down
-            $check = false;
         }
 
-        $sql = "select p.id from permission_lookup_assignments p, permission_fast_cache c
-                where p.permission_descriptor_id = c.descriptor_id AND permission_id = {$permId}
-                AND user_id = {$userId} AND permission_lookup_id = {$lookupId}";
-
-        $result = DBUtil::getOneResultKey($sql, 'id');
-
-        if(is_numeric($result) && $result > 0) {
-            $check = true;
-        } else {
-            // Check system roles
-            $check = $this->checkSystemRoles($permId, $lookupId, $userId);
-        }
-
-        // Set the permission check in memcache
-        if($this->memcache !== false) {
-            $this->memcache->setPermission($userId, $lookupId, $permId, $check);
-        }
-
-        return $check;
+        return $this->checkCachedPermission($lookupId, $permId, $userId);
     }
 
     /**
@@ -175,12 +152,14 @@ class PermissionCache
      * @access public
      * @param int $userId The id of the user
      */
-    public function updateCacheForUser($userId = null)
+    public function updateCacheForUser($userId = null, $list = null)
     {
         $userId = is_numeric($userId) ? $userId : $_SESSION['userID'];
 
-        // Get the descriptor ids for the user
-        $list = $this->getDescriptors($userId);
+        if(!is_array($list) || empty($list)){
+            // Get the descriptor ids for the user
+            $list = $this->getDescriptors($userId);
+        }
 
         // Remove current cache for the user
         $this->clearCacheForUser($userId);
@@ -266,6 +245,91 @@ class PermissionCache
 
         return $descriptors;
     }
+
+    /**
+     * Check whether a user has a given permission on an object.
+     * The check will access memcache to check, if nothing exists then the database will be checked.
+     *
+     * @access public
+     * @param int $lookupId The permission lookup id for the object (folder | document)
+     * @param int $permId The id of the permission to check, eg 1 = read
+     * @param int $userId The id of the user
+     * @return boolean True if the user has permission | False if not allowed
+     */
+    private function checkCachedPermission($lookupId, $permId, $userId)
+    {
+        // Check the permissions in memcache
+        if($this->memcache !== false) {
+            $check = $this->memcache->checkPermission($userId, $lookupId, $permId);
+
+            if(is_bool($check)){
+                return $check;
+            }
+
+            // if the memcache permission check returns anything other than a boolean value then
+            // we use the database to check and reset the memcache key further down
+            $check = false;
+        }
+
+        $sql = "select p.id from permission_lookup_assignments p, permission_fast_cache c
+                where p.permission_descriptor_id = c.descriptor_id AND permission_id = {$permId}
+                AND user_id = {$userId} AND permission_lookup_id = {$lookupId}";
+
+        $result = DBUtil::getOneResultKey($sql, 'id');
+
+        if(is_numeric($result) && $result > 0) {
+            $check = true;
+        } else {
+            // Check system roles
+            $check = $this->checkSystemRoles($permId, $lookupId, $userId);
+        }
+
+        // Set the permission check in memcache
+        if($this->memcache !== false) {
+            $this->memcache->setPermission($userId, $lookupId, $permId, $check);
+        }
+
+        return $check;
+    }
+
+    /**
+     * Check whether the cached permissions match the system permissions and update them if required.
+     *
+     * @param int $userId
+     * @param bool $update Default true. If set to true the function will update the permissions | If false it will return true/false dependent on the validation
+     * @return bool True if validate | False if in need of an update
+     */
+    private function validateCachedPermissions($userId, $update = true)
+    {
+        // Get cached descriptors
+        $sql = "select descriptor_id from permission_fast_cache
+                where user_id = {$userId};";
+        $cached = DBUtil::getResultArrayKey($sql, 'descriptor_id');
+
+        // If cache is empty - return false -> needs update
+        if(empty($cached) || PEAR::isError($cached)){
+            if($update){
+                $this->updateCacheForUser($userId);
+            }
+            return false;
+        }
+
+        // Get descriptors for user and compare against cache
+        $descriptors = $this->getDescriptors($userId);
+
+        $diff = array_diff($descriptors, $cached);
+
+        if(empty($diff)){
+            return true;
+        }
+
+        if($update){
+            $this->updateCacheForUser($userId, $descriptors);
+        }
+
+        return false;
+    }
+
 }
 
 /**
@@ -324,6 +388,42 @@ class PermissionMemCache
         }
         $this->namespaceKey = $namespaceKey;
         $this->namespace = $this->getNamespace();
+    }
+
+    /**
+     * Check whether the memcache permissions have been updated.
+     * Store the permissions namespace in session to ensure that a permissions update will be propogated.
+     *
+     * @return bool True if valid | False if invalid
+     */
+    public function validateMemcachePermissions()
+    {
+        $session = (isset($_SESSION['Permissions_Namespace']) && !empty($_SESSION['Permissions_Namespace'])) ? $_SESSION['Permissions_Namespace'] : '';
+
+        if(empty($session)){
+            $_SESSION['Permissions_Namespace'] = $this->getNamespace();
+            return false;
+        }
+
+        $namespace = $this->getNamespace();
+        if($session != $namespace){
+            $_SESSION['Permissions_Namespace'] = $namespace;
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Invalidate the permissions stored in memcache by updating the namespace.
+     * Note: the namespace is unique per account so this will invalidate permissions for the current account
+     *
+     * @access public
+     */
+    public function invalidateMemcachePermissions()
+    {
+        $this->setNamespace();
+        $_SESSION['Permissions_Namespace'] = $this->getNamespace();
     }
 
     /**
