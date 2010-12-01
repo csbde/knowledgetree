@@ -130,7 +130,8 @@ class KTUserUtil {
         $invitedUsers = array();
         $failedUsers = array();
         $groupName = '';
-
+		$message = '';
+		
     	$inSystemList = self::checkUniqueEmail($addressList);
 
     	// loop through any addresses that currently exist and unset them in the invitee list
@@ -182,8 +183,8 @@ class KTUserUtil {
 			if($type == 'shared') {
 				self::addSharedContent($user->getId(), $shareContent['object_id'], $shareContent['object_type'], $shareContent['permission']);
 			}
-            
-            $invitedUsers[] = array('id' => $user->getId(), 'email' => $email);
+            $message = isset($shareContent['message']) ? $shareContent['message'] : '';
+            $invitedUsers[] = array('id' => $user->getId(), 'email' => $email, 'message' => $message);
     	}
 
     	// Send invitation
@@ -479,8 +480,16 @@ class KTUserUtil {
             $user = (int)$user_id * 354;
             $user = base_convert($user, 10, 25);
             $link = $url . '88' . $user;
-
-            $list[] = array('name' => '', 'email' => $item['email'], 'sender' => $sender, 'link' => $link);
+			if($item['message'] != '')
+			{
+				$item['message'] = '<p><font color="#7F7F7F" size="2" face="Arial"><p>Message from '.$sender.':</p><p><font size="2">'. $item['message'] .'</font></p></font></p>';
+			}
+            $list[] = array(	'name' => '', 
+            					'email' => $item['email'], 
+            					'sender' => $sender, 
+            					'link' => $link,
+            					'message' => $item['message'],
+            				);
         }
 
         if (empty($list)) {
