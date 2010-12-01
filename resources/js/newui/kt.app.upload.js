@@ -15,7 +15,7 @@ kt.app.upload=new function(){
 	this.data.files={};
 	
 	//contains a list of fragments that will get preloaded
-	var fragments=this.fragments=['upload/upload.dialog','upload/upload.dialog.item','upload/upload.metadata.fieldset'];
+	var fragments=this.fragments=['upload/upload.dialog','upload/upload.dialog.item','upload/upload.dialog.item.nobulk','upload/upload.metadata.fieldset'];
 	
 	//contains a list of executable fragments that will get preloaded
 	var execs=this.execs=['upload/upload.doctypes','upload/upload.metadata.dialog'];
@@ -58,10 +58,17 @@ kt.app.upload=new function(){
 			docTypeId = self.data['globalMetaData']['docTypeID'];
 			docTypeHasRequiredFields = !self.data['globalMetaDataRequiredDone'];
 		}		
-		
-		var item=jQuery(kt.api.getFragment('upload/upload.dialog.item'));
-		jQuery(self.elems.item_container).append(item);
-		
+		// Check which dialog to get
+		var usertype = kt.api.getUserType('upload/upload.dialog.item');
+		if(usertype == 4)
+		{
+			var item=jQuery(kt.api.getFragment('upload/upload.dialog.item.nobulk'));
+		}
+		else
+		{
+			var item=jQuery(kt.api.getFragment('upload/upload.dialog.item'));
+		}
+		jQuery(self.elems.item_container).append(item);		
 		if(fileName.length > 50){
 			jQuery('.ul_filename').addClass('ellipsis');
 		}

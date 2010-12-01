@@ -390,10 +390,6 @@ class KTDispatcherValidation {
         return $oEntity;
     }
 
-
-
-
-
     /* unlike the KTEmail version, this only handles ONE email address */
     function validateEmailAddress($sEmailAddress, $aOptions = null) {
         $sEmailAddress = trim($sEmailAddress);
@@ -406,7 +402,6 @@ class KTDispatcherValidation {
         }
         return $sEmailAddress;
     }
-
 
     /* just does an empty string validation with an appropriate message, and then a duplicate name validation */
     function validateEntityName($sEntityTypeName, $sName, $aOptions = null) {

@@ -31,26 +31,28 @@ class browseViewUtil
 	}
 }
 
+class sharedUserBrowseAsView extends browseView 
+{
+	/**
+	 * Get the shared users
+	 *
+	 * @param string $folderId
+	 * @param string $sortField
+	 * @param string $asc
+	 * @return mixed $ret
+	 */
+	public function getFolderContent($folderId, $sortField = 'title', $asc = true)
+	{
+		
+	}
+}
+
 /**
  * Shared user browse view class
  *
  */
 class sharedUserBrowseView extends browseView
 {
-	public function browseViewItems($item, $folderId)
-	{
-		foreach ($item as $key=>$value)
-		{
-			if ($value=='n/a')
-			{
-				$item[$key]=null;
-			}
-		}
-		$item['container_folder_id']=$folderId;
-
-		return $item;
-	}
-
 	/**
 	 * Get the folder listing
 	 *
@@ -106,7 +108,7 @@ class sharedUserBrowseView extends browseView
 	 	$fileNameCutoff = 100;
 	 	$ns = ' not_supported';
 		$permissions = SharedContent::canAccessDocument($item['user_id'], $item['id'], null, 1);
-		$hasCheckedOut = ($_SESSION['userID'] == $item['checked_out_by']);
+		$hasCheckedOut = ($_SESSION['userID'] == $item['checked_out_by_id']);
 		// Icons
 		$iconFile = 'resources/mimetypes/newui/' . KTMime::getIconPath($item['mimetypeid']) . '.png';
 		$item['icon_exists'] = file_exists(KT_DIR . '/' . $iconFile);
@@ -121,15 +123,16 @@ class sharedUserBrowseView extends browseView
 		$item['document_link'] = KTUtil::buildUrl("view.php", array('fDocumentId'=>$item['id']));
 		$item['filename'] = (strlen($item['filename']) > $fileNameCutoff) ? substr($item['filename'], 0, $fileNameCutoff - 3) . "..." : $item['filename'];
 		$item['has_workflow'] = '';
-		$item['is_immutable'] = ($item['is_immutable'] == 'true') ? true : false;
+		$item['is_immutable'] = ($item['is_immutable'] == 1) ? true : false;
 		$item['is_immutable'] = $item['is_immutable'] ? '' : $ns;
 		$item['is_checkedout'] = $item['checked_out_date'] ? '' : $ns;
 		// Check parent folder if user type is shared (disabled == 4)
 		if (isset($item['object_permissions'])) {
 			// check permissions based on object_permissions, if set, or shared user access if shared user
+			// and check if the user has checkd out the document
 		    $item['actions.checkout'] = ($item['object_permissions'] == 0) ? $ns : ($item['checked_out_date'] ? $ns : '');
-		    $item['actions.checkin'] = ($item['object_permissions'] == 0) ? $ns : ($item['is_checked_out'] == 0 ? $ns : '');
-			$item['actions.cancel_checkout'] = ($item['object_permissions'] == 0) ? $ns : ($item['is_checked_out'] == 0 ? $ns : '');
+		    $item['actions.checkin'] = ($item['object_permissions'] == 0 || !$hasCheckedOut) ? $ns : ($item['is_checked_out'] == 0 ? $ns : '');
+			$item['actions.cancel_checkout'] = ($item['object_permissions'] == 0 || !$hasCheckedOut) ? $ns : ($item['is_checked_out'] == 0 ? $ns : '');
 		}
 		else if ($item['user_disabled'] == 4) {
 		    // check permissions on parent folder if document not present in shared content for user
@@ -207,9 +210,14 @@ class sharedUserBrowseView extends browseView
 			if (Zoho::resolve_type($item["mime_type"]))
 			{
 				if ($item['actions.checkout'] != $ns) {
-					$item['allowdoczohoedit'] = '<li><a href="javascript:;" onclick="zohoEdit(\'' . $item['id'] . '\')">Edit Document Online</a></li>';
+					$item['allowdoczohoedit'] = '<li class="action_zoho_document"><a href="javascript:;" onclick="zohoEdit(\'' . $item['id'] . '\')">Edit Document Online</a></li>';
 				}
 			}
+		}
+		if(!is_null($item['checked_out_by_id']))
+		{
+			$coUser = User::get($item['checked_out_by_id']);
+			$item['checked_out_by'] = $coUser->getName();
 		}
 		$checkbox = '';
 		$tpl='
@@ -233,13 +241,13 @@ class sharedUserBrowseView extends browseView
 								<!-- li class="actionIcon comments"></li -->
 								<li class="actionIcon actions">
 									<ul>
-										<li class="[actions.download]"><a href="action.php?kt_path_info=ktcore.actions.document.view&fDocumentId=[id]">Download</a></li>
-										<li class="[actions.instant_view]"><a href="[document_link]#preview">Instant View</a></li>
+										<li class="actions.download [actions.download]"><a href="action.php?kt_path_info=ktcore.actions.document.view&fDocumentId=[id]">Download</a></li>
+										<li class="actions.instant_view [actions.instant_view]"><a href="[document_link]#preview">Instant View</a></li>
 										[allowdoczohoedit]
 
-										<li class="[actions.checkout]"><a href="action.php?kt_path_info=ktcore.actions.document.checkout&fDocumentId=[id]">Check-out</a></li>
-										<li class="[actions.cancel_checkout]"><a href="action.php?kt_path_info=ktcore.actions.document.cancelcheckout&fDocumentId=[id]">Cancel Check-out</a></li>
-										<li class="[actions.checkin]"><a href="action.php?kt_path_info=ktcore.actions.document.checkin&fDocumentId=[id]">Check-in</a></li>
+										<li class="actions.checkout [actions.checkout]"><a href="action.php?kt_path_info=ktcore.actions.document.checkout&fDocumentId=[id]">Check-out</a></li>
+										<li class="actions.cancel_checkout [actions.cancel_checkout]"><a href="action.php?kt_path_info=ktcore.actions.document.cancelcheckout&fDocumentId=[id]">Cancel Check-out</a></li>
+										<li class="actions.checkin [actions.checkin]"><a href="action.php?kt_path_info=ktcore.actions.document.checkin&fDocumentId=[id]">Check-in</a></li>
 									</ul>
 								</li>
 							</ul>
@@ -295,6 +303,28 @@ class sharedUserBrowseView extends browseView
 		if ($empty) { return '<span class="fragment folder" style="display:none;">' . $tpl . '</span>'; }
 
 		return ktVar::parseString($tpl,$item);
+	}
+	
+	/**
+	 * Sanitize a browse view items attributes
+	 *
+	 * @param array $item
+	 * @param int $folderId
+	 * @return array $item
+	 */
+	
+	private function browseViewItems($item, $folderId)
+	{
+		foreach ($item as $key=>$value)
+		{
+			if ($value=='n/a')
+			{
+				$item[$key]=null;
+			}
+		}
+		$item['container_folder_id']=$folderId;
+
+		return $item;
 	}
 }
 /**
@@ -595,16 +625,13 @@ class browseView {
 		if(get_class($oDocument) == 'Document'){
     		if($hasWrite) {
         		$item['actions.checkout'] = $item['checked_out_date'] ? $ns : '';
-
-                $hasCheckedOut = ($_SESSION['userID'] == $oDocument->getCheckedOutUserID());
+                $hasCheckedOut = ($_SESSION['userID'] == $item['checked_out_by_id']);
         		$item['actions.checkin'] = ($item['checked_out_date'] && $hasCheckedOut) ? '' : $ns;
         		$item['actions.cancel_checkout'] = ($item['checked_out_date'] && $hasCheckedOut) ? '' : $ns;
-
     			$item['actions.move'] = KTDocumentUtil::canBeMoved($oDocument) ? '' : $ns;
     		}
 
     		$item['actions.delete'] = (KTDocumentUtil::canBeDeleted($oDocument) && $hasDelete) ? '' : $ns;
-
     		$item['actions.copy'] = KTDocumentUtil::canBeCopied($oDocument) ? '' : $ns;
 		}
 
@@ -629,6 +656,15 @@ class browseView {
 		if(!$hasWrite){
 		    $item['actions.change_owner'] = $ns;
 		    $item['actions.share_document'] = $ns;
+		    if($isCheckedOut || $item['actions.finalize_document'])
+		    {
+		    	$oUser = User::get($_SESSION['userID']);
+		    	$sPermissions = 'ktcore.permissions.write';
+		    	if(KTPermissionUtil::userHasPermissionOnItem($oUser, $sPermissions, $oDocument))
+		    	{
+		    		$item['actions.share_document'] = '';
+		    	}
+		    }
 			$item['actions.finalize_document'] = $ns;
 			$item['separatorE']=$ns;
 		}
@@ -689,7 +725,7 @@ class browseView {
 			if (Zoho::resolve_type($item["mime_type"]))
 			{
 				if ($item['actions.checkout'] != $ns) {
-					$item['allowdoczohoedit'] = '<li><a href="javascript:;" onclick="zohoEdit(\''.$item['id'].'\')">Edit Document Online</a></li>';
+					$item['allowdoczohoedit'] = '<li class="action_zoho_document"><a href="javascript:;" onclick="zohoEdit(\''.$item['id'].'\')">Edit Document Online</a></li>';
 				}
 			}
 		}
@@ -728,33 +764,33 @@ class browseView {
 								<!-- li class="actionIcon comments"></li -->
 								<li class="actionIcon actions">
 									<ul>
-										<li class="[actions.share_document]"><a href="#" onclick="javascript:kt.app.inviteusers.showInviteWindow(\'[id]\',\'[item_type]\',\'[user_id]\');">Share This Document</a></li>
+										<li class="action_share_document [actions.share_document]"><a href="#" onclick="javascript:kt.app.sharewithusers.shareContentWindow(\'[id]\',\'[item_type]\',\'[user_id]\');">Share This Document</a></li>
 										<li class="separator[separatorE]"></li>
-										<li class="[actions.download]"><a href="action.php?kt_path_info=ktcore.actions.document.view&fDocumentId=[id]">Download</a></li>
-										<li class="[actions.instant_view]"><a href="[document_link]#preview">Instant View</a></li>
+										<li class="action_download [actions.download]"><a href="action.php?kt_path_info=ktcore.actions.document.view&fDocumentId=[id]">Download</a></li>
+										<li class="action_instant_view [actions.instant_view]"><a href="[document_link]#preview">Instant View</a></li>
 										[allowdoczohoedit]
 
 										<li class="separator[separatorA]"></li>
 
-										<li class="[actions.copy]"><a href="action.php?kt_path_info=ktcore.actions.document.copy&fDocumentId=[id]">Copy</a></li>
-										<li class="[actions.move]"><a href="action.php?kt_path_info=ktcore.actions.document.move&fDocumentId=[id]">Move</a></li>
-										<li class="[actions.delete]"><a href="action.php?kt_path_info=ktcore.actions.document.delete&fDocumentId=[id]">Delete</a></li>
+										<li class="action_copy [actions.copy]"><a href="action.php?kt_path_info=ktcore.actions.document.copy&fDocumentId=[id]">Copy</a></li>
+										<li class="action_move [actions.move]"><a href="action.php?kt_path_info=ktcore.actions.document.move&fDocumentId=[id]">Move</a></li>
+										<li class="action_delete [actions.delete]"><a href="action.php?kt_path_info=ktcore.actions.document.delete&fDocumentId=[id]">Delete</a></li>
 
 										<li class="separator[separatorB]"></li>
 
-										<li class="[actions.checkout]"><a href="action.php?kt_path_info=ktcore.actions.document.checkout&fDocumentId=[id]">Check-out</a></li>
-										<li class="[actions.cancel_checkout]"><a href="action.php?kt_path_info=ktcore.actions.document.cancelcheckout&fDocumentId=[id]">Cancel Check-out</a></li>
-										<li class="[actions.checkin]"><a href="action.php?kt_path_info=ktcore.actions.document.checkin&fDocumentId=[id]">Check-in</a></li>
+										<li class="action_checkout [actions.checkout]"><a href="action.php?kt_path_info=ktcore.actions.document.checkout&fDocumentId=[id]">Check-out</a></li>
+										<li class="action_cancel_checkout [actions.cancel_checkout]"><a href="action.php?kt_path_info=ktcore.actions.document.cancelcheckout&fDocumentId=[id]">Cancel Check-out</a></li>
+										<li class="action_checkin [actions.checkin]"><a href="action.php?kt_path_info=ktcore.actions.document.checkin&fDocumentId=[id]">Check-in</a></li>
 
 										<li class="separator[separatorC]"></li>
 
-										<li class="[actions.alerts]"><a href="action.php?kt_path_info=alerts.action.document.alert&fDocumentId=[id]">Alerts</a></li>
-										<li class="[actions.email]"><a href="action.php?kt_path_info=ktcore.actions.document.email&fDocumentId=[id]">Email</a></li>
+										<li class="action_alerts [actions.alerts]"><a href="action.php?kt_path_info=alerts.action.document.alert&fDocumentId=[id]">Alerts</a></li>
+										<li class="action_email [actions.email]"><a href="action.php?kt_path_info=ktcore.actions.document.email&fDocumentId=[id]">Email</a></li>
 
 										<li class="separator[separatorD]"></li>
 
-										<li class="[actions.change_owner]"><a href="action.php?kt_path_info=ktcore.actions.document.ownershipchange&fDocumentId=[id]">Change Document Ownership</a></li>
-										<li class="[actions.finalize_document]"><a href="action.php?kt_path_info=ktcore.actions.document.immutable&fDocumentId=[id]">Finalize Document</a></li>
+										<li class="action_change_owner [actions.change_owner]"><a href="action.php?kt_path_info=ktcore.actions.document.ownershipchange&fDocumentId=[id]">Change Owner</a></li>
+										<li class="action_finalize_document [actions.finalize_document]"><a href="action.php?kt_path_info=ktcore.actions.document.immutable&fDocumentId=[id]">Finalize Document</a></li>
 									</ul>
 								</li>
 							</ul>
@@ -822,19 +858,19 @@ class browseView {
 						<div class="title"><a class="clearLink" href="[link]">[title]</a></div>
 						<div class="detail"><span class="item">Created by: <span class="creator">[created_by]</span></span></div>
 					</td>
+					<td>
 						<ul class="folder actionMenu">
 							<li class="actionIcon actions">
 									<ul>
-                                        <li class="[actions.share_folder]"><a href="#" onclick="javascript:kt.app.inviteusers.showInviteWindow(\'[id]\',\'[item_type]\',\'[user_id]\');">Share This Folder</a></li>
-                                        <li class="[actions.rename]"><a href="action.php?kt_path_info=ktcore.actions.folder.rename&fFolderId=[id]">Rename Folder</a></li>
-                                        <li class="[actions.permissions]"><a href="action.php?kt_path_info=ktcore.actions.folder.permissions&fFolderId=[id]">Permissions</a></li>
+                                        <li class="action_share_folder [actions.share_folder]"><a href="#" onclick="javascript:kt.app.sharewithusers.shareContentWindow(\'[id]\',\'[item_type]\',\'[user_id]\');">Share This Folder</a></li>
+                                        <li class="action_rename_folder [actions.rename]"><a href="action.php?kt_path_info=ktcore.actions.folder.rename&fFolderId=[id]">Rename Folder</a></li>
+                                        <li class="action_folder_permissions [actions.permissions]"><a href="action.php?kt_path_info=ktcore.actions.folder.permissions&fFolderId=[id]">Set Folder Permissions</a></li>
                                         <!-- <li class="[actions.subscribe]"><a href="#" onclick=\'alert("JavaScript to be modified")\'>Subscribe to Folder</a></li> -->
                                         <li class="separator[separatorA]"></li>
-                                        <li class="[actions.view_transactions]"><a href="action.php?kt_path_info=ktcore.actions.folder.transactions&fFolderId=[id]">View Folder Activity</a></li>
+                                        <li class="action_view_transactions [actions.view_transactions]"><a href="action.php?kt_path_info=ktcore.actions.folder.transactions&fFolderId=[id]">View Folder Activity</a></li>
 									</ul>
 							</li>
 						</ul>
-					<td>
 					</td>
 				</tr>
 			</table>

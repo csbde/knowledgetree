@@ -8,35 +8,22 @@ class siteapi extends client_service{
 		global $default;
 
 		$documents = $params['documents'];
-
 		$default->log->debug('Uploading files '.print_r($documents, true));
-
 		$index = 0;
-
 		$returnResponse = array();
-
 		foreach($documents as $document){
 			$default->log->debug('Uploading file '.$document['fileName']);
 			//file_put_contents('uploadFile.txt', "\n\rUploading file ".$document['fileName'], FILE_APPEND);
-
 			try
 			{
 				$baseFolderID = $document['baseFolderID'];
-
 		    	$oStorage = KTStorageManagerUtil::getSingleton();
-
 		    	$folderID = $document['folderID'];
-
 		    	$documentTypeID = $document['docTypeID'];
-
 		    	$fileName = $document['fileName'];
-
 		    	$sS3TempFile  = $document['s3TempFile'];
-
 		    	$metadata = $document['metadata'];
-
 		    	$default->log->debug('Uploading file :: metadata '.print_r($metadata, true));
-
 		    	$MDPack = array();
 		    	//assemble the metadata and convert to fileds and fieldsets
 		    	foreach($metadata as $MD) {
@@ -46,17 +33,11 @@ class siteapi extends client_service{
 		    			$MD['value']
 	                );
 		    	}
-
 		    	$default->log->debug('Uploading file :: metadatapack '.print_r($MDPack, true));
-
 		    	//file_put_contents('uploadFile.txt', "\n\rMDPack ".print_r($MDPack, true), FILE_APPEND);
-
 		       	$aString = "\n\rfolderID: $folderID documentTypeID: $documentTypeID fileName: $fileName S3TempFile: $sS3TempFile";
-
 		    	$default->log->debug("uploading with options $aString");
-
 		        $options['uploaded_file'] = 'true';
-
 		        $oFolder = Folder::get($folderID);
 		        if (PEAR::isError($oFolder)) {
 		        	//$default->log->error("\n\rFolder $folderID: {$oFolder->getMessage()}");
@@ -114,32 +95,25 @@ class siteapi extends client_service{
 
 		        	$fs = new KTAmazonS3ZipImportStorage('', $fileData);
 	        	    $response = $oStorage->headS3Object($sS3TempFile);
-
-
 	        	    $size = 0;
 	        	    if (($response instanceof ResponseCore) && $response->isOK()) {
 	        	        $size = $response->header['content-length'];
 	        	    }
-
 	        	    $aOptions = array('documenttype' => $oDocumentType,
 	        	    				'metadata' => $MDPack);
 
 					$bm = new KTAmazonS3BulkImportManager($oFolder, $fs, $oUser, $aOptions);
 			        $res = $bm->import($sS3TempFile, $size);
-
 			        $archives[] = $res;
-
 			        //give dummy response
 			        //$this->addResponse('addedDocuments', '');
 			        $item = array();
 					$json = array();
 					$item['filename'] = $fileName;
 			        $item['isBulk'] = true;
-
 			        $json['success'] = $item;
 
 					$returnResponse[] = json_encode($json);
-
 		        } else {
 					//add to KT
 		        	$oDocument =& KTDocumentUtil::add($oFolder, $fileName, $oUser, $aOptions);
@@ -184,9 +158,7 @@ class siteapi extends client_service{
 					$item['modified_date'] = $oDocument->getLastModifiedDate();
 
 					$json['success'] = $item;
-
 					$returnResponse[] = json_encode($json);
-
 					$default->log->debug('Document add added response '.print_r($returnResponse, true));
 	        	}
 			}
@@ -194,7 +166,6 @@ class siteapi extends client_service{
 	        catch(Exception $e) {
 	        	$default->log->error("Document add failed {$e->getMessage()}");
 	        	file_put_contents('uploadFile.txt', "\n\rDocument add failed {$e->getMessage()}", FILE_APPEND);
-
 	        	$item = array();
 				$json = array();
 	        	//construct error message
@@ -443,8 +414,12 @@ class siteapi extends client_service{
 		$options = array( 'orderby'=>'name' );
 		$folders = Folder::getList ( array ('parent_id = ?', $folderId ), $options );
 		$subfolders=array();
-		foreach($folders as $folder){
-			$subfolders[$folder->aFieldArr['id']]=$this->filter_array($folder->aFieldArr,$filter,false);
+		foreach($folders as $folder)
+		{
+			if($this->userHasPermissionOnItem(User::get($_SESSION['userID']), 'ktcore.permissions.write', $folder, 'folder'))
+			{
+				$subfolders[$folder->aFieldArr['id']]=$this->filter_array($folder->aFieldArr,$filter,false);
+			}
 		}
 		$this->addResponse('children',$subfolders);
 	}
@@ -454,21 +429,24 @@ class siteapi extends client_service{
 	 * @param $params
 	 * @return unknown_type
 	 */
-	public function getFolderHierarchy($params){
+	public function getFolderHierarchy($params)
+	{
 		$folderId=$params['folderId'];
 		$filter=isset($params['fields']) ? $params['fields'] : '';
 
 		$oFolder = Folder::get($folderId);
 		$ancestors = array();
 
-		if ($oFolder) {
-
-			if ($oFolder->getParentFolderIDs() != '') {
-				$ancestors=($this->ext_explode(",",$oFolder->getParentFolderIDs()));
+		if ($oFolder) 
+		{
+			$parent_ids = $oFolder->getParentFolderIDs();
+			if ($parent_ids != '') 
+			{
+				$ancestors=($this->ext_explode(",",$parent_ids));
 				$ancestors=Folder::getList(array('id IN ('.join(',',$ancestors).')'),array());
 				$parents=array();
-
-				foreach($ancestors as $obj){
+				foreach($ancestors as $obj)
+				{
 					$parents[$obj->getID()]=$this->filter_array($obj->aFieldArr,$filter,false);
 				}
 			}
@@ -493,8 +471,6 @@ class siteapi extends client_service{
         }
 		// load amazon authentication information
         $aws = ConfigManager::getSection('aws');
-
-
         $buckets = ConfigManager::getSection('buckets');
 		$bucket = $buckets['accounts'];
 
@@ -503,16 +479,9 @@ class siteapi extends client_service{
 		$randomfile = mt_rand();// . '_';
 		$aws_tmp_path = ACCOUNT_NAME . '/' . 'tmp/' . $username . '/';
 
-
-
 		/* OVERRIDE FOR TESTING */
 		//$bucket = 'testa';
 		//$aws_tmp_path = 'martin/';
-
-
-
-
-
 		// TODO : Is there a callback handler? Create one.
 		$success_action_redirect = KTLiveUtil::getServerUrl() . '/plugins/ktlive/webservice/callback.php';
 		$aws_form_action = 'https://' . $bucket . '.s3.amazonaws.com/';
@@ -524,7 +493,6 @@ class siteapi extends client_service{
 				 ->addCondition('starts-with', '$key', $aws_tmp_path)
 				 ->addCondition('starts-with', '$Content-Type', '')
 				 ->addCondition('', 'success_action_redirect', $success_action_redirect);
-
 
 		return array(
 			'formAction' => $aws_form_action,
@@ -579,11 +547,27 @@ class siteapi extends client_service{
         $this->addResponse('invitedUsers', json_encode($response));
     }
     
-    public function hasWrite($params)
+    public function getUserType()
     {
-        $response = array('hasWrite'=> 0);
-
-        $this->addResponse('data', json_encode($response));
+    	$oUser = User::get($_SESSION['userID']);
+        //$response = array('usertype'=> );
+        $response = $oUser->getDisabled();
+        $this->addResponse('usertype', $response);
+    }
+    
+    private function userHasPermissionOnItem($oUser, $sPermissions, $documentOrFolder, $type)
+    {
+    	// Shared user
+    	if($oUser->getDisabled() == 4 && !is_null($type))
+    	{
+    		require_once(KT_LIB_DIR . '/render_helpers/sharedContent.inc');
+    		return (SharedContent::getPermissions($oUser->getId(), $documentOrFolder->getId(), null, $type) == 1);
+    	}
+    	// System User
+    	else 
+    	{
+    		return KTPermissionUtil::userHasPermissionOnItem($oUser, $sPermissions, $documentOrFolder);
+    	}
     }
 }
 

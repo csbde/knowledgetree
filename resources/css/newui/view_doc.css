@@ -1,3 +1,18 @@
+#document-views{
+	-moz-border-radius:5px 5px 5px 5px;
+	-moz-box-shadow:0 0 5px #666677;
+	-webkit-border-radius:5px 5px 5px 5px;
+	-webkit-box-shadow:0 0 5px #666677;
+	box-shadow:0 0 5px #C6C6B7;
+	border-top-left-radius:5px;
+	border-top-right-radius:5px;
+	border-bottom-right-radius:5px;
+	border-bottom-left-radius:5px;
+	margin:5px;
+	width:300px;
+	right:30px;
+}
+
 #content ul.view_doc_tabs,ul.view_doc_tabs {
 	list-style: none;
 	margin: 0px;

@@ -44,6 +44,7 @@ if(!$iu->isSystemInstalled()) {
 	$iu->redirect("setup/wizard");
 	exit(0);
 }
+
 // main library routines and defaults
 require_once('config/dmsDefaults.php');
 require_once(KT_LIB_DIR . '/util/ktutil.inc');

@@ -2136,5 +2136,4 @@ class KTOwnershipChangeAction extends KTDocumentAction {
         $this->successRedirectToMain(_kt('Ownership changed.'), sprintf('fDocumentId=%d', $this->oDocument->getId()));
     }
 }
-
 ?>
