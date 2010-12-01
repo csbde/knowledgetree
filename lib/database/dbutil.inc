@@ -280,7 +280,7 @@ class DBUtil {
     /**
     * Returns a row from a result set from a gievn recordset key.
     * @param string $query
-    * @param sring $key
+    * @param string $key
     * @return array $aRow
     *
     **/
