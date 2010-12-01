@@ -39,28 +39,18 @@ kt.app.sharewithusers=new function(){
     this.inviteUsers  =  function(userType) {
         emails = document.getElementById('share.emails').value;
         if (emails.length < 3) {
-	        //document.getElementById('invite.errormsg').style.display = 'block';
 	        alert('Please enter a valid email address.');
 	    } else {
-	        if (userType == 'shared') {
-	            group = null;
-		        var sharedData = new Array();
-		        readOnly = jQuery('#readonly:checkbox:checked').val();
-		        // 0 = read only, 1 = write
-		        perm = (readOnly === undefined) ? 1 : 0;
-		        sharedData['permission'] = perm;
-		        sharedData['object_id'] = document.getElementById('object.id').value;
-		        sharedData['object_type'] = document.getElementById('object.type').value;
-		        sharedData['message'] = document.getElementById('share.message').value;
-	        }
-	        else {
-	            group = document.getElementById('invite.grouplist').value;
-	            userType = 'invited';
-	            objectId = null;
-	            objectType = null;
-	            permissions = null;
-	        }
-
+            group = null;
+	        var sharedData = new Array();
+	        readOnly = jQuery('#readonly:checkbox:checked').val();
+	        // 0 = read only, 1 = write
+	        perm = (readOnly === undefined) ? 1 : 0;
+	        sharedData['permission'] = perm;
+	        sharedData['object_id'] = document.getElementById('object.id').value;
+	        sharedData['object_type'] = document.getElementById('object.type').value;
+	        sharedData['message'] = document.getElementById('share.message').value;
+	        
 	        kt.api.inviteUsers(emails, group, userType, sharedData, self.inviteCallback, function() {});
 	    }
 	    
@@ -80,7 +70,10 @@ kt.app.sharewithusers=new function(){
 	    var existing = list.existing;
 	    var failed = list.failed;
 	    var userType = list.userType;
-
+	    var hasPermissions = list.hasPermissions;
+	    var noPerms = list.noPerms;
+	    var permMessage = list.permMessage;
+	    
         var inviteConfirmWin = new Ext.Window({
             id              : 'extinviteconfirmwindow',
             layout          : 'fit',
@@ -94,7 +87,7 @@ kt.app.sharewithusers=new function(){
             cls             : 'ul_win',
             shadow          : true,
             modal           : true,
-            title           : 'User Invitations Sent',
+            title           : 'Sharing Invitations Sent',
             html            : kt.api.execFragment('users/invite.shared.confirm.dialog')
         });
 
@@ -129,6 +122,20 @@ kt.app.sharewithusers=new function(){
             document.getElementById('invitedGroup').innerHTML = group;
 	    }
 
+	    // display a permission warning
+        if(hasPermissions !== false)
+        {
+        	document.getElementById('showNoPerms').style.display = 'none';
+        	document.getElementById('showPermsMessage').style.display = 'none';
+        }
+        else
+        {
+        	document.getElementById('showNoPerms').style.display = 'block';
+        	document.getElementById('showPermsMessage').style.display = 'block';
+        	document.getElementById('noPerms').innerHTML = noPerms;
+        	document.getElementById('permMessage').innerHTML = permMessage;
+        }
+            
         if (check != 0) {
             document.getElementById('inviteLicenses').style.display = 'block';
         }
@@ -161,6 +168,7 @@ kt.app.sharewithusers=new function(){
             cls             : 'ul_win',
             shadow          : true,
             modal           : true,
+            //title           : '<span class="sharingtree">&nbsp;</span> Sharing',
             title           : 'Sharing',
             html            : kt.api.getFragment('users/invite.shared.dialog')
         });

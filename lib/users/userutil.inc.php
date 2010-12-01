@@ -41,7 +41,7 @@ require_once(KT_LIB_DIR . '/util/ktutil.inc');
 
 class KTUserUtil {
 
-    public static function createUser($username, $name, $password = null, $email_address = null, $email_notifications = false, $mobile_number = null, $max_sessions = 3, $source_id = null, $details = null, $details2 = null, $disabled_flag = 0)
+    static public function createUser($username, $name, $password = null, $email_address = null, $email_notifications = false, $mobile_number = null, $max_sessions = 3, $source_id = null, $details = null, $details2 = null, $disabled_flag = 0)
     {
         global $default;
 
@@ -91,7 +91,7 @@ class KTUserUtil {
         return $user;
     }
 
-    public static function getUserField($userId, $fieldName = 'name')
+    static public function getUserField($userId, $fieldName = 'name')
     {
     	if (!is_array($userId)) { $userId = array($userId); }
     	$userId = array_unique($userId, SORT_NUMERIC);
@@ -117,7 +117,7 @@ class KTUserUtil {
      * @param boolean $type licensed | unlicensed
      * @return array The lists of newly invited users, failed invitations and already existing users
      */
-    public static function inviteUsersByEmail($addressList, $group = null, $type = null, $shareContent = null)
+    static public function inviteUsersByEmail($addressList, $group = null, $type = null, $shareContent = null)
     {
         if (empty($addressList)) {
             $response = array('invited' => 0, 'existing' => '', 'failed' => '', 'group' => '', 'type' => '', 'check' => 0);
@@ -130,7 +130,8 @@ class KTUserUtil {
         $invitedUsers = array();
         $failedUsers = array();
         $groupName = '';
-
+		$message = '';
+		
     	$inSystemList = self::checkUniqueEmail($addressList);
 
     	// loop through any addresses that currently exist and unset them in the invitee list
@@ -182,8 +183,8 @@ class KTUserUtil {
 			if($type == 'shared') {
 				self::addSharedContent($user->getId(), $shareContent['object_id'], $shareContent['object_type'], $shareContent['permission']);
 			}
-            
-            $invitedUsers[] = array('id' => $user->getId(), 'email' => $email);
+            $message = isset($shareContent['message']) ? $shareContent['message'] : '';
+            $invitedUsers[] = array('id' => $user->getId(), 'email' => $email, 'message' => $message);
     	}
 
     	// Send invitation
@@ -213,21 +214,110 @@ class KTUserUtil {
     	    }
     	}
 
-    	$response = array('invited' => $numInvited, 'existing' => $existing, 'failed' => $failed, 'group' => $groupName, 'type' => $type, 'check' => $check);
-    	
-    	// Send invitation to existing users
-    	if (($type == 'shared') && !empty($existingUsers)) {
-    	    foreach ($existingUsers as $existingUser) {
-    	        self::addSharedContent($existingUser['id'], $shareContent['object_id'], $shareContent['object_type'], $shareContent['permission']);
-    	        // Send a sharing notification to existing users.
-    	        self::sendNotifications($existingUsers, $shareContent['object_id'], $shareContent['object_type'], $shareContent['message']);
-    	    }
+    	$response = array(	'invited' => $numInvited, 
+    						'existing' => $existing, 
+    						'failed' => $failed, 
+    						'group' => $groupName, 
+    						'type' => $type, 
+    						'check' => $check, 
+    						'hasPermissions' => '', 
+    						'permMessage' => '', 
+    						'noPerms' => ''
+    					);
+    	if (($type == 'shared') && !empty($existingUsers)) 
+    	{
+    		$response = self::checkPermissions($response, $existingUsers, $shareContent);
     	}
     	
     	return $response;
     }
 
-    public static function addSharedContent($user_id, $object_id, $object_type, $permission)
+    /**
+     * Notify existing users and check permissions on shared objects.
+     *
+     * @param array $response
+     * @param array $existingUsers
+     * @param array $shareContent
+     * @return $response
+     */
+    static private function checkPermissions($response, $existingUsers, $shareContent)
+    {
+    	// Set warning to false
+    	$noPermsUsers = array();
+    	$hasPermissions = true;
+    	// Send invitation to existing users
+	    foreach ($existingUsers as $existingUser) 
+	    {
+	    	// Create shared content
+	        self::addSharedContent($existingUser['id'], $shareContent['object_id'], $shareContent['object_type'], $shareContent['permission']);
+	        // Send a sharing notification to existing users.
+	        self::sendNotifications($existingUsers, $shareContent['object_id'], $shareContent['object_type'], $shareContent['message']);
+	        // Check if system user
+	        if($existingUser['disabled'] != 4)
+	        {
+				// Get user
+	        	$oUser = User::get($existingUser['id']);
+	        	// Get permission
+	        	if($shareContent['permission'] == 1)
+	        	{
+	        		$sPermission = 'ktcore.permissions.write';
+	        	}
+	        	else 
+	        	{
+	        		$sPermission = 'ktcore.permissions.read';
+	        	}
+	        	// Get folder or document
+	        	if($shareContent['object_type'] == 'F')
+	        	{
+	        		$oFolderDocument = Document::get($shareContent['object_id']);
+	        		$type = 'folder';
+	        		$action = 'ktcore.actions.folder.permissions';
+	        	}
+	        	else 
+	        	{
+	        		$oFolderDocument = Folder::get($shareContent['object_id']);
+	        		$type = 'document';
+	        		$action = 'ktcore.actions.document.permissions';
+	        	}
+	        	// Check if user has permission
+	        	if(!KTPermissionUtil::userHasPermissionOnItem($oUser, $sPermission, $oFolderDocument))
+	        	{
+	        		if($hasPermissions)
+	        		{
+	        			$hasPermissions = false;
+	        			$response['hasPermissions'] = false;
+		        		$obType = ucwords($type);
+		        		$params = array(	'kt_path_info' => $action,
+		        							"f{$obType}Id" => $shareContent['object_id'],
+		        							);
+	    				$link = KTUtil::kt_url() . '/' . KTUtil::buildUrl("action.php", $params);
+		        		$response['permMessage'] = "Please update permissions for $type. <a href='$link' target='_blank'> Permissions </a>";
+	        		}
+	        		// Store existing system user
+	        		$noPermsUsers[] = $existingUser;
+	        	}
+	        }
+	    }
+    	
+    	$noPerms = '';
+    	if (!empty($noPermsUsers))
+    	{
+    	    foreach ($noPermsUsers as $item)
+    	    {
+    	        $noPerms .= '<li>';
+    	        if (!empty($item['name'])) 
+    	        {
+    	            $noPerms .= $item['name'] . ' - ';
+    	        }
+    	        $noPerms .= $item['email'] .'</li>';
+    	    }
+    	    $response['noPerms'] = $noPerms;
+    	}
+    	
+    	return $response;
+    }
+    
+    static public function addSharedContent($user_id, $object_id, $object_type, $permission)
     {
     	global $default;
 		// Add shared content entry.
@@ -252,7 +342,7 @@ class KTUserUtil {
      * @param int $iInvited
      * @return int
      */
-    public static function checkUserLicenses($iInvited, $iAvailable)
+    static public function checkUserLicenses($iInvited, $iAvailable)
     {
         if ($iAvailable <= 0) {
             return 1;
@@ -271,7 +361,7 @@ class KTUserUtil {
      * @param array $emailList Array of email addresses: format $list[] = array('id' => $id, 'email' => $email)
      * @return bool
      */
-    public static function sendNotifications($emailList, $object_id, $object_type = null, $message = '')
+    static public function sendNotifications($emailList, $object_id, $object_type = null, $message = '')
     {
     	global $default;
     	$folderId = null;
@@ -368,7 +458,7 @@ class KTUserUtil {
      * @param array $emailList Array of email addresses: format $list[] = array('id' => $id, 'email' => $email)
      * @return bool
      */
-    public static function sendInvitations($emailList)
+    static public function sendInvitations($emailList)
     {
         // Use the current user as the "inviter" / sender of the emails
         // goes into the user array for use in the email
@@ -390,8 +480,16 @@ class KTUserUtil {
             $user = (int)$user_id * 354;
             $user = base_convert($user, 10, 25);
             $link = $url . '88' . $user;
-
-            $list[] = array('name' => '', 'email' => $item['email'], 'sender' => $sender, 'link' => $link);
+			if($item['message'] != '')
+			{
+				$item['message'] = '<p><font color="#7F7F7F" size="2" face="Arial"><p>Message from '.$sender.':</p><p><font size="2">'. $item['message'] .'</font></p></font></p>';
+			}
+            $list[] = array(	'name' => '', 
+            					'email' => $item['email'], 
+            					'sender' => $sender, 
+            					'link' => $link,
+            					'message' => $item['message'],
+            				);
         }
 
         if (empty($list)) {
@@ -429,7 +527,7 @@ class KTUserUtil {
      * @param array $addresses
      * @return array
      */
-    public static function checkUniqueEmail($addresses)
+    static public function checkUniqueEmail($addresses)
     {
         if (empty($addresses)) {
             return false;

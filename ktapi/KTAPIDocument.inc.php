@@ -1341,6 +1341,115 @@ class KTAPI_Document extends KTAPI_FolderItem
 
 		 return $results;
 	}
+	
+	/**
+	 * This returns all tags for the document.
+	 *
+	 *
+	 * @author KnowledgeTree Team
+	 * @access public
+	 * @return array An array of metadata fieldsets for tags
+	 */
+	function get_tag($sTagCloudFieldsetName = 'tag cloud')
+	{		
+		$fieldsets = (array) KTMetadataUtil::fieldsetsByNameForDocument($this->document, $sTagCloudFieldsetName);
+		
+		 if (is_null($fieldsets) || PEAR::isError($fieldsets))
+		 {
+		     return array();
+		 }
+
+		 $results = array();
+
+		 foreach ($fieldsets as $fieldset)
+		 {
+		    // this line caused conditional metadata to not be present, and it is there when this is commented out;
+		    // if there are problems with conditional metadata in future, check here to make sure this is not the cause
+//		 	if ($fieldset->getIsConditional()) {	/* this is not implemented...*/	continue;	}
+
+		 	$fields = $fieldset->getFields();
+		 	$result = array('fieldset' => $fieldset->getName(),
+		 					'description' => $fieldset->getDescription());
+
+		 	$fieldsresult = array();
+
+            foreach ($fields as $field)
+            {
+                $value = '';
+
+				$fieldvalue = DocumentFieldLink::getByDocumentAndField($this->document, $field);
+                if (!is_null($fieldvalue) && (!PEAR::isError($fieldvalue)))
+                {
+                	$value = $fieldvalue->getValue();
+                }
+
+                // Old
+                //$controltype = 'string';
+                // Replace with true
+                $controltype = strtolower($field->getDataType());
+
+                if ($field->getHasLookup())
+                {
+                	$controltype = 'lookup';
+                    if ($field->getHasLookupTree())
+                    {
+                    	$controltype = 'tree';
+                    }
+                }
+
+                // Options - Required for Custom Properties
+                $options = array();
+
+                if ($field->getInetLookupType() == 'multiwithcheckboxes' || $field->getInetLookupType() == 'multiwithlist') {
+                    $controltype = 'multiselect';
+                }
+
+                switch ($controltype)
+                {
+                	case 'lookup':
+                		$selection = KTAPI::get_metadata_lookup($field->getId());
+                		break;
+                	case 'tree':
+                		$selection = KTAPI::get_metadata_tree($field->getId());
+                		break;
+                    case 'large text':
+                        $options = array(
+                                'ishtml' => $field->getIsHTML(),
+                                'maxlength' => $field->getMaxLength()
+                            );
+                        $selection= array();
+                        break;
+                    case 'multiselect':
+                        $selection = KTAPI::get_metadata_lookup($field->getId());
+                        $options = array(
+                                'type' => $field->getInetLookupType()
+                            );
+                        break;
+                	default:
+                		$selection= array();
+                }
+
+
+                $fieldsresult[] = array(
+                	'fieldid' => $field->getId(),
+                	'name' => $field->getName(),
+                	'required' => $field->getIsMandatory(),
+                    'value' => $value == '' ? 'n/a' : $value,
+                    'blankvalue' => $value=='' ? '1' : '0',
+                    'description' => $field->getDescription(),
+                    'control_type' => $controltype,
+                    'selection' => $selection,
+                    'options' => $options,
+
+                );
+
+            }
+            $result['fields'] = $fieldsresult;
+            $results [] = $result;
+		 }
+
+		 return $results;
+	}
 
 	/**
 	 * Gets a simple array of document metadata fields
@@ -1730,6 +1839,31 @@ class KTAPI_Document extends KTAPI_FolderItem
 			}
 		}
 	}
+	
+	/**
+	 * This updates the tag on the document.
+	 *
+	 * @author KnowledgeTree Team
+	 * @access public
+	 * @param string $tag_word The tag to be added
+	 * @return void|PEAR_Error Returns nothing on success | a PEAR_Error on failure
+	 */
+	function update_tag($tag_word)
+	{		
+		$metadata = $this->get_metadata();
+	
+		$num_metadata = count($metadata++);
+		for ($i = 0; $i < $num_metadata; $i++)
+		{	
+			//look for the "Tag Cloud" fieldset		
+			if (strtolower($metadata[$i]['fieldset']) == "tag cloud") 
+			{
+				$metadata[$i]['fields'][0][value] = $tag_word;				
+			}
+		}
+				
+		return ($this->update_metadata($metadata));
+	}
 
 	/**
 	 * Clears the cached data on the document and refreshes the document object.
@@ -1991,34 +2125,50 @@ class KTAPI_Document extends KTAPI_FolderItem
 
 		// get the creator
 		$userid = $document->getCreatorID();
-		$username='n/a';
+		$user_name = $user_username = 'n/a';
 		if (is_numeric($userid))
 		{
-			$username = '* unknown *';
+			$user_name = $user_username = '* unknown *';
 			$user = User::get($userid);
 			if (!is_null($user) && !PEAR::isError($user))
 			{
-				$username = $user->getName();
+				$user_name = $user->getName();
+				if ($wsversion >= 3)
+				{
+					$user_username = $user->getUserName();
+				}
 			}
 		}
-		$detail['created_by'] = $username;
+		$detail['created_by'] = $user_name;
+		if ($wsversion >= 3)
+		{
+			$detail['created_by_user_name'] = $user_username;
+		}
 
 		// get the creation date
 		$detail['created_date'] = $document->getCreatedDateTime();
 
 		// get the checked out user
 		$userid = $document->getCheckedOutUserID();
-		$username='n/a';
+		$user_name = $user_username = 'n/a';
 		if (is_numeric($userid))
 		{
-			$username = '* unknown *';
+			$user_name = $user_username = '* unknown *';
 			$user = User::get($userid);
 			if (!is_null($user) && !PEAR::isError($user))
 			{
-				$username = $user->getName();
+				$user_name = $user->getName();
+				if ($wsversion >= 3)
+				{
+					$user_username = $user->getUserName();
+				}
 			}
 		}
-		$detail['checked_out_by'] = $username;
+		$detail['checked_out_by'] = $user_name;
+		if ($wsversion >= 3)
+		{
+			$detail['checked_out_by_user_name'] = $user_username;
+		}
 
 		// get the checked out date
 		list($major, $minor, $fix) = explode('.', $default->systemVersion);
@@ -2034,34 +2184,50 @@ class KTAPI_Document extends KTAPI_FolderItem
 
 		// get the modified user
 		$userid = $document->getModifiedUserId();
-		$username='n/a';
+		$user_name = $user_username = 'n/a';
 		if (is_numeric($userid))
 		{
-			$username = '* unknown *';
+			$user_name = $user_username = '* unknown *';
 			$user = User::get($userid);
 			if (!is_null($user) && !PEAR::isError($user))
 			{
-				$username = $user->getName();
+				$user_name = $user->getName();
+				if ($wsversion >= 3)
+				{
+					$user_username = $user->getUserName();
+				}
 			}
 		}
-		$detail['modified_by'] = $detail['updated_by'] = $username;
+		$detail['modified_by'] = $detail['updated_by'] = $user_name;
+		if ($wsversion >= 3)
+		{
+			$detail['modified_by_user_name'] = $user_username;
+		}
 
 		// get the modified date
 		$detail['updated_date'] = $detail['modified_date'] = $document->getLastModifiedDate();
 
 		// get the owner
 		$userid = $document->getOwnerID();
-		$username='n/a';
+		$user_name = $user_username = 'n/a';
 		if (is_numeric($userid))
 		{
-			$username = '* unknown *';
+			$user_name = $user_username = '* unknown *';
 			$user = User::get($userid);
 			if (!is_null($user) && !PEAR::isError($user))
 			{
-				$username = $user->getName();
+				$user_name = $user->getName();
+				if ($wsversion >= 3)
+				{
+					$user_username = $user->getUserName();
+				}
 			}
 		}
-		$detail['owned_by'] = $username;
+		$detail['owned_by'] = $user_name;
+		if ($wsversion >= 3)
+		{
+			$detail['owned_by_user_name'] = $user_username;
+		}
 
 		// get the version
 		$detail['version'] = $document->getVersion();
@@ -2130,6 +2296,13 @@ class KTAPI_Document extends KTAPI_FolderItem
 		}
 		if($wsversion < 3){
 			unset($detail['linked_document_id']);
+		}
+		
+		if ($wsversion >= 3)
+		{	
+			//clean URI
+			$url = KTBrowseUtil::getUrlForDocument($document);			
+			$detail['clean_uri'] = $url;
 		}
 
 		return $detail;
@@ -2231,7 +2404,7 @@ class KTAPI_Document extends KTAPI_FolderItem
 	 */
 	function get_transaction_history()
 	{
-        $sQuery = 'SELECT DTT.name AS transaction_name, U.name AS username, DT.version AS version, DT.comment AS comment, DT.datetime AS datetime ' .
+        $sQuery = 'SELECT DTT.name AS transaction_name, U.name AS username, U.username AS user_username, DT.version AS version, DT.comment AS comment, DT.datetime AS datetime ' .
             'FROM ' . KTUtil::getTableName('document_transactions') . ' AS DT INNER JOIN ' . KTUtil::getTableName('users') . ' AS U ON DT.user_id = U.id ' .
             'INNER JOIN ' . KTUtil::getTableName('transaction_types') . ' AS DTT ON DTT.namespace = DT.transaction_namespace ' .
             'WHERE DT.document_id = ? ORDER BY DT.datetime DESC';
@@ -2274,10 +2447,12 @@ class KTAPI_Document extends KTAPI_FolderItem
 
         	$userid = $document->getModifiedUserId();
 			$user = User::get($userid);
-			$username = 'Unknown';
+			$username = $user_username = 'Unknown';
 			if (!PEAR::isError($user))
 			{
 				$username = is_null($user)?'n/a':$user->getName();
+				
+				$user_username = is_null($user)?'n/a':$user->getUserName();
 			}
 
         	$version['user'] = $username;
@@ -2288,6 +2463,11 @@ class KTAPI_Document extends KTAPI_FolderItem
         	{
         		$version['metadata_version'] = (int) $version['metadata_version'];
         		$version['content_version'] = (float) $version['content_version'];
+        	}
+        	
+        	if ($wsversion >= 3)
+        	{
+        		$version['user_username'] = $user_username;	
         	}
 
             $versions[] = $version;
