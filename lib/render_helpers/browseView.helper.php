@@ -871,7 +871,6 @@ class browseView {
 									</ul>
 							</li>
 						</ul>
-					<td>
 					</td>
 				</tr>
 			</table>
