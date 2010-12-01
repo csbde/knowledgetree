@@ -252,5 +252,27 @@ class DocumentTransaction extends KTEntity {
         $iDocumentId = KTUtil::getId($oDocument);
         return DocumentTransaction::getList(array('document_id = ?', array($iDocumentId)));
     }
+    
+	function getByDocumentFilterByNamespace($oDocument, $sNameSpace) {		
+		//we need to get the proper name of the action we are filtering on
+		$oType = KTDocumentTransactionType::getByNamespace($sNameSpace);
+		
+        $aTransactionsByDocument = DocumentTransaction::getByDocument($oDocument);
+        
+        $result = array();
+        
+        foreach($aTransactionsByDocument as $oTransaction)
+        {
+        	$transaction =  DocumentTransaction::get($oTransaction->getId());
+
+        	//do we have a match?
+        	if(strtolower($transaction->getAction()) == strtolower($oType->getName()))
+        	{
+        		$result[] = $transaction;
+        	}
+        }
+        
+        return $result;
+    }
 }
 ?>
