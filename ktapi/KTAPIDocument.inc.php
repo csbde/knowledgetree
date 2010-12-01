@@ -2303,6 +2303,26 @@ class KTAPI_Document extends KTAPI_FolderItem
 			//clean URI
 			$url = KTBrowseUtil::getUrlForDocument($document);			
 			$detail['clean_uri'] = $url;
+			
+			//need to get latest check-in date
+			$aTransactionsByDocument = DocumentTransaction::getByDocumentFilterByNamespace($document, 'ktcore.transactions.check_in');
+			
+			$newest_date_so_far = null;
+			$newest_date_as_string = 'n/a';
+			
+			//look for the latest date
+			foreach($aTransactionsByDocument as $oTransaction)
+			{				
+				$date = strtotime($oTransaction->getDate());
+				
+				if ($date > $newest_date_so_far)
+				{
+					$newest_date_so_far = $date;
+					$newest_date_as_string = $oTransaction->getDate();
+				}
+			}
+			
+			$detail['checked_in_date'] = $newest_date_as_string;
 		}
 
 		return $detail;
