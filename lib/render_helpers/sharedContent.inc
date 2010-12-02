@@ -76,38 +76,39 @@ class SharedContent extends KTEntity {
     public function create()
     {
     	// Check if parent is shared
-    	if($this->sType == 'folder')
+    	if ($this->sType == 'folder')
     	{
     		// Get folder
     		$oFolder = Folder::get($this->iObjectId);
     		$iParentFolderId = $oFolder->getParentID();
 	    	// Update parent id if shared parent exists
-    		if($this->exists($this->iUserId, $iParentFolderId, 'folder'))
+    		if ($this->exists($this->iUserId, $iParentFolderId, 'folder'))
     		{
     			$this->iParentObjectId = $iParentFolderId;
     		}
     	} 
-    	else if($this->sType == 'document')
+    	else if ($this->sType == 'document')
     	{
     		// Get document
     		$oDocument = Document::get($this->iObjectId);
     		$iParentFolderId = $oDocument->getParentID();
 	    	// Do not create a shared entry if document is in a shared folder
-    		if($this->exists($this->iUserId, $iParentFolderId, 'folder'))
+    		if ($this->exists($this->iUserId, $iParentFolderId, 'folder'))
     		{
     			return true;
     		}
     	}
+    	
     	// Create shared content object
     	$res = parent::create();
-    	if($res)
+    	if ($res)
     	{
     		// If this was a folder object delete all shared documents in that folder,
     		// As they will inherit permissions from the parent folder
-    		if($this->sType == 'folder')
+    		if ($this->sType == 'folder')
     		{
     			$aDocumentsInFolder = explode(',', Folder::getDocumentIDs($this->iObjectId));
-    			if(!PEAR::isError($aDocumentsInFolder))
+    			if (!PEAR::isError($aDocumentsInFolder))
     			{
     				foreach ($aDocumentsInFolder as $doc)
     				{
@@ -115,7 +116,7 @@ class SharedContent extends KTEntity {
     				}
     			}
     		}
-    		else if($this->sType == 'document')
+    		else if ($this->sType == 'document')
     		{
     			// Add a comment
     			$oFromUser = User::get($this->iSystemUserId);
@@ -125,6 +126,8 @@ class SharedContent extends KTEntity {
     			Comments::add_comment($this->iObjectId, "$username has shared this document with $sharedname");
     		}
     	}
+    	
+    	return $res;
     }
     
     public function delete()
@@ -300,10 +303,13 @@ class SharedContent extends KTEntity {
     {
     	// Check if document has been shared with user
     	$sql = "SELECT user_id FROM shared_content as sc WHERE user_id = '{$iUserId}' AND object_id = '{$iDocumentId}' AND type = 'document'";
-    	if(!is_null($permissions))
+    	if (!is_null($permissions)) {
     		$sql .= " AND sc.permissions = $permissions";
+    	}
+    		
     	$res = DBUtil::getResultArray($sql);
     	if (PEAR::isError($res)) { return false; }
+    	
     	if (count($res) > 0)
     	{
     		return true;
@@ -319,8 +325,10 @@ class SharedContent extends KTEntity {
     		else {
     		    $sql = "SELECT sc.user_id FROM shared_content sc WHERE (sc.user_id = '{$iUserId}' AND sc.object_id = '{$iFolderId}' AND sc.type = 'folder')";
     		}
-    		if(!is_null($permissions))
+    		
+    		if (!is_null($permissions)) {
     			$sql .= " AND sc.permissions = $permissions";
+    		}
     		
     		$res = DBUtil::getResultArray($sql);
     		if (PEAR::isError($res)) { return false; }
@@ -362,19 +370,21 @@ class SharedContent extends KTEntity {
     {
     	// Check if shared object exists
     	$sql = "SELECT sc.permissions FROM shared_content as sc WHERE (user_id = '{$iUserId}' AND object_id = '{$iObjectId}' AND type = '{$sType}')";
+    	
     	$res = DBUtil::getResultArray($sql);
     	if (PEAR::isError($res)) { return false; }
-    	if(count($res) > 0)
+    	
+    	if (count($res) > 0)
     	{
     		return $res[0]['permissions'];
     	}
     	else 
     	{
-			if($sType == 'document')
+			if ($sType == 'document')
 			{
 				return SharedContent::getDocumentPermissions($iUserId, $iObjectId, $iFolderId);
 			}
-			else if($sType == 'folder')
+			else if ($sType == 'folder')
 			{
 				return SharedContent::getFolderPermissions($iUserId, $iObjectId, $iFolderId);
 			}
@@ -402,9 +412,10 @@ class SharedContent extends KTEntity {
 		else {
 		    $sql = "SELECT sc.permissions FROM shared_content sc WHERE (sc.user_id = '{$iUserId}' AND sc.object_id = '{$iFolderId}' AND sc.type = 'folder')";
 		}
+		
 		$res = DBUtil::getResultArray($sql);
 		if (PEAR::isError($res)) { return false; }
-		if(count($res) > 0)
+		if (count($res) > 0)
 		{
 			return $res[0]['permissions'];
 		}
@@ -431,9 +442,10 @@ class SharedContent extends KTEntity {
 		else {
 		    $sql = "SELECT sc.permissions FROM shared_content as sc WHERE (sc.user_id = '{$iUserId}' AND sc.object_id = '{$iFolderId}' AND sc.type = 'folder')";
 		}
+		
 		$res = DBUtil::getResultArray($sql);
 		if (PEAR::isError($res)) { return false; }
-		if(count($res) > 0)
+		if (count($res) > 0)
 		{
 			return $res[0]['permissions'];
 		}
