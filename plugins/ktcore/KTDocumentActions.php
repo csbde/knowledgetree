@@ -274,8 +274,9 @@ class KTDocumentVersionHistoryAction extends KTDocumentAction {
             $frag[] = sprintf('%s=%s', urlencode($k), urlencode($v));
         }
 
-        //redirect(KTUtil::ktLink('view.php',null,implode('&', $frag)));
-        redirect(KTUtil::buildUrl(KTUtil::ktLink('view.php'), $frag));
+        redirect(KTUtil::ktLink('view.php',null,implode('&', $frag)));
+        // can't use clean urls, they break the functionality.
+        //redirect(KTUtil::buildUrl(KTUtil::ktLink('view.php'), $frag));
     }
 
     function getUserForId($iUserId) {
@@ -480,7 +481,7 @@ class KTDocumentCheckOutAction extends KTDocumentAction {
                     'name' => 'info'
                 ));
             $widgets[] = array('ktcore.widgets.string', array(
-                    'label' => _kt('Username'),
+                    'label' => ($default->useEmailLogin) ? _kt('Email Address') : _kt('Username'),
                     'name' => 'sign_username',
                     'required' => true
                 ));
@@ -718,7 +719,7 @@ class KTDocumentCheckInAction extends KTDocumentAction {
                     'name' => 'info'
                 ));
             $aWidgets[] = array('ktcore.widgets.string', array(
-                    'label' => _kt('Username'),
+                    'label' => ($default->useEmailLogin) ? _kt('Email Address') : _kt('Username'),
                     'name' => 'sign_username',
                     'required' => true
                 ));
@@ -941,7 +942,7 @@ class KTDocumentCancelCheckOutAction extends KTDocumentAction {
                     'name' => 'info'
                 ));
             $widgets[] = array('ktcore.widgets.string', array(
-                    'label' => _kt('Username'),
+                    'label' => ($default->useEmailLogin) ? _kt('Email Address') : _kt('Username'),
                     'name' => 'sign_username',
                     'required' => true
                 ));
@@ -1101,7 +1102,7 @@ class KTDocumentDeleteAction extends KTDocumentAction {
                     'name' => 'info'
                 ));
             $widgets[] = array('ktcore.widgets.string', array(
-                    'label' => _kt('Username'),
+                    'label' => ($default->useEmailLogin) ? _kt('Email Address') : _kt('Username'),
                     'name' => 'sign_username',
                     'required' => true
                 ));
@@ -1274,7 +1275,7 @@ class KTDocumentMoveAction extends KTDocumentAction {
                     'name' => 'info'
                 ));
             $widgets[] = array('ktcore.widgets.string', array(
-                    'label' => _kt('Username'),
+                    'label' => ($default->useEmailLogin) ? _kt('Email Address') : _kt('Username'),
                     'name' => 'sign_username',
                     'required' => true
                 ));
@@ -1511,7 +1512,7 @@ class KTDocumentCopyAction extends KTDocumentAction {
                     'name' => 'info'
                 ));
             $widgets[] = array('ktcore.widgets.string', array(
-                    'label' => _kt('Username'),
+                    'label' => ($default->useEmailLogin) ? _kt('Email Address') : _kt('Username'),
                     'name' => 'sign_username',
                     'required' => true
                 ));
@@ -1727,7 +1728,7 @@ class KTDocumentArchiveAction extends KTDocumentAction {
                     'name' => 'info'
                 ));
             $widgets[] = array('ktcore.widgets.string', array(
-                    'label' => _kt('Username'),
+                    'label' => ($default->useEmailLogin) ? _kt('Email Address') : _kt('Username'),
                     'name' => 'sign_username',
                     'required' => true
                 ));
@@ -2003,7 +2004,7 @@ class KTDocumentWorkflowAction extends KTDocumentAction {
                     'name' => 'info'
                 ));
             $widgets[] = array('ktcore.widgets.string', array(
-                    'label' => _kt('Username'),
+                    'label' => ($default->useEmailLogin) ? _kt('Email Address') : _kt('Username'),
                     'name' => 'sign_username',
                     'required' => true
                 ));

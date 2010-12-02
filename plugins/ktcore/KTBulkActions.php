@@ -134,7 +134,7 @@ class KTBulkDeleteAction extends KTBulkAction {
                     'name' => 'info'
                 ));
             $widgets[] = array('ktcore.widgets.string', array(
-                    'label' => _kt('Username'),
+                    'label' => ($default->useEmailLogin) ? _kt('Email Address') : _kt('Username'),
                     'name' => 'sign_username',
                     'required' => true
                 ));
@@ -366,7 +366,7 @@ class KTBulkMoveAction extends KTBulkAction {
                     'name' => 'info'
                 )));
             $oForm->addWidget(array('ktcore.widgets.string', array(
-                    'label' => _kt('Username'),
+                    'label' => ($default->useEmailLogin) ? _kt('Email Address') : _kt('Username'),
                     'name' => 'sign_username',
                     'required' => true
                 )));
@@ -613,7 +613,7 @@ class KTBulkCopyAction extends KTBulkAction {
                     'name' => 'info'
                 )));
             $oForm->addWidget(array('ktcore.widgets.string', array(
-                    'label' => _kt('Username'),
+                    'label' => ($default->useEmailLogin) ? _kt('Email Address') : _kt('Username'),
                     'name' => 'sign_username',
                     'required' => true
                 )));
@@ -808,7 +808,7 @@ class KTBulkArchiveAction extends KTBulkAction {
                     'name' => 'info'
                 )));
             $oForm->addWidget(array('ktcore.widgets.string', array(
-                    'label' => _kt('Username'),
+                    'label' => ($default->useEmailLogin) ? _kt('Email Address') : _kt('Username'),
                     'name' => 'sign_username',
                     'required' => true
                 )));
@@ -1317,7 +1317,7 @@ class KTBrowseBulkCheckoutAction extends KTBulkAction {
                     'name' => 'info'
                 ));
             $widgets[] = array('ktcore.widgets.string', array(
-                    'label' => _kt('Username'),
+                    'label' => ($default->useEmailLogin) ? _kt('Email Address') : _kt('Username'),
                     'name' => 'sign_username',
                     'required' => true
                 ));

@@ -302,12 +302,12 @@ class SearchHelper
 	*/
 	public static function deleteSavedSearch($searchID)
 	{
-		$sysAdmin=Permission::userIsSystemAdministrator();
+		$sysAdmin = Permission::userIsSystemAdministrator();
 
 		$sql = "DELETE FROM search_saved WHERE type='S' AND id=$searchID";
 		if (!$sysAdmin)
 		{
-			$sql .= " AND user_id='".$_SESSION['userID']."'";
+			$sql .= " AND user_id='" . $_SESSION['userID'] . "'";
 		}
 
 		DBUtil::runQuery($sql);
@@ -506,15 +506,15 @@ class SearchHelper
 			return new PEAR_Error(_kt('Fieldset was not found'));
 		}
 
-		$result=array();
+		$result = array();
 		foreach($rs as $item)
 		{
-			$fieldid=$item['id'];
-			$type='normal';
+			$fieldid = $item['id'];
+			$type = 'normal';
 			$options = array();
-			$haslookup =$item['has_lookup'] + 0 > 0;
-			$hastree = ($item['has_lookuptree']+0 > 1);
-			$hasinetlookup=$item['has_inetlookup'] + 0 > 0;
+			$haslookup = $item['has_lookup'] + 0 > 0;
+			$hastree = ($item['has_lookuptree'] + 0 > 1);
+			$hasinetlookup = $item['has_inetlookup'] + 0 > 0;
 			
 			if ($haslookup || $hastree || $hasinetlookup)
 			{
@@ -524,7 +524,7 @@ class SearchHelper
 
 			}
 			
-			$inetlookup_type = "";
+			$inetlookup_type = '';
 			if($hasinetlookup)
 			{
 				$type = 'inetlookup';
@@ -541,21 +541,21 @@ class SearchHelper
 			if ($item['data_type'] == 'USERLIST')
 			{
 				$type = 'lookup';
-				$sql = "SELECT id, name from users WHERE disabled=0";
+				$sql = 'SELECT id, name from users WHERE disabled=0';
 				$options = DBUtil::getResultArray($sql);
 			}
 
 			$ritem = array(
-				'id'=>$fieldid,
-				'name'=>$item['name'],
-				'description'=>$item['description'],
-				'datatype'=>$item['data_type'],
-				'control'=>$type,
+				'id' => $fieldid,
+				'name' => $item['name'],
+				'description' => $item['description'],
+				'datatype' => $item['data_type'],
+				'control' => $type,
 				'inetlookup_type' => $inetlookup_type,
-				'options'=>$options
+				'options' => $options
 			);
 
-			$result[]= $ritem;
+			$result[] = $ritem;
 		}
 		return $result;
 	}
@@ -618,8 +618,7 @@ class SearchHelper
 
 }
 
-
-function getExpressionLocalityString($expr_str, $locality, $length, $start_offset=10)
+function getExpressionLocalityString($expr_str, $locality, $length, $start_offset = 10)
 {
     if ($locality - $start_offset < 0)
     {
@@ -645,7 +644,7 @@ function parseExpression($expr_str)
     $lexer = new SearchCommandLexer($expr_str);
 
 //    $parser->PrintTrace();
-    $use_internal=false;
+    $use_internal = false;
 
     try
     {
@@ -657,9 +656,9 @@ function parseExpression($expr_str)
 
             if (!$parser->isExprOk())
             {
-                $use_internal=true;
-                $expr_str=getExpressionLocalityString($expr_str, $lexer->offset, 20);
-                throw new Exception(sprintf(_kt("Parsing problem near '%s' in '%s' of expression."),$lexer->value,$expr_str));
+                $use_internal = true;
+                $expr_str = getExpressionLocalityString($expr_str, $lexer->offset, 20);
+                throw new Exception(sprintf(_kt("Parsing problem near '%s' in '%s' of expression."), $lexer->value, $expr_str));
             }
         }
 
@@ -668,9 +667,9 @@ function parseExpression($expr_str)
 
         if (!$parser->isExprOk())
         {
-            $use_internal=true;
-            $expr_str=getExpressionLocalityString($expr_str, $lexer->offset, 20);
-            throw new Exception(sprintf(_kt("There is a problem parsing the expression '%s'"),$expr_str));
+            $use_internal = true;
+            $expr_str = getExpressionLocalityString($expr_str, $lexer->offset, 20);
+            throw new Exception(sprintf(_kt("There is a problem parsing the expression '%s'"), $expr_str));
         }
 
     }
@@ -684,7 +683,7 @@ function parseExpression($expr_str)
         {
             throw $e;
         }
-        $expr_str=getExpressionLocalityString($expr_str, $lexer->offset, 20);
+        $expr_str = getExpressionLocalityString($expr_str, $lexer->offset, 20);
         throw new Exception(sprintf(_kt("Parsing problem near '%s' of expression '%s'."), $lexer->value, $expr_str));
     }
 
@@ -710,53 +709,52 @@ function processSearchExpression($query)
     		foreach($rs as $hit)
     		{
     			 $item = array(
-						'document_id' => (int) $hit->DocumentID,
+						'document_id' => (int)$hit->DocumentID,
 
 						'custom_document_no' => 'n/a',
-		                'oem_document_no' => (string) $hit->OemDocumentNo,
+		                'oem_document_no' => (string)$hit->OemDocumentNo,
 
 						'relevance' => (float) $hit->Rank,
-        				'text' => (string)  $noText?'':urlencode($hit->Text),
+        				'text' => (string)$noText ? '' : urlencode($hit->Text),
 
-        				'title' => (string) $hit->Title,
+        				'title' => (string)$hit->Title,
         				'document_type'=> $hit->DocumentType,
-        				'fullpath' => (string) $hit->FullPath,
-        				'filename' => (string) $hit->Filename,
-        				'filesize' => (int) $hit->Filesize,
-        				'folder_id' => (int) $hit->FolderId,
+        				'fullpath' => (string)$hit->FullPath,
+        				'filename' => (string)$hit->Filename,
+        				'filesize' => (int)$hit->Filesize,
+        				'folder_id' => (int)$hit->FolderId,
 
-						'created_by' => (string) $hit->CreatedBy,
-						'created_date' => (string) $hit->DateCreated,
+						'created_by' => (string)$hit->CreatedBy,
+						'created_date' => (string)$hit->DateCreated,
 
-						'modified_by' => (string) $hit->ModifiedBy,
-						'modified_date' => (string) $hit->DateModified,
+						'modified_by' => (string)$hit->ModifiedBy,
+						'modified_date' => (string)$hit->DateModified,
 
-						'checked_out_by' => (string) $hit->CheckedOutUser,
-        				'checked_out_date' => (string) $hit->DateCheckedOut,
+						'checked_out_by' => (string)$hit->CheckedOutUser,
+        				'checked_out_date' => (string)$hit->DateCheckedOut,
 
-						'owned_by' => (string) $hit->Owner,
+						'owned_by' => (string)$hit->Owner,
 
-        				'version' => (float) $hit->Version,
-        				'is_immutable'=> (bool) $hit->Immutable,
-        				'permissions'=> $hit->Permissions,
+        				'version' => (float)$hit->Version,
+        				'is_immutable' => (bool)$hit->Immutable,
+        				'permissions' => $hit->Permissions,
 
-        				'workflow' => (string) $hit->WorkflowOnly,
-        				'workflow_state' => (string) $hit->WorkflowStateOnly,
+        				'workflow' => (string)$hit->WorkflowOnly,
+        				'workflow_state' => (string)$hit->WorkflowStateOnly,
 
-        				'mime_type' => (string) $hit->MimeType,
-        				'mime_icon_path' => (string) $hit->MimeIconPath,
-        				'mime_display' => (string) $hit->MimeDisplay,
+        				'mime_type' => (string)$hit->MimeType,
+        				'mime_icon_path' => (string)$hit->MimeIconPath,
+        				'mime_display' => (string)$hit->MimeDisplay,
 
-						'storage_path' => (string) $hit->StoragePath,
+						'storage_path' => (string)$hit->StoragePath,
 
-						'status' => (string) $hit->Status,
+						'status' => (string)$hit->Status,
 
-        				'is_available' => (bool) $hit->IsAvailable,
+        				'is_available' => (bool)$hit->IsAvailable,
 
     				);
 
     				$results[] = $item;
-
     		}
     		
     		return $results;
@@ -789,7 +787,7 @@ function resolveSearchShortcuts($result)
         // check user type, disabled = 4 means shared user, which has a different permissions structure
         if ($oUser->getDisabled() == 4) {
             $sql = "SELECT d.id, d.linked_document_id from documents d\n";
-            $sql .= " INNER JOIN shared_content sc ON (sc.object_id = d.id) OR (sc.object_id = (SELECT folder_id FROM documents dlink WHERE dlink.id = d.id) AND sc.type = 'folder')\n";
+            $sql .= " INNER JOIN shared_content sc ON (sc.object_id = d.id) OR (sc.object_id = (SELECT folder_id FROM documents dlink WHERE dlink.id = d.id) AND sc.type = 'folder') AND sc.user_id = {$oUser->getId()}\n";
             $sql .= " WHERE d.linked_document_id in ($documentIds)";
         }
         else {
@@ -823,7 +821,7 @@ function resolveSearchShortcuts($result)
         // check user type, disabled = 4 means shared user, which has a different permissions structure
         if ($oUser->getDisabled() == 4) {
             $sql = "SELECT f.id, f.parent_id, f.linked_folder_id, f.full_path from folders f\n";
-            $sql .= " INNER JOIN shared_content sc ON (sc.object_id = f.id) OR (sc.object_id = (SELECT parent_id FROM folders flink WHERE flink.id = f.id) AND sc.type = 'folder')\n";
+            $sql .= " INNER JOIN shared_content sc ON (sc.object_id = f.id) OR (sc.object_id = (SELECT parent_id FROM folders flink WHERE flink.id = f.id) AND sc.type = 'folder') AND sc.user_id = {$oUser->getId()}\n";
             $sql .= " WHERE f.linked_folder_id in ($folderIds)";
         }
         else {
