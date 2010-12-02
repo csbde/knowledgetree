@@ -53,7 +53,7 @@ require_once(KT_LIB_DIR . "/util/sanitize.inc");
 // {{{ KTDocumentDetailsAction
 class KTDocumentDetailsAction extends KTDocumentAction {
     var $sName = 'ktcore.actions.document.displaydetails';
-	
+
     function do_main() {
         redirect(generateControllerLink('viewDocument',sprintf(_kt('fDocumentId=%d'),$this->oDocument->getId())));
         exit(0);
@@ -69,7 +69,7 @@ class KTDocumentDetailsAction extends KTDocumentAction {
 // {{{ KTDocumentHistoryAction
 class KTDocumentTransactionHistoryAction extends KTDocumentAction {
     var $sName = 'ktcore.actions.document.transactionhistory';
-	
+
     function getDisplayName() {
         return _kt('Transaction History');
     }
@@ -341,7 +341,7 @@ class KTDocumentViewAction extends KTDocumentAction {
     var $sIconClass = 'download';
 	var $showIfWrite = true;
 	var $showIfRead = true;
-	
+
     function getDisplayName() {
         return _kt('Download');
     }
@@ -389,7 +389,7 @@ class KTDocumentViewAction extends KTDocumentAction {
             $oFolder = Folder::get($this->oDocument->getFolderID());
             $oSubscriptionEvent->DownloadDocument($this->oDocument, $oFolder);
         }
-        
+
         if ($iVersion) {
             $oVersion = KTDocumentContentVersion::get($iVersion);
             $aOptions['version'] = sprintf('%d.%d', $oVersion->getMajorVersionNumber(), $oVersion->getMinorVersionNumber());
@@ -404,7 +404,7 @@ class KTDocumentViewAction extends KTDocumentAction {
             redirect(generateControllerLink('viewDocument',sprintf(_kt('fDocumentId=%d'),$this->oDocument->getId())));
             exit(0);
         }
-        
+
         exit(0);
     }
 }
@@ -422,7 +422,7 @@ class KTDocumentCheckOutAction extends KTDocumentAction {
 
 	var $showIfWrite = true;
 	var $showIfRead = false;
-	
+
     function getDisplayName() {
         return _kt('Checkout');
     }
@@ -491,11 +491,13 @@ class KTDocumentCheckOutAction extends KTDocumentAction {
                 ));
         }
 
-        if($this->oConfig->get('actionreasons/globalReasons'))$widgets[] = array('ktcore.widgets.reason', array(
-                'label' => _kt('Note'),
-				'required' => false,
-                'name' => 'reason',
-            ));
+        if($this->oConfig->get('actionreasons/globalReasons') || $default->enableESignatures) {
+            $widgets[] = array('ktcore.widgets.reason', array(
+                    'label' => _kt('Note'),
+    				'required' => ($default->enableESignatures) ? true : false,
+                    'name' => 'reason',
+                ));
+        }
         $widgets[] = array('ktcore.widgets.boolean', array(
                 'label' => _kt('Download this file?'),
                 'name' => 'download_file',
@@ -504,12 +506,14 @@ class KTDocumentCheckOutAction extends KTDocumentAction {
 
         $oForm->setWidgets($widgets);
 
-        if($this->oConfig->get('actionreasons/globalReasons'))$validators[] = array('ktcore.validators.string', array(
-                'test' => 'reason',
-                'min_length' => 1,
-                'max_length' => 250,
-                'output' => 'reason',
-            ));
+        if($this->oConfig->get('actionreasons/globalReasons') || $default->enableESignatures) {
+            $validators[] = array('ktcore.validators.string', array(
+                    'test' => 'reason',
+                    'min_length' => 1,
+                    'max_length' => 250,
+                    'output' => 'reason',
+                ));
+        }
         $validators[] = array('ktcore.validators.boolean', array(
                 'test' => 'download_file',
                 'output' => 'download_file',
@@ -615,7 +619,7 @@ class KTDocumentCheckInAction extends KTDocumentAction {
 
 	var $showIfWrite = true;
 	var $showIfRead = false;
-	
+
     function getDisplayName() {
         return _kt('Check-in');
     }
@@ -725,11 +729,13 @@ class KTDocumentCheckInAction extends KTDocumentAction {
                 ));
         }
 
-        if($this->oConfig->get('actionreasons/globalReasons'))$aWidgets[] = array('ktcore.widgets.reason', array(
-                'label' => _kt('Note'),
-				'required' => false,
-                'name' => 'reason',
-            ));
+        if($this->oConfig->get('actionreasons/globalReasons') || $default->enableESignatures) {
+            $aWidgets[] = array('ktcore.widgets.reason', array(
+                    'label' => _kt('Note'),
+    				'required' => ($default->enableESignatures) ? true : false,
+                    'name' => 'reason',
+                ));
+        }
 
         // Set the validators for the widgets
         $aValidators = array(
@@ -743,12 +749,14 @@ class KTDocumentCheckInAction extends KTDocumentAction {
             )),
         );
 
-        if($this->oConfig->get('actionreasons/globalReasons'))$aValidators[]=array('ktcore.validators.string', array(
-                'test' => 'reason',
-                'min_length' => 1,
-                'max_length' => 250,
-                'output' => 'reason',
-        ));
+        if($this->oConfig->get('actionreasons/globalReasons') || $default->enableESignatures) {
+            $aValidators[]=array('ktcore.validators.string', array(
+                    'test' => 'reason',
+                    'min_length' => 1,
+                    'max_length' => 250,
+                    'output' => 'reason',
+            ));
+        }
 
         if($default->enableESignatures){
             $aValidators[] = array('electonic.signatures.validators.authenticate', array(
@@ -858,10 +866,10 @@ class KTDocumentCancelCheckOutAction extends KTDocumentAction {
     var $bAllowInAdminMode = true;
     var $bInAdminMode = null;
     var $sIconClass = 'cancel_checkout';
-    
+
 	var $showIfWrite = true;
 	var $showIfRead = false;
-	
+
     function getDisplayName() {
         return _kt('Cancel Checkout');
     }
@@ -944,20 +952,24 @@ class KTDocumentCancelCheckOutAction extends KTDocumentAction {
                 ));
         }
 
-        if($this->oConfig->get('actionreasons/globalReasons'))$widgets[] = array('ktcore.widgets.reason', array(
-                'label' => _kt('Note'),
-			    'required' => false,
-                'name' => 'reason',
-            ));
+        if($this->oConfig->get('actionreasons/globalReasons') || $default->enableESignatures) {
+            $widgets[] = array('ktcore.widgets.reason', array(
+                    'label' => _kt('Note'),
+    			    'required' => ($default->enableESignatures) ? true : false,
+                    'name' => 'reason',
+                ));
+        }
 
         $oForm->setWidgets($widgets);
 
-        if($this->oConfig->get('actionreasons/globalReasons'))$validators[] = array('ktcore.validators.string', array(
-                'test' => 'reason',
-                'min_length' => 1,
-                'max_length' => 250,
-                'output' => 'reason',
-            ));
+        if($this->oConfig->get('actionreasons/globalReasons') || $default->enableESignatures) {
+            $validators[] = array('ktcore.validators.string', array(
+                    'test' => 'reason',
+                    'min_length' => 1,
+                    'max_length' => 250,
+                    'output' => 'reason',
+                ));
+        }
 
         // Electronic signature validation - does the authentication
         if($default->enableESignatures){
@@ -1100,22 +1112,26 @@ class KTDocumentDeleteAction extends KTDocumentAction {
                 ));
         }
 
-        $getReason=$this->oDocument->getImmutable() || $this->oConfig->get('actionreasons/globalReasons');
+        $getReason = $this->oDocument->getImmutable() || $this->oConfig->get('actionreasons/globalReasons') || $default->enableESignatures;
 
-        if($getReason)$widgets[] = array('ktcore.widgets.reason', array(
-                'label' => _kt('Note'),
-			    'required' => false,
-                'name' => 'reason',
-            ));
+        if($getReason) {
+            $widgets[] = array('ktcore.widgets.reason', array(
+                    'label' => _kt('Note'),
+    			    'required' => ($default->enableESignatures) ? true : false,
+                    'name' => 'reason',
+                ));
+        }
 
         $oForm->setWidgets($widgets);
 
-        if($getReason)$validators[] = array('ktcore.validators.string', array(
+        if($getReason) {
+            $validators[] = array('ktcore.validators.string', array(
                 'test' => 'reason',
                 'min_length' => 1,
                 'max_length' => 250,
                 'output' => 'reason',
             ));
+        }
 
         if($default->enableESignatures){
             $validators[] = array('electonic.signatures.validators.authenticate', array(
@@ -1270,20 +1286,24 @@ class KTDocumentMoveAction extends KTDocumentAction {
         }
 
 
-        if($this->oConfig->get('actionreasons/globalReasons'))$widgets[] = array('ktcore.widgets.reason', array(
-                'label' => _kt('Note'),
-			    'required' => false,
-                'name' => 'reason',
-        ));
+        if($this->oConfig->get('actionreasons/globalReasons') || $default->enableESignatures) {
+            $widgets[] = array('ktcore.widgets.reason', array(
+                    'label' => _kt('Note'),
+    			    'required' => ($default->enableESignatures) ? true : false,
+                    'name' => 'reason',
+            ));
+        }
 
         $oForm->setWidgets($widgets);
 
-        if($this->oConfig->get('actionreasons/globalReasons'))$validators[] = array('ktcore.validators.string', array(
-                'test' => 'reason',
-                'min_length' => 1,
-                'max_length' => 250,
-                'output' => 'reason',
-        ));
+        if($this->oConfig->get('actionreasons/globalReasons') || $default->enableESignatures) {
+            $validators[] = array('ktcore.validators.string', array(
+                    'test' => 'reason',
+                    'min_length' => 1,
+                    'max_length' => 250,
+                    'output' => 'reason',
+            ));
+        }
         $validators[] = array('ktcore.validators.entity', array(
                 'class' => 'Folder',
                 'test' => 'browse',
@@ -1427,7 +1447,7 @@ class KTDocumentCopyAction extends KTDocumentAction {
     var $sName = 'ktcore.actions.document.copy';
 
     var $_sShowPermission = 'ktcore.permissions.read';
-	
+
     function getDisplayName() {
         return _kt('Copy');
     }
@@ -1502,21 +1522,25 @@ class KTDocumentCopyAction extends KTDocumentAction {
                 ));
         }
 
-        if($this->oConfig->get('actionreasons/globalReasons'))$widgets[] = array('ktcore.widgets.reason', array(
+        if($this->oConfig->get('actionreasons/globalReasons') || $default->enableESignatures) {
+            $widgets[] = array('ktcore.widgets.reason', array(
                 'label' => _kt('Note'),
-				'required' => false,
+				'required' => ($default->enableESignatures) ? true : false,
                 'name' => 'reason',
             ));
+        }
 
         $oForm->setWidgets($widgets);
 
         $validators = array();
-        if($this->oConfig->get('actionreasons/globalReasons'))$validators[] = array('ktcore.validators.string', array(
-                'test' => 'reason',
-                'min_length' => 1,
-                'max_length' => 250,
-                'output' => 'reason',
-            ));
+        if($this->oConfig->get('actionreasons/globalReasons') || $default->enableESignatures) {
+            $validators[] = array('ktcore.validators.string', array(
+                    'test' => 'reason',
+                    'min_length' => 1,
+                    'max_length' => 250,
+                    'output' => 'reason',
+                ));
+        }
         $validators[] = array('ktcore.validators.entity', array(
                 'class' => 'Folder',
                 'test' => 'browse',
@@ -1657,7 +1681,7 @@ class KTDocumentArchiveAction extends KTDocumentAction {
     var $_bMutator = false;
 	var $showIfWrite = false;
 	var $showIfRead = false;
-	
+
     function getDisplayName() {
         return _kt('Archive');
     }
@@ -1714,20 +1738,24 @@ class KTDocumentArchiveAction extends KTDocumentAction {
                 ));
         }
 
-        if($this->oConfig->get('actionreasons/globalReasons'))$widgets[] = array('ktcore.widgets.reason', array(
-                'label' => _kt('Note'),
-			    'required' => false,
-                'name' => 'reason',
-            ));
+        if($this->oConfig->get('actionreasons/globalReasons') || $default->enableESignatures) {
+            $widgets[] = array('ktcore.widgets.reason', array(
+                    'label' => _kt('Note'),
+    			    'required' => ($default->enableESignatures) ? true : false,
+                    'name' => 'reason',
+                ));
+        }
 
         $oForm->setWidgets($widgets);
 
-        if($this->oConfig->get('actionreasons/globalReasons'))$validators[] = array('ktcore.validators.string', array(
+        if($this->oConfig->get('actionreasons/globalReasons') || $default->enableESignatures) {
+            $validators[] = array('ktcore.validators.string', array(
                 'test' => 'reason',
                 'min_length' => 1,
                 'max_length' => 250,
                 'output' => 'reason',
             ));
+        }
 
         if($default->enableESignatures){
             $validators[] = array('electonic.signatures.validators.authenticate', array(
@@ -1807,7 +1835,7 @@ class KTDocumentWorkflowAction extends KTDocumentAction {
 
 	var $showIfWrite = true;
 	var $showIfRead = false;
-	
+
     function predispatch() {
         $this->persistParams(array('fTransitionId'));
     }
@@ -1989,7 +2017,7 @@ class KTDocumentWorkflowAction extends KTDocumentAction {
 
         $widgets[] = array('ktcore.widgets.reason', array(
                     'label' => _kt('Note'),
-					'required' => false,
+					'required' => ($default->enableESignatures) ? true : false,
                     'name' => 'reason',
                 ));
 

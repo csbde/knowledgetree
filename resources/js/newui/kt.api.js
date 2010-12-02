@@ -135,6 +135,22 @@ kt.api = new function() {
 			return;
 		}
 	};
+	
+	this.shareUsers = function(addresses, userType, sharedData, callback, errorCallback) {
+		var params = {};
+		params.addresses = addresses;
+		params.userType = userType;
+		params.sharedData = sharedData;
+		var synchronous = false;
+		var func = 'siteapi.inviteUsers';
+		if (callback === true) {
+			var data = ktjapi.retrieve(func, params, this.cacheTimeout);
+			return data;
+		} else {
+			ktjapi.callMethod(func, params, callback, synchronous, errorCallback, this.cacheTimeout);
+			return;
+		}
+	};
 
 	this.isShared = function(callback, errorCallback) {
 		var params = {};

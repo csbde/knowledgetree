@@ -41,7 +41,6 @@ kt.app.sharewithusers=new function(){
         if (emails.length < 3) {
 	        alert('Please enter a valid email address.');
 	    } else {
-            group = null;
 	        var sharedData = new Array();
 	        readOnly = jQuery('#readonly:checkbox:checked').val();
 	        // 0 = read only, 1 = write
@@ -51,20 +50,19 @@ kt.app.sharewithusers=new function(){
 	        sharedData['object_type'] = document.getElementById('object.type').value;
 	        sharedData['message'] = document.getElementById('share.message').value;
 	        
-	        kt.api.inviteUsers(emails, group, userType, sharedData, self.inviteCallback, function() {});
+	        kt.api.shareUsers(emails, userType, sharedData, self.inviteCallback, function() {});
 	    }
 	    
 	    self.disableInviteButton();
 	}
 
     // callback for the inviteUsers function
-    // displays a confirmation dialog listing the users and group
+    // displays a confirmation dialog listing the users
     this.inviteCallback = function(result) {
         // get the response from the server
         var response = result.data.invitedUsers;
         var list = jQuery.parseJSON(response);
 
-        var group = list.group;
         var invited = list.invited;
         var check = list.check;
 	    var existing = list.existing;
@@ -114,14 +112,6 @@ kt.app.sharewithusers=new function(){
             document.getElementById('showFailedUsers').style.display = 'block';
         }
 
-	    // display the select group
-	    if (group == '') {
-	        document.getElementById('showInvitedGroup').style.display = 'none';
-	    } else {
-            document.getElementById('showInvitedGroup').style.display = 'block';
-            document.getElementById('invitedGroup').innerHTML = group;
-	    }
-
 	    // display a permission warning
         if(hasPermissions !== false)
         {
@@ -158,7 +148,7 @@ kt.app.sharewithusers=new function(){
         var inviteWin = new Ext.Window({
             id              : 'extinvitewindow',
             layout          : 'fit',
-            width           : 500,
+            width           : 380,
             resizable       : false,
             closable        : true,
             closeAction     : 'destroy',
