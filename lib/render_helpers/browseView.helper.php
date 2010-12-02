@@ -469,8 +469,10 @@ class browseView {
 
 	public function noFilesOrFoldersMessage($folderId = null, $editable = true)
 	{
+		$folderMessage = '<h2>There\'s nothing in this folder yet!</h2>';
 		if(SharedUserUtil::isSharedUser())
 		{
+			$folderMessage = '<h2>There\'s no shared content in this folder yet!</h2>';
 			$perm = SharedContent::getPermissions($_SESSION['userID'], $folderId, null, 'folder');
 			if($perm == 1)
 			{
@@ -481,10 +483,11 @@ class browseView {
 				 $editable = false;
 			}
 		}
+		
 		if (!$editable) {
-			return '<span class="notification">
-			<h2>There\'s nothing in this folder yet!</h2>
-			</span>';
+			return "<span class='notification'>
+						$folderMessage
+			</span>";
 		} else {
 			$hint = '(Here are three easy ways you can change that...)';
 			$upload = '					<td><div class="roundnum">1</div></td>
@@ -516,7 +519,7 @@ class browseView {
 					</td>';
 			
 			return '<span class="notification">
-			<h2>There\'s nothing in this folder yet!</h2>
+			' . $folderMessage . '
 			' . $hint . '
 			<table>
 				<tr>
