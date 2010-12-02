@@ -347,10 +347,15 @@ class KTStandardDispatcher extends KTDispatcher {
             redirect(KTUtil::ktLink('login.php','',sprintf("redirect=%s&errorMessage=%s", urlencode($_SERVER['REQUEST_URI']), urlencode(_kt("You must be logged in to perform this action"))))); exit(0);
         }
 		global $default;
-		$msg = '<h3>' . _kt('The plan you are currently on does not have access to this functionality.') . '</h3>';
-		$msg .= '<br/>';
-		$msg .= '<a href="/plugins/ktlive/subscribe.php" title="Upgrade"> Upgrade now </a>';
-        $this->oPage->setPageContents($msg);
+		
+		$msg = _kt('You are on the ' . $default->plan . ' plan which does not have this functionality - ');
+		$msg .= '<a href="https://app.knowledgetree.com/upgrade"  target="_blank" title="Upgrade"> Upgrade </a>';
+		// Don't sanitize the info, as we would like to display a link
+		$this->oPage->allowHTML = true;
+		// Set message in info flash
+        $this->oPage->addInfo($msg);
+        // Empty content
+        $this->oPage->setPageContents('<div></div>');
         $this->oPage->setUser($this->oUser);
 		$this->oPage->hideSection();
         $this->oPage->render();

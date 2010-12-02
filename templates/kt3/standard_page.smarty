@@ -296,7 +296,11 @@
 						<div class="info_dashlet_leftrepeat_bottom"></div>
 						<div class="info_list">
 						{foreach item=sInfo from=$page->infoStack}
-							<div class="info_item">{$sInfo|sanitize}</div>
+							{if (!$page->allowHTML)}
+								<div class="info_item">{$sInfo|sanitize}</div>
+							{else}
+								<div class="info_item">{$sInfo}</div>
+							{/if}
 						{/foreach}
 						</div>
 						<div class="info_dashlet_topleft_small"></div>
