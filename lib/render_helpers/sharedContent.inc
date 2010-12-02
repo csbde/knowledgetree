@@ -347,18 +347,16 @@ class SharedContent extends KTEntity {
     	return (count($res) > 0);
     }
     
-    // TODO : Establish if a link has been created between shared folders
-    // TODO : Remove shared documents if a folder is shared
     // TODO : Get only one document metadata version from database
     
     /**
-     * Retreive the permission of a document
+     * Retreive the permission of an object
      *
      * @param int $iUserId
      * @param int $iObjectId
      * @param int $iFolderId
      * @param string $sType
-     * @return mixed
+     * @return mixed - false if no permissions on object, and the permission value if one exists
      */
     static public function getPermissions($iUserId, $iObjectId = null, $iFolderId = null, $sType = 'document')
     {
@@ -385,6 +383,14 @@ class SharedContent extends KTEntity {
     	return false;
     }
     
+    /**
+     * Retreive the permission of a document
+     *
+     * @param int $iUserId
+     * @param int $iObjectId
+     * @param int $iFolderId
+     * @return mixed - false if no permissions on document, and the permission value if one exists
+     */
 	static private function getDocumentPermissions($iUserId, $iObjectId = null, $iFolderId = null)
 	{
 		// Check if documents parent folder has been shared with user
@@ -406,6 +412,14 @@ class SharedContent extends KTEntity {
 		return false;
 	}
 	
+	/**
+	 * Retreive the permission of a folder
+	 *
+	 * @param int $iUserId
+	 * @param int $iObjectId
+	 * @param int $iFolderId
+	 * @return mixed - false if no permissions on folder, and the permission value if one exists
+	 */
 	static private function getFolderPermissions($iUserId, $iObjectId = null, $iFolderId = null)
 	{
 		// Check if documents parent folder has been shared with user
