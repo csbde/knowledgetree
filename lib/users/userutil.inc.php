@@ -191,16 +191,20 @@ class KTUserUtil {
             // additional operations and fields for shared content
             if ($userType == 'shared') {
 				self::addSharedContent($user->getId(), $shareContent['object_id'], $shareContent['object_type'], $shareContent['permission']);
-                if (isset(self::$objectTypeMap[$shareContent['object_type']])) {
-                    $objectTypeName = self::$objectTypeMap[$shareContent['object_type']];
-                }
-                else {
-                    $objectTypeName = 'Unknown';
-                }
-                $objectName = self::getObjectName($shareContent['object_id'], $shareContent['object_type']);
             }
             
             $invitedUsers[] = $invitedUser;
+    	}
+    	
+    	// additional operations and fields for shared content
+    	if ($userType == 'shared') {
+    	    if (isset(self::$objectTypeMap[$shareContent['object_type']])) {
+    	        $objectTypeName = self::$objectTypeMap[$shareContent['object_type']];
+    	    }
+    	    else {
+    	        $objectTypeName = 'Unknown';
+    	    }
+    	    $objectName = self::getObjectName($shareContent['object_id'], $shareContent['object_type']);
     	}
 
     	// Send invitation
@@ -440,7 +444,7 @@ class KTUserUtil {
      * @param array $emailList Array of email addresses: format $list[] = array('id' => $id, 'email' => $email)
      * @return bool
      */
-    static public function sendNotifications($emailList, $objectId, $objectTypeName = null, $objectName, $message = '')
+    static public function sendNotifications($emailList, $objectId, $objectTypeName, $objectName, $message = '')
     {
     	global $default;
     	
