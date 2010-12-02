@@ -113,7 +113,7 @@ class KTBulkDeleteAction extends KTBulkAction {
 
     function form_collectinfo() {
         global $default;
-    	
+
         $cancelUrl = $this->getReturnUrl();
 
         $oForm = new KTForm;
@@ -144,14 +144,14 @@ class KTBulkDeleteAction extends KTBulkAction {
                     'required' => true
                 ));
         }
-        
-		
-        if(($this->oConfig->get('actionreasons/globalReasons')?true:false)){
+
+
+        if($this->oConfig->get('actionreasons/globalReasons') || $default->enableESignatures){
 	        $widgets[] = array('ktcore.widgets.reason',array(
 	                'name' => 'reason',
 	                'label' => _kt('Note'),
 	                'value' => null,
-	                'required' => false,
+	                'required' => ($default->enableESignatures) ? true : false,
 	         ));
         }
 
@@ -229,8 +229,8 @@ class KTBulkDeleteAction extends KTBulkAction {
 	        $this->store_lists();
 	        return $this->do_performaction();
         }
-        
-        
+
+
         $this->store_lists();
         $this->get_lists();
 
@@ -378,14 +378,16 @@ class KTBulkMoveAction extends KTBulkAction {
         }
 
 
-        if(($this->oConfig->get('actionreasons/globalReasons')?true:false))$oForm->addWidget(
-            array('ktcore.widgets.reason',array(
-                'name' => 'reason',
-                'label' => _kt('Note'),
-                'value' => null,
-                'required' => false,
-                )
-        ));
+        if($this->oConfig->get('actionreasons/globalReasons') || $default->enableESignatures) {
+            $oForm->addWidget(
+                array('ktcore.widgets.reason',array(
+                    'name' => 'reason',
+                    'label' => _kt('Note'),
+                    'value' => null,
+                    'required' => ($default->enableESignatures) ? true : false,
+                    )
+            ));
+        }
 
         $oForm->setValidators(array(
             array('ktcore.validators.string', array(
@@ -622,14 +624,16 @@ class KTBulkCopyAction extends KTBulkAction {
                 )));
         }
 
-       if(($this->oConfig->get('actionreasons/globalReasons')?true:false)) $oForm->addWidget(
-            array('ktcore.widgets.reason',array(
-                'name' => 'reason',
-                'label' => _kt('Note'),
-                'value' => null,
-                'required' => false,
-                )
-        ));
+       if($this->oConfig->get('actionreasons/globalReasons') || $default->enableESignatures) {
+           $oForm->addWidget(
+                array('ktcore.widgets.reason',array(
+                    'name' => 'reason',
+                    'label' => _kt('Note'),
+                    'value' => null,
+                    'required' => ($default->enableESignatures) ? true : false,
+                    )
+            ));
+       }
 
         $oForm->setValidators(array(
             array('ktcore.validators.string', array(
@@ -815,14 +819,16 @@ class KTBulkArchiveAction extends KTBulkAction {
                 )));
         }
 
-        if(($this->oConfig->get('actionreasons/globalReasons')?true:false))$oForm->addWidget(
-            array('ktcore.widgets.reason',array(
-                'name' => 'reason',
-                'label' => _kt('Note'),
-                'value' => null,
-                'required' => false,
-                )
-        ));
+        if($this->oConfig->get('actionreasons/globalReasons') || $default->enableESignatures) {
+            $oForm->addWidget(
+                array('ktcore.widgets.reason',array(
+                    'name' => 'reason',
+                    'label' => _kt('Note'),
+                    'value' => null,
+                    'required' => ($default->enableESignatures) ? true : false,
+                    )
+            ));
+        }
 
         $oForm->setValidators(array(
             array('ktcore.validators.string', array(
@@ -1322,13 +1328,15 @@ class KTBrowseBulkCheckoutAction extends KTBulkAction {
                 ));
         }
 
-        if(($this->oConfig->get('actionreasons/globalReasons')?true:false)) $widgets[] = array('ktcore.widgets.reason',array(
-                'name' => 'reason',
-                'label' => _kt('Note'),
-                'value' => null,
-                'required' => false,
-                ));
-                
+        if($this->oConfig->get('actionreasons/globalReasons') || $default->enableESignatures) {
+            $widgets[] = array('ktcore.widgets.reason',array(
+                    'name' => 'reason',
+                    'label' => _kt('Note'),
+                    'value' => null,
+                    'required' => ($default->enableESignatures) ? true : false,
+                    ));
+        }
+
         $widgets[] = array('ktcore.widgets.boolean', array(
                 'label' => _kt('Download Files'),
                 'description' => _kt('Indicate whether you would like to download these file as part of the checkout.'),
