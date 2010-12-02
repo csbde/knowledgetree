@@ -1,4 +1,4 @@
-#document-views{
+div.viewletworkflow {
 	-moz-border-radius:5px 5px 5px 5px;
 	-moz-box-shadow:0 0 5px #666677;
 	-webkit-border-radius:5px 5px 5px 5px;
@@ -9,7 +9,7 @@
 	border-bottom-right-radius:5px;
 	border-bottom-left-radius:5px;
 	margin:5px;
-	width:300px;
+	/*width:300px;*/
 	right:30px;
 }
 
