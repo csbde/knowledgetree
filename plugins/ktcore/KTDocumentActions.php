@@ -229,7 +229,8 @@ class KTDocumentVersionHistoryAction extends KTDocumentAction {
             return $this->redirectToMain(_kt('The document you selected was invalid'));
         }
 
-        if (!Permission::userHasDocumentReadPermission($oDocument)) {
+        //if (!Permission::userHasDocumentReadPermission($oDocument)) {
+        if (!$this->userHasDocumentReadPermission($oDocument)) {
             return $this->errorRedirectToMain(_kt('You are not allowed to view this document'));
         }
         $this->oDocument =& $oDocument;
@@ -1938,7 +1939,8 @@ class KTDocumentWorkflowAction extends KTDocumentAction {
         $oUser =& User::get($_SESSION['userID']);
         $res = KTWorkflowUtil::performTransitionOnDocument($oTransition, $oDocument, $oUser, $sComments);
 
-        if(!Permission::userHasDocumentReadPermission($oDocument)) {
+        //if(!Permission::userHasDocumentReadPermission($oDocument)) {
+        if(!$this->userHasDocumentReadPermission($oDocument)) {
             $this->commitTransaction();
             $_SESSION['KTInfoMessage'][] = _kt('Transition performed') . '. ' . _kt('You no longer have permission to view this document');
             controllerRedirect('browse', sprintf('fFolderId=%d', $oDocument->getFolderId()));
@@ -2043,7 +2045,8 @@ class KTDocumentWorkflowAction extends KTDocumentAction {
 
         $res = KTWorkflowUtil::performTransitionOnDocument($oTransition, $this->oDocument, $this->oUser, sanitizeForHTML($data['reason']));
 
-        if(!Permission::userHasDocumentReadPermission($this->oDocument)) {
+        //if(!Permission::userHasDocumentReadPermission($this->oDocument)) {
+        if(!$this->userHasDocumentReadPermission($this->oDocument)) {
             $this->commitTransaction();
             $_SESSION['KTInfoMessage'][] = _kt('Transition performed') . '. ' . _kt('You no longer have permission to view this document');
             controllerRedirect('browse', sprintf('fFolderId=%d', $this->oDocument->getFolderId()));
