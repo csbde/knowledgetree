@@ -40,6 +40,8 @@ require_once(KT_LIB_DIR . '/users/User.inc');
 require_once(KT_LIB_DIR . '/util/ktutil.inc');
 
 class KTUserUtil {
+    
+    static private $objectTypes = array('F' => 'folder', 'D' => 'document');
 
     static public function createUser($username, $name, $password = null, $email_address = null, $email_notifications = false, $mobile_number = null, $max_sessions = 3, $source_id = null, $details = null, $details2 = null, $disabled_flag = 0)
     {
@@ -151,7 +153,8 @@ class KTUserUtil {
     	   if (PEAR::isError($group)) {
     	       $default->log->error("Invite users. Error on selected group ({$group}) - {$group->getMessage()}");
     	       $group = false;
-    	   } else {
+    	   }
+    	   else {
     	       $groupName = $group->getName();
     	   }
         }
@@ -164,8 +167,8 @@ class KTUserUtil {
             if (empty($email)) {
                 continue;
             }
+            
             $user = self::createUser($email, '', null, $email, true, null, 3, null, null, null, $types[$type]);
-
             if (PEAR::isError($user)) {
                $default->log->error("Invite users. Error on creating invited user ({$email}) - {$user->getMessage()}");
                $failedUsers[] = $email;
@@ -179,12 +182,18 @@ class KTUserUtil {
                    continue;
                }
             }
-            
-			if($type == 'shared') {
-				self::addSharedContent($user->getId(), $shareContent['object_id'], $shareContent['object_type'], $shareContent['permission']);
-			}
+            			
             $message = isset($shareContent['message']) ? $shareContent['message'] : '';
-            $invitedUsers[] = array('id' => $user->getId(), 'email' => $email, 'message' => $message);
+            $invitedUser = array('id' => $user->getId(), 'email' => $email, 'message' => $message);
+            
+            // additional operations and fields for shared content
+            if ($type == 'shared') {
+				self::addSharedContent($user->getId(), $shareContent['object_id'], $shareContent['object_type'], $shareContent['permission']);
+                $invitedUser['contentType'] = $shareContent['object_type'];
+                $invitedUser['contentName'] = self::getObjectName($shareContent['object_id'], $shareContent['object_type']);
+            }
+            
+            $invitedUsers[] = $invitedUser;
     	}
 
     	// Send invitation
@@ -196,8 +205,8 @@ class KTUserUtil {
     	$check = 0;
     	// Format the list of existing users
     	$existing = '';
-    	if (!empty($existingUsers)){
-    	    foreach ($existingUsers as $item){
+    	if (!empty($existingUsers)) {
+    	    foreach ($existingUsers as $item) {
     	        $existing .= '<li>';
     	        if (!empty($item['name'])) {
     	            $existing .= $item['name'] . ' - ';
@@ -208,8 +217,8 @@ class KTUserUtil {
 
     	// Format the list of failed email addresses
     	$failed = '';
-    	if (!empty($failedUsers)){
-    	    foreach ($failedUsers as $item){
+    	if (!empty($failedUsers)) {
+    	    foreach ($failedUsers as $item) {
     	        $failed .= '<li>'.$item .'</li>';
     	    }
     	}
@@ -224,16 +233,24 @@ class KTUserUtil {
     						'permMessage' => '', 
     						'noPerms' => ''
     					);
-    	if (($type == 'shared') && !empty($existingUsers)) 
-    	{
+    					
+    	if (($type == 'shared') && !empty($existingUsers)) {
     		$response = self::checkPermissions($response, $existingUsers, $shareContent);
+    		// add content and send notifications
+    		foreach ($existingUsers as $existingUser) {
+    		    // Create shared content
+    		    self::addSharedContent($existingUser['id'], $shareContent['object_id'], $shareContent['object_type'], $shareContent['permission']);
+    		    // TODO if user already exists, add a specific link to the newly shared content and set different link text
+    		    // Send a sharing notification to existing users.
+    		    self::sendNotifications($existingUsers, $shareContent['object_id'], $shareContent['object_type'], $shareContent['message']);
+    		}
     	}
     	
     	return $response;
     }
 
     /**
-     * Notify existing users and check permissions on shared objects.
+     * Check permissions on shared objects.
      *
      * @param array $response
      * @param array $existingUsers
@@ -247,18 +264,15 @@ class KTUserUtil {
     	$hasPermissions = true;
     	// Send invitation to existing users
 	    foreach ($existingUsers as $existingUser) 
-	    {
-	    	// Create shared content
-	        self::addSharedContent($existingUser['id'], $shareContent['object_id'], $shareContent['object_type'], $shareContent['permission']);
-	        // Send a sharing notification to existing users.
-	        self::sendNotifications($existingUsers, $shareContent['object_id'], $shareContent['object_type'], $shareContent['message']);
+	    {	        
 	        // Check if system user
-	        if($existingUser['disabled'] != 4)
+	        if ($existingUser['disabled'] != 4)
 	        {
 				// Get user
 	        	$oUser = User::get($existingUser['id']);
+	        	
 	        	// Get permission
-	        	if($shareContent['permission'] == 1)
+	        	if ($shareContent['permission'] == 1)
 	        	{
 	        		$sPermission = 'ktcore.permissions.write';
 	        	}
@@ -266,23 +280,25 @@ class KTUserUtil {
 	        	{
 	        		$sPermission = 'ktcore.permissions.read';
 	        	}
+	        	
 	        	// Get folder or document
-	        	if($shareContent['object_type'] == 'F')
+	        	if ($shareContent['object_type'] == 'F')
 	        	{
-	        		$oFolderDocument = Document::get($shareContent['object_id']);
-	        		$type = 'folder';
+	        		$oFolderDocument = Folder::get($shareContent['object_id']);
 	        		$action = 'ktcore.actions.folder.permissions';
 	        	}
 	        	else 
 	        	{
-	        		$oFolderDocument = Folder::get($shareContent['object_id']);
-	        		$type = 'document';
+	        		$oFolderDocument = Document::get($shareContent['object_id']);
 	        		$action = 'ktcore.actions.document.permissions';
 	        	}
+	        	
+	        	$type = self::$objectTypes[$shareContent['object_type']];
+	        	
 	        	// Check if user has permission
-	        	if(!KTPermissionUtil::userHasPermissionOnItem($oUser, $sPermission, $oFolderDocument))
+	        	if (!KTPermissionUtil::userHasPermissionOnItem($oUser, $sPermission, $oFolderDocument))
 	        	{
-	        		if($hasPermissions)
+	        		if ($hasPermissions)
 	        		{
 	        			$hasPermissions = false;
 	        			$response['hasPermissions'] = false;
@@ -293,6 +309,7 @@ class KTUserUtil {
 	    				$link = KTUtil::kt_url() . '/' . KTUtil::buildUrl("action.php", $params);
 		        		$response['permMessage'] = "Please update permissions for $type. <a href='$link' target='_blank'> Permissions </a>";
 	        		}
+	        		
 	        		// Store existing system user
 	        		$noPermsUsers[] = $existingUser;
 	        	}
@@ -319,23 +336,24 @@ class KTUserUtil {
     
     static public function addSharedContent($user_id, $object_id, $object_type, $permission)
     {
-    	global $default;
-		// Add shared content entry.
-		require_once(KT_LIB_DIR . '/render_helpers/sharedContent.inc');
-		$object_type = ($object_type == 'F') ? 'folder' : 'document';
-		$oSharedContent = new SharedContent($user_id, $_SESSION['userID'], $object_id, $object_type, $permission);
-		// Check for existsing object and delete if it exists.
-		if($oSharedContent->exists())
-		{
-			$oSharedContent->delete();
-		}
-		$res = $oSharedContent->create();
-		if (!$res)
-		{
-			$default->log->error("Failed sharing " . ($object_type == 'F') ? "folder" : " file " . " $object_id with invited user id $user_id.");
-		}
+        // Add shared content entry.
+        require_once(KT_LIB_DIR . '/render_helpers/sharedContent.inc');
+        $oSharedContent = new SharedContent($user_id, $_SESSION['userID'], $object_id, self::$objectTypes[$object_type], $permission);
 
+        // Check for existsing object and delete if it exists.
+        if ($oSharedContent->exists())
+        {
+            $oSharedContent->delete();
+        }
+
+        $res = $oSharedContent->create();
+        if (!$res)
+        {
+            global $default;
+            $default->log->error("Failed sharing " . ($object_type == 'F') ? 'folder' : 'file' . " $object_id with invited user id $user_id.");
+        }
     }
+    
     /**
      * Check how many licenses are available in the system.
      *
@@ -352,7 +370,59 @@ class KTUserUtil {
         if ($rem < 0) {
             return 2;
         }
+        
         return 0;
+    }    
+    
+    /**
+     * Create the unique url for the invite/share and send to the queue
+     *
+     * @param array $emailList Array of email addresses: format $list[] = array('id' => $id, 'email' => $email)
+     * @return bool
+     */
+    static public function sendInvitations($emailList, $type = null, $name = null)
+    {
+        global $default;
+        
+        $sender = self::getSender();
+        $url = KTUtil::kt_url() . '/users/key/';
+
+        $list = array();
+        foreach ($emailList as $item) {
+            // new user id generation
+            $user_id = $item['id'];
+            $user = (int)$user_id * 354;
+            $user = base_convert($user, 10, 25);
+            $link = $url . '88' . $user;
+            
+			if ($item['message'] != '')
+			{
+				$item['message'] = '<p><font color="#7F7F7F" size="2" face="Arial"><p>Message from ' . $sender . ':</p><p><font size="2">' . $item['message'] . '</font></p></font></p>';
+			}
+			
+            $list[] = array(	'name' => '', 
+            					'email' => $item['email'], 
+            					'sender' => $sender, 
+            					'contenttype' => $type, 
+            					'contentname' => $name, 
+            					'sender' => $sender, 
+            					'linktext' => 'Click on this link to complete your profile and login',
+            					'link' => $link,
+            					'message' => $item['message'],
+            				);
+        }
+
+        if (empty($list)) {
+            return true;
+        }
+
+        $default->log->debug('Invited keys '. json_encode($list));
+        
+        if (ACCOUNT_ROUTING_ENABLED) {
+            return self::dispatchQueueEvent($list, _kt('KnowledgeTree Invitation'), 'Send email invite', 'invite-user-content.html');
+        }
+        
+        return true;
     }
 
     /**
@@ -364,53 +434,46 @@ class KTUserUtil {
     static public function sendNotifications($emailList, $object_id, $object_type = null, $message = '')
     {
     	global $default;
+    	
     	$folderId = null;
-    	$docoumentId = null;
-    	$type = 'Unknown';
-    	if(is_null($object_type))
+    	$documentId = null;
+    	$type = isset(self::$objectTypes[$object_type]) ? $type = self::$objectTypes[$object_type] : 'Unknown';
+    	
+    	if (is_null($object_type))
     	{
-    		$docoumentId = $object_id;
+    		$documentId = $object_id;
     	}
     	else 
     	{
-    		if($object_type == 'D')
+    		if ($object_type == 'D')
     		{
-    			$docoumentId = $object_id;
+    			$documentId = $object_id;
     		}
-    		else if($object_type == 'F')
+    		else if ($object_type == 'F')
     		{
     			$folderId = $object_id;
     		}
     	}
-        // Use the current user as the "inviter" / sender of the emails
-        // goes into the user array for use in the email
-        $oSender = User::get($_SESSION['userID']);
-
-        if (PEAR::isError($oSender) || empty($oSender)) {
-            $sender = 'KnowledgeTree';
-        } else {
-            $sender = $oSender->getName();
-        }
-
+    	
+        $sender = self::getSender();
         $list = array();
         $server = KTUtil::kt_url();
-        if(is_null($docoumentId))
+        
+        if (is_null($documentId))
         {
-        	$folder_link = KTUtil::buildUrl("browse.php", array('fFolderId'=>$folderId));
+        	$folder_link = KTUtil::buildUrl('/browse.php', array('fFolderId' => $folderId));
         	$link = $server . $folder_link;
         	require_once(KT_LIB_DIR . '/foldermanagement/Folder.inc');
 			$oFolder = Folder::get($folderId);
 			$name = $oFolder->getName();
-			$type = 'folder';
         }
         else 
         {
-	        $document_link = KTUtil::buildUrl("view.php", array('fDocumentId'=>$docoumentId));
+	        $document_link = KTUtil::buildUrl('/view.php', array('fDocumentId' => $documentId));
 	        $link = $server . $document_link;
 	        require_once(KT_LIB_DIR . '/documentmanagement/Document.inc');
-			$oDocument = Document::get($docoumentId);
+			$oDocument = Document::get($documentId);
 			$name = $oDocument->getName();
-			$type = 'document';
         }
 
         foreach ($emailList as $item) 
@@ -418,6 +481,9 @@ class KTUserUtil {
             $list[] = array(	'name' => '', 
             					'email' => $item['email'], 
             					'sender' => $sender, 
+            					'contenttype' => $type, 
+            					'contentname' => $name, 
+            					'linktext' => 'Click on this link to view the shared content', 
             					'link' => $link, 
             					'title' => $name,
             					'message' => $message,
@@ -430,95 +496,59 @@ class KTUserUtil {
         }
 
         $default->log->debug('Invited keys '. json_encode($list));
-        $emailFrom = $default->emailFrom;
 
         if (ACCOUNT_ROUTING_ENABLED) {
-            // dispatch queue event
-            require_once(KT_LIVE_DIR . '/sqsqueue/dispatchers/queueDispatcher.php');
-            $params = array();
-            $params['subject'] = _kt('KnowledgeTree Sharing Notification');
-            $params['content_html'] = 'email/notifications/shared-user-content.html';
-            $params['sender'] = array($emailFrom => 'KnowledgeTree');
-            $params['recipients'] = $list;
-			$params['action'] = 'Send notification';
-			
-            $oQueueDispatcher = new queueDispatcher();
-        	$oQueueDispatcher->addProcess('mailer', $params);
-        	$res = $oQueueDispatcher->sendToQueue();
-
-        	return $res;
+            return self::dispatchQueueEvent($list, _kt('KnowledgeTree Sharing Notification'), 'Send notification', 'shared-user-content.html');
         }
         
         return true;
     }
     
     /**
-     * Create the unique url for the invite and send to the queue
+     * Dispatch a queue event
      *
-     * @param array $emailList Array of email addresses: format $list[] = array('id' => $id, 'email' => $email)
-     * @return bool
+     * @param string $emailFrom
+     * @param array $list
+     * @return boolean
      */
-    static public function sendInvitations($emailList)
+    static private function dispatchQueueEvent($list, $subject, $action, $content, $emailFrom = null)
     {
+        if (empty($emailFrom)) {
+            global $default;
+            $emailFrom = $default->emailFrom;
+        }
+        
+        // dispatch queue event
+        require_once(KT_LIVE_DIR . '/sqsqueue/dispatchers/queueDispatcher.php');
+        
+        $params = array();
+        $params['subject'] = $subject;
+        $params['content_html'] = "email/notifications/$content";
+        $params['sender'] = array($emailFrom => 'KnowledgeTree');
+        $params['recipients'] = $list;
+        $params['action'] = $action;
+
+        $oQueueDispatcher = new queueDispatcher();
+        $oQueueDispatcher->addProcess('mailer', $params);
+        $res = $oQueueDispatcher->sendToQueue();
+
+        return $res;
+    }
+    
+    private static function getSender()
+    {
+        // default if user not found
+        $sender = 'KnowledgeTree';
+        
         // Use the current user as the "inviter" / sender of the emails
         // goes into the user array for use in the email
         $oSender = User::get($_SESSION['userID']);
-
-        if (PEAR::isError($oSender) || empty($oSender)) {
-            $sender = 'KnowledgeTree';
-        } else {
+        
+        if (!PEAR::isError($oSender) || empty($oSender)) {    
             $sender = $oSender->getName();
         }
-
-        $url = KTUtil::kt_url() . '/users/key/';
-
-        $list = array();
-        foreach ($emailList as $item) {
-            //$key = 'skfjiwefjaldi';
-            $user_id = $item['id'];
-            //$user = KTUtil::encode($user, $key);
-            $user = (int)$user_id * 354;
-            $user = base_convert($user, 10, 25);
-            $link = $url . '88' . $user;
-			if($item['message'] != '')
-			{
-				$item['message'] = '<p><font color="#7F7F7F" size="2" face="Arial"><p>Message from '.$sender.':</p><p><font size="2">'. $item['message'] .'</font></p></font></p>';
-			}
-            $list[] = array(	'name' => '', 
-            					'email' => $item['email'], 
-            					'sender' => $sender, 
-            					'link' => $link,
-            					'message' => $item['message'],
-            				);
-        }
-
-        if (empty($list)) {
-            return true;
-        }
-
-        global $default;
-
-        $default->log->debug('Invited keys '. json_encode($list));
-        $emailFrom = $default->emailFrom;
-
-        if (ACCOUNT_ROUTING_ENABLED) {
-            // dispatch queue event
-            require_once(KT_LIVE_DIR . '/sqsqueue/dispatchers/queueDispatcher.php');
-
-            $params = array();
-            $params['subject'] = _kt('KnowledgeTree Invitation');
-            $params['content_html'] = 'email/notifications/invite-user-content.html';
-            $params['sender'] = array($emailFrom => 'KnowledgeTree');
-            $params['recipients'] = $list;
-			$params['action'] = 'Send email invite';
-			
-            $oQueueDispatcher = new queueDispatcher();
-        	$oQueueDispatcher->addProcess('mailer', $params);
-        	$res = $oQueueDispatcher->sendToQueue();
-
-        	return $res;
-        }
-        return true;
+        
+        return $sender;
     }
 
     /**
@@ -551,8 +581,20 @@ class KTUserUtil {
 
         return $result;
     }
+    
+    static private function getObjectName($id, $type)
+    {
+        $name = null;
+        
+        // Get folder or document
+        $contentObject = ($shareContent['object_type'] == 'F') ? Folder::get($id) : Document::get($id);
+        if (!PEAR::isError($contentObject)) {
+            $name = $contentObject->getName();
+        }
+
+        return $name;
+    }
 
 }
-
 
 ?>

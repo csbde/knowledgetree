@@ -87,7 +87,7 @@ kt.app.sharewithusers=new function(){
             cls             : 'ul_win',
             shadow          : true,
             modal           : true,
-            title           : 'Sharing Invitations Sent',
+            title           : 'Content Shared',
             html            : kt.api.execFragment('users/invite.shared.confirm.dialog')
         });
 
