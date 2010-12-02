@@ -448,45 +448,28 @@ class KTUserUtil {
     {
     	global $default;
     	
-    	$folderId = null;
-    	$documentId = null;
-    	
-    	if (is_null($objectTypeId))
-    	{
-    		$documentId = $objectId;
-    	}
-    	else 
-    	{
-    		if ($objectTypeId == 'D')
-    		{
-    			$documentId = $objectId;
-    		}
-    		else if ($objectTypeId == 'F')
-    		{
-    			$folderId = $objectId;
-    		}
-    	}
-    	
         $sender = self::getSender();
         $list = array();
         $server = KTUtil::kt_url();
         
-        if (is_null($documentId))
-        {
-        	$folder_link = KTUtil::buildUrl('/browse.php', array('fFolderId' => $folderId));
-        	$link = $server . $folder_link;
-        	require_once(KT_LIB_DIR . '/foldermanagement/Folder.inc');
-			$oFolder = Folder::get($folderId);
-			$objectName = $oFolder->getName();
-        }
-        else 
-        {
+    	if (is_null($objectTypeName) || ($objectTypeName == 'document'))
+    	{
+    		$documentId = $objectId;
 	        $document_link = KTUtil::buildUrl('/view.php', array('fDocumentId' => $documentId));
 	        $link = $server . $document_link;
 	        require_once(KT_LIB_DIR . '/documentmanagement/Document.inc');
 			$oDocument = Document::get($documentId);
 			$objectName = $oDocument->getName();
-        }
+    	}
+    	else if ($objectTypeName == 'folder')
+    	{
+    	    $folderId = $objectId;
+        	$folder_link = KTUtil::buildUrl('/browse.php', array('fFolderId' => $folderId));
+        	$link = $server . $folder_link;
+        	require_once(KT_LIB_DIR . '/foldermanagement/Folder.inc');
+			$oFolder = Folder::get($folderId);
+			$objectName = $oFolder->getName();
+    	}
 
         foreach ($emailList as $item) 
         { 
