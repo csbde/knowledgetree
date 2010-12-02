@@ -146,6 +146,14 @@ class PermissionCache
         return $this->checkCachedPermission($lookupId, $permId, $userId);
     }
 
+    public function invalidateCache()
+    {
+        if($this->memcache !== false){
+            $this->memcache->invalidateMemcachePermissions();
+        }
+        return true;
+    }
+
     /**
      * Create / renew the permissions cache for a given user
      *

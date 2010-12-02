@@ -38,6 +38,7 @@
 
 require_once(KT_LIB_DIR . "/documentmanagement/Document.inc");
 require_once(KT_LIB_DIR . "/foldermanagement/Folder.inc");
+
 require_once(KT_LIB_DIR . "/permissions/permission.inc.php");
 require_once(KT_LIB_DIR . "/permissions/permissionassignment.inc.php");
 require_once(KT_LIB_DIR . "/permissions/permissiondescriptor.inc.php");
@@ -45,6 +46,9 @@ require_once(KT_LIB_DIR . "/permissions/permissionlookup.inc.php");
 require_once(KT_LIB_DIR . "/permissions/permissionlookupassignment.inc.php");
 require_once(KT_LIB_DIR . "/permissions/permissionobject.inc.php");
 require_once(KT_LIB_DIR . "/permissions/permissiondynamiccondition.inc.php");
+
+require_once(KT_LIB_DIR . '/security/PermissionCache.php');
+
 require_once(KT_LIB_DIR . "/groups/GroupUtil.php");
 require_once(KT_LIB_DIR . "/roles/roleallocation.inc.php");
 require_once(KT_LIB_DIR . "/roles/documentroleallocation.inc.php");
@@ -259,6 +263,13 @@ class KTPermissionUtil {
 				unset($oDocument);
         	}
         }
+
+        /* *** */
+
+        // Clear the cached permissions to force an update of the cache
+        $this->clearCache();
+
+        /* *** */
 
        /* $aDocuments =& Document::getList(array($sWhere, $aParams));
         if (!PEAR::isError($aDocuments)) {
@@ -515,7 +526,6 @@ class KTPermissionUtil {
 	    $check = $cache->checkPermission($lookup_id, $oPermission, $oUser);
 	    KTUtil::logTiming(__FUNCTION__);
 	    return $check;
-
 
         KTUtil::startTiming(__FUNCTION__);
 
@@ -833,6 +843,14 @@ class KTPermissionUtil {
         return kt_array_merge($aPermissionDescriptors, $aUserDescriptors, $aRoleDescriptors);
     }
     // }}}
+
+    function clearCache()
+    {
+        // Invalidate the cached permissions to force an update of the cache
+        $cache = PermissionCache::getSingleton();
+        $cache->invalidateCache();
+    }
+
 }
 
 class KTPermissionChannel {
