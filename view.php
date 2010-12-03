@@ -31,7 +31,7 @@
  * logo is not reasonably feasible for technical reasons, the Appropriate Legal Notices
  * must display the words "Powered by KnowledgeTree" and retain the original
  * copyright notice.
- * Contributor( s): ______________________________________
+ * Contributor(s): ______________________________________
  */
 
 // boilerplate.
@@ -109,6 +109,7 @@ class sharedViewDocumentDispatcher extends KTStandardDispatcher
             $_REQUEST['fDocumentId'] = sanitizeForSQL(KTUtil::arrayGet($_REQUEST, 'fDocumentID'));
             unset($_REQUEST['fDocumentID']);
         }
+        
         $document_data = array();
         $document_id = sanitizeForSQL(KTUtil::arrayGet($_REQUEST, 'fDocumentId'));
         if ($document_id === null) 
@@ -116,16 +117,17 @@ class sharedViewDocumentDispatcher extends KTStandardDispatcher
             $this->oPage->addError(sprintf(_kt("No document was requested.  Please <a href=\"%s\">browse</a> for one."), KTBrowseUtil::getBrowseBaseUrl()));
             return $this->do_error();
         }
+        
         // try get the document.
         $oDocument = Document::get($document_id);
         if (PEAR::isError($oDocument)) 
         {
             $this->oPage->addError(sprintf(_kt("The document you attempted to retrieve is invalid.   Please <a href=\"%s\">browse</a> for one."), KTBrowseUtil::getBrowseBaseUrl()));
-
             $this->oPage->booleanLink = true;
 
             return $this->do_error();
         }
+        
         $document_id = $oDocument->getId();
         $document_data['document_id'] = $oDocument->getId();
 
@@ -133,11 +135,13 @@ class sharedViewDocumentDispatcher extends KTStandardDispatcher
         {
             $this->oPage->addError(_kt('This document has been archived.'));
             return $this->do_request($oDocument);
-        } else if ($oDocument->getStatusID() == DELETED) 
+        }
+        else if ($oDocument->getStatusID() == DELETED) 
         {
             $this->oPage->addError(_kt('This document has been deleted.'));
             return $this->do_error();
-        } else if (!SharedContent::canAccessDocument($this->oUser->getId(), $document_id, $oDocument->getFolderID())) 
+        }
+        else if (!SharedContent::canAccessDocument($this->oUser->getId(), $document_id, $oDocument->getFolderID())) 
         {
             $this->oPage->addError(_kt('You are not allowed to view this document'));
             return $this->permissionDenied();
@@ -164,7 +168,6 @@ class sharedViewDocumentDispatcher extends KTStandardDispatcher
         }else{
             $this->aBreadcrumbs = kt_array_merge($this->aBreadcrumbs, KTBrowseUtil::breadcrumbsForDocument($oDocument, $aOptions, $iSymLinkFolderId));
         }
-
         
         $this->addPortlets('Document Details');
 
@@ -225,13 +228,14 @@ class sharedViewDocumentDispatcher extends KTStandardDispatcher
                 }
             }
         }
-		$bCanEdit = SharedContent::canAccessDocument($this->oUser->getId(), $document_id, $oDocument->getFolderID());
+		
+        $bCanEdit = SharedContent::canAccessDocument($this->oUser->getId(), $document_id, $oDocument->getFolderID());
+		
         // viewlets.
         $aViewlets = array();
         $aViewletActions = KTDocumentActionUtil::getDocumentActionsForDocument($this->oDocument, $this->oUser, 'documentviewlet');
         foreach ($aViewletActions as $oAction) {
             $aInfo = $oAction->getInfo();
-
             if ($aInfo !== null) {
                 $aViewlets[] = $oAction->display_viewlet(); // use the action, since we display_viewlet() later.
             }
@@ -249,24 +253,26 @@ class sharedViewDocumentDispatcher extends KTStandardDispatcher
         $oTemplating = KTTemplating::getSingleton();
         $oTemplate = $oTemplating->loadTemplate('ktcore/document/view');
         
-		if (KTPluginUtil::pluginIsActive ( 'instaview.processor.plugin' )) {
-			$path = KTPluginUtil::getPluginPath ( 'instaview.processor.plugin' );
-			try{
-				require_once ($path . 'instaViewLinkAction.php');
-				$oLivePreview=new instaViewLinkAction($oDocument,$this->oUser,NULL);
-		        $live_preview=$oLivePreview->do_main();
-			}catch(Exception $e){}
+		if (KTPluginUtil::pluginIsActive('instaview.processor.plugin')) {
+			$path = KTPluginUtil::getPluginPath ('instaview.processor.plugin');
+			try { // TODO I think this actually loads the instant view, which probably shouldn't be happening here anymore since the new view
+				require_once($path . 'instaViewLinkAction.php');
+				$oLivePreview = new instaViewLinkAction($oDocument, $this->oUser, null);
+		        $live_preview = $oLivePreview->do_main();
+			} catch(Exception $e) {}
 		}
         
-        $ownerUser=KTUserUtil::getUserField($oDocument->getOwnerID(),'name');
-        $creatorUser=KTUserUtil::getUserField($oDocument->getCreatorID(),'name');
-        $lastModifierUser=KTUserUtil::getUserField($oDocument->getModifiedUserId(),'name');
+        $ownerUser = KTUserUtil::getUserField($oDocument->getOwnerID(), 'name');
+        $creatorUser = KTUserUtil::getUserField($oDocument->getCreatorID(), 'name');
+        $lastModifierUser = KTUserUtil::getUserField($oDocument->getModifiedUserId(), 'name');
         
+        $FieldsetDisplayHelper = new KTFieldsetDisplay();
+                
         $aTemplateData = array(
-        	'doc_data'=>array(
-        		'owner'=>$ownerUser[0]['name'],
-        		'creator'=>$creatorUser[0]['name'],
-        		'lastModifier'=>$lastModifierUser[0]['name']
+        	'doc_data' => array(
+        		'owner' => $ownerUser[0]['name'],
+        		'creator' => $creatorUser[0]['name'],
+        		'lastModifier' => $lastModifierUser[0]['name']
         	),
 			'context' => $this,
 			'sCheckoutUser' => $checkout_user,
@@ -279,15 +285,16 @@ class sharedViewDocumentDispatcher extends KTStandardDispatcher
 			'document_data' => $document_data,
 			'fieldsets' => $fieldsets,
 			'viewlet_data' => $viewlet_data,
-        	'hasNotifications' => false
+        	'hasNotifications' => false,
+			'fieldsetDisplayHelper' => $FieldsetDisplayHelper
         );
+       
         //Conditionally include live_preview
-        if($live_preview)$aTemplateData['live_preview']=$live_preview;
+        if($live_preview) { $aTemplateData['live_preview'] = $live_preview; }
         
         //Setting Document Notifications Status
-        if($oDocument->getIsCheckedOut() || $oDocument->getImmutable())$aTemplateData['hasNotifications']=true;
-        
-        
+        if($oDocument->getIsCheckedOut() || $oDocument->getImmutable()) { $aTemplateData['hasNotifications'] = true; }
+                
         $this->oPage->setBreadcrumbDetails(_kt("Document Details"));
         return $oTemplate->render($aTemplateData);
     }
@@ -315,8 +322,8 @@ class sharedViewDocumentDispatcher extends KTStandardDispatcher
                     'label' => _kt('Note'),
                     'name' => 'reason',
                     'required' => true,
-                ))
-            );
+                    ))
+                );
 
         $data = isset($_REQUEST['data']) ? $_REQUEST['data'] : array();
 
@@ -561,26 +568,26 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
         $oTemplating =& KTTemplating::getSingleton();
         $oTemplate = $oTemplating->loadTemplate('ktcore/document/view');
         
-		if (KTPluginUtil::pluginIsActive ( 'instaview.processor.plugin' )) {
-			$path = KTPluginUtil::getPluginPath ( 'instaview.processor.plugin' );
-			try{
-				require_once ($path . 'instaViewLinkAction.php');
-				$oLivePreview=new instaViewLinkAction($oDocument,$this->oUser,NULL);
-		        $live_preview=$oLivePreview->do_main();
-			}catch(Exception $e){}
+		if (KTPluginUtil::pluginIsActive('instaview.processor.plugin')) {
+			$path = KTPluginUtil::getPluginPath ('instaview.processor.plugin');
+			try {
+				require_once($path . 'instaViewLinkAction.php');
+				$oLivePreview = new instaViewLinkAction($oDocument, $this->oUser, null);
+		        $live_preview = $oLivePreview->do_main();
+			} catch(Exception $e) {}
 		}
         
-        $ownerUser=KTUserUtil::getUserField($oDocument->getOwnerID(),'name');
-        $creatorUser=KTUserUtil::getUserField($oDocument->getCreatorID(),'name');
-        $lastModifierUser=KTUserUtil::getUserField($oDocument->getModifiedUserId(),'name');
+        $ownerUser = KTUserUtil::getUserField($oDocument->getOwnerID(), 'name');
+        $creatorUser = KTUserUtil::getUserField($oDocument->getCreatorID(), 'name');
+        $lastModifierUser = KTUserUtil::getUserField($oDocument->getModifiedUserId(), 'name');
 		
 		$FieldsetDisplayHelper = new KTFieldsetDisplay();
         
         $aTemplateData = array(
-        	'doc_data'=>array(
-        		'owner'=>$ownerUser[0]['name'],
-        		'creator'=>$creatorUser[0]['name'],
-        		'lastModifier'=>$lastModifierUser[0]['name']
+        	'doc_data' => array(
+        		'owner' => $ownerUser[0]['name'],
+        		'creator' => $creatorUser[0]['name'],
+        		'lastModifier' => $lastModifierUser[0]['name']
         	),
 			'context' => $this,
 			'sCheckoutUser' => $checkout_user,
@@ -596,12 +603,12 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
         	'hasNotifications' => false,
 			'fieldsetDisplayHelper' => $FieldsetDisplayHelper
         );
+        
         //Conditionally include live_preview
-        if($live_preview)$aTemplateData['live_preview']=$live_preview;
+        if($live_preview) { $aTemplateData['live_preview'] = $live_preview; }
         
         //Setting Document Notifications Status
-        if($oDocument->getIsCheckedOut() || $oDocument->getImmutable())$aTemplateData['hasNotifications']=true;
-        
+        if($oDocument->getIsCheckedOut() || $oDocument->getImmutable()) { $aTemplateData['hasNotifications'] = true; }
         
         $this->oPage->setBreadcrumbDetails(_kt("Document Details"));
         return $oTemplate->render($aTemplateData);

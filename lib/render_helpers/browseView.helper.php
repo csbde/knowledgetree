@@ -469,8 +469,10 @@ class browseView {
 
 	public function noFilesOrFoldersMessage($folderId = null, $editable = true)
 	{
+		$folderMessage = '<h2>There\'s nothing in this folder yet!</h2>';
 		if(SharedUserUtil::isSharedUser())
 		{
+			$folderMessage = '<h2>There\'s no shared content in this folder yet!</h2>';
 			$perm = SharedContent::getPermissions($_SESSION['userID'], $folderId, null, 'folder');
 			if($perm == 1)
 			{
@@ -481,10 +483,11 @@ class browseView {
 				 $editable = false;
 			}
 		}
+		
 		if (!$editable) {
-			return '<span class="notification">
-			<h2>There\'s nothing in this folder yet!</h2>
-			</span>';
+			return "<span class='notification'>
+						$folderMessage
+			</span>";
 		} else {
 			$hint = '(Here are three easy ways you can change that...)';
 			$upload = '					<td><div class="roundnum">1</div></td>
@@ -516,7 +519,7 @@ class browseView {
 					</td>';
 			
 			return '<span class="notification">
-			<h2>There\'s nothing in this folder yet!</h2>
+			' . $folderMessage . '
 			' . $hint . '
 			<table>
 				<tr>
@@ -729,7 +732,8 @@ class browseView {
 				}
 			}
 		}
-
+		
+		$item['isfinalize_document'] = ($item['actions.finalize_document']) ? 0 : 1;
 		$tpl='
 			<span class="doc browseView">
 				<table cellspacing="0" cellpadding="0" width="100%" border="0" class="doc item ddebug">
@@ -764,7 +768,7 @@ class browseView {
 								<!-- li class="actionIcon comments"></li -->
 								<li class="actionIcon actions">
 									<ul>
-										<li class="action_share_document [actions.share_document]"><a href="#" onclick="javascript:kt.app.sharewithusers.shareContentWindow(\'[id]\',\'[item_type]\',\'[user_id]\');">Share This Document</a></li>
+										<li class="action_share_document [actions.share_document]"><a href="#" onclick="javascript:kt.app.sharewithusers.shareContentWindow(\'[id]\',\'[item_type]\',\'[user_id]\', \'[isfinalize_document]\');">Share This Document</a></li>
 										<li class="separator[separatorE]"></li>
 										<li class="action_download [actions.download]"><a href="action.php?kt_path_info=ktcore.actions.document.view&fDocumentId=[id]">Download</a></li>
 										<li class="action_instant_view [actions.instant_view]"><a href="[document_link]#preview">Instant View</a></li>
