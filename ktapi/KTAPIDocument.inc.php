@@ -512,6 +512,28 @@ class KTAPI_Document extends KTAPI_FolderItem
 	 */
 	function checkout($reason)
 	{
+		
+		//live or published
+		if ($this->document->getStatusID() == 1 || $this->document->getStatusID() == 2)
+		{
+			//just ignore
+			;
+		}
+		//deleted
+		else if($this->document->getStatusID() == 3)
+		{
+			return new KTAPI_Error(KTAPI_ERROR_DOCUMENT_DELETED);
+		}
+		//archived
+		else if($this->document->getStatusID() == 4)
+		{
+			return new KTAPI_Error(KTAPI_ERROR_DOCUMENT_ARCHIVED);
+		}
+		else
+		{
+			return new KTAPI_Error(KTAPI_ERROR_DOCUMENT_UNAVAILABLE);
+		}
+		
 		$user = $this->can_user_access_object_requiring_permission($this->document, KTAPI_PERMISSION_WRITE);
 
 		if (PEAR::isError($user))
