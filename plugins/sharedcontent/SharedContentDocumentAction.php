@@ -38,7 +38,7 @@
 
 require_once(KT_LIB_DIR . '/actions/documentaction.inc.php');
 
-// {{{ KTDocumentShareAction
+// {{{ SharedContentDocumentAction
 class SharedContentDocumentAction extends KTDocumentAction {
     var $sName = 'ktcore.actions.document.sharecontent';
     var $_sShowPermission = 'ktcore.permissions.write';
