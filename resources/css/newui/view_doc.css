@@ -1,14 +1,12 @@
 div.viewletworkflow {
-	-moz-border-radius:5px;
-	-moz-box-shadow:0 0 5px #666677;
-	-webkit-border-radius:5px;
-	-webkit-box-shadow:0 0 5px #666677;
-	box-shadow:0 0 5px #C6C6B7;
-	border-radius:5px;
-	margin:5px;
-	right:30px;
-	padding:5px;
-	font-size:80%;
+	-moz-border-radius: 5px;
+	-moz-box-shadow: -1px -1px 5px #666677;
+	-webkit-border-radius: 5px;
+	-webkit-box-shadow: -1px -1px 5px #666677;
+	box-shadow: -1px -1px 5px #666677;
+	border-radius: 5px;
+	padding: 5px;
+	font-size: 80%;
 }
 
 #content ul.view_doc_tabs,ul.view_doc_tabs {
@@ -225,13 +223,13 @@ div.viewletworkflow {
     font-size: 11px;
     padding: 2px 2px 2px 15px;
     width: 50px;
-    
+
 }
 
 .activityfeed .activityfeed_content .date{
     font-weight: bold;
     color: #69A137;
-    
+
 }
 .activityfeed .activityfeed_content .user{
     font-weight: bold;

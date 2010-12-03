@@ -37,6 +37,7 @@
  */
 
 require_once(KT_LIB_DIR . '/render_helpers/sharedContent.inc');
+require_once(KT_LIB_DIR . '/users/shareduserutil.inc.php');
 
 /**
  * Trigger for document add (postValidate)
@@ -67,6 +68,8 @@ class KTAddSharedContentObjectTrigger {
      * @return unknown
      */
     function postValidate() {
+		if(!SharedUserUtil::isSharedUser())
+			return false;
 		$oSharedContent = new SharedContent($this->oUser->getID(), $_SESSION['userID'], $this->oFolder->getID(), $this->sType, 1);
 		if(!$oSharedContent->exists())
 		{
@@ -111,6 +114,8 @@ class KTDeleteSharedContentObjectTrigger {
      * @return unknown
      */
     function postValidate() {
+		if(!SharedUserUtil::isSharedUser())
+			return false;
 		$oSharedContent = new SharedContent($this->oUser->getID(), $_SESSION['userID'], $this->oFolder->getID(), $this->sType, 1);
 		if(!$oSharedContent->exists())
 		{

@@ -62,16 +62,8 @@ kt.app.sharewithusers=new function(){
         // get the response from the server
         var response = result.data.invitedUsers;
         var list = jQuery.parseJSON(response);
-
         var invited = list.invited;
-        var check = list.check;
-	    var existing = list.existing;
-	    var failed = list.failed;
 	    var userType = list.userType;
-	    var hasPermissions = list.hasPermissions;
-	    var noPerms = list.noPerms;
-	    var permMessage = list.permMessage;
-	    
         var inviteConfirmWin = new Ext.Window({
             id              : 'extinviteconfirmwindow',
             layout          : 'fit',
@@ -88,47 +80,14 @@ kt.app.sharewithusers=new function(){
             title           : 'Content Shared',
             html            : kt.api.execFragment('users/invite.shared.confirm.dialog')
         });
-
+		// Close current window
         self.closeWindow();
         self.inviteConfirmWin = inviteConfirmWin;
+        // Open confirmation
         inviteConfirmWin.show();
-
-        // display the list of invited users
-        document.getElementById('invitedUsers').innerHTML = invited;
-
-        // display any existing users
-        if (existing == '') {
-            document.getElementById('showExistingUsers').style.display = 'none';
-        } else {
-            document.getElementById('existingUsers').innerHTML = existing;
-            document.getElementById('showExistingUsers').style.display = 'block';
-        }
-
-        // display any failed emails
-        if (failed == '') {
-            document.getElementById('showFailedUsers').style.display = 'none';
-        } else {
-            document.getElementById('failedUsers').innerHTML = failed;
-            document.getElementById('showFailedUsers').style.display = 'block';
-        }
-
-	    // display a permission warning
-        if(hasPermissions !== false)
-        {
-        	document.getElementById('showNoPerms').style.display = 'none';
-        	document.getElementById('showPermsMessage').style.display = 'none';
-        }
-        else
-        {
-        	document.getElementById('showNoPerms').style.display = 'block';
-        	document.getElementById('showPermsMessage').style.display = 'block';
-        	document.getElementById('noPerms').innerHTML = noPerms;
-        	document.getElementById('permMessage').innerHTML = permMessage;
-        }
-            
-        if (check != 0) {
-            document.getElementById('inviteLicenses').style.display = 'block';
-        }
+        
+        // display the number of shared users
+        document.getElementById('sharedUsers').innerHTML = invited;
     }
 
 	this.enableInviteButton = function() {
