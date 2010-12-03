@@ -349,7 +349,7 @@ class KTStandardDispatcher extends KTDispatcher {
 		global $default;
 		
 		$msg = _kt('You are on the ' . $default->plan . ' plan which does not have this functionality - ');
-		$msg .= '<a href="https://app.knowledgetree.com/upgrade"  target="_blank" title="Upgrade"> Upgrade </a>';
+		$msg .= '<a href="/admin.php?kt_path_info=accountInformation/systemQuotas" title="Upgrade"> Upgrade </a>';
 		// Don't sanitize the info, as we would like to display a link
 		$this->oPage->allowHTML = true;
 		// Set message in info flash

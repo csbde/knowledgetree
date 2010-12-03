@@ -240,13 +240,14 @@ class KTUserUtil {
     						'group' => $groupName, 
     						'type' => $userType, 
     						'check' => $check, 
-    						'hasPermissions' => '', 
+//    						'hasPermissions' => '', 
     						'permMessage' => '', 
     						'noPerms' => ''
     					);
     					
     	if (($userType == 'shared') && !empty($existingUsers)) {
-    		$response = self::checkPermissions($response, $existingUsers, $shareContent);
+    		// TODO : Removed today, will leave here as next week it might be put back!!!...sigh
+    		// $response = self::checkPermissions($response, $existingUsers, $shareContent);
     		// add content and send notifications
     		foreach ($existingUsers as $existingUser) {
     		    // Create shared content
@@ -272,7 +273,7 @@ class KTUserUtil {
     {
     	// Set warning to false
     	$noPermsUsers = array();
-    	$hasPermissions = true;
+//    	$hasPermissions = true;
     	// Send invitation to existing users
 	    foreach ($existingUsers as $existingUser) 
 	    {	        
@@ -393,24 +394,17 @@ class KTUserUtil {
      */
     static public function sendInvitations($emailList, $userType, $objectTypeName = null, $objectName = null)
     {
-        global $default;
-        
         $sender = self::getSender();
-        $url = KTUtil::kt_url() . '/users/key/';
-
         $list = array();
         foreach ($emailList as $item) {
-            // new user id generation
-            $user_id = $item['id'];
-            $user = (int)$user_id * 354;
-            $user = base_convert($user, 10, 25);
-            $link = $url . '88' . $user;
-            
-			if ($item['message'] != '')
+			if($userType != 'shared')
 			{
-//				$item['message'] = '<p><font color="#7F7F7F" size="2" face="Arial"><p>Message from ' . $sender . ':</p><p><font size="2">' . $item['message'] . '</font></p></font></p>';
+				$link = self::createUserLink($item);
 			}
-			
+			else 
+			{
+				$link = self::createSharedLink($item, $objectTypeName);
+			}
             $list[] = array(	'name' => '', 
             					'email' => $item['email'], 
             					'sender' => $sender, 
@@ -427,17 +421,55 @@ class KTUserUtil {
             return true;
         }
 
-        $default->log->debug('Invited keys '. json_encode($list));
+		if($userType != 'shared')
+		{
+			return self::sendUserInvite($list);
+		}
+		else 
+		{
+			return self::sendSharedInvite($list);
+		}
+    }
+
+    static public function createSharedLink($item, $objectTypeName)
+    {
+    	// The first shared object will always show in browse view landing.
+    	// No need to redirect to it
+        return self::createUserLink($item); // . '_' . $item['id'] . '_' . $objectTypeName;
+    }
+    
+    static public function createUserLink($item)
+    {
+    	$url = KTUtil::kt_url() . '/users/key/';
+        // new user id generation
+        $user_id = $item['id'];
+        $user = (int)$user_id * 354;
+        $user = base_convert($user, 10, 25);
+        $link = $url . '88' . $user;
         
-        $content = ($userType != 'shared') ? 'invite-user-content.html' : 'shared-user-content.html';
-        
-        if (ACCOUNT_ROUTING_ENABLED) {
-            return self::dispatchQueueEvent($list, _kt('KnowledgeTree Invitation'), 'Send email invite', $content);
+        return $link;
+    }
+    
+    static public function sendSharedInvite($list)
+    {
+        if (ACCOUNT_ROUTING_ENABLED) 
+        {
+            return self::dispatchQueueEvent($list, _kt('KnowledgeTree Invitation'), 'Send email invite', 'shared-user-content.html');
         }
         
         return true;
     }
-
+    
+    static public function sendUserInvite()
+    {
+        if (ACCOUNT_ROUTING_ENABLED) 
+        {
+            return self::dispatchQueueEvent($list, _kt('KnowledgeTree Invitation'), 'Send email invite', 'invite-user-content.html');
+        }
+        
+        return true;    	
+    }
+    
     /**
      * Create the unique url for the invite and send to the queue
      *
@@ -450,26 +482,19 @@ class KTUserUtil {
     	
         $sender = self::getSender();
         $list = array();
-        $server = KTUtil::kt_url();
         
-    	if (is_null($objectTypeName) || ($objectTypeName == 'document'))
-    	{
-    		$documentId = $objectId;
-	        $document_link = KTUtil::buildUrl('/view.php', array('fDocumentId' => $documentId));
-	        $link = $server . $document_link;
+		if (is_null($objectTypeName) || ($objectTypeName == 'document'))
+		{
 	        require_once(KT_LIB_DIR . '/documentmanagement/Document.inc');
-			$oDocument = Document::get($documentId);
+			$oDocument = Document::get($objectId);
 			$objectName = $oDocument->getName();
-    	}
-    	else if ($objectTypeName == 'folder')
-    	{
-    	    $folderId = $objectId;
-        	$folder_link = KTUtil::buildUrl('/browse.php', array('fFolderId' => $folderId));
-        	$link = $server . $folder_link;
+		}
+		else if ($objectTypeName == 'folder')
+		{
         	require_once(KT_LIB_DIR . '/foldermanagement/Folder.inc');
-			$oFolder = Folder::get($folderId);
+			$oFolder = Folder::get($objectId);
 			$objectName = $oFolder->getName();
-    	}
+		}
 
         foreach ($emailList as $item) 
         { 
@@ -479,7 +504,7 @@ class KTUserUtil {
             					'contenttype' => $objectTypeName, 
             					'contentname' => $objectName, 
             					'linktext' => 'Click on this link to view the shared content', 
-            					'link' => $link, 
+            					'link' => self::createContentLink($objectTypeName, $objectId), 
             					'title' => $objectName,
             					'message' => nl2br($message),
             					'type' => $objectType,
@@ -497,6 +522,23 @@ class KTUserUtil {
         }
         
         return true;
+    }
+    
+    static public function createContentLink($objectTypeName, $objectId)
+    {
+    	$server = KTUtil::kt_url();
+    	if (is_null($objectTypeName) || ($objectTypeName == 'document'))
+    	{
+	        $document_link = KTUtil::buildUrl('/view.php', array('fDocumentId' => $objectId));
+	        $link = $server . $document_link;
+    	}
+    	else if ($objectTypeName == 'folder')
+    	{
+        	$folder_link = KTUtil::buildUrl('/browse.php', array('fFolderId' => $objectId));
+        	$link = $server . $folder_link;
+    	}
+    	
+    	return $link;
     }
     
     /**
