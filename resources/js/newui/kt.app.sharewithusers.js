@@ -148,7 +148,7 @@ kt.app.sharewithusers=new function(){
         var inviteWin = new Ext.Window({
             id              : 'extinvitewindow',
             layout          : 'fit',
-            width           : 380,
+            width           : 440,
             resizable       : false,
             closable        : true,
             closeAction     : 'destroy',
