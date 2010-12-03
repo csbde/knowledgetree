@@ -265,9 +265,20 @@ class BrowseDispatcher extends KTStandardDispatcher {
 		// Prepare Multi-File Actions
 		$aBulkActions = KTBulkActionUtil::getAllBulkActions();
 		
+		$ktOlarkPopup = null;
 		if (ACCOUNT_ROUTING_ENABLED && liveAccounts::isTrialAccount()) {
             $js = preg_replace('/.*[\/\\\\]plugins/', 'plugins', KT_LIVE_DIR) . '/resources/js/olark/olark.js';
             $this->oPage->requireJsResource($js);
+            // popup immediately if first login
+            if (isset($_SESSION['isFirstLogin'])) {
+                // add popup to page
+                $ktOlarkPopup = '{literal}
+<script type="text/javascript">
+    ktOlarkPopup("Welcome to KnowledgeTree.  If you have any questions, please let us know.", 0);
+</script>
+{/literal}';
+                unset($_SESSION['isFirstLogin']);
+            }
         }
 
 		// Prepare Templating Engine
@@ -282,6 +293,7 @@ class BrowseDispatcher extends KTStandardDispatcher {
               'bulkactions' => $aBulkActions,
               'browseutil' => new KTBrowseUtil(),
               'returnaction' => 'browse',
+              'ktOlarkPopup' => $ktOlarkPopup
 		);
 
 		if ($this->oFolder) { // ?don't quite know why this is in here. Someone reports that it is there for search browsing which seem to be disabled
