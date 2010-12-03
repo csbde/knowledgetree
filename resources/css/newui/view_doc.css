@@ -1,16 +1,14 @@
-#document-views{
-	-moz-border-radius:5px 5px 5px 5px;
+div.viewletworkflow {
+	-moz-border-radius:5px;
 	-moz-box-shadow:0 0 5px #666677;
-	-webkit-border-radius:5px 5px 5px 5px;
+	-webkit-border-radius:5px;
 	-webkit-box-shadow:0 0 5px #666677;
 	box-shadow:0 0 5px #C6C6B7;
-	border-top-left-radius:5px;
-	border-top-right-radius:5px;
-	border-bottom-right-radius:5px;
-	border-bottom-left-radius:5px;
+	border-radius:5px;
 	margin:5px;
-	width:300px;
 	right:30px;
+	padding:5px;
+	font-size:80%;
 }
 
 #content ul.view_doc_tabs,ul.view_doc_tabs {
@@ -121,10 +119,16 @@
 }
 
 #content .doc_view .doc_version {
-	font-family: "Lucida Grande", Tahoma, sans-serif;
+	/*font-family: "Lucida Grande", Tahoma, sans-serif;*/
+	font-family: "Verdana", "Arial", sans-serif;
 	letter-spacing: 0.0em;
-	font-weight: 300;
-	font-size: 12px;
+	font-size: 13px;
+	margin-left: 10px;
+	color:#999999;
+}
+
+#content .doc_view .doc_version strong {
+	font-weight: bold;
 }
 
 #content .doc_view .doc_file_title {
@@ -137,6 +141,8 @@
 	clear: both;
 	display: block;
 	margin: 15px 0px 5px 0px;
+	line-height:120%;
+	width:70%;
 }
 
 .buttonTabContentContainer table.kt_collection {
@@ -234,6 +240,7 @@
     display: block;
     padding: 2px 10px;
     color: #AAAAAAA;
+	white-space: normal;
 }
 
 .activityfeed .item.comment .activityfeed_content{
@@ -259,7 +266,8 @@
 
 #commentsbox {
 	width: 100%;
-	height: 35px;
+	height: 25px;
+	font-size: 15px;
 }
 
 #commentssaveajax {

@@ -37,6 +37,7 @@
  */
 	require_once('ktapi/ktapi.inc.php');
 	require_once(KT_LIB_DIR . '/browse/columnregistry.inc.php');
+	require_once(KT_LIB_DIR . '/browse/browseutil.inc.php');
 
 	function uploadFile($fileTmp, $fileName, $folderID = 1, $documentTypeID = 1, $metadata = array()) {
 		$GLOBALS['default']->log->debug("DRAGDROP Uploading file $fileTmp $fileName");
@@ -343,6 +344,7 @@
 
 	//assemble the item
 	$item['id'] = $oDocument->getId();
+	$item['document_url'] = KTBrowseUtil::getUrlForDocument($oDocument);
 	$item['owned_by'] = $oOwner->getName();
 	$item['created_by'] = $oCreator->getName();
 	$item['modified_by'] = $oModifier->getName();

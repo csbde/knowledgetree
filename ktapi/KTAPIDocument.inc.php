@@ -512,6 +512,28 @@ class KTAPI_Document extends KTAPI_FolderItem
 	 */
 	function checkout($reason)
 	{
+		
+		//live or published
+		if ($this->document->getStatusID() == 1 || $this->document->getStatusID() == 2)
+		{
+			//just ignore
+			;
+		}
+		//deleted
+		else if($this->document->getStatusID() == 3)
+		{
+			return new KTAPI_Error(KTAPI_ERROR_DOCUMENT_DELETED);
+		}
+		//archived
+		else if($this->document->getStatusID() == 4)
+		{
+			return new KTAPI_Error(KTAPI_ERROR_DOCUMENT_ARCHIVED);
+		}
+		else
+		{
+			return new KTAPI_Error(KTAPI_ERROR_DOCUMENT_UNAVAILABLE);
+		}
+		
 		$user = $this->can_user_access_object_requiring_permission($this->document, KTAPI_PERMISSION_WRITE);
 
 		if (PEAR::isError($user))
@@ -2303,6 +2325,26 @@ class KTAPI_Document extends KTAPI_FolderItem
 			//clean URI
 			$url = KTBrowseUtil::getUrlForDocument($document);			
 			$detail['clean_uri'] = $url;
+			
+			//need to get latest check-in date
+			$aTransactionsByDocument = DocumentTransaction::getByDocumentFilterByNamespace($document, 'ktcore.transactions.check_in');
+			
+			$newest_date_so_far = null;
+			$newest_date_as_string = 'n/a';
+			
+			//look for the latest date
+			foreach($aTransactionsByDocument as $oTransaction)
+			{				
+				$date = strtotime($oTransaction->getDate());
+				
+				if ($date > $newest_date_so_far)
+				{
+					$newest_date_so_far = $date;
+					$newest_date_as_string = $oTransaction->getDate();
+				}
+			}
+			
+			$detail['checked_in_date'] = $newest_date_as_string;
 		}
 
 		return $detail;

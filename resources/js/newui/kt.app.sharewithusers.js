@@ -41,7 +41,6 @@ kt.app.sharewithusers=new function(){
         if (emails.length < 3) {
 	        alert('Please enter a valid email address.');
 	    } else {
-            group = null;
 	        var sharedData = new Array();
 	        readOnly = jQuery('#readonly:checkbox:checked').val();
 	        // 0 = read only, 1 = write
@@ -51,20 +50,19 @@ kt.app.sharewithusers=new function(){
 	        sharedData['object_type'] = document.getElementById('object.type').value;
 	        sharedData['message'] = document.getElementById('share.message').value;
 	        
-	        kt.api.inviteUsers(emails, group, userType, sharedData, self.inviteCallback, function() {});
+	        kt.api.shareUsers(emails, userType, sharedData, self.inviteCallback, function() {});
 	    }
 	    
 	    self.disableInviteButton();
 	}
 
     // callback for the inviteUsers function
-    // displays a confirmation dialog listing the users and group
+    // displays a confirmation dialog listing the users
     this.inviteCallback = function(result) {
         // get the response from the server
         var response = result.data.invitedUsers;
         var list = jQuery.parseJSON(response);
 
-        var group = list.group;
         var invited = list.invited;
         var check = list.check;
 	    var existing = list.existing;
@@ -87,7 +85,7 @@ kt.app.sharewithusers=new function(){
             cls             : 'ul_win',
             shadow          : true,
             modal           : true,
-            title           : 'Sharing Invitations Sent',
+            title           : 'Content Shared',
             html            : kt.api.execFragment('users/invite.shared.confirm.dialog')
         });
 
@@ -113,14 +111,6 @@ kt.app.sharewithusers=new function(){
             document.getElementById('failedUsers').innerHTML = failed;
             document.getElementById('showFailedUsers').style.display = 'block';
         }
-
-	    // display the select group
-	    if (group == '') {
-	        document.getElementById('showInvitedGroup').style.display = 'none';
-	    } else {
-            document.getElementById('showInvitedGroup').style.display = 'block';
-            document.getElementById('invitedGroup').innerHTML = group;
-	    }
 
 	    // display a permission warning
         if(hasPermissions !== false)
@@ -154,11 +144,11 @@ kt.app.sharewithusers=new function(){
     // ENTRY POINT: Calling this function will set up the environment, display the dialog,
     //              and hook up the AjaxUploader callbacks to the correct functions.
     // objectId, if set, identifies a share with a non-licensed user for a selected object (folder or document)
-    this.shareContentWindow = function(objectId, objectType, userId) {
+    this.shareContentWindow = function(objectId, objectType, userId, finalized) {
         var inviteWin = new Ext.Window({
             id              : 'extinvitewindow',
             layout          : 'fit',
-            width           : 500,
+            width           : 440,
             resizable       : false,
             closable        : true,
             closeAction     : 'destroy',
@@ -182,7 +172,12 @@ kt.app.sharewithusers=new function(){
         	document.getElementById('object.type').value = objectType;
         }
         // Call to check permissions on object.
-        // kt.api.hasWrite(objectId, objectType, userId, function() {}, function(){});
+        // Check if document is finalized
+        if(finalized == 0)
+        {
+        	jQuery('#readonly').attr('checked', 'true');
+        	jQuery('#readonly').attr('disabled', 'disabled');
+        }
 	    self.disableInviteButton();
     }
 

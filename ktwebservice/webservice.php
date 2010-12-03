@@ -74,24 +74,25 @@ if (defined('HAS_SEARCH_FUNCTIONALITY'))
 
 // Status Codes as defined in the specification.
 
-define('KTWS_SUCCESS',						0);
-define('KTWS_ERR_INVALID_SESSION',			1);
-define('KTWS_ERR_AUTHENTICATION_ERROR',		2);
-define('KTWS_ERR_INSUFFICIENT_PERMISSIONS',	3);
+define('KTWS_SUCCESS',							0);
+define('KTWS_ERR_INVALID_SESSION',				1);
+define('KTWS_ERR_AUTHENTICATION_ERROR',			2);
+define('KTWS_ERR_INSUFFICIENT_PERMISSIONS',		3);
 
-define('KTWS_ERR_FILE_NOT_FOUND',			10);
-define('KTWS_ERR_INVALID_FILENAME',			20);
+define('KTWS_ERR_FILE_NOT_FOUND',				10);
+define('KTWS_ERR_INVALID_FILENAME',				20);
 
-define('KTWS_ERR_INVALID_DOCUMENT',			21);
-define('KTWS_ERR_INVALID_FOLDER',			22);
-define('KTWS_ERR_INVALID_METADATA',			23);
-define('KTWS_ERR_INVALID_REASON',			24);
-define('KTWS_ERR_INVALID_DEPTH',			25);
-define('KTWS_ERR_INVALID_DOCUMENT_TYPE',	26);
-define('KTWS_ERR_INVALID_WORKFLOW',			27);
+define('KTWS_ERR_INVALID_DOCUMENT',				21);
+define('KTWS_ERR_INVALID_FOLDER',				22);
+define('KTWS_ERR_INVALID_METADATA',				23);
+define('KTWS_ERR_INVALID_REASON',				24);
+define('KTWS_ERR_INVALID_DEPTH',				25);
+define('KTWS_ERR_INVALID_DOCUMENT_TYPE',		26);
+define('KTWS_ERR_INVALID_WORKFLOW',				27);
+define('KTWS_ERR_INVALID_TRANSACTION_HISTORY',	28);
 
-define('KTWS_ERR_PROBLEM',					98);
-define('KTWS_ERR_DB_PROBLEM',				99);
+define('KTWS_ERR_PROBLEM',						98);
+define('KTWS_ERR_DB_PROBLEM',					99);
 
 if (!defined('LATEST_WEBSERVICE_VERSION'))
 {
@@ -3249,17 +3250,19 @@ class KTWebService {
 		
 		return new SOAP_Value($name, "{urn:$this->namespace}kt_document_transaction_history", $history);
 	}
-
+	
 	/**
 	 * Returns the document transaction history.
 	 *
+	 * Internal function to get the transaction history
+	 *
 	 * @param string $session_id
 	 * @param int $document_id
-	 * @return kt_document_transaction_history_response
+	 * @return array $response
 	 */
-	function get_document_transaction_history($session_id, $document_id)
+	function _get_document_transaction_history($session_id, $document_id)
 	{
-		$this->debug("get_document_transaction_history('$session_id', $document_id)");
+		$this->debug("_get_document_transaction_history('$session_id', $document_id)");
     	$kt = &$this->get_ktapi($session_id );
     	if (is_array($kt))
     	{
@@ -3271,26 +3274,46 @@ class KTWebService {
 		if (PEAR::isError($document))
     	{
     		$response['message'] = $document->getMessage();
-    		$this->debug("get_document_transaction_history - cannot get documentid $document_id - "  . $document->getMessage(), $session_id);
-    		return new SOAP_Value('return', "{urn:$this->namespace}kt_document_transaction_history_response", $response);
+    		$this->debug("_get_document_transaction_history - cannot get documentid $document_id - "  . $document->getMessage(), $session_id);
+    		return $response;
     	}
 
     	$result = $document->get_transaction_history();
     	if (PEAR::isError($result))
     	{
-    		$response['status_code'] = KTWS_PROBLEM;
+    		$response['status_code'] = KTWS_ERR_INVALID_TRANSACTION_HISTORY;
     		$response['message'] = $result->getMessage();
-    		$this->debug("get_document_transaction_history - cannot get history - "  . $result->getMessage(), $session_id);
-    		return new SOAP_Value('return', "{urn:$this->namespace}kt_document_transaction_history_response", $response);
+    		$this->debug("_get_document_transaction_history - cannot get transaction history - "  . $result->getMessage(), $session_id);
+    		return $response;
     	}
-
+    	
     	$response['status_code'] = KTWS_SUCCESS;
     	$response['message'] = 'success';
     	$response['history'] = KTWebService::_encode_transaction_history($result);
     	
-    	$GLOBALS['default']->log->debug('get_document_transaction_history response '.print_r($response, true));
+    	return $response;
+	}
 
-    	return new SOAP_Value('return', "{urn:$this->namespace}kt_document_transaction_history_response", $response);
+	/**
+	 * Returns the document transaction history.
+	 *
+	 * @param string $session_id
+	 * @param int $document_id
+	 * @return kt_document_transaction_history_response
+	 */
+	function get_document_transaction_history($session_id, $document_id)
+	{
+		$this->debug("get_document_transaction_history('$session_id', $document_id)");
+		
+		$history = $this->_get_document_transaction_history($session_id, $document_id);
+    	
+		if ($history['status_code'] !== KTWS_SUCCESS)
+		{
+			$response  = KTWebService::_status($history['status_code'], $history['message']);
+			return new SOAP_Value('return', "{urn:$this->namespace}kt_document_transaction_history_response", $response);
+		}
+    	
+    	return new SOAP_Value('return', "{urn:$this->namespace}kt_document_transaction_history_response", $history);
 	}
 
 	/**
@@ -3637,13 +3660,51 @@ class KTWebService {
      * @access private
      * @static
 	 */
-	function _encode_document_comments($comments, $name = 'results')
-	{
+	function _encode_document_comments($comments, $name = 'comments')
+	{		
 		foreach($comments as $key => $item)
 		{
 			$comments[$key] = new SOAP_Value('item', "{urn:$this->namespace}kt_document_comment", $item);
 		}
+
 		return new SOAP_Value($name, "{urn:$this->namespace}kt_document_comments", $comments);
+	}
+	
+	function _get_document_comments($session_id, $document_id, $order = 'DESC')
+	{
+		$this->debug("_get_document_comments('$session_id', $document_id, '$order')");
+
+    	$kt = &$this->get_ktapi($session_id);
+    	if (is_array($kt))
+    	{
+    		return new SOAP_Value('return', "{urn:$this->namespace}kt_response", $kt);
+    	}
+
+		$comments = &$kt->get_comments($document_id, $order);
+
+		if (PEAR::isError($comments))
+		{
+			$this->error("_get_document_comments - cannot get comments for document $document_id  - {$comments->getMessage()}");
+			$response = KTWebService::_status(KTWS_ERR_INVALID_DOCUMENT, $e->getMessage());
+			return new SOAP_Value('return', "{urn:$this->namespace}kt_response", $response);
+		}
+		else
+		{		
+			$this->debug("_get_document_comments comments " . print_r($comments, true));
+
+			if ($comments['status_code'] === 0)
+			{
+	            $response = KTWebService::_status(KTWS_SUCCESS);
+	    	    $response['comments'] = KTWebService::_encode_document_comments($comments['results']);
+			}
+			else
+			{
+			    $response  = KTWebService::_status(KTWS_ERR_INVALID_DOCUMENT, $response['message']);
+			    return new SOAP_Value('return', "{urn:$this->namespace}kt_response", $response);
+			}
+		}
+		
+    	return $response;
 	}
 
 	/**
@@ -3658,37 +3719,15 @@ class KTWebService {
 	{
 		$this->debug("get_document_comments('$session_id', $document_id, '$order')");
 
-    	$kt = &$this->get_ktapi($session_id);
-    	if (is_array($kt))
-    	{
-    		return new SOAP_Value('return', "{urn:$this->namespace}kt_response", $kt);
-    	}
-
-		$comments = &$kt->get_comments($document_id, $order);
-		//$GLOBALS['default']->log->debug("get_document_comments " . print_r($comments, true));
-		if (PEAR::isError($comments))
+		$comments = $this->_get_document_comments($session_id, $document_id);
+		
+		if ($comments['status_code'] !== KTWS_SUCCESS)
 		{
-			$this->error("get_document_comments - cannot get comments for document $document_id  - {$comments->getMessage()}");
-			$response = KTWebService::_status(KTWS_ERR_INVALID_DOCUMENT, $e->getMessage());
-			return new SOAP_Value('return', "{urn:$this->namespace}kt_response", $response);
-		}
-		else
-		{		
-			$this->debug("get_document_comments comments " . print_r($comments, true));
-
-			if ($comments['status_code'] === 0)
-			{
-	            $response = KTWebService::_status(KTWS_SUCCESS);
-	    	    $response['results'] = KTWebService::_encode_document_comments($comments['results']);
-			}
-			else
-			{
-			    $response  = KTWebService::_status(KTWS_ERR_INVALID_DOCUMENT, $response['message']);
-			    return new SOAP_Value('return', "{urn:$this->namespace}kt_response", $response);
-			}
+			$response  = KTWebService::_status($comments['status_code'], $comments['message']);
+			return new SOAP_Value('return', "{urn:$this->namespace}kt_document_comments_response", $response);
 		}
 
-    	return new SOAP_Value('return', "{urn:$this->namespace}kt_document_comments_response", $response);
+    	return new SOAP_Value('return', "{urn:$this->namespace}kt_document_comments_response", $comments);
 	}
 
 	/**
@@ -3736,107 +3775,40 @@ class KTWebService {
 		}
 	}
 	
-	
+	/**
+	 * Gets both the transaction history and comments associated with a document
+	 *
+	 * @param string $session_id
+	 * @param int $document_id
+	 * @param int $order
+	 * @return kt_document_comments_response
+	 */
 	function get_document_transaction_history_and_comments($session_id, $document_id)
 	{
-		/*$this->debug("get_document_transaction_history_and_comments('$session_id', $document_id)");
+		$this->debug("get_document_transaction_history_and_comments('$session_id', $document_id)");
 		
-		$history = $this->get_document_transaction_history($session_id, $document_id);
+		$history = $this->_get_document_transaction_history($session_id, $document_id);
 		
-		$GLOBALS['default']->log->debug('get_document_transaction_history_and_comments history '.print_r($history, true));
+		if ($history['status_code'] !== KTWS_SUCCESS)
+		{
+			$response  = KTWebService::_status($history['status_code'], $history['message']);
+			return new SOAP_Value('return', "{urn:$this->namespace}kt_document_transaction_history_comments_response", $response);
+		}
 		
-		$comments = $this->get_document_comments($session_id, $document_id);
+		$comments = $this->_get_document_comments($session_id, $document_id);
 		
-		$GLOBALS['default']->log->debug('get_document_transaction_history_and_comments comments '.print_r($comments, true));
-		
-		$response['transaction_history'] = $history;
-		$response['comments'] = $comments;
-		
-		$GLOBALS['default']->log->debug('get_document_transaction_history_and_comments response '.print_r($response, true));
-		
-		return new SOAP_Value('return', "{urn:$this->namespace}kt_document_transaction_history_contents_response", $response);*/
-		
-		$kt = &$this->get_ktapi($session_id);
-    	if (is_array($kt))
-    	{
-    		return new SOAP_Value('return', "{urn:$this->namespace}kt_response", $kt);
-    	}
+		if ($comments['status_code'] !== KTWS_SUCCESS)
+		{
+			$response  = KTWebService::_status($comments['status_code'], $comments['message']);
+			return new SOAP_Value('return', "{urn:$this->namespace}kt_document_transaction_history_comments_response", $response);
+		}
     	
-		$response = KTWebService::_status(KTWS_ERR_INVALID_DOCUMENT);
-
-    	$document = &$kt->get_document_by_id($document_id);
-		if (PEAR::isError($document))
-    	{
-    		$response['message'] = $document->getMessage();
-    		$this->debug("get_document_transaction_history - cannot get documentid $document_id - "  . $document->getMessage(), $session_id);
-    		return new SOAP_Value('return', "{urn:$this->namespace}kt_document_transaction_history_comments_response", $response);
-    	}
-
-    	$transaction_history = $document->get_transaction_history();
+    	$response['status_code'] = $history['status_code'];
+    	$response['message'] = $history['message'].' '.$comments['message'];
+    	$response['history'] = $history['history'];
+    	$response['comments'] = $comments['comments'];
     	
-    	$GLOBALS['default']->log->debug('get_document_transaction_history_and_comments transaction_history'.print_r($transaction_history, true));
-    	
-    	if (PEAR::isError($transaction_history))
-    	{
-    		$response['status_code'] = KTWS_PROBLEM;
-    		$response['message'] = $transaction_history->getMessage();
-    		$this->debug("get_document_transaction_history - cannot get history - "  . $transaction_history->getMessage(), $session_id);
-    		return new SOAP_Value('return', "{urn:$this->namespace}kt_document_transaction_history_comments_response", $response);
-    	}
-    	
-    	$response['status_code'] = KTWS_SUCCESS;
-    	$response['message'] = "transaction_history SUCCESS";
-    	$response['history'] = KTWebService::_encode_transaction_history($transaction_history);
-    	
-    	$GLOBALS['default']->log->debug('get_document_transaction_history_and_comments response1 '.print_r($response, true));
-
-    	$comments = &$kt->get_comments($document_id);
-    	$GLOBALS['default']->log->debug('get_document_transaction_history_and_comments comments '.print_r($comments, true));
-//		$comments = array(); 
-//		$comments['results'] = array();
-//		$response['status_code'] = KTWS_SUCCESS;
-//        $response['message'] = $response['message']." comments SUCCESS";
-		$response['comments'] = KTWebService::_encode_document_comments($comments);
-//        
-       $GLOBALS['default']->log->debug('get_document_transaction_history_and_comments response2 '.print_r($response, true));
-        
     	return new SOAP_Value('return', "{urn:$this->namespace}kt_document_transaction_history_comments_response", $response);
-        
-        //**************************************
-		/*&$kt->get_comments($document_id, $order);
-		
-		$GLOBALS['default']->log->debug('get_document_transaction_history_and_comments comments'.print_r($comments, true));
-		
-		if (PEAR::isError($comments))
-		{
-			$response['status_code'] = KTWS_PROBLEM;
-    		$response['message'] = $comments->getMessage();
-			//$this->error("get_document_comments - cannot get comments for document $document_id  - {$comments->getMessage()}");
-			//$response = KTWebService::_status(KTWS_ERR_INVALID_DOCUMENT, $e->getMessage());
-			//return new SOAP_Value('return', "{urn:$this->namespace}kt_response", $response);
-			return new SOAP_Value('return', "{urn:$this->namespace}kt_document_transaction_history_contents_response", $response);
-		}
-	
-		$this->debug("get_document_comments comments " . print_r($comments, true));
-
-		if ($comments['status_code'] === 0)
-		{
-            $response['status_code'] = KTWS_SUCCESS;
-            $response['message'] = $response['message']." comments SUCCESS";
-    	    $response['comments'] = KTWebService::_encode_document_comments($comments['results']);
-		}
-		else
-		{
-		    //$response  = KTWebService::_status(KTWS_ERR_INVALID_DOCUMENT, $response['message']);
-		    //return new SOAP_Value('return', "{urn:$this->namespace}kt_response", $response);
-		    $response['status_code'] = KTWS_PROBLEM;
-    		$response['message'] = $comments->getMessage();
-    		return new SOAP_Value('return', "{urn:$this->namespace}kt_document_transaction_history_contents_response", $response);
-		}*/
-		
-		//$GLOBALS['default']->log->debug('get_document_transaction_history_and_comments response'.print_r($response, true));
-		
-		//return new SOAP_Value('return', "{urn:$this->namespace}kt_document_transaction_history_contents_response", $response);
 	}
 
 	/**
@@ -3959,7 +3931,6 @@ class KTWebService {
 		    $response = KTWebService::_status(KTWS_ERR_PROBLEM, $result['message']);
 		}
     	
-    	$GLOBALS['default']->log->debug('get_clean_uri url '.$result['message']);
     	$this->debug('get_clean_uri url '.$result['message']);
     	
 		return new SOAP_Value('return', "{urn:$this->namespace}kt_response", $response);
@@ -4041,7 +4012,7 @@ class KTWebService {
          	$this->__typedef["{urn:$this->namespace}kt_document_comments"] =
          	array(
 				array(
-                        'comment' => "{urn:$this->namespace}kt_document_comment"
+                        'comments' => "{urn:$this->namespace}kt_document_comment"
                   )
          	);
          	
@@ -4049,7 +4020,7 @@ class KTWebService {
          	array(
          		'status_code' => 'int',
          		'message' => 'string',
-         		'results' => "{urn:$this->namespace}kt_document_comments"
+         		'comments' => "{urn:$this->namespace}kt_document_comments"
          		);
          }
 
@@ -4234,6 +4205,8 @@ class KTWebService {
          	if ($this->version >= 3) {
          		$this->__typedef["{urn:$this->namespace}kt_document_detail"]['linked_document_id'] = 'int';
          		$this->__typedef["{urn:$this->namespace}kt_document_detail"]['clean_uri'] = 'string';
+         		
+         		$this->__typedef["{urn:$this->namespace}kt_document_detail"]['checked_in_date'] = 'string';
          		
          		$this->__typedef["{urn:$this->namespace}kt_document_detail"]['created_by_user_name'] = 'string';
          		$this->__typedef["{urn:$this->namespace}kt_document_detail"]['modified_by_user_name'] = 'string';
