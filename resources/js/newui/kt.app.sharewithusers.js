@@ -62,6 +62,7 @@ kt.app.sharewithusers=new function(){
         // get the response from the server
         var response = result.data.invitedUsers;
         var list = jQuery.parseJSON(response);
+        var invited = list.invited;
 	    var userType = list.userType;
         var inviteConfirmWin = new Ext.Window({
             id              : 'extinviteconfirmwindow',
@@ -79,10 +80,14 @@ kt.app.sharewithusers=new function(){
             title           : 'Content Shared',
             html            : kt.api.execFragment('users/invite.shared.confirm.dialog')
         });
-
+		// Close current window
         self.closeWindow();
         self.inviteConfirmWin = inviteConfirmWin;
+        // Open confirmation
         inviteConfirmWin.show();
+        
+        // display the number of shared users
+        document.getElementById('sharedUsers').innerHTML = invited;
     }
 
 	this.enableInviteButton = function() {
