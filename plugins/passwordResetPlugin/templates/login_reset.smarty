@@ -144,10 +144,17 @@
 	</div>
 </div>
 
-	{if $reset_password}
-    	<script type="text/javascript">showResetBox();</script>
-    {else}
-    	<script type="text/javascript">hideResetBox(); document.getElementById("username").focus();</script>
-    {/if}
+{if $reset_password}
+   	<script type="text/javascript">showResetBox();</script>
+{else}
+   	<script type="text/javascript">hideResetBox(); document.getElementById("username").focus();</script>
+{/if}
+
+{literal}
+<script type="text/javascript">
+    ktOlarkPopup('Do you need help logging in?', 3000);
+</script>
+{/literal}
+
 </body>
 </html>
