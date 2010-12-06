@@ -45,6 +45,8 @@ class LdapUserManager extends LdapManager {
 	
     /**
      * Search the LDAP server for users matching the supplied search string
+     * 
+     * NOTE the return value is an iterator on success, an empty array on failure.
      *
      * @param string $search
      * @return iterator object A collection of results

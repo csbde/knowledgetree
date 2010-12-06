@@ -88,7 +88,8 @@ class ldapUserDispatcher extends KTStandardDispatcher {
             return $this->_do_createUserFromSource();
         }
         
-        $searchResults = '';
+        $searchResults = null;
+        $users = array();
         $fields = array();
         // Get the search query
         $name = KTUtil::arrayGet($_REQUEST, 'ldap_name');
@@ -96,15 +97,17 @@ class ldapUserDispatcher extends KTStandardDispatcher {
         if (!empty($name) || $isMassImport) {
             $manager = new LdapUserManager($this->source);
             $searchResults = $manager->searchUsers($name, array('cn', 'dn'));
-            
-            if (!empty($searchResults)) {
-                $searchResultsKeys = array_keys($searchResults);
+            if ($searchResults->count()) {
+                // make sure we start from the beginning
+                $searchResults->rewind();
+                
                 $searchDNs = array();
-                foreach ($searchResultsKeys as $k) {
-                    if (is_array($searchResults[$k]['cn'])) {
-                        $searchResults[$k]['cn'] = $searchResults[$k]['cn'][0];
+                foreach ($searchResults as $key => $result) {
+                    if (is_array($result['cn'])) {
+                        $result['cn'] = $result['cn'][0];
                     }
-                    $searchDNs[$k] = "'{$searchResults[$k]['dn']}'";
+                    $searchDNs[$key] = "'{$result['dn']}'";
+                    $users[] = $result;
                 }
 
                 $dnList = implode(',', $searchDNs);
@@ -112,11 +115,11 @@ class ldapUserDispatcher extends KTStandardDispatcher {
                 $currentUsers = DBUtil::getResultArray($query);
 
                 // If the user has already been added, then remove from the list
-                if (!PEAR::isError($currentUsers) && !empty($currentUsers)){
-                    foreach($currentUsers as $item){
-                        $key = array_search("'".$item['dn']."'", $searchDNs);
+                if (!PEAR::isError($currentUsers) && !empty($currentUsers)) {
+                    foreach($currentUsers as $item) {
+                        $key = array_search("'{$item['dn']}'", $searchDNs);
                         $keys[] = $key;
-                        unset($searchResults[$key]);
+                        unset($users[$key]);
                     }
                 }
             }
@@ -134,7 +137,7 @@ class ldapUserDispatcher extends KTStandardDispatcher {
         'context' => &$this,
         'fields' => $fields,
         'source' => $this->source,
-        'search_results' => $searchResults,
+        'search_results' => $users,
         'identifier_field' => $identifierField,
         'massimport' => $massImport,
         );
