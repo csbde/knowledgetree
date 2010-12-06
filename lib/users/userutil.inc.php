@@ -119,7 +119,7 @@ class KTUserUtil {
      * @param string $userType
      * @return array The lists of newly invited users, failed invitations and already existing users
      */
-    static public function inviteUsersByEmail($addressList, $group = null, $userType = null, $shareContent = null)
+    static public function inviteUsersByEmail($addressList, $groupId = null, $userType = null, $shareContent = null)
     {
         if (empty($addressList)) {
             $response = array('invited' => 0, 'existing' => '', 'failed' => '', 'group' => '', 'type' => '', 'check' => 0);
@@ -132,6 +132,7 @@ class KTUserUtil {
         $invitedUsers = array();
         $failedUsers = array();
         $groupName = '';
+    	$group = false;
 		$message = '';
 		$objectTypeName = null;
 		$objectName = null;
@@ -148,12 +149,11 @@ class KTUserUtil {
 
     	// Get the group object if a group has been selected
     	// NOTE There is no need to prevent this for unlicensed users as there will be no group selected
-    	$group = false;
-    	if (is_numeric($group)) {
-    	   $group = Group::get($group);
+    	if (is_numeric($groupId)) {
+    	   $group = Group::get($groupId);
 
     	   if (PEAR::isError($group)) {
-    	       $default->log->error("Invite users. Error on selected group ({$group}) - {$group->getMessage()}");
+    	       $default->log->error("Invite users. Error on selected group ({$groupId}) - {$group->getMessage()}");
     	       $group = false;
     	   }
     	   else {
@@ -180,7 +180,7 @@ class KTUserUtil {
             if ($group !== false) {
                $res = $group->addMember($user);
                if (PEAR::isError($res)) {
-                   $default->log->error("Invite users. Error on adding user ({$email}) to group {$group} - {$res->getMessage()}");
+                   $default->log->error("Invite users. Error on adding user ({$email}) to group {$groupId} - {$res->getMessage()}");
                    continue;
                }
             }
