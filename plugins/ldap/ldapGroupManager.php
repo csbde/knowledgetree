@@ -17,15 +17,13 @@ class LdapGroupManager extends LdapManager {
     /**
      * Search groups, using the supplied search string
      * 
-     * NOTE the return value is an iterator on success, an empty array on failure.
+     * NOTE the return value is an iterator on success, not an array.
      *
      * @param string $search
      * @return iterator object $groups
      */
     public function searchGroups($search)
     {
-        $groups = array();
-              
         $attributes = array('cn', 'dn', 'displayName', 'member');
         // NOTE we don't need to get the base dn here:
         //      If null, it will be automatically used as set in the construction of the ldap connector.
@@ -35,11 +33,9 @@ class LdapGroupManager extends LdapManager {
             $groups = $this->ldapConnector->search("(&(|(objectClass=group)(objectClass=posixGroup))(cn=*$search*))", null, Zend_Ldap::SEARCH_SCOPE_SUB, $attributes);
         }
         catch (Exception $e) {
-            return new PEAR_Error("There was a problem executing the search [{$e->getMessage()}]");
+            throw new RuntimeException("There was a problem executing the search [{$e->getMessage()}]");
         }
         
-        // NOTE groups (on successful retrieval) is an iterator object and can be used with foreach() or next()
-        //      on failed retrieval it will be an empty array
         return $groups;
     }
     
