@@ -274,7 +274,7 @@ class BrowseDispatcher extends KTStandardDispatcher {
                 // add popup to page
                 $ktOlarkPopup = '{literal}
 <script type="text/javascript">
-    ktOlarkPopup("Welcome to KnowledgeTree.  If you have any questions, please let us know.", 0);
+    ktOlarkPopupTrigger("Welcome to KnowledgeTree.  If you have any questions, please let us know.", 0);
 </script>
 {/literal}';
                 unset($_SESSION['isFirstLogin']);
