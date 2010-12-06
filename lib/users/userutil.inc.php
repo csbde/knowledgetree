@@ -464,7 +464,7 @@ class KTUserUtil {
         return true;
     }
 
-    static public function sendUserInvite()
+    static public function sendUserInvite($list)
     {
         if (ACCOUNT_ROUTING_ENABLED)
         {
