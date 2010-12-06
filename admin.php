@@ -60,7 +60,6 @@ class AdminSplashDispatcher extends KTAdminDispatcher {
             return $this->do_viewCategory();
         };
 
-
         // are we categorised, or not?
         $oRegistry =& KTAdminNavigationRegistry::getSingleton();
         $categories = $oRegistry->getCategories();
@@ -89,6 +88,7 @@ class AdminSplashDispatcher extends KTAdminDispatcher {
         {
         	$leftmenu[$leftcat] = $categories[$leftcat];
         }
+        
 		foreach (array('accountInformation', 'userSetup', 'sysConfig') as $rightcat)
 		{
 			$rightmenu[$rightcat] = $categories[$rightcat];
@@ -111,11 +111,13 @@ class AdminSplashDispatcher extends KTAdminDispatcher {
 
         //Removing bad contentSetup/fieldmanagement links from the Document Metadata and Workflow Configuration page.
 		$oPage =& $GLOBALS['main'];
+		
 		if ($category == 'contentSetup') {
 			$aJavascript[] = 'thirdpartyjs/jquery/jquery-1.4.2.js';
 			$oPage->requireJSResources($aJavascript);
 			$jscript .= "<script src='resources/js/kt_hideadminlink.js' type='text/javascript'></script>";
 		}
+		
 		$aJavascript[] = 'resources/js/newui/hide_system_links.js';
 		$oPage->requireJSResources($aJavascript);
 
@@ -141,6 +143,7 @@ class AdminSplashDispatcher extends KTAdminDispatcher {
               'baseurl' =>  $_SERVER['PHP_SELF'],
         	  'jscript' => $jscript,
         );
+        
         //echo "<pre>".print_r($aTemplateData,true),'</pre>';exit;
         return $oTemplate->render($aTemplateData);
     }
@@ -165,7 +168,6 @@ if (empty($sub_url)) {
        $oDispatcher->aBreadcrumbs = array();
        $oDispatcher->aBreadcrumbs[] = array('action' => 'administration', 'name' => _kt('Settings'));
        $oDispatcher->aBreadcrumbs[] = array('name' => $aCategory['title'], 'url' => KTUtil::ktLink('admin.php',$aParts[0]));
-
     } else {
        // FIXME (minor) redirect to no-suburl?
        $oDispatcher = new AdminSplashDispatcher();
@@ -184,5 +186,4 @@ if($default->enableAdminSignatures && $_SESSION['electronic_signature_time'] < t
 }
 
 $oDispatcher->dispatch(); // we _may_ be redirected at this point (see KTAdminNavigation)
-
 ?>
