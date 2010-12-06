@@ -214,12 +214,15 @@ class sharedUserBrowseView extends browseView
 				}
 			}
 		}
+		// Get the name of the user that checked out document
 		if(!is_null($item['checked_out_by_id']))
 		{
 			$coUser = User::get($item['checked_out_by_id']);
 			$item['checked_out_by'] = $coUser->getName();
 		}
 		$checkbox = '';
+		// Sanitize document title
+		$item['title'] = sanitizeForHTML($item['title']);
 		$tpl='
 			<span class="doc browseView">
 				<table cellspacing="0" cellpadding="0" width="100%" border="0" class="doc item ddebug">
@@ -283,6 +286,8 @@ class sharedUserBrowseView extends browseView
 	{
 		$item['link'] = KTUtil::buildUrl('browse.php', array('fFolderId'=>$item['id']));
 		$checkbox = '';
+		// Sanitize folder title
+		$item['title'] = sanitizeForHTML($item['title']);
 		$tpl='
 			<span class="doc browseView">
 			<table cellspacing="0" cellpadding="0" width="100%" border="0" class="folder item">
@@ -734,6 +739,8 @@ class browseView {
 		}
 
 		$item['isfinalize_document'] = ($item['actions.finalize_document']) ? 0 : 1;
+		// Sanitize document title
+		$item['title'] = sanitizeForHTML($item['title']);
 		$tpl='
 			<span class="doc browseView">
 				<table cellspacing="0" cellpadding="0" width="100%" border="0" class="doc item ddebug">
@@ -844,7 +851,8 @@ class browseView {
 		$item['actions.rename'] = ($hasRename) ? '' : $ns;
 
 		$item['separatorA'] = ($hasWrite || $hasSecurity || $hasRename) ? '' : $ns;
-
+		// Sanitize folder title
+		$item['title'] = sanitizeForHTML($item['title']);
 		$tpl='
 			<span class="doc browseView">
 			<table cellspacing="0" cellpadding="0" width="100%" border="0" class="folder item">
