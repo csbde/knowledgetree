@@ -61,11 +61,12 @@ kt.app.inviteusers=new function(){
 	            objectId = null;
 	            objectType = null;
 	            permissions = null;
+	            sharedData = null;
 	        }
 
 	        kt.api.inviteUsers(emails, group, userType, sharedData, self.inviteCallback, function() {});
 	    }
-	    
+
 	    self.disableInviteButton();
 	}
 
@@ -146,7 +147,7 @@ kt.app.inviteusers=new function(){
 		var btn = jQuery('#invite_actions_invite_btn');
     	btn.attr('disabled', 'true');
 	}
-	
+
     // ENTRY POINT: Calling this function will set up the environment, display the dialog,
     //              and hook up the AjaxUploader callbacks to the correct functions.
     // objectId, if set, identifies a share with a non-licensed user for a selected object (folder or document)
