@@ -118,15 +118,8 @@ class Document {
     function getDocumentTypeID() { return $this->_oDocumentMetadataVersion->getDocumentTypeId(); }
     function setDocumentTypeID($sNewValue) { $this->_oDocumentMetadataVersion->setDocumentTypeId($sNewValue); }
 
-    function getName($truncate=NULL) {
-    	$ret=$this->_oDocumentMetadataVersion->getName();
-    	$truncate=(int)$truncate;
-    	if($truncate>0){
-    		if(strlen($ret)>$truncate){
-    			$ret=substr($ret,0,$truncate-3).'...';
-    		}
-    	}
-    	return $ret;
+    function getName() {
+    	return $this->_oDocumentMetadataVersion->getName();
     }
     function setName($sNewValue) { $this->_oDocumentMetadataVersion->setName($sNewValue); }
 
