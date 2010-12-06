@@ -427,7 +427,7 @@ class loginResetEmailDispatcher extends KTDispatcher {
         }
 
         if ($this->checkFirstLogin()) {
-            $GLOBALS['default']->log->debug(__FUNCTION__ . " first login for: " . $_SESSION['userID']);
+            $GLOBALS['default']->log->debug(__FUNCTION__ . ' first login for: ' . $_SESSION['userID']);
             // this line may no longer be necessary
             $_SESSION['isFirstLogin'] = true;
             /*
