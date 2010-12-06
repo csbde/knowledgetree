@@ -454,6 +454,12 @@ class KTUserUtil {
         return $link;
     }
 
+    /**
+     * Dispatch shared user invite
+     *
+     * @param array $list - email parameters 
+     * @return boolean - true on success, false on failure
+     */
     static public function sendSharedInvite($list)
     {
         if (ACCOUNT_ROUTING_ENABLED)
@@ -464,6 +470,12 @@ class KTUserUtil {
         return true;
     }
 
+    /**
+     * Dispatch user invite
+     *
+     * @param array $list - email parameters 
+     * @return boolean - true on success, false on failure
+     */
     static public function sendUserInvite($list)
     {
         if (ACCOUNT_ROUTING_ENABLED)
@@ -489,15 +501,11 @@ class KTUserUtil {
 
 		if (is_null($objectTypeName) || ($objectTypeName == 'document'))
 		{
-	        require_once(KT_LIB_DIR . '/documentmanagement/Document.inc');
-			$oDocument = Document::get($objectId);
-			$objectName = $oDocument->getName();
+			$objectName = self::getObjectName($objectId, 'D');
 		}
 		else if ($objectTypeName == 'folder')
 		{
-        	require_once(KT_LIB_DIR . '/foldermanagement/Folder.inc');
-			$oFolder = Folder::get($objectId);
-			$objectName = $oFolder->getName();
+			$objectName = self::getObjectName($objectId, 'F');
 		}
 
         foreach ($emailList as $item)
@@ -528,6 +536,13 @@ class KTUserUtil {
         return true;
     }
 
+    /**
+     * Create a content url for a document or a folder
+     *
+     * @param string $objectTypeName - folder or document
+     * @param int $objectId - the id of folder or document
+     * @return string $link - a link to content
+     */
     static public function createContentLink($objectTypeName, $objectId)
     {
     	$server = KTUtil::kt_url();
@@ -576,6 +591,11 @@ class KTUserUtil {
         return $res;
     }
     
+    /**
+     * Retrieve the current logged in users name
+     *
+     * @return unknown
+     */
     private static function getSender()
     {
         // default if user not found
@@ -623,6 +643,13 @@ class KTUserUtil {
         return $result;
     }
 
+    /**
+     * Retrieve the name of a document or folder
+     *
+     * @param int $id - the id of the document or folder
+     * @param int $objectTypeId - an 'F' for folder and a 'D' for document
+     * @return string $name
+     */
     static private function getObjectName($id, $objectTypeId)
     {
         $name = null;
