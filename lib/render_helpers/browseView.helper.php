@@ -207,7 +207,7 @@ class sharedUserBrowseView extends browseView
 		$item['allowdoczohoedit'] = '';
 
 		if ($this->zohoEnabled) {
-			if (Zoho::resolve_type($item["mime_type"]))
+			if (Zoho::resolve_type($oDocument))
 			{
 				if ($item['actions.checkout'] != $ns) {
 					$item['allowdoczohoedit'] = '<li class="action_zoho_document"><a href="javascript:;" onclick="zohoEdit(\'' . $item['id'] . '\')">Edit Document Online</a></li>';
@@ -224,7 +224,7 @@ class sharedUserBrowseView extends browseView
 		// Sanitize document title
 		$item['title'] = sanitizeForHTML($item['title']);
 		$tpl='
-			<span class="doc browseView">
+			<span class="doc browseView 1">
 				<table cellspacing="0" cellpadding="0" width="100%" border="0" class="doc item ddebug">
 					<tr>
 						'.$checkbox.'
@@ -730,7 +730,7 @@ class browseView {
 		$item['allowdoczohoedit'] = '';
 
 		if ($this->zohoEnabled && $hasWrite) {
-			if (Zoho::resolve_type($item["mime_type"]))
+			if (Zoho::resolve_type($oDocument))
 			{
 				if ($item['actions.checkout'] != $ns) {
 					$item['allowdoczohoedit'] = '<li class="action_zoho_document"><a href="javascript:;" onclick="zohoEdit(\''.$item['id'].'\')">Edit Document Online</a></li>';
@@ -742,7 +742,7 @@ class browseView {
 		// Sanitize document title
 		$item['title'] = sanitizeForHTML($item['title']);
 		$tpl='
-			<span class="doc browseView">
+			<span class="doc browseView 2">
 				<table cellspacing="0" cellpadding="0" width="100%" border="0" class="doc item ddebug">
 					<tr>
 						<td width="1" class="checkbox">
