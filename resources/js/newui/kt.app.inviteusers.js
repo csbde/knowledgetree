@@ -5,7 +5,7 @@ if (typeof(kt.app) == 'undefined') { kt.app = {}; }
 if(typeof(kt.api)=='undefined')kt.api={};
 
 /**
- * Dialog for inviting new licensed/shared users to the system
+ * Dialog for inviting new licensed users to the system
  */
 kt.app.inviteusers=new function(){
 
@@ -13,7 +13,7 @@ kt.app.inviteusers=new function(){
     var fragments = this.fragments = ['users/invite.shared.dialog'];
 
     //contains a list of executable fragments that will get preloaded
-    var execs = this.execs = ['users/invite.dialog', 'users/invite.shared.dialog', 'users/invite.confirm.dialog'];
+    var execs = this.execs = ['users/invite.dialog', 'users/invite.confirm.dialog'];
 
     //scope protector. inside this object referrals to self happen via 'self' rather than 'this' to make sure we call the functionality within the right scope.
     var self = this;
@@ -35,34 +35,26 @@ kt.app.inviteusers=new function(){
     this.inviteWindow = null;
 
     // send the invites and add the users to the system
-    // userType of 'shared' means shared user, else regular user
-    this.inviteUsers  =  function(userType) {
+    this.inviteUsers  =  function() {
         emails = document.getElementById('invite.emails').value;
         if (emails.length < 3) {
 	        //document.getElementById('invite.errormsg').style.display = 'block';
 	        alert('Please enter a valid email address.');
 	    } else {
-	        if (userType == 'shared') {
-	            group = null;
-		        var sharedData = new Array();
-		        readOnly = jQuery('#readonly:checkbox:checked').val();
-		        // 0 = read only, 1 = write
-		        perm = (readOnly === undefined) ? 1 : 0;
-		        sharedData['permission'] = perm;
-		        sharedData['object_id'] = document.getElementById('object.id').value;
-		        sharedData['object_type'] = document.getElementById('object.type').value;
-	        }
-	        else {
-	            group = document.getElementById('invite.grouplist').value;
-	            userType = 'invited';
-	            objectId = null;
-	            objectType = null;
-	            permissions = null;
-	        }
-
-	        kt.api.inviteUsers(emails, group, userType, sharedData, self.inviteCallback, function() {});
+            group = document.getElementById('invite.grouplist').value;
+			jQuery('#extinvitewindow').block({ 
+												message: '<div id="loading_invite_users">',
+												overlayCSS: {
+													backgroundColor: '#00f transparent'
+												},
+												css: {
+														border:		'',
+														backgroundColor:'#fff transparent',
+													},
+											});
+	        kt.api.inviteUsers(emails, group, 'invited', null, self.inviteCallback, function() {});
 	    }
-	    
+
 	    self.disableInviteButton();
 	}
 
@@ -98,9 +90,9 @@ kt.app.inviteusers=new function(){
             html            : kt.api.execFragment('users/invite.confirm.dialog')
         });
 
-        self.closeWindow();
-        self.inviteConfirmWin = inviteConfirmWin;
-        inviteConfirmWin.show();
+//        self.closeWindow();
+//        self.inviteConfirmWin = inviteConfirmWin;
+//        inviteConfirmWin.show();
 
         // display the list of invited users
         document.getElementById('invitedUsers').innerHTML = invited;
@@ -143,7 +135,7 @@ kt.app.inviteusers=new function(){
 		var btn = jQuery('#invite_actions_invite_btn');
     	btn.attr('disabled', 'true');
 	}
-	
+
     // ENTRY POINT: Calling this function will set up the environment, display the dialog,
     //              and hook up the AjaxUploader callbacks to the correct functions.
     // objectId, if set, identifies a share with a non-licensed user for a selected object (folder or document)
@@ -162,19 +154,11 @@ kt.app.inviteusers=new function(){
             shadow          : true,
             modal           : true,
             title           : 'Invite Users',
-            html            : (objectId == null) ? kt.api.execFragment('users/invite.dialog') : kt.api.getFragment('users/invite.shared.dialog')
+            html            : kt.api.execFragment('users/invite.dialog')
         });
 
         self.inviteWindow = inviteWin;
         inviteWin.show();
-        // Check if an object has been shared
-        if ((objectId != null) && (objectType != null))
-        {
-        	document.getElementById('object.id').value = objectId;
-        	document.getElementById('object.type').value = objectType;
-        }
-        // Call to check permissions on object.
-        // kt.api.hasWrite(objectId, objectType, userId, function() {}, function(){});
 	    self.disableInviteButton();
     }
 

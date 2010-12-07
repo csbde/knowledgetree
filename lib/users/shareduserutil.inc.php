@@ -35,10 +35,15 @@
  * Contributor( s): ______________________________________
  *
  */
-require_once(KT_LIB_DIR . "/users/User.inc");
+require_once(KT_LIB_DIR . '/users/User.inc');
 
-class SharedUserUtil
-{
+class SharedUserUtil {
+    
+	/**
+	 * Check if a user is of type shared
+	 *
+	 * @return boolean - true if a shared user false if other
+	 */
 	static public function isSharedUser()
 	{
 		if(is_null($_SESSION['userID'])) return false;
@@ -49,6 +54,6 @@ class SharedUserUtil
     	return ($userType == 4);
 	}
 	
-
+	
 }
 ?>

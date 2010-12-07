@@ -44,9 +44,9 @@ class LdapPlugin extends KTPlugin
     public $autoRegister = true;
     public $sNamespace = 'ldap.plugin';
 
-    public function LdapPlugin($sFilename = null)
+    public function LdapPlugin($filename = null)
     {
-        $res = parent::KTPlugin($sFilename);
+        $res = parent::KTPlugin($filename);
         $this->sFriendlyName = _kt('LDAP Authentication Plugin');
         return $res;
     }
@@ -62,11 +62,11 @@ class LdapPlugin extends KTPlugin
 
         //$this->registerAdminPage('ldapauth', 'LdapConfigurationAdminPage', 'userSetup', _kt('LDAP Authentication Configuration'), _kt('Configure the connection to an external LDAP server for authentication of users.'), 'ldapConfigAdminPage.php');
 
-        $oTemplating = KTTemplating::getSingleton();
-        $oTemplating->addLocation('ldap auth', '/plugins/ldap/templates');
+        $templating = KTTemplating::getSingleton();
+        $templating->addLocation('ldap auth', '/plugins/ldap/templates');
     }
 }
 
-$oPluginRegistry =& KTPluginRegistry::getSingleton();
-$oPluginRegistry->registerPlugin('LdapPlugin', 'ldap.plugin', __FILE__);
+$pluginRegistry =& KTPluginRegistry::getSingleton();
+$pluginRegistry->registerPlugin('LdapPlugin', 'ldap.plugin', __FILE__);
 ?>

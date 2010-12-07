@@ -282,6 +282,19 @@ class KTDocumentAction extends KTStandardDispatcher {
 		$iFolderId = $this->oDocument->getFolderID();
 		return SharedContent::getPermissions($iUserId, $iDocumentId, $iFolderId, 'document');
     }
+    
+    function userHasDocumentReadPermission($oDocument)
+    {
+    	if(SharedUserUtil::isSharedUser())
+    	{
+    		$res = $this->getPermission();
+    		if($res == 1) return true; elseif ($res == 0) return false; else return false;
+    	}
+    	else 
+    	{
+    		return Permission::userHasDocumentReadPermission($oDocument);
+    	}
+    }
 }
 
 class JavascriptDocumentAction extends KTDocumentAction

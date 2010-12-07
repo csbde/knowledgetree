@@ -175,7 +175,8 @@ class KTBrowseUtil {
         $sAction = KTUtil::arrayGet($aOptions, 'folderaction');
 
 		if(PEAR::isError($oFolder)) {
-		    $url = KTUtil::addQueryStringSelf('fFolderId=1');
+			//$url = KTUtil::addQueryStringSelf('fFolderId=1');
+		    $url = KTUtil::buildUrl('browse.php', array('fFolderId'=>'1'));
 		    if(!empty($sAction)) {
 			$url = generateControllerUrl($sAction, 'fFolderId=1');
 		    }
@@ -195,7 +196,9 @@ class KTBrowseUtil {
 
         // we have made the "default" folder non-root, so we need to be able
         // to reach "Root" (Folder::get(1)).
-        $url = KTUtil::addQueryStringSelf('fFolderId=1');
+        //$url = KTUtil::addQueryStringSelf('fFolderId=1');
+        $url = KTUtil::buildUrl('browse.php', array('fFolderId'=>'1'));
+        
         if (!empty($sAction)) {
             $url = generateControllerUrl($sAction, 'fFolderId=1');
         }
@@ -207,7 +210,9 @@ class KTBrowseUtil {
                 $id = $folder_path_ids[$index];
                 $oThisFolder = Folder::get($id);
                 $sFolderName = $oThisFolder->getName();
-                $url = KTUtil::addQueryStringSelf('fFolderId=' . $id);
+                //$url = KTUtil::addQueryStringSelf('fFolderId=' . $id);
+                $url = KTUtil::buildUrl('browse.php', array('fFolderId'=>$id));
+                
                 if (!empty($sAction)) {
                     $url = generateControllerUrl($sAction, 'fFolderId=' . $id);
                 }
@@ -226,7 +231,9 @@ class KTBrowseUtil {
         // now add this folder, _if we aren't in 1_.
         if ($oFolder->getId() != 1) {
             $id = $oFolder->getId();
-            $url = KTUtil::addQueryStringSelf('fFolderId=' . $id);
+            //$url = KTUtil::addQueryStringSelf('fFolderId=' . $id);
+            $url = KTUtil::buildUrl('browse.php', array('fFolderId'=>$id));
+            
             if (!empty($sAction)) {
                 $url = generateControllerUrl($sAction, 'fFolderId=' . $id);
             }
@@ -275,7 +282,9 @@ class KTBrowseUtil {
 
 
         $sAction = KTUtil::arrayGet($aOptions, 'documentaction');
-        $url = KTUtil::addQueryStringSelf('fDocumentId=' . $oDocument->getId());
+        //$url = KTUtil::addQueryStringSelf('fDocumentId=' . $oDocument->getId());
+        $url = KTUtil::buildUrl('view.php', array('fDocumentId'=>$oDocument->getId()));
+        
         if (!empty($sAction)) {
             $url = generateControllerUrl($sAction, 'fDocumentId=' .  $oDocument->getId());
         }

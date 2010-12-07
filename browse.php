@@ -352,9 +352,6 @@ class BrowseDispatcher extends KTStandardDispatcher {
 		return $oTemplate->render($aTemplateData);
 	}
 
-
-
-
 	function do_selectField() {
 		$aFields = DocumentField::getList('has_lookup = 1');
 

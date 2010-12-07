@@ -128,10 +128,26 @@ kt.api = new function() {
 		var synchronous = false;
 		var func = 'siteapi.inviteUsers';
 		if (callback === true) {
-			var data = ktjapi.retrieve(func, params, this.cacheTimeout);
+			var data = ktjapi.retrieve(func, params, 200);
 			return data;
 		} else {
-			ktjapi.callMethod(func, params, callback, synchronous, errorCallback, this.cacheTimeout);
+			ktjapi.callMethod(func, params, callback, synchronous, errorCallback, 200);
+			return;
+		}
+	};
+
+	this.shareUsers = function(addresses, userType, sharedData, callback, errorCallback) {
+		var params = {};
+		params.addresses = addresses;
+		params.userType = userType;
+		params.sharedData = sharedData;
+		var synchronous = false;
+		var func = 'siteapi.inviteUsers';
+		if (callback === true) {
+			var data = ktjapi.retrieve(func, params, 200);
+			return data;
+		} else {
+			ktjapi.callMethod(func, params, callback, synchronous, errorCallback, 200);
 			return;
 		}
 	};
@@ -148,7 +164,15 @@ kt.api = new function() {
 			return;
 		}
 	};
-	
+
+	this.getUserType = function() {
+		params = {};
+		var func = 'siteapi.getUserType';
+		var ret = ktjapi.retrieve(func, params, 30000);
+
+		return ret.data.usertype;
+	};
+
 	/* Template related functions */
 
 	this.preloadFragment = function(fragName, params) {
@@ -165,14 +189,6 @@ kt.api = new function() {
 		var ret = ktjapi.callMethod(func, params, function() {}, false, function() {}, 30000);
 	};
 
-	this.getUserType = function() {
-		params = {};
-		var func = 'siteapi.getUserType';
-		var ret = ktjapi.retrieve(func, params, 30000);
-
-		return ret.data.usertype;
-	};
-	
 	this.getFragment = function(fragName, params) {
 		if (!kt.lib.Object.is_object(params)) { params = {}; }
 		params = kt.lib.Object.extend({name:fragName}, params);

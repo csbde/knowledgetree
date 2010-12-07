@@ -1026,7 +1026,16 @@ class KTUtil {
 
     // {{{ addQueryStringSelf
     static function addQueryStringSelf($qs) {
-        return KTUtil::addQueryString($_SERVER['PHP_SELF'], $qs);
+		
+		// REDIRECT_URL is different from HTTP_REFERER
+		// It picks up a .htaccess redirect
+		if (isset($_SERVER['REDIRECT_URL'])) {
+			$url = $_SERVER['REDIRECT_URL'];
+		} else {
+			$url = $_SERVER['PHP_SELF'];
+		}
+		
+        return KTUtil::addQueryString($url, $qs);
     }
     // }}}
 

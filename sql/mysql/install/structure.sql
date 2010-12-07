@@ -637,7 +637,6 @@ CREATE TABLE `download_files` (
   `filesize` int(10) unsigned,
   `content_version` int(10) unsigned,
   `hash` varchar(100) NOT NULL,
-  PRIMARY KEY  (`document_id`,`session`),
   CONSTRAINT `download_files_ibfk_1` FOREIGN KEY (`document_id`) REFERENCES `documents` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 

@@ -632,7 +632,10 @@ class KTInit {
                     liveRenderError::errorFail($_SERVER, LIVE_ACCOUNT_DISABLED);
                 }
             } else {
-                $logger->error(ACCOUNT_NAME." DB Setup. DB CONNECT FAILURE and NO ACCOUNT(".$dbError->getMessage().")");
+                $account_name = ACCOUNT_NAME;
+                if(!empty($account_name)){
+                    $logger->error(ACCOUNT_NAME." DB Setup. DB CONNECT FAILURE and NO ACCOUNT(".$dbError->getMessage().")");
+                }
                 liveRenderError::errorNoAccount($dbError, LIVE_ACCOUNT_DISABLED);
             }
         } else {
@@ -660,7 +663,7 @@ class KTInit {
 		}
 		$_SESSION['userID'] = 1;
 	}
-	
+
 }
 
 $KTInit = new KTInit();
