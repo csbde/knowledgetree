@@ -175,7 +175,7 @@ class DBUtil {
         else {
             $sQuery = $query;
         }
-        
+
         if (isset($default->_slave) && (strncasecmp(ltrim($sQuery), "select", 6) === 0 ) && (self::$Transactions === false)) {
             $db = self::getSlave();
             if (PEAR::isError($db)) {
@@ -382,6 +382,46 @@ class DBUtil {
         }
 
         return PEAR::raiseError(_kt('Unknown return value for autoInsert'));
+    }
+
+    /**
+     *  Automatically prepares and executes INSERT  queries.
+     *  This method builds a SQL statement using autoPrepare() and then executes the statement using execute() with it.
+     * @param string $sTable
+     * @param array $aFieldValues
+     * @return mixed last inserted id
+     *
+     **/
+    public static function multiInsert($sTable, $aColumns, $aFieldValues, $aOptions = null)
+    {
+        if (is_null($aOptions)) {
+            $aOptions = array();
+        }
+
+        $statement = "INSERT INTO `{$sTable}` ";
+
+        if(!empty($aColumns)){
+            $statement .= '(`'. implode('`, `', $aColumns) .'`) ';
+        }
+
+        $statement .= 'VALUES ';
+
+        foreach ($aFieldValues as $item) {
+            $row = '';
+            foreach ($item as $row_item) {
+                $row .= (!empty($row)) ? ',' : '';
+                $row .= "'{$row_item}'";
+            }
+            $row = "({$row}),";
+
+            $statement .= $row;
+        }
+
+        $statement = substr($statement, 0, strlen($statement)-1);
+
+        $res = self::runQuery($statement);
+
+        return $res;
     }
 
     /**
