@@ -90,6 +90,8 @@ define('KTWS_ERR_INVALID_DEPTH',				25);
 define('KTWS_ERR_INVALID_DOCUMENT_TYPE',		26);
 define('KTWS_ERR_INVALID_WORKFLOW',				27);
 define('KTWS_ERR_INVALID_TRANSACTION_HISTORY',	28);
+define('KTWS_ERR_DOCUMENT_DELETED',				29);
+define('KTWS_ERR_DOCUMENT_ARCHIVED',			30);
 
 define('KTWS_ERR_PROBLEM',						98);
 define('KTWS_ERR_DB_PROBLEM',					99);
@@ -4207,6 +4209,8 @@ class KTWebService {
          		$this->__typedef["{urn:$this->namespace}kt_document_detail"]['clean_uri'] = 'string';
          		
          		$this->__typedef["{urn:$this->namespace}kt_document_detail"]['checked_in_date'] = 'string';
+         		
+         		$this->__typedef["{urn:$this->namespace}kt_document_detail"]['document_status'] = 'string';
          		
          		$this->__typedef["{urn:$this->namespace}kt_document_detail"]['created_by_user_name'] = 'string';
          		$this->__typedef["{urn:$this->namespace}kt_document_detail"]['modified_by_user_name'] = 'string';
