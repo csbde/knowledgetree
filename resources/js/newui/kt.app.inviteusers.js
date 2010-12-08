@@ -90,9 +90,9 @@ kt.app.inviteusers=new function(){
             html            : kt.api.execFragment('users/invite.confirm.dialog')
         });
 
-//        self.closeWindow();
-//        self.inviteConfirmWin = inviteConfirmWin;
-//        inviteConfirmWin.show();
+        self.closeWindow();
+        self.inviteConfirmWin = inviteConfirmWin;
+        inviteConfirmWin.show();
 
         // display the list of invited users
         document.getElementById('invitedUsers').innerHTML = invited;

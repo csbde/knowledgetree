@@ -552,6 +552,11 @@ class User extends KTEntity {
 	    $this->setAuthenticationDetailsBool2(null);
 
         $this->update();
+
+        // delete any sessions related to the user
+        $sql = "delete from active_sessions where user_id = {$tempUserID}";
+        DBUtil::runQuery($sql);
+
         if (KTPluginUtil::pluginIsActive('ktdms.wintools')) {
             $path = KTPluginUtil::getPluginPath('ktdms.wintools');
             require_once($path . 'baobabkeyutil.inc.php');
