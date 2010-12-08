@@ -2007,12 +2007,13 @@ abstract class Indexer {
      *
      * @param boolean $clear. Optional. Defaults to false.
      */
-    public function registerTypes($clear=false)
+    public function registerTypes($clear = false)
     {
         if ($clear)
         {
             $this->clearExtractors();
         }
+        
         $dir = opendir(SearchHelper::correctPath($this->extractorPath));
         while (($file = readdir($dir)) !== false)
         {
@@ -2054,9 +2055,9 @@ abstract class Indexer {
      *
      * @param int $docid
      */
-    public static function unqueueDocument($docid, $reason=false, $level='debug')
+    public static function unqueueDocument($docid, $reason = false, $level = 'debug')
     {
-        $sql = "DELETE FROM index_files WHERE document_id=$docid";
+        $sql = "DELETE FROM index_files WHERE document_id = $docid";
         DBUtil::runQuery($sql);
         if ($reason !== false)
         {
@@ -2070,9 +2071,9 @@ abstract class Indexer {
      *
      * @param int $docid
      */
-    public static function unqueueDocFromProcessing($docid, $reason=false, $level='debug')
+    public static function unqueueDocFromProcessing($docid, $reason = false, $level = 'debug')
     {
-        $sql = "DELETE FROM process_queue WHERE document_id=$docid";
+        $sql = "DELETE FROM process_queue WHERE document_id = $docid";
         $result = DBUtil::runQuery($sql);
 
         if ($reason !== false)

@@ -36,24 +36,21 @@
  * Contributor( s): ______________________________________
  *
  */
-class Redirector
-{
-
+class Redirector {
+    
 	/**
 	 * Constructor
 	 */
 	public function __construct($uri)
     {
         $this->uri = $this->cleanUri($uri);
-
-		$this->foundDestination = FALSE;
+		$this->foundDestination = false;
     }
 
     function run()
     {
 		// First check for some special cases
-		switch($this->uri)
-        {
+		switch($this->uri) {
             case 'dashboard': $this->finalizeRun('dashboard.php'); break;
             case 'admin': $this->finalizeRun('admin.php'); break;
             case 'preferences': $this->finalizeRun('preferences.php'); break;
@@ -90,8 +87,7 @@ class Redirector
 
 		if (!$this->foundDestination) {
 		    $aUri = explode('/', $this->uri);
-
-		    switch($aUri[0]){
+		    switch($aUri[0]) {
 		        case 'users':
 		            // not ideal but it works
 		            $file = '/plugins/ktcore/authentication/newuserlogin.php';
@@ -101,7 +97,6 @@ class Redirector
 		            break;
 		    }
 		}
-
 
 		if (!$this->foundDestination) {
 			header("HTTP/1.0 404 Not Found");
@@ -119,9 +114,9 @@ class Redirector
 		$firstPart = substr($uri, 0, 2);
 
 		if ($firstPart == '00' || $firstPart == '01') {
-			return TRUE;
+			return true;
 		} else {
-			return FALSE;
+			return false;
 		}
 	}
 
@@ -138,7 +133,7 @@ class Redirector
 				// Do nothing
 			} else {
 				// Check that there is no question mark
-				if (strpos($uri, '?') === FALSE) {
+				if (strpos($uri, '?') === false) {
 					// Redirect to location minus last slash
 					header('Location:'.substr($uri, 0, -1));
 				}
@@ -147,7 +142,6 @@ class Redirector
 
 		// Remove Query String
 		$uri = preg_replace('/(\?.*)/i', '', $uri);
-
 		// Remove the first slash
 		$uri = substr($uri, 1);
 
@@ -156,19 +150,18 @@ class Redirector
 
 	/**
 	 * Method to finish up the redirector
-	 * Loads the appropriate file, and sets the flag to TRUE
+	 * Loads the appropriate file, and sets the flag to true
 	 *
 	 * @param string $uri URI
 	 */
 	private function finalizeRun($file)
 	{
 		// Adjust Current Server Variables to reflect new path
-
 		$_SERVER['SCRIPT_NAME'] = '/'.$file;
 		$_SERVER['REQUEST_URI'] = '/'.$file;
 		$_SERVER['PHP_SELF'] = '/'.$file;
 
-		$this->foundDestination = TRUE;
+		$this->foundDestination = true;
 
 		require_once($file);
 	}
@@ -181,18 +174,17 @@ class Redirector
 	 */
 	private function redirectPage($file, $query = '')
 	{
-	    $this->foundDestination = TRUE;
+	    $this->foundDestination = true;
 
-	    if(!empty($query)){
-	        $file = $file.'?'.$query;
+	    if (!empty($query)) {
+	        $file = $file . '?' . $query;
 	    }
-	    header('Location: '.$file);
+	    
+	    header('Location: ' . $file);
 	    exit;
 	}
+	
 }
-
 
 $redirector = new Redirector($_SERVER['REQUEST_URI']);
 $redirector->run();
-
-
