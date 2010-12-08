@@ -156,7 +156,7 @@ class Net_LDAP extends PEAR
             return $ldap_check;
         }
 
-        @$obj = & new Net_LDAP($config);
+        @$obj = new Net_LDAP($config);
 
         // todo? better errorhandling for setConfig()?
 
@@ -763,10 +763,10 @@ class Net_LDAP extends PEAR
         if ($err = @ldap_errno($this->_link)) {
             if ($err == 32) {
                 // Errorcode 32 = no such object, i.e. a nullresult.
-                return $obj = & new Net_LDAP_Search ($search, $this, $attributes);
+                return $obj = new Net_LDAP_Search ($search, $this, $attributes);
             } elseif ($err == 4) {
                 // Errorcode 4 = sizelimit exeeded.
-                return $obj = & new Net_LDAP_Search ($search, $this, $attributes);
+                return $obj = new Net_LDAP_Search ($search, $this, $attributes);
             } elseif ($err == 87) {
                 // bad search filter
                 return $this->raiseError($this->errorMessage($err) . "($filter)", $err);
@@ -775,7 +775,7 @@ class Net_LDAP extends PEAR
                 return $this->raiseError($this->errorMessage($err) . $msg, $err);
             }
         } else {
-            return $obj = & new Net_LDAP_Search($search, $this, $attributes);
+            return $obj = new Net_LDAP_Search($search, $this, $attributes);
         }
     }
 
@@ -1196,7 +1196,7 @@ class Net_LDAP extends PEAR
     function &schema($dn = null)
     {
         if (false == $this->_schema instanceof Net_LDAP_Schema) {
-            $this->_schema = & new Net_LDAP_Schema();
+            $this->_schema = new Net_LDAP_Schema();
 
             if (is_null($dn)) {
                 // get the subschema entry via root dse

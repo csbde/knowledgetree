@@ -377,7 +377,7 @@ class Net_Curl
      * <?php
      *     require_once('Net/Curl.php');
      *     
-     *     $curl = & new Net_Curl('http://www.example.com');
+     *     $curl = new Net_Curl('http://www.example.com');
      *     $curl->fields = array('foo' => '1', 'bar' => 'apple');
      *     $result = $curl->execute();
      *     if (!PEAR::isError($result)) {
@@ -610,7 +610,7 @@ class Net_Curl
      * <?php
      *
      * require_once('Net/Curl.php'); 
-     * $curl = & new Net_Curl('http://www.example.com');
+     * $curl = new Net_Curl('http://www.example.com');
      * $check = $curl->create();
      * if (!PEAR::isError($check)) {
      *     $curl->setOption(CURLOPT_FOO,'bar');

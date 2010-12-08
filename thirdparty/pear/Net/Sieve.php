@@ -154,7 +154,7 @@ class Net_Sieve
         $this->_data['port'] = $port;
         $this->_data['logintype'] = $logintype;
         $this->_data['euser'] = $euser;
-        $this->_sock = &new Net_Socket();
+        $this->_sock = new Net_Socket();
         $this->_debug  = $debug;
         /*
         * Include the Auth_SASL package.  If the package is not available,
