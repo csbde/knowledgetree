@@ -47,7 +47,10 @@ class SharedContentDocumentAction extends KTDocumentAction {
 	var $showIfRead = false;
 	
     function getDisplayName() {
-    	return "<a href='#' onclick='javascript:{kt.app.inviteusers.showInviteWindow(\"{$this->oDocument->getId()}\", \"D\", \"{$_SESSION['userID']}\");}' >" . _kt('Share This Document') . "</a>";
+    	// Check if we are in the document view and return a link,
+    	// otherwise return the display name only.
+    	if(is_null($this->oDocument)) { return _kt('Sharing'); }
+    	else { return "<a href='#' onclick='javascript:{kt.app.inviteusers.showInviteWindow(\"{$this->oDocument->getId()}\", \"D\", \"{$_SESSION['userID']}\");}' >" . _kt('Share This Document') . "</a>"; }
     }
 	
 	function getURL() {

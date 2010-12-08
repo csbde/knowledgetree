@@ -457,7 +457,7 @@ div#upgradePlan {
     margin-left: 50px;
     padding-top: 30px;
 	width:750px;
-	overflow:scroll;
+	/*overflow:scroll;*/
 }
 
 #usageStats table {

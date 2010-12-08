@@ -7,7 +7,7 @@
 				<h2 class="doc_file_title">
 					{if $document->getImmutable()}<img src="{php}echo "{$GLOBALS['default']->rootUrl}/resources/graphics/newui/docview_immutable.png";{/php}" style="display: inline-block" alt="{i18n}Finalized{/i18n}"  title="{i18n}Finalized{/i18n}" />{/if}
 					{if $document->getIsCheckedOut()}<img src="{php}echo "{$GLOBALS['default']->rootUrl}/resources/graphics/newui/docview_checkedout.png";{/php}" style="display: inline-block" alt="{i18n}Checked-Out{/i18n}"  title="{i18n}Checked Out{/i18n}" />{/if}
-					{$context->oDocument->getName(70)|sanitize}
+					{i18n}{$document->getName()|sanitize}{/i18n}
 					<span class="doc_version" style="display: block; margin-top: 5px;">
 						<strong>Ver</strong> {$document->getMajorVersionNumber()}.{$document->getMinorVersionNumber()}  - <strong>File Size</strong> {$fieldsetDisplayHelper->_sizeHelper($document->getSize())}
 						{if $document->getIsCheckedOut()}

@@ -119,11 +119,13 @@ class AdminSplashDispatcher extends KTAdminDispatcher {
 
         //Removing bad contentSetup/fieldmanagement links from the Document Metadata and Workflow Configuration page.
 		$oPage =& $GLOBALS['main'];
+		
 		if ($category == 'contentSetup') {
 			$aJavascript[] = 'thirdpartyjs/jquery/jquery-1.4.2.js';
 			$oPage->requireJSResources($aJavascript);
 			$jscript .= "<script src='resources/js/kt_hideadminlink.js' type='text/javascript'></script>";
 		}
+		
 		$aJavascript[] = 'resources/js/newui/hide_system_links.js';
 		$oPage->requireJSResources($aJavascript);
 
@@ -174,7 +176,6 @@ if (empty($sub_url)) {
        $oDispatcher->aBreadcrumbs = array();
        $oDispatcher->aBreadcrumbs[] = array('action' => 'administration', 'name' => _kt('Settings'));
        $oDispatcher->aBreadcrumbs[] = array('name' => $aCategory['title'], 'url' => KTUtil::ktLink('admin.php',$aParts[0]));
-
     } else {
        // FIXME (minor) redirect to no-suburl?
        $oDispatcher = new AdminSplashDispatcher();
@@ -194,5 +195,4 @@ if ($default->enableAdminSignatures && ($_SESSION['electronic_signature_time'] <
 }
 
 $oDispatcher->dispatch(); // we _may_ be redirected at this point (see KTAdminNavigation)
-
 ?>

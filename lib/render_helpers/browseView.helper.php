@@ -211,14 +211,15 @@ class sharedUserBrowseView extends browseView
 		// Default - hide edit online
 		$item['allowdoczohoedit'] = '';
 		if ($this->zohoEnabled) {
-			if (Zoho::resolve_type($item["mime_type"]))
+			if (Zoho::resolve_type($oDocument))
 			{
 				if ($item['actions.checkout'] != $ns) {
 					$item['allowdoczohoedit'] = '<li class="action_zoho_document"><a href="javascript:;" onclick="zohoEdit(\'' . $item['id'] . '\')">Edit Document Online</a></li>';
 				}
 			}
 		}
-		
+
+		// Get the name of the user that checked out document
 		if (!is_null($item['checked_out_by_id']))
 		{
 			$coUser = User::get($item['checked_out_by_id']);
@@ -226,8 +227,10 @@ class sharedUserBrowseView extends browseView
 		}
 		
 		$checkbox = '';
-		$tpl = '
-			<span class="doc browseView">
+		// Sanitize document title
+		$item['title'] = sanitizeForHTML($item['title']);
+		$tpl='
+			<span class="doc browseView 1">
 				<table cellspacing="0" cellpadding="0" width="100%" border="0" class="doc item ddebug">
 					<tr>
 						' . $checkbox . '
@@ -289,7 +292,9 @@ class sharedUserBrowseView extends browseView
 	{
 		$item['link'] = KTUtil::buildUrl('browse.php', array('fFolderId'=> $item['id']));
 		$checkbox = '';
-		$tpl = '
+		// Sanitize folder title
+		$item['title'] = sanitizeForHTML($item['title']);
+		$tpl='
 			<span class="doc browseView">
 			<table cellspacing="0" cellpadding="0" width="100%" border="0" class="folder item">
 				<tr>
@@ -731,7 +736,7 @@ class browseView {
 		$item['allowdoczohoedit'] = '';
 
 		if ($this->zohoEnabled && $hasWrite) {
-			if (Zoho::resolve_type($item["mime_type"]))
+			if (Zoho::resolve_type($oDocument))
 			{
 				if ($item['actions.checkout'] != $ns) {
 					$item['allowdoczohoedit'] = '<li class="action_zoho_document"><a href="javascript:;" onclick="zohoEdit(\'' . $item['id'] . '\')">Edit Document Online</a></li>';
@@ -740,8 +745,10 @@ class browseView {
 		}
 
 		$item['isfinalize_document'] = ($item['actions.finalize_document']) ? 0 : 1;
-		$tpl = '
-			<span class="doc browseView">
+		// Sanitize document title
+		$item['title'] = sanitizeForHTML($item['title']);
+		$tpl='
+			<span class="doc browseView 2">
 				<table cellspacing="0" cellpadding="0" width="100%" border="0" class="doc item ddebug">
 					<tr>
 						<td width="1" class="checkbox">
@@ -850,8 +857,9 @@ class browseView {
 		$item['actions.rename'] = ($hasRename) ? '' : $ns;
 
 		$item['separatorA'] = ($hasWrite || $hasSecurity || $hasRename) ? '' : $ns;
-
-		$tpl = '
+		// Sanitize folder title
+		$item['title'] = sanitizeForHTML($item['title']);
+		$tpl='
 			<span class="doc browseView">
 			<table cellspacing="0" cellpadding="0" width="100%" border="0" class="folder item">
 				<tr>

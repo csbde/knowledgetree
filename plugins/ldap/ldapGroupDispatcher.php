@@ -82,14 +82,28 @@ class ldapGroupDispatcher extends KTStandardDispatcher {
         $fields = array();
         $fields[] = new KTStringWidget(_kt("Group's name"), _kt("The group's name, or part thereof, to find the group that you wish to add"), 'name', '', $this->oPage, true);
 
+        // TODO old ldap authenticator did not appear to validate against existing groups as it did for users;
+        //      if we can do it here then it may be worthwhile.
+        $groups = array();
         $name = KTUtil::arrayGet($_REQUEST, 'name');
         if (!empty($name)) {
             $manager = new ldapGroupManager($this->source);
-            $searchResults = $manager->searchGroups($name);
-            
-            if (PEAR::isError($searchResults)) {
-                $this->addErrorMessage($searchResults->getMessage());
-                $searchResults = array();
+            try {
+                $searchResults = $manager->searchGroups($name);
+                if ($searchResults->count()) {
+                    // make sure we start from the beginning
+                    $searchResults->rewind();
+                    // get group results
+                    foreach ($searchResults as $key => $result) {
+                        if (is_array($result['cn'])) {
+                            $result['cn'] = $result['cn'][0];
+                        }
+                        $groups[] = $result;
+                    }
+                }
+            }
+            catch (Exception $e) {
+                $this->addErrorMessage($e->getMessage());
             }
         }
 
@@ -97,7 +111,7 @@ class ldapGroupDispatcher extends KTStandardDispatcher {
             'context' => &$this,
             'fields' => $fields,
             'source' => $this->source,
-            'search_results' => $searchResults,
+            'search_results' => $groups,
             'identifier_field' => 'displayName',
         );
         

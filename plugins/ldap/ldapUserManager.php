@@ -45,6 +45,8 @@ class LdapUserManager extends LdapManager {
 	
     /**
      * Search the LDAP server for users matching the supplied search string
+     * 
+     * NOTE the return value is an iterator on success, not an array.
      *
      * @param string $search
      * @return iterator object A collection of results
@@ -52,8 +54,6 @@ class LdapUserManager extends LdapManager {
     public function searchUsers($search)
     {
         global $default;
-        
-        $users = array();
         
         $attributes = array('cn', 'dn', 'displayName');
         // NOTE we don't need to get the base dn here:
@@ -76,11 +76,9 @@ class LdapUserManager extends LdapManager {
             $users = $this->ldapConnector->search($filter, null, Zend_Ldap::SEARCH_SCOPE_SUB, $attributes);
         }
         catch (Exception $e) {
-            return new PEAR_Error("There was a problem executing the search [{$e->getMessage()}]");
+            throw new RuntimeException("There was a problem executing the search [{$e->getMessage()}]");
         }
         
-        // NOTE groups (on successful retrieval) is an iterator object and can be used with foreach() or next()
-        //      on failed retrieval it will be an empty array
         return $users;
     }
     
@@ -109,7 +107,7 @@ class LdapUserManager extends LdapManager {
         
         global $default;
         foreach ($attributes as $k => $v) {
-            $default->log->info("LDAP: For DN $dn, attribute $k value is " . print_r($v, true));
+            /*$default->log->info("LDAP: For DN $dn, attribute $k value is " . print_r($v, true));*/
             if (is_array($v)) {
                 $v = array_shift($v);
             }
