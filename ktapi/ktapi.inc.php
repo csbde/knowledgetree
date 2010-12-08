@@ -207,7 +207,7 @@ class KTAPI
     {
         return $this->version;
     }
-    
+
 
  	/**
  	* This returns the current session.
@@ -3745,7 +3745,7 @@ class KTAPI
 	 * @access public
  	 * @param int $document_id
  	 * @param string $newtitle
- 	 * @return arry
+ 	 * @return array
  	 */
  	public function rename_document_title($document_id, $newtitle, $sig_username = '', $sig_password = '', $reason = '')
  	{
@@ -3937,7 +3937,7 @@ class KTAPI
 		if (PEAR::isError($result))
     	{
     		$response['status_code'] = 1;
-    		$response['message'] = $result>getMessage();
+    		$response['message'] = $result->getMessage();
 			return $response;
     	}
 
@@ -4182,7 +4182,7 @@ class KTAPI
     		$response['message'] = $result->getMessage();
 			return $response;
     	}
-    	
+
     	$response['status_code'] = 0;
     	$response['history'] = $result;
 		return $response;
@@ -5107,7 +5107,7 @@ class KTAPI
 
         	return true;
         }
-        
+
         return false;
     }
 
@@ -5118,7 +5118,7 @@ class KTAPI
      * @return array
      */
     public function get_comments($document_id, $order = 'DESC')
-    {    	
+    {
     	$GLOBALS['default']->log->debug("KTAPI get_comments $document_id $order");
 
     	$response = array('status_code' => null, 'message' => null, 'results' => null);
@@ -5161,7 +5161,7 @@ class KTAPI
     public function add_comment($document_id, $comment)
     {
     	$GLOBALS['default']->log->debug("KTAPI add_comment $document_id $comment");
-    	
+
     	$response = array('status_code' => null, 'message' => null, 'results' => null);
 
     	if ($this->comments_enabled()) {
@@ -5179,7 +5179,7 @@ class KTAPI
 
     	return $response;
     }
-    
+
 	/**
      * Returns the most recent document owned by a user
      *
@@ -5189,19 +5189,19 @@ class KTAPI
     public function get_most_recent_documents_owned($user_name, $limit = 10)
     {
     	$GLOBALS['default']->log->debug("KTAPI get_most_recent_documents_owned $user_name $limit");
-		
+
     	$user = KTAPI_User::getByUsername($user_name);
     	if (is_null($user) || PEAR::isError($user))
 		{
 			$result =  new PEAR_Error(KTAPI_ERROR_USER_INVALID);
 			return $result;
 		}
-		
+
     	$documents = $user->mostRecentDocumentsOwned($limit);
-    	
+
 		return $documents;
     }
-    
+
 	/**
      * Gets a document's clean uri
      *
@@ -5210,26 +5210,26 @@ class KTAPI
     public function get_clean_uri($document_id)
 	{
 		$GLOBALS['default']->log->debug("KTAPI get_clean_uri $document_id");
-		
+
 		$oDocument = &Document::get($document_id);
-		
+
 		if (is_null($oDocument) || PEAR::isError($oDocument))
 		{
 			$response['message'] = $oDocument->getMessage();
 	        $response['status_code'] = 1;
 	        return $response;
 		}
-		
+
 		$url = KTBrowseUtil::getUrlForDocument($oDocument);
-		
+
 		$GLOBALS['default']->log->debug("KTAPI get_clean_uri uri $url");
-		
+
 		$response['message'] = $url;
 	    $response['status_code'] = 0;
-		
-		return $response;		
+
+		return $response;
 	}
-	
+
 	/**
      * Gets a user's Gravatar
      *
@@ -5239,24 +5239,24 @@ class KTAPI
     public function get_user_gravatar($user_name)
 	{
 		$GLOBALS['default']->log->debug("KTAPI get_user_gravatar $user_name");
-		
+
 		$oUser = &User::getByUserName($user_name);
-		
+
 		if (is_null($oUser) || PEAR::isError($oUser))
 		{
 			$response['message'] = $oUser->getMessage();
 	        $response['status_code'] = 1;
 	        return $response;
 		}
-		
+
 		$gravatar_url = "http://www.gravatar.com/avatar/".md5($oUser->getEmail());
-		
+
 		$GLOBALS['default']->log->debug("KTAPI get_user_gravatar uri $gravatar_url");
-		
+
 		$response['message'] = $gravatar_url;
 	    $response['status_code'] = 0;
-		
-		return $response;		
+
+		return $response;
 	}
 
 }

@@ -142,7 +142,7 @@ class siteapi extends client_service{
 
 					$item = array();
 					$json = array();
-
+					$ns = ' not_supported';
 					//assemble the item
 					$item['baseFolderID'] = $baseFolderID;
 					$item['isBulk'] = false;
@@ -156,6 +156,18 @@ class siteapi extends client_service{
 					$item['mimeicon'] = $mimeIcon;
 					$item['created_date'] = $oDocument->getCreatedDateTime();
 					$item['modified_date'] = $oDocument->getLastModifiedDate();
+					$item['item_type'] = 'D';
+					$item['user_id'] = $_SESSION['userID'];
+					$item['isfinalize_document'] = 1;
+					$item['allowdoczohoedit'] = $ns;
+					if (KTPluginUtil::pluginIsActive('zoho.plugin')) {
+						require_once(KT_PLUGIN_DIR . '/ktlive/zoho/zoho.inc.php');
+						if (Zoho::resolve_type($oDocument))
+						{
+							$item['allowdoczohoedit'] = '<li class="action_zoho_document"><a href="javascript:;" onclick="zohoEdit(\'' . $item['id'] . '\')">Edit Document Online</a></li>';
+						}
+						
+					}
 
 					$json['success'] = $item;
 					$returnResponse[] = json_encode($json);

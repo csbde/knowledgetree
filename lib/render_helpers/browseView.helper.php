@@ -31,7 +31,7 @@ class browseViewUtil
 	}
 }
 
-class sharedUserBrowseAsView extends browseView 
+class sharedUserBrowseAsView extends browseView
 {
 	/**
 	 * Get the shared users
@@ -43,7 +43,7 @@ class sharedUserBrowseAsView extends browseView
 	 */
 	public function getFolderContent($folderId, $sortField = 'title', $asc = true)
 	{
-		
+
 	}
 }
 
@@ -66,7 +66,7 @@ class sharedUserBrowseView extends browseView
 		$user_id = $_SESSION['userID'];
 		$oUser = User::get($user_id);
 		$disabled = $oUser->getDisabled();
-		
+
 		$oSharedContent = new SharedContent();
 		$aSharedContent = $oSharedContent->getUsersSharedContents($user_id, $folderId);
 		$ret = array(	'folders' => array(),
@@ -140,7 +140,7 @@ class sharedUserBrowseView extends browseView
 		    $item['actions.checkin'] = ($permissions == false) ? $ns : (($item['is_checked_out'] == 0) ? '' : $ns);
 			$item['actions.cancel_checkout'] = ($permissions == false) ? $ns : (($item['is_checked_out'] == 0) ? '' : $ns);
 		}
-		
+
 		//Modifications to perform when the document has been checked out
 		if ($item['checked_out_date']) {
 			list($item['checked_out_date_d'], $item['checked_out_date_t']) = split(" ", $item['checked_out_date']);
@@ -207,21 +207,24 @@ class sharedUserBrowseView extends browseView
 		$item['allowdoczohoedit'] = '';
 
 		if ($this->zohoEnabled) {
-			if (Zoho::resolve_type($item["mime_type"]))
+			if (Zoho::resolve_type($oDocument))
 			{
 				if ($item['actions.checkout'] != $ns) {
 					$item['allowdoczohoedit'] = '<li class="action_zoho_document"><a href="javascript:;" onclick="zohoEdit(\'' . $item['id'] . '\')">Edit Document Online</a></li>';
 				}
 			}
 		}
+		// Get the name of the user that checked out document
 		if(!is_null($item['checked_out_by_id']))
 		{
 			$coUser = User::get($item['checked_out_by_id']);
 			$item['checked_out_by'] = $coUser->getName();
 		}
 		$checkbox = '';
+		// Sanitize document title
+		$item['title'] = sanitizeForHTML($item['title']);
 		$tpl='
-			<span class="doc browseView">
+			<span class="doc browseView 1">
 				<table cellspacing="0" cellpadding="0" width="100%" border="0" class="doc item ddebug">
 					<tr>
 						'.$checkbox.'
@@ -241,13 +244,13 @@ class sharedUserBrowseView extends browseView
 								<!-- li class="actionIcon comments"></li -->
 								<li class="actionIcon actions">
 									<ul>
-										<li class="actions.download [actions.download]"><a href="action.php?kt_path_info=ktcore.actions.document.view&fDocumentId=[id]">Download</a></li>
-										<li class="actions.instant_view [actions.instant_view]"><a href="[document_link]#preview">Instant View</a></li>
+										<li class="action_download [actions.download]"><a href="action.php?kt_path_info=ktcore.actions.document.view&fDocumentId=[id]">Download</a></li>
+										<li class="action_instant_view [actions.instant_view]"><a href="[document_link]#preview">Instant View</a></li>
 										[allowdoczohoedit]
 
-										<li class="actions.checkout [actions.checkout]"><a href="action.php?kt_path_info=ktcore.actions.document.checkout&fDocumentId=[id]">Check-out</a></li>
-										<li class="actions.cancel_checkout [actions.cancel_checkout]"><a href="action.php?kt_path_info=ktcore.actions.document.cancelcheckout&fDocumentId=[id]">Cancel Check-out</a></li>
-										<li class="actions.checkin [actions.checkin]"><a href="action.php?kt_path_info=ktcore.actions.document.checkin&fDocumentId=[id]">Check-in</a></li>
+										<li class="action_checkout [actions.checkout]"><a href="action.php?kt_path_info=ktcore.actions.document.checkout&fDocumentId=[id]">Check-out</a></li>
+										<li class="action_cancel_checkout [actions.cancel_checkout]"><a href="action.php?kt_path_info=ktcore.actions.document.cancelcheckout&fDocumentId=[id]">Cancel Check-out</a></li>
+										<li class="action_checkin [actions.checkin]"><a href="action.php?kt_path_info=ktcore.actions.document.checkin&fDocumentId=[id]">Check-in</a></li>
 									</ul>
 								</li>
 							</ul>
@@ -283,6 +286,8 @@ class sharedUserBrowseView extends browseView
 	{
 		$item['link'] = KTUtil::buildUrl('browse.php', array('fFolderId'=>$item['id']));
 		$checkbox = '';
+		// Sanitize folder title
+		$item['title'] = sanitizeForHTML($item['title']);
 		$tpl='
 			<span class="doc browseView">
 			<table cellspacing="0" cellpadding="0" width="100%" border="0" class="folder item">
@@ -304,7 +309,7 @@ class sharedUserBrowseView extends browseView
 
 		return ktVar::parseString($tpl,$item);
 	}
-	
+
 	/**
 	 * Sanitize a browse view items attributes
 	 *
@@ -312,7 +317,7 @@ class sharedUserBrowseView extends browseView
 	 * @param int $folderId
 	 * @return array $item
 	 */
-	
+
 	private function browseViewItems($item, $folderId)
 	{
 		foreach ($item as $key=>$value)
@@ -421,7 +426,7 @@ class browseView {
 		$user_id = $_SESSION['userID'];
 		$oUser = User::get($user_id);
 		$disabled = $oUser->getDisabled();
-		
+
 		$kt = new KTAPI(3);
 		$session=$kt->start_system_session($oUser->getUsername());
 
@@ -478,12 +483,12 @@ class browseView {
 			{
 				 $editable = true;
 			}
-			else 
+			else
 			{
 				 $editable = false;
 			}
 		}
-		
+
 		if (!$editable) {
 			return "<span class='notification'>
 						$folderMessage
@@ -517,7 +522,7 @@ class browseView {
 							<a href="action.php?kt_path_info=zoho.new.document&fFolderId='.$folderId.'"><span class="createdocButton">Online Doc</span></a>
 						</div>
 					</td>';
-			
+
 			return '<span class="notification">
 			' . $folderMessage . '
 			' . $hint . '
@@ -671,7 +676,7 @@ class browseView {
 			$item['actions.finalize_document'] = $ns;
 			$item['separatorE']=$ns;
 		}
-		
+
 		$item['separatorA'] = $item['actions.copy'] == '' ? '' : $ns;
 		$item['separatorB'] = $item['actions.download'] == '' || $item['actions.instantview'] == '' ? '' : $ns;
 		$item['separatorC'] = $item['actions.checkout'] == '' || $item['actions.checkin'] == '' || $item['actions.cancel_checkout']== '' ? '' : $ns;
@@ -725,17 +730,19 @@ class browseView {
 		$item['allowdoczohoedit'] = '';
 
 		if ($this->zohoEnabled && $hasWrite) {
-			if (Zoho::resolve_type($item["mime_type"]))
+			if (Zoho::resolve_type($oDocument))
 			{
 				if ($item['actions.checkout'] != $ns) {
 					$item['allowdoczohoedit'] = '<li class="action_zoho_document"><a href="javascript:;" onclick="zohoEdit(\''.$item['id'].'\')">Edit Document Online</a></li>';
 				}
 			}
 		}
-		
+
 		$item['isfinalize_document'] = ($item['actions.finalize_document']) ? 0 : 1;
+		// Sanitize document title
+		$item['title'] = sanitizeForHTML($item['title']);
 		$tpl='
-			<span class="doc browseView">
+			<span class="doc browseView 2">
 				<table cellspacing="0" cellpadding="0" width="100%" border="0" class="doc item ddebug">
 					<tr>
 						<td width="1" class="checkbox">
@@ -756,7 +763,7 @@ class browseView {
 							</div>
 						</td>
 						<td class="doc summary_cell fdebug">
-							
+
 							<div class="title"><a class="clearLink" href="[document_link]" style="">[title]</a></div>
 
 							<div class="detail"><span class="item">
@@ -844,7 +851,8 @@ class browseView {
 		$item['actions.rename'] = ($hasRename) ? '' : $ns;
 
 		$item['separatorA'] = ($hasWrite || $hasSecurity || $hasRename) ? '' : $ns;
-
+		// Sanitize folder title
+		$item['title'] = sanitizeForHTML($item['title']);
 		$tpl='
 			<span class="doc browseView">
 			<table cellspacing="0" cellpadding="0" width="100%" border="0" class="folder item">
@@ -858,7 +866,7 @@ class browseView {
 						</div>
 					</td>
 					<td class="folder summary_cell">
-						
+
 						<div class="title"><a class="clearLink" href="[link]">[title]</a></div>
 						<div class="detail"><span class="item">Created by: <span class="creator">[created_by]</span></span></div>
 					</td>

@@ -1,7 +1,7 @@
 <?php
 /**
  * $Id$
- *	
+ *
  * KnowledgeTree Community Edition
  * Document Management Made Simple
  * Copyright (C) 2008, 2009, 2010 KnowledgeTree Inc.
@@ -68,17 +68,17 @@ class sharedViewDocumentDispatcher extends KTStandardDispatcher
     public $sHelpPage = 'ktcore/browse.html';
     public $actions;
     private $oSharedUserActions = null;
-    
+
 	public function __construct()
 	{
 		require_once(KT_LIB_DIR . '/render_helpers/sharedContent.inc');
         $this->aBreadcrumbs = array(
             array('action' => 'browse', 'name' => _kt('Browse')),
         );
-        
+
         parent::KTStandardDispatcher();
 	}
-	
+
     public function check() {
         if (!parent::check()) { return false; }
 
@@ -86,7 +86,7 @@ class sharedViewDocumentDispatcher extends KTStandardDispatcher
 
         return true;
     }
-    
+
     // FIXME identify the current location somehow.
     public function addPortlets($currentaction = null) {
         $currentaction = $this->sName;
@@ -104,44 +104,44 @@ class sharedViewDocumentDispatcher extends KTStandardDispatcher
 
     public function do_main() {
         // fix legacy, broken items.
-        if (KTUtil::arrayGet($_REQUEST, 'fDocumentID', true) !== true) 
+        if (KTUtil::arrayGet($_REQUEST, 'fDocumentID', true) !== true)
         {
             $_REQUEST['fDocumentId'] = sanitizeForSQL(KTUtil::arrayGet($_REQUEST, 'fDocumentID'));
             unset($_REQUEST['fDocumentID']);
         }
-        
+
         $document_data = array();
         $document_id = sanitizeForSQL(KTUtil::arrayGet($_REQUEST, 'fDocumentId'));
-        if ($document_id === null) 
+        if ($document_id === null)
         {
             $this->oPage->addError(sprintf(_kt("No document was requested.  Please <a href=\"%s\">browse</a> for one."), KTBrowseUtil::getBrowseBaseUrl()));
             return $this->do_error();
         }
-        
+
         // try get the document.
         $oDocument = Document::get($document_id);
-        if (PEAR::isError($oDocument)) 
+        if (PEAR::isError($oDocument))
         {
             $this->oPage->addError(sprintf(_kt("The document you attempted to retrieve is invalid.   Please <a href=\"%s\">browse</a> for one."), KTBrowseUtil::getBrowseBaseUrl()));
             $this->oPage->booleanLink = true;
 
             return $this->do_error();
         }
-        
+
         $document_id = $oDocument->getId();
         $document_data['document_id'] = $oDocument->getId();
 
-        if ($oDocument->getStatusID() == ARCHIVED) 
+        if ($oDocument->getStatusID() == ARCHIVED)
         {
             $this->oPage->addError(_kt('This document has been archived.'));
             return $this->do_request($oDocument);
         }
-        else if ($oDocument->getStatusID() == DELETED) 
+        else if ($oDocument->getStatusID() == DELETED)
         {
             $this->oPage->addError(_kt('This document has been deleted.'));
             return $this->do_error();
         }
-        else if (!SharedContent::canAccessDocument($this->oUser->getId(), $document_id, $oDocument->getFolderID())) 
+        else if (!SharedContent::canAccessDocument($this->oUser->getId(), $document_id, $oDocument->getFolderID()))
         {
             $this->oPage->addError(_kt('You are not allowed to view this document'));
             return $this->permissionDenied();
@@ -168,7 +168,7 @@ class sharedViewDocumentDispatcher extends KTStandardDispatcher
         }else{
             $this->aBreadcrumbs = kt_array_merge($this->aBreadcrumbs, KTBrowseUtil::breadcrumbsForDocument($oDocument, $aOptions, $iSymLinkFolderId));
         }
-        
+
         $this->addPortlets('Document Details');
 
         $document_data['document'] = $oDocument;
@@ -228,9 +228,9 @@ class sharedViewDocumentDispatcher extends KTStandardDispatcher
                 }
             }
         }
-		
+
         $bCanEdit = SharedContent::canAccessDocument($this->oUser->getId(), $document_id, $oDocument->getFolderID());
-		
+
         // viewlets.
         $aViewlets = array();
         $aViewletActions = KTDocumentActionUtil::getDocumentActionsForDocument($this->oDocument, $this->oUser, 'documentviewlet');
@@ -252,7 +252,7 @@ class sharedViewDocumentDispatcher extends KTStandardDispatcher
 
         $oTemplating = KTTemplating::getSingleton();
         $oTemplate = $oTemplating->loadTemplate('ktcore/document/view');
-        
+
 		if (KTPluginUtil::pluginIsActive('instaview.processor.plugin')) {
 			$path = KTPluginUtil::getPluginPath ('instaview.processor.plugin');
 			try { // TODO I think this actually loads the instant view, which probably shouldn't be happening here anymore since the new view
@@ -261,13 +261,13 @@ class sharedViewDocumentDispatcher extends KTStandardDispatcher
 		        $live_preview = $oLivePreview->do_main();
 			} catch(Exception $e) {}
 		}
-        
+
         $ownerUser = KTUserUtil::getUserField($oDocument->getOwnerID(), 'name');
         $creatorUser = KTUserUtil::getUserField($oDocument->getCreatorID(), 'name');
         $lastModifierUser = KTUserUtil::getUserField($oDocument->getModifiedUserId(), 'name');
-        
+
         $FieldsetDisplayHelper = new KTFieldsetDisplay();
-                
+
         $aTemplateData = array(
         	'doc_data' => array(
         		'owner' => $ownerUser[0]['name'],
@@ -288,18 +288,18 @@ class sharedViewDocumentDispatcher extends KTStandardDispatcher
         	'hasNotifications' => false,
 			'fieldsetDisplayHelper' => $FieldsetDisplayHelper
         );
-       
+
         //Conditionally include live_preview
         if($live_preview) { $aTemplateData['live_preview'] = $live_preview; }
-        
+
         //Setting Document Notifications Status
         if($oDocument->getIsCheckedOut() || $oDocument->getImmutable()) { $aTemplateData['hasNotifications'] = true; }
-                
+
         $this->oPage->setBreadcrumbDetails(_kt("Document Details"));
         return $oTemplate->render($aTemplateData);
     }
 
-    public function do_error() 
+    public function do_error()
     {
         return '&nbsp;'; // don't actually do anything.
     }
@@ -422,7 +422,7 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
             $_REQUEST['fDocumentId'] = sanitizeForSQL(KTUtil::arrayGet($_REQUEST, 'fDocumentID'));
             unset($_REQUEST['fDocumentID']);
         }
-        
+
         $document_data = array();
         $document_id = sanitizeForSQL(KTUtil::arrayGet($_REQUEST, 'fDocumentId'));
         if ($document_id === null) {
@@ -482,7 +482,7 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
             $this->aBreadcrumbs = kt_array_merge($this->aBreadcrumbs, KTBrowseUtil::breadcrumbsForDocument($oDocument, $aOptions, $iSymLinkFolderId));
         }
 
-        
+
         $this->addPortlets('Document Details');
 
         $document_data['document'] = $oDocument;
@@ -547,17 +547,25 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
 		$bCanEdit = true;
         // viewlets.
         $aViewlets = array();
+        $aViewlets2 = array();
         $aViewletActions = KTDocumentActionUtil::getDocumentActionsForDocument($this->oDocument, $this->oUser, 'documentviewlet');
         foreach ($aViewletActions as $oAction) {
             $aInfo = $oAction->getInfo();
 
             if ($aInfo !== null) {
-                $aViewlets[] = $oAction->display_viewlet(); // use the action, since we display_viewlet() later.
+                if($aInfo['ns'] == 'ktcore.viewlet.document.activityfeed' || $aInfo['ns'] == 'thumbnail.viewlets') {
+                    $aViewlets[] = $oAction->display_viewlet(); // use the action, since we display_viewlet() later.
+                } else {
+                    $aViewlets2[] = $oAction->display_viewlet(); // use the action, since we display_viewlet() later.
+                }
             }
         }
 
         $viewlet_data = implode(' ', $aViewlets);
         $viewlet_data = trim($viewlet_data);
+
+        $viewlet_data2 = implode(' ', $aViewlets2);
+        $viewlet_data2 = trim($viewlet_data2);
 
         $content_class = 'view';
         if (!empty($viewlet_data)) {
@@ -567,7 +575,7 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
 
         $oTemplating =& KTTemplating::getSingleton();
         $oTemplate = $oTemplating->loadTemplate('ktcore/document/view');
-        
+
 		if (KTPluginUtil::pluginIsActive('instaview.processor.plugin')) {
 			$path = KTPluginUtil::getPluginPath ('instaview.processor.plugin');
 			try {
@@ -576,13 +584,13 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
 		        $live_preview = $oLivePreview->do_main();
 			} catch(Exception $e) {}
 		}
-        
+
         $ownerUser = KTUserUtil::getUserField($oDocument->getOwnerID(), 'name');
         $creatorUser = KTUserUtil::getUserField($oDocument->getCreatorID(), 'name');
         $lastModifierUser = KTUserUtil::getUserField($oDocument->getModifiedUserId(), 'name');
-		
+
 		$FieldsetDisplayHelper = new KTFieldsetDisplay();
-        
+
         $aTemplateData = array(
         	'doc_data' => array(
         		'owner' => $ownerUser[0]['name'],
@@ -600,16 +608,17 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
 			'document_data' => $document_data,
 			'fieldsets' => $fieldsets,
 			'viewlet_data' => $viewlet_data,
+			'viewlet_data2' => $viewlet_data2,
         	'hasNotifications' => false,
 			'fieldsetDisplayHelper' => $FieldsetDisplayHelper
         );
-        
+
         //Conditionally include live_preview
         if($live_preview) { $aTemplateData['live_preview'] = $live_preview; }
-        
+
         //Setting Document Notifications Status
         if($oDocument->getIsCheckedOut() || $oDocument->getImmutable()) { $aTemplateData['hasNotifications'] = true; }
-        
+
         $this->oPage->setBreadcrumbDetails(_kt("Document Details"));
         return $oTemplate->render($aTemplateData);
     }
@@ -833,7 +842,7 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
  */
 class viewUtil
 {
-    static function getView() 
+    static function getView()
     {
     	$oUser = User::get($_SESSION['userID']);
     	if(PEAR::isError($oUser)) { $userType = 0; }
