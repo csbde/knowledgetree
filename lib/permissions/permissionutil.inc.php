@@ -196,6 +196,8 @@ class KTPermissionUtil {
      * It may be that you don't have or want to have the root item for a
      * permission object that you do have and have updates - then use
      * this.
+     *
+     * @static
      */
     function updatePermissionLookupForPO($oPO) {
         $sWhere = 'permission_object_id = ?';
@@ -267,7 +269,7 @@ class KTPermissionUtil {
         /* *** */
 
         // Clear the cached permissions to force an update of the cache
-        $this->clearCache();
+        self::clearCache();
 
         /* *** */
 
@@ -506,26 +508,57 @@ class KTPermissionUtil {
      * object, by virtue of a direct or indirect assignment due to the
      * user, its groups, its roles, or the roles assigned to its groups,
      * and so forth.
+     *
+     * @param int $user The id of the user | The user object
+     * @param string $permission The permission string to check eg ktcore.permissions.read | The permission object
+     * @param object $oFolderOrDocument The folder or document object on which the user has permissions.
+     * @return bool
      */
-    function userHasPermissionOnItem($oUser, $oPermission, $oFolderOrDocument)
+    function userHasPermissionOnItem($user, $permission, $oFolderOrDocument)
     {
         KTUtil::startTiming(__FUNCTION__);
 
-        if($oPermission instanceof KTPermission){
-            $oPermission = $oPermission->getName();
+        if (isset($_SESSION['adminmode']) && $_SESSION['adminmode'] === true) {
+            return true;
         }
 
-        if($oUser instanceof User || $oUser instanceof UserProxy){
-            $oUser = $oUser->iId;
+        if($permission instanceof KTPermission){
+            $permission = $permission->getName();
         }
+
+        if (!is_string($permission)) {
+            $GLOBALS['default']->log->error('Incorrect permission format received, should be a string.');
+            return false;
+        }
+
+        if($user instanceof User || $user instanceof UserProxy){
+            $user = $user->iId;
+        }
+
+        if(!is_numeric($user)){
+            $GLOBALS['default']->log->error('Incorrect user id format received, should be numeric.');
+            return false;
+        }
+
+        if (PEAR::isError($oFolderOrDocument) || $oFolderOrDocument == null) {
+            $msg = '';
+            if(PEAR::isError($oFolderOrDocument)){
+                $msg = '- '.$oFolderOrDocument->getMessage();
+            }
+            $GLOBALS['default']->log->error('Error on the folder or document object '.$msg);
+            return false;
+        }
+
 
         $lookup_id = $oFolderOrDocument->getPermissionLookupID();
 
         // Get the users permissions from cache
 	    $cache = PermissionCache::getSingleton();
-	    $check = $cache->checkPermission($lookup_id, $oPermission, $oUser);
+	    $check = $cache->checkPermission($lookup_id, $permission, $user);
 	    KTUtil::logTiming(__FUNCTION__);
 	    return $check;
+
+	    /* *** Old version *** *
 
         KTUtil::startTiming(__FUNCTION__);
 
@@ -591,6 +624,7 @@ class KTPermissionUtil {
         KTPermissionUtil::$permArr[$iPermId][$lookup][$iDocId] = false;
         KTUtil::logTiming(__FUNCTION__, 'final');
         return false;
+        */
     }
     // }}}
 
@@ -844,7 +878,13 @@ class KTPermissionUtil {
     }
     // }}}
 
-    function clearCache()
+    /**
+     * Clear the cached permissions
+     *
+     * @static
+     * @access public
+     */
+    static function clearCache()
     {
         // Invalidate the cached permissions to force an update of the cache
         $cache = PermissionCache::getSingleton();
