@@ -44,10 +44,12 @@ require_once(KT_LIB_DIR . '/widgets/portlet.inc.php');
 require_once(KT_LIB_DIR . '/plugins/KTAdminNavigation.php');
 
 class AdminSplashDispatcher extends KTAdminDispatcher {
+    
     var $category = '';
     var $sSection = 'administration';
 
-    function AdminSplashDispatcher() {
+    function AdminSplashDispatcher()
+    {
         $this->aBreadcrumbs = array(
             array('url' => KTUtil::getRequestScriptName($_SERVER), 'name' => _kt('Settings')),
         );
@@ -55,7 +57,8 @@ class AdminSplashDispatcher extends KTAdminDispatcher {
         parent::KTAdminDispatcher();
     }
 
-    function do_main() {
+    function do_main()
+    {
         if ($this->category !== '') {
             return $this->do_viewCategory();
         };
@@ -77,6 +80,11 @@ class AdminSplashDispatcher extends KTAdminDispatcher {
 
         $this->oPage->hideSection();
         $oTemplating =& KTTemplating::getSingleton();
+        
+        if (ACCOUNT_ROUTING_ENABLED && liveAccounts::isTrialAccount()) {
+            $js = preg_replace('/.*[\/\\\\]plugins/', 'plugins', KT_LIVE_DIR) . '/resources/js/olark/olark.js';
+            $this->oPage->requireJsResource($js);
+        }
 
         if ($condensed_admin) {
             $oTemplate = $oTemplating->loadTemplate('kt3/admin_fulllist');
@@ -84,13 +92,11 @@ class AdminSplashDispatcher extends KTAdminDispatcher {
             $oTemplate = $oTemplating->loadTemplate('kt3/admin_categories');
         }
 
-		foreach (array('contentManagement', 'contentSetup', 'contentIndexing') as $leftcat)
-        {
+		foreach (array('contentManagement', 'contentSetup', 'contentIndexing') as $leftcat) {
         	$leftmenu[$leftcat] = $categories[$leftcat];
         }
         
-		foreach (array('accountInformation', 'userSetup', 'sysConfig') as $rightcat)
-		{
+		foreach (array('accountInformation', 'userSetup', 'sysConfig') as $rightcat) {
 			$rightmenu[$rightcat] = $categories[$rightcat];
 		}
 
@@ -102,10 +108,12 @@ class AdminSplashDispatcher extends KTAdminDispatcher {
               'all_items' => $aAllItems,
               'baseurl' => $_SERVER['PHP_SELF'],
         );
+        
         return $oTemplate->render($aTemplateData);
     }
 
-    function do_viewCategory() {
+    function do_viewCategory()
+    {
         // are we categorised, or not?
         $category = KTUtil::arrayGet($_REQUEST, 'fCategory', $this->category);
 
@@ -125,7 +133,7 @@ class AdminSplashDispatcher extends KTAdminDispatcher {
         $aCategory = $oRegistry->getCategory($category);
         $aItems = $oRegistry->getItemsForCategory($category);
 
-        if(count($aItems) == 1){
+        if (count($aItems) == 1) {
             // skip the list of admin pages and go direct to the first / only page
             $url = KTUtil::ktLink('admin.php', $aItems[0]['fullname']);
             redirect($url);
@@ -144,9 +152,9 @@ class AdminSplashDispatcher extends KTAdminDispatcher {
         	  'jscript' => $jscript,
         );
         
-        //echo "<pre>".print_r($aTemplateData,true),'</pre>';exit;
         return $oTemplate->render($aTemplateData);
     }
+    
 }
 
 $sub_url = KTUtil::arrayGet($_SERVER, 'PATH_INFO');
@@ -173,12 +181,13 @@ if (empty($sub_url)) {
        $oDispatcher = new AdminSplashDispatcher();
        $oDispatcher->category = $sub_url;
     }
+    
 }
 
 // Implement an electronic signature for accessing the admin section, it will appear every 10 minutes
 global $main;
 global $default;
-if($default->enableAdminSignatures && $_SESSION['electronic_signature_time'] < time()){
+if ($default->enableAdminSignatures && ($_SESSION['electronic_signature_time'] < time())) {
     $sBaseUrl = KTUtil::kt_url();
     $sUrl = KTPluginUtil::getPluginPath('electronic.signatures.plugin', true);
     $heading = _kt('You are attempting to access Settings');

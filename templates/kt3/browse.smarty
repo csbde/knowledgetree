@@ -298,5 +298,6 @@
 })(jQuery);
 </script>
 {/literal}
+{$ktOlarkPopup}
 
 <!-- FILE_END: kt3/fieldsets/browse.smarty -->
