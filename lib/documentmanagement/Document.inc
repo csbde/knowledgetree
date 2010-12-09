@@ -710,6 +710,35 @@ class Document {
         return $result;
     }
     // }}}
+    
+	function getContentVersionStatus($version)
+    {
+        $aVersion = explode('.', $version);
+        $major = $aVersion[0];
+        $minor = $aVersion[1];
+
+        $doc_id = $this->iId;
+        
+        $query = "
+        		select dmv.status_id as status_id from document_content_version dcv 
+        		inner join document_metadata_version dmv on dcv.id = dmv.content_version_id 
+        		where dcv.document_id = $doc_id and dcv.major_version = $major and dcv.minor_version = $minor";
+
+        $result = DBUtil::getOneResultKey($query, 'status_id');
+        
+        $GLOBALS['default']->log->debug('getContentVersionStatus result '.print_r($result, true));
+
+        if(empty($result)){
+            return PEAR::raiseError("Requested content version, $version, does not exist.");
+        }
+
+        if(PEAR::isError($result)){
+            return $result;
+        }
+
+        return $result;
+        
+    }
 
     // {{{ getMetadataVersionIdFromVersion
     static function getMetadataVersionIdFromVersion($doc_id, $version)
