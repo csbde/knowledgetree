@@ -40,22 +40,30 @@ require_once(KT_LIB_DIR . '/actions/documentaction.inc.php');
 
 // {{{ SharedContentDocumentAction
 class SharedContentDocumentAction extends KTDocumentAction {
+    
     var $sName = 'ktcore.actions.document.sharecontent';
     var $_sShowPermission = 'ktcore.permissions.write';
 	var $sDisplayName = "Share This Document";
 	var $showIfWrite = false;
 	var $showIfRead = false;
 	
-    function getDisplayName() {
+    function getDisplayName()
+    {
     	// Check if we are in the document view and return a link,
     	// otherwise return the display name only.
-    	if(is_null($this->oDocument)) { return _kt('Sharing'); }
-    	else { return "<a href='#' onclick='javascript:{kt.app.inviteusers.showInviteWindow(\"{$this->oDocument->getId()}\", \"D\", \"{$_SESSION['userID']}\");}' >" . _kt('Share This Document') . "</a>"; }
+    	if (is_null($this->oDocument)) {
+    	    return _kt('Sharing');
+    	}
+    	else {
+    	    return "<a href='#' onclick='javascript:{kt.app.sharewithusers.shareContentWindow(\"{$this->oDocument->getId()}\", \"D\", \"{$_SESSION['userID']}\");}' >" . _kt('Share This Document') . "</a>";
+    	}
     }
 	
-	function getURL() {
+	function getURL()
+	{
 		return '';
 	}
+	
 }
 // }}}
 ?>
