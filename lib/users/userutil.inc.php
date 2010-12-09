@@ -256,8 +256,29 @@ class KTUserUtil {
     		    // Send a sharing notification to existing users.
     		    self::sendNotifications($existingUsers, $shareContent['object_id'], $objectTypeName, $objectName, $shareContent['message']);
     		}
+
     		$cnt = count($existingUsers) + (int)$numInvited;
     		$response['invited'] = $cnt;
+    	}
+
+    	if ($userType == 'shared') {
+    	    // get list of users with whom content was shared - this can be found in a combination of $invitedUsers and $existingUsers
+    	    $userList = array();
+    	    $invited = array_merge($invitedUsers, $existingUsers);
+    	    foreach ($invited as $user) {
+    	       $userList[] = $user['email'];
+    	    }
+    	    $userList = implode(', ', $userList);
+
+    	    // create the transaction record
+    	    if ($shareContent['object_type'] == 'D') {
+    	        $document = Document::get($shareContent['object_id']);
+                $oDocumentTransaction = new DocumentTransaction($document, "Document shared with $userList", 'ktcore.transactions.share');
+                $oDocumentTransaction->create();
+    	    }
+    	    else if ($shareContent['object_type'] == 'F') {
+    	        // TODO folder transaction here
+    	    }
     	}
 
     	return $response;
@@ -457,7 +478,7 @@ class KTUserUtil {
     /**
      * Dispatch shared user invite
      *
-     * @param array $list - email parameters 
+     * @param array $list - email parameters
      * @return boolean - true on success, false on failure
      */
     static public function sendSharedInvite($list)
@@ -473,7 +494,7 @@ class KTUserUtil {
     /**
      * Dispatch user invite
      *
-     * @param array $list - email parameters 
+     * @param array $list - email parameters
      * @return boolean - true on success, false on failure
      */
     static public function sendUserInvite($list)
@@ -590,7 +611,7 @@ class KTUserUtil {
 
         return $res;
     }
-    
+
     /**
      * Retrieve the current logged in users name
      *
@@ -600,15 +621,15 @@ class KTUserUtil {
     {
         // default if user not found
         $sender = 'KnowledgeTree';
-        
+
         // Use the current user as the "inviter" / sender of the emails
         // goes into the user array for use in the email
         $oSender = User::get($_SESSION['userID']);
-        
-        if (!PEAR::isError($oSender) || empty($oSender)) {    
+
+        if (!PEAR::isError($oSender) || empty($oSender)) {
             $sender = $oSender->getName();
         }
-        
+
         return $sender;
     }
 

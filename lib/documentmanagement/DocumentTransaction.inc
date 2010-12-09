@@ -100,7 +100,7 @@ class DocumentTransaction extends KTEntity {
 		$this->sComment = $sNewComment;
 		$this->sTransactionNS = $sTransactionNS;
 		$this->sVersion = KTUtil::arrayGet($aOptions, 'version', $oDocument->getMajorVersionNumber() . "." . $oDocument->getMinorVersionNumber());
-		
+
 		$oFolder = Folder::get($oDocument->getFolderId());
 		// handle the case where oFolder is broken.
 		if (PEAR::isError($oFolder) || ($oFolder == false)) {
@@ -110,14 +110,14 @@ class DocumentTransaction extends KTEntity {
 		    $this->sFileName = addslashes($oFolder->getFullPath() . "/" . $oDocument->getName());
 		}
 
-		$this->iUserID = $_SESSION["userID"];
-		$this->iSessionId = $_SESSION["sessionID"];
+		$this->iUserID = $_SESSION['userID'];
+		$this->iSessionId = $_SESSION['sessionID'];
         $oUser = KTUtil::arrayGet($aOptions, 'user');
 
         if (!(PEAR::isError($oUser) || ($oUser == false))) {
             $this->iUserID = $oUser->getID();
         }
-        
+
 		$this->dDateTime = getCurrentDateTime();
 		$this->sIP = KTUtil::arrayGet($_SERVER, 'REMOTE_ADDR', '0.0.0.0');
 
@@ -145,7 +145,7 @@ class DocumentTransaction extends KTEntity {
 	function getFilename() { return $this->sFileName; }
 	function getDate() { return $this->dDateTime; }
 	function & getTransactionType() { return KTDocumentTransactionType::getByNamespace($this->sTransactionNS); }
-	
+
 	function getAction()
 	{
 		$oType = $this->getTransactionType();
@@ -178,17 +178,17 @@ class DocumentTransaction extends KTEntity {
                 'session_id' => $this->iSessionId,
 				'admin_mode' => $this->bAdminMode,
             );
-            
+
             $id =& DBUtil::autoInsert($this->_table(), $aFieldValues);
 
             if (PEAR::isError($id)) {
                 $_SESSION['errorMessage'] = $id->toString();
                 return false;
             }
-            
+
             $this->iId = $id;
             $this->clearCachedGroups();
-            
+
             return true;
 		}
 		else {
@@ -201,7 +201,7 @@ class DocumentTransaction extends KTEntity {
 	function delete()
 	{
 		global $default, $lang_err_database, $lang_err_object_key;
-		
+
         if ($this->iId >= 0) {
             $sql = $default->db;
             $result = $sql->query("DELETE FROM  " . $default->document_transactions_table . "  WHERE id = " . $this->iId);
@@ -210,14 +210,14 @@ class DocumentTransaction extends KTEntity {
                 $this->iId = -1;
                 return true;
             }
-            
+
             $_SESSION['errorMessage'] = $lang_err_database;
-            
+
             return false;
         }
-        
+
         $_SESSION['errorMessage'] = $lang_err_object_key;
-        
+
         return false;
 	}
 
@@ -231,7 +231,7 @@ class DocumentTransaction extends KTEntity {
     function & get($iDocumentTransactionID)
     {
         global $default, $lang_err_doc_not_exist;
-        
+
         if (strlen($iDocumentTransactionID) > 0) {
 	        $sql = $default->db;
 	        $sql->query(array("SELECT * FROM $default->document_transactions_table WHERE id = ?", $iDocumentTransactionID));/*ok*/
@@ -244,10 +244,10 @@ class DocumentTransaction extends KTEntity {
 				$oDocumentTransaction->sIP = $sql->f("ip");
 				$oDocumentTransaction->sFileName = $sql->f("filename");
 				$oDocumentTransaction->bAdminMode = $sql->f("admin_mode");
-				
+
 	            return $oDocumentTransaction;
 	        }
-	        
+
 	        $_SESSION['errorMessage'] = $lang_err_object_not_exist . "id = " . $iDocumentTransactionID . " table = document_transactions";
 	        return false;
         }
@@ -275,13 +275,13 @@ class DocumentTransaction extends KTEntity {
         $iDocumentId = KTUtil::getId($oDocument);
         return DocumentTransaction::getList(array('document_id = ?', array($iDocumentId)));
     }
-    
+
 	function getByDocumentFilterByNamespace($oDocument, $sNameSpace)
 	{
 		//we need to get the proper name of the action we are filtering on
 		$oType = KTDocumentTransactionType::getByNamespace($sNameSpace);
         $aTransactionsByDocument = DocumentTransaction::getByDocument($oDocument);
-        
+
         $result = array();
         foreach($aTransactionsByDocument as $oTransaction) {
         	$transaction =  DocumentTransaction::get($oTransaction->getId());
@@ -291,9 +291,9 @@ class DocumentTransaction extends KTEntity {
         		$result[] = $transaction;
         	}
         }
-        
+
         return $result;
     }
-    
+
 }
 ?>

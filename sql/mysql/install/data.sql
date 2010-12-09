@@ -509,7 +509,8 @@ INSERT INTO `document_transaction_types_lookup` VALUES
 (18,'Role allocations changed','ktcore.transactions.role_allocations_change'),
 (19,'Bulk Export','ktstandard.transactions.bulk_export'),
 (20,'Copy','ktcore.transactions.copy'),
-(21,'Delete Version','ktcore.transactions.delete_version');
+(21,'Delete Version','ktcore.transactions.delete_version'),
+(22,'Share','ktcore.transactions.share');
 /*!40000 ALTER TABLE `document_transaction_types_lookup` ENABLE KEYS */;
 UNLOCK TABLES;
 
