@@ -611,12 +611,6 @@ class browseView {
 		$hasWrite = (strpos($permissions, 'W') === false) ? false : true;
 		$hasDelete = (strpos($permissions, 'D') === false) ? false : true;
 
-		if ($item['linked_document_id']) {
-			$item['document_link']=KTUtil::buildUrl("view.php", array('fDocumentId'=>$item['linked_document_id'], 'fShortcutFolder'=>$item['container_folder_id']));
-		}else{
-			$item['document_link']=KTUtil::buildUrl("view.php", array('fDocumentId'=>$item['id']));
-		}
-
 		$item['filename']=(strlen($item['filename'])>$fileNameCutoff)?substr($item['filename'],0,$fileNameCutoff-3)."...":$item['filename'];
 
 		$ns = " not_supported";
@@ -722,10 +716,6 @@ class browseView {
             }
         }
 
-//		$item['zoho_url']=Zoho::kt_url() . '/' . Zoho::plugin_path() . '/zohoEdit.php?session='.session_id().'&document_id='.$item['id'];
-//		$item['zoho_edit']="zoho_edit" . time();
-
-
 		// Default - hide edit online
 		$item['allowdoczohoedit'] = '';
 
@@ -741,6 +731,19 @@ class browseView {
 		$item['isfinalize_document'] = ($item['actions.finalize_document']) ? 0 : 1;
 		// Sanitize document title
 		$item['title'] = sanitizeForHTML($item['title']);
+		// Check if the document is a shortcut
+		if ($item['linked_document_id']) {
+			$item['actions.share_document'] = $ns;
+			$item['document_link']=KTUtil::buildUrl("view.php", array('fDocumentId'=>$item['linked_document_id'], 'fShortcutFolder'=>$item['container_folder_id']));
+		}else{
+			$item['document_link']=KTUtil::buildUrl("view.php", array('fDocumentId'=>$item['id']));
+		}
+		$share_separator = '';
+		if($item['actions.share_document'] != $ns)
+		{
+			$share_separator = '<li class="separator[separatorE]"></li>';
+		}
+		
 		$tpl='
 			<span class="doc browseView 2">
 				<table cellspacing="0" cellpadding="0" width="100%" border="0" class="doc item ddebug">
@@ -776,7 +779,7 @@ class browseView {
 								<li class="actionIcon actions">
 									<ul>
 										<li class="action_share_document [actions.share_document]"><a href="#" onclick="javascript:kt.app.sharewithusers.shareContentWindow(\'[id]\',\'[item_type]\',\'[user_id]\', \'[isfinalize_document]\');">Share This Document</a></li>
-										<li class="separator[separatorE]"></li>
+										'. $share_separator .'
 										<li class="action_download [actions.download]"><a href="action.php?kt_path_info=ktcore.actions.document.view&fDocumentId=[id]">Download</a></li>
 										<li class="action_instant_view [actions.instant_view]"><a href="[document_link]#preview">Instant View</a></li>
 										[allowdoczohoedit]
@@ -834,12 +837,6 @@ class browseView {
 		$ns = " not_supported";
 		$item['is_shortcut']=$item['is_shortcut']?'':$ns;
 
-		if ($item['linked_folder_id'] == '') {
-			$item['link'] = KTUtil::buildUrl('browse.php', array('fFolderId'=>$item['id']));
-		} else {
-			$item['link'] = KTUtil::buildUrl('browse.php', array('fFolderId'=>$item['linked_folder_id'], 'fShortcutFolder'=>$item['container_folder_id']));
-		}
-
 		// Get the users permissions on the folder
 		$permissions = $item['permissions'];
 		$hasWrite = (strpos($permissions, 'W') === false) ? false : true;
@@ -853,6 +850,12 @@ class browseView {
 		$item['separatorA'] = ($hasWrite || $hasSecurity || $hasRename) ? '' : $ns;
 		// Sanitize folder title
 		$item['title'] = sanitizeForHTML($item['title']);
+		if ($item['linked_folder_id'] == '') {
+			$item['link'] = KTUtil::buildUrl('browse.php', array('fFolderId'=>$item['id']));
+		} else {
+			$item['actions.share_folder'] = $ns;
+			$item['link'] = KTUtil::buildUrl('browse.php', array('fFolderId'=>$item['linked_folder_id'], 'fShortcutFolder'=>$item['container_folder_id']));
+		}
 		$tpl='
 			<span class="doc browseView">
 			<table cellspacing="0" cellpadding="0" width="100%" border="0" class="folder item">
