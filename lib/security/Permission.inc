@@ -56,8 +56,6 @@ class Permission {
     */
     function userHasDocumentWritePermission($oDocument)
     {
-        KTUtil::startTiming(__FUNCTION__);
-
     	if ($oDocument->getImmutable())
 		{
 			return false;
@@ -75,8 +73,6 @@ class Permission {
         $permission = 'ktcore.permissions.write';
 
         $result = KTPermissionUtil::userHasPermissionOnItem($user_id, $permission, $oDocument);
-
-        KTUtil::logTiming(__FUNCTION__);
         return $result;
     }
 
@@ -90,13 +86,10 @@ class Permission {
     */
     function userHasDocumentReadPermission($oDocument)
     {
-        KTUtil::startTiming(__FUNCTION__);
         $user_id = $_SESSION["userID"];
         $permission = 'ktcore.permissions.read';
 
         $result = KTPermissionUtil::userHasPermissionOnItem($user_id, $permission, $oDocument);
-
-        KTUtil::logTiming(__FUNCTION__);
         return $result;
     }
 
@@ -108,14 +101,10 @@ class Permission {
     */
     function userHasDeleteDocumentPermission($oDocument)
     {
-        KTUtil::startTiming(__FUNCTION__);
-
         $user_id = $_SESSION["userID"];
         $permission = 'ktcore.permissions.delete';
 
         $result = KTPermissionUtil::userHasPermissionOnItem($user_id, $permission, $oDocument);
-
-        KTUtil::logTiming(__FUNCTION__);
         return $result;
     }
 
@@ -128,14 +117,10 @@ class Permission {
     */
     function userHasFolderWritePermission($oFolder)
     {
-        KTUtil::startTiming(__FUNCTION__);
-
         $user_id = $_SESSION["userID"];
         $permission = 'ktcore.permissions.write';
 
         $result = KTPermissionUtil::userHasPermissionOnItem($user_id, $permission, $oFolder);
-
-        KTUtil::logTiming(__FUNCTION__);
         return $result;
     }
 
@@ -149,14 +134,10 @@ class Permission {
     */
     function userHasFolderReadPermission($oFolder)
     {
-        KTUtil::startTiming(__FUNCTION__);
-
         $user_id = $_SESSION["userID"];
         $permission = 'ktcore.permissions.read';
 
         $result = KTPermissionUtil::userHasPermissionOnItem($user_id, $permission, $oFolder);
-
-        KTUtil::logTiming(__FUNCTION__);
         return $result;
     }
 
@@ -169,15 +150,10 @@ class Permission {
     */
     function userHasAddFolderPermission($oFolder)
     {
-
-        KTUtil::startTiming(__FUNCTION__);
-
         $user_id = $_SESSION["userID"];
         $permission = 'ktcore.permissions.addFolder';
 
         $result = KTPermissionUtil::userHasPermissionOnItem($user_id, $permission, $oFolder);
-
-        KTUtil::logTiming(__FUNCTION__);
         return $result;
     }
 
@@ -189,14 +165,10 @@ class Permission {
     */
     function userHasRenameFolderPermission($oFolder)
     {
-        KTUtil::startTiming(__FUNCTION__);
-
         $user_id = $_SESSION["userID"];
         $permission = 'ktcore.permissions.folder_rename';
 
         $result = KTPermissionUtil::userHasPermissionOnItem($user_id, $permission, $oFolder);
-
-        KTUtil::logTiming(__FUNCTION__);
         return $result;
     }
 
@@ -208,14 +180,10 @@ class Permission {
     */
     function userHasDeleteFolderPermission($oFolder)
     {
-        KTUtil::startTiming(__FUNCTION__);
-
         $user_id = $_SESSION["userID"];
         $permission = 'ktcore.permissions.delete';
 
         $result = KTPermissionUtil::userHasPermissionOnItem($user_id, $permission, $oFolder);
-
-        KTUtil::logTiming(__FUNCTION__);
         return $result;
     }
 
@@ -227,14 +195,10 @@ class Permission {
     */
     function userHasSecurityFolderPermission($oFolder)
     {
-        KTUtil::startTiming(__FUNCTION__);
-
 	    $user_id = $_SESSION["userID"];
         $permission = 'ktcore.permissions.security';
 
         $result = KTPermissionUtil::userHasPermissionOnItem($user_id, $permission, $oFolder);
-
-        KTUtil::logTiming(__FUNCTION__);
         return $result;
     }
 

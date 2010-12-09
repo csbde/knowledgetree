@@ -562,6 +562,13 @@ class KTPermissionUtil {
 
         KTUtil::startTiming(__FUNCTION__);
 
+        $oPermission = $permission;
+        $oUser = $user;
+
+        if(is_numeric($oUser)) {
+            $oUser = User::get($oUser);
+        }
+
         if (is_string($oPermission)) {
              $oPermission =& KTPermission::getByName($oPermission);
         }
