@@ -121,12 +121,12 @@ class KTUserUtil {
      */
     static public function inviteUsersByEmail($addressList, $groupId = null, $userType = null, $shareContent = null)
     {
+        global $default;
+
         if (empty($addressList)) {
             $response = array('invited' => 0, 'existing' => '', 'failed' => '', 'group' => '', 'type' => '', 'check' => 0);
             return $response;
         }
-
-        global $default;
 
         $existingUsers = array();
         $invitedUsers = array();
@@ -136,7 +136,6 @@ class KTUserUtil {
 		$message = '';
 		$objectTypeName = null;
 		$objectName = null;
-
     	$inSystemList = self::checkUniqueEmail($addressList);
 
     	// loop through any addresses that currently exist and unset them in the invitee list
@@ -257,27 +256,33 @@ class KTUserUtil {
     		    self::sendNotifications($existingUsers, $shareContent['object_id'], $objectTypeName, $objectName, $shareContent['message']);
     		}
 
-    		$cnt = count($existingUsers) + (int)$numInvited;
-    		$response['invited'] = $cnt;
+    		$response['invited'] = count($existingUsers) + (int)$numInvited;
     	}
 
     	if ($userType == 'shared') {
-    	    // get list of users with whom content was shared - this can be found in a combination of $invitedUsers and $existingUsers
+    	    /*// get list of users with whom content was shared - this can be found in a combination of $invitedUsers and $existingUsers
     	    $userList = array();
     	    $invited = array_merge($invitedUsers, $existingUsers);
     	    foreach ($invited as $user) {
     	       $userList[] = $user['email'];
     	    }
-    	    $userList = implode(', ', $userList);
+    	    $userList = implode(', ', $userList);*/
 
     	    // create the transaction record
+    	    $s = ($response['invited'] == 1) ? '' : 's';
     	    if ($shareContent['object_type'] == 'D') {
     	        $document = Document::get($shareContent['object_id']);
-                $oDocumentTransaction = new DocumentTransaction($document, "Document shared with $userList", 'ktcore.transactions.share');
-                $oDocumentTransaction->create();
+                $documentTransaction = new DocumentTransaction($document, "Document shared with {$response['invited']} user$s", 'ktcore.transactions.share');
+                $documentTransaction->create();
     	    }
     	    else if ($shareContent['object_type'] == 'F') {
-    	        // TODO folder transaction here
+    	        $transaction = KTFolderTransaction::createFromArray(array(
+                    'folderid' => $shareContent['object_id'],
+                    'comment' => "Folder shared with {$response['invited']} user$s",
+                    'transactionNS' => 'ktcore.transactions.share',
+                    'userid' => $_SESSION['userID'],
+                    'ip' => Session::getClientIP(),
+                ));
     	    }
     	}
 
