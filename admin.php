@@ -131,8 +131,17 @@ class AdminSplashDispatcher extends KTAdminDispatcher {
 
         $oRegistry =& KTAdminNavigationRegistry::getSingleton();
         $aCategory = $oRegistry->getCategory($category);
-        $aItems = $oRegistry->getItemsForCategory($category);
-
+        if(ACCOUNT_ROUTING_ENABLED)
+        {
+			$aItems = null;
+			$message = 'Indexing of full-text content in KnowledgeTree is carried out through shared queue processes using SOLR. <br/>Content Indexing statistics coming soon!';
+        } 
+        else 
+        {
+        	$aItems = $oRegistry->getItemsForCategory($category);
+        	$message = null;
+        }
+		
         if (count($aItems) == 1) {
             // skip the list of admin pages and go direct to the first / only page
             $url = KTUtil::ktLink('admin.php', $aItems[0]['fullname']);
@@ -150,6 +159,7 @@ class AdminSplashDispatcher extends KTAdminDispatcher {
               'items' => $aItems,
               'baseurl' =>  $_SERVER['PHP_SELF'],
         	  'jscript' => $jscript,
+        	  'message' => $message,
         );
         
         return $oTemplate->render($aTemplateData);
