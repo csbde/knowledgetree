@@ -131,7 +131,7 @@ class AdminSplashDispatcher extends KTAdminDispatcher {
 
         $oRegistry =& KTAdminNavigationRegistry::getSingleton();
         $aCategory = $oRegistry->getCategory($category);
-        if(ACCOUNT_ROUTING_ENABLED)
+        if(ACCOUNT_ROUTING_ENABLED && $category == 'contentIndexing')
         {
 			$aItems = null;
 			$message = 'Indexing of full-text content in KnowledgeTree is carried out through shared queue processes using SOLR. <br/>Content Indexing statistics coming soon!';
