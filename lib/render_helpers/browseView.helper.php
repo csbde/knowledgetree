@@ -740,7 +740,8 @@ class browseView {
 		$item['title'] = sanitizeForHTML($item['title']);
 		
 		// Check if the document is a shortcut
-		if ($item['linked_document_id']) {
+		if (!is_null($item['linked_document_id'])) {
+			$item['actions.share_document'] = $ns;
 			$item['document_link'] = KTUtil::buildUrl('view.php', array('fDocumentId' => $item['linked_document_id'], 'fShortcutFolder' => $item['container_folder_id']));
 		} else {
 			$item['document_link'] = KTUtil::buildUrl('view.php', array('fDocumentId' => $item['id']));
@@ -860,10 +861,11 @@ class browseView {
 		$item['title'] = sanitizeForHTML($item['title']);
 		
 		// Check for shortcut
-		if ($item['linked_folder_id'] == '') {
-			$item['link'] = KTUtil::buildUrl('browse.php', array('fFolderId'=> $item['id']));
-		} else {
+		if (!is_null($item['linked_folder_id'])) {
+			$item['actions.share_folder'] = $ns;
 			$item['link'] = KTUtil::buildUrl('browse.php', array('fFolderId'=> $item['linked_folder_id'], 'fShortcutFolder'=> $item['container_folder_id']));
+		} else {
+			$item['link'] = KTUtil::buildUrl('browse.php', array('fFolderId'=> $item['id']));
 		}
 		
 		$tpl='
