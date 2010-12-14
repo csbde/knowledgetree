@@ -37,11 +37,8 @@
  */
 
 require_once(KT_LIB_DIR . '/subscriptions/Subscription.inc');
-
-
 require_once(KT_LIB_DIR . '/subscriptions/SubscriptionManager.inc');
 require_once(KT_LIB_DIR . '/subscriptions/subscriptions.inc.php');
-
 require_once(KT_LIB_DIR . '/plugins/pluginregistry.inc.php');
 require_once(KT_LIB_DIR . '/plugins/plugin.inc.php');
 require_once(KT_LIB_DIR . '/widgets/portlet.inc.php');
@@ -328,7 +325,7 @@ class KTDocumentUnsubscriptionAction extends KTDocumentAction {
             $output = _kt('You are not subscribed to this document');
             $result = false;
         } else {
-            $oSubscription = new Subscription($this->oUser->getId(), $this->oDocument->getId(), $iSubscriptionType);
+            $oSubscription = & Subscription::getByIDs($this->oUser->getId(), $this->oDocument->getId(), $iSubscriptionType);
             $res = $oSubscription->delete();
             if ($res) {
                 $output = _kt('You have been unsubscribed from this document');
@@ -591,7 +588,7 @@ class KTFolderUnsubscriptionAction extends KTFolderAction {
         if (!Subscription::exists($this->oUser->getId(), $this->oFolder->getId(), $iSubscriptionType)) {
             $str = _kt('You were not subscribed to that folder');
         } else {
-            $oSubscription = & Subscription::getByIDs($this->oUser->getId(), $this->oFolder->getId(), $iSubscriptionType);
+            $oSubscription =& Subscription::getByIDs($this->oUser->getId(), $this->oFolder->getId(), $iSubscriptionType);
             $res = $oSubscription->delete();
             if ($res) {
                 $str = _kt('You have been unsubscribed from this folder');
