@@ -1000,7 +1000,14 @@ class KTDocumentCancelCheckOutAction extends KTDocumentAction {
 
     function do_main() {
         $this->oPage->setBreadcrumbDetails(_kt('cancel checkout'));
-        $oTemplate =& $this->oValidator->validateTemplate('ktcore/action/cancel_checkout');
+        if(ACCOUNT_ROUTING_ENABLED)
+        {
+        	$oTemplate =& $this->oValidator->validateTemplate('core/action/cancel_checkout');
+        }
+        else 
+        {
+        	$oTemplate =& $this->oValidator->validateTemplate('ktcore/action/cancel_checkout');
+        }
 
         $oForm = $this->form_main();
 
