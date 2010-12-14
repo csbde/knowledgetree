@@ -232,10 +232,14 @@ class KTDocumentSubscriptionAction extends KTDocumentAction {
             $res = $oSubscription->create();
             if ($res) {
                 $str = _kt('You have been subscribed to this document');
+                // create the document transaction record
+                $documentTransaction = new DocumentTransaction($this->oDocument, 'User subscribed to document', 'ktcore.transactions.subscribe');
+                $documentTransaction->create();
             } else {
                 $str = _kt('There was a problem subscribing you to this document');
             }
         }
+
         $str = wrapString($str);
         echo $str;
         exit(0);
