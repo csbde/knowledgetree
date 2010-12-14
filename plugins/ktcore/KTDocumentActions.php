@@ -52,7 +52,7 @@ require_once(KT_LIB_DIR . "/util/sanitize.inc");
 
 // {{{ KTDocumentDetailsAction
 class KTDocumentDetailsAction extends KTDocumentAction {
-    
+
     var $sName = 'ktcore.actions.document.displaydetails';
 
     function do_main() {
@@ -63,14 +63,11 @@ class KTDocumentDetailsAction extends KTDocumentAction {
     function getDisplayName() {
         return _kt('Display Details');
     }
-    
+
 }
-// }}}
 
-
-// {{{ KTDocumentHistoryAction
 class KTDocumentTransactionHistoryAction extends KTDocumentAction {
-    
+
     var $sName = 'ktcore.actions.document.transactionhistory';
 
     function getDisplayName() {
@@ -117,6 +114,7 @@ class KTDocumentTransactionHistoryAction extends KTDocumentAction {
               'document' => $this->oDocument,
               'transactions' => $aTransactions,
         );
+
         return $oTemplate->render($aTemplateData);
     }
 
@@ -129,12 +127,9 @@ class KTDocumentTransactionHistoryAction extends KTDocumentAction {
     }
 
 }
-// }}}
 
-
-// {{{ KTDocumentHistoryAction
 class KTDocumentVersionHistoryAction extends KTDocumentAction {
-    
+
     var $sName = 'ktcore.actions.document.versionhistory';
 
     function getDisplayName() {
@@ -217,6 +212,7 @@ class KTDocumentVersionHistoryAction extends KTDocumentAction {
               'bShowVersionCompare' => $bShowVersionCompare,
               'sUrl' => $sUrl
         );
+
         return $oTemplate->render($aTemplateData);
     }
 
@@ -256,6 +252,7 @@ class KTDocumentVersionHistoryAction extends KTDocumentAction {
               'versions' => $aVersions,
               'downloadaction' => $oAction,
         );
+
         return $oTemplate->render($aTemplateData);
     }
 
@@ -286,6 +283,7 @@ class KTDocumentVersionHistoryAction extends KTDocumentAction {
     function getUserForId($iUserId) {
         $u = User::get($iUserId);
         if (PEAR::isError($u) || ($u == false)) { return _kt('User no longer exists'); }
+
         return $u->getName();
     }
 
@@ -309,6 +307,7 @@ class KTDocumentVersionHistoryAction extends KTDocumentAction {
             'fDocumentId' => $this->oDocument->getId(),
             'oVersion' => $oVersion,
         );
+
         return $oTemplate->render($aTemplateData);
     }
 
@@ -336,13 +335,11 @@ class KTDocumentVersionHistoryAction extends KTDocumentAction {
 
         redirect(KTDocumentAction::getURL());
     }
-    
-}
-// }}}
 
-// {{{ KTDocumentViewAction
+}
+
 class KTDocumentViewAction extends KTDocumentAction {
-    
+
     var $sName = 'ktcore.actions.document.view';
     var $sIconClass = 'download';
 	var $showIfWrite = true;
@@ -413,13 +410,11 @@ class KTDocumentViewAction extends KTDocumentAction {
 
         exit(0);
     }
-    
-}
-// }}}
 
-// {{{ KTDocumentCheckOutAction
+}
+
 class KTDocumentCheckOutAction extends KTDocumentAction {
-    
+
     var $sName = 'ktcore.actions.document.checkout';
     var $_sShowPermission = 'ktcore.permissions.write';
     var $_bMutator = true;
@@ -452,6 +447,7 @@ class KTDocumentCheckOutAction extends KTDocumentAction {
         if ($res !== true) {
             return $res;
         }
+
         // since we actually check the doc out, then download it ...
         if (($_REQUEST[$this->event_var] == 'checkout_final') && ($this->oDocument->getCheckedOutUserID() == $_SESSION['userID'])) {
              return true;
@@ -463,6 +459,7 @@ class KTDocumentCheckOutAction extends KTDocumentAction {
             controllerRedirect('viewDocument', 'fDocumentId=' .  $this->oDocument->getId());
             exit(0);
         }
+
         return true;
     }
 
@@ -550,11 +547,11 @@ class KTDocumentCheckOutAction extends KTDocumentAction {
             'context' => &$this,
             'form' => $oForm,
         ));
+
         return $oTemplate->render();
     }
 
     function do_checkout() {
-
         $oForm = $this->form_checkout();
         $res = $oForm->validate();
         if (!empty($res['errors'])) {
@@ -572,8 +569,6 @@ class KTDocumentCheckOutAction extends KTDocumentAction {
             return $this->errorRedirectToMain(sprintf(_kt('Failed to check out the document: %s'), $res->getMessage()));
         }
 
-
-
         $this->commitTransaction();
 
         if (!$data['download_file']) {
@@ -586,6 +581,7 @@ class KTDocumentCheckOutAction extends KTDocumentAction {
             'context' => &$this,
             'reason' => $sReason,
         ));
+
         return $oTemplate->render();
     }
 
@@ -612,13 +608,11 @@ class KTDocumentCheckOutAction extends KTDocumentAction {
         $oStorage->download($this->oDocument, true);
         exit(0);
     }
-    
-}
-// }}}
 
-// {{{ KTDocumentCheckInAction
+}
+
 class KTDocumentCheckInAction extends KTDocumentAction {
-    
+
     var $sName = 'ktcore.actions.document.checkin';
     var $_sShowPermission = 'ktcore.permissions.write';
     var $sIconClass = 'checkin';
@@ -644,6 +638,7 @@ class KTDocumentCheckInAction extends KTDocumentAction {
         if ($this->oDocument->getCheckedOutUserID() != $this->oUser->getId()) {
             return null;
         }
+
         return parent::getInfo();
     }
 
@@ -652,6 +647,7 @@ class KTDocumentCheckInAction extends KTDocumentAction {
         if ($res !== true) {
             return $res;
         }
+
         $postExpected = KTUtil::arrayGet($_REQUEST, 'postExpected');
         $postReceived = KTUtil::arrayGet($_REQUEST, 'postReceived');
         if (!empty($postExpected)) {
@@ -661,16 +657,19 @@ class KTDocumentCheckInAction extends KTDocumentAction {
             );
             $this->oValidator->notEmpty($postReceived, $aErrorOptions);
         }
+
         if (!$this->oDocument->getIsCheckedOut()) {
             $_SESSION['KTErrorMessage'][] = _kt('This document is not checked out');
             controllerRedirect('viewDocument', 'fDocumentId=' .  $this->oDocument->getId());
             exit(0);
         }
+
         if ($this->oDocument->getCheckedOutUserID() != $this->oUser->getId()) {
             $_SESSION['KTErrorMessage'][] = _kt('This document is checked out, but not by you');
             controllerRedirect('viewDocument', 'fDocumentId=' .  $this->oDocument->getId());
             exit(0);
         }
+
         return true;
     }
 
@@ -790,6 +789,7 @@ class KTDocumentCheckInAction extends KTDocumentAction {
         // Add widgets and validators to the form
         $oForm->setWidgets($aWidgets);
         $oForm->setValidators($aValidators);
+
         return $oForm;
     }
 
@@ -803,6 +803,7 @@ class KTDocumentCheckInAction extends KTDocumentAction {
             'context' => &$this,
             'form' => $oForm,
         ));
+
         return $oTemplate->render();
     }
 
@@ -819,7 +820,7 @@ class KTDocumentCheckInAction extends KTDocumentAction {
 
             if ($default->disableForceFilenameOption) {
                 $extra_errors['file'] = sprintf(_kt('The file you uploaded was not called "%s". The file must have the same name as the original file.'), htmlentities($docFileName,ENT_QUOTES,'UTF-8'));
-            }else if ($data['forcefilename']) {
+            } else if ($data['forcefilename']) {
                 $extra_errors['file'] = sprintf(_kt('The file you uploaded was not called "%s". If you wish to change the filename, please set "Force Original Filename" below to false. '), htmlentities($docFileName,ENT_QUOTES,'UTF-8'));
             }
         }
@@ -857,13 +858,11 @@ class KTDocumentCheckInAction extends KTDocumentAction {
         redirect(KTBrowseUtil::getUrlForDocument($this->oDocument));
         exit(0);
     }
-    
-}
-// }}}
 
-// {{{ KTDocumentCancelCheckOutAction
+}
+
 class KTDocumentCancelCheckOutAction extends KTDocumentAction {
-    
+
     var $sName = 'ktcore.actions.document.cancelcheckout';
 
     var $_sShowPermission = 'ktcore.permissions.write';
@@ -882,7 +881,7 @@ class KTDocumentCancelCheckOutAction extends KTDocumentAction {
         if (!$this->oDocument->getIsCheckedOut()) {
             return null;
         }
-        
+
         if (is_null($this->bInAdminMode)) {
             $oFolder = Folder::get($this->oDocument->getFolderId());
             if (KTBrowseUtil::inAdminMode($this->oUser, $oFolder)) {
@@ -892,11 +891,11 @@ class KTDocumentCancelCheckOutAction extends KTDocumentAction {
         } else if ($this->bInAdminMode == true) {
             return parent::getInfo();
         }
-        
+
         if ($this->oDocument->getCheckedOutUserID() != $this->oUser->getId()) {
             return null;
         }
-        
+
         return parent::getInfo();
     }
 
@@ -906,13 +905,13 @@ class KTDocumentCancelCheckOutAction extends KTDocumentAction {
         if ($res !== true) {
             return $res;
         }
-        
+
         if (!$this->oDocument->getIsCheckedOut()) {
             $_SESSION['KTErrorMessage'][] = _kt('This document is not checked out');
             controllerRedirect('viewDocument', 'fDocumentId=' .  $this->oDocument->getId());
             exit(0);
         }
-        
+
         // hard override if we're in admin mode for this doc.
         if (is_null($this->bInAdminMode)) {
             $oFolder = Folder::get($this->oDocument->getFolderId());
@@ -923,13 +922,13 @@ class KTDocumentCancelCheckOutAction extends KTDocumentAction {
         } else if ($this->bInAdminMode == true) {
             return true;
         }
-        
+
         if ($this->oDocument->getCheckedOutUserID() != $this->oUser->getId()) {
             $_SESSION['KTErrorMessage'][] = _kt('This document is checked out, but not by you');
             controllerRedirect('viewDocument', 'fDocumentId=' .  $this->oDocument->getId());
             exit(0);
         }
-        
+
         return true;
     }
 
@@ -1000,12 +999,10 @@ class KTDocumentCancelCheckOutAction extends KTDocumentAction {
 
     function do_main() {
         $this->oPage->setBreadcrumbDetails(_kt('cancel checkout'));
-        if(ACCOUNT_ROUTING_ENABLED)
-        {
+        if (ACCOUNT_ROUTING_ENABLED) {
         	$oTemplate =& $this->oValidator->validateTemplate('core/action/cancel_checkout');
         }
-        else 
-        {
+        else {
         	$oTemplate =& $this->oValidator->validateTemplate('ktcore/action/cancel_checkout');
         }
 
@@ -1016,7 +1013,7 @@ class KTDocumentCancelCheckOutAction extends KTDocumentAction {
             'form' => $oForm,
             'document' => $this->oDocument,
         ));
-        
+
         return $oTemplate->render();
     }
 
@@ -1047,17 +1044,15 @@ class KTDocumentCancelCheckOutAction extends KTDocumentAction {
             $this->rollbackTransaction();
             return $this->errorRedirectToMain(_kt('Failed to force the document\'s checkin.'),sprintf('fDocumentId=%d'),$this->oDocument->getId());
         }
-        
+
         $this->commitTransaction();
         redirect(KTBrowseUtil::getUrlForDocument($this->oDocument));
     }
-    
-}
-// }}}
 
-// {{{ KTDocumentDeleteAction
+}
+
 class KTDocumentDeleteAction extends KTDocumentAction {
-    
+
     var $sName = 'ktcore.actions.document.delete';
     var $_sShowPermission = 'ktcore.permissions.delete';
     var $_bMutator = true;
@@ -1164,19 +1159,19 @@ class KTDocumentDeleteAction extends KTDocumentAction {
 
     function do_main() {
         $this->oPage->setBreadcrumbDetails(_kt('Delete'));
-        
+
     	//check if we need confirmation for symblolic links linking to this document
 		if (count($this->oDocument->getSymbolicLinks())>0 && KTutil::arrayGet($_REQUEST,'postReceived') != 1) {
         	$this->redirectTo("confirm");
         }
-        
+
         $oTemplate =& $this->oValidator->validateTemplate('ktcore/action/delete');
         $oForm = $this->form_main();
         $oTemplate->setData(array(
             'context' => &$this,
             'form' => $oForm,
         ));
-        
+
         return $oTemplate->render();
     }
 
@@ -1188,7 +1183,7 @@ class KTDocumentDeleteAction extends KTDocumentAction {
             'context' => &$this,
             'form' => $oForm,
         ));
-        
+
         return $oTemplate->render();
     }
 
@@ -1213,13 +1208,11 @@ class KTDocumentDeleteAction extends KTDocumentAction {
         controllerRedirect('browse', 'fFolderId=' .  $fFolderId);
         exit(0);
     }
-    
-}
-// }}}
 
-// {{{ KTDocumentMoveAction
+}
+
 class KTDocumentMoveAction extends KTDocumentAction {
-    
+
     var $sName = 'ktcore.actions.document.move';
     var $_sShowPermission = 'ktcore.permissions.write';
     var $_bMutator = true;
@@ -1232,7 +1225,7 @@ class KTDocumentMoveAction extends KTDocumentAction {
         if ($this->oDocument->getIsCheckedOut()) {
             return null;
         }
-        
+
         return parent::getInfo();
     }
 
@@ -1241,7 +1234,7 @@ class KTDocumentMoveAction extends KTDocumentAction {
         if ($res !== true) {
             return $res;
         }
-        
+
         if ($this->oDocument->getIsCheckedOut()) {
             $_SESSION['KTErrorMessage'][]= _kt('This document can\'t be moved because it is checked out');
             controllerRedirect('viewDocument', 'fDocumentId=' .  $this->oDocument->getId());
@@ -1251,7 +1244,7 @@ class KTDocumentMoveAction extends KTDocumentAction {
         $iFolderId = KTUtil::arrayGet($_REQUEST, 'fFolderId', $this->oDocument->getFolderId());
         $this->oFolder = $this->oValidator->validateFolder($iFolderId);
         $this->oDocumentFolder = $this->oValidator->validateFolder($this->oDocument->getFolderId());
-        
+
         return true;
     }
 
@@ -1323,7 +1316,7 @@ class KTDocumentMoveAction extends KTDocumentAction {
                     'output' => 'reason',
             ));
         }
-        
+
         $validators[] = array('ktcore.validators.entity', array(
                 'class' => 'Folder',
                 'test' => 'browse',
@@ -1355,7 +1348,7 @@ class KTDocumentMoveAction extends KTDocumentAction {
                     'required' => true,
                 ))
             );
-            
+
             $oForm->addValidator(
                 array('ktcore.validators.string', array(
                     'output' => 'name',
@@ -1372,7 +1365,7 @@ class KTDocumentMoveAction extends KTDocumentAction {
                     'required' => true,
                 ))
             );
-            
+
             $oForm->addValidator(
                 array('ktcore.validators.string', array(
                     'output' => 'filename',
@@ -1380,7 +1373,7 @@ class KTDocumentMoveAction extends KTDocumentAction {
                 ))
             );
         }
-        
+
         return $oForm;
     }
 
@@ -1403,7 +1396,7 @@ class KTDocumentMoveAction extends KTDocumentAction {
                 } else {
                     $name = $this->oDocument->getName();
                 }
-                
+
                 if ($bNameClash) {
                     $extra_errors['name'] = _kt('A document with this title already exists in your chosen folder.  Please choose a different folder, or specify a new title for the copied document.');
             }
@@ -1415,7 +1408,7 @@ class KTDocumentMoveAction extends KTDocumentAction {
                 } else {
                     $filename = $this->oDocument->getFilename();
                 }
-                
+
                 if ($bFileClash) {
                     $extra_errors['filename'] = _kt('A document with this filename already exists in your chosen folder.  Please choose a different folder, or specify a new filename for the copied document.');
                 }
@@ -1454,10 +1447,9 @@ class KTDocumentMoveAction extends KTDocumentAction {
     }
 
 }
-// }}}
 
 class KTDocumentCopyColumn extends TitleColumn {
-    
+
     function KTDocumentCopyColumn($sLabel, $sName, $oDocument) {
         $this->oDocument = $oDocument;
         parent::TitleColumn($sLabel, $sName);
@@ -1465,12 +1457,12 @@ class KTDocumentCopyColumn extends TitleColumn {
     function buildFolderLink($aDataRow) {
         return KTUtil::addQueryString($_SERVER['PHP_SELF'], sprintf('fDocumentId=%d&fFolderId=%d', $this->oDocument->getId(), $aDataRow['folder']->getId()));
     }
-    
+
 }
 
 // {{{ KTDocumentMoveAction
 class KTDocumentCopyAction extends KTDocumentAction {
-    
+
     var $sName = 'ktcore.actions.document.copy';
     var $_sShowPermission = 'ktcore.permissions.read';
 
@@ -1491,17 +1483,17 @@ class KTDocumentCopyAction extends KTDocumentAction {
         if ($res !== true) {
             return $res;
         }
-        
+
         if ($this->oDocument->getIsCheckedOut()) {
             $_SESSION['KTErrorMessage'][]= _kt('This document can\'t be copied because it is checked out');
             controllerRedirect('viewDocument', 'fDocumentId=' .  $this->oDocument->getId());
             exit(0);
         }
-        
+
         $iFolderId = KTUtil::arrayGet($_REQUEST, 'fFolderId', $this->oDocument->getFolderId());
         $this->oFolder = $this->oValidator->validateFolder($iFolderId);
         $this->oDocumentFolder = $this->oValidator->validateFolder($this->oDocument->getFolderId());
-        
+
         return true;
     }
 
@@ -1570,7 +1562,7 @@ class KTDocumentCopyAction extends KTDocumentAction {
                     'output' => 'reason',
                 ));
         }
-        
+
         $validators[] = array('ktcore.validators.entity', array(
                 'class' => 'Folder',
                 'test' => 'browse',
@@ -1602,7 +1594,7 @@ class KTDocumentCopyAction extends KTDocumentAction {
                     'required' => true,
                 ))
             );
-            
+
             $oForm->addValidator(
                 array('ktcore.validators.string', array(
                     'output' => 'name',
@@ -1619,7 +1611,7 @@ class KTDocumentCopyAction extends KTDocumentAction {
                     'required' => true,
                 ))
             );
-            
+
             $oForm->addValidator(
                 array('ktcore.validators.string', array(
                     'output' => 'filename',
@@ -1627,7 +1619,7 @@ class KTDocumentCopyAction extends KTDocumentAction {
                 ))
             );
         }
-        
+
         return $oForm;
     }
 
@@ -1653,7 +1645,7 @@ class KTDocumentCopyAction extends KTDocumentAction {
             } else {
                 $name = $this->oDocument->getName();
             }
-            
+
             if ($bNameClash) {
                 $extra_errors['name'] = _kt('A document with this title already exists in your chosen folder.  Please choose a different folder, or specify a new title for the copied document.');
             }
@@ -1666,7 +1658,7 @@ class KTDocumentCopyAction extends KTDocumentAction {
             } else {
                 $filename = $this->oDocument->getFilename();
             }
-            
+
             if ($bFileClash) {
                 $extra_errors['filename'] = _kt('A document with this filename already exists in your chosen folder.  Please choose a different folder, or specify a new filename for the copied document.');
             }
@@ -1706,13 +1698,11 @@ class KTDocumentCopyAction extends KTDocumentAction {
         controllerRedirect('viewDocument', 'fDocumentId=' .  $oNewDoc->getId());
         exit(0);
     }
-    
-}
-// }}}
 
-// {{{ KTDocumentArchiveAction
+}
+
 class KTDocumentArchiveAction extends KTDocumentAction {
-    
+
     var $sName = 'ktcore.actions.document.archive';
     var $_sShowPermission = 'ktcore.permissions.write';
     var $_bMutator = false;
@@ -1727,7 +1717,7 @@ class KTDocumentArchiveAction extends KTDocumentAction {
         if ($this->oDocument->getIsCheckedOut()) {
             return null;
         }
-        
+
         return parent::getInfo();
     }
 
@@ -1824,7 +1814,7 @@ class KTDocumentArchiveAction extends KTDocumentAction {
             'context' => &$this,
             'form' => $oForm,
         ));
-        
+
         return $oTemplate->render();
     }
 
@@ -1836,7 +1826,7 @@ class KTDocumentArchiveAction extends KTDocumentAction {
             'context' => &$this,
             'form' => $oForm,
         ));
-        
+
         return $oTemplate->render();
     }
 
@@ -1862,13 +1852,11 @@ class KTDocumentArchiveAction extends KTDocumentAction {
         controllerRedirect('browse', 'fFolderId=' .  $this->oDocument->getFolderID());
         exit(0);
     }
-    
-}
-// }}}
 
-// {{{ KTDocumentWorkflowAction
+}
+
 class KTDocumentWorkflowAction extends KTDocumentAction {
-    
+
     var $sName = 'ktcore.actions.document.workflow';
     var $_sShowPermission = 'ktcore.permissions.read';
     var $sHelpPage = 'ktcore/user/workflow.html';
@@ -1884,7 +1872,7 @@ class KTDocumentWorkflowAction extends KTDocumentAction {
         if (!KTPermissionUtil::userHasPermissionOnItem($oUser, 'ktcore.permissions.workflow', $this->oDocument)) {
             return '';
         }
-        
+
         return _kt('Workflow');
     }
 
@@ -1892,7 +1880,7 @@ class KTDocumentWorkflowAction extends KTDocumentAction {
         if ($this->oDocument->getIsCheckedOut()) {
             return null;
         }
-        
+
         return parent::getInfo();
     }
 
@@ -1974,7 +1962,7 @@ class KTDocumentWorkflowAction extends KTDocumentAction {
             'submit' => $submit,
             'submit2' => $submit2
         );
-        
+
         return $oTemplate->render($aTemplateData);
     }
 
@@ -1985,12 +1973,12 @@ class KTDocumentWorkflowAction extends KTDocumentAction {
         } else {
             $oWorkflow = null;
         }
-        
+
         $res = KTWorkflowUtil::startWorkflowOnDocument($oWorkflow, $oDocument);
         if (PEAR::isError($res)) {
             $this->errorRedirectToMain($res->message, sprintf('fDocumentId=%s',$oDocument->getId()));
         }
-        
+
         $this->successRedirectToMain(_kt('Workflow started'), array('fDocumentId' => $oDocument->getId()));
         exit(0);
     }
@@ -2092,7 +2080,7 @@ class KTDocumentWorkflowAction extends KTDocumentAction {
         $transition_id = $_REQUEST['fTransitionId'];
         $oTransition = KTWorkflowTransition::get($transition_id);
         $oForm = $this->form_quicktransition();
-        
+
         return $oForm->renderPage(sprintf(_kt('Perform Transition: %s'), $oTransition->getName()));
     }
 
@@ -2124,10 +2112,9 @@ class KTDocumentWorkflowAction extends KTDocumentAction {
     }
 
 }
-// }}}
 
 class KTOwnershipChangeAction extends KTDocumentAction {
-    
+
     var $sName = 'ktcore.actions.document.ownershipchange';
     var $_sShowPermission = 'ktcore.permissions.security';
 
@@ -2174,7 +2161,7 @@ class KTOwnershipChangeAction extends KTDocumentAction {
             'context' => $this,
             'form' => $change_form,
         ));
-        
+
         return $oTemplate->render();
     }
 
@@ -2204,8 +2191,12 @@ class KTOwnershipChangeAction extends KTDocumentAction {
             $this->errorRedirectToMain(sprintf(_kt('Failed to update document: %s'), $res->getMessage()), sprintf('fDocumentId=%d', $this->oDocument->getId()));
         }
 
+        // create the document transaction record
+        $documentTransaction = new DocumentTransaction($this->oDocument, 'Ownership changed', 'ktcore.transactions.ownership_change');
+        $documentTransaction->create();
+
         $this->successRedirectToMain(_kt('Ownership changed.'), sprintf('fDocumentId=%d', $this->oDocument->getId()));
     }
-    
+
 }
 ?>
