@@ -254,10 +254,14 @@ class KTDocumentSubscriptionAction extends KTDocumentAction {
             $res = $oSubscription->create();
             if ($res) {
                 $_SESSION['KTInfoMessage'][] = _kt("You have been subscribed to this document");
+                // create the document transaction record
+                $documentTransaction = new DocumentTransaction($this->oDocument, 'User subscribed to document', 'ktcore.transactions.subscribe');
+                $documentTransaction->create();
             } else {
                 $_SESSION['KTErrorMessage'][] = _kt("There was a problem subscribing you to this document");
             }
         }
+
         controllerRedirect('viewDocument', 'fDocumentId=' . $this->oDocument->getId());
         exit(0);
     }
@@ -289,10 +293,14 @@ class KTDocumentUnsubscriptionAction extends KTDocumentAction {
             $res = $oSubscription->create();
             if ($res) {
                 $str = _kt('You have been unsubscribed from this document');
+                // create the document transaction record
+                $documentTransaction = new DocumentTransaction($this->oDocument, 'User unsubscribed from document', 'ktcore.transactions.usubscribe');
+                $documentTransaction->create();
             } else {
                 $str = _kt('There was a problem unsubscribing you from this document');
             }
         }
+
         $str = wrapString($str);
         echo $str;
         exit(0);
@@ -307,10 +315,14 @@ class KTDocumentUnsubscriptionAction extends KTDocumentAction {
             $res = $oSubscription->delete();
             if ($res) {
                 $_SESSION['KTInfoMessage'][] = _kt("You have been unsubscribed from this document");
+                // create the document transaction record
+                $documentTransaction = new DocumentTransaction($this->oDocument, 'User unsubscribed from document', 'ktcore.transactions.usubscribe');
+                $documentTransaction->create();
             } else {
                 $_SESSION['KTErrorMessage'][] = _kt("There was a problem unsubscribing you from this document");
             }
         }
+
         controllerRedirect('viewDocument', 'fDocumentId=' . $this->oDocument->getId());
         exit(0);
     }

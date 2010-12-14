@@ -512,7 +512,8 @@ INSERT INTO `document_transaction_types_lookup` VALUES
 (21,'Delete Version','ktcore.transactions.delete_version'),
 (22,'Share','ktcore.transactions.share'),
 (23,'Ownership changed','ktcore.transactions.ownership_change'),
-(24,'User subscribed to document','ktcore.transactions.subscribe');
+(24,'User subscribed to document','ktcore.transactions.subscribe'),
+(25,'User unsubscribed from document','ktcore.transactions.unsubscribe');
 /*!40000 ALTER TABLE `document_transaction_types_lookup` ENABLE KEYS */;
 UNLOCK TABLES;
 
