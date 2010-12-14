@@ -674,10 +674,23 @@ class KTSubscriptionManagePage extends KTStandardDispatcher {
             foreach ($foldersubscriptions as $iSubscriptionId) {
                 $oSubscription = Subscription::get($iSubscriptionId, SubscriptionEvent::subTypes('Folder'));
                 if ($oSubscription) {
-                    $oSubscription->delete();
-                    $iSuccesses++;
+                    $result = DBUtil::getOneResult("SELECT folder_id FROM folder_subscriptions WHERE id = $iSubscriptionId");
+                    if ($oSubscription->delete()) {
+                        // create the folder transaction
+                        $oTransaction = KTFolderTransaction::createFromArray(array(
+                            'folderid' => $result['folder_id'],
+                            'comment' => 'User unsubscribed from folder',
+                            'transactionNS' => 'ktstandard.transactions.unsubscribe',
+                            'userid' => $_SESSION['userID'],
+                            'ip' => Session::getClientIP(),
+                        ));
+                        ++$iSuccesses;
+                    }
+                    else {
+                        ++$iFailures;
+                    }
                 } else {
-                    $iFailures++;
+                    ++$iFailures;
                 }
             }
         }
