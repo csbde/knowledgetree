@@ -469,7 +469,7 @@ class KTDiscussionSubscriptionTrigger {
 
 class KTFolderSubscriptionAction extends KTFolderAction {
 
-    var $sName = 'ktstandard.subscription.foldersubscription';
+    public $sName = 'ktstandard.subscription.foldersubscription';
 
     public function getDisplayName()
     {
@@ -567,15 +567,17 @@ class KTFolderSubscriptionAction extends KTFolderAction {
 
 }
 
-// {{{ KTFolderUnsubscriptionAction
 class KTFolderUnsubscriptionAction extends KTFolderAction {
-    var $sName = 'ktstandard.subscription.folderunsubscription';
 
-    function getDisplayName() {
+    public $sName = 'ktstandard.subscription.folderunsubscription';
+
+    public function getDisplayName()
+    {
         return _kt('Unsubscribe from folder');
     }
 
-    function getInfo() {
+    public function getInfo()
+    {
         $aInfo = parent::getInfo();
         if (!Subscription::exists($this->oUser->getID(), $this->oFolder->getID(), SubscriptionEvent::subTypes('Folder'))) {
             $aInfo['active'] = 'no';
@@ -583,41 +585,58 @@ class KTFolderUnsubscriptionAction extends KTFolderAction {
         return $aInfo;
     }
 
-    function do_ajax() {
-        $iSubscriptionType = SubscriptionEvent::subTypes('Folder');
-        if (!Subscription::exists($this->oUser->getId(), $this->oFolder->getId(), $iSubscriptionType)) {
-            $str = _kt('You were not subscribed to that folder');
-        } else {
-            $oSubscription =& Subscription::getByIDs($this->oUser->getId(), $this->oFolder->getId(), $iSubscriptionType);
-            $res = $oSubscription->delete();
-            if ($res) {
-                $str = _kt('You have been unsubscribed from this folder');
-            } else {
-                $str = _kt('There was a problem unsubscribing you from this folder');
-            }
-        }
+    public function do_ajax()
+    {
+        $str = null;
+        $this->deleteSubscription($str);
         echo wrapString($str);
         exit(0);
     }
 
-    function do_main() {
-        $iSubscriptionType = SubscriptionEvent::subTypes('Folder');
-        if (!Subscription::exists($this->oUser->getId(), $this->oFolder->getId(), $iSubscriptionType)) {
-            $_SESSION['KTErrorMessage'][] = _kt('You were not subscribed to that folder');
-        } else {
-            $oSubscription = & Subscription::getByIDs($this->oUser->getId(), $this->oFolder->getId(), $iSubscriptionType);
-            $res = $oSubscription->delete();
-            if ($res) {
-                $_SESSION['KTInfoMessage'][] = _kt('You have been unsubscribed from this folder');
-            } else {
-                $_SESSION['KTErrorMessage'][] = _kt('There was a problem unsubscribing you from this folder');
-            }
+    public function do_main()
+    {
+        $str = null;
+        if ($this->deleteSubscription($str)) {
+            $_SESSION['KTInfoMessage'][] = $str;
         }
+        else {
+            $_SESSION['KTErrorMessage'][] = $str;
+        }
+
         controllerRedirect('browse', 'fFolderId=' . $this->oFolder->getId());
         exit(0);
     }
+
+    private function deleteSubscription(&$output)
+    {
+        $result = true;
+        $output = null;
+
+        $iSubscriptionType = SubscriptionEvent::subTypes('Folder');
+        if (!Subscription::exists($this->oUser->getId(), $this->oFolder->getId(), $iSubscriptionType)) {
+            $output = _kt('You were not subscribed to that folder');
+            $result = false;
+        } else {
+            $oSubscription =& Subscription::getByIDs($this->oUser->getId(), $this->oFolder->getId(), $iSubscriptionType);
+            $res = $oSubscription->delete();
+            if ($res) {
+                $output = _kt('You have been unsubscribed from this folder');
+                // create the folder transaction
+                $oTransaction = KTFolderTransaction::createFromArray(array(
+                    'folderid' => $this->oFolder->getId(),
+                    'comment' => 'User unsubscribed from folder',
+                    'transactionNS' => 'ktstandard.transactions.unsubscribe',
+                    'userid' => $_SESSION['userID'],
+                    'ip' => Session::getClientIP(),
+                ));
+            } else {
+                $output = _kt('There was a problem unsubscribing you from this folder');
+                $result = false;
+            }
+        }
+    }
+
 }
-// }}}
 
 class KTSubscriptionManagePage extends KTStandardDispatcher {
 
