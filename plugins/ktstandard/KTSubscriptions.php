@@ -90,12 +90,12 @@ class KTSubscriptionPlugin extends KTPlugin {
 $oRegistry =& KTPluginRegistry::getSingleton();
 $oRegistry->registerPlugin('KTSubscriptionPlugin', 'ktstandard.subscriptions.plugin', __FILE__);
 
-function wrapString($str, $length = 20){
+function wrapString($str, $length = 20) {
     // Wrap string to given character length (content rendered from ajax doesn't render correctly in ie)
     $len = mb_strlen($str);
     $out = '';
     $pos = 0;
-    while($len > $length && $pos !== false){
+    while ($len > $length && $pos !== false) {
         $pos = mb_strpos($str, ' ', $length);
         $line = mb_strcut($str, 0, $pos+1);
         $str = mb_strcut($str, $pos+1);
@@ -119,13 +119,13 @@ class KTSubscriptionPortlet extends KTPortlet {
         {
             return null;
         }
-        if($this->oDispatcher->oDocument){
+        if ($this->oDispatcher->oDocument) {
             $oObject = $this->oDispatcher->oDocument;
             $type = 'documentsubscriptionaction';
-        }else if($this->oDispatcher->oFolder){
+        }else if ($this->oDispatcher->oFolder) {
             $oObject = $this->oDispatcher->oFolder;
             $type = 'foldersubscriptionaction';
-        }else{
+        } else {
             // not in a folder or document
             return null;
         }
@@ -140,15 +140,15 @@ class KTSubscriptionPortlet extends KTPortlet {
         $oKTActionRegistry =& KTActionRegistry::getSingleton();
         $actions = $oKTActionRegistry->getActions($type);
 
-        foreach ($actions as $aAction){
+        foreach ($actions as $aAction) {
             list($sClassName, $sPath) = $aAction;
             $oSubscription = new $sClassName($oObject, $oUser);
             $actionInfo = $oSubscription->getInfo();
-            if(!empty($actionInfo)){
-                if(isset($actionInfo['active']) && $actionInfo['active'] == 'no'){
+            if (!empty($actionInfo)) {
+                if (isset($actionInfo['active']) && $actionInfo['active'] == 'no') {
                     $nonActiveUrl = $base_url.$actionInfo['url'];
                     $nonActiveName = $actionInfo['name'];
-                }else {
+                } else {
                     $aInfo = $actionInfo;
                 }
             }
@@ -157,7 +157,7 @@ class KTSubscriptionPortlet extends KTPortlet {
         // Create js script
         $url = $base_url.$aInfo['url'];
         $script = '<script type="text/javascript">
-            function doSubscribe(action){
+            function doSubscribe(action) {
                 var respDiv = document.getElementById("subscriptionResponse");
                 var link = document.getElementById("subscribeLink");
 
@@ -167,7 +167,7 @@ class KTSubscriptionPortlet extends KTPortlet {
                         respDiv.innerHTML = response.responseText;
                         respDiv.style.display = "block";
                         link.style.display = "none";
-                        if(document.getElementById("subLink")){
+                        if (document.getElementById("subLink")) {
                             document.getElementById("subLink").style.display = "none";
                         }
                     },
@@ -187,7 +187,7 @@ class KTSubscriptionPortlet extends KTPortlet {
         $aInfo['js'] = $script;
         $this->actions[] = $aInfo;
 
-        if(isset($aInfo['subaction'])){
+        if (isset($aInfo['subaction'])) {
             $subInfo = array();
             $subInfo['js'] = "<a id='subLink' style='cursor:pointer' onclick='javascript: doSubscribe(\"add_subfolders\")'>{$aInfo['subaction']}</a>";
             $this->actions[] = $subInfo;
@@ -202,20 +202,23 @@ class KTSubscriptionPortlet extends KTPortlet {
             'context' => $this,
             'btn' => $btn
         );
+
         return $oTemplate->render($aTemplateData);
     }
 }
 // }}}
 
-// {{{ KTDocumentSubscriptionAction
 class KTDocumentSubscriptionAction extends KTDocumentAction {
-    var $sName = 'ktstandard.subscription.documentsubscription';
 
-    function getDisplayName() {
+    public $sName = 'ktstandard.subscription.documentsubscription';
+
+    public function getDisplayName()
+    {
         return _kt('Subscribe to document');
     }
 
-    function getInfo() {
+    public function getInfo()
+    {
         $aInfo = parent::getInfo();
         if (Subscription::exists($this->oUser->getID(), $this->oDocument->getID(), SubscriptionEvent::subTypes('Document'))) {
             $aInfo['active'] = 'no';
@@ -223,60 +226,68 @@ class KTDocumentSubscriptionAction extends KTDocumentAction {
         return $aInfo;
     }
 
-    function do_ajax() {
-        $iSubscriptionType = SubscriptionEvent::subTypes('Document');
-        if (Subscription::exists($this->oUser->getId(), $this->oDocument->getId(), $iSubscriptionType)) {
-            $str = _kt('You are already subscribed to that document');
-        } else {
-            $oSubscription = new Subscription($this->oUser->getId(), $this->oDocument->getId(), $iSubscriptionType);
-            $res = $oSubscription->create();
-            if ($res) {
-                $str = _kt('You have been subscribed to this document');
-                // create the document transaction record
-                $documentTransaction = new DocumentTransaction($this->oDocument, 'User subscribed to document', 'ktcore.transactions.subscribe');
-                $documentTransaction->create();
-            } else {
-                $str = _kt('There was a problem subscribing you to this document');
-            }
-        }
-
+    public function do_ajax()
+    {
+        $str = null;
+        $this->createSubscription($str);
         $str = wrapString($str);
         echo $str;
         exit(0);
     }
 
-    function do_main() {
-        $iSubscriptionType = SubscriptionEvent::subTypes('Document');
-        if (Subscription::exists($this->oUser->getId(), $this->oDocument->getId(), $iSubscriptionType)) {
-            $_SESSION['KTErrorMessage'][] = _kt("You are already subscribed to that document");
-        } else {
-            $oSubscription = new Subscription($this->oUser->getId(), $this->oDocument->getId(), $iSubscriptionType);
-            $res = $oSubscription->create();
-            if ($res) {
-                $_SESSION['KTInfoMessage'][] = _kt("You have been subscribed to this document");
-                // create the document transaction record
-                $documentTransaction = new DocumentTransaction($this->oDocument, 'User subscribed to document', 'ktcore.transactions.subscribe');
-                $documentTransaction->create();
-            } else {
-                $_SESSION['KTErrorMessage'][] = _kt("There was a problem subscribing you to this document");
-            }
+    public function do_main()
+    {
+        $str = null;
+        if ($this->createSubscription($str)) {
+            $_SESSION['KTInfoMessage'][] = $str;
+        }
+        else {
+            $_SESSION['KTErrorMessage'][] = $str;
         }
 
         controllerRedirect('viewDocument', 'fDocumentId=' . $this->oDocument->getId());
         exit(0);
     }
-}
-// }}}
 
-// {{{ KTDocumentUnsubscriptionAction
+    private function createSubscription(&$output)
+    {
+        $result = true;
+        $output = null;
+
+        $iSubscriptionType = SubscriptionEvent::subTypes('Document');
+        if (Subscription::exists($this->oUser->getId(), $this->oDocument->getId(), $iSubscriptionType)) {
+            $output = _kt('You are already subscribed to that document');
+            $result = false;
+        } else {
+            $oSubscription = new Subscription($this->oUser->getId(), $this->oDocument->getId(), $iSubscriptionType);
+            $res = $oSubscription->create();
+            if ($res) {
+                $output = _kt('You have been subscribed to this document');
+                // create the document transaction record
+                $documentTransaction = new DocumentTransaction($this->oDocument, 'User subscribed to document', 'ktcore.transactions.subscribe');
+                $documentTransaction->create();
+            } else {
+                $output = _kt('There was a problem subscribing you to this document');
+                $result = false;
+            }
+        }
+
+        return $result;
+    }
+
+}
+
 class KTDocumentUnsubscriptionAction extends KTDocumentAction {
+
     var $sName = 'ktstandard.subscription.documentunsubscription';
 
-    function getDisplayName() {
+    public function getDisplayName()
+    {
         return _kt('Unsubscribe from document');
     }
 
-    function getInfo() {
+    public function getInfo()
+    {
         $aInfo = parent::getInfo();
         if (!Subscription::exists($this->oUser->getID(), $this->oDocument->getID(), SubscriptionEvent::subTypes('Document'))) {
             $aInfo['active'] = 'no';
@@ -284,50 +295,56 @@ class KTDocumentUnsubscriptionAction extends KTDocumentAction {
         return $aInfo;
     }
 
-    function do_ajax() {
-        $iSubscriptionType = SubscriptionEvent::subTypes('Document');
-        if (!Subscription::exists($this->oUser->getId(), $this->oDocument->getId(), $iSubscriptionType)) {
-            $str = _kt('You are not subscribed to this document');
-        } else {
-            $oSubscription = new Subscription($this->oUser->getId(), $this->oDocument->getId(), $iSubscriptionType);
-            $res = $oSubscription->create();
-            if ($res) {
-                $str = _kt('You have been unsubscribed from this document');
-                // create the document transaction record
-                $documentTransaction = new DocumentTransaction($this->oDocument, 'User unsubscribed from document', 'ktcore.transactions.usubscribe');
-                $documentTransaction->create();
-            } else {
-                $str = _kt('There was a problem unsubscribing you from this document');
-            }
-        }
-
+    public function do_ajax()
+    {
+        $str = null;
+        $this->deleteSubscription($str);
         $str = wrapString($str);
         echo $str;
         exit(0);
     }
 
-    function do_main() {
-        $iSubscriptionType = SubscriptionEvent::subTypes('Document');
-        if (!Subscription::exists($this->oUser->getId(), $this->oDocument->getId(), $iSubscriptionType)) {
-            $_SESSION['KTErrorMessage'][] = _kt("You were not subscribed to that document");
-        } else {
-            $oSubscription = & Subscription::getByIDs($this->oUser->getId(), $this->oDocument->getId(), $iSubscriptionType);
-            $res = $oSubscription->delete();
-            if ($res) {
-                $_SESSION['KTInfoMessage'][] = _kt("You have been unsubscribed from this document");
-                // create the document transaction record
-                $documentTransaction = new DocumentTransaction($this->oDocument, 'User unsubscribed from document', 'ktcore.transactions.usubscribe');
-                $documentTransaction->create();
-            } else {
-                $_SESSION['KTErrorMessage'][] = _kt("There was a problem unsubscribing you from this document");
-            }
+    public function do_main()
+    {
+        $str = null;
+        if ($this->deleteSubscription($str)) {
+            $_SESSION['KTInfoMessage'][] = $str;
+        }
+        else {
+            $_SESSION['KTErrorMessage'][] = $str;
         }
 
         controllerRedirect('viewDocument', 'fDocumentId=' . $this->oDocument->getId());
         exit(0);
     }
+
+    private function deleteSubscription(&$output)
+    {
+        $result = true;
+        $output = null;
+
+        $iSubscriptionType = SubscriptionEvent::subTypes('Document');
+        if (!Subscription::exists($this->oUser->getId(), $this->oDocument->getId(), $iSubscriptionType)) {
+            $output = _kt('You are not subscribed to this document');
+            $result = false;
+        } else {
+            $oSubscription = new Subscription($this->oUser->getId(), $this->oDocument->getId(), $iSubscriptionType);
+            $res = $oSubscription->delete();
+            if ($res) {
+                $output = _kt('You have been unsubscribed from this document');
+                // create the document transaction record
+                $documentTransaction = new DocumentTransaction($this->oDocument, 'User unsubscribed from document', 'ktcore.transactions.usubscribe');
+                $documentTransaction->create();
+            } else {
+                $output = _kt('There was a problem unsubscribing you from this document');
+                $result = false;
+            }
+        }
+
+        return $result;
+    }
+
 }
-// }}}
 
 // {{{ KTCheckoutSubscriptionTrigger
 class KTCheckoutSubscriptionTrigger {
@@ -341,7 +358,7 @@ class KTCheckoutSubscriptionTrigger {
         $oDocument =& $this->aInfo["document"];
         // fire subscription alerts for the checked out document
 
-        if(!$bulk_action) {
+        if (!$bulk_action) {
             $oSubscriptionEvent = new SubscriptionEvent();
             $oFolder = Folder::get($oDocument->getFolderID());
             $oSubscriptionEvent->CheckoutDocument($oDocument, $oFolder);
@@ -384,7 +401,7 @@ class KTDeleteSubscriptionTrigger {
         $oDocument =& $this->aInfo["document"];
 
         // fire subscription alerts for the deleted document
-        if(!$bulk_action) {
+        if (!$bulk_action) {
             // fire subscription alerts for the checked in document
             $oSubscriptionEvent = new SubscriptionEvent();
             $oFolder = Folder::get($oDocument->getFolderID());
@@ -407,7 +424,7 @@ class KTDocumentMoveSubscriptionTrigger {
         $oOldFolder =& $this->aInfo["old_folder"];
         $oNewFolder =& $this->aInfo["new_folder"];
 
-        if(!$bulk_action) {
+        if (!$bulk_action) {
             // fire subscription alerts for the checked in document
             $oSubscriptionEvent = new SubscriptionEvent();
             $oSubscriptionEvent->MoveDocument($oDocument, $oNewFolder, $oNewFolder);
@@ -426,7 +443,7 @@ class KTArchiveSubscriptionTrigger {
     function postValidate($bulk_action = false) {
         global $default;
         $oDocument =& $this->aInfo["document"];
-        if(!$bulk_action) {
+        if (!$bulk_action) {
             // fire subscription alerts for the checked in document
             $oSubscriptionEvent = new SubscriptionEvent();
             $oFolder = Folder::get($oDocument->getFolderID());
@@ -490,15 +507,15 @@ class KTFolderSubscriptionAction extends KTFolderAction {
         } else {
             $oSubscription = new Subscription($this->oUser->getId(), $this->oFolder->getId(), $iSubscriptionType);
 
-            if($incSubFolders){
+            if ($incSubFolders) {
                 $oSubscription->setWithSubFolders(true);
             }
 
             $res = $oSubscription->create();
             if ($res) {
-                if($incSubFolders){
+                if ($incSubFolders) {
                     $str = _kt('You have been subscribed to this folder and its subfolders');
-                }else{
+                } else {
                     $str = _kt('You have been subscribed to this folder');
                 }
             } else {
@@ -580,9 +597,10 @@ class KTFolderUnsubscriptionAction extends KTFolderAction {
 }
 // }}}
 
-// {{{ KTSubscriptionManagePage
 class KTSubscriptionManagePage extends KTStandardDispatcher {
-    function do_main() {
+
+    function do_main()
+    {
         $this->aBreadcrumbs[] = array("name" => _kt("Subscription Management"));
         $aFolderSubscriptions = SubscriptionManager::retrieveUserSubscriptions(
             $this->oUser->getId(), SubscriptionEvent::subTypes('Folder'));
@@ -600,7 +618,8 @@ class KTSubscriptionManagePage extends KTStandardDispatcher {
         return $oTemplate->render($aTemplateData);
     }
 
-    function do_removeSubscriptions() {
+    function do_removeSubscriptions()
+    {
         $foldersubscriptions = KTUtil::arrayGet($_REQUEST, 'foldersubscriptions');
         $documentsubscriptions = KTUtil::arrayGet($_REQUEST, 'documentsubscriptions');
         if (empty($foldersubscriptions) && empty($documentsubscriptions)) {
@@ -626,10 +645,20 @@ class KTSubscriptionManagePage extends KTStandardDispatcher {
             foreach ($documentsubscriptions as $iSubscriptionId) {
                 $oSubscription = Subscription::get($iSubscriptionId, SubscriptionEvent::subTypes('Document'));
                 if ($oSubscription) {
-                    $oSubscription->delete();
-                    $iSuccesses++;
+                    $result = DBUtil::getOneResult("SELECT document_id FROM document_subscriptions WHERE id = $iSubscriptionId");
+                    if ($oSubscription->delete()) {
+                        // get document object");
+                        $document = Document::get($result['document_id']);
+                        // create the document transaction record
+                        $documentTransaction = new DocumentTransaction($document, 'User unsubscribed from document', 'ktcore.transactions.usubscribe');
+                        $documentTransaction->create();
+                        ++$iSuccesses;
+                    }
+                    else {
+                        ++$iFailures;
+                    }
                 } else {
-                    $iFailures++;
+                    ++$iFailures;
                 }
             }
         }
@@ -640,8 +669,9 @@ class KTSubscriptionManagePage extends KTStandardDispatcher {
         } else {
             $sMessage .= sprintf('%d', $iSuccesses);
         }
+
         $this->successRedirectToMain($sMessage);
         exit(0);
     }
+
 }
-// }}}
