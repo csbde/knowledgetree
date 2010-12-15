@@ -1489,7 +1489,7 @@ class KTBrowseBulkCheckoutAction extends KTBulkAction {
 
             if($this->bDownload){
                 if ($this->bNoisy) {
-                    $oDocumentTransaction = new DocumentTransaction($oEntity, "Document part of bulk checkout", 'ktstandard.transactions.check_out', array());
+                    $oDocumentTransaction = new DocumentTransaction($oEntity, "Document part of bulk checkout", 'ktcore.transactions.check_out', array());
                     $oDocumentTransaction->create();
                 }
 
@@ -1614,7 +1614,7 @@ class KTBrowseBulkCheckoutAction extends KTBulkAction {
                     // Add document to the zip file
                     if($this->bDownload){
                         if ($this->bNoisy) {
-                            $oDocumentTransaction = new DocumentTransaction($oDocument, 'Document part of bulk checkout', 'ktstandard.transactions.check_out', array());
+                            $oDocumentTransaction = new DocumentTransaction($oDocument, 'Document part of bulk checkout', 'ktcore.transactions.check_out', array());
                             $oDocumentTransaction->create();
                         }
 
