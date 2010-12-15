@@ -44,7 +44,23 @@ class auth extends client_service {
 
         $user=$kt->get_user_object_by_username($username);
         if(!PEAR::isError($user)){
-	        $password=$user->getPassword();
+			
+			$session=new stdClass();
+			$this->Response->setDebug('trying to start session with',array('username'=>$username,'password'=>$params['passhash']));
+			
+			$session = $kt->start_session($username, $params['passhash'],NULL,$app_type);
+			if(!PEAR::isError($session)){
+				$this->Response->setStatus('session_id',$session->get_session());
+			}else{
+				$this->setResponse(array('authenticated'=> false, 'message'=> 'Invalid username and/or password.'));
+				$this->addDebug('failed login '.$session->getMessage());
+				$this->addError('Unknown Login Error');
+				return false;
+			}
+			
+			/*
+			// OLD WAY
+			$password=$user->getPassword();
 			$localPassHash=md5($password.$token);
 			if($localPassHash==$passhash){
 				$session=new stdClass();
@@ -63,6 +79,8 @@ class auth extends client_service {
 				//throw new Exception('Incorrect Credentials');
 				return false;
 			}
+			*/
+			
         }else{
         	$this->addError('Incorrect Credentials');
         	//throw new Exception('Unrecognized User');

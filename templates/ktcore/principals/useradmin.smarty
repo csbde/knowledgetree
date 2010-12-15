@@ -1,3 +1,11 @@
+{if $authentication_sources}
+{assign var="colwidth" value="33%"}
+{else}
+{assign var="colwidth" value="300"}
+{/if}
+
+
+
 <h2>{i18n}User Management{/i18n}</h2>
 {literal}
 <script type="text/javascript">
@@ -19,69 +27,74 @@
 
 <!-- we roll both in here. -->
 <form action="{$smarty.server.PHP_SELF}" method="POST">
-	<div class="widgetRow">
-		<input type="hidden" name="do_search" value="1" />
-	{capture assign=link}{addQS}show_all=1{/addQS}{/capture}
-
-	{foreach item=oWidget from=$search_fields}
-	  {$oWidget->render()}
-	{/foreach}
-
-		<div class="form_actions">
-			<!-- Search button -->
-			<input type="submit" value="{i18n}Search For Users{/i18n}" />
-		</div>
-	</div>
-
-
-	<div class="widgetRow">
-
-		<!-- View all users -->	
-		<div class="widgetItem">
-			<div class="form_actions">
-					<a href="{i18n arg_link=$link}#link#{/i18n}">{i18n}View all users{/i18n}</a>
-			</div>
-		</div>
 		
-		<!-- Add user -->
-		{if $can_add}
-			{if !$authentication}
-			{i18n}If you are using an external source of login information, ensure the appropriate plugin is loaded and use the section below.{/i18n}
-			{/if}
-		<div class="widgetItem">
-			<div class="form_actions">
-				<a href="{addQS}action=addUser{/addQS}" style="background: none repeat scroll 0% 0% transparent;">{i18n}Add a new user{/i18n}</a>
-			</div>
-		</div>
-			{if $authentication_sources}
-			
-		<div class="widgetItem">		
-			<input type="hidden" name="action" value="addUserFromSource" />
+		
+		<table width="100%">
+			<tr>
+				
+				<td width="{$colwidth}" valign="top">
+					<div class="field"><label>{i18n}Invite Users{/i18n}</label></div>
+					{if $can_add}
+						{if !$authentication}
+							<div class="descriptiveText">{i18n}If you are using an external source of login information, ensure the appropriate plugin is loaded and use the section below.{/i18n}</div>
+						{/if}
+						<p>
+							Send users email invitations, or manually add them.
+						</p>
+					<div class="widgetItem">
+						<div class="form_actions">
+							<a href="javascript:kt.app.inviteusers.showInviteWindow();" style="background: none repeat scroll 0% 0% transparent;"><span class="inviteButton">{i18n}Invite users{/i18n}</span></a>
+						</div>
+					</div>
+					<div style="float: left;">&nbsp; or &nbsp;</div>
+					<div class="widgetItem">
+						<div class="form_actions">
+							<a href="{addQS}action=addUser{/addQS}" style="background: none repeat scroll 0% 0% transparent;">{i18n}Add a new user{/i18n}</a>
+						</div>
+					</div>
+					{else}
+					<div class="ktInfoMessage">
+						<span>{i18n}You do not have enough available licenses to add more active users.<br />Please disable some existing ones if you wish to add new active users.{/i18n}</span>
+					</div>
+					{/if}
+				</td>
+				
+				<td width="{$colwidth}">
+					<input type="hidden" name="do_search" value="1" />
+					{capture assign=link}{addQS}show_all=1{/addQS}{/capture}
+				
+					{foreach item=oWidget from=$search_fields}
+					  {$oWidget->render()}
+					{/foreach}
+				
+					<div class="form_actions">
+						<!-- Search button -->
+						<input type="submit" value="{i18n}Search For Users{/i18n}" />
+					</div>
+				</td>
+				{if $can_add}
+				{if $authentication_sources}
+				<td width="{$colwidth}"  valign="top">
+					<div class="field"><label>{i18n}Import Users{/i18n}</label></div>
+					<div class="widgetItem">
+						<input type="hidden" name="action" value="addUserFromSource" />
+						<p class="descriptiveText">{i18n}Add a user from an authentication source{/i18n}</p>
+							<div style="float:left">{entity_select name="source_id" entities=$authentication_sources} &nbsp; </div>
+							<div class="form_actions">
+								<input type="submit" name="submit" value="{i18n}Add from source{/i18n}" />
+							</div>
+						
+					</div>
+				</td>
+				{/if}
+				{/if}
+			</tr>
+		</table>
 
-			<p class="descriptiveText">{i18n}Add a user from an authentication source{/i18n}</p>
-			{entity_select name="source_id" entities=$authentication_sources}
-				<div class="form_actions">
-					<input type="submit" name="submit" value="{i18n}Add from source{/i18n}" />
-				</div>
-			</p>
-		</div>
-	
-			{/if}
-	</div>
-		{else}
-	</div>
-	
-	<div class="widgetRow">
-		<div class="widgetItem">
-			<div class="ktInfoMessage"><span>{i18n}You do not have enough available licenses to add more active users.  Please disable some existing ones if you wish to add new active users.{/i18n}</span></div>
-		</div>
-	</div>
-		{/if}
-	
 
 </form>
 
-<br/><br/><br/>
+<br/><br/>
 
 {if ($no_search === true)}
 {else}
@@ -101,7 +114,7 @@
 				  <th>{i18n}Current Groups{/i18n}</th>
 			   </tr>
 			</thead>
-			
+
 			<tbody>
 			   <!-- do we want to batch here? -->
 				 {foreach item=oUser from=$search_results}
@@ -119,20 +132,31 @@
 						{if ($oUser->getDisabled() == 1)}
 							<span class="ktAction ktDenied" title="{i18n}Disabled{/i18n}">{i18n}Disabled{/i18n}</span>
 						{else}
+                            {if $oUser->getDisabled() == 3}
+                                {assign var='invited' value='true'}
+    						    <a href="{addQS}action=resendInvite&user_id={$oUser->getId()}{/addQS}" title="{i18n}Resend Invitation{/i18n}">{i18n}Invitation sent{/i18n}</a>
+    						{else}
 							<span class="ktAction ktAllowed" title="{i18n}Enabled{/i18n}">{i18n}Enabled{/i18n}</span>
+							{/if}
 						{/if}
 						</td>
-
-						<td><a href="{addQS}action=editgroups&user_id={$oUser->getId()}&old_search={$old_search}{/addQS}">{i18n}Manage Groups{/i18n}</a></td>
+							
+						<td>
+							{if $oUser->getDisabled() != 4}
+								<a href="{addQS}action=editgroups&user_id={$oUser->getId()}&old_search={$old_search}{/addQS}">{i18n}Manage Groups{/i18n}</a>
+							{else}
+								N/A
+							{/if}
+						</td>
 						<td class="title"><span class="descriptiveText">{$context->getGroupStringForUser($oUser)}</span></td>
 					 </tr>
 				 {/if}
 				 {/foreach}
 			</tbody>
-			
+
 		</table>
 	</div>
-	
+
 	<div class="widgetRow">
 		<div class="form_actions">
 			<input type="hidden" name="action" value="change_enabled" />
@@ -140,6 +164,9 @@
 			<input type="button" value="{i18n}Enable{/i18n}" id="enableButton" onclick="updateUser('enable');">
 			<input type="button" value="{i18n}Disable{/i18n}" id="disableButton" onclick="updateUser('disable');">
 			<input type="button" value="{i18n}Delete{/i18n}" id="deleteButton" onclick="confirmDelete();">
+			{if $invited}
+			    <input type="button" value="{i18n}Resend Invites{/i18n}" id="inviteButton" onclick="updateUser('invite');">
+			{/if}
 		</div>
 	</div>
 </form>

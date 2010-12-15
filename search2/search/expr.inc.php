@@ -92,7 +92,7 @@ class RankManager
 		$this->dbfields=array();
 		$sql = "SELECT groupname, itemname, ranking, type FROM search_ranking";
 		$rs = DBUtil::getResultArray($sql);
-		foreach($rs as $item)
+		foreach ($rs as $item)
 		{
 			switch ($item['type'])
 			{
@@ -127,10 +127,12 @@ class RankManager
 	public static function get()
 	{
 		static $singleton = null;
+		
 		if (is_null($singleton))
 		{
 			$singleton = new RankManager();
 		}
+		
 		return $singleton;
 	}
 
@@ -549,7 +551,6 @@ class DBFieldExpr extends FieldExpr
     	return $value;
     }
 
-
     public function getJoinTable() { return $this->jointable; }
     public function getJoinField() { return $this->joinfield; }
     public function getMatchingField() { return $this->matchfield; }
@@ -808,7 +809,7 @@ class ValueListExpr extends Expr
     	}
         $str = '';
 
-        foreach($this->values as $value)
+        foreach ($this->values as $value)
         {
         	if ($str != '') $str .= ',';
         	$str .= "\"$value\"";
@@ -834,10 +835,10 @@ class ValueListExpr extends Expr
             $expr_id = $this->getExprId();
 
             $str .= "struct$expr_id [style=ellipse, label=\"$expr_id: ";
-            $i=0;
-            foreach($this->values as $value)
+            $i = 0;
+            foreach ($this->values as $value)
             {
-            	if ($i++>0) $str .= ',';
+            	if ($i++ > 0) $str .= ',';
             	$value = addslashes($value);
             	$str .= "\\\"$value\\\"";
             }
@@ -855,7 +856,7 @@ class ValueListExpr extends Expr
 			return;
 		}
 		$newops = array();
-		foreach($this->values as $value)
+		foreach ($this->values as $value)
 		{
 			$classname = get_class($left);
 			$class = new $classname;
@@ -1009,7 +1010,7 @@ class TextQueryBuilder implements QueryBuilder
 	public function buildSimpleQuery($op, $group)
 	{
 		$query = '';
-		foreach($group as $expr)
+		foreach ($group as $expr)
 		{
 			if (!empty($query))
 			{
@@ -1036,9 +1037,10 @@ class TextQueryBuilder implements QueryBuilder
 	public function getRanking($result)
 	{
 		$init = $result->Rank;
-		$score=0;
+		$score = 0;
 		$ranker = RankManager::get();
-		$score += $init *$ranker->scoreField('DocumentText', 'S');
+		$score += $init * $ranker->scoreField('DocumentText', 'S');
+		
 		return $score;
 	}
 
@@ -1199,7 +1201,7 @@ class SQLQueryBuilder implements QueryBuilder
 	private function exploreGroup($group)
 	{
 		// split up metadata and determine table usage
-        foreach($group as $expr)
+        foreach ($group as $expr)
         {
             $field = $expr->left();
 
@@ -1294,6 +1296,7 @@ class SQLQueryBuilder implements QueryBuilder
 			    $query = $right->getSQL($left, $left->modifyName($fieldname), $expr->op(), $isNot);
 		    }
 		}
+		
 		return $query;
 	}
 
@@ -1333,8 +1336,8 @@ class SQLQueryBuilder implements QueryBuilder
          *
          * 0 = "does not match"
          */
-        $offset=0;
-        foreach($this->db as $expr)
+        $offset = 0;
+        foreach ($this->db as $expr)
         {
             $offset++;
             $sql .= ", ifnull(" . $this->getSQLEvalExpr($expr) . ",0) as expr$offset ";
@@ -1346,7 +1349,7 @@ class SQLQueryBuilder implements QueryBuilder
          *
          * 0 = "does not match"
          */
-        foreach($this->metadata as $expr)
+        foreach ($this->metadata as $expr)
         {
         	$offset++;
         	$sql .= ", ifnull(" . $this->getSQLEvalExpr($expr) . ",0) as expr$offset ";
@@ -1407,7 +1410,7 @@ class SQLQueryBuilder implements QueryBuilder
          * look at the constructors for the AnyMetadataField class or the MimeTypeField class.
          */
 		$offset = 0;
-        foreach($this->db as $expr)
+        foreach ($this->db as $expr)
         {
         	$field = $expr->left();
         	$jointable=$field->getJoinTable();
@@ -1424,8 +1427,8 @@ class SQLQueryBuilder implements QueryBuilder
 
         if ($this->context == ExprContext::DOCUMENT)
         {
-            $offset=0;
-            foreach($this->metadata as $expr)
+            $offset = 0;
+            foreach ($this->metadata as $expr)
             {
                 $offset++;
                 $field = $expr->left();
@@ -1437,21 +1440,34 @@ class SQLQueryBuilder implements QueryBuilder
         }
 
         // Add permissions sql for read access
-        $oPermission =& KTPermission::getByName('ktcore.permissions.read');
-        $permId = $oPermission->getID();
         $oUser = User::get($_SESSION['userID']);
-        $aPermissionDescriptors = KTPermissionUtil::getPermissionDescriptorsForUser($oUser);
-        $sPermissionDescriptors = empty($aPermissionDescriptors)? -1: implode(',', $aPermissionDescriptors);
+        // check user type, shared users have a different permissions validation structure
+        if ($oUser->getDisabled() == 4) {
+            if ($this->context == ExprContext::DOCUMENT) {
+                $sql .= " INNER JOIN shared_content sc ON (sc.object_id = d.id) OR (sc.object_id = (SELECT folder_id FROM documents dlink WHERE dlink.id = d.id) AND sc.type = 'folder') AND sc.user_id = {$oUser->getId()}\n";
+            }
+            else if ($this->context == ExprContext::FOLDER) {
+                $sql .= " INNER JOIN shared_content sc ON (sc.object_id = f.id) OR (sc.object_id = (SELECT parent_id FROM folders flink WHERE flink.id = f.id) AND sc.type = 'folder') AND sc.user_id = {$oUser->getId()}\n";
+            }
+            
+            $sql .= ' WHERE ';
+        }
+        else {
+            $oPermission =& KTPermission::getByName('ktcore.permissions.read');
+            $permId = $oPermission->getID();
+            $aPermissionDescriptors = KTPermissionUtil::getPermissionDescriptorsForUser($oUser);
+            $sPermissionDescriptors = empty($aPermissionDescriptors) ? -1 : implode(',', $aPermissionDescriptors);
 
-        $sql .= "INNER JOIN permission_lookups AS PL ON $primaryAlias.permission_lookup_id = PL.id\n";
-        $sql .= 'INNER JOIN permission_lookup_assignments AS PLA ON PL.id = PLA.permission_lookup_id AND PLA.permission_id = '.$permId. " \n";
-        $sql .= "WHERE PLA.permission_descriptor_id IN ($sPermissionDescriptors) AND ";
+            $sql .= " INNER JOIN permission_lookups AS PL ON $primaryAlias.permission_lookup_id = PL.id\n";
+            $sql .= " INNER JOIN permission_lookup_assignments AS PLA ON PL.id = PLA.permission_lookup_id AND PLA.permission_id = $permId \n";
+            $sql .= " WHERE PLA.permission_descriptor_id IN ($sPermissionDescriptors) AND ";
+        }
 
         if ($this->context == ExprContext::DOCUMENT)
         {
              $sql .= "d.linked_document_id is null";
 
-             if($this->incl_status){
+             if ($this->incl_status) {
                 $sql .= " AND dmv.status_id=1 AND d.status_id=1";
              }
         }
@@ -1471,29 +1487,31 @@ class SQLQueryBuilder implements QueryBuilder
 			throw new Exception(_kt('Metadata field expected'));
 		}
 
-		$offset=0;
-		foreach($this->metadata as $item)
+		$offset = 0;
+		foreach ($this->metadata as $item)
 		{
 			if ($item->getExprId() == $expr->getExprId())
 			{
 				return $offset;
 			}
-			$offset++;
+			++$offset;
 		}
+		
 		throw new Exception('metadata field not found');
 	}
 
 	private function resolveJoinOffset($expr)
 	{
-		$offset=0;
-		foreach($this->db as $item)
+		$offset = 0;
+		foreach ($this->db as $item)
 		{
 			if ($item->getExprId() == $expr->getExprId())
 			{
 				return $offset;
 			}
-			$offset++;
+			++$offset;
 		}
+		
 		throw new Exception('join field not found');
 	}
 
@@ -1570,8 +1588,8 @@ class SQLQueryBuilder implements QueryBuilder
 
         $sql = $this->buildCoreSQL();
 
-        $offset=0;
-        foreach($this->db as $expr)
+        $offset = 0;
+        foreach ($this->db as $expr)
         {
             if ($offset++)
             {
@@ -1600,8 +1618,8 @@ class SQLQueryBuilder implements QueryBuilder
 
         if ($this->context == ExprContext::DOCUMENT)
         {
-            $moffset=0;
-            foreach($this->metadata as $expr)
+            $moffset = 0;
+            foreach ($this->metadata as $expr)
             {
                 $moffset++;
                 if ($offset++)
@@ -1638,7 +1656,7 @@ class SQLQueryBuilder implements QueryBuilder
 	{
 		$ranker = RankManager::get();
 		$score = 0;
-		foreach($result as $col=>$val)
+		foreach ($result as $col=>$val)
 		{
 			if ($val + 0 == 0)
 			{
@@ -1671,7 +1689,7 @@ class SQLQueryBuilder implements QueryBuilder
 	public function getResultText($result)
 	{
 		$text = array();
-		foreach($result as $col=>$val)
+		foreach ($result as $col=>$val)
 		{
 			if (substr($col, 0, 4) == 'expr' && is_numeric(substr($col, 4)))
 			{
@@ -1680,7 +1698,9 @@ class SQLQueryBuilder implements QueryBuilder
 					// we are not interested if the expression failed
 					continue;
 				}
+				
 				$exprno = substr($col, 4);
+				
 				if ($exprno <= count($this->db))
 				{
 					$expr = $this->db[$exprno-1];
@@ -1690,14 +1710,14 @@ class SQLQueryBuilder implements QueryBuilder
 					$exprno -= count($this->db);
 					$expr = $this->metadata[$exprno-1];
 				}
+				
 				$text[] = (string) $expr;
 			}
 		}
+		
 		return '(' . implode(') AND (', $text) . ')';
 	}
 }
-
-
 
 class OpExpr extends Expr
 {
@@ -1707,7 +1727,6 @@ class OpExpr extends Expr
      * @var Expr
      */
     protected $left_expr;
-
     /**
      * The operator on the left and right
      *
@@ -1720,42 +1739,36 @@ class OpExpr extends Expr
      * @var Expr
      */
     protected $right_expr;
-
     /**
      * This indicates that the expression is negative
      *
      * @var boolean
      */
     protected $not;
-
     protected $point;
-
     protected $has_text;
     protected $has_db;
-
     private $debug = false;
-
-//    protected $flattened;
-
     protected $results;
+//    protected $flattened;
 
     public function setResults($results)
     {
-        $this->results=$results;
+        $this->results = $results;
     }
     public function getResults()
     {
         return $this->results;
     }
 
-    public function setHasDb($value=true)
+    public function setHasDb($value = true)
     {
-        $this->has_db=$value;
+        $this->has_db = $value;
     }
 
-    public function setHasText($value=true)
+    public function setHasText($value = true)
     {
-        $this->has_text=$value;
+        $this->has_text = $value;
     }
 
     public function setContext($context)
@@ -1800,7 +1813,7 @@ class OpExpr extends Expr
 		return $this->op() == $expr->op();
 	}
 
-	public static function rewriteString(&$left, &$op, &$right, $not=false)
+	public static function rewriteString(&$left, &$op, &$right, $not = false)
     {
 		if ($right->isValueExpr())
     	{
@@ -1812,20 +1825,17 @@ class OpExpr extends Expr
     	}
 
     	$text = array();
+    	preg_match_all('/[\']([^\']*)[\']/', $value, $matches);
 
-
-    	preg_match_all('/[\']([^\']*)[\']/',$value, $matches);
-
-    	foreach($matches[0] as $item)
+    	foreach ($matches[0] as $item)
     	{
     		$text [] = $item;
-
     		$value = str_replace($item, '', $value);
     	}
 
     	$matches = explode(' ', $value);
 
-    	foreach($matches as $item)
+    	foreach ($matches as $item)
     	{
     		if (empty($item)) continue;
     		$text[] = $item;
@@ -1840,9 +1850,9 @@ class OpExpr extends Expr
 
     	$left = new OpExpr($doctext, $op, new ValueExpr($text[0]));
 
-    	for($i=1;$i<count($text);$i++)
+    	for ($i = 1; $i < count($text); $i++)
     	{
-    		if ($i==1)
+    		if ($i == 1)
     		{
     			$right = new OpExpr($doctext, $op, new ValueExpr($text[$i]));
     		}
@@ -1855,7 +1865,6 @@ class OpExpr extends Expr
 
     	$op = ExprOp::OP_AND;
     }
-
 
     /**
      * Constructor for the expression
@@ -1901,11 +1910,11 @@ class OpExpr extends Expr
 
         $left->setParent($this);
         $right->setParent($this);
-        $this->left_expr=&$left;
+        $this->left_expr = &$left;
         $this->op = $op;
-        $this->right_expr=&$right;
+        $this->right_expr = &$right;
         $this->not = $not;
-        $this->has_text=false;
+        $this->has_text = false;
 
        // $this->setPoint('point');
 
@@ -1926,7 +1935,7 @@ class OpExpr extends Expr
         if ($right->isOpExpr())
         {
             if ($right->getHasText()) { $this->setHasText(); }
-            if ($right->getHasDb())   { $this->setHasDb(); }
+            if ($right->getHasDb()) { $this->setHasDb(); }
         }
      //   $this->flattened=null;
 
@@ -2028,7 +2037,7 @@ class OpExpr extends Expr
 
     protected function isMergePoint()
     {
-    	return in_array($this->getPoint(), array('merge','point'));
+    	return in_array($this->getPoint(), array('merge', 'point'));
     }
 
     /**
@@ -2047,7 +2056,7 @@ class OpExpr extends Expr
      * @param boolean $not
      * @return boolean
      */
-    public function not($not=null)
+    public function not($not = null)
     {
         if (!is_null($not))
         {
@@ -2085,7 +2094,7 @@ class OpExpr extends Expr
     public function __toString()
     {
         // _kt may not translate well here.
-        $expr = $this->left_expr . ' ' . sprintf(_kt('%s') , $this->op) .' ' .  $this->right_expr;
+        $expr = $this->left_expr . ' ' . sprintf(_kt('%s') , $this->op) . ' ' .  $this->right_expr;
 
         if (is_null($this->parent))
         {
@@ -2098,7 +2107,7 @@ class OpExpr extends Expr
 
         if ($this->parent->isOpExpr())
         {
-            if ($this->parent->op != $this->op && in_array($this->op, DefaultOpCollection::$boolean))
+            if (($this->parent->op != $this->op) && in_array($this->op, DefaultOpCollection::$boolean))
             {
                  $expr = "($expr)";
             }
@@ -2138,7 +2147,7 @@ class OpExpr extends Expr
     		return array(); // small optimisation
     	}
     	$result = array();
-    	foreach($leftres as $item)
+    	foreach ($leftres as $item)
     	{
     		$document_id = $item->Id;
 
@@ -2193,7 +2202,7 @@ class OpExpr extends Expr
     	}
     	$result = array();
 
-    	foreach($leftres as $item)
+    	foreach ($leftres as $item)
     	{
 			if ($item->IsLive)
     		{
@@ -2201,7 +2210,7 @@ class OpExpr extends Expr
     		}
     	}
 
-    	foreach($rightres as $item)
+    	foreach ($rightres as $item)
     	{
     		if (!array_key_exists($item->Id, $result) || $item->Rank > $result[$item->Id]->Rank)
     		{
@@ -2219,9 +2228,8 @@ class OpExpr extends Expr
      * @param OpExpr $right
      * @param boolean $not
      */
-    public function transform(& $left, & $op, & $right, & $not)
+    public function transform(&$left, &$op, &$right, &$not)
     {
-
     	if (!$left->isOpExpr() || !$right->isOpExpr() || !DefaultOpCollection::isBoolean($op))
     	{
     		return;
@@ -2236,12 +2244,12 @@ class OpExpr extends Expr
 			return;
 		}
 
-		if ($op != $right->op() || !DefaultOpCollection::isBoolean($right))
+		if (($op != $right->op()) || !DefaultOpCollection::isBoolean($right))
 		{
 			return;
 		}
 
-		if ($op == ExprOp::OP_OR && ($not || $right->not()))
+		if (($op == ExprOp::OP_OR) && ($not || $right->not()))
 		{
 			// NOTE: we can't transform. e.g.
 			// db or !(db or txt) => db or !db and !txt
@@ -2256,7 +2264,7 @@ class OpExpr extends Expr
 
 		if ($left->isDBonly() && $rightLeft->isDBonly())
 		{
-			$newLeft = new OpExpr( $left, $op, $rightLeft );
+			$newLeft = new OpExpr($left, $op, $rightLeft);
 
 			$right = $rightRight;
 			$left = $newLeft;
@@ -2279,6 +2287,7 @@ class OpExpr extends Expr
     	{
     		return null;
     	}
+    	
     	switch($what)
     	{
     		case 'db':
@@ -2294,11 +2303,13 @@ class OpExpr extends Expr
     			}
     			break;
     	}
+    	
     	$node = $this->findDBNode($start->left(), $op, $what);
     	if (is_null($left))
     	{
     		$node = $this->findDBNode($start->right(), $op, $what);
     	}
+    	
     	return $node;
 
     }
@@ -2313,13 +2324,13 @@ class OpExpr extends Expr
 
     private function exploreItem($item, & $group, $interest)
     {
-    	if (($interest == 'db' && $item->getHasDb()) ||
-    		($interest == 'text' && $item->getHasText()))
+    	if ((($interest == 'db') && $item->getHasDb()) ||
+    		(($interest == 'text') && $item->getHasText()))
     	{
 			if (in_array($item->op(), array(ExprOp::OP_OR, ExprOp::OP_AND)))
 			{
-				$this->exploreItem($item->left(),  $group, $interest);
-				$this->exploreItem($item->right(),  $group, $interest);
+				$this->exploreItem($item->left(), $group, $interest);
+				$this->exploreItem($item->right(), $group, $interest);
 			}
 			else
 			{
@@ -2328,10 +2339,10 @@ class OpExpr extends Expr
     	}
     }
 
-    private function explore($left, $right, & $group, $interest)
+    private function explore($left, $right, &$group, $interest)
     {
-		$this->exploreItem($left,  $group, $interest);
-		$this->exploreItem($right,  $group, $interest);
+		$this->exploreItem($left, $group, $interest);
+		$this->exploreItem($right, $group, $interest);
     }
 
 	public function checkComplexQuery($expr)
@@ -2344,12 +2355,12 @@ class OpExpr extends Expr
 		if (DefaultOpCollection::isBoolean($expr))
 		{			
 			$iCriteria = $this->checkComplexQuery($left);
-			if(!empty($iCriteria)) {
+			if (!empty($iCriteria)) {
 				$oCriteria = array_merge($oCriteria, $iCriteria);
 			}
 
 			$iCriteria = $this->checkComplexQuery($right);
-			if(!empty($iCriteria)) {
+			if (!empty($iCriteria)) {
 				$oCriteria = array_merge($oCriteria, $iCriteria);
 			}
 		}
@@ -2367,14 +2378,12 @@ class OpExpr extends Expr
 
             $rsField = DBUtil::getResultArray("SELECT * FROM document_fields WHERE name = \"$fieldname\";");
 
-            if($rsField[0]['data_type'] == 'LARGE TEXT')
+            if ($rsField[0]['data_type'] == 'LARGE TEXT')
             {
             	$iCriteria = array();
-            	
             	$iCriteria['field'] = $fieldname;
             	$iCriteria['value'] = $value;
             	$iCriteria['not'] = $expr->not();
-	
             	$oCriteria[] = $iCriteria;
             }
             
@@ -2411,7 +2420,7 @@ class OpExpr extends Expr
     // NOTE this function is currently unused as it is incomplete and not able to handle some complex queries
 	public function checkValues($document_id, $oColumns)
 	{
-		foreach($oColumns as $column)
+		foreach ($oColumns as $column)
 		{
 			$rsField = DBUtil::getResultArray("SELECT df.name, dfl.value FROM documents d 
 				INNER JOIN document_metadata_version dmv ON d.metadata_version_id=dmv.id 
@@ -2433,11 +2442,11 @@ class OpExpr extends Expr
 
     		//$default->log->debug("POSITION: " . $position);
     		
-    		if(!$column['not'] && ($position === false)) {
+    		if (!$column['not'] && ($position === false)) {
                 return false;
             }
     		// cater for NOT queries
-            else if($column['not'] && ($position !== false)) {
+            else if ($column['not'] && ($position !== false)) {
                 return false;
             }
 		}
@@ -2471,12 +2480,11 @@ class OpExpr extends Expr
     	if (empty($sql)) {
     	    return array();
     	}
-
-    	$results = array();
+    	
     	global $default;
     	$default->log->debug("SEARCH SQL: $sql");
+    	
     	$rs = DBUtil::getResultArray($sql);
-
     	if (PEAR::isError($rs)) {
     		throw new Exception($rs->getMessage());
     	}
@@ -2488,8 +2496,7 @@ class OpExpr extends Expr
     	else
     	{
            	//$default->log->debug("CASE 2");
-           	
-			foreach($group as $expr)
+			foreach ($group as $expr)
 			{
 				$left = $expr->left();
             	$right = $expr->right();
@@ -2501,18 +2508,15 @@ class OpExpr extends Expr
 
             	$rsField = DBUtil::getResultArray("SELECT * FROM document_fields WHERE name = \"$fieldname\";");
 
-            	if($rsField[0]['data_type'] == 'LARGE TEXT')
+            	if ($rsField[0]['data_type'] == 'LARGE TEXT')
             	{
             		$iCriteria = array();
-
-					$iCriteria[0] = array();
-
+            		$iCriteria[0] = array();
             		$iCriteria[0]['field'] = $fieldname;
             		$iCriteria[0]['value'] = $value;
             		$iCriteria[0]['not'] = $expr->not();
-
             		$oCriteria[] = $iCriteria[0];
-
+            		
             		/*$not = $expr->not()?' NOT ':'';
 
             		if (strpos($value, ' ') !== false)
@@ -2527,18 +2531,19 @@ class OpExpr extends Expr
 
         //$default->log->debug("TOTAL CRITERIA: " . count($oCriteria));
 		
-    	foreach($rs as $item)
+    	$results = array();
+    	foreach ($rs as $item)
     	{
     		$id = $item['id'];
     		$rank = $exprbuilder->getRanking($item);
-    		if (!array_key_exists($id, $results) || $rank > $results[$id]->Rank)
+    		if (!array_key_exists($id, $results) || ($rank > $results[$id]->Rank))
     		{
 				if ($this->context == ExprContext::DOCUMENT)
     		    {
     		        // NOTE removing the call to checkValues as the function only handles some query types, and is currently not so important as
                     //      we are stripping most html tags from the html type inputs
     				/*
-    				if((count($oCriteria) > 0 && $this->checkValues($id, $oCriteria)) || count($oCriteria) == 0)
+    				if ((count($oCriteria) > 0 && $this->checkValues($id, $oCriteria)) || count($oCriteria) == 0)
     				{
 		    			$results[$id] = new DocumentResultItem($id, $rank, $item['title'], $exprbuilder->getResultText($item), null, $this->incl_status);
     				}
@@ -2567,7 +2572,7 @@ class OpExpr extends Expr
     {
     	global $default;
     	// if the indexer has been disabled, return an empty array
-    	if(!$default->enableIndexing){
+    	if (!$default->enableIndexing) {
     	    $default->log->debug("SEARCH LUCENE: indexer has been disabled.");
     	    return array();
     	}
@@ -2600,7 +2605,7 @@ class OpExpr extends Expr
     	$default->log->debug("SEARCH LUCENE: $query");
 
     	$results = $indexer->query($query);
-    	foreach($results as $item)
+    	foreach ($results as $item)
     	{
     		$item->Rank = $exprbuilder->getRanking($item);
     		$exprbuilder->setQuery($query);
@@ -2618,9 +2623,8 @@ class OpExpr extends Expr
      */
 	public function evaluate($context = ExprContext::DOCUMENT_AND_FOLDER)
 	{
-
     	global $default;
-    	$default->log->debug("START EVALUATE");
+    	$default->log->debug('START EVALUATE');
 		
 		if ($context == ExprContext::DOCUMENT_AND_FOLDER)
 	    {	    	
@@ -2645,7 +2649,7 @@ class OpExpr extends Expr
         {
         	$point = 'point';
         }
-		$resultContext = ($this->getContext() == ExprContext::DOCUMENT)?'docs':'folders';
+		$resultContext = ($this->getContext() == ExprContext::DOCUMENT) ? 'docs' : 'folders';
 		
 		if ($point == 'merge')
 		{
@@ -2713,9 +2717,9 @@ class OpExpr extends Expr
 		}
 
 		$permResults = array();
-		if(isset($result[$resultContext]))
+		if (isset($result[$resultContext]))
 		{
-    		foreach($result[$resultContext] as $idx=>$item)
+    		foreach ($result[$resultContext] as $idx => $item)
     		{
     			$permResults[$resultContext][$idx] = $item;
     		}

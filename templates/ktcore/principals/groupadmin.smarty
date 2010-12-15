@@ -12,7 +12,7 @@
 		
 		<div class="form_actions">
 			<!-- Search button -->
-			<input type="submit" value="{i18n}search for groups{/i18n}" />
+			<input type="submit" value="{i18n}Search For Groups{/i18n}" />
 		</div>
 	</div>
 	

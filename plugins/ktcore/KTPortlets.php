@@ -206,3 +206,5 @@ class KTAdminSectionNavigation extends KTPortlet {
         return $oTemplate->render($aTemplateData);
     }
 }
+
+?>

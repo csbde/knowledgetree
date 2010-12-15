@@ -41,6 +41,10 @@ class jsonResponseObject{
 		Clienttools_Syslog::logError($user,$this->location,array('code'=>$code,'message'=>$message),'');
 	}
 	
+	public function hasErrors(){
+		return count($this->errors)>0;
+	}
+	
 	public function setStatus($varName=NULL,$value=NULL){
 		$this->status[$varName]=$value;
 	}
@@ -49,12 +53,20 @@ class jsonResponseObject{
 		$this->data[$varName]=$value;
 	}
 	
+	public function getData($varname=NULL){
+		if($varname==NULL){
+			return $this->data;
+		}else{
+			return isset($this->data[$varname]) ? $this->data[$varname] : NULL;
+		}
+	}
+	
 	public function overwriteData($value=NULL){
 		$this->data=$value;
 	}
 	
 	public function setDebug($varName=NULL,$value=NULL){
-		if(is_array($this->debug[$varName]) && is_array($value))$value=array_merge($this->debug[$varName],$value);
+//		if(is_array($this->debug[$varName]) && is_array($value))$value=array_merge($this->debug[$varName],$value);
 		$this->debug[$varName]=$value;
 		$user=isset($this->request['auth']['user'])?$this->request['auth']['user']:'';
 		Clienttools_Syslog::logInfo($user,$this->location,$varName,$value);

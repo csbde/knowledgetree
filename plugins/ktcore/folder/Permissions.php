@@ -5,7 +5,7 @@
  * KnowledgeTree Community Edition
  * Document Management Made Simple
  * Copyright (C) 2008, 2009, 2010 KnowledgeTree Inc.
- * 
+ *
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License version 3 as published by the
@@ -53,11 +53,11 @@ class KTFolderPermissionsAction extends KTFolderAction {
     var $bAutomaticTransaction = true;
 
     function getDisplayName() {
-        return _kt('Sharing');
+        return _kt('Permissions');
     }
 
     function do_main() {
-        $this->oPage->setBreadcrumbDetails(_kt('Sharing'));
+        $this->oPage->setBreadcrumbDetails(_kt('Permissions'));
         $oTemplate = $this->oValidator->validateTemplate('ktcore/folder/view_permissions');
 
         $oPO = KTPermissionObject::get($this->oFolder->getPermissionObjectID());
@@ -190,7 +190,7 @@ class KTFolderPermissionsAction extends KTFolderAction {
     }
 
     function do_resolved_users() {
-        $this->oPage->setBreadcrumbDetails(_kt('Sharing'));
+        $this->oPage->setBreadcrumbDetails(_kt('Permissions'));
         $oTemplate = $this->oValidator->validateTemplate('ktcore/folder/resolved_permissions_user');
 
         $oPL = KTPermissionLookup::get($this->oFolder->getPermissionLookupID());
@@ -220,7 +220,8 @@ class KTFolderPermissionsAction extends KTFolderAction {
 				if ($everyone || ($authenticated && $oUser->isAnonymous()) ||
 					KTPermissionUtil::userHasPermissionOnItem($oUser, $oPermission, $this->oFolder)){
 					$aMapPermissionUser[$iPermissionID][$oUser->getId()] = true;
-					$aActiveUsers[$oUser->getId()] = $oUser->getName();
+					$name = ($oUser->getDisabled() == 3) ? '(Invited) '.$oUser->getEmail() : $oUser->getName();
+					$aActiveUsers[$oUser->getId()] = $name;
 				}
              }
         }

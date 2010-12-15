@@ -7,7 +7,7 @@
  * KnowledgeTree Community Edition
  * Document Management Made Simple
  * Copyright (C) 2008, 2009, 2010 KnowledgeTree Inc.
- * 
+ *
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License version 3 as published by the
@@ -46,7 +46,7 @@ class KTUtil {
 	const DAY_IN_SECS = 86400;
 	const KB = 1024;
     const MB = 1048576;
-    const GB = 1000000000;
+    const GB = 1073741824;
     const TB = 1099511627776;
     const PB = 1125899906842624;
 
@@ -157,6 +157,7 @@ class KTUtil {
 		{
 			$default->log->debug("kt_url: base url - $base_url");
 		}
+		
 		return $base_url;
 	}
 
@@ -1025,7 +1026,16 @@ class KTUtil {
 
     // {{{ addQueryStringSelf
     static function addQueryStringSelf($qs) {
-        return KTUtil::addQueryString($_SERVER['PHP_SELF'], $qs);
+		
+		// REDIRECT_URL is different from HTTP_REFERER
+		// It picks up a .htaccess redirect
+		if (isset($_SERVER['REDIRECT_URL'])) {
+			$url = $_SERVER['REDIRECT_URL'];
+		} else {
+			$url = $_SERVER['PHP_SELF'];
+		}
+		
+        return KTUtil::addQueryString($url, $qs);
     }
     // }}}
 
@@ -1366,32 +1376,32 @@ class KTUtil {
     	}
     	return $result;
     }
-    
+
     public static function documentIsQueued($document_id=NULL){
     	$sql="SELECT document_id FROM `process_queue` WHERE document_id='{$document_id}'";
     	$res=DBUtil::getOneResultKey($sql,"document_id");
     	$ret=PEAR::isError($res) ? false : (count($res)>0 ? true : false);
     	return $ret;
     }
-	
+
 	public static function buildUrl($file, $params=null)
 	{
 		$useCleanURL = TRUE;
-		
+
 		// Convert to Array
 		if ($params == null) {
 			$params = array();
 		}
-		
-		
+
+
 		if ($useCleanURL) {
 			return KTUtil::buildCleanUrl($file, $params);
 		} else {
 			return KTUtil::buildNormalUrl($file, $params);
-			
+
 		}
 	}
-	
+
 	private function buildNormalUrl($file, $params)
 	{
 		if (count($params) == 0) {
@@ -1399,58 +1409,106 @@ class KTUtil {
 		} else {
 			$file .= '?';
 			$sep = '';
-			
+
 			foreach ($params as $param=>$name)
 			{
 				$file .= $sep.$param.'='.$name;
 				$sep = '&';
 			}
-			
+
 			return $file;
 		}
 	}
-	
+
 	private function buildCleanUrl($file, $params)
 	{
 		switch($file)
 		{
 			case '/view.php':
 			case 'view.php':
-				
+
 				$config = KTConfig::getSingleton();
 				$rootUrl = $config->get('KnowledgeTree/rootUrl');
-				
+
 				$url = $rootUrl.'/01'.base_convert($params['fDocumentId'], 10, 36);
-				
+
 				// Remove parameter
 				unset($params['fDocumentId']);
 				// Rebuild with additional parameters
 				return KTUtil::buildNormalUrl($url, $params);
-				
+
 				break;
 			case '/browse.php':
 			case 'browse.php':
-				
+
 				$config = KTConfig::getSingleton();
 				$rootUrl = $config->get('KnowledgeTree/rootUrl');
-				
+
 				if (!isset($params['fFolderId'])) {
 					$params['fFolderId'] = 1;
 				}
-				
+
 				$url = $rootUrl.'/00'.base_convert($params['fFolderId'], 10, 36);
-				
+
 				// Remove parameter
 				unset($params['fFolderId']);
 				// Rebuild with additional parameters
 				return KTUtil::buildNormalUrl($url, $params);
-				
+
 				break;
 			default:
 				return KTUtil::buildNormalUrl($file, $params);
 		}
 	}
-    
+
+	public static function decodeId($id)
+	{
+	    return base_convert($id, 36, 10);
+	}
+
+	/**
+	 * Encode a string using a key
+	 * http://www.myphpscripts.net/tutorial.php?id=9
+	 *
+	 * @param string $string The string to encode
+     * @param string $key The key to use in the encoding
+     * @return string The encoded string
+	 */
+    public static function encode($string,$key) {
+        $key = sha1($key);
+        $strLen = strlen($string);
+        $keyLen = strlen($key);
+        for ($i = 0; $i < $strLen; $i++) {
+            $ordStr = ord(substr($string,$i,1));
+            if ($j == $keyLen) { $j = 0; }
+            $ordKey = ord(substr($key,$j,1));
+            $j++;
+            $hash .= strrev(base_convert(dechex($ordStr + $ordKey),16,36));
+        }
+        return $hash;
+    }
+
+    /**
+     * Decode a hashed string using a key
+     * http://www.myphpscripts.net/tutorial.php?id=9
+     *
+     * @param string $string The string to decode
+     * @param string $key The key to use in the decoding
+     * @return string The unencoded string
+     */
+    public static function decode($string,$key) {
+        $key = sha1($key);
+        $strLen = strlen($string);
+        $keyLen = strlen($key);
+        for ($i = 0; $i < $strLen; $i+=2) {
+            $ordStr = hexdec(base_convert(strrev(substr($string,$i,2)),36,16));
+            if ($j == $keyLen) { $j = 0; }
+            $ordKey = ord(substr($key,$j,1));
+            $j++;
+            $hash .= chr($ordStr - $ordKey);
+        }
+        return $hash;
+    }
 }
 
 /**

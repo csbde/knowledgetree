@@ -165,11 +165,20 @@ var $sHelpPage = 'ktcore/admin/deleted documents.html';
         foreach ($aDocuments as $oDoc) {
             // first evaluate the folder for inconsistencies.
             $oFolder = Folder::get($oDoc->getFolderID());
+            $sFilename = $oDoc->getFileName();
+            $full_path = $oDoc->getFullPath();
+
             if (PEAR::isError($oFolder)) { $oDoc->setFolderId(1); $oDoc->update(); }
 
             if (!$oStorage->expunge($oDoc)) { $aErrorDocuments[] = $oDoc->getDisplayPath(); }
             else {
-                $oDocumentTransaction = & new DocumentTransaction($oDoc, _kt('Document expunged'), 'ktcore.transactions.expunge');
+                // Store the documents full path in the transaction history - replace the title with the filename
+                $path_arr = explode('/', $full_path);
+                array_pop($path_arr);
+                $full_path = implode('/', $path_arr);
+
+                $comment = sprintf(_kt("Document expunged: %s/%s"), $full_path, $sFilename);
+                $oDocumentTransaction = & new DocumentTransaction($oDoc, $comment, 'ktcore.transactions.expunge');
                 $oDocumentTransaction->create();
 
                 // delete this from the db now

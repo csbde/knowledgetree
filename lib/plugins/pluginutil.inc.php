@@ -174,8 +174,8 @@ class KTPluginUtil {
 
         if(PEAR::isError($aPluginHelpers)){
             global $default;
-            $default->log->debug('Error in pluginutil: '.$aPluginHelpers->getMessage());
-            return false;
+            $default->log->error('Error in pluginutil: '.$aPluginHelpers->getMessage());
+            return $aPluginHelpers;
         }
 
         // Check that there are plugins and if not, register them
@@ -199,14 +199,17 @@ class KTPluginUtil {
                 if ((strpos($path, KT_DIR) === false)) {
                     $path = KT_DIR . '/' . $path;
                 }
-                require_once($path);
-
-            	$oPlugin = new $classname($path);
-            	if($oPlugin->load()){
-            	   $aPlugins[] = $oPlugin;
-            	}else{
-            	    $aDisabled[] = "'{$aItem['plugin']}'";
-            	}
+                if(file_exists($path))
+                {
+	                require_once($path);
+	
+	            	$oPlugin = new $classname($path);
+	            	if($oPlugin->load()){
+	            	   $aPlugins[] = $oPlugin;
+	            	}else{
+	            	    $aDisabled[] = "'{$aItem['plugin']}'";
+	            	}
+                }
             }
         }
 
@@ -737,7 +740,7 @@ class KTPluginUtil {
             return $oEntity;
         }
         $dir = dirname($oEntity->getPath()) . '/';
-                
+
         if(!$relative && (strpos($dir, KT_DIR) === false)) {
             $dir = KT_DIR . '/' . $dir;
         }

@@ -269,7 +269,7 @@ INSERT INTO `config_settings` VALUES
 (92, 'cache', 'Cache Directory', 'The location of the KnowledgeTree cache.', 'cacheDirectory', 'default', '${varDirectory}/cache', 'string', NULL, 1),
 (93, 'openoffice', 'Program Path', 'Defines the path to the OpenOffice program directory. ', 'programPath', 'default', '../openoffice/program', 'string', NULL, 1),
 (94, 'urls', 'Document Directory', 'The path to the documents directory', 'documentRoot', 'default', '${varDirectory}/Documents', 'string', NULL, 1),
-(95, 'KnowledgeTree', 'Redirect To Browse View', 'Defines whether to redirect to the Browse view (Browse Documemts) on login, instead of the Dashboard.<br>Default is \'False\'. ', 'redirectToBrowse', 'default', 'false', 'boolean', NULL, 1),
+(95, 'KnowledgeTree', 'Redirect To Browse View', 'Defines whether to redirect to the Browse view (Browse Documemts) on login, instead of the Dashboard.<br>Default is \'True\'. ', 'redirectToBrowse', 'default', 'true', 'boolean', NULL, 1),
 (96, 'KnowledgeTree', 'Redirect To Browse View: Exceptions', 'Specifies that, when \'Redirect To Browse\' is set to \'True\' all users, except for the users listed in the text field below are redirected to the Browse view on log in. The users listed for this setting are directed to the KnowledgeTree Dashboard. To define exceptions, add user names in the text field as follows, e.g. admin, joebloggs, etc.', 'redirectToBrowseExceptions', '', '', 'string', NULL, 1),
 (97, 'session', 'Allow Automatic Sign In', 'Defines whether to automatically create a user account on first login for any user who does not yet exist in the system. Default is \'False\'.', 'allowAutoSignup', 'default', 'false', 'boolean', 'string', 1),
 (98, 'ldapAuthentication', 'Create Groups Automatically', 'Defines whether to allow LDAP groups to be created automatically. Default is \'False\'.', 'autoGroupCreation', 'default', 'false', 'boolean', 'string', 1),
@@ -277,7 +277,7 @@ INSERT INTO `config_settings` VALUES
 (100, 'import', 'Disable Bulk Import', 'Disable the bulk import plugin', 'disableBulkImport', 'default', 'false', 'string', NULL, 1),
 (101, 'session', 'Enable version check', 'Compares the system version with the database version to determine if a database upgrade is needed.','dbversioncompare', 'default', 'true', 'boolean', NULL, 0),
 (102, 'tweaks', 'Update Document Version (Content) on Editing Metadata', 'The document version is equivalent to the document content version. When set to true the document version will be increased when the document metadata is updated.', 'updateContentVersion', 'default', 'false', 'boolean', NULL, 1),
-(103, 'tweaks', 'Always Force Original Filename on Checkin', 'When set to true, the checkbox for "Force Original Filename" will be hidden on check-in. This ensures that the filename will always stay the same.', 'disableForceFilenameOption', 'default', 'false', 'boolean', NULL, 1),
+(103, 'tweaks', 'Always Force Original Filename on Check-In', 'When set to true, the checkbox for "Force Original Filename" will be hidden on check-in. This ensures that the filename will always stay the same.', 'disableForceFilenameOption', 'default', 'false', 'boolean', NULL, 1),
 (104, 'KnowledgeTree', 'The Location of the Mime Magic File', 'The path to the mime magic database file.', 'magicDatabase', 'default', '${fileSystemRoot}/../common/share/file/magic', 'string', NULL, 1),
 (105, 'search', 'Maximum results from SQL query', 'The maximum results from an SQL query', 'maxSqlResults', 'default', '10000', 'numeric_string', NULL, 1),
 (106, 'indexer', 'Enable the Document Indexer', 'Enables the indexing of document content for full text searching.', 'enableIndexing', 'default', 'true', 'boolean', NULL, 1),
@@ -295,7 +295,9 @@ INSERT INTO `config_settings` VALUES
 (118, 'urls', 'Internal Var Directory', 'The path to the internal var directory that must sit within the web root', 'internalVarDirectory', 'default', '${fileSystemRoot}/var', 'string', NULL, 0),
 (119, 'externalBinary', 'convert', 'The path to the ImageMagick "convert" binary', 'convertPath', 'default', 'convert', 'string', NULL, 1),
 (120, 'explorerCPSettings', 'Debug Log Level', 'Set the level of debug information included in the server side log file', 'debugLevel', 'error', 'error', 'dropdown', 'a:1:{s:7:\"options\";a:3:{i:0;a:2:{s:5:\"value\";s:3:\"off\";s:5:\"label\";s:10:\"No Logging\";}i:1;a:2:{s:5:\"value\";s:5:\"error\";s:5:\"label\";s:18:\"Error Logging Only\";}i:2;a:2:{s:5:\"value\";s:5:\"debug\";s:5:\"label\";s:28:\"Error and Debug Info Logging\";}}}', 1),
-('121', 'actionreasons', 'Enable Global Document Reasons', 'If switched on, reasons will be required for all major document actions including Check-in, Check-out, Delete, Finalize, Copy, Move and Archive.', 'globalReasons', 'false', 'false', 'boolean', NULL, 1);
+(121, 'actionreasons', 'Enable Global Document Reasons', 'If switched on, reasons will be required for all major document actions including Check-in, Check-out, Delete, Finalize, Copy, Move and Archive.', 'globalReasons', 'default', 'false', 'boolean', NULL, 1),
+(122, 'ui', 'Restricted Environment', 'Removes certain administrative features from the interface to prevent users from accessing the functionality', 'restrictedEnv', 'default', 'false', 'boolean', NULL, 0),
+(123, 'user_prefs', 'Use Email Address to Login', 'Defines whether the username or the users email address is used for logging in', 'useEmailLogin', 'true', 'false', 'boolean', NULL, 0);
 /*!40000 ALTER TABLE `config_settings` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -493,12 +495,12 @@ INSERT INTO `document_transaction_types_lookup` VALUES
 (4,'Rename','ktcore.transactions.rename'),
 (5,'Move','ktcore.transactions.move'),
 (6,'Download','ktcore.transactions.download'),
-(7,'Check In','ktcore.transactions.check_in'),
-(8,'Check Out','ktcore.transactions.check_out'),
+(7,'Check-In','ktcore.transactions.check_in'),
+(8,'Check-Out','ktcore.transactions.check_out'),
 (9,'Collaboration Step Rollback','ktcore.transactions.collaboration_step_rollback'),
 (10,'View','ktcore.transactions.view'),
 (11,'Expunge','ktcore.transactions.expunge'),
-(12,'Force CheckIn','ktcore.transactions.force_checkin'),
+(12,'Force Check-In','ktcore.transactions.force_checkin'),
 (13,'Email Link','ktcore.transactions.email_link'),
 (14,'Collaboration Step Approve','ktcore.transactions.collaboration_step_approve'),
 (15,'Email Attachment','ktcore.transactions.email_attachment'),
@@ -680,7 +682,7 @@ UNLOCK TABLES;
 LOCK TABLES `folders` WRITE;
 /*!40000 ALTER TABLE `folders` DISABLE KEYS */;
 INSERT INTO `folders` VALUES
-(1,'Root Folder','Root Document Folder',NULL,1,'',1,'',0,NULL,NULL,1,5,0,1,NULL);
+(1,'Root Folder','Root Document Folder',NULL,1,'',1,'',0,NULL,NULL,1,3,0,1,NULL);
 /*!40000 ALTER TABLE `folders` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1132,14 +1134,14 @@ UNLOCK TABLES;
 LOCK TABLES `permission_assignments` WRITE;
 /*!40000 ALTER TABLE `permission_assignments` DISABLE KEYS */;
 INSERT INTO `permission_assignments` VALUES
-(1,1,1,2),
-(2,2,1,2),
-(3,3,1,2),
+(1,1,1,3),
+(2,2,1,3),
+(3,3,1,3),
 (4,4,1,2),
 (5,5,1,2),
 (6,6,1,2),
-(7,7,1,2),
-(8,8,1,2);
+(7,7,1,3),
+(8,8,1,3);
 /*!40000 ALTER TABLE `permission_assignments` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1150,7 +1152,8 @@ UNLOCK TABLES;
 LOCK TABLES `permission_descriptor_groups` WRITE;
 /*!40000 ALTER TABLE `permission_descriptor_groups` DISABLE KEYS */;
 INSERT INTO `permission_descriptor_groups` VALUES
-(2,1);
+(2,1),
+(3,1);
 /*!40000 ALTER TABLE `permission_descriptor_groups` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1160,6 +1163,8 @@ UNLOCK TABLES;
 
 LOCK TABLES `permission_descriptor_roles` WRITE;
 /*!40000 ALTER TABLE `permission_descriptor_roles` DISABLE KEYS */;
+INSERT INTO `permission_descriptor_roles` VALUES
+(3,-4);
 /*!40000 ALTER TABLE `permission_descriptor_roles` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1180,7 +1185,8 @@ LOCK TABLES `permission_descriptors` WRITE;
 /*!40000 ALTER TABLE `permission_descriptors` DISABLE KEYS */;
 INSERT INTO `permission_descriptors` VALUES
 (1,'d41d8cd98f00b204e9800998ecf8427e',''),
-(2,'a689e7c4dc953de8d93b1ed4843b2dfe','group(1)');
+(2,'a689e7c4dc953de8d93b1ed4843b2dfe','group(1)'),
+(3,'454170523920fb0dd45353aa492d5899','group(1)role(-4)');
 /*!40000 ALTER TABLE `permission_descriptors` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1215,24 +1221,19 @@ INSERT INTO `permission_lookup_assignments` VALUES
 (4,1,2,2),
 (5,2,2,2),
 (6,3,2,2),
-(7,1,3,2),
-(8,2,3,2),
-(9,3,3,2),
-(10,4,3,2),
-(11,5,3,2),
-(12,1,4,2),
-(13,2,4,2),
-(14,3,4,2),
-(15,4,4,2),
-(16,5,4,2),
-(17,6,4,2),
-(18,1,5,2),
-(19,2,5,2),
-(20,3,5,2),
-(21,4,5,2),
-(22,5,5,2),
-(23,6,5,2),
-(24,7,5,2);
+(7,4,2,2),
+(8,5,2,2),
+(9,6,2,2),
+(10,7,2,2),
+(11,8,2,2),
+(12,1,3,3),
+(13,2,3,3),
+(14,3,3,3),
+(15,4,3,2),
+(16,5,3,2),
+(17,6,3,2),
+(18,7,3,3),
+(19,8,3,3);
 /*!40000 ALTER TABLE `permission_lookup_assignments` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1245,9 +1246,7 @@ LOCK TABLES `permission_lookups` WRITE;
 INSERT INTO `permission_lookups` VALUES
 (1),
 (2),
-(3),
-(4),
-(5);
+(3);
 /*!40000 ALTER TABLE `permission_lookups` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1346,12 +1345,13 @@ UNLOCK TABLES;
 LOCK TABLES `roles` WRITE;
 /*!40000 ALTER TABLE `roles` DISABLE KEYS */;
 INSERT INTO `roles` VALUES
-(-4,'Authenticated Users'),
-(4,'Creator'),
+(-5,'Shared Users'),
+(-4,'Licensed Users'),
 (-3,'Everyone'),
 (-2,'Owner'),
 (2,'Publisher'),
-(3,'Reviewer');
+(3,'Reviewer'),
+(4,'Creator');
 /*!40000 ALTER TABLE `roles` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1467,8 +1467,8 @@ LOCK TABLES `system_settings` WRITE;
 /*!40000 ALTER TABLE `system_settings` DISABLE KEYS */;
 INSERT INTO `system_settings` VALUES
 (1,'lastIndexUpdate','0'),
-(2,'knowledgeTreeVersion','3.7.0.5'),
-(3,'databaseVersion','3.7.0.5'),
+(2,'knowledgeTreeVersion','3.7.0.8'),
+(3,'databaseVersion','3.7.0.8'),
 (4,'server_name','127.0.0.1');
 /*!40000 ALTER TABLE `system_settings` ENABLE KEYS */;
 UNLOCK TABLES;
@@ -1787,7 +1787,21 @@ INSERT INTO `upgrades` VALUES
 (239,'upgrade*3.7.0.3*99*upgrade3.7.0.3','Upgrade from version 3.7.0.2 to 3.7.0.3','2009-12-14 00:00:00',1,'upgrade*3.7.0.3*99*upgrade3.7.0.3'),
 (240,'sql*3.7.0.4*0*3.7.0.4/download_files.sql','Database upgrade to version 3.7.0.4: Download Files','2010-02-19 00:00:00',1,'upgrade*3.7.0.4*99*upgrade3.7.0.4'),
 (241,'upgrade*3.7.0.4*99*upgrade3.7.0.4','Upgrade from version 3.7.0.3 to 3.7.0.4','2010-02-19 00:00:00',1,'upgrade*3.7.0.4*99*upgrade3.7.0.4'),
-(242,'upgrade*3.7.0.5*99*upgrade3.7.0.5','Upgrade from version 3.7.0.4 to 3.7.0.5','2010-05-06 00:00:00',1,'upgrade*3.7.0.5*99*upgrade3.7.0.5');
+(242,'sql*3.7.0.5*0*3.7.0.5/config_setting_hide_storage_driver.sql','Database upgrade to version 3.7.0.5: Config Setting Hide Storage Driver','2010-05-06 00:00:00',1,'upgrade*3.7.0.5*99*upgrade3.7.0.5'),
+(243,'sql*3.7.0.5*0*3.7.0.5/config_setting_restricted_env.sql','Database upgrade to version 3.7.0.5: Config Setting Restricted Env','2010-05-06 00:00:00',1,'upgrade*3.7.0.5*99*upgrade3.7.0.5'),
+(244,'sql*3.7.0.5*0*3.7.0.5/document_link_types.sql','Database upgrade to version 3.7.0.5: Document Link Types','2010-05-06 00:00:00',1,'upgrade*3.7.0.5*99*upgrade3.7.0.5'),
+(245,'sql*3.7.0.5*0*3.7.0.5/drop_zseq_tables.sql','Database upgrade to version 3.7.0.5: Drop Zseq Tables','2010-05-06 00:00:00',1,'upgrade*3.7.0.5*99*upgrade3.7.0.5'),
+(246,'upgrade*3.7.0.5*99*upgrade3.7.0.5','Upgrade from version 3.7.0.4 to 3.7.0.5','2010-05-06 00:00:00',1,'upgrade*3.7.0.5*99*upgrade3.7.0.5'),
+(247,'sql*3.7.0.6*0*3.7.0.6/disable_force_file_option.sql','Database upgrade to version 3.7.0.6: Disable Force File Option','2010-10-13 00:00:00',1,'upgrade*3.7.0.6*99*upgrade3.7.0.6'),
+(248,'sql*3.7.0.6*0*3.7.0.6/document_renditions.sql','Database upgrade to version 3.7.0.6: Document Renditions','2010-10-13 00:00:00',1,'upgrade*3.7.0.6*99*upgrade3.7.0.6'),
+(249,'sql*3.7.0.6*0*3.7.0.6/global_reasons_switch.sql','Database upgrade to version 3.7.0.6: Global Reasons Switch','2010-10-13 00:00:00',1,'upgrade*3.7.0.6*99*upgrade3.7.0.6'),
+(250,'upgrade*3.7.0.6*99*upgrade3.7.0.6','Upgrade from version 3.7.0.5 to 3.7.0.6','2010-10-13 00:00:00',1,'upgrade*3.7.0.6*99*upgrade3.7.0.6'),
+(251,'sql*3.7.0.7*0*3.7.0.7/config_email_login.sql','Database upgrade to version 3.7.0.7: Config email login','2010-11-01 00:00:00',1,'upgrade*3.7.0.7*99*upgrade3.7.0.7'),
+(252,'sql*3.7.0.7*0*3.7.0.7/rename_authenticated_role.sql','Database upgrade to version 3.7.0.7: Rename authenticated role','2010-11-01 00:00:00',1,'upgrade*3.7.0.7*99*upgrade3.7.0.7'),
+(253,'upgrade*3.7.0.7*99*upgrade3.7.0.7','Upgrade from version 3.7.0.6 to 3.7.0.7','2010-11-01 00:00:00',1,'upgrade*3.7.0.7*99*upgrade3.7.0.7'),
+(254,'sql*3.7.0.8*0*3.7.0.8/shared_content.sql','Database upgrade to version 3.7.0.8: Add shared content table','2010-11-01 00:00:00',1,'upgrade*3.7.0.8*99*upgrade3.7.0.8'),
+(255,'sql*3.7.0.8*0*3.7.0.8/shared_users.sql','Database upgrade to version 3.7.0.8: Add shared user role','2010-11-01 00:00:00',1,'upgrade*3.7.0.8*99*upgrade3.7.0.8'),
+(256,'upgrade*3.7.0.8*99*upgrade3.7.0.8','Upgrade from version 3.7.0.7 to 3.7.0.8','2010-11-01 00:00:00',1,'upgrade*3.7.0.8*99*upgrade3.7.0.8');
 /*!40000 ALTER TABLE `upgrades` ENABLE KEYS */;
 UNLOCK TABLES;
 

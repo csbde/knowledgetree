@@ -38,16 +38,14 @@
 // TODO: do we have to serialise/unserialise the results. this is not optimal!!!
 
 session_start();
-require_once("config/dmsDefaults.php");
+
+require_once('config/dmsDefaults.php');
 require_once(KT_DIR . '/search2/indexing/indexerCore.inc.php');
-
-require_once(KT_LIB_DIR . "/unitmanagement/Unit.inc");
-
-require_once(KT_LIB_DIR . "/templating/templating.inc.php");
-require_once(KT_LIB_DIR . "/dispatcher.inc.php");
-require_once(KT_LIB_DIR . "/widgets/forms.inc.php");
-require_once(KT_LIB_DIR . "/actions/bulkaction.php");
-
+require_once(KT_LIB_DIR . '/unitmanagement/Unit.inc');
+require_once(KT_LIB_DIR . '/templating/templating.inc.php');
+require_once(KT_LIB_DIR . '/dispatcher.inc.php');
+require_once(KT_LIB_DIR . '/widgets/forms.inc.php');
+require_once(KT_LIB_DIR . '/actions/bulkaction.php');
 require_once(KT_LIB_DIR . '/browse/DocumentCollection.inc.php');
 require_once(KT_LIB_DIR . '/documentmanagement/Document.inc');
 require_once(KT_LIB_DIR . '/browse/PartialQuery.inc.php');
@@ -55,7 +53,6 @@ require_once(KT_LIB_DIR . '/browse/PartialQuery.inc.php');
 function search2queryCompare($a, $b)
 {
 	global $search2queryColumn, $search2queryOrder;
-
 
 	if ($a->$search2queryColumn == $b->$search2queryColumn)
 	{
@@ -68,9 +65,8 @@ function search2queryCompare($a, $b)
 	if ($search2queryOrder == 'asc')
 		return $result;
 	else
-		return - $result;
+		return -$result;
 }
-
 
 /**
  * Assists with old browse search results
@@ -257,7 +253,8 @@ class SearchDispatcher extends KTStandardDispatcher {
 
     		// bit of a hack
     		// check for the isDeleted and isArchived keywords affecting status in the query
-    		if(strpos($query, 'IsDeleted') !== false || strpos($query, 'IsArchived') !== false){
+    		if (strpos($query, 'IsDeleted') !== false || strpos($query, 'IsArchived') !== false)
+    		{
     		    $expr->setIncludeStatus(false);
     		}
 
@@ -293,7 +290,7 @@ class SearchDispatcher extends KTStandardDispatcher {
     	redirect(KTUtil::kt_url().'/dashboard.php');
     }
 
-    function do_refresh(){
+    function do_refresh() {
         // Get query from session
         $query = $_SESSION['search2_query'];
 
@@ -305,14 +302,15 @@ class SearchDispatcher extends KTStandardDispatcher {
      * Processes a query sent by HTTP POST in searchQuery.
      *
      */
+    // FIXME the string replacement of certain chars was causing some problem which I cannot recall (check jira?)
     function do_process()
     {
     	if (empty($_REQUEST['txtQuery']))
     	{
     		$this->errorRedirectTo('searchResults', _kt('Please reattempt the query. The query is missing.'));
     	}
-    	$query = $_REQUEST['txtQuery'];
 
+    	$query = $_REQUEST['txtQuery'];
     	// Strip out returns - they cause a js error [unterminated string literal]
     	$query = str_replace(array("\r\n", "\r", "\n"), array(' ', ' ', ' '), $query);
     	$query = strip_tags($query);
@@ -332,7 +330,6 @@ class SearchDispatcher extends KTStandardDispatcher {
 
     		    $special_chars = array('+', '-', '&&', '||', '(', ')', '{', '}', '[', ']', '^', '"', '~', '*', '?', ':', '<', '>', '\\');
 //                $replacement = array('\+', '\-', '\&\&', '\|\|', '\!', '\(', '\)', '\{', '\}', '\[', '\]', '\^', '\"', '\~', '\*', '\?', '\:');
-
                 $updated_query = str_replace($special_chars, ' ', $new_query);
 
     			$_SESSION['search2_quickQuery'] = $updated_query;
@@ -343,7 +340,8 @@ class SearchDispatcher extends KTStandardDispatcher {
     	{
 			$_SESSION['search2_quickQuery'] = '';
     	}
-    	if (isset($_REQUEST['cbQuickGeneral']) && $_REQUEST['cbQuickGeneral'] +0 == 1)
+    	
+    	if (isset($_REQUEST['cbQuickGeneral']) && ($_REQUEST['cbQuickGeneral'] + 0 == 1))
     	{
     		$_SESSION['search2_general'] = 1;
     	}
@@ -455,7 +453,7 @@ class SearchDispatcher extends KTStandardDispatcher {
     {
         if (array_key_exists('format', $_GET))
         {
-            switch ($_GET['format']){
+            switch ($_GET['format']) {
                 case 'searchengine':
                     $_SESSION['search2resultFormat'] = 'searchengine';
                     break;
@@ -466,7 +464,7 @@ class SearchDispatcher extends KTStandardDispatcher {
         }
         else
         {
-            if(!array_key_exists('search2resultFormat', $_SESSION)){
+            if (!array_key_exists('search2resultFormat', $_SESSION)) {
                 global $default;
                 $_SESSION['search2resultFormat'] = $default->resultsDisplayFormat;
             }
@@ -500,7 +498,7 @@ class SearchDispatcher extends KTStandardDispatcher {
         $display_order = $_SESSION['display_order'];
         $selected_order = array('f' => '', 'd' => '', 's' => '');
 
-        switch ($display_order){
+        switch ($display_order) {
             case 's':
                 $selected_order['s'] = 'selected';
                 $resultArray = $results['shortfolders'];
@@ -783,6 +781,7 @@ class SearchDispatcher extends KTStandardDispatcher {
               'iSavedSearchId'=>$this->savedSearchId
 
         );
+        
         return $oTemplate->render($aTemplateData);
 	}
 }

@@ -1,0 +1,1 @@
+ALTER TABLE document_content_version ADD COLUMN has_rendition INT(4);

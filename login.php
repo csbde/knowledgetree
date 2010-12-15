@@ -57,7 +57,7 @@ class LoginPageDispatcher extends KTDispatcher {
         $this->session = new Session();
         $sessionStatus = $this->session->verify();
         if ($sessionStatus === true) { // the session is valid
-            if ($_SESSION['userID'] == -2 && $oKTConfig->get('allowAnonymousLogin', false)) {
+            if (($_SESSION['userID'] == -2) && ($oKTConfig->get('allowAnonymousLogin', false))) {
                 ; // that's ok - we want to login.
             }
             else {
@@ -92,11 +92,6 @@ class LoginPageDispatcher extends KTDispatcher {
     }
 
     function performLogin(&$oUser) {
-        if (!($oUser instanceof User)) {
-            #var_dump($oUser);
-            #var_dump(PEAR::raiseError());
-        }
-
         /*
         Removing the code that redirects to the dashboard as it breaks linking in from external documents.
         The fix below doesn't work if the users are behind a proxy server.
@@ -192,6 +187,10 @@ class LoginPageDispatcher extends KTDispatcher {
             $sDisclaimer = $oPlugin->getLoginDisclaimer();
         }
 
+        // Check if using the username or email address
+        $oConfig = KTConfig::getSingleton();
+        $useEmail = $oConfig->get('user_prefs/useEmailLogin', false);
+
         $oTemplating =& KTTemplating::getSingleton();
         $oTemplate = $oTemplating->loadTemplate("ktcore/login");
         $aTemplateData = array(
@@ -205,6 +204,7 @@ class LoginPageDispatcher extends KTDispatcher {
               'selected_language' => $sLanguageSelect,
 	      	  'disclaimer' => $sDisclaimer,
 			  'smallVersion' => $default->versionTier,
+              'use_email' => $useEmail,
         	  'username' => isset($_REQUEST['username']) ? $_REQUEST['username'] : null,
         );
         return $oTemplate->render($aTemplateData);
@@ -266,7 +266,12 @@ class LoginPageDispatcher extends KTDispatcher {
             if ($oUser instanceof ktentitynoobjects) {
                 $this->handleUserDoesNotExist($username, $password, $aExtra);
             }
-            $this->simpleRedirectToMain(_kt('Login failed.  Please check your username and password, and try again.'), $url, $queryParams);
+			$KTConfig = KTConfig::getSingleton();
+			if($KTConfig->get('user_prefs/useEmailLogin', false))
+            	$message = 'Login failed.  Please check your email address and password, and try again.';
+            else 
+            	$message = 'Login failed.  Please check your username and password, and try again.';
+            $this->simpleRedirectToMain(_kt($message), $url, $queryParams);
             exit(0);
         }
 
@@ -282,7 +287,12 @@ class LoginPageDispatcher extends KTDispatcher {
         }
 
         if ($authenticated !== true) {
-            $this->simpleRedirectToMain(_kt('Login failed.  Please check your username and password, and try again.'), $url, $queryParams);
+			$KTConfig = KTConfig::getSingleton();
+			if($KTConfig->get('user_prefs/useEmailLogin', false))
+            	$message = 'Login failed.  Please check your email address and password, and try again.';
+            else 
+            	$message = 'Login failed.  Please check your username and password, and try again.';
+            $this->simpleRedirectToMain(_kt($message), $url, $queryParams);
             exit(0);
         }
 

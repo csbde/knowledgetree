@@ -107,7 +107,7 @@ class DocumentTransaction extends KTEntity {
 		if (PEAR::isError($oFolder) || ($oFolder == false)) {
 		    $this->sFileName = '.../' . $oDocument->getName();
 		} else {
-		    $this->sFileName = addslashes($oFolder->sFullPath . "/" . $oFolder->getName() . "/" . $oDocument->getName());
+		    $this->sFileName = addslashes($oFolder->getFullPath() . "/" . $oDocument->getName());
 		}
 
 		$this->iUserID = $_SESSION["userID"];
@@ -118,7 +118,7 @@ class DocumentTransaction extends KTEntity {
             $this->iUserID = $oUser->getID();
         }
 		$this->dDateTime = getCurrentDateTime();
-		$this->sIP = KTUtil::arrayGet($_SERVER, "REMOTE_ADDR", '0.0.0.0');
+		$this->sIP = KTUtil::arrayGet($_SERVER, 'REMOTE_ADDR', '0.0.0.0');
 
 		$oFolder = Folder::get($oDocument->getFolderID());
 		// head off the certain breakage down the line.
@@ -251,6 +251,28 @@ class DocumentTransaction extends KTEntity {
     function getByDocument($oDocument) {
         $iDocumentId = KTUtil::getId($oDocument);
         return DocumentTransaction::getList(array('document_id = ?', array($iDocumentId)));
+    }
+    
+	function getByDocumentFilterByNamespace($oDocument, $sNameSpace) {		
+		//we need to get the proper name of the action we are filtering on
+		$oType = KTDocumentTransactionType::getByNamespace($sNameSpace);
+		
+        $aTransactionsByDocument = DocumentTransaction::getByDocument($oDocument);
+        
+        $result = array();
+        
+        foreach($aTransactionsByDocument as $oTransaction)
+        {
+        	$transaction =  DocumentTransaction::get($oTransaction->getId());
+
+        	//do we have a match?
+        	if(strtolower($transaction->getAction()) == strtolower($oType->getName()))
+        	{
+        		$result[] = $transaction;
+        	}
+        }
+        
+        return $result;
     }
 }
 ?>

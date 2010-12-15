@@ -1456,7 +1456,8 @@ jQuery(document).ready(function(){
 				{
 					return;
 				}
-				jQuery('form .form_actions').hide();
+				jQuery('#button1').hide();
+				jQuery('#cancelButton').show();
 				ranfilename = jQuery('#file_random_name').val();
 				detectArchiveFile(file);
                 this.setData({
@@ -1470,7 +1471,6 @@ jQuery(document).ready(function(){
                 });
                 button.hide();
 				jQuery('#uploading_spinner').css({visibility: 'visible'});
-				jQuery('#cancelButton').show();
                 Img = document.getElementById('spinner');
                 Img.style.display="inline";
                 Img.src = "resources/graphics/thirdparty/loader.gif";
@@ -1487,7 +1487,7 @@ jQuery(document).ready(function(){
                 jQuery('#cancelButton').hide();
                 jQuery('#document_type_field').show();
                 jQuery('#type_metadata_fields').show();
-                jQuery('#advanced_settings_metadata_button').show();
+                //jQuery('#advanced_settings_metadata_button').show();
                 jQuery('#successful_upload_files_ul').show();
 				var listitem = '<li>';
 				listitem += '<span id="'+ranfilename+'_title">'+title+'</span>';

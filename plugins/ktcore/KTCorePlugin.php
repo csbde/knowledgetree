@@ -57,12 +57,15 @@ class KTCorePlugin extends KTPlugin {
         $oConfig = KTConfig::getSingleton();
         $restrictedEnv = $oConfig->get('ui/restrictedEnv');
 
+		
         $this->registerAction('documentinfo', 'KTDocumentDetailsAction', 'ktcore.actions.document.displaydetails', 'KTDocumentActions.php');
         $this->registerAction('documentviewlet', 'KTDocumentActivityFeedAction', 'ktcore.viewlet.document.activityfeed', 'KTDocumentViewlets.php');
         $this->registerAction('documentaction', 'KTDocumentViewAction', 'ktcore.actions.document.view', 'KTDocumentActions.php');
         $this->registerAction('documentaction', 'KTOwnershipChangeAction', 'ktcore.actions.document.ownershipchange', 'KTDocumentActions.php');
         $this->registerAction('documentaction', 'KTDocumentCheckOutAction', 'ktcore.actions.document.checkout', 'KTDocumentActions.php');
         $this->registerAction('documentaction', 'KTDocumentCancelCheckOutAction', 'ktcore.actions.document.cancelcheckout', 'KTDocumentActions.php');
+        $this->registerAction('documentaction', 'SharedContentDocumentAction', 'ktcore.actions.document.sharecontent', KT_PLUGIN_DIR . '/sharedcontent/SharedContentDocumentAction.php');
+        
         $this->registerAction('documentaction', 'KTDocumentCheckInAction', 'ktcore.actions.document.checkin', 'KTDocumentActions.php');
         $this->registerAction('documentaction', 'KTDocumentEditAction', 'ktcore.actions.document.edit', 'document/edit.php');
         $this->registerAction('documentaction', 'KTDocumentDeleteAction', 'ktcore.actions.document.delete', 'KTDocumentActions.php');
@@ -179,6 +182,10 @@ class KTCorePlugin extends KTPlugin {
 		// Bulk Download Trigger
 		$this->registerTrigger('ktcore', 'pageLoad', 'BulkDownloadTrigger', 'ktcore.triggers.pageload', 'KTDownloadTriggers.inc.php');
 
+		// Shared User Triggers
+		$this->registerTrigger('contentadd', 'postValidate', 'KTAddSharedContentObjectTrigger', 'ktcore.triggers.sharedcontent.add', KT_DIR . '/plugins/sharedcontent/SharedContentTriggers.php');
+		$this->registerTrigger('contentdelete', 'postValidate', 'KTDeleteSharedContentObjectTrigger', 'ktcore.triggers.sharedcontent.delete', KT_DIR . '/plugins/sharedcontent/SharedContentTriggers.php');
+
         // widgets
         $this->registerWidget('KTCoreInfoWidget', 'ktcore.widgets.info', 'KTWidgets.php');
         $this->registerWidget('KTCoreHiddenWidget', 'ktcore.widgets.hidden', 'KTWidgets.php');
@@ -207,7 +214,7 @@ class KTCorePlugin extends KTPlugin {
         $this->registerWidget('KTCoreImageCropWidget', 'ktcore.widgets.imagecrop', 'KTWidgets.php');
 		$this->registerWidget('KTCoreSWFFileSelectWidget', 'ktcore.widgets.swffileselect', 'KTWidgets.php');
 		$this->registerWidget('KTCoreAjaxUploadWidget', 'ktcore.widgets.ajaxupload', 'KTWidgets.php');
-        
+
         $this->registerPage('collection', 'KTCoreCollectionPage', 'KTWidgets.php');
         $this->registerPage('notifications', 'KTNotificationOverflowPage', 'KTMiscPages.php');
 
@@ -277,25 +284,25 @@ class KTCorePlugin extends KTPlugin {
             _kt('Configure system settings.'));
 		$this->registerAdminCategory('contentIndexing', _kt('Content Indexing'),
             _kt('View and configure content indexing for search.'));
-			
+
 
         // users and groups
         $this->registerAdminPage('users', 'KTUserAdminDispatcher', 'userSetup',
             _kt('Manage Users'), _kt('Add or remove users from the system.'),
-            'admin/userManagement.php', null);
+            'admin/userManagement.php', null, 10);
         $this->registerAdminPage('groups', 'KTGroupAdminDispatcher', 'userSetup',
             _kt('Manage Groups'), _kt('Add or remove groups from the system.'),
-            'admin/groupManagement.php', null);
+            'admin/groupManagement.php', null, 9);
         $this->registerAdminPage('units', 'KTUnitAdminDispatcher', 'contentSetup',
             _kt('Control Units'), _kt('Specify which organisational units are available within the repository.'),
             'admin/unitManagement.php', null);
 
         // security
         $this->registerAdminPage('permissions', 'ManagePermissionsDispatcher', 'userSetup',
-            _kt('Permissions'), _kt('Create or delete permissions.'), 'admin/managePermissions.php', null);
+            _kt('Permissions'), _kt('Create or delete permissions.'), 'admin/managePermissions.php', null, 7);
         $this->registerAdminPage('roles', 'RoleAdminDispatcher', 'userSetup',
             _kt('Roles'), _kt('Create or delete roles'),
-            'admin/roleManagement.php', null);
+            'admin/roleManagement.php', null, 8);
         $this->registerAdminPage('conditions', 'KTConditionDispatcher', 'contentSetup',
             _kt('Dynamic Conditions'),
             _kt('Manage criteria which determine whether a user is permitted to perform a system action.'),

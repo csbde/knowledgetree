@@ -217,7 +217,6 @@ class KTDispatcher {
     function redirectTo($event, $sQuery = "") {
         // meld persistant options
         $sQuery = $this->meldPersistQuery($sQuery, $event);
-
         $sRedirect = KTUtil::addQueryString($_SERVER['PHP_SELF'], $sQuery);
         $this->oRedirector->redirect($sRedirect);
         exit(0);
@@ -307,14 +306,15 @@ class KTDispatcher {
 }
 
 class KTStandardDispatcher extends KTDispatcher {
-    var $bLogonRequired = true;
-    var $bAdminRequired = false;
-    var $aBreadcrumbs = array();
-    var $sSection = false;
-    var $oPage = false;
-    var $sHelpPage = null;
-    var $bJSONMode = false;
-
+    public $bLogonRequired = true;
+    public $bAdminRequired = false;
+    public $aBreadcrumbs = array();
+    public $sSection = false;
+    public $oPage = false;
+    public $sHelpPage = null;
+    public $bJSONMode = false;
+	public $aCannotView = array();
+	
     function KTStandardDispatcher() {
         if (empty($GLOBALS['main'])) {
             $GLOBALS['main'] =new KTPage;
@@ -337,6 +337,27 @@ class KTStandardDispatcher extends KTDispatcher {
         $this->oPage->setUser($this->oUser);
 	$this->oPage->hideSection();
 
+        $this->oPage->render();
+        exit(0);
+    }
+    
+    function planDenied () {
+        // handle anonymous specially.
+        if ($this->oUser->getId() == -2) {
+            redirect(KTUtil::ktLink('login.php','',sprintf("redirect=%s&errorMessage=%s", urlencode($_SERVER['REQUEST_URI']), urlencode(_kt("You must be logged in to perform this action"))))); exit(0);
+        }
+		global $default;
+		
+		$msg = _kt('You are on the ' . $default->plan . ' plan which does not have this functionality - ');
+		$msg .= '<a href="/admin.php?kt_path_info=accountInformation/systemQuotas" title="Upgrade"> Upgrade </a>';
+		// Don't sanitize the info, as we would like to display a link
+		$this->oPage->allowHTML = true;
+		// Set message in info flash
+        $this->oPage->addInfo($msg);
+        // Empty content
+        $this->oPage->setPageContents('<div></div>');
+        $this->oPage->setUser($this->oUser);
+		$this->oPage->hideSection();
         $this->oPage->render();
         exit(0);
     }
@@ -419,6 +440,23 @@ class KTStandardDispatcher extends KTDispatcher {
             }
         }
 
+        if (!empty($this->aCannotView)) 
+        {
+        	global $default;
+        	if(in_array($default->plan, $this->aCannotView))
+        	{
+				$this->planDenied();
+                exit(0);
+        	}
+        	
+        	$this->oUser =& User::get($_SESSION['userID']);
+        	if(in_array($this->oUser->getDisabled(), $this->aCannotView))
+        	{
+				$this->permissionDenied();
+                exit(0);
+        	}
+        }
+        
         if ($this->check() !== true) {
             $this->permissionDenied();
             exit(0);
@@ -517,8 +555,8 @@ class KTStandardDispatcher extends KTDispatcher {
 }
 
 class KTAdminDispatcher extends KTStandardDispatcher {
-    var $bAdminRequired = true;
-    var $sSection = 'administration';
+    public $bAdminRequired = true;
+    public $sSection = 'administration';
 
     function KTAdminDispatcher() {
         $this->aBreadcrumbs = array(

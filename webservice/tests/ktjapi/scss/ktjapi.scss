@@ -1,0 +1,160 @@
+@import 'mixins';
+
+
+$background-color:#D5DDF5;
+$corner-size: 5px;
+
+$header-background:#DDDDDD;
+$header-border: 3px none #999999;
+
+$main-background: #FFFFFF;
+$main-border: 1px solid #666666;
+
+
+
+html{
+	display: block;
+	margin: 0;
+	background-color:$background-color;
+	height: 100%;
+}
+
+body{
+	display: block;
+	margin: 0;
+	padding: 20px;
+}
+.main{
+	@include corners($corner-size);
+	@include shadow(15px,#3D445C);
+	font-family:Arial, Helvetica, sans-serif;
+	font-size:11px;
+	color:#333333;
+	background-color:$main-background;
+	width: 400px;
+	height: 100%;
+	border: $main-border;
+}
+.output{
+	@include corners($corner-size);
+	@include shadow(15px,#3D445C);
+	font-family:Arial, Helvetica, sans-serif;
+	font-size:11px;
+	color:#333333;
+	background-color:#FFFFFF;
+	width: 600px;
+	height: 100%;
+	border: 1px solid #666666;
+}
+.header{
+	font-family:Arial, Helvetica, sans-serif;
+	color:#333333;
+	font-size:16px;
+	font-weight:bold;
+	padding: 5px 5px 5px 10px;
+	border-bottom:$header-border;
+	@include gradient($header-background);
+	@include shadow(3px, #666666, 0px, 1px);
+	&.top{
+		@include corners(5px,5px,0px);
+	}
+}
+.content{
+	padding:15px;
+	font-family:Arial, Helvetica, sans-serif;
+	font-size:11px;
+	color:#333333;
+}
+
+.inputHeading{
+	text-shadow: 1px 1px 5px #666666;
+	font-size:14px;
+	font-weight:bold;
+	padding:4px;
+}
+
+.inputSection{
+	border:1px solid #999999;
+	background-color: #FFFFFF;
+	@include shadow(4px,#666666);
+	padding: 5px;
+}
+
+.inputTitle{
+	font-size:12px;
+	font-weight: bold;
+	text-align:right;
+	padding: 2px;
+	padding-right:5px;
+	background-color:#EEEEEE;
+	border-right:1px solid #999999;
+	vertical-align:middle;
+}
+
+.inputCell{
+	padding: 1px 5px 1px 5px;
+	text-align:left;
+	vertical-align:middle;
+	border-bottom:1px dotted #CCCCCC;
+}
+
+.altInputCell{
+	padding: 1px 5px 1px 5px;
+	text-align:left;
+	vertical-align:middle;
+	border-right:1px solid #999999;
+	border-bottom:1px dotted #CCCCCC;
+}
+
+.inputCell:last{
+	border:none;
+}
+
+.inputDivision{
+	height: 2px;
+	background-color:#CCCCCC;
+}
+
+.textInput{
+	border:1px solid #FFFFFF;
+	width: 100%;
+	font-family:Arial, Helvetica, sans-serif;
+	font-size: 11px;
+}
+
+.textInput:hover, .textInput:focus{
+	background-color:#D1E3FA;
+	border:1px dotted #3E8BE1;
+}
+
+.disabled:hover{
+	background-color: #EFCFCF;
+	border:1px dotted #C95F5F;
+}
+
+.inputSubmitCell{
+	text-align:right;
+	padding: 2px;
+	padding-right:5px;
+	background-color:#EEEEEE;
+	vertical-align:middle;
+}
+
+#error{
+	padding:2px;
+	font-weight:bold;
+	text-align:center;
+	font-size:12px;
+	color:#A10000;
+}
+#uri,#datasourceuri{
+	padding:2px;
+	font-weight:bold;
+	text-align:center;
+	font-size:14px;
+	border-bottom:2px solid #CCCCCC;
+}
+
+.divider{
+	height:20px;
+}

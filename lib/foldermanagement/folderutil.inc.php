@@ -7,7 +7,7 @@
  * KnowledgeTree Community Edition
  * Document Management Made Simple
  * Copyright (C) 2008, 2009, 2010 KnowledgeTree Inc.
- * 
+ *
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License version 3 as published by the
@@ -216,7 +216,7 @@ class KTFolderUtil {
             return $res;
         }
 
-        $sComment = sprintf(_kt("Folder moved from %s to %s"), $sOldPath, $sNewParentFolderPath);
+        $sComment = sprintf(_kt("Folder moved from %s to %s"), $sOldFolderPath, $sNewFullPath);
         if($sReason !== null) {
             $sComment .= sprintf(_kt(" (reason: %s)"), $sReason);
         }
@@ -288,7 +288,7 @@ class KTFolderUtil {
         $oFolder->setDescription($sNewName);
         $oFolder->setLastModifiedDate(getCurrentDateTime());
         $oFolder->setModifiedUserId($oUser->getId());
-        
+
         $res = $oFolder->update();
 
         $oTransaction = KTFolderTransaction::createFromArray(array(
@@ -326,7 +326,7 @@ class KTFolderUtil {
     function delete($oStartFolder, $oUser, $sReason, $aOptions = null, $bulk_action = false) {
         require_once(KT_LIB_DIR . '/unitmanagement/Unit.inc');
 		$oStorage = KTStorageManagerUtil::getSingleton();
-		
+
         $oPerm = KTPermission::getByName('ktcore.permissions.delete');
 
         $bIgnorePermissions = KTUtil::arrayGet($aOptions, 'ignore_permissions');

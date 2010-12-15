@@ -37,6 +37,7 @@
  * Contributor(s): Guenter Roeck______________________________________
  *
  */
+
 // The line below will switch on tracing for debugging & dev purposes
 define('KTLIVE_TRACE_ENABLE', false);
 
@@ -52,7 +53,7 @@ if (defined('DMS_DEFAULTS_INCLUDED')) {
 }
 
 define('DMS_DEFAULTS_INCLUDED', 1);
-define('LATEST_WEBSERVICE_VERSION', 2);
+define('LATEST_WEBSERVICE_VERSION', 3);
 
 if (!session_id())
 	session_start();
@@ -111,13 +112,10 @@ if (!defined('PATH_SEPARATOR')) {
 
 require_once(KT_LIB_DIR . '/validation/customerror.php');
 
-// {{{ prependPath()
 function prependPath($path) {
-
 	$include_path = ini_get('include_path');
 	ini_set('include_path', $path . PATH_SEPARATOR . $include_path);
 }
-// }}}
 
 prependPath(KT_DIR . '/thirdparty/ZendFramework/library');
 prependPath(KT_DIR . '/thirdparty/pear');
@@ -138,7 +136,7 @@ require_once(KT_LIB_DIR . '/config/config.inc.php');
 // {{{ KTInit
 class KTInit {
 
-    function configureLog($logDir, $logLevel, $userId, $dbName){
+    function configureLog($logDir, $logLevel, $userId, $dbName) {
 		define('KT_LOG4PHP_DIR', KT_DIR . '/thirdparty/apache-log4php/src/main/php' . DIRECTORY_SEPARATOR);
 		define('LOG4PHP_CONFIGURATION', KT_DIR . '/config/ktlog.ini');
 		define('LOG4PHP_DEFAULT_INIT_OVERRIDE', true);
@@ -201,9 +199,9 @@ class KTInit {
 	 * @return void
 	 */
 	public function accountRouting() {
-		if (file_exists(KT_PLUGIN_DIR . '/ktlive/liveEnable.php')) 
+		if (file_exists(KT_PLUGIN_DIR . '/ktlive/liveEnable.php'))
 		 {
-		    define('ACCOUNT_ROUTING_ENABLED',true);     
+		    define('ACCOUNT_ROUTING_ENABLED',true);
 			require_once(KT_PLUGIN_DIR . '/ktlive/liveEnable.php');
 			/**
 			 * The code below demonstrates how to use accountOverride functionality.
@@ -225,23 +223,18 @@ class KTInit {
 			define('ACCOUNT_ROUTING_ENABLED', false);
 			define('ACCOUNT_NAME', '');
 		}
-
 	}
 
 	public function accountRoutingLicenceCheck() {
 		/* Check if account is licensed */
 		if (ACCOUNT_ROUTING_ENABLED) {
-
 //		    $oKTConfig = KTConfig::getSingleton();
-//
 //		    // Set up logging so that we can log the error.
 //		    $logDir = $oKTConfig->get('urls/logDirectory', KT_DIR.'/var/log');
 //		    $userId = isset($_SESSION['userID']) ? $_SESSION['userID'] : 'n/a';
 //		    $this->configureLog($logDir, 'ERROR', $userId, ACCOUNT_NAME);
-//
 //		    $logger = LoggerManager::getLogger('default');
 		    $logger = $GLOBALS['default']->log;
-
 
 			if (!isset($_SESSION[LIVE_LICENSE_OVERRIDE])) {
 				if (!liveAccounts::accountLicenced()) {
@@ -249,21 +242,15 @@ class KTInit {
 					if (liveAccounts::accountExists()) {
 						// Check if account is enabled
 						if (!liveAccounts::accountEnabled()) {
-
-						    if (liveAccounts::isTrialAccount()){
-
+						    if (liveAccounts::isTrialAccount()) {
     						    $logger->error(ACCOUNT_NAME." License Check. Trial Account License expired, Exists but Not Enabled. ");
     							liveRenderError::errorTrialLicense($_SERVER, LIVE_ACCOUNT_DISABLED);
 
-						    }else {
-
+						    } else {
 						        $logger->error(ACCOUNT_NAME." License Check. Account Not Licenced, Exists but Not Enabled. ");
     							liveRenderError::errorDisabled($_SERVER, LIVE_ACCOUNT_DISABLED);
-
 						    }
-
-						}else{
-
+						} else {
 						    $logger->error(ACCOUNT_NAME." License Check. Account Not Licenced, Exists AND Enabled AND Not Expired in SimpleDB. ");
 							liveRenderError::errorFail(NULL, LIVE_ACCOUNT_LICENCE);
 
@@ -559,7 +546,6 @@ class KTInit {
 	// {{{ initConfig
 	function initConfig() {
 		global $default;
-		$oPear = new PEAR();
 		$oKTConfig = KTConfig::getSingleton();
 
 		// Override the config setting - KT_DIR is resolved on page load
@@ -578,7 +564,7 @@ class KTInit {
 			$use_cache = $oKTConfig->setMemCache();
 		}
 
-		// why we clear the cache?  This way it is populated but never used because the next page call clears it
+		// If the cache needs to be cleared for debugging purposes uncomment the following lines..
 		/*$oKTConfig->clearCache();
 		$use_cache = false;*/
 
@@ -593,51 +579,69 @@ class KTInit {
 
 		$dbSetup = $oKTConfig->setupDB();
 
-		if ($oPear->isError($dbSetup)) {
+		if (PEAR::isError($dbSetup)) {
 			/* We need to setup the language handler to display this error correctly */
 			$this->setupI18n();
-			if (ACCOUNT_ROUTING_ENABLED) {
-			    // Set up the logging so that we can log the error.
-			    $logDir = $oKTConfig->get('urls/logDirectory', KT_DIR.'/var/log');
-			    $userId = isset($_SESSION['userID']) ? $_SESSION['userID'] : 'n/a';
-			    $this->configureLog($logDir, 'ERROR', $userId, ACCOUNT_NAME);
-
-			    $logger = LoggerManager::getLogger('default');
-			    $GLOBALS['default']->log = $logger;
-
-				// Check if account exists
-				if (liveAccounts::accountExists()) {
-					// Check if account is enabled
-					if (!liveAccounts::accountEnabled()) {
-						$logger->error(ACCOUNT_NAME." DB Setup. DB CONNECT FAILURE and ACCOUNT DISABLED(".$dbSetup->getMessage().")");
-						liveRenderError::errorDisabled($_SERVER, LIVE_ACCOUNT_DISABLED);
-					}else{
-						$logger->error(ACCOUNT_NAME." DB Setup. DB CONNECT FAILURE and ACCOUNT ENABLED(".$dbSetup->getMessage().")");
-						liveRenderError::errorFail($_SERVER, LIVE_ACCOUNT_DISABLED);
-					}
-				} else {
-					$logger->error(ACCOUNT_NAME." DB Setup. DB CONNECT FAILURE and NO ACCOUNT(".$dbSetup->getMessage().")");
-					liveRenderError::errorNoAccount($dbSetup, LIVE_ACCOUNT_DISABLED);
-				}
-			} else {
-				$this->handleInitError($dbSetup);
-			}
+            $this->showDBError($dbSetup);
 		}
 
 		// Read in the config settings from the database
 		// Create the global $default array(NOTE this was actually created at the top of dmsDefaults, perhaps needs to move here?)
-		if ($use_cache === false){
+		if ($use_cache === false) {
 			$res = $oKTConfig->readConfig();
+			// If the config can't be read then it is most likely caused by a DB connection error
+			if (PEAR::isError($res)) {
+				$this->showDBError($res);
+			}
 		}
 
 		// Get default server url settings
 		$this->getDynamicConfigSettings();
 
-		if ($use_cache === false && $store_cache){
+		if ($use_cache === false && $store_cache) {
 			$oKTConfig->createCache();
 		}
 	}
 	// }}}
+
+	function showDBError($dbError)
+	{
+        if (ACCOUNT_ROUTING_ENABLED) {
+            $oKTConfig = KTConfig::getSingleton();
+
+            if (!isset($GLOBALS['default']->log)) {
+                // Set up the logging so that we can log the error.
+                $logDir = $oKTConfig->get('urls/logDirectory', KT_DIR.'/var/log');
+                $userId = isset($_SESSION['userID']) ? $_SESSION['userID'] : 'n/a';
+                $this->configureLog($logDir, 'ERROR', $userId, ACCOUNT_NAME);
+
+                $logger = LoggerManager::getLogger('default');
+                $GLOBALS['default']->log = $logger;
+            }else {
+                $logger = $GLOBALS['default']->log;
+            }
+
+                // Check if account exists
+            if (liveAccounts::accountExists()) {
+                // Check if account is enabled
+                if (!liveAccounts::accountEnabled()) {
+                    $logger->error(ACCOUNT_NAME." DB Setup. DB CONNECT FAILURE and ACCOUNT DISABLED(".$dbError->getMessage().")");
+                    liveRenderError::errorDisabled($_SERVER, LIVE_ACCOUNT_DISABLED);
+                }else{
+                    $logger->error(ACCOUNT_NAME." DB Setup. DB CONNECT FAILURE and ACCOUNT ENABLED(".$dbError->getMessage().")");
+                    liveRenderError::errorFail($_SERVER, LIVE_ACCOUNT_DISABLED);
+                }
+            } else {
+                $account_name = ACCOUNT_NAME;
+                if(!empty($account_name)){
+                    $logger->error(ACCOUNT_NAME." DB Setup. DB CONNECT FAILURE and NO ACCOUNT(".$dbError->getMessage().")");
+                }
+                liveRenderError::errorNoAccount($dbError, LIVE_ACCOUNT_DISABLED);
+            }
+        } else {
+            $this->handleInitError($dbError);
+        }
+	}
 
 	// {{{ initTesting
 	function initTesting() {
@@ -659,9 +663,8 @@ class KTInit {
 		}
 		$_SESSION['userID'] = 1;
 	}
-	// }}}
+
 }
-// }}}
 
 $KTInit = new KTInit();
 $KTInit->accountRouting();
@@ -686,7 +689,7 @@ $KTInit->setupServerVariables();
 
 // instantiate log
 $loggingSupport = $KTInit->setupLogging();
-$oKTConfig->logErrors(); 
+$oKTConfig->logErrors();
 
 // Send all PHP errors to a file(and maybe a window)
 set_error_handler(array('KTInit', 'handlePHPError'));
@@ -720,7 +723,12 @@ if ($checkup !== true) {
 	$pos = strpos($sScript, '.');
 	$sType = substr($sScript, 0, $pos);
 
-	KTPluginUtil::loadPlugins($sType);
+	$res = KTPluginUtil::loadPlugins($sType);
+
+	if (PEAR::isError($res)) {
+	    // If the plugins aren't loaded, there was a DB error, possibly a DB connection error
+	    $KTInit->showDBError($res);
+	}
 }
 
 if ($checkup !== true) {
@@ -735,6 +743,7 @@ if ($checkup !== true) {
 		$default->versionName = $default->versionName . ' ' . _kt('(Community Edition)');
 	}
 }
+
 if (!extension_loaded('mbstring')) {
 	require_once(KT_LIB_DIR . '/mbstring.inc.php');
 }
@@ -746,4 +755,5 @@ $GLOBALS['main'] = new KTPage();
 define('KTLIVE_TRACE_LOG_FILE', $GLOBALS['default']->varDirectory . '/tmp/live_trace.log');
 define('KTLIVE_CALLBACK_LOG_FILE', $GLOBALS['default']->varDirectory . '/tmp/live_callback.log');
 $KTInit->accountRoutingLicenceCheck();
+
 ?>
