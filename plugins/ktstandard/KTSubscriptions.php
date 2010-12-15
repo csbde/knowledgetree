@@ -548,7 +548,7 @@ class KTFolderSubscriptionAction extends KTFolderAction {
                 $oTransaction = KTFolderTransaction::createFromArray(array(
                     'folderid' => $this->oFolder->getId(),
                     'comment' => 'User subscribed to folder',
-                    'transactionNS' => 'ktstandard.transactions.subscribe',
+                    'transactionNS' => 'ktcore.transactions.subscribe',
                     'userid' => $_SESSION['userID'],
                     'ip' => Session::getClientIP(),
                 ));
@@ -625,7 +625,7 @@ class KTFolderUnsubscriptionAction extends KTFolderAction {
                 $oTransaction = KTFolderTransaction::createFromArray(array(
                     'folderid' => $this->oFolder->getId(),
                     'comment' => 'User unsubscribed from folder',
-                    'transactionNS' => 'ktstandard.transactions.unsubscribe',
+                    'transactionNS' => 'ktcore.transactions.unsubscribe',
                     'userid' => $_SESSION['userID'],
                     'ip' => Session::getClientIP(),
                 ));
@@ -680,7 +680,7 @@ class KTSubscriptionManagePage extends KTStandardDispatcher {
                         $oTransaction = KTFolderTransaction::createFromArray(array(
                             'folderid' => $result['folder_id'],
                             'comment' => 'User unsubscribed from folder',
-                            'transactionNS' => 'ktstandard.transactions.unsubscribe',
+                            'transactionNS' => 'ktcore.transactions.unsubscribe',
                             'userid' => $_SESSION['userID'],
                             'ip' => Session::getClientIP(),
                         ));
