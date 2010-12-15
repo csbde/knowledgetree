@@ -6,7 +6,7 @@
  * KnowledgeTree Community Edition
  * Document Management Made Simple
  * Copyright (C) 2008, 2009, 2010 KnowledgeTree Inc.
- * 
+ *
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License version 3 as published by the
@@ -173,44 +173,49 @@ class JavaXMLRPCLuceneIndexer extends Indexer
      */
     public function query($query)
     {
-    	global $default;
-    	$results = array();
-    	$hits = $this->lucene->query($query);
-    	if (is_array($hits))
-    	{
-    		foreach ($hits as $hit)
-    		{
-    			$document_id 	= $hit->DocumentID;
+        try {
+        	global $default;
+        	$results = array();
+        	$hits = $this->lucene->query($query);
+        	if (is_array($hits))
+        	{
+        		foreach ($hits as $hit)
+        		{
+        			$document_id 	= $hit->DocumentID;
 
-    			// avoid adding duplicates. If it is in already, it has higher priority.
-    			if (!array_key_exists($document_id, $results) || $score > $results[$document_id]->Rank)
-    			{
-    				try
-    				{
-    					$item = new DocumentResultItem($document_id, $hit->Rank, $hit->Title, $hit->Content, null, $this->inclStatus);
+        			// avoid adding duplicates. If it is in already, it has higher priority.
+        			if (!array_key_exists($document_id, $results) || $score > $results[$document_id]->Rank)
+        			{
+        				try
+        				{
+        					$item = new DocumentResultItem($document_id, $hit->Rank, $hit->Title, $hit->Content, null, $this->inclStatus);
 
-    					if ($item->CanBeReadByUser)
-    					{
-    						$results[$document_id] = $item;
-    					}
-    				}
-    				catch(IndexerInconsistencyException $ex)
-    				{
-    				    // if the status is not set to 1 (LIVE) and the document is not in the DB then delete from the index
-    				    // if the status is set to 1 then the document may be archived or deleted in the DB so leave in the index
-    				    if(!$this->inclStatus){
-        					$this->deleteDocument($document_id);
-        					$default->log->info("Document Indexer inconsistency: $document_id has been found in document index but is not in the database.");
-    				    }
-    				}
-    			}
-    		}
-    	}
-    	else
-    	{
-			 $_SESSION['KTErrorMessage'][] = _kt('The Document Indexer did not respond correctly. Your search results will not include content results.');
-    	}
-        return $results;
+        					if ($item->CanBeReadByUser)
+        					{
+        						$results[$document_id] = $item;
+        					}
+        				}
+        				catch(IndexerInconsistencyException $ex)
+        				{
+        				    // if the status is not set to 1 (LIVE) and the document is not in the DB then delete from the index
+        				    // if the status is set to 1 then the document may be archived or deleted in the DB so leave in the index
+        				    if(!$this->inclStatus){
+            					$this->deleteDocument($document_id);
+            					$default->log->info("Document Indexer inconsistency: $document_id has been found in document index but is not in the database.");
+        				    }
+        				}
+        			}
+        		}
+        	}
+        	else
+        	{
+    			 $_SESSION['KTErrorMessage'][] = _kt('The Document Indexer did not respond correctly. Your search results will not include content results.');
+        	}
+            return $results;
+        } catch (Exception $e) {
+            $_SESSION['KTErrorMessage'][] = _kt('The Document Indexer did not respond correctly. Your search results will not include content results.');
+            return array();
+        }
     }
 
     /**

@@ -328,8 +328,8 @@ class SearchDispatcher extends KTStandardDispatcher {
     			$term = $out[1];
     			$term_close = $out[3];
 
-    		    $special_chars = array('+', '-', '&&', '||', '(', ')', '{', '}', '[', ']', '^', '"', '~', '*', '?', ':', '<', '>', '\\');
-//                $replacement = array('\+', '\-', '\&\&', '\|\|', '\!', '\(', '\)', '\{', '\}', '\[', '\]', '\^', '\"', '\~', '\*', '\?', '\:');
+    		    $special_chars = array('+', '&&', '||', '(', ')', '{', '}', '[', ']', '^', '"', '~', '*', '?', ':', '<', '>', '\\');
+//                $replacement = array('\+', '\&\&', '\|\|', '\!', '\(', '\)', '\{', '\}', '\[', '\]', '\^', '\"', '\~', '\*', '\?', '\:', '\-');
                 $updated_query = str_replace($special_chars, ' ', $new_query);
 
     			$_SESSION['search2_quickQuery'] = $updated_query;
@@ -340,7 +340,7 @@ class SearchDispatcher extends KTStandardDispatcher {
     	{
 			$_SESSION['search2_quickQuery'] = '';
     	}
-    	
+
     	if (isset($_REQUEST['cbQuickGeneral']) && ($_REQUEST['cbQuickGeneral'] + 0 == 1))
     	{
     		$_SESSION['search2_general'] = 1;
@@ -781,7 +781,7 @@ class SearchDispatcher extends KTStandardDispatcher {
               'iSavedSearchId'=>$this->savedSearchId
 
         );
-        
+
         return $oTemplate->render($aTemplateData);
 	}
 }
