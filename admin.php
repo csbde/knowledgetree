@@ -44,7 +44,7 @@ require_once(KT_LIB_DIR . '/widgets/portlet.inc.php');
 require_once(KT_LIB_DIR . '/plugins/KTAdminNavigation.php');
 
 class AdminSplashDispatcher extends KTAdminDispatcher {
-    
+
     var $category = '';
     var $sSection = 'administration';
 
@@ -80,8 +80,9 @@ class AdminSplashDispatcher extends KTAdminDispatcher {
 
         $this->oPage->hideSection();
         $oTemplating =& KTTemplating::getSingleton();
-        
-        if (ACCOUNT_ROUTING_ENABLED && liveAccounts::isTrialAccount()) {
+
+        // temporarily disabled
+        if (false && ACCOUNT_ROUTING_ENABLED && liveAccounts::isTrialAccount()) {
             $js = preg_replace('/.*[\/\\\\]plugins/', 'plugins', KT_LIVE_DIR) . '/resources/js/olark/olark.js';
             $this->oPage->requireJsResource($js);
         }
@@ -95,7 +96,7 @@ class AdminSplashDispatcher extends KTAdminDispatcher {
 		foreach (array('contentManagement', 'contentSetup', 'contentIndexing') as $leftcat) {
         	$leftmenu[$leftcat] = $categories[$leftcat];
         }
-        
+
 		foreach (array('accountInformation', 'userSetup', 'sysConfig') as $rightcat) {
 			$rightmenu[$rightcat] = $categories[$rightcat];
 		}
@@ -108,7 +109,7 @@ class AdminSplashDispatcher extends KTAdminDispatcher {
               'all_items' => $aAllItems,
               'baseurl' => $_SERVER['PHP_SELF'],
         );
-        
+
         return $oTemplate->render($aTemplateData);
     }
 
@@ -119,13 +120,13 @@ class AdminSplashDispatcher extends KTAdminDispatcher {
 
         //Removing bad contentSetup/fieldmanagement links from the Document Metadata and Workflow Configuration page.
 		$oPage =& $GLOBALS['main'];
-		
+
 		if ($category == 'contentSetup') {
 			$aJavascript[] = 'thirdpartyjs/jquery/jquery-1.4.2.js';
 			$oPage->requireJSResources($aJavascript);
 			$jscript .= "<script src='resources/js/kt_hideadminlink.js' type='text/javascript'></script>";
 		}
-		
+
 		$aJavascript[] = 'resources/js/newui/hide_system_links.js';
 		$oPage->requireJSResources($aJavascript);
 
@@ -135,13 +136,13 @@ class AdminSplashDispatcher extends KTAdminDispatcher {
         {
 			$aItems = null;
 			$message = 'Indexing of full-text content in KnowledgeTree is carried out through shared queue processes using SOLR. <br/>Content Indexing statistics coming soon!';
-        } 
-        else 
+        }
+        else
         {
         	$aItems = $oRegistry->getItemsForCategory($category);
         	$message = null;
         }
-		
+
         if (count($aItems) == 1) {
             // skip the list of admin pages and go direct to the first / only page
             $url = KTUtil::ktLink('admin.php', $aItems[0]['fullname']);
@@ -161,10 +162,10 @@ class AdminSplashDispatcher extends KTAdminDispatcher {
         	  'jscript' => $jscript,
         	  'message' => $message,
         );
-        
+
         return $oTemplate->render($aTemplateData);
     }
-    
+
 }
 
 $sub_url = KTUtil::arrayGet($_SERVER, 'PATH_INFO');
@@ -191,7 +192,6 @@ if (empty($sub_url)) {
        $oDispatcher = new AdminSplashDispatcher();
        $oDispatcher->category = $sub_url;
     }
-    
 }
 
 // Implement an electronic signature for accessing the admin section, it will appear every 10 minutes

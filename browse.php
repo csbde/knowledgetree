@@ -85,7 +85,7 @@ class BrowseDispatcher extends KTStandardDispatcher {
 		$this->aBreadcrumbs = array(
 		  array('action' => 'browse', 'name' => _kt('Browse')),
 		);
-		
+
 		return parent::KTStandardDispatcher();
 	}
 
@@ -135,12 +135,12 @@ class BrowseDispatcher extends KTStandardDispatcher {
 				{
 					$this->editable = true;
 				}
-				else 
+				else
 				{
 					$this->editable = false;
 				}
 			}
-			else 
+			else
 			{
 				$oPerm = KTPermission::getByName('ktcore.permissions.write');
 				if (KTPermissionUtil::userHasPermissionOnItem($this->oUser, $oPerm, $oFolder)) {
@@ -149,14 +149,14 @@ class BrowseDispatcher extends KTStandardDispatcher {
 					$this->editable = false;
 				}
 			}
-			
+
 			// set the title and breadcrumbs...
 			$this->oPage->setTitle(_kt('Browse'));
 			if (SharedUserUtil::isSharedUser())
 			{
 				// TODO : What should we do if it is a shared user.
 			}
-			else 
+			else
 			{
 				if (KTPermissionUtil::userHasPermissionOnItem($this->oUser, 'ktcore.permissions.folder_details', $oFolder)) {
 					$this->oPage->setSecondaryTitle($oFolder->getName());
@@ -180,7 +180,7 @@ class BrowseDispatcher extends KTStandardDispatcher {
 			} else {
 				$this->aBreadcrumbs = kt_array_merge($this->aBreadcrumbs, KTBrowseUtil::breadcrumbsForFolder($oFolder));
 			}
-			
+
 			$this->oFolder =& $oFolder;
 
 			// we now have a folder, and need to create the query.
@@ -204,7 +204,7 @@ class BrowseDispatcher extends KTStandardDispatcher {
 		} else if ($this->browse_mode == 'lookup_value') {
 			// browsing by a lookup value
 			$this->editable = false;
-			
+
 			// check the inputs
 			$field = KTUtil::arrayGet($_REQUEST, 'fField', null);
 			$oField = DocumentField::get($field);
@@ -212,7 +212,7 @@ class BrowseDispatcher extends KTStandardDispatcher {
 				$this->errorRedirectToMain('No Field selected.');
 				exit(0);
 			}
-			
+
 			$value = KTUtil::arrayGet($_REQUEST, 'fValue', null);
 			$oValue = MetaData::get($value);
 			if (PEAR::isError($oValue) || ($oValue == false)) {
@@ -234,7 +234,7 @@ class BrowseDispatcher extends KTStandardDispatcher {
 		} else if ($this->browse_mode == 'document_type') {
 			// browsing by document type
 			$this->editable = false;
-			
+
 			$doctype = KTUtil::arrayGet($_REQUEST, 'fType',null);
 			$oDocType = DocumentType::get($doctype);
 			if (PEAR::isError($oDocType) || ($oDocType == false)) {
@@ -264,9 +264,10 @@ class BrowseDispatcher extends KTStandardDispatcher {
 
 		// Prepare Multi-File Actions
 		$aBulkActions = KTBulkActionUtil::getAllBulkActions();
-		
+
 		$ktOlarkPopup = null;
-		if (ACCOUNT_ROUTING_ENABLED && liveAccounts::isTrialAccount()) {
+		// temporarily disabled
+		if (false && ACCOUNT_ROUTING_ENABLED && liveAccounts::isTrialAccount()) {
             $js = preg_replace('/.*[\/\\\\]plugins/', 'plugins', KT_LIVE_DIR) . '/resources/js/olark/olark.js';
             $this->oPage->requireJsResource($js);
             // popup immediately if first login
@@ -278,6 +279,18 @@ class BrowseDispatcher extends KTStandardDispatcher {
 </script>
 {/literal}';
                 unset($_SESSION['isFirstLogin']);
+            }
+            else {
+                $ktOlarkPopup = '{literal}
+<script type="text/javascript">
+    olark.extend(function(api) {
+        setTimeout(function(){
+           api.box.expand();
+       }, 60000);
+
+    });
+</script>
+{/literal}';
             }
         }
 
@@ -384,7 +397,7 @@ class BrowseDispatcher extends KTStandardDispatcher {
               'context' => $this,
               'fields' => $aFields,
 		);
-		
+
 		return $oTemplate->render($aTemplateData);
 	}
 
@@ -407,7 +420,7 @@ class BrowseDispatcher extends KTStandardDispatcher {
               'oField' => $oField,
               'values' => $aValues,
 		);
-		
+
 		return $oTemplate->render($aTemplateData);
 	}
 
@@ -428,7 +441,7 @@ class BrowseDispatcher extends KTStandardDispatcher {
               'context' => $this,
               'document_types' => $aTypes,
 		);
-		
+
 		return $oTemplate->render($aTemplateData);
 	}
 
@@ -468,11 +481,11 @@ class BrowseDispatcher extends KTStandardDispatcher {
 			redirect(KTBrowseUtil::getUrlForDocument($iDocumentId));
 			exit(0);
 		}
-		
+
 		if ($_REQUEST['fFolderId']) {
 			$this->successRedirectToMain(_kt('Administrator mode enabled'), sprintf('fFolderId=%d', $_REQUEST['fFolderId']));
 		}
-		
+
 		$this->successRedirectToMain(_kt('Administrator mode enabled'));
 	}
 
@@ -506,17 +519,17 @@ class BrowseDispatcher extends KTStandardDispatcher {
 		$this->oValidator->notError($oLogEntry, $aOpts);
 
 		$_SESSION['adminmode'] = false;
-		
+
 		if ($_REQUEST['fDocumentId']) {
 			$_SESSION['KTInfoMessage'][] = _kt('Administrator mode disabled');
 			redirect(KTBrowseUtil::getUrlForDocument($iDocumentId));
 			exit(0);
 		}
-		
+
 		if ($_REQUEST['fFolderId']) {
 			$this->successRedirectToMain(_kt('Administrator mode disabled'), sprintf('fFolderId=%d', $_REQUEST['fFolderId']));
 		}
-		
+
 		$this->successRedirectToMain(_kt('Administrator mode disabled'));
 	}
 
@@ -534,7 +547,7 @@ class BrowseDispatcher extends KTStandardDispatcher {
 			foreach ($item as $key => $value) {
 				if ($value == 'n/a') { $item[$key] = null; }
 			}
-			
+
 			switch($item['item_type']) {
 				case 'F':
 					$ret['folders'][] = $item;

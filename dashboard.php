@@ -62,10 +62,10 @@ class DashboardDispatcher extends KTStandardDispatcher {
         $this->aBreadcrumbs = array(
             array('action' => 'dashboard', 'name' => _kt('Dashboard')),
         );
-        
+
         return parent::KTStandardDispatcher();
     }
-    
+
     function do_main() {
         $this->oPage->setShowPortlets(false);
         // retrieve action items for the user.
@@ -103,7 +103,7 @@ class DashboardDispatcher extends KTStandardDispatcher {
                 if ($i == 0) { $aDashletsLeft[] = $oDashlet; }
                 else {$aDashletsRight[] = $oDashlet; }
             }
-            
+
             $i += 1;
             $i %= 2;
         }
@@ -140,9 +140,10 @@ class DashboardDispatcher extends KTStandardDispatcher {
         $sDSJS .= ';';
         $this->oPage->requireJSStandalone($sDSJS);
         $this->oPage->requireJSResource('resources/js/dashboard.js');
-        
+
         $ktOlarkPopup = null;
-        if (ACCOUNT_ROUTING_ENABLED && liveAccounts::isTrialAccount() && isset($_SESSION['isFirstLogin'])) {
+        // temporarily disabled
+        if (false && ACCOUNT_ROUTING_ENABLED && liveAccounts::isTrialAccount() && isset($_SESSION['isFirstLogin'])) {
             $js = preg_replace('/.*[\/\\\\]plugins/', 'plugins', KT_LIVE_DIR) . '/resources/js/olark/olark.js';
             $this->oPage->requireJsResource($js);
             // add popup to page
@@ -153,7 +154,7 @@ class DashboardDispatcher extends KTStandardDispatcher {
 {/literal}';
             unset($_SESSION['isFirstLogin']);
         }
-        
+
         // render
         $oTemplating =& KTTemplating::getSingleton();
         $oTemplate = $oTemplating->loadTemplate('kt3/dashboard');
@@ -218,7 +219,7 @@ class DashboardDispatcher extends KTStandardDispatcher {
         $this->oUser->setDashboardState($sState);
         return array('success' => true);
     }
-    
+
 }
 
 $oDispatcher = new DashboardDispatcher();
