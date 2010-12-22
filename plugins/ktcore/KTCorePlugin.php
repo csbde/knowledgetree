@@ -128,7 +128,7 @@ class KTCorePlugin extends KTPlugin {
 
         }
 
-        //$this->registerAdminPage('authentication', 'KTAuthenticationAdminPage', 'userSetup', _kt('Authentication'), sprintf(_kt('You can use additional lists of users and groups. These will be used as additional sources of authentication data.'), APP_NAME), 'authentication/authenticationadminpage.inc.php');
+        $this->registerAdminPage('authentication', 'KTAuthenticationAdminPage', 'userSetup', _kt('Authentication'), sprintf(_kt('You can use additional lists of users and groups. These will be used as additional sources of authentication data.'), APP_NAME), 'authentication/authenticationadminpage.inc.php');
 
 		    $this->registerPortlet(array('browse', 'dashboard'),
                 'Search2Portlet', 'ktcore.search2.portlet',
