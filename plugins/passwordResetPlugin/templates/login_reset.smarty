@@ -80,11 +80,11 @@
 					{/if}
 					{if $use_email}
 	    				<input type=hidden id=reset_username name=reset_username value=null />
-	    				
+
 	    			{else}
 	    	    		<label for="reset_username">{i18n}Username{/i18n}</label>
 	    				<input type="text" id="reset_username" name="reset_username" />
-	    				<br />	    			
+	    				<br />
 	    			{/if}
 	    			<label for="reset_email">{i18n}Email Address{/i18n}</label>
 	 				<input type="text" id="reset_email" name="reset_email" />
@@ -116,9 +116,9 @@
 
 		 				<label for="new_password">{i18n}New password{/i18n}</label>
 		 				<input type="password" id="new_password" name="new_password" value="" />
-		 				
+
 						{if $use_email}
-							
+
 						{else}
 							<br />
 			 				<label for="new_password_repeat">{i18n}Confirm new password{/i18n}</label>
@@ -144,11 +144,17 @@
 	</div>
 </div>
 
-	{if $reset_password}
-    	<script type="text/javascript">showResetBox();</script>
-    {else}
-    	<script type="text/javascript">hideResetBox(); document.getElementById("username").focus();</script>
-    {/if}
+{if $reset_password}
+   	<script type="text/javascript">showResetBox();</script>
+{else}
+   	<script type="text/javascript">hideResetBox(); document.getElementById("username").focus();</script>
+{/if}
+
+{literal}
+<!--<script type="text/javascript">
+    ktOlarkPopupTrigger('Hi, do you need help logging in?', 30000);
+</script>-->
+{/literal}
 
 </body>
 </html>

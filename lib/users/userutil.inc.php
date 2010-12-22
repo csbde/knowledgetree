@@ -121,12 +121,12 @@ class KTUserUtil {
      */
     static public function inviteUsersByEmail($addressList, $groupId = null, $userType = null, $shareContent = null)
     {
+        global $default;
+
         if (empty($addressList)) {
             $response = array('invited' => 0, 'existing' => '', 'failed' => '', 'group' => '', 'type' => '', 'check' => 0);
             return $response;
         }
-
-        global $default;
 
         $existingUsers = array();
         $invitedUsers = array();
@@ -136,7 +136,6 @@ class KTUserUtil {
 		$message = '';
 		$objectTypeName = null;
 		$objectName = null;
-
     	$inSystemList = self::checkUniqueEmail($addressList);
 
     	// loop through any addresses that currently exist and unset them in the invitee list
@@ -256,8 +255,35 @@ class KTUserUtil {
     		    // Send a sharing notification to existing users.
     		    self::sendNotifications($existingUsers, $shareContent['object_id'], $objectTypeName, $objectName, $shareContent['message']);
     		}
-    		$cnt = count($existingUsers) + (int)$numInvited;
-    		$response['invited'] = $cnt;
+
+    		$response['invited'] = count($existingUsers) + (int)$numInvited;
+    	}
+
+    	if ($userType == 'shared') {
+    	    /*// get list of users with whom content was shared - this can be found in a combination of $invitedUsers and $existingUsers
+    	    $userList = array();
+    	    $invited = array_merge($invitedUsers, $existingUsers);
+    	    foreach ($invited as $user) {
+    	       $userList[] = $user['email'];
+    	    }
+    	    $userList = implode(', ', $userList);*/
+
+    	    // create the transaction record
+    	    $s = ($response['invited'] == 1) ? '' : 's';
+    	    if ($shareContent['object_type'] == 'D') {
+    	        $document = Document::get($shareContent['object_id']);
+                $documentTransaction = new DocumentTransaction($document, "Document shared with {$response['invited']} user$s", 'ktcore.transactions.share');
+                $documentTransaction->create();
+    	    }
+    	    else if ($shareContent['object_type'] == 'F') {
+    	        $transaction = KTFolderTransaction::createFromArray(array(
+                    'folderid' => $shareContent['object_id'],
+                    'comment' => "Folder shared with {$response['invited']} user$s",
+                    'transactionNS' => 'ktcore.transactions.share',
+                    'userid' => $_SESSION['userID'],
+                    'ip' => Session::getClientIP(),
+                ));
+    	    }
     	}
 
     	return $response;
@@ -457,7 +483,7 @@ class KTUserUtil {
     /**
      * Dispatch shared user invite
      *
-     * @param array $list - email parameters 
+     * @param array $list - email parameters
      * @return boolean - true on success, false on failure
      */
     static public function sendSharedInvite($list)
@@ -473,7 +499,7 @@ class KTUserUtil {
     /**
      * Dispatch user invite
      *
-     * @param array $list - email parameters 
+     * @param array $list - email parameters
      * @return boolean - true on success, false on failure
      */
     static public function sendUserInvite($list)
@@ -590,7 +616,7 @@ class KTUserUtil {
 
         return $res;
     }
-    
+
     /**
      * Retrieve the current logged in users name
      *
@@ -600,15 +626,15 @@ class KTUserUtil {
     {
         // default if user not found
         $sender = 'KnowledgeTree';
-        
+
         // Use the current user as the "inviter" / sender of the emails
         // goes into the user array for use in the email
         $oSender = User::get($_SESSION['userID']);
-        
-        if (!PEAR::isError($oSender) || empty($oSender)) {    
+
+        if (!PEAR::isError($oSender) || empty($oSender)) {
             $sender = $oSender->getName();
         }
-        
+
         return $sender;
     }
 

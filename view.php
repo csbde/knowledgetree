@@ -60,9 +60,8 @@ require_once(KT_LIB_DIR . '/widgets/FieldsetDisplayRegistry.inc.php');
 require_once(KT_LIB_DIR . '/actions/documentaction.inc.php');
 require_once(KT_LIB_DIR . '/browse/browseutil.inc.php');
 
-
-class sharedViewDocumentDispatcher extends KTStandardDispatcher
-{
+class sharedViewDocumentDispatcher extends KTStandardDispatcher {
+    
     public $sName = 'ktcore.actions.document.displaydetails';
     public $sSection = 'view_details';
     public $sHelpPage = 'ktcore/browse.html';
@@ -160,12 +159,12 @@ class sharedViewDocumentDispatcher extends KTStandardDispatcher
         //If we came here from a shortcut, the breadcrumbspath should be relative
         //to the shortcut folder.
     	$iSymLinkFolderId = KTUtil::arrayGet($_REQUEST, 'fShortcutFolder', null);
-        if(is_numeric($iSymLinkFolderId)){
+        if (is_numeric($iSymLinkFolderId)) {
             $oBreadcrumbsFolder = Folder::get($iSymLinkFolderId);
             $aOptions['final'] = false;
             $this->aBreadcrumbs = kt_array_merge($this->aBreadcrumbs, KTBrowseUtil::breadcrumbsForFolder($oBreadcrumbsFolder,$aOptions));
             $this->aBreadcrumbs[] = array('name'=>$this->oDocument->getName());
-        }else{
+        } else {
             $this->aBreadcrumbs = kt_array_merge($this->aBreadcrumbs, KTBrowseUtil::breadcrumbsForDocument($oDocument, $aOptions, $iSymLinkFolderId));
         }
 
@@ -221,11 +220,11 @@ class sharedViewDocumentDispatcher extends KTStandardDispatcher
         // is the checkout action active?
         $bCanCheckin = false;
         foreach ($this->actions as $oDocAction) {
-            $sActName = $oDocAction->sName;
-            if ($sActName == 'ktcore.actions.document.cancelcheckout') {
+            if ($oDocAction->sName == 'ktcore.actions.document.cancelcheckout') {
                 if ($oDocAction->getInfo()) {
                     $bCanCheckin = true;
                 }
+                break;
             }
         }
 
@@ -290,12 +289,13 @@ class sharedViewDocumentDispatcher extends KTStandardDispatcher
         );
 
         //Conditionally include live_preview
-        if($live_preview) { $aTemplateData['live_preview'] = $live_preview; }
+        if ($live_preview) { $aTemplateData['live_preview'] = $live_preview; }
 
         //Setting Document Notifications Status
-        if($oDocument->getIsCheckedOut() || $oDocument->getImmutable()) { $aTemplateData['hasNotifications'] = true; }
+        if ($oDocument->getIsCheckedOut() || $oDocument->getImmutable()) { $aTemplateData['hasNotifications'] = true; }
 
         $this->oPage->setBreadcrumbDetails(_kt("Document Details"));
+        
         return $oTemplate->render($aTemplateData);
     }
 
@@ -331,19 +331,19 @@ class sharedViewDocumentDispatcher extends KTStandardDispatcher
         $oFolder = Folder::get($iFolderId);
         $sFolderUrl = KTBrowseUtil::getUrlForFolder($oFolder);
 
-        if(!empty($data)){
+        if (!empty($data)) {
             $res = $oForm->validate();
             if (!empty($res['errors'])) {
                 return $oForm->handleError('', $aError);
             }
 
             $aAdminGroups = Group::getAdministratorGroups();
-            if(!PEAR::isError($aAdminGroups) && !empty($aAdminGroups)){
+            if (!PEAR::isError($aAdminGroups) && !empty($aAdminGroups)) {
                 foreach ($aAdminGroups as $oGroup) {
                     $aGroupUsers = $oGroup->getMembers();
 
                     // ensure unique users
-                    foreach ($aGroupUsers as $oUser){
+                    foreach ($aGroupUsers as $oUser) {
                         $aUsers[$oUser->getId()] = $oUser;
                     }
                 }
@@ -369,16 +369,16 @@ class sharedViewDocumentDispatcher extends KTStandardDispatcher
         return $oForm->renderPage(_kt('Archived document request') . ': '.$oDocument->getName());
     }
 
-
-
     public function getUserForId($iUserId) {
         $u = User::get($iUserId);
         if (PEAR::isError($u) || ($u == false)) { return _kt('User no longer exists'); }
         return $u->getName();
     }
+    
 }
 
 class ViewDocumentDispatcher extends KTStandardDispatcher {
+    
     public $sName = 'ktcore.actions.document.displaydetails';
     public $sSection = 'view_details';
     public $sHelpPage = 'ktcore/browse.html';
@@ -438,6 +438,7 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
 
             return $this->do_error();
         }
+
         $document_id = $oDocument->getId();
         $document_data['document_id'] = $oDocument->getId();
 
@@ -473,15 +474,14 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
         //If we came here from a shortcut, the breadcrumbspath should be relative
         //to the shortcut folder.
     	$iSymLinkFolderId = KTUtil::arrayGet($_REQUEST, 'fShortcutFolder', null);
-        if(is_numeric($iSymLinkFolderId)){
+        if (is_numeric($iSymLinkFolderId)) {
             $oBreadcrumbsFolder = Folder::get($iSymLinkFolderId);
             $aOptions['final'] = false;
             $this->aBreadcrumbs = kt_array_merge($this->aBreadcrumbs, KTBrowseUtil::breadcrumbsForFolder($oBreadcrumbsFolder,$aOptions));
             $this->aBreadcrumbs[] = array('name'=>$this->oDocument->getName());
-        }else{
+        } else {
             $this->aBreadcrumbs = kt_array_merge($this->aBreadcrumbs, KTBrowseUtil::breadcrumbsForDocument($oDocument, $aOptions, $iSymLinkFolderId));
         }
-
 
         $this->addPortlets('Document Details');
 
@@ -513,14 +513,11 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
         //   to the view (i.e. ZX3).   Unfortunately, we don't have
         //   any of the plumbing to do it, so we handle this here.
         $fieldsets = array();
-
         // we always have a generic.
         array_push($fieldsets, new GenericFieldsetDisplay());
 
         $fieldsetDisplayReg =& KTFieldsetDisplayRegistry::getSingleton();
-
         $aDocFieldsets = KTMetadataUtil::fieldsetsForDocument($oDocument);
-
         foreach ($aDocFieldsets as $oFieldset) {
             $displayClass = $fieldsetDisplayReg->getHandler($oFieldset->getNamespace());
             array_push($fieldsets, new $displayClass($oFieldset));
@@ -537,23 +534,24 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
         // is the checkout action active?
         $bCanCheckin = false;
         foreach ($this->actions as $oDocAction) {
-            $sActName = $oDocAction->sName;
-            if ($sActName == 'ktcore.actions.document.cancelcheckout') {
+            if ($oDocAction->sName == 'ktcore.actions.document.cancelcheckout') {
                 if ($oDocAction->getInfo()) {
                     $bCanCheckin = true;
                 }
+                break;
             }
         }
+        
 		$bCanEdit = true;
-        // viewlets.
+		
+        // viewlets
         $aViewlets = array();
         $aViewlets2 = array();
         $aViewletActions = KTDocumentActionUtil::getDocumentActionsForDocument($this->oDocument, $this->oUser, 'documentviewlet');
         foreach ($aViewletActions as $oAction) {
             $aInfo = $oAction->getInfo();
-
             if ($aInfo !== null) {
-                if($aInfo['ns'] == 'ktcore.viewlet.document.activityfeed' || $aInfo['ns'] == 'thumbnail.viewlets') {
+                if (($aInfo['ns'] == 'ktcore.viewlet.document.activityfeed') || ($aInfo['ns'] == 'thumbnail.viewlets')) {
                     $aViewlets[] = $oAction->display_viewlet(); // use the action, since we display_viewlet() later.
                 } else {
                     $aViewlets2[] = $oAction->display_viewlet(); // use the action, since we display_viewlet() later.
@@ -563,7 +561,6 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
 
         $viewlet_data = implode(' ', $aViewlets);
         $viewlet_data = trim($viewlet_data);
-
         $viewlet_data2 = implode(' ', $aViewlets2);
         $viewlet_data2 = trim($viewlet_data2);
 
@@ -588,8 +585,12 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
         $ownerUser = KTUserUtil::getUserField($oDocument->getOwnerID(), 'name');
         $creatorUser = KTUserUtil::getUserField($oDocument->getCreatorID(), 'name');
         $lastModifierUser = KTUserUtil::getUserField($oDocument->getModifiedUserId(), 'name');
+        
+        $FieldsetDisplayHelper = new KTFieldsetDisplay();
 
-		$FieldsetDisplayHelper = new KTFieldsetDisplay();
+        // create the document transaction record
+        $oDocumentTransaction = new DocumentTransaction($oDocument, 'Document details page view', 'ktcore.transactions.view');
+        $oDocumentTransaction->create();
 
         $aTemplateData = array(
         	'doc_data' => array(
@@ -613,22 +614,22 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
 			'fieldsetDisplayHelper' => $FieldsetDisplayHelper
         );
 
-        //Conditionally include live_preview
-        if($live_preview) { $aTemplateData['live_preview'] = $live_preview; }
+        // Conditionally include live_preview
+        if ($live_preview) { $aTemplateData['live_preview'] = $live_preview; }
 
-        //Setting Document Notifications Status
-        if($oDocument->getIsCheckedOut() || $oDocument->getImmutable()) { $aTemplateData['hasNotifications'] = true; }
+        // Setting Document Notifications Status
+        if ($oDocument->getIsCheckedOut() || $oDocument->getImmutable()) { $aTemplateData['hasNotifications'] = true; }
 
         $this->oPage->setBreadcrumbDetails(_kt("Document Details"));
+        
         return $oTemplate->render($aTemplateData);
     }
 
-        // FIXME refactor out the document-info creation into a single utility function.
-        // this gets in:
-        //   fDocumentId (document to compare against)
-        //   fComparisonVersion (the metadata_version of the appropriate document)
+    // FIXME refactor out the document-info creation into a single utility function.
+    // this gets in:
+    //   fDocumentId (document to compare against)
+    //   fComparisonVersion (the metadata_version of the appropriate document)
     public function do_viewComparison() {
-
         $document_data = array();
         $document_id = KTUtil::arrayGet($_REQUEST, 'fDocumentId');
         if ($document_id === null) {
@@ -676,10 +677,8 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
 
         $comparison_data = array();
         $comparison_data['document_id'] = $oComparison->getId();
-
         $document_data['document'] = $oDocument;
         $comparison_data['document'] = $oComparison;
-
         $document_data['document_type'] =& DocumentType::get($oDocument->getDocumentTypeID());
         $comparison_data['document_type'] =& DocumentType::get($oComparison->getDocumentTypeID());
 
@@ -699,13 +698,12 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
                 $field_values[$oFieldLink->getDocumentFieldID()] = $oFieldLink->getValue();
         }
 
-
         $document_data['field_values'] = $field_values;
         $mdlist =& DocumentFieldLink::getList(array('metadata_version_id = ?', array($comparison_version)));
 
         $field_values = array();
         foreach ($mdlist as $oFieldLink) {
-                $field_values[$oFieldLink->getDocumentFieldID()] = $oFieldLink->getValue();
+            $field_values[$oFieldLink->getDocumentFieldID()] = $oFieldLink->getValue();
         }
 
         $comparison_data['field_values'] = $field_values;
@@ -789,19 +787,19 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
         $oFolder = Folder::get($iFolderId);
         $sFolderUrl = KTBrowseUtil::getUrlForFolder($oFolder);
 
-        if(!empty($data)){
+        if (!empty($data)) {
             $res = $oForm->validate();
             if (!empty($res['errors'])) {
                 return $oForm->handleError('', $aError);
             }
 
             $aAdminGroups = Group::getAdministratorGroups();
-            if(!PEAR::isError($aAdminGroups) && !empty($aAdminGroups)){
+            if (!PEAR::isError($aAdminGroups) && !empty($aAdminGroups)) {
                 foreach ($aAdminGroups as $oGroup) {
                     $aGroupUsers = $oGroup->getMembers();
 
                     // ensure unique users
-                    foreach ($aGroupUsers as $oUser){
+                    foreach ($aGroupUsers as $oUser) {
                         $aUsers[$oUser->getId()] = $oUser;
                     }
                 }
@@ -827,25 +825,24 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
         return $oForm->renderPage(_kt('Archived document request') . ': '.$oDocument->getName());
     }
 
-
-
     public function getUserForId($iUserId) {
         $u = User::get($iUserId);
         if (PEAR::isError($u) || ($u == false)) { return _kt('User no longer exists'); }
         return $u->getName();
     }
+    
 }
 
 /**
  * Utility class to switch between user specific document views
  *
  */
-class viewUtil
-{
+class viewUtil {
+    
     static function getView()
     {
     	$oUser = User::get($_SESSION['userID']);
-    	if(PEAR::isError($oUser)) { $userType = 0; }
+    	if (PEAR::isError($oUser)) { $userType = 0; }
     	else { $userType = $oUser->getDisabled(); }
     	switch ($userType)
     	{
@@ -860,6 +857,7 @@ class viewUtil
     			break;
     	}
 	}
+	
 }
 
 $oDispatcher = viewUtil::getView();

@@ -55,8 +55,9 @@ if (defined('DMS_DEFAULTS_INCLUDED')) {
 define('DMS_DEFAULTS_INCLUDED', 1);
 define('LATEST_WEBSERVICE_VERSION', 3);
 
-if (!session_id())
+if (!session_id()) {
 	session_start();
+}
 
 if (function_exists('apd_set_pprof_trace')) {
 	apd_set_pprof_trace();
@@ -237,7 +238,7 @@ class KTInit {
 		    $logger = $GLOBALS['default']->log;
 
 			if (!isset($_SESSION[LIVE_LICENSE_OVERRIDE])) {
-				if (!liveAccounts::accountLicenced()) {
+				if (!liveAccounts::accountLicensed()) {
 					// Check if account exists
 					if (liveAccounts::accountExists()) {
 						// Check if account is enabled
@@ -627,13 +628,13 @@ class KTInit {
                 if (!liveAccounts::accountEnabled()) {
                     $logger->error(ACCOUNT_NAME." DB Setup. DB CONNECT FAILURE and ACCOUNT DISABLED(".$dbError->getMessage().")");
                     liveRenderError::errorDisabled($_SERVER, LIVE_ACCOUNT_DISABLED);
-                }else{
+                } else {
                     $logger->error(ACCOUNT_NAME." DB Setup. DB CONNECT FAILURE and ACCOUNT ENABLED(".$dbError->getMessage().")");
                     liveRenderError::errorFail($_SERVER, LIVE_ACCOUNT_DISABLED);
                 }
             } else {
                 $account_name = ACCOUNT_NAME;
-                if(!empty($account_name)){
+                if (!empty($account_name)) {
                     $logger->error(ACCOUNT_NAME." DB Setup. DB CONNECT FAILURE and NO ACCOUNT(".$dbError->getMessage().")");
                 }
                 liveRenderError::errorNoAccount($dbError, LIVE_ACCOUNT_DISABLED);

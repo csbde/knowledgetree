@@ -199,7 +199,7 @@ class SharedContent extends KTEntity {
     public function getSharedFolders($iUserId, $iFolderId)
     {
     	$shared_content = 'sc.object_id as id, sc.permissions AS object_permissions, sc.user_id AS user_id, sc.parent_id AS parent_id';
-    	$folders = 'f.name AS title, cu.name as created_by, f.full_path AS full_path';
+    	$folders = 'f.name AS title, cu.name as created_by, f.full_path AS full_path, f.linked_folder_id AS linked_folder_id';
     	if ($iFolderId == 1)
     	{
 	    	$sql = "SELECT $shared_content, $folders

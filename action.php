@@ -57,6 +57,7 @@ $_REQUEST['fReturnData'] = strip_tags($_REQUEST['fReturnData']);
  * then chains onto that action's dispatcher.
  */
 class KTActionDispatcher extends KTStandardDispatcher {
+    
     /**
      * Default dispatch
      *
@@ -72,43 +73,46 @@ class KTActionDispatcher extends KTStandardDispatcher {
             $this->error = true;
             $this->errorPage(_kt('No action given'));
         }
+        
         $oRegistry =& KTActionRegistry::getSingleton();
         $aActionInfo = $oRegistry->getActionByNsname($action);
         if (empty($aActionInfo)) {
             $this->error = true;
             $this->errorPage(sprintf(_kt('No such action exists in %s'), APP_NAME));
         }
+        
         $sFilename = $aActionInfo[1];
         if (!empty($sFilename)) {
             require_once($sFilename);
         }
+        
         $oAction = new $aActionInfo[0];
         $oAction->dispatch();
     }
 
     function json_main() {
-	return $this->do_main();
+        return $this->do_main();
     }
 
-    function getBulkReturnUrl(){
+    function getBulkReturnUrl() {
         $sReturnAction = $_REQUEST['fReturnAction'];
         $sReturnData = $_REQUEST['fReturnData'];
         $sAction = 'main';
         $qs = '';
 
-        switch ($sReturnAction){
+        switch ($sReturnAction) {
             case 'browse':
                 $sReturnData = (empty($sReturnData)) ? $_REQUEST['fFolderId'] : $sReturnData;
                 $sTargetUrl = KTBrowseUtil::getUrlForFolder(Folder::get($sReturnData));
                 break;
             case 'simpleSearch':
                 $sTargetUrl = KTBrowseUtil::getSimpleSearchBaseUrl();
-                $extra = 'fSearchableText='.$sReturnData;
+                $extra = 'fSearchableText=' . $sReturnData;
                 break;
             case 'booleanSearch':
                 $sTargetUrl = KTBrowseUtil::getBooleanSearchBaseUrl();
                 $sAction = 'performSearch';
-                $extra = 'boolean_search_id='.$sReturnData;
+                $extra = 'boolean_search_id=' . $sReturnData;
                 break;
             case 'search2':
                 $sTargetUrl = KTBrowseUtil::getSearchResultURL();
@@ -119,8 +123,8 @@ class KTActionDispatcher extends KTStandardDispatcher {
                 $sAction = '';
         }
 
-        $qs = (!empty($sAction))? 'action='.$sAction : '';
-        $qs .= (!empty($extra))? '&'.$extra : '';
+        $qs = !empty($sAction) ? ('action=' . $sAction) : '';
+        $qs .= !empty($extra) ? ('&' . $extra) : '';
         $sTargetUrl = KTUtil::addQueryString($sTargetUrl, $qs);
 
         return $sTargetUrl;
@@ -132,7 +136,8 @@ class KTActionDispatcher extends KTStandardDispatcher {
         $targets = array_keys($act);
         if (!empty($targets)) {
             $target = $targets[0];
-        } else {
+        }
+        else {
             $this->errorRedirectToBrowse(_kt('No action selected.'));
             exit(0);
         }
@@ -143,22 +148,24 @@ class KTActionDispatcher extends KTStandardDispatcher {
         $oFolder = Folder::get(KTUtil::arrayGet($_REQUEST, 'fFolderId', 1));
         if (PEAR::isError($oFolder)) {
             $redirectUrl = $this->getBulkReturnUrl();
-            if(!empty($redirectUrl)){
+            if (!empty($redirectUrl)) {
                 $this->addErrorMessage(_kt('Invalid folder selected.'));
                 redirect($redirectUrl);
                 exit(0);
             }
+            
             $this->errorRedirectToBrowse(_kt('Invalid folder selected.'));
             exit(0);
         }
 
         if (empty($aFolderSelection) && empty($aDocumentSelection)) {
             $redirectUrl = $this->getBulkReturnUrl();
-            if(!empty($redirectUrl)){
+            if (!empty($redirectUrl)) {
                 $this->addErrorMessage(_kt('Please select documents or folders first.'));
                 redirect($redirectUrl);
                 exit(0);
             }
+            
             $this->errorRedirectToBrowse(_kt('Please select documents or folders first.'), sprintf('fFolderId=%d', $oFolder->getId()));
             exit(0);
         }
@@ -167,20 +174,17 @@ class KTActionDispatcher extends KTStandardDispatcher {
         $oActionRegistry =& KTActionRegistry::getSingleton();
         $oAction =& $oActionRegistry->initializeAction($target, $this->oUser);
 
-        if(!$oAction || PEAR::isError($oAction)) {
+        if (!$oAction || PEAR::isError($oAction)) {
             $this->errorRedirectToBrowse(_kt('No such action.'));
             exit(0);
         }
 
         $oAction->oFolder = $oFolder;
-
         $oEntityList = new KTEntityList($aDocumentSelection, $aFolderSelection);
         $oAction->setEntityList($oEntityList);
         $oAction->redispatch('action', 'do_', $this);
-
         //        exit(0);
     }
-
 
     /**
      * Handle output from this dispatcher.
@@ -192,10 +196,13 @@ class KTActionDispatcher extends KTStandardDispatcher {
     function handleOutput ($data) {
         if ($this->bJSONMode || $this->error) {
             parent::handleOutput($data);
-        } else {
+        }
+        else {
             print $data;
         }
     }
+    
 }
+
 $d = new KTActionDispatcher();
 $d->dispatch();

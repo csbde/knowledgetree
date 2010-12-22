@@ -6,7 +6,7 @@
  * KnowledgeTree Community Edition
  * Document Management Made Simple
  * Copyright (C) 2008, 2009, 2010 KnowledgeTree Inc.
- * 
+ *
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License version 3 as published by the
@@ -53,7 +53,7 @@ class RestSolrIndexer extends Indexer
 	public function __construct()
 	{
 		parent::__construct();
-		
+
 		// TODO solr config from config_settings
 		$config =& KTConfig::getSingleton();
 		$this->solrServerUrl = $config->get('indexer/javaLuceneURL');
@@ -78,7 +78,7 @@ class RestSolrIndexer extends Indexer
 	{
 		// do nothing. The java lucene indexer will create the indexes if required
 	}
-	
+
 	/**
 	 * Process a document - extract text and index it
 	 * Refactored from indexDocuments()
@@ -92,9 +92,9 @@ class RestSolrIndexer extends Indexer
 	    if ($extractorClass != 'TikaApacheExtractor') {
 	        $extract = true;
 	    }
-	    
+
 	    $this->solr->setExtract(!$extract);
-	    
+
 	    parent::processDocument($document, $docinfo, $extract);
 	}
 
@@ -108,12 +108,12 @@ class RestSolrIndexer extends Indexer
     public function indexDocument($docId, $textfile, $title, $version)
     {
     	try
-    	{                        
+    	{
             //Indexing the document with Tika extraction.
-            $this->logPreIndex($docinfo, $textfile, $indexDiscussion);	
+            $this->logPreIndex($docinfo, $textfile, $indexDiscussion);
             $result = $this->solr->addDocument($docId, $textfile, '', $title, $version);
             $this->logPostIndex($textfile, $result);
-            
+
             return $result;
     	}
     	catch(Exception $e)
@@ -121,7 +121,7 @@ class RestSolrIndexer extends Indexer
     		return false;
     	}
     }
-    
+
     /**
      * Temporary function for logging info during implementation and testing
      */
@@ -134,7 +134,7 @@ class RestSolrIndexer extends Indexer
         $default->log->info('SOLR - document title : ' . var_export($docinfo, true));
         $default->log->info('SOLR - document version : ' . var_export($docinfo, true));
     }
-    
+
     /**
      * Temporary function for logging info during implementation and testing
      */
@@ -157,7 +157,7 @@ class RestSolrIndexer extends Indexer
     	try
     	{
 	    	$discussion = Indexer::getDiscussionText($docId);
-	    	$this->logPreIndex($docinfo, $textfile, $indexDiscussion);	
+	    	$this->logPreIndex($docinfo, $textfile, $indexDiscussion);
             $result = $this->solr->addDocument($docId, $textfile, $discussion, $title, $version);
             $this->logPostIndex($textfile, $result);
     		return $result;
@@ -236,43 +236,48 @@ class RestSolrIndexer extends Indexer
      */
     public function query($query)
     {
-    	$results = array();
-    	$hits = $this->solr->query($query);
-    	if (is_array($hits))
-    	{
-    		foreach ($hits as $hit)
-    		{
-    			$document_id 	= $hit->DocumentID;
+        try {
+        	$results = array();
+        	$hits = $this->solr->query($query);
+        	if (is_array($hits))
+        	{
+        		foreach ($hits as $hit)
+        		{
+        			$document_id 	= $hit->DocumentID;
 
-    			// avoid adding duplicates. If it is in already, it has higher priority.
-    			if (!array_key_exists($document_id, $results) || $score > $results[$document_id]->Rank)
-    			{
-    				try
-    				{
-    					$item = new DocumentResultItem($document_id, $hit->Rank, $hit->Title, $hit->Content, null, $this->inclStatus);
+        			// avoid adding duplicates. If it is in already, it has higher priority.
+        			if (!array_key_exists($document_id, $results) || $score > $results[$document_id]->Rank)
+        			{
+        				try
+        				{
+        					$item = new DocumentResultItem($document_id, $hit->Rank, $hit->Title, $hit->Content, null, $this->inclStatus);
 
-    					if ($item->CanBeReadByUser)
-    					{
-    						$results[$document_id] = $item;
-    					}
-    				}
-    				catch(IndexerInconsistencyException $ex)
-    				{
-    				    // if the status is not set to 1 (LIVE) and the document is not in the DB then delete from the index
-    				    // if the status is set to 1 then the document may be archived or deleted in the DB so leave in the index
-    				    if(!$this->inclStatus){
-        					$this->deleteDocument($document_id);
-        					$default->log->info("Document Indexer inconsistency: $document_id has been found in document index but is not in the database.");
-    				    }
-    				}
-    			}
-    		}
-    	}
-    	else
-    	{
-			 $_SESSION['KTErrorMessage'][] = _kt('The Document Indexer did not respond correctly. Your search results will not include content results.');
-    	}
-        return $results;
+        					if ($item->CanBeReadByUser)
+        					{
+        						$results[$document_id] = $item;
+        					}
+        				}
+        				catch(IndexerInconsistencyException $ex)
+        				{
+        				    // if the status is not set to 1 (LIVE) and the document is not in the DB then delete from the index
+        				    // if the status is set to 1 then the document may be archived or deleted in the DB so leave in the index
+        				    if(!$this->inclStatus){
+            					$this->deleteDocument($document_id);
+            					$default->log->info("Document Indexer inconsistency: $document_id has been found in document index but is not in the database.");
+        				    }
+        				}
+        			}
+        		}
+        	}
+        	else
+        	{
+    			 $_SESSION['KTErrorMessage'][] = _kt('The Document Indexer did not respond correctly. Your search results will not include content results.');
+        	}
+            return $results;
+        } catch (Exception $e) {
+            $_SESSION['KTErrorMessage'][] = _kt('The Document Indexer did not respond correctly. Your search results will not include content results.');
+            return array();
+        }
     }
 
     /**
@@ -315,12 +320,12 @@ class RestSolrIndexer extends Indexer
     	catch (Exception $e) {
     	    return _kt('Not Available');
     	}
-    	
+
     	if ($stats === false || !is_object($stats))
     	{
     		return _kt('Not Available');
     	}
-    	
+
     	return $stats->index->numDocs;
     }
 
@@ -337,7 +342,7 @@ class RestSolrIndexer extends Indexer
     	catch (Exception $e) {
     	    return false;
     	}
-    	
+
     	if ($stats === false || !is_object($stats))
     	{
     		return false;

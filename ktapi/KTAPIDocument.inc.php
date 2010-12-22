@@ -512,26 +512,27 @@ class KTAPI_Document extends KTAPI_FolderItem
 	 */
 	function checkout($reason)
 	{
+		$document_status = $this->document->getStatusID();
 		
-		//live or published
-		if ($this->document->getStatusID() == 1 || $this->document->getStatusID() == 2)
-		{
-			//just ignore
-			;
-		}
-		//deleted
-		else if($this->document->getStatusID() == 3)
-		{
-			return new KTAPI_Error(KTAPI_ERROR_DOCUMENT_DELETED);
-		}
-		//archived
-		else if($this->document->getStatusID() == 4)
-		{
-			return new KTAPI_Error(KTAPI_ERROR_DOCUMENT_ARCHIVED);
-		}
-		else
-		{
-			return new KTAPI_Error(KTAPI_ERROR_DOCUMENT_UNAVAILABLE);
+		switch ($document_status) {
+			case LIVE:
+				//just ignore
+				break;
+			case PUBLISHED:
+				//just ignore
+				break;
+			case DELETED:
+				return new KTAPI_Error(KTAPI_ERROR_DOCUMENT_DELETED);
+				break;
+			case ARCHIVED:
+				return new KTAPI_Error(KTAPI_ERROR_DOCUMENT_ARCHIVED);
+				break;
+			case STATUS_INCOMPLETE:
+				return new KTAPI_Error(KTAPI_ERROR_DOCUMENT_UNAVAILABLE);
+				break;
+			case VERSION_DELETED:
+				return new KTAPI_Error(KTAPI_ERROR_DOCUMENT_DELETED);
+				break;
 		}
 		
 		$user = $this->can_user_access_object_requiring_permission($this->document, KTAPI_PERMISSION_WRITE);
@@ -2326,6 +2327,9 @@ class KTAPI_Document extends KTAPI_FolderItem
 			$url = KTBrowseUtil::getUrlForDocument($document);			
 			$detail['clean_uri'] = $url;
 			
+			$document_status_id = $document->getStatusID();
+			$detail['document_status'] = Document::getStatusString($document_status_id);
+			
 			//need to get latest check-in date
 			$aTransactionsByDocument = DocumentTransaction::getByDocumentFilterByNamespace($document, 'ktcore.transactions.check_in');
 			
@@ -2409,7 +2413,40 @@ class KTAPI_Document extends KTAPI_FolderItem
 	 * @access public
 	 */
 	function download($version = null)
-	{
+	{		
+		$document_status = $this->document->getStatusID();
+		
+		switch ($document_status) {
+			case LIVE:
+				//just ignore
+				break;
+			case PUBLISHED:
+				//just ignore
+				break;
+			case DELETED:
+				return new KTAPI_Error(KTAPI_ERROR_DOCUMENT_DELETED);
+				break;
+			case ARCHIVED:
+				return new KTAPI_Error(KTAPI_ERROR_DOCUMENT_ARCHIVED);
+				break;
+			case STATUS_INCOMPLETE:
+				return new KTAPI_Error(KTAPI_ERROR_DOCUMENT_UNAVAILABLE);
+				break;
+			case VERSION_DELETED:
+				return new KTAPI_Error(KTAPI_ERROR_DOCUMENT_VERSION_DELETED);
+				break;
+		}
+		
+		if (isset($version))
+		{
+			$content_version_status_id = $this->document->getContentVersionStatus($version);
+		
+			if ($content_version_status_id == VERSION_DELETED)
+			{
+				return new KTAPI_Error(KTAPI_ERROR_DOCUMENT_VERSION_DELETED);
+			}
+		}
+		
 		$oStorage = KTStorageManagerUtil::getSingleton();
         $options = array();
 

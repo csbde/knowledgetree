@@ -66,6 +66,7 @@ define('KTAPI_ERROR_WORKFLOW_NOT_IN_PROGRESS', 	'The workflow is not in progress
 define('KTAPI_ERROR_DOCUMENT_LINK_TYPE_INVALID','The link type could not be resolved.');
 define('KTAPI_ERROR_DOCUMENT_DELETED',			'The document is deleted.');
 define('KTAPI_ERROR_DOCUMENT_ARCHIVED',			'The document is archived.');
+define('KTAPI_ERROR_DOCUMENT_VERSION_DELETED',	'The document version is deleted.');
 define('KTAPI_ERROR_DOCUMENT_UNAVAILABLE',		'The document is not available.');
 
 /**
