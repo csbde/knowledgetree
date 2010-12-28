@@ -59,10 +59,10 @@ class KTAbout extends KTStandardDispatcher {
         $oTemplate = $oTemplating->loadTemplate($aboutPage);
 
         $aVersionInfo = explode(' ', $default->versionName);
-        foreach($aVersionInfo as $sVersionpiece){
-        	if(substr($sVersionpiece, 1, 1) == '.'){
+        foreach ($aVersionInfo as $sVersionpiece) {
+        	if (substr($sVersionpiece, 1, 1) == '.') {
         		$sVersionNo = $sVersionpiece;
-        	}else{
+        	} else {
         		$sVersionName .= " ".$sVersionpiece;
         	}
         }
