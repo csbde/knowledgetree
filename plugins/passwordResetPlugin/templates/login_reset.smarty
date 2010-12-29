@@ -14,7 +14,7 @@
         <script type="text/javascript" src="{$rootUrl}{$item}"> </script>
     {/foreach}
 </head>
-<body >
+<body onload="ktOlarkPopupTrigger('Hi, do you need help logging in?', 30000);">
 <div id="loginbox_outer"  {if ($disclaimer)} class="hasDisclaimer" {/if} style="width:800px;">
 	<div class="header">
 
@@ -149,12 +149,6 @@
 {else}
    	<script type="text/javascript">hideResetBox(); document.getElementById("username").focus();</script>
 {/if}
-
-{literal}
-<!--<script type="text/javascript">
-    ktOlarkPopupTrigger('Hi, do you need help logging in?', 30000);
-</script>-->
-{/literal}
 
 </body>
 </html>

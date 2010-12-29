@@ -267,7 +267,7 @@ class BrowseDispatcher extends KTStandardDispatcher {
 
 		$ktOlarkPopup = null;
 		// temporarily disabled
-		if (false && ACCOUNT_ROUTING_ENABLED && liveAccounts::isTrialAccount()) {
+		if (ACCOUNT_ROUTING_ENABLED && liveAccounts::isTrialAccount()) {
             $js = preg_replace('/.*[\/\\\\]plugins/', 'plugins', KT_LIVE_DIR) . '/resources/js/olark/olark.js';
             $this->oPage->requireJsResource($js);
             // popup immediately if first login
@@ -284,10 +284,11 @@ class BrowseDispatcher extends KTStandardDispatcher {
                 $ktOlarkPopup = '{literal}
 <script type="text/javascript">
     olark.extend(function(api) {
-        setTimeout(function(){
-           api.box.expand();
-       }, 60000);
-
+//        really not sure why this was done, browse page is not supposed to pop it up; leaving it commented until confirmed
+//        setTimeout(function(){
+//           api.box.expand();
+//       }, 60000);
+        api.box.show();
     });
 </script>
 {/literal}';

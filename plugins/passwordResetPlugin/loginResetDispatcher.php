@@ -137,7 +137,7 @@ class loginResetDispatcher extends KTDispatcher {
         $js[] = '/thirdpartyjs/extjs/adapter/ext/ext-base.js';
         $js[] = '/thirdpartyjs/extjs/ext-all.js';
         // temporarily disabled
-        if (false && ACCOUNT_ROUTING_ENABLED && liveAccounts::isTrialAccount()) {
+        if (ACCOUNT_ROUTING_ENABLED && liveAccounts::isTrialAccount()) {
             $js[] = preg_replace('/.*[\/\\\\]plugins/', '/plugins', KT_LIVE_DIR) . '/resources/js/olark/olark.js';
         }
         $css[] = '/thirdpartyjs/extjs/resources/css/ext-all.css';
