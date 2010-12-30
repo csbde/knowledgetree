@@ -147,11 +147,9 @@ class DashboardDispatcher extends KTStandardDispatcher {
             $js = preg_replace('/.*[\/\\\\]plugins/', 'plugins', KT_LIVE_DIR) . '/resources/js/olark/olark.js';
             $this->oPage->requireJsResource($js);
             // add popup to page
-            $ktOlarkPopup = '{literal}
-<script type="text/javascript">
+            $ktOlarkPopup = '<script type="text/javascript">
     ktOlarkPopupTrigger("Welcome to KnowledgeTree.  If you have any questions, please let us know.", 0);
-</script>
-{/literal}';
+</script>';
             unset($_SESSION['isFirstLogin']);
         }
 

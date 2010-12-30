@@ -273,16 +273,13 @@ class BrowseDispatcher extends KTStandardDispatcher {
             // popup immediately if first login
             if (isset($_SESSION['isFirstLogin'])) {
                 // add popup to page
-                $ktOlarkPopup = '{literal}
-<script type="text/javascript">
+                $ktOlarkPopup = '<script type="text/javascript">
     ktOlarkPopupTrigger("Welcome to KnowledgeTree.  If you have any questions, please let us know.", 0);
-</script>
-{/literal}';
+</script>';
                 unset($_SESSION['isFirstLogin']);
             }
             else {
-                $ktOlarkPopup = '{literal}
-<script type="text/javascript">
+                $ktOlarkPopup = '<script type="text/javascript">
     olark.extend(function(api) {
 //        really not sure why this was done, browse page is not supposed to pop it up; leaving it commented until confirmed
 //        setTimeout(function(){
@@ -290,8 +287,7 @@ class BrowseDispatcher extends KTStandardDispatcher {
 //       }, 60000);
         api.box.show();
     });
-</script>
-{/literal}';
+</script>';
             }
         }
 
