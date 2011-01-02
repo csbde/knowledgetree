@@ -360,13 +360,14 @@ kt.app.upload=new function(){
 						delete self.data.files[responseJSON.success.filename];
 						
 						//don't display the item if it isn't the same folder or if you are on the dashboard
-						if (!responseJSON.success.isBulk && !onDashboardPage && responseJSON.success.baseFolderID == folderID) {						
+						if (!responseJSON.success.isBulk && !onDashboardPage && responseJSON.success.baseFolderID == folderID) {
 							//now add the new item to the grid
 							var item = {
 								id: responseJSON.success.id,
 					    		is_immutable: false,
 					    		is_checkedout: false,
 					    		filename: responseJSON.success.filename,
+								document_url: responseJSON.success.document_url,
 					    		title: responseJSON.success.title,
 					    		owned_by: responseJSON.success.owned_by,
 					    		created_by: responseJSON.success.created_by,
@@ -374,6 +375,10 @@ kt.app.upload=new function(){
 					    		modified_by: responseJSON.success.modified_by,
 					    		modified_date: responseJSON.success.modified_date,
 					    		mimeicon: responseJSON.success.mimeicon,
+					    		allowdoczohoedit:responseJSON.success.allowdoczohoedit,
+					    		isfinalize_document:responseJSON.success.isfinalize_document,
+					    		user_id:responseJSON.success.user_id,
+					    		item_type:responseJSON.success.item_type,
 					    		thumbnail: '',
 					    		thumbnailclass: 'nopreview'
 					    	};
@@ -904,6 +909,14 @@ kt.app.upload.uploadStructure=function(options){
 		self.options.docTypeId=docType;
 		//reset required fields 
 		self.options.fields_required = {};
+		
+		//does this Doc Type have required fields?
+		kt.api.docTypeHasRequiredFields(docType, function(data){
+			//if so, we need to disable the Upload button
+			docTypeHasRequiredFields = data.data.hasRequiredFields;	
+			//console.log('docTypeHasRequiredFields '+docTypeHasRequiredFields);
+			self.options.has_required_metadata = docTypeHasRequiredFields;
+		});
 		
 		try {
 			var selectBox=jQuery('.ul_doctype',self.options.metaDataTable)[0];

@@ -590,8 +590,9 @@ class KTAPI_Folder extends KTAPI_FolderItem
                     $created_date = $document->getCreatedDateTime();
                     if (empty($created_date))
                     $created_date = 'n/a';
-
-                    $checked_out_by = $this->_resolve_user($document->getCheckedOutUserID());
+                    
+					$checked_out_by_id = $document->getCheckedOutUserID();
+                    $checked_out_by = $this->_resolve_user($checked_out_by_id);
                     $checked_out_date = $document->getCheckedOutDate();
                     if (empty($checked_out_date))
                     $checked_out_date = 'n/a';
@@ -645,6 +646,7 @@ class KTAPI_Folder extends KTAPI_FolderItem
                         'created_by' => is_null($created_by) ? 'n/a' : $created_by->getName(),
                         'created_date' => $created_date,
                         'checked_out_by' => is_null($checked_out_by) ? 'n/a' : $checked_out_by->getName(),
+                        'checked_out_by_id' => $checked_out_by_id,
                         'checked_out_date' => $checked_out_date,
                         'modified_by' => is_null($modified_by) ? 'n/a' : $modified_by->getName(),
                         'modified_date' => $modified_date,
@@ -669,6 +671,13 @@ class KTAPI_Folder extends KTAPI_FolderItem
                                 $array ['item_type'] = "S";
                             }
                             $array['has_rendition'] = $document->getHasRendition();
+                            
+                            $array['clean_uri'] = KTBrowseUtil::getUrlForDocument($document);
+                            
+                            $array['created_by_user_name'] = is_null($created_by) ? 'n/a' : $created_by->getUserName();
+                            $array['modified_by_user_name'] = is_null($modified_by) ? 'n/a' : $modified_by->getUserName();
+                            $array['checked_out_by_user_name'] = is_null($checked_out_by) ? 'n/a' : $checked_out_by->getUserName();
+                            $array['owned_by_user_name'] = is_null($owned_by) ? 'n/a' : $owned_by->getUserName();
                         }
 
                         $array ['items'] = array();

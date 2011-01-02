@@ -46,7 +46,7 @@ class KTUtil {
 	const DAY_IN_SECS = 86400;
 	const KB = 1024;
     const MB = 1048576;
-    const GB = 1000000000;
+    const GB = 1073741824;
     const TB = 1099511627776;
     const PB = 1125899906842624;
 
@@ -128,11 +128,6 @@ class KTUtil {
         }
         return $host;
     }
-    
-    static function getServerDateTime()
-    {
-    	return gmdate("c");
-    }
 
     static function kt_url()
 	{
@@ -162,6 +157,7 @@ class KTUtil {
 		{
 			$default->log->debug("kt_url: base url - $base_url");
 		}
+		
 		return $base_url;
 	}
 
@@ -1030,7 +1026,16 @@ class KTUtil {
 
     // {{{ addQueryStringSelf
     static function addQueryStringSelf($qs) {
-        return KTUtil::addQueryString($_SERVER['PHP_SELF'], $qs);
+		
+		// REDIRECT_URL is different from HTTP_REFERER
+		// It picks up a .htaccess redirect
+		if (isset($_SERVER['REDIRECT_URL'])) {
+			$url = $_SERVER['REDIRECT_URL'];
+		} else {
+			$url = $_SERVER['PHP_SELF'];
+		}
+		
+        return KTUtil::addQueryString($url, $qs);
     }
     // }}}
 
@@ -1381,7 +1386,7 @@ class KTUtil {
 
 	public static function buildUrl($file, $params=null)
 	{
-		$useCleanURL = FALSE;
+		$useCleanURL = TRUE;
 
 		// Convert to Array
 		if ($params == null) {

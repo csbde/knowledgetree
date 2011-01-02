@@ -50,6 +50,10 @@ require_once(KT_LIB_DIR . '/help/helpreplacement.inc.php');
 require_once(KT_LIB_DIR . '/widgets/fieldWidgets.php');
 require_once(KT_LIB_DIR . '/util/ktutil.inc');
 
+if (ACCOUNT_ROUTING_ENABLED) {
+    require_once(KT_LIVE_DIR . '/helpers/liveAccounts.helper.php');
+}
+
 class loginResetDispatcher extends KTDispatcher {
 
     function do_main() {
@@ -67,19 +71,22 @@ class loginResetDispatcher extends KTDispatcher {
                 $oUser = array($res);
             }
         }
+
         if (is_array($oUser) && count($oUser)) {
             if (empty($_REQUEST['errorMessage'])) {
                 $_REQUEST['errorMessage'] = array();
             } else {
                 $_REQUEST['errorMessage'] = array($_REQUEST['errorMessage']);
             }
+
             foreach ($oUser as $oError) {
                 $_REQUEST['errorMessage'][] = $oError->getMessage();
             }
+
             $_REQUEST['errorMessage'] = join('. <br /> ', $_REQUEST['errorMessage']);
         }
 
-        if(!$this->check() && $_SESSION['userID'] != -2) { // bounce here, potentially.
+        if (!$this->check() && ($_SESSION['userID'] != -2)) { // bounce here, potentially.
             // User is already logged in - get the redirect
             $redirect = strip_tags(KTUtil::arrayGet($_REQUEST, 'redirect'));
 
@@ -108,14 +115,14 @@ class loginResetDispatcher extends KTDispatcher {
         $aLanguageNames = $oReg->getLanguages('knowledgeTree');
         $aRegisteredLanguageNames = array();
 
-        if(!empty($aRegisteredLangs))
-        {
+        if (!empty($aRegisteredLangs)) {
             foreach (array_keys($aRegisteredLangs) as $sLang) {
                 $aRegisteredLanguageNames[$sLang] = $aLanguageNames[$sLang];
             }
 
             asort($aRegisteredLanguageNames);
         }
+
         $sLanguageSelect = $default->defaultLanguage;
 
         // extra disclaimer, if plugin is enabled
@@ -129,6 +136,10 @@ class loginResetDispatcher extends KTDispatcher {
         $css = array();
         $js[] = '/thirdpartyjs/extjs/adapter/ext/ext-base.js';
         $js[] = '/thirdpartyjs/extjs/ext-all.js';
+        // temporarily disabled
+        if (ACCOUNT_ROUTING_ENABLED && liveAccounts::isTrialAccount()) {
+            $js[] = preg_replace('/.*[\/\\\\]plugins/', '/plugins', KT_LIVE_DIR) . '/resources/js/olark/olark.js';
+        }
         $css[] = '/thirdpartyjs/extjs/resources/css/ext-all.css';
 
         // Include additional js and css files if plugin
@@ -138,27 +149,24 @@ class loginResetDispatcher extends KTDispatcher {
         $oConfig = KTConfig::getSingleton();
         $useEmail = $oConfig->get('user_prefs/useEmailLogin', false);
         $email = false;
-        if($useEmail)
-        {
+        if ($useEmail) {
 			$resetKey = (isset($_REQUEST['pword_reset'])) ? $_REQUEST['pword_reset'] : '';
-        	if(!empty($resetKey)){
+        	if (!empty($resetKey)) {
 	            // Get the user id from the key
 	            $aKey = explode('_', $resetKey);
 	            $id = isset($aKey[1]) ? $aKey[1] : '';
         		$oUser = User::get($id);
-        		if(!PEAR::isError($oUser))
-        		{
+        		if (!PEAR::isError($oUser)) {
         			$email = $oUser->getEmail();
         		}
         	}
         }
+
         if ($oPlugin != null) {
-        	if($useEmail)
-        	{
+        	if ($useEmail) {
         		$js[] = $oPlugin->getURLPath('resources/passwordResetEmailUsers.js');
         	}
-        	else 
-        	{
+        	else {
         		$js[] = $oPlugin->getURLPath('resources/passwordReset.js');
         	}
             $css[] = $oPlugin->getURLPath('resources/passwordReset.css');
@@ -187,6 +195,7 @@ class loginResetDispatcher extends KTDispatcher {
         'new_email' => $email,
         'username' => isset($_REQUEST['username']) ? $_REQUEST['username'] : null
         );
+
         return $oTemplate->render($aTemplateData);
     }
 
@@ -243,11 +252,15 @@ class loginResetDispatcher extends KTDispatcher {
             if ($oUser instanceof ktentitynoobjects) {
                 $this->handleUserDoesNotExist($username, $password, $aExtra);
             }
+
 			$KTConfig = KTConfig::getSingleton();
-			if($KTConfig->get('user_prefs/useEmailLogin', false))
+			if ($KTConfig->get('user_prefs/useEmailLogin', false)) {
             	$message = 'Login failed.  Please check your email address and password, and try again.';
-            else 
+			}
+            else {
             	$message = 'Login failed.  Please check your username and password, and try again.';
+            }
+
             $this->simpleRedirectToMain(_kt($message), $url, $queryParams);
             exit(0);
         }
@@ -265,10 +278,13 @@ class loginResetDispatcher extends KTDispatcher {
 
         if ($authenticated !== true) {
 			$KTConfig = KTConfig::getSingleton();
-			if($KTConfig->get('user_prefs/useEmailLogin', false))
+			if ($KTConfig->get('user_prefs/useEmailLogin', false)) {
             	$message = 'Login failed.  Please check your email address and password, and try again.';
-            else 
+			}
+            else {
             	$message = 'Login failed.  Please check your username and password, and try again.';
+            }
+
             $this->simpleRedirectToMain(_kt($message), $url, $queryParams);
             exit(0);
         }
@@ -316,7 +332,6 @@ class loginResetDispatcher extends KTDispatcher {
         if (empty($result)) {
             // set db to reflect that user has now logged in
             UserPreferences::saveUserPreferences($_SESSION['userID'], 'firstLogin', date('Y-m-d H:i:s'));
-
             return true;
         }
 
@@ -333,6 +348,7 @@ class loginResetDispatcher extends KTDispatcher {
         if ($sessionStatus !== true) { // the session is not valid
             $this->redirectToMain();
         }
+
         $this->oUser =& User::get($_SESSION['userID']);
         $oProvider =& KTAuthenticationUtil::getAuthenticationProviderForUser($this->oUser);
         $oProvider->subDispatch($this);
@@ -358,8 +374,7 @@ class loginResetDispatcher extends KTDispatcher {
         $_SESSION["pageAccess"] = NULL;
         $cookietest = KTUtil::randomString();
         setcookie("CookieTestCookie", $cookietest, 0);
-        if($doRedirect)
-        {
+        if ($doRedirect) {
         	$this->redirectTo('checkCookie', array(	'cookieVerify' => $cookietest,
         											'redirect' => $redirect,
         											));
@@ -375,21 +390,23 @@ class loginResetDispatcher extends KTDispatcher {
         // Check if the user has been deleted before allowing auto-signup
         $delUser = User::checkDeletedUser($username);
 
-        if($delUser){
+        if ($delUser) {
             return ;
         }
 
         $oKTConfig = KTConfig::getSingleton();
         $allow = $oKTConfig->get('session/allowAutoSignup', true);
 
-        if($allow){
+        if ($allow) {
             $res = KTAuthenticationUtil::autoSignup($username, $password, $aExtra);
             if (empty($res)) {
                 return $res;
             }
+
             if ($res instanceof User) {
                 $this->performLogin($res);
             }
+
             if ($res instanceof KTAuthenticationSource) {
                 $_SESSION['autosignup'] = $aExtra;
                 $this->redirectTo('autoSignup', array(
@@ -428,7 +445,7 @@ class loginResetDispatcher extends KTDispatcher {
         }
 
         if ($this->checkFirstLogin()) {
-            $GLOBALS['default']->log->debug(__FUNCTION__ . " first login for: " . $_SESSION['userID']);
+            $GLOBALS['default']->log->debug(__FUNCTION__ . ' first login for: ' . $_SESSION['userID']);
             // this line may no longer be necessary
             $_SESSION['isFirstLogin'] = true;
             /*
@@ -451,15 +468,13 @@ class loginResetDispatcher extends KTDispatcher {
             $redirectToBrowse = $config->get('KnowledgeTree/redirectToBrowse', false);
             $redirectToDashboardList = $config->get('KnowledgeTree/redirectToBrowseExceptions', '');
 
-            if ($redirectToBrowse)
-            {
+            if ($redirectToBrowse) {
                 $exceptionsList = explode(',', str_replace(' ','',$redirectToDashboardList));
                 $user = User::get($_SESSION['userID']);
                 $username = $user->getUserName();
                 $url .= (in_array($username, $exceptionsList)) ? '/dashboard.php' : KTUtil::buildUrl('/browse.php');
             }
-            else
-            {
+            else {
                 $url .=  '/dashboard.php';
             }
         }
@@ -469,7 +484,7 @@ class loginResetDispatcher extends KTDispatcher {
 
     function checkReset() {
         $resetKey = (isset($_REQUEST['pword_reset'])) ? $_REQUEST['pword_reset'] : '';
-        if(!empty($resetKey)){
+        if (!empty($resetKey)) {
             // Get the user id from the key
             $aKey = explode('_', $resetKey);
             $id = isset($aKey[1]) ? $aKey[1] : '';
@@ -478,30 +493,29 @@ class loginResetDispatcher extends KTDispatcher {
             $storedKey = KTUtil::getSystemSetting('password_reset_key-'.$id);
             $expiry = KTUtil::getSystemSetting('password_reset_expire-'.$id);
 
-            if($expiry < time()){
+            if ($expiry < time()) {
                 $_REQUEST['errorMessage'] = _kt('The password reset key has expired, please send a new request.');
-            }else if($storedKey != $resetKey){
+            } else if ($storedKey != $resetKey) {
                 $_REQUEST['errorMessage'] = _kt('Unauthorised access denied.');
-            }else{
+            } else {
                 return true;
             }
         }
+
         return false;
     }
 
     public function validateCredentials($email, $user)
     {
 		$KTConfig = KTConfig::getSingleton();
-		if($KTConfig->get('user_prefs/useEmailLogin', false))
-		{
+		if ($KTConfig->get('user_prefs/useEmailLogin', false)) {
 			return $this->validateEmailUser($email);
 		}
-		else 
-		{
+		else {
 			return $this->validateUser($email, $user);
 		}
     }
-    
+
     private function validateEmailUser($email)
     {
         // Check that the user and email match up in the database
@@ -509,7 +523,7 @@ class loginResetDispatcher extends KTDispatcher {
         $aParams = array($email, $email);
         return DBUtil::getOneResultKey(array($sQuery, $aParams), 'id');
     }
-    
+
     private function validateUser($email, $user)
     {
         // Check that the user and email match up in the database
@@ -517,21 +531,21 @@ class loginResetDispatcher extends KTDispatcher {
         $aParams = array($user, $email);
         return DBUtil::getOneResultKey(array($sQuery, $aParams), 'id');
     }
-    
-    function do_sendResetRequest(){
+
+    function do_sendResetRequest() {
         $email = $_REQUEST['email'];
         $user = $_REQUEST['username'];
 		$id = $this->validateCredentials($email, $user);
-        if(!is_numeric($id) || $id < 1) {
-        	if($KTConfig->get('user_prefs/useEmailLogin', false))
-        	{
+
+		if (!is_numeric($id) || $id < 1) {
+        	if ($KTConfig->get('user_prefs/useEmailLogin', false)) {
         		return _kt('Please check that you have entered a valid email address.');
         	}
-        	else 
-        	{
+        	else {
         		return _kt('Please check that you have entered a valid username and email address.');
         	}
         }
+
         // Generate a random key that expires after 24 hours
         $expiryDate = time()+86400;
         $randomKey = rand(20000, 100000)."_{$id}_".KTUtil::getSystemIdentifier();
@@ -553,7 +567,7 @@ class loginResetDispatcher extends KTDispatcher {
         $oEmail = new Email();
         $res = $oEmail->send($email, $subject, $body);
 
-        if($res === true){
+        if ($res === true) {
             return _kt('A verification email has been sent to your email address.');
         }
 
@@ -566,31 +580,36 @@ class loginResetDispatcher extends KTDispatcher {
         $sQuery = 'SELECT id FROM users WHERE username = ? AND email = ?';
         $aParams = array($email, $email);
         $id = DBUtil::getOneResultKey(array($sQuery, $aParams), 'id');
-        if(!is_numeric($id) || $id < 1) {
+
+        if (!is_numeric($id) || $id < 1) {
             return _kt('Please check that you have entered a valid email address.');
         }
+
         $password = md5($password);
+
 		return $this->sendUpdatePasswordAndEmail($id, false, $password);
     }
-    
+
     private function sendUpdatePasswordAndEmail($id, $email, $password)
     {
         // Check expiry
         $expiry = KTUtil::getSystemSetting('password_reset_expire-'.$id);
-        if($expiry < time()){
+        if ($expiry < time()) {
             return _kt('The password reset key has expired, please send a new request.');
         }
+
         // Update password
         $res = DBUtil::autoUpdate('users', array('password' => $password), $id);
-        if(PEAR::isError($res) || is_null($res)){
+        if (PEAR::isError($res) || is_null($res)) {
             return _kt('Your password could not be reset, please try again.');
         }
+
         // Unset expiry date and key
         KTUtil::setSystemSetting('password_reset_expire-'.$id, '');
         KTUtil::setSystemSetting('password_reset_key-'.$id, '');
+
         // Dont send email about password update.
-        if($email == false)
-        {
+        if ($email == false) {
         	$oUser = User::get($id);
 	        if ($oUser instanceof User) {
 	        	$this->performLogin(User::get($id), '', false);
@@ -606,39 +625,42 @@ class loginResetDispatcher extends KTDispatcher {
 	        $body .= "</p><p><a href = '$url'>". _kt('Login').'</a></p></dd>';
 	        $oEmail = new Email();
 	        $res = $oEmail->send($email, $subject, $body);
-	        if($res === true){
+	        if ($res === true) {
 	            return _kt('Your password has been successfully reset. Proceed to login.');
 	        }
         }
-        
+
         return _kt('An error occurred while sending the email. Please try again.');
     }
-    
-    function do_resetPassword(){
+
+    function do_resetPassword() {
         $email = $_REQUEST['email'];
         $user = $_REQUEST['username'];
         $password = $_REQUEST['password'];
         $confirm = $_REQUEST['confirm'];
 		$KTConfig = KTConfig::getSingleton();
-		if($KTConfig->get('user_prefs/useEmailLogin', false))
-		{
+		if ($KTConfig->get('user_prefs/useEmailLogin', false)) {
 			return $this->resetPasswordEmailUser($email, $password);
 		}
-        if(!($password == $confirm)){
+
+        if (!($password == $confirm)) {
             return _kt('The passwords do not match, please re-enter them.');
         }
+
         $password = md5($password);
+
         // Get user from db
         $sQuery = 'SELECT id FROM users WHERE username = ? AND email = ?';
         $aParams = array($user, $email);
         $id = DBUtil::getOneResultKey(array($sQuery, $aParams), 'id');
 
-        if(!is_numeric($id) || $id < 1) { //PEAR::isError($res) || is_null($res)){
+        if (!is_numeric($id) || $id < 1) { //PEAR::isError($res) || is_null($res)) {
             return _kt('Please check that you have entered a valid username and email address.');
         }
 
 		return $this->sendUpdatePasswordAndEmail($id, $email, $password);
     }
+
 }
 
 $dispatcher = new loginResetDispatcher();

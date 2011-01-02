@@ -6,7 +6,7 @@
  * KnowledgeTree Community Edition
  * Document Management Made Simple
  * Copyright (C) 2008, 2009, 2010 KnowledgeTree Inc.
- * 
+ *
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License version 3 as published by the
@@ -42,22 +42,22 @@ require_once(KT_LIB_DIR . '/plugins/pluginregistry.inc.php');
 require_once('TagCloudRedirectPage.php');
 require_once(KT_LIB_DIR . '/templating/templating.inc.php');
 
- /**
-  * Tag Cloud Plugin class
-  *
-  */
- class TagCloudPlugin extends KTPlugin{
+/**
+ * Tag Cloud Plugin class
+ */
+class TagCloudPlugin extends KTPlugin {
 
- 	var $sNamespace = 'ktcore.tagcloud.plugin';
- 	var $iVersion = 1;
+    var $sNamespace = 'ktcore.tagcloud.plugin';
+    var $iVersion = 1;
 
- 	/**
- 	 * Constructor method for plugin
- 	 *
- 	 * @param string $sFilename
- 	 * @return TagCloudPlugin
- 	 */
- 	function TagCloudPlugin($sFilename = null) {
+    /**
+      * Constructor method for plugin
+      *
+      * @param string $sFilename
+      * @return TagCloudPlugin
+      */
+    function TagCloudPlugin($sFilename = null)
+    {
         $res = parent::KTPlugin($sFilename);
         $this->sFriendlyName = _kt('Tag Cloud Plugin');
         return $res;
@@ -65,34 +65,33 @@ require_once(KT_LIB_DIR . '/templating/templating.inc.php');
 
     /**
      * Setup function for plugin
-     *
      */
-    function setup() {
-    	// Register plugin components
-		$this->registerCriterion('TagCloudCriterion', 'ktcore.criteria.tagcloud', KT_LIB_DIR . '/browse/Criteria.inc');
-		$this->registerDashlet('TagCloudDashlet', 'ktcore.tagcloud.feed.dashlet', 'TagCloudDashlet.php');
-		$this->registerPage('TagCloudRedirection', 'TagCloudRedirectPage', __FILE__);
-		$this->registerPortlet(array(), 'TagCloudPortlet', 'tagcloud.portlet', 'TagCloudPortlet.php');
-
+    function setup()
+    {
+        // Register plugin components
+        $this->registerCriterion('TagCloudCriterion', 'ktcore.criteria.tagcloud', KT_LIB_DIR . '/browse/Criteria.inc');
+        $this->registerDashlet('TagCloudDashlet', 'ktcore.tagcloud.feed.dashlet', 'TagCloudDashlet.php');
+        $this->registerPage('TagCloudRedirection', 'TagCloudRedirectPage', __FILE__);
+        $this->registerPortlet(array(), 'TagCloudPortlet', 'tagcloud.portlet', 'TagCloudPortlet.php');
 
         // Check if the tagcloud fielset entry exists, if not, create it
         $iFieldsetId = TagCloudPlugin::tagFieldsetExists();
-        if($iFieldsetId === false){
-        	$oFieldset = TagCloudPlugin::createFieldset();
-        	if (PEAR::isError($oFieldset) || is_null($oFieldset)) {
-	            return false;
-	        }
-        	// make the fieldset id viewable
-        	$iFieldsetId = $oFieldset->iId;
+        if ($iFieldsetId === false) {
+            $oFieldset = TagCloudPlugin::createFieldset();
+            if (PEAR::isError($oFieldset) || is_null($oFieldset)) {
+                return false;
+            }
+            // make the fieldset id viewable
+            $iFieldsetId = $oFieldset->iId;
         }
 
         // Check if the tagcloud document field entry exists, if not, create it
         $fExists = TagCloudPlugin::tagFieldExists();
-        if($fExists === false){
-        	$oField = TagCloudPlugin::createDocumentField($iFieldsetId);
-        	if (PEAR::isError($oField) || is_null($oField)) {
-	            return false;
-	        }
+        if ($fExists === false) {
+            $oField = TagCloudPlugin::createDocumentField($iFieldsetId);
+            if (PEAR::isError($oField) || is_null($oField)) {
+                return false;
+            }
         }
 
         $oTemplating =& KTTemplating::getSingleton();
@@ -104,21 +103,22 @@ require_once(KT_LIB_DIR . '/templating/templating.inc.php');
      *
      * @return unknown
      */
-    function createFieldset(){
-    	// create the fieldsets entry
-    	$oFieldset = KTFieldset::createFromArray(array(
+    function createFieldset()
+    {
+        // create the fieldsets entry
+        $oFieldset = KTFieldset::createFromArray(array(
             'name' => _kt('Tag Cloud'),
-	    	'description' => _kt('The following tags are associated with your document'),
+            'description' => _kt('The following tags are associated with your document'),
             'namespace' => 'tagcloud',
             'mandatory' => false,
-	    	'isConditional' => false,
+            'isConditional' => false,
             'isGeneric' => true,
             'isComplete' => false,
             'isComplex' => false,
             'isSystem' => false,
         ));
 
-		return $oFieldset;
+        return $oFieldset;
     }
 
     /**
@@ -127,9 +127,10 @@ require_once(KT_LIB_DIR . '/templating/templating.inc.php');
      * @param int $parentId
      * @return int $id
      */
-    function createDocumentField($parentId){
-    	// create the document_field entry
-    	$id = DocumentField::createFromArray(array(
+    function createDocumentField($parentId)
+    {
+        // create the document_field entry
+        $id = DocumentField::createFromArray(array(
             'Name' => 'Tag',
             'Description' => 'Tag Words',
             'DataType' => 'STRING',
@@ -140,7 +141,7 @@ require_once(KT_LIB_DIR . '/templating/templating.inc.php');
             'IsMandatory' => false,
         ));
 
-		return $id;
+        return $id;
     }
 
     /**
@@ -148,20 +149,21 @@ require_once(KT_LIB_DIR . '/templating/templating.inc.php');
      *
      * @return boolean
      */
-    function tagFieldExists(){
-    	$sQuery = 'SELECT df.id AS id FROM document_fields AS df ' .
-				'WHERE df.name = \'Tag\'';
-		$sTag = DBUtil::getOneResultKey(array($sQuery), 'id');
+    function tagFieldExists()
+    {
+        $sQuery = 'SELECT df.id AS id FROM document_fields AS df WHERE df.name = \'Tag\'';
+        $sTag = DBUtil::getOneResultKey(array($sQuery), 'id');
 
         if (PEAR::isError($sTag)) {
             global $default;
             $default->log->error('Tag Cloud plugin - error checking tag field: '.$sTag->getMessage());
             return $sTag;
         }
-        if(is_numeric($sTag)){
-        	return $sTag;
-        }else{
-        	return false;
+
+        if (is_numeric($sTag)) {
+            return $sTag;
+        } else {
+            return false;
         }
     }
 
@@ -170,23 +172,25 @@ require_once(KT_LIB_DIR . '/templating/templating.inc.php');
      *
      * @return boolean
      */
-    function tagFieldsetExists(){
-    	$sQuery = 'SELECT fs.id AS id FROM fieldsets AS fs '.
-    			'WHERE namespace = \'tagcloud\'';
-		$iFieldset = DBUtil::getOneResultKey(array($sQuery), 'id');
+    function tagFieldsetExists() {
+        $sQuery = 'SELECT fs.id AS id FROM fieldsets AS fs '.
+                'WHERE namespace = \'tagcloud\'';
+        $iFieldset = DBUtil::getOneResultKey(array($sQuery), 'id');
 
         if (PEAR::isError($iFieldset)) {
             global $default;
             $default->log->error('Tag Cloud plugin - error checking tag fieldset: '.$iFieldset->getMessage());
             return $iFieldset;
         }
-        if(is_numeric($iFieldset)){
-        	return $iFieldset;
-        }else{
-        	return false;
+
+        if (is_numeric($iFieldset)) {
+            return $iFieldset;
+        } else {
+            return false;
         }
     }
- }
+}
+
 $oPluginRegistry =& KTPluginRegistry::getSingleton();
 $oPluginRegistry->registerPlugin('TagCloudPlugin', 'ktcore.tagcloud.plugin', __FILE__);
 

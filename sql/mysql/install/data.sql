@@ -277,7 +277,7 @@ INSERT INTO `config_settings` VALUES
 (100, 'import', 'Disable Bulk Import', 'Disable the bulk import plugin', 'disableBulkImport', 'default', 'false', 'string', NULL, 1),
 (101, 'session', 'Enable version check', 'Compares the system version with the database version to determine if a database upgrade is needed.','dbversioncompare', 'default', 'true', 'boolean', NULL, 0),
 (102, 'tweaks', 'Update Document Version (Content) on Editing Metadata', 'The document version is equivalent to the document content version. When set to true the document version will be increased when the document metadata is updated.', 'updateContentVersion', 'default', 'false', 'boolean', NULL, 1),
-(103, 'tweaks', 'Always Force Original Filename on Check-in', 'When set to true, the checkbox for "Force Original Filename" will be hidden on check-in. This ensures that the filename will always stay the same.', 'disableForceFilenameOption', 'default', 'false', 'boolean', NULL, 1),
+(103, 'tweaks', 'Always Force Original Filename on Check-In', 'When set to true, the checkbox for "Force Original Filename" will be hidden on check-in. This ensures that the filename will always stay the same.', 'disableForceFilenameOption', 'default', 'false', 'boolean', NULL, 1),
 (104, 'KnowledgeTree', 'The Location of the Mime Magic File', 'The path to the mime magic database file.', 'magicDatabase', 'default', '${fileSystemRoot}/../common/share/file/magic', 'string', NULL, 1),
 (105, 'search', 'Maximum results from SQL query', 'The maximum results from an SQL query', 'maxSqlResults', 'default', '10000', 'numeric_string', NULL, 1),
 (106, 'indexer', 'Enable the Document Indexer', 'Enables the indexing of document content for full text searching.', 'enableIndexing', 'default', 'true', 'boolean', NULL, 1),
@@ -495,8 +495,8 @@ INSERT INTO `document_transaction_types_lookup` VALUES
 (4,'Rename','ktcore.transactions.rename'),
 (5,'Move','ktcore.transactions.move'),
 (6,'Download','ktcore.transactions.download'),
-(7,'Check In','ktcore.transactions.check_in'),
-(8,'Check Out','ktcore.transactions.check_out'),
+(7,'Check-In','ktcore.transactions.check_in'),
+(8,'Check-Out','ktcore.transactions.check_out'),
 (9,'Collaboration Step Rollback','ktcore.transactions.collaboration_step_rollback'),
 (10,'View','ktcore.transactions.view'),
 (11,'Expunge','ktcore.transactions.expunge'),
@@ -509,7 +509,11 @@ INSERT INTO `document_transaction_types_lookup` VALUES
 (18,'Role allocations changed','ktcore.transactions.role_allocations_change'),
 (19,'Bulk Export','ktstandard.transactions.bulk_export'),
 (20,'Copy','ktcore.transactions.copy'),
-(21,'Delete Version','ktcore.transactions.delete_version');
+(21,'Delete Version','ktcore.transactions.delete_version'),
+(22,'Share','ktcore.transactions.share'),
+(23,'Ownership changed','ktcore.transactions.ownership_change'),
+(24,'Subscribe','ktcore.transactions.subscribe'),
+(25,'Unsubscribe','ktcore.transactions.unsubscribe');
 /*!40000 ALTER TABLE `document_transaction_types_lookup` ENABLE KEYS */;
 UNLOCK TABLES;
 

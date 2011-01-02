@@ -116,14 +116,14 @@ class LdapAuthProvider extends KTAuthenticationProvider {
         $config = unserialize($source->getConfig());
         $fields = $this->get_form($config);
 
-        $oTemplate = $this->oValidator->validateTemplate('ldap_config');
-        $aTemplateData = array(
+        $template = $this->oValidator->validateTemplate('ldap_config');
+        $templateData = array(
             'context' => &$this,
             'fields' => $fields,
             'source_id' => $sourceId,
         );
         
-        return $oTemplate->render($aTemplateData);
+        return $template->render($templateData);
     }
 
     /**
@@ -150,18 +150,18 @@ class LdapAuthProvider extends KTAuthenticationProvider {
         foreach ($this->configMap as $k => $v) {
             $value = KTUtil::arrayGet($_REQUEST, $k . '_nls');
             if ($value) {
-                $nls_array = split("\n", $value);
+                $nlsArray = split("\n", $value);
                 
-                $final_array = array();
-                foreach ($nls_array as $nls_item) {
-                    $nls_item = trim($nls_item);
-                    if (empty($nls_item)) {
+                $finalArray = array();
+                foreach ($nlsArray as $nlsItem) {
+                    $nlsItem = trim($nlsItem);
+                    if (empty($nlsItem)) {
                         continue;
                     }
-                    $final_array[] = $nls_item;
+                    $finalArray[] = $nlsItem;
                 }
                 
-                $config[$k] = $final_array;
+                $config[$k] = $finalArray;
                 continue;
             }
             
@@ -196,6 +196,7 @@ class LdapAuthProvider extends KTAuthenticationProvider {
         $errorOptions = array(
             'redirect_to' => array('editSourceProvider', sprintf('source_id=%d', $source->getId())),
         );
+        
         $errorOptions['message'] = _kt("A server name or ip address is required");
         $name = $this->oValidator->validateString($config['server'], $errorOptions);
 
@@ -251,20 +252,20 @@ class LdapAuthProvider extends KTAuthenticationProvider {
     private function get_form($config)
     {
         $server = (isset($config['server'])) ? $config['server'] : '';
-        $basedn = (isset($config['basedn'])) ? $config['basedn'] : '';
-        $searchuser = (isset($config['searchuser'])) ? $config['searchuser'] : '';
-        $searchpwd = (isset($config['searchpwd'])) ? $config['searchpwd'] : '';
+        $baseDN = (isset($config['basedn'])) ? $config['basedn'] : '';
+        $searchUser = (isset($config['searchuser'])) ? $config['searchuser'] : '';
+        $searchPwd = (isset($config['searchpwd'])) ? $config['searchpwd'] : '';
         $searchAttributes = (isset($config['searchattributes'])) ? $config['searchattributes'] : $this->defaultSearchAttributes;
         $objectClasses = (isset($config['objectclasses'])) ? $config['objectclasses'] : $this->defaultObjectClasses;
 
         $fields = array();
         $fields[] = new KTStringWidget(_kt('Server Address'), _kt('The host name or IP address of the LDAP server'), 'server', $server, $this->oPage, true);
 
-        $fields[] = new KTStringWidget(_kt('Base DN'), _kt('The location in the LDAP directory to start searching from (CN=Users,DC=mycorp,DC=com)'), 'basedn', $basedn, $this->oPage, true);
+        $fields[] = new KTStringWidget(_kt('Base DN'), _kt('The location in the LDAP directory to start searching from (CN=Users,DC=mycorp,DC=com)'), 'basedn', $baseDN, $this->oPage, true);
 
-        $fields[] = new KTStringWidget(_kt('Search User'), _kt('The user account in the LDAP directory to perform searches in the LDAP directory as (such as CN=searchUser,CN=Users,DC=mycorp,DC=com or searchUser@mycorp.com)'), 'searchuser', $searchuser, $this->oPage, true);
+        $fields[] = new KTStringWidget(_kt('Search User'), _kt('The user account in the LDAP directory to perform searches in the LDAP directory as (such as CN=searchUser,CN=Users,DC=mycorp,DC=com or searchUser@mycorp.com)'), 'searchuser', $searchUser, $this->oPage, true);
 
-        $fields[] = new KTPasswordWidget(_kt('Search Password'), _kt('The password for the user account in the LDAP directory that performs searches'), 'searchpwd', $searchpwd, $this->oPage, true);
+        $fields[] = new KTPasswordWidget(_kt('Search Password'), _kt('The password for the user account in the LDAP directory that performs searches'), 'searchpwd', $searchPwd, $this->oPage, true);
         
         $fields[] = new KTTextWidget(_kt('Search Attributes'), _kt('The LDAP attributes to use to search for users when given their name (one per line, examples: <strong>cn</strong>, <strong>mail</strong>)'), 'searchattributes_nls', join("\n", $searchAttributes), $this->oPage, true, null, null, $aOptions);
         
@@ -275,8 +276,8 @@ class LdapAuthProvider extends KTAuthenticationProvider {
 
 }
 
-require_once('LdapUtil.php');
-require_once('LdapGroupManager.php');
+require_once('ldapUtil.php');
+require_once('ldapGroupManager.php');
         
 class LdapAuthenticator extends Authenticator {
     

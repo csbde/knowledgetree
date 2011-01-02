@@ -1,4 +1,4 @@
- 
+
 <!-- FILE: ktcore/document/view.smarty -->
 	<table border="0" width="100%" class="doc_view">
 		<tr>
@@ -7,26 +7,25 @@
 				<h2 class="doc_file_title">
 					{if $document->getImmutable()}<img src="{php}echo "{$GLOBALS['default']->rootUrl}/resources/graphics/newui/docview_immutable.png";{/php}" style="display: inline-block" alt="{i18n}Finalized{/i18n}"  title="{i18n}Finalized{/i18n}" />{/if}
 					{if $document->getIsCheckedOut()}<img src="{php}echo "{$GLOBALS['default']->rootUrl}/resources/graphics/newui/docview_checkedout.png";{/php}" style="display: inline-block" alt="{i18n}Checked-Out{/i18n}"  title="{i18n}Checked Out{/i18n}" />{/if}
-					{$context->oDocument->getName(70)|sanitize}
-					<span class="doc_version" style="display: block; margin-top: 5px; margin-left: 25px;">
-						Ver {$document->getMajorVersionNumber()}.{$document->getMinorVersionNumber()}  
-						<i>(<strong>Owner: </strong>{$doc_data.owner})</i>
+					{i18n}{$document->getName()|sanitize}{/i18n}
+					<span class="doc_version" style="display: block; margin-top: 5px;">
+						<strong>Ver</strong> {$document->getMajorVersionNumber()}.{$document->getMinorVersionNumber()}  - <strong>File Size</strong> {$fieldsetDisplayHelper->_sizeHelper($document->getSize())}
 						{if $document->getIsCheckedOut()}
 							<span class="doc_checkedout"> <strong>Checked-out By:</strong> {$sCheckoutUser}</span>
 						{/if}
 					</span>
 				</h2>
-				<hr style="border: none; background-color: #E3E3E3; width: 75%; height: 1px; margin-left: 10px; margin-bottom: 15px;" align="left" />
+				<hr style="border: none; background-color: #E3E3E3; width: 98%; height: 1px; margin-left: 10px; margin-bottom: 15px;" align="left" />
 				<div>
 					<span class="doc_header_item">
-						<span class="doc_field_title">Created on:</span><span class="doc_field_value">{$document->getCreatedDateTime()|date_format:"%B %e, %Y <b>at</b> %H:%M"} <b>by</b> <span class="doc_user_link">{$doc_data.creator}</span></span>
+						<span class="doc_field_title">Created by:</span> <span class="doc_user_link">{$doc_data.creator}</span> on <span class="doc_field_value">{$document->getCreatedDateTime()|date_format:"%B %e, %Y <b>at</b> %H:%M"}</span>
 					</span>
 					<span class="doc_header_item">
-						<span class="doc_field_title">Last Modified:</span><span class="doc_field_value">{$document->getLastModifiedDate()|date_format:"%B %e, %Y <b>at</b> %H:%M"} <b>by</b> <span class="doc_user_link">{$doc_data.lastModifier}</span></span>
+						<span class="doc_field_title">Last Modified by:</span> <span class="doc_user_link">{$doc_data.lastModifier}</span> on <span class="doc_field_value">{$document->getLastModifiedDate()|date_format:"%B %e, %Y <b>at</b> %H:%M"}</span>
 					</span>
 				</div>
 			</td>
-			
+
 		</tr>
 		<tr>
 			<td colspan="2" valign="top">
@@ -45,21 +44,21 @@
 							</table>
 						</li>
 					{/if}
-					
+
 					<li class="page_properties" title="Properties">
 						<table class="kt_collection" style="clear: both;"><tr><td>
 							{if ($hasNotifications & bCanEdit)}
 								<div class="notification">
-								
+
 									{if ($document->getIsCheckedOut() & $canCheckin)}
 										<span class="item">
 											Other users will not be able to edit this document until you
 												<a href="/action.php?kt_path_info=ktcore.actions.document.checkin&fDocumentId={$document_id}">check it back in</a>
-												 or 
+												 or
 												<a href="/action.php?kt_path_info=ktcore.actions.document.cancelcheckout&fDocumentId={$document_id}">cancel the checkout</a>.
 										</span>
 									{/if}
-								
+
 									{if ($document->getIsCheckedOut() & !$canCheckin)}
 										<span class="item">
 											This document is currently checked out by {$sCheckoutUser}. You will not be able to edit the document until it is checked back in.
@@ -71,8 +70,8 @@
 											This document has been finalized and cannot be edited further.
 										</span>
 									{/if}
-									
-									
+
+
 								{if 1==2}
 									{if ($document->getIsCheckedOut() == 1)}
 										{capture assign=checkout_user}<strong>{$sCheckoutUser}</strong>{/capture}
@@ -95,7 +94,7 @@
 											{/if}
 										{/if}
 									{/if}
-									
+
 									{if ($document->getImmutable() == true)}
 										<div class="ktInfoMessage">
 											<span>{i18n}This document is immutable.  No further content changes can be
@@ -116,17 +115,25 @@
 						{/foreach}
 						</td></tr></table>
 					</li>
-			
-				</ul>			
+
+				</ul>
 			</td>
+			{if !empty($viewlet_data2)}
+                <td valign="top" width="225px">
+            		<!--  Document "Views" -->
+            		<div id="document-views">
+            			{$viewlet_data2}
+            		</div>
+                </td>
+            {/if}
 		</tr>
 	</table>
 
 	{if !empty($viewlet_data)}
 		<!--  Document "Views" -->
-		<!-- <div id="document-views" style="display: none; width: 200px;"> -->
-		<div id="document-views">
+		<div style="display: none;">
 			{$viewlet_data}
 		</div>
-	{/if}
+    {/if}
+
 <!-- FILE_END: ktcore/document/view.smarty -->

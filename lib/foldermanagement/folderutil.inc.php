@@ -50,13 +50,16 @@ require_once(KT_LIB_DIR . '/browse/browseutil.inc.php');
 require_once(KT_LIB_DIR . '/database/dbutil.inc');
 
 class KTFolderUtil {
+
     function _add($oParentFolder, $sFolderName, $oUser) {
         if (PEAR::isError($oParentFolder)) {
             return $oParentFolder;
         }
+
         if (PEAR::isError($oUser)) {
             return $oUser;
         }
+
         $oStorage = KTStorageManagerUtil::getSingleton();
 
         $oFolder =& Folder::createFromArray(array(
@@ -69,11 +72,13 @@ class KTFolderUtil {
         if (PEAR::isError($oFolder)) {
             return $oFolder;
         }
+
         $res = $oStorage->createFolder($oFolder);
         if (PEAR::isError($res)) {
             $oFolder->delete();
             return $res;
         }
+
         return $oFolder;
     }
 
@@ -85,10 +90,9 @@ class KTFolderUtil {
       *             boolean $bulk_action
       */
     function add($oParentFolder, $sFolderName, $oUser, $bulk_action = false) {
-
         $folderid=$oParentFolder->getId();
         // check for conflicts first
-        if (Folder::folderExistsName($sFolderName,$folderid)) {
+        if (Folder::folderExistsName($sFolderName, $folderid)) {
             return PEAR::raiseError(sprintf(_kt('The folder %s already exists.'), $sFolderName));
         }
 
@@ -98,13 +102,14 @@ class KTFolderUtil {
         }
 
         $oTransaction = KTFolderTransaction::createFromArray(array(
-        'folderid' => $oFolder->getId(),
-        'comment' => _kt('Folder created'),
-        'transactionNS' => 'ktcore.transactions.create',
-        'userid' => $oUser->getId(),
-        'ip' => Session::getClientIP(),
+            'folderid' => $oFolder->getId(),
+            'comment' => _kt('Folder created'),
+            'transactionNS' => 'ktcore.transactions.create',
+            'userid' => $oUser->getId(),
+            'ip' => Session::getClientIP(),
         ));
-        if(!$bulk_action) {
+
+        if (!$bulk_action) {
             // fire subscription alerts for the new folder
             $oSubscriptionEvent = new SubscriptionEvent();
             $oSubscriptionEvent->AddFolder($oFolder, $oParentFolder);
@@ -114,23 +119,23 @@ class KTFolderUtil {
     }
 
     function move($oFolder, $oNewParentFolder, $oUser, $sReason=null, $bulk_action = false) {
-    	if ($oFolder->getId() == 1)
-    	{
+    	if ($oFolder->getId() == 1) {
     		return PEAR::raiseError(_kt('Cannot move root folder!'));
     	}
-    	if ($oFolder->getParentID() == $oNewParentFolder->getId())
-    	{
+
+    	if ($oFolder->getParentID() == $oNewParentFolder->getId()) {
     		// moved! done.
     		return;
     	}
+
     	$oStorage = KTStorageManagerUtil::getSingleton();
     	$sFolderParentIds = $oFolder->getParentFolderIDs();
     	$sNewFolderParentIds = $oNewParentFolder->getParentFolderIDs();
 
-    	if (strpos($sNewFolderParentIds, $oFolder->getID()) === 0)
-    	{
+    	if (strpos($sNewFolderParentIds, $oFolder->getID()) === 0) {
     		return PEAR::raiseError(_kt('Cannot move folder into a descendant folder!'));
     	}
+
         if (KTFolderUtil::exists($oNewParentFolder, $oFolder->getName())) {
             return PEAR::raiseError(_kt('Folder with the same name already exists in the new parent folder'));
         }
@@ -142,12 +147,14 @@ class KTFolderUtil {
             // root - how do we move inside something?
             return PEAR::raiseError(_kt('Folder has no parent'));
         }
+
         $oOriginalParentFolder = Folder::get($iOriginalParentFolderId);
         if (PEAR::isError($oOriginalParentFolder)) {
             // If we have no parent, then we're the root.  If we're the
             // root - how do we move inside something?
             return PEAR::raiseError(_kt('Folder parent does not exist'));
         }
+
         $iOriginalParentPermissionObjectId = $oOriginalParentFolder->getPermissionObjectId();
         $iTargetPermissionObjectId = $oFolder->getPermissionObjectId();
 
@@ -161,13 +168,11 @@ class KTFolderUtil {
         // First, deal with SQL, as it, at least, is guaranteed to be atomic
         $table = 'folders';
 
-        if ($oNewParentFolder->getId() == 1)
-        {
+        if ($oNewParentFolder->getId() == 1) {
             $sNewFullPath = $oFolder->getName();
             $sNewParentFolderIds = "1";
         }
-        else
-        {
+        else {
             $sNewFullPath = $oNewParentFolder->getFullPath() . '/' . $oFolder->getName();
             $sNewParentFolderIds =  $oNewParentFolder->getParentFolderIDs() . ',' . $oNewParentFolder->getID();
         }
@@ -217,16 +222,16 @@ class KTFolderUtil {
         }
 
         $sComment = sprintf(_kt("Folder moved from %s to %s"), $sOldFolderPath, $sNewFullPath);
-        if($sReason !== null) {
+        if ($sReason !== null) {
             $sComment .= sprintf(_kt(" (reason: %s)"), $sReason);
         }
 
         $oTransaction = KTFolderTransaction::createFromArray(array(
-        'folderid' => $oFolder->getId(),
-        'comment' => $sComment,
-        'transactionNS' => 'ktcore.transactions.move',
-        'userid' => $oUser->getId(),
-        'ip' => Session::getClientIP(),
+            'folderid' => $oFolder->getId(),
+            'comment' => $sComment,
+            'transactionNS' => 'ktcore.transactions.move',
+            'userid' => $oUser->getId(),
+            'ip' => Session::getClientIP(),
         ));
 
         Document::clearAllCaches();
@@ -292,12 +297,13 @@ class KTFolderUtil {
         $res = $oFolder->update();
 
         $oTransaction = KTFolderTransaction::createFromArray(array(
-        'folderid' => $oFolder->getId(),
-        'comment' => sprintf(_kt("Renamed from \"%s\" to \"%s\""), $sOldName, $sNewName),
-        'transactionNS' => 'ktcore.transactions.rename',
-        'userid' => $_SESSION['userID'],
-        'ip' => Session::getClientIP(),
+            'folderid' => $oFolder->getId(),
+            'comment' => sprintf(_kt("Renamed from \"%s\" to \"%s\""), $sOldName, $sNewName),
+            'transactionNS' => 'ktcore.transactions.rename',
+            'userid' => $_SESSION['userID'],
+            'ip' => Session::getClientIP(),
         ));
+
         if (PEAR::isError($oTransaction)) {
             return $oTransaction;
         }
@@ -312,8 +318,6 @@ class KTFolderUtil {
         return Folder::folderExistsName($sName, $oParentFolder->getID());
     }
 
-
-
     /* folderUtil::delete
     *
     * this function is _much_ more complex than it might seem.
@@ -322,20 +326,15 @@ class KTFolderUtil {
     *   - validate that permissions are allocated correctly.
     *   - step-by-step delete.
     */
-
     function delete($oStartFolder, $oUser, $sReason, $aOptions = null, $bulk_action = false) {
         require_once(KT_LIB_DIR . '/unitmanagement/Unit.inc');
 		$oStorage = KTStorageManagerUtil::getSingleton();
-
         $oPerm = KTPermission::getByName('ktcore.permissions.delete');
-
         $bIgnorePermissions = KTUtil::arrayGet($aOptions, 'ignore_permissions');
-
         $aFolderIds = array(); // of oFolder
         $aDocuments = array(); // of oDocument
         $aFailedDocuments = array(); // of String
         $aFailedFolders = array(); // of String
-
         $aRemainingFolders = array($oStartFolder->getId());
 
         DBUtil::startTransaction();
@@ -393,6 +392,7 @@ class KTFolderUtil {
             if (!empty($aFailedFolders)) {
                 $sFF = _kt('Folders: ') . implode(', ', $aFailedFolders) . '.';
             }
+
             return PEAR::raiseError(_kt('You do not have permission to delete these items. ') . $sFD . $sFF);
         }
 
@@ -409,7 +409,7 @@ class KTFolderUtil {
 
         // Check for symbolic links to the folder and its sub folders
         $aSymlinks = array();
-        foreach($aFolderIds as $iFolder){
+        foreach($aFolderIds as $iFolder) {
         	$oFolder = Folder::get($iFolder);
 	        $aLinks = $oFolder->getSymbolicLinks();
 	        $aSymlinks = array_merge($aSymlinks, $aLinks);
@@ -420,16 +420,15 @@ class KTFolderUtil {
         $aParams = $aFolderIds;
 
         $res = DBUtil::runQuery(array($sQuery, $aParams));
-
         if (PEAR::isError($res)) {
             DBUtil::rollback();
             return PEAR::raiseError(_kt('Failure deleting folders.'));
         }
 
         // now that the folder has been deleted we delete all the shortcuts
-        if(!empty($aSymlinks)){
+        if (!empty($aSymlinks)) {
             $links = array();
-            foreach($aSymlinks as $link){
+            foreach($aSymlinks as $link) {
                 $links[] = $link['id'];
             }
             $linkIds = implode(',', $links);
@@ -439,7 +438,7 @@ class KTFolderUtil {
         }
 
         /*
-        foreach($aSymlinks as $aSymlink){
+        foreach($aSymlinks as $aSymlink) {
         	KTFolderUtil::deleteSymbolicLink($aSymlink['id']);
         }
         */
@@ -458,6 +457,7 @@ class KTFolderUtil {
         if (KTFolderUtil::exists($oDestFolder, $sDestFolderName)) {
             return PEAR::raiseError(_kt("Folder with the same name already exists in the new parent folder"));
         }
+
 		$oStorage = KTStorageManagerUtil::getSingleton();
         //
         // FIXME the failure cleanup code here needs some serious work.
@@ -478,7 +478,7 @@ class KTFolderUtil {
         // If the folder defines its own permissions then we copy the permission object
         // If the source folder inherits permissions we must change it to inherit from the new parent folder
         $bInheritPermissions = false;
-        if($iSrcPoId == $iSrcParentPoId){
+        if ($iSrcPoId == $iSrcParentPoId) {
             $bInheritPermissions = true;
         }
 
@@ -531,6 +531,7 @@ class KTFolderUtil {
             if (!empty($aFailedFolders)) {
                 $sFF = _kt('Folders: ') . implode(', ', $aFailedFolders) . '.';
             }
+
             return PEAR::raiseError(_kt('You do not have permission to copy these items. ') . $sFD . $sFF);
         }
 
@@ -556,6 +557,7 @@ class KTFolderUtil {
             DBUtil::rollback();
             return $id;
         }
+
         $sSrcFolderId = $oSrcFolder->getId();
         $aFolderMap[$sSrcFolderId]['parent_id'] = $id;
         $aFolderMap[$sSrcFolderId]['parent_folder_ids'] = $aRow['parent_folder_ids'];
@@ -569,8 +571,8 @@ class KTFolderUtil {
             DBUtil::rollback();
             return $res;
         }
-        $aRemainingFolders = Folder::getList(array('parent_id = ?', array($oSrcFolder->getId())), array('ids' => true));
 
+        $aRemainingFolders = Folder::getList(array('parent_id = ?', array($oSrcFolder->getId())), array('ids' => true));
 
         while (!empty($aRemainingFolders) && $copyAll) {
             $iFolderId = array_pop($aRemainingFolders);
@@ -621,7 +623,7 @@ class KTFolderUtil {
         }
 
         $sComment = sprintf(_kt("Folder copied from %s to %s"), $oSrcFolder->getFullPath(), $oDestFolder->getFullPath());
-        if($sReason !== null) {
+        if ($sReason !== null) {
             $sComment .= sprintf(_kt(" (reason: %s)"), $sReason);
         }
 
@@ -635,12 +637,12 @@ class KTFolderUtil {
 
         // If the folder inherits its permissions then we set it to inherit from the new parent folder and update permissions
         // If it defines its own then copy the permission object over
-        if($bInheritPermissions){
+        if ($bInheritPermissions) {
             $aOptions = array(
                 'evenifnotowner' => true, // Inherit from parent folder, even though not permission owner
                 );
             KTPermissionUtil::inheritPermissionObject($oNewBaseFolder, $aOptions);
-        }else{
+        } else {
             KTPermissionUtil::copyPermissionObject($oNewBaseFolder);
         }
 
@@ -650,7 +652,7 @@ class KTFolderUtil {
         return true;
     }
 
-/**
+    /**
      * Create a symbolic link in the target folder
      *
      * @param Folder $sourceFolder Folder to create a link to
@@ -661,50 +663,51 @@ class KTFolderUtil {
     static function createSymbolicLink($sourceFolder, $targetFolder, $user = null) // added/
     {
     	//validate input
-        if (is_numeric($sourceFolder))
-        {
+        if (is_numeric($sourceFolder)) {
             $sourceFolder = Folder::get($sourceFolder);
         }
-        if (!($sourceFolder instanceof Folder))
-        {
+
+        if (!($sourceFolder instanceof Folder)) {
             return PEAR::raiseError(_kt('Source folder not specified'));
         }
-        if (is_numeric($targetFolder))
-        {
+
+        if (is_numeric($targetFolder)) {
             $targetFolder = Folder::get($targetFolder);
         }
-        if (!($targetFolder instanceof Folder))
-        {
+
+        if (!($targetFolder instanceof Folder)) {
             return PEAR::raiseError(_kt('Target folder not specified'));
         }
-        if (is_null($user))
-        {
+
+        if (is_null($user)) {
             $user = $_SESSION['userID'];
         }
-        if (is_numeric($user))
-        {
+
+        if (is_numeric($user)) {
             $user = User::get($user);
         }
 
         //check for permissions
         $oWritePermission =& KTPermission::getByName("ktcore.permissions.write");
 		$oReadPermission =& KTPermission::getByName("ktcore.permissions.read");
+
 		if (!KTBrowseUtil::inAdminMode($user, $targetFolder)) {
-            if(!KTPermissionUtil::userHasPermissionOnItem($user, $oWritePermission, $targetFolder)){
+            if (!KTPermissionUtil::userHasPermissionOnItem($user, $oWritePermission, $targetFolder)) {
         		return PEAR::raiseError(_kt('You\'re not authorized to create shortcuts'));
        		}
         }
+
         if (!KTBrowseUtil::inAdminMode($user, $sourceFolder)) {
-        	if(!KTPermissionUtil::userHasPermissionOnItem($user, $oReadPermission, $sourceFolder)){
+        	if (!KTPermissionUtil::userHasPermissionOnItem($user, $oReadPermission, $sourceFolder)) {
         		return PEAR::raiseError(_kt('You\'re not authorized to create a shortcut to this folder'));
        		}
         }
 
     	//check if the shortcut doesn't already exists in the target folder
         $aSymlinks = $sourceFolder->getSymbolicLinks();
-        foreach($aSymlinks as $iSymlink){
+        foreach($aSymlinks as $iSymlink) {
         	$oSymlink = Folder::get($iSymlink['id']);
-        	if($oSymlink->getParentID() == $targetFolder->getID()){
+        	if ($oSymlink->getParentID() == $targetFolder->getID()) {
         		return PEAR::raiseError(_kt('There already is a shortcut to this folder in the target folder.'));
         	}
         }
@@ -719,6 +722,7 @@ class KTFolderUtil {
             'iPermissionLookupID' => $targetFolder->getPermissionLookupID(),
         	'iLinkedFolderId' => $sourceFolder->getId(),
         ));
+
         return $oSymlink;
     }
 
@@ -732,31 +736,30 @@ class KTFolderUtil {
     static function deleteSymbolicLink($folder, $user = null) // added/
     {
     	//validate input
-        if (is_numeric($folder))
-        {
+        if (is_numeric($folder)) {
             $folder = Folder::get($folder);
         }
-        if (!($folder instanceof Folder))
-        {
+
+        if (!($folder instanceof Folder)) {
             return PEAR::raiseError(_kt('Folder not specified'));
         }
-        if (!$folder->isSymbolicLink())
-        {
+
+        if (!$folder->isSymbolicLink()) {
             return PEAR::raiseError(_kt('Folder must be a symbolic link entity'));
         }
-        if (is_null($user))
-        {
+
+        if (is_null($user)) {
             $user = $_SESSION['userID'];
         }
-        if (is_numeric($user))
-        {
+
+        if (is_numeric($user)) {
             $user = User::get($user);
         }
 
         //check if the user has sufficient permissions
 		$oPerm = KTPermission::getByName('ktcore.permissions.delete');
     	if (!KTBrowseUtil::inAdminMode($user, $folder)) {
-            if(!KTPermissionUtil::userHasPermissionOnItem($user, $oPerm, $folder)){
+            if (!KTPermissionUtil::userHasPermissionOnItem($user, $oPerm, $folder)) {
         		return PEAR::raiseError(_kt('You\'re not authorized to delete shortcuts'));
        		}
         }
@@ -764,9 +767,7 @@ class KTFolderUtil {
         // we only need to delete the folder entry for the link
         $sql = "DELETE FROM folders WHERE id=?";
         DBUtil::runQuery(array($sql, array($folder->getId())));
-
     }
-
 
 }
 

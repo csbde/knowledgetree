@@ -67,7 +67,7 @@ class KTGroupAdminDispatcher extends KTAdminDispatcher {
         $this->oPage->setTitle(_kt("Group Management"));
 
         $KTConfig =& KTConfig::getSingleton();
-        $alwaysAll = $KTConfig->get("alwaysShowAll");
+        $alwaysAll = 1; //$KTConfig->get("alwaysShowAll");
 
         $name = KTUtil::arrayGet($_REQUEST, 'search_name', KTUtil::arrayGet($_REQUEST, 'old_search'));
         $show_all = KTUtil::arrayGet($_REQUEST, 'show_all', $alwaysAll);

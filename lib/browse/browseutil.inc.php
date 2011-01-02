@@ -38,6 +38,7 @@
  */
 
 require_once(KT_LIB_DIR . '/actions/documentaction.inc.php');
+require_once(KT_LIB_DIR . '/util/ktutil.inc');
 
 class KTBrowseUtil {
     // {{{ folderOrDocument
@@ -174,7 +175,8 @@ class KTBrowseUtil {
         $sAction = KTUtil::arrayGet($aOptions, 'folderaction');
 
 		if(PEAR::isError($oFolder)) {
-		    $url = KTUtil::addQueryStringSelf('fFolderId=1');
+			//$url = KTUtil::addQueryStringSelf('fFolderId=1');
+		    $url = KTUtil::buildUrl('browse.php', array('fFolderId'=>'1'));
 		    if(!empty($sAction)) {
 			$url = generateControllerUrl($sAction, 'fFolderId=1');
 		    }
@@ -194,7 +196,9 @@ class KTBrowseUtil {
 
         // we have made the "default" folder non-root, so we need to be able
         // to reach "Root" (Folder::get(1)).
-        $url = KTUtil::addQueryStringSelf('fFolderId=1');
+        //$url = KTUtil::addQueryStringSelf('fFolderId=1');
+        $url = KTUtil::buildUrl('browse.php', array('fFolderId'=>'1'));
+        
         if (!empty($sAction)) {
             $url = generateControllerUrl($sAction, 'fFolderId=1');
         }
@@ -206,7 +210,9 @@ class KTBrowseUtil {
                 $id = $folder_path_ids[$index];
                 $oThisFolder = Folder::get($id);
                 $sFolderName = $oThisFolder->getName();
-                $url = KTUtil::addQueryStringSelf('fFolderId=' . $id);
+                //$url = KTUtil::addQueryStringSelf('fFolderId=' . $id);
+                $url = KTUtil::buildUrl('browse.php', array('fFolderId'=>$id));
+                
                 if (!empty($sAction)) {
                     $url = generateControllerUrl($sAction, 'fFolderId=' . $id);
                 }
@@ -225,7 +231,9 @@ class KTBrowseUtil {
         // now add this folder, _if we aren't in 1_.
         if ($oFolder->getId() != 1) {
             $id = $oFolder->getId();
-            $url = KTUtil::addQueryStringSelf('fFolderId=' . $id);
+            //$url = KTUtil::addQueryStringSelf('fFolderId=' . $id);
+            $url = KTUtil::buildUrl('browse.php', array('fFolderId'=>$id));
+            
             if (!empty($sAction)) {
                 $url = generateControllerUrl($sAction, 'fFolderId=' . $id);
             }
@@ -274,7 +282,9 @@ class KTBrowseUtil {
 
 
         $sAction = KTUtil::arrayGet($aOptions, 'documentaction');
-        $url = KTUtil::addQueryStringSelf('fDocumentId=' . $oDocument->getId());
+        //$url = KTUtil::addQueryStringSelf('fDocumentId=' . $oDocument->getId());
+        $url = KTUtil::buildUrl('view.php', array('fDocumentId'=>$oDocument->getId()));
+        
         if (!empty($sAction)) {
             $url = generateControllerUrl($sAction, 'fDocumentId=' .  $oDocument->getId());
         }
@@ -295,7 +305,10 @@ class KTBrowseUtil {
         if (KTUtil::arrayGet($_SERVER, 'kt_no_extensions')) {
             $sExt = '';
         }
-        return sprintf('%s/browse%s?fFolderId=%d', $GLOBALS['KTRootUrl'], $sExt, $iFolderId);
+        
+        return KTUtil::buildUrl(sprintf('%s/browse%s', $GLOBALS['KTRootUrl'], $sExt), array('fFolderId'=>$iFolderId));
+        
+        //return sprintf('%s/browse%s?fFolderId=%d', $GLOBALS['KTRootUrl'], $sExt, $iFolderId);
     }
     // }}}
 
@@ -306,7 +319,10 @@ class KTBrowseUtil {
         if (KTUtil::arrayGet($_SERVER, 'kt_no_extensions')) {
             $sExt = '';
         }
-        return sprintf('%s/view%s?fDocumentId=%d', $GLOBALS['KTRootUrl'], $sExt, $iDocumentId);
+        
+        return KTUtil::buildUrl(sprintf('%s/view%s', $GLOBALS['KTRootUrl'], $sExt), array('fDocumentId'=>$iDocumentId));
+        
+        //return sprintf('%s/view%s?fDocumentId=%d', $GLOBALS['KTRootUrl'], $sExt, $iDocumentId);
     }
     // }}}
 

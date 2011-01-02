@@ -54,51 +54,54 @@ require_once(KT_DIR . '/search2/search/search.inc.php');
 require_once(KT_LIB_DIR . "/users/shareduserutil.inc.php");
 
 class KTPage {
-    var $hide_section = false;
-	var $secondary_title = null;
+    public $hide_section = false;
+	public $secondary_title = null;
 
     /** resources are "filename"->1 to allow subcomponents to require items. */
-    var $js_resources = Array();
-    var $css_resources = Array();
-    var $theme_css_resources = Array();
-	var $ie_only_css = Array();
-	var $theme_ie_only_css = Array();
-    var $js_standalone = Array();
-    var $css_standalone = Array();
-    var $onload = false;
+    public $js_resources = Array();
+    public $css_resources = Array();
+    public $theme_css_resources = Array();
+	public $ie_only_css = Array();
+	public $theme_ie_only_css = Array();
+    public $js_standalone = Array();
+    public $css_standalone = Array();
+    public $onload = false;
 
 	/** context-relevant information */
-	var $errStack = Array();
-	var $booleanLink = false;
-    var $infoStack = Array();
-	var $portlets = Array();
-	var $show_portlets = true;
+	public $errStack = Array();
+	public $booleanLink = false;
+    public $infoStack = Array();
+	public $portlets = Array();
+	public $show_portlets = true;
 
     /** miscellaneous items */
-    var $title = '';
-    var $systemName = APP_NAME;
-    var $systemURL = 'http://www.knowledgetree.com/';
-    var $breadcrumbs = false;
-    var $breadcrumbDetails = false;
-    var $breadcrumbSection = false;
-    var $menu = null;
-    var $userMenu = null;
-    var $helpPage = null;
+    public $title = '';
+    public $systemName = APP_NAME;
+    public $systemURL = 'http://www.knowledgetree.com/';
+    public $breadcrumbs = false;
+    public $breadcrumbDetails = false;
+    public $breadcrumbSection = false;
+    public $menu = null;
+    public $userMenu = null;
+    public $helpPage = null;
 
     /** the "component".  Used to set the page header (see documentation for explanation). */
-    var $componentLabel = 'Browse Documents';
-    var $componentClass = 'browse_collections';
+    public $componentLabel = 'Browse Documents';
+    public $componentClass = 'browse_collections';
 
     /** $contents is the center of the page.  In KT < 3, this was CentralPayload. */
-    var $contents = '';
+    public $contents = '';
 
-    var $template = "kt3/standard_page";
+    public $template = "kt3/standard_page";
 
-    var $contentType = 'text/html';
-    var $charset = 'UTF-8';
+    public $contentType = 'text/html';
+    public $charset = 'UTF-8';
 
-    var $content_class;
+    public $content_class;
 
+    /* Whether or not to sanitize info */
+    public $allowHTML = false;
+    
     /* further initialisation */
     function KTPage() {
         global $default;
@@ -130,6 +133,7 @@ class KTPage {
         $this->requireCSSResource("resources/css/kt-ie-icons.css", true);
 
         /* default js files initialisation */
+        // TODO : Remove js based on user type.
         $aJS = Array();
 
 		$aJS[] = 'thirdpartyjs/MochiKit/MochiKitPacked.js';
@@ -151,8 +155,13 @@ class KTPage {
         $aJS[] = 'resources/js/newui/kt.lib.js';
         $aJS[] = 'resources/js/newui/kt.api.js';
         $aJS[] = 'resources/js/newui/kt.app.upload.js';
-        $aJS[] = 'resources/js/newui/kt.app.sharewithusers.js';
-        $aJS[] = 'resources/js/newui/kt.app.inviteusers.js';
+        // Shared users cannot re-share or invite users to the system.
+        if(!SharedUserUtil::isSharedUser())
+        {
+	        $aJS[] = 'resources/js/newui/kt.app.sharewithusers.js';
+	        $aJS[] = 'resources/js/newui/kt.app.inviteusers.js';
+	        $aJS[] = 'resources/js/jquery.blockui.js';
+        }
         $aJS[] = 'resources/js/newui/newUIFunctionality.js';
         $aJS[] = 'resources/js/newui/jquery.helper.js';
         $aJS[] = 'resources/js/newui/buttontabs.jquery.js';
@@ -374,7 +383,7 @@ class KTPage {
 	}
 
 	/* LEGACY */
-	var $deprecationWarning = "Legacy UI API: ";
+	public $deprecationWarning = "Legacy UI API: ";
 	function setCentralPayload($sCentral) {
 	    $this->contents = $sCentral;
 		$this->addError($this->deprecationWarning . "called <strong>setCentralPayload</strong>");

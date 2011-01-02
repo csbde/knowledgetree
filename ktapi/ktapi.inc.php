@@ -75,8 +75,8 @@ require_once(KTAPI_DIR .'/KTAPIUser.inc.php');
 * @package KTAPI
 * @version Version 0.9
 */
-abstract class KTAPI_FolderItem
-{
+abstract class KTAPI_FolderItem {
+
 	/**
 	* This is a reference to the core KTAPI controller
 	*
@@ -122,8 +122,8 @@ abstract class KTAPI_FolderItem
 * @package KTAPI
 * @version Version 0.9
 */
-class KTAPI_Error extends PEAR_Error
-{
+class KTAPI_Error extends PEAR_Error {
+
  	/**
  	* This method determines if there is an error in the object itself or just a common error
  	*
@@ -142,6 +142,7 @@ class KTAPI_Error extends PEAR_Error
 			parent::PEAR_Error($msg);
 		}
 	}
+
 }
 
 /**
@@ -151,8 +152,7 @@ class KTAPI_Error extends PEAR_Error
 * @package KTAPI
 * @version Version 0.9
 */
-class KTAPI_DocumentTypeError extends KTAPI_Error
-{
+class KTAPI_DocumentTypeError extends KTAPI_Error {
 
 }
 
@@ -164,8 +164,8 @@ class KTAPI_DocumentTypeError extends KTAPI_Error
 * @version Version 0.9
 */
 
-class KTAPI
-{
+class KTAPI {
+
 	/**
 	* This is the current session.
 	*
@@ -174,11 +174,8 @@ class KTAPI
 	* @var object $session The KTAPI_Session object
 	*/
 	protected $session = null;
-
 	protected $version = 3;
-
     private $esig_enabled;
-
 	public $webserviceVersion;
 
 	public function __construct($version = null)
@@ -206,21 +203,6 @@ class KTAPI
     public function getVersion()
     {
         return $this->version;
-    }
-    
-    /**
- 	* This returns the current date-time 
- 	*
-	* @author KnowledgeTree Team
- 	* @access public
- 	* @return string UTC Date-Time
- 	*/
-	public function getServerDateTime()
-    {
-    	$datetime = KTUtil::getServerDateTime();
-    	$GLOBALS['default']->log->debug("getServerTime $datetime");
-    	
-        return $datetime;
     }
 
  	/**
@@ -326,7 +308,8 @@ class KTAPI
 	* @param int
 	*
 	*/
-	public function get_folder_permissions($username, $folder_id) {
+	public function get_folder_permissions($username, $folder_id)
+	{
 		if (is_null($this->session))
 		{
 			return array(
@@ -348,7 +331,6 @@ class KTAPI
 			"status_code" => 0,
 			"results" => $permissions->permissions
 		);
-
 	}
 
 	/**
@@ -359,7 +341,8 @@ class KTAPI
 	 * @param int
 	 *
 	 */
-	public function get_document_permissions($username, $document_id) {
+	public function get_document_permissions($username, $document_id)
+	{
 		if (is_null($this->session))
 		{
 			return array(
@@ -388,7 +371,6 @@ class KTAPI
 			"status_code" => 0,
 			"results" => $permissions->permissions
 		);
-
 	}
 
 	/**
@@ -3759,7 +3741,7 @@ class KTAPI
 	 * @access public
  	 * @param int $document_id
  	 * @param string $newtitle
- 	 * @return arry
+ 	 * @return array
  	 */
  	public function rename_document_title($document_id, $newtitle, $sig_username = '', $sig_password = '', $reason = '')
  	{
@@ -3951,7 +3933,7 @@ class KTAPI
 		if (PEAR::isError($result))
     	{
     		$response['status_code'] = 1;
-    		$response['message'] = $result>getMessage();
+    		$response['message'] = $result->getMessage();
 			return $response;
     	}
 
@@ -4196,7 +4178,7 @@ class KTAPI
     		$response['message'] = $result->getMessage();
 			return $response;
     	}
-    	
+
     	$response['status_code'] = 0;
     	$response['history'] = $result;
 		return $response;
@@ -5121,7 +5103,7 @@ class KTAPI
 
         	return true;
         }
-        
+
         return false;
     }
 
@@ -5132,7 +5114,7 @@ class KTAPI
      * @return array
      */
     public function get_comments($document_id, $order = 'DESC')
-    {    	
+    {
     	$GLOBALS['default']->log->debug("KTAPI get_comments $document_id $order");
 
     	$response = array('status_code' => null, 'message' => null, 'results' => null);
@@ -5175,7 +5157,7 @@ class KTAPI
     public function add_comment($document_id, $comment)
     {
     	$GLOBALS['default']->log->debug("KTAPI add_comment $document_id $comment");
-    	
+
     	$response = array('status_code' => null, 'message' => null, 'results' => null);
 
     	if ($this->comments_enabled()) {
@@ -5193,7 +5175,7 @@ class KTAPI
 
     	return $response;
     }
-    
+
 	/**
      * Returns the most recent document owned by a user
      *
@@ -5203,21 +5185,19 @@ class KTAPI
     public function get_most_recent_documents_owned($user_name, $limit = 10)
     {
     	$GLOBALS['default']->log->debug("KTAPI get_most_recent_documents_owned $user_name $limit");
-		
+
     	$user = KTAPI_User::getByUsername($user_name);
     	if (is_null($user) || PEAR::isError($user))
 		{
 			$result =  new PEAR_Error(KTAPI_ERROR_USER_INVALID);
 			return $result;
 		}
-		
+
     	$documents = $user->mostRecentDocumentsOwned($limit);
 
-    	$GLOBALS['default']->log->debug('KTAPI get_most_recent_documents_owned items '.print_r($documents, true));
-    	
 		return $documents;
     }
-    
+
 	/**
      * Gets a document's clean uri
      *
@@ -5226,26 +5206,26 @@ class KTAPI
     public function get_clean_uri($document_id)
 	{
 		$GLOBALS['default']->log->debug("KTAPI get_clean_uri $document_id");
-		
+
 		$oDocument = &Document::get($document_id);
-		
+
 		if (is_null($oDocument) || PEAR::isError($oDocument))
 		{
 			$response['message'] = $oDocument->getMessage();
 	        $response['status_code'] = 1;
 	        return $response;
 		}
-		
+
 		$url = KTBrowseUtil::getUrlForDocument($oDocument);
-		
+
 		$GLOBALS['default']->log->debug("KTAPI get_clean_uri uri $url");
-		
+
 		$response['message'] = $url;
 	    $response['status_code'] = 0;
-		
-		return $response;		
+
+		return $response;
 	}
-	
+
 	/**
      * Gets a user's Gravatar
      *
@@ -5255,24 +5235,24 @@ class KTAPI
     public function get_user_gravatar($user_name)
 	{
 		$GLOBALS['default']->log->debug("KTAPI get_user_gravatar $user_name");
-		
+
 		$oUser = &User::getByUserName($user_name);
-		
+
 		if (is_null($oUser) || PEAR::isError($oUser))
 		{
 			$response['message'] = $oUser->getMessage();
 	        $response['status_code'] = 1;
 	        return $response;
 		}
-		
+
 		$gravatar_url = "http://www.gravatar.com/avatar/".md5($oUser->getEmail());
-		
+
 		$GLOBALS['default']->log->debug("KTAPI get_user_gravatar uri $gravatar_url");
-		
+
 		$response['message'] = $gravatar_url;
 	    $response['status_code'] = 0;
-		
-		return $response;		
+
+		return $response;
 	}
 
 }
@@ -5284,8 +5264,8 @@ class KTAPI
 * @package KTAPI
 * @version Version 0.9
 */
-class savedSearches
-{
+class savedSearches {
+
      /**
      * Instance of the KTAPI object
      *
@@ -5400,8 +5380,10 @@ class savedSearches
 		$query = $search[0]['expression'];
 
 	    $results = processSearchExpression($query);
+
 		return $results;
 	}
+
 }
 
 ?>

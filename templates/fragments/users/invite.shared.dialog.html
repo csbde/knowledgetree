@@ -1,45 +1,50 @@
-<table border="0" cellspacing="5" cellpadding="5px">
+<table border="0" cellspacing="5" cellpadding="5px" class="uploadTable">
+    <tr>
+        <td valign="top">
+            Enter or copy and paste the email address(es) of the user(s) you want to share this content with. 
+            Users outside your organization will only be able to see the content you have shared with them.
+        </td>
+    </tr>
+    
+    <tr><td>&nbsp;</td></tr>
+    
     <tr>
         <td colspan="2" valign="top">
-            Share with:
+            Share with (separate email addresses with a space or comma):
         </td>
     </tr>
 
     <tr>
         <td>
-        	<textarea name="share.emails" id="share.emails" rows="3" cols="63" ></textarea>
+        	<textarea name="share.emails" id="share.emails" rows="3" cols="48" ></textarea>
         </td>
     </tr>
 
     <tr>
-        <td width="30%" valign="top">
+        <td valign="top">
             Message (Optional):
         </td>
 	</tr>
 	<tr>
-        <td width="70%">
-            <textarea name="share.message" id="share.message" rows="3" cols="63" ></textarea>
+        <td>
+            <textarea name="share.message" id="share.message" rows="3" cols="48" ></textarea>
         </td>
         
     </tr>
 
     <tr>
-        <td width="30%">
+        <td>
         	<label for="read.only">Read-only</label>
         	<input type="checkbox" name="readonly" id="readonly" class="readonly">
         </td>
     </tr>
     
     <tr>
-        <td width="30%" align="right">
+        <td align="right" class="ul_actions">
+        	<a class="ul_actions_cancel_link" href="javascript: kt.app.sharewithusers.closeWindow();">Cancel</a>
 			<input id="ul_actions_upload_btn" class="ul_actions_btns" type="button" value="Share" onClick="kt.app.sharewithusers.inviteUsers('shared');" />
-            &nbsp;&nbsp;
-            <a class="ul_actions_cancel_link" href="javascript: kt.app.sharewithusers.closeWindow();">Cancel</a>
             <input type="hidden" name="object.id" id="object.id" value="">
             <input type="hidden" name="object.type" id="object.type" value="">
-        </td>
-        <td width="70%">
-        
         </td>
     </tr>
 
