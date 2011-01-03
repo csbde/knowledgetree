@@ -82,7 +82,7 @@ class AdminSplashDispatcher extends KTAdminDispatcher {
         $oTemplating =& KTTemplating::getSingleton();
 
         // temporarily disabled
-        if (false && ACCOUNT_ROUTING_ENABLED && liveAccounts::isTrialAccount()) {
+        if (ACCOUNT_ROUTING_ENABLED && liveAccounts::isTrialAccount()) {
             $js = preg_replace('/.*[\/\\\\]plugins/', 'plugins', KT_LIVE_DIR) . '/resources/js/olark/olark.js';
             $this->oPage->requireJsResource($js);
         }
