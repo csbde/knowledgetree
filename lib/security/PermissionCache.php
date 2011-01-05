@@ -487,10 +487,16 @@ class PermissionCache
         // Get descriptors for user and compare against cache
         $descriptors = $this->getDescriptors($userId);
 
+        // Check for new descriptors
         $diff = array_diff($descriptors, $cached);
 
         if(empty($diff)){
-            return true;
+            // Check for removed descriptors
+            $diff2 = array_diff($cached, $descriptors);
+
+            if(empty($diff2)){
+                return true;
+            }
         }
 
         if($update){

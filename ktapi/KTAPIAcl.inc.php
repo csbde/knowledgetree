@@ -1620,6 +1620,7 @@ final class KTAPI_RoleAllocation extends KTAPI_AllocationBase
 				}
 			}
 		}
+		KTPermissionUtil::clearCache();
 	}
 
 
