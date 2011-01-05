@@ -249,6 +249,12 @@ class SearchDispatcher extends KTStandardDispatcher {
      */
     private function processQuery($query)
     {
+        // if query is empty after removing any which contain only spaces, return an error
+        $query = trim(preg_replace('/\([a-z]* +[^ ]* +"[ ]*"\)/i', '', $query));
+        if (empty($query)) {
+            $this->errorRedirectTo('guiBuilder', _kt('Could not process query.  No valid search terms found (query contains only spaces and disallowed characters.)'));
+        }
+
     	try
     	{
      		$expr = parseExpression($query);
