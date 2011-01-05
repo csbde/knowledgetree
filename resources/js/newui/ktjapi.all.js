@@ -134,7 +134,7 @@ ktjapi = new function() {
 	};
 
 	this.callMethod = function(func, params,callback, sync, errorFunct, cacheTimeout, customTimeout) {
-		var afunc = (''+func).split(/\./);
+		var afunc = ('' + func).split(/\./);
 		var reqObj = this.createPackage(afunc[0], afunc[1], params);
 
 		//Make sure cacheTimeout is dealt with
@@ -161,18 +161,17 @@ ktjapi = new function() {
 		var success = (function(callback) {
 			return function(ds,st,xhr) {
 				xhr = xhr.responseText;
-				try{
+				try {
 					var data = ktjapi._lib.String.json.decode(xhr);
-				}catch(e) {
+				} catch(e) {
 					data = {auth:{}, data:{}, status:{random_token:'', session_id:''}, request:{}, raw:xhr, errors:{hadErrors:1, errors:[{message:'JSON From Server Incorrect', type:''}]}};
 					ktjapi.evt.trigger(ktjapi.cfg.get('JSONerrorEventName'), data);
 					//return;
 				}
 //				ktjapi.cfg.set('security.token', data.status.random_token);
 //				ktjapi.cfg.set('server.session', data.status.session_id);
-				if (data.errors.hadErrors>0) {
-					for (var i = 0; i < data.errors.errors.length; i++) {
-					}
+				if (data.errors.hadErrors > 0) {
+					for (var i = 0; i < data.errors.errors.length; i++) {}
 				} else {
 					ktjapi.setCache(data.request.request, data);
 				}
