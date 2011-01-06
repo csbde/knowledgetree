@@ -110,7 +110,7 @@ class sharedUserBrowseView extends browseView
 	 	$ns = ' not_supported';
 		$permissions = SharedContent::canAccessDocument($item['user_id'], $item['id'], null, 1);
 		$hasCheckedOut = ($_SESSION['userID'] == $item['checked_out_by_id']);
-		
+
 		// Icons
 		$iconFile = 'resources/mimetypes/newui/' . KTMime::getIconPath($item['mimetypeid']) . '.png';
 		$item['icon_exists'] = file_exists(KT_DIR . '/' . $iconFile);
@@ -121,7 +121,7 @@ class sharedUserBrowseView extends browseView
 		} else {
 			$item['mimeicon'] = '';
 		}
-		
+
 		// Create link, which will always be of a document and not a shortcut
 		$item['document_link'] = KTUtil::buildUrl('view.php', array('fDocumentId'=> $item['id']));
 		$item['filename'] = (strlen($item['filename']) > $fileNameCutoff) ? substr($item['filename'], 0, $fileNameCutoff - 3) . "..." : $item['filename'];
@@ -129,7 +129,7 @@ class sharedUserBrowseView extends browseView
 		$item['is_immutable'] = ($item['is_immutable'] == 1) ? true : false;
 		$item['is_immutable'] = $item['is_immutable'] ? '' : $ns;
 		$item['is_checkedout'] = $item['checked_out_date'] ? '' : $ns;
-		
+
 		// Check parent folder if user type is shared (disabled == 4)
 		if (isset($item['object_permissions'])) {
 			// check permissions based on object_permissions, if set, or shared user access if shared user
@@ -207,7 +207,7 @@ class sharedUserBrowseView extends browseView
                 $item['thumbnailclass'] = 'preview';
             }
         }
-        
+
 		// Default - hide edit online
 		$item['allowdoczohoedit'] = '';
 		if ($this->zohoEnabled) {
@@ -225,10 +225,12 @@ class sharedUserBrowseView extends browseView
 			$coUser = User::get($item['checked_out_by_id']);
 			$item['checked_out_by'] = $coUser->getName();
 		}
-		
+
 		$checkbox = '';
 		// Sanitize document title
 		$item['title'] = sanitizeForHTML($item['title']);
+		$item['filesize'] = KTUtil::filesizeToString($item['filesize']);
+
 		$tpl='
 			<span class="doc browseView 1">
 				<table cellspacing="0" cellpadding="0" width="100%" border="0" class="doc item ddebug">
@@ -262,8 +264,8 @@ class sharedUserBrowseView extends browseView
 							</ul>
 							<div class="title"><a class="clearLink" href="[document_link]" style="">[title]</a></div>
 
-							<div class="detail"><span class="item">
-								Owner: <span class="user">[owned_by]</span></span><span class="item">Created: <span class="date">[created_date]</span> by <span class="user">[created_by]</span></span><span class="item">Updated: <span class="date">[modified_date]</span> by <span class="user">[modified_by]</span></span>
+							<div class="detail">
+							<span class="item">File size: <span class="user">[filesize]</span></span><span class="item"> Owner: <span class="user">[owned_by]</span></span><span class="item">Created: <span class="date">[created_date]</span> by <span class="user">[created_by]</span></span><span class="item">Updated: <span class="date">[modified_date]</span> by <span class="user">[modified_by]</span></span>
 							</div>
 						</td>
 					</tr>
@@ -406,7 +408,7 @@ class browseView {
 				$curItem = 1;
 				$folderView[] = '</div><div class="page page_' . $pageCount . ' ">';
 			}
-			
+
 			$folderView[] = $item;
 		}
 
@@ -558,7 +560,7 @@ class browseView {
 		$pages[] = '<li class="' . $itemClass . '" onclick="' . $nextScript . '">Next</li>';
 		$pages[] = '</ul>';
 		$pages = join($pages);
-		
+
 		return $pages;
 	}
 
@@ -591,7 +593,7 @@ class browseView {
 		//parts order: Copy, move, archive, delete, download all
 		$tpl .= join($parts);
 		$tpl .= '</td><td class="status" style="width: 200px; text-align: right;"></td></tr></table>';
-		
+
 		return $tpl;
 	}
 
@@ -713,7 +715,7 @@ class browseView {
                 } else {
                     $oDocument->setHasRendition(0);
                 }
-                
+
                 $oDocument->update();
             }
 
@@ -738,7 +740,8 @@ class browseView {
 		$item['isfinalize_document'] = ($item['actions.finalize_document']) ? 0 : 1;
 		// Sanitize document title
 		$item['title'] = sanitizeForHTML($item['title']);
-		
+		$item['filesize'] = KTUtil::filesizeToString($item['filesize']);
+
 		// Check if the document is a shortcut
 		if (!is_null($item['linked_document_id'])) {
 			$item['actions.share_document'] = $ns;
@@ -746,13 +749,13 @@ class browseView {
 		} else {
 			$item['document_link'] = KTUtil::buildUrl('view.php', array('fDocumentId' => $item['id']));
 		}
-		
+
 		$share_separator = '';
 		if($item['actions.share_document'] != $ns)
 		{
 			$share_separator = '<li class="separator[separatorE]"></li>';
 		}
-		
+
 		$tpl='
 			<span class="doc browseView 2">
 				<table cellspacing="0" cellpadding="0" width="100%" border="0" class="doc item ddebug">
@@ -778,8 +781,8 @@ class browseView {
 
 							<div class="title"><a class="clearLink" href="[document_link]" style="">[title]</a></div>
 
-							<div class="detail"><span class="item">
-								Owner: <span class="user">[owned_by]</span></span><span class="item">Created: <span class="date">[created_date]</span> by <span class="user">[created_by]</span></span><span class="item">Updated: <span class="date">[modified_date]</span> by <span class="user">[modified_by]</span></span>
+							<div class="detail">
+								<span class="item">File size: <span class="user">[filesize]</span></span> <span class="item">Owner: <span class="user">[owned_by]</span></span><span class="item">Created: <span class="date">[created_date]</span> by <span class="user">[created_by]</span></span><span class="item">Updated: <span class="date">[modified_date]</span> by <span class="user">[modified_by]</span></span>
 							</div>
 						</td>
 						<td>
@@ -859,7 +862,7 @@ class browseView {
 		$item['separatorA'] = ($hasWrite || $hasSecurity || $hasRename) ? '' : $ns;
 		// Sanitize folder title
 		$item['title'] = sanitizeForHTML($item['title']);
-		
+
 		// Check for shortcut
 		if (!is_null($item['linked_folder_id'])) {
 			$item['actions.share_folder'] = $ns;
@@ -867,7 +870,7 @@ class browseView {
 		} else {
 			$item['link'] = KTUtil::buildUrl('browse.php', array('fFolderId'=> $item['id']));
 		}
-		
+
 		$tpl='
 			<span class="doc browseView">
 			<table cellspacing="0" cellpadding="0" width="100%" border="0" class="folder item">
