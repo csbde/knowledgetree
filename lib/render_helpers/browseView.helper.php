@@ -4,6 +4,7 @@ require_once(KT_LIB_DIR . '/util/ktutil.inc');
 require_once(KT_LIB_DIR . '/plugins/pluginutil.inc.php');
 require_once(KT_LIB_DIR . '/documentmanagement/documentutil.inc.php');
 require_once(KT_LIB_DIR . '/users/shareduserutil.inc.php');
+require_once(KT_LIB_DIR . '/workflow/workflow.inc.php');
 require_once('sharedContent.inc');
 
 /**
@@ -600,10 +601,11 @@ class browseView {
 	public function renderDocumentItem($item = null, $empty = false, $shortcut = false)
 	{
 		$fileNameCutoff = 100;
-
+		$share_separator = '';
 		// When $item is null, $oDocument resolves to a PEAR Error, we should add a check for $item and initialise the document data at the top
 		// instead of using $oDocument in the code.
-		$oDocument = Document::get($item[id]);
+		$oDocument = Document::get($item['id']);
+		if(PEAR::isError($oDocument)) return '';
 		$item['mimetypeid'] = (method_exists($oDocument,'getMimeTypeId')) ? $oDocument->getMimeTypeId() : '0';
 		$iconFile = 'resources/mimetypes/newui/' . KTMime::getIconPath($item['mimetypeid']) . '.png';
 		$item['icon_exists'] = file_exists(KT_DIR . '/' . $iconFile);
@@ -749,8 +751,13 @@ class browseView {
 		} else {
 			$item['document_link'] = KTUtil::buildUrl('view.php', array('fDocumentId' => $item['id']));
 		}
-
-		$share_separator = '';
+		// Check if document is in workflow and if action has not been restricted.
+		if(!KTWorkflowUtil::actionEnabledForDocument($oDocument, 'ktcore.actions.document.sharecontent'))
+		{
+			$item['actions.share_document'] = $ns;
+		}
+		
+		// Add line separator after share link
 		if($item['actions.share_document'] != $ns)
 		{
 			$share_separator = '<li class="separator[separatorE]"></li>';
