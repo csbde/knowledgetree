@@ -345,7 +345,7 @@ class SearchDispatcher extends KTStandardDispatcher {
     		        $query = str_replace("\"{$matches[$key]}\"", "\"{$match}\"", $query);
     		    }
 
-    		    $_SESSION['search2_quickQuery'] = $query;
+    		    $_SESSION['search2_quickQuery'] = '';
     		}
     	}
     	else
@@ -491,9 +491,9 @@ class SearchDispatcher extends KTStandardDispatcher {
     	$oTemplating =& KTTemplating::getSingleton();
         $oTemplate = $oTemplating->loadTemplate("ktcore/search2/search_results");
 
-       KTEntityUtil::_proxyCreate('KTDocumentContentVersion','KTDocumentContentVersionProxy');
-       KTEntityUtil::_proxyCreate('KTDocumentCore','KTDocumentCoreProxy');
-       KTEntityUtil::_proxyCreate('KTDocumentMetadataVersion','KTDocumentMetadataVersionProxy');
+        KTEntityUtil::_proxyCreate('KTDocumentContentVersion','KTDocumentContentVersionProxy');
+        KTEntityUtil::_proxyCreate('KTDocumentCore','KTDocumentCoreProxy');
+        KTEntityUtil::_proxyCreate('KTDocumentMetadataVersion','KTDocumentMetadataVersionProxy');
 
         $results = unserialize($_SESSION['search2_results']);
 
