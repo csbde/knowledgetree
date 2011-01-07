@@ -64,11 +64,8 @@ class Redirector {
         }
 
 		if (!$this->foundDestination) {
-
 			// Only proceed if it is a document or a folder
 			if ($this->isDocumentOrFolder($this->uri)) {
-
-
 				// Needs further work if catering for actions
 				// See discussion doc
 
@@ -92,7 +89,7 @@ class Redirector {
 		            // not ideal but it works
 		            $file = '/plugins/ktcore/authentication/newuserlogin.php';
 		            $query = isset($aUri[1]) ? $aUri[1] : 'key';
-		            $query .= isset($aUri[2]) ? '='.$aUri[2] : '';
+		            $query .= isset($aUri[2]) ? ('=' . $aUri[2]) : '';
 		            $this->redirectPage($file, $query);
 		            break;
 		    }
@@ -156,12 +153,12 @@ class Redirector {
 	 */
 	private function finalizeRun($file)
 	{
-		// Adjust Current Server Variables to reflect new path
-		$_SERVER['SCRIPT_NAME'] = '/'.$file;
-		$_SERVER['REQUEST_URI'] = '/'.$file;
-		$_SERVER['PHP_SELF'] = '/'.$file;
-
 		$this->foundDestination = true;
+		
+		// Adjust Current Server Variables to reflect new path
+		$_SERVER['SCRIPT_NAME'] = '/' . $file;
+		$_SERVER['REQUEST_URI'] = '/' . $file;
+		$_SERVER['PHP_SELF'] = '/' . $file;
 
 		require_once($file);
 	}
