@@ -14,7 +14,7 @@
         <script type="text/javascript" src="{$rootUrl}{$item}"> </script>
     {/foreach}
 </head>
-<body onload="ktOlarkPopupTrigger('Hi, do you need help logging in?', 30000);">
+<body>
 <div id="loginbox_outer"  {if ($disclaimer)} class="hasDisclaimer" {/if} style="width:800px;">
 	<div class="header">
 
