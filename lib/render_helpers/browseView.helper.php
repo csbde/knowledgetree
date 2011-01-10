@@ -4,6 +4,7 @@ require_once(KT_LIB_DIR . '/util/ktutil.inc');
 require_once(KT_LIB_DIR . '/plugins/pluginutil.inc.php');
 require_once(KT_LIB_DIR . '/documentmanagement/documentutil.inc.php');
 require_once(KT_LIB_DIR . '/users/shareduserutil.inc.php');
+require_once(KT_LIB_DIR . '/workflow/workflow.inc.php');
 require_once('sharedContent.inc');
 
 /**
@@ -53,6 +54,8 @@ class sharedUserBrowseAsView extends browseView
  */
 class sharedUserBrowseView extends browseView
 {
+	private $oUser = null;
+	
 	/**
 	 * Get the folder listing
 	 *
@@ -64,8 +67,8 @@ class sharedUserBrowseView extends browseView
 	public function getFolderContent($folderId, $sortField = 'title', $asc = true)
 	{
 		$user_id = $_SESSION['userID'];
-		$oUser = User::get($user_id);
-		$disabled = $oUser->getDisabled();
+		$this->oUser = is_null($this->oUser) ? User::get($user_id) : $this->oUser;
+		$disabled = $this->oUser->getDisabled();
 
 		$oSharedContent = new SharedContent();
 		$aSharedContent = $oSharedContent->getUsersSharedContents($user_id, $folderId);
@@ -436,11 +439,11 @@ class browseView {
 	public function getFolderContent($folderId, $sortField = 'title', $asc = true)
 	{
 		$user_id = $_SESSION['userID'];
-		$oUser = User::get($user_id);
-		$disabled = $oUser->getDisabled();
+		$this->oUser = is_null($this->oUser) ? User::get($user_id) : $this->oUser;
+		$disabled = $this->oUser->getDisabled();
 
 		$kt = new KTAPI(3);
-		$session = $kt->start_system_session($oUser->getUsername());
+		$session = $kt->start_system_session($this->oUser->getUsername());
 
 		//Get folder content, depth = 1, types= Directory, File, Shortcut, webserviceversion override
 		$folder = &$kt->get_folder_contents($folderId, 1, 'DFS');
@@ -597,13 +600,60 @@ class browseView {
 		return $tpl;
 	}
 
+	/**
+	 * Checks the systems workflow permissions to see if actions have been overriden
+	 *
+	 * @param array $item
+	 * @return array $item
+	 */
+	private function checkWorkflowPermissions($item = null, $oDocument)
+	{
+		$ns = " not_supported";
+		// Check workflow action restrictions
+		$actions = array_merge(KTDocumentActionUtil::getDocumentActionsForDocument($oDocument, $this->oUser), KTDocumentActionUtil::getDocumentActionsForDocument($oDocument, $this->oUser, 'documentinfo'));
+		foreach ($actions as $oAction)
+		{
+			$actionname = $oAction->getName();
+			$aname = explode('.', $actionname);
+			$name = $aname[count($aname) - 1];
+			$allowaction[$name] = $oAction->_show();
+		}
+		if(!$allowaction['immutable']) $item['actions.finalize_document'] = $ns;
+		if(!$allowaction['ownershipchange']) $item['actions.change_owner'] = $ns;
+		if(!$allowaction['checkout'])
+		{ 
+			$item['allowdoczohoedit'] = '';
+			$item['actions.checkout'] = $ns;
+		}
+		if(!$allowaction['cancelcheckout']) $item['actions.cancel_checkout'] = $ns;
+		if(!$allowaction['checkin']) $item['actions.checkin'] = $ns;
+		if(!$allowaction['alert']) $item['actions.alerts'] = $ns;
+		if(!$allowaction['email']) $item['actions.email'] = $ns;
+		if(!$allowaction['view']) $item['actions.download'] = $ns;
+		if(!$allowaction['sharecontent']) $item['actions.share_document'] = $ns;
+		
+		return $item;
+	}
+	
+	/**
+	 * Renders html block for a document in the new browse
+	 *
+	 * @param array $item
+	 * @param boolean $empty
+	 * @param boolean $shortcut
+	 * @return string
+	 */
 	public function renderDocumentItem($item = null, $empty = false, $shortcut = false)
 	{
-		$fileNameCutoff = 100;
-
 		// When $item is null, $oDocument resolves to a PEAR Error, we should add a check for $item and initialise the document data at the top
 		// instead of using $oDocument in the code.
-		$oDocument = Document::get($item[id]);
+		$oDocument = Document::get($item['id']);
+		if(PEAR::isError($oDocument)) return '';
+		$fileNameCutoff = 100;
+		$share_separator = '';
+		$item['separatorE'] = '';
+		$ns = " not_supported";
+		
 		$item['mimetypeid'] = (method_exists($oDocument,'getMimeTypeId')) ? $oDocument->getMimeTypeId() : '0';
 		$iconFile = 'resources/mimetypes/newui/' . KTMime::getIconPath($item['mimetypeid']) . '.png';
 		$item['icon_exists'] = file_exists(KT_DIR . '/' . $iconFile);
@@ -622,8 +672,7 @@ class browseView {
 		$hasDelete = (strpos($permissions, 'D') === false) ? false : true;
 
 		$item['filename'] = (strlen($item['filename']) > $fileNameCutoff) ? (substr($item['filename'], 0, $fileNameCutoff - 3) . "...") : $item['filename'];
-
-		$ns = " not_supported";
+	
 		$item['has_workflow'] = '';
 		$item['is_immutable'] = $item['is_immutable'] == 'true' ? true : false;
 		$item['is_immutable'] = $item['is_immutable'] ? '' : $ns;
@@ -664,30 +713,21 @@ class browseView {
 
 		$item['actions.finalize_document'] = ($isCheckedOut) ? $ns : $item['actions.finalize_document'];
 
-		$item['separatorE'] = '';
+		
 		if (!$hasWrite) {
 		    $item['actions.change_owner'] = $ns;
 		    $item['actions.share_document'] = $ns;
 		    if ($isCheckedOut || $item['actions.finalize_document'])
 		    {
-		    	$oUser = User::get($_SESSION['userID']);
+		    	$this->oUser = is_null($this->oUser) ? User::get($user_id) : $this->oUser;
 		    	$sPermissions = 'ktcore.permissions.write';
-		    	if (KTPermissionUtil::userHasPermissionOnItem($oUser, $sPermissions, $oDocument))
+		    	if (KTPermissionUtil::userHasPermissionOnItem($this->oUser, $sPermissions, $oDocument))
 		    	{
 		    		$item['actions.share_document'] = '';
 		    	}
 		    }
 			$item['actions.finalize_document'] = $ns;
 			$item['separatorE']=$ns;
-		}
-
-		$item['separatorA'] = $item['actions.copy'] == '' ? '' : $ns;
-		$item['separatorB'] = $item['actions.download'] == '' || $item['actions.instantview'] == '' ? '' : $ns;
-		$item['separatorC'] = $item['actions.checkout'] == '' || $item['actions.checkin'] == '' || $item['actions.cancel_checkout']== '' ? '' : $ns;
-		$item['separatorD'] = ($item['actions.alert'] == '' || $item ['actions.email'] == '') && $hasWrite ? '' : $ns;
-
-		if ($item['is_immutable'] == '') {
-			$item['separatorB'] = $item['separatorC'] = $item['separatorD'] = $ns;
 		}
 
 		// Check if the thumbnail exists
@@ -749,8 +789,16 @@ class browseView {
 		} else {
 			$item['document_link'] = KTUtil::buildUrl('view.php', array('fDocumentId' => $item['id']));
 		}
-
-		$share_separator = '';
+		// Check if document is in workflow and if action has not been restricted.
+		// Another layer of permissions
+		$item = $this->checkWorkflowPermissions($item, $oDocument);
+		
+		$item['separatorA'] = $ns;//$item['actions.copy'] == '' ? '' : $ns;
+		$item['separatorB'] = $ns;//$item['actions.download'] == '' || $item['actions.instantview'] == '' ? '' : $ns;
+		$item['separatorC'] = $ns;//$item['actions.checkout'] == '' || $item['actions.checkin'] == '' || $item['actions.cancel_checkout']== '' ? '' : $ns;
+		$item['separatorD'] = $ns;//($item['actions.alert'] == '' || $item ['actions.email'] == '') && $hasWrite ? '' : $ns;
+		if ($item['is_immutable'] == '') { $item['separatorB'] = $item['separatorC'] = $item['separatorD'] = $ns; }
+		// Add line separator after share link
 		if($item['actions.share_document'] != $ns)
 		{
 			$share_separator = '<li class="separator[separatorE]"></li>';
