@@ -249,6 +249,12 @@ class SearchDispatcher extends KTStandardDispatcher {
      */
     private function processQuery($query)
     {
+        // if query is empty after removing any which contain only spaces, return an error
+        $query = trim(preg_replace('/\([a-z]* +[^ ]* +"[ ]*"\)/i', '', $query));
+        if (empty($query)) {
+            $this->errorRedirectTo('guiBuilder', _kt('Could not process query.  No valid search terms found (query contains only spaces and disallowed characters.)'));
+        }
+
     	try
     	{
      		$expr = parseExpression($query);
@@ -339,7 +345,7 @@ class SearchDispatcher extends KTStandardDispatcher {
     		        $query = str_replace("\"{$matches[$key]}\"", "\"{$match}\"", $query);
     		    }
 
-    		    $_SESSION['search2_quickQuery'] = $query;
+    		    $_SESSION['search2_quickQuery'] = '';
     		}
     	}
     	else
@@ -485,9 +491,9 @@ class SearchDispatcher extends KTStandardDispatcher {
     	$oTemplating =& KTTemplating::getSingleton();
         $oTemplate = $oTemplating->loadTemplate("ktcore/search2/search_results");
 
-       KTEntityUtil::_proxyCreate('KTDocumentContentVersion','KTDocumentContentVersionProxy');
-       KTEntityUtil::_proxyCreate('KTDocumentCore','KTDocumentCoreProxy');
-       KTEntityUtil::_proxyCreate('KTDocumentMetadataVersion','KTDocumentMetadataVersionProxy');
+        KTEntityUtil::_proxyCreate('KTDocumentContentVersion','KTDocumentContentVersionProxy');
+        KTEntityUtil::_proxyCreate('KTDocumentCore','KTDocumentCoreProxy');
+        KTEntityUtil::_proxyCreate('KTDocumentMetadataVersion','KTDocumentMetadataVersionProxy');
 
         $results = unserialize($_SESSION['search2_results']);
 

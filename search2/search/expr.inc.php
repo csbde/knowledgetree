@@ -1703,12 +1703,12 @@ class SQLQueryBuilder implements QueryBuilder
 
 				if ($exprno <= count($this->db))
 				{
-					$expr = $this->db[$exprno-1];
+					$expr = $this->db[$exprno - 1];
 				}
 				else
 				{
 					$exprno -= count($this->db);
-					$expr = $this->metadata[$exprno-1];
+					$expr = $this->metadata[$exprno - 1];
 				}
 
 				$text[] = (string) $expr;

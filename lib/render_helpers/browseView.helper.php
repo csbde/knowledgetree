@@ -4,6 +4,7 @@ require_once(KT_LIB_DIR . '/util/ktutil.inc');
 require_once(KT_LIB_DIR . '/plugins/pluginutil.inc.php');
 require_once(KT_LIB_DIR . '/documentmanagement/documentutil.inc.php');
 require_once(KT_LIB_DIR . '/users/shareduserutil.inc.php');
+require_once(KT_LIB_DIR . '/workflow/workflow.inc.php');
 require_once('sharedContent.inc');
 
 /**
@@ -53,6 +54,8 @@ class sharedUserBrowseAsView extends browseView
  */
 class sharedUserBrowseView extends browseView
 {
+	private $oUser = null;
+	
 	/**
 	 * Get the folder listing
 	 *
@@ -64,8 +67,8 @@ class sharedUserBrowseView extends browseView
 	public function getFolderContent($folderId, $sortField = 'title', $asc = true)
 	{
 		$user_id = $_SESSION['userID'];
-		$oUser = User::get($user_id);
-		$disabled = $oUser->getDisabled();
+		$this->oUser = is_null($this->oUser) ? User::get($user_id) : $this->oUser;
+		$disabled = $this->oUser->getDisabled();
 
 		$oSharedContent = new SharedContent();
 		$aSharedContent = $oSharedContent->getUsersSharedContents($user_id, $folderId);
@@ -110,7 +113,7 @@ class sharedUserBrowseView extends browseView
 	 	$ns = ' not_supported';
 		$permissions = SharedContent::canAccessDocument($item['user_id'], $item['id'], null, 1);
 		$hasCheckedOut = ($_SESSION['userID'] == $item['checked_out_by_id']);
-		
+
 		// Icons
 		$iconFile = 'resources/mimetypes/newui/' . KTMime::getIconPath($item['mimetypeid']) . '.png';
 		$item['icon_exists'] = file_exists(KT_DIR . '/' . $iconFile);
@@ -121,7 +124,7 @@ class sharedUserBrowseView extends browseView
 		} else {
 			$item['mimeicon'] = '';
 		}
-		
+
 		// Create link, which will always be of a document and not a shortcut
 		$item['document_link'] = KTUtil::buildUrl('view.php', array('fDocumentId'=> $item['id']));
 		$item['filename'] = (strlen($item['filename']) > $fileNameCutoff) ? substr($item['filename'], 0, $fileNameCutoff - 3) . "..." : $item['filename'];
@@ -129,7 +132,7 @@ class sharedUserBrowseView extends browseView
 		$item['is_immutable'] = ($item['is_immutable'] == 1) ? true : false;
 		$item['is_immutable'] = $item['is_immutable'] ? '' : $ns;
 		$item['is_checkedout'] = $item['checked_out_date'] ? '' : $ns;
-		
+
 		// Check parent folder if user type is shared (disabled == 4)
 		if (isset($item['object_permissions'])) {
 			// check permissions based on object_permissions, if set, or shared user access if shared user
@@ -207,7 +210,7 @@ class sharedUserBrowseView extends browseView
                 $item['thumbnailclass'] = 'preview';
             }
         }
-        
+
 		// Default - hide edit online
 		$item['allowdoczohoedit'] = '';
 		if ($this->zohoEnabled) {
@@ -225,10 +228,12 @@ class sharedUserBrowseView extends browseView
 			$coUser = User::get($item['checked_out_by_id']);
 			$item['checked_out_by'] = $coUser->getName();
 		}
-		
+
 		$checkbox = '';
 		// Sanitize document title
 		$item['title'] = sanitizeForHTML($item['title']);
+		$item['filesize'] = KTUtil::filesizeToString($item['filesize']);
+
 		$tpl='
 			<span class="doc browseView 1">
 				<table cellspacing="0" cellpadding="0" width="100%" border="0" class="doc item ddebug">
@@ -262,8 +267,8 @@ class sharedUserBrowseView extends browseView
 							</ul>
 							<div class="title"><a class="clearLink" href="[document_link]" style="">[title]</a></div>
 
-							<div class="detail"><span class="item">
-								Owner: <span class="user">[owned_by]</span></span><span class="item">Created: <span class="date">[created_date]</span> by <span class="user">[created_by]</span></span><span class="item">Updated: <span class="date">[modified_date]</span> by <span class="user">[modified_by]</span></span>
+							<div class="detail">
+							<span class="item">File size: <span class="user">[filesize]</span></span><span class="item"> Owner: <span class="user">[owned_by]</span></span><span class="item">Created: <span class="date">[created_date]</span> by <span class="user">[created_by]</span></span><span class="item">Updated: <span class="date">[modified_date]</span> by <span class="user">[modified_by]</span></span>
 							</div>
 						</td>
 					</tr>
@@ -406,7 +411,7 @@ class browseView {
 				$curItem = 1;
 				$folderView[] = '</div><div class="page page_' . $pageCount . ' ">';
 			}
-			
+
 			$folderView[] = $item;
 		}
 
@@ -434,11 +439,11 @@ class browseView {
 	public function getFolderContent($folderId, $sortField = 'title', $asc = true)
 	{
 		$user_id = $_SESSION['userID'];
-		$oUser = User::get($user_id);
-		$disabled = $oUser->getDisabled();
+		$this->oUser = is_null($this->oUser) ? User::get($user_id) : $this->oUser;
+		$disabled = $this->oUser->getDisabled();
 
 		$kt = new KTAPI(3);
-		$session = $kt->start_system_session($oUser->getUsername());
+		$session = $kt->start_system_session($this->oUser->getUsername());
 
 		//Get folder content, depth = 1, types= Directory, File, Shortcut, webserviceversion override
 		$folder = &$kt->get_folder_contents($folderId, 1, 'DFS');
@@ -558,7 +563,7 @@ class browseView {
 		$pages[] = '<li class="' . $itemClass . '" onclick="' . $nextScript . '">Next</li>';
 		$pages[] = '</ul>';
 		$pages = join($pages);
-		
+
 		return $pages;
 	}
 
@@ -591,17 +596,63 @@ class browseView {
 		//parts order: Copy, move, archive, delete, download all
 		$tpl .= join($parts);
 		$tpl .= '</td><td class="status" style="width: 200px; text-align: right;"></td></tr></table>';
-		
+
 		return $tpl;
 	}
 
+	/**
+	 * Checks the systems workflow permissions to see if actions have been overriden
+	 *
+	 * @param array $item
+	 * @return array $item
+	 */
+	private function checkWorkflowPermissions($item = null, $oDocument)
+	{
+		$ns = " not_supported";
+		// Check workflow action restrictions
+		$actions = array_merge(KTDocumentActionUtil::getDocumentActionsForDocument($oDocument, $this->oUser), KTDocumentActionUtil::getDocumentActionsForDocument($oDocument, $this->oUser, 'documentinfo'));
+		foreach ($actions as $oAction)
+		{
+			$actionname = $oAction->getName();
+			$aname = explode('.', $actionname);
+			$name = $aname[count($aname) - 1];
+			$allowaction[$name] = $oAction->_show();
+		}
+		if(!$allowaction['immutable']) $item['actions.finalize_document'] = $ns;
+		if(!$allowaction['ownershipchange']) $item['actions.change_owner'] = $ns;
+		if(!$allowaction['checkout'])
+		{ 
+			$item['allowdoczohoedit'] = '';
+			$item['actions.checkout'] = $ns;
+		}
+		if(!$allowaction['cancelcheckout']) $item['actions.cancel_checkout'] = $ns;
+		if(!$allowaction['checkin']) $item['actions.checkin'] = $ns;
+		if(!$allowaction['alert']) $item['actions.alerts'] = $ns;
+		if(!$allowaction['email']) $item['actions.email'] = $ns;
+		if(!$allowaction['view']) $item['actions.download'] = $ns;
+		if(!$allowaction['sharecontent']) $item['actions.share_document'] = $ns;
+		
+		return $item;
+	}
+	
+	/**
+	 * Renders html block for a document in the new browse
+	 *
+	 * @param array $item
+	 * @param boolean $empty
+	 * @param boolean $shortcut
+	 * @return string
+	 */
 	public function renderDocumentItem($item = null, $empty = false, $shortcut = false)
 	{
-		$fileNameCutoff = 100;
-
 		// When $item is null, $oDocument resolves to a PEAR Error, we should add a check for $item and initialise the document data at the top
 		// instead of using $oDocument in the code.
-		$oDocument = Document::get($item[id]);
+		$oDocument = Document::get($item['id']);
+		$fileNameCutoff = 100;
+		$share_separator = '';
+		$item['separatorE'] = '';
+		$ns = " not_supported";
+		
 		$item['mimetypeid'] = (method_exists($oDocument,'getMimeTypeId')) ? $oDocument->getMimeTypeId() : '0';
 		$iconFile = 'resources/mimetypes/newui/' . KTMime::getIconPath($item['mimetypeid']) . '.png';
 		$item['icon_exists'] = file_exists(KT_DIR . '/' . $iconFile);
@@ -620,8 +671,7 @@ class browseView {
 		$hasDelete = (strpos($permissions, 'D') === false) ? false : true;
 
 		$item['filename'] = (strlen($item['filename']) > $fileNameCutoff) ? (substr($item['filename'], 0, $fileNameCutoff - 3) . "...") : $item['filename'];
-
-		$ns = " not_supported";
+	
 		$item['has_workflow'] = '';
 		$item['is_immutable'] = $item['is_immutable'] == 'true' ? true : false;
 		$item['is_immutable'] = $item['is_immutable'] ? '' : $ns;
@@ -662,30 +712,21 @@ class browseView {
 
 		$item['actions.finalize_document'] = ($isCheckedOut) ? $ns : $item['actions.finalize_document'];
 
-		$item['separatorE'] = '';
+		
 		if (!$hasWrite) {
 		    $item['actions.change_owner'] = $ns;
 		    $item['actions.share_document'] = $ns;
 		    if ($isCheckedOut || $item['actions.finalize_document'])
 		    {
-		    	$oUser = User::get($_SESSION['userID']);
+		    	$this->oUser = is_null($this->oUser) ? User::get($user_id) : $this->oUser;
 		    	$sPermissions = 'ktcore.permissions.write';
-		    	if (KTPermissionUtil::userHasPermissionOnItem($oUser, $sPermissions, $oDocument))
+		    	if (KTPermissionUtil::userHasPermissionOnItem($this->oUser, $sPermissions, $oDocument))
 		    	{
 		    		$item['actions.share_document'] = '';
 		    	}
 		    }
 			$item['actions.finalize_document'] = $ns;
 			$item['separatorE']=$ns;
-		}
-
-		$item['separatorA'] = $item['actions.copy'] == '' ? '' : $ns;
-		$item['separatorB'] = $item['actions.download'] == '' || $item['actions.instantview'] == '' ? '' : $ns;
-		$item['separatorC'] = $item['actions.checkout'] == '' || $item['actions.checkin'] == '' || $item['actions.cancel_checkout']== '' ? '' : $ns;
-		$item['separatorD'] = ($item['actions.alert'] == '' || $item ['actions.email'] == '') && $hasWrite ? '' : $ns;
-
-		if ($item['is_immutable'] == '') {
-			$item['separatorB'] = $item['separatorC'] = $item['separatorD'] = $ns;
 		}
 
 		// Check if the thumbnail exists
@@ -713,7 +754,7 @@ class browseView {
                 } else {
                     $oDocument->setHasRendition(0);
                 }
-                
+
                 $oDocument->update();
             }
 
@@ -738,7 +779,8 @@ class browseView {
 		$item['isfinalize_document'] = ($item['actions.finalize_document']) ? 0 : 1;
 		// Sanitize document title
 		$item['title'] = sanitizeForHTML($item['title']);
-		
+		$item['filesize'] = KTUtil::filesizeToString($item['filesize']);
+
 		// Check if the document is a shortcut
 		if (!is_null($item['linked_document_id'])) {
 			$item['actions.share_document'] = $ns;
@@ -746,13 +788,21 @@ class browseView {
 		} else {
 			$item['document_link'] = KTUtil::buildUrl('view.php', array('fDocumentId' => $item['id']));
 		}
+		// Check if document is in workflow and if action has not been restricted.
+		// Another layer of permissions
+		//$item = $this->checkWorkflowPermissions($item, $oDocument);
 		
-		$share_separator = '';
+		$item['separatorA'] = $item['actions.copy'] == '' ? '' : $ns;
+		$item['separatorB'] = $item['actions.download'] == '' || $item['actions.instantview'] == '' ? '' : $ns;
+		$item['separatorC'] = $item['actions.checkout'] == '' || $item['actions.checkin'] == '' || $item['actions.cancel_checkout']== '' ? '' : $ns;
+		$item['separatorD'] = $ns;//($item['actions.alert'] == '' || $item ['actions.email'] == '') && $hasWrite ? '' : $ns;
+		if ($item['is_immutable'] == '') { $item['separatorB'] = $item['separatorC'] = $item['separatorD'] = $ns; }
+		// Add line separator after share link
 		if($item['actions.share_document'] != $ns)
 		{
 			$share_separator = '<li class="separator[separatorE]"></li>';
 		}
-		
+
 		$tpl='
 			<span class="doc browseView 2">
 				<table cellspacing="0" cellpadding="0" width="100%" border="0" class="doc item ddebug">
@@ -778,8 +828,8 @@ class browseView {
 
 							<div class="title"><a class="clearLink" href="[document_link]" style="">[title]</a></div>
 
-							<div class="detail"><span class="item">
-								Owner: <span class="user">[owned_by]</span></span><span class="item">Created: <span class="date">[created_date]</span> by <span class="user">[created_by]</span></span><span class="item">Updated: <span class="date">[modified_date]</span> by <span class="user">[modified_by]</span></span>
+							<div class="detail">
+								<span class="item">File size: <span class="user">[filesize]</span></span> <span class="item">Owner: <span class="user">[owned_by]</span></span><span class="item">Created: <span class="date">[created_date]</span> by <span class="user">[created_by]</span></span><span class="item">Updated: <span class="date">[modified_date]</span> by <span class="user">[modified_by]</span></span>
 							</div>
 						</td>
 						<td>
@@ -859,7 +909,7 @@ class browseView {
 		$item['separatorA'] = ($hasWrite || $hasSecurity || $hasRename) ? '' : $ns;
 		// Sanitize folder title
 		$item['title'] = sanitizeForHTML($item['title']);
-		
+
 		// Check for shortcut
 		if (!is_null($item['linked_folder_id'])) {
 			$item['actions.share_folder'] = $ns;
@@ -867,7 +917,7 @@ class browseView {
 		} else {
 			$item['link'] = KTUtil::buildUrl('browse.php', array('fFolderId'=> $item['id']));
 		}
-		
+
 		$tpl='
 			<span class="doc browseView">
 			<table cellspacing="0" cellpadding="0" width="100%" border="0" class="folder item">

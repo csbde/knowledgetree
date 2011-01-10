@@ -367,6 +367,7 @@ kt.app.upload=new function(){
 					    		is_immutable: false,
 					    		is_checkedout: false,
 					    		filename: responseJSON.success.filename,
+					    		filesize: responseJSON.success.filesize,
 								document_url: responseJSON.success.document_url,
 					    		title: responseJSON.success.title,
 					    		owned_by: responseJSON.success.owned_by,

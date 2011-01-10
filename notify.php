@@ -105,5 +105,5 @@ class KTNotificationDispatcher extends KTStandardDispatcher {
     }
 }
 
-$dispatcher =& new KTNotificationDispatcher();
+$dispatcher = new KTNotificationDispatcher();
 $dispatcher->dispatch();

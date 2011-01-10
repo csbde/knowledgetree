@@ -42,7 +42,7 @@ require_once(KT_LIB_DIR . '/authentication/Authenticator.inc');
 require_once(KT_LIB_DIR . '/widgets/fieldWidgets.php');
 
 class LdapAuthProvider extends KTAuthenticationProvider {
-    
+
     public $sName = 'LDAP Authentication Provider';
     public $sNamespace = 'ldap.auth.provider';
     public $sAuthClass = 'LdapAuthenticator';
@@ -51,7 +51,7 @@ class LdapAuthProvider extends KTAuthenticationProvider {
     private $configMap;
     private $defaultSearchAttributes = array('cn', 'mail', 'sAMAccountName');
     private $defaultObjectClasses = array('user', 'inetOrgPerson', 'posixAccount');
-    
+
     public function __construct()
     {
         parent::KTAuthenticationProvider();
@@ -64,7 +64,7 @@ class LdapAuthProvider extends KTAuthenticationProvider {
             'objectclasses' => _kt('Object Classes')
         );
     }
-    
+
     /**
      * Runs the appropriate function from either this class or the designated dispatcher
      *
@@ -74,13 +74,13 @@ class LdapAuthProvider extends KTAuthenticationProvider {
     {
         $event = strip_tags($_REQUEST[$this->event_var]);
         $proposedMethod = sprintf('%s_%s', $this->action_prefix, $event);
-        
+
         // attempt to map to an event in one of the associated classes if there is
         // no method available in the current class.
         if (method_exists($this, $proposedMethod)) {
             return $this->$proposedMethod;
         }
-        
+
         // attempt to determine whether the function is to be found in the user or group dispatcher
         $ldapDispatcher = null;
         $checkMethod = preg_replace('/^add|create|delete|edit|update/i', '', $event);
@@ -92,12 +92,12 @@ class LdapAuthProvider extends KTAuthenticationProvider {
             require_once('ldapGroupDispatcher.php');
             $ldapDispatcher = new ldapGroupDispatcher();
         }
-        
+
         // if we have manager to find a dispatcher for the requested method
         if (is_object($ldapDispatcher)) {
             return $ldapDispatcher->$proposedMethod();
         }
-        
+
         return null;
     }
 
@@ -122,7 +122,7 @@ class LdapAuthProvider extends KTAuthenticationProvider {
             'fields' => $fields,
             'source_id' => $sourceId,
         );
-        
+
         return $template->render($templateData);
     }
 
@@ -146,12 +146,12 @@ class LdapAuthProvider extends KTAuthenticationProvider {
         // TLS is forced on, not user configurable
         $config['tls'] = true;
         $config['port'] = !empty($config['port']) ? $config['port'] : 389; // in case port is empty
-        
+
         foreach ($this->configMap as $k => $v) {
             $value = KTUtil::arrayGet($_REQUEST, $k . '_nls');
             if ($value) {
                 $nlsArray = split("\n", $value);
-                
+
                 $finalArray = array();
                 foreach ($nlsArray as $nlsItem) {
                     $nlsItem = trim($nlsItem);
@@ -160,11 +160,11 @@ class LdapAuthProvider extends KTAuthenticationProvider {
                     }
                     $finalArray[] = $nlsItem;
                 }
-                
+
                 $config[$k] = $finalArray;
                 continue;
             }
-            
+
             if (array_key_exists($k . '_bool', $_REQUEST)) {
                 if ($_REQUEST[$k . '_bool']) {
                     $config[$k] = true;
@@ -174,7 +174,7 @@ class LdapAuthProvider extends KTAuthenticationProvider {
                 }
                 continue;
             }
-            
+
             $value = KTUtil::arrayGet($_REQUEST, $k);
             if ($value) {
                 $config[$k] = $value;
@@ -196,7 +196,7 @@ class LdapAuthProvider extends KTAuthenticationProvider {
         $errorOptions = array(
             'redirect_to' => array('editSourceProvider', sprintf('source_id=%d', $source->getId())),
         );
-        
+
         $errorOptions['message'] = _kt("A server name or ip address is required");
         $name = $this->oValidator->validateString($config['server'], $errorOptions);
 
@@ -225,11 +225,11 @@ class LdapAuthProvider extends KTAuthenticationProvider {
      * @return string
      */
     public function showSource($source)
-    {        
+    {
         $config = unserialize($source->getConfig());
 
         $output = '';
-        foreach ($this->configMap as $key => $item) {            
+        foreach ($this->configMap as $key => $item) {
             $setting = ($key == 'searchpwd') ? '******' : (is_array($config[$key]) ? join(', ', $config[$key]) : $config[$key]);
             $output .= $item . ': ' . $setting . '<br />';
         }
@@ -241,7 +241,7 @@ class LdapAuthProvider extends KTAuthenticationProvider {
     {
         return new $this->sAuthClass($source);
     }
-    
+
     /**
      * Returns the fields to be used for the provider info
      *
@@ -266,9 +266,9 @@ class LdapAuthProvider extends KTAuthenticationProvider {
         $fields[] = new KTStringWidget(_kt('Search User'), _kt('The user account in the LDAP directory to perform searches in the LDAP directory as (such as CN=searchUser,CN=Users,DC=mycorp,DC=com or searchUser@mycorp.com)'), 'searchuser', $searchUser, $this->oPage, true);
 
         $fields[] = new KTPasswordWidget(_kt('Search Password'), _kt('The password for the user account in the LDAP directory that performs searches'), 'searchpwd', $searchPwd, $this->oPage, true);
-        
+
         $fields[] = new KTTextWidget(_kt('Search Attributes'), _kt('The LDAP attributes to use to search for users when given their name (one per line, examples: <strong>cn</strong>, <strong>mail</strong>)'), 'searchattributes_nls', join("\n", $searchAttributes), $this->oPage, true, null, null, $aOptions);
-        
+
         $fields[] = new KTTextWidget(_kt('Object Classes'), _kt('The LDAP object classes to search for users (one per line, example: <strong>user</strong>, <strong>inetOrgPerson</strong>, <strong>posixAccount</strong>)'), 'objectclasses_nls', join("\n", $objectClasses), $this->oPage, true, null, null, $aOptions);
 
         return $fields;
@@ -278,16 +278,16 @@ class LdapAuthProvider extends KTAuthenticationProvider {
 
 require_once('ldapUtil.php');
 require_once('ldapGroupManager.php');
-        
+
 class LdapAuthenticator extends Authenticator {
-    
+
     private $source;
     private $ldapConnector;
-    
+
     public function __construct($source)
-    {        
+    {
         $this->source =& KTUtil::getObject('KTAuthenticationSource', $source);
-        
+
         // Connect to LDAP
         $options = LdapUtil::getConnectionOptions($this->source);
         try {
@@ -298,7 +298,7 @@ class LdapAuthenticator extends Authenticator {
             $default->log->error("Unable to create an ldap connection: {$e->getMessage()}");
         }
     }
-    
+
     /**
      * Destroy the ldap connector
      */
@@ -314,18 +314,18 @@ class LdapAuthenticator extends Authenticator {
      * @param string the password to check
      * @return boolean true if the password is correct | false
      */
-    public function checkPassword($oUser, $sPassword)
+    public function checkPassword($user, $password)
     {
         global $default;
 
-        $dn = $oUser->getAuthenticationDetails();
+        $dn = $user->getAuthenticationDetails();
         if (empty($dn)) {
             return new PEAR_Error(_kt('The authentication parameters are corrupt. (authentication_detail_s1 is null)'));
         }
 
         // Authenticate against ldap
         try {
-            $result = $this->ldapConnector->bind($dn, $sPassword);
+            $result = $this->ldapConnector->bind($dn, $password);
             return true;
         }
         catch (Exception $e) {
@@ -333,7 +333,7 @@ class LdapAuthenticator extends Authenticator {
             return false;
         }
     }
-    
+
     public function synchroniseGroup($group)
     {
         $manager = new LdapGroupManager($this->source);
@@ -344,7 +344,7 @@ class LdapAuthenticator extends Authenticator {
     {
     	return $this->ldapConnector;
     }
-    
+
 }
 
 ?>
