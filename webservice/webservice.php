@@ -56,12 +56,11 @@ if($_GET['class'] && (in_array($_GET['class'], $WSClasses) || in_array($_GET['cl
 	$WSHelper->setWSDLCacheFolder('wsdl/'); //trailing slash mandatory. Default is 'wsdl/'
 
 	try {
-
 		$WSHelper->handle();
 		//possible db transaction commit
-	}catch(Exception $e) {
+	} catch(Exception $e) {
 		//possible db transaction rollback
-		$WSHelper->fault("SERVER", $e->getMessage(),"", $e->__toString());
+		$WSHelper->fault("SERVER", $e->getMessage(), "", $e->__toString());
 	}
 } else {
 	die("No valid class selected");

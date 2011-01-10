@@ -60,7 +60,7 @@
     {foreach item=sJavascript from=$page->getJSStandalone()}
        <script type="text/javascript">
        var rootURL = "{$absoluteRootUrl}";
-       var quickQuery = "{$search2_quickQuery}";
+       var quickQuery = '{$search2_quickQuery}';
 	{$sJavascript}
        </script>
     {/foreach}

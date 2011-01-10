@@ -73,7 +73,7 @@ class ZipFolder {
         $this->sPattern = "[\*|\%|\\\|\/|\<|\>|\+|\:|\?|\||\'|\"]";
         $this->sFolderPattern = "[\*|\%|\<|\>|\+|\:|\?|\||\'|\"]";
 
-        if(!empty($exportCode)){
+        if (!empty($exportCode)) {
             $this->exportCode = $exportCode;
         }else{
             $this->exportCode = KTUtil::randomString();
@@ -81,7 +81,7 @@ class ZipFolder {
 
         // Check if the temp directory has been created and stored in session
         $aData = KTUtil::arrayGet($_SESSION['zipcompression'], $exportCode);
-        if(!empty($aData) && isset($aData['dir'])){
+        if (!empty($aData) && isset($aData['dir'])) {
             $sTmpPath = $aData['dir'];
         }else {
             $sBasedir = $this->oKTConfig->get("urls/tmpDirectory");
@@ -113,7 +113,7 @@ class ZipFolder {
     static public function get($exportCode)
     {
         static $zipFolder = null;
-        if(is_null($zipFolder)){
+        if (is_null($zipFolder)) {
             $zipFolder = new ZipFolder('', $exportCode);
         }
         return $zipFolder;
@@ -147,7 +147,7 @@ class ZipFolder {
     * Add a document to the zip file
     */
     function addDocumentToZip($oDocument, $oFolder = null) {
-        if(empty($oFolder)){
+        if (empty($oFolder)) {
             $oFolder = Folder::get($oDocument->getFolderID());
         }
 
@@ -205,7 +205,7 @@ class ZipFolder {
     * Zip the temp folder
     */
     function createZipFile($bEchoStatus = FALSE) {
-        if(empty($this->aPaths)){
+        if (empty($this->aPaths)) {
             return PEAR::raiseError(_kt("No folders or documents found to compress"));
         }
 
@@ -225,7 +225,7 @@ class ZipFolder {
         putenv("LANGUAGE=$loc");
         $loc = setlocale(LC_ALL, $loc);
 
-        if($useBinary){
+        if ($useBinary) {
             $sManifest = sprintf("%s/%s", $this->sTmpPath, "MANIFEST");
             file_put_contents($sManifest, join("\n", $this->aPaths));
         }
@@ -233,7 +233,7 @@ class ZipFolder {
         $sZipFile = sprintf("%s/%s.".$this->extension, $this->sTmpPath, $this->sZipFileName);
         $sZipFile = str_replace('<', '', str_replace('</', '', str_replace('>', '', $sZipFile)));
 
-        if($useBinary){
+        if ($useBinary) {
             $sZipCommand = KTUtil::findCommand("export/zip", "zip");
             $aCmd = array($sZipCommand, "-r", $sZipFile, ".", "-i@MANIFEST");
             $sOldPath = getcwd();
@@ -243,7 +243,7 @@ class ZipFolder {
             $aOptions = array('popen' => 'r');
             $fh = KTUtil::pexec($aCmd, $aOptions);
 
-            if($bEchoStatus){
+            if ($bEchoStatus) {
                 $last_beat = time();
                 while(!feof($fh)) {
                     if ($i % 1000 == 0) {
@@ -287,13 +287,13 @@ class ZipFolder {
     * Download the zip file
     */
     function downloadZipFile($exportCode = NULL) {
-        if(!(isset($exportCode) && !empty($exportCode))) {
+        if (!(isset($exportCode) && !empty($exportCode))) {
             $exportCode = KTUtil::arrayGet($_SESSION['zipcompression'], 'exportcode');
         }
 
         $aData = KTUtil::arrayGet($_SESSION['zipcompression'], $exportCode);
 
-        if(!empty($aData)){
+        if (!empty($aData)) {
             $sZipFile = $aData['file'];
             $sTmpPath = $aData['dir'];
         }else{
@@ -323,13 +323,13 @@ class ZipFolder {
 
     function checkArchiveExists($exportCode = null)
     {
-        if(!(isset($exportCode) && !empty($exportCode))) {
+        if (!(isset($exportCode) && !empty($exportCode))) {
             $exportCode = KTUtil::arrayGet($_SESSION['zipcompression'], 'exportcode');
         }
 
         $aData = KTUtil::arrayGet($_SESSION['zipcompression'], $exportCode);
 
-        if(!empty($aData)){
+        if (!empty($aData)) {
             $sZipFile = $aData['file'];
             $sTmpPath = $aData['dir'];
         }else{
@@ -347,14 +347,14 @@ class ZipFolder {
     * Check that iconv exists and that the selected encoding is supported.
     */
     function checkConvertEncoding() {
-        if(!function_exists("iconv")) {
+        if (!function_exists("iconv")) {
             return PEAR::raiseError(_kt('IConv PHP extension not installed. The zip file compression could not handle output filename encoding conversion !'));
         }
         $oKTConfig = $this->oKTConfig;
         $this->sOutputEncoding = $oKTConfig->get('export/encoding', 'UTF-8');
 
         // Test the specified encoding
-        if(iconv("UTF-8", $this->sOutputEncoding, "") === FALSE) {
+        if (iconv("UTF-8", $this->sOutputEncoding, "") === FALSE) {
             return PEAR::raiseError(_kt('Specified output encoding for the zip files compression does not exists !'));
         }
         return true;
@@ -375,14 +375,14 @@ class ZipFolder {
     {
         return true;
 
-        if($object instanceof Document || $object instanceof DocumentProxy){
+        if ($object instanceof Document || $object instanceof DocumentProxy) {
         }
 
-        if($object instanceof Folder || $object instanceof FolderProxy){
+        if ($object instanceof Folder || $object instanceof FolderProxy) {
             $id = $object->iId;
 
             // If we're working with the root folder
-            if($id = 1){
+            if ($id = 1) {
                 $sql = 'SELECT count(*) as cnt FROM documents where folder_id = 1';
             }else{
                 $sql[] = "SELECT count(*) as cnt FROM documents where parent_folder_ids like '%,?' OR parent_folder_ids like '%,?,%' OR folder_id = ?";
@@ -398,7 +398,7 @@ class ZipFolder {
 
             $result = DBUtil::getOneResult($sql);
 
-            if($result['cnt'] > 10){
+            if ($result['cnt'] > 10) {
                 return true;
             }
         }
@@ -497,12 +497,12 @@ class DownloadQueue
         $sql = 'SELECT * FROM download_queue d WHERE status = 0 AND object_type != "zip" ORDER BY date_added, code';
         $rows = DBUtil::getResultArray($sql);
 
-        if(PEAR::isError($rows)){
+        if (PEAR::isError($rows)) {
             return $rows;
         }
 
         $queue = array();
-        foreach ($rows as $item){
+        foreach ($rows as $item) {
             $queue[$item['code']][] = $item;
         }
         return $queue;
@@ -556,7 +556,7 @@ class DownloadQueue
 
         // get items from queue
         $queue = $this->getQueue();
-        if(PEAR::isError($queue)){
+        if (PEAR::isError($queue)) {
             $default->log->debug('Download Queue: error on fetching queue - '.$queue->getMessage());
             return false;
         }
@@ -565,12 +565,12 @@ class DownloadQueue
         $this->oStorage->touch($this->lockFile);
 
         // Loop through items and create downloads
-        foreach ($queue as $code => $download){
+        foreach ($queue as $code => $download) {
             // reset the error messages
             $this->errors = null;
 
             // if the user_id is not set then skip
-            if(!isset($download[0]['user_id']) || empty($download[0]['user_id'])){
+            if (!isset($download[0]['user_id']) || empty($download[0]['user_id'])) {
                 $default->log->debug('Download Queue: no user id set for download code '.$code);
                 $error = array(_kt('No user id has been set, the archive cannot be created.'));
                 $result = $this->setItemStatus($code, 3, $error);
@@ -585,7 +585,7 @@ class DownloadQueue
             $zip = new ZipFolder('', $code);
             $res = $zip->checkConvertEncoding();
 
-            if(PEAR::isError($res)){
+            if (PEAR::isError($res)) {
                 $default->log->error('Download Queue: Archive class check convert encoding error - '.$res->getMessage());
                 $error = array(_kt('The archive cannot be created. An error occurred in the encoding.'));
                 $result = $this->setItemStatus($code, 3, $error);
@@ -593,7 +593,7 @@ class DownloadQueue
             }
 
             $result = $this->setItemStatus($code, 1);
-            if(PEAR::isError($result)){
+            if (PEAR::isError($result)) {
                 $default->log->error('Download Queue: item status could not be set for user: '.$_SESSION['userID'].', code: '.$code.', error: '.$result->getMessage());
             }
 
@@ -602,12 +602,12 @@ class DownloadQueue
             DBUtil::startTransaction();
 
             // Add the individual files and folders into the archive
-            foreach ($download as $item){
-                if($item['object_type'] == 'document'){
+            foreach ($download as $item) {
+                if ($item['object_type'] == 'document') {
                     $docId = $item['object_id'];
                     $this->addDocument($zip, $docId, false);
                 }
-                if($item['object_type'] == 'folder'){
+                if ($item['object_type'] == 'folder') {
                     $folderId = $item['object_id'];
                     $this->addFolder($zip, $folderId, false);
                 }
@@ -615,7 +615,7 @@ class DownloadQueue
 
             $res = $zip->createZipFile();
 
-            if(PEAR::isError($res)){
+            if (PEAR::isError($res)) {
                 $default->log->debug('Download Queue: Archive could not be created. Exiting transaction. '.$res->getMessage());
                 DBUtil::rollback();
 
@@ -634,8 +634,8 @@ class DownloadQueue
                 'ip' => Session::getClientIP(),
             ));
 
-            if(PEAR::isError($oTransaction)){
-                $default->log->debug('Download Queue: transaction could not be logged. '.$oTransaction->getMessage());
+            if (PEAR::isError($oTransaction)) {
+                $default->log->debug('Download Queue: transaction could not be logged. ' . $oTransaction->getMessage());
             }
 
             DBUtil::commit();
@@ -643,7 +643,7 @@ class DownloadQueue
             // Set status for the download
             $this->errors['archive'] = $_SESSION['zipcompression'];
             $result = $this->setItemStatus($code, 2, $this->errors);
-            if(PEAR::isError($result)){
+            if (PEAR::isError($result)) {
                 $default->log->error('Download Queue: item status could not be set for user: '.$_SESSION['userID'].', code: '.$code.', error: '.$result->getMessage());
             }
             else {
@@ -678,7 +678,7 @@ class DownloadQueue
     {
 
         $oDocument = Document::get($docId);
-        if(PEAR::isError($oDocument)){
+        if (PEAR::isError($oDocument)) {
             $this->errors[] = _kt('Document cannot be exported, an error occurred: ').$oDocument->getMessage();
             return $oDocument;
         }
@@ -689,7 +689,7 @@ class DownloadQueue
         }
 
         // fire subscription alerts for the downloaded document - if global config is set
-        if($this->bNotifications && $alerts){
+        if ($this->bNotifications && $alerts) {
             $oSubscriptionEvent = new SubscriptionEvent();
             $oFolder = Folder::get($oDocument->getFolderID());
             $oSubscriptionEvent->DownloadDocument($oDocument, $oFolder);
@@ -710,13 +710,13 @@ class DownloadQueue
     {
         $oFolder = Folder::get($folderId);
 
-        if(PEAR::isError($oFolder)){
+        if (PEAR::isError($oFolder)) {
             $this->errors[] = _kt('Folder cannot be exported, an error occurred: ').$oFolder->getMessage();
             return $oFolder;
         }
 
         $sFolderDocs = $oFolder->getDocumentIDs($folderId);
-        if(PEAR::isError($sFolderDocs)){
+        if (PEAR::isError($sFolderDocs)) {
             $default->log->error('Download Queue: get document ids for folder caused an error: '.$sFolderDocs->getMessage());
             $sFolderDocs = '';
         }
@@ -725,7 +725,7 @@ class DownloadQueue
         $zip->addFolderToZip($oFolder);
 
         $aDocuments = array();
-        if(!empty($sFolderDocs)){
+        if (!empty($sFolderDocs)) {
             $aDocuments = explode(',', $sFolderDocs);
         }
 
@@ -743,17 +743,17 @@ class DownloadQueue
         $aFolderObjects[$folderId] = $oFolder;
 
         // Export the folder structure to ensure the export of empty directories
-        if(!empty($aFolderList)){
-            foreach($aFolderList as $k => $oFolderItem){
-                if($oFolderItem->isSymbolicLink()){
+        if (!empty($aFolderList)) {
+            foreach($aFolderList as $k => $oFolderItem) {
+                if ($oFolderItem->isSymbolicLink()) {
                 	$oFolderItem = $oFolderItem->getLinkedFolder();
                 }
-            	if(Permission::userHasFolderReadPermission($oFolderItem)){
+            	if (Permission::userHasFolderReadPermission($oFolderItem)) {
                     // Get documents for each folder
                     $sFolderItemId = $oFolderItem->getID();
                     $sFolderItemDocs = $oFolderItem->getDocumentIDs($sFolderItemId);
 
-                    if(!empty($sFolderItemDocs)){
+                    if (!empty($sFolderItemDocs)) {
                         $aFolderDocs = explode(',', $sFolderItemDocs);
                         $aDocuments = array_merge($aDocuments, $aFolderDocs);
                     }
@@ -764,15 +764,15 @@ class DownloadQueue
         }
 
         // Add all documents to the export
-        if(!empty($aDocuments)){
-            foreach($aDocuments as $sDocumentId){
+        if (!empty($aDocuments)) {
+            foreach($aDocuments as $sDocumentId) {
                 $oDocument = Document::get($sDocumentId);
-             	if($oDocument->isSymbolicLink()){
+             	if ($oDocument->isSymbolicLink()) {
     				$oDocument->switchToLinkedCore();
     			}
-    			if(Permission::userHasDocumentReadPermission($oDocument)){
+    			if (Permission::userHasDocumentReadPermission($oDocument)) {
 
-                    if(!KTWorkflowUtil::actionEnabledForDocument($oDocument, 'ktcore.actions.document.view')){
+                    if (!KTWorkflowUtil::actionEnabledForDocument($oDocument, 'ktcore.actions.document.view')) {
                         $this->errors[] = $oDocument->getName().': '._kt('Document cannot be exported as it is restricted by the workflow.');
                         continue;
                     }
@@ -786,7 +786,7 @@ class DownloadQueue
                     }
 
                     // fire subscription alerts for the downloaded document
-                    if($this->bNotifications && $alerts) {
+                    if ($this->bNotifications && $alerts) {
                         $oSubscriptionEvent = new SubscriptionEvent();
                         $oSubscriptionEvent->DownloadDocument($oDocument, $oFolder);
                     }
@@ -806,11 +806,11 @@ class DownloadQueue
     function getLinkingEntities($aFolderList)
     {
     	$aSearchFolders = array();
-    	if(!empty($aFolderList)){
-            foreach($aFolderList as $oFolderItem){
-            	if(Permission::userHasFolderReadPermission($oFolderItem)){
+    	if (!empty($aFolderList)) {
+            foreach($aFolderList as $oFolderItem) {
+            	if (Permission::userHasFolderReadPermission($oFolderItem)) {
 	                // If it is a shortcut, we should do some more searching
-	                if($oFolderItem->isSymbolicLink()){
+	                if ($oFolderItem->isSymbolicLink()) {
 	                    $oFolderItem = $oFolderItem->getLinkedFolder();
 	                    $aSearchFolders[] = $oFolderItem->getID();
 	                }
@@ -820,7 +820,7 @@ class DownloadQueue
     	$aLinkingFolders = array();
     	$aSearchCompletedFolders = array();
     	$count = 0;
-        while(count($aSearchFolders)>0){
+        while(count($aSearchFolders)>0) {
         	$count++;
         	$oFolder = Folder::get(array_pop($aSearchFolders));
         	$folderId = $oFolder->getId();
@@ -830,18 +830,18 @@ class DownloadQueue
             parent_folder_ids LIKE '%,{$folderId},%' OR
             parent_folder_ids LIKE '%,{$folderId}'";
             $aFolderList = $oFolder->getList($sWhereClause);
-            foreach($aFolderList as $oFolderItem){
-	            if($oFolderItem->isSymbolicLink()){
+            foreach($aFolderList as $oFolderItem) {
+	            if ($oFolderItem->isSymbolicLink()) {
 	            	$oFolderItem = $oFolderItem->getLinkedFolder();
 	            }
-				if(Permission::userHasFolderReadPermission($oFolderItem)){
-		            if($aSearchCompletedFolders[$oFolderItem->getID()] != true){
+				if (Permission::userHasFolderReadPermission($oFolderItem)) {
+		            if ($aSearchCompletedFolders[$oFolderItem->getID()] != true) {
 	            		$aSearchFolders[] = $oFolderItem->getID();
 	            		$aSearchCompletedFolders[$oFolderItem->getID()] = true;
 	            	}
 				}
             }
-            if(!isset($aLinkingFolders[$oFolder->getId()])){
+            if (!isset($aLinkingFolders[$oFolder->getId()])) {
             	$aLinkingFolders[$oFolder->getId()] = $oFolder;
             }
         }
@@ -859,14 +859,14 @@ class DownloadQueue
         $check = $this->getItemStatus($code);
         $status = $check[0]['status'];
 
-        if($status < 2){
+        if ($status < 2) {
             return false;
         }
 
         $message = $check[0]['errors'];
         $message = json_decode($message, true);
 
-        if($status > 2){
+        if ($status > 2) {
             return $message;
         }
 
@@ -876,7 +876,7 @@ class DownloadQueue
 
         // Check that the archive has been created
         $zip = new ZipFolder('', $code);
-        if($zip->checkArchiveExists($code)){
+        if ($zip->checkArchiveExists($code)) {
             // Clean up the download queue and return errors
             $this->removeItem($code);
             return $message;
@@ -942,7 +942,7 @@ class DownloadQueue
         // NOTE the above issue may only occur due to the way I have been testing, often breaking the process before it is finished,
         //      but conceivably this could actually happen in the real world also.
         $zip = new ZipFolder('', $code);
-        if($zip->checkArchiveExists($code)) {
+        if ($zip->checkArchiveExists($code)) {
             return $code;
         }
 

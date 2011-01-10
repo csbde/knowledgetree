@@ -42,7 +42,7 @@ kt.app.inviteusers=new function(){
 	        alert('Please enter a valid email address.');
 	    } else {
             group = document.getElementById('invite.grouplist').value;
-			jQuery('#extinvitewindow').block({ 
+			/*jQuery('#extinvitewindow').block({ 
 												message: '<div id="loading_invite_users">',
 												overlayCSS: {
 													backgroundColor: '#00f transparent'
@@ -51,7 +51,7 @@ kt.app.inviteusers=new function(){
 														border:		'',
 														backgroundColor:'#fff transparent',
 													},
-											});
+											});*/
 	        kt.api.inviteUsers(emails, group, 'invited', null, self.inviteCallback, function() {});
 	    }
 
@@ -112,14 +112,6 @@ kt.app.inviteusers=new function(){
             document.getElementById('failedUsers').innerHTML = failed;
             document.getElementById('showFailedUsers').style.display = 'block';
         }
-
-	    // display the select group
-	    if (group == '') {
-	        document.getElementById('showInvitedGroup').style.display = 'none';
-	    } else {
-            document.getElementById('showInvitedGroup').style.display = 'block';
-            document.getElementById('invitedGroup').innerHTML = group;
-	    }
 
         if (check != 0) {
             document.getElementById('inviteLicenses').style.display = 'block';

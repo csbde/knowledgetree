@@ -52,6 +52,7 @@ require_once(KT_LIB_DIR . "/util/sanitize.inc");
 require_once(KT_LIB_DIR . '/subscriptions/subscriptions.inc.php'); // Deal with bulk action
 
 class KTBulkAction extends KTStandardDispatcher {
+
     var $sName;
     var $sDescription;
 
@@ -155,7 +156,7 @@ class KTBulkAction extends KTStandardDispatcher {
 
     // helper function
     function _getNames($aIds, $sEntity) {
-        if(count($aIds)) {
+        if (count($aIds)) {
             $aNames = array();
             $aFunc = array($sEntity, 'get');
 
@@ -164,7 +165,7 @@ class KTBulkAction extends KTStandardDispatcher {
                 $name = array();
                 $name['name'] = $oE->getName();
                 //add shortcut notice if the entity is a shortcut
-                if($oE->isSymbolicLink()){
+                if ($oE->isSymbolicLink()){
                 	$name['notice'] = _kt("Shortcut");
                 }
                 $aNames[] = $name;
@@ -186,12 +187,12 @@ class KTBulkAction extends KTStandardDispatcher {
 		$symlinksPresent = false;
         foreach($this->oActiveEntityList->getDocumentIds() as $iDocument){
         	$oDocument = Document::get($iDocument);
-        	if(count($oDocument->getSymbolicLinks()) > 0){
+        	if (count($oDocument->getSymbolicLinks()) > 0){
         		$symlinksPresent = true;
         		break;
         	}
         }
-        if($symlinksPresent == false){
+        if ($symlinksPresent == false){
 	        foreach($this->oActiveEntityList->getFolderIds() as $iFolder){
 	        	$oStartFolder = Folder::get($iFolder);
 	        	$aRemainingFolders = array($oStartFolder->getId());
@@ -199,14 +200,14 @@ class KTBulkAction extends KTStandardDispatcher {
 	        		$iFolderId = array_pop($aRemainingFolders);
 	        		$oFolder = Folder::get($iFolderId);
 
-		        	if(count($oFolder->getSymbolicLinks()) > 0){
+		        	if (count($oFolder->getSymbolicLinks()) > 0){
 		        		$symlinksPresent = true;
 		        		break;
 		        	}
 
 	        		$aChildDocs = Document::getList(array('folder_id = ?',array($iFolderId)));
 	        		foreach ($aChildDocs as $oDoc) {
-				        if(count($oDoc->getSymbolicLinks()) > 0){
+				        if (count($oDoc->getSymbolicLinks()) > 0){
 			        		$symlinksPresent = true;
 			        		break;
 			        	}
@@ -220,17 +221,17 @@ class KTBulkAction extends KTStandardDispatcher {
         return $symlinksPresent;
 	}
 
-/**
+    /**
      * checks a folderList for shortcuts and queries the repositories for all folders
      * that are somehow connected to these folders.
      */
     function getLinkingEntities($aFolderList){
     	$aSearchFolders = array();
-    	if(!empty($aFolderList)){
+    	if (!empty($aFolderList)){
             foreach($aFolderList as $oFolderItem){
-            	if(Permission::userHasFolderReadPermission($oFolderItem)){
+            	if (Permission::userHasFolderReadPermission($oFolderItem)){
 	                // If it is a shortcut, we should do some more searching
-	                if($oFolderItem->isSymbolicLink()){
+	                if ($oFolderItem->isSymbolicLink()){
 	                    $oFolderItem = $oFolderItem->getLinkedFolder();
 	                    $aSearchFolders[] = $oFolderItem->getID();
 	                }
@@ -251,17 +252,17 @@ class KTBulkAction extends KTStandardDispatcher {
             parent_folder_ids LIKE '%,{$sFolderId}'";
             $aFolderList = $this->oFolder->getList($sWhereClause);
             foreach($aFolderList as $oFolderItem){
-	            if($oFolderItem->isSymbolicLink()){
+	            if ($oFolderItem->isSymbolicLink()){
 	            	$oFolderItem = $oFolderItem->getLinkedFolder();
 	            }
-				if(Permission::userHasFolderReadPermission($oFolderItem)){
-		            if($aSearchCompletedFolders[$oFolderItem->getID()] != true){
+				if (Permission::userHasFolderReadPermission($oFolderItem)){
+		            if ($aSearchCompletedFolders[$oFolderItem->getID()] != true){
 	            		$aSearchFolders[] = $oFolderItem->getID();
 	            		$aSearchCompletedFolders[$oFolderItem->getID()] = true;
 	            	}
 				}
             }
-            if(!isset($aLinkingFolders[$oFolder->getId()])){
+            if (!isset($aLinkingFolders[$oFolder->getId()])){
             	$aLinkingFolders[$oFolder->getId()] = $oFolder;
             }
         }
@@ -287,20 +288,19 @@ class KTBulkAction extends KTStandardDispatcher {
         return true;
     }
 
-
     // check the entire entity list. this needn't be overrided at any point
     function check_entities() {
         $aFailed = array('documents' => array(), 'folders' => array());
         $aSucceeded = array('documents' => array(), 'folders' => array());
 
-        if(!$this->oEntityList) {
+        if (!$this->oEntityList) {
             return true;
         }
 
         foreach($this->oEntityList->getDocumentIds() as $iId) {
             $oDocument =& Document::get($iId);
 
-            if(PEAR::isError($oDocument)) {
+            if (PEAR::isError($oDocument)) {
                 $aFailed['documents'][] = array($iId, _kt('No such document'));
             } else {
                 $res = $this->check_entity($oDocument);
@@ -310,9 +310,9 @@ class KTBulkAction extends KTStandardDispatcher {
                 // 2. false, for unknown error
                 // 3. true, to pass
 
-                if(PEAR::isError($res)) {
+                if (PEAR::isError($res)) {
                     $aFailed['documents'][] = array($oDocument->getName(), $res->getMessage());
-                } else if($res === false) {
+                } else if ($res === false) {
                     $aFailed['documents'][] = array($oDocument->getName(), _kt('Failed (unknown reason)'));
                 } else {
                     $aSucceeded['documents'][] = $oDocument->getId();
@@ -323,14 +323,14 @@ class KTBulkAction extends KTStandardDispatcher {
         foreach($this->oEntityList->getFolderIds() as $iId) {
             $oFolder =& Folder::get($iId);
 
-            if(PEAR::isError($oFolder)) {
+            if (PEAR::isError($oFolder)) {
                 $aFailed['folders'][] = array($iId, _kt('No such folder'));
             } else {
                 $res = $this->check_entity($oFolder);
 
-                if(PEAR::isError($res)) {
+                if (PEAR::isError($res)) {
                     $aFailed['folders'][] = array($oFolder->getName(), $res->getMessage());
-                } else if($res === false) {
+                } else if ($res === false) {
                     $aFailed['folders'][] = array($oFolder->getName(), _kt('Failed (unknown reason)'));
                 } else {
                     $aSucceeded['folders'][] = $oFolder->getId();
@@ -343,7 +343,6 @@ class KTBulkAction extends KTStandardDispatcher {
         return count($aSucceeded['documents']) + count($aSucceeded['folders']);
     }
 
-
     // iterate over all entites to act on them
     function perform_action_on_list() {
         $this->aActionResults = array('folders'=>array(), 'documents'=>array());
@@ -351,7 +350,7 @@ class KTBulkAction extends KTStandardDispatcher {
             $oDocument =& Document::get($iId);
             // Store document
             $this->uploadedDocs[] = $oDocument;
-            if(!PEAR::isError($oDocument)) {
+            if (!PEAR::isError($oDocument)) {
                 $sName = $oDocument->getName();
             } else {
                 $sName = _kt('Error fetching document name');
@@ -361,15 +360,15 @@ class KTBulkAction extends KTStandardDispatcher {
 
             //check for shortcut notice
             $notice = null;
-            if($oDocument->isSymbolicLink()){
+            if ($oDocument->isSymbolicLink()){
             	$notice = _kt("Shortcut");
             }
 
-            if(PEAR::isError($res)) {
+            if (PEAR::isError($res)) {
                 $this->aActionResults['documents'][] = array($sName, $res->getMessage(), $notice);
             } else {
                 // TODO better way of getting the bulk action type
-                if($this->eventAction == null) {
+                if ($this->eventAction == null) {
                     $this->eventAction = $res;
                 }
                 $this->aActionResults['documents'][] = array($sName, _kt('Success'), $notice);
@@ -382,7 +381,7 @@ class KTBulkAction extends KTStandardDispatcher {
             $oFolder =& Folder::get($iId);
             // Store folder
             $this->uploadedFolders[] = $oFolder;
-            if(!PEAR::isError($oFolder)) {
+            if (!PEAR::isError($oFolder)) {
                 $sName = $oFolder->getName();
             } else {
                 $sName = _kt('Error fetching folder name');
@@ -392,15 +391,15 @@ class KTBulkAction extends KTStandardDispatcher {
 
         	//check for shortcut notice
             $notice = null;
-            if($oFolder->isSymbolicLink()){
+            if ($oFolder->isSymbolicLink()){
             	$notice = _kt("Shortcut");
             }
 
-            if(PEAR::isError($res)) {
+            if (PEAR::isError($res)) {
                 $this->aActionResults['folders'][] = array($sName, $res->getMessage(), $notice);
             } else {
                 // // TODO better way of getting the bulk action type
-                if($this->eventAction == null) {
+                if ($this->eventAction == null) {
                     $this->eventAction = $res;
                 }
                 $this->aActionResults['folders'][] = array($sName, _kt('Success'), $notice);
@@ -409,14 +408,12 @@ class KTBulkAction extends KTStandardDispatcher {
 
     }
 
-
-
     // list persistance
     // fetch existing lists
     function get_lists() {
         $this->oEntityList = KTEntityList::retrieveList(KTUtil::arrayGet($_REQUEST, 'fListCode', null));
         $this->oActiveEntityList = KTEntityList::retrieveList(KTUtil::arrayGet($_REQUEST, 'fActiveListCode', null));
-        if(PEAR::isError($this->oActiveEntityList)) {
+        if (PEAR::isError($this->oActiveEntityList)) {
             $this->oActiveEntityList = null;
         }
     }
@@ -577,22 +574,28 @@ class KTBulkAction extends KTStandardDispatcher {
         $targetFolderId = $_REQUEST['fFolderId'];
         $targetFolder =& Folder::get($targetFolderId);
         $this->perform_action_on_list();
+
         // Parse affected documents and folders
-        if(count($this->uploadedDocs) > 0)
+        if (count($this->uploadedDocs) > 0) {
             $this->do_notification($this->uploadedDocs, $this->eventAction, $targetFolder);
-        elseif(count($this->uploadedFolders) > 0)
+        }
+        else if (count($this->uploadedFolders) > 0) {
             $this->do_notification($this->uploadedFolders, $this->eventAction, $targetFolder);
+        }
+
         // Action specific Emails
         // Check if its a move action
         // TODO I don't think this belongs here, a download is never a move...legacy from copy/paste most likely
-        if($this->eventAction == "MovedDocument") {
+        if ($this->eventAction == 'MovedDocument') {
             // Notify the folder from which the action happened
             $originalFolderId = $_REQUEST['fOriginalFolderId'];
             $originalFolder =& Folder::get($originalFolderId);
-            if(count($this->uploadedDocs) > 0)
+            if (count($this->uploadedDocs) > 0) {
                 $this->do_notification($this->uploadedDocs, $this->eventAction, $originalFolder);
-            elseif(count($this->uploadedFolders) > 0)
+            }
+            else if (count($this->uploadedFolders) > 0) {
                 $this->do_notification($this->uploadedFolders, $this->eventAction, $originalFolder);
+            }
         }
 
         $oTemplating =& KTTemplating::getSingleton();
@@ -614,9 +617,6 @@ class KTBulkAction extends KTStandardDispatcher {
         }
     }
 
-
-
-
     // main overrides
 
     // override to do the actual action, on an individual entity
@@ -629,7 +629,7 @@ class KTBulkAction extends KTStandardDispatcher {
     // parent implementation
     function check_entity($oEntity) {
         $oPermission =& KTPermission::getByName($this->_sPermission);
-        if(PEAR::isError($oPermission)) {
+        if (PEAR::isError($oPermission)) {
             return true;
         }
 
@@ -639,36 +639,36 @@ class KTBulkAction extends KTStandardDispatcher {
         //       should probably store the 'equivalent' action (ie. document.delete)
         //       and check that, rather than add a new list of actions to the workflow
         //       section
-        if($oEntity instanceof Document) {
-            if(!KTWorkflowUtil::actionEnabledForDocument($oEntity, $this->sName)) {
+        if ($oEntity instanceof Document) {
+            if (!KTWorkflowUtil::actionEnabledForDocument($oEntity, $this->sName)) {
                 return PEAR::raiseError(_kt('Action is disabled by workflow'));
             }
             $status = $oEntity->getStatusID();
-            if($status==DELETED||$status==ARCHIVED) {
+            if ($status==DELETED||$status==ARCHIVED) {
                 return PEAR::raiseError(_kt('Document is archived or deleted'));
             }
         }
 
         // admin check
-        if($this->bAllowInAdminMode) {
-            if(KTBrowseUtil::inAdminMode($this->oUser, null)) {
+        if ($this->bAllowInAdminMode) {
+            if (KTBrowseUtil::inAdminMode($this->oUser, null)) {
                 return true;
             }
         }
 
-        if(!KTPermissionUtil::userHasPermissionOnItem($this->oUser, $oPermission, $oEntity)) {
+        if (!KTPermissionUtil::userHasPermissionOnItem($this->oUser, $oPermission, $oEntity)) {
             return PEAR::raiseError(_kt('You do not have the required permissions'));
         }
 
         return true;
     }
 
-
 }
 
 class KTBulkDocumentAction extends KTBulkAction {
+
     function check_entity($oEntity) {
-        if(!($oEntity instanceof Document)) {
+        if (!($oEntity instanceof Document)) {
             return false;
         }
         return parent::check_entity($oEntity);
@@ -677,18 +677,17 @@ class KTBulkDocumentAction extends KTBulkAction {
 
 class KTBulkFolderAction extends KTBulkAction {
     function check_entity($oEntity) {
-        if(!($oEntity instanceof Folder)) {
+        if (!($oEntity instanceof Folder)) {
             return false;
         }
         return parent::check_entity($oEntity);
     }
+
 }
 
-
-
 // util class for bulk actions
-
 class KTBulkActionUtil {
+
     function getBulkActionInfo($slot = 'bulkaction') {
         $oRegistry =& KTActionRegistry::getSingleton();
         return $oRegistry->getActions($slot);
@@ -725,6 +724,7 @@ class KTBulkActionUtil {
         }
         return $aObjects;
     }
+
 }
 
 ?>
