@@ -648,7 +648,6 @@ class browseView {
 		// When $item is null, $oDocument resolves to a PEAR Error, we should add a check for $item and initialise the document data at the top
 		// instead of using $oDocument in the code.
 		$oDocument = Document::get($item['id']);
-		if(PEAR::isError($oDocument)) return '';
 		$fileNameCutoff = 100;
 		$share_separator = '';
 		$item['separatorE'] = '';
@@ -791,11 +790,11 @@ class browseView {
 		}
 		// Check if document is in workflow and if action has not been restricted.
 		// Another layer of permissions
-		$item = $this->checkWorkflowPermissions($item, $oDocument);
+		//$item = $this->checkWorkflowPermissions($item, $oDocument);
 		
-		$item['separatorA'] = $ns;//$item['actions.copy'] == '' ? '' : $ns;
-		$item['separatorB'] = $ns;//$item['actions.download'] == '' || $item['actions.instantview'] == '' ? '' : $ns;
-		$item['separatorC'] = $ns;//$item['actions.checkout'] == '' || $item['actions.checkin'] == '' || $item['actions.cancel_checkout']== '' ? '' : $ns;
+		$item['separatorA'] = $item['actions.copy'] == '' ? '' : $ns;
+		$item['separatorB'] = $item['actions.download'] == '' || $item['actions.instantview'] == '' ? '' : $ns;
+		$item['separatorC'] = $item['actions.checkout'] == '' || $item['actions.checkin'] == '' || $item['actions.cancel_checkout']== '' ? '' : $ns;
 		$item['separatorD'] = $ns;//($item['actions.alert'] == '' || $item ['actions.email'] == '') && $hasWrite ? '' : $ns;
 		if ($item['is_immutable'] == '') { $item['separatorB'] = $item['separatorC'] = $item['separatorD'] = $ns; }
 		// Add line separator after share link

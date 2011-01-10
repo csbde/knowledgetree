@@ -151,6 +151,7 @@ class siteapi extends client_service {
 					$item['created_by'] = $oCreator->getName();
 					$item['modified_by'] = $oModifier->getName();
 					$item['filename'] = $fileName;
+					$item['filesize'] = KTUtil::filesizeToString($oDocument->getFileSize());
 					$item['title'] = $oDocument->getName();
 					$item['mimeicon'] = $mimeIcon;
 					$item['created_date'] = $oDocument->getCreatedDateTime();
