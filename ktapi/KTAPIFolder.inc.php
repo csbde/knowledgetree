@@ -579,10 +579,18 @@ class KTAPI_Folder extends KTAPI_FolderItem
 
             $where = "WHERE $permissionString AND F.parent_id = ?";
             // deal with options
-            $queryOptions['orderby'] = 'F.name';
-            $optionString = DBUtil::getDbOptions($queryOptions);
-            $sql = "SELECT F.id as folder_id FROM folders as F $permissionJoin $where $optionString";
+            $fQueryOptions = $queryOptions;
+            $fQueryOptions['orderby'] = 'F.name';
+            $optionString = DBUtil::getDbOptions($fQueryOptions);
+            $totalSql = "SELECT count(F.id) as folder_ids FROM folders as F $permissionJoin $where GROUP BY F.id";
 
+            $totalFolders = DBUtil::getResultArrayKey(array($totalSql, array_merge($permissionParams, array($this->folderid))), 'folder_ids');
+            if (PEAR::isError($totalFolders)) {
+                return $totalFolders;
+            }
+            $totalFolders = count($totalFolders);
+
+            $sql = "SELECT F.id as folder_id FROM folders as F $permissionJoin $where $optionString";
             $folder_children = DBUtil::getResultArrayKey(array($sql, array_merge($permissionParams, array($this->folderid))), 'folder_id');
             if (PEAR::isError($folder_children)) {
                 return $folder_children;
@@ -660,7 +668,25 @@ class KTAPI_Folder extends KTAPI_FolderItem
             }
         }
 
-        if (strpos($what, 'D') !== false) {
+        // check limits
+        $remaining = -1;
+        if (!empty($queryOptions['limit'])) {
+            $found = count($folderContents);
+            $remaining = $queryOptions['limit'] - $found;
+            $queryOptions['limit'] = $remaining;
+            // remaining offset will depend on whether there were any folders returned in this match and the total folder count.
+            // no folders means offset may need to be applied to docs.
+            // folders = no offset to be applied to docs, it has already been applied to the folder results.
+            if (($found == 0) && isset($queryOptions['offset'])) {
+                $toFind = $queryOptions['offset'] - $totalFolders;
+                $queryOptions['offset'] = ($toFind > 0) ? $toFind : 0;
+            }
+            else {
+                $queryOptions['offset'] = 0;
+            }
+        }
+
+        if ((strpos($what, 'D') !== false) && ($remaining != 0)) {
             $res = KTSearchUtil::permissionToSQL($user, KTAPI_PERMISSION_READ, 'D');
             if (PEAR::isError($res)) {
                 return $res;
@@ -668,8 +694,11 @@ class KTAPI_Folder extends KTAPI_FolderItem
 
             list($permissionString, $permissionParams, $permissionJoin) = $res;
 
+            $contentVersionJoin = 'INNER JOIN document_content_version DCV ON DCV.document_id = D.id INNER JOIN document_metadata_version DMV ON DMV.content_version_id = DCV.id';
             $where = "WHERE D.status_id = 1 AND $permissionString AND D.folder_id = ?";
-            $sql = "SELECT D.id as document_id FROM documents as D $permissionJoin $where";
+            $queryOptions['orderby'] = 'DMV.name';
+            $optionString = DBUtil::getDbOptions($queryOptions);
+            $sql = "SELECT D.id as document_id FROM documents as D $contentVersionJoin $permissionJoin $where $optionString";
 
             $document_children = DBUtil::getResultArrayKey(array($sql, array_merge($permissionParams, array($this->folderid))), 'document_id');
             if (PEAR::isError($document_children)) {
@@ -805,8 +834,9 @@ class KTAPI_Folder extends KTAPI_FolderItem
             }
         }
 
-        //now sort the array of Documents according to title
-        usort($documentContents, array($this, 'compare_title'));
+        // now sort the array of Documents according to title
+        // not needed anymore because we join on content and metadata versions and sort by metadata name (document title)
+        /*usort($documentContents, array($this, 'compare_title'));*/
 
         $contents = array_merge($documentContents, $folderContents);
 
