@@ -561,12 +561,103 @@ class KTAPI_Folder extends KTAPI_FolderItem
         $read_permission = &KTPermission::getByName(KTAPI_PERMISSION_READ);
         $folder_permission = &KTPermission::getByName(KTAPI_PERMISSION_VIEW_FOLDER);
         $user = $this->ktapi->get_user();
-        $contents = array();
+        $contents = $folderContents = $documentContents = array();
 
         // Initialize the options array and merge it with options passed
-        $aOptions = array();
+        $queryOptions = array();
         if (is_array($options)) {
-            $aOptions = array_merge($aOptions, $options);
+            $queryOptions = array_merge($queryOptions, $options);
+        }
+
+        if (strpos($what, 'F') !== false) {
+            $res = KTSearchUtil::permissionToSQL($user, KTAPI_PERMISSION_VIEW_FOLDER, 'F');
+            if (PEAR::isError($res)) {
+                return $res;
+            }
+
+            list($permissionString, $permissionParams, $permissionJoin) = $res;
+
+            $where = "WHERE $permissionString AND F.parent_id = ?";
+            // deal with options
+            $queryOptions['orderby'] = 'F.name';
+            $optionString = DBUtil::getDbOptions($queryOptions);
+            $sql = "SELECT F.id as folder_id FROM folders as F $permissionJoin $where $optionString";
+
+            $folder_children = DBUtil::getResultArrayKey(array($sql, array_merge($permissionParams, array($this->folderid))), 'folder_id');
+            if (PEAR::isError($folder_children)) {
+                return $folder_children;
+            }
+
+            foreach ($folder_children as $folderId) {
+                $folder = Folder::get($folderId);
+                if ($fullTree || ($depth > 1)) {
+                    $sub_folder = &$this->ktapi->get_folder_by_id($folder->getId());
+                    $items = $sub_folder->get_listing($depth - 1, $what);
+                } else {
+                    $items = array();
+                }
+
+                $creator = $this->_resolve_user($folder->getCreatorID());
+
+                if ($wsversion >= 2) {
+                    $array = array(
+                    'id' => (int)$folder->getId(),
+                    'item_type' => 'F',
+                    'custom_document_no' => 'n/a',
+                    'oem_document_no' => 'n/a',
+                    'title' => $folder->getName(),
+                    'document_type' => 'n/a',
+                    'filename' => $folder->getName(),
+                    'filesize' => 'n/a',
+                    'created_by' => is_null($creator) ? 'n/a' : $creator->getName(),
+                    'created_date' => 'n/a',
+                    'checked_out_by' => 'n/a',
+                    'checked_out_date' => 'n/a',
+                    'modified_by' => 'n/a',
+                    'modified_date' => 'n/a',
+                    'owned_by' => 'n/a',
+                    'version' => 'n/a',
+                    'is_immutable' => 'n/a',
+                    'permissions' => KTAPI_Folder::get_permission_string($folder),
+                    'workflow' => 'n/a',
+                    'workflow_state' => 'n/a',
+                    'mime_type' => 'folder',
+                    'mime_icon_path' => 'folder',
+                    'mime_display' => 'Folder',
+                    'storage_path' => 'n/a',
+                    'full_path' => $folder->getFullPath()
+                    );
+
+                    if ($wsversion >= 3) {
+                        $array['linked_folder_id'] = $folder->getLinkedFolderId();
+                        if ($folder->isSymbolicLink()) {
+                            $array['item_type'] = "S";
+                        }
+                    }
+                    $array['items'] = $items;
+                    if ($wsversion < 3 || (strpos($what, 'F') !== false && !$folder->isSymbolicLink()) || ($folder->isSymbolicLink() && strpos($what, 'S') !== false)) {
+                        $folderContents[] = $array;
+                    }
+                } else {
+                    $folderContents[] = array(
+                    'id' =>(int) $folder->getId(),
+                    'item_type' => 'F',
+                    'title' => $folder->getName(),
+                    'creator' => is_null($creator) ? 'n/a' : $creator->getName(),
+                    'checkedoutby' => 'n/a', 'modifiedby' => 'n/a', 'filename' => $folder->getName(),
+                    'size' => 'n/a',
+                    'major_version' => 'n/a',
+                    'minor_version' => 'n/a',
+                    'storage_path' => 'n/a',
+                    'mime_type' => 'folder',
+                    'mime_icon_path' => 'folder',
+                    'mime_display' => 'Folder',
+                    'items' => $items,
+                    'workflow' => 'n/a',
+                    'workflow_state' => 'n/a'
+                    );
+                }
+            }
         }
 
         if (strpos($what, 'D') !== false) {
@@ -688,10 +779,10 @@ class KTAPI_Folder extends KTAPI_FolderItem
                     $array['items'] = array();
 
                     if ($wsversion < 3 || ((strpos($what, 'D') !== false) && !$document->isSymbolicLink()) || ($document->isSymbolicLink() && (strpos($what, 'S') !== false))) {
-                        $contents[] = $array;
+                        $documentContents[] = $array;
                     }
                 } else {
-                    $contents[] = array(
+                    $documentContents[] = array(
                     'id' =>(int) $document->getId(),
                     'item_type' => 'D',
                     'title' => $document->getName(),
@@ -715,97 +806,9 @@ class KTAPI_Folder extends KTAPI_FolderItem
         }
 
         //now sort the array of Documents according to title
-        usort($contents, array($this, 'compare_title'));
+        usort($documentContents, array($this, 'compare_title'));
 
-        if (strpos($what, 'F') !== false) {
-            $res = KTSearchUtil::permissionToSQL($user, KTAPI_PERMISSION_VIEW_FOLDER, 'F');
-            if (PEAR::isError($res)) {
-                return $res;
-            }
-
-            list($permissionString, $permissionParams, $permissionJoin) = $res;
-
-            $where = "WHERE $permissionString AND F.parent_id = ?";
-            $sql = "SELECT F.id as folder_id FROM folders as F $permissionJoin $where ORDER BY F.name";
-
-            $folder_children = DBUtil::getResultArrayKey(array($sql, array_merge($permissionParams, array($this->folderid))), 'folder_id');
-            if (PEAR::isError($folder_children)) {
-                return $folder_children;
-            }
-
-            foreach ($folder_children as $folderId) {
-                $folder = Folder::get($folderId);
-                if ($fullTree || ($depth > 1)) {
-                    $sub_folder = &$this->ktapi->get_folder_by_id($folder->getId());
-                    $items = $sub_folder->get_listing($depth - 1, $what);
-                } else {
-                    $items = array();
-                }
-
-                $creator = $this->_resolve_user($folder->getCreatorID());
-
-                if ($wsversion >= 2) {
-                    $array = array(
-                    'id' => (int)$folder->getId(),
-                    'item_type' => 'F',
-                    'custom_document_no' => 'n/a',
-                    'oem_document_no' => 'n/a',
-                    'title' => $folder->getName(),
-                    'document_type' => 'n/a',
-                    'filename' => $folder->getName(),
-                    'filesize' => 'n/a',
-                    'created_by' => is_null($creator) ? 'n/a' : $creator->getName(),
-                    'created_date' => 'n/a',
-                    'checked_out_by' => 'n/a',
-                    'checked_out_date' => 'n/a',
-                    'modified_by' => 'n/a',
-                    'modified_date' => 'n/a',
-                    'owned_by' => 'n/a',
-                    'version' => 'n/a',
-                    'is_immutable' => 'n/a',
-                    'permissions' => KTAPI_Folder::get_permission_string($folder),
-                    'workflow' => 'n/a',
-                    'workflow_state' => 'n/a',
-                    'mime_type' => 'folder',
-                    'mime_icon_path' => 'folder',
-                    'mime_display' => 'Folder',
-                    'storage_path' => 'n/a',
-                    'full_path' => $folder->getFullPath()
-                    );
-
-                    if ($wsversion >= 3) {
-                        $array['linked_folder_id'] = $folder->getLinkedFolderId();
-                        if ($folder->isSymbolicLink()) {
-                            $array['item_type'] = "S";
-                        }
-                    }
-                    $array['items'] = $items;
-                    if ($wsversion < 3 || (strpos($what, 'F') !== false && !$folder->isSymbolicLink()) || ($folder->isSymbolicLink() && strpos($what, 'S') !== false)) {
-                        $contents[] = $array;
-                    }
-                } else {
-
-                    $contents[] = array(
-                    'id' =>(int) $folder->getId(),
-                    'item_type' => 'F',
-                    'title' => $folder->getName(),
-                    'creator' => is_null($creator) ? 'n/a' : $creator->getName(),
-                    'checkedoutby' => 'n/a', 'modifiedby' => 'n/a', 'filename' => $folder->getName(),
-                    'size' => 'n/a',
-                    'major_version' => 'n/a',
-                    'minor_version' => 'n/a',
-                    'storage_path' => 'n/a',
-                    'mime_type' => 'folder',
-                    'mime_icon_path' => 'folder',
-                    'mime_display' => 'Folder',
-                    'items' => $items,
-                    'workflow' => 'n/a',
-                    'workflow_state' => 'n/a'
-                    );
-                }
-            }
-
-        }
+        $contents = array_merge($documentContents, $folderContents);
 
         return $contents;
     }
