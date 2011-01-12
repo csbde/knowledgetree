@@ -11,8 +11,8 @@ require_once('sharedContent.inc');
  * Utility class to switch between user specific browse views
  *
  */
-class browseViewUtil
-{
+class browseViewUtil {
+
     static function getBrowseView()
     {
     	$oUser = User::get($_SESSION['userID']);
@@ -30,41 +30,46 @@ class browseViewUtil
     			break;
     	}
 	}
+
 }
 
-class sharedUserBrowseAsView extends browseView
-{
+class sharedUserBrowseAsView extends browseView {
+
 	/**
 	 * Get the shared users
 	 *
 	 * @param string $folderId
+	 * @param int $totalItems
 	 * @param string $sortField
 	 * @param string $asc
 	 * @return mixed $ret
 	 */
-	public function getFolderContent($folderId, $sortField = 'title', $asc = true)
+	public function getFolderContent($folderId, &$totalItems = 0, $sortField = 'title', $asc = true)
 	{
 
 	}
+
 }
 
 /**
  * Shared user browse view class
  *
  */
-class sharedUserBrowseView extends browseView
-{
+class sharedUserBrowseView extends browseView {
+
 	private $oUser = null;
-	
+
 	/**
 	 * Get the folder listing
 	 *
 	 * @param string $folderId
+	 * @param $totalItems
 	 * @param string $sortField
 	 * @param string $asc
 	 * @return mixed $ret
 	 */
-	public function getFolderContent($folderId, $sortField = 'title', $asc = true)
+	// TODO add support for total items here...
+	public function getFolderContent($folderId, &$totalItems = 0, $sortField = 'title', $asc = true)
 	{
 		$user_id = $_SESSION['userID'];
 		$this->oUser = is_null($this->oUser) ? User::get($user_id) : $this->oUser;
@@ -342,13 +347,13 @@ class sharedUserBrowseView extends browseView
 
 		return $item;
 	}
+
 }
 /**
  * Default user browse view class
  *
  */
-class userBrowseView extends browseView
-{
+class userBrowseView extends browseView {
 
 }
 
@@ -432,21 +437,25 @@ class browseView {
 	 * Get the folder listing
 	 *
 	 * @param string $folderId
+	 * @param int $totalItems
 	 * @param string $sortField
 	 * @param string $asc
 	 * @return mixed $ret
 	 */
-	public function getFolderContent($folderId, $sortField = 'title', $asc = true)
+	public function getFolderContent($folderId, &$totalItems = 0, $sortField = 'title', $asc = true)
 	{
 		$user_id = $_SESSION['userID'];
-		$this->oUser = is_null($this->oUser) ? User::get($user_id) : $this->oUser;
+		if (is_null($this->oUser)) {
+            $this->oUser =  User::get($user_id);
+		}
 		$disabled = $this->oUser->getDisabled();
 
 		$kt = new KTAPI(3);
 		$session = $kt->start_system_session($this->oUser->getUsername());
 
 		//Get folder content, depth = 1, types= Directory, File, Shortcut, webserviceversion override
-		$folder = &$kt->get_folder_contents($folderId, 1, 'DFS');
+		$totalItems = 0;
+		$folder = &$kt->get_folder_contents($folderId, 1, 'DFS', $totalItems);
 		$items = $folder['results']['items'];
 		$ret = array('folders' => array(), 'documents' => array());
 
@@ -454,6 +463,7 @@ class browseView {
 			foreach ($item as $key => $value) {
 				if ($value == 'n/a') { $item[$key] = null; }
 			}
+
 			$item['user_id'] = $user_id;
 			$item['user_disabled'] = $disabled;
 			$item['container_folder_id'] = $folderId;
@@ -489,16 +499,13 @@ class browseView {
 	public function noFilesOrFoldersMessage($folderId = null, $editable = true)
 	{
 		$folderMessage = '<h2>There\'s nothing in this folder yet!</h2>';
-		if (SharedUserUtil::isSharedUser())
-		{
+		if (SharedUserUtil::isSharedUser()) {
 			$folderMessage = '<h2>There\'s no shared content in this folder yet!</h2>';
 			$perm = SharedContent::getPermissions($_SESSION['userID'], $folderId, null, 'folder');
-			if ($perm == 1)
-			{
+			if ($perm == 1) {
 				 $editable = true;
 			}
-			else
-			{
+			else {
 				 $editable = false;
 			}
 		}
@@ -621,7 +628,7 @@ class browseView {
 		if(!$allowaction['immutable']) $item['actions.finalize_document'] = $ns;
 		if(!$allowaction['ownershipchange']) $item['actions.change_owner'] = $ns;
 		if(!$allowaction['checkout'])
-		{ 
+		{
 			$item['allowdoczohoedit'] = '';
 			$item['actions.checkout'] = $ns;
 		}
@@ -631,10 +638,10 @@ class browseView {
 		if(!$allowaction['email']) $item['actions.email'] = $ns;
 		if(!$allowaction['view']) $item['actions.download'] = $ns;
 		if(!$allowaction['sharecontent']) $item['actions.share_document'] = $ns;
-		
+
 		return $item;
 	}
-	
+
 	/**
 	 * Renders html block for a document in the new browse
 	 *
@@ -652,7 +659,7 @@ class browseView {
 		$share_separator = '';
 		$item['separatorE'] = '';
 		$ns = " not_supported";
-		
+
 		$item['mimetypeid'] = (method_exists($oDocument,'getMimeTypeId')) ? $oDocument->getMimeTypeId() : '0';
 		$iconFile = 'resources/mimetypes/newui/' . KTMime::getIconPath($item['mimetypeid']) . '.png';
 		$item['icon_exists'] = file_exists(KT_DIR . '/' . $iconFile);
@@ -671,7 +678,7 @@ class browseView {
 		$hasDelete = (strpos($permissions, 'D') === false) ? false : true;
 
 		$item['filename'] = (strlen($item['filename']) > $fileNameCutoff) ? (substr($item['filename'], 0, $fileNameCutoff - 3) . "...") : $item['filename'];
-	
+
 		$item['has_workflow'] = '';
 		$item['is_immutable'] = $item['is_immutable'] == 'true' ? true : false;
 		$item['is_immutable'] = $item['is_immutable'] ? '' : $ns;
@@ -712,7 +719,7 @@ class browseView {
 
 		$item['actions.finalize_document'] = ($isCheckedOut) ? $ns : $item['actions.finalize_document'];
 
-		
+
 		if (!$hasWrite) {
 		    $item['actions.change_owner'] = $ns;
 		    $item['actions.share_document'] = $ns;
@@ -791,7 +798,7 @@ class browseView {
 		// Check if document is in workflow and if action has not been restricted.
 		// Another layer of permissions
 		//$item = $this->checkWorkflowPermissions($item, $oDocument);
-		
+
 		$item['separatorA'] = $item['actions.copy'] == '' ? '' : $ns;
 		$item['separatorB'] = $item['actions.download'] == '' || $item['actions.instantview'] == '' ? '' : $ns;
 		$item['separatorC'] = $item['actions.checkout'] == '' || $item['actions.checkin'] == '' || $item['actions.cancel_checkout']== '' ? '' : $ns;
