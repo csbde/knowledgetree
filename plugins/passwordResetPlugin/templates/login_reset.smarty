@@ -14,7 +14,7 @@
         <script type="text/javascript" src="{$rootUrl}{$item}"> </script>
     {/foreach}
 </head>
-<body>
+<body {if $page->onload}onload="{$page->getBodyOnload()}"{/if}>
 <div id="loginbox_outer"  {if ($disclaimer)} class="hasDisclaimer" {/if} style="width:800px;">
 	<div class="header">
 
