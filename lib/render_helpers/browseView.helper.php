@@ -5,6 +5,7 @@ require_once(KT_LIB_DIR . '/plugins/pluginutil.inc.php');
 require_once(KT_LIB_DIR . '/documentmanagement/documentutil.inc.php');
 require_once(KT_LIB_DIR . '/users/shareduserutil.inc.php');
 require_once(KT_LIB_DIR . '/workflow/workflow.inc.php');
+require_once(KT_LIB_DIR . '/datetime/datetimeutil.inc.php');
 require_once('sharedContent.inc');
 
 /**
@@ -233,7 +234,7 @@ class sharedUserBrowseView extends browseView
 		// Sanitize document title
 		$item['title'] = sanitizeForHTML($item['title']);
 		$item['filesize'] = KTUtil::filesizeToString($item['filesize']);
-
+		$item = $this->offsetDates($item);
 		$tpl='
 			<span class="doc browseView 1">
 				<table cellspacing="0" cellpadding="0" width="100%" border="0" class="doc item ddebug">
@@ -372,6 +373,12 @@ class browseView {
 		$oPage->requireCSSResource("resources/css/newui/browseView.css?" . rand());
 	}
 
+	private function offsetDates($item)
+	{
+		$item['created_date'] = datetimeutil::getDisplayDate($item['created_date']);
+		return $item;
+	}
+	
 	public function getJavaScript()
 	{
 		$javaScript = '';
@@ -791,6 +798,8 @@ class browseView {
 		// Check if document is in workflow and if action has not been restricted.
 		// Another layer of permissions
 		//$item = $this->checkWorkflowPermissions($item, $oDocument);
+		// Offset the dates accordingly
+		$item = $this->offsetDates($item);
 		
 		$item['separatorA'] = $item['actions.copy'] == '' ? '' : $ns;
 		$item['separatorB'] = $item['actions.download'] == '' || $item['actions.instantview'] == '' ? '' : $ns;
@@ -889,7 +898,7 @@ class browseView {
 
 		return ktVar::parseString($tpl, $item);
 	}
-
+	
 	public function renderFolderItem($item = null, $empty = false, $shortcut = false)
 	{
 		//TODO: Tohir, if you put the .selected thing on the table $(.folder.item), it should work fine
