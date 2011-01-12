@@ -152,7 +152,6 @@ class KTPlugin {
         $this->registerPluginHelper($sNamespace, $sClass, $sFilename, $params, 'general', 'authentication_provider');
     }
 
-//registerLocation($sName, $sClass, $sCategory, $sTitle, $sDescription, $sDispatcherFilePath = null, $sURL = null)
     function registerAdminPage($sName, $sClass, $sCategory, $sTitle, $sDescription, $sFilename, $sURL = null, $order = 0) {
         $sFullname = $sCategory . '/' . $sName;
         $sFilename = $this->_fixFilename($sFilename);

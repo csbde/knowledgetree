@@ -228,7 +228,17 @@ class BaseConfigDispatcher extends KTAdminDispatcher
 	            $input .= isset($options['label']) ? "<label for='{$id}'>{$options['label']}</label>&nbsp;&nbsp;" : '';
 	            $input .= "<input name='configArray[{$id}]' value='{$value}' size = '5'>";
 	            break;
-
+	        case 'class':
+	        	$value = ($value == 'default') ? $defaultValue : $value;
+	        	$input .= "<select id='{$id}' name='configArray[{$id}]'>&nbsp;&nbsp;";
+	        	if(file_exists($options['file']))
+	        	{
+	        		require_once($options['file']);
+	        		$oClass = new $options['class']();
+	        		$input .= $oClass->renderDropDown($value);
+	        	}
+	        	$input .= '</select>';
+	        	break;
 	        case 'string':
             default:
 	            // Prepend a label if set
