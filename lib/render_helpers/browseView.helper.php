@@ -384,7 +384,7 @@ class BrowseView {
 	 *
 	 * @param int $folderId
 	 */
-	public function renderBrowseFolder($folderId, $aBulkActions, $folder, $editable)
+	public function renderBrowseFolder($folderId, $aBulkActions, $folder, $editable, $pageCount = 1)
 	{
 		$response = array();
 
@@ -392,19 +392,19 @@ class BrowseView {
 		    return $response;
 		}
 
-		// TODO set pagecount dynamically
-		$pageCount = 1;
+		// TODO implement dynamic 'either side' process or just get in batches of 3?
 		$perPage = 15;
 		$pageLimit = 3;
-		$offset = ($pageCount - 1) * $perPage;
-		$limit = $perPage * $pageLimit;
+		$options = array();
+		$options['offset'] = ($pageCount - 1) * $perPage;
+		$options['limit'] = $perPage * $pageLimit;
 
 		$response['returndata'] = $folderId;
 		// TODO consider this perhaps moving back out to the dispatcher?
 		$response['bulkActionMenu'] = $this->renderBulkActionMenu($aBulkActions, $folder);
 
 		$totalItems = 0;
-        $folderContentItems = $this->getFolderContent($folderId, $totalItems, array('offset' => $offset, 'limit' => $limit));
+        $folderContentItems = $this->getFolderContent($folderId, $totalItems, $options);
 
         $folderView = $folderItems = array();
 
