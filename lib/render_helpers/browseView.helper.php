@@ -209,29 +209,32 @@ class SharedUserBrowseView extends BrowseView {
 			$item['checked_out_by'] = $coUser->getName();
 		}
 
-		$checkbox = '';
 		// Sanitize document title
 		$item['title'] = sanitizeForHTML($item['title']);
 		$item['filesize'] = KTUtil::filesizeToString($item['filesize']);
 
-		$tpl='
-			<span class="doc browseView 1">
-				<table cellspacing="0" cellpadding="0" width="100%" border="0" class="doc item ddebug">
-					<tr>
-						' . $checkbox . '
-						<td class="doc icon_cell" width="1">
-							<div class="doc icon" style="[mimeicon]">
-								<span class="immutable_info[is_immutable]">
-									<span>This document has been <strong>finalized</strong> and can no longer be modified.</span>
-									</span>
-								<span class="checked_out[is_checkedout]">
-									<span>This document is <strong>checked-out</strong> by <strong>[checked_out_by]</strong> and cannot be edited until it is Checked-in.</span>
-								</span>
-								<span class="doc [thumbnailclass]">[thumbnail]</span>
-							</div>
-						</td>
-						<td class="doc summary_cell fdebug">
-							<ul class="doc actionMenu">
+		$tpl = $this->getDocumentTemplate(2);
+
+		if ($empty) { return '<span class="fragment document" style="display:none;">' . $tpl . '</span>'; }
+
+		return ktVar::parseString($tpl, $item);
+	}
+
+	public function renderFolderItem($item = null, $empty = false, $shortcut = false)
+	{
+		$item['link'] = KTUtil::buildUrl('browse.php', array('fFolderId'=> $item['id']));
+		// Sanitize folder title
+		$item['title'] = sanitizeForHTML($item['title']);
+		$tpl = $this->getFolderTemplate(false);
+
+		if ($empty) { return '<span class="fragment folder" style="display:none;">' . $tpl . '</span>'; }
+
+		return ktVar::parseString($tpl,$item);
+	}
+
+	protected function getDocumentActionMenu($share_separator = null)
+	{
+	    return '<ul class="doc actionMenu">
 								<!-- li class="actionIcon comments"></li -->
 								<li class="actionIcon actions">
 									<ul>
@@ -244,61 +247,7 @@ class SharedUserBrowseView extends BrowseView {
 										<li class="action_checkin [actions.checkin]"><a href="action.php?kt_path_info=ktcore.actions.document.checkin&fDocumentId=[id]">Check-in</a></li>
 									</ul>
 								</li>
-							</ul>
-							<div class="title"><a class="clearLink" href="[document_link]" style="">[title]</a></div>
-
-							<div class="detail">
-							<span class="item">File size: <span class="user">[filesize]</span></span><span class="item"> Owner: <span class="user">[owned_by]</span></span><span class="item">Created: <span class="date">[created_date]</span> by <span class="user">[created_by]</span></span><span class="item">Updated: <span class="date">[modified_date]</span> by <span class="user">[modified_by]</span></span>
-							</div>
-						</td>
-					</tr>
-					<tr>
-						<td class="expanderField" colspan="3">
-							<span class="expanderWidget comments">
-								<H1>Comments</H1>
-								<span>The comment display and add widget will be inserted here.</span>
-							</span>
-							<span class="expanderWidget properties">
-								<H1>Properties</H1>
-								<span>The properties display and edit widget will be inserted here.</span>
-							</span>
-						</td>
-					</tr>
-				</table>
-			</span>
-		';
-
-		if ($empty) { return '<span class="fragment document" style="display:none;">' . $tpl . '</span>'; }
-
-		return ktVar::parseString($tpl, $item);
-	}
-
-	public function renderFolderItem($item = null, $empty = false, $shortcut = false)
-	{
-		$item['link'] = KTUtil::buildUrl('browse.php', array('fFolderId'=> $item['id']));
-		$checkbox = '';
-		// Sanitize folder title
-		$item['title'] = sanitizeForHTML($item['title']);
-		$tpl='
-			<span class="doc browseView">
-			<table cellspacing="0" cellpadding="0" width="100%" border="0" class="folder item">
-				<tr>
-					' . $checkbox . '
-					<td class="folder icon_cell" width="1">
-						<div class="folder icon">
-						</div>
-					</td>
-					<td class="folder summary_cell">
-						<div class="title"><a class="clearLink" href="[link]">[title]</a></div>
-						<div class="detail"><span class="item">Created by: <span class="creator">[created_by]</span></span></div>
-					</td>
-				</tr>
-			</table>
-			</span>';
-
-		if ($empty) { return '<span class="fragment folder" style="display:none;">' . $tpl . '</span>'; }
-
-		return ktVar::parseString($tpl,$item);
+							</ul>';
 	}
 
 	/**
@@ -324,8 +273,8 @@ class SharedUserBrowseView extends BrowseView {
 
 }
 /**
- * Default user browse view class
- *
+ * Default user browse view class.
+ * Does not differ from regular browse view, so nothing here.  Kind of silly but does allow a nicer name.
  */
 class UserBrowseView extends BrowseView {
 
@@ -816,37 +765,102 @@ class BrowseView {
 			$share_separator = '<li class="separator[separatorE]"></li>';
 		}
 
-		$tpl='
-			<span class="doc browseView 2">
+		$tpl = $this->getDocumentTemplate(1, '<td width="1" class="checkbox">
+							<input name="selection_d[]" type="checkbox" value="[id]" />
+						</td>', $share_separator, '<span class="shortcut[is_shortcut]">
+									<span>This is a shortcut to the file.</span>
+								</span>');
+
+		if ($empty) { return '<span class="fragment document" style="display:none;">' . $tpl . '</span>'; }
+
+		return ktVar::parseString($tpl, $item);
+	}
+
+	public function renderFolderItem($item = null, $empty = false, $shortcut = false)
+	{
+		//TODO: Tohir, if you put the .selected thing on the table $(.folder.item), it should work fine
+		$ns = ' not_supported';
+		$item['is_shortcut'] = $item['is_shortcut'] ? '' : $ns;
+
+		// Get the users permissions on the folder
+		$permissions = $item['permissions'];
+		$hasWrite = (strpos($permissions, 'W') === false) ? false : true;
+		$hasRename = (strpos($permissions, 'N') === false) ? false : true;
+		$hasSecurity = (strpos($permissions, 'S') === false) ? false : true;
+
+		$item['actions.share_folder'] = ($hasWrite) ? '' : $ns;
+		$item['actions.permissions'] = ($hasSecurity) ? '' : $ns;
+		$item['actions.rename'] = ($hasRename) ? '' : $ns;
+
+		$item['separatorA'] = ($hasWrite || $hasSecurity || $hasRename) ? '' : $ns;
+		// Sanitize folder title
+		$item['title'] = sanitizeForHTML($item['title']);
+
+		// Check for shortcut
+		if (!is_null($item['linked_folder_id'])) {
+			$item['actions.share_folder'] = $ns;
+			$item['link'] = KTUtil::buildUrl('browse.php', array('fFolderId'=> $item['linked_folder_id'], 'fShortcutFolder'=> $item['container_folder_id']));
+		} else {
+			$item['link'] = KTUtil::buildUrl('browse.php', array('fFolderId'=> $item['id']));
+		}
+
+		$tpl = $this->getFolderTemplate(true, '<td width="1" class="checkbox">
+						<input name="selection_f[]" type="checkbox" value="[id]" />
+					</td>', '<span class="shortcut[is_shortcut]"><span>This is a shortcut to the folder.</span></span>');
+
+		if ($empty) { return '<span class="fragment folder" style="display:none;">' . $tpl . '</span>'; }
+
+		return ktVar::parseString($tpl, $item);
+	}
+
+	protected function getDocumentTemplate($browseViewId, $checkbox = null, $share_separator = null, $shortcut = null)
+	{
+	    return '
+			<span class="doc browseView ' . $browseViewId . '">
 				<table cellspacing="0" cellpadding="0" width="100%" border="0" class="doc item ddebug">
 					<tr>
-						<td width="1" class="checkbox">
-							<input name="selection_d[]" type="checkbox" value="[id]" />
-						</td>
+						' . $checkbox . '
 						<td class="doc icon_cell" width="1">
 							<div class="doc icon" style="[mimeicon]">
-								<span class="immutable_info[is_immutable]">
+							    <span class="immutable_info[is_immutable]">
 									<span>This document has been <strong>finalized</strong> and can no longer be modified.</span>
-									</span>
+								</span>
 								<span class="checked_out[is_checkedout]">
 									<span>This document is <strong>checked-out</strong> by <strong>[checked_out_by]</strong> and cannot be edited until it is Checked-in.</span>
 								</span>
-								<span class="shortcut[is_shortcut]">
-									<span>This is a shortcut to the file.</span>
-								</span>
+								' . $shortcut . '
 								<span class="doc [thumbnailclass]">[thumbnail]</span>
 							</div>
-						</td>
+                        </td>
 						<td class="doc summary_cell fdebug">
-
-							<div class="title"><a class="clearLink" href="[document_link]" style="">[title]</a></div>
-
+                            <div class="title"><a class="clearLink" href="[document_link]" style="">[title]</a></div>
 							<div class="detail">
-								<span class="item">File size: <span class="user">[filesize]</span></span> <span class="item">Owner: <span class="user">[owned_by]</span></span><span class="item">Created: <span class="date">[created_date]</span> by <span class="user">[created_by]</span></span><span class="item">Updated: <span class="date">[modified_date]</span> by <span class="user">[modified_by]</span></span>
+								<span class="item"> Owner: <span class="user">[owned_by]</span></span><span class="item">Created: <span class="date">[created_date]</span> by <span class="user">[created_by]</span></span><span class="item">Updated: <span class="date">[modified_date]</span> by <span class="user">[modified_by]</span></span><span class="item">File size: <span class="user">[filesize]</span></span>
 							</div>
 						</td>
 						<td>
-							<ul class="doc actionMenu">
+							' . $this->getDocumentActionMenu($share_separator) . '
+						</td>
+					</tr>
+					<tr>
+						<td class="expanderField" colspan="3">
+							<span class="expanderWidget comments">
+								<H1>Comments</H1>
+								<span>The comment display and add widget will be inserted here.</span>
+							</span>
+							<span class="expanderWidget properties">
+								<H1>Properties</H1>
+								<span>The properties display and edit widget will be inserted here.</span>
+							</span>
+						</td>
+					</tr>
+				</table>
+			</span>';
+	}
+
+	protected function getDocumentActionMenu($share_separator = null)
+	{
+	    return '<ul class="doc actionMenu">
 								<!-- li class="actionIcon comments"></li -->
 								<li class="actionIcon actions">
 									<ul>
@@ -879,76 +893,34 @@ class BrowseView {
 										<li class="action_finalize_document [actions.finalize_document]"><a href="action.php?kt_path_info=ktcore.actions.document.immutable&fDocumentId=[id]">Finalize Document</a></li>
 									</ul>
 								</li>
-							</ul>
-						</td>
-					</tr>
-					<tr>
-						<td class="expanderField" colspan="3">
-							<span class="expanderWidget comments">
-								<H1>Comments</H1>
-								<span>The comment display and add widget will be inserted here.</span>
-							</span>
-							<span class="expanderWidget properties">
-								<H1>Properties</H1>
-								<span>The properties display and edit widget will be inserted here.</span>
-							</span>
-						</td>
-					</tr>
-				</table>
-			</span>
-		';
-
-		if ($empty) { return '<span class="fragment document" style="display:none;">' . $tpl . '</span>'; }
-
-		return ktVar::parseString($tpl, $item);
+							</ul>';
 	}
 
-	public function renderFolderItem($item = null, $empty = false, $shortcut = false)
+	protected function getFolderTemplate($fetchActionMenu, $checkbox = null, $shortcut = null)
 	{
-		//TODO: Tohir, if you put the .selected thing on the table $(.folder.item), it should work fine
-		$ns = ' not_supported';
-		$item['is_shortcut']=$item['is_shortcut']?'':$ns;
-
-		// Get the users permissions on the folder
-		$permissions = $item['permissions'];
-		$hasWrite = (strpos($permissions, 'W') === false) ? false : true;
-		$hasRename = (strpos($permissions, 'N') === false) ? false : true;
-		$hasSecurity = (strpos($permissions, 'S') === false) ? false : true;
-
-		$item['actions.share_folder'] = ($hasWrite) ? '' : $ns;
-		$item['actions.permissions'] = ($hasSecurity) ? '' : $ns;
-		$item['actions.rename'] = ($hasRename) ? '' : $ns;
-
-		$item['separatorA'] = ($hasWrite || $hasSecurity || $hasRename) ? '' : $ns;
-		// Sanitize folder title
-		$item['title'] = sanitizeForHTML($item['title']);
-
-		// Check for shortcut
-		if (!is_null($item['linked_folder_id'])) {
-			$item['actions.share_folder'] = $ns;
-			$item['link'] = KTUtil::buildUrl('browse.php', array('fFolderId'=> $item['linked_folder_id'], 'fShortcutFolder'=> $item['container_folder_id']));
-		} else {
-			$item['link'] = KTUtil::buildUrl('browse.php', array('fFolderId'=> $item['id']));
-		}
-
-		$tpl='
+	    return '
 			<span class="doc browseView">
 			<table cellspacing="0" cellpadding="0" width="100%" border="0" class="folder item">
 				<tr>
-					<td width="1" class="checkbox">
-						<input name="selection_f[]" type="checkbox" value="[id]" />
-					</td>
+					' . $checkbox . '
 					<td class="folder icon_cell" width="1">
 						<div class="folder icon">
-							<span class="shortcut[is_shortcut]"><span>This is a shortcut to the folder.</span></span>
+							' . $shortcut . '
 						</div>
 					</td>
 					<td class="folder summary_cell">
-
 						<div class="title"><a class="clearLink" href="[link]">[title]</a></div>
 						<div class="detail"><span class="item">Created by: <span class="creator">[created_by]</span></span></div>
 					</td>
-					<td>
+					' . ($fetchActionMenu ? $this->getFolderActionMenu() : '') . '
+				</tr>
+			</table>
+			</span>';
+	}
+
+	protected function getFolderActionMenu()
+	{
+	    return '<td>
 						<ul class="folder actionMenu">
 							<li class="actionIcon actions">
 									<ul>
@@ -961,14 +933,7 @@ class BrowseView {
 									</ul>
 							</li>
 						</ul>
-					</td>
-				</tr>
-			</table>
-			</span>';
-
-		if ($empty) { return '<span class="fragment folder" style="display:none;">' . $tpl . '</span>'; }
-
-		return ktVar::parseString($tpl, $item);
+					</td>';
 	}
 
 }
