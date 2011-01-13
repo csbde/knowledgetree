@@ -208,6 +208,7 @@ class KTPermissionUtil {
 		$oChannel =& KTPermissionChannel::getSingleton();
 		$aPermAssigns = KTPermissionAssignment::getByObjectMulti($oPO);
 		$aMapPermAllowed = array();
+
 		foreach ($aPermAssigns as $oPermAssign) {
 		  $oPermDescriptor = KTPermissionDescriptor::get($oPermAssign->getPermissionDescriptorID());
 		  $aGroupIDs = $oPermDescriptor->getGroups();
@@ -220,6 +221,7 @@ class KTPermissionUtil {
 							);
 		  $aMapPermAllowed[$oPermAssign->getPermissionID()] = $aAllowed;
 		}
+
 		$aMapPermDesc = array();
 		foreach ($aMapPermAllowed as $iPermissionId => $aAllowed) {
 		  $oLookupPD = KTPermissionUtil::getOrCreateDescriptor($aAllowed);
@@ -270,6 +272,7 @@ class KTPermissionUtil {
 
         // Clear the cached permissions to force an update of the cache
         self::clearCache();
+
 
         /* *** */
 
@@ -516,7 +519,7 @@ class KTPermissionUtil {
      */
     function userHasPermissionOnItem($user, $permission, $oFolderOrDocument)
     {
-        KTUtil::startTiming(__FUNCTION__);
+        //KTUtil::startTiming(__FUNCTION__);
 
         if (isset($_SESSION['adminmode']) && $_SESSION['adminmode'] === true) {
             return true;
@@ -555,7 +558,7 @@ class KTPermissionUtil {
         // Get the users permissions from cache
 	    $cache = PermissionCache::getSingleton();
 	    $check = $cache->checkPermission($lookup_id, $permission, $user);
-	    KTUtil::logTiming(__FUNCTION__);
+	    //KTUtil::logTiming(__FUNCTION__);
 	    return $check;
 
 	    /* *** Old version *** *
@@ -884,6 +887,385 @@ class KTPermissionUtil {
         return kt_array_merge($aPermissionDescriptors, $aUserDescriptors, $aRoleDescriptors);
     }
     // }}}
+
+    /**
+     * Update the permission lookup id for a given permission object
+     *
+     * @param int $objectId
+     */
+    static function updatePermissionLookupForObject($objectId, $folderId)
+    {
+        // Create a mapping of the permission id to the allowed groups, users and roles
+        // Create a mapping of the permission id to the descriptor id for the above
+		$aPermAssigns = KTPermissionAssignment::getByObjectMulti($objectId);
+		$aMapPermAllowed = array();
+		$aMapPermDesc = array();
+
+		foreach ($aPermAssigns as $oPermAssign) {
+		    $iDescriptorId = $oPermAssign->getPermissionDescriptorID();
+		    $iPermissionId = $oPermAssign->getPermissionID();
+
+            $oPermDescriptor = KTPermissionDescriptor::get($iDescriptorId);
+            $aGroupIDs = $oPermDescriptor->getGroups();
+            $aUserIDs = array();
+            $aRoleIDs = $oPermDescriptor->getRoles();
+            $aAllowed = array(
+            			'group' => $aGroupIDs,
+            			'user' => $aUserIDs,
+            			'role' => $aRoleIDs,
+            			);
+
+            $aMapPermAllowed[$iPermissionId] = $aAllowed;
+            $aMapPermDesc[$iPermissionId] = $iDescriptorId;
+		}
+
+		$aMapPermLookup = $aMapPermAllowed;
+
+		// Map any roles allocated to the parent folder and include in the allowed groups and users
+		$_roleCache = array();
+		$role_mappings = array();
+
+        foreach ($aMapPermLookup as $iPermissionId => $aAllowed) {
+            $aSystemRoles = array();
+            if (array_key_exists('role', $aAllowed)) {
+                foreach ($aAllowed['role'] as $k => $iRoleId) {
+
+                    // Check for the system roles: special-case "all" or "authenticated".
+                    if (($iRoleId == -3) || ($iRoleId == -4)) {
+                        $aSystemRoles[] = $iRoleId;
+                        continue;
+                    }
+
+                    // If we haven't checked allocations for this role, get them
+                    if (!array_key_exists($iRoleId, $_roleCache)) {
+                        $oRoleAllocation = RoleAllocation::getAllocationsForFolderAndRole($folderId, $iRoleId);
+                        $_roleCache[$iRoleId] = $oRoleAllocation;
+                    }
+
+                    // roles are _not_ always assigned (can be null at root)
+                    $role_allowed = array();
+                    if (!is_null($_roleCache[$iRoleId])) {
+                        $role_allowed['user'] = $_roleCache[$iRoleId]->getUserIds();
+                        $role_allowed['group'] = $_roleCache[$iRoleId]->getGroupIds();
+
+                        $aMapPermLookup[$iPermissionId]['user'] = kt_array_merge($aMapPermLookup[$iPermissionId]['user'], $role['user']);
+                        $aMapPermLookup[$iPermissionId]['group'] = kt_array_merge($aMapPermLookup[$iPermissionId]['group'], $role['group']);
+                    }
+
+                    $role_mappings[$iRoleId][$folderId] = $role_allowed;
+
+                    unset($aAllowed['role'][$k]);
+                }
+
+            }
+
+            unset($aMapPermLookup[$iPermissionId]['role']);
+            if (!empty($aSystemRoles)) {
+                $aMapPermLookup[$iPermissionId]['role'] = $aSystemRoles;
+            }
+        }
+
+        // If the role cache has changed then the permission descriptor mapping has changed - update
+        if(!empty($_roleCache)){
+            $aMapPermDesc = array();
+            foreach ($aMapPermLookup as $iPermissionId => $aAllowed) {
+                $oLookupPD = KTPermissionUtil::getOrCreateDescriptor($aAllowed);
+                $aMapPermDesc[$iPermissionId] = $oLookupPD->getID();
+            }
+        }
+
+		// Use the permission descriptor mapping to find / create a permission lookup id.
+		$oPermLookup = KTPermissionLookupAssignment::findOrCreateLookupByPermissionDescriptorMap($aMapPermDesc);
+		$lookupId = $oPermLookup->getId();
+
+		// Update the permission lookup id on the folders associated with the permission object
+		$res = DBUtil::whereUpdate('folders', array('permission_lookup_id' => $lookupId), array('permission_object_id' => $objectId));
+
+		// Update the permission lookup id on the documents associated with the permission object
+		$res = DBUtil::whereUpdate('documents', array('permission_lookup_id' => $lookupId), array('permission_object_id' => $objectId));
+
+		// Note: At this point the selected permissions have been applied to all folders and documents.
+		// The following code updates the permissions based on dynamic conditions, workflow and role allocations on sub-folders
+
+		/* *** Check for dynamic conditions that can be applied to the documents *** */
+
+		$aDynamicConditions = KTPermissionDynamicCondition::getByPermissionObject($objectId);
+
+		// Test the dynamic condition on all documents associated with the permission object
+        // Create permission mappings for the returned documents
+
+        $conditions_mapping = array();
+		if (!PEAR::isError($aDynamicConditions)) {
+            foreach($aDynamicConditions as $oDynamicCondition) {
+                $iConditionId = $oDynamicCondition->getConditionId();
+
+                // Test the condition
+                $results = KTSearchUtil::testConditionOnPermissionObject($iConditionId, $objectId);
+
+                // Check if documents are returned in the results
+                if(count($results) > 0){
+                    $iGroupId = $oDynamicCondition->getGroupId();
+                    $aPermissionIds = $oDynamicCondition->getAssignment();
+
+                    // Create a map of the allowed permissions for the current dynamic condition
+                    $aMap = array();
+                    foreach ($aPermissionIds as $iPermissionId) {
+                        $aAllowed = array();
+                        $aAllowed['group'][] = $iGroupId;
+                        $aMap[$iPermissionId] = $aAllowed;
+                    }
+
+                    // Store for later use
+                    $conditions_mapping[$iConditionId] = array('docs' => $results, 'map' => $aMap);
+                }
+            }
+        }
+
+        /* *** Check for documents in workflow states with restricted permissions *** */
+
+        // Get the list of state ids
+        // Get the permission assignments for each state
+
+        // Get the workflow states for the permission object
+        $states = KTWorkflowUtil::getWorkflowStatesForPermissionObject($objectId);
+
+        $states_mapping = array();
+
+        if($states){
+            // Loop through states and get permission assignments
+            foreach ($states as $state_id){
+                $aWorkflowStatePermissionAssignments = KTWorkflowStatePermissionAssignment::getByState($state_id);
+
+                $aMap = array();
+                foreach ($aWorkflowStatePermissionAssignments as $oAssignment) {
+                    $iPermissionId = $oAssignment->getPermissionId();
+                    $iPermissionDescriptorId = $oAssignment->getDescriptorId();
+
+                    $oPD = KTPermissionDescriptor::get($iPermissionDescriptorId);
+                    $aGroupIDs = $oPD->getGroups();
+                    $aUserIDs = array();
+                    $aRoleIDs = $oPD->getRoles();
+                    $aAllowed = array(
+                        'group' => $aGroupIDs,
+                        'user' => $aUserIDs,
+                        'role' => $aRoleIDs,
+                    );
+
+                    // Create permissions map
+                    $aMap[$iPermissionId] = $aAllowed;
+                }
+
+                $states_mapping[$state_id] = array('docs' => array(), 'map' => $aMap);
+            }
+        }
+
+
+        /* *** Check for role allocations on folders with the PO *** */
+
+        // We've already checked roles on the top level folder
+        // Find any roles allocated on folders associated with the permission object
+        $role_allocations = RoleAllocation::getAllocationsForPO($objectId);
+
+        if(!empty($role_allocations)){
+            foreach ($role_allocations as $role_allocation) {
+                $folder_id = $role_allocation['folder_id'];
+                $role_id = $role_allocation['role_id'];
+                $descriptor_id = $role_allocation['permission_descriptor_id'];
+
+                $oPD = KTPermissionDescriptor::get($descriptor_id);
+                $aGroupIDs = $oPD->getGroups();
+                $aUserIDs = $oPD->getUsers();
+                $aAllowed = array(
+                    'group' => $aGroupIDs,
+                    'user' => $aUserIDs
+                );
+
+                $role_mappings[$role_id][$folder_id] = $aAllowed;
+            }
+        }
+
+        /* *** Loop through folders and documents and update the permission lookup *** */
+        $options = array();
+        $options['map'] = $aMapPermAllowed;
+        $options['roles'] = $role_mappings;
+
+        // If there are no additional role allocations then we don't need to loop through the folders
+        if(!empty($role_allocations)){
+            $aFolders = KTFolderUtil::getFolderListByPO($objectId);
+            foreach ($aFolders as $folder) {
+               self::updateFolderPermissionLookup($folder, $options);
+            }
+        }
+
+        $options['conditions'] = $conditions_mapping;
+        $options['states'] = $states_mapping;
+
+        $aDocuments = KTDocumentUtil::getDocumentsByPO($objectId);
+        foreach ($aDocuments as $document) {
+            self::updateDocumentPermissionLookup($document, $options);
+        }
+
+        // Clear the cached permissions to force an update of the cache
+        self::clearCache();
+    }
+
+    static function getHighestFolder($map, $folders)
+    {
+        $map_key = array_keys($map);
+        $inter = array_intersect($map_key, $folders);
+
+        return max($inter);
+    }
+
+    static function updateFolderPermissionLookup($folder, $options)
+    {
+        $aMapPermAllowed = $options['map'];
+        $role_mappings = $options['roles'];
+
+        $folderId = $folder['id'];
+        $folderParentIds = $folder['parent_folder_ids'];
+        $folderLookupId = $folder['permission_lookup_id'];
+
+        $parents = explode(',', $folderParentIds);
+        $parents[] = $folderId;
+
+        // Check for any roles within the permissions and resolve them to users and groups
+        foreach ($aMapPermAllowed as $iPermissionId => $aAllowed) {
+            $aSystemRoles = array();
+            if (array_key_exists('role', $aAllowed)) {
+                foreach ($aAllowed['role'] as $k => $iRoleId) {
+
+                    // Check for the system roles: special-case "all" or "authenticated".
+                    if (($iRoleId == -3) || ($iRoleId == -4)) {
+                        $aSystemRoles[] = $iRoleId;
+                        continue;
+                    }
+
+                    $maps = $role_mappings[$iRoleId];
+                    $key = self::getHighestFolder($maps, $parents);
+                    $role_allowed = $maps[$key];
+
+                    // roles are _not_ always assigned (can be null at root)
+                    if (!is_null($role_allowed)) {
+                        $aMapPermAllowed[$iPermissionId]['user'] = kt_array_merge($aMapPermAllowed[$iPermissionId]['user'], $role_allowed['user']);
+                        $aMapPermAllowed[$iPermissionId]['group'] = kt_array_merge($aMapPermAllowed[$iPermissionId]['group'], $role_allowed['group']);
+                    }
+
+                    unset($aAllowed['role'][$k]);
+                }
+
+                unset($aMapPermAllowed[$iPermissionId]['role']);
+                if (!empty($aSystemRoles)) {
+                    $aMapPermAllowed[$iPermissionId]['role'] = $aSystemRoles;
+                }
+            }
+        }
+
+        $aMapPermDesc = array();
+        foreach ($aMapPermAllowed as $iPermissionId => $aAllowed) {
+            $oLookupPD = KTPermissionUtil::getOrCreateDescriptor($aAllowed);
+            $aMapPermDesc[$iPermissionId] = $oLookupPD->getID();
+        }
+
+        $oPermLookup = KTPermissionLookupAssignment::findOrCreateLookupByPermissionDescriptorMap($aMapPermDesc);
+        $newLookupId = $oPermLookup->getID();
+
+        if($newLookupId != $folderLookupId){
+            DBUtil::autoUpdate('folders', array('permission_lookup_id' => $newLookupId), $folderId);
+        }
+    }
+
+    static function updateDocumentPermissionLookup($document, $options)
+    {
+        $aMapPermAllowed = $options['map'];
+        $conditions_mapping = $options['conditions'];
+        $states_mapping = $options['states'];
+        $role_mappings = $options['roles'];
+
+        $docId = $document['id'];
+        $folderId = $document['folder_id'];
+        $folderParentIds = $document['parent_folder_ids'];
+        $docLookupId = $document['permission_lookup_id'];
+
+        $parents = explode(',', $folderParentIds);
+        $parents[] = $folderId;
+
+        // If there are is no folder id then the document has been deleted
+        // Use the restore folder path
+        if(empty($folderId)) {
+            $parents = explode(',', $document['restore_folder_path']);
+        }
+
+        // Check for any dynamic conditions that affect the document
+        foreach ($conditions_mapping as $condition) {
+            if(in_array($docId, $condition['docs'])) {
+                foreach ($condition['map'] as $iPermissionId => $allowed) {
+                    // Dynamic conditions are only on groups
+                    $aMapPermAllowed[$iPermissionId]['group'] = array_merge($aMapPermAllowed[$iPermissionId]['group'], $allowed['group']);
+                }
+            }
+        }
+
+        // Check whether the document has a workflow state with restricted permissions
+        if(is_numeric($document['workflow_state_id'])){
+            $map = $states_mapping[$document['workflow_state_id']]['map'];
+
+            foreach ($map as $iPermissionId => $allowed) {
+                $aMapPermAllowed[$iPermissionId] = $allowed;
+            }
+        }
+
+        // Check for any roles within the permissions and resolve them to users and groups
+        foreach ($aMapPermAllowed as $iPermissionId => $aAllowed) {
+            $aSystemRoles = array();
+            if (array_key_exists('role', $aAllowed)) {
+                foreach ($aAllowed['role'] as $k => $iRoleId) {
+
+                    // Check for the system roles: special-case "all" or "authenticated".
+                    if (($iRoleId == -3) || ($iRoleId == -4)) {
+                        $aSystemRoles[] = $iRoleId;
+                        continue;
+                    }
+
+                    // Check for the owner role
+                    if ($iRoleId == -2) {
+                        $ownerId = $document['owner_id'];
+                        $aMapPermAllowed[$iPermissionId]['user'][] = $ownerId;
+                    }
+
+                    $maps = $role_mappings[$iRoleId];
+                    $key = self::getHighestFolder($maps, $parents);
+                    $role_allowed = $maps[$key];
+
+                    // roles are _not_ always assigned (can be null at root)
+                    if (!is_null($role_allowed)) {
+                        $aMapPermAllowed[$iPermissionId]['user'] = kt_array_merge($aMapPermAllowed[$iPermissionId]['user'], $role_allowed['user']);
+                        $aMapPermAllowed[$iPermissionId]['group'] = kt_array_merge($aMapPermAllowed[$iPermissionId]['group'], $role_allowed['group']);
+                    }
+
+                    unset($aAllowed['role'][$k]);
+                }
+            }
+
+            unset($aMapPermAllowed[$iPermissionId]['role']);
+            if (!empty($aSystemRoles)) {
+                $aMapPermAllowed[$iPermissionId]['role'] = $aSystemRoles;
+            }
+        }
+
+        $aMapPermDesc = array();
+        foreach ($aMapPermAllowed as $iPermissionId => $aAllowed) {
+            $oLookupPD = KTPermissionUtil::getOrCreateDescriptor($aAllowed);
+            $aMapPermDesc[$iPermissionId] = $oLookupPD->getID();
+        }
+
+        $oPermLookup = KTPermissionLookupAssignment::findOrCreateLookupByPermissionDescriptorMap($aMapPermDesc);
+        $newLookupId = $oPermLookup->getID();
+
+        if($newLookupId != $docLookupId){
+            DBUtil::autoUpdate('documents', array('permission_lookup_id' => $oPermLookup->getID()), $docId);
+        }
+    }
 
     /**
      * Clear the cached permissions

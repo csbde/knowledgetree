@@ -769,6 +769,18 @@ class KTFolderUtil {
         DBUtil::runQuery(array($sql, array($folder->getId())));
     }
 
+    static function getFolderListByPO($iObjectId)
+    {
+        $sql = "SELECT id, parent_folder_ids, permission_lookup_id
+                FROM folders
+                WHERE permission_object_id = {$iObjectId}";
+
+        $results = DBUtil::getResultArray($sql);
+        if(PEAR::isError($results)){
+            return 0;
+        }
+        return $results;
+    }
 }
 
 ?>

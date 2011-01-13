@@ -468,6 +468,27 @@ class KTWorkflowUtil {
     }
     // }}}
 
+    function getDocumentsInWorkflowStatesForPermissionObject($iObjectId)
+    {
+        $query = "SELECT d.id, d.permission_lookup_id, m.workflow_state_id from documents d, document_metadata_version m
+                WHERE d.metadata_version_id = m.id AND d.permission_object_id = {$iObjectId} AND m.workflow_state_id is not null";
+
+        $result = DBUtil::getResultArray($query);
+        return $result;
+    }
+
+    function getWorkflowStatesForPermissionObject ($iObjectId)
+    {
+        $query = "SELECT DISTINCT(workflow_state_id) FROM workflow_state_permission_assignments w
+                    WHERE workflow_state_id IN (
+                        SELECT m.workflow_state_id from documents d, document_metadata_version m
+                        WHERE d.metadata_version_id = m.id AND d.permission_object_id = {$iObjectId}
+                    )";
+
+        $result = DBUtil::getResultArrayKey($query, 'workflow_state_id');
+        return $result;
+    }
+
     // {{{ getTransitionsForDocumentUser
     /**
      * Gets the transitions that are available for a document by virtue

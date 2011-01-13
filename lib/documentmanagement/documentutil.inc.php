@@ -1728,6 +1728,19 @@ class KTDocumentUtil {
 
         return $content;
     }
+
+    public static function getDocumentsByPO($iObjectId)
+    {
+        $sql = "SELECT d.id, d.owner_id, d.folder_id, d.parent_folder_ids, d.permission_lookup_id, m.workflow_state_id, d.restore_folder_path
+                FROM documents d, document_metadata_version m
+                WHERE d.metadata_version_id = m.id AND permission_object_id = {$iObjectId}";
+
+        $results = DBUtil::getResultArray($sql);
+        if(PEAR::isError($results)){
+            return 0;
+        }
+        return $results;
+    }
 }
 
 class KTMetadataValidationError extends PEAR_Error {
