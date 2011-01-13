@@ -277,9 +277,6 @@ class BrowseDispatcher extends KTStandardDispatcher {
 		/**
 		 * New ktapi based method
 		 */
-		$pageCount = 1;
-		$perPage = 15;
-
 		$aBulkActions = KTBulkActionUtil::getAllBulkActions();
 
 		$ktOlarkPopup = null;
@@ -300,62 +297,11 @@ class BrowseDispatcher extends KTStandardDispatcher {
               'ktOlarkPopup' => $ktOlarkPopup
 		);
 
-		if ($this->oFolder) { // ?don't quite know why this is in here. Someone reports that it is there for search browsing which seem to be disabled
+        // ?don't quite know why this is in here. Someone reports that it is there for search browsing which seem to be disabled
+		if ($this->oFolder) {
 			$renderHelper = BrowseViewUtil::getBrowseView();
-
-			$aTemplateData['returndata'] = $this->oFolder->getId();
-            $aTemplateData['bulkActionMenu'] = $renderHelper->renderBulkActionMenu($aBulkActions, $this->oFolder);
-
-            $totalItems = 0;
-            $folderContentItems = $renderHelper->getFolderContent($this->oFolder->getId(), $totalItems);
-
-			$folderItems = array();
-			foreach ($folderContentItems['folders'] as $item) {
-			    $folderItems[] = $renderHelper->renderFolderItem($item);
-			}
-
-			foreach ($folderContentItems['documents'] as $item) {
-			    $folderItems[] = $renderHelper->renderDocumentItem($item);
-			}
-
-			$itemCount = count($folderItems);
-			$curItem = 0;
-
-			$folderView = array();
-
-			$folderView[] = '<div class="page page_' . $pageCount . ' ">';
-
-			// Iterate through the folder items and add them to the current page
-			foreach ($folderItems as $item) {
-				++$curItem;
-				if ($curItem > $perPage) {
-					++$pageCount;
-					$curItem = 1;
-					$folderView[] = '</div><div class="page page_' . $pageCount . ' ">';
-				}
-
-				$folderView[] = $item;
-			}
-
-			// Deal with scenario where there are no items in a folder
-			if ($itemCount <= 0) {
-				$folderView[] = $renderHelper->noFilesOrFoldersMessage($this->oFolder->getId(), $this->editable);
-			}
-
-			$folderView[] = '</div>';
-
-			$aTemplateData['folderContents'] = join($folderView);
-
-			// Adding Fragments for drag & drop client side processing
-			$aTemplateData['fragments'] = '';
-			$aTemplateData['fragments'] .= $renderHelper->renderDocumentItem(null, true);
-			$aTemplateData['fragments'] .= $renderHelper->renderFolderItem(null, true);
-
-			// Apply Clientside Pagination element
-			$aTemplateData['pagination'] = $renderHelper->paginateByDiv($pageCount, 'page', 'paginate', 'item', "kt.pages.browse.viewPage('[page]');", 'kt.pages.browse.prevPage();', 'kt.pages.browse.nextPage();');
-
-			// Add Additional browse view Javascript
-			$aTemplateData['javascript'] = $renderHelper->getJavaScript();
+			$renderData = $renderHelper->renderBrowseFolder($this->oFolder->getId(), $aBulkActions, $this->oFolder, $this->editable);
+            $aTemplateData = array_merge($aTemplateData, $renderData);
 		}
 
 		return $oTemplate->render($aTemplateData);
