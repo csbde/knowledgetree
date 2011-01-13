@@ -593,7 +593,7 @@ class KTAPI_Folder extends KTAPI_FolderItem
 
 					$checked_out_by_id = $document->getCheckedOutUserID();
                     $checked_out_by = $this->_resolve_user($checked_out_by_id);
-                    $checked_out_date = $document->getCheckedOutDate();
+                    $checked_out_date = $document->getDisplayCheckedOutDate();
                     if (empty($checked_out_date))
                     $checked_out_date = 'n/a';
 

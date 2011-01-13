@@ -2198,7 +2198,7 @@ class KTAPI_Document extends KTAPI_FolderItem
 		list($major, $minor, $fix) = explode('.', $default->systemVersion);
 		if ($major == 3 && $minor >= 5)
 		{
-			$detail['checked_out_date'] = $document->getCheckedOutDate();
+			$detail['checked_out_date'] = $document->getDisplayCheckedOutDate();
 		}
 		else
 		{
