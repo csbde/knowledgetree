@@ -185,8 +185,8 @@ class KTDocumentCore extends KTEntity {
 
     // Timezone getters
     function getDisplayCreatedDateTime() { return datetimeutil::getDisplayDate($this->dCreated); }
-    function getDisplayLastModifiedDate() { return datetimeutil::getDisplayDate($this->dModified); }
-    function getDisplayCheckedOutDate() { return datetimeutil::getDisplayDate($this->dCheckedOut); }
+    function getDisplayLastModifiedDate() { return empty($this->dModified) ? $this->dModified : datetimeutil::getDisplayDate($this->dModified); }
+    function getDisplayCheckedOutDate() { return empty($this->dCheckedOut) ? $this->dCheckedOut : datetimeutil::getDisplayDate($this->dCheckedOut); }
     
     /**
      * Returns the ID of the real document.

@@ -231,7 +231,7 @@ class KTAPI_Folder extends KTAPI_FolderItem
         $detail['modified_by'] = $detail['updated_by'] = $username;
 
         // get the modified date
-        $detail['updated_date'] = $detail['modified_date'] = $folder->getLastModifiedDate();
+        $detail['updated_date'] = $detail['modified_date'] = $folder->getDisplayLastModifiedDate();
 
         return $detail;
     }
@@ -598,7 +598,7 @@ class KTAPI_Folder extends KTAPI_FolderItem
                     $checked_out_date = 'n/a';
 
                     $modified_by = $this->_resolve_user($document->getCreatorID());
-                    $modified_date = $document->getLastModifiedDate();
+                    $modified_date = $document->getDisplayLastModifiedDate();
                     if (empty($modified_date))
                     $modified_date = 'n/a';
 

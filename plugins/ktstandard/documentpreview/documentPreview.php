@@ -238,7 +238,7 @@ class DocumentPreview {
         $sLastUpdatedByLb = ''; $sLastUpdatedBy = '';
         if(!empty($iModifiedId)){
             $sLastUpdatedByLb = _kt('Last updated by: ');
-            $sModified = $this->_oDocument->getLastModifiedDate();
+            $sModified = $this->_oDocument->getDisplayLastModifiedDate();
             $oModifier = User::get($iModifiedId);
             $sLastUpdatedBy = $oModifier->getName().' ('.$sModified.')';
         }

@@ -2229,7 +2229,7 @@ class KTAPI_Document extends KTAPI_FolderItem
 		}
 
 		// get the modified date
-		$detail['updated_date'] = $detail['modified_date'] = $document->getLastModifiedDate();
+		$detail['updated_date'] = $detail['modified_date'] = $document->getDisplayLastModifiedDate();
 
 		// get the owner
 		$userid = $document->getOwnerID();
