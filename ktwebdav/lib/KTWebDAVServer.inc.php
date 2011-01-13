@@ -658,7 +658,7 @@ class KTWebDAVServer extends HTTP_WebDAV_Server
             $info["props"][] = $this->mkprop("displayname", $oDocument->getName());
 
             // creation and modification time
-            $info["props"][] = $this->mkprop("creationdate", strtotime($oDocument->getCreatedDateTime()));
+            $info["props"][] = $this->mkprop("creationdate", strtotime($oDocument->getDisplayCreatedDateTime()));
             $info["props"][] = $this->mkprop("getlastmodified", strtotime($oDocument->getVersionCreated()));
 
             // plain file (WebDAV resource)
@@ -742,10 +742,6 @@ class KTWebDAVServer extends HTTP_WebDAV_Server
             $info["props"] = array();
             // no special beautified displayname here ...
             $info["props"][] = $this->mkprop("displayname", $oFolder->getName());
-
-            // creation and modification time
-            //$info["props"][] = $this->mkprop("creationdate", strtotime($oFolder->getCreatedDateTime()));
-            //$info["props"][] = $this->mkprop("getlastmodified", strtotime($oFolder->getVersionCreated()));
 
             // directory (WebDAV collection)
             $info["props"][] = $this->mkprop("resourcetype", "collection");

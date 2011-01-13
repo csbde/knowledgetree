@@ -47,12 +47,16 @@ class datetimeutil
 	
 	static public function getDisplayDate($date)
 	{
+		// Create time conversion object
 		$tzc = new TimezoneConversion();
-		$tzc->setProperty('DateTime', 'now');             /** Set local 'DateTime' to convert */
-		$tzvalue = KTConfig::get('setTimezone');
+		// Set the date to convert
+		$tzc->setProperty('Datetime', $date);
+		// Retrieve system timezone
+		$oConfig = KTConfig::getSingleton();
+		$tzvalue = $oConfig->get('tweaks/setTimezone', 'UTC');
+		// Set the timezone
 		$tzc->setProperty('Timezone', $tzvalue);
-		$converted = $tzc->convertDateTime();
-		return $converted;
+		return $tzc->convertDateTime();
 	}
 	
 	/**
@@ -60,7 +64,7 @@ class datetimeutil
 	 *
 	 * @return string
 	 */
-	public function renderDropDown($value)
+	static public function renderDropDown($value)
 	{
 		$tzc = new TimezoneConversion();
 		$ddoptions = '';

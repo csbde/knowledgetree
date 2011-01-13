@@ -432,7 +432,7 @@ class DateCreatedCriterion extends BrowseCriterion {
     }
 
     function documentDisplay ($oDocument) {
-        return $oDocument->getCreatedDateTime();
+        return $oDocument->getDisplayCreatedDateTime();
     }
 
     function parameterDisplay($aData) {

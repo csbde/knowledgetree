@@ -234,7 +234,8 @@ class sharedUserBrowseView extends browseView
 		// Sanitize document title
 		$item['title'] = sanitizeForHTML($item['title']);
 		$item['filesize'] = KTUtil::filesizeToString($item['filesize']);
-		$item = $this->offsetDates($item);
+		// Offset the dates accordingly
+		//$item = $this->offsetDates($item);
 		$tpl='
 			<span class="doc browseView 1">
 				<table cellspacing="0" cellpadding="0" width="100%" border="0" class="doc item ddebug">
@@ -373,9 +374,16 @@ class browseView {
 		$oPage->requireCSSResource("resources/css/newui/browseView.css?" . rand());
 	}
 
+	/**
+	 * Offset the date according to the users timezone.
+	 *
+	 * @param array $item
+	 * @return array
+	 */
 	private function offsetDates($item)
 	{
-//		$item['created_date'] = datetimeutil::getDisplayDate($item['created_date']);
+		isset($item['created_date']) ? $item['created_date'] = datetimeutil::getDisplayDate($item['created_date']) : '';
+		isset($item['modified_date']) ? $item['modified_date'] = datetimeutil::getDisplayDate($item['modified_date']) : '';
 		return $item;
 	}
 	
@@ -799,7 +807,7 @@ class browseView {
 		// Another layer of permissions
 		//$item = $this->checkWorkflowPermissions($item, $oDocument);
 		// Offset the dates accordingly
-		$item = $this->offsetDates($item);
+		//$item = $this->offsetDates($item);
 		
 		$item['separatorA'] = $item['actions.copy'] == '' ? '' : $ns;
 		$item['separatorB'] = $item['actions.download'] == '' || $item['actions.instantview'] == '' ? '' : $ns;

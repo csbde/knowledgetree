@@ -242,10 +242,10 @@ class GenericFieldsetDisplay extends KTFieldsetDisplay {
         } else {
            $modified_user_name = $modified_user->getName();
         }
-        $creation_date = $this->_dateHelper($document->getCreatedDateTime());
+        $creation_date = $this->_dateHelper($document->getDisplayCreatedDateTime());
 
         // last mod
-        $last_modified_date = $this->_dateHelper($document->getLastModifiedDate());
+        $last_modified_date = $this->_dateHelper($document->getDisplayLastModifiedDate());
 
         // document type // FIXME move this to view.php
         $document_type = $aDocumentData['document_type']->getName();
@@ -291,11 +291,11 @@ class GenericFieldsetDisplay extends KTFieldsetDisplay {
         } else {
            $creator = $creator->getName();
         }
-        $creation_date = $this->_dateHelper($document->getCreatedDateTime());
+        $creation_date = $this->_dateHelper($document->getDisplayCreatedDateTime());
 
         // last mod
-        $last_modified_date = $this->_dateHelper($document->getVersionCreated());
-        $comparison_last_modified_date = $this->_dateHelper($comparison_document->getVersionCreated());
+        $last_modified_date = $this->_dateHelper($document->getDisplayVersionCreated());
+        $comparison_last_modified_date = $this->_dateHelper($comparison_document->getDisplayVersionCreated());
 
         // document type // FIXME move this to view.php
         $document_type = $aDocumentData['document_type']->getName();

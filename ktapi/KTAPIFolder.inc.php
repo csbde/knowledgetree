@@ -214,7 +214,7 @@ class KTAPI_Folder extends KTAPI_FolderItem
         $detail['created_by'] = $username;
 
         // get the creation date
-        $detail['created_date'] = $folder->getCreatedDateTime();
+        $detail['created_date'] = $folder->getDisplayCreatedDateTime();
 
         // get the modified user
         $userid = $folder->getModifiedUserId();
@@ -587,7 +587,7 @@ class KTAPI_Folder extends KTAPI_FolderItem
             foreach ($document_children as $document) {
                 if (KTPermissionUtil::userHasPermissionOnItem($user, $read_permission, $document)) {
                     $created_by = $this->_resolve_user($document->getCreatorID());
-                    $created_date = $document->getCreatedDateTime();
+                    $created_date = $document->getDisplayCreatedDateTime();
                     if (empty($created_date))
                     $created_date = 'n/a';
                     
@@ -919,7 +919,7 @@ class KTAPI_Folder extends KTAPI_FolderItem
                 if (KTPermissionUtil::userHasPermissionOnItem($user, $read_permission, $document))
                 {
                     $created_by = $this->_resolve_user($document->getCreatorID());
-                    $created_date = $document->getCreatedDateTime();
+                    $created_date = $document->getDisplayCreatedDateTime();
                     if (empty($created_date)) $created_date = 'n/a';
 
                     $checked_out_by = $this->_resolve_user($document->getCheckedOutUserID());

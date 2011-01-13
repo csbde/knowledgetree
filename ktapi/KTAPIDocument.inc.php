@@ -2170,7 +2170,7 @@ class KTAPI_Document extends KTAPI_FolderItem
 		}
 
 		// get the creation date
-		$detail['created_date'] = $document->getCreatedDateTime();
+		$detail['created_date'] = $document->getDisplayCreatedDateTime();
 
 		// get the checked out user
 		$userid = $document->getCheckedOutUserID();
