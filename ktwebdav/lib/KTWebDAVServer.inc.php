@@ -659,7 +659,7 @@ class KTWebDAVServer extends HTTP_WebDAV_Server
 
             // creation and modification time
             $info["props"][] = $this->mkprop("creationdate", strtotime($oDocument->getDisplayCreatedDateTime()));
-            $info["props"][] = $this->mkprop("getlastmodified", strtotime($oDocument->getVersionCreated()));
+            $info["props"][] = $this->mkprop("getlastmodified", strtotime($oDocument->getDisplayVersionCreated()));
 
             // plain file (WebDAV resource)
             $info["props"][] = $this->mkprop("resourcetype", '');
@@ -1191,7 +1191,7 @@ class KTWebDAVServer extends HTTP_WebDAV_Server
             // some clients seem to treat this as a reverse rule
             // requiering a Last-Modified header if the getlastmodified header was set
 
-            $options['mtime'] = $oDocument->getVersionCreated();
+            $options['mtime'] = $oDocument->getDisplayVersionCreated();
 
             // detect resource size
             $options['size'] = $oDocument->getFileSize();

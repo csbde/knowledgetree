@@ -2538,7 +2538,7 @@ class KTAPI_Document extends KTAPI_FolderItem
         	$version['user'] = $username;
         	$version['metadata_version'] = $document->getMetadataVersion();
         	$version['content_version'] = $document->getVersion();
-			$version['datetime'] = $document->getVersionCreated();
+			$version['datetime'] = $document->getDisplayVersionCreated();
         	if ($wsversion >= 2)
         	{
         		$version['metadata_version'] = (int) $version['metadata_version'];
