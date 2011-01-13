@@ -375,7 +375,7 @@ class browseView {
 
 	private function offsetDates($item)
 	{
-		$item['created_date'] = datetimeutil::getDisplayDate($item['created_date']);
+//		$item['created_date'] = datetimeutil::getDisplayDate($item['created_date']);
 		return $item;
 	}
 	

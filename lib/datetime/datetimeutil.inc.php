@@ -45,7 +45,7 @@ class datetimeutil
 		
 	}
 	
-	public function getDisplayDate($date)
+	static public function getDisplayDate($date)
 	{
 		$tzc = new TimezoneConversion();
 		$tzc->setProperty('DateTime', 'now');             /** Set local 'DateTime' to convert */
