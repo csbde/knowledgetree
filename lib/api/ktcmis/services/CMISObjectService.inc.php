@@ -47,18 +47,18 @@ class CMISObjectService {
      */
     // TODO throw ConstraintViolationException if:
     //      value of any of the properties violates the min/max/required/length constraints
-    //      specified in the property definition in the Object-Type. 
-    // TODO throw ConstraintViolationException if At least one of the permissions is used in 
+    //      specified in the property definition in the Object-Type.
+    // TODO throw ConstraintViolationException if At least one of the permissions is used in
     //      an ACE provided which is not supported by the repository.
     // NOTE typeId is supplied in the cmis:objectTypeId property in the properties array
     // TODO support submission of content stream as an array containing mimetype and stream;
     //      for now we just filter on the other side so that only the stream comes through
     //      and continue to check the mime type dynamically (may need that anyway if none specified
     //      by CMIS client)
-    public function createDocument($repositoryId, $properties, $folderId = null, $contentStream = null, 
-                                   $versioningState = 'none', $policies = array(), $addACEs = array(), 
+    public function createDocument($repositoryId, $properties, $folderId = null, $contentStream = null,
+                                   $versioningState = 'none', $policies = array(), $addACEs = array(),
                                    $removeACEs = array())
-    {        
+    {
         $objectId = null;
 
         // fetch type definition of supplied type and check for base type "document", if not true throw exception
@@ -128,11 +128,11 @@ class CMISObjectService {
         else if ($typeDefinition['attributes']['versionable'] && (empty($versioningState) || $versioningState == 'none')) {
             throw new ConstraintViolationException('Invalid versioning state supplied');
         }
-        
+
         if (!$typeDefinition['attributes']['controllablePolicy'] && count($policies)) {
             throw new ConstraintViolationException('This object-type does not support policies');
         }
-        
+
         if (!$typeDefinition['attributes']['controllableACL'] && (count($addACEs) || count($removeACEs))) {
             throw new ConstraintViolationException('This object-type does not support ACLs');
         }
@@ -301,12 +301,12 @@ class CMISObjectService {
     // TODO throw ConstraintViolationException if:
     //      value of any of the properties violates the min/max/required/length constraints
     //      specified in the property definition in the Object-Type.
-    // TODO throw ConstraintViolationException if At least one of the permissions is used in 
+    // TODO throw ConstraintViolationException if At least one of the permissions is used in
     //      an ACE provided which is not supported by the repository.
     public function createFolder($repositoryId, $properties, $folderId, $policies = array(), $addACEs = array(), $removeACEs = array())
     {
         $objectId = null;
-        
+
         // fetch type definition of supplied type and check for base type "folder", if not true throw exception
         $RepositoryService = new CMISRepositoryService();
         try {
@@ -319,7 +319,7 @@ class CMISObjectService {
         catch (Exception $e) {
             throw new ConstraintViolationException('Object is not of base type folder. ' . $e->getMessage());
         }
-        
+
         if ($typeDefinition['attributes']['baseId'] != 'cmis:folder') {
             throw new ConstraintViolationException('Object is not of base type folder');
         }
@@ -329,22 +329,22 @@ class CMISObjectService {
         $tmpObjectId = CMISUtil::decodeObjectId($tmpObjectId, $tmpTypeId);
         if ($tmpTypeId != 'unknown')
             $folderId = $tmpObjectId;
-        
+
         // if parent folder is not allowed to hold this type, throw exception
         $CMISFolder = new CMISFolderObject($folderId, $this->ktapi);
         $allowed = $CMISFolder->getProperty('allowedChildObjectTypeIds');
         if (!is_array($allowed) || !in_array($properties['objectTypeId'], $allowed)) {
             throw new ConstraintViolationException('Parent folder may not hold objects of this type (' . $properties['objectTypeId'] . ')');
         }
-        
+
         if (!$typeDefinition['attributes']['controllablePolicy'] && count($policies)) {
             throw new ConstraintViolationException('This object-type does not support policies');
         }
-        
+
         if (!$typeDefinition['attributes']['controllableACL'] && (count($addACEs) || count($removeACEs))) {
             throw new ConstraintViolationException('This object-type does not support ACLs');
         }
-        
+
         // set title and name identical if only one submitted
         if ($properties['title'] == '') {
             $properties['title'] = $properties['name'];
@@ -352,7 +352,7 @@ class CMISObjectService {
         else if ($properties['name'] == '') {
             $properties['name'] = $properties['title'];
         }
-        
+
         // throw NameConstraintViolation if there is a violation with the given cmis:name property value
         // OR choose a name which does not conflict
         if (trim($properties['name']) == '') {
@@ -369,7 +369,7 @@ class CMISObjectService {
 
         return $objectId;
     }
-    
+
     /**
      * Fetches the properties for the specified object
      *
@@ -399,69 +399,69 @@ class CMISObjectService {
                 $CMISObject = new CMISFolderObject($objectId, $this->ktapi, $repository->getRepositoryURI());
                 break;
         }
-        
+
         // check that we were actually able to retrieve a real object
         $objectId = $CMISObject->getProperty('objectId');
         if (empty($objectId)) {
             throw new ObjectNotFoundException('The requested object could not be found');
         }
-        
+
         $propertyCollection = $CMISObject->getProperties();
         $properties = CMISUtil::createObjectPropertiesEntry($propertyCollection);
 
         return $properties;
     }
-    
+
     /**
      * Fetches the content stream data for an object, or fetched a rendition stream for a specified rendition
-     *  
+     *
      * @param string $repositoryId
      * @param string $objectId
      * @param string $streamId [optional for documents] Specifies the rendition to retrieve if not original document
      * @return string $contentStream (binary [base64 encoded] or text data)
      */
-    // NOTE Each CMIS protocol binding MAY provide a way for fetching a sub-range within a content stream, 
+    // NOTE Each CMIS protocol binding MAY provide a way for fetching a sub-range within a content stream,
     //      in a manner appropriate to that protocol.
     function getContentStream($repositoryId, $objectId, $streamId = null)
     {
         $contentStream = null;
-        
+
         // decode $objectId
         $objectId = CMISUtil::decodeObjectId($objectId, $typeId, $className);
-        
+
         // unknown object type?
         if ($typeId == 'unknown') {
             throw new ObjectNotFoundException('The type of the requested object could not be determined');
         }
-        
+
         // fetch type definition of supplied object type
         $objectClass = 'CMIS' . $className . 'Object';
         $CMISObject = new $objectClass($objectId, $this->ktapi);
-        
-        // if content stream is not allowed for this object type definition, or the specified object does not have 
+
+        // if content stream is not allowed for this object type definition, or the specified object does not have
         // a content/rendition stream, throw a ConstraintViolationException
         if (($CMISObject->getAttribute('contentStreamAllowed') == 'notAllowed'))
         {
             throw new ConstraintViolationException('This object does not have a content stream of the requested type');
         }
-        
+
         // now go on to fetching the content stream
         // TODO allow fetching of partial streams
         //      from the CMIS specification (0.61):
         //      "Each CMIS protocol binding SHALL provide a way for fetching a sub-range within a content stream, in a manner appropriate to that protocol."
-        
+
         // steps to fetch content stream:
         // 1. find actual physical document (see zip/download code)
         // TODO move this into a ktapi function
         $document = $this->ktapi->get_document_by_id($objectId);
         $contentStream = $document->get_document_content();
-        
+
         return  $contentStream;
     }
-    
+
     /**
      * Moves a fileable object from one folder to another.
-     * 
+     *
      * @param string $repositoryId
      * @param string $objectId
      * @param string $targetFolderId
@@ -476,31 +476,31 @@ class CMISObjectService {
         $tmpObjectId = $objectId;
         $tmpObjectId = CMISUtil::decodeObjectId($tmpObjectId, $typeId, $className);
         if ($tmpTypeId != 'unknown') $objectId = $tmpObjectId;
-        
+
         $objectClass = 'CMIS' . $className . 'Object';
         $CMISObject = new $objectClass($objectId, $this->ktapi);
-        
+
         $targetFolderId = CMISUtil::decodeObjectId($targetFolderId);
-            
-        // check the $sourceFolderId parameter - if empty or does not match (at least one) parent of the specified object, 
+
+        // check the $sourceFolderId parameter - if empty or does not match (at least one) parent of the specified object,
         // throw exception
         if (empty($sourceFolderId) || $CMISObject->getProperty('parentId') != $sourceFolderId) {
             throw new InvalidArgumentException('The source folder id is invalid');
         }
-        
+
         // check type id of object against allowed child types for destination folder
         $CMISFolder = new CMISFolderObject($targetFolderId, $this->ktapi);
         $allowed = $CMISFolder->getProperty('allowedChildObjectTypeIds');
         if (!is_array($allowed) || !in_array($typeId, $allowed)) {
             throw new ConstraintViolationException('Parent folder may not hold objects of this type (' . $typeId . ')');
         }
-        
+
         // throw updateConflictException if the operation is attempting to update an object that is no longer current (as determined by the repository).
         $exists = CMISUtil::contentExists($typeId, $objectId, $this->ktapi);
         if (!$exists) {
             throw new updateConflictException('Unable to move the object as it cannot be found.');
         }
-        
+
         // TODO add reasons and sig data
         // attempt to move object
         if ($typeId == 'cmis:folder') {
@@ -513,27 +513,27 @@ class CMISObjectService {
             $response['status_code'] = 1;
             $response['message'] = 'The object type could not be determined.';
         }
-        
-        // TODO The repository may throw a NameConstrainViolationException if there is a name conflict (determined by KTAPI) 
+
+        // TODO The repository may throw a NameConstrainViolationException if there is a name conflict (determined by KTAPI)
         //      or may choose a name which does not conflict
 
         // if failed, throw StorageException
         if ($response['status_code'] != 0) {
             throw new StorageException('The repository was unable to move the object: ' . $response['message']);
         }
-        
+
         return CMISUtil::encodeObjectId($objectId, $typeId);
     }
-    
+
     /**
      * Deletes an object from the repository
-     * 
+     *
      * @param string $repositoryId
      * @param string $objectId
      * @param string $allVersions [optional] If true, delete all versions
      */
-    // NOTE Invoking this service method on an object SHALL not delete the entire version series for a Document Object 
-    //      if $allVersions is false. 
+    // NOTE Invoking this service method on an object SHALL not delete the entire version series for a Document Object
+    //      if $allVersions is false.
     public function deleteObject($repositoryId, $objectId, $allVersions = true)
     {
         // determine object type and internal id
@@ -564,7 +564,7 @@ class CMISObjectService {
         if (!$exists) {
             throw new updateConflictException('Unable to delete the object as it cannot be found.');
         }
-        
+
         // throw ConstraintViolationException if method is invoked on a Folder object that contains one or more objects
         if ($typeId == 'cmis:folder')
         {
@@ -595,53 +595,53 @@ class CMISObjectService {
                     throw new ConstraintViolationException('This repository does not allow deleting of only the latest version.');
                 }
             }
-            
-            // do not allow deletion of a checked out document - this is actually handled by the ktapi code, 
-            // but is possibly slightly more efficient to check before trying to delete 
+
+            // do not allow deletion of a checked out document - this is actually handled by the ktapi code,
+            // but is possibly slightly more efficient to check before trying to delete
             if ($object->is_checked_out()) {
                 throw new RuntimeException('The object cannot be deleted as it is currently checked out');
             }
-            
+
             // now try the delete and throw an exception if there is an error
             // TODO add a default reason
             // TODO add the electronic signature capability
             $auth_sig = true;
             $result = $this->ktapi->delete_document($objectId, $reason, $auth_sig, $sig_username, $sig_password);
         }
-        
+
         // if there was an error performing the delete, throw exception
         if ($result['status_code'] == 1) {
             throw new RuntimeException('There was an error deleting the object: ' . $result['message']);
         }
     }
-    
+
     /**
      * Deletes an entire tree including all subfolders and other filed objects
-     * 
+     *
      * @param string $repositoryId
      * @param string $folderId
-     * @param boolean $unfileObjects [optional] unfile/deletesinglefiles/delete - note that since KnowledgeTree does not 
+     * @param boolean $unfileObjects [optional] unfile/deletesinglefiles/delete - note that since KnowledgeTree does not
      *                                          allow unfiling this will be ignored
      * @param boolean $continueOnFailure [optional] - note that since KnowledgeTree does not allow continue on failure this will be ignored
      * @return array $failedToDelete A list of identifiers of objects in the folder tree that were not deleted.
      */
-    // NOTE • A Repository MAY attempt to delete child- and descendant-objects of the specified folder in any order. 
-    //      • Any child- or descendant-object that the Repository cannot delete SHALL persist in a valid state in the CMIS domain model. 
+    // NOTE • A Repository MAY attempt to delete child- and descendant-objects of the specified folder in any order.
+    //      • Any child- or descendant-object that the Repository cannot delete SHALL persist in a valid state in the CMIS domain model.
     //      • This is not transactional.
-    //      • However, if DeleteSingleFiled is chosen and some objects fail to delete, then single-filed objects are either deleted or kept, 
+    //      • However, if DeleteSingleFiled is chosen and some objects fail to delete, then single-filed objects are either deleted or kept,
     //        never just unfiled. This is so that a user can call this command again to recover from the error by using the same tree.
-    // NOTE when $continueOnFailure is false, the repository SHOULD abort this method when it fails to delete a single child- or 
+    // NOTE when $continueOnFailure is false, the repository SHOULD abort this method when it fails to delete a single child- or
     //      descendant-object
     public function deleteTree($repositoryId, $folderId, $unfileObjects = 'delete', $continueOnFailure = false)
     {
         // NOTE since we do not currently allow partial deletes this will always be empty
         //      (unless there is a failure at the requested folder level - what do we do then?  exception or array of all objects?)
         $failedToDelete = array();
-        
+
         // determine object type and internal id
         $folderId = CMISUtil::decodeObjectId($folderId, $typeId);
-        
-        // throw updateConflictException if the operation is attempting to update an object that is no longer current 
+
+        // throw updateConflictException if the operation is attempting to update an object that is no longer current
         // (as determined by the repository)
         if ($typeId == 'cmis:folder') {
             $object = $this->ktapi->get_folder_by_id($folderId);
@@ -653,7 +653,7 @@ class CMISObjectService {
         else {
             throw new RuntimeException('Cannot call deleteTree on a non-folder object.');
         }
-        
+
         // attempt to delete tree, throw RuntimeException if failed
         // TODO add a default reason
         // TODO add the electronic signature capability
@@ -666,7 +666,7 @@ class CMISObjectService {
             //      Not sure yet what this output may be used for by a client, and the current specification (0.61c) says:
             //      "A list of identifiers of objects in the folder tree that were not deleted", so let's leave it returning just ids for now.
             $failedToDelete[] = CMISUtil::encodeObjectId(CMIS_FOLDER, $folderId);
-            $folderContents = $object->get_full_listing();
+            $folderContents = $object->get_listing(-1);
             foreach($folderContents as $folderObject)
             {
                 if ($folderObject['item_type'] == 'F') {
@@ -675,11 +675,11 @@ class CMISObjectService {
                 else if ($folderObject['item_type'] == 'D') {
                     $type = 'cmis:document';
                 }
-                
-                $failedToDelete[] = CMISUtil::encodeObjectId($type, $folderObject['id']); 
+
+                $failedToDelete[] = CMISUtil::encodeObjectId($type, $folderObject['id']);
             }
         }
-        
+
         return $failedToDelete;
     }
 
@@ -711,7 +711,7 @@ class CMISObjectService {
         // NOTE while it might have been nice to keep this out of here, KTAPI has no method for creating a document without
         //      a physical upload, so we cannot create the document first and then add the upload as a content stream, the
         //      entire creation step needs to happen here.
-        
+
         // Attempt to decode $documentId, use as is if not detected as encoded
         $tmpObjectId = $documentId;
         $tmpObjectId = CMISUtil::decodeObjectId($tmpObjectId, $tmpTypeId);
@@ -722,7 +722,7 @@ class CMISObjectService {
 
         // fetch type definition of supplied document
         $CMISDocument = new CMISDocumentObject($documentId, $this->ktapi);
-        
+
         // if content stream is not allowed for this object type definition, throw a ConstraintViolationException
         if (($CMISDocument->getAttribute('contentStreamAllowed') == 'notAllowed'))
         {
