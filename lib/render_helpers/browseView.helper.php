@@ -32,24 +32,6 @@ class BrowseViewUtil {
 
 }
 
-class SharedUserBrowseAsView extends BrowseView {
-
-	/**
-	 * Get the shared users
-	 *
-	 * @param string $folderId
-	 * @param int $totalItems
-	 * @param string $sortField
-	 * @param string $asc
-	 * @return mixed $ret
-	 */
-	public function getFolderContent($folderId, &$totalItems = 0, $sortField = 'title', $asc = true)
-	{
-
-	}
-
-}
-
 /**
  * Shared user browse view class
  *
@@ -76,8 +58,9 @@ class SharedUserBrowseView extends BrowseView {
 
 		$oSharedContent = new SharedContent();
 		$aSharedContent = $oSharedContent->getUsersSharedContents($user_id, $folderId);
-		$ret = array(	'folders' => array(),
-						'documents'=>array()
+		$ret = array(
+                        'folders' => array(),
+                        'documents'=>array()
 					);
 
 		foreach ($aSharedContent['documents'] as $item) {
