@@ -273,7 +273,7 @@ class sharedUserBrowseView extends browseView {
 							<div class="title"><a class="clearLink" href="[document_link]" style="">[title]</a></div>
 
 							<div class="detail">
-							<span class="item">File size: <span class="user">[filesize]</span></span><span class="item"> Owner: <span class="user">[owned_by]</span></span><span class="item">Created: <span class="date">[created_date]</span> by <span class="user">[created_by]</span></span><span class="item">Updated: <span class="date">[modified_date]</span> by <span class="user">[modified_by]</span></span>
+							<span class="item"> Owner: <span class="user">[owned_by]</span></span><span class="item">Created: <span class="date">[created_date]</span> by <span class="user">[created_by]</span></span><span class="item">Updated: <span class="date">[modified_date]</span> by <span class="user">[modified_by]</span></span><span class="item">File size: <span class="user">[filesize]</span></span>
 							</div>
 						</td>
 					</tr>
@@ -836,7 +836,7 @@ class browseView {
 							<div class="title"><a class="clearLink" href="[document_link]" style="">[title]</a></div>
 
 							<div class="detail">
-								<span class="item">File size: <span class="user">[filesize]</span></span> <span class="item">Owner: <span class="user">[owned_by]</span></span><span class="item">Created: <span class="date">[created_date]</span> by <span class="user">[created_by]</span></span><span class="item">Updated: <span class="date">[modified_date]</span> by <span class="user">[modified_by]</span></span>
+								<span class="item">Owner: <span class="user">[owned_by]</span></span><span class="item">Created: <span class="date">[created_date]</span> by <span class="user">[created_by]</span></span><span class="item">Updated: <span class="date">[modified_date]</span> by <span class="user">[modified_by]</span></span><span class="item">File size: <span class="user">[filesize]</span></span>
 							</div>
 						</td>
 						<td>
