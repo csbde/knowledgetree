@@ -910,6 +910,14 @@ kt.app.upload.uploadStructure=function(options){
 		//reset required fields 
 		self.options.fields_required = {};
 		
+		//does this Doc Type have required fields?
+		kt.api.docTypeHasRequiredFields(docType, function(data){
+			//if so, we need to disable the Upload button
+			docTypeHasRequiredFields = data.data.hasRequiredFields;	
+			//console.log('docTypeHasRequiredFields '+docTypeHasRequiredFields);
+			self.options.has_required_metadata = docTypeHasRequiredFields;
+		});
+		
 		try {
 			var selectBox=jQuery('.ul_doctype',self.options.metaDataTable)[0];
 			//for(var idx in selectBox.options){

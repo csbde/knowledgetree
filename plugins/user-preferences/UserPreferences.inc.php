@@ -210,7 +210,7 @@ class UserPreferences extends KTEntity {
     * @author KnowledgeTree Team
     * @access public
     * @param $aOptions - array
-    * @return 
+    * @return mixed - return value on success, and false if it does not exist
     */
     public function getUserPreferenceValue($iUserId, $sKey) {
     	$aPref = UserPreferences::getPreferences($iUserId, $sKey);
@@ -227,12 +227,12 @@ class UserPreferences extends KTEntity {
     }
     
     /**
-    *
+    * Save or update an existing user preference
     *
     * @author KnowledgeTree Team
     * @access public
     * @param $aOptions - array
-    * @return 
+    * @return boolean - true on success, false on failure
     */
     public function saveUserPreferences($iUserId, $sKey, $sValue) {
     	$oUser = User::get($iUserId); // Get the user
@@ -251,6 +251,8 @@ class UserPreferences extends KTEntity {
 	    		}
     		}
 		}
+		
+		return true;
     }
 }
 ?>

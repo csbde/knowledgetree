@@ -1,0 +1,20 @@
+<h2>Configure an LDAP Authentication Server</h2>
+
+<p class="descriptiveText">
+    Configure KnowledgeTree to use your company LDAP server for authenticating users against.
+</p>
+
+<form action="{$smarty.server.PHP_SELF}" method="POST">
+    <input type="hidden" name="source_id" value="{$source_id}" />
+    <input type="hidden" name="action" value="performEditSourceProvider" />
+
+    {foreach from=$fields item=oWidget}
+        <p style="padding-top: 10px;">
+        {$oWidget->render()}
+        </p>
+    {/foreach}
+
+    <div class="form_actions ">
+        <input type="submit" name="submit" value="{i18n}Save{/i18n}" />
+    </div>
+</form>

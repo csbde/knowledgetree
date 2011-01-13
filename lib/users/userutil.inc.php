@@ -121,12 +121,12 @@ class KTUserUtil {
      */
     static public function inviteUsersByEmail($addressList, $groupId = null, $userType = null, $shareContent = null)
     {
+        global $default;
+
         if (empty($addressList)) {
             $response = array('invited' => 0, 'existing' => '', 'failed' => '', 'group' => '', 'type' => '', 'check' => 0);
             return $response;
         }
-
-        global $default;
 
         $existingUsers = array();
         $invitedUsers = array();
@@ -136,7 +136,6 @@ class KTUserUtil {
 		$message = '';
 		$objectTypeName = null;
 		$objectName = null;
-
     	$inSystemList = self::checkUniqueEmail($addressList);
 
     	// loop through any addresses that currently exist and unset them in the invitee list
@@ -256,8 +255,35 @@ class KTUserUtil {
     		    // Send a sharing notification to existing users.
     		    self::sendNotifications($existingUsers, $shareContent['object_id'], $objectTypeName, $objectName, $shareContent['message']);
     		}
-    		$cnt = count($existingUsers) + (int)$numInvited;
-    		$response['invited'] = $cnt;
+
+    		$response['invited'] = count($existingUsers) + (int)$numInvited;
+    	}
+
+    	if ($userType == 'shared') {
+    	    /*// get list of users with whom content was shared - this can be found in a combination of $invitedUsers and $existingUsers
+    	    $userList = array();
+    	    $invited = array_merge($invitedUsers, $existingUsers);
+    	    foreach ($invited as $user) {
+    	       $userList[] = $user['email'];
+    	    }
+    	    $userList = implode(', ', $userList);*/
+
+    	    // create the transaction record
+    	    $s = ($response['invited'] == 1) ? '' : 's';
+    	    if ($shareContent['object_type'] == 'D') {
+    	        $document = Document::get($shareContent['object_id']);
+                $documentTransaction = new DocumentTransaction($document, "Document shared with {$response['invited']} user$s", 'ktcore.transactions.share');
+                $documentTransaction->create();
+    	    }
+    	    else if ($shareContent['object_type'] == 'F') {
+    	        $transaction = KTFolderTransaction::createFromArray(array(
+                    'folderid' => $shareContent['object_id'],
+                    'comment' => "Folder shared with {$response['invited']} user$s",
+                    'transactionNS' => 'ktcore.transactions.share',
+                    'userid' => $_SESSION['userID'],
+                    'ip' => Session::getClientIP(),
+                ));
+    	    }
     	}
 
     	return $response;
@@ -454,6 +480,12 @@ class KTUserUtil {
         return $link;
     }
 
+    /**
+     * Dispatch shared user invite
+     *
+     * @param array $list - email parameters
+     * @return boolean - true on success, false on failure
+     */
     static public function sendSharedInvite($list)
     {
         if (ACCOUNT_ROUTING_ENABLED)
@@ -464,6 +496,12 @@ class KTUserUtil {
         return true;
     }
 
+    /**
+     * Dispatch user invite
+     *
+     * @param array $list - email parameters
+     * @return boolean - true on success, false on failure
+     */
     static public function sendUserInvite($list)
     {
         if (ACCOUNT_ROUTING_ENABLED)
@@ -489,15 +527,11 @@ class KTUserUtil {
 
 		if (is_null($objectTypeName) || ($objectTypeName == 'document'))
 		{
-	        require_once(KT_LIB_DIR . '/documentmanagement/Document.inc');
-			$oDocument = Document::get($objectId);
-			$objectName = $oDocument->getName();
+			$objectName = self::getObjectName($objectId, 'D');
 		}
 		else if ($objectTypeName == 'folder')
 		{
-        	require_once(KT_LIB_DIR . '/foldermanagement/Folder.inc');
-			$oFolder = Folder::get($objectId);
-			$objectName = $oFolder->getName();
+			$objectName = self::getObjectName($objectId, 'F');
 		}
 
         foreach ($emailList as $item)
@@ -593,6 +627,82 @@ class KTUserUtil {
     }
 
     /**
+     * Create a content url for a document or a folder
+     *
+     * @param string $objectTypeName - folder or document
+     * @param int $objectId - the id of folder or document
+     * @return string $link - a link to content
+     */
+    static public function createContentLink($objectTypeName, $objectId)
+    {
+    	$server = KTUtil::kt_url();
+    	if (is_null($objectTypeName) || ($objectTypeName == 'document'))
+    	{
+	        $document_link = KTUtil::buildUrl('/view.php', array('fDocumentId' => $objectId));
+	        $link = $server . $document_link;
+    	}
+    	else if ($objectTypeName == 'folder')
+    	{
+        	$folder_link = KTUtil::buildUrl('/browse.php', array('fFolderId' => $objectId));
+        	$link = $server . $folder_link;
+    	}
+
+    	return $link;
+    }
+
+    /**
+     * Dispatch a queue event
+     *
+     * @param string $emailFrom
+     * @param array $list
+     * @return boolean
+     */
+    static private function dispatchQueueEvent($list, $subject, $action, $content, $emailFrom = null)
+    {
+        if (empty($emailFrom)) {
+            global $default;
+            $emailFrom = $default->emailFrom;
+        }
+
+        // dispatch queue event
+        require_once(KT_LIVE_DIR . '/sqsqueue/dispatchers/queueDispatcher.php');
+
+        $params = array();
+        $params['subject'] = $subject;
+        $params['content_html'] = "email/notifications/$content";
+        $params['sender'] = array($emailFrom => 'KnowledgeTree');
+        $params['recipients'] = $list;
+        $params['action'] = $action;
+
+        $oQueueDispatcher = new queueDispatcher();
+        $oQueueDispatcher->addProcess('mailer', $params);
+        $res = $oQueueDispatcher->sendToQueue();
+
+        return $res;
+    }
+
+    /**
+     * Retrieve the current logged in users name
+     *
+     * @return unknown
+     */
+    private static function getSender()
+    {
+        // default if user not found
+        $sender = 'KnowledgeTree';
+
+        // Use the current user as the "inviter" / sender of the emails
+        // goes into the user array for use in the email
+        $oSender = User::get($_SESSION['userID']);
+
+        if (!PEAR::isError($oSender) || empty($oSender)) {
+            $sender = $oSender->getName();
+        }
+
+        return $sender;
+    }
+
+    /**
      * Check whether an email address is being used within the system
      *
      * @param array $addresses
@@ -623,6 +733,13 @@ class KTUserUtil {
         return $result;
     }
 
+    /**
+     * Retrieve the name of a document or folder
+     *
+     * @param int $id - the id of the document or folder
+     * @param int $objectTypeId - an 'F' for folder and a 'D' for document
+     * @return string $name
+     */
     static private function getObjectName($id, $objectTypeId)
     {
         $name = null;

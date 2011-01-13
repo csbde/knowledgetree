@@ -49,7 +49,16 @@ kt.app.sharewithusers=new function(){
 	        sharedData['object_id'] = document.getElementById('object.id').value;
 	        sharedData['object_type'] = document.getElementById('object.type').value;
 	        sharedData['message'] = document.getElementById('share.message').value;
-	        
+			jQuery('#extinvitewindow').block({ 
+												message: '<div id="loading_invite_users">',
+												overlayCSS: {
+													backgroundColor: '#00f transparent'
+												},
+												css: {
+														border:		'',
+														backgroundColor:'#fff transparent',
+													},
+											});
 	        kt.api.shareUsers(emails, userType, sharedData, self.inviteCallback, function() {});
 	    }
 	    

@@ -3,7 +3,7 @@
  * KnowledgeTree Community Edition
  * Document Management Made Simple
  * Copyright (C) 2008, 2009, 2010 KnowledgeTree Inc.
- * 
+ *
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License version 3 as published by the
@@ -244,9 +244,11 @@ class Subscription extends KTEntity {
             $this->sIdFieldName => $this->iExternalID,
             'is_alerted' => KTUtil::anyToBool($this->bIsAlerted),
         );
+
         if($this->sIdFieldName == 'folder_id'){
             $fields['with_subfolders'] = KTUtil::anyToBool($this->bWithSubFolders);
         }
+
         return $fields;
     }
 
@@ -282,6 +284,7 @@ class Subscription extends KTEntity {
                                             $iSubscriptionType,
                                             $res["is_alerted"]);
         $oSubscription->iId = $iSubscriptionID;
+
         return $oSubscription;
     }
 
@@ -313,6 +316,7 @@ class Subscription extends KTEntity {
                                             $iSubscriptionType,
                                             $res["is_alerted"]);
         $oSubscription->iId = $res['id'];
+
         return $oSubscription;
     }
 
@@ -353,6 +357,7 @@ class Subscription extends KTEntity {
         }
 
     }
+
     /**
      * Returns the correct id field name for the subscription type
      *

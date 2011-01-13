@@ -133,6 +133,7 @@ class KTPage {
         $this->requireCSSResource("resources/css/kt-ie-icons.css", true);
 
         /* default js files initialisation */
+        // TODO : Remove js based on user type.
         $aJS = Array();
 
 		$aJS[] = 'thirdpartyjs/MochiKit/MochiKitPacked.js';
@@ -154,8 +155,13 @@ class KTPage {
         $aJS[] = 'resources/js/newui/kt.lib.js';
         $aJS[] = 'resources/js/newui/kt.api.js';
         $aJS[] = 'resources/js/newui/kt.app.upload.js';
-        $aJS[] = 'resources/js/newui/kt.app.sharewithusers.js';
-        $aJS[] = 'resources/js/newui/kt.app.inviteusers.js';
+        // Shared users cannot re-share or invite users to the system.
+        if(!SharedUserUtil::isSharedUser())
+        {
+	        $aJS[] = 'resources/js/newui/kt.app.sharewithusers.js';
+	        $aJS[] = 'resources/js/newui/kt.app.inviteusers.js';
+	        $aJS[] = 'resources/js/jquery.blockui.js';
+        }
         $aJS[] = 'resources/js/newui/newUIFunctionality.js';
         $aJS[] = 'resources/js/newui/jquery.helper.js';
         $aJS[] = 'resources/js/newui/buttontabs.jquery.js';

@@ -62,8 +62,10 @@ class DashboardDispatcher extends KTStandardDispatcher {
         $this->aBreadcrumbs = array(
             array('action' => 'dashboard', 'name' => _kt('Dashboard')),
         );
+
         return parent::KTStandardDispatcher();
     }
+
     function do_main() {
         $this->oPage->setShowPortlets(false);
         // retrieve action items for the user.
@@ -78,7 +80,6 @@ class DashboardDispatcher extends KTStandardDispatcher {
         $portlet->setActions($aActions,null);
 
         $midToolbarButtons = $portlet->showButtons();
-
 
         $oDashletRegistry =& KTDashletRegistry::getSingleton();
         $aDashlets = $oDashletRegistry->getDashlets($this->oUser);
@@ -96,12 +97,13 @@ class DashboardDispatcher extends KTStandardDispatcher {
 
         $i = 0;
         foreach ($aDashlets as $oDashlet) {
-            if(strpos(strtolower($oDashlet->sTitle), 'welcome to knowledgetree') !== false && !empty($aDashletsLeft)){
+            if ((strpos(strtolower($oDashlet->sTitle), 'welcome to knowledgetree') !== false) && !empty($aDashletsLeft)) {
                 array_unshift($aDashletsLeft, $oDashlet);
-            }else{
+            } else {
                 if ($i == 0) { $aDashletsLeft[] = $oDashlet; }
                 else {$aDashletsRight[] = $oDashlet; }
             }
+
             $i += 1;
             $i %= 2;
         }
@@ -129,7 +131,7 @@ class DashboardDispatcher extends KTStandardDispatcher {
         // dashboard
         $sDashboardState = $this->oUser->getDashboardState();
         $sDSJS = 'var savedState = ';
-        if($sDashboardState == null) {
+        if ($sDashboardState == null) {
             $sDSJS .= 'false';
             $sDashboardState = false;
         } else {
@@ -139,6 +141,20 @@ class DashboardDispatcher extends KTStandardDispatcher {
         $this->oPage->requireJSStandalone($sDSJS);
         $this->oPage->requireJSResource('resources/js/dashboard.js');
 
+        $ktOlarkPopup = null;
+        // temporarily disabled
+        if (false && ACCOUNT_ROUTING_ENABLED && liveAccounts::isTrialAccount() && isset($_SESSION['isFirstLogin'])) {
+            $js = preg_replace('/.*[\/\\\\]plugins/', 'plugins', KT_LIVE_DIR) . '/resources/js/olark/olark.js';
+            $this->oPage->requireJsResource($js);
+            // add popup to page
+            $ktOlarkPopup = '{literal}
+<script type="text/javascript">
+    ktOlarkPopupTrigger("Welcome to KnowledgeTree.  If you have any questions, please let us know.", 0);
+</script>
+{/literal}';
+            unset($_SESSION['isFirstLogin']);
+        }
+
         // render
         $oTemplating =& KTTemplating::getSingleton();
         $oTemplate = $oTemplating->loadTemplate('kt3/dashboard');
@@ -147,10 +163,11 @@ class DashboardDispatcher extends KTStandardDispatcher {
               'dashlets_left' => $aDashletsLeft,
               'dashlets_right' => $aDashletsRight,
               'midToolbarButtons' => $midToolbarButtons,
+              'ktOlarkPopup' => $ktOlarkPopup
         );
 
 		// TODO : Is this ok?
-		if(file_exists(KT_DIR.DIRECTORY_SEPARATOR.'var'.DIRECTORY_SEPARATOR.'bin'.DIRECTORY_SEPARATOR."firstlogin.lock")) {
+		if (file_exists(KT_DIR.DIRECTORY_SEPARATOR . 'var' . DIRECTORY_SEPARATOR . 'bin' . DIRECTORY_SEPARATOR . 'firstlogin.lock')) {
 			$this->runFirstLoginWizard($oTemplate, $aTemplateData);
 		}
 
@@ -164,7 +181,6 @@ class DashboardDispatcher extends KTStandardDispatcher {
     	//$this->oPage->requireJSResource('thirdpartyjs/jquery/jquery-1.3.2.min.js');
     	$this->oPage->requireJSResource('thirdpartyjs/jquery/jquery_noconflict.js');
     	$this->oPage->requireJSResource('setup/wizard/resources/js/firstlogin.js');
-
     }
 
     // return some kind of ID for each dashlet
@@ -199,10 +215,11 @@ class DashboardDispatcher extends KTStandardDispatcher {
 
 
     function json_saveDashboardState() {
-        $sState = KTUtil::arrayGet($_REQUEST, 'state', array('error'=>true));
+        $sState = KTUtil::arrayGet($_REQUEST, 'state', array('error' => true));
         $this->oUser->setDashboardState($sState);
         return array('success' => true);
     }
+
 }
 
 $oDispatcher = new DashboardDispatcher();

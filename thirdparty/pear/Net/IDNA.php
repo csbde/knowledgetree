@@ -62,7 +62,7 @@ class Net_IDNA
 
         /* If the class exists, return a new instance of it. */
         if (class_exists($class)) {
-            $instance = &new $class($params);
+            $instance = new $class($params);
             return $instance;
         }
 

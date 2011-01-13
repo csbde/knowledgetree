@@ -599,12 +599,6 @@ class KTEntityUtil {
 
         list($bCached, $mCached) = $oCache->get($group, $vals);
 
-
-        
-        
-        
-        
-        
         /* *** Execute the query *** */
         // If only id's are requested, return them
         if($bIDs){

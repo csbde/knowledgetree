@@ -2248,6 +2248,38 @@ body #content #add_dashlet
     vertical-align: top;
 }
 
+/* Admin section authentication */
+
+.auth fieldset {
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
+    /*-webkit-box-shadow: 0px 0px 5px #999999;
+    -moz-box-shadow: 0px 0px 5px #999999;*/
+    box-shadow: 0px 0px 5px #999999;
+    border: 1px solid #85A2BD;
+    padding: 15px 0px 5px 0px;
+    margin-bottom: 15px;
+    position: relative;
+    background-color: #FFFFFF;
+    display: block;
+}
+
+.auth legend {
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
+    -webkit-box-shadow: 0px 0px 2px #999999;
+    -moz-box-shadow: 0px 0px 2px #999999;
+    box-shadow: 0px 0px 2px #999999;
+    border: 1px solid #CCC; /*#85A2BD;*/
+    padding: 15px 0px 5px 0px;
+    position: relative;
+    background-color: #FFFFFF;
+    display: block;
+}
+
+
 /* ================= Search widget - override ExtJS CSS ================= */
 
 .x-toolbar{

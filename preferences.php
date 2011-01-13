@@ -84,7 +84,8 @@ class PreferencesDispatcher extends KTStandardDispatcher {
                 'value' => sanitizeForHTML($this->oUser->getName()),
                 'autocomplete' => false));
 
-        if($useEmail === false){
+        if($useEmail === false)
+        {
             $widgets[] = array('ktcore.widgets.string', array(
                 'label' => _kt('Email Address'),
                 'required' => true,
@@ -102,17 +103,19 @@ class PreferencesDispatcher extends KTStandardDispatcher {
                 'autocomplete' => false));
 
         $oForm->setWidgets($widgets);
-        $oForm->setValidators(array(
-            array('ktcore.validators.string', array(
+        $validators[] = array('ktcore.validators.string', array(
                 'test' => 'name',
-                'output' => 'name')),
-            array('ktcore.validators.emailaddress', array(
-                'test' => 'email_address',
-                'output' => 'email_address')),
-            array('ktcore.validators.boolean', array(
+                'output' => 'name'));
+		$validators[] = array('ktcore.validators.boolean', array(
                 'test' => 'email_notifications',
-                'output' => 'email_notifications')),
-        ));
+                'output' => 'email_notifications'));
+        if($useEmail === false)
+        {
+			$validators[] = array('ktcore.validators.emailaddress', array(
+	                'test' => 'email_address',
+	                'output' => 'email_address'));
+        }
+        $oForm->setValidators($validators);
 
         return $oForm;
 
@@ -245,7 +248,9 @@ class PreferencesDispatcher extends KTStandardDispatcher {
         $this->startTransaction();
         $oUser =& $this->oUser;
         $oUser->setName($res['name']);
-        $oUser->setEmail($res['email_address']);
+        $oConfig = KTConfig::getSingleton();
+        $useEmail = $oConfig->get('user_prefs/useEmailLogin', false);
+        if($useEmail === false) { $oUser->setEmail($res['email_address']); }
         $oUser->setEmailNotification($res['email_notifications']);
 
 

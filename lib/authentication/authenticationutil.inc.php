@@ -41,6 +41,7 @@ require_once(KT_LIB_DIR .  '/authentication/builtinauthenticationprovider.inc.ph
 require_once(KT_LIB_DIR .  '/authentication/authenticationproviderregistry.inc.php');
 
 class KTAuthenticationUtil {
+    
     function checkPassword ($oUser, $sPassword) {
         $oUser =& KTUtil::getObject('User', $oUser);
         if ($oUser->getDisabled() == 2)
@@ -53,18 +54,24 @@ class KTAuthenticationUtil {
 
     function &getAuthenticatorForUser($oUser) {
         $iSourceId = $oUser->getAuthenticationSourceId();
-        return KTAuthenticationUtil::getAuthenticatorForSource($iSourceId);
+        $authenticator = KTAuthenticationUtil::getAuthenticatorForSource($iSourceId);
+        
+        return $authenticator;
     }
 
     function &getAuthenticationProviderForUser($oUser) {
         if (PEAR::isError($oUser)) { var_dump($oUser); }
         $iSourceId = $oUser->getAuthenticationSourceId();
-        return KTAuthenticationUtil::getAuthenticationProviderForSource($iSourceId);
+        $provider = KTAuthenticationUtil::getAuthenticationProviderForSource($iSourceId);
+        
+        return $provider;
     }
 
     function &getAuthenticatorForSource($oSource) {
         $oProvider =& KTAuthenticationUtil::getAuthenticationProviderForSource($oSource);
-        return $oProvider->getAuthenticator($oSource);
+        $authenticator = $oProvider->getAuthenticator($oSource);
+        
+        return $authenticator;
     }
 
     function &getAuthenticationProviderForSource($oSource) {
@@ -76,6 +83,7 @@ class KTAuthenticationUtil {
         } else {
             $oProvider = new KTBuiltinAuthenticationProvider;
         }
+        
         return $oProvider;
     }
 
@@ -83,6 +91,7 @@ class KTAuthenticationUtil {
         $oGroup =& KTUtil::getObject('Group', $oGroup);
         $iSourceId = $oGroup->getAuthenticationSourceId();
         $oAuthenticator = KTAuthenticationUtil::getAuthenticatorForSource($iSourceId);
+        
         return $oAuthenticator->synchroniseGroup($oGroup);
     }
 
@@ -95,6 +104,8 @@ class KTAuthenticationUtil {
                 return $res;
             }
         }
+        
         return false;
     }
+    
 }
