@@ -1089,8 +1089,8 @@ class KTPermissionUtil {
         $options['map'] = $aMapPermAllowed;
         $options['roles'] = $role_mappings;
 
-        // If there are no additional role allocations then we don't need to loop through the folders
-        if(!empty($role_allocations)){
+        // If there are no role allocations then we don't need to loop through the folders
+        if(!empty($role_mappings)){
             $aFolders = KTFolderUtil::getFolderListByPO($objectId);
             foreach ($aFolders as $folder) {
                self::updateFolderPermissionLookup($folder, $options);
