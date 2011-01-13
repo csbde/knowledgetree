@@ -392,15 +392,19 @@ class BrowseView {
 		    return $response;
 		}
 
+		// TODO set pagecount dynamically
 		$pageCount = 1;
 		$perPage = 15;
 		$pageLimit = 3;
+		$offset = ($pageCount - 1) * $perPage;
+		$limit = $perPage * $pageLimit;
 
 		$response['returndata'] = $folderId;
+		// TODO consider this perhaps moving back out to the dispatcher?
 		$response['bulkActionMenu'] = $this->renderBulkActionMenu($aBulkActions, $folder);
 
 		$totalItems = 0;
-        $folderContentItems = $this->getFolderContent($folderId, $totalItems);
+        $folderContentItems = $this->getFolderContent($folderId, $totalItems, array('offset' => $offset, 'limit' => $limit));
 
         $folderView = $folderItems = array();
 
@@ -435,9 +439,6 @@ class BrowseView {
 
 		$folderView[] = '</div>';
 
-		$fullPageCount = ceil($totalItems / $perPage);
-		$fullPageCount = $pageCount;
-
 		$response['folderContents'] = join($folderView);
 
 		// Adding Fragments for drag & drop client side processing
@@ -447,6 +448,7 @@ class BrowseView {
 		$response['fragments'] .= $this->renderFolderItem(null, true);
 
 		// Apply Clientside Pagination element
+		$fullPageCount = ceil($totalItems / $perPage);
 		$response['pagination'] = $this->paginateByDiv($fullPageCount, 'page', 'paginate', 'item', "kt.pages.browse.viewPage('[page]');", 'kt.pages.browse.prevPage();', 'kt.pages.browse.nextPage();');
 
 		// Add Additional browse view Javascript
@@ -460,11 +462,12 @@ class BrowseView {
 	 *
 	 * @param string $folderId
 	 * @param int $totalItems
+	 * @param array $options Offset/Limit
 	 * @param string $sortField
 	 * @param string $asc
 	 * @return mixed $ret
 	 */
-	public function getFolderContent($folderId, &$totalItems = 0, $sortField = 'title', $asc = true)
+	public function getFolderContent($folderId, &$totalItems = 0, $options = array(), $sortField = 'title', $asc = true)
 	{
 		$user_id = $_SESSION['userID'];
 		if (is_null($this->oUser)) {
@@ -477,7 +480,7 @@ class BrowseView {
 
 		//Get folder content, depth = 1, types= Directory, File, Shortcut, webserviceversion override
 		$totalItems = 0;
-		$folder = &$kt->get_folder_contents($folderId, 1, 'DFS', $totalItems);
+		$folder = &$kt->get_folder_contents($folderId, 1, 'DFS', $totalItems, $options);
 		$items = $folder['results']['items'];
 		$ret = array('folders' => array(), 'documents' => array());
 
