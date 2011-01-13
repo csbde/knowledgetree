@@ -107,6 +107,7 @@ class KTFolderUtil {
             'transactionNS' => 'ktcore.transactions.create',
             'userid' => $oUser->getId(),
             'ip' => Session::getClientIP(),
+        	'parentid' => $oFolder->getParentID(),
         ));
 
         if (!$bulk_action) {
@@ -232,6 +233,7 @@ class KTFolderUtil {
             'transactionNS' => 'ktcore.transactions.move',
             'userid' => $oUser->getId(),
             'ip' => Session::getClientIP(),
+        	'parentid' => $oFolder->getParentID(),
         ));
 
         Document::clearAllCaches();
@@ -302,6 +304,7 @@ class KTFolderUtil {
             'transactionNS' => 'ktcore.transactions.rename',
             'userid' => $_SESSION['userID'],
             'ip' => Session::getClientIP(),
+        	'parentid' => $oFolder->getParentID(),
         ));
 
         if (PEAR::isError($oTransaction)) {
@@ -424,6 +427,22 @@ class KTFolderUtil {
             DBUtil::rollback();
             return PEAR::raiseError(_kt('Failure deleting folders.'));
         }
+        
+    	$sComment = sprintf(_kt('Folder deleted'));
+        if ($sReason !== null) {
+            $sComment .= sprintf(_kt(" (reason: %s)"), $sReason);
+        }
+        
+        //foreach($aFolderIds as $folderID) {
+        $oTransaction = KTFolderTransaction::createFromArray(array(
+            'folderid' => $oFolder->getId(),
+            'comment' => _kt('Folder deleted'),
+            'transactionNS' => 'ktcore.transactions.delete',
+            'userid' => $oUser->getId(),
+            'ip' => Session::getClientIP(),
+        	'parentid' => $oFolder->getParentID(),
+        ));
+        //}
 
         // now that the folder has been deleted we delete all the shortcuts
         if (!empty($aSymlinks)) {
@@ -633,6 +652,7 @@ class KTFolderUtil {
             'transactionNS' => 'ktcore.transactions.copy',
             'userid' => $oUser->getId(),
             'ip' => Session::getClientIP(),
+        	'parentid' => $oFolder->getParentID(),
         ));
 
         // If the folder inherits its permissions then we set it to inherit from the new parent folder and update permissions

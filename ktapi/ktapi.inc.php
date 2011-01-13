@@ -5229,8 +5229,7 @@ class KTAPI {
 	/**
      * Gets a user's Gravatar
      *
-     * @param int $user_name
-     * @param int $limit
+     * @param string $user_name
      */
     public function get_user_gravatar($user_name)
 	{
@@ -5253,6 +5252,240 @@ class KTAPI {
 	    $response['status_code'] = 0;
 
 		return $response;
+	}
+	
+	/**
+     * Reports the total number of documents and their total size
+     *
+     * @param int $folder_id
+     */
+	public function get_folder_total_documents($folder_id)
+	{
+		$GLOBALS['default']->log->debug("KTAPI get_folder_total_files $folder_id");
+		
+		$folder = KTAPI_Folder::get($this, $folder_id);
+		
+		if (PEAR::isError($folder))
+		{
+			$GLOBALS['default']->log->error('KTAPI get_folder_total_files folder error '.$folder->getMessage());
+			
+			return array(
+				"status_code" => 1,
+				"message" => $folder->getMessage()
+			);
+		}
+		
+		$result = $folder->get_total_documents();
+		
+		$response['status_code'] = 0;
+		
+		$response = array_merge($response, $result);
+	    
+	    return $response;
+	}
+	
+	/**
+     * Reports whether a folder contains any documents and/or subfolders
+     *
+     * @param int $folder_id
+	*/
+	public function is_folder_empty($folder_id)
+	{
+		$GLOBALS['default']->log->debug("KTAPI is_folder_empty $folder_id");
+		
+		$folder = KTAPI_Folder::get($this, $folder_id);
+		
+		//if we get an error on the folder, we assume that it is empty!
+		if (PEAR::isError($folder))
+		{
+			$GLOBALS['default']->log->error('KTAPI is_folder_empty folder error '.$folder->getMessage());
+			
+			return array(
+				"status_code" => 0,
+				"message" => 'true'
+			);
+		}
+		
+		$result = $folder->is_empty();
+		
+		$GLOBALS['default']->log->debug("KTAPI is_folder_empty result $result");
+		
+		$response['status_code'] = 0;
+		
+		$response['message'] = 'false';
+		
+		if($result) {
+			$response['message'] = 'true';
+		}
+	    
+	    return $response;
+	}
+	
+	/**
+	 * EXPERIMENTAL
+     * Determines whether a folder has changed using timestamp (i.e. are there any changes since ...)
+     *
+     * @param int $user_name
+     * @param int $limit
+     */
+	/*public function get_folder_has_changes($folder_id, $timestamp)
+	{
+		$GLOBALS['default']->log->debug("KTAPI get_folder_has_changes $folder_id $timestamp");
+		
+		$folder = KTAPI_Folder::get($this, $folder_id);
+		
+		if (PEAR::isError($folder))
+		{
+			$GLOBALS['default']->log->error('KTAPI get_folder_has_changes folder error '.$folder->getMessage());
+			
+			return array(
+				"status_code" => 1,
+				"message" => $folder->getMessage()
+			);
+		}
+		
+		$timezone = date_default_timezone_get();
+    	$GLOBALS['default']->log->debug("extractChangeID timezone $timezone");
+    	date_default_timezone_set("UTC");
+    	
+    	$timestamp = date("c", $timestamp);
+    	
+    	$GLOBALS['default']->log->debug("get_folder_has_changes timestamp $timestamp");
+    	$GLOBALS['default']->log->debug('KTAPI get_folder_has_changes current epoch ' .time());
+        
+        //TODO: remove this!!!
+        date_default_timezone_set($timezone);
+		
+		$has_changes = $folder->hasChangesSince($timestamp);
+		
+		//$current_change_id = $folder->getChangeID();
+		
+		$response['has_changes'] = $has_changes ? 'TRUE' : 'FALSE';
+		
+		//if ($has_changes)
+		//{
+			//$response['has_changes'] = 'TRUE';
+		//}
+		//else
+		//{
+			//$response['has_changes'] = 'FALSE';
+		//}
+		
+		$GLOBALS['default']->log->debug("KTAPI get_folder_has_changes has changes $has_changes");
+			
+		//$response['change_id'] = $current_change_id;
+		//$response['message'] = strval($current_change_id);
+	    $response['status_code'] = 0;
+	    
+	    return $response;
+	}*/
+	
+	/**
+     * Determines whether a folder has changed using MD5 hash of folder details and contents
+     *
+     * @param int $user_name
+     * @param int $limit
+     */
+	public function get_folder_has_changes($folder_id, $change_id)
+	{
+		$GLOBALS['default']->log->debug("KTAPI get_folder_has_changes $folder_id $change_id");
+		
+		$folder = KTAPI_Folder::get($this, $folder_id);
+		
+		if (PEAR::isError($folder))
+		{
+			$GLOBALS['default']->log->error('KTAPI get_folder_has_changes folder error '.$folder->getMessage());
+			
+			return array(
+				"status_code" => 1,
+				"message" => $folder->getMessage()
+			);
+		}
+		
+		$current_change_id = $folder->getChangeID();
+		
+		$response['has_changes'] = $current_change_id == $change_id ? 'FALSE' : 'TRUE';
+		
+		$GLOBALS['default']->log->debug("KTAPI get_folder_has_changes current changeID $current_change_id");
+	
+		$response['change_id'] = $current_change_id;
+		//$response['message'] = strval($current_change_id);
+	    $response['status_code'] = 0;
+	    
+	    return $response;
+	}
+	
+	/**
+     * Determines whether and how a folder has changed
+     *
+     * @param int $folder_id
+     * @param string changeid
+     * @param int $depth
+     */
+	public function get_folder_changes($folder_id, $changeid_timestamp, $depth)
+	{
+		$GLOBALS['default']->log->debug("KTAPI get_folder_changes $folder_id $changeid_timestamp");
+		
+		$folder = KTAPI_Folder::get($this, $folder_id);
+		
+		if (PEAR::isError($folder))
+		{
+			$GLOBALS['default']->log->error('KTAPI get_folder_changes folder error '.$folder->getMessage());
+			
+			return array(
+				"status_code" => 1,
+				"message" => $folder->getMessage()
+			);
+		}
+		//get the changeID and timestamp from the requesting changeID
+		$change_id_split = KTUtil::extractChangeID($changeid_timestamp);
+		$change_id = $change_id_split[0];
+		$timestamp = $change_id_split[1];
+				
+		$GLOBALS['default']->log->debug('KTAPI get_folder_changes split change id '.print_r($change_id_split, true));		
+		
+		//what is the folder's current changeID?
+		$current_change_id = $folder->getChangeID();
+		
+		$GLOBALS['default']->log->debug("KTAPI get_folder_changes current change id $current_change_id");
+
+		//if the current changeID matches the requesting changeID, there aren't any changes!
+		if ($current_change_id == $change_id)
+		{
+			$GLOBALS['default']->log->debug("KTAPI get_folder_changes NO CHANGES");
+			
+			//TODO: remove this!!!
+	    	//$timezone = date_default_timezone_get();
+	    	//date_default_timezone_set("UTC");
+	    	
+	    	//$new_timestamp = time();
+	        //date_default_timezone_set($timezone);
+			
+			return array(
+				"status_code" => 1,
+				"message" => KTAPI_ERROR_FOLDER_NO_CHANGES,
+				"change_id" => (string)$current_change_id."_".time(),
+			);
+		}		
+		
+		//get the changes!
+		$changes = $folder->getChanges($timestamp, $depth);
+		
+		$GLOBALS['default']->log->debug('KTAPI get_folder_changes changes '.print_r($changes, true));
+		
+		//TODO: remove this!!!
+    	//$timezone = date_default_timezone_get();
+    	//date_default_timezone_set("UTC");
+    	
+    	//$new_timestamp = time();
+        //date_default_timezone_set($timezone);
+				
+		return array(
+			"status_code" => 0,
+			"message" => "The folder has changes.",
+			"change_id" => (string)$current_change_id."_".time(),
+			"changes" => $changes		
+		);
 	}
 
 }
