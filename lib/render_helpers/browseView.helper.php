@@ -234,8 +234,7 @@ class sharedUserBrowseView extends browseView
 		// Sanitize document title
 		$item['title'] = sanitizeForHTML($item['title']);
 		$item['filesize'] = KTUtil::filesizeToString($item['filesize']);
-		// Offset the dates accordingly
-		//$item = $this->offsetDates($item);
+
 		$tpl='
 			<span class="doc browseView 1">
 				<table cellspacing="0" cellpadding="0" width="100%" border="0" class="doc item ddebug">
@@ -301,6 +300,7 @@ class sharedUserBrowseView extends browseView
 		$checkbox = '';
 		// Sanitize folder title
 		$item['title'] = sanitizeForHTML($item['title']);
+		
 		$tpl='
 			<span class="doc browseView">
 			<table cellspacing="0" cellpadding="0" width="100%" border="0" class="folder item">
@@ -374,19 +374,6 @@ class browseView {
 		$oPage->requireCSSResource("resources/css/newui/browseView.css?" . rand());
 	}
 
-	/**
-	 * Offset the date according to the users timezone.
-	 *
-	 * @param array $item
-	 * @return array
-	 */
-	private function offsetDates($item)
-	{
-		isset($item['created_date']) ? $item['created_date'] = datetimeutil::getDisplayDate($item['created_date']) : '';
-		isset($item['modified_date']) ? $item['modified_date'] = datetimeutil::getDisplayDate($item['modified_date']) : '';
-		return $item;
-	}
-	
 	public function getJavaScript()
 	{
 		$javaScript = '';
@@ -806,8 +793,6 @@ class browseView {
 		// Check if document is in workflow and if action has not been restricted.
 		// Another layer of permissions
 		//$item = $this->checkWorkflowPermissions($item, $oDocument);
-		// Offset the dates accordingly
-		//$item = $this->offsetDates($item);
 		
 		$item['separatorA'] = $item['actions.copy'] == '' ? '' : $ns;
 		$item['separatorB'] = $item['actions.download'] == '' || $item['actions.instantview'] == '' ? '' : $ns;
