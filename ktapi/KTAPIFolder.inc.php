@@ -519,7 +519,6 @@ class KTAPI_Folder extends KTAPI_FolderItem
         return $perms;
     }
 
-
     /**
 	 * Gets a folder listing, recursing to the given depth.
 	 *
@@ -542,8 +541,9 @@ class KTAPI_Folder extends KTAPI_FolderItem
 	 * @param array $options Options include limit, offset, orderby (overridden for folders)
 	 * @return array
 	 */
-    function get_listing($depth = 1, $what = 'DFS', &$totalItems = 0, $options = array())
+    function get_listing($depth = 1, $what = 'DFS', &$totalItems = -1, $options = array())
     {
+        $calculateTotal = ($totalItems == -1) ? false : true;
         $totalItems = $totalFolders = $totalDocuments = 0;
 
         // are we fetching the entire tree?
@@ -586,13 +586,15 @@ class KTAPI_Folder extends KTAPI_FolderItem
             $fQueryOptions = $queryOptions;
             $fQueryOptions['orderby'] = 'F.name';
             $optionString = DBUtil::getDbOptions($fQueryOptions);
-            $totalSql = "SELECT count(F.id) as folder_ids FROM folders as F $permissionJoin $where GROUP BY F.id";
 
-            $totalFolders = DBUtil::getResultArrayKey(array($totalSql, array_merge($permissionParams, array($this->folderid))), 'folder_ids');
-            if (PEAR::isError($totalFolders)) {
-                return $totalFolders;
+            if ($calculateTotal) {
+                $totalSql = "SELECT count(F.id) as folder_ids FROM folders as F $permissionJoin $where GROUP BY F.id";
+                $totalFolders = DBUtil::getResultArrayKey(array($totalSql, array_merge($permissionParams, array($this->folderid))), 'folder_ids');
+                if (PEAR::isError($totalFolders)) {
+                    return $totalFolders;
+                }
+                $totalFolders = count($totalFolders);
             }
-            $totalFolders = count($totalFolders);
 
             $sql = "SELECT F.id as folder_id FROM folders as F $permissionJoin $where $optionString";
             $folder_children = DBUtil::getResultArrayKey(array($sql, array_merge($permissionParams, array($this->folderid))), 'folder_id');
@@ -704,19 +706,22 @@ class KTAPI_Folder extends KTAPI_FolderItem
             $queryOptions['orderby'] = 'DMV.name';
             $optionString = DBUtil::getDbOptions($queryOptions);
 
-            $totalSql = "SELECT count(D.id) as document_ids FROM documents as D $permissionJoin $where GROUP BY D.id";
-
-            $totalDocuments = DBUtil::getResultArrayKey(array($totalSql, array_merge($permissionParams, array($this->folderid))), 'document_ids');
-            if (PEAR::isError($totalDocuments)) {
-                return $totalDocuments;
+            if ($calculateTotal) {
+                $totalSql = "SELECT count(D.id) as document_ids FROM documents as D $permissionJoin $where GROUP BY D.id";
+                $totalDocuments = DBUtil::getResultArrayKey(array($totalSql, array_merge($permissionParams, array($this->folderid))), 'document_ids');
+                if (PEAR::isError($totalDocuments)) {
+                    // FIXME not what we want?
+                    return $totalDocuments;
+                }
+                $totalDocuments = count($totalDocuments);
             }
-            $totalDocuments = count($totalDocuments);
 
             // do we need to fetch anything or do we just need the count for paging?
             if ($remaining != 0) {
                 $sql = "SELECT D.id as document_id FROM documents as D $contentVersionJoin $permissionJoin $where $optionString";
                 $document_children = DBUtil::getResultArrayKey(array($sql, array_merge($permissionParams, array($this->folderid))), 'document_id');
                 if (PEAR::isError($document_children)) {
+                    // FIXME not what we want?
                     return $document_children;
                 }
 
