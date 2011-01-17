@@ -145,6 +145,7 @@ class TimezoneConversion
 	 *
 	 * @return array
 	 */
+	
 	public function getPopularZones()
 	{
 		$standard = array();
@@ -1404,7 +1405,7 @@ class TimezoneConversion
 					$timeOffset = $userDateTimeZone->getOffset($utcDateTime);
 					if($timeOffset != 0)
 					{
-						return round(($timeOffset/3600));
+						return ($timeOffset/3600);
 					}
 					else 
 					{
