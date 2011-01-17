@@ -20,7 +20,7 @@ class ktVar {
 		if ($exit) { exit; }
 	}
 
-	public static function sortArrayMatrixByKeyValue($array, $sortKey, f$asc = true)
+	public static function sortArrayMatrixByKeyValue($array, $sortKey, $asc = true)
 	{
 		$arr = $array;
 		if (is_array($array)) {
