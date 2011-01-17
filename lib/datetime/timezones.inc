@@ -1405,7 +1405,8 @@ class TimezoneConversion
 					$timeOffset = $userDateTimeZone->getOffset($utcDateTime);
 					if($timeOffset != 0)
 					{
-						return ($timeOffset/3600);
+						$offset = ($timeOffset/3600);
+						return $offset;
 					}
 					else 
 					{

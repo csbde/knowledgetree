@@ -228,6 +228,7 @@ class BaseConfigDispatcher extends KTAdminDispatcher
 	            $input .= isset($options['label']) ? "<label for='{$id}'>{$options['label']}</label>&nbsp;&nbsp;" : '';
 	            $input .= "<input name='configArray[{$id}]' value='{$value}' size = '5'>";
 	            break;
+	            
 	        case 'class':
 	        	$value = ($value == 'default') ? $defaultValue : $value;
 	        	$input .= "<select id='{$id}' name='configArray[{$id}]'>&nbsp;&nbsp;";
@@ -239,6 +240,7 @@ class BaseConfigDispatcher extends KTAdminDispatcher
 	        	}
 	        	$input .= '</select>';
 	        	break;
+	        	
 	        case 'string':
             default:
 	            // Prepend a label if set
