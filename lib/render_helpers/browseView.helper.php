@@ -55,7 +55,7 @@ class sharedUserBrowseAsView extends browseView
 class sharedUserBrowseView extends browseView
 {
 	private $oUser = null;
-	
+
 	/**
 	 * Get the folder listing
 	 *
@@ -268,7 +268,7 @@ class sharedUserBrowseView extends browseView
 							<div class="title"><a class="clearLink" href="[document_link]" style="">[title]</a></div>
 
 							<div class="detail">
-							<span class="item">File size: <span class="user">[filesize]</span></span><span class="item"> Owner: <span class="user">[owned_by]</span></span><span class="item">Created: <span class="date">[created_date]</span> by <span class="user">[created_by]</span></span><span class="item">Updated: <span class="date">[modified_date]</span> by <span class="user">[modified_by]</span></span>
+							<span class="item"> Owner: <span class="user">[owned_by]</span></span><span class="item">Created: <span class="date">[created_date]</span> by <span class="user">[created_by]</span></span><span class="item">Updated: <span class="date">[modified_date]</span> by <span class="user">[modified_by]</span></span><span class="item">File size: <span class="user">[filesize]</span></span>
 							</div>
 						</td>
 					</tr>
@@ -621,7 +621,7 @@ class browseView {
 		if(!$allowaction['immutable']) $item['actions.finalize_document'] = $ns;
 		if(!$allowaction['ownershipchange']) $item['actions.change_owner'] = $ns;
 		if(!$allowaction['checkout'])
-		{ 
+		{
 			$item['allowdoczohoedit'] = '';
 			$item['actions.checkout'] = $ns;
 		}
@@ -631,10 +631,10 @@ class browseView {
 		if(!$allowaction['email']) $item['actions.email'] = $ns;
 		if(!$allowaction['view']) $item['actions.download'] = $ns;
 		if(!$allowaction['sharecontent']) $item['actions.share_document'] = $ns;
-		
+
 		return $item;
 	}
-	
+
 	/**
 	 * Renders html block for a document in the new browse
 	 *
@@ -652,7 +652,7 @@ class browseView {
 		$share_separator = '';
 		$item['separatorE'] = '';
 		$ns = " not_supported";
-		
+
 		$item['mimetypeid'] = (method_exists($oDocument,'getMimeTypeId')) ? $oDocument->getMimeTypeId() : '0';
 		$iconFile = 'resources/mimetypes/newui/' . KTMime::getIconPath($item['mimetypeid']) . '.png';
 		$item['icon_exists'] = file_exists(KT_DIR . '/' . $iconFile);
@@ -671,7 +671,7 @@ class browseView {
 		$hasDelete = (strpos($permissions, 'D') === false) ? false : true;
 
 		$item['filename'] = (strlen($item['filename']) > $fileNameCutoff) ? (substr($item['filename'], 0, $fileNameCutoff - 3) . "...") : $item['filename'];
-	
+
 		$item['has_workflow'] = '';
 		$item['is_immutable'] = $item['is_immutable'] == 'true' ? true : false;
 		$item['is_immutable'] = $item['is_immutable'] ? '' : $ns;
@@ -712,7 +712,7 @@ class browseView {
 
 		$item['actions.finalize_document'] = ($isCheckedOut) ? $ns : $item['actions.finalize_document'];
 
-		
+
 		if (!$hasWrite) {
 		    $item['actions.change_owner'] = $ns;
 		    $item['actions.share_document'] = $ns;
@@ -791,7 +791,7 @@ class browseView {
 		// Check if document is in workflow and if action has not been restricted.
 		// Another layer of permissions
 		//$item = $this->checkWorkflowPermissions($item, $oDocument);
-		
+
 		$item['separatorA'] = $item['actions.copy'] == '' ? '' : $ns;
 		$item['separatorB'] = $item['actions.download'] == '' || $item['actions.instantview'] == '' ? '' : $ns;
 		$item['separatorC'] = $item['actions.checkout'] == '' || $item['actions.checkin'] == '' || $item['actions.cancel_checkout']== '' ? '' : $ns;
@@ -829,7 +829,7 @@ class browseView {
 							<div class="title"><a class="clearLink" href="[document_link]" style="">[title]</a></div>
 
 							<div class="detail">
-								<span class="item">File size: <span class="user">[filesize]</span></span> <span class="item">Owner: <span class="user">[owned_by]</span></span><span class="item">Created: <span class="date">[created_date]</span> by <span class="user">[created_by]</span></span><span class="item">Updated: <span class="date">[modified_date]</span> by <span class="user">[modified_by]</span></span>
+								<span class="item">Owner: <span class="user">[owned_by]</span></span><span class="item">Created: <span class="date">[created_date]</span> by <span class="user">[created_by]</span></span><span class="item">Updated: <span class="date">[modified_date]</span> by <span class="user">[modified_by]</span></span><span class="item">File size: <span class="user">[filesize]</span></span>
 							</div>
 						</td>
 						<td>
