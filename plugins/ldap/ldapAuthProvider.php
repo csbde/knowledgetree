@@ -274,7 +274,7 @@ class LdapAuthProvider extends KTAuthenticationProvider {
 
         $fields[] = new KTTextWidget(_kt('Object Classes'), _kt('The LDAP object classes to search for users (one per line, example: <strong>user</strong>, <strong>inetOrgPerson</strong>, <strong>posixAccount</strong>)'), 'objectclasses_nls', join("\n", $objectClasses), $this->oPage, true, null, null, $aOptions);
 
-        $fields[] = new KTTextWidget(_kt('Member Attributes'), _kt('The attribute name(s) to use when syncing groups (one per line, example: <strong>member</strong>, <strong>memberUid</strong>, <strong>uniqueMember</strong>)'), 'memberattributes_nls', join("\n", $memberAttributes), $this->oPage, true, null, null, $aOptions);
+        $fields[] = new KTTextWidget(_kt('Group Member Attributes'), _kt('The attribute name(s) to use when syncing groups (one per line, example: <strong>member</strong>, <strong>memberUid</strong>, <strong>uniqueMember</strong>)'), 'memberattributes_nls', join("\n", $memberAttributes), $this->oPage, true, null, null, $aOptions);
 
         return $fields;
     }
