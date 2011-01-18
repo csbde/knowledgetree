@@ -265,30 +265,9 @@ class BrowseDispatcher extends KTStandardDispatcher {
 		// Prepare Multi-File Actions
 		$aBulkActions = KTBulkActionUtil::getAllBulkActions();
 
-		$ktOlarkPopup = null;
-		// temporarily disabled
-		if (ACCOUNT_ROUTING_ENABLED && liveAccounts::isTrialAccount()) {
-            $js = preg_replace('/.*[\/\\\\]plugins/', 'plugins', KT_LIVE_DIR) . '/resources/js/olark/olark.js';
-            $this->oPage->requireJsResource($js);
-            // popup immediately if first login
-            if (isset($_SESSION['isFirstLogin'])) {
-                // add popup to page
-                $ktOlarkPopup = '<script type="text/javascript">
-    ktOlarkPopupTrigger("Welcome to KnowledgeTree.  If you have any questions, please let us know.", 0);
-</script>';
-                unset($_SESSION['isFirstLogin']);
-            }
-            else {
-                $ktOlarkPopup = '<script type="text/javascript">
-    olark.extend(function(api) {
-//        really not sure why this was done, browse page is not supposed to pop it up; leaving it commented until confirmed
-//        setTimeout(function(){
-//           api.box.expand();
-//       }, 60000);
-        api.box.show();
-    });
-</script>';
-            }
+        $ktOlarkPopup = null;
+        if (ACCOUNT_ROUTING_ENABLED && liveAccounts::isTrialAccount()) {
+            $this->includeOlark();
         }
 
 		// Prepare Templating Engine
@@ -302,8 +281,7 @@ class BrowseDispatcher extends KTStandardDispatcher {
               'isEditable' => $this->editable,
               'bulkactions' => $aBulkActions,
               'browseutil' => new KTBrowseUtil(),
-              'returnaction' => 'browse',
-              'ktOlarkPopup' => $ktOlarkPopup
+              'returnaction' => 'browse'
 		);
 
 		if ($this->oFolder) { // ?don't quite know why this is in here. Someone reports that it is there for search browsing which seem to be disabled
@@ -559,6 +537,25 @@ class BrowseDispatcher extends KTStandardDispatcher {
 		}
 
 		return $ret;
+	}
+
+	private function includeOlark()
+	{
+	    $js = preg_replace('/.*[\/\\\\]plugins/', 'plugins', KT_LIVE_DIR) . '/resources/js/olark/olark.js';
+	    $this->oPage->requireJsResource($js);
+	    // popup immediately if first login
+	    if (isset($_SESSION['isFirstLogin'])) {
+	        // add popup to page
+	        $this->oPage->setBodyOnload("javascript: ktOlarkPopupTrigger('Welcome to KnowledgeTree.  If you have any questions, please let us know.', 0);");
+	        unset($_SESSION['isFirstLogin']);
+	    }
+	    else {
+	        // NOTE not sure why but if the user closes the box (dismisses it completely from the page instead of minimizing)
+	        //      then it only shows up again if we issue expand (not wanted) or shrink (acceptable.)
+	        //      The call to show remains is what was expected to display the box, but it does not.
+	        //      Remains here for now just in case there are scenarios where it is needed.
+	        $this->oPage->setBodyOnload("javascript: olark.extend(function(api) { api.box.shrink(); api.box.show(); });");
+	    }
 	}
 
 }

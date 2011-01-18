@@ -97,7 +97,7 @@
 
         return $oDocument;
 	}
-	
+
 	function getMetadata()
 	{
 		/*$t[0] = array('id'=>'author', 'value'=>'martin');
@@ -105,23 +105,23 @@
 		$GLOBALS['default']->log->debug("DRAGDROP Document t ".print_r($t, true));
 		$test = array('metadata'=>$t);
 		$GLOBALS['default']->log->debug("DRAGDROP Document test ".print_r($test, true));
-		
+
 		$jsonencoded = json_encode($test);
-		
+
 		$GLOBALS['default']->log->debug("DRAGDROP Document jsonencoded $jsonencoded");
 		$jsondecode = json_decode($jsonencoded, true);
 		$GLOBALS['default']->log->debug("DRAGDROP Document jsonencoded decoded ".print_r($jsondecode, true));*/
-		
+
 	    if(isset($_REQUEST['metadata'])){
 	    	$metadata = $_REQUEST['metadata'];
 	    	$GLOBALS['default']->log->debug("DRAGDROP Document metadata ".print_r($metadata, true));
-	    	
+
 	    	$json = json_decode($metadata, true);
-	    	
+
 	    	$GLOBALS['default']->log->debug("DRAGDROP Document json ".print_r($json, true));
-	       	
+
 	    	$MDPack = array();
-	    	
+
 	    	foreach($json as $element) {
 	    		foreach($element as $MD) {
 		       		$GLOBALS['default']->log->debug("DRAGDROP Document metadata ".print_r($MD, true));
@@ -134,10 +134,10 @@
 		                );
 		       	}
 	    	}
-	       	
+
 	       	return $MDPack;
 	    }
-	    
+
 	    return array();
 
 	    /*$id = 1;
@@ -157,22 +157,22 @@
 
 		return $id;*/
 	}
-	
+
 	function getDocumentTypeId()
-	{		
+	{
 	    if(isset($_REQUEST['documentTypeID'])){
 	    	$GLOBALS['default']->log->debug("DRAGDROP getDocumentTypeId ".$_REQUEST['documentTypeID']);
 	       return (int)$_REQUEST['documentTypeID'];
-	    }    
-	    
-	    
+	    }
+
+
 		return 1;
 	}
 
 	function getId()
 	{
 		$GLOBALS['default']->log->debug("DRAGDROP entire request ".print_r($_REQUEST, true));
-		
+
 	    if(isset($_REQUEST['folderID'])){
 	       return (int)$_REQUEST['folderID'];
 	    }
@@ -243,9 +243,9 @@
 		$tempmeta = $_SERVER["HTTP_METADATA"];
 		$GLOBALS['default']->log->debug("DRAGDROP metadata ".print_r($tempmeta, true));
 	}*/
-	
+
 	//$GLOBALS['default']->log->debug("DRAGDROP getallheaders " .print_r($_SERVER, true));
-		
+
 	// Look for the content type header
 	if (isset($_SERVER["HTTP_CONTENT_TYPE"]))
 		$contentType = $_SERVER["HTTP_CONTENT_TYPE"];
@@ -294,24 +294,24 @@
 	}
 
 	$folderID = getId();
-	
+
 	$GLOBALS['default']->log->debug("DRAGDROP folderID resolves to $folderID");
-	
+
 	$documentTypeID = getDocumentTypeId();
-	
+
 	$GLOBALS['default']->log->debug("DRAGDROP documentTypeID resolves to $documentTypeID");
-	
+
 	$metadata = getMetadata();
-	
+
 	$GLOBALS['default']->log->debug("DRAGDROP metadata resolves to ".print_r($metadata, true));
-	
+
 	if($folderID<=0){
 		$GLOBALS['default']->log->error("DRAGDROP error getting folder ID");
 		exit(1);
 	}
 
 	//$fileTmp = str_replace('\\','/',$targetDir.'/'.$fileName);
-	
+
 	//used to test failures
 	//die('{"jsonrpc" : "2.0", "error" : {"code": 102, "message": "Document could not be uploaded", "filename":"'.$fileName.'"}, "id" : "id"}');
 
@@ -350,6 +350,7 @@
 	$item['modified_by'] = $oModifier->getName();
 	$item['filename'] = $fileName;
 	$item['title'] = $oDocument->getName();
+	$item['filesize'] = KTUtil::filesizeToString($oDocument->getFileSize());
 	$item['mimeicon'] = $mimeIcon;
 	$item['created_date'] = $oDocument->getDisplayCreatedDateTime();
 	$item['modified_date'] = $oDocument->getDisplayLastModifiedDate();
