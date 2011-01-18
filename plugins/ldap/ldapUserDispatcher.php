@@ -191,13 +191,18 @@ class ldapUserDispatcher extends KTStandardDispatcher {
 
         $userName = $results[$this->attributes[1]];
 
+        // NOTE we should discuss which is preferred, userprincipalname or uid/common name
+        //      ALSO TESTING with different servers having different setups!
         // If the SAMAccountName is empty then try alternate sources
         if (empty($userName)) {
-            // check uid
+            // check uid; if in dn form, extract the cn attribute, otherwise it can be used as is.
             if (!empty($results[$this->attributes[7]])) {
                 $userName = $results[$this->attributes[7]];
+                if (preg_match('/^cn=([^,]*),/', $userName, $matches)) {
+                    $userName = $matches[1];
+                }
             }
-            else {
+            else if (!empty($results[$this->attributes[6]])) {
                 // use the UserPrincipalName (UPN) to find the username.
                 // The UPN is normally the username @ the internet domain
                 $upn = $results[$this->attributes[6]];
@@ -205,6 +210,9 @@ class ldapUserDispatcher extends KTStandardDispatcher {
                 $userName = $upn[0];
             }
         }
+
+        // NOTE Also consider getting display name from givenname and sn?  Currently comes from cn, and this may not be set up correctly
+        //      (or is that user/admin error on the part of the person administrating the ldap server?)
 
         $fields = array();
         $fields[] =  new KTStaticTextWidget(_kt('LDAP DN'), _kt('The location of the user within the LDAP directory.'), 'dn', $id, $this->oPage);
