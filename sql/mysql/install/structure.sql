@@ -183,7 +183,7 @@ CREATE TABLE `config_settings` (
   `item` varchar(255) NOT NULL,
   `value` varchar(255) NOT NULL default 'default',
   `default_value` varchar(255) NOT NULL,
-  `type` enum('boolean','string','numeric_string','numeric','radio','dropdown') default 'string',
+  `type` enum('boolean','string','numeric_string','numeric','radio','dropdown', 'class') default 'string',
   `options` mediumtext,
   `can_edit` tinyint(1) NOT NULL default '1',
   PRIMARY KEY  (`id`)

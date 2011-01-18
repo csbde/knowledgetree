@@ -68,10 +68,11 @@ class datetimeutil
 	{
 		$tzc = new TimezoneConversion();
 		$ddoptions = '';
-		foreach ($tzc->getPopularZones() as $region=>$standardZone)
+		
+		foreach ($tzc->getPhpTimezones() as $standardZone)
 		{
-			$selected = ($standardZone['timezone'] == $value) ? 'selected' : '';
-			$ddoptions .= '<option value="' . $standardZone['timezone'] . '" ' . $selected . '>(UTC ' . $standardZone['offset'] . ') ' . $region . '</option>';
+			$selected = ($standardZone == $value) ? 'selected' : '';
+			$ddoptions .= '<option value="' . $standardZone . '" ' . $selected . '> ' . $standardZone . '</option>';
 		}
 		
 		return $ddoptions;

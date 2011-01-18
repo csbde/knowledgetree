@@ -297,7 +297,8 @@ INSERT INTO `config_settings` VALUES
 (120, 'explorerCPSettings', 'Debug Log Level', 'Set the level of debug information included in the server side log file', 'debugLevel', 'error', 'error', 'dropdown', 'a:1:{s:7:\"options\";a:3:{i:0;a:2:{s:5:\"value\";s:3:\"off\";s:5:\"label\";s:10:\"No Logging\";}i:1;a:2:{s:5:\"value\";s:5:\"error\";s:5:\"label\";s:18:\"Error Logging Only\";}i:2;a:2:{s:5:\"value\";s:5:\"debug\";s:5:\"label\";s:28:\"Error and Debug Info Logging\";}}}', 1),
 (121, 'actionreasons', 'Enable Global Document Reasons', 'If switched on, reasons will be required for all major document actions including Check-in, Check-out, Delete, Finalize, Copy, Move and Archive.', 'globalReasons', 'default', 'false', 'boolean', NULL, 1),
 (122, 'ui', 'Restricted Environment', 'Removes certain administrative features from the interface to prevent users from accessing the functionality', 'restrictedEnv', 'default', 'false', 'boolean', NULL, 0),
-(123, 'user_prefs', 'Use Email Address to Login', 'Defines whether the username or the users email address is used for logging in', 'useEmailLogin', 'true', 'false', 'boolean', NULL, 0);
+(123, 'user_prefs', 'Use Email Address to Login', 'Defines whether the username or the users email address is used for logging in', 'useEmailLogin', 'true', 'false', 'boolean', NULL, 0),
+(124, 'tweaks', 'Set Timezone', 'Defines your timezone you are in.', 'setTimezone', 'default', 'UTC', 'class', 'a:2:{s:4:"file";s:33:"lib/datetime/datetimeutil.inc.php";s:5:"class";s:12:"datetimeutil";}', 1);
 /*!40000 ALTER TABLE `config_settings` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1809,6 +1810,9 @@ INSERT INTO `upgrades` VALUES
 (257,'sql*3.7.0.9*0*3.7.0.9/transaction_types.sql','Database upgrade to version 3.7.0.9: Transaction types','2011-01-10 00:00:00',1,'upgrade*3.7.0.9*99*upgrade3.7.0.9'),
 (258,'sql*3.7.0.9*0*3.7.0.9/permission_cache.sql','Database upgrade to version 3.7.0.9: Permission cache','2011-01-10 00:00:00',1,'upgrade*3.7.0.9*99*upgrade3.7.0.9'),
 (259,'upgrade*3.7.0.9*99*upgrade3.7.0.9','Upgrade from version 3.7.0.8 to 3.7.0.9','2011-01-10 00:00:00',1,'upgrade*3.7.0.9*99*upgrade3.7.0.9');
+(260,'sql*3.7.1.0*0*3.7.1.0/session_management.sql','Database upgrade to version 3.7.0.9: Session Management','2011-01-18 00:00:00',1,'upgrade*3.7.0.9*99*upgrade3.7.0.9'),
+(261,'sql*3.7.1.0*0*3.7.1.0/timezone_settings.sql','Database upgrade to version 3.7.0.9: Timezone Settings','2011-01-10 00:00:00',1,'upgrade*3.7.0.9*99*upgrade3.7.0.9'),
+(262,'upgrade*3.7.1.0*99*upgrade3.7.1.0','Upgrade from version 3.7.0.9 to 3.7.1.0','2011-01-18 00:00:00',1,'upgrade*3.7.1.0*99*upgrade3.7.1.0');
 /*!40000 ALTER TABLE `upgrades` ENABLE KEYS */;
 UNLOCK TABLES;
 
