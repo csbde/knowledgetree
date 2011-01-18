@@ -49,8 +49,9 @@ class LdapAuthProvider extends KTAuthenticationProvider {
     public $oLDAPUser = null;
     public $bGroupSource = true;
     private $configMap;
-    private $defaultSearchAttributes = array('cn', 'mail', 'sAMAccountName');
+    private $defaultSearchAttributes = array('cn', 'mail', 'sAMAccountName', 'uid');
     private $defaultObjectClasses = array('user', 'inetOrgPerson', 'posixAccount');
+    private $defaultMemberAttributes = array('member', 'memberUid', 'uniqueMember');
 
     public function __construct()
     {
@@ -61,7 +62,8 @@ class LdapAuthProvider extends KTAuthenticationProvider {
             'searchuser' => _kt('Search User'),
             'searchpwd' => _kt('Search Password'),
             'searchattributes' => _kt('Search Attributes'),
-            'objectclasses' => _kt('Object Classes')
+            'objectclasses' => _kt('Object Classes'),
+            'memberattributes' => _kt('Group Member Attributes')
         );
     }
 
@@ -257,6 +259,7 @@ class LdapAuthProvider extends KTAuthenticationProvider {
         $searchPwd = (isset($config['searchpwd'])) ? $config['searchpwd'] : '';
         $searchAttributes = (isset($config['searchattributes'])) ? $config['searchattributes'] : $this->defaultSearchAttributes;
         $objectClasses = (isset($config['objectclasses'])) ? $config['objectclasses'] : $this->defaultObjectClasses;
+        $memberAttributes = (isset($config['memberattributes'])) ? $config['memberattributes'] : $this->defaultMemberAttributes;
 
         $fields = array();
         $fields[] = new KTStringWidget(_kt('Server Address'), _kt('The host name or IP address of the LDAP server'), 'server', $server, $this->oPage, true);
@@ -270,6 +273,8 @@ class LdapAuthProvider extends KTAuthenticationProvider {
         $fields[] = new KTTextWidget(_kt('Search Attributes'), _kt('The LDAP attributes to use to search for users when given their name (one per line, examples: <strong>cn</strong>, <strong>mail</strong>)'), 'searchattributes_nls', join("\n", $searchAttributes), $this->oPage, true, null, null, $aOptions);
 
         $fields[] = new KTTextWidget(_kt('Object Classes'), _kt('The LDAP object classes to search for users (one per line, example: <strong>user</strong>, <strong>inetOrgPerson</strong>, <strong>posixAccount</strong>)'), 'objectclasses_nls', join("\n", $objectClasses), $this->oPage, true, null, null, $aOptions);
+
+        $fields[] = new KTTextWidget(_kt('Member Attributes'), _kt('The attribute name(s) to use when syncing groups (one per line, example: <strong>member</strong>, <strong>memberUid</strong>, <strong>uniqueMember</strong>)'), 'memberattributes_nls', join("\n", $memberAttributes), $this->oPage, true, null, null, $aOptions);
 
         return $fields;
     }
@@ -334,6 +339,7 @@ class LdapAuthenticator extends Authenticator {
         }
     }
 
+    // does not belong here, has nothing to do with auth.  test to see whether it is used.
     public function synchroniseGroup($group)
     {
         $manager = new LdapGroupManager($this->source);
