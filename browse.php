@@ -541,20 +541,16 @@ class BrowseDispatcher extends KTStandardDispatcher {
 
 	private function includeOlark()
 	{
+	    $user = User::get($_SESSION['userID']);
 	    $js = preg_replace('/.*[\/\\\\]plugins/', 'plugins', KT_LIVE_DIR) . '/resources/js/olark/olark.js';
 	    $this->oPage->requireJsResource($js);
-	    // popup immediately if first login
+
 	    if (isset($_SESSION['isFirstLogin'])) {
-	        // add popup to page
-	        $this->oPage->setBodyOnload("javascript: ktOlarkPopupTrigger('Welcome to KnowledgeTree.  If you have any questions, please let us know.', 0);");
+	        $this->oPage->setBodyOnload("javascript: ktOlarkPopupTrigger('Welcome to KnowledgeTree.  If you have any questions, please let us know.', 0, '" . $user->getName() . "', '" . $user->getEmail() . "');");
 	        unset($_SESSION['isFirstLogin']);
 	    }
 	    else {
-	        // NOTE not sure why but if the user closes the box (dismisses it completely from the page instead of minimizing)
-	        //      then it only shows up again if we issue expand (not wanted) or shrink (acceptable.)
-	        //      The call to show remains is what was expected to display the box, but it does not.
-	        //      Remains here for now just in case there are scenarios where it is needed.
-	        $this->oPage->setBodyOnload("javascript: olark.extend(function(api) { api.box.shrink(); api.box.show(); });");
+	        $this->oPage->setBodyOnload("javascript: ktOlarkSetUserData('" . $user->getName() . "', '" . $user->getEmail() . "');");
 	    }
 	}
 
