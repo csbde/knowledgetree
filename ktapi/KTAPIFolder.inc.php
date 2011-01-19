@@ -1583,6 +1583,8 @@ class KTAPI_Folder extends KTAPI_FolderItem
     	
     	$this->movedSince($timestamp, $what, $changes);
     	
+    	$this->updatedSince($timestamp, $changes);
+    	
     	//$GLOBALS['default']->log->debug('getChanges created '.print_r($changes, true));
     	
     	if ($depth != 1)
@@ -1653,6 +1655,7 @@ class KTAPI_Folder extends KTAPI_FolderItem
 	        			
 	        			if(!PEAR::isError($folder))
 			        	{
+			        		//get the changes for the current folder
 							$ktapi_folder->createdSince($timestamp, $what, $changes);
 					    	
 					    	$ktapi_folder->deletedSince($timestamp, $what, $changes);
@@ -1660,6 +1663,8 @@ class KTAPI_Folder extends KTAPI_FolderItem
 					    	$ktapi_folder->renamedSince($timestamp, $what, $changes);
 					    	
 					    	$ktapi_folder->movedSince($timestamp, $what, $changes);
+					    	
+					    	$ktapi_folder->updatedSince($timestamp, $changes);
 					        
 					    	//now recurse!
 							if ($fullTree || ($depth > 1)) {
@@ -1995,27 +2000,10 @@ class KTAPI_Folder extends KTAPI_FolderItem
      * 
      * @return array of folders
      */
-    public function updatedSince($timestamp, $depth = 1)
+    public function updatedSince($timestamp, &$contents = array())
     {	
     	$GLOBALS['default']->log->debug("updatedSince $timestamp");
-    	
-    	// are we fetching the entire tree?
-        // Set a static boolean value which will instruct recursive calls to ignore the depth parameter;
-        // negative indicates full tree, positive goes to specified depth, 0 = nothing
-    	static $fullTree = null;
-        if (is_null($fullTree)) {
-            $fullTree = ($depth < 0) ? true : false;
-        }
-
-        // if we are not getting the full listing, we need to kick out if depth less than 1
-        if (!$fullTree && ($depth < 1)) {
-            return array();
-        }
-        
-    	static $contents = array();
-	       
-        static $counter = 0;
-    	    	
+    	    	    	
     	$sQuery = 'SELECT D.id, DT.datetime AS change_date '.
         'FROM ' . KTUtil::getTableName('document_transactions') . ' AS DT INNER JOIN ' . KTUtil::getTableName('documents') . ' AS D ON D.id = DT.document_id ' .
     	'WHERE DT.transaction_namespace IN (\'ktcore.transactions.update\', \'ktcore.transactions.check_in\', \'ktcore.transactions.check_out\', '.
@@ -2042,42 +2030,34 @@ class KTAPI_Folder extends KTAPI_FolderItem
         	if (KTPermissionUtil::userHasPermissionOnItem($user, $read_permission, $oDocument)) {
     			$this->assemble_document_array($oDocument, $contents);
     			
-    			$contents[$counter++]['changes'] = array(
+    			$contents[count($contents)-1]['changes'] = array(
 					'change_type' => 'U', 
 					'change_date' => $document['change_date']
 				);
     		}
         }
         
-        $GLOBALS['default']->log->debug('updatedSince contents '.print_r($contents, true));
-        
-        return $contents;
+        //$GLOBALS['default']->log->debug('updatedSince contents '.print_r($contents, true));
     }
-    
+   
     /**
-     * Calculates an MD5 hash of a folder based on its:
-     * folder details
-     * folder contents
-     * 
-     * @return number
+     * Calculates an MD5 hash of a folder based on its details and contents RECURSIVELY 
      */
     public function getChangeID()
     {    	
     	$folder_details = $this->get_detail();
-    	$folder_contents = $this->get_listing(1, 'D');
+    	$folder_contents = $this->get_listing(-1, 'DF');
     	
-    	//get a merged array of folder details and folder contents;
-    	//this will be hashed!
-    	$hashMe = array_merge($folder_details, $folder_contents);
+    	$folder_details_imploded = implode('', $folder_details);
     	
-    	$hash = md5(implode('', $hashMe));
+    	$folder_contents_imploded = KTUtil::recursive_implode('', $folder_contents);
     	
-    	$GLOBALS['default']->log->debug("getChangeID hash $hash");
+    	$hash_me = $folder_details_imploded .= $folder_contents_imploded;
+    	
+    	$hash = md5($hash_me);
     	
     	//now append a timestamp, using epoch (i.e. seconds since 01/01/1970)
-    	$change_id = $hash.'_'.time();
-    	
-    	$GLOBALS['default']->log->debug("getChangeID change_id $change_id");
+    	//$change_id = $hash.'_'.time();
     	
     	return $hash; 
     }
@@ -2129,7 +2109,7 @@ class KTAPI_Folder extends KTAPI_FolderItem
 	 * @param unknown_type $contents
 	 * @param unknown_type $what
 	 */
-	private function assemble_folder_array($folder, &$contents, $what = 'F')	//, $custom_fields = null)
+	private function assemble_folder_array($folder, &$contents, $what = 'F')
 	{
 		//$GLOBALS['default']->log->debug('assemble_folder_array contents '.print_r($contents, true));
 		
@@ -2229,25 +2209,16 @@ class KTAPI_Folder extends KTAPI_FolderItem
 				'workflow_state' => 'n/a'
 			);
 		}
-		
-		/*$GLOBALS['default']->log->debug('assemble_folder_array before adding custom fields '.print_r($contents, true));
-		
-		//add any possible optional fields
-		if(isset($custom_fields))
-		{
-			$GLOBALS['default']->log->debug('assemble_folder_array has custom fields');
-			
-			foreach($custom_fields as $key=>$field)
-			{
-				$GLOBALS['default']->log->debug("assemble_folder_array adding custom field $key $field");
-				$contents[0][$key] = $field;				
-			}
-		}*/
-		//$GLOBALS['default']->log->debug('assemble_folder_array total contents '.print_r($contents, true));
 	}
 	
-	/*
+	/**
+	 * Assembles/constructs the array used in getting a document's details
 	 * 
+	 * Uses an array passed by reference to recursively build up the folder details
+	 * 
+	 * @param unknown_type $document
+	 * @param unknown_type $contents
+	 * @param unknown_type $what
 	 */
 	private function assemble_document_array($document, &$contents, $what = 'D')
 	{

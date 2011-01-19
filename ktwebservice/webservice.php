@@ -4030,6 +4030,33 @@ class KTWebService {
 	}
 	
 	/**
+	 * Gets a folder's changeID
+	 *
+	 * @param string $session_id
+	 * @param int $folder_id
+	 * @param string $change_id
+	 * @return kt_response
+	 */
+	function get_folder_change_id($session_id, $folder_id)
+	{
+		$GLOBALS['default']->log->debug("get_folder_change_id $folder_id");
+		
+		$kt = &$this->get_ktapi($session_id );
+		if (is_array($kt))
+    	{
+    		return new SOAP_Value('return', "{urn:$this->namespace}kt_response", $kt);
+    	}
+    	
+    	$result = &$kt->get_folder_change_id($folder_id);
+    	
+    	//$GLOBALS['default']->log->debug('get_folder_change_id result '.print_r($result, true));
+    	
+    	$response = KTWebService::_status(KTWS_SUCCESS, $result['message']);
+    	
+    	return new SOAP_Value('return', "{urn:$this->namespace}kt_response", $response);  
+	}
+	
+	/**
 	 * Gets whether a folder has changes
 	 *
 	 * @param string $session_id
@@ -4053,8 +4080,6 @@ class KTWebService {
     	
     	$response = KTWebService::_status(KTWS_SUCCESS, $result['message']);
     	
-    	
-    	    	
     	return new SOAP_Value('return', "{urn:$this->namespace}kt_response", $response);    	
 	}
 	
@@ -4103,7 +4128,11 @@ class KTWebService {
     		return new SOAP_Value('return', "{urn:$this->namespace}kt_response", $kt);
     	}
     	
-    	$result = &$kt->get_folder_changes($folder_id, $change_id, $depth, 'FD');
+    	/*$change_id = $change_id.'_'.time();
+    	
+    	$GLOBALS['default']->log->debug("get_folder_changes adjusted change id $change_id");*/
+    	
+    	$result = &$kt->get_folder_changes($folder_id, $change_id, $depth, 'DF');
     	
     	//$GLOBALS['default']->log->debug('get_folder_changes result '.print_r($result, true));
     	
@@ -5511,6 +5540,11 @@ class KTWebService {
             
     	if ($this->version >= 3)
     	{
+    		$this->__dispatch_map['get_folder_change_id'] = 
+    			array('in' => array('session_id' => 'string', 'folder_id' => 'int' ),
+    			'out' => array( 'return' => "{urn:$this->namespace}kt_response" )
+    			);
+    			
     		$this->__dispatch_map['get_folder_has_changes'] = 
     			array('in' => array('session_id' => 'string', 'folder_id' => 'int', 'change_id' => 'string' ),
     			'out' => array( 'return' => "{urn:$this->namespace}kt_response" )

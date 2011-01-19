@@ -5322,15 +5322,14 @@ class KTAPI {
 	}
 	
 	/**
-	 * EXPERIMENTAL
-     * Determines whether a folder has changed using timestamp (i.e. are there any changes since ...)
+     * Determines whether a folder has changed using MD5 hash of folder details and contents
      *
      * @param int $user_name
      * @param int $limit
      */
-	/*public function get_folder_has_changes($folder_id, $timestamp)
+	public function get_folder_change_id($folder_id)
 	{
-		$GLOBALS['default']->log->debug("KTAPI get_folder_has_changes $folder_id $timestamp");
+		$GLOBALS['default']->log->debug("KTAPI get_folder_has_changes $folder_id $change_id");
 		
 		$folder = KTAPI_Folder::get($this, $folder_id);
 		
@@ -5344,41 +5343,13 @@ class KTAPI {
 			);
 		}
 		
-		$timezone = date_default_timezone_get();
-    	$GLOBALS['default']->log->debug("extractChangeID timezone $timezone");
-    	date_default_timezone_set("UTC");
-    	
-    	$timestamp = date("c", $timestamp);
-    	
-    	$GLOBALS['default']->log->debug("get_folder_has_changes timestamp $timestamp");
-    	$GLOBALS['default']->log->debug('KTAPI get_folder_has_changes current epoch ' .time());
-        
-        //TODO: remove this!!!
-        date_default_timezone_set($timezone);
-		
-		$has_changes = $folder->hasChangesSince($timestamp);
-		
-		//$current_change_id = $folder->getChangeID();
-		
-		$response['has_changes'] = $has_changes ? 'TRUE' : 'FALSE';
-		
-		//if ($has_changes)
-		//{
-			//$response['has_changes'] = 'TRUE';
-		//}
-		//else
-		//{
-			//$response['has_changes'] = 'FALSE';
-		//}
-		
-		$GLOBALS['default']->log->debug("KTAPI get_folder_has_changes has changes $has_changes");
-			
-		//$response['change_id'] = $current_change_id;
-		//$response['message'] = strval($current_change_id);
-	    $response['status_code'] = 0;
-	    
-	    return $response;
-	}*/
+		return array(
+				"status_code" => 0,
+				"message" => $folder->getChangeID().'_'.time()
+			);
+	}
+	
+	
 	
 	/**
      * Determines whether a folder has changed using MD5 hash of folder details and contents
