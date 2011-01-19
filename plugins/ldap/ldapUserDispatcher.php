@@ -68,9 +68,9 @@ class ldapUserDispatcher extends KTStandardDispatcher {
         // Check if its a mass import
         $massImport = KTUtil::arrayGet($_REQUEST, 'massimport');
         $isMassImport = ($massImport == 'on') ? true : false;
-        
+
         if (KTUtil::arrayGet($submit, 'chosen')) {
-            $id = KTUtil::arrayGet($_REQUEST, 'id');            
+            $id = KTUtil::arrayGet($_REQUEST, 'id');
             if (!empty($id)) {
                 if ($isMassImport) {
                     return $this->_do_massCreateUsers();
@@ -83,15 +83,15 @@ class ldapUserDispatcher extends KTStandardDispatcher {
                 $this->oPage->addError(_kt("No valid LDAP user chosen"));
             }
         }
-        
+
         if (KTUtil::arrayGet($submit, 'create')) {
             return $this->_do_createUserFromSource();
         }
-        
+
         $searchResults = null;
         $users = array();
         $fields = array();
-        
+
         // Get the search query
         $name = KTUtil::arrayGet($_REQUEST, 'ldap_name');
         if (!empty($name) || $isMassImport) {
@@ -99,7 +99,6 @@ class ldapUserDispatcher extends KTStandardDispatcher {
             try {
                 $searchResults = $manager->searchUsers($name, array('cn', 'dn'));
                 if ($searchResults->count()) {
-                    // make sure we start from the beginning
                     $searchResults->rewind();
                     // get dns to check existing users and populate default user result list
                     $searchDNs = array();
@@ -148,22 +147,22 @@ class ldapUserDispatcher extends KTStandardDispatcher {
 
         return  $template->render($templateData);
     }
-    
+
     private function _do_createUserFromSource()
     {
         $dn = KTUtil::arrayGet($_REQUEST, 'dn');
         $samaccountname = KTUtil::arrayGet($_REQUEST, 'samaccountname');
-        
+
         $name = KTUtil::arrayGet($_REQUEST, 'name');
         if (empty($name)) { $this->errorRedirectToMain(_kt('You must specify a name for the user.')); }
-        
+
         $username = KTUtil::arrayGet($_REQUEST, 'ldap_username');
         if (empty($username)) { $this->errorRedirectToMain(_kt('You must specify a new username.')); }
 
         $emailAddress = KTUtil::arrayGet($_REQUEST, 'emailAddress');
         $emailNotifications = KTUtil::arrayGet($_REQUEST, 'emailNotifications', false);
         if ($emailNotifications !== false) { $emailNotifications = true; }
-        
+
         $maxSessions = KTUtil::arrayGet($_REQUEST, 'max_sessions', '3');
         // FIXME check for numeric maxSessions... db-error else?
 
@@ -177,7 +176,7 @@ class ldapUserDispatcher extends KTStandardDispatcher {
         $this->successRedirectToMain(_kt('Created new user') . ': ' . $user->getUsername());
         exit(0);
     }
-    
+
     private function _do_editUserFromSource()
     {
         $template = $this->oValidator->validateTemplate('ldap_add_user');
@@ -192,13 +191,28 @@ class ldapUserDispatcher extends KTStandardDispatcher {
 
         $userName = $results[$this->attributes[1]];
 
-        // If the SAMAccountName is empty then use the UserPrincipalName (UPN) to find the username.
-        // The UPN is normally the username @ the internet domain
+        // NOTE we should discuss which is preferred, userprincipalname or uid/common name
+        //      ALSO TESTING with different servers having different setups!
+        // If the SAMAccountName is empty then try alternate sources
         if (empty($userName)) {
-            $upn = $results[$this->attributes[6]];
-            $upn = explode('@', $upn);
-            $userName = $upn[0];
+            // check uid; if in dn form, extract the cn attribute, otherwise it can be used as is.
+            if (!empty($results[$this->attributes[7]])) {
+                $userName = $results[$this->attributes[7]];
+                if (preg_match('/^cn=([^,]*),/', $userName, $matches)) {
+                    $userName = $matches[1];
+                }
+            }
+            else if (!empty($results[$this->attributes[6]])) {
+                // use the UserPrincipalName (UPN) to find the username.
+                // The UPN is normally the username @ the internet domain
+                $upn = $results[$this->attributes[6]];
+                $upn = explode('@', $upn);
+                $userName = $upn[0];
+            }
         }
+
+        // NOTE Also consider getting display name from givenname and sn?  Currently comes from cn, and this may not be set up correctly
+        //      (or is that user/admin error on the part of the person administrating the ldap server?)
 
         $fields = array();
         $fields[] =  new KTStaticTextWidget(_kt('LDAP DN'), _kt('The location of the user within the LDAP directory.'), 'dn', $id, $this->oPage);
@@ -217,7 +231,7 @@ class ldapUserDispatcher extends KTStandardDispatcher {
             'dn' => $id,
             'samaccountname' => $results['samaccountname'],
         );
-        
+
         return $template->render($templateData);
     }
 
@@ -242,7 +256,7 @@ class ldapUserDispatcher extends KTStandardDispatcher {
             if (($this->authenticatorClass == 'LdapAuthenticator') && empty($userName)) {
                 $userName = strtolower($results[$this->attributes[2]]);
             }
-            
+
             $name = $results[$this->attributes[0]];
             if ($name == '') {
                 $dnParts = ldap_explode_dn($dn, 0);
@@ -266,9 +280,9 @@ class ldapUserDispatcher extends KTStandardDispatcher {
             $user = KTUserUtil::createUser($userName, $name, '', $emailAddress, true, '', 3, $this->source->getId(), $dn, $userName);
             $names[] = $name;
         }
-        
+
         $this->successRedirectToMain(_kt('Added users') . ': ' . join(', ', $names));
     }
-    
+
 }
 ?>
