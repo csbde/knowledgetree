@@ -546,11 +546,11 @@ class BrowseDispatcher extends KTStandardDispatcher {
 	    $this->oPage->requireJsResource($js);
 
 	    if (isset($_SESSION['isFirstLogin'])) {
-	        $this->oPage->setBodyOnload("javascript: ktOlarkPopupTrigger('Welcome to KnowledgeTree.  If you have any questions, please let us know.', 0, '" . $user->getName() . "', '" . $user->getEmail() . "');");
+	        $this->oPage->setBodyOnload("javascript: ktOlark.popupTrigger('Welcome to KnowledgeTree.  If you have any questions, please let us know.', 0, '" . $user->getName() . "', '" . $user->getEmail() . "');");
 	        unset($_SESSION['isFirstLogin']);
 	    }
 	    else {
-	        $this->oPage->setBodyOnload("javascript: ktOlarkSetUserData('" . $user->getName() . "', '" . $user->getEmail() . "');");
+	        $this->oPage->setBodyOnload("javascript: ktOlark.setUserData('" . $user->getName() . "', '" . $user->getEmail() . "');");
 	    }
 	}
 

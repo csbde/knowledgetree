@@ -169,7 +169,7 @@ class AdminSplashDispatcher extends KTAdminDispatcher {
 	    $user = User::get($_SESSION['userID']);
 	    $js = preg_replace('/.*[\/\\\\]plugins/', 'plugins', KT_LIVE_DIR) . '/resources/js/olark/olark.js';
 	    $this->oPage->requireJsResource($js);
-	    $this->oPage->setBodyOnload("javascript: ktOlarkSetUserData('" . $user->getName() . "', '" . $user->getEmail() . "');");
+	    $this->oPage->setBodyOnload("javascript: ktOlark.setUserData('" . $user->getName() . "', '" . $user->getEmail() . "');");
 	}
 
 }
