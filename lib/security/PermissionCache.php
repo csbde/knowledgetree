@@ -54,7 +54,7 @@ class PermissionCache
      * @access private
      * @var PermissionMemCache
      */
-    private $memcache;
+    private $memcache = false;
 
     /**
      * The name of the cache table
@@ -741,9 +741,13 @@ class PermissionMemCache
      */
     private function initMemcache()
     {
-        if(MemCacheUtil::$enabled){
-            return true;
-        }
+    	if(class_exists('MemCacheUtil'))
+    	{
+	        if(MemCacheUtil::$enabled)
+	        {
+	            return true;
+	        }
+    	}
 
         $oConfig = KTConfig::getSingleton();
         $enabled = $oConfig->setMemcache();
