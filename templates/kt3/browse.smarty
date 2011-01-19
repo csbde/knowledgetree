@@ -215,7 +215,6 @@
 	kt.lib.shortcut.add("ctrl+a",kt.pages.browse.selectAllItems);
 	kt.lib.shortcut.add("ctrl+shift+a",kt.pages.browse.deSelectAllItems);
 
-
 	$(document).ready(function(){
 		kt.pages.browse.viewPage(1);
 		kt.pages.browse.setBulkActionMenuStatus=function(){
