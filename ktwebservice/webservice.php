@@ -624,9 +624,9 @@ class KTWebService {
      * @static
      */
     function _encode_folder_items($items)
-    {
+    {    	
     	foreach($items as $key => $item)
-    	{
+    	{    		
     		$item['id'] = (int) $item['id'];
  			$item['items'] = KTWebService::_encode_folder_items($item['items']);
 
@@ -4059,7 +4059,7 @@ class KTWebService {
 	}
 	
 	function _encode_folder_change_items($items)
-    {
+    {    	
     	$new_items = array();
     	
     	foreach($items as $key => $item)
@@ -4067,8 +4067,15 @@ class KTWebService {
     		$item['id'] = (int) $item['id'];
     		$item['parent_id'] = (int) $item['parent_id'];
     		
-    		$new_item['change_type'] = $item['change_type'];
-    		unset($item['change_type']);
+    		$new_item['change_type'] = $item['changes']['change_type'];
+    		$new_item['change_date'] = $item['changes']['change_date'];
+    		    		
+    		if (isset($item['changes']['previous_parent_id']))
+    		{
+    			$new_item['previous_parent_id'] = (int) $item['changes']['previous_parent_id'];
+    		}
+    		
+    		unset($item['changes']);
     		$new_item['item'] = new SOAP_Value('item', "{urn:$this->namespace}kt_folder_item", $item);
     		
     		$new_items[] = new SOAP_Value('change_item', "{urn:$this->namespace}kt_folder_change_item", $new_item);
@@ -4096,7 +4103,7 @@ class KTWebService {
     		return new SOAP_Value('return', "{urn:$this->namespace}kt_response", $kt);
     	}
     	
-    	$result = &$kt->get_folder_changes($folder_id, $change_id, $depth);
+    	$result = &$kt->get_folder_changes($folder_id, $change_id, $depth, 'FD');
     	
     	//$GLOBALS['default']->log->debug('get_folder_changes result '.print_r($result, true));
     	
@@ -4302,6 +4309,8 @@ class KTWebService {
 	         $this->__typedef["{urn:$this->namespace}kt_folder_change_item"] =
 	         	array(
 	         		'change_type' => 'string',
+	         		'change_date' => 'string',
+	         		'previous_parent_id' => 'int',
 	         		'item' => "{urn:$this->namespace}kt_folder_item",
 	         	);
          }

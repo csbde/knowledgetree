@@ -5422,9 +5422,9 @@ class KTAPI {
      * @param string changeid
      * @param int $depth
      */
-	public function get_folder_changes($folder_id, $changeid_timestamp, $depth)
+	public function get_folder_changes($folder_id, $changeid_timestamp, $depth = 1, $what = 'DF')
 	{
-		$GLOBALS['default']->log->debug("KTAPI get_folder_changes $folder_id $changeid_timestamp");
+		$GLOBALS['default']->log->debug("KTAPI get_folder_changes $folder_id $changeid_timestamp $depth '$what'");
 		
 		$folder = KTAPI_Folder::get($this, $folder_id);
 		
@@ -5469,7 +5469,7 @@ class KTAPI {
 		}		
 		
 		//get the changes!
-		$changes = $folder->getChanges($timestamp, $depth);
+		$changes = $folder->getChanges($timestamp, $depth, $what);
 		
 		$GLOBALS['default']->log->debug('KTAPI get_folder_changes changes '.print_r($changes, true));
 		

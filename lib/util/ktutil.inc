@@ -1386,7 +1386,7 @@ class KTUtil {
 
 	public static function buildUrl($file, $params=null)
 	{
-		$useCleanURL = TRUE;
+		$useCleanURL = FALSE;
 
 		// Convert to Array
 		if ($params == null) {
@@ -1534,6 +1534,35 @@ class KTUtil {
 
         error_log($msg, 3, $logFile);
     }
+    
+    /**
+     * Splits the change id into its MD5 hash and epoch time, and converts the
+     * epoch to UTC
+     * 
+     * @param string $changeID
+     */
+    public static function extractChangeID($changeID)
+    {
+    	//$GLOBALS['default']->log->debug("KTUtil extractChangeID $changeID");
+    	
+    	//TODO: remove this!!!
+    	$timezone = date_default_timezone_get();
+    	$GLOBALS['default']->log->debug("extractChangeID timezone $timezone");
+    	date_default_timezone_set("UTC");
+    	
+    	$split = explode("_", $changeID);
+    	
+    	//$GLOBALS['default']->log->debug('KTUtil extractChangeID split change id '.print_r($split, true));
+    	
+    	$split[1] = date("c", $split[1]);
+    	
+    	//$GLOBALS['default']->log->debug('KTUtil extractChangeID split change id 2 '.print_r($split, true));
+        
+        //TODO: remove this!!!
+        date_default_timezone_set($timezone);
+    	
+    	return $split;
+    } 
 }
 
 /**
@@ -1560,6 +1589,7 @@ if (version_compare(phpversion(), '5.0') === -1) {
     }
     ');
 }
+
 
 
 ?>

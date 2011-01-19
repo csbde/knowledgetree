@@ -621,6 +621,8 @@ class KTAPI_Folder extends KTAPI_FolderItem
 	 */
     function get_listing($depth = 1, $what = 'DFS', $options = array())
     {
+    	//$GLOBALS['default']->log->debug("get_listing $depth $what");
+    	
         // are we fetching the entire tree?
         // Set a static boolean value which will instruct recursive calls to ignore the depth parameter;
         // negative indicates full tree, positive goes to specified depth, 0 = nothing
@@ -644,8 +646,6 @@ class KTAPI_Folder extends KTAPI_FolderItem
         }
         */
 
-        $wsversion = $this->getWSVersion();
-
         $what = strtoupper($what);
         $read_permission = &KTPermission::getByName(KTAPI_PERMISSION_READ);
         $folder_permission = &KTPermission::getByName(KTAPI_PERMISSION_VIEW_FOLDER);
@@ -660,118 +660,22 @@ class KTAPI_Folder extends KTAPI_FolderItem
 
         if (strpos($what, 'D') !== false) {
             $document_children = Document::getList(array('folder_id = ? AND status_id = 1', $this->folderid));
+            
+            //$GLOBALS['default']->log->debug('get_listing document_children '.print_r($document_children, true));
 
             // I hate that KT doesn't cache things nicely...
             $mime_cache = array();
 
             foreach ($document_children as $document) {
                 if (KTPermissionUtil::userHasPermissionOnItem($user, $read_permission, $document)) {
-                    $created_by = $this->_resolve_user($document->getCreatorID());
-                    $created_date = $document->getCreatedDateTime();
-                    if (empty($created_date))
-                    $created_date = 'n/a';
-
-					$checked_out_by_id = $document->getCheckedOutUserID();
-                    $checked_out_by = $this->_resolve_user($checked_out_by_id);
-                    $checked_out_date = $document->getCheckedOutDate();
-                    if (empty($checked_out_date))
-                    $checked_out_date = 'n/a';
-
-                    $modified_by = $this->_resolve_user($document->getModifiedUserId());
-                    $modified_date = $document->getLastModifiedDate();
-                    if (empty($modified_date))
-                    $modified_date = 'n/a';
-
-                    $owned_by = $this->_resolve_user($document->getOwnerID());
-
-                    $mimetypeid = $document->getMimeTypeID();
-                    if (!array_key_exists($mimetypeid, $mime_cache)) {
-                        $type = KTMime::getMimeTypeName($mimetypeid);
-                        $icon = KTMime::getIconPath($mimetypeid);
-                        $display = KTMime::getFriendlyNameForString($type);
-                        $mime_cache [$mimetypeid] = array('type' => $type, 'icon' => $icon, 'display' => $display)
-
-                        ;
+                	
+                	if (strpos($what, 'S') !== false)
+                    {
+                    	$this->assemble_document_array($document, $contents, 'DS');
                     }
-                    $mimeinfo = $mime_cache [$mimetypeid];
-
-                    $workflow = 'n/a';
-                    $state = 'n/a';
-                    $wf = KTWorkflowUtil::getWorkflowForDocument($document);
-                    if (!is_null($wf) && !PEAR::isError($wf)) {
-                        $workflow = $wf->getHumanName();
-                        $ws = KTWorkflowUtil::getWorkflowStateForDocument($document);
-                        if (!is_null($ws) && !PEAR::isError($ws)) {
-                            $state = $ws->getHumanName();
-                        }
-                    }
-
-                    if ($wsversion >= 2) {
-                        $docTypeId = $document->getDocumentTypeID();
-                        $documentType = DocumentType::get($docTypeId);
-
-                        $oemDocumentNo = $document->getOemNo();
-                        if (empty($oemDocumentNo))
-                        $oemDocumentNo = 'n/a';
-
-                        $array = array(
-                        'id' =>(int) $document->getId(),
-                        'item_type' => 'D',
-                        'custom_document_no' => 'n/a',
-                        'oem_document_no' => $oemDocumentNo,
-                        'title' => $document->getName(),
-                        'document_type' => $documentType->getName(),
-                        'filename' => $document->getFileName(),
-                        'filesize' => $document->getFileSize(),
-                        'created_by' => is_null($created_by) ? 'n/a' : $created_by->getName(),
-                        'created_date' => $created_date,
-                        'checked_out_by' => is_null($checked_out_by) ? 'n/a' : $checked_out_by->getName(),
-                        'checked_out_by_id' => $checked_out_by_id,
-                        'checked_out_date' => $checked_out_date,
-                        'modified_by' => is_null($modified_by) ? 'n/a' : $modified_by->getName(),
-                        'modified_date' => $modified_date,
-                        'owned_by' => is_null($owned_by) ? 'n/a' : $owned_by->getName(),
-                        'version' => $document->getMajorVersionNumber() . '.' . $document->getMinorVersionNumber(),
-                        'content_id' => $document->getContentVersionId(),
-                        'is_immutable' => $document->getImmutable() ? 'true' : 'false',
-                        'permissions' => KTAPI_Document::get_permission_string($document),
-                        'workflow' => $workflow,
-                        'workflow_state' => $state,
-                        'mime_type' => $mime_cache [$mimetypeid] ['type'],
-                        'mime_icon_path' => $mime_cache [$mimetypeid] ['icon'],
-                        'mime_display' => $mime_cache [$mimetypeid] ['display'],
-                        'storage_path' => $document->getStoragePath()
-                        );
-
-                        if ($wsversion >= 3) {
-                            $document->switchToRealCore();
-                            $array ['linked_document_id'] = $document->getLinkedDocumentId();
-                            $document->switchToLinkedCore();
-                            if ($document->isSymbolicLink()) {
-                                $array ['item_type'] = "S";
-                            }
-                            
-                            $array ['parent_id'] = (int)$this->folderid;
-                            
-                            $array['has_rendition'] = $document->getHasRendition();
-
-                            $array['clean_uri'] = KTBrowseUtil::getUrlForDocument($document);
-
-                            $array['created_by_user_name'] = is_null($created_by) ? 'n/a' : $created_by->getUserName();
-                            $array['modified_by_user_name'] = is_null($modified_by) ? 'n/a' : $modified_by->getUserName();
-                            $array['checked_out_by_user_name'] = is_null($checked_out_by) ? 'n/a' : $checked_out_by->getUserName();
-                            $array['owned_by_user_name'] = is_null($owned_by) ? 'n/a' : $owned_by->getUserName();
-                        }
-
-                        $array ['items'] = array();
-
-                        if ($wsversion < 3 || (strpos($what, 'D') !== false && !$document->isSymbolicLink()) || ($document->isSymbolicLink() && strpos($what, 'S') !== false)) {
-                            $contents [] = $array;
-                        }
-                    } else {
-
-                        $contents [] = array('id' =>(int) $document->getId(), 'item_type' => 'D', 'title' => $document->getName(), 'creator' => is_null($created_by) ? 'n/a' : $created_by->getName(), 'checkedoutby' => is_null($checked_out_by) ? 'n/a' : $checked_out_by->getName(), 'modifiedby' => is_null($modified_by) ? 'n/a' : $modified_by->getName(), 'filename' => $document->getFileName(), 'size' => $document->getFileSize(), 'major_version' => $document->getMajorVersionNumber(), 'minor_version' => $document->getMinorVersionNumber(), 'storage_path' => $document->getStoragePath(), 'mime_type' => $mime_cache [$mimetypeid] ['type'], 'mime_icon_path' => $mime_cache [$mimetypeid] ['icon'], 'mime_display' => $mime_cache [$mimetypeid] ['display'], 'items' => array(), 'workflow' => $workflow, 'workflow_state' => $state);
-
+                    else
+                    {
+                    	$this->assemble_document_array($document, $contents, 'D');
                     }
                 }
             }
@@ -781,13 +685,17 @@ class KTAPI_Folder extends KTAPI_FolderItem
         usort($contents, array($this, 'compare_title'));
 
         if (strpos($what, 'F') !== false) {
+        	$contents_count = count($contents);
+        	
             $aOptions ['orderby'] = 'name';
             $folder_children = Folder::getList(array('parent_id = ?', $this->folderid), $aOptions);
             
-            foreach ($folder_children as $key=>$folder) {
+            //$GLOBALS['default']->log->debug('get_listing folder_children '.print_r($folder_children, true));
+            
+            foreach ($folder_children as $folder) {
                 if (KTPermissionUtil::userHasPermissionOnItem($user, $folder_permission, $folder))
                 //|| KTPermissionUtil::userHasPermissionOnItem($user, $read_permission, $folder))
-                {
+                {	
                     if ($fullTree || ($depth > 1)) {
                         $sub_folder = &$this->ktapi->get_folder_by_id($folder->getId());
                         $items = $sub_folder->get_listing($depth - 1, $what);
@@ -795,12 +703,24 @@ class KTAPI_Folder extends KTAPI_FolderItem
                         $items = array();
                     }
                     
-                    $this->assemble_folder_array($folder, $contents);
-                    $contents[$key]['items'] = $items;
+                    if (strpos($what, 'S') !== false)
+                    {
+                    	$this->assemble_folder_array($folder, $contents, 'FS');
+                    }
+                    else
+                    {
+                    	$this->assemble_folder_array($folder, $contents, 'F');
+                    }
                     
-                    //$GLOBALS['default']->log->debug('get_listing assembled contents '.print_r($contents, true));
+                    //$GLOBALS['default']->log->debug('get_listing assembled folder contents 1 '.print_r($contents, true));
+                    
+                    $contents[$contents_count++]['items'] = $items;
+                    
+                    //$GLOBALS['default']->log->debug('get_listing assembled folder contents '.print_r($contents, true));
                 }
             }
+            
+            //$GLOBALS['default']->log->debug('get_listing total contents after folder '.print_r($contents, true));
         }
 
         //$GLOBALS['default']->log->debug('get_listing total contents '.print_r($contents, true));
@@ -1649,47 +1569,47 @@ class KTAPI_Folder extends KTAPI_FolderItem
      * 
      * @return number
      */
-    public function getChanges($timestamp, $depth)
+    public function getChanges($timestamp, $depth = 1, $what = 'DF')
     {
-    	//TODO: if a folder has been created but then deleted, both after the timestamp, then don't include it!
-    	//same for renamed etc!
+    	$GLOBALS['default']->log->debug("getChanges $timestamp $depth '$what'");
     	
-    	//$GLOBALS['default']->log->debug("getChanges timestamp $timestamp");
+    	$changes = array();
     	
-    	$created = $this->createdSince($timestamp, $depth);
+    	$this->createdSince($timestamp, $what, $changes);
     	
-    	//$GLOBALS['default']->log->debug('getChanges created '.print_r($created, true));
+    	$this->deletedSince($timestamp, $what, $changes);
     	
-    	$deleted = $this->deletedSince($timestamp, $depth);
+    	$this->renamedSince($timestamp, $what, $changes);
     	
-    	//$GLOBALS['default']->log->debug('getChanges deleted '.print_r($deleted, true));
+    	$this->movedSince($timestamp, $what, $changes);
     	
-    	$renamed = $this->renamedSince($timestamp, $depth);
+    	//$GLOBALS['default']->log->debug('getChanges created '.print_r($changes, true));
     	
-    	//$GLOBALS['default']->log->debug('getChanges renamed '.print_r($renamed, true));
-    	
-    	$moved = $this->movedSince($timestamp, $depth);
-    	
-    	//$GLOBALS['default']->log->debug('getChanges moved '.print_r($moved, true));
-    	
-    	$merged = array_merge($created, $deleted, $renamed, $moved);
-    	
+    	if ($depth != 1)
+    	{    	
+    		$this->getChangesRecursive($timestamp, $depth, $what, $changes);
+    		
+    		$GLOBALS['default']->log->debug('getChanges recursive '.print_r($changes, true));
+    	}
+
     	//now sort the array according to id
-        usort($merged, array($this, 'compare_changes'));
+        usort($changes, array($this, 'compare_changes'));
+        
+        //$this->resolveChanges($merged);
     	
-    	//$GLOBALS['default']->log->debug('getChanges merged '.print_r($merged, true));
+    	$GLOBALS['default']->log->debug('getChanges merged '.print_r($changes, true));
     	
-    	return $merged;
+    	return $changes;
     }
     
-	/**
-     * Gets the subfolders created since a specific time
+     /**
+     * Recursively gets the changes in a folder since a specific time
      * 
-     * @return array of folders
+     * @return number
      */
-    public function createdSince($timestamp, $depth = 1)
+	private function getChangesRecursive($timestamp, $depth = 1, $what = 'DF', &$changes = array())
     {
-    	//$GLOBALS['default']->log->debug("createdSince timestamp $timestamp");
+    	//$GLOBALS['default']->log->debug("getChangesRecursive timestamp $timestamp depth $depth ".print_r($changes, true));
     	
     	// are we fetching the entire tree?
         // Set a static boolean value which will instruct recursive calls to ignore the depth parameter;
@@ -1703,46 +1623,54 @@ class KTAPI_Folder extends KTAPI_FolderItem
         if (!$fullTree && ($depth < 1)) {
             return array();
         }
+        
+        if ($fullTree || ($depth > 1)) {
+	    	$sQuery = 'SELECT F.id FROM '. KTUtil::getTableName('folders') . ' AS F WHERE F.parent_id = ? '.
+	    	'UNION SELECT FT.folder_id AS id FROM folder_transactions AS FT WHERE FT.transaction_namespace = \'ktcore.transactions.delete\' '.
+			'AND FT.parent_id = ?';
+	        
+	        $aParams = array($this->folderid, $this->folderid);
+	        
+	        $results = DBUtil::getResultArray(array($sQuery, $aParams));
+	        if (is_null($results) || PEAR::isError($results))
+	        {
+	            return new KTAPI_Error(KTAPI_ERROR_INTERNAL_ERROR, $results );
+	        }
+	        
+	        $GLOBALS['default']->log->debug('getChangesRecursive folders '.print_r($results, true));
+	        
+	        $folder_permission = &KTPermission::getByName(KTAPI_PERMISSION_VIEW_FOLDER);
+	        $user = $this->ktapi->get_user();
+	        	        
+	        foreach ($results as $result) 
+	        {	
+	        	$folder = &Folder::get($result['id']);
+	        	if(!PEAR::isError($folder))
+	        	{
+	        		if (KTPermissionUtil::userHasPermissionOnItem($user, $folder_permission, $folder)) 
+	        		{	
+	        			$ktapi_folder = &$this->ktapi->get_folder_by_id($folder->getId());
+	        			
+	        			if(!PEAR::isError($folder))
+			        	{
+							$ktapi_folder->createdSince($timestamp, $what, $changes);
+					    	
+					    	$ktapi_folder->deletedSince($timestamp, $what, $changes);
+					    	
+					    	$ktapi_folder->renamedSince($timestamp, $what, $changes);
+					    	
+					    	$ktapi_folder->movedSince($timestamp, $what, $changes);
+					        
+					    	//now recurse!
+							if ($fullTree || ($depth > 1)) {
+								$ktapi_folder->getChangesRecursive($timestamp, $depth - 1, $what, $changes);
+							} 
+			        	}
+					}
+	        	}	    
+	        }
     	
-    	$sQuery = 'SELECT F.id, F.name, F.description, F.parent_id, F.creator_id, F.created, F.modified_user_id, F.modified, F.is_public, F.full_path, ' .
-    	'F.parent_folder_ids, F.permission_object_id, F.permission_lookup_id, F.restrict_document_types, F.linked_folder_id, F.owner_id ' .
-        'FROM ' . KTUtil::getTableName('folder_transactions') . ' AS FT INNER JOIN ' . KTUtil::getTableName('folders') . ' AS F ON F.id = FT.folder_id ' .
-        'WHERE FT.transaction_namespace = \'ktcore.transactions.create\' AND F.parent_id = ? AND FT.datetime > ? ORDER BY FT.datetime DESC';
-        
-        $aParams = array($this->folderid, $timestamp);
-        
-        $results = DBUtil::getResultArray(array($sQuery, $aParams));
-        if (is_null($results) || PEAR::isError($results))
-        {
-            return new KTAPI_Error(KTAPI_ERROR_INTERNAL_ERROR, $results );
         }
-        
-        $folder_children = KTEntityUtil::loadFromArrayMulti('Folder', $results);
-        
-        //$GLOBALS['default']->log->debug('createdSince folder_children '.print_r($folder_children, true));
-        
-        $folder_permission = &KTPermission::getByName(KTAPI_PERMISSION_VIEW_FOLDER);
-        $user = $this->ktapi->get_user();
-        static $contents = array();
-        
-    	foreach ($folder_children as $key => $folder) {
-			if (KTPermissionUtil::userHasPermissionOnItem($user, $folder_permission, $folder)) {				
-				
-				if ($fullTree || ($depth > 1)) {
-					$sub_folder = &$this->ktapi->get_folder_by_id($folder->getId());
-					$sub_folder->createdSince($timestamp, $depth - 1);
-				}
-				
-				$this->assemble_folder_array($folder, $contents);
-				$contents[$key]['change_type'] = 'C';
-				$contents[$key]['items'] = $items;    
-				//$GLOBALS['default']->log->debug('createdSince assembled contents '.print_r($contents, true));
-            }
-        }
-        
-        //$GLOBALS['default']->log->debug('createdSince result '.print_r($contents, true));
-        
-        return $contents;
     }
     
 	/**
@@ -1750,149 +1678,160 @@ class KTAPI_Folder extends KTAPI_FolderItem
      * 
      * @return array of folders
      */
-    /*public function createdSince($timestamp, $depth = 1)
-    {
-    	$GLOBALS['default']->log->debug("createdSince timestamp $timestamp");
-    	
-    	//$children = $this->get_listing(1, 'DF');
-    	
-    	//$GLOBALS['default']->log->debug('getChanges children '.print_r($children, true));
-    	
-    	static $fullTree = null;
-		if (is_null($fullTree)) {
-			$fullTree = ($depth < 0) ? true : false;
-		}
-
-		// if we are not getting the full listing, we need to kick out if depth less than 1
-		if (!$fullTree && ($depth < 1)) {
-			return array();
-		}
-		
-		$folder_permission = &KTPermission::getByName(KTAPI_PERMISSION_VIEW_FOLDER);
-        $user = $this->ktapi->get_user();
-        $contents = array();
-    	
-    	$aOptions ['orderby'] = 'name';
-    	$folder_children = Folder::getList(array('parent_id = ? AND created > ?', array($this->folderid, $timestamp)), $aOptions);
-
-    	$GLOBALS['default']->log->debug('createdSince folder_children '.print_r($folder_children, true));
-    	
-		foreach ($folder_children as $folder) {
-			if (KTPermissionUtil::userHasPermissionOnItem($user, $folder_permission, $folder)) {				
-				//TODO: sort out recursiveness!
-				if ($fullTree || ($depth > 1)) {
-					$sub_folder = &$this->ktapi->get_folder_by_id($folder->getId());
-					$items = $sub_folder->createdSince($timestamp, $depth - 1);
-				} else {
-					$items = array();
-				}
-
-				$creator = $this->_resolve_user($folder->getCreatorID());
-				$created_date = $folder->getCreatedDateTime();
-				if (empty($created_date))
-				$created_date = 'n/a';
-
-				$modified_by = $this->_resolve_user($folder->getModifiedUserID());
-				$modified_date = $folder->getLastModifiedDate();
-				if (empty($modified_date))
-				$modified_date = 'n/a';
-
-				$owned_by = $this->_resolve_user($folder->getOwnerID());
-
-				$array = array(
-					'id' => (int)$folder->getId(),
-					'item_type' => 'F',
-					'custom_document_no' => 'n/a',
-					'oem_document_no' => 'n/a',
-					'title' => $folder->getName(),
-					'document_type' => 'n/a',
-					'filename' => $folder->getName(),
-					'filesize' => 'n/a',
-					'created_by' => is_null($creator) ? 'n/a' : $creator->getName(),
-					'created_date' => $created_date,
-					'checked_out_by' => 'n/a',
-					'checked_out_date' => 'n/a',
-					'modified_by' => is_null($modified_by) ? 'n/a' : $modified_by->getName(),
-					'modified_date' => $modified_date,
-					'owned_by' => is_null($owned_by) ? 'n/a' : $owned_by->getName(),
-					'version' => 'n/a',
-					'is_immutable' => 'n/a',
-					'permissions' => KTAPI_Folder::get_permission_string($folder),
-					'workflow' => 'n/a',
-					'workflow_state' => 'n/a',
-					'mime_type' => 'folder',
-					'mime_icon_path' => 'folder',
-					'mime_display' => 'Folder',
-					'storage_path' => 'n/a',
-					'full_path' => $folder->getFullPath()
-				);
-
-				$array ['linked_folder_id'] = $folder->getLinkedFolderId();
-
-				if ($folder->isSymbolicLink()) {
-					$array ['item_type'] = "S";
-				}
-
-				$array ['items'] = $items;
-
-				if (!$folder->isSymbolicLink()) {
-					$contents [] = $array;
-				}
-
-            }
+    public function createdSince($timestamp, $what = 'DF', &$contents = array())
+    {    	
+        //need to do folders?
+        if (strpos($what, 'F') !== false)
+        {
+	    	$sQuery = 'SELECT F.id, FT.datetime AS change_date ' .
+	        'FROM ' . KTUtil::getTableName('folder_transactions') . ' AS FT INNER JOIN ' . KTUtil::getTableName('folders') . ' AS F ON F.id = FT.folder_id ' .
+	        'WHERE (FT.transaction_namespace = \'ktcore.transactions.create\' OR FT.transaction_namespace = \'ktcore.transactions.copy\') AND F.parent_id = ? AND FT.datetime > ? ORDER BY FT.datetime ASC';
+	        
+	        $aParams = array($this->folderid, $timestamp);
+	        
+	        $results = DBUtil::getResultArray(array($sQuery, $aParams));
+	        if (is_null($results) || PEAR::isError($results))
+	        {
+	            return new KTAPI_Error(KTAPI_ERROR_INTERNAL_ERROR, $results );
+	        }
+	        
+	        $folder_permission = &KTPermission::getByName(KTAPI_PERMISSION_VIEW_FOLDER);
+	        $user = $this->ktapi->get_user();
+	        	        
+	        foreach ($results as $result) {
+	        	$folder = &Folder::get($result['id']);
+	        	$GLOBALS['default']->log->debug('createdSince folder '.print_r($folder, true));
+				if (KTPermissionUtil::userHasPermissionOnItem($user, $folder_permission, $folder)) {
+					
+					$this->assemble_folder_array($folder, $contents, $what);
+					
+					$contents[count($contents)-1]['changes'] = array(
+						'change_type' => 'C', 
+						'change_date' => $result['change_date']
+					);
+	            }
+	        }
+	        
+	        //$GLOBALS['default']->log->debug('createdSince folder result '.print_r($contents, true));
         }
         
-        $GLOBALS['default']->log->debug('createdSince result '.print_r($contents, true));
-        
-        return $contents;
-    }*/
+        //need to do documents?
+        if(strpos($what, 'D') !== false)
+        {        	
+        	$sQuery = 'SELECT D.id, DT.datetime AS change_date '.
+	        'FROM ' . KTUtil::getTableName('document_transactions') . ' AS DT INNER JOIN ' . KTUtil::getTableName('documents') . ' AS D ON D.id = DT.document_id ' .
+	    	'WHERE (DT.transaction_namespace = \'ktcore.transactions.create\' OR DT.transaction_namespace = \'ktcore.transactions.copy\') AND D.folder_id = ? AND DT.datetime > ? ORDER BY DT.datetime ASC';
+	        
+	        $aParams = array($this->folderid, $timestamp);
+	        
+	        $documents = DBUtil::getResultArray(array($sQuery, $aParams));
+	        if (is_null($documents) || PEAR::isError($documents))
+	        {
+	            return new KTAPI_Error(KTAPI_ERROR_INTERNAL_ERROR, $documents );
+	        }
+	        
+	        $read_permission = &KTPermission::getByName(KTAPI_PERMISSION_READ);
+	        $user = $this->ktapi->get_user();
+	        
+	        foreach ($documents as $document) {	        	
+	        	$oDocument = &Document::get($document['id']);
+	        	
+	        	if (KTPermissionUtil::userHasPermissionOnItem($user, $read_permission, $oDocument)) {
+	    			$this->assemble_document_array($oDocument, $contents);
+	    			
+	    			$contents[count($contents)-1]['changes'] = array(
+						'change_type' => 'C', 
+						'change_date' => $document['change_date']
+					);   
+	    		}
+	        }
+	        
+	        //$GLOBALS['default']->log->debug('documentsCreatedSince contents '.print_r($contents, true));        
+        }
+    }
+
     
     /**
      * Gets the subfolders deleted since a specific time
      * 
      * @return array of folders
      */
-    public function deletedSince($timestamp, $depth = 1)
+    public function deletedSince($timestamp, $what = 'DF', &$contents = array())
     {
     	//$GLOBALS['default']->log->debug("deletedSince timestamp $timestamp");
     	
-        $sQuery = 'SELECT FT.folder_id AS id, FT.datetime AS datetime, FT.parent_id AS parent_id FROM ' . KTUtil::getTableName('folder_transactions') . ' AS FT ' .
-        'WHERE FT.transaction_namespace = \'ktcore.transactions.delete\' AND FT.parent_id = ? AND FT.datetime > ? ORDER BY FT.datetime DESC';
-        
-        $aParams = array($this->folderid, $timestamp);
-
-        $folderIDs = DBUtil::getResultArray(array($sQuery, $aParams));
-        if (is_null($folderIDs) || PEAR::isError($folderIDs))
+    	//need to do folders?
+        if (strpos($what, 'F') !== false)
         {
-            return new KTAPI_Error(KTAPI_ERROR_INTERNAL_ERROR, $folderIDs);
+	        $sQuery = 'SELECT FT.folder_id AS id, FT.datetime AS change_date, FT.parent_id AS parent_id FROM ' . KTUtil::getTableName('folder_transactions') . ' AS FT ' .
+	        'WHERE FT.transaction_namespace = \'ktcore.transactions.delete\' AND FT.parent_id = ? AND FT.datetime > ? ORDER BY FT.datetime ASC';
+	        
+	        $aParams = array($this->folderid, $timestamp);
+	
+	        $results = DBUtil::getResultArray(array($sQuery, $aParams));
+	        if (is_null($results) || PEAR::isError($results))
+	        {
+	            return new KTAPI_Error(KTAPI_ERROR_INTERNAL_ERROR, $results);
+	        }
+	        	        
+	        foreach ($results as $result) {      
+	        	//can't do this since folder is deleted and thus does not exist in folders table anymore!  	
+	        	/*$oFolder = Folder::get((int)$folderID);
+	        	$this->assemble_folder_array($folder, $contents);
+	        	$contents[$key]['change_type'] = 'D';
+				$contents[$key]['items'] = array();*/
+	        	
+	        	$array = array(
+					'id' => $result['id'],
+	        		'item_type' => 'F',
+	        		'parent_id' => $result['parent_id'],	        		
+	        	);
+	        	
+	        	$contents[] = $array;
+	        	$contents[count($contents)-1]['changes'] = array(
+						'change_type' => 'D', 
+						'change_date' => $result['change_date']
+					); 
+	        }        
+	        
+	        //$GLOBALS['default']->log->debug('deletedSince folderIDs '.print_r($contents, true));
         }
         
-        //$GLOBALS['default']->log->debug('deletedSince folderIDs '.print_r($folderIDs, true));
-        
-        $contents = array();
-        
-        foreach ($folderIDs as $folderID) {      
-        	//can't do this since folder is deleted and thus does not exist in folders table anymore!  	
-        	/*$oFolder = Folder::get((int)$folderID);
-        	$this->assemble_folder_array($folder, $contents);
-        	$contents[$key]['change_type'] = 'D';
-			$contents[$key]['items'] = array();*/
-        	
-        	$array = array(
-				'id' => $folderID['id'],
-        		'item_type' => 'F',
-        		'parent_id' => $folderID['parent_id'],
-        		'change_type' => 'D',
-        		'modified_date' => $folderID['datetime'],
-        		
-        	);
-        	
-        	$contents[] = $array;
-        }        
-        
-        //$GLOBALS['default']->log->debug('deletedSince folderIDs '.print_r($contents, true));
-
-        return $contents;
+        //TODO: what about archived documents? Or is that picked up by documents modified?
+        //need to do documents?
+        if (strpos($what, 'D') !== false)
+        {
+        	//TODO: need to add parent_id field to document_transactions since folder_id field is deleted from documents when document is deleted!
+        	$sQuery = 'SELECT D.id, DT.datetime AS change_date, DT.parent_id AS parent_id '.
+	        'FROM ' . KTUtil::getTableName('document_transactions') . ' AS DT INNER JOIN ' . KTUtil::getTableName('documents') . ' AS D ON D.id = DT.document_id ' .
+	    	'WHERE DT.transaction_namespace = \'ktcore.transactions.delete\' AND D.folder_id = ? AND DT.datetime > ? ORDER BY DT.datetime ASC';
+	        
+	        $aParams = array($this->folderid, $timestamp);
+	        
+	        $documents = DBUtil::getResultArray(array($sQuery, $aParams));
+	        if (is_null($documents) || PEAR::isError($documents))
+	        {
+	            return new KTAPI_Error(KTAPI_ERROR_INTERNAL_ERROR, $documents );
+	        }
+	        
+	        $read_permission = &KTPermission::getByName(KTAPI_PERMISSION_READ);
+	        $user = $this->ktapi->get_user();
+	        
+	        foreach ($documents as $document) {	        	
+	        	$oDocument = &Document::get($document['id']);
+	        	
+	        	if (KTPermissionUtil::userHasPermissionOnItem($user, $read_permission, $oDocument)) {
+	    			
+	        		//TODO: need to do this? Rather do the same as for folders?
+	        		$this->assemble_document_array($oDocument, $contents);
+	    			
+	    			$contents[count($contents)-1]['changes'] = array(
+						'change_type' => 'D', 
+						'change_date' => $document['change_date']
+					); 
+	    		}
+	        }
+        }
     }
     
     /**
@@ -1900,61 +1839,76 @@ class KTAPI_Folder extends KTAPI_FolderItem
      * 
      * @return array of folders
      */
-    public function renamedSince($timestamp, $depth = 1)
+    public function renamedSince($timestamp, $what = 'DF', &$contents = array())
     {
     	//$GLOBALS['default']->log->debug("renamedSince timestamp $timestamp");
-    	
-    	// are we fetching the entire tree?
-        // Set a static boolean value which will instruct recursive calls to ignore the depth parameter;
-        // negative indicates full tree, positive goes to specified depth, 0 = nothing
-    	static $fullTree = null;
-        if (is_null($fullTree)) {
-            $fullTree = ($depth < 0) ? true : false;
-        }
-
-        // if we are not getting the full listing, we need to kick out if depth less than 1
-        if (!$fullTree && ($depth < 1)) {
-            return array();
-        }
-    	
-    	$sQuery = 'SELECT F.id, F.name, F.description, F.parent_id, F.creator_id, F.created, F.modified_user_id, F.modified, F.is_public, F.full_path, ' .
-    	'F.parent_folder_ids, F.permission_object_id, F.permission_lookup_id, F.restrict_document_types, F.linked_folder_id, F.owner_id ' .
-        'FROM ' . KTUtil::getTableName('folder_transactions') . ' AS FT INNER JOIN ' . KTUtil::getTableName('folders') . ' AS F ON F.id = FT.folder_id ' .
-        'WHERE FT.transaction_namespace = \'ktcore.transactions.rename\' AND F.parent_id = ? AND FT.datetime > ? ORDER BY FT.datetime DESC';
-        
-        $aParams = array($this->folderid, $timestamp);
-        
-        $results = DBUtil::getResultArray(array($sQuery, $aParams));
-        if (is_null($results) || PEAR::isError($results))
+    	    	
+        //need to do folders?
+        if (strpos($what, 'F') !== false)
         {
-            return new KTAPI_Error(KTAPI_ERROR_INTERNAL_ERROR, $results);
+	    	$sQuery = 'SELECT F.id, FT.datetime AS change_date ' .
+	        'FROM ' . KTUtil::getTableName('folder_transactions') . ' AS FT INNER JOIN ' . KTUtil::getTableName('folders') . ' AS F ON F.id = FT.folder_id ' .
+	        'WHERE FT.transaction_namespace = \'ktcore.transactions.rename\' AND F.parent_id = ? AND FT.datetime > ? ORDER BY FT.datetime ASC';
+	        
+	        $aParams = array($this->folderid, $timestamp);
+	        
+	        $results = DBUtil::getResultArray(array($sQuery, $aParams));
+	        if (is_null($results) || PEAR::isError($results))
+	        {
+	            return new KTAPI_Error(KTAPI_ERROR_INTERNAL_ERROR, $results);
+	        }
+	        
+	        $folder_permission = &KTPermission::getByName(KTAPI_PERMISSION_VIEW_FOLDER);
+	        $user = $this->ktapi->get_user();
+	        
+	    	foreach ($results as $result) {
+	        	$folder = &Folder::get($result['id']);
+				if (KTPermissionUtil::userHasPermissionOnItem($user, $folder_permission, $folder)) {
+					$this->assemble_folder_array($folder, $contents);
+					
+					$contents[count($contents)-1]['changes'] = array(
+						'change_type' => 'R', 
+						'change_date' => $result['change_date']
+					);
+					
+					//$GLOBALS['default']->log->debug('renamedSince assembled contents '.print_r($contents, true));
+	            }
+	        }
+	        
+	        //$GLOBALS['default']->log->debug('renamedSince result '.print_r($contents, true));
         }
         
-        $folder_children = KTEntityUtil::loadFromArrayMulti('Folder', $results);
-        
-        //$GLOBALS['default']->log->debug('renamedSince folder_children '.print_r($folder_children, true));
-        
-        $folder_permission = &KTPermission::getByName(KTAPI_PERMISSION_VIEW_FOLDER);
-        $user = $this->ktapi->get_user();
-        static $contents = array();
-        
-    	foreach ($folder_children as $key => $folder) {
-			if (KTPermissionUtil::userHasPermissionOnItem($user, $folder_permission, $folder)) {				
-				if ($fullTree || ($depth > 1)) {
-					$sub_folder = &$this->ktapi->get_folder_by_id($folder->getId());
-					$sub_folder->createdSince($timestamp, $depth - 1);
-				}
-				
-				$this->assemble_folder_array($folder, $contents);
-				$contents[$key]['change_type'] = 'R';
-				$contents[$key]['items'] = $items;    
-				//$GLOBALS['default']->log->debug('renamedSince assembled contents '.print_r($contents, true));
-            }
+        //need to do documents?
+        if (strpos($what, 'D') !== false)
+        {
+        	$sQuery = 'SELECT D.id, DT.datetime AS change_date '.
+	        'FROM ' . KTUtil::getTableName('document_transactions') . ' AS DT INNER JOIN ' . KTUtil::getTableName('documents') . ' AS D ON D.id = DT.document_id ' .
+	    	'WHERE DT.transaction_namespace = \'ktcore.transactions.rename\' AND D.folder_id = ? AND DT.datetime > ? ORDER BY DT.datetime ASC';
+	        
+	        $aParams = array($this->folderid, $timestamp);
+	        
+	        $documents = DBUtil::getResultArray(array($sQuery, $aParams));
+	        if (is_null($documents) || PEAR::isError($documents))
+	        {
+	            return new KTAPI_Error(KTAPI_ERROR_INTERNAL_ERROR, $documents );
+	        }
+	        
+	        $read_permission = &KTPermission::getByName(KTAPI_PERMISSION_READ);
+	        $user = $this->ktapi->get_user();
+	        
+	        foreach ($documents as $document) {	        	
+	        	$oDocument = &Document::get($document['id']);
+	        	
+	        	if (KTPermissionUtil::userHasPermissionOnItem($user, $read_permission, $oDocument)) {
+	    			$this->assemble_document_array($oDocument, $contents);
+	    			
+	    			$contents[count($contents)-1]['changes'] = array(
+						'change_type' => 'R', 
+						'change_date' => $document['change_date']
+					); 
+	    		}
+	        }
         }
-        
-        //$GLOBALS['default']->log->debug('renamedSince result '.print_r($contents, true));
-        
-        return $contents;
     }
     
 	/**
@@ -1962,9 +1916,88 @@ class KTAPI_Folder extends KTAPI_FolderItem
      * 
      * @return array of folders
      */
-    public function movedSince($timestamp, $depth = 1)
+    public function movedSince($timestamp, $what = 'DF', &$contents = array())
     {
     	//$GLOBALS['default']->log->debug("movedSince timestamp $timestamp");
+    	    	
+        //need to do folders?
+        if (strpos($what, 'F') !== false)
+        {
+	    	$sQuery = 'SELECT F.id, FT.datetime AS change_date, FT.parent_id AS transaction_parent_id ' .
+	        'FROM ' . KTUtil::getTableName('folder_transactions') . ' AS FT INNER JOIN ' . KTUtil::getTableName('folders') . ' AS F ON F.id = FT.folder_id ' .
+	        'WHERE FT.transaction_namespace = \'ktcore.transactions.move\' AND FT.parent_id = ? AND FT.datetime > ? ORDER BY FT.datetime ASC';
+	        
+	        $aParams = array($this->folderid, $timestamp);
+	        
+	        $results = DBUtil::getResultArray(array($sQuery, $aParams));
+	        if (is_null($results) || PEAR::isError($results))
+	        {
+	            return new KTAPI_Error(KTAPI_ERROR_INTERNAL_ERROR, $results);
+	        }
+	        
+	        $folder_permission = &KTPermission::getByName(KTAPI_PERMISSION_VIEW_FOLDER);
+	        $user = $this->ktapi->get_user();
+	        
+	        foreach ($results as $result) {
+	        	$folder = &Folder::get($result['id']);
+				if (KTPermissionUtil::userHasPermissionOnItem($user, $folder_permission, $folder)) {									
+					$this->assemble_folder_array($folder, $contents);
+					
+					$contents[count($contents)-1]['changes'] = array(
+						'change_type' => 'M', 
+						'change_date' => $result['change_date'],
+						'previous_parent_id' => $result['transaction_parent_id']
+					);
+					
+					//$GLOBALS['default']->log->debug('movedSince assembled contents '.print_r($contents, true));
+	            }
+	        }
+	        
+	        //$GLOBALS['default']->log->debug('movedSince folders '.print_r($contents, true));
+        }
+        
+    	//need to do documents?
+        if (strpos($what, 'D') !== false)
+        {
+        	$sQuery = 'SELECT D.id, DT.datetime AS change_date, DT.parent_id AS transaction_parent_id  '.
+	        'FROM ' . KTUtil::getTableName('document_transactions') . ' AS DT INNER JOIN ' . KTUtil::getTableName('documents') . ' AS D ON D.id = DT.document_id ' .
+	    	'WHERE DT.transaction_namespace = \'ktcore.transactions.move\' AND D.folder_id = ? AND DT.datetime > ? ORDER BY DT.datetime ASC';
+	        
+	        $aParams = array($this->folderid, $timestamp);
+	        
+	        $documents = DBUtil::getResultArray(array($sQuery, $aParams));
+	        if (is_null($documents) || PEAR::isError($documents))
+	        {
+	            return new KTAPI_Error(KTAPI_ERROR_INTERNAL_ERROR, $documents );
+	        }
+	        
+	        $read_permission = &KTPermission::getByName(KTAPI_PERMISSION_READ);
+	        $user = $this->ktapi->get_user();
+	        
+	        foreach ($documents as $document) {	        	
+	        	$oDocument = &Document::get($document['id']);
+	        	
+	        	if (KTPermissionUtil::userHasPermissionOnItem($user, $read_permission, $oDocument)) {
+	    			$this->assemble_document_array($oDocument, $contents);
+	    			
+	    			$contents[count($contents)-1]['changes'] = array(
+						'change_type' => 'M', 
+						'change_date' => $document['change_date'],
+	    				'previous_parent_id' => $document['transaction_parent_id']
+					);   
+	    		}
+	        }
+        }
+    }
+    
+    /**
+     * Gets the subfolders moved since a specific time
+     * 
+     * @return array of folders
+     */
+    public function updatedSince($timestamp, $depth = 1)
+    {	
+    	$GLOBALS['default']->log->debug("updatedSince $timestamp");
     	
     	// are we fetching the entire tree?
         // Set a static boolean value which will instruct recursive calls to ignore the depth parameter;
@@ -1978,74 +2011,48 @@ class KTAPI_Folder extends KTAPI_FolderItem
         if (!$fullTree && ($depth < 1)) {
             return array();
         }
-    	
-    	$sQuery = 'SELECT F.id, F.name, F.description, F.parent_id, F.creator_id, F.created, F.modified_user_id, F.modified, F.is_public, F.full_path, ' .
-    	'F.parent_folder_ids, F.permission_object_id, F.permission_lookup_id, F.restrict_document_types, F.linked_folder_id, F.owner_id ' .
-        'FROM ' . KTUtil::getTableName('folder_transactions') . ' AS FT INNER JOIN ' . KTUtil::getTableName('folders') . ' AS F ON F.id = FT.folder_id ' .
-        'WHERE FT.transaction_namespace = \'ktcore.transactions.move\' AND FT.parent_id = ? AND FT.datetime > ? ORDER BY FT.datetime DESC';
         
-        $aParams = array($this->folderid, $timestamp);
+    	static $contents = array();
+	       
+        static $counter = 0;
+    	    	
+    	$sQuery = 'SELECT D.id, DT.datetime AS change_date '.
+        'FROM ' . KTUtil::getTableName('document_transactions') . ' AS DT INNER JOIN ' . KTUtil::getTableName('documents') . ' AS D ON D.id = DT.document_id ' .
+    	'WHERE DT.transaction_namespace IN (\'ktcore.transactions.update\', \'ktcore.transactions.check_in\', \'ktcore.transactions.check_out\', '.
+    	'\'ktcore.transactions.force_checkin\', \'ktcore.transactions.permissions_change\') AND D.folder_id = ? AND DT.datetime > ? ORDER BY DT.datetime ASC';
         
-        $results = DBUtil::getResultArray(array($sQuery, $aParams));
-        if (is_null($results) || PEAR::isError($results))
+    	//TODO: ktcore.transactions.immutable, ktcore.transactions.ownership_change?
+        
+    	$aParams = array($this->folderid, $timestamp);
+        
+        $documents = DBUtil::getResultArray(array($sQuery, $aParams));
+        if (is_null($documents) || PEAR::isError($documents))
         {
-            return new KTAPI_Error(KTAPI_ERROR_INTERNAL_ERROR, $results);
+            return new KTAPI_Error(KTAPI_ERROR_INTERNAL_ERROR, $documents );
         }
+                
+        $GLOBALS['default']->log->debug('updatedSince documents '.print_r($documents, true));
         
-        $folder_children = KTEntityUtil::loadFromArrayMulti('Folder', $results);
-        
-        //$GLOBALS['default']->log->debug('movedSince folder_children '.print_r($folder_children, true));
-        
-        $folder_permission = &KTPermission::getByName(KTAPI_PERMISSION_VIEW_FOLDER);
+        $read_permission = &KTPermission::getByName(KTAPI_PERMISSION_READ);
         $user = $this->ktapi->get_user();
-        static $contents = array();
         
-    	foreach ($folder_children as $key => $folder) {
-			if (KTPermissionUtil::userHasPermissionOnItem($user, $folder_permission, $folder)) {				
-				
-				if ($fullTree || ($depth > 1)) {
-					$sub_folder = &$this->ktapi->get_folder_by_id($folder->getId());
-					$sub_folder->createdSince($timestamp, $depth - 1);
-				}
-				
-				$this->assemble_folder_array($folder, $contents);
-				$contents[$key]['change_type'] = 'M';
-				$contents[$key]['items'] = $items;    
-				//$GLOBALS['default']->log->debug('movedSince assembled contents '.print_r($contents, true));
-            }
+        foreach ($documents as $document) {	        	
+        	$oDocument = &Document::get($document['id']);
+        	
+        	if (KTPermissionUtil::userHasPermissionOnItem($user, $read_permission, $oDocument)) {
+    			$this->assemble_document_array($oDocument, $contents);
+    			
+    			$contents[$counter++]['changes'] = array(
+					'change_type' => 'U', 
+					'change_date' => $document['change_date']
+				);
+    		}
         }
         
-        //$GLOBALS['default']->log->debug('movedSince result '.print_r($contents, true));
+        $GLOBALS['default']->log->debug('updatedSince contents '.print_r($contents, true));
         
         return $contents;
     }
-    
-    /**
-     * EXPERIMENTAL
-     * Calculates whether there are any changes in a folder since
-     * 
-     * @return number
-     */
-    /*public function hasChangesSince($timestamp)
-    {
-    	$sQuery = 'SELECT COUNT(DISTINCT F.id) AS count '.
-        'FROM ' . KTUtil::getTableName('folder_transactions') . ' AS FT LEFT JOIN ' . KTUtil::getTableName('folders') . ' AS F ON F.id = FT.folder_id ' .
-        'WHERE (F.parent_id = ? AND F.modified > ?) OR (FT.parent_id = ? AND FT.datetime > ? AND FT.transaction_namespace IN (\'ktcore.transactions.create\', ' .
-    	'\'ktcore.transactions.delete\', \'ktcore.transactions.rename\', \'ktcore.transactions.move\', \'ktcore.transactions.permissions_change\')) ' .
-        'ORDER BY FT.datetime DESC';
-        
-        $aParams = array($this->folderid, $timestamp, $this->folderid, $timestamp);
-
-        $res = DBUtil::getOneResultKey(array($sQuery, $aParams), 'count');
-        if (PEAR::isError($res)) {
-            return false; // return $res;
-        }
-        
-        $GLOBALS['default']->log->debug('hasChangesSince result '.print_r($res, true));
-        
-        return ($res > 0);	
-    
-    }*/
     
     /**
      * Calculates an MD5 hash of a folder based on its:
@@ -2075,11 +2082,39 @@ class KTAPI_Folder extends KTAPI_FolderItem
     	return $hash; 
     }
     
+    /**
+     * Compares the changes array as follows
+     * 
+     * id ASC
+     * if ids are equal, then date changes made ASC
+     * 
+     * @param $a
+     * @param $b
+     */
 	private function compare_changes($a, $b)
-	{
+	{ 
 		if ($a['id'] == $b['id']) {
-			return 0;
-		}
+			
+			//($a['change_type'] == 'F' && $b['change_type'] == 'D') ? -1 : (($a['change_type'] == 'D' && $b['change_type'] == 'F') ? 1);
+			
+			//we need to compare item_types as well since could get a doc and a folder which have the same id!
+			if($a['change_type'] == 'F' && $b['change_type'] == 'D')
+			{
+				return -1;
+			}
+		
+			if($a['change_type'] == 'D' && $b['change_type'] == 'F')
+			{
+				return 1;
+			}
+			
+			if ($a['changes']['change_date'] == $b['changes']['change_date'])
+			{
+				return 0;
+			}
+			
+			return ($a['changes']['change_date'] < $b['changes']['change_date']) ? -1 : 1;
+		} 
 		
 		return ($a['id'] < $b['id']) ? -1 : 1;
 	}
@@ -2088,14 +2123,16 @@ class KTAPI_Folder extends KTAPI_FolderItem
 	/**
 	 * Assembles/constructs the array used in getting a folder's details
 	 * 
-	 * Uses an array passed by reference
+	 * Uses an array passed by reference to recursively build up the folder details
 	 * 
 	 * @param unknown_type $folder
 	 * @param unknown_type $contents
 	 * @param unknown_type $what
 	 */
-	private function assemble_folder_array($folder, &$contents, $what = 'F')
+	private function assemble_folder_array($folder, &$contents, $what = 'F')	//, $custom_fields = null)
 	{
+		//$GLOBALS['default']->log->debug('assemble_folder_array contents '.print_r($contents, true));
+		
 		$wsversion = $this->getWSVersion();
 
 		$created_by = $this->_resolve_user($folder->getCreatorID());
@@ -2165,7 +2202,7 @@ class KTAPI_Folder extends KTAPI_FolderItem
 
 			}
 
-			$array ['items'] = $items;
+			$array ['items'] = array();
 					
 			if ($wsversion < 3 || (strpos($what, 'F') !== false && !$folder->isSymbolicLink()) || ($folder->isSymbolicLink() && strpos($what, 'S') !== false)) 
 			{
@@ -2193,7 +2230,153 @@ class KTAPI_Folder extends KTAPI_FolderItem
 			);
 		}
 		
+		/*$GLOBALS['default']->log->debug('assemble_folder_array before adding custom fields '.print_r($contents, true));
+		
+		//add any possible optional fields
+		if(isset($custom_fields))
+		{
+			$GLOBALS['default']->log->debug('assemble_folder_array has custom fields');
+			
+			foreach($custom_fields as $key=>$field)
+			{
+				$GLOBALS['default']->log->debug("assemble_folder_array adding custom field $key $field");
+				$contents[0][$key] = $field;				
+			}
+		}*/
 		//$GLOBALS['default']->log->debug('assemble_folder_array total contents '.print_r($contents, true));
+	}
+	
+	/*
+	 * 
+	 */
+	private function assemble_document_array($document, &$contents, $what = 'D')
+	{
+		$GLOBALS['default']->log->debug('assemble_document_array '.print_r($document, true));
+		
+		$wsversion = $this->getWSVersion();
+		
+		$mime_cache = array();
+		
+		$created_by = $this->_resolve_user($document->getCreatorID());
+		$created_date = $document->getCreatedDateTime();
+		if (empty($created_date))
+		{
+			$created_date = 'n/a';
+		}
+
+		$checked_out_by_id = $document->getCheckedOutUserID();
+		$checked_out_by = $this->_resolve_user($checked_out_by_id);
+		$checked_out_date = $document->getCheckedOutDate();
+		if (empty($checked_out_date))
+		{
+			$checked_out_date = 'n/a';
+		}
+			
+		$modified_by = $this->_resolve_user($document->getModifiedUserId());
+		$modified_date = $document->getLastModifiedDate();
+		if (empty($modified_date))
+		{
+			$modified_date = 'n/a';
+		}
+
+		$mimetypeid = $document->getMimeTypeID();
+		if (!array_key_exists($mimetypeid, $mime_cache)) 
+		{
+			$type = KTMime::getMimeTypeName($mimetypeid);
+			$icon = KTMime::getIconPath($mimetypeid);
+			$display = KTMime::getFriendlyNameForString($type);
+			$mime_cache [$mimetypeid] = array('type' => $type, 'icon' => $icon, 'display' => $display);
+		}
+		$mimeinfo = $mime_cache[$mimetypeid];
+
+		$workflow = 'n/a';
+		$state = 'n/a';
+		$wf = KTWorkflowUtil::getWorkflowForDocument($document);
+		if (!is_null($wf) && !PEAR::isError($wf)) 
+		{
+			$workflow = $wf->getHumanName();
+			$ws = KTWorkflowUtil::getWorkflowStateForDocument($document);
+			if (!is_null($ws) && !PEAR::isError($ws)) 
+			{
+				$state = $ws->getHumanName();
+			}
+		}
+
+		if ($wsversion >= 2) 
+		{
+			$docTypeId = $document->getDocumentTypeID();
+			$documentType = DocumentType::get($docTypeId);
+
+			$oemDocumentNo = $document->getOemNo();
+			if (empty($oemDocumentNo))
+			{
+				$oemDocumentNo = 'n/a';
+			}
+
+			$array = array(
+				'id' =>(int) $document->getId(),
+				'item_type' => 'D',
+				'custom_document_no' => 'n/a',
+				'oem_document_no' => $oemDocumentNo,
+				'title' => $document->getName(),
+				'document_type' => $documentType->getName(),
+				'filename' => $document->getFileName(),
+				'filesize' => $document->getFileSize(),
+				'created_by' => is_null($created_by) ? 'n/a' : $created_by->getName(),
+				'created_date' => $created_date,
+				'checked_out_by' => is_null($checked_out_by) ? 'n/a' : $checked_out_by->getName(),
+				'checked_out_by_id' => $checked_out_by_id,
+				'checked_out_date' => $checked_out_date,
+				'modified_by' => is_null($modified_by) ? 'n/a' : $modified_by->getName(),
+				'modified_date' => $modified_date,
+				'owned_by' => is_null($owned_by) ? 'n/a' : $owned_by->getName(),
+				'version' => $document->getMajorVersionNumber() . '.' . $document->getMinorVersionNumber(),
+				'content_id' => $document->getContentVersionId(),
+				'is_immutable' => $document->getImmutable() ? 'true' : 'false',
+				'permissions' => KTAPI_Document::get_permission_string($document),
+				'workflow' => $workflow,
+				'workflow_state' => $state,
+				'mime_type' => $mime_cache [$mimetypeid] ['type'],
+				'mime_icon_path' => $mime_cache [$mimetypeid] ['icon'],
+				'mime_display' => $mime_cache [$mimetypeid] ['display'],
+				'storage_path' => $document->getStoragePath()
+			);
+			
+			if ($wsversion >= 3) 
+			{
+				$document->switchToRealCore();
+				$array ['linked_document_id'] = $document->getLinkedDocumentId();
+				$document->switchToLinkedCore();
+					if ($document->isSymbolicLink()) 
+					{
+						$array ['item_type'] = "S";
+					}
+
+				$array ['parent_id'] = (int)$this->folderid;
+
+				$array['has_rendition'] = $document->getHasRendition();
+
+				$array['clean_uri'] = KTBrowseUtil::getUrlForDocument($document);
+
+				$array['created_by_user_name'] = is_null($created_by) ? 'n/a' : $created_by->getUserName();
+				$array['modified_by_user_name'] = is_null($modified_by) ? 'n/a' : $modified_by->getUserName();
+				$array['checked_out_by_user_name'] = is_null($checked_out_by) ? 'n/a' : $checked_out_by->getUserName();
+				$array['owned_by_user_name'] = is_null($owned_by) ? 'n/a' : $owned_by->getUserName();
+			}
+
+			$array ['items'] = array();
+
+			if ($wsversion < 3 || (strpos($what, 'D') !== false && !$document->isSymbolicLink()) || ($document->isSymbolicLink() && strpos($what, 'S') !== false)) 
+			{
+				$contents [] = $array;
+			}
+		} 
+		else 
+		{
+			$contents [] = array('id' =>(int) $document->getId(), 'item_type' => 'D', 'title' => $document->getName(), 'creator' => is_null($created_by) ? 'n/a' : $created_by->getName(), 'checkedoutby' => is_null($checked_out_by) ? 'n/a' : $checked_out_by->getName(), 'modifiedby' => is_null($modified_by) ? 'n/a' : $modified_by->getName(), 'filename' => $document->getFileName(), 'size' => $document->getFileSize(), 'major_version' => $document->getMajorVersionNumber(), 'minor_version' => $document->getMinorVersionNumber(), 'storage_path' => $document->getStoragePath(), 'mime_type' => $mime_cache [$mimetypeid] ['type'], 'mime_icon_path' => $mime_cache [$mimetypeid] ['icon'], 'mime_display' => $mime_cache [$mimetypeid] ['display'], 'items' => array(), 'workflow' => $workflow, 'workflow_state' => $state);
+		}
+		
+		//$GLOBALS['default']->log->debug('assemble_document_array total contents '.print_r($contents, true));
 	}
 }
 
