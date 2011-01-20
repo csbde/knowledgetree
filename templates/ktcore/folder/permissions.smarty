@@ -93,6 +93,7 @@
 
 {if (!empty($conditions))}
 {if ($edit || $dynamic_conditions)}
+<br><br>
 <h2>{i18n}Dynamic permissions{/i18n}</h2>
 {/if}
 { if $dynamic_conditions }
@@ -140,6 +141,7 @@ $this->assign("aPermissions", $this->_tpl_vars['oDynamicCondition']->getAssignme
 { /if }
 
 { if $edit }
+<br>
 <h3>{i18n}Add a new dynamic permission{/i18n}</h3>
 <form action="{$smarty.server.PHP_SELF}" method="POST">
 <table class="kt_collection" cellpadding="0" cellspacing="0">

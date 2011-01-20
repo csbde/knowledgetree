@@ -154,7 +154,6 @@ class LoginPageDispatcher extends KTDispatcher {
             $_REQUEST['errorMessage'] = join('. <br /> ', $_REQUEST['errorMessage']);
         }
 
-
         KTInterceptorRegistry::checkInterceptorsForTakeOver();
 
         $this->check(); // bounce here, potentially.
@@ -207,6 +206,7 @@ class LoginPageDispatcher extends KTDispatcher {
               'use_email' => $useEmail,
         	  'username' => isset($_REQUEST['username']) ? $_REQUEST['username'] : null,
         );
+        
         return $oTemplate->render($aTemplateData);
     }
 

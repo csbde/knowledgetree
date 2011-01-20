@@ -43,6 +43,7 @@
 
 require_once(KT_LIB_DIR . '/permissions/permission.inc.php');
 require_once(KT_LIB_DIR . '/permissions/permissionutil.inc.php');
+require_once(KT_LIB_DIR . '/security/PermissionCache.php');
 
 class Permission {
 
@@ -53,8 +54,8 @@ class Permission {
     *
     * @return boolean true if the current user has document write permission, false otherwise and set $_SESSION["errorMessage"]
     */
-    function userHasDocumentWritePermission($oDocument) {
-
+    function userHasDocumentWritePermission($oDocument)
+    {
     	if ($oDocument->getImmutable())
 		{
 			return false;
@@ -68,11 +69,11 @@ class Permission {
 			}
 		}
 
-        $oUser = User::get($_SESSION["userID"]);
-        $oPermission = KTPermission::getByName('ktcore.permissions.write');
+		$user_id = $_SESSION["userID"];
+        $permission = 'ktcore.permissions.write';
 
-        return KTPermissionUtil::userHasPermissionOnItem($oUser,
-                $oPermission, $oDocument);
+        $result = KTPermissionUtil::userHasPermissionOnItem($user_id, $permission, $oDocument);
+        return $result;
     }
 
     /**
@@ -83,12 +84,13 @@ class Permission {
     *
     * @return boolean true if the user has document write permission, false otherwise and set $_SESSION["errorMessage"]
     */
-    function userHasDocumentReadPermission($oDocument) {
-        $oUser = User::get($_SESSION["userID"]);
-        $oPermission = KTPermission::getByName('ktcore.permissions.read');
+    function userHasDocumentReadPermission($oDocument)
+    {
+        $user_id = $_SESSION["userID"];
+        $permission = 'ktcore.permissions.read';
 
-        return KTPermissionUtil::userHasPermissionOnItem($oUser,
-                $oPermission, $oDocument);
+        $result = KTPermissionUtil::userHasPermissionOnItem($user_id, $permission, $oDocument);
+        return $result;
     }
 
     /**
@@ -97,12 +99,13 @@ class Permission {
     * @param $oDocument     Document object to check
     * @return boolean true if the user has delete document permission, false otherwise and set $_SESSION["errorMessage"]
     */
-    function userHasDeleteDocumentPermission($oDocument) {
-        $oUser = User::get($_SESSION["userID"]);
-        $oPermission = KTPermission::getByName('ktcore.permissions.delete');
+    function userHasDeleteDocumentPermission($oDocument)
+    {
+        $user_id = $_SESSION["userID"];
+        $permission = 'ktcore.permissions.delete';
 
-        return KTPermissionUtil::userHasPermissionOnItem($oUser,
-                $oPermission, $oDocument);
+        $result = KTPermissionUtil::userHasPermissionOnItem($user_id, $permission, $oDocument);
+        return $result;
     }
 
     /**
@@ -112,12 +115,13 @@ class Permission {
     *
     * @return boolean true if the user has folder write permission, false otherwise and set $_SESSION["errorMessage"]
     */
-    function userHasFolderWritePermission($oFolder) {
-        $oUser = User::get($_SESSION["userID"]);
-        $oPermission = KTPermission::getByName('ktcore.permissions.write');
+    function userHasFolderWritePermission($oFolder)
+    {
+        $user_id = $_SESSION["userID"];
+        $permission = 'ktcore.permissions.write';
 
-        return KTPermissionUtil::userHasPermissionOnItem($oUser,
-                $oPermission, $oFolder);
+        $result = KTPermissionUtil::userHasPermissionOnItem($user_id, $permission, $oFolder);
+        return $result;
     }
 
 
@@ -128,12 +132,13 @@ class Permission {
     *
     * @return boolean true if the user has folder write permission, false otherwise and set $_SESSION["errorMessage"]
     */
-    function userHasFolderReadPermission($oFolder) {
-        $oUser = User::get($_SESSION["userID"]);
-        $oPermission = KTPermission::getByName('ktcore.permissions.read');
+    function userHasFolderReadPermission($oFolder)
+    {
+        $user_id = $_SESSION["userID"];
+        $permission = 'ktcore.permissions.read';
 
-        return KTPermissionUtil::userHasPermissionOnItem($oUser,
-                $oPermission, $oFolder);
+        $result = KTPermissionUtil::userHasPermissionOnItem($user_id, $permission, $oFolder);
+        return $result;
     }
 
 	/**
@@ -143,12 +148,13 @@ class Permission {
     *
     * @return boolean true if the user has add folder permission, false otherwise and set $_SESSION["errorMessage"]
     */
-    function userHasAddFolderPermission($oFolder) {
-        $oUser = User::get($_SESSION["userID"]);
-        $oPermission = KTPermission::getByName('ktcore.permissions.addFolder');
+    function userHasAddFolderPermission($oFolder)
+    {
+        $user_id = $_SESSION["userID"];
+        $permission = 'ktcore.permissions.addFolder';
 
-        return KTPermissionUtil::userHasPermissionOnItem($oUser,
-                $oPermission, $oFolder);
+        $result = KTPermissionUtil::userHasPermissionOnItem($user_id, $permission, $oFolder);
+        return $result;
     }
 
     /**
@@ -157,12 +163,13 @@ class Permission {
     * @param $oFolder     Folder object to check
     * @return boolean true if the user has rename folder permission, false otherwise and set $_SESSION["errorMessage"]
     */
-    function userHasRenameFolderPermission($oFolder) {
-        $oUser = User::get($_SESSION["userID"]);
-        $oPermission = KTPermission::getByName('ktcore.permissions.folder_rename');
+    function userHasRenameFolderPermission($oFolder)
+    {
+        $user_id = $_SESSION["userID"];
+        $permission = 'ktcore.permissions.folder_rename';
 
-        return KTPermissionUtil::userHasPermissionOnItem($oUser,
-                $oPermission, $oFolder);
+        $result = KTPermissionUtil::userHasPermissionOnItem($user_id, $permission, $oFolder);
+        return $result;
     }
 
     /**
@@ -171,12 +178,13 @@ class Permission {
     * @param $oFolder     Folder object to check
     * @return boolean true if the user has delete folder permission, false otherwise and set $_SESSION["errorMessage"]
     */
-    function userHasDeleteFolderPermission($oFolder) {
-        $oUser = User::get($_SESSION["userID"]);
-        $oPermission = KTPermission::getByName('ktcore.permissions.delete');
+    function userHasDeleteFolderPermission($oFolder)
+    {
+        $user_id = $_SESSION["userID"];
+        $permission = 'ktcore.permissions.delete';
 
-        return KTPermissionUtil::userHasPermissionOnItem($oUser,
-                $oPermission, $oFolder);
+        $result = KTPermissionUtil::userHasPermissionOnItem($user_id, $permission, $oFolder);
+        return $result;
     }
 
     /**
@@ -185,12 +193,13 @@ class Permission {
     * @param $oFolder     Folder object to check
     * @return boolean true if the user has security folder permission, false otherwise and set $_SESSION["errorMessage"]
     */
-    function userHasSecurityFolderPermission($oFolder) {
-        $oUser = User::get($_SESSION["userID"]);
-        $oPermission = KTPermission::getByName('ktcore.permissions.security');
+    function userHasSecurityFolderPermission($oFolder)
+    {
+	    $user_id = $_SESSION["userID"];
+        $permission = 'ktcore.permissions.security';
 
-        return KTPermissionUtil::userHasPermissionOnItem($oUser,
-                $oPermission, $oFolder);
+        $result = KTPermissionUtil::userHasPermissionOnItem($user_id, $permission, $oFolder);
+        return $result;
     }
 
     /**

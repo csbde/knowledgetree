@@ -58,7 +58,7 @@ class loginResetEmailDispatcher extends KTDispatcher {
 
     function do_main() {
         global $default;
-        $oPage = $GLOBALS['main'];
+        $oPage =& $GLOBALS['main'];
 
         // Check if the user is trying to reset their password.
         $reset_password = $this->checkReset();
@@ -137,8 +137,9 @@ class loginResetEmailDispatcher extends KTDispatcher {
         $js[] = '/thirdpartyjs/extjs/adapter/ext/ext-base.js';
         $js[] = '/thirdpartyjs/extjs/ext-all.js';
         // temporarily disabled
-        if (false && ACCOUNT_ROUTING_ENABLED && liveAccounts::isTrialAccount()) {
+        if (ACCOUNT_ROUTING_ENABLED && liveAccounts::isTrialAccount()) {
             $js[] = preg_replace('/.*[\/\\\\]plugins/', '/plugins', KT_LIVE_DIR) . '/resources/js/olark/olark.js';
+            $oPage->setBodyOnload("javascript: ktOlarkPopupTrigger('Hi, do you need help logging in?', 30000);");
         }
         $css[] = '/thirdpartyjs/extjs/resources/css/ext-all.css';
 
@@ -171,6 +172,7 @@ class loginResetEmailDispatcher extends KTDispatcher {
         $oTemplating =& KTTemplating::getSingleton();
         $oTemplate = $oTemplating->loadTemplate('login_reset');
         $aTemplateData = array(
+        'page' => $oPage,
         'errorMessage' => $errorMessage,
         'errorMessageConfirm' => $errorMessageConfirm,
         'redirect' => $redirect,

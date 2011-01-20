@@ -75,8 +75,8 @@ require_once(KTAPI_DIR .'/KTAPIUser.inc.php');
 * @package KTAPI
 * @version Version 0.9
 */
-abstract class KTAPI_FolderItem
-{
+abstract class KTAPI_FolderItem {
+
 	/**
 	* This is a reference to the core KTAPI controller
 	*
@@ -122,8 +122,8 @@ abstract class KTAPI_FolderItem
 * @package KTAPI
 * @version Version 0.9
 */
-class KTAPI_Error extends PEAR_Error
-{
+class KTAPI_Error extends PEAR_Error {
+
  	/**
  	* This method determines if there is an error in the object itself or just a common error
  	*
@@ -142,6 +142,7 @@ class KTAPI_Error extends PEAR_Error
 			parent::PEAR_Error($msg);
 		}
 	}
+
 }
 
 /**
@@ -151,8 +152,7 @@ class KTAPI_Error extends PEAR_Error
 * @package KTAPI
 * @version Version 0.9
 */
-class KTAPI_DocumentTypeError extends KTAPI_Error
-{
+class KTAPI_DocumentTypeError extends KTAPI_Error {
 
 }
 
@@ -164,8 +164,8 @@ class KTAPI_DocumentTypeError extends KTAPI_Error
 * @version Version 0.9
 */
 
-class KTAPI
-{
+class KTAPI {
+
 	/**
 	* This is the current session.
 	*
@@ -174,11 +174,8 @@ class KTAPI
 	* @var object $session The KTAPI_Session object
 	*/
 	protected $session = null;
-
 	protected $version = 3;
-
     private $esig_enabled;
-
 	public $webserviceVersion;
 
 	public function __construct($version = null)
@@ -208,7 +205,6 @@ class KTAPI
         return $this->version;
     }
     
-
 
  	/**
  	* This returns the current session.
@@ -313,7 +309,8 @@ class KTAPI
 	* @param int
 	*
 	*/
-	public function get_folder_permissions($username, $folder_id) {
+	public function get_folder_permissions($username, $folder_id)
+	{
 		if (is_null($this->session))
 		{
 			return array(
@@ -335,7 +332,6 @@ class KTAPI
 			"status_code" => 0,
 			"results" => $permissions->permissions
 		);
-
 	}
 
 	/**
@@ -346,7 +342,8 @@ class KTAPI
 	 * @param int
 	 *
 	 */
-	public function get_document_permissions($username, $document_id) {
+	public function get_document_permissions($username, $document_id)
+	{
 		if (is_null($this->session))
 		{
 			return array(
@@ -375,7 +372,6 @@ class KTAPI
 			"status_code" => 0,
 			"results" => $permissions->permissions
 		);
-
 	}
 
 	/**
@@ -5348,8 +5344,8 @@ class KTAPI
 * @package KTAPI
 * @version Version 0.9
 */
-class savedSearches
-{
+class savedSearches {
+
      /**
      * Instance of the KTAPI object
      *
@@ -5464,8 +5460,10 @@ class savedSearches
 		$query = $search[0]['expression'];
 
 	    $results = processSearchExpression($query);
+
 		return $results;
 	}
+
 }
 
 ?>

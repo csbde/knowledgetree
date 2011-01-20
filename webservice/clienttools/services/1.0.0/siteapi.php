@@ -2,20 +2,21 @@
 
 require_once(KT_LIB_DIR . '/browse/browseutil.inc.php');
 
-class siteapi extends client_service{
-
-    function uploadFile($params) {
+class siteapi extends client_service {
+    
+    function uploadFile($params)
+    {
 		global $default;
 
 		$documents = $params['documents'];
 		$default->log->debug('Uploading files '.print_r($documents, true));
 		$index = 0;
 		$returnResponse = array();
-		foreach($documents as $document){
-			$default->log->debug('Uploading file '.$document['fileName']);
+
+		foreach ($documents as $document) {
+			$default->log->debug('Uploading file ' . $document['fileName']);
 			//file_put_contents('uploadFile.txt', "\n\rUploading file ".$document['fileName'], FILE_APPEND);
-			try
-			{
+			try {
 				$baseFolderID = $document['baseFolderID'];
 		    	$oStorage = KTStorageManagerUtil::getSingleton();
 		    	$folderID = $document['folderID'];
@@ -26,7 +27,7 @@ class siteapi extends client_service{
 		    	$default->log->debug('Uploading file :: metadata '.print_r($metadata, true));
 		    	$MDPack = array();
 		    	//assemble the metadata and convert to fileds and fieldsets
-		    	foreach($metadata as $MD) {
+		    	foreach ($metadata as $MD) {
 		    		$oField = DocumentField::get($MD['id']);
 		    		$MDPack[] = array(
 		    			$oField,
@@ -78,13 +79,13 @@ class siteapi extends client_service{
 		            'cleanup_initial_file' => true
 		        );
 
-		        if($document['doBulk']=='true'){
-		        	$dir = realpath(dirname(__FILE__).'/../../../../');
+		        if ($document['doBulk'] == 'true') {
+		        	$dir = realpath(dirname(__FILE__) . '/../../../../');
 		        	require_once($dir . '/plugins/ktlive/lib/import/amazons3zipimportstorage.inc.php');
 					require_once($dir . '/plugins/ktlive/lib/import/amazons3bulkimport.inc.php');
 
 		         	// Check if archive is a deb package
-			        if($sExtension == 'deb')
+			        if ($sExtension == 'deb')
 			        {
 						$this->sExtension = 'ar';
 			        }
@@ -120,7 +121,6 @@ class siteapi extends client_service{
 
 		        	if (PEAR::isError($oDocument)) {
 	        			file_put_contents('uploadFile.txt', "\n\rabout to throw exception {$oDocument->getMessage()}", FILE_APPEND);
-
 	        			throw new Exception($oDocument->getMessage());
 		        	}
 
@@ -128,15 +128,14 @@ class siteapi extends client_service{
 					$mimetypeid = (method_exists($oDocument,'getMimeTypeId')) ? $oDocument->getMimeTypeId():'0';
 					$iconFile = 'resources/mimetypes/newui/'.KTMime::getIconPath($mimetypeid).'.png';
 					$iconExists = file_exists(KT_DIR.'/'.$iconFile);
-					if($iconExists){
+					if ($iconExists) {
 						$mimeIcon = str_replace('\\','/',$GLOBALS['default']->rootUrl.'/'.$iconFile);
 						$mimeIcon = "background-image: url(".$mimeIcon.")";
-					}else{
+					} else {
 						$mimeIcon = '';
 					}
 
 					$oOwner = User::get($oDocument->getOwnerID());
-
 					$oCreator = User::get($oDocument->getCreatorID());
 					$oModifier = User::get($oDocument->getModifiedUserId());
 
@@ -152,6 +151,7 @@ class siteapi extends client_service{
 					$item['created_by'] = $oCreator->getName();
 					$item['modified_by'] = $oModifier->getName();
 					$item['filename'] = $fileName;
+					$item['filesize'] = KTUtil::filesizeToString($oDocument->getFileSize());
 					$item['title'] = $oDocument->getName();
 					$item['mimeicon'] = $mimeIcon;
 					$item['created_date'] = $oDocument->getCreatedDateTime();
@@ -174,7 +174,6 @@ class siteapi extends client_service{
 					$default->log->debug('Document add added response '.print_r($returnResponse, true));
 	        	}
 			}
-
 	        catch(Exception $e) {
 	        	$default->log->error("Document add failed {$e->getMessage()}");
 	        	file_put_contents('uploadFile.txt', "\n\rDocument add failed {$e->getMessage()}", FILE_APPEND);
@@ -199,19 +198,19 @@ class siteapi extends client_service{
 	 * @param $params
 	 * @return unknown_type
 	 */
-	public function docTypeHasRequiredFields($params){
-		$docType=$params['docType'];
+	public function docTypeHasRequiredFields($params)
+	{
+		$docType = $params['docType'];
 
 		$aGenericFieldsetIds = KTFieldset::getGenericFieldsets(array('ids' => false));
         $aSpecificFieldsetIds = KTFieldset::getForDocumentType($docType, array('ids' => false));
         $fieldSets = kt_array_merge($aGenericFieldsetIds, $aSpecificFieldsetIds);
-
 		$hasRequiredFields = false;
 
-	    foreach($fieldSets as $fieldSet){
-			$fields=$fieldSet->getFields();
+	    foreach ($fieldSets as $fieldSet) {
+			$fields = $fieldSet->getFields();
 			//fwrite($fh, "\r\nfields ".print_r($fields, true));
-			foreach($fields as $field){
+			foreach ($fields as $field) {
 				if ($field->getIsMandatory()) {
 					$hasRequiredFields = true;
 					break;
@@ -227,31 +226,32 @@ class siteapi extends client_service{
 	 * @param $params
 	 * @return unknown_type
 	 */
-	public function docTypeFields($params){
-		$type=$params['type'];
-		$filter=is_array($params['filter'])?$params['filter']:NULL;
-		$oDT=DocumentType::get($type);
+	public function docTypeFields($params)
+	{
+		$type = $params['type'];
+		$filter = is_array($params['filter']) ? $params['filter'] : null;
+		$oDT = DocumentType::get($type);
 
 		$aGenericFieldsetIds = KTFieldset::getGenericFieldsets(array('ids' => false));
         $aSpecificFieldsetIds = KTFieldset::getForDocumentType($oDT->getID(), array('ids' => false));
         $fieldSets = kt_array_merge($aGenericFieldsetIds, $aSpecificFieldsetIds);
 
-		$ret=array();
-		foreach($fieldSets as $fieldSet){
-			$ret[$fieldSet->getID()]['properties']=$fieldSet->getProperties();
-			$fields=$fieldSet->getFields();
-			foreach($fields as $field){
-				$properties=$field->getProperties();
+		$ret = array();
+		foreach ($fieldSets as $fieldSet) {
+			$ret[$fieldSet->getID()]['properties'] = $fieldSet->getProperties();
+			$fields = $fieldSet->getFields();
+			foreach ($fields as $field) {
+				$properties = $field->getProperties();
 
-				/*if(isset($properties['has_lookup'])) {
-					if($properties['data_type']=='LARGE TEXT'){
+				/*if (isset($properties['has_lookup'])) {
+					if ($properties['data_type'] == 'LARGE TEXT') {
 						file_put_contents('docTypeFields.txt', "\n\rI have large text ".$properties['name'], FILE_APPEND);
 					}
 				}*/
 
-				if(isset($properties['has_lookup'])) {
-					if($properties['has_lookup']==1){
-						if($properties['has_lookuptree']==1){
+				if (isset($properties['has_lookup'])) {
+					if ($properties['has_lookup'] == 1) {
+						if ($properties['has_lookuptree'] == 1) {
 							//need to recursively populate tree lookup fields!
 							$properties['tree_lookup_values'] = $this->get_metadata_tree($field->getId());
 						} else {
@@ -261,27 +261,28 @@ class siteapi extends client_service{
 					}
 				}
 
-				if(isset($properties['has_inetlookup'])) {
-					if($properties['has_inetlookup']==1) {
-						if($properties['inetlookup_type']=="multiwithlist") {
+				if (isset($properties['has_inetlookup'])) {
+					if ($properties['has_inetlookup'] == 1) {
+						if ($properties['inetlookup_type'] == "multiwithlist") {
 							$properties['multi_lookup_values'] = $this->get_metadata_lookup($field->getId());
-						} else if($properties['inetlookup_type']=="multiwithcheckboxes") {
+						} else if ($properties['inetlookup_type'] == "multiwithcheckboxes") {
 							$properties['checkbox_lookup_values'] = $this->get_metadata_lookup($field->getId());
 						}
 					}
 				}
 
-				if(is_array($filter)){
-					$requirements=true;
-					foreach($filter as $elem=>$value){
-						if($properties[$elem]!=$value)$requirements=false;
+				if (is_array($filter)) {
+					$requirements = true;
+					foreach ($filter as $elem => $value) {
+						if ($properties[$elem] != $value) { $requirements = false; }
 					}
-					if($requirements)$ret[$fieldSet->getID()]['fields'][$field->getID()]=$properties;
-				}else{
-					$ret[$fieldSet->getID()]['fields'][$field->getID()]=$properties;
+					if ($requirements) { $ret[$fieldSet->getID()]['fields'][$field->getID()] = $properties; }
+				} else {
+					$ret[$fieldSet->getID()]['fields'][$field->getID()] = $properties;
 				}
 			}
 		}
+		
 		$this->addResponse('fieldsets',$ret);
 	}
 
@@ -290,21 +291,23 @@ class siteapi extends client_service{
 	 * @param $params
 	 * @return unknown_type
 	 */
-	public function docTypeRequiredFields($params){
-		$nparams=$params;
-		$nparams['filter']=array(
-			'is_mandatory'=>1
+	public function docTypeRequiredFields($params)
+	{
+		$nparams  =  $params;
+		$nparams['filter'] = array(
+			'is_mandatory' => 1
 		);
 		$this->docTypeFields($nparams);
 	}
 
-
-	public function getDocTypes($params){
-		$types=DocumentType::getList();
-		$ret=array();
-		foreach($types as $type){
-			$ret[$type->aFieldArr['id']]=$type->aFieldArr;
+	public function getDocTypes($params)
+	{
+		$types = DocumentType::getList();
+		$ret = array();
+		foreach ($types as $type) {
+			$ret[$type->aFieldArr['id']] = $type->aFieldArr;
 		}
+		
 		$this->addResponse('documentTypes',$ret);
 	}
 
@@ -327,12 +330,12 @@ class siteapi extends client_service{
 		else
 		{*/
 		$results = array();
-		foreach($rows as $row)
-		{
+		foreach ($rows as $row) {
 			//need to prepend "id" otherwise it sees it as the i-th element of the array!
-			$results[] = array('id'.$row['id']=> $row['name']);
+			$results[] = array('id' . $row['id'] => $row['name']);
 		}
 		//}
+		
 		return json_encode($results);
 	}
 
@@ -344,7 +347,7 @@ class siteapi extends client_service{
 	* @param integer $fieldid The id of the tree field to get the metadata for
 	* @return array|object $results SUCCESS - the array of metadata for the field | FAILURE - an error object
 	*/
-	public function get_metadata_tree($fieldid, $parentid=0)
+	public function get_metadata_tree($fieldid, $parentid = 0)
 	{
 		//$myFile = "siteapi.txt";
 		//$fh = fopen($myFile, 'a');
@@ -372,7 +375,8 @@ class siteapi extends client_service{
 		return json_encode($results);
 	}
 
-	private function convertToTree(array $flat) {
+	private function convertToTree(array $flat)
+	{
 		$idTree = 'treeid';
 		$idField = 'id';
 		$parentIdField = 'parentid';
@@ -414,26 +418,25 @@ class siteapi extends client_service{
 	    return $results;
 	}
 
-
 	/**
 	 * Get the subfolders of the specified folder
 	 * @param $params
 	 * @return unknown_type
 	 */
-	public function getSubFolders($params){
-		$folderId=isset($params['folderId']) ? $params['folderId'] : 1;
-		$filter=isset($params['fields']) ? $params['fields'] : '';
-		$options = array( 'orderby'=>'name' );
-		$folders = Folder::getList ( array ('parent_id = ?', $folderId ), $options );
-		$subfolders=array();
-		foreach($folders as $folder)
-		{
-			if($this->userHasPermissionOnItem(User::get($_SESSION['userID']), 'ktcore.permissions.write', $folder, 'folder'))
-			{
-				$subfolders[$folder->aFieldArr['id']]=$this->filter_array($folder->aFieldArr,$filter,false);
+	public function getSubFolders($params)
+	{
+		$folderId = isset($params['folderId']) ? $params['folderId'] : 1;
+		$filter = isset($params['fields']) ? $params['fields'] : '';
+		$options = array('orderby' => 'name');
+		$folders = Folder::getList(array('parent_id = ?', $folderId), $options);
+		$subfolders = array();
+		foreach ($folders as $folder) {
+			if($this->userHasPermissionOnItem(User::get($_SESSION['userID']), 'ktcore.permissions.write', $folder, 'folder')) {
+				$subfolders[$folder->aFieldArr['id']] = $this->filter_array($folder->aFieldArr, $filter, false);
 			}
 		}
-		$this->addResponse('children',$subfolders);
+		
+		$this->addResponse('children', $subfolders);
 	}
 
 	/**
@@ -443,28 +446,25 @@ class siteapi extends client_service{
 	 */
 	public function getFolderHierarchy($params)
 	{
-		$folderId=$params['folderId'];
-		$filter=isset($params['fields']) ? $params['fields'] : '';
+		$folderId = $params['folderId'];
+		$filter = isset($params['fields']) ? $params['fields'] : '';
 
 		$oFolder = Folder::get($folderId);
 		$ancestors = array();
 
-		if ($oFolder) 
-		{
+		if ($oFolder) {
 			$parent_ids = $oFolder->getParentFolderIDs();
-			if ($parent_ids != '') 
-			{
-				$ancestors=($this->ext_explode(",",$parent_ids));
-				$ancestors=Folder::getList(array('id IN ('.join(',',$ancestors).')'),array());
-				$parents=array();
-				foreach($ancestors as $obj)
-				{
-					$parents[$obj->getID()]=$this->filter_array($obj->aFieldArr,$filter,false);
+			if ($parent_ids != '') {
+				$ancestors = ($this->ext_explode(',', $parent_ids));
+				$ancestors = Folder::getList(array('id IN (' . join(',', $ancestors) . ')'), array());
+				$parents = array();
+				foreach ($ancestors as $obj) {
+					$parents[$obj->getID()] = $this->filter_array($obj->aFieldArr, $filter, false);
 				}
 			}
 		}
 
-		$this->addResponse('currentFolder',$this->filter_array($oFolder->_fieldValues(),$filter,false));
+		$this->addResponse('currentFolder', $this->filter_array($oFolder->_fieldValues(), $filter, false));
 		$this->addResponse('parents', $parents);
 		$this->addResponse('amazoncreds', $this->getAmazonCredentials());
 
@@ -494,6 +494,7 @@ class siteapi extends client_service{
 		/* OVERRIDE FOR TESTING */
 		//$bucket = 'testa';
 		//$aws_tmp_path = 'martin/';
+
 		// TODO : Is there a callback handler? Create one.
 		$success_action_redirect = KTLiveUtil::getServerUrl() . '/plugins/ktlive/webservice/callback.php';
 		$aws_form_action = 'https://' . $bucket . '.s3.amazonaws.com/';
@@ -507,15 +508,14 @@ class siteapi extends client_service{
 				 ->addCondition('', 'success_action_redirect', $success_action_redirect);
 
 		return array(
-			'formAction' => $aws_form_action,
-			'awstmppath'				=> $aws_tmp_path,
-			'randomfile'				=> $randomfile,
-
-			'AWSAccessKeyId' 			=> $s3policy->getAwsAccessKeyId(),
-			'acl'            			=> $s3policy->getCondition('acl'),
-			'policy'         			=> $s3policy->getPolicy(true),
-			'signature'      			=> $s3policy->getSignedPolicy(),
-			'success_action_redirect'   => $s3policy->getCondition('success_action_redirect'),
+			'formAction'                 => $aws_form_action,
+			'awstmppath'                 => $aws_tmp_path,
+			'randomfile'                 => $randomfile,
+			'AWSAccessKeyId'             => $s3policy->getAwsAccessKeyId(),
+			'acl'                        => $s3policy->getCondition('acl'),
+			'policy'                     => $s3policy->getPolicy(true),
+			'signature'                  => $s3policy->getSignedPolicy(),
+			'success_action_redirect'    => $s3policy->getCondition('success_action_redirect'),
 		);
 	}
 
@@ -524,7 +524,7 @@ class siteapi extends client_service{
         include_once(KT_LIB_DIR . '/users/userutil.inc.php');
 
         global $default;
-        $default->log->debug("Inviting users (group id: {$params['group']}): {$params['addresses']}");
+        $default->log->debug("Inviting users (group id: {$params['group']}): {$params['addresses']}, type: {$params['type']}");
 
         /**
     	 * Break string into separate email addresses
@@ -581,6 +581,7 @@ class siteapi extends client_service{
     		return KTPermissionUtil::userHasPermissionOnItem($oUser, $sPermissions, $documentOrFolder);
     	}
     }
+    
 }
 
 ?>

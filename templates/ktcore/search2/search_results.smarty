@@ -187,7 +187,9 @@ function onShowAll(showall)
 			     <font style="color: green ">{i18n}Folder ID:{/i18n} {$hit->Id}</font>
 		    {/if}
 		</tr>
-		<tr><td colspan=2>{$hit->Text}</td></tr>
+		{if $hit->Text != '()'}
+		    <tr><td colspan=2>{$hit->Text}</td></tr>
+		{/if}
 		<tr><td>
 		{if $hit->IsDocument}
 		      <font style=" color: green "><a href="{url file="$rootUrl/browse.php" fFolderId=$hit->FolderId}" tag="{$hit->FullPath}">{$hit->FullPath|mb_truncate:30:'...':true}</a>/{$hit->Title|mb_truncate:30:'...':true} - {$hit->Filesize}</font>

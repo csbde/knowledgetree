@@ -513,7 +513,7 @@ class KTAPI_Document extends KTAPI_FolderItem
 	function checkout($reason)
 	{
 		$document_status = $this->document->getStatusID();
-		
+
 		switch ($document_status) {
 			case LIVE:
 				//just ignore
@@ -534,7 +534,7 @@ class KTAPI_Document extends KTAPI_FolderItem
 				return new KTAPI_Error(KTAPI_ERROR_DOCUMENT_DELETED);
 				break;
 		}
-		
+
 		$user = $this->can_user_access_object_requiring_permission($this->document, KTAPI_PERMISSION_WRITE);
 
 		if (PEAR::isError($user))
@@ -1364,7 +1364,7 @@ class KTAPI_Document extends KTAPI_FolderItem
 
 		 return $results;
 	}
-	
+
 	/**
 	 * This returns all tags for the document.
 	 *
@@ -1374,9 +1374,9 @@ class KTAPI_Document extends KTAPI_FolderItem
 	 * @return array An array of metadata fieldsets for tags
 	 */
 	function get_tag($sTagCloudFieldsetName = 'tag cloud')
-	{		
+	{
 		$fieldsets = (array) KTMetadataUtil::fieldsetsByNameForDocument($this->document, $sTagCloudFieldsetName);
-		
+
 		 if (is_null($fieldsets) || PEAR::isError($fieldsets))
 		 {
 		     return array();
@@ -1668,6 +1668,7 @@ class KTAPI_Document extends KTAPI_FolderItem
 
         if(!PEAR::isError($dynamicCondition) && !empty($dynamicCondition)){
             $res = KTPermissionUtil::updatePermissionLookup($this->document);
+            KTPermissionUtil::clearCache();
         }
 	}
 
@@ -1862,7 +1863,7 @@ class KTAPI_Document extends KTAPI_FolderItem
 			}
 		}
 	}
-	
+
 	/**
 	 * This updates the tag on the document.
 	 *
@@ -1872,19 +1873,19 @@ class KTAPI_Document extends KTAPI_FolderItem
 	 * @return void|PEAR_Error Returns nothing on success | a PEAR_Error on failure
 	 */
 	function update_tag($tag_word)
-	{		
+	{
 		$metadata = $this->get_metadata();
-	
+
 		$num_metadata = count($metadata++);
 		for ($i = 0; $i < $num_metadata; $i++)
-		{	
-			//look for the "Tag Cloud" fieldset		
-			if (strtolower($metadata[$i]['fieldset']) == "tag cloud") 
+		{
+			//look for the "Tag Cloud" fieldset
+			if (strtolower($metadata[$i]['fieldset']) == "tag cloud")
 			{
-				$metadata[$i]['fields'][0][value] = $tag_word;				
+				$metadata[$i]['fields'][0][value] = $tag_word;
 			}
 		}
-				
+
 		return ($this->update_metadata($metadata));
 	}
 
@@ -2320,33 +2321,33 @@ class KTAPI_Document extends KTAPI_FolderItem
 		if($wsversion < 3){
 			unset($detail['linked_document_id']);
 		}
-		
+
 		if ($wsversion >= 3)
-		{	
+		{
 			//clean URI
-			$url = KTBrowseUtil::getUrlForDocument($document);			
+			$url = KTBrowseUtil::getUrlForDocument($document);
 			$detail['clean_uri'] = $url;
-			
+
 			$document_status_id = $document->getStatusID();
 			$detail['document_status'] = Document::getStatusString($document_status_id);
 			//need to get latest check-in date
 			$aTransactionsByDocument = DocumentTransaction::getByDocumentFilterByNamespace($document, 'ktcore.transactions.check_in');
-			
+
 			$newest_date_so_far = null;
 			$newest_date_as_string = 'n/a';
-			
+
 			//look for the latest date
 			foreach($aTransactionsByDocument as $oTransaction)
-			{				
+			{
 				$date = strtotime($oTransaction->getDate());
-				
+
 				if ($date > $newest_date_so_far)
 				{
 					$newest_date_so_far = $date;
 					$newest_date_as_string = $oTransaction->getDate();
 				}
 			}
-			
+
 			$detail['checked_in_date'] = $newest_date_as_string;
 		}
 
@@ -2412,9 +2413,9 @@ class KTAPI_Document extends KTAPI_FolderItem
 	 * @access public
 	 */
 	function download($version = null)
-	{		
+	{
 		$document_status = $this->document->getStatusID();
-		
+
 		switch ($document_status) {
 			case LIVE:
 				//just ignore
@@ -2435,17 +2436,17 @@ class KTAPI_Document extends KTAPI_FolderItem
 				return new KTAPI_Error(KTAPI_ERROR_DOCUMENT_VERSION_DELETED);
 				break;
 		}
-		
+
 		if (isset($version))
 		{
 			$content_version_status_id = $this->document->getContentVersionStatus($version);
-		
+
 			if ($content_version_status_id == VERSION_DELETED)
 			{
 				return new KTAPI_Error(KTAPI_ERROR_DOCUMENT_VERSION_DELETED);
 			}
 		}
-		
+
 		$oStorage = KTStorageManagerUtil::getSingleton();
         $options = array();
 
@@ -2529,7 +2530,7 @@ class KTAPI_Document extends KTAPI_FolderItem
 			if (!PEAR::isError($user))
 			{
 				$username = is_null($user)?'n/a':$user->getName();
-				
+
 				$user_username = is_null($user)?'n/a':$user->getUserName();
 			}
 
@@ -2542,10 +2543,10 @@ class KTAPI_Document extends KTAPI_FolderItem
         		$version['metadata_version'] = (int) $version['metadata_version'];
         		$version['content_version'] = (float) $version['content_version'];
         	}
-        	
+
         	if ($wsversion >= 3)
         	{
-        		$version['user_username'] = $user_username;	
+        		$version['user_username'] = $user_username;
         	}
 
             $versions[] = $version;

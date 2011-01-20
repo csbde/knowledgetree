@@ -267,30 +267,27 @@ class BrowseDispatcher extends KTStandardDispatcher {
 
 		$ktOlarkPopup = null;
 		// temporarily disabled
-		if (false && ACCOUNT_ROUTING_ENABLED && liveAccounts::isTrialAccount()) {
+		if (ACCOUNT_ROUTING_ENABLED && liveAccounts::isTrialAccount()) {
             $js = preg_replace('/.*[\/\\\\]plugins/', 'plugins', KT_LIVE_DIR) . '/resources/js/olark/olark.js';
             $this->oPage->requireJsResource($js);
             // popup immediately if first login
             if (isset($_SESSION['isFirstLogin'])) {
                 // add popup to page
-                $ktOlarkPopup = '{literal}
-<script type="text/javascript">
+                $ktOlarkPopup = '<script type="text/javascript">
     ktOlarkPopupTrigger("Welcome to KnowledgeTree.  If you have any questions, please let us know.", 0);
-</script>
-{/literal}';
+</script>';
                 unset($_SESSION['isFirstLogin']);
             }
             else {
-                $ktOlarkPopup = '{literal}
-<script type="text/javascript">
+                $ktOlarkPopup = '<script type="text/javascript">
     olark.extend(function(api) {
-        setTimeout(function(){
-           api.box.expand();
-       }, 60000);
-
+//        really not sure why this was done, browse page is not supposed to pop it up; leaving it commented until confirmed
+//        setTimeout(function(){
+//           api.box.expand();
+//       }, 60000);
+        api.box.show();
     });
-</script>
-{/literal}';
+</script>';
             }
         }
 

@@ -9,7 +9,7 @@
 
 {if ($params)}
 <div class="collapsible">
-<h4 onclick="toggleElementClass('expanded', this.parentNode)">{i18n}Parameters{/i18n}</h4>
+<h4 onclick="jQuery('.collapsiblebody').toggle();">{i18n}Parameters{/i18n}</h4>
 <div class="collapsiblebody">
 {assign var=mainjoin value=$joins.main}
 
