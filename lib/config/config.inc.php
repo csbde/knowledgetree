@@ -80,13 +80,10 @@ class KTConfig {
 
     function setMemcache()
     {
-    	if(class_exists('MemCacheUtil'))
-    	{
-	        if(MemCacheUtil::$enabled)
-	        {
-	            return true;
-	        }
-    	}
+        if(MemCacheUtil::$enabled)
+        {
+            return true;
+        }
     	
 		$isEnabled = false;
         $ktconfpath = KT_PLUGIN_DIR . '/ktlive/config/kt-path';
@@ -143,9 +140,7 @@ class KTConfig {
         }
 
         try {
-        	if(class_exists('MemCacheUtil')) {
             	$isEnabled=MemCacheUtil::init($servers);
-        	}
         }catch (Exception $e){
             return false;
         }

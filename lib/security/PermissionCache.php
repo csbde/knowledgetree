@@ -741,13 +741,7 @@ class PermissionMemCache
      */
     private function initMemcache()
     {
-    	if(class_exists('MemCacheUtil'))
-    	{
-	        if(MemCacheUtil::$enabled)
-	        {
-	            return true;
-	        }
-    	}
+        if(MemCacheUtil::$enabled) { return true; }
 
         $oConfig = KTConfig::getSingleton();
         $enabled = $oConfig->setMemcache();
