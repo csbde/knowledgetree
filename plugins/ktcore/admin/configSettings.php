@@ -230,15 +230,21 @@ class BaseConfigDispatcher extends KTAdminDispatcher
 	            break;
 	            
 	        case 'class':
+	        	if(!file_exists($options['file'])) { return ; }
+        		require_once($options['file']);
+        		$oClass = new $options['class']();
 	        	$value = ($value == 'default') ? $defaultValue : $value;
-	        	$input .= "<select id='{$id}' name='configArray[{$id}]'>&nbsp;&nbsp;";
-	        	if(file_exists($options['file']))
-	        	{
-	        		require_once($options['file']);
-	        		$oClass = new $options['class']();
-	        		$input .= $oClass->renderDropDown($value);
-	        	}
+	        	$input .= $oClass->renderCountryLabel();
+	        	$input .= "<select id='country_select' name='country_select'>&nbsp;&nbsp;";
+	        	$input .= $oClass->renderCountries($value);
 	        	$input .= '</select>';
+	        	$input .= '<br/><br/>';
+	        	$input .= $oClass->renderTimezoneLabel();
+	        	$input .= "<select id='{$id}' name='configArray[{$id}]'>&nbsp;&nbsp;";
+	        	$input .= $oClass->renderTimezones($value);
+	        	$input .= '</select>';
+	        	
+	        	
 	        	break;
 	        	
 	        case 'string':

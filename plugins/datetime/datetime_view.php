@@ -36,31 +36,56 @@
  * copyright notice.
  * Contributor( s): ______________________________________
  */
-require_once('timezones.inc');
+require_once(KT_LIB_DIR . '/datetime/timezones.inc');
 
-class datetimeutil
+class datetime_view extends KTDispatcher 
 {
-	public function __construct()
+	/**
+	 * Renders a list of standard timezone options to be used in a dropdown
+	 *
+	 * @return string
+	 */
+	static public function renderCountries($value)
 	{
-		
-	}
-	
-	static public function getDisplayDate($date)
-	{
-		// Create time conversion object
 		$tzc = new TimezoneConversion();
-		// Set the date to convert
-		$tzc->setProperty('Datetime', $date);
-		// Retrieve system timezone
-		$oConfig = KTConfig::getSingleton();
-		$tzvalue = $oConfig->get('tweaks/setTimezone', 'UTC');
-		// Set the timezone
-		$tzc->setProperty('Timezone', $tzvalue);
+		$ddoptions = '';
+		$aValue = explode('/', $value);
+		$currentCountry = isset($aValue[0]) ? $aValue[0] : 'Other';		
+		foreach ($tzc->getPhpCountries() as $country)
+		{
+			$selected = ($country == $currentCountry) ? 'selected' : '';
+			$ddoptions .= '<option onclick="javascript:{alert(\'a\');}" value="' . $country . '" ' . $selected . '> ' . $country . '</option>';
+		}
 		
-		return $tzc->convertDateTime();
+		return $ddoptions;
 	}
 	
-
-
+	/**
+	 * Renders a list of standard timezone options to be used in a dropdown
+	 *
+	 * @return string
+	 */
+	static public function renderTimezones($value)
+	{
+		$tzc = new TimezoneConversion();
+		$ddoptions = '';
+		
+		foreach ($tzc->getPhpTimezones() as $standardZone)
+		{
+			$selected = ($standardZone == $value) ? 'selected' : '';
+			$ddoptions .= '<option value="' . $standardZone . '" ' . $selected . '> ' . $standardZone . '</option>';
+		}
+		
+		return $ddoptions;
+	}
+	
+	static public function renderCountryLabel()
+	{
+		return "<label for='country'>Select Region</label>&nbsp;&nbsp;&nbsp;&nbsp;";
+	}
+	
+	static public function renderTimezoneLabel()
+	{
+		return "<label for='timezone'>Select Location</label>&nbsp;&nbsp;";
+	}
 }
-?>
