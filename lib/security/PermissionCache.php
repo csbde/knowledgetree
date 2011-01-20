@@ -35,7 +35,7 @@
  * Contributor( s): ______________________________________
  */
 
-
+require_once(KT_DIR . '/lib/memcache/MemCacheUtil.helper.php');
 /**
  * Uses the permissions cache to determine whether the current user has access to an object (folder / document)
  *
