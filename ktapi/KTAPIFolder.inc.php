@@ -574,111 +574,345 @@ class KTAPI_Folder extends KTAPI_FolderItem
         }
 
         if (strpos($what, 'F') !== false) {
-            $res = KTSearchUtil::permissionToSQL($user, KTAPI_PERMISSION_VIEW_FOLDER, 'F');
-            if (PEAR::isError($res)) {
-                return $res;
+            $folderContents = $this->getFolderListing($user, $wsversion, $queryOptions, $what, $fullTree, $calculateTotal, $totalFolders);
+            if (PEAR::isError($folderContents)) {
+                return $folderContents;
+            }
+        }
+
+        $remaining = $this->checkLimit($queryOptions, count($folderContents));
+
+        if (strpos($what, 'D') !== false) {
+            $documentContents = $this->getDocumentListing($user, $wsversion, $queryOptions, $what, $calculateTotal, $totalDocuments, $remaining);
+            if (PEAR::isError($documentContents)) {
+                return $documentContents;
+            }
+        }
+
+        // now sort the array of Documents according to title
+        // not needed anymore because we join on content and metadata versions and sort by metadata name (document title)
+        /*usort($documentContents, array($this, 'compare_title'));*/
+
+        $totalItems = $totalFolders + $totalDocuments;
+        $contents = array_merge($documentContents, $folderContents);
+
+        return $contents;
+    }
+
+    /**
+     * Fetch the folder content listing for a specified folder.
+     * Expects to be fed with inputs from get_listing - not intended for use on its own.
+     * (Just did not like how long get_listing had become, was very unwieldy when debugging)
+     *
+     * @param object $user
+     * @param int $wsversion
+     * @param array $queryOptions
+     * @param string $what
+     * @param boolean $fullTree
+     * @param boolean $calculateTotal
+     * @param int $totalFolders
+     * @return array
+     */
+    private function getFolderListing($user, $wsversion, $queryOptions, $what, $fullTree = false, $calculateTotal = false, &$totalFolders = 0)
+    {
+        $folderContents = array();
+
+        $res = KTSearchUtil::permissionToSQL($user, KTAPI_PERMISSION_VIEW_FOLDER, 'F');
+        if (PEAR::isError($res)) {
+            return $res;
+        }
+
+        list($permissionString, $permissionParams, $permissionJoin) = $res;
+
+        $where = "WHERE $permissionString AND F.parent_id = ?";
+        // deal with options
+        $fQueryOptions = $queryOptions;
+        $fQueryOptions['orderby'] = 'F.name';
+        $optionString = DBUtil::getDbOptions($fQueryOptions);
+
+        if ($calculateTotal) {
+            $totalSql = "SELECT count(F.id) as folder_ids FROM folders as F $permissionJoin $where GROUP BY F.id";
+            $totalFolders = DBUtil::getResultArrayKey(array($totalSql, array_merge($permissionParams, array($this->folderid))), 'folder_ids');
+            if (PEAR::isError($totalFolders)) {
+                return $totalFolders;
+            }
+            $totalFolders = count($totalFolders);
+        }
+
+        $sql = "SELECT F.id as folder_id FROM folders as F $permissionJoin $where $optionString";
+        $folder_children = DBUtil::getResultArrayKey(array($sql, array_merge($permissionParams, array($this->folderid))), 'folder_id');
+        if (PEAR::isError($folder_children)) {
+            return $folder_children;
+        }
+
+        foreach ($folder_children as $folderId) {
+            $folder = Folder::get($folderId);
+            if ($fullTree || ($depth > 1)) {
+                $sub_folder = &$this->ktapi->get_folder_by_id($folder->getId());
+                // This doesn't support limits and offsets but they wouldn't really make sense with this operation anyway
+                $items = $sub_folder->get_listing($depth - 1, $what);
+            } else {
+                $items = array();
             }
 
-            list($permissionString, $permissionParams, $permissionJoin) = $res;
+            $creator = $this->_resolve_user($folder->getCreatorID());
 
-            $where = "WHERE $permissionString AND F.parent_id = ?";
-            // deal with options
-            $fQueryOptions = $queryOptions;
-            $fQueryOptions['orderby'] = 'F.name';
-            $optionString = DBUtil::getDbOptions($fQueryOptions);
+            if ($wsversion >= 2) {
+                $detail = array(
+                'id' => (int)$folder->getId(),
+                'item_type' => 'F',
+                'custom_document_no' => 'n/a',
+                'oem_document_no' => 'n/a',
+                'title' => $folder->getName(),
+                'document_type' => 'n/a',
+                'filename' => $folder->getName(),
+                'filesize' => 'n/a',
+                'created_by' => is_null($creator) ? 'n/a' : $creator->getName(),
+                'created_date' => 'n/a',
+                'checked_out_by' => 'n/a',
+                'checked_out_date' => 'n/a',
+                'modified_by' => 'n/a',
+                'modified_date' => 'n/a',
+                'owned_by' => 'n/a',
+                'version' => 'n/a',
+                'is_immutable' => 'n/a',
+                'permissions' => KTAPI_Folder::get_permission_string($folder),
+                'workflow' => 'n/a',
+                'workflow_state' => 'n/a',
+                'mime_type' => 'folder',
+                'mime_icon_path' => 'folder',
+                'mime_display' => 'Folder',
+                'storage_path' => 'n/a',
+                'full_path' => $folder->getFullPath()
+                );
 
-            if ($calculateTotal) {
-                $totalSql = "SELECT count(F.id) as folder_ids FROM folders as F $permissionJoin $where GROUP BY F.id";
-                $totalFolders = DBUtil::getResultArrayKey(array($totalSql, array_merge($permissionParams, array($this->folderid))), 'folder_ids');
-                if (PEAR::isError($totalFolders)) {
-                    return $totalFolders;
+                if ($wsversion >= 3) {
+                    $detail['linked_folder_id'] = $folder->getLinkedFolderId();
+                    if ($folder->isSymbolicLink()) {
+                        $detail['item_type'] = "S";
+                    }
                 }
-                $totalFolders = count($totalFolders);
+                $detail['items'] = $items;
+                if ($wsversion < 3 || (strpos($what, 'F') !== false && !$folder->isSymbolicLink()) || ($folder->isSymbolicLink() && strpos($what, 'S') !== false)) {
+                    $folderContents[] = $detail;
+                }
+            } else {
+                $folderContents[] = array(
+                'id' =>(int) $folder->getId(),
+                'item_type' => 'F',
+                'title' => $folder->getName(),
+                'creator' => is_null($creator) ? 'n/a' : $creator->getName(),
+                'checkedoutby' => 'n/a', 'modifiedby' => 'n/a', 'filename' => $folder->getName(),
+                'size' => 'n/a',
+                'major_version' => 'n/a',
+                'minor_version' => 'n/a',
+                'storage_path' => 'n/a',
+                'mime_type' => 'folder',
+                'mime_icon_path' => 'folder',
+                'mime_display' => 'Folder',
+                'items' => $items,
+                'workflow' => 'n/a',
+                'workflow_state' => 'n/a'
+                );
+            }
+        }
+
+        return $folderContents;
+    }
+
+    /**
+     * Fetch the document content listing for a specified folder.
+     * Expects to be fed with inputs from get_listing - not intended for use on its own.
+     * (Just did not like how long get_listing had become, was very unwieldy when debugging)
+     *
+     * @param object $user
+     * @param int $wsversion
+     * @param array $queryOptions
+     * @param string $what
+     * @param boolean $calculateTotal
+     * @param int $totalFolders
+     * @param int $remaining
+     * @return array
+     */
+    private function getDocumentListing($user, $wsversion, $queryOptions, $what, $calculateTotal = false, &$totalDocuments = 0, $remaining = -1)
+    {
+        $documentContents = array();
+
+        $res = KTSearchUtil::permissionToSQL($user, KTAPI_PERMISSION_READ, 'D');
+        if (PEAR::isError($res)) {
+            return $res;
+        }
+
+        list($permissionString, $permissionParams, $permissionJoin) = $res;
+
+        $contentVersionJoin = 'INNER JOIN document_content_version DCV ON DCV.document_id = D.id INNER JOIN document_metadata_version DMV ON DMV.content_version_id = DCV.id';
+        $where = "WHERE D.status_id = 1 AND $permissionString AND D.folder_id = ?";
+        $queryOptions['orderby'] = 'DMV.name';
+        $optionString = DBUtil::getDbOptions($queryOptions);
+
+        if ($calculateTotal) {
+            $totalSql = "SELECT count(D.id) as document_ids FROM documents as D $permissionJoin $where GROUP BY D.id";
+            $totalDocuments = DBUtil::getResultArrayKey(array($totalSql, array_merge($permissionParams, array($this->folderid))), 'document_ids');
+            if (PEAR::isError($totalDocuments)) {
+                // FIXME not what we want?
+                return $totalDocuments;
+            }
+            $totalDocuments = count($totalDocuments);
+        }
+
+        // do we need to fetch anything or do we just need the count for paging?
+        if ($remaining != 0) {
+            $sql = "SELECT D.id as document_id FROM documents as D $contentVersionJoin $permissionJoin $where $optionString";
+            $document_children = DBUtil::getResultArrayKey(array($sql, array_merge($permissionParams, array($this->folderid))), 'document_id');
+            if (PEAR::isError($document_children)) {
+                // FIXME not what we want?
+                return $document_children;
             }
 
-            $sql = "SELECT F.id as folder_id FROM folders as F $permissionJoin $where $optionString";
-            $folder_children = DBUtil::getResultArrayKey(array($sql, array_merge($permissionParams, array($this->folderid))), 'folder_id');
-            if (PEAR::isError($folder_children)) {
-                return $folder_children;
-            }
+            // I hate that KT doesn't cache things nicely...
+            $mime_cache = array();
 
-            foreach ($folder_children as $folderId) {
-                $folder = Folder::get($folderId);
-                if ($fullTree || ($depth > 1)) {
-                    $sub_folder = &$this->ktapi->get_folder_by_id($folder->getId());
-                    // This doesn't support limits and offsets but they wouldn't really make sense with this operation anyway
-                    $items = $sub_folder->get_listing($depth - 1, $what);
-                } else {
-                    $items = array();
+            foreach ($document_children as $documentId) {
+                $document = Document::get($documentId);
+                $created_by = $this->_resolve_user($document->getCreatorID());
+                $created_date = $document->getCreatedDateTime();
+                if (empty($created_date)) {
+                    $created_date = 'n/a';
                 }
 
-                $creator = $this->_resolve_user($folder->getCreatorID());
+                $checked_out_by_id = $document->getCheckedOutUserID();
+                $checked_out_by = $this->_resolve_user($checked_out_by_id);
+                $checked_out_date = $document->getCheckedOutDate();
+                if (empty($checked_out_date)) {
+                    $checked_out_date = 'n/a';
+                }
+
+                $modified_by = $this->_resolve_user($document->getCreatorID());
+                $modified_date = $document->getLastModifiedDate();
+                if (empty($modified_date)) {
+                    $modified_date = 'n/a';
+                }
+
+                $owned_by = $this->_resolve_user($document->getOwnerID());
+
+                $mimetypeid = $document->getMimeTypeID();
+                if (!array_key_exists($mimetypeid, $mime_cache)) {
+                    $type = KTMime::getMimeTypeName($mimetypeid);
+                    $icon = KTMime::getIconPath($mimetypeid);
+                    $display = KTMime::getFriendlyNameForString($type);
+                    $mime_cache[$mimetypeid] = array('type' => $type, 'icon' => $icon, 'display' => $display);
+                }
+                $mimeinfo = $mime_cache[$mimetypeid];
+
+                $workflow = 'n/a';
+                $state = 'n/a';
+                $wf = KTWorkflowUtil::getWorkflowForDocument($document);
+                if (!is_null($wf) && !PEAR::isError($wf)) {
+                    $workflow = $wf->getHumanName();
+                    $ws = KTWorkflowUtil::getWorkflowStateForDocument($document);
+                    if (!is_null($ws) && !PEAR::isError($ws)) {
+                        $state = $ws->getHumanName();
+                    }
+                }
 
                 if ($wsversion >= 2) {
-                    $array = array(
-                    'id' => (int)$folder->getId(),
-                    'item_type' => 'F',
+                    $docTypeId = $document->getDocumentTypeID();
+                    $documentType = DocumentType::get($docTypeId);
+
+                    $oemDocumentNo = $document->getOemNo();
+                    if (empty($oemDocumentNo)) {
+                        $oemDocumentNo = 'n/a';
+                    }
+
+                    $detail = array(
+                    'id' =>(int) $document->getId(),
+                    'item_type' => 'D',
                     'custom_document_no' => 'n/a',
-                    'oem_document_no' => 'n/a',
-                    'title' => $folder->getName(),
-                    'document_type' => 'n/a',
-                    'filename' => $folder->getName(),
-                    'filesize' => 'n/a',
-                    'created_by' => is_null($creator) ? 'n/a' : $creator->getName(),
-                    'created_date' => 'n/a',
-                    'checked_out_by' => 'n/a',
-                    'checked_out_date' => 'n/a',
-                    'modified_by' => 'n/a',
-                    'modified_date' => 'n/a',
-                    'owned_by' => 'n/a',
-                    'version' => 'n/a',
-                    'is_immutable' => 'n/a',
-                    'permissions' => KTAPI_Folder::get_permission_string($folder),
-                    'workflow' => 'n/a',
-                    'workflow_state' => 'n/a',
-                    'mime_type' => 'folder',
-                    'mime_icon_path' => 'folder',
-                    'mime_display' => 'Folder',
-                    'storage_path' => 'n/a',
-                    'full_path' => $folder->getFullPath()
+                    'oem_document_no' => $oemDocumentNo,
+                    'title' => $document->getName(),
+                    'document_type' => $documentType->getName(),
+                    'filename' => $document->getFileName(),
+                    'filesize' => $document->getFileSize(),
+                    'created_by' => is_null($created_by) ? 'n/a' : $created_by->getName(),
+                    'created_date' => $created_date,
+                    'checked_out_by' => is_null($checked_out_by) ? 'n/a' : $checked_out_by->getName(),
+                    'checked_out_by_id' => $checked_out_by_id,
+                    'checked_out_date' => $checked_out_date,
+                    'modified_by' => is_null($modified_by) ? 'n/a' : $modified_by->getName(),
+                    'modified_date' => $modified_date,
+                    'owned_by' => is_null($owned_by) ? 'n/a' : $owned_by->getName(),
+                    'version' => $document->getMajorVersionNumber() . '.' . $document->getMinorVersionNumber(),
+                    'content_id' => $document->getContentVersionId(),
+                    'is_immutable' => $document->getImmutable() ? 'true' : 'false',
+                    'permissions' => KTAPI_Document::get_permission_string($document),
+                    'workflow' => $workflow,
+                    'workflow_state' => $state,
+                    'mime_type' => $mime_cache[$mimetypeid]['type'],
+                    'mime_icon_path' => $mime_cache[$mimetypeid]['icon'],
+                    'mime_display' => $mime_cache[$mimetypeid]['display'],
+                    'storage_path' => $document->getStoragePath()
                     );
 
                     if ($wsversion >= 3) {
-                        $array['linked_folder_id'] = $folder->getLinkedFolderId();
-                        if ($folder->isSymbolicLink()) {
-                            $array['item_type'] = "S";
+                        $document->switchToRealCore();
+                        $detail['linked_document_id'] = $document->getLinkedDocumentId();
+                        $document->switchToLinkedCore();
+                        if ($document->isSymbolicLink()) {
+                            $detail['item_type'] = "S";
                         }
+
+                        $detail['has_rendition'] = $document->getHasRendition();
+                        $detail['clean_uri'] = KTBrowseUtil::getUrlForDocument($document);
+                        $detail['created_by_user_name'] = is_null($created_by) ? 'n/a' : $created_by->getUserName();
+                        $detail['modified_by_user_name'] = is_null($modified_by) ? 'n/a' : $modified_by->getUserName();
+                        $detail['checked_out_by_user_name'] = is_null($checked_out_by) ? 'n/a' : $checked_out_by->getUserName();
+                        $detail['owned_by_user_name'] = is_null($owned_by) ? 'n/a' : $owned_by->getUserName();
                     }
-                    $array['items'] = $items;
-                    if ($wsversion < 3 || (strpos($what, 'F') !== false && !$folder->isSymbolicLink()) || ($folder->isSymbolicLink() && strpos($what, 'S') !== false)) {
-                        $folderContents[] = $array;
+
+                    $detail['items'] = array();
+
+                    if ($wsversion < 3 || ((strpos($what, 'D') !== false) && !$document->isSymbolicLink()) || ($document->isSymbolicLink() && (strpos($what, 'S') !== false))) {
+                        $documentContents[] = $detail;
                     }
                 } else {
-                    $folderContents[] = array(
-                    'id' =>(int) $folder->getId(),
-                    'item_type' => 'F',
-                    'title' => $folder->getName(),
-                    'creator' => is_null($creator) ? 'n/a' : $creator->getName(),
-                    'checkedoutby' => 'n/a', 'modifiedby' => 'n/a', 'filename' => $folder->getName(),
-                    'size' => 'n/a',
-                    'major_version' => 'n/a',
-                    'minor_version' => 'n/a',
-                    'storage_path' => 'n/a',
-                    'mime_type' => 'folder',
-                    'mime_icon_path' => 'folder',
-                    'mime_display' => 'Folder',
-                    'items' => $items,
-                    'workflow' => 'n/a',
-                    'workflow_state' => 'n/a'
+                    $documentContents[] = array(
+                    'id' =>(int) $document->getId(),
+                    'item_type' => 'D',
+                    'title' => $document->getName(),
+                    'creator' => is_null($created_by) ? 'n/a' : $created_by->getName(),
+                    'checkedoutby' => is_null($checked_out_by) ? 'n/a' : $checked_out_by->getName(),
+                    'modifiedby' => is_null($modified_by) ? 'n/a' : $modified_by->getName(),
+                    'filename' => $document->getFileName(),
+                    'size' => $document->getFileSize(),
+                    'major_version' => $document->getMajorVersionNumber(),
+                    'minor_version' => $document->getMinorVersionNumber(),
+                    'storage_path' => $document->getStoragePath(),
+                    'mime_type' => $mime_cache[$mimetypeid]['type'],
+                    'mime_icon_path' => $mime_cache[$mimetypeid]['icon'],
+                    'mime_display' => $mime_cache[$mimetypeid]['display'],
+                    'items' => array(),
+                    'workflow' => $workflow,
+                    'workflow_state' => $state
                     );
                 }
             }
         }
 
-        // check limits
+        return $documentContents;
+    }
+
+    /**
+     * Check collection limits after getting a certain number of items of one type (folders.)
+     *
+     * @param array $queryOptions
+     * @param int $found
+     * @return int
+     */
+    private function checkLimit(&$queryOptions, $found)
+    {
         $remaining = -1;
+
         if (!empty($queryOptions['limit'])) {
-            $found = count($folderContents);
             $remaining = $queryOptions['limit'] - $found;
             $queryOptions['limit'] = $remaining;
             // remaining offset will depend on whether there were any folders returned in this match and the total folder count.
@@ -693,176 +927,7 @@ class KTAPI_Folder extends KTAPI_FolderItem
             }
         }
 
-        if (strpos($what, 'D') !== false) {
-            $res = KTSearchUtil::permissionToSQL($user, KTAPI_PERMISSION_READ, 'D');
-            if (PEAR::isError($res)) {
-                return $res;
-            }
-
-            list($permissionString, $permissionParams, $permissionJoin) = $res;
-
-            $contentVersionJoin = 'INNER JOIN document_content_version DCV ON DCV.document_id = D.id INNER JOIN document_metadata_version DMV ON DMV.content_version_id = DCV.id';
-            $where = "WHERE D.status_id = 1 AND $permissionString AND D.folder_id = ?";
-            $queryOptions['orderby'] = 'DMV.name';
-            $optionString = DBUtil::getDbOptions($queryOptions);
-
-            if ($calculateTotal) {
-                $totalSql = "SELECT count(D.id) as document_ids FROM documents as D $permissionJoin $where GROUP BY D.id";
-                $totalDocuments = DBUtil::getResultArrayKey(array($totalSql, array_merge($permissionParams, array($this->folderid))), 'document_ids');
-                if (PEAR::isError($totalDocuments)) {
-                    // FIXME not what we want?
-                    return $totalDocuments;
-                }
-                $totalDocuments = count($totalDocuments);
-            }
-
-            // do we need to fetch anything or do we just need the count for paging?
-            if ($remaining != 0) {
-                $sql = "SELECT D.id as document_id FROM documents as D $contentVersionJoin $permissionJoin $where $optionString";
-                $document_children = DBUtil::getResultArrayKey(array($sql, array_merge($permissionParams, array($this->folderid))), 'document_id');
-                if (PEAR::isError($document_children)) {
-                    // FIXME not what we want?
-                    return $document_children;
-                }
-
-                // I hate that KT doesn't cache things nicely...
-                $mime_cache = array();
-
-                foreach ($document_children as $documentId) {
-                    $document = Document::get($documentId);
-                    $created_by = $this->_resolve_user($document->getCreatorID());
-                    $created_date = $document->getCreatedDateTime();
-                    if (empty($created_date)) {
-                        $created_date = 'n/a';
-                    }
-
-                    $checked_out_by_id = $document->getCheckedOutUserID();
-                    $checked_out_by = $this->_resolve_user($checked_out_by_id);
-                    $checked_out_date = $document->getCheckedOutDate();
-                    if (empty($checked_out_date)) {
-                        $checked_out_date = 'n/a';
-                    }
-
-                    $modified_by = $this->_resolve_user($document->getCreatorID());
-                    $modified_date = $document->getLastModifiedDate();
-                    if (empty($modified_date)) {
-                        $modified_date = 'n/a';
-                    }
-
-                    $owned_by = $this->_resolve_user($document->getOwnerID());
-
-                    $mimetypeid = $document->getMimeTypeID();
-                    if (!array_key_exists($mimetypeid, $mime_cache)) {
-                        $type = KTMime::getMimeTypeName($mimetypeid);
-                        $icon = KTMime::getIconPath($mimetypeid);
-                        $display = KTMime::getFriendlyNameForString($type);
-                        $mime_cache[$mimetypeid] = array('type' => $type, 'icon' => $icon, 'display' => $display);
-                    }
-                    $mimeinfo = $mime_cache[$mimetypeid];
-
-                    $workflow = 'n/a';
-                    $state = 'n/a';
-                    $wf = KTWorkflowUtil::getWorkflowForDocument($document);
-                    if (!is_null($wf) && !PEAR::isError($wf)) {
-                        $workflow = $wf->getHumanName();
-                        $ws = KTWorkflowUtil::getWorkflowStateForDocument($document);
-                        if (!is_null($ws) && !PEAR::isError($ws)) {
-                            $state = $ws->getHumanName();
-                        }
-                    }
-
-                    if ($wsversion >= 2) {
-                        $docTypeId = $document->getDocumentTypeID();
-                        $documentType = DocumentType::get($docTypeId);
-
-                        $oemDocumentNo = $document->getOemNo();
-                        if (empty($oemDocumentNo)) {
-                            $oemDocumentNo = 'n/a';
-                        }
-
-                        $array = array(
-                        'id' =>(int) $document->getId(),
-                        'item_type' => 'D',
-                        'custom_document_no' => 'n/a',
-                        'oem_document_no' => $oemDocumentNo,
-                        'title' => $document->getName(),
-                        'document_type' => $documentType->getName(),
-                        'filename' => $document->getFileName(),
-                        'filesize' => $document->getFileSize(),
-                        'created_by' => is_null($created_by) ? 'n/a' : $created_by->getName(),
-                        'created_date' => $created_date,
-                        'checked_out_by' => is_null($checked_out_by) ? 'n/a' : $checked_out_by->getName(),
-                        'checked_out_by_id' => $checked_out_by_id,
-                        'checked_out_date' => $checked_out_date,
-                        'modified_by' => is_null($modified_by) ? 'n/a' : $modified_by->getName(),
-                        'modified_date' => $modified_date,
-                        'owned_by' => is_null($owned_by) ? 'n/a' : $owned_by->getName(),
-                        'version' => $document->getMajorVersionNumber() . '.' . $document->getMinorVersionNumber(),
-                        'content_id' => $document->getContentVersionId(),
-                        'is_immutable' => $document->getImmutable() ? 'true' : 'false',
-                        'permissions' => KTAPI_Document::get_permission_string($document),
-                        'workflow' => $workflow,
-                        'workflow_state' => $state,
-                        'mime_type' => $mime_cache[$mimetypeid]['type'],
-                        'mime_icon_path' => $mime_cache[$mimetypeid]['icon'],
-                        'mime_display' => $mime_cache[$mimetypeid]['display'],
-                        'storage_path' => $document->getStoragePath()
-                        );
-
-                        if ($wsversion >= 3) {
-                            $document->switchToRealCore();
-                            $array['linked_document_id'] = $document->getLinkedDocumentId();
-                            $document->switchToLinkedCore();
-                            if ($document->isSymbolicLink()) {
-                                $array['item_type'] = "S";
-                            }
-
-                            $array['has_rendition'] = $document->getHasRendition();
-                            $array['clean_uri'] = KTBrowseUtil::getUrlForDocument($document);
-                            $array['created_by_user_name'] = is_null($created_by) ? 'n/a' : $created_by->getUserName();
-                            $array['modified_by_user_name'] = is_null($modified_by) ? 'n/a' : $modified_by->getUserName();
-                            $array['checked_out_by_user_name'] = is_null($checked_out_by) ? 'n/a' : $checked_out_by->getUserName();
-                            $array['owned_by_user_name'] = is_null($owned_by) ? 'n/a' : $owned_by->getUserName();
-                        }
-
-                        $array['items'] = array();
-
-                        if ($wsversion < 3 || ((strpos($what, 'D') !== false) && !$document->isSymbolicLink()) || ($document->isSymbolicLink() && (strpos($what, 'S') !== false))) {
-                            $documentContents[] = $array;
-                        }
-                    } else {
-                        $documentContents[] = array(
-                        'id' =>(int) $document->getId(),
-                        'item_type' => 'D',
-                        'title' => $document->getName(),
-                        'creator' => is_null($created_by) ? 'n/a' : $created_by->getName(),
-                        'checkedoutby' => is_null($checked_out_by) ? 'n/a' : $checked_out_by->getName(),
-                        'modifiedby' => is_null($modified_by) ? 'n/a' : $modified_by->getName(),
-                        'filename' => $document->getFileName(),
-                        'size' => $document->getFileSize(),
-                        'major_version' => $document->getMajorVersionNumber(),
-                        'minor_version' => $document->getMinorVersionNumber(),
-                        'storage_path' => $document->getStoragePath(),
-                        'mime_type' => $mime_cache[$mimetypeid]['type'],
-                        'mime_icon_path' => $mime_cache[$mimetypeid]['icon'],
-                        'mime_display' => $mime_cache[$mimetypeid]['display'],
-                        'items' => array(),
-                        'workflow' => $workflow,
-                        'workflow_state' => $state
-                        );
-                    }
-                }
-            }
-        }
-
-        // now sort the array of Documents according to title
-        // not needed anymore because we join on content and metadata versions and sort by metadata name (document title)
-        /*usort($documentContents, array($this, 'compare_title'));*/
-
-        $totalItems = $totalFolders + $totalDocuments;
-        $contents = array_merge($documentContents, $folderContents);
-
-        return $contents;
+        return $remaining;
     }
 
     private function getWSVersion()
