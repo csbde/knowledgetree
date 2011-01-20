@@ -38,23 +38,30 @@
  */
 require_once(KT_LIB_DIR . '/datetime/timezones.inc');
 
-class datetime_view extends KTDispatcher 
+class datetime_view extends KTAdminDispatcher
 {
+	public function __construct()
+	{
+        global $main;
+        $main->requireJSResource('plugins/datetime/resources/js/datetime.js');
+        $main->requireCSSResource('plugins/datetime/resources/css/datetime.css');
+	}
+	
 	/**
 	 * Renders a list of standard timezone options to be used in a dropdown
 	 *
 	 * @return string
 	 */
-	static public function renderCountries($value)
+	static public function renderRegions($value)
 	{
 		$tzc = new TimezoneConversion();
 		$ddoptions = '';
 		$aValue = explode('/', $value);
-		$currentCountry = isset($aValue[0]) ? $aValue[0] : 'Other';		
-		foreach ($tzc->getPhpCountries() as $country)
+		$currentRegion = isset($aValue[1]) ? $aValue[0] : 'Other';
+		foreach ($tzc->getPhpRegions() as $region)
 		{
-			$selected = ($country == $currentCountry) ? 'selected' : '';
-			$ddoptions .= '<option onclick="javascript:{alert(\'a\');}" value="' . $country . '" ' . $selected . '> ' . $country . '</option>';
+			$selected = ($region == $currentRegion) ? 'selected' : '';
+			$ddoptions .= '<option onclick="javascript:{kt.datetime.change_region(\'' . $region. '\');}" value="' . $region . '" ' . $selected . '> ' . $region . '</option>';
 		}
 		
 		return $ddoptions;
@@ -69,19 +76,24 @@ class datetime_view extends KTDispatcher
 	{
 		$tzc = new TimezoneConversion();
 		$ddoptions = '';
-		
+		$aValue = explode('/', $value);
+		$currentRegion = isset($aValue[1]) ? $aValue[0] : 'Other';
 		foreach ($tzc->getPhpTimezones() as $standardZone)
 		{
+			$aValue = explode('/', $standardZone);
+			$zoneRegion = isset($aValue[1]) ? $aValue[0] : 'Other';
 			$selected = ($standardZone == $value) ? 'selected' : '';
-			$ddoptions .= '<option value="' . $standardZone . '" ' . $selected . '> ' . $standardZone . '</option>';
+			$class = ($zoneRegion == $currentRegion) ? "show_select $zoneRegion":"hide_select $zoneRegion";
+			$standardZone = ($zoneRegion == 'Other') ? "Other/$standardZone" : $standardZone;
+			$ddoptions .= '<option class="' . $class . '" value="' . $standardZone . '" ' . $selected . '> ' . $standardZone . '</option>';
 		}
 		
 		return $ddoptions;
 	}
 	
-	static public function renderCountryLabel()
+	static public function renderRegionLabel()
 	{
-		return "<label for='country'>Select Region</label>&nbsp;&nbsp;&nbsp;&nbsp;";
+		return "<label for='region'>Select Region</label>&nbsp;&nbsp;&nbsp;&nbsp;";
 	}
 	
 	static public function renderTimezoneLabel()

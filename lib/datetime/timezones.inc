@@ -188,7 +188,7 @@ class TimezoneConversion
 	 * systems that do not support the function but a list of timezones is
 	 * needed anyway
 	 **/
-	public function getPhpCountries()
+	public function getPhpRegions()
 	{
 		return array(
 						'Africa',
@@ -222,12 +222,6 @@ class TimezoneConversion
 				$timezone = $azone['timezone_id'];
 				if($timezone != '')
 				{
-					$aTimezone = explode('/', $timezone);
-					$country = isset($aTimezone[0]) ? $aTimezone[0] : 'Other';
-					if(count($aTimezone) == 1)
-					{
-						$timezone = "Other/$timezone";
-					}
 					if(!in_array($timezone, $list_of_zones))
 					{
 						if($currentCountry === false)
