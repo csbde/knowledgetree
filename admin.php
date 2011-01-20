@@ -82,8 +82,7 @@ class AdminSplashDispatcher extends KTAdminDispatcher {
         $oTemplating =& KTTemplating::getSingleton();
 
         if (ACCOUNT_ROUTING_ENABLED && liveAccounts::isTrialAccount()) {
-            $js = preg_replace('/.*[\/\\\\]plugins/', 'plugins', KT_LIVE_DIR) . '/resources/js/olark/olark.js';
-            $this->oPage->requireJsResource($js);
+            $this->includeOlark();
         }
 
         if ($condensed_admin) {
@@ -164,6 +163,14 @@ class AdminSplashDispatcher extends KTAdminDispatcher {
 
         return $oTemplate->render($aTemplateData);
     }
+
+    private function includeOlark()
+	{
+	    $user = User::get($_SESSION['userID']);
+	    $js = preg_replace('/.*[\/\\\\]plugins/', 'plugins', KT_LIVE_DIR) . '/resources/js/olark/olark.js';
+	    $this->oPage->requireJsResource($js);
+	    $this->oPage->setBodyOnload("javascript: ktOlark.setUserData('" . $user->getName() . "', '" . $user->getEmail() . "');");
+	}
 
 }
 

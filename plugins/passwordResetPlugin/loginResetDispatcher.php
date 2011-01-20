@@ -138,8 +138,8 @@ class loginResetDispatcher extends KTDispatcher {
         $js[] = '/thirdpartyjs/extjs/ext-all.js';
         // temporarily disabled
         if (ACCOUNT_ROUTING_ENABLED && liveAccounts::isTrialAccount()) {
-            $js[] = preg_replace('/.*[\/\\\\]plugins/', '/plugins', KT_LIVE_DIR) . '/resources/js/olark/olark.js';global $main;
-            $oPage->setBodyOnload("javascript: ktOlarkPopupTrigger('Hi, do you need help logging in?', 30000);");
+            $js[] = preg_replace('/.*[\/\\\\]plugins/', '/plugins', KT_LIVE_DIR) . '/resources/js/olark/olark.js';
+            $oPage->setBodyOnload("javascript: ktOlark.popupTrigger('Hi, do you need help logging in?', 30000);");
         }
         $css[] = '/thirdpartyjs/extjs/resources/css/ext-all.css';
 

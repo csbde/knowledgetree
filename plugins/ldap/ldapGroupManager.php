@@ -1,12 +1,29 @@
 <?php
 
 require_once('ldapManager.php');
+require_once('ldapUserManager.php');
 
 class LdapGroupManager extends LdapManager {
+
+    private $memberAttributes;
+    private $searchAttributes;
 
     public function __construct($source)
     {
         parent::__construct($source);
+
+        $defaultMemberAttributes = array('member', 'memberUid');
+        $config = unserialize($this->source->getConfig());
+
+        $memberAttributes = KTUtil::arrayGet($config, 'memberattributes');
+        if (!empty($memberAttributes)) {
+            if (!is_array($memberAttributes)) {
+                $memberAttributes = array($memberAttributes);
+            }
+            $this->memberAttributes = array_unique(array_merge($memberAttributes, $defaultMemberAttributes));
+        }
+
+        $this->searchAttributes = array_merge(array('cn', 'dn', 'displayName'), $this->memberAttributes);
     }
 
     public function __destruct()
@@ -24,7 +41,7 @@ class LdapGroupManager extends LdapManager {
      */
     public function searchGroups($search)
     {
-        $attributes = array('cn', 'dn', 'displayName', 'member');
+        $attributes = $this->searchAttributes;
         // NOTE we don't need to get the base dn here:
         //      If null, it will be automatically used as set in the construction of the ldap connector.
 
@@ -77,30 +94,55 @@ class LdapGroupManager extends LdapManager {
         $dn = $group->getAuthenticationDetails();
 
         try {
-            $ldapResult = $this->getGroup($dn, array('member'));
+            $ldapResult = $this->getGroup($dn, $this->memberAttributes);
         }
         catch (Exception $e) {
             // wrap in PEAR error for the rest of the system which expects that format
             return new PEAR_Error($e->getMessage());
         }
 
-        $members = KTUtil::arrayGet($ldapResult, 'member', array());
+        foreach ($this->memberAttributes as $attribute) {
+        	$members = KTUtil::arrayGet($ldapResult, strtolower($attribute), array());
+            if (!empty($members)) {
+                break;
+            }
+        }
+
         if (!is_array($members)) {
             $members = array($members);
         }
 
         $userIds = array();
         foreach ($members as $member) {
-            $userId = User::getByAuthenticationSourceAndDetails($this->source, $member, array('ids' => true));
-            if (PEAR::isError($userId)) {
+            // we need the user cn to check the authentication source, this may not always be directly returned
+            if (!preg_match('/^cn=/', $member)) {
+                $userManager = new LdapUserManager($this->source);
+                $searchResults = $userManager->searchUsers($member);
+                // There is likely a problem with the ldap server setup if there is more than one user with a matching identifier.
+                // Even if not, how are we to know which
+                if ($searchResults->count() == 1) {
+                    $searchResults->rewind();
+                    foreach ($searchResults as $key => $result) {
+                        $member = $result['dn'];
+                        $userId = User::getByAuthenticationSourceAndDetails($this->source, $member, array('ids' => true));
+                        if (!PEAR::isError($userId)) {
+                            break;
+                        }
+                    }
+                }
+            }
+            else {
+                $userId = User::getByAuthenticationSourceAndDetails($this->source, $member, array('ids' => true));
+            }
+
+            if (empty($userId) || PEAR::isError($userId)) {
                 continue;
             }
+
             $userIds[] = $userId;
         }
 
-        if (!empty($userIds)) {
-            $group->setMembers($userIds);
-        }
+        $group->setMembers($userIds);
 
         return null;
     }

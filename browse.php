@@ -279,8 +279,7 @@ class BrowseDispatcher extends KTStandardDispatcher {
 		 */
 		$aBulkActions = KTBulkActionUtil::getAllBulkActions();
 
-		$ktOlarkPopup = null;
-		if (ACCOUNT_ROUTING_ENABLED && liveAccounts::isTrialAccount()) {
+        if (ACCOUNT_ROUTING_ENABLED && liveAccounts::isTrialAccount()) {
             $this->includeOlark();
         }
 
@@ -293,8 +292,7 @@ class BrowseDispatcher extends KTStandardDispatcher {
               'isEditable' => $this->editable,
               'bulkactions' => $aBulkActions,
               'browseutil' => new KTBrowseUtil(),
-              'returnaction' => 'browse',
-              'ktOlarkPopup' => $ktOlarkPopup
+              'returnaction' => 'browse'
 		);
 
         // ?don't quite know why this is in here. Someone reports that it is there for search browsing which seem to be disabled
@@ -498,22 +496,16 @@ class BrowseDispatcher extends KTStandardDispatcher {
 
 	private function includeOlark()
 	{
+	    $user = User::get($_SESSION['userID']);
 	    $js = preg_replace('/.*[\/\\\\]plugins/', 'plugins', KT_LIVE_DIR) . '/resources/js/olark/olark.js';
 	    $this->oPage->requireJsResource($js);
-	    // popup immediately if first login
+
 	    if (isset($_SESSION['isFirstLogin'])) {
-	        // add popup to page
-	        $ktOlarkPopup = '<script type="text/javascript">
-    ktOlarkPopupTrigger("Welcome to KnowledgeTree.  If you have any questions, please let us know.", 0);
-</script>';
+	        $this->oPage->setBodyOnload("javascript: ktOlark.popupTrigger('Welcome to KnowledgeTree.  If you have any questions, please let us know.', 0, '" . $user->getName() . "', '" . $user->getEmail() . "');");
 	        unset($_SESSION['isFirstLogin']);
 	    }
 	    else {
-	        $ktOlarkPopup = '<script type="text/javascript">
-    olark.extend(function(api) {
-        api.box.show();
-    });
-</script>';
+	        $this->oPage->setBodyOnload("javascript: ktOlark.setUserData('" . $user->getName() . "', '" . $user->getEmail() . "');");
 	    }
 	}
 
