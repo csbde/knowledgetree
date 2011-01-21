@@ -546,7 +546,7 @@ class KTUserUtil {
             					'link' => self::createContentLink($objectTypeName, $objectId),
             					'title' => $objectName,
             					'message' => nl2br($message),
-            					'type' => $objectType,
+            					'type' => ($objectTypeName == 'document') ? 'D' : 'F',
             				);
         }
 
