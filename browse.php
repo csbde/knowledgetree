@@ -264,6 +264,7 @@ class BrowseDispatcher extends KTStandardDispatcher {
 
 		// Prepare Multi-File Actions
 		$aBulkActions = KTBulkActionUtil::getAllBulkActions();
+
         $ktOlarkPopup = null;
         if (ACCOUNT_ROUTING_ENABLED && liveAccounts::isTrialAccount()) {
             $this->includeOlark();
