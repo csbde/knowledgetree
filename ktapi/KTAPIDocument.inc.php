@@ -2330,6 +2330,7 @@ class KTAPI_Document extends KTAPI_FolderItem
 
 			$document_status_id = $document->getStatusID();
 			$detail['document_status'] = Document::getStatusString($document_status_id);
+
 			//need to get latest check-in date
 			$aTransactionsByDocument = DocumentTransaction::getByDocumentFilterByNamespace($document, 'ktcore.transactions.check_in');
 

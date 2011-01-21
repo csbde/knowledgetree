@@ -221,6 +221,7 @@ class sharedUserBrowseView extends browseView
 				}
 			}
 		}
+
 		// Get the name of the user that checked out document
 		if (!is_null($item['checked_out_by_id']))
 		{
@@ -512,6 +513,7 @@ class browseView {
 					<td class="info">
 						<h2>Upload files and folders</h2>
 						Upload one or more files including .zip files and other archives
+
 						<br />
 						<br />
 						<div>

@@ -68,9 +68,9 @@ class ldapUserDispatcher extends KTStandardDispatcher {
         // Check if its a mass import
         $massImport = KTUtil::arrayGet($_REQUEST, 'massimport');
         $isMassImport = ($massImport == 'on') ? true : false;
-        
+
         if (KTUtil::arrayGet($submit, 'chosen')) {
-            $id = KTUtil::arrayGet($_REQUEST, 'id');            
+            $id = KTUtil::arrayGet($_REQUEST, 'id');
             if (!empty($id)) {
                 if ($isMassImport) {
                     return $this->_do_massCreateUsers();
@@ -83,15 +83,15 @@ class ldapUserDispatcher extends KTStandardDispatcher {
                 $this->oPage->addError(_kt("No valid LDAP user chosen"));
             }
         }
-        
+
         if (KTUtil::arrayGet($submit, 'create')) {
             return $this->_do_createUserFromSource();
         }
-        
+
         $searchResults = null;
         $users = array();
         $fields = array();
-        
+
         // Get the search query
         $name = KTUtil::arrayGet($_REQUEST, 'ldap_name');
         if (!empty($name) || $isMassImport) {
@@ -99,7 +99,6 @@ class ldapUserDispatcher extends KTStandardDispatcher {
             try {
                 $searchResults = $manager->searchUsers($name, array('cn', 'dn'));
                 if ($searchResults->count()) {
-                    // make sure we start from the beginning
                     $searchResults->rewind();
                     // get dns to check existing users and populate default user result list
                     $searchDNs = array();
@@ -148,22 +147,22 @@ class ldapUserDispatcher extends KTStandardDispatcher {
 
         return  $template->render($templateData);
     }
-    
+
     private function _do_createUserFromSource()
     {
         $dn = KTUtil::arrayGet($_REQUEST, 'dn');
         $samaccountname = KTUtil::arrayGet($_REQUEST, 'samaccountname');
-        
+
         $name = KTUtil::arrayGet($_REQUEST, 'name');
         if (empty($name)) { $this->errorRedirectToMain(_kt('You must specify a name for the user.')); }
-        
+
         $username = KTUtil::arrayGet($_REQUEST, 'ldap_username');
         if (empty($username)) { $this->errorRedirectToMain(_kt('You must specify a new username.')); }
 
         $emailAddress = KTUtil::arrayGet($_REQUEST, 'emailAddress');
         $emailNotifications = KTUtil::arrayGet($_REQUEST, 'emailNotifications', false);
         if ($emailNotifications !== false) { $emailNotifications = true; }
-        
+
         $maxSessions = KTUtil::arrayGet($_REQUEST, 'max_sessions', '3');
         // FIXME check for numeric maxSessions... db-error else?
 
@@ -177,36 +176,29 @@ class ldapUserDispatcher extends KTStandardDispatcher {
         $this->successRedirectToMain(_kt('Created new user') . ': ' . $user->getUsername());
         exit(0);
     }
-    
+
     private function _do_editUserFromSource()
     {
         $template = $this->oValidator->validateTemplate('ldap_add_user');
         $id = KTUtil::arrayGet($_REQUEST, 'id');
 
         $manager = new LdapUserManager($this->source);
-        $results = $manager->getUser($id);
+        $result = $manager->getUser($id);
         $errorOptions = array(
             'message' => _kt('Could not find user in LDAP server'),
         );
-        $this->oValidator->notError($results);
+        $this->oValidator->notError($result);
 
-        $userName = $results[$this->attributes[1]];
-
-        // If the SAMAccountName is empty then use the UserPrincipalName (UPN) to find the username.
-        // The UPN is normally the username @ the internet domain
-        if (empty($userName)) {
-            $upn = $results[$this->attributes[6]];
-            $upn = explode('@', $upn);
-            $userName = $upn[0];
-        }
+        $userData = $this->extractUserData($result, $id);
+        extract($userData);
 
         $fields = array();
         $fields[] =  new KTStaticTextWidget(_kt('LDAP DN'), _kt('The location of the user within the LDAP directory.'), 'dn', $id, $this->oPage);
         $fields[] =  new KTStringWidget(_kt('Username'), sprintf(_kt('The username the user will enter to gain access to %s.  e.g. <strong>jsmith</strong>'), APP_NAME), 'ldap_username', $userName, $this->oPage, true);
-        $fields[] =  new KTStringWidget(_kt('Name'), _kt('The full name of the user.  This is shown in reports and listings.  e.g. <strong>John Smith</strong>'), 'name', $results[$this->attributes[0]], $this->oPage, true);
-        $fields[] =  new KTStringWidget(_kt('Email Address'), _kt('The email address of the user.  Notifications and alerts are mailed to this address if <strong>email notifications</strong> is set below. e.g. <strong>jsmith@acme.com</strong>'), 'emailAddress', $results[$this->attributes[4]], $this->oPage, false);
+        $fields[] =  new KTStringWidget(_kt('Name'), _kt('The full name of the user.  This is shown in reports and listings.  e.g. <strong>John Smith</strong>'), 'name', $name, $this->oPage, true);
+        $fields[] =  new KTStringWidget(_kt('Email Address'), _kt('The email address of the user.  Notifications and alerts are mailed to this address if <strong>email notifications</strong> is set below. e.g. <strong>jsmith@acme.com</strong>'), 'emailAddress', $emailAddress, $this->oPage, false);
         $fields[] =  new KTCheckboxWidget(_kt('Email Notifications'), _kt('If this is specified then the user will have notifications sent to the email address entered above.  If it is not set, then the user will only see notifications on the <strong>Dashboard</strong>'), 'emailNotifications', true, $this->oPage, false);
-        $fields[] =  new KTStringWidget(_kt('Mobile Number'), _kt('The mobile phone number of the user.  e.g. <strong>999 9999 999</strong>'), 'mobile_number', $results[$this->attributes[5]], $this->oPage, false);
+        $fields[] =  new KTStringWidget(_kt('Mobile Number'), _kt('The mobile phone number of the user.  e.g. <strong>999 9999 999</strong>'), 'mobile_number', $phone, $this->oPage, false);
         $fields[] =  new KTStringWidget(_kt('Maximum Sessions'), _kt('As a safety precaution, it is useful to limit the number of times a given account can log in, before logging out.  This prevents a single account being used by many different people.'), 'max_sessions', '3', $this->oPage, true);
 
         $templateData = array(
@@ -215,9 +207,9 @@ class ldapUserDispatcher extends KTStandardDispatcher {
             'source' => $this->source,
             'search_results' => $aSearchResults,
             'dn' => $id,
-            'samaccountname' => $results['samaccountname'],
+            'samaccountname' => $result['samaccountname'],
         );
-        
+
         return $template->render($templateData);
     }
 
@@ -228,47 +220,86 @@ class ldapUserDispatcher extends KTStandardDispatcher {
         $manager = new LdapUserManager($this->source);
 
         foreach ($ids as $id) {
-            $results = $manager->getUser($id);
-            $dn = $id;
-            $userName = $results[$this->attributes[1]];
+            $result = $manager->getUser($id);
+            $userData = $this->extractUserData($result, $id, true);
+            extract($userData);
+            $user = KTUserUtil::createUser($userName, $name, '', $emailAddress, true, '', 3, $this->source->getId(), $id, $userName);
+            $names[] = $name;
+        }
 
-            if ($userName == '') {
+        $this->successRedirectToMain(_kt('Added users') . ': ' . join(', ', $names));
+    }
+
+    /**
+     * Extract user data from the ldap result
+     *
+     * @param ldap result $result
+     * @param boolean $append Whether to append _DUPLICATE to the user name if one already exists;
+     *                        This would usually only apply to a mass import.
+     * @return array
+     */
+    private function extractUserData($result, $dn = null, $append = false)
+    {
+        $user = array();
+
+        $userName = $result[$this->attributes[1]];
+
+        // If the SAMAccountName is empty then try alternate sources
+        if (empty($userName)) {
+            // try userprincipalname
+            if (!empty($result[$this->attributes[6]])) {
+                // use the UserPrincipalName (UPN) to find the username.
+                // The UPN is normally the username @ the internet domain
+                $upn = $result[$this->attributes[6]];
+                $upn = explode('@', $upn);
+                $userName = $upn[0];
+            }
+            // try uid - this will usually be the same as the dn, but may not be in dn form
+            // (ref: http://publib.boulder.ibm.com/infocenter/db2luw/v8/index.jsp?topic=/com.ibm.db2.udb.doc/admin/t0006021.htm)
+            else if (!empty($result[$this->attributes[7]])) {
+                $userName = $result[$this->attributes[7]];
+                // if in dn form, extract the cn attribute, otherwise it can be used as is.
+                if (preg_match('/^cn=([^,]*),/', $userName, $matches)) {
+                    $userName = $matches[1];
+                }
+            }
+            // try dn
+            else if (!empty($dn)) {
                 $dnParts = ldap_explode_dn($dn, 0);
                 $userName = end(explode('=', $dnParts[0]));;
             }
-
-            // With LDAP, if the 'uid' is null then try using the 'givenname' instead.
-            // See activedirectoryauthenticationprovider.inc.php and ldapauthenticationprovider.inc.php for details.
-            if (($this->authenticatorClass == 'LdapAuthenticator') && empty($userName)) {
-                $userName = strtolower($results[$this->attributes[2]]);
+            // try 'givenname'
+            else if (($this->authenticatorClass == 'LdapAuthenticator') && empty($userName)) {
+                $userName = strtolower($result[$this->attributes[2]]);
             }
-            
-            $name = $results[$this->attributes[0]];
-            if ($name == '') {
+        }
+
+        $name = $result[$this->attributes[0]];
+        if (empty($name)) {
+            if (!empty($dn)) {
                 $dnParts = ldap_explode_dn($dn, 0);
                 $name = end(explode('=', $dnParts[0]));
             }
-
-            $emailAddress = $results[$this->attributes[4]];
-
-            // If the user already exists append some text so the admin can see the duplicates.
-            $appending = true;
-            while ($appending) {
-                if (!PEAR::isError(User::getByUserName($userName))) {
-                    $userName = $userName . '_DUPLICATE';
-                    $appending = true;
-                }
-                else {
-                    $appending = false;
-                }
+            else {
+                $name = trim("{$result[$this->attributes[2]]} {$result[$this->attributes[3]]}");
             }
-
-            $user = KTUserUtil::createUser($userName, $name, '', $emailAddress, true, '', 3, $this->source->getId(), $dn, $userName);
-            $names[] = $name;
         }
-        
-        $this->successRedirectToMain(_kt('Added users') . ': ' . join(', ', $names));
+
+        $emailAddress = $result[$this->attributes[4]];
+
+        // If the user already exists append some text so the admin can see the duplicates.
+        if ($append) {
+            while (!PEAR::isError(User::getByUserName($userName))) {
+                $userName = $userName . '_DUPLICATE';
+            }
+        }
+
+        $phone = $result[$this->attributes[5]];
+
+        $user = compact('userName', 'name', 'emailAddress', 'phone');
+
+        return $user;
     }
-    
+
 }
 ?>
