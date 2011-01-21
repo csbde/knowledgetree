@@ -5115,14 +5115,14 @@ class KTAPI {
      */
     public function get_comments($document_id, $order = 'DESC')
     {
-    	$GLOBALS['default']->log->debug("KTAPI get_comments $document_id $order");
+    	//$GLOBALS['default']->log->debug("KTAPI get_comments $document_id $order");
 
     	$response = array('status_code' => null, 'message' => null, 'results' => null);
 
     	if ($this->comments_enabled()) {
     		try {
 		        $comments = Comments::get_comments($document_id, $order);
-		        $GLOBALS['default']->log->debug("COMMENTS_API get comments " . print_r($comments, true));
+		        //$GLOBALS['default']->log->debug("COMMENTS_API get comments " . print_r($comments, true));
 
 		        foreach ($comments as $key => $comment) {
 		            // set correct return value types for SOAP webservice
@@ -5139,7 +5139,7 @@ class KTAPI {
 		        $response['results'] = $comments;
     		}
     		catch (Exception $e) {
-    			$GLOBALS['default']->log->error("COMMENTS_API get comments error {$e->getMessage()}");
+    			//$GLOBALS['default']->log->error("COMMENTS_API get comments error {$e->getMessage()}");
 		        $response['status_code'] = 1;
 		        $response['message'] = $e->getMessage();
     		}
@@ -5156,7 +5156,7 @@ class KTAPI {
      */
     public function add_comment($document_id, $comment)
     {
-    	$GLOBALS['default']->log->debug("KTAPI add_comment $document_id $comment");
+    	//$GLOBALS['default']->log->debug("KTAPI add_comment $document_id $comment");
 
     	$response = array('status_code' => null, 'message' => null, 'results' => null);
 
@@ -5167,7 +5167,7 @@ class KTAPI {
 		        $response['results'] = $result;
     		}
     		catch (Exception $e) {
-    			$GLOBALS['default']->log->error("COMMENTS_API add comment error {$e->getMessage()}");
+    			//$GLOBALS['default']->log->error("COMMENTS_API add comment error {$e->getMessage()}");
     			$response['status_code'] = 1;
 		        $response['message'] = $e->getMessage();
     		}
@@ -5184,7 +5184,7 @@ class KTAPI {
      */
     public function get_most_recent_documents_owned($user_name, $limit = 10)
     {
-    	$GLOBALS['default']->log->debug("KTAPI get_most_recent_documents_owned $user_name $limit");
+    	//$GLOBALS['default']->log->debug("KTAPI get_most_recent_documents_owned $user_name $limit");
 
     	$user = KTAPI_User::getByUsername($user_name);
     	if (is_null($user) || PEAR::isError($user))
@@ -5205,7 +5205,7 @@ class KTAPI {
      */
     public function get_clean_uri($document_id)
 	{
-		$GLOBALS['default']->log->debug("KTAPI get_clean_uri $document_id");
+		//$GLOBALS['default']->log->debug("KTAPI get_clean_uri $document_id");
 
 		$oDocument = &Document::get($document_id);
 
@@ -5218,7 +5218,7 @@ class KTAPI {
 
 		$url = KTBrowseUtil::getUrlForDocument($oDocument);
 
-		$GLOBALS['default']->log->debug("KTAPI get_clean_uri uri $url");
+		//$GLOBALS['default']->log->debug("KTAPI get_clean_uri uri $url");
 
 		$response['message'] = $url;
 	    $response['status_code'] = 0;
@@ -5233,7 +5233,7 @@ class KTAPI {
      */
     public function get_user_gravatar($user_name)
 	{
-		$GLOBALS['default']->log->debug("KTAPI get_user_gravatar $user_name");
+		//$GLOBALS['default']->log->debug("KTAPI get_user_gravatar $user_name");
 
 		$oUser = &User::getByUserName($user_name);
 
@@ -5246,7 +5246,7 @@ class KTAPI {
 
 		$gravatar_url = "http://www.gravatar.com/avatar/".md5($oUser->getEmail());
 
-		$GLOBALS['default']->log->debug("KTAPI get_user_gravatar uri $gravatar_url");
+		//$GLOBALS['default']->log->debug("KTAPI get_user_gravatar uri $gravatar_url");
 
 		$response['message'] = $gravatar_url;
 	    $response['status_code'] = 0;
@@ -5261,13 +5261,13 @@ class KTAPI {
      */
 	public function get_folder_total_documents($folder_id)
 	{
-		$GLOBALS['default']->log->debug("KTAPI get_folder_total_files $folder_id");
+		//$GLOBALS['default']->log->debug("KTAPI get_folder_total_files $folder_id");
 		
 		$folder = KTAPI_Folder::get($this, $folder_id);
 		
 		if (PEAR::isError($folder))
 		{
-			$GLOBALS['default']->log->error('KTAPI get_folder_total_files folder error '.$folder->getMessage());
+			//$GLOBALS['default']->log->error('KTAPI get_folder_total_files folder error '.$folder->getMessage());
 			
 			return array(
 				"status_code" => 1,
@@ -5291,14 +5291,14 @@ class KTAPI {
 	*/
 	public function is_folder_empty($folder_id)
 	{
-		$GLOBALS['default']->log->debug("KTAPI is_folder_empty $folder_id");
+		//$GLOBALS['default']->log->debug("KTAPI is_folder_empty $folder_id");
 		
 		$folder = KTAPI_Folder::get($this, $folder_id);
 		
 		//if we get an error on the folder, we assume that it is empty!
 		if (PEAR::isError($folder))
 		{
-			$GLOBALS['default']->log->error('KTAPI is_folder_empty folder error '.$folder->getMessage());
+			//$GLOBALS['default']->log->error('KTAPI is_folder_empty folder error '.$folder->getMessage());
 			
 			return array(
 				"status_code" => 0,
@@ -5308,7 +5308,7 @@ class KTAPI {
 		
 		$result = $folder->is_empty();
 		
-		$GLOBALS['default']->log->debug("KTAPI is_folder_empty result $result");
+		//$GLOBALS['default']->log->debug("KTAPI is_folder_empty result $result");
 		
 		$response['status_code'] = 0;
 		
@@ -5329,13 +5329,13 @@ class KTAPI {
      */
 	public function get_folder_change_id($folder_id)
 	{
-		$GLOBALS['default']->log->debug("KTAPI get_folder_has_changes $folder_id $change_id");
+		//$GLOBALS['default']->log->debug("KTAPI get_folder_has_changes $folder_id $change_id");
 		
 		$folder = KTAPI_Folder::get($this, $folder_id);
 		
 		if (PEAR::isError($folder))
 		{
-			$GLOBALS['default']->log->error('KTAPI get_folder_has_changes folder error '.$folder->getMessage());
+			//$GLOBALS['default']->log->error('KTAPI get_folder_has_changes folder error '.$folder->getMessage());
 			
 			return array(
 				"status_code" => 1,
@@ -5359,13 +5359,13 @@ class KTAPI {
      */
 	public function get_folder_has_changes($folder_id, $change_id)
 	{
-		$GLOBALS['default']->log->debug("KTAPI get_folder_has_changes $folder_id $change_id");
+		//$GLOBALS['default']->log->debug("KTAPI get_folder_has_changes $folder_id $change_id");
 		
 		$folder = KTAPI_Folder::get($this, $folder_id);
 		
 		if (PEAR::isError($folder))
 		{
-			$GLOBALS['default']->log->error('KTAPI get_folder_has_changes folder error '.$folder->getMessage());
+			//$GLOBALS['default']->log->error('KTAPI get_folder_has_changes folder error '.$folder->getMessage());
 			
 			return array(
 				"status_code" => 1,
@@ -5377,7 +5377,7 @@ class KTAPI {
 		
 		$response['has_changes'] = $current_change_id == $change_id ? 'FALSE' : 'TRUE';
 		
-		$GLOBALS['default']->log->debug("KTAPI get_folder_has_changes current changeID $current_change_id");
+		//$GLOBALS['default']->log->debug("KTAPI get_folder_has_changes current changeID $current_change_id");
 	
 		$response['change_id'] = $current_change_id;
 		//$response['message'] = strval($current_change_id);
@@ -5393,7 +5393,7 @@ class KTAPI {
      * @param string changeid
      * @param int $depth
      */
-	public function get_folder_changes($folder_id, $changeid_timestamp, $depth = 1, $what = 'DF')
+	/*public function get_folder_changes($folder_id, $changeid_timestamp, $depth = 1, $what = 'DF')
 	{
 		$GLOBALS['default']->log->debug("KTAPI get_folder_changes $folder_id $changeid_timestamp $depth '$what'");
 		
@@ -5421,9 +5421,9 @@ class KTAPI {
 		$GLOBALS['default']->log->debug("KTAPI get_folder_changes current change id $current_change_id");
 
 		//if the current changeID matches the requesting changeID, there aren't any changes!
-		if ($current_change_id == $change_id)
-		{
-			$GLOBALS['default']->log->debug("KTAPI get_folder_changes NO CHANGES");
+		//if ($current_change_id == $change_id)
+		//{
+			//$GLOBALS['default']->log->debug("KTAPI get_folder_changes NO CHANGES");
 			
 			//TODO: remove this!!!
 	    	//$timezone = date_default_timezone_get();
@@ -5432,15 +5432,26 @@ class KTAPI {
 	    	//$new_timestamp = time();
 	        //date_default_timezone_set($timezone);
 			
+			//return array(
+				//"status_code" => 1,
+				//"message" => KTAPI_ERROR_FOLDER_NO_CHANGES,
+				//"change_id" => (string)$current_change_id."_".time(),
+			//);
+		//}		
+		
+		//get the changes!
+		$changes = $folder->getChanges($timestamp, $depth, $what);
+		
+		$GLOBALS['default']->log->debug('KTAPI get_folder_changes count changes '.count($changes));
+		
+		if (count($changes) == 0)
+		{
 			return array(
 				"status_code" => 1,
 				"message" => KTAPI_ERROR_FOLDER_NO_CHANGES,
 				"change_id" => (string)$current_change_id."_".time(),
 			);
-		}		
-		
-		//get the changes!
-		$changes = $folder->getChanges($timestamp, $depth, $what);
+		}
 		
 		$GLOBALS['default']->log->debug('KTAPI get_folder_changes changes '.print_r($changes, true));
 		
@@ -5456,6 +5467,80 @@ class KTAPI {
 			"message" => "The folder has changes.",
 			"change_id" => (string)$current_change_id."_".time(),
 			"changes" => $changes		
+		);
+	}*/
+	
+	/**
+     * Determines whether and how a folder has changed
+     *
+     * @param int $folder_id
+     * @param string changeid
+     * @param int $depth
+     */
+	public function get_folder_changes($folder_ids, $timestamp, $depth = 1, $what = 'DF')
+	{
+		//$GLOBALS['default']->log->debug("KTAPI get_folder_changes ".print_r($folder_ids, true)." $timestamp $depth '$what'");
+		
+		$results = array();
+		
+		$hasChanges = FALSE;
+		
+		foreach($folder_ids as $folder_id)
+		{
+			$folder = KTAPI_Folder::get($this, $folder_id);
+			
+			if (PEAR::isError($folder))
+			{
+				//$GLOBALS['default']->log->error('KTAPI get_folder_changes folder error '.$folder->getMessage());
+				
+				$results[] = array(
+					"status_code" => 1,
+					"message" => $folder->getMessage()
+				);
+			}
+			
+			//TODO: remove this!!!
+	    	$timezone = date_default_timezone_get();
+	    	date_default_timezone_set("UTC");
+			
+			$timestamp = date("c", (int)$timestamp);
+			
+			 //TODO: remove this!!!
+        	date_default_timezone_set($timezone);
+			
+			//get the changes!
+			$changes = $folder->getChanges($timestamp, $depth, $what);
+			
+			//$GLOBALS['default']->log->debug('KTAPI get_folder_changes count changes '.count($changes));
+			
+			//no changes for this folder
+			if (count($changes) == 0)
+			{				
+				$results[$folder_id] = array(
+					"status_code" => 1, 
+					"message" => KTAPI_ERROR_FOLDER_NO_CHANGES,
+					"changes" => array(),
+				);
+			}
+			else
+			{				
+				$hasChanges = TRUE;
+						
+				$results[$folder_id] = array(
+					"status_code" => 0,
+					"message" => "Folder has changes",
+					"changes" => $changes
+				);
+			}
+		}
+		
+		//$GLOBALS['default']->log->debug('KTAPI get_folder_changes results '.print_r($results, true));
+		
+		return array(
+			"status_code" => $hasChanges ? 0 : 1,
+			"message" => $hasChanges ? "There are changes." : "No changes.",
+			"change_id" => time(),
+			"result" => $results
 		);
 	}
 

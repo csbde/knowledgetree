@@ -4037,7 +4037,7 @@ class KTWebService {
 	 * @param string $change_id
 	 * @return kt_response
 	 */
-	function get_folder_change_id($session_id, $folder_id)
+	/*function get_folder_change_id($session_id, $folder_id)
 	{
 		$GLOBALS['default']->log->debug("get_folder_change_id $folder_id");
 		
@@ -4054,7 +4054,7 @@ class KTWebService {
     	$response = KTWebService::_status(KTWS_SUCCESS, $result['message']);
     	
     	return new SOAP_Value('return', "{urn:$this->namespace}kt_response", $response);  
-	}
+	}*/
 	
 	/**
 	 * Gets whether a folder has changes
@@ -4064,7 +4064,7 @@ class KTWebService {
 	 * @param string $change_id
 	 * @return kt_response
 	 */
-	function get_folder_has_changes($session_id, $folder_id, $change_id = 0)
+	/*function get_folder_has_changes($session_id, $folder_id, $change_id = 0)
 	{
 		$GLOBALS['default']->log->debug("get_folder_has_changes $folder_id $change_id");
 		
@@ -4081,14 +4081,23 @@ class KTWebService {
     	$response = KTWebService::_status(KTWS_SUCCESS, $result['message']);
     	
     	return new SOAP_Value('return', "{urn:$this->namespace}kt_response", $response);    	
-	}
+	}*/
 	
 	function _encode_folder_change_items($items)
-    {    	
+    { 
+    	//$GLOBALS['default']->log->debug('_encode_folder_change_items '.print_r($items, true));
+    	   	
     	$new_items = array();
     	
+    	if (count($items) == 0)
+    	{
+    		$new_item['item'] = new SOAP_Value('item', "{urn:$this->namespace}kt_folder_item", array());
+    		
+    		$new_items[] = new SOAP_Value('change_item', "{urn:$this->namespace}kt_folder_change_item", $new_item);
+    	}
+    	
     	foreach($items as $key => $item)
-    	{    		
+    	{    				
     		$item['id'] = (int) $item['id'];
     		$item['parent_id'] = (int) $item['parent_id'];
     		
@@ -4118,7 +4127,7 @@ class KTWebService {
 	 * @param int $depth
 	 * @return kt_folder_change_response
 	 */
-	function get_folder_changes($session_id, $folder_id, $change_id = 0, $depth = 1)
+	/*function get_folder_changes($session_id, $folder_id, $change_id = 0, $depth = 1)
 	{
 		$GLOBALS['default']->log->debug("get_folder_changes $folder_id $change_id");
 		
@@ -4128,9 +4137,9 @@ class KTWebService {
     		return new SOAP_Value('return', "{urn:$this->namespace}kt_response", $kt);
     	}
     	
-    	/*$change_id = $change_id.'_'.time();
+    	//$change_id = $change_id.'_'.time();
     	
-    	$GLOBALS['default']->log->debug("get_folder_changes adjusted change id $change_id");*/
+    	//$GLOBALS['default']->log->debug("get_folder_changes adjusted change id $change_id");
     	
     	$result = &$kt->get_folder_changes($folder_id, $change_id, $depth, 'DF');
     	
@@ -4160,6 +4169,70 @@ class KTWebService {
 		}
     	
     	return new SOAP_Value('return', "{urn:$this->namespace}kt_folder_change_response", $changes);
+	}*/
+	
+	function get_folder_changes($session_id, $folder_ids, $change_id = 0, $depth = 1)
+	{
+		//$GLOBALS['default']->log->debug("get_folder_changes $folder_id $change_id");
+		
+		$kt = &$this->get_ktapi($session_id );
+		if (is_array($kt))
+    	{
+    		return new SOAP_Value('return', "{urn:$this->namespace}kt_response", $kt);
+    	}
+    	
+    	$result = &$kt->get_folder_changes($folder_ids, $change_id, $depth, 'DF');
+    	
+    	//$GLOBALS['default']->log->debug('get_folder_changes result '.print_r($result, true));
+    	
+		if ($result['status_code'] !== 0)
+		{
+		    $return = array(
+	    		'status_code' => KTWS_ERR_PROBLEM,
+				'message' => $result['message'],
+	        	'change_id' => (string)$result['change_id'],
+	    	);
+		}
+		
+		else
+		{
+			$changes = array();
+			
+			//iterate through each folder's changes
+			foreach($result['result'] as $key => $change)
+			{
+				$new_change = array();
+				
+				//this folder has changes
+				if ($change['status_code'] === 0)
+				{					
+					$new_change['folder_id'] = $key;
+					$new_change['changes'] = KTWebService::_encode_folder_change_items($change['changes']);
+			    	    	
+			    	$changes[] = new SOAP_Value('change_item', "{urn:$this->namespace}kt_folder_change", $new_change);
+				}
+				
+				else
+				{
+					$new_change['folder_id'] = $key;
+					$new_change['changes'] = KTWebService::_encode_folder_change_items(array());
+					
+					$changes[] = new SOAP_Value('change_item', "{urn:$this->namespace}kt_folder_change", $new_change);
+				}
+				
+			}
+			
+			$return = array(
+				'status_code' => KTWS_SUCCESS,
+				'message' => '',
+	        	'change_id' => (string)$result['change_id'],
+	    		'changes' => new SOAP_Value('changes', "{urn:$this->namespace}kt_folder_changes", $changes)
+			);
+		}
+		
+		//$GLOBALS['default']->log->debug('get_folder_changes return '.print_r($return, true));
+    	
+    	return new SOAP_Value('return', "{urn:$this->namespace}kt_folder_change_response", $return);
 	}
 	
 	
@@ -4319,14 +4392,33 @@ class KTWebService {
          
          if ($this->version >= 3)
          {
+         	$this->__typedef["{urn:$this->namespace}kt_folder_ids"] =
+	         	array (
+	         		array(
+		         		'folder_id' => 'int',
+	         		)
+	         	);
+         		
 	        $this->__typedef["{urn:$this->namespace}kt_folder_change_response"] =
 	         	array(
 					'status_code' => 'int',
 					'message' => 'string',
-					'folder_id' => 'int',
 	        		'change_id' => 'string' ,
-	        		'changes' => "{urn:$this->namespace}kt_folder_change_items",
+	        		'changes' => "{urn:$this->namespace}kt_folder_changes",
 	         	);
+	         	
+	         $this->__typedef["{urn:$this->namespace}kt_folder_changes"] =
+				array(
+					array(
+						'change_item' => "{urn:$this->namespace}kt_folder_change"
+					)
+				);
+				
+			$this->__typedef["{urn:$this->namespace}kt_folder_change"] =
+				array(
+					'folder_id' => 'int',
+					'changes' => "{urn:$this->namespace}kt_folder_change_items",		
+				);
 	         	
 	         $this->__typedef["{urn:$this->namespace}kt_folder_change_items"] =
 				array(
@@ -5540,7 +5632,7 @@ class KTWebService {
             
     	if ($this->version >= 3)
     	{
-    		$this->__dispatch_map['get_folder_change_id'] = 
+    		/*$this->__dispatch_map['get_folder_change_id'] = 
     			array('in' => array('session_id' => 'string', 'folder_id' => 'int' ),
     			'out' => array( 'return' => "{urn:$this->namespace}kt_response" )
     			);
@@ -5548,10 +5640,15 @@ class KTWebService {
     		$this->__dispatch_map['get_folder_has_changes'] = 
     			array('in' => array('session_id' => 'string', 'folder_id' => 'int', 'change_id' => 'string' ),
     			'out' => array( 'return' => "{urn:$this->namespace}kt_response" )
-    			);
+    			);*/
+    			
+    		/*$this->__dispatch_map['get_folder_changes'] = 
+    			array('in' => array('session_id' => 'string', 'folder_id' => 'int', 'change_id' => 'string', 'depth' => 'int' ),
+    			'out' => array( 'return' => "{urn:$this->namespace}kt_folder_change_response" )
+    			);*/
     			
     		$this->__dispatch_map['get_folder_changes'] = 
-    			array('in' => array('session_id' => 'string', 'folder_id' => 'int', 'change_id' => 'string', 'depth' => 'int' ),
+    			array('in' => array('session_id' => 'string', 'folder_ids' => "{urn:$this->namespace}kt_folder_ids", 'change_id' => 'string', 'depth' => 'int' ),
     			'out' => array( 'return' => "{urn:$this->namespace}kt_folder_change_response" )
     			);
     			

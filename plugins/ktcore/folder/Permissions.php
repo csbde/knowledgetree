@@ -262,6 +262,7 @@ class KTFolderPermissionsAction extends KTFolderAction {
             'transactionNS' => 'ktcore.transactions.permissions_change',
             'userid' => $_SESSION['userID'],
             'ip' => Session::getClientIP(),
+        	'parentid' => $this->oFolder->getParentID(),
         ));
         $aOptions = array(
             'defaultmessage' => _kt('Error updating permissions'),
@@ -538,6 +539,7 @@ class KTFolderPermissionsAction extends KTFolderAction {
             'transactionNS' => 'ktcore.transactions.permissions_change',
             'userid' => $_SESSION['userID'],
             'ip' => Session::getClientIP(),
+        	'parentid' => $this->oFolder->getParentID(),
             ));
         $aOptions = array(
             'defaultmessage' => _kt('Error updating permissions'),
@@ -571,6 +573,7 @@ class KTFolderPermissionsAction extends KTFolderAction {
             'transactionNS' => 'ktcore.transactions.permissions_change',
             'userid' => $_SESSION['userID'],
             'ip' => Session::getClientIP(),
+        	'parentid' => $this->oFolder->getParentID(),
         ));
         $aOptions = array(
             'defaultmessage' => _kt('Error updating permissions'),
@@ -603,6 +606,7 @@ class KTFolderPermissionsAction extends KTFolderAction {
             'transactionNS' => 'ktcore.transactions.permissions_change',
             'userid' => $_SESSION['userID'],
             'ip' => Session::getClientIP(),
+        	'parentid' => $this->oFolder->getParentID(),
         ));
         $aOptions = array(
             'defaultmessage' => _kt('Error updating permissions'),
@@ -640,6 +644,7 @@ class KTFolderPermissionsAction extends KTFolderAction {
             'transactionNS' => 'ktcore.transactions.permissions_change',
             'userid' => $_SESSION['userID'],
             'ip' => Session::getClientIP(),
+        	'parentid' => $this->oFolder->getParentID(),
         ));
         $aOptions = array(
             'defaultmessage' => _kt('Error updating permissions'),
