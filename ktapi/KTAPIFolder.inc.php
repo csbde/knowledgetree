@@ -580,7 +580,7 @@ class KTAPI_Folder extends KTAPI_FolderItem
             }
         }
 
-        $remaining = $this->checkLimit($queryOptions, count($folderContents));
+        $remaining = $this->checkLimit($queryOptions, count($folderContents), $totalFolders);
 
         if (strpos($what, 'D') !== false) {
             $documentContents = $this->getDocumentListing($user, $wsversion, $queryOptions, $what, $calculateTotal, $totalDocuments, $remaining);
@@ -906,9 +906,10 @@ class KTAPI_Folder extends KTAPI_FolderItem
      *
      * @param array $queryOptions
      * @param int $found
+     * @param int $totalFolders
      * @return int
      */
-    private function checkLimit(&$queryOptions, $found)
+    private function checkLimit(&$queryOptions, $found, $totalFolders = 0)
     {
         $remaining = -1;
 

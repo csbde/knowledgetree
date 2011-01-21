@@ -81,10 +81,10 @@ class BrowseDispatcher extends KTStandardDispatcher {
 	var $sHelpPage = 'ktcore/browse.html';
 	var $editable;
 
-	function BrowseDispatcher()
+	function __construct()
 	{
 		$this->aBreadcrumbs = array(
-		  array('action' => 'browse', 'name' => _kt('Browse')),
+            array('action' => 'browse', 'name' => _kt('Browse')),
 		);
 
 		return parent::KTStandardDispatcher();
@@ -101,156 +101,18 @@ class BrowseDispatcher extends KTStandardDispatcher {
 			return true;
 		}
 
-		// if we're going to main ...
-
-		// folder browse mode
-		if ($this->browse_mode == 'folder') {
-			$in_folder_id = KTUtil::arrayGet($_REQUEST, 'fFolderId');
-			if (empty($in_folder_id)) {
-				$oConfig = KTConfig::getSingleton();
-				if ($oConfig->get('tweaks/browseToUnitFolder')) {
-					$iHomeFolderId = $this->oUser->getHomeFolderId();
-					if ($iHomeFolderId) {
-						$in_folder_id = $iHomeFolderId;
-					}
-				}
-			}
-
-			$folder_id = (int) $in_folder_id; // conveniently, will be 0 if not possible.
-			if ($folder_id == 0) {
-				$folder_id = 1;
-			}
-
-			$_REQUEST['fBrowseMode'] = 'folder';
-
-			// here we need the folder object to do the breadcrumbs.
-			$oFolder =& Folder::get($folder_id);
-			if (PEAR::isError($oFolder)) {
-				return false; // just fail.
-			}
-
-			// check whether the user can edit this folder
-			if (SharedUserUtil::isSharedUser())
-			{
-				// TODO : What should we do if it is a shared user.
-				if (SharedContent::getPermissions($this->oUser->getId(), null, $folder_id, 'folder') == 1) {
-					$this->editable = true;
-				}
-				else {
-					$this->editable = false;
-				}
-			}
-			else {
-				$oPerm = KTPermission::getByName('ktcore.permissions.write');
-				if (KTPermissionUtil::userHasPermissionOnItem($this->oUser, $oPerm, $oFolder)) {
-					$this->editable = true;
-				} else {
-					$this->editable = false;
-				}
-			}
-
-			// set the title and breadcrumbs...
-			$this->oPage->setTitle(_kt('Browse'));
-			if (SharedUserUtil::isSharedUser())
-			{
-				// TODO : What should we do if it is a shared user.
-			}
-			else
-			{
-				if (KTPermissionUtil::userHasPermissionOnItem($this->oUser, 'ktcore.permissions.folder_details', $oFolder)) {
-					$this->oPage->setSecondaryTitle($oFolder->getName());
-				} else {
-					if (KTBrowseUtil::inAdminMode($this->oUser, $oFolder)) {
-						$this->oPage->setSecondaryTitle(sprintf('(%s)', $oFolder->getName()));
-					} else {
-						$this->oPage->setSecondaryTitle('...');
-					}
-				}
-			}
-
-			//Figure out if we came here by navigating trough a shortcut.
-			//If we came here from a shortcut, the breadcrumbspath should be relative
-			//to the shortcut folder.
-			$iSymLinkFolderId = KTUtil::arrayGet($_REQUEST, 'fShortcutFolder', null);
-			if (is_numeric($iSymLinkFolderId)) {
-				$oBreadcrumbsFolder = Folder::get($iSymLinkFolderId);
-				$this->aBreadcrumbs = kt_array_merge($this->aBreadcrumbs, KTBrowseUtil::breadcrumbsForFolder($oBreadcrumbsFolder, array('final' => false)));
-				$this->aBreadcrumbs[] = array('name' => $oFolder->getName());
-			} else {
-				$this->aBreadcrumbs = kt_array_merge($this->aBreadcrumbs, KTBrowseUtil::breadcrumbsForFolder($oFolder));
-			}
-
-			$this->oFolder =& $oFolder;
-
-			// we now have a folder, and need to create the query.
-			$aOptions = array(
-                'ignorepermissions' => KTBrowseUtil::inAdminMode($this->oUser, $oFolder),
-			);
-			$this->oQuery = new BrowseQuery($oFolder->getId(), $this->oUser, $aOptions);
-
-			$this->resultURL = KTUtil::addQueryString($_SERVER['PHP_SELF'], sprintf('fFolderId=%d', $oFolder->getId()));
-
-			// and the portlets
-			$portlet = new KTActionPortlet(sprintf(_kt('Info')));
-			$aActions = KTFolderActionUtil::getFolderInfoActionsForFolder($this->oFolder, $this->oUser);
-			$portlet->setActions($aActions,$this->sName);
-			$this->oPage->addPortlet($portlet);
-
-			$portlet = new KTActionPortlet(sprintf(_kt('Actions')));
-			$aActions = KTFolderActionUtil::getFolderActionsForFolder($oFolder, $this->oUser);
-			$portlet->setActions($aActions,null);
-			$this->oPage->addPortlet($portlet);
-		} else if ($this->browse_mode == 'lookup_value') {
-			// browsing by a lookup value
-			$this->editable = false;
-
-			// check the inputs
-			$field = KTUtil::arrayGet($_REQUEST, 'fField', null);
-			$oField = DocumentField::get($field);
-			if (PEAR::isError($oField) || ($oField == false)) {
-				$this->errorRedirectToMain('No Field selected.');
-				exit(0);
-			}
-
-			$value = KTUtil::arrayGet($_REQUEST, 'fValue', null);
-			$oValue = MetaData::get($value);
-			if (PEAR::isError($oValue) || ($oValue == false)) {
-				$this->errorRedirectToMain('No Value selected.');
-				exit(0);
-			}
-			$this->oQuery = new ValueBrowseQuery($oField, $oValue);
-			$this->resultURL = KTUtil::addQueryString($_SERVER['PHP_SELF'],
-			sprintf('fBrowseMode=lookup_value&fField=%d&fValue=%d', $field, $value));
-			// setup breadcrumbs
-			$this->aBreadcrumbs =
-			array(
-                array('name' => _kt('Lookup Values'),
-                                'url' => KTUtil::addQueryString($_SERVER['PHP_SELF'], 'action=selectField')),
-			    array('name' => $oField->getName(),
-                                'url' => KTUtil::addQueryString($_SERVER['PHP_SELF'], 'action=selectLookup&fField=' . $oField->getId())),
-			    array('name' => $oValue->getName(),
-                                'url' => KTUtil::addQueryString($_SERVER['PHP_SELF'], sprintf('fBrowseMode=lookup_value&fField=%d&fValue=%d', $field, $value))));
-		} else if ($this->browse_mode == 'document_type') {
-			// browsing by document type
-			$this->editable = false;
-
-			$doctype = KTUtil::arrayGet($_REQUEST, 'fType',null);
-			$oDocType = DocumentType::get($doctype);
-			if (PEAR::isError($oDocType) || ($oDocType == false)) {
-				$this->errorRedirectToMain('No Document Type selected.');
-				exit(0);
-			}
-
-			$this->oQuery =  new TypeBrowseQuery($oDocType);
-
-			// FIXME probably want to redirect to self + action=selectType
-			$this->aBreadcrumbs[] = array('name' => _kt('Document Types'), 'url' => KTUtil::addQueryString($_SERVER['PHP_SELF'], 'action=selectType'));
-			$this->aBreadcrumbs[] = array('name' => $oDocType->getName(), 'url' => KTUtil::addQueryString($_SERVER['PHP_SELF'], 'fBrowseMode=document_type&fType=' . $oDocType->getId()));
-
-			$this->resultURL = KTUtil::addQueryString($_SERVER['PHP_SELF'], sprintf('fType=%s&fBrowseMode=document_type', $doctype));;
-		} else {
-			// FIXME what should we do if we can't initiate the browse?  we "pretend" to have no perms.
-			return false;
+		switch ($this->browse_mode) {
+		    case 'folder':
+                $this->browseFolder();
+		        break;
+		    case 'lookup_value':
+		        $this->browseByLookup();
+		    case 'document_type':
+                $this->browseByDocument();
+		        break;
+		    default:
+		        // FIXME what should we do if we can't initiate the browse?  we "pretend" to have no perms.
+		        return false;
 		}
 
 		return true;
@@ -259,53 +121,78 @@ class BrowseDispatcher extends KTStandardDispatcher {
 	public function do_main()
 	{
 	    /**
-	     * Old documentcollection method
+	     * Old documentcollection method - this would require implementation of the new browse view code in a document collection.
+	     * NewUiCollection is currently imaginary :)
 	     */
-	    /*$collection = new AdvancedCollection();
+	    /*$collection = new NewUiCollection();
 	    $aOptions = $collection->getEnvironOptions(); // extract data from the environment
-		$aOptions['result_url'] = $this->resultURL;
-		$aOptions['is_browse'] = true;
-		$collection->setOptions($aOptions);
-		$collection->setQueryObject($this->oQuery);
-		$collection->setColumnOptions('ktcore.columns.selection', array(
-            'rangename' => 'selection',
-            'show_folders' => true,
-            'show_documents' => true,
-		));
-		$collection->render();*/
+	    $aOptions['result_url'] = $this->resultURL;
+	    $aOptions['is_browse'] = true;
+	    $collection->setOptions($aOptions);
+	    $collection->setQueryObject($this->oQuery);
+	    $collection->setColumnOptions('ktcore.columns.selection', array(
+	    'rangename' => 'selection',
+	    'show_folders' => true,
+	    'show_documents' => true,
+	    ));
+	    $collection->render();*/
 
-		/**
+	    /**
 		 * New ktapi based method
 		 */
-		$aBulkActions = KTBulkActionUtil::getAllBulkActions();
+	    $aBulkActions = KTBulkActionUtil::getAllBulkActions();
 
-        if (ACCOUNT_ROUTING_ENABLED && liveAccounts::isTrialAccount()) {
-            $this->includeOlark();
-        }
+	    if (ACCOUNT_ROUTING_ENABLED && liveAccounts::isTrialAccount()) {
+	        $this->includeOlark();
+	    }
 
-		$oTemplating =& KTTemplating::getSingleton();
-		$oTemplate = $oTemplating->loadTemplate('kt3/browse');
+	    $oTemplating =& KTTemplating::getSingleton();
+	    $oTemplate = $oTemplating->loadTemplate('kt3/browse');
 
-		$aTemplateData = array(
-              'context' => $this,
-              'browse_mode' => $this->browse_mode,
-              'isEditable' => $this->editable,
-              'bulkactions' => $aBulkActions,
-              'browseutil' => new KTBrowseUtil(),
-              'returnaction' => 'browse'
-		);
+	    $aTemplateData = array(
+	    'context' => $this,
+	    'browse_mode' => $this->browse_mode,
+	    'isEditable' => $this->editable,
+	    'bulkactions' => $aBulkActions,
+	    'browseutil' => new KTBrowseUtil(),
+	    'returnaction' => 'browse'
+	    );
 
-        // ?don't quite know why this is in here. Someone reports that it is there for search browsing which seem to be disabled
-		if ($this->oFolder) {
-			$renderHelper = BrowseViewUtil::getBrowseView();
-			$renderData = $renderHelper->renderBrowseFolder($this->oFolder->getId(), $aBulkActions, $this->oFolder, $this->editable);
-            $aTemplateData = array_merge($aTemplateData, $renderData);
-		}
+	    // ?don't quite know why this is in here. Someone reports that it is there for search browsing which seem to be disabled
+	    if ($this->oFolder) {
+	        $renderHelper = BrowseViewUtil::getBrowseView();
+	        $renderData = $renderHelper->renderBrowseFolder($this->oFolder->getId(), $aBulkActions, $this->oFolder, $this->editable);
+	        $aTemplateData = array_merge($aTemplateData, $renderData);
+	    }
 
-		return $oTemplate->render($aTemplateData);
+	    return $oTemplate->render($aTemplateData);
 	}
 
-	function do_selectField()
+	public function do_paging()
+	{
+	    $folder_id = $this->getFolderId();
+	    $page = KTUtil::arrayGet($_REQUEST, 'page');
+	    $_REQUEST['fBrowseMode'] = 'paging';
+
+	    $oFolder =& Folder::get($folder_id);
+	    if (PEAR::isError($oFolder)) {
+	        return false; // just fail.
+	    }
+
+	    $this->setEditable($oFolder);
+	    $this->oFolder =& $oFolder;
+
+	    // we now have a folder, and need to create the query.
+	    $aOptions = array('ignorepermissions' => KTBrowseUtil::inAdminMode($this->oUser, $oFolder));
+	    $this->oQuery = new BrowseQuery($oFolder->getId(), $this->oUser, $aOptions);
+
+	    $renderHelper = BrowseViewUtil::getBrowseView();
+	    $renderData = $renderHelper->lazyLoad($this->oFolder->getId(), $page);
+
+	    return $renderData;
+	}
+
+	public function do_selectField()
 	{
 		$aFields = DocumentField::getList('has_lookup = 1');
 
@@ -326,7 +213,7 @@ class BrowseDispatcher extends KTStandardDispatcher {
 		return $oTemplate->render($aTemplateData);
 	}
 
-	function do_selectLookup()
+	public function do_selectLookup()
 	{
 		$field = KTUtil::arrayGet($_REQUEST, 'fField', null);
 		$oField = DocumentField::get($field);
@@ -350,7 +237,7 @@ class BrowseDispatcher extends KTStandardDispatcher {
 		return $oTemplate->render($aTemplateData);
 	}
 
-	function do_selectType()
+	public function do_selectType()
 	{
 		$aTypes = DocumentType::getList();
 		// FIXME what is the error message?
@@ -372,7 +259,7 @@ class BrowseDispatcher extends KTStandardDispatcher {
 		return $oTemplate->render($aTemplateData);
 	}
 
-	function do_enableAdminMode()
+	public function do_enableAdminMode()
 	{
 		$iDocumentId = KTUtil::arrayGet($_REQUEST, 'fDocumentId');
 		$iFolderId = KTUtil::arrayGet($_REQUEST, 'fFolderId');
@@ -417,7 +304,7 @@ class BrowseDispatcher extends KTStandardDispatcher {
 		$this->successRedirectToMain(_kt('Administrator mode enabled'));
 	}
 
-	function do_disableAdminMode()
+	public function do_disableAdminMode()
 	{
 		$iDocumentId = KTUtil::arrayGet($_REQUEST, 'fDocumentId');
 		$iFolderId = KTUtil::arrayGet($_REQUEST, 'fFolderId');
@@ -460,6 +347,184 @@ class BrowseDispatcher extends KTStandardDispatcher {
 		}
 
 		$this->successRedirectToMain(_kt('Administrator mode disabled'));
+	}
+
+	/**
+	 * Determine the folder id for which to browse.
+	 *
+	 * @return int
+	 */
+	private function getFolderId()
+	{
+	    $folder_id = 1;
+
+	    $in_folder_id = KTUtil::arrayGet($_REQUEST, 'fFolderId');
+	    if (empty($in_folder_id)) {
+	        $oConfig = KTConfig::getSingleton();
+	        if ($oConfig->get('tweaks/browseToUnitFolder')) {
+	            $iHomeFolderId = $this->oUser->getHomeFolderId();
+	            if ($iHomeFolderId) {
+	                $in_folder_id = $iHomeFolderId;
+	            }
+	        }
+	    }
+
+	    $folder_id = (int) $in_folder_id; // conveniently, will be 0 if not possible.
+	    if ($folder_id == 0) {
+	        $folder_id = 1;
+	    }
+
+	    return $folder_id;
+	}
+
+	/**
+	 * Check permissions for whether the user can edit this folder
+	 *
+	 * @param folder object $oFolder
+	 */
+	private function setEditable($oFolder)
+	{
+	    // check whether the user can edit this folder
+	    if (SharedUserUtil::isSharedUser()) {
+	        if (SharedContent::getPermissions($this->oUser->getId(), null, $oFolder->getId(), 'folder') == 1) {
+	            $this->editable = true;
+	        }
+	        else {
+	            $this->editable = false;
+	        }
+	    }
+	    else {
+	        $oPerm = KTPermission::getByName('ktcore.permissions.write');
+	        if (KTPermissionUtil::userHasPermissionOnItem($this->oUser, $oPerm, $oFolder)) {
+	            $this->editable = true;
+	        } else {
+	            $this->editable = false;
+	        }
+	    }
+	}
+
+	/**
+	 * Browse folder contents
+	 *
+	 * @return boolean (on failure only)
+	 */
+	private function browseFolder()
+	{
+	    $folder_id = $this->getFolderId();
+	    $_REQUEST['fBrowseMode'] = 'folder';
+
+	    $oFolder =& Folder::get($folder_id);
+	    if (PEAR::isError($oFolder)) {
+	        return false; // just fail.
+	    }
+
+	    $this->setEditable($oFolder);
+
+	    // set the title and breadcrumbs...
+	    $this->oPage->setTitle(_kt('Browse'));
+	    if (SharedUserUtil::isSharedUser()) {
+	        // TODO : What should we do if it is a shared user.
+	    }
+	    else {
+	        if (KTPermissionUtil::userHasPermissionOnItem($this->oUser, 'ktcore.permissions.folder_details', $oFolder)) {
+	            $this->oPage->setSecondaryTitle($oFolder->getName());
+	        } else {
+	            if (KTBrowseUtil::inAdminMode($this->oUser, $oFolder)) {
+	                $this->oPage->setSecondaryTitle(sprintf('(%s)', $oFolder->getName()));
+	            } else {
+	                $this->oPage->setSecondaryTitle('...');
+	            }
+	        }
+	    }
+
+	    // Figure out if we came here by navigating trough a shortcut.
+	    // If we came here from a shortcut, the breadcrumbspath should be relative to the shortcut folder.
+	    $iSymLinkFolderId = KTUtil::arrayGet($_REQUEST, 'fShortcutFolder', null);
+	    if (is_numeric($iSymLinkFolderId)) {
+	        $oBreadcrumbsFolder = Folder::get($iSymLinkFolderId);
+	        $this->aBreadcrumbs = kt_array_merge($this->aBreadcrumbs, KTBrowseUtil::breadcrumbsForFolder($oBreadcrumbsFolder, array('final' => false)));
+	        $this->aBreadcrumbs[] = array('name' => $oFolder->getName());
+	    } else {
+	        $this->aBreadcrumbs = kt_array_merge($this->aBreadcrumbs, KTBrowseUtil::breadcrumbsForFolder($oFolder));
+	    }
+
+	    $this->oFolder =& $oFolder;
+
+	    // we now have a folder, and need to create the query.
+	    $aOptions = array('ignorepermissions' => KTBrowseUtil::inAdminMode($this->oUser, $oFolder));
+	    $this->oQuery = new BrowseQuery($oFolder->getId(), $this->oUser, $aOptions);
+
+	    $this->resultURL = KTUtil::addQueryString($_SERVER['PHP_SELF'], sprintf('fFolderId=%d', $oFolder->getId()));
+
+	    // and the portlets
+	    $portlet = new KTActionPortlet(sprintf(_kt('Info')));
+	    $aActions = KTFolderActionUtil::getFolderInfoActionsForFolder($this->oFolder, $this->oUser);
+	    $portlet->setActions($aActions,$this->sName);
+	    $this->oPage->addPortlet($portlet);
+
+	    $portlet = new KTActionPortlet(sprintf(_kt('Actions')));
+	    $aActions = KTFolderActionUtil::getFolderActionsForFolder($oFolder, $this->oUser);
+	    $portlet->setActions($aActions,null);
+	    $this->oPage->addPortlet($portlet);
+	}
+
+	/**
+	 * Browse by lookup value
+	 */
+	private function browseByLookup()
+	{
+	    $this->editable = false;
+
+	    // check the inputs
+	    $field = KTUtil::arrayGet($_REQUEST, 'fField', null);
+	    $oField = DocumentField::get($field);
+	    if (PEAR::isError($oField) || ($oField == false)) {
+	        $this->errorRedirectToMain('No Field selected.');
+	        exit(0);
+	    }
+
+	    $value = KTUtil::arrayGet($_REQUEST, 'fValue', null);
+	    $oValue = MetaData::get($value);
+	    if (PEAR::isError($oValue) || ($oValue == false)) {
+	        $this->errorRedirectToMain('No Value selected.');
+	        exit(0);
+	    }
+
+	    $this->oQuery = new ValueBrowseQuery($oField, $oValue);
+	    $this->resultURL = KTUtil::addQueryString($_SERVER['PHP_SELF'],
+	    sprintf('fBrowseMode=lookup_value&fField=%d&fValue=%d', $field, $value));
+
+	    $this->aBreadcrumbs = array(
+	       array('name' => _kt('Lookup Values'),
+	             'url' => KTUtil::addQueryString($_SERVER['PHP_SELF'], 'action=selectField')),
+	       array('name' => $oField->getName(),
+	             'url' => KTUtil::addQueryString($_SERVER['PHP_SELF'], 'action=selectLookup&fField=' . $oField->getId())),
+	       array('name' => $oValue->getName(),
+	             'url' => KTUtil::addQueryString($_SERVER['PHP_SELF'], sprintf('fBrowseMode=lookup_value&fField=%d&fValue=%d', $field, $value))));
+	}
+
+	/**
+	 * Browse a document
+	 */
+	private function browseByDocument()
+	{
+	    // browsing by document type
+	    $this->editable = false;
+
+	    $doctype = KTUtil::arrayGet($_REQUEST, 'fType',null);
+	    $oDocType = DocumentType::get($doctype);
+	    if (PEAR::isError($oDocType) || ($oDocType == false)) {
+	        $this->errorRedirectToMain('No Document Type selected.');
+	        exit(0);
+	    }
+
+	    $this->oQuery =  new TypeBrowseQuery($oDocType);
+
+	    // FIXME probably want to redirect to self + action=selectType
+	    $this->aBreadcrumbs[] = array('name' => _kt('Document Types'), 'url' => KTUtil::addQueryString($_SERVER['PHP_SELF'], 'action=selectType'));
+	    $this->aBreadcrumbs[] = array('name' => $oDocType->getName(), 'url' => KTUtil::addQueryString($_SERVER['PHP_SELF'], 'fBrowseMode=document_type&fType=' . $oDocType->getId()));
+
+	    $this->resultURL = KTUtil::addQueryString($_SERVER['PHP_SELF'], sprintf('fType=%s&fBrowseMode=document_type', $doctype));
 	}
 
 	private function getCurrentFolderContent($folderId, $page = 1, $itemsPerPage = 5)

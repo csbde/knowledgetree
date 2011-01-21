@@ -14,6 +14,8 @@ class BrowseView {
 
     private $pages = array();
     private $range = array();
+    private $pageLimit = 3;
+    private $folderId;
 
 	public function __construct()
 	{
@@ -40,15 +42,111 @@ class BrowseView {
 		return $javaScript;
 	}
 
-	public function setPagingOptions($pageCount = 1)
+	/**
+	 * Sets the start page based on page requested and pages already loaded.
+	 * Aims to get one page on either side of requested page, if not already loaded.
+	 *
+	 * @param int $folderId
+	 * @param int $requested
+	 * @return array
+	 */
+	private function getLazyOptions($folderId, $requested)
 	{
+	    if (!$_SESSION) {
+	        session_start();
+	    }
+
+	    $session = !empty($_SESSION['ktPageSet'][$folderId]) ? $_SESSION['ktPageSet'][$folderId] : array();
+
+	    $preceding = $requested - 1;
+	    $index = ($preceding > 0) ? $preceding : 1;
+        $pages = array($index => 1, $index + 1 => 1, $index + 2 => 1);
+
+        $limit = $index + $this->pageLimit;
+        for ($i = $index; $i < $limit; ++$i) {
+            if (isset($session[$i])) {
+                unset($pages[$i]);
+            }
+        }
+
+        $options = array();
+        $options['limit'] = count($pages);
+        $options['offset'] = ($options['limit'] > 0) ? array_shift(array_flip($pages)) : 0;
+
+        return $options;
+	}
+
+	/**
+	 * Sets offset and limit for browsing
+	 *
+	 * @param int $pageCount
+	 */
+	public function setPagingOptions($pageCount = 1, $limit = null)
+	{
+	    if (empty($limit)) {
+	        $limit = $this->pageLimit;
+	    }
+
 	    $this->pages['count'] = $pageCount;
 	    $this->pages['perPage'] = 15;
-		$pageLimit = 3;
 		$this->range['offset'] = ($this->pages['count'] - 1) * $this->pages['perPage'];
-		$this->range['limit'] = $this->pages['perPage'] * $pageLimit;
-		/*$this->range['offset'] = 0;
-		$this->range['limit'] = 500;*/
+		$this->range['limit'] = $this->pages['perPage'] * $limit;
+	}
+
+	/**
+	 * Sets/Updates a session value to contain the list of pages already loaded
+	 *
+	 * @param array $options
+	 * @param int $folderId
+	 */
+	private function updateSession($folderId)
+	{
+	    if (!$_SESSION) {
+	        session_start();
+	    }
+
+        $session = (!empty($_SESSION['ktPageSet'][$folderId]) && ($this->range['offset'] > 0)) ? $_SESSION['ktPageSet'][$folderId] : array();
+
+        $limit = $this->pages['count'] + ($this->range['limit'] / $this->pages['perPage']);
+        for ($i = $this->pages['count']; $i < $limit; ++$i) {
+            if (!isset($session[$i])) {
+                $session[$i] = 1;
+            }
+        }
+
+        $_SESSION['ktPageSet'][$folderId] = $session;
+	}
+
+	/**
+	 * Loads additional pages on request, returned as a json encoded array.
+	 *
+	 * @param int $folderId
+	 * @param int $pageCount
+	 */
+	public function lazyLoad($folderId, $requested = 1)
+	{
+        $response = array();
+
+		if (empty($folderId)) {
+		    return $response;
+		}
+
+		// TODO can improve performance on calling already loaded pages if we set these options
+		//      before doing the folder setup, etc., which currently happens before.
+		$options = $this->getLazyOptions($folderId, $requested);
+
+        // ignore a request for already loaded content
+        if ($options['limit'] > 0) {
+		  $this->setPagingOptions($options['offset'], $options['limit']);
+
+		  $folderContentItems = $this->getFolderContent($folderId);
+		  $response['folderContents'] = json_encode($this->buildFolderView($folderContentItems));
+        }
+        else {
+            $response['folderContents'] = json_encode(array('result' => 'No results found'));
+        }
+
+        return $response;
 	}
 
 	/**
@@ -94,28 +192,6 @@ class BrowseView {
 		$response['javascript'] = $this->getJavaScript();
 
 		return $response;
-	}
-
-	/**
-	 * Loads additional pages on request, returned as a json encoded array.
-	 *
-	 * @param int $folderId
-	 * @param int $pageCount
-	 */
-	public function lazyLoad($folderId, $pageCount = 1)
-	{
-        $response = array();
-
-		if (empty($folderId)) {
-		    return $response;
-		}
-
-		$this->setPagingOptions($pageCount);
-
-		$folderContentItems = $this->getFolderContent($folderId);
-        $response['folderContents'] = json_encode($this->buildFolderView($folderContentItems));
-
-        return $response;
 	}
 
 	private function getFolderItems($folderContentItems)
@@ -230,9 +306,18 @@ class BrowseView {
 			$ret['folders'] = ktvar::sortArrayMatrixByKeyValue($ret['folders'], $sortField, $asc);
 		}*/
 
+		$this->updateSession($folderId);
+
 		return $ret;
 	}
 
+	/**
+	 * Displays a message when there is no folder content
+	 *
+	 * @param int $folderId
+	 * @param boolean $editable
+	 * @return string
+	 */
 	public function noFilesOrFoldersMessage($folderId = null, $editable = true)
 	{
 		$folderMessage = '<h2>There\'s nothing in this folder yet!</h2>';
