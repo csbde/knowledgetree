@@ -59,6 +59,7 @@ class DocumentTransaction extends KTEntity {
 	var $sTransactionNS;
 	var $iSessionId;
 	var $bAdminMode = 0;
+	var $iParentID;
 
 	var $_aFieldToSelect = array(
         'iId' => 'id',
@@ -72,6 +73,7 @@ class DocumentTransaction extends KTEntity {
         'sTransactionNS' => 'transaction_namespace',
         'iSessionId' => 'session_id',
         'bAdminMode' => 'admin_mode',
+		'iParentID' => 'parent_id',
     );
 
 	/**
@@ -120,6 +122,8 @@ class DocumentTransaction extends KTEntity {
 
 		$this->dDateTime = getCurrentDateTime();
 		$this->sIP = KTUtil::arrayGet($_SERVER, 'REMOTE_ADDR', '0.0.0.0');
+		
+		$this->iParentID = $oDocument->getFolderID();
 
 		$oFolder = Folder::get($oDocument->getFolderID());
 		// head off the certain breakage down the line.
@@ -177,6 +181,7 @@ class DocumentTransaction extends KTEntity {
                 'transaction_namespace' => $this->sTransactionNS,
                 'session_id' => $this->iSessionId,
 				'admin_mode' => $this->bAdminMode,
+            	'parent_id' =>	$this->iParentID
             );
 
             $id =& DBUtil::autoInsert($this->_table(), $aFieldValues);
