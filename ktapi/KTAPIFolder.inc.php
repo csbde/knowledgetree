@@ -2089,6 +2089,8 @@ class KTAPI_Folder extends KTAPI_FolderItem
 		if (empty($modified_date)) {
 			$modified_date = 'n/a';
 		}
+		
+		$owned_by = $this->_resolve_user($document->getOwnerID());
 
         $owned_by = $this->_resolve_user($document->getOwnerID());
 
