@@ -17,7 +17,7 @@
             }
 
             for (j = 0, fl = f.length; j < fl; j++) {
-                temp = s[i]+'';
+                temp = s[i] + '';
                 repl = ra ? (r[j] !== undefined ? r[j] : '') : r[0];
                 s[i] = (temp).split(f[j]).join(repl);
                 if (count && (s[i] !== temp)) {
@@ -60,7 +60,7 @@
     };
 
     kt.pages.browse.curPage = 1;
-    kt.pages.browse.viewPage = function(pageNum) {
+    kt.pages.browse.viewPage = function(pageNum, fetch) {
         if (pageNum < 1) { pageNum = 1; }
         var pageItem = jQuery('.paginate>li.page_' + pageNum);
 
@@ -68,10 +68,13 @@
             return;
         }
 
-        // around here is where you would fire off a request to get more content, so let's give that a try
-        // and see what comes back :)
-        var testOutput = jQuery.get('http://paul.knowledgetree.com/browse.php?action=paging&fFolderId=6&page=' + pageNum);
-        console.log(testOutput);
+        fetch = (typeof fetch == 'undefined') ? true : fetch;
+        if (fetch) {
+            // around here is where you would fire off a request to get more content, so let's give that a try
+            // and see what comes back :)
+            var testOutput = jQuery.get('http://paul.knowledgetree.com/browse.php?action=paging&fFolderId=6&page=' + pageNum);
+            console.log(testOutput);
+        }
 
         jQuery('.page').hide(0, function() {jQuery('.page.page_' + pageNum).show(0);})
         jQuery('.paginate>li.item').removeClass('highlight');
@@ -115,7 +118,7 @@
     kt.lib.shortcut.add("ctrl+shift+a", kt.pages.browse.deSelectAllItems);
 
     $(document).ready(function() {
-        kt.pages.browse.viewPage(1);
+        kt.pages.browse.viewPage(1, false);
         kt.pages.browse.setBulkActionMenuStatus = function() {
             var selectedItems = $(".itemContainer .item .checkbox>input:checkbox:checked:enabled").length;
             if (selectedItems > 0) {
