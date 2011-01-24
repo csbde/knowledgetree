@@ -168,6 +168,12 @@ class BrowseDispatcher extends KTStandardDispatcher {
 	    return $oTemplate->render($aTemplateData);
 	}
 
+	/**
+	 * Fetches folder content for a paging request.
+	 * Content from this function will not be rendered and must be rendered by the calling code.
+	 *
+	 * @return string a JSON encoded output string
+	 */
 	public function do_paging()
 	{
 	    $folder_id = $this->getFolderId();
@@ -189,7 +195,9 @@ class BrowseDispatcher extends KTStandardDispatcher {
 	    $renderHelper = BrowseViewUtil::getBrowseView();
 	    $renderData = $renderHelper->lazyLoad($this->oFolder->getId(), $page);
 
-	    return $renderData;
+//	    echo count($renderData['folderContents']['documents'])."\n";exit;
+	    echo $renderData['folderContents'];
+	    exit(0);
 	}
 
 	public function do_selectField()
