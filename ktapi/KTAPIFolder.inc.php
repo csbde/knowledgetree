@@ -59,8 +59,8 @@ require_once(KT_LIB_DIR . '/search/searchutil.inc.php');
  * @version Version 0.9
  *
 */
-class KTAPI_Folder extends KTAPI_FolderItem
-{
+class KTAPI_Folder extends KTAPI_FolderItem {
+
     /**
 	 * This is a reference to a base Folder object.
 	 *
@@ -637,8 +637,6 @@ class KTAPI_Folder extends KTAPI_FolderItem
             return array();
         }
 
-        $wsversion = $this->getWSVersion();
-
         $what = strtoupper($what);
         $read_permission = &KTPermission::getByName(KTAPI_PERMISSION_READ);
         $folder_permission = &KTPermission::getByName(KTAPI_PERMISSION_VIEW_FOLDER);
@@ -652,7 +650,7 @@ class KTAPI_Folder extends KTAPI_FolderItem
         }
 
         if (strpos($what, 'F') !== false) {
-            $folderContents = $this->getFolderListing($user, $wsversion, $queryOptions, $what, $fullTree, $calculateTotal, $totalFolders);
+            $folderContents = $this->getFolderListing($user, $queryOptions, $what, $fullTree, $calculateTotal, $totalFolders);
             if (PEAR::isError($folderContents)) {
                 return $folderContents;
             }
@@ -661,7 +659,7 @@ class KTAPI_Folder extends KTAPI_FolderItem
         $remaining = $this->checkLimit($queryOptions, count($folderContents), $totalFolders);
 
         if (strpos($what, 'D') !== false) {
-            $documentContents = $this->getDocumentListing($user, $wsversion, $queryOptions, $what, $calculateTotal, $totalDocuments, $remaining);
+            $documentContents = $this->getDocumentListing($user, $queryOptions, $what, $calculateTotal, $totalDocuments, $remaining);
             if (PEAR::isError($documentContents)) {
                 return $documentContents;
             }
@@ -683,7 +681,6 @@ class KTAPI_Folder extends KTAPI_FolderItem
      * (Just did not like how long get_listing had become, was very unwieldy when debugging)
      *
      * @param object $user
-     * @param int $wsversion
      * @param array $queryOptions
      * @param string $what
      * @param boolean $fullTree
@@ -691,7 +688,7 @@ class KTAPI_Folder extends KTAPI_FolderItem
      * @param int $totalFolders
      * @return array
      */
-    private function getFolderListing($user, $wsversion, $queryOptions, $what, $fullTree = false, $calculateTotal = false, &$totalFolders = 0)
+    private function getFolderListing($user, $queryOptions, $what, $fullTree = false, $calculateTotal = false, &$totalFolders = 0)
     {
         $folderContents = array();
 
@@ -746,7 +743,6 @@ class KTAPI_Folder extends KTAPI_FolderItem
      * (Just did not like how long get_listing had become, was very unwieldy when debugging)
      *
      * @param object $user
-     * @param int $wsversion
      * @param array $queryOptions
      * @param string $what
      * @param boolean $calculateTotal
@@ -754,7 +750,7 @@ class KTAPI_Folder extends KTAPI_FolderItem
      * @param int $remaining
      * @return array
      */
-    private function getDocumentListing($user, $wsversion, $queryOptions, $what, $calculateTotal = false, &$totalDocuments = 0, $remaining = -1)
+    private function getDocumentListing($user, $queryOptions, $what, $calculateTotal = false, &$totalDocuments = 0, $remaining = -1)
     {
         $documentContents = array();
 
@@ -2089,7 +2085,7 @@ class KTAPI_Folder extends KTAPI_FolderItem
 		if (empty($modified_date)) {
 			$modified_date = 'n/a';
 		}
-		
+
 		$owned_by = $this->_resolve_user($document->getOwnerID());
 
         $owned_by = $this->_resolve_user($document->getOwnerID());
