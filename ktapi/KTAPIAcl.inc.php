@@ -622,6 +622,7 @@ abstract class KTAPI_AllocationBase extends KTAPI_Dynamic
                     'transactionNS' => $namespace,
                     'userid' => $_SESSION['userID'],
                     'ip' => Session::getClientIP(),
+                	'parentid' => $object->getParentID(),
                 ));
 
                 break;

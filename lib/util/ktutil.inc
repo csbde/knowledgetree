@@ -1534,6 +1534,55 @@ class KTUtil {
 
         error_log($msg, 3, $logFile);
     }
+    
+    /**
+     * Splits the change id into its MD5 hash and epoch time, and converts the
+     * epoch to UTC
+     * 
+     * @param string $changeID
+     */
+    public static function extractChangeID($changeID)
+    {
+    	//$GLOBALS['default']->log->debug("KTUtil extractChangeID $changeID");
+    	
+    	//TODO: remove this!!!
+    	$timezone = date_default_timezone_get();
+    	//$GLOBALS['default']->log->debug("extractChangeID timezone $timezone");
+    	date_default_timezone_set("UTC");
+    	
+    	$split = explode("_", $changeID);
+    	
+    	//$GLOBALS['default']->log->debug('KTUtil extractChangeID split change id '.print_r($split, true));
+    	
+    	$split[1] = date("c", $split[1]);
+    	
+    	//$GLOBALS['default']->log->debug('KTUtil extractChangeID split change id 2 '.print_r($split, true));
+        
+        //TODO: remove this!!!
+        date_default_timezone_set($timezone);
+    	
+    	return $split;
+    } 
+    
+    public static function recursive_implode($glue, $pieces) 
+	{
+		foreach($pieces as $r_pieces) 
+		{
+			if (is_array($r_pieces)) 
+			{
+				
+				if (count($r_pieces))
+				{
+					$retVal[] = KTUtil::recursive_implode($glue, $r_pieces);
+				}
+			} 
+			else 
+			{ 
+				$retVal[] = $r_pieces; 
+			} 
+		} 
+		return implode($glue, $retVal); 
+	} 
 }
 
 /**
@@ -1560,6 +1609,7 @@ if (version_compare(phpversion(), '5.0') === -1) {
     }
     ');
 }
+
 
 
 ?>

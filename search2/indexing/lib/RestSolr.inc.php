@@ -257,6 +257,8 @@ class RestSolr
     function query($query)
     {
         $query = str_replace('Content:', 'text:', $query);
+        require_once(KT_LIB_DIR . '/users/shareduserutil.inc.php');
+        $shareduser = (SharedUserUtil::isSharedUser()) ? true : false;
         $query = strtolower($query);
         $offset = 0;
         $limit = 10;
@@ -275,7 +277,12 @@ class RestSolr
         //var_dump($result['response']['docs']); exit;
         $retDocs = array();
         $count = 0;
+    	if($shareduser)
+    	{
+			$result = $this->shareduser_results($result);
+    	}
         foreach($result['response']['docs'] as $document) {
+
             //var_dump($document);
             $retDocs[$count]->DocumentID = $document['id'];
             $retDocs[$count]->Rank = $document['boost'];
@@ -288,11 +295,26 @@ class RestSolr
 
             $count++;
         }
-        //var_dump($retDocs); exit;
+        
         return $retDocs;
-        //return json_decode($result);
     }
 
+    function shareduser_results($result)
+    {
+    	require_once(KT_LIB_DIR . '/render_helpers/sharedContent.inc');
+    	$sharedUserDocs = array();
+    	$aSharedDocs = SharedContent::getDocumentIds($_SESSION['userID']);
+    	$shared_results = array();
+    	foreach($result['response']['docs'] as $document) {
+    		if(in_array($document['id'], $aSharedDocs))
+    		{
+    			$sharedUserDocs['response']['docs'] = $document;
+    		}
+    	}
+    	
+    	return $sharedUserDocs;
+    }
+    
     /**
 	 * Updates the discussion text on a given document.
 	 *

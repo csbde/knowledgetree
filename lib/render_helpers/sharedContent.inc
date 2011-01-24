@@ -393,6 +393,24 @@ class SharedContent extends KTEntity {
     	return false;
     }
 
+    static public function getDocumentIds($iUserId)
+    {
+    	if (!isset($iUserId)) return array();
+    	$ids = array();
+    	$sql = "SELECT user_id, object_id, type from shared_content where user_id = '$iUserId' and type = 'document'";
+    	$results = DBUtil::getResultArray($sql);
+    	if (PEAR::isError($res)) { return $ids; }
+    	if (count($results) > 0) 
+    	{  
+    		foreach ($results as $result)
+    		{
+    			$ids[] = $result['object_id'];
+    		}
+    	}
+    	
+    	return $ids;
+    }
+    
     /**
      * Retreive the permission of a document
      *
