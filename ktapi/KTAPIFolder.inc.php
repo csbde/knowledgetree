@@ -2298,6 +2298,8 @@ class KTAPI_Folder extends KTAPI_FolderItem
 		{
 			$modified_date = 'n/a';
 		}
+		
+		$owned_by = $this->_resolve_user($document->getOwnerID());
 
 		$mimetypeid = $document->getMimeTypeID();
 		if (!array_key_exists($mimetypeid, $mime_cache)) 
