@@ -71,7 +71,7 @@ class BrowseView {
 
         $options = array();
         $options['limit'] = count($pages);
-        $options['offset'] = ($options['limit'] > 0) ? array_shift(array_flip($pages)) : 0;
+        $options['offset'] = ($options['limit'] > 0) ? array_shift(array_keys($pages)) : 0;
 
         return $options;
 	}
@@ -138,7 +138,6 @@ class BrowseView {
         // ignore a request for already loaded content
         if ($options['limit'] > 0) {
 		  $this->setPagingOptions($options['offset'], $options['limit']);
-
 		  $folderContentItems = $this->getFolderContent($folderId);
 		  $response['folderContents'] = json_encode($this->buildFolderView($folderContentItems));
         }
