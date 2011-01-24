@@ -262,9 +262,8 @@ class RestSolr
         $query = strtolower($query);
         $offset = 0;
         $limit = 10;
-        $result = array();
-//        $result = $this->client->search($query, $offset, $limit, array('hl.fl' => 'text', 'hl' => 'true'));
-//        $result = json_decode($result->getRawResponse(), true);
+        $result = $this->client->search($query, $offset, $limit, array('hl.fl' => 'text', 'hl' => 'true'));
+        $result = json_decode($result->getRawResponse(), true);
 
         //formatting the response to be compatible with current search struct:
         /*
@@ -296,9 +295,8 @@ class RestSolr
 
             $count++;
         }
-        //var_dump($retDocs); exit;
+        
         return $retDocs;
-        //return json_decode($result);
     }
 
     function shareduser_results($result)
