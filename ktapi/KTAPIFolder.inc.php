@@ -621,6 +621,8 @@ class KTAPI_Folder extends KTAPI_FolderItem {
 	 */
     function get_listing($depth = 1, $what = 'DFS', &$totalItems = -1, $options = array())
     {
+        // TODO no need to get listings if the offset is beyond the total
+
         $calculateTotal = ($totalItems == -1) ? false : true;
         $totalItems = $totalFolders = $totalDocuments = 0;
 

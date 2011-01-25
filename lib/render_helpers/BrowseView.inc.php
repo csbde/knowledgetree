@@ -136,14 +136,16 @@ class BrowseView {
 		$options = $this->getLazyOptions($folderId, $requested);
 
         // ignore a request for already loaded content
+        $responseData = array();
         if ($options['limit'] > 0) {
 		  $this->setPagingOptions($options['offset'], $options['limit']);
 		  $folderContentItems = $this->getFolderContent($folderId);
-		  $response['folderContents'] = json_encode($this->buildFolderView($folderContentItems));
+		  if (count($folderContentItems['documents']) + count($folderContentItems['folders']) > 0) {
+		      $responseData = $this->buildFolderView($folderContentItems);
+		  }
         }
-        else {
-            $response['folderContents'] = json_encode(array());
-        }
+
+        $response['folderContents'] = json_encode($responseData);
 
         return $response;
 	}
