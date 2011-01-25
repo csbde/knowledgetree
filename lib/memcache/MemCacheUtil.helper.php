@@ -5,7 +5,7 @@
  *
  */
 
-require_once(KT_DIR . '/lib/memcache/ktMemcachePool.helper.php');
+if(!class_exists('ktMemcachePool')) { require_once('ktMemcachePool.helper.php'); }
 
 class MemCacheUtil extends ktMemcachePool{}
 
