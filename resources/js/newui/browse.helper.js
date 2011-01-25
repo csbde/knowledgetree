@@ -70,7 +70,7 @@ kt.pages.browse.viewPage = function(pageNum, fetch) {
     // if the selected page was already loaded, display immediately
     var loaded = false;
     if (jQuery('.page.page_' + pageNum).length > 0) {
-//        console.log('previously loaded :)');
+        console.log('Page ' + pageNum + ' previously loaded :)');
         jQuery('.page').hide(0, function() { jQuery('.page.page_' + pageNum).show(0); })
         jQuery('.paginate>li.item').removeClass('highlight');
         loaded = true;
@@ -83,12 +83,15 @@ kt.pages.browse.viewPage = function(pageNum, fetch) {
             if (data != '[]') {
                 var responseJSON = jQuery.parseJSON(data);
                 for (var pageId in responseJSON) {
+                    console.log("Load page " + pageId);
                     // we prepend because otherwise it switches the location of the page navigator
                     jQuery('.itemContainer').prepend(responseJSON[pageId]);
+                    jQuery('.page.page_' + pageId).hide(0);
                 }
             }
 
             if (!loaded) {
+                console.log("Show page " + pageId);
                 jQuery('.page').hide(0, function() { jQuery('.page.page_' + pageNum).show(0); })
                 jQuery('.paginate>li.item').removeClass('highlight');
             }
