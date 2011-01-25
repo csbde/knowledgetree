@@ -228,7 +228,25 @@ class BaseConfigDispatcher extends KTAdminDispatcher
 	            $input .= isset($options['label']) ? "<label for='{$id}'>{$options['label']}</label>&nbsp;&nbsp;" : '';
 	            $input .= "<input name='configArray[{$id}]' value='{$value}' size = '5'>";
 	            break;
-
+	            
+	        case 'class':
+	        	if(!file_exists($options['file'])) { return ; }
+        		require_once($options['file']);
+        		$oClass = new $options['class']();
+	        	$value = ($value == 'default') ? $defaultValue : $value;
+	        	$input .= $oClass->renderRegionLabel();
+	        	$input .= "<select id='country_select' name='country_select'>&nbsp;&nbsp;";
+	        	$input .= $oClass->renderRegions($value);
+	        	$input .= '</select>';
+	        	$input .= '<br/><br/>';
+	        	$input .= $oClass->renderTimezoneLabel();
+	        	$input .= "<select class='timezones' id='{$id}' name='configArray[{$id}]'>&nbsp;&nbsp;";
+	        	$input .= $oClass->renderTimezones($value);
+	        	$input .= '</select>';
+	        	
+	        	
+	        	break;
+	        	
 	        case 'string':
             default:
 	            // Prepend a label if set

@@ -11,7 +11,7 @@
 </tr><tr>
 <td>Content version: </td><td>{$oVersion->getMajorVersionNumber()}.{$oVersion->getMinorVersionNumber()}</td>
 </tr><tr>
-<td>Date created: </td><td>{$oVersion->getVersionCreated()}</td>
+<td>Date created: </td><td>{$oVersion->getDisplayVersionCreated()}</td>
 </tr></table>
 
 <p>

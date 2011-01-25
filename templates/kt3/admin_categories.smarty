@@ -4,10 +4,10 @@
 <table width="95%">
     <tr>
         <td align="center">
-            <div class="adminheadings settingHeads"> {i18n} Content Settings {/i18n}</div>
+            <div class="adminheadings settingHeads"> {i18n} Account Settings {/i18n} </div>
 
             <div id="leftmenu" class="menuitems">
-            	{foreach item=aCategory from=$leftmenu}
+            	{foreach item=aCategory from=$rightmenu}
             	{capture assign="cat_id"}{$aCategory.name}{/capture}
             		<h2 style="margin-top:5px;">
             			<img src="resources/graphics/admin_{$cat_id}.png" align="left" style="padding-right:10px;">
@@ -21,10 +21,10 @@
             </div>
         </td>
         <td align="center">
-            <div class="adminheadings settingHeads"> {i18n} Account Settings {/i18n} </div>
+            <div class="adminheadings settingHeads"> {i18n} Content Settings {/i18n}</div>
 
             <div id="rightmenu" class="menuitems">
-            	{foreach item=aCategory from=$rightmenu}
+            	{foreach item=aCategory from=$leftmenu}
             	{capture assign="cat_id"}{$aCategory.name}{/capture}
             		<h2 style="margin-top:5px;">
             			<img src="resources/graphics/admin_{$cat_id}.png" align="left" style="padding-right:10px;">

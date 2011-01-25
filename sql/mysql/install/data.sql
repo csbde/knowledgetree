@@ -140,31 +140,32 @@ LOCK TABLES `config_groups` WRITE;
 /*!40000 ALTER TABLE `config_groups` DISABLE KEYS */;
 INSERT INTO `config_groups` VALUES
 (1, 'browse', 'Browse View', 'Configurable options for working in Browse View', 'User Interface Settings'),
-(2, 'cache', 'Cache', 'Configure settings for the KnowledgeTree cache. Only advanced users should change these settings.', 'General Settings'),
+(2, 'cache', 'Cache', 'Configure settings for the KnowledgeTree cache. Only advanced users should change these settings.', 'System Settings'),
 (3, 'CustomErrorMessages', 'Custom Error Messages', 'Configuration settings for custom error messages. Only advanced users should change these settings.', 'User Interface Settings'),
-(4, 'dashboard', 'Dashboard', 'Configures Dashboard Settings', 'General Settings'),
-(5, 'DiskUsage', 'Disk Usage Dashlet', 'Configures the Disk Usage dashlet ', 'General Settings'),
+(4, 'dashboard', 'Dashboard', 'Configures Dashboard Settings', 'System Settings'),
+(5, 'DiskUsage', 'Disk Usage Dashlet', 'Configures the Disk Usage dashlet ', 'System Settings'),
 (6, 'email', 'Email', 'Enables Email on your KnowledgeTree installation and configures Email settings. Note that several KnowledgeTree features use these settings. ', 'Email Settings'),
-(7, 'export', 'Export', 'Configures KnowledgeTree''s ''Bulk Export'' feature.', 'General Settings'),
-(8, 'externalBinary', 'External Binaries', 'KnowledgeTree uses various external binaries. This section defines the paths to these binaries. <br>Only advanced users should change these settings.', 'General Settings'),
+(7, 'export', 'Export', 'Configures KnowledgeTree''s ''Bulk Export'' feature.', 'System Settings'),
+(8, 'externalBinary', 'External Binaries', 'KnowledgeTree uses various external binaries. This section defines the paths to these binaries. <br>Only advanced users should change these settings.', 'System Settings'),
 (9, 'i18n', 'Internationalization', 'Configures settings for Internationalization.', 'Internationalisation Settings'),
-(10, 'import', 'Import', 'Configures settings on Bulk Import.', 'General Settings'),
+(10, 'import', 'Import', 'Configures settings on Bulk Import.', 'System Settings'),
 (11, 'indexer', 'Document Indexer', 'Configures the Document Indexer. Only advanced users should change these settings.', 'Search and Indexing Settings'),
-(12, 'KnowledgeTree', 'KnowledgeTree', 'Configures general settings for your KnowledgeTree server installation.', 'General Settings'),
+(12, 'KnowledgeTree', 'KnowledgeTree', 'Configures general settings for your KnowledgeTree server installation.', 'System Settings'),
 (13, 'KTWebDAVSettings', 'WebDAV', 'Configuration options for third-party WebDAV clients', 'Client Tools Settings'),
 (14, 'openoffice', 'OpenOffice.org Service', 'Configuration options for the OpenOffice.org service. Note that several KnowledgeTree features use this service.', 'Search and Indexing Settings'),
 (15, 'search', 'Search', 'Configures settings for KnowledgeTree''s Search function.', 'Search and Indexing Settings'),
 (16, 'session', 'Session Management', 'Session management configuration.', 'General Settings'),
-(17, 'storage', 'Storage', 'Configure the KnowledgeTree storage manager.', 'General Settings'),
+(17, 'storage', 'Storage', 'Configure the KnowledgeTree storage manager.', 'System Settings'),
 (18, 'tweaks', 'Tweaks', 'Small configuration tweaks', 'General Settings'),
 (19, 'ui', 'User Interface', 'General user interface configuration', 'User Interface Settings'),
-(20, 'urls', 'Urls', 'The paths to the KnowledgeTree server and filesystem. <br>Full values are specific to your installation (Windows or Linux). Only advanced users should change these settings.', 'General Settings'),
-(21, 'user_prefs', 'User Preferences', 'Configures user preferences.', 'General Settings'),
+(20, 'urls', 'Urls', 'The paths to the KnowledgeTree server and filesystem. <br>Full values are specific to your installation (Windows or Linux). Only advanced users should change these settings.', 'System Settings'),
+(21, 'user_prefs', 'User Preferences', 'Configures user preferences.', 'System Settings'),
 (22, 'webservice', 'Web Services', 'KnowledgeTree Web Service Interface configuration. Note that a number of KnowledgeTree Tools rely on this service.', 'Client Tools Settings'),
-(23, 'ldapAuthentication', 'LDAP Authentication', 'Configures LDAP Authentication', 'General Settings'),
-(24, 'server', 'Server Settings', 'Configuration settings for the server', 'General Settings'),
+(23, 'ldapAuthentication', 'LDAP Authentication', 'Configures LDAP Authentication', 'System Settings'),
+(24, 'server', 'Server Settings', 'Configuration settings for the server', 'System Settings'),
 (25, 'explorerCPSettings', 'Explorer CP Settings', 'Configuration options for KnowledgeTree Explorer CP', 'Client Tools Settings'),
-(26, 'actionreasons', 'Document Action Settings', 'Configure how the system deals with reasons for document actions.', 'Document Action Settings');
+(26, 'actionreasons', 'Document Action Settings', 'Configure how the system deals with reasons for document actions.', 'Document Action Settings'),
+(27, 'timezone', 'Timezone', 'Timezone configuration settings', 'General Settings');
 /*!40000 ALTER TABLE `config_groups` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -297,7 +298,8 @@ INSERT INTO `config_settings` VALUES
 (120, 'explorerCPSettings', 'Debug Log Level', 'Set the level of debug information included in the server side log file', 'debugLevel', 'error', 'error', 'dropdown', 'a:1:{s:7:\"options\";a:3:{i:0;a:2:{s:5:\"value\";s:3:\"off\";s:5:\"label\";s:10:\"No Logging\";}i:1;a:2:{s:5:\"value\";s:5:\"error\";s:5:\"label\";s:18:\"Error Logging Only\";}i:2;a:2:{s:5:\"value\";s:5:\"debug\";s:5:\"label\";s:28:\"Error and Debug Info Logging\";}}}', 1),
 (121, 'actionreasons', 'Enable Global Document Reasons', 'If switched on, reasons will be required for all major document actions including Check-in, Check-out, Delete, Finalize, Copy, Move and Archive.', 'globalReasons', 'default', 'false', 'boolean', NULL, 1),
 (122, 'ui', 'Restricted Environment', 'Removes certain administrative features from the interface to prevent users from accessing the functionality', 'restrictedEnv', 'default', 'false', 'boolean', NULL, 0),
-(123, 'user_prefs', 'Use Email Address to Login', 'Defines whether the username or the users email address is used for logging in', 'useEmailLogin', 'true', 'false', 'boolean', NULL, 0);
+(123, 'user_prefs', 'Use Email Address to Login', 'Defines whether the username or the users email address is used for logging in', 'useEmailLogin', 'true', 'false', 'boolean', NULL, 0),
+(124, 'timezone', '', '', 'setTimezone', 'default', 'UTC', 'class', 'a:2:{s:5:"class";s:13:"datetime_view";s:4:"file";s:34:"plugins/datetime/datetime_view.php";}', 1);
 /*!40000 ALTER TABLE `config_settings` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1808,7 +1810,10 @@ INSERT INTO `upgrades` VALUES
 (256,'upgrade*3.7.0.8*99*upgrade3.7.0.8','Upgrade from version 3.7.0.7 to 3.7.0.8','2010-11-01 00:00:00',1,'upgrade*3.7.0.8*99*upgrade3.7.0.8'),
 (257,'sql*3.7.0.9*0*3.7.0.9/transaction_types.sql','Database upgrade to version 3.7.0.9: Transaction types','2011-01-10 00:00:00',1,'upgrade*3.7.0.9*99*upgrade3.7.0.9'),
 (258,'sql*3.7.0.9*0*3.7.0.9/permission_cache.sql','Database upgrade to version 3.7.0.9: Permission cache','2011-01-10 00:00:00',1,'upgrade*3.7.0.9*99*upgrade3.7.0.9'),
-(259,'upgrade*3.7.0.9*99*upgrade3.7.0.9','Upgrade from version 3.7.0.8 to 3.7.0.9','2011-01-10 00:00:00',1,'upgrade*3.7.0.9*99*upgrade3.7.0.9');
+(259,'upgrade*3.7.0.9*99*upgrade3.7.0.9','Upgrade from version 3.7.0.8 to 3.7.0.9','2011-01-10 00:00:00',1,'upgrade*3.7.0.9*99*upgrade3.7.0.9'),
+(260,'sql*3.7.1.0*0*3.7.1.0/session_management.sql','Database upgrade to version 3.7.0.9: Session Management','2011-01-18 00:00:00',1,'upgrade*3.7.0.9*99*upgrade3.7.0.9'),
+(261,'sql*3.7.1.0*0*3.7.1.0/timezone_settings.sql','Database upgrade to version 3.7.0.9: Timezone Settings','2011-01-10 00:00:00',1,'upgrade*3.7.0.9*99*upgrade3.7.0.9'),
+(262,'upgrade*3.7.1.0*99*upgrade3.7.1.0','Upgrade from version 3.7.0.9 to 3.7.1.0','2011-01-18 00:00:00',1,'upgrade*3.7.1.0*99*upgrade3.7.1.0');
 /*!40000 ALTER TABLE `upgrades` ENABLE KEYS */;
 UNLOCK TABLES;
 
