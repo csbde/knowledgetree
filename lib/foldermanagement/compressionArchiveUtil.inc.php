@@ -632,6 +632,7 @@ class DownloadQueue
                 'transactionNS' => 'ktstandard.transactions.bulk_export',
                 'userid' => $_SESSION['userID'],
                 'ip' => Session::getClientIP(),
+            	'parentid' => $baseFolderId,	//TODO: need to get the parent ID here!
             ));
 
             if (PEAR::isError($oTransaction)) {

@@ -5,8 +5,6 @@
  *
  */
 
-require_once(KT_DIR . '/lib/memcache/ktMemcachePool.helper.php');
-
 class MemCacheUtil extends ktMemcachePool{}
 
 ?>
