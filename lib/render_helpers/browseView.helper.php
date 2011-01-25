@@ -5,6 +5,7 @@ require_once(KT_LIB_DIR . '/plugins/pluginutil.inc.php');
 require_once(KT_LIB_DIR . '/documentmanagement/documentutil.inc.php');
 require_once(KT_LIB_DIR . '/users/shareduserutil.inc.php');
 require_once(KT_LIB_DIR . '/workflow/workflow.inc.php');
+require_once(KT_LIB_DIR . '/datetime/datetimeutil.inc.php');
 require_once('sharedContent.inc');
 
 /**
@@ -299,6 +300,7 @@ class sharedUserBrowseView extends browseView
 		$checkbox = '';
 		// Sanitize folder title
 		$item['title'] = sanitizeForHTML($item['title']);
+		
 		$tpl='
 			<span class="doc browseView">
 			<table cellspacing="0" cellpadding="0" width="100%" border="0" class="folder item">
@@ -889,7 +891,7 @@ class browseView {
 
 		return ktVar::parseString($tpl, $item);
 	}
-
+	
 	public function renderFolderItem($item = null, $empty = false, $shortcut = false)
 	{
 		//TODO: Tohir, if you put the .selected thing on the table $(.folder.item), it should work fine

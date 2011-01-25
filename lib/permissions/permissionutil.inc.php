@@ -521,8 +521,20 @@ class KTPermissionUtil {
     {
         //KTUtil::startTiming(__FUNCTION__);
 
+        if($user instanceof User || $user instanceof UserProxy){
+            $user = $user->iId;
+        }
+
+        if(!is_numeric($user)){
+            $GLOBALS['default']->log->error('Incorrect user id format received, should be numeric.');
+            return false;
+        }
+
         if (isset($_SESSION['adminmode']) && $_SESSION['adminmode'] === true) {
-            return true;
+        	if (Permission::userIsSystemAdministrator($user))
+        	{
+        		return true;
+        	}
         }
 
         if($permission instanceof KTPermission){
@@ -533,16 +545,6 @@ class KTPermissionUtil {
             $GLOBALS['default']->log->error('Incorrect permission format received, should be a string.');
             return false;
         }
-
-        if($user instanceof User || $user instanceof UserProxy){
-            $user = $user->iId;
-        }
-
-        if(!is_numeric($user)){
-            $GLOBALS['default']->log->error('Incorrect user id format received, should be numeric.');
-            return false;
-        }
-
         if (PEAR::isError($oFolderOrDocument) || $oFolderOrDocument == null) {
             $msg = '';
             if(PEAR::isError($oFolderOrDocument)){
