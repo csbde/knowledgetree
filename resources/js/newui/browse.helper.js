@@ -70,9 +70,8 @@ kt.pages.browse.viewPage = function(pageNum, fetch) {
     // if the selected page was already loaded, display immediately
     var loaded = false;
     if (jQuery('.page.page_' + pageNum).length > 0) {
-        console.log('Page ' + pageNum + ' previously loaded :)');
-        jQuery('.page').hide(0, function() { jQuery('.page.page_' + pageNum).show(0); })
-        jQuery('.paginate>li.item').removeClass('highlight');
+        console.log('Page ' + pageNum + ' previously loaded');
+        kt.pages.browse.showPage(pageNum, pageItem);
         loaded = true;
     }
 
@@ -91,17 +90,20 @@ kt.pages.browse.viewPage = function(pageNum, fetch) {
             }
 
             if (!loaded) {
-                console.log("Show page " + pageId);
-                jQuery('.page').hide(0, function() { jQuery('.page.page_' + pageNum).show(0); })
-                jQuery('.paginate>li.item').removeClass('highlight');
+                console.log("Show page " + pageNum);
+                kt.pages.browse.showPage(pageNum, pageItem);
             }
         });
     }
 
-    pageItem.addClass('highlight');
-
     kt.pages.browse.curPage = new Number(pageNum);
 };
+
+kt.pages.browse.showPage = function(pageNum, pageItem) {
+    jQuery('.page').hide(0, function() { jQuery('.page.page_' + pageNum).show(0); })
+    jQuery('.paginate>li.item').removeClass('highlight');
+    pageItem.addClass('highlight');
+}
 
 kt.pages.browse.nextPage = function() {
     kt.pages.browse.viewPage(kt.pages.browse.curPage + 1);
