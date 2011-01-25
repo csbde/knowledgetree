@@ -5,7 +5,6 @@ require_once('sharedContent.inc');
 
 /**
  * Shared user browse view class
- *
  */
 class SharedUserBrowseView extends BrowseView {
 
