@@ -59,8 +59,7 @@ kt.pages.browse.addDocumentItem = function(item) {
 };
 
 kt.pages.browse.curPage = 1;
-kt.pages.browse.viewPage = function(pageNum) {
-	console.log('pageNum '+pageNum);
+kt.pages.browse.viewPage = function(pageNum, fetch) {
     if (pageNum < 1) { pageNum = 1; }
     var pageItem = jQuery('.paginate>li.page_' + pageNum);
 
@@ -68,23 +67,33 @@ kt.pages.browse.viewPage = function(pageNum) {
         return;
     }
 
-    // around here is where you would fire off a request to get more content, so let's give that a try
-    // and see what comes back :)
-    var testOutput = jQuery.get('http://martin.knowledgetree.dev/browse.php?action=paging&fFolderId=1104&page=' + pageNum, function(data) {
-    	//console.log(data);
-    	var responseJSON = jQuery.parseJSON(data);
-        //console.log(responseJSON);
-        
-        console.log(responseJSON[pageNum]);
-        
-        jQuery('.page.page_' + pageNum-1).append(responseJSON[pageNum]);
-	});
-    
+    // if the selected page was already loaded, display immediately
+    var loaded = false;
+    if (jQuery('.page.page_' + pageNum).length > 0) {
+//        console.log('previously loaded :)');
+        jQuery('.page').hide(0, function() { jQuery('.page.page_' + pageNum).show(0); })
+        jQuery('.paginate>li.item').removeClass('highlight');
+        loaded = true;
+    }
 
-    
-    
-    jQuery('.page').hide(0, function() {jQuery('.page.page_' + pageNum).show(0);})
-    jQuery('.paginate>li.item').removeClass('highlight');
+    // then check for additional content within the requested range, not yet loaded
+    fetch = (typeof fetch == 'undefined') ? true : fetch;
+    if (fetch) {
+        var response = jQuery.get('http://paul.knowledgetree.com/browse.php?action=paging&fFolderId=6&page=' + pageNum, function(data) {
+            if (data != '[]') {
+                var responseJSON = jQuery.parseJSON(data);
+                for (var pageId in responseJSON) {
+                    // we prepend because otherwise it switches the location of the page navigator
+                    jQuery('.itemContainer').prepend(responseJSON[pageId]);
+                }
+            }
+
+            if (!loaded) {
+                jQuery('.page').hide(0, function() { jQuery('.page.page_' + pageNum).show(0); })
+                jQuery('.paginate>li.item').removeClass('highlight');
+            }
+        });
+    }
 
     pageItem.addClass('highlight');
 
@@ -125,7 +134,7 @@ kt.lib.shortcut.add("ctrl+a", kt.pages.browse.selectAllItems);
 kt.lib.shortcut.add("ctrl+shift+a", kt.pages.browse.deSelectAllItems);
 
 jQuery(document).ready(function() {
-    kt.pages.browse.viewPage(1);
+    kt.pages.browse.viewPage(1, false);
     kt.pages.browse.setBulkActionMenuStatus = function() {
         var selectedItems = jQuery(".itemContainer .item .checkbox>input:checkbox:checked:enabled").length;
         if (selectedItems > 0) {
@@ -198,5 +207,4 @@ jQuery(document).ready(function() {
     if (jQuery('ul.paginate li.item').length == 3) {
     	jQuery('ul.paginate').hide();
     }
-
 });

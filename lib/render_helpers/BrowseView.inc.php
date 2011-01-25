@@ -142,7 +142,7 @@ class BrowseView {
 		  $response['folderContents'] = json_encode($this->buildFolderView($folderContentItems));
         }
         else {
-            $response['folderContents'] = json_encode(array('result' => 'No results found'));
+            $response['folderContents'] = json_encode(array());
         }
 
         return $response;

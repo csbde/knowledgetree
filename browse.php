@@ -195,7 +195,6 @@ class BrowseDispatcher extends KTStandardDispatcher {
 	    $renderHelper = BrowseViewUtil::getBrowseView();
 	    $renderData = $renderHelper->lazyLoad($this->oFolder->getId(), $page);
 
-//	    echo count($renderData['folderContents']['documents'])."\n";exit;
 	    echo $renderData['folderContents'];
 	    exit(0);
 	}
