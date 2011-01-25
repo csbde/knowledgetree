@@ -53,10 +53,12 @@ class datetimeutil
 		$tzc->setProperty('Datetime', $date);
 		// Retrieve system timezone
 		$oConfig = KTConfig::getSingleton();
-		$tzvalue = $oConfig->get('tweaks/setTimezone', 'UTC');
+		$tzvalue = $oConfig->get('timezone/setTimezone', 'UTC');
+		// Check if it is UTC and return
+		if($tzvalue) { return $date; }
 		// Set the timezone
 		$tzc->setProperty('Timezone', $tzvalue);
-		
+		// Convert timezone
 		return $tzc->convertDateTime();
 	}
 	
