@@ -95,14 +95,13 @@ kt.pages.browse.viewPage = function(pageNum, fetch) {
             }
         });
     }
-
-    kt.pages.browse.curPage = new Number(pageNum);
 };
 
 kt.pages.browse.showPage = function(pageNum, pageItem) {
     jQuery('.page').hide(0, function() { jQuery('.page.page_' + pageNum).show(0); })
     jQuery('.paginate>li.item').removeClass('highlight');
     pageItem.addClass('highlight');
+    kt.pages.browse.curPage = new Number(pageNum);
 }
 
 kt.pages.browse.nextPage = function() {
