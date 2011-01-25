@@ -183,7 +183,7 @@ class KTDocumentActivityFeedAction extends KTDocumentViewlet {
             $mainArray[] = array(
                 'name' => $this->getUserForId($version->getVersionCreatorId()),
                 'transaction_name' => 'New Document Version',
-                'datetime' => $version->getVersionCreated(),
+                'datetime' => $version->getDisplayVersionCreated(),
                 'version' => $version->getMajorVersionNumber().'.'.$version->getMinorVersionNumber(),
                 'comment' => '',
                 'type' => 'version'

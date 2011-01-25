@@ -1,5 +1,8 @@
 <?php
 
+// TODO confirm whether this must load for all, but seems likely...
+require_once(KT_LIB_DIR . '/datetime/datetimeutil.inc.php');
+
 require_once(KT_LIB_DIR . '/render_helpers/BrowseView.inc.php');
 require_once(KT_LIB_DIR . '/render_helpers/UserBrowseView.inc.php');
 require_once(KT_LIB_DIR . '/render_helpers/SharedBrowseView.inc.php');

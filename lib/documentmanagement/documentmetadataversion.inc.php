@@ -38,6 +38,7 @@
 
 require_once(KT_LIB_DIR . '/ktentity.inc');
 require_once(KT_LIB_DIR . "/util/sanitize.inc");
+require_once(KT_LIB_DIR . '/datetime/datetimeutil.inc.php');
 
 class KTDocumentMetadataVersion extends KTEntity {
     var $_bUsePearError = true;
@@ -100,6 +101,8 @@ class KTDocumentMetadataVersion extends KTEntity {
     function setWorkflowId($mValue) { $this->iWorkflowId = $mValue; }
     function getWorkflowStateId() { return $this->iWorkflowStateId; }
     function setWorkflowStateId($mValue) { $this->iWorkflowStateId = $mValue; }
+    // Timezone getters
+    function getDisplayVersionCreated() { return datetimeutil::getDisplayDate($this->dVersionCreated); }
     // }}}
 
     function __construct() {

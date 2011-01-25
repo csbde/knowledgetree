@@ -20,7 +20,6 @@ class SharedUserBrowseView extends BrowseView {
 	 * @param string $asc
 	 * @return mixed $ret
 	 */
-	// TODO add support for total items here...
 	public function getFolderContent($folderId, &$totalItems = 0, $sortField = 'title', $asc = true)
 	{
 		$user_id = $_SESSION['userID'];
