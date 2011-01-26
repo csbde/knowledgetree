@@ -78,8 +78,11 @@ kt.pages.browse.viewPage = function(pageNum, folderId, fetch) {
     // check for additional content within the requested range, not yet loaded
     fetch = (typeof fetch == 'undefined') ? true : fetch;
     if (fetch && kt.pages.browse.checkRange(pageNum)) {
-        console.log('fade out');
-        jQuery('.paginate').fadeOut();
+    	jQuery.loading.css.background = 'yellow';
+    	//jQuery.loading.css.border = '1px solid #000';
+        jQuery.loading(true, { text:'Loading...', mask:true, effect:'update' });
+        //console.log('fade out');
+        //jQuery('.paginate').fadeOut();
         jQuery.get('/browse.php?action=paging&fFolderId=' + folderId + '&page=' + pageNum, function(data) {
             try { var responseJSON = jQuery.parseJSON(data); }
             catch(e) { return; }
@@ -107,14 +110,16 @@ kt.pages.browse.viewPage = function(pageNum, folderId, fetch) {
             else {
                 console.log('no pages found');
             }
+            
+            jQuery.loading(false);
 
             if (!loaded) {
                 console.log("Show page " + pageNum);
                 kt.pages.browse.showPage(pageNum, pageItem);
             }
 
-            console.log('fade in');
-            jQuery('.paginate').fadeIn();
+            //console.log('fade in');
+            //jQuery('.paginate').fadeIn();
         });
     }
 };
