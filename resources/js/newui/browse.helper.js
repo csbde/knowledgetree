@@ -70,7 +70,6 @@ kt.pages.browse.viewPage = function(pageNum, folderId, fetch) {
     // if the selected page was already loaded, display immediately
     var loaded = false;
     if (jQuery('.page.page_' + pageNum).length > 0) {
-        console.log('Show page ' + pageNum + ' (previously loaded)');
         kt.pages.browse.showPage(pageNum, pageItem);
         loaded = true;
     }
@@ -81,7 +80,6 @@ kt.pages.browse.viewPage = function(pageNum, folderId, fetch) {
     	jQuery.loading.css.background = 'yellow';
     	//jQuery.loading.css.border = '1px solid #000';
         jQuery.loading(true, { text:'Loading...', mask:true, effect:'update' });
-        //console.log('fade out');
         //jQuery('.paginate').fadeOut();
         jQuery.get('/browse.php?action=paging&fFolderId=' + folderId + '&page=' + pageNum, function(data) {
             try { var responseJSON = jQuery.parseJSON(data); }
@@ -90,9 +88,7 @@ kt.pages.browse.viewPage = function(pageNum, folderId, fetch) {
             var pages = 0;
             jQuery.each(responseJSON, function() { ++pages; });
             if (pages > 0) {
-                console.log('got ' + pages + ' pages');
                 for (var pageId in responseJSON) {
-                    console.log("Load page " + pageId);
                     if (pageNum == 1) {
                         // we prepend because otherwise it switches the location of the page navigator
                         jQuery('.itemContainer').prepend(responseJSON[pageId]);
@@ -107,18 +103,13 @@ kt.pages.browse.viewPage = function(pageNum, folderId, fetch) {
                     jQuery('.page.page_' + pageId).hide(0);
                 }
             }
-            else {
-                console.log('no pages found');
-            }
-            
+
             jQuery.loading(false);
 
             if (!loaded) {
-                console.log("Show page " + pageNum);
                 kt.pages.browse.showPage(pageNum, pageItem);
             }
 
-            //console.log('fade in');
             //jQuery('.paginate').fadeIn();
         });
     }
