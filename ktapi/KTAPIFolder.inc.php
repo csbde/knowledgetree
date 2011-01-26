@@ -2057,9 +2057,9 @@ class KTAPI_Folder extends KTAPI_FolderItem {
 	 *
 	 * Uses an array passed by reference to recursively build up the folder details
 	 *
-	 * @param unknown_type $document
-	 * @param unknown_type $contents
-	 * @param unknown_type $what
+	 * @param object $document
+	 * @param array $contents
+	 * @param string $what
 	 */
 	private function assemble_document_array($document, &$contents, $what = 'D')
 	{

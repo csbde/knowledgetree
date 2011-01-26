@@ -69,6 +69,9 @@ class BrowseView {
             }
         }
 
+        // TODO if we end up with only one page and it is the first or last in the set, perhaps
+        //      load an extra page in the appropriate direction?
+
         $options = array();
         $options['limit'] = count($pages);
         $options['offset'] = ($options['limit'] > 0) ? array_shift(array_keys($pages)) : 0;
@@ -168,6 +171,7 @@ class BrowseView {
 		    return $response;
 		}
 
+		$this->folderId = $folderId;
 		$this->setPagingOptions($pageCount);
 
 		$response['returndata'] = $folderId;
@@ -187,7 +191,7 @@ class BrowseView {
 
 		// Apply Clientside Pagination element
 		$fullPageCount = ceil($totalItems / $this->pages['perPage']);
-		$response['pagination'] = $this->paginateByDiv($fullPageCount, 'page', 'paginate', 'item', "kt.pages.browse.viewPage('[page]');", 'kt.pages.browse.prevPage();', 'kt.pages.browse.nextPage();');
+		$response['pagination'] = $this->paginateByDiv($fullPageCount, 'page', 'paginate', 'item', "kt.pages.browse.viewPage([page], [folder]);", "kt.pages.browse.prevPage({$this->folderId});", "kt.pages.browse.nextPage({$this->folderId});");
 
 		// Add Additional browse view Javascript
 		$response['javascript'] = $this->getJavaScript();
@@ -386,9 +390,9 @@ class BrowseView {
 		$idClass = $pageClass . '_[page]';
 		$pages = array();
 		$pages[] = '<ul class="' . $paginationClass . '">';
-		$pages[]='<li class="' . $itemClass . '" onclick="' . $prevScript . '">Previous</li>';
-		for($i = 1; $i <= $pageCount; $i++) {
-			$pages[] = ktVar::parseString('<li class="' . $itemClass . ' ' . $idClass . '" onclick="' . $pageScript . '">' . $i . '</li>', array('page'=> $i));
+		$pages[] = '<li class="' . $itemClass . '" onclick="' . $prevScript . '">Previous</li>';
+		for($i = 1; $i <= $pageCount; ++$i) {
+			$pages[] = ktVar::parseString('<li class="' . $itemClass . ' ' . $idClass . '" onclick="' . $pageScript . '">' . $i . '</li>', array('page'=> $i, 'folder' => $this->folderId));
 		}
 		$pages[] = '<li class="' . $itemClass . '" onclick="' . $nextScript . '">Next</li>';
 		$pages[] = '</ul>';

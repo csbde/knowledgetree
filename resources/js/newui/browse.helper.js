@@ -60,7 +60,7 @@ kt.pages.browse.addDocumentItem = function(item) {
     jQuery('.page.page_' + kt.pages.browse.curPage).append(elem);
 };
 
-kt.pages.browse.viewPage = function(pageNum, fetch) {
+kt.pages.browse.viewPage = function(pageNum, folderId, fetch) {
     // TODO consider rather just returning if pageNum < 1?
     if (pageNum < 1) { pageNum = 1; }
     var pageItem = jQuery('.paginate>li.page_' + pageNum);
@@ -80,7 +80,7 @@ kt.pages.browse.viewPage = function(pageNum, fetch) {
     if (fetch && kt.pages.browse.checkRange(pageNum)) {
         console.log('fade out');
         jQuery('.paginate').fadeOut();
-        jQuery.get('/browse.php?action=paging&fFolderId=6&page=' + pageNum, function(data) {
+        jQuery.get('/browse.php?action=paging&fFolderId=' + folderId + '&page=' + pageNum, function(data) {
             var responseJSON = jQuery.parseJSON(data);
             var pages = 0;
             jQuery.each(responseJSON, function() { ++pages; });
@@ -140,13 +140,13 @@ kt.pages.browse.showPage = function(pageNum, pageItem) {
     jQuery('html, body').animate({ scrollTop: 0 }, 0);
 }
 
-kt.pages.browse.nextPage = function() {
-    kt.pages.browse.viewPage(kt.pages.browse.curPage + 1);
+kt.pages.browse.nextPage = function(folderId) {
+    kt.pages.browse.viewPage(kt.pages.browse.curPage + 1, folderId);
     return false;
 };
 
-kt.pages.browse.prevPage = function() {
-    kt.pages.browse.viewPage(kt.pages.browse.curPage - 1);
+kt.pages.browse.prevPage = function(folderId) {
+    kt.pages.browse.viewPage(kt.pages.browse.curPage - 1, folderId);
     return false;
 };
 
@@ -174,7 +174,7 @@ kt.lib.shortcut.add("ctrl+a", kt.pages.browse.selectAllItems);
 kt.lib.shortcut.add("ctrl+shift+a", kt.pages.browse.deSelectAllItems);
 
 jQuery(document).ready(function() {
-    kt.pages.browse.viewPage(1, false);
+    kt.pages.browse.viewPage(1, null, false);
     kt.pages.browse.setBulkActionMenuStatus = function() {
         var selectedItems = jQuery(".itemContainer .item .checkbox>input:checkbox:checked:enabled").length;
         if (selectedItems > 0) {
