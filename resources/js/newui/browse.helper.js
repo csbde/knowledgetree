@@ -45,6 +45,7 @@ kt.lib.parseTemplate = function(str, obj) {
 kt.pages.browse = {};
 
 kt.pages.browse.curPage = 1;
+kt.pages.browse.loading = false;
 
 kt.pages.browse.addDocumentItem = function(item) {
     item.is_shortcut = item.is_shortcut ? '' : ' not_supported';
@@ -61,6 +62,8 @@ kt.pages.browse.addDocumentItem = function(item) {
 };
 
 kt.pages.browse.viewPage = function(pageNum, folderId, fetch) {
+    // don't allow more than one load request at a time
+    if (kt.pages.browse.loading) { console.log('already loading content, rejecting multiple requests'); return; }
     // TODO consider rather just returning if pageNum < 1?
     if (pageNum < 1) { pageNum = 1; }
     var pageItem = jQuery('.paginate>li.page_' + pageNum);
@@ -77,10 +80,11 @@ kt.pages.browse.viewPage = function(pageNum, folderId, fetch) {
     // check for additional content within the requested range, not yet loaded
     fetch = (typeof fetch == 'undefined') ? true : fetch;
     if (fetch && kt.pages.browse.checkRange(pageNum)) {
+        console.log('fetching');
+        kt.pages.browse.loading = true;
     	jQuery.loading.css.background = 'yellow';
     	//jQuery.loading.css.border = '1px solid #000';
-        jQuery.loading(true, { text:'Loading...', mask:true, effect:'update' });
-        //jQuery('.paginate').fadeOut();
+        jQuery.loading(true, { text:'Loading...', /*mask:true, */effect:'update' });
         jQuery.get('/browse.php?action=paging&fFolderId=' + folderId + '&page=' + pageNum, function(data) {
             try { var responseJSON = jQuery.parseJSON(data); }
             catch(e) { return; }
@@ -110,7 +114,7 @@ kt.pages.browse.viewPage = function(pageNum, folderId, fetch) {
                 kt.pages.browse.showPage(pageNum, pageItem);
             }
 
-            //jQuery('.paginate').fadeIn();
+            kt.pages.browse.loading = false;
         });
     }
 };
