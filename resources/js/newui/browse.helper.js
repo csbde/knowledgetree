@@ -64,14 +64,12 @@ kt.pages.browse.viewPage = function(pageNum, fetch) {
     if (pageNum < 1) { pageNum = 1; }
     var pageItem = jQuery('.paginate>li.page_' + pageNum);
 
-    if (pageItem.length <= 0) {
-        return;
-    }
+    if (pageItem.length <= 0) { return; }
 
     // if the selected page was already loaded, display immediately
     var loaded = false;
     if (jQuery('.page.page_' + pageNum).length > 0) {
-        console.log('Page ' + pageNum + ' previously loaded');
+        console.log('Show page ' + pageNum + ' (previously loaded)');
         kt.pages.browse.showPage(pageNum, pageItem);
         loaded = true;
     }
@@ -79,7 +77,7 @@ kt.pages.browse.viewPage = function(pageNum, fetch) {
     // then check for additional content within the requested range, not yet loaded
     fetch = (typeof fetch == 'undefined') ? true : fetch;
     if (fetch) {
-        var response = jQuery.get('http://paul.knowledgetree.com/browse.php?action=paging&fFolderId=6&page=' + pageNum, function(data) {
+        var response = jQuery.get('/browse.php?action=paging&fFolderId=6&page=' + pageNum, function(data) {
             if (data != '[]') {
                 var responseJSON = jQuery.parseJSON(data);
                 for (var pageId in responseJSON) {
@@ -103,6 +101,7 @@ kt.pages.browse.showPage = function(pageNum, pageItem) {
     jQuery('.paginate>li.item').removeClass('highlight');
     pageItem.addClass('highlight');
     kt.pages.browse.curPage = new Number(pageNum);
+    jQuery('html, body').animate({ scrollTop: 0 }, 0);
 }
 
 kt.pages.browse.nextPage = function() {
