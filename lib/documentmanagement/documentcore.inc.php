@@ -37,6 +37,7 @@
  */
 
 require_once(KT_LIB_DIR . '/ktentity.inc');
+require_once(KT_LIB_DIR . '/datetime/datetimeutil.inc.php');
 
 class KTDocumentCore extends KTEntity {
     var $_bUsePearError = true;
@@ -134,6 +135,7 @@ class KTDocumentCore extends KTEntity {
     function getOwnerId() { return $this->iOwnerId; }
     function setOwnerId($iNewValue) { $this->iOwnerId = $iNewValue; }
     function getCreatedDateTime() { return $this->dCreated; }
+    
     function getModifiedUserId() { return $this->iModifiedUserId; }
     function setModifiedUserId($iNewValue) { $this->iModifiedUserId = $iNewValue; }
     function getLastModifiedDate() { return $this->dModified; }
@@ -181,6 +183,11 @@ class KTDocumentCore extends KTEntity {
     function getLinkedDocumentId(){ return $this->iLinkedDocumentId;}
     function setLinkedDocumentId($iNewValue){ $this->iLinkedDocumentId = $iNewValue;}
 
+    // Timezone getters
+    function getDisplayCreatedDateTime() { return datetimeutil::getDisplayDate($this->dCreated); }
+    function getDisplayLastModifiedDate() { return empty($this->dModified) ? $this->dModified : datetimeutil::getDisplayDate($this->dModified); }
+    function getDisplayCheckedOutDate() { return empty($this->dCheckedOut) ? $this->dCheckedOut : datetimeutil::getDisplayDate($this->dCheckedOut); }
+    
     /**
      * Returns the ID of the real document.
      *

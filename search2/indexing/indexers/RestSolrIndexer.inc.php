@@ -252,7 +252,7 @@ class RestSolrIndexer extends Indexer
         				{
         					$item = new DocumentResultItem($document_id, $hit->Rank, $hit->Title, $hit->Content, null, $this->inclStatus);
 
-        					if ($item->CanBeReadByUser)
+        					if ($item->CanBeReadByUser || $hit->SharedUser)
         					{
         						$results[$document_id] = $item;
         					}

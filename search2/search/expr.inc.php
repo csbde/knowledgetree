@@ -1444,10 +1444,10 @@ class SQLQueryBuilder implements QueryBuilder
         // check user type, shared users have a different permissions validation structure
         if ($oUser->getDisabled() == 4) {
             if ($this->context == ExprContext::DOCUMENT) {
-                $sql .= " INNER JOIN shared_content sc ON (sc.object_id = d.id) OR (sc.object_id = (SELECT folder_id FROM documents dlink WHERE dlink.id = d.id) AND sc.type = 'folder') AND sc.user_id = {$oUser->getId()}\n";
+                $sql .= " INNER JOIN shared_content sc ON ((sc.object_id = d.id) OR (sc.object_id = (SELECT folder_id FROM documents dlink WHERE dlink.id = d.id) AND sc.type = 'folder')) AND sc.user_id = {$oUser->getId()}\n";
             }
             else if ($this->context == ExprContext::FOLDER) {
-                $sql .= " INNER JOIN shared_content sc ON (sc.object_id = f.id) OR (sc.object_id = (SELECT parent_id FROM folders flink WHERE flink.id = f.id) AND sc.type = 'folder') AND sc.user_id = {$oUser->getId()}\n";
+                $sql .= " INNER JOIN shared_content sc ON ((sc.object_id = f.id) OR (sc.object_id = (SELECT parent_id FROM folders flink WHERE flink.id = f.id) AND sc.type = 'folder')) AND sc.user_id = {$oUser->getId()}\n";
             }
 
             $sql .= ' WHERE ';
