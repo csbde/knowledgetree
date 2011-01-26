@@ -81,7 +81,9 @@ kt.pages.browse.viewPage = function(pageNum, folderId, fetch) {
         console.log('fade out');
         jQuery('.paginate').fadeOut();
         jQuery.get('/browse.php?action=paging&fFolderId=' + folderId + '&page=' + pageNum, function(data) {
-            var responseJSON = jQuery.parseJSON(data);
+            try { var responseJSON = jQuery.parseJSON(data); }
+            catch(e) { return; }
+
             var pages = 0;
             jQuery.each(responseJSON, function() { ++pages; });
             if (pages > 0) {
