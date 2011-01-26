@@ -84,8 +84,8 @@ class datetime_view extends KTAdminDispatcher
 			$zoneRegion = isset($aValue[1]) ? $aValue[0] : 'Other';
 			$selected = ($standardZone == $value) ? 'selected' : '';
 			$class = ($zoneRegion == $currentRegion) ? "show_select $zoneRegion":"hide_select $zoneRegion";
-			$standardZone = ($zoneRegion == 'Other') ? "Other/$standardZone" : $standardZone;
-			$ddoptions .= '<option class="' . $class . '" value="' . $standardZone . '" ' . $selected . '> ' . $standardZone . '</option>';
+			$displayZone = ($zoneRegion == 'Other') ? "Other/$standardZone" : $standardZone;
+			$ddoptions .= '<option class="' . $class . '" value="' . $standardZone . '" ' . $selected . '> ' . $displayZone . '</option>';
 		}
 		
 		return $ddoptions;
