@@ -1190,12 +1190,15 @@ class KTDocumentUtil {
 
         DBUtil::commit();
         
-        /*$GLOBALS['default']->log->debug('Document transaction id '.$oDocumentTransaction->iID);
-        
-        $aFields = array();
-        $aFields['parent_id'] = $oOrigFolder->getId();
-        
-        DBUtil::autoUpdate('document_transactions', $aFields, $oDocument->getId());*/
+        //now update the document_transactions table to reflect the parent folder id
+        $aFV = array(        
+        	'parent_id' => $oOrigFolder->getId(),    
+        );    
+        $aWFV = array(        
+        	'document_id' => $oDocument->getId(),
+        );
+
+        $res = DBUtil::whereUpdate(KTUtil::getTableName('document_transactions'), $aFV, $aWFV);
         
         // TODO : better way of checking if its a bulk delete
         if (!$bulk_action) {
