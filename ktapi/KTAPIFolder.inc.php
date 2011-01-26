@@ -1573,6 +1573,10 @@ class KTAPI_Folder extends KTAPI_FolderItem
     {
     	//$GLOBALS['default']->log->debug("getChanges $timestamp $depth '$what'");
     	
+    	//just for some sanity
+    	if ($depth == 0)
+    		$depth = 1;
+    	
     	$changes = array();
     	
     	$this->createdSince($timestamp, $what, $changes);
@@ -1611,7 +1615,7 @@ class KTAPI_Folder extends KTAPI_FolderItem
      */
 	private function getChangesRecursive($timestamp, $depth = 1, $what = 'DF', &$changes = array())
     {
-    	//$GLOBALS['default']->log->debug("getChangesRecursive timestamp $timestamp depth $depth ".print_r($changes, true));
+    	$GLOBALS['default']->log->debug("getChangesRecursive timestamp $timestamp depth $depth ".print_r($changes, true));
     	
     	// are we fetching the entire tree?
         // Set a static boolean value which will instruct recursive calls to ignore the depth parameter;
@@ -1665,6 +1669,8 @@ class KTAPI_Folder extends KTAPI_FolderItem
 					    	$ktapi_folder->movedSince($timestamp, $what, $changes);
 					    	
 					    	$ktapi_folder->updatedSince($timestamp, $what, $changes);
+					    	
+					    	$GLOBALS['default']->log->debug("getChangesRecursive just before recursing timestamp $timestamp depth $depth");
 					        
 					    	//now recurse!
 							if ($fullTree || ($depth > 1)) {
@@ -1763,7 +1769,7 @@ class KTAPI_Folder extends KTAPI_FolderItem
      */
     public function deletedSince($timestamp, $what = 'DF', &$contents = array())
     {
-    	//$GLOBALS['default']->log->debug("deletedSince timestamp $timestamp");
+    	$GLOBALS['default']->log->debug("deletedSince timestamp $timestamp \'$what\'");
     	
     	//need to do folders?
         if (strpos($what, 'F') !== false)
@@ -1799,7 +1805,7 @@ class KTAPI_Folder extends KTAPI_FolderItem
 					); 
 	        }        
 	        
-	        //$GLOBALS['default']->log->debug('deletedSince folderIDs '.print_r($contents, true));
+	        $GLOBALS['default']->log->debug('deletedSince folders '.print_r($contents, true));
         }
         
         //TODO: what about archived documents? Or is that picked up by documents modified?
@@ -1824,7 +1830,7 @@ class KTAPI_Folder extends KTAPI_FolderItem
 	        foreach ($documents as $document) {	   
 	        	$array = array(
 					'id' => $document['id'],
-	        		'item_type' => 'F',
+	        		'item_type' => 'D',
 	        		'parent_id' => $document['parent_id'],	        		
 	        	);
 	        	
@@ -1846,6 +1852,8 @@ class KTAPI_Folder extends KTAPI_FolderItem
 					); 
 	    		}*/
 	        }
+	        
+	        $GLOBALS['default']->log->debug('deletedSince documents '.print_r($contents, true));
         }
     }
     

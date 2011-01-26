@@ -485,6 +485,9 @@ class KTWebService {
     {    	
     	$datetime = gmdate("c");
     	
+    	//$utc_str = gmdate("M d Y H:i:s", time());
+  		//$utc = strtotime($utc_str);
+    	
     	$response['status_code'] = KTWS_SUCCESS;
     	$response['message'] = $datetime;
     	
@@ -4215,7 +4218,7 @@ class KTWebService {
 				else
 				{
 					$new_change['folder_id'] = $key;
-					$new_change['changes'] = KTWebService::_encode_folder_change_items(array());
+					$new_change['changes'] = NULL;	//KTWebService::_encode_folder_change_items(array());
 					
 					$changes[] = new SOAP_Value('change_item', "{urn:$this->namespace}kt_folder_change", $new_change);
 				}

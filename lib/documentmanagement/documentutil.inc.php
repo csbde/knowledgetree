@@ -1181,12 +1181,22 @@ class KTDocumentUtil {
         	}
         }
 
+        //$GLOBALS['default']->log->debug('Document transaction folder id '.$oDocument->getFolderID().' or '.$oOrigFolder->getId());
+        
         $oDocumentTransaction = new DocumentTransaction($oDocument, _kt('Document deleted: ') . $sReason, 'ktcore.transactions.delete');
         $oDocumentTransaction->create();
-
+        
         $oDocument->setFolderID(1);
 
         DBUtil::commit();
+        
+        /*$GLOBALS['default']->log->debug('Document transaction id '.$oDocumentTransaction->iID);
+        
+        $aFields = array();
+        $aFields['parent_id'] = $oOrigFolder->getId();
+        
+        DBUtil::autoUpdate('document_transactions', $aFields, $oDocument->getId());*/
+        
         // TODO : better way of checking if its a bulk delete
         if (!$bulk_action) {
             // we weren't doing notifications on this one
