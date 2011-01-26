@@ -385,8 +385,24 @@ class BrowseView {
 		}
 	}
 
+	/**
+	 * Create the pagination element.
+	 *
+	 * @param int $pageCount
+	 * @param string $pageClass
+	 * @param string $paginationClass
+	 * @param string $itemClass
+	 * @param string $pageScript
+	 * @param string $prevScript
+	 * @param string $nextScript
+	 * @return string
+	 */
 	public function paginateByDiv($pageCount, $pageClass, $paginationClass = 'paginate', $itemClass = 'item', $pageScript = 'alert([page])', $prevScript = "alert('previous');", $nextScript = "alert('next');")
 	{
+	    if ($pageCount <= 0) {
+	        return '';
+	    }
+
 		$idClass = $pageClass . '_[page]';
 		$pages = array();
 		$pages[] = '<ul class="' . $paginationClass . '">';
