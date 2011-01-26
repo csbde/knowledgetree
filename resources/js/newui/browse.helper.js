@@ -80,9 +80,12 @@ kt.pages.browse.viewPage = function(pageNum, fetch) {
     if (fetch && kt.pages.browse.checkRange(pageNum)) {
         console.log('fade out');
         jQuery('.paginate').fadeOut();
-        var response = jQuery.get('/browse.php?action=paging&fFolderId=6&page=' + pageNum, function(data) {
-            if (data != '[]') {
-                var responseJSON = jQuery.parseJSON(data);
+        jQuery.get('/browse.php?action=paging&fFolderId=6&page=' + pageNum, function(data) {
+            var responseJSON = jQuery.parseJSON(data);
+            var pages = 0;
+            jQuery.each(responseJSON, function() { ++pages; });
+            if (pages > 0) {
+                console.log('got ' + pages + ' pages');
                 for (var pageId in responseJSON) {
                     console.log("Load page " + pageId);
                     if (pageNum == 1) {
@@ -98,6 +101,9 @@ kt.pages.browse.viewPage = function(pageNum, fetch) {
                     }
                     jQuery('.page.page_' + pageId).hide(0);
                 }
+            }
+            else {
+                console.log('no pages found');
             }
 
             if (!loaded) {
