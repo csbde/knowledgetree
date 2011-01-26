@@ -44,6 +44,8 @@ kt.lib.parseTemplate = function(str, obj) {
 
 kt.pages.browse = {};
 
+kt.pages.browse.curPage = 1;
+
 kt.pages.browse.addDocumentItem = function(item) {
     item.is_shortcut = item.is_shortcut ? '' : ' not_supported';
     item.is_immutable = item.is_immutable ? '' : ' not_supported';
@@ -58,7 +60,6 @@ kt.pages.browse.addDocumentItem = function(item) {
     jQuery('.page.page_' + kt.pages.browse.curPage).append(elem);
 };
 
-kt.pages.browse.curPage = 1;
 kt.pages.browse.viewPage = function(pageNum, fetch) {
     if (pageNum < 1) { pageNum = 1; }
     var pageItem = jQuery('.paginate>li.page_' + pageNum);
