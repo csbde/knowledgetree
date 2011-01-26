@@ -61,6 +61,7 @@ kt.pages.browse.addDocumentItem = function(item) {
 };
 
 kt.pages.browse.viewPage = function(pageNum, fetch) {
+    // TODO consider rather just returning if pageNum < 1?
     if (pageNum < 1) { pageNum = 1; }
     var pageItem = jQuery('.paginate>li.page_' + pageNum);
 
@@ -74,9 +75,11 @@ kt.pages.browse.viewPage = function(pageNum, fetch) {
         loaded = true;
     }
 
-    // then check for additional content within the requested range, not yet loaded
+    // check for additional content within the requested range, not yet loaded
     fetch = (typeof fetch == 'undefined') ? true : fetch;
-    if (fetch) {
+    if (fetch && kt.pages.browse.checkRange(pageNum)) {
+        console.log('fade out');
+        jQuery('.paginate').fadeOut();
         var response = jQuery.get('/browse.php?action=paging&fFolderId=6&page=' + pageNum, function(data) {
             if (data != '[]') {
                 var responseJSON = jQuery.parseJSON(data);
@@ -101,9 +104,27 @@ kt.pages.browse.viewPage = function(pageNum, fetch) {
                 console.log("Show page " + pageNum);
                 kt.pages.browse.showPage(pageNum, pageItem);
             }
+
+            console.log('fade in');
+            jQuery('.paginate').fadeIn();
         });
     }
 };
+
+kt.pages.browse.checkRange = function(pageNum) {
+    var range = 3;
+    pageNum = Number(pageNum);
+
+    // TODO adapt for different range settings - split range and set endpoints in both directions
+    var pages = 0;
+    for (var i = pageNum - 1; i <= pageNum + 1; ++i) {
+        var pageItem = jQuery('.paginate>li.page_' + i);
+        if (pageItem.length <= 0) { continue; }
+        if (jQuery('.page.page_' + i).length <= 0) { ++pages; }
+    }
+
+    return pages > 0;
+}
 
 kt.pages.browse.showPage = function(pageNum, pageItem) {
     jQuery('.page').hide(0, function() { jQuery('.page.page_' + pageNum).show(0); })
