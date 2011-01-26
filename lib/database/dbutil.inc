@@ -678,5 +678,41 @@ class DBUtil {
         return $default->_admindb;
     }
 
+    public static function getDbOptions($options = null)
+    {
+        $optionString = '';
+
+        // Force the options to be an array
+        if (is_null($options)) {
+            $options = array();
+        }
+
+        /* ***  Check for all option values  *** */
+
+        // not sure what this next one did in the context of ktentity getlist
+        /*// Check if only the id's have been requested
+        $bIDs = isset($options['ids']) ? $options['ids'] : false;*/
+
+        // not sure what this next one did in the context of ktentity getlist
+        /*// Check if the id field differs from the standard
+        $sIDField = isset($options['idfield']) ? $options['idfield'] : 'id';*/
+
+        // Check for an order by clause
+        $orderBy = isset($options['orderby']) ? $options['orderby'] : false;
+
+        // Check for a limit and offset
+        $limit = isset($options['limit']) ? $options['limit'] : false;
+        $offset = isset($options['offset']) ? $options['offset'] : false;
+
+        $limit = ($offset && $limit) ? (" LIMIT $offset, $limit") : ($limit ? " LIMIT $limit" : '');
+        $optionString = ($orderBy ? " ORDER BY $orderBy" : '') . $limit;
+
+        // not sure what this next one did in the context of ktentity getlist
+        /*// Check for the cache value
+        $cache = isset($options['cache']) ? $options['cache'] : 'getlist';*/
+
+        return $optionString;
+    }
+
 }
 ?>

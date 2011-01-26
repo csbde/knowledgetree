@@ -2138,9 +2138,11 @@ class KTAPI {
      * @param integer $folder_id The id of the folder
      * @param integer $depth The depth to display - 1 = direct contents, 2 = include contents of the contained folders, etc
      * @param string $what Filter on what should be returned, takes a combination of the following: D = documents, F = folders, S = shortcuts
+     * @param int $totalItems
+     * @param array $options
      * @return array Response 'results' contains kt_folder_contents | 'message' contains error message on failure
      */
-    public function get_folder_contents($folder_id, $depth = 1, $what = 'DFS')
+    public function get_folder_contents($folder_id, $depth = 1, $what = 'DFS', &$totalItems = 0, $options = array())
     {
         $folder = &$this->get_folder_by_id($folder_id);
         if (PEAR::isError($folder)) {
@@ -2149,7 +2151,7 @@ class KTAPI {
     	    return $response;
         }
 
-        $listing = $folder->get_listing($depth, $what);
+        $listing = $folder->get_listing($depth, $what, $totalItems, $options);
 
     	$contents = array(
     		'folder_id' => $folder_id + 0,
