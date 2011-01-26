@@ -5481,7 +5481,7 @@ class KTAPI {
      */
 	public function get_folder_changes($folder_ids, $timestamp, $depth = 1, $what = 'DF')
 	{
-		//$GLOBALS['default']->log->debug("KTAPI get_folder_changes ".print_r($folder_ids, true)." $timestamp $depth '$what'");
+		$GLOBALS['default']->log->debug("KTAPI get_folder_changes ".print_r($folder_ids, true)." $timestamp $depth '$what'");
 		
 		$results = array();
 		
@@ -5505,13 +5505,15 @@ class KTAPI {
 	    	$timezone = date_default_timezone_get();
 	    	date_default_timezone_set("UTC");
 			
-			$timestamp = date("c", (int)$timestamp);
+			$time = date("c", (int)$timestamp);
+			
+			$GLOBALS['default']->log->debug("KTAPI get_folder_changes converted timestamp $time");
 			
 			 //TODO: remove this!!!
         	date_default_timezone_set($timezone);
 			
 			//get the changes!
-			$changes = $folder->getChanges($timestamp, $depth, $what);
+			$changes = $folder->getChanges($time, $depth, $what);
 			
 			//$GLOBALS['default']->log->debug('KTAPI get_folder_changes count changes '.count($changes));
 			
@@ -5536,12 +5538,20 @@ class KTAPI {
 			}
 		}
 		
-		//$GLOBALS['default']->log->debug('KTAPI get_folder_changes results '.print_r($results, true));
+		$GLOBALS['default']->log->debug('KTAPI get_folder_changes results '.print_r($results, true));
+		
+		$timezone = date_default_timezone_get();
+    	date_default_timezone_set("UTC");
+		
+		$timestamp = time();
+		
+		 //TODO: remove this!!!
+        date_default_timezone_set($timezone);
 		
 		return array(
 			"status_code" => $hasChanges ? 0 : 1,
 			"message" => $hasChanges ? "There are changes." : "No changes.",
-			"change_id" => time(),
+			"change_id" => $timestamp,
 			"result" => $results
 		);
 	}
