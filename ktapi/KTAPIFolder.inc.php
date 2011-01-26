@@ -48,7 +48,6 @@
 
 require_once(KT_DIR . '/ktwebservice/KTUploadManager.inc.php');
 require_once(KT_LIB_DIR . '/mime.inc.php');
-// TODO Check what uses this - latest edge code doesn't have this line
 require_once(KT_LIB_DIR . '/search/searchutil.inc.php');
 
 /**
@@ -1966,13 +1965,13 @@ class KTAPI_Folder extends KTAPI_FolderItem {
 		$wsversion = $this->getWSVersion();
 
 		$created_by = $this->_resolve_user($folder->getCreatorID());
-		$created_date = $folder->getCreatedDateTime();
+		$created_date = $folder->getDisplayCreatedDateTime();
 		if (empty($created_date)) {
 			$created_date = 'n/a';
 		}
 
 		$modified_by = $this->_resolve_user($folder->getModifiedUserID());
-		$modified_date = $folder->getLastModifiedDate();
+		$modified_date = $folder->getDisplayLastModifiedDate();
 		if (empty($modified_date)) {
 				$modified_date = 'n/a';
 		}
@@ -2070,20 +2069,20 @@ class KTAPI_Folder extends KTAPI_FolderItem {
 		$mime_cache = array();
 
         $created_by = $this->_resolve_user($document->getCreatorID());
-		$created_date = $document->getCreatedDateTime();
+		$created_date = $document->getDisplayCreatedDateTime();
 		if (empty($created_date)) {
 			$created_date = 'n/a';
 		}
 
 		$checked_out_by_id = $document->getCheckedOutUserID();
 		$checked_out_by = $this->_resolve_user($checked_out_by_id);
-		$checked_out_date = $document->getCheckedOutDate();
+		$checked_out_date = $document->getDisplayCheckedOutDate();
 		if (empty($checked_out_date)) {
 			$checked_out_date = 'n/a';
 		}
 
 		$modified_by = $this->_resolve_user($document->getModifiedUserId());
-		$modified_date = $document->getLastModifiedDate();
+		$modified_date = $document->getDisplayLastModifiedDate();
 		if (empty($modified_date)) {
 			$modified_date = 'n/a';
 		}
