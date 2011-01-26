@@ -82,8 +82,17 @@ kt.pages.browse.viewPage = function(pageNum, fetch) {
                 var responseJSON = jQuery.parseJSON(data);
                 for (var pageId in responseJSON) {
                     console.log("Load page " + pageId);
-                    // we prepend because otherwise it switches the location of the page navigator
-                    jQuery('.itemContainer').prepend(responseJSON[pageId]);
+                    if (pageNum == 1) {
+                        // we prepend because otherwise it switches the location of the page navigator
+                        jQuery('.itemContainer').prepend(responseJSON[pageId]);
+                    }
+                    else {
+                        var appendTo = pageId - 1;
+                        while (jQuery('.page.page_' + appendTo).length <= 0) {
+                            --appendTo;
+                        }
+                        jQuery('.page.page_' + appendTo).after(responseJSON[pageId]);
+                    }
                     jQuery('.page.page_' + pageId).hide(0);
                 }
             }
