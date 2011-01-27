@@ -62,10 +62,7 @@ kt.pages.browse.addDocumentItem = function(item) {
 };
 
 kt.pages.browse.viewPage = function(pageNum, folderId, fetch) {
-    if (kt.pages.browse.loading) {
-        console.log('already loading content, rejecting multiple requests');
-        return;
-    }
+    if (kt.pages.browse.loading) { return; }
 
     // TODO consider rather just returning if pageNum < 1?
     if (pageNum < 1) { pageNum = 1; }
@@ -83,13 +80,12 @@ kt.pages.browse.viewPage = function(pageNum, folderId, fetch) {
     // check for additional content within the requested range, not yet loaded
     fetch = (typeof fetch == 'undefined') ? true : fetch;
     if (fetch && kt.pages.browse.checkRange(pageNum)) {
-        console.log('fetching');
         kt.pages.browse.loading = true;
     	jQuery.loading.css.background = 'yellow';
         jQuery.loading(true, { text: 'Loading...', effect: 'update' });
-//        jQuery.get('/browse.php?action=paging&fFolderId=' + folderId + '&page=' + pageNum, function(data) {
         jQuery.ajax({
-            url: '/browse.php?action=paging&fFolderId=' + folderId + '&page=' + pageNum,
+            url: '/browse.php?action=paging&fFolderId=' + folderId + '&page=' + pageNum
+                 + '&options={"offset":' + kt.pages.browse.offset + ',"limit":'+ kt.pages.browse.limit + '}',
             timeout: 30000,
             success: function(data) { kt.pages.browse.loaded(data, pageNum, pageItem, loaded); },
             error: kt.pages.browse.loadingFailed
@@ -98,13 +94,14 @@ kt.pages.browse.viewPage = function(pageNum, folderId, fetch) {
 };
 
 kt.pages.browse.checkRange = function(requested) {
-    // NOTE if you change the limit here, be sure to also change it on the server side
-    var limit = 3;
+    // NOTE if you change the limit here, you should also change it on the server side
+    //      (although the code should function fine if you don't...)
+    kt.pages.browse.limit = 3;
     requested = Number(requested);
 
     var mid = null;
-	var half = Math.floor(limit / 2);
-	var remainder = limit % 2;
+	var half = Math.floor(kt.pages.browse.limit / 2);
+	var remainder = kt.pages.browse.limit % 2;
 	if (remainder != 0) {
 	    mid = half + 1;
 	    var first = requested - half;
@@ -115,21 +112,21 @@ kt.pages.browse.checkRange = function(requested) {
 	}
 
 	index = (first > 0) ? first : 1;
-	limit = index + limit;
-	var pages = 0;
+	limit = index + kt.pages.browse.limit;
+	var pages = new Array;
 	for (var i = index; i < limit; ++i) {
         var pageItem = jQuery('.paginate>li.page_' + i);
         if (pageItem.length <= 0) { continue; }
-        if (jQuery('.page.page_' + i).length <= 0) { ++pages; }
+        if (jQuery('.page.page_' + i).length <= 0) { pages[pages.length] = i; }
 	}
 
-	console.log('fetching ' + pages + ' pages')
+	kt.pages.browse.offset = (pages.length > 0) ? pages[0] : 0;
+	kt.pages.browse.limit = pages.length;
 
-    return pages > 0;
+    return pages.length > 0;
 }
 
 kt.pages.browse.loaded = function(data, pageNum, pageItem, loaded) {
-    console.log('loading successful');
     try {
         var responseJSON = jQuery.parseJSON(data);
     }
@@ -166,7 +163,6 @@ kt.pages.browse.loaded = function(data, pageNum, pageItem, loaded) {
 }
 
 kt.pages.browse.loadingFailed = function(request, errorType, thrown) {
-    console.log('loading failed: ' + errorType);
     jQuery.loading(false);
     kt.pages.browse.loading = false;
 }

@@ -15,7 +15,8 @@ class BrowseView {
     private $pages = array();
     private $range = array();
     private $initialLoad = 3;
-    // NOTE if you change the limit here, be sure to also change it in the client side js
+    // NOTE if you change the limit here, be sure to also change it in the client side js;
+    //      the value may be overridden by the javascript, but this value is always a fallback.
     private $limit = 3;
     private $folderId;
 
@@ -46,7 +47,7 @@ class BrowseView {
 
     /**
 	 * Sets the start page based on page requested and pages already loaded.
-	 * Aims to get one page on either side of requested page, if not already loaded.
+	 * Aims to get one or more pages on either side of requested page, if not already loaded.
 	 *
 	 * @param int $folderId
 	 * @param int $requested
@@ -73,7 +74,7 @@ class BrowseView {
         $limit = $index + $this->limit;
         $pages = array();
         for ($i = $index; $i < $limit; ++$i) {
-            if (!isset($session[$i])) { $pages[$i] = 1; }
+            if (!isset($session[$i])) { $pages[] = $i; }
         }
 
         // TODO if we end up with only one page and it is the first or last in the set, perhaps
@@ -81,7 +82,7 @@ class BrowseView {
 
         $options = array();
         $options['limit'] = count($pages);
-        $options['offset'] = ($options['limit'] > 0) ? array_shift(array_keys($pages)) : 0;
+        $options['offset'] = ($options['limit'] > 0) ? $pages[0] : 0;
 
         return $options;
     }
@@ -129,8 +130,11 @@ class BrowseView {
 	 *
 	 * @param int $folderId
 	 * @param int $pageCount
+	 * @param array $options If these are submitted then the requested range will be force loaded
+	 *                       even if there was a previous load.  This allows pages to recover from
+	 *                       a partially failed request.
 	 */
-    public function lazyLoad($folderId, $requested = 1)
+    public function lazyLoad($folderId, $requested = 1, $options = array())
     {
         $response = array();
 
@@ -140,7 +144,9 @@ class BrowseView {
 
         // TODO can improve performance on calling already loaded pages if we set these options
         //      before doing the folder setup, etc., which currently happens before.
-        $options = $this->getLazyOptions($folderId, $requested);
+        if (empty($options)) {
+            $options = $this->getLazyOptions($folderId, $requested);
+        }
 
         // ignore a request for already loaded content
         $responseData = array();
