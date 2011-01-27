@@ -62,8 +62,11 @@ kt.pages.browse.addDocumentItem = function(item) {
 };
 
 kt.pages.browse.viewPage = function(pageNum, folderId, fetch) {
-    // don't allow more than one load request at a time
-    if (kt.pages.browse.loading) { console.log('already loading content, rejecting multiple requests'); return; }
+    if (kt.pages.browse.loading) {
+        console.log('already loading content, rejecting multiple requests');
+        return;
+    }
+
     // TODO consider rather just returning if pageNum < 1?
     if (pageNum < 1) { pageNum = 1; }
     var pageItem = jQuery('.paginate>li.page_' + pageNum);
@@ -83,43 +86,13 @@ kt.pages.browse.viewPage = function(pageNum, folderId, fetch) {
         console.log('fetching');
         kt.pages.browse.loading = true;
     	jQuery.loading.css.background = 'yellow';
-    	//jQuery.loading.css.border = '1px solid #000';
-        jQuery.loading(true, { text:'Loading...', /*mask:true, */effect:'update' });
-        jQuery.get('/browse.php?action=paging&fFolderId=' + folderId + '&page=' + pageNum, function(data) {
-            try {
-                var responseJSON = jQuery.parseJSON(data);
-            }
-            catch(e) {
-                kt.pages.browse.loading = false;
-                return;
-            }
-
-            var pages = 0;
-            jQuery.each(responseJSON, function() { ++pages; });
-            if (pages > 0) {
-                for (var pageId in responseJSON) {
-                    if (pageNum == 1) {
-                        // we prepend because otherwise it switches the location of the page navigator
-                        jQuery('.itemContainer').prepend(responseJSON[pageId]);
-                    }
-                    else {
-                        var appendTo = pageId - 1;
-                        while (jQuery('.page.page_' + appendTo).length <= 0) {
-                            --appendTo;
-                        }
-                        jQuery('.page.page_' + appendTo).after(responseJSON[pageId]);
-                    }
-                    jQuery('.page.page_' + pageId).hide(0);
-                }
-            }
-
-            jQuery.loading(false);
-
-            if (!loaded) {
-                kt.pages.browse.showPage(pageNum, pageItem);
-            }
-
-            kt.pages.browse.loading = false;
+        jQuery.loading(true, { text: 'Loading...', effect: 'update' });
+//        jQuery.get('/browse.php?action=paging&fFolderId=' + folderId + '&page=' + pageNum, function(data) {
+        jQuery.ajax({
+            url: '/browse.php?action=paging&fFolderId=' + folderId + '&page=' + pageNum,
+            timeout: 7500,
+            success: function(data) { kt.pages.browse.loaded(data, pageNum, pageItem, loaded); },
+            error: kt.pages.browse.loadingFailed
         });
     }
 };
@@ -137,6 +110,49 @@ kt.pages.browse.checkRange = function(pageNum) {
     }
 
     return pages > 0;
+}
+
+kt.pages.browse.loaded = function(data, pageNum, pageItem, loaded) {
+    console.log('loading successful');
+    try {
+        var responseJSON = jQuery.parseJSON(data);
+    }
+    catch(e) {
+        kt.pages.browse.loading = false;
+        return;
+    }
+
+    var pages = 0;
+    jQuery.each(responseJSON, function() { ++pages; });
+    if (pages > 0) {
+        for (var pageId in responseJSON) {
+            if (pageNum == 1) {
+                // we prepend because otherwise it switches the location of the page navigator
+                jQuery('.itemContainer').prepend(responseJSON[pageId]);
+            }
+            else {
+                var appendTo = pageId - 1;
+                while (jQuery('.page.page_' + appendTo).length <= 0) {
+                    --appendTo;
+                }
+                jQuery('.page.page_' + appendTo).after(responseJSON[pageId]);
+            }
+            jQuery('.page.page_' + pageId).hide(0);
+        }
+    }
+
+    if (!loaded) {
+        kt.pages.browse.showPage(pageNum, pageItem);
+    }
+
+    jQuery.loading(false);
+    kt.pages.browse.loading = false;
+}
+
+kt.pages.browse.loadingFailed = function(request, errorType, thrown) {
+    console.log('loading failed: ' + errorType);
+    jQuery.loading(false);
+    kt.pages.browse.loading = false;
 }
 
 kt.pages.browse.showPage = function(pageNum, pageItem) {
