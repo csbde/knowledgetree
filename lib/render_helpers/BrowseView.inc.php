@@ -14,35 +14,37 @@ class BrowseView {
 
     private $pages = array();
     private $range = array();
-    private $pageLimit = 3;
+    private $initialLoad = 3;
+    // NOTE if you change the limit here, be sure to also change it in the client side js
+    private $limit = 3;
     private $folderId;
 
-	public function __construct()
-	{
-		if (KTPluginUtil::pluginIsActive('zoho.plugin')) {
-			$this->zohoEnabled = true;
-			require_once(KT_PLUGIN_DIR . '/ktlive/zoho/zoho.inc.php');
-		} else {
-			$this->zohoEnabled = false;
-		}
+    public function __construct()
+    {
+        if (KTPluginUtil::pluginIsActive('zoho.plugin')) {
+            $this->zohoEnabled = true;
+            require_once(KT_PLUGIN_DIR . '/ktlive/zoho/zoho.inc.php');
+        } else {
+            $this->zohoEnabled = false;
+        }
 
-		// Include new browse view css
-		$oPage = $GLOBALS['main'];
-		$oPage->requireCSSResource("resources/css/newui/browseView.css?" . rand());
-	}
+        // Include new browse view css
+        $oPage = $GLOBALS['main'];
+        $oPage->requireCSSResource("resources/css/newui/browseView.css?" . rand());
+    }
 
-	public function getJavaScript()
-	{
-		$javaScript = '';
+    public function getJavaScript()
+    {
+        $javaScript = '';
 
-		if ($this->zohoEnabled) {
-			$javaScript .= '<script type="text/javascript">' . Zoho::editScript() . '</script>';
-		}
+        if ($this->zohoEnabled) {
+            $javaScript .= '<script type="text/javascript">' . Zoho::editScript() . '</script>';
+        }
 
-		return $javaScript;
-	}
+        return $javaScript;
+    }
 
-	/**
+    /**
 	 * Sets the start page based on page requested and pages already loaded.
 	 * Aims to get one page on either side of requested page, if not already loaded.
 	 *
@@ -50,23 +52,28 @@ class BrowseView {
 	 * @param int $requested
 	 * @return array
 	 */
-	private function getLazyOptions($folderId, $requested)
-	{
-	    if (!$_SESSION) {
-	        session_start();
-	    }
+    private function getLazyOptions($folderId, $requested)
+    {
+        if (!$_SESSION) { session_start(); }
+        $session = !empty($_SESSION['ktPageSet'][$folderId]) ? $_SESSION['ktPageSet'][$folderId] : array();
 
-	    $session = !empty($_SESSION['ktPageSet'][$folderId]) ? $_SESSION['ktPageSet'][$folderId] : array();
+        $mid = null;
+        $half = floor($this->limit / 2);
+        $remainder = $this->limit % 2;
+        if ($remainder != 0) {
+            $mid = $half + 1;
+            $first = $requested - $half;
+        }
+        else {
+            $mid = $half;
+            $first = $requested - $half - 1;
+        }
 
-	    $preceding = $requested - 1;
-	    $index = ($preceding > 0) ? $preceding : 1;
-        $pages = array($index => 1, $index + 1 => 1, $index + 2 => 1);
-
-        $limit = $index + $this->pageLimit;
+        $index = ($first > 0) ? $first : 1;
+        $limit = $index + $this->limit;
+        $pages = array();
         for ($i = $index; $i < $limit; ++$i) {
-            if (isset($session[$i])) {
-                unset($pages[$i]);
-            }
+            if (!isset($session[$i])) { $pages[$i] = 1; }
         }
 
         // TODO if we end up with only one page and it is the first or last in the set, perhaps
@@ -77,37 +84,34 @@ class BrowseView {
         $options['offset'] = ($options['limit'] > 0) ? array_shift(array_keys($pages)) : 0;
 
         return $options;
-	}
+    }
 
-	/**
+    /**
 	 * Sets offset and limit for browsing
 	 *
 	 * @param int $pageCount
 	 */
-	public function setPagingOptions($pageCount = 1, $limit = null)
-	{
-	    if (empty($limit)) {
-	        $limit = $this->pageLimit;
-	    }
+    public function setPagingOptions($pageCount = 1, $limit = null)
+    {
+        if (empty($limit)) {
+            $limit = $this->limit;
+        }
 
-	    $this->pages['count'] = $pageCount;
-	    $this->pages['perPage'] = 15;
-		$this->range['offset'] = ($this->pages['count'] - 1) * $this->pages['perPage'];
-		$this->range['limit'] = $this->pages['perPage'] * $limit;
-	}
+        $this->pages['count'] = $pageCount;
+        $this->pages['perPage'] = 15;
+        $this->range['offset'] = ($this->pages['count'] - 1) * $this->pages['perPage'];
+        $this->range['limit'] = $this->pages['perPage'] * $limit;
+    }
 
-	/**
+    /**
 	 * Sets/Updates a session value to contain the list of pages already loaded
 	 *
 	 * @param array $options
 	 * @param int $folderId
 	 */
-	private function updateSession($folderId)
-	{
-	    if (!$_SESSION) {
-	        session_start();
-	    }
-
+    private function updateSession($folderId)
+    {
+        if (!$_SESSION) { session_start(); }
         $session = (!empty($_SESSION['ktPageSet'][$folderId]) && ($this->range['offset'] > 0)) ? $_SESSION['ktPageSet'][$folderId] : array();
 
         $limit = $this->pages['count'] + ($this->range['limit'] / $this->pages['perPage']);
@@ -118,42 +122,42 @@ class BrowseView {
         }
 
         $_SESSION['ktPageSet'][$folderId] = $session;
-	}
+    }
 
-	/**
+    /**
 	 * Loads additional pages on request, returned as a json encoded array.
 	 *
 	 * @param int $folderId
 	 * @param int $pageCount
 	 */
-	public function lazyLoad($folderId, $requested = 1)
-	{
+    public function lazyLoad($folderId, $requested = 1)
+    {
         $response = array();
 
-		if (empty($folderId)) {
-		    return $response;
-		}
+        if (empty($folderId)) {
+            return $response;
+        }
 
-		// TODO can improve performance on calling already loaded pages if we set these options
-		//      before doing the folder setup, etc., which currently happens before.
-		$options = $this->getLazyOptions($folderId, $requested);
+        // TODO can improve performance on calling already loaded pages if we set these options
+        //      before doing the folder setup, etc., which currently happens before.
+        $options = $this->getLazyOptions($folderId, $requested);
 
         // ignore a request for already loaded content
         $responseData = array();
         if ($options['limit'] > 0) {
-		  $this->setPagingOptions($options['offset'], $options['limit']);
-		  $folderContentItems = $this->getFolderContent($folderId);
-		  if (count($folderContentItems['documents']) + count($folderContentItems['folders']) > 0) {
-		      $responseData = $this->buildFolderView($folderContentItems);
-		  }
+            $this->setPagingOptions($options['offset'], $options['limit']);
+            $folderContentItems = $this->getFolderContent($folderId);
+            if (count($folderContentItems['documents']) + count($folderContentItems['folders']) > 0) {
+                $responseData = $this->buildFolderView($folderContentItems);
+            }
         }
 
         $response['folderContents'] = json_encode($responseData);
 
         return $response;
-	}
+    }
 
-	/**
+    /**
 	 * Fetch and render the contents of a folder.
 	 * This function is intended for the initial rendering.
 	 *
@@ -163,47 +167,47 @@ class BrowseView {
 	 * @param boolean $editable
 	 * @param int $pageCount
 	 */
-	public function renderBrowseFolder($folderId, $aBulkActions, $folder, $editable, $pageCount = 1)
-	{
-		$response = array();
+    public function renderBrowseFolder($folderId, $aBulkActions, $folder, $editable, $pageCount = 1)
+    {
+        $response = array();
 
-		if (empty($folderId)) {
-		    return $response;
-		}
+        if (empty($folderId)) {
+            return $response;
+        }
 
-		$this->folderId = $folderId;
-		$this->setPagingOptions($pageCount);
+        $this->folderId = $folderId;
+        $this->setPagingOptions($pageCount, $this->initialLoad);
 
-		$response['returndata'] = $folderId;
-		// TODO consider this perhaps moving back out to the dispatcher?
-		$response['bulkActionMenu'] = $this->renderBulkActionMenu($aBulkActions, $folder);
+        $response['returndata'] = $folderId;
+        // TODO consider this perhaps moving back out to the dispatcher?
+        $response['bulkActionMenu'] = $this->renderBulkActionMenu($aBulkActions, $folder);
 
-		$totalItems = 0;
+        $totalItems = 0;
         $folderContentItems = $this->getFolderContent($folderId, $totalItems);
         $folderView = $this->buildFolderView($folderContentItems);
-		$response['folderContents'] = join($folderView);
+        $response['folderContents'] = join($folderView);
 
-		// Adding Fragments for drag & drop client side processing
-		$response['fragments'] = '';
-		$response['fragments'] = '';
-		$response['fragments'] .= $this->renderDocumentItem(null, true);
-		$response['fragments'] .= $this->renderFolderItem(null, true);
+        // Adding Fragments for drag & drop client side processing
+        $response['fragments'] = '';
+        $response['fragments'] = '';
+        $response['fragments'] .= $this->renderDocumentItem(null, true);
+        $response['fragments'] .= $this->renderFolderItem(null, true);
 
-		// Apply Clientside Pagination element
-		$fullPageCount = ceil($totalItems / $this->pages['perPage']);
-		$response['pagination'] = $this->paginateByDiv($fullPageCount, 'page', 'paginate', 'item', "kt.pages.browse.viewPage([page], [folder]);", "kt.pages.browse.prevPage({$this->folderId});", "kt.pages.browse.nextPage({$this->folderId});");
+        // Apply Clientside Pagination element
+        $fullPageCount = ceil($totalItems / $this->pages['perPage']);
+        $response['pagination'] = $this->paginateByDiv($fullPageCount, 'page', 'paginate', 'item', "kt.pages.browse.viewPage([page], [folder]);", "kt.pages.browse.prevPage({$this->folderId});", "kt.pages.browse.nextPage({$this->folderId});");
 
-		// Add Additional browse view Javascript
-		$response['javascript'] = $this->getJavaScript();
+        // Add Additional browse view Javascript
+        $response['javascript'] = $this->getJavaScript();
 
-		return $response;
-	}
+        return $response;
+    }
 
-	private function getFolderItems($folderContentItems)
-	{
-	    $folderItems = array();
+    private function getFolderItems($folderContentItems)
+    {
+        $folderItems = array();
 
-	    foreach ($folderContentItems['folders'] as $item) {
+        foreach ($folderContentItems['folders'] as $item) {
             $folderItems[] = $this->renderFolderItem($item);
         }
 
@@ -212,40 +216,40 @@ class BrowseView {
         }
 
         return $folderItems;
-	}
+    }
 
-	private function buildFolderView($folderContentItems)
-	{
-	    $folderItems = $this->getFolderItems($folderContentItems);
-	    $itemCount = count($folderItems);
-		$curItem = 0;
+    private function buildFolderView($folderContentItems)
+    {
+        $folderItems = $this->getFolderItems($folderContentItems);
+        $itemCount = count($folderItems);
+        $curItem = 0;
 
-	    $folderView = array();
-		$folderView[$this->pages['count']] = '<div class="page page_' . $this->pages['count'] . ' ">';
+        $folderView = array();
+        $folderView[$this->pages['count']] = '<div class="page page_' . $this->pages['count'] . ' ">';
 
-		foreach ($folderItems as $item) {
-		    ++$curItem;
-		    if ($curItem > $this->pages['perPage']) {
-		        $folderView[$this->pages['count']] .= '</div>';
-		        ++$this->pages['count'];
-		        $curItem = 1;
-		        $folderView[$this->pages['count']] = '<div class="page page_' . $this->pages['count'] . ' ">';
-		    }
+        foreach ($folderItems as $item) {
+            ++$curItem;
+            if ($curItem > $this->pages['perPage']) {
+                $folderView[$this->pages['count']] .= '</div>';
+                ++$this->pages['count'];
+                $curItem = 1;
+                $folderView[$this->pages['count']] = '<div class="page page_' . $this->pages['count'] . ' ">';
+            }
 
-		    $folderView[$this->pages['count']] .= $item;
-		}
+            $folderView[$this->pages['count']] .= $item;
+        }
 
-		// Deal with scenario where there are no items in a folder
-		if ($itemCount <= 0) {
-		    $folderView[$this->pages['count']] .= $this->noFilesOrFoldersMessage($folderId, $editable);
-		}
+        // Deal with scenario where there are no items in a folder
+        if ($itemCount <= 0) {
+            $folderView[$this->pages['count']] .= $this->noFilesOrFoldersMessage($folderId, $editable);
+        }
 
-		$folderView[$this->pages['count']] .= '</div>';
+        $folderView[$this->pages['count']] .= '</div>';
 
-		return $folderView;
-	}
+        return $folderView;
+    }
 
-	/**
+    /**
 	 * Get the folder listing
 	 *
 	 * @param string $folderId
@@ -255,95 +259,95 @@ class BrowseView {
 	 * @param string $asc
 	 * @return mixed $ret
 	 */
-	public function getFolderContent($folderId, &$totalItems = 0, $options = array(), $sortField = 'title', $asc = true)
-	{
-	    if (empty($options)) {
-	        $options = $this->range;
-	    }
+    public function getFolderContent($folderId, &$totalItems = 0, $options = array(), $sortField = 'title', $asc = true)
+    {
+        if (empty($options)) {
+            $options = $this->range;
+        }
 
-		$user_id = $_SESSION['userID'];
-		if (is_null($this->oUser)) {
+        $user_id = $_SESSION['userID'];
+        if (is_null($this->oUser)) {
             $this->oUser =  User::get($user_id);
-		}
-		$disabled = $this->oUser->getDisabled();
+        }
+        $disabled = $this->oUser->getDisabled();
 
-		$kt = new KTAPI(3);
-		$session = $kt->start_system_session($this->oUser->getUsername());
+        $kt = new KTAPI(3);
+        $session = $kt->start_system_session($this->oUser->getUsername());
 
-		//Get folder content, depth = 1, types= Directory, File, Shortcut, webserviceversion override
-		$totalItems = 0;
-		$folder =& $kt->get_folder_contents($folderId, 1, 'DFS', $totalItems, $options);
-		$items = $folder['results']['items'];
-		$ret = array('folders' => array(), 'documents' => array());
+        //Get folder content, depth = 1, types= Directory, File, Shortcut, webserviceversion override
+        $totalItems = 0;
+        $folder =& $kt->get_folder_contents($folderId, 1, 'DFS', $totalItems, $options);
+        $items = $folder['results']['items'];
+        $ret = array('folders' => array(), 'documents' => array());
 
-		foreach ($items as $item) {
-			foreach ($item as $key => $value) {
-				if ($value == 'n/a') { $item[$key] = null; }
-			}
+        foreach ($items as $item) {
+            foreach ($item as $key => $value) {
+                if ($value == 'n/a') { $item[$key] = null; }
+            }
 
-			$item['user_id'] = $user_id;
-			$item['user_disabled'] = $disabled;
-			$item['container_folder_id'] = $folderId;
+            $item['user_id'] = $user_id;
+            $item['user_disabled'] = $disabled;
+            $item['container_folder_id'] = $folderId;
 
-			switch($item['item_type']) {
-				case 'F':
-					$item['is_shortcut'] = false;
-					$ret['folders'][] = $item;
-					break;
-				case 'D':
-					$item['is_shortcut'] = false;
-					$ret['documents'][] = $item;
-					break;
-				case 'S':
-					$item['is_shortcut'] = true;
-					if ($item['mime_type'] == 'folder') {
-						$ret['folders'][] = $item;
-					} else {
-						$ret['documents'][] = $item;
-					}
-					break;
-			}
-		}
+            switch($item['item_type']) {
+                case 'F':
+                    $item['is_shortcut'] = false;
+                    $ret['folders'][] = $item;
+                    break;
+                case 'D':
+                    $item['is_shortcut'] = false;
+                    $ret['documents'][] = $item;
+                    break;
+                case 'S':
+                    $item['is_shortcut'] = true;
+                    if ($item['mime_type'] == 'folder') {
+                        $ret['folders'][] = $item;
+                    } else {
+                        $ret['documents'][] = $item;
+                    }
+                    break;
+            }
+        }
 
-		// NOTE the sort field cannot be used here if we are getting paged results, it must be used in the main query...
-		/*if (isset($sortField)) {
-			$ret['documents'] = ktvar::sortArrayMatrixByKeyValue($ret['documents'], $sortField, $asc);
-			$ret['folders'] = ktvar::sortArrayMatrixByKeyValue($ret['folders'], $sortField, $asc);
-		}*/
+        // NOTE the sort field cannot be used here if we are getting paged results, it must be used in the main query...
+        /*if (isset($sortField)) {
+        $ret['documents'] = ktvar::sortArrayMatrixByKeyValue($ret['documents'], $sortField, $asc);
+        $ret['folders'] = ktvar::sortArrayMatrixByKeyValue($ret['folders'], $sortField, $asc);
+        }*/
 
-		$this->updateSession($folderId);
+        $this->updateSession($folderId);
 
-		return $ret;
-	}
+        return $ret;
+    }
 
-	/**
+    /**
 	 * Displays a message when there is no folder content
 	 *
 	 * @param int $folderId
 	 * @param boolean $editable
 	 * @return string
 	 */
-	public function noFilesOrFoldersMessage($folderId = null, $editable = true)
-	{
-		$folderMessage = '<h2>There\'s nothing in this folder yet!</h2>';
-		if (SharedUserUtil::isSharedUser()) {
-			$folderMessage = '<h2>There\'s no shared content in this folder yet!</h2>';
-			$perm = SharedContent::getPermissions($_SESSION['userID'], $folderId, null, 'folder');
-			if ($perm == 1) {
-				 $editable = true;
-			}
-			else {
-				 $editable = false;
-			}
-		}
+    public function noFilesOrFoldersMessage($folderId = null, $editable = true)
+    {
+        $folderMessage = '<h2>There\'s nothing in this folder yet!</h2>';
+        if (SharedUserUtil::isSharedUser()) {
+            $folderMessage = '<h2>There\'s no shared content in this folder yet!</h2>';
+            $perm = SharedContent::getPermissions($_SESSION['userID'], $folderId, null, 'folder');
+            if ($perm == 1) {
+                $editable = true;
+            }
+            else {
+                $editable = false;
+            }
+        }
 
-		if (!$editable) {
-			return "<span class='notification'>
+        if (!$editable) {
+            return "<span class='notification'>
 						$folderMessage
 			</span>";
-		} else {
-			$hint = '(Here are three easy ways you can change that...)';
-			$upload = '					<td><div class="roundnum">1</div></td>
+        } else {
+            $hint = '(Here are three easy ways you can change that...)';
+            $upload = '					<td><div class="roundnum">1</div></td>
 					<td class="info">
 						<h2>Upload files and folders</h2>
 						Upload one or more files including .zip files and other archives
@@ -355,12 +359,12 @@ class BrowseView {
 						</div>
 
 					</td>';
-			$dragndrop = '					<td><div class="roundnum">2</div></td>
+            $dragndrop = '					<td><div class="roundnum">2</div></td>
 					<td class="info">
 						<h2>Drag and Drop files here</h2>
 						<img src="/resources/graphics/newui/dragdrop.png" />
 					</td>';
-			$createonline = '					<td><div class="roundnum">3</div></td>
+            $createonline = '					<td><div class="roundnum">3</div></td>
 					<td class="info">
 						<h2>Create content online</h2>
 						Create and share files right within KnowledgeTree
@@ -371,7 +375,7 @@ class BrowseView {
 						</div>
 					</td>';
 
-			return '<span class="notification">
+            return '<span class="notification">
 			' . $folderMessage . '
 			' . $hint . '
 			<table>
@@ -382,96 +386,112 @@ class BrowseView {
 				</tr>
 			</table>
 			</span>';
-		}
-	}
+        }
+    }
 
-	public function paginateByDiv($pageCount, $pageClass, $paginationClass = 'paginate', $itemClass = 'item', $pageScript = 'alert([page])', $prevScript = "alert('previous');", $nextScript = "alert('next');")
-	{
-		$idClass = $pageClass . '_[page]';
-		$pages = array();
-		$pages[] = '<ul class="' . $paginationClass . '">';
-		$pages[] = '<li class="' . $itemClass . '" onclick="' . $prevScript . '">Previous</li>';
-		for($i = 1; $i <= $pageCount; ++$i) {
-			$pages[] = ktVar::parseString('<li class="' . $itemClass . ' ' . $idClass . '" onclick="' . $pageScript . '">' . $i . '</li>', array('page'=> $i, 'folder' => $this->folderId));
-		}
-		$pages[] = '<li class="' . $itemClass . '" onclick="' . $nextScript . '">Next</li>';
-		$pages[] = '</ul>';
-		$pages = join($pages);
+    /**
+	 * Create the pagination element.
+	 *
+	 * @param int $pageCount
+	 * @param string $pageClass
+	 * @param string $paginationClass
+	 * @param string $itemClass
+	 * @param string $pageScript
+	 * @param string $prevScript
+	 * @param string $nextScript
+	 * @return string
+	 */
+    public function paginateByDiv($pageCount, $pageClass, $paginationClass = 'paginate', $itemClass = 'item', $pageScript = 'alert([page])', $prevScript = "alert('previous');", $nextScript = "alert('next');")
+    {
+        if ($pageCount <= 0) {
+            return '';
+        }
 
-		return $pages;
-	}
+        $idClass = $pageClass . '_[page]';
+        $pages = array();
+        $pages[] = '<ul class="' . $paginationClass . '">';
+        $pages[] = '<li class="' . $itemClass . '" onclick="' . $prevScript . '">Previous</li>';
+        for($i = 1; $i <= $pageCount; ++$i) {
+            $pages[] = ktVar::parseString('<li class="' . $itemClass . ' ' . $idClass . '" onclick="' . $pageScript . '">' . $i . '</li>', array('page'=> $i, 'folder' => $this->folderId));
+        }
+        $pages[] = '<li class="' . $itemClass . '" onclick="' . $nextScript . '">Next</li>';
+        $pages[] = '</ul>';
+        $pages = join($pages);
 
-	public function renderBulkActionMenu($items, $folder)
-	{
-	    $canDelete = Permission::userHasDeleteFolderPermission($folder);
-	    $canWrite = Permission::userHasFolderWritePermission($folder);
+        return $pages;
+    }
 
-		$tpl = '<table class="browseView bulkActionMenu" cellspacing="0" cellpadding="0"><tr><td>
+    public function renderBulkActionMenu($items, $folder)
+    {
+        $canDelete = Permission::userHasDeleteFolderPermission($folder);
+        $canWrite = Permission::userHasFolderWritePermission($folder);
+
+        $tpl = '<table class="browseView bulkActionMenu" cellspacing="0" cellpadding="0"><tr><td>
 		<input type="checkbox" class="select_all" />
 		<input type="hidden" value="" name="sListCode"><input type="hidden" value="bulkaction" name="action">
 		<input type="hidden" value="browse" name="fReturnAction"><input type="hidden" value="1" name="fReturnData">';
 
-		$parts = array();
+        $parts = array();
 
-		foreach ($items as $item) {
-			$parts[$item->getName()] = '<input type="submit" name="submit[' . $item->getName() . ']" value="' . $item->getDisplayName() . '" />';
-		}
+        foreach ($items as $item) {
+            $parts[$item->getName()] = '<input type="submit" name="submit[' . $item->getName() . ']" value="' . $item->getDisplayName() . '" />';
+        }
 
-		// Unset the bulk actions dependent on the users permissions
-		if (!$canDelete) {
-		    unset($parts['ktcore.actions.bulk.delete']);
-		}
+        // Unset the bulk actions dependent on the users permissions
+        if (!$canDelete) {
+            unset($parts['ktcore.actions.bulk.delete']);
+        }
 
-		if (!$canWrite) {
-		    unset($parts['ktcore.actions.bulk.move']);
-		    unset($parts['ktcore.actions.bulk.archive']);
-		}
+        if (!$canWrite) {
+            unset($parts['ktcore.actions.bulk.move']);
+            unset($parts['ktcore.actions.bulk.archive']);
+        }
 
-		//parts order: Copy, move, archive, delete, download all
-		$tpl .= join($parts);
-		$tpl .= '</td><td class="status" style="width: 200px; text-align: right;"></td></tr></table>';
+        //parts order: Copy, move, archive, delete, download all
+        $tpl .= join($parts);
+        $tpl .= '</td><td class="status" style="width: 200px; text-align: right;"></td></tr></table>';
 
-		return $tpl;
-	}
+        return $tpl;
+    }
 
-	/**
+    /**
 	 * Checks the systems workflow permissions to see if actions have been overriden
 	 *
 	 * @param array $item
 	 * @return array $item
 	 */
-	private function checkWorkflowPermissions($item = null, $oDocument)
-	{
-		$ns = ' not_supported';
-		// Check workflow action restrictions
-		$actions = array_merge(KTDocumentActionUtil::getDocumentActionsForDocument($oDocument, $this->oUser), KTDocumentActionUtil::getDocumentActionsForDocument($oDocument, $this->oUser, 'documentinfo'));
+    private function checkWorkflowPermissions($item = null, $oDocument)
+    {
+        $ns = ' not_supported';
+        // Check workflow action restrictions
+        $actions = array_merge(KTDocumentActionUtil::getDocumentActionsForDocument($oDocument, $this->oUser), KTDocumentActionUtil::getDocumentActionsForDocument($oDocument, $this->oUser, 'documentinfo'));
 
-		foreach ($actions as $oAction) {
-			$actionname = $oAction->getName();
-			$aname = explode('.', $actionname);
-			$name = $aname[count($aname) - 1];
-			$allowaction[$name] = $oAction->_show();
-		}
+        foreach ($actions as $oAction) {
+            $actionname = $oAction->getName();
+            $aname = explode('.', $actionname);
+            $name = $aname[count($aname) - 1];
+            $allowaction[$name] = $oAction->_show();
+        }
 
-		if (!$allowaction['immutable']) { $item['actions.finalize_document'] = $ns; }
-		if (!$allowaction['ownershipchange']) { $item['actions.change_owner'] = $ns; }
+        if (!$allowaction['immutable']) { $item['actions.finalize_document'] = $ns; }
+        if (!$allowaction['ownershipchange']) { $item['actions.change_owner'] = $ns; }
 
-		if (!$allowaction['checkout']) {
-			$item['allowdoczohoedit'] = '';
-			$item['actions.checkout'] = $ns;
-		}
+        if (!$allowaction['checkout']) {
+            $item['allowdoczohoedit'] = '';
+            $item['actions.checkout'] = $ns;
+        }
 
-		if (!$allowaction['cancelcheckout']) { $item['actions.cancel_checkout'] = $ns; }
-		if (!$allowaction['checkin']) { $item['actions.checkin'] = $ns; }
-		if (!$allowaction['alert']) { $item['actions.alerts'] = $ns; }
-		if (!$allowaction['email']) { $item['actions.email'] = $ns; }
-		if (!$allowaction['view']) { $item['actions.download'] = $ns; }
-		if (!$allowaction['sharecontent']) { $item['actions.share_document'] = $ns; }
+        if (!$allowaction['cancelcheckout']) { $item['actions.cancel_checkout'] = $ns; }
+        if (!$allowaction['checkin']) { $item['actions.checkin'] = $ns; }
+        if (!$allowaction['alert']) { $item['actions.alerts'] = $ns; }
+        if (!$allowaction['email']) { $item['actions.email'] = $ns; }
+        if (!$allowaction['view']) { $item['actions.download'] = $ns; }
+        if (!$allowaction['sharecontent']) { $item['actions.share_document'] = $ns; }
 
-		return $item;
-	}
+        return $item;
+    }
 
-	/**
+    /**
 	 * Renders html block for a document in the new browse
 	 *
 	 * @param array $item
@@ -479,90 +499,90 @@ class BrowseView {
 	 * @param boolean $shortcut
 	 * @return string
 	 */
-	public function renderDocumentItem($item = null, $empty = false, $shortcut = false)
-	{
-		// When $item is null, $oDocument resolves to a PEAR Error, we should add a check for $item and initialise the document data at the top
-		// instead of using $oDocument in the code.
-		$oDocument = Document::get($item['id']);
-		$fileNameCutoff = 100;
-		$share_separator = '';
-		$item['separatorE'] = '';
-		$ns = ' not_supported';
+    public function renderDocumentItem($item = null, $empty = false, $shortcut = false)
+    {
+        // When $item is null, $oDocument resolves to a PEAR Error, we should add a check for $item and initialise the document data at the top
+        // instead of using $oDocument in the code.
+        $oDocument = Document::get($item['id']);
+        $fileNameCutoff = 100;
+        $share_separator = '';
+        $item['separatorE'] = '';
+        $ns = ' not_supported';
 
-		$item['mimetypeid'] = (method_exists($oDocument,'getMimeTypeId')) ? $oDocument->getMimeTypeId() : '0';
-		$iconFile = 'resources/mimetypes/newui/' . KTMime::getIconPath($item['mimetypeid']) . '.png';
-		$item['icon_exists'] = file_exists(KT_DIR . '/' . $iconFile);
-		$item['icon_file'] = $iconFile;
+        $item['mimetypeid'] = (method_exists($oDocument,'getMimeTypeId')) ? $oDocument->getMimeTypeId() : '0';
+        $iconFile = 'resources/mimetypes/newui/' . KTMime::getIconPath($item['mimetypeid']) . '.png';
+        $item['icon_exists'] = file_exists(KT_DIR . '/' . $iconFile);
+        $item['icon_file'] = $iconFile;
 
-		if ($item['icon_exists']) {
-			$item['mimeicon'] = str_replace('\\', '/', $GLOBALS['default']->rootUrl . '/' . $iconFile);
-			$item['mimeicon'] = 'background-image: url(' . $item['mimeicon'] . ')';
-		} else {
-			$item['mimeicon'] = '';
-		}
+        if ($item['icon_exists']) {
+            $item['mimeicon'] = str_replace('\\', '/', $GLOBALS['default']->rootUrl . '/' . $iconFile);
+            $item['mimeicon'] = 'background-image: url(' . $item['mimeicon'] . ')';
+        } else {
+            $item['mimeicon'] = '';
+        }
 
-		// Get the users permissions on the document
-		$permissions = $item['permissions'];
-		$hasWrite = (strpos($permissions, 'W') === false) ? false : true;
-		$hasDelete = (strpos($permissions, 'D') === false) ? false : true;
+        // Get the users permissions on the document
+        $permissions = $item['permissions'];
+        $hasWrite = (strpos($permissions, 'W') === false) ? false : true;
+        $hasDelete = (strpos($permissions, 'D') === false) ? false : true;
 
-		$item['filename'] = (strlen($item['filename']) > $fileNameCutoff) ? (substr($item['filename'], 0, $fileNameCutoff - 3) . "...") : $item['filename'];
+        $item['filename'] = (strlen($item['filename']) > $fileNameCutoff) ? (substr($item['filename'], 0, $fileNameCutoff - 3) . "...") : $item['filename'];
 
-		$item['has_workflow'] = '';
-		$item['is_immutable'] = ($item['is_immutable'] == 'true') ? true : false;
-		$item['is_immutable'] = $item['is_immutable'] ? '' : $ns;
-		$item['is_checkedout'] = $item['checked_out_date'] ? '' : $ns;
-		$item['is_shortcut'] = $item['is_shortcut'] ? '' : $ns;
+        $item['has_workflow'] = '';
+        $item['is_immutable'] = ($item['is_immutable'] == 'true') ? true : false;
+        $item['is_immutable'] = $item['is_immutable'] ? '' : $ns;
+        $item['is_checkedout'] = $item['checked_out_date'] ? '' : $ns;
+        $item['is_shortcut'] = $item['is_shortcut'] ? '' : $ns;
 
-		$item['actions.checkin'] = $item['actions.cancel_checkout'] = $item['actions.checkout'] = $ns;
-		$item['actions.move'] = $item['actions.copy'] = $item['actions.delete'] = $ns;
+        $item['actions.checkin'] = $item['actions.cancel_checkout'] = $item['actions.checkout'] = $ns;
+        $item['actions.move'] = $item['actions.copy'] = $item['actions.delete'] = $ns;
 
-		$isCheckedOut = ($item['checked_out_date']) ? true : false;
-		if (get_class($oDocument) == 'Document') {
-    		if ($hasWrite) {
-        		$item['actions.checkout'] = $item['checked_out_date'] ? $ns : '';
+        $isCheckedOut = ($item['checked_out_date']) ? true : false;
+        if (get_class($oDocument) == 'Document') {
+            if ($hasWrite) {
+                $item['actions.checkout'] = $item['checked_out_date'] ? $ns : '';
                 $hasCheckedOut = ($_SESSION['userID'] == $item['checked_out_by_id']);
-        		$item['actions.checkin'] = ($item['checked_out_date'] && $hasCheckedOut) ? '' : $ns;
-        		$item['actions.cancel_checkout'] = ($item['checked_out_date'] && $hasCheckedOut) ? '' : $ns;
-    			$item['actions.move'] = KTDocumentUtil::canBeMoved($oDocument) ? '' : $ns;
-    		}
+                $item['actions.checkin'] = ($item['checked_out_date'] && $hasCheckedOut) ? '' : $ns;
+                $item['actions.cancel_checkout'] = ($item['checked_out_date'] && $hasCheckedOut) ? '' : $ns;
+                $item['actions.move'] = KTDocumentUtil::canBeMoved($oDocument) ? '' : $ns;
+            }
 
-    		$item['actions.delete'] = (KTDocumentUtil::canBeDeleted($oDocument) && $hasDelete) ? '' : $ns;
-    		$item['actions.copy'] = KTDocumentUtil::canBeCopied($oDocument) ? '' : $ns;
-		}
+            $item['actions.delete'] = (KTDocumentUtil::canBeDeleted($oDocument) && $hasDelete) ? '' : $ns;
+            $item['actions.copy'] = KTDocumentUtil::canBeCopied($oDocument) ? '' : $ns;
+        }
 
-		//Modifications to perform when the document has been checked out
-		if ($item['checked_out_date']) {
-			list($item['checked_out_date_d'], $item['checked_out_date_t']) = split(" ", $item['checked_out_date']);
-		}
+        //Modifications to perform when the document has been checked out
+        if ($item['checked_out_date']) {
+            list($item['checked_out_date_d'], $item['checked_out_date_t']) = split(" ", $item['checked_out_date']);
+        }
 
-		if ($item['is_immutable'] == '') {
-			$item['actions.checkin'] = $ns;
-			$item['actions.checkout'] = $ns;
-			$item['actions.cancel_checkout'] = $ns;
-			$item['actions.alerts'] = $ns;
-			$item['actions.email'] = $ns;
-			$item['actions.change_owner'] = $ns;
-			$item['actions.finalize_document'] = $ns;
-		}
+        if ($item['is_immutable'] == '') {
+            $item['actions.checkin'] = $ns;
+            $item['actions.checkout'] = $ns;
+            $item['actions.cancel_checkout'] = $ns;
+            $item['actions.alerts'] = $ns;
+            $item['actions.email'] = $ns;
+            $item['actions.change_owner'] = $ns;
+            $item['actions.finalize_document'] = $ns;
+        }
 
-		$item['actions.finalize_document'] = ($isCheckedOut) ? $ns : $item['actions.finalize_document'];
+        $item['actions.finalize_document'] = ($isCheckedOut) ? $ns : $item['actions.finalize_document'];
 
-		if (!$hasWrite) {
-		    $item['actions.change_owner'] = $ns;
-		    $item['actions.share_document'] = $ns;
-		    if ($isCheckedOut || $item['actions.finalize_document']) {
-		    	$this->oUser = is_null($this->oUser) ? User::get($user_id) : $this->oUser;
-		    	$sPermissions = 'ktcore.permissions.write';
-		    	if (KTPermissionUtil::userHasPermissionOnItem($this->oUser, $sPermissions, $oDocument)) {
-		    		$item['actions.share_document'] = '';
-		    	}
-		    }
-			$item['actions.finalize_document'] = $ns;
-			$item['separatorE']=$ns;
-		}
+        if (!$hasWrite) {
+            $item['actions.change_owner'] = $ns;
+            $item['actions.share_document'] = $ns;
+            if ($isCheckedOut || $item['actions.finalize_document']) {
+                $this->oUser = is_null($this->oUser) ? User::get($user_id) : $this->oUser;
+                $sPermissions = 'ktcore.permissions.write';
+                if (KTPermissionUtil::userHasPermissionOnItem($this->oUser, $sPermissions, $oDocument)) {
+                    $item['actions.share_document'] = '';
+                }
+            }
+            $item['actions.finalize_document'] = $ns;
+            $item['separatorE']=$ns;
+        }
 
-		// Check if the thumbnail exists
+        // Check if the thumbnail exists
         $dev_no_thumbs = (isset($_GET['noThumbs']) || $_SESSION['browse_no_thumbs']) ? true : false;
         $_SESSION['browse_no_thumbs'] = $dev_no_thumbs;
         $item['thumbnail'] = '';
@@ -597,95 +617,95 @@ class BrowseView {
             }
         }
 
-		// Default - hide edit online
-		$item['allowdoczohoedit'] = '';
+        // Default - hide edit online
+        $item['allowdoczohoedit'] = '';
 
-		if ($this->zohoEnabled && $hasWrite) {
-			if (Zoho::resolve_type($oDocument))
-			{
-				if ($item['actions.checkout'] != $ns) {
-					$item['allowdoczohoedit'] = '<li class="action_zoho_document"><a href="javascript:;" onclick="zohoEdit(\'' . $item['id'] . '\')">Edit Document Online</a></li>';
-				}
-			}
-		}
+        if ($this->zohoEnabled && $hasWrite) {
+            if (Zoho::resolve_type($oDocument))
+            {
+                if ($item['actions.checkout'] != $ns) {
+                    $item['allowdoczohoedit'] = '<li class="action_zoho_document"><a href="javascript:;" onclick="zohoEdit(\'' . $item['id'] . '\')">Edit Document Online</a></li>';
+                }
+            }
+        }
 
-		$item['isfinalize_document'] = ($item['actions.finalize_document']) ? 0 : 1;
-		// Sanitize document title
-		$item['title'] = sanitizeForHTML($item['title']);
-		$item['filesize'] = KTUtil::filesizeToString($item['filesize']);
+        $item['isfinalize_document'] = ($item['actions.finalize_document']) ? 0 : 1;
+        // Sanitize document title
+        $item['title'] = sanitizeForHTML($item['title']);
+        $item['filesize'] = KTUtil::filesizeToString($item['filesize']);
 
-		// Check if the document is a shortcut
-		if (!is_null($item['linked_document_id'])) {
-			$item['actions.share_document'] = $ns;
-			$item['document_link'] = KTUtil::buildUrl('view.php', array('fDocumentId' => $item['linked_document_id'], 'fShortcutFolder' => $item['container_folder_id']));
-		} else {
-			$item['document_link'] = KTUtil::buildUrl('view.php', array('fDocumentId' => $item['id']));
-		}
-		// Check if document is in workflow and if action has not been restricted.
-		// Another layer of permissions
-		//$item = $this->checkWorkflowPermissions($item, $oDocument);
+        // Check if the document is a shortcut
+        if (!is_null($item['linked_document_id'])) {
+            $item['actions.share_document'] = $ns;
+            $item['document_link'] = KTUtil::buildUrl('view.php', array('fDocumentId' => $item['linked_document_id'], 'fShortcutFolder' => $item['container_folder_id']));
+        } else {
+            $item['document_link'] = KTUtil::buildUrl('view.php', array('fDocumentId' => $item['id']));
+        }
+        // Check if document is in workflow and if action has not been restricted.
+        // Another layer of permissions
+        //$item = $this->checkWorkflowPermissions($item, $oDocument);
 
-		$item['separatorA'] = $item['actions.copy'] == '' ? '' : $ns;
-		$item['separatorB'] = $item['actions.download'] == '' || $item['actions.instantview'] == '' ? '' : $ns;
-		$item['separatorC'] = $item['actions.checkout'] == '' || $item['actions.checkin'] == '' || $item['actions.cancel_checkout']== '' ? '' : $ns;
-		$item['separatorD'] = $ns;//($item['actions.alert'] == '' || $item ['actions.email'] == '') && $hasWrite ? '' : $ns;
-		if ($item['is_immutable'] == '') { $item['separatorB'] = $item['separatorC'] = $item['separatorD'] = $ns; }
-		// Add line separator after share link
-		if ($item['actions.share_document'] != $ns) {
-			$share_separator = '<li class="separator[separatorE]"></li>';
-		}
+        $item['separatorA'] = $item['actions.copy'] == '' ? '' : $ns;
+        $item['separatorB'] = $item['actions.download'] == '' || $item['actions.instantview'] == '' ? '' : $ns;
+        $item['separatorC'] = $item['actions.checkout'] == '' || $item['actions.checkin'] == '' || $item['actions.cancel_checkout']== '' ? '' : $ns;
+        $item['separatorD'] = $ns;//($item['actions.alert'] == '' || $item ['actions.email'] == '') && $hasWrite ? '' : $ns;
+        if ($item['is_immutable'] == '') { $item['separatorB'] = $item['separatorC'] = $item['separatorD'] = $ns; }
+        // Add line separator after share link
+        if ($item['actions.share_document'] != $ns) {
+            $share_separator = '<li class="separator[separatorE]"></li>';
+        }
 
-		$tpl = $this->getDocumentTemplate(1, '<td width="1" class="checkbox">
+        $tpl = $this->getDocumentTemplate(1, '<td width="1" class="checkbox">
 							<input name="selection_d[]" type="checkbox" value="[id]" />
 						</td>', $share_separator, '<span class="shortcut[is_shortcut]">
 									<span>This is a shortcut to the file.</span>
 								</span>');
 
-		if ($empty) { return '<span class="fragment document" style="display:none;">' . $tpl . '</span>'; }
+        if ($empty) { return '<span class="fragment document" style="display:none;">' . $tpl . '</span>'; }
 
-		return ktVar::parseString($tpl, $item);
-	}
+        return ktVar::parseString($tpl, $item);
+    }
 
-	public function renderFolderItem($item = null, $empty = false, $shortcut = false)
-	{
-		//TODO: Tohir, if you put the .selected thing on the table $(.folder.item), it should work fine
-		$ns = ' not_supported';
-		$item['is_shortcut'] = $item['is_shortcut'] ? '' : $ns;
+    public function renderFolderItem($item = null, $empty = false, $shortcut = false)
+    {
+        //TODO: Tohir, if you put the .selected thing on the table $(.folder.item), it should work fine
+        $ns = ' not_supported';
+        $item['is_shortcut'] = $item['is_shortcut'] ? '' : $ns;
 
-		// Get the users permissions on the folder
-		$permissions = $item['permissions'];
-		$hasWrite = (strpos($permissions, 'W') === false) ? false : true;
-		$hasRename = (strpos($permissions, 'N') === false) ? false : true;
-		$hasSecurity = (strpos($permissions, 'S') === false) ? false : true;
+        // Get the users permissions on the folder
+        $permissions = $item['permissions'];
+        $hasWrite = (strpos($permissions, 'W') === false) ? false : true;
+        $hasRename = (strpos($permissions, 'N') === false) ? false : true;
+        $hasSecurity = (strpos($permissions, 'S') === false) ? false : true;
 
-		$item['actions.share_folder'] = ($hasWrite) ? '' : $ns;
-		$item['actions.permissions'] = ($hasSecurity) ? '' : $ns;
-		$item['actions.rename'] = ($hasRename) ? '' : $ns;
+        $item['actions.share_folder'] = ($hasWrite) ? '' : $ns;
+        $item['actions.permissions'] = ($hasSecurity) ? '' : $ns;
+        $item['actions.rename'] = ($hasRename) ? '' : $ns;
 
-		$item['separatorA'] = ($hasWrite || $hasSecurity || $hasRename) ? '' : $ns;
-		// Sanitize folder title
-		$item['title'] = sanitizeForHTML($item['title']);
+        $item['separatorA'] = ($hasWrite || $hasSecurity || $hasRename) ? '' : $ns;
+        // Sanitize folder title
+        $item['title'] = sanitizeForHTML($item['title']);
 
-		// Check for shortcut
-		if (!is_null($item['linked_folder_id'])) {
-			$item['actions.share_folder'] = $ns;
-			$item['link'] = KTUtil::buildUrl('browse.php', array('fFolderId'=> $item['linked_folder_id'], 'fShortcutFolder'=> $item['container_folder_id']));
-		} else {
-			$item['link'] = KTUtil::buildUrl('browse.php', array('fFolderId'=> $item['id']));
-		}
+        // Check for shortcut
+        if (!is_null($item['linked_folder_id'])) {
+            $item['actions.share_folder'] = $ns;
+            $item['link'] = KTUtil::buildUrl('browse.php', array('fFolderId'=> $item['linked_folder_id'], 'fShortcutFolder'=> $item['container_folder_id']));
+        } else {
+            $item['link'] = KTUtil::buildUrl('browse.php', array('fFolderId'=> $item['id']));
+        }
 
-		$tpl = $this->getFolderTemplate(true, '<td width="1" class="checkbox">
+        $tpl = $this->getFolderTemplate(true, '<td width="1" class="checkbox">
 						<input name="selection_f[]" type="checkbox" value="[id]" />
 					</td>', '<span class="shortcut[is_shortcut]"><span>This is a shortcut to the folder.</span></span>');
 
-		if ($empty) { return '<span class="fragment folder" style="display:none;">' . $tpl . '</span>'; }
+        if ($empty) { return '<span class="fragment folder" style="display:none;">' . $tpl . '</span>'; }
 
-		return ktVar::parseString($tpl, $item);
-	}
+        return ktVar::parseString($tpl, $item);
+    }
 
-	protected function getDocumentTemplate($browseViewId, $checkbox = null, $share_separator = null, $shortcut = null)
-	{
-	    return '
+    protected function getDocumentTemplate($browseViewId, $checkbox = null, $share_separator = null, $shortcut = null)
+    {
+        return '
 			<span class="doc browseView ' . $browseViewId . '">
 				<table cellspacing="0" cellpadding="0" width="100%" border="0" class="doc item ddebug">
 					<tr>
@@ -726,11 +746,11 @@ class BrowseView {
 					</tr>
 				</table>
 			</span>';
-	}
+    }
 
-	protected function getDocumentActionMenu($share_separator = null)
-	{
-	    return '<ul class="doc actionMenu">
+    protected function getDocumentActionMenu($share_separator = null)
+    {
+        return '<ul class="doc actionMenu">
 								<!-- li class="actionIcon comments"></li -->
 								<li class="actionIcon actions">
 									<ul>
@@ -764,11 +784,11 @@ class BrowseView {
 									</ul>
 								</li>
 							</ul>';
-	}
+    }
 
-	protected function getFolderTemplate($fetchActionMenu, $checkbox = null, $shortcut = null)
-	{
-	    return '
+    protected function getFolderTemplate($fetchActionMenu, $checkbox = null, $shortcut = null)
+    {
+        return '
 			<span class="doc browseView">
 			<table cellspacing="0" cellpadding="0" width="100%" border="0" class="folder item">
 				<tr>
@@ -786,11 +806,11 @@ class BrowseView {
 				</tr>
 			</table>
 			</span>';
-	}
+    }
 
-	protected function getFolderActionMenu()
-	{
-	    return '<td>
+    protected function getFolderActionMenu()
+    {
+        return '<td>
 						<ul class="folder actionMenu">
 							<li class="actionIcon actions">
 									<ul>
@@ -804,7 +824,7 @@ class BrowseView {
 							</li>
 						</ul>
 					</td>';
-	}
+    }
 
 }
 
