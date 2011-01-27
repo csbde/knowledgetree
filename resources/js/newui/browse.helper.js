@@ -90,7 +90,7 @@ kt.pages.browse.viewPage = function(pageNum, folderId, fetch) {
 //        jQuery.get('/browse.php?action=paging&fFolderId=' + folderId + '&page=' + pageNum, function(data) {
         jQuery.ajax({
             url: '/browse.php?action=paging&fFolderId=' + folderId + '&page=' + pageNum,
-            timeout: 7500,
+            timeout: 30000,
             success: function(data) { kt.pages.browse.loaded(data, pageNum, pageItem, loaded); },
             error: kt.pages.browse.loadingFailed
         });
