@@ -86,8 +86,13 @@ kt.pages.browse.viewPage = function(pageNum, folderId, fetch) {
     	//jQuery.loading.css.border = '1px solid #000';
         jQuery.loading(true, { text:'Loading...', /*mask:true, */effect:'update' });
         jQuery.get('/browse.php?action=paging&fFolderId=' + folderId + '&page=' + pageNum, function(data) {
-            try { var responseJSON = jQuery.parseJSON(data); }
-            catch(e) { return; }
+            try {
+                var responseJSON = jQuery.parseJSON(data);
+            }
+            catch(e) {
+                kt.pages.browse.loading = false;
+                return;
+            }
 
             var pages = 0;
             jQuery.each(responseJSON, function() { ++pages; });
