@@ -97,17 +97,33 @@ kt.pages.browse.viewPage = function(pageNum, folderId, fetch) {
     }
 };
 
-kt.pages.browse.checkRange = function(pageNum) {
-    var range = 3;
-    pageNum = Number(pageNum);
+kt.pages.browse.checkRange = function(requested) {
+    // NOTE if you change the limit here, be sure to also change it on the server side
+    var limit = 3;
+    requested = Number(requested);
 
-    // TODO adapt for different range settings - split range and set endpoints in both directions
-    var pages = 0;
-    for (var i = pageNum - 1; i <= pageNum + 1; ++i) {
+    var mid = null;
+	var half = Math.floor(limit / 2);
+	var remainder = limit % 2;
+	if (remainder != 0) {
+	    mid = half + 1;
+	    var first = requested - half;
+	}
+	else {
+	    mid = half;
+	    var first = requested - half - 1;
+	}
+
+	index = (first > 0) ? first : 1;
+	limit = index + limit;
+	var pages = 0;
+	for (var i = index; i < limit; ++i) {
         var pageItem = jQuery('.paginate>li.page_' + i);
         if (pageItem.length <= 0) { continue; }
         if (jQuery('.page.page_' + i).length <= 0) { ++pages; }
-    }
+	}
+
+	console.log('fetching ' + pages + ' pages')
 
     return pages > 0;
 }
