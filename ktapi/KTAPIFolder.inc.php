@@ -1385,26 +1385,34 @@ class KTAPI_Folder extends KTAPI_FolderItem {
     public function getChanges($timestamp, $depth = 1, $what = 'DF')
     {
     	//$GLOBALS['default']->log->debug("getChanges $timestamp $depth '$what'");
-    	
-    	//just for some sanity
-    	if ($depth == 0)
-    		$depth = 1;
 			
+    	//array to store all the changes
     	$changes = array();
 
-    	$this->createdSince($timestamp, $what, $changes);
-    	$this->deletedSince($timestamp, $what, $changes);
-    	$this->renamedSince($timestamp, $what, $changes);
-    	$this->movedSince($timestamp, $what, $changes);
-    	$this->updatedSince($timestamp, $what, $changes);
-
-    	//$GLOBALS['default']->log->debug('getChanges created '.print_r($changes, true));
-
-    	if ($depth != 1)
+    	//has the current folder changed in relevant ways?
+    	//$this->deletedSince($timestamp, $changes);
+    	$this->renamedSince($timestamp, $changes);
+    	$this->movedSince($timestamp, $changes);
+    	$this->updatedSince($timestamp, $changes);
+    	
+    	//have to check more than just myself?
+    	if ($depth != 0)
     	{
-    		$this->getChangesRecursive($timestamp, $depth, $what, $changes);
-
-    		//$GLOBALS['default']->log->debug('getChanges recursive '.print_r($changes, true));
+	    	$this->childrenCreatedSince($timestamp, $what, $changes);
+	    	$this->childrenDeletedSince($timestamp, $what, $changes);
+	    	$this->childrenRenamedSince($timestamp, $what, $changes);
+	    	$this->childrenMovedSince($timestamp, $what, $changes);
+	    	$this->childrenUpdatedSince($timestamp, $what, $changes);
+	
+	    	//$GLOBALS['default']->log->debug('getChanges created '.print_r($changes, true));
+	
+	    	//have to check more than just my immediate children?
+	    	if ($depth != 1)
+	    	{
+	    		$this->getChangesRecursive($timestamp, $depth, $what, $changes);
+	
+	    		//$GLOBALS['default']->log->debug('getChanges recursive '.print_r($changes, true));
+	    	}
     	}
 
     	//now sort the array according to id
@@ -1469,11 +1477,11 @@ class KTAPI_Folder extends KTAPI_FolderItem {
 	        			if(!PEAR::isError($folder))
 			        	{
 			        		// get the changes for the current folder
-							$ktapi_folder->createdSince($timestamp, $what, $changes);
-					    	$ktapi_folder->deletedSince($timestamp, $what, $changes);
-					    	$ktapi_folder->renamedSince($timestamp, $what, $changes);
-					    	$ktapi_folder->movedSince($timestamp, $what, $changes);
-					    	$ktapi_folder->updatedSince($timestamp, $what, $changes);
+							$ktapi_folder->childrenCreatedSince($timestamp, $what, $changes);
+					    	$ktapi_folder->childrenDeletedSince($timestamp, $what, $changes);
+					    	$ktapi_folder->childrenRenamedSince($timestamp, $what, $changes);
+					    	$ktapi_folder->childrenMovedSince($timestamp, $what, $changes);
+					    	$ktapi_folder->childrenUpdatedSince($timestamp, $what, $changes);
 
 					    	// now recurse!
 							if ($fullTree || ($depth > 1)) {
@@ -1486,12 +1494,121 @@ class KTAPI_Folder extends KTAPI_FolderItem {
         }
     }
 
+    
+	public function renamedSince($timestamp, &$contents = array())
+    {
+    	//$GLOBALS['default']->log->debug("renamedSince timestamp $timestamp");
+    	
+    	$sQuery = 'SELECT F.id, FT.datetime AS change_date ' .
+        'FROM ' . KTUtil::getTableName('folder_transactions') . ' AS FT INNER JOIN ' . KTUtil::getTableName('folders') . ' AS F ON F.id = FT.folder_id ' .
+        'WHERE FT.transaction_namespace = \'ktcore.transactions.rename\' AND FT.folder_id = ? AND FT.datetime > ? ORDER BY FT.datetime ASC';
+
+        $aParams = array($this->folderid, $timestamp);
+
+        $results = DBUtil::getResultArray(array($sQuery, $aParams));
+        if (is_null($results) || PEAR::isError($results))
+        {
+            return new KTAPI_Error(KTAPI_ERROR_INTERNAL_ERROR, $results);
+        }
+
+        $folder_permission = &KTPermission::getByName(KTAPI_PERMISSION_VIEW_FOLDER);
+        $user = $this->ktapi->get_user();
+
+    	foreach ($results as $result) {
+        	$folder = &Folder::get($result['id']);
+			if (KTPermissionUtil::userHasPermissionOnItem($user, $folder_permission, $folder)) {
+				$this->assemble_folder_array($folder, $contents);
+
+				$contents[count($contents) - 1]['changes'] = array(
+					'change_type' => 'R',
+					'change_date' => $result['change_date']
+				);
+
+				// $GLOBALS['default']->log->debug('renamedSince assembled contents '.print_r($contents, true));
+            }
+        }
+        
+        //$GLOBALS['default']->log->debug('renamedSince folders '.print_r($contents, true));
+    }
+    
+	public function movedSince($timestamp, &$contents = array())
+    {
+    	//$GLOBALS['default']->log->debug("movedSince timestamp $timestamp");
+    	
+    	$sQuery = 'SELECT F.id, FT.datetime AS change_date ' .
+        'FROM ' . KTUtil::getTableName('folder_transactions') . ' AS FT INNER JOIN ' . KTUtil::getTableName('folders') . ' AS F ON F.id = FT.folder_id ' .
+        'WHERE FT.transaction_namespace = \'ktcore.transactions.move\' AND FT.folder_id = ? AND FT.datetime > ? ORDER BY FT.datetime ASC';
+
+        $aParams = array($this->folderid, $timestamp);
+
+        $results = DBUtil::getResultArray(array($sQuery, $aParams));
+        if (is_null($results) || PEAR::isError($results))
+        {
+            return new KTAPI_Error(KTAPI_ERROR_INTERNAL_ERROR, $results);
+        }
+
+        $folder_permission = &KTPermission::getByName(KTAPI_PERMISSION_VIEW_FOLDER);
+        $user = $this->ktapi->get_user();
+
+    	foreach ($results as $result) {
+        	$folder = &Folder::get($result['id']);
+			if (KTPermissionUtil::userHasPermissionOnItem($user, $folder_permission, $folder)) {
+				$this->assemble_folder_array($folder, $contents);
+
+				$contents[count($contents) - 1]['changes'] = array(
+					'change_type' => 'M',
+					'change_date' => $result['change_date']
+				);
+
+				// $GLOBALS['default']->log->debug('renamedSince assembled contents '.print_r($contents, true));
+            }
+        }
+        
+        //$GLOBALS['default']->log->debug('movedSince folders '.print_r($contents, true));
+    }
+    
+	public function updatedSince($timestamp, &$contents = array())
+    {
+    	//$GLOBALS['default']->log->debug("updatedSince timestamp $timestamp");
+    	    	
+    	$sQuery = 'SELECT F.id, FT.datetime AS change_date, FT.parent_id AS transaction_parent_id  ' .
+        'FROM ' . KTUtil::getTableName('folder_transactions') . ' AS FT INNER JOIN ' . KTUtil::getTableName('folders') . ' AS F ON F.id = FT.folder_id ' .
+        'WHERE FT.transaction_namespace = \'ktcore.transactions.permissions_change\' AND FT.folder_id = ? AND FT.datetime > ? ORDER BY FT.datetime ASC';
+
+        $aParams = array($this->folderid, $timestamp);
+
+        $results = DBUtil::getResultArray(array($sQuery, $aParams));
+        if (is_null($results) || PEAR::isError($results))
+        {
+            return new KTAPI_Error(KTAPI_ERROR_INTERNAL_ERROR, $results);
+        }
+
+        $folder_permission = &KTPermission::getByName(KTAPI_PERMISSION_VIEW_FOLDER);
+        $user = $this->ktapi->get_user();
+
+    	foreach ($results as $result) {
+        	$folder = &Folder::get($result['id']);
+			if (KTPermissionUtil::userHasPermissionOnItem($user, $folder_permission, $folder)) {
+				$this->assemble_folder_array($folder, $contents);
+
+				$contents[count($contents) - 1]['changes'] = array(
+					'change_type' => 'U',
+					'change_date' => $result['change_date']
+				);
+
+				// $GLOBALS['default']->log->debug('renamedSince assembled contents '.print_r($contents, true));
+            }
+        }
+        
+        //$GLOBALS['default']->log->debug('updatedSince folders '.print_r($contents, true));
+    }
+
 	/**
      * Gets the subfolders created since a specific time
      *
      * @return array of folders
      */
-    public function createdSince($timestamp, $what = 'DF', &$contents = array())
+    public function childrenCreatedSince($timestamp, $what = 'DF', &$contents = array())
     {
         // need to do folders?
         if (strpos($what, 'F') !== false)
@@ -1568,9 +1685,8 @@ class KTAPI_Folder extends KTAPI_FolderItem {
      *
      * @return array of folders
      */
-    public function deletedSince($timestamp, $what = 'DF', &$contents = array())
+    public function childrenDeletedSince($timestamp, $what = 'DF', &$contents = array())
     {
-
     	//$GLOBALS['default']->log->debug("deletedSince timestamp $timestamp \'$what\'");
     	
     	//need to do folders?
@@ -1661,7 +1777,7 @@ class KTAPI_Folder extends KTAPI_FolderItem {
      *
      * @return array of folders
      */
-    public function renamedSince($timestamp, $what = 'DF', &$contents = array())
+    public function childrenRenamedSince($timestamp, $what = 'DF', &$contents = array())
     {
     	// $GLOBALS['default']->log->debug("renamedSince timestamp $timestamp");
 
@@ -1738,9 +1854,9 @@ class KTAPI_Folder extends KTAPI_FolderItem {
      *
      * @return array of folders
      */
-    public function movedSince($timestamp, $what = 'DF', &$contents = array())
+    public function childrenMovedSince($timestamp, $what = 'DF', &$contents = array())
     {
-    	// $GLOBALS['default']->log->debug("movedSince timestamp $timestamp");
+    	//$GLOBALS['default']->log->debug("childrenMovedSince timestamp $timestamp '$what'");
 
         // need to do folders?
         if (strpos($what, 'F') !== false)
@@ -1775,13 +1891,13 @@ class KTAPI_Folder extends KTAPI_FolderItem {
 	            }
 	        }
 
-	        //$GLOBALS['default']->log->debug('movedSince folders '.print_r($contents, true));
+	        //$GLOBALS['default']->log->debug('childrenMovedSince folders '.print_r($contents, true));
         }
 
     	// need to do documents?
         if (strpos($what, 'D') !== false)
         {
-        	$sQuery = 'SELECT D.id, DT.datetime AS change_date, DT.parent_id AS transaction_parent_id  '.
+        	$sQuery = 'SELECT D.id, DT.datetime AS change_date, DT.parent_id AS transaction_parent_id '.
 	        'FROM ' . KTUtil::getTableName('document_transactions') . ' AS DT INNER JOIN ' . KTUtil::getTableName('documents') . ' AS D ON D.id = DT.document_id ' .
 	    	'WHERE DT.transaction_namespace = \'ktcore.transactions.move\' AND DT.parent_id = ? AND DT.datetime > ? ORDER BY DT.datetime ASC';
 	        
@@ -1817,7 +1933,7 @@ class KTAPI_Folder extends KTAPI_FolderItem {
      *
      * @return array of folders
      */
-    public function updatedSince($timestamp, $what = 'DF', &$contents = array())
+    public function childrenUpdatedSince($timestamp, $what = 'DF', &$contents = array())
     {
     	// $GLOBALS['default']->log->debug("updatedSince $timestamp $what");
 

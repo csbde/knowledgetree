@@ -81,8 +81,10 @@ class TimezoneConversion
 	 * Constructor
 	 *
 	 */
-	public function __construct() 
+	public function __construct($returnFormat = 'Y-m-d H:i:s') 
 	{
+		$this->_timezone['Return_Format'] = $returnFormat;
+		
 		$this->initTimezones();
 	}
   

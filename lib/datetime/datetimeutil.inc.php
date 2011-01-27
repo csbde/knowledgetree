@@ -62,7 +62,16 @@ class datetimeutil
 		return $tzc->convertDateTime();
 	}
 	
-
-
+	static public function convertToUTC($date)
+	{
+		// Create time conversion object, set format to ISO 8601 (YYYY-MM-DDThh:mm:ss+UTC offset eg 2004-02-12T15:19:21+00:00)
+		$tzc = new TimezoneConversion('c');
+		// Set the date to convert
+		$tzc->setProperty('Datetime', $date);
+		// set zone to UTC
+		$tzc->setProperty('Timezone', 'UTC');
+		// Convert timezone
+		return $tzc->convertDateTime();
+	}
 }
 ?>
