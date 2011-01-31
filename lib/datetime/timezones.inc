@@ -151,10 +151,8 @@ class TimezoneConversion
 	}
 	
 	/**
-	 * Timezone List
-	 * Array compiled from timezone_identifiers_list() that can be used on
-	 * systems that do not support the function but a list of timezones is
-	 * needed anyway
+	 * Timezone Region List
+	 * 
 	 **/
 	public function getPhpRegions()
 	{
@@ -175,11 +173,9 @@ class TimezoneConversion
 	
 	/**
 	 * Timezone List
-	 * Array compiled from timezone_identifiers_list() that can be used on
-	 * systems that do not support the function but a list of timezones is
-	 * needed anyway
+	 * 
 	 **/
-	public function getPhpTimezones($currentCountry = false)
+	public function getPhpTimezones($currentCountry = false, $gmtOffset = false)
 	{
 		$list_of_zones = array();
 		$timezones = DateTimeZone::listAbbreviations();
@@ -194,13 +190,15 @@ class TimezoneConversion
 					{
 						if($currentCountry === false)
 						{
-							$list_of_zones[] = $timezone;
+							$list_of_zones[$timezone]['timezone_id'] = $timezone;
+							if($gmtOffset !== false) $list_of_zones[$timezone]['offset'] = round(($azone['offset']/3600));
 						}
 						else
 						{
 							if($country == $currentCountry)
 							{
 								$list_of_zones[] = $timezone;
+								if($gmtOffset !== false) $list_of_zones[$timezone]['offset'] = round(($azone['offset']/3600));
 							}
 						}
 					}
@@ -247,7 +245,6 @@ class TimezoneConversion
 	 */
 	private function convertDateTimeToGMT($datetime_str = 'now', $return_format = 'U') 
 	{
-	
 		return gmdate($return_format, strtotime($datetime_str));
 	}
 
@@ -258,7 +255,7 @@ class TimezoneConversion
   	 * @param string $timezone
   	 * @return unknown
   	 */
-  	private function getTimeZoneOffset($timezone = 'GMT') 
+  	public function getTimeZoneOffset($timezone = 'GMT') 
   	{
 	    /** Find Timezone Offset */
 	    foreach ($this->getPhpTimezones() as $timezone_name) 
@@ -282,6 +279,7 @@ class TimezoneConversion
 				if($timeOffset != 0)
 				{
 					$offset = ($timeOffset/3600);
+					
 					return $offset;
 				}
 				else

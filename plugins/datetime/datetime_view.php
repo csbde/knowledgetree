@@ -78,13 +78,14 @@ class datetime_view extends KTAdminDispatcher
 		$ddoptions = '';
 		$aValue = explode('/', $value);
 		$currentRegion = isset($aValue[1]) ? $aValue[0] : 'Other';
-		foreach ($tzc->getPhpTimezones() as $standardZone)
+		foreach ($tzc->getPhpTimezones(false, true) as $standardZone=>$values)
 		{
 			$aValue = explode('/', $standardZone);
 			$zoneRegion = isset($aValue[1]) ? $aValue[0] : 'Other';
 			$selected = ($standardZone == $value) ? 'selected' : '';
 			$class = ($zoneRegion == $currentRegion) ? "show_select $zoneRegion":"hide_select $zoneRegion";
-			$displayZone = ($zoneRegion == 'Other') ? "Other/$standardZone" : $standardZone;
+			$offset = ($values['offset'] > 0) ? " (UTC +{$values['offset']})" : " (UTC {$values['offset']})";
+			$displayZone = ($zoneRegion == 'Other') ? "Other/$standardZone" : $standardZone . $offset;
 			$ddoptions .= '<option class="' . $class . '" value="' . $standardZone . '" ' . $selected . '> ' . $displayZone . '</option>';
 		}
 		
