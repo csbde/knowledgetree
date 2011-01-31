@@ -5336,34 +5336,46 @@ class KTAPI {
 		//$GLOBALS['default']->log->debug("KTAPI get_folder_changes ".print_r($folder_ids, true)." $timestamp $depth '$what'");
 		
 		$results = array();
+		$changes = array();
 		
 		$hasChanges = FALSE;
 		
 		foreach($folder_ids as $folder_id)
 		{
 			$folder = KTAPI_Folder::get($this, $folder_id);
-			
+			//TODO: need to do this? Or can we expect it to be in UTC?
+			//OR should we accept a time and then convert to epoch?
+			$time = datetimeutil::convertToUTC(date("c", (int)$timestamp));
 			if (PEAR::isError($folder))
 			{
-				//$GLOBALS['default']->log->error('KTAPI get_folder_changes folder error '.print_r($folder, true));	//$folder->getMessage());
+				//$GLOBALS['default']->log->error('KTAPI get_folder_changes folder error '.$folder->getMessage());
 				
-				//check if I'm deleted
+				//since a PEAR error is raised when a get is done on a folder that has been deleted,
+				//need to check for that case
+				$changes = KTAPI_Folder::deletedSince($folder_id, $time);
 				
-				$results[] = array(
-					"status_code" => 1,
-					"message" => $folder->getMessage()
-				);
+				if (count($changes) > 0)
+				{
+					$hasChanges = TRUE;
+							
+					$results[$folder_id] = array(
+						"status_code" => 0,
+						"message" => "Folder has changes",
+						"changes" => $changes
+					);
+				}
+				else
+				{
+					$results[] = array(
+						"status_code" => 1,
+						"message" => $folder->getMessage()
+					);
+				}
 			}
 			else
 			{				
-				$time = datetimeutil::convertToUTC(date("c", (int)$timestamp));	//date("c", (int)$timestamp);
-				
-				//$GLOBALS['default']->log->debug("KTAPI get_folder_changes converted timestamp $time");
-				
 				//get the changes!
 				$changes = $folder->getChanges($time, $depth, $what);
-				
-				//$GLOBALS['default']->log->debug('KTAPI get_folder_changes count changes '.count($changes));
 				
 				//no changes for this folder
 				if (count($changes) == 0)
