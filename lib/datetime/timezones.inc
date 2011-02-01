@@ -184,6 +184,8 @@ class TimezoneConversion
 			foreach ($timezone_info as $azone)
 			{
 				$timezone = $azone['timezone_id'];
+				$aValue = explode('/', $timezone);
+				$country = isset($aValue[1]) ? $aValue[0] : 'Other';
 				if($timezone != '')
 				{
 					if(!in_array($timezone, $list_of_zones))
@@ -191,14 +193,14 @@ class TimezoneConversion
 						if($currentCountry === false)
 						{
 							$list_of_zones[$timezone]['timezone_id'] = $timezone;
-							if($gmtOffset !== false) $list_of_zones[$timezone]['offset'] = round(($azone['offset']/3600));
+							if($gmtOffset) $list_of_zones[$timezone]['offset'] = round(($azone['offset']/3600));
 						}
 						else
 						{
 							if($country == $currentCountry)
 							{
-								$list_of_zones[] = $timezone;
-								if($gmtOffset !== false) $list_of_zones[$timezone]['offset'] = round(($azone['offset']/3600));
+								$list_of_zones[$timezone]['timezone_id'] = $timezone;
+								if($gmtOffset) $list_of_zones[$timezone]['offset'] = round(($azone['offset']/3600));
 							}
 						}
 					}

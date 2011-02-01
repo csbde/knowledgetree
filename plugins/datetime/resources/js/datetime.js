@@ -1,32 +1,29 @@
 kt.datetime = new function() 
 {
 	this.change_region = function(country) {
-		jQuery('.timezones').each(
-			function() {
-				var firstshow = false;
-				jQuery(this.options).each(
-					function() {
-						var classname = jQuery(this).attr('class');
-						var split = classname.split(' ');
-						if(split[1] == country)
-						{
-							if(firstshow == false)
-							{
-								firstshow = true;
-								jQuery(this).attr('selected', 'selected');
-							}
-							if(jQuery(this).attr('class') != 'show_select ')
-								jQuery(this).attr('class', 'show_select ' + split[1]);
-						}
-						else
-						{
-							if(jQuery(this).attr('class') != 'hide_select ')
-								jQuery(this).attr('class', 'hide_select ' + split[1]);
-						}
-					}
-				);
-			}
-		);
+		var country = (jQuery('select#country_select option:selected').val());
+		var url = "plugins/datetime/KTDateTime.php?action=renderTimezones&country=" + country;
+		kt.datetime.getUrl(url, 'countryList');
 	}
+	
+// Send request and update a div
+	this.getUrl = function (address, div)  {
+		jQuery.ajax({
+			url: address,
+			type: "POST",
+			cache: false,
+			success: function(data) {
+				if(div == "") { // no div
+					return false;
+				}
+				jQuery("."+div).empty();
+				jQuery("."+div).append(data);
+				
+				return true;
+			}
+		});
+	}
+	
+	
 };
 if(typeof(kt.datetime)=='undefined')kt.datetime={};
