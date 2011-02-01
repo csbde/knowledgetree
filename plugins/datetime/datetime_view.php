@@ -61,7 +61,8 @@ class datetime_view extends KTAdminDispatcher
 		foreach ($tzc->getPhpRegions() as $region)
 		{
 			$selected = ($region == $currentRegion) ? 'selected' : '';
-			$ddoptions .= '<option onclick="javascript:{kt.datetime.change_region(\'' . $region. '\');}" value="' . $region . '" ' . $selected . '> ' . $region . '</option>';
+			//$ddoptions .= '<option onclick="javascript:{change_region(\'' . $region. '\');}" value="' . $region . '" ' . $selected . '> ' . $region . '</option>';
+			$ddoptions .= '<option value="' . $region . '" ' . $selected . '> ' . $region . '</option>';
 		}
 		
 		return $ddoptions;
@@ -72,22 +73,21 @@ class datetime_view extends KTAdminDispatcher
 	 *
 	 * @return string
 	 */
-	static public function renderTimezones($value)
+	static public function renderTimezones($value, $region = false)
 	{
 		$tzc = new TimezoneConversion();
 		$ddoptions = '';
 		$aValue = explode('/', $value);
 		$currentRegion = isset($aValue[1]) ? $aValue[0] : 'Other';
-		foreach ($tzc->getPhpTimezones() as $standardZone)
+		$byCountry = ($region) ? $region : $currentRegion;
+		foreach ($tzc->getPhpTimezones($byCountry, true) as $standardZone=>$values)
 		{
-			$aValue = explode('/', $standardZone);
-			$zoneRegion = isset($aValue[1]) ? $aValue[0] : 'Other';
 			$selected = ($standardZone == $value) ? 'selected' : '';
-			$class = ($zoneRegion == $currentRegion) ? "show_select $zoneRegion":"hide_select $zoneRegion";
-			$displayZone = ($zoneRegion == 'Other') ? "Other/$standardZone" : $standardZone;
-			$ddoptions .= '<option class="' . $class . '" value="' . $standardZone . '" ' . $selected . '> ' . $displayZone . '</option>';
+			$offset = ($values['offset'] > 0) ? " (UTC +{$values['offset']})" : " (UTC {$values['offset']})";
+			$displayZone = ($zoneRegion == 'Other') ? "Other/$standardZone" : $standardZone . $offset;
+			$ddoptions .= '<option value="' . $standardZone . '" ' . $selected . '> ' . $displayZone . '</option>';
 		}
-		
+
 		return $ddoptions;
 	}
 	
@@ -101,3 +101,4 @@ class datetime_view extends KTAdminDispatcher
 		return "<label for='timezone'>Select Location</label>&nbsp;&nbsp;";
 	}
 }
+?>

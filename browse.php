@@ -178,6 +178,8 @@ class BrowseDispatcher extends KTStandardDispatcher {
 	{
 	    $folder_id = $this->getFolderId();
 	    $page = KTUtil::arrayGet($_REQUEST, 'page');
+	    $options = KTUtil::arrayGet($_REQUEST, 'options');
+	    $options = json_decode($options, true);
 	    $_REQUEST['fBrowseMode'] = 'paging';
 
 	    $oFolder =& Folder::get($folder_id);
@@ -193,7 +195,7 @@ class BrowseDispatcher extends KTStandardDispatcher {
 	    $this->oQuery = new BrowseQuery($oFolder->getId(), $this->oUser, $aOptions);
 
 	    $renderHelper = BrowseViewUtil::getBrowseView();
-	    $renderData = $renderHelper->lazyLoad($this->oFolder->getId(), $page);
+	    $renderData = $renderHelper->lazyLoad($this->oFolder->getId(), $page, (!empty($options) ? $options : array()));
 
 	    echo $renderData['folderContents'];
 	    exit(0);

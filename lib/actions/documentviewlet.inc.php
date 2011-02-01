@@ -40,10 +40,10 @@
 require_once(KT_LIB_DIR . '/actions/documentaction.inc.php');
 
 class KTDocumentViewlet extends KTDocumentAction {
-    var $sName;
-    var $sDescription;
+    public $sName;
+    public $sDescription;
 
-    var $_sShowPermission = 'ktcore.permissions.read';
+    public $_sShowPermission = 'ktcore.permissions.read';
     
     // the only major distinction of the viewlet vs. the action is the
     // display_viewlet() method.

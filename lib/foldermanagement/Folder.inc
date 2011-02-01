@@ -133,8 +133,8 @@ class Folder extends KTEntity {
 	function setLinkedFolderId($iNewValue){ $this->iLinkedFolderId = $iNewValue;}
 
 	// Timezone getters
-	function getDisplayCreatedDateTime() { return datetimeutil::getDisplayDate($this->dCreated); }
-	function getDisplayLastModifiedDate() { return datetimeutil::getDisplayDate($this->dModified); }
+	function getDisplayCreatedDateTime() { return datetimeutil::getLocaleDate($this->dCreated); }
+	function getDisplayLastModifiedDate() { return datetimeutil::getLocaleDate($this->dModified); }
 	
     // {{{ create()
     function create () {
