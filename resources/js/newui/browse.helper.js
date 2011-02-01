@@ -1,3 +1,5 @@
+// Additional kt.lib functions
+
 kt.lib.str_replace = function(search, replace, subject, count) {
     var i = 0, j = 0, temp = '', repl = '', sl = 0, fl = 0,
     f = [].concat(search),
@@ -42,172 +44,187 @@ kt.lib.parseTemplate = function(str, obj) {
     return kt.lib.str_replace(fr, to, str);
 };
 
-kt.pages.browse = {};
+// kt.pages.browse class
+kt.pages.browse = new function() {
 
-kt.pages.browse.curPage = 1;
-kt.pages.browse.loading = false;
+    var self = this;
 
-kt.pages.browse.addDocumentItem = function(item) {
-    item.is_shortcut = item.is_shortcut ? '' : ' not_supported';
-    item.is_immutable = item.is_immutable ? '' : ' not_supported';
-    item.is_checkedout = item.is_checkedout ? '' : ' not_supported';
-    //item.document_link = 'view.php?fDocumentId=' + item.id;
-    item.document_link = item.document_url;
-
-    var newItem = jQuery(jQuery('.fragment.document')[0]).html();
-    newItem = kt.lib.parseTemplate(newItem, item);
-    var elem = jQuery(newItem);
-    var mime = jQuery('.doc.icon',elem).attr('style', item.mimeicon);
-    jQuery('.page.page_' + kt.pages.browse.curPage).append(elem);
-};
-
-kt.pages.browse.viewPage = function(pageNum, folderId, fetch) {
-    if (kt.pages.browse.loading) { return; }
-
-    // TODO consider rather just returning if pageNum < 1?
-    if (pageNum < 1) { pageNum = 1; }
-    var pageItem = jQuery('.paginate>li.page_' + pageNum);
-
-    if (pageItem.length <= 0) { return; }
-
-    // if the selected page was already loaded, display immediately
-    var loaded = false;
-    if (jQuery('.page.page_' + pageNum).length > 0) {
-        kt.pages.browse.showPage(pageNum, pageItem);
-        loaded = true;
-    }
-
-    // check for additional content within the requested range, not yet loaded
-    fetch = (typeof fetch == 'undefined') ? true : fetch;
-    if (fetch && kt.pages.browse.checkRange(pageNum)) {
-        kt.pages.browse.loading = true;
-    	jQuery.loading.css.background = 'yellow';
-        jQuery.loading(true, { text: 'Loading...', effect: 'update' });
-        jQuery.ajax({
-            url: '/browse.php?action=paging&fFolderId=' + folderId + '&page=' + pageNum
-                 + '&options={"offset":' + kt.pages.browse.offset + ',"limit":'+ kt.pages.browse.limit + '}',
-            timeout: 30000,
-            success: function(data) { kt.pages.browse.loaded(data, pageNum, pageItem, loaded); },
-            error: kt.pages.browse.loadingFailed
-        });
-    }
-};
-
-kt.pages.browse.checkRange = function(requested) {
+    self.curPage = 1;
+    self.loading = false;
     // NOTE if you change the limit here, you should also change it on the server side
-    //      (although the code should function fine if you don't...)
-    kt.pages.browse.limit = 3;
-    requested = Number(requested);
+    //      (although the code should function fine if you don't, as this value operates as an override...)
+    self.limit = 5;
 
-    var mid = null;
-	var half = Math.floor(kt.pages.browse.limit / 2);
-	var remainder = kt.pages.browse.limit % 2;
-	if (remainder != 0) {
-	    mid = half + 1;
-	    var first = requested - half;
-	}
-	else {
-	    mid = half;
-	    var first = requested - half - 1;
-	}
+    this.addDocumentItem = function(item) {
+        item.is_shortcut = item.is_shortcut ? '' : ' not_supported';
+        item.is_immutable = item.is_immutable ? '' : ' not_supported';
+        item.is_checkedout = item.is_checkedout ? '' : ' not_supported';
+        //item.document_link = 'view.php?fDocumentId=' + item.id;
+        item.document_link = item.document_url;
 
-	index = (first > 0) ? first : 1;
-	limit = index + kt.pages.browse.limit;
-	var pages = new Array;
-	for (var i = index; i < limit; ++i) {
-        var pageItem = jQuery('.paginate>li.page_' + i);
-        if (pageItem.length <= 0) { continue; }
-        if (jQuery('.page.page_' + i).length <= 0) { pages[pages.length] = i; }
-	}
+        var newItem = jQuery(jQuery('.fragment.document')[0]).html();
+        newItem = kt.lib.parseTemplate(newItem, item);
+        var elem = jQuery(newItem);
+        var mime = jQuery('.doc.icon',elem).attr('style', item.mimeicon);
+        jQuery('.page.page_' + self.curPage).append(elem);
+    };
 
-	kt.pages.browse.offset = (pages.length > 0) ? pages[0] : 0;
-	kt.pages.browse.limit = pages.length;
+    this.viewPage = function(pageNum, folderId, fetch) {
+        if (self.loading) { return; }
 
-    return pages.length > 0;
-}
+        // TODO consider rather just returning if pageNum < 1?
+        if (pageNum < 1) { pageNum = 1; }
+        var pageItem = jQuery('.paginate>li.page_' + pageNum);
 
-kt.pages.browse.loaded = function(data, pageNum, pageItem, loaded) {
-    try {
-        var responseJSON = jQuery.parseJSON(data);
-    }
-    catch(e) {
-        kt.pages.browse.loading = false;
-        return;
-    }
+        if (pageItem.length <= 0) { return; }
 
-    var pages = 0;
-    jQuery.each(responseJSON, function() { ++pages; });
-    if (pages > 0) {
-        for (var pageId in responseJSON) {
-            if (pageNum == 1) {
-                // we prepend because otherwise it switches the location of the page navigator
-                jQuery('.itemContainer').prepend(responseJSON[pageId]);
-            }
-            else {
-                var appendTo = pageId - 1;
-                while (jQuery('.page.page_' + appendTo).length <= 0) {
-                    --appendTo;
-                }
-                jQuery('.page.page_' + appendTo).after(responseJSON[pageId]);
-            }
-            jQuery('.page.page_' + pageId).hide(0);
+        // if the selected page was already loaded, display immediately
+        var loaded = false;
+        if (jQuery('.page.page_' + pageNum).length > 0) {
+            self.showPage(pageNum, pageItem);
+            loaded = true;
         }
+
+        // check for additional content within the requested range, not yet loaded
+        fetch = (typeof fetch == 'undefined') ? true : fetch;
+        if (fetch && self.checkRange(pageNum)) {
+            self.loading = true;
+            if (!loaded) {
+                jQuery.loading.css.background = 'yellow';
+                jQuery.loading(true, { text: 'Loading...', effect: 'update' });
+            }
+
+            self.timeout = self.limit * 6000;
+            if (self.timeout < 30000) {
+                self.timeout = 30000;
+            }
+
+            jQuery.ajax({
+                url: '/browse.php?action=paging&fFolderId=' + folderId + '&page=' + pageNum
+                   + '&options={"offset":' + self.offset + ',"limit":'+ self.pages + '}',
+                timeout: self.timeout,
+                success: function(data) { self.loaded(data, pageNum, pageItem, loaded); },
+                error: self.loadingFailed
+            });
+        }
+    };
+
+    this.checkRange = function(requested) {
+        requested = Number(requested);
+
+        var mid = null;
+        var half = Math.floor(self.limit / 2);
+        var remainder = self.limit % 2;
+        if (remainder != 0) {
+            mid = half + 1;
+            var first = requested - half;
+        }
+        else {
+            mid = half;
+            var first = requested - half - 1;
+        }
+
+        index = (first > 0) ? first : 1;
+        limit = index + self.limit;
+        var pages = new Array;
+        for (var i = index; i < limit; ++i) {
+            var pageItem = jQuery('.paginate>li.page_' + i);
+            if (pageItem.length <= 0) { continue; }
+            if (jQuery('.page.page_' + i).length <= 0) { pages[pages.length] = i; }
+        }
+
+        self.offset = (pages.length > 0) ? pages[0] : 0;
+        self.pages = pages.length;
+
+        return pages.length > 0;
     }
 
-    if (!loaded) {
-        kt.pages.browse.showPage(pageNum, pageItem);
+    this.loaded = function(data, pageNum, pageItem, loaded) {
+        try {
+            var responseJSON = jQuery.parseJSON(data);
+        }
+        catch(e) {
+            self.loading = false;
+            return;
+        }
+
+        var pages = 0;
+        jQuery.each(responseJSON, function() { ++pages; });
+        if (pages > 0) {
+            for (var pageId in responseJSON) {
+                if (pageNum == 1) {
+                    // we prepend because otherwise it switches the location of the page navigator
+                    jQuery('.itemContainer').prepend(responseJSON[pageId]);
+                }
+                else {
+                    var appendTo = pageId - 1;
+                    while (jQuery('.page.page_' + appendTo).length <= 0) {
+                        --appendTo;
+                    }
+                    jQuery('.page.page_' + appendTo).after(responseJSON[pageId]);
+                }
+                jQuery('.page.page_' + pageId).hide(0);
+            }
+        }
+
+        if (!loaded) {
+            self.showPage(pageNum, pageItem);
+            jQuery.loading(false);
+        }
+
+        self.loading = false;
     }
 
-    jQuery.loading(false);
-    kt.pages.browse.loading = false;
-}
+    this.loadingFailed = function(request, errorType, thrown) {
+        jQuery.loading(false);
+        self.loading = false;
+    }
 
-kt.pages.browse.loadingFailed = function(request, errorType, thrown) {
-    jQuery.loading(false);
-    kt.pages.browse.loading = false;
-}
+    this.showPage = function(pageNum, pageItem) {
+        jQuery('.page').hide(0, function() { jQuery('.page.page_' + pageNum).show(0); })
+        jQuery('.paginate>li.item').removeClass('highlight');
+        pageItem.addClass('highlight');
+        self.curPage = new Number(pageNum);
+        jQuery('html, body').animate({ scrollTop: 0 }, 0);
+    }
 
-kt.pages.browse.showPage = function(pageNum, pageItem) {
-    jQuery('.page').hide(0, function() { jQuery('.page.page_' + pageNum).show(0); })
-    jQuery('.paginate>li.item').removeClass('highlight');
-    pageItem.addClass('highlight');
-    kt.pages.browse.curPage = new Number(pageNum);
-    jQuery('html, body').animate({ scrollTop: 0 }, 0);
-}
+    this.nextPage = function(folderId) {
+        self.viewPage(self.curPage + 1, folderId);
+        return false;
+    };
 
-kt.pages.browse.nextPage = function(folderId) {
-    kt.pages.browse.viewPage(kt.pages.browse.curPage + 1, folderId);
-    return false;
+    this.prevPage = function(folderId) {
+        self.viewPage(self.curPage - 1, folderId);
+        return false;
+    };
+
+    this.selectAllItems = function() {
+        jQuery('.itemContainer .item .checkbox > input:checkbox:enabled').each(function() {
+            if (!this.checked) { jQuery(this).click(); }
+            jQuery(this).parents('.item').addClass('highlighted');
+        });
+        self.setBulkActionMenuStatus();
+        return false;
+    }
+
+    this.deSelectAllItems = function() {
+        jQuery('.itemContainer .item .checkbox>input:checkbox:enabled').each(function() {
+            if (this.checked)jQuery(this).click();
+            jQuery(this).parents('.item').removeClass('highlighted');
+        });
+        self.setBulkActionMenuStatus();
+        return false;
+    }
+
 };
 
-kt.pages.browse.prevPage = function(folderId) {
-    kt.pages.browse.viewPage(kt.pages.browse.curPage - 1, folderId);
-    return false;
-};
-
-kt.pages.browse.selectAllItems = function() {
-    jQuery('.itemContainer .item .checkbox > input:checkbox:enabled').each(function() {
-        if (!this.checked) { jQuery(this).click(); }
-        jQuery(this).parents('.item').addClass('highlighted');
-    });
-    kt.pages.browse.setBulkActionMenuStatus();
-    return false;
-}
-
-kt.pages.browse.deSelectAllItems = function() {
-    jQuery('.itemContainer .item .checkbox>input:checkbox:enabled').each(function() {
-        if (this.checked)jQuery(this).click();
-        jQuery(this).parents('.item').removeClass('highlighted');
-    });
-    kt.pages.browse.setBulkActionMenuStatus();
-    return false;
-}
-
+// Setup
 kt.lib.shortcut.add("ctrl+right", kt.pages.browse.nextPage);
 kt.lib.shortcut.add("ctrl+left", kt.pages.browse.prevPage);
 kt.lib.shortcut.add("ctrl+a", kt.pages.browse.selectAllItems);
 kt.lib.shortcut.add("ctrl+shift+a", kt.pages.browse.deSelectAllItems);
 
+// Main
 jQuery(document).ready(function() {
     kt.pages.browse.viewPage(1, null, false);
     kt.pages.browse.setBulkActionMenuStatus = function() {

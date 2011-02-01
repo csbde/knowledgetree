@@ -17,7 +17,7 @@ class BrowseView {
     private $initialLoad = 3;
     // NOTE if you change the limit here, be sure to also change it in the client side js;
     //      the value may be overridden by the javascript, but this value is always a fallback.
-    private $limit = 3;
+    private $limit = 5;
     private $folderId;
 
     public function __construct()
