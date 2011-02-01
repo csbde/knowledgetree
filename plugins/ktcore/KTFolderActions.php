@@ -102,15 +102,14 @@ class KTFolderAddFolderAction extends KTFolderAction {
         ));
         
         // widgets
-		$folderWidgets[] = 
-            array('ktcore.widgets.string', array(
-                'label' => _kt('Folder name'),
-                'required' => true,
-                'name' => 'name',
-				'has_id' => true,
-				'id' => 'folder_name'
-				),
-            );
+		$folderWidgets[] = array('ktcore.widgets.string', array(
+			                		'label' => _kt('Folder name'),
+					                'required' => true,
+					                'name' => 'name',
+									'has_id' => true,
+									'id' => 'folder_name'
+								),
+							);
         $usertype = '';
         if($this->oUser instanceof UserProxy)
         {
@@ -124,10 +123,33 @@ class KTFolderAddFolderAction extends KTFolderAction {
         // Shared users should not see folder template structures
         if($usertype != 4)
         {
-			$aFolderTemplates = $this->folderTemplateOptions(); // Get folder structure creation option
-			if(is_array($aFolderTemplates)) { // Check if any results are returned
-				 $folderWidgets[] = $aFolderTemplates; 
-			}
+        	// Check if folder templates plugin is active
+        	if (KTPluginUtil::pluginIsActive('folder.templates.plugin'))
+        	{
+        		// Get folder templates
+        		$aFolderTemplates = $this->folderTemplateOptions(); // Get folder structure creation option
+				if(is_array($aFolderTemplates)) 
+				{
+					global $main;
+	        		// Load folder templates css and js
+	        		$main->requireCSSResource(FTemplates_DIR . "/resources/folder_templates.css");
+	        		if(preg_match("/MSIE 7\.\d/", $_SERVER['HTTP_USER_AGENT'])) 
+	        		{
+	       				$main->requireCSSResource(FTemplates_DIR . "/resources/folder_templates_ie_7.css");
+	       			}
+	       			if(preg_match("/Firefox\/2\.\d/", $_SERVER['HTTP_USER_AGENT'])) 
+	       			{
+	       				$main->requireCSSResource(FTemplates_DIR . "/resources/folder_templates_ff_2.css");
+	       			}
+	       			$main->requireJSResource(FTemplates_DIR . "/resources/folder_templates.js");
+					// Check if any results are returned
+					$folderWidgets[] = $aFolderTemplates;
+					$folderWidgets[] = array('ktcore.widgets.div', array(
+													'id' => 'outer'
+											)
+										); 
+				}
+        	}
         }
         
         $oForm->setWidgets($folderWidgets);
@@ -186,13 +208,11 @@ class KTFolderAddFolderAction extends KTFolderAction {
      *
      * @return unknown
      */
-    function folderTemplateOptions() {
-		if (KTPluginUtil::pluginIsActive('folder.templates.plugin')) { // Check if folder templates plugin is active
-			require_once(FolderTemplatesPlugin_DIR . DIRECTORY_SEPARATOR. "FolderTemplate.inc.php");
-			return FolderTemplateRenders::getTemplates();
-		}
+    function folderTemplateOptions() 
+    {
+		require_once(FolderTemplatesPlugin_DIR . DIRECTORY_SEPARATOR. "FolderTemplate.inc.php");
 		
-		return false;
+		return FolderTemplateRenders::getTemplates();
     }
     
     function do_main() {

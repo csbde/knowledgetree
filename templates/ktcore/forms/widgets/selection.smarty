@@ -4,6 +4,7 @@
   <select name="{$name}{if $options.multi}[]{/if}"
     {if $has_id}id="{$id}"{/if}
     {if $options.multi}multiple="true"{/if}
+    {if $eventList} {$eventList} {/if}
     >
     {if $options.initial_string}
     <option value="">{$options.initial_string}</option>
