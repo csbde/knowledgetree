@@ -64,6 +64,7 @@ KTDashboard.prototype = {
         this.initializeDraggables();
 
         var self = this;
+        
         map(function(e) {
                 if(hasElementClass(e, 'empty')) {
                     return;
