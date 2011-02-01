@@ -295,7 +295,7 @@ class KTCorePlugin extends KTPlugin {
         $this->registerAdminPage('groups', 'KTGroupAdminDispatcher', 'userSetup',
             _kt('Manage Groups'), _kt('Add or remove groups from the system.'),
             'admin/groupManagement.php', null, 9);
-        $this->registerAdminPage('units', 'KTUnitAdminDispatcher', 'contentSetup',
+        $this->registerAdminPage('units', 'KTUnitAdminDispatcher', 'userSetup',
             _kt('Control Units'), _kt('Specify which organisational units are available within the repository.'),
             'admin/unitManagement.php', null);
 
@@ -341,29 +341,29 @@ class KTCorePlugin extends KTPlugin {
 				$this->registerAdminPage('managemimetypes', 'ManageMimeTypesDispatcher', 'contentIndexing',
 				_kt('Mime Types'), sprintf(_kt('This report lists all mime types and extensions that can be identified by %s.'), APP_NAME),
 				'../search2/reporting/ManageMimeTypes.php', null);
-				
+
 				$this->registerAdminPage('extractorinfo', 'ExtractorInfoDispatcher', 'contentIndexing',
 				_kt('Extractor Information'), _kt('This report lists the text extractors and their supported mime types.'),
 				'../search2/reporting/ExtractorInfo.php', null);
-				
+
 				$this->registerAdminPage('indexerrors', 'IndexErrorsDispatcher', 'contentIndexing',
 				_kt('Document Indexing Diagnostics'), _kt('This report will help to diagnose problems with document indexing.'),
 				'../search2/reporting/IndexErrors.php', null);
-				
+
 				$this->registerAdminPage('pendingdocuments', 'PendingDocumentsDispatcher', 'contentIndexing',
 				_kt('Pending Documents Indexing Queue'), _kt('This report lists documents that are waiting to be indexed.'),
 				'../search2/reporting/PendingDocuments.php', null);
-				
+
 				$this->registerAdminPage('reschedulealldocuments', 'RescheduleDocumentsDispatcher', 'contentIndexing',
 				_kt('Reschedule all documents'), _kt('This function allows you to re-index your entire repository.'),
 				'../search2/reporting/RescheduleDocuments.php', null);
-				
+
 				$this->registerAdminCategory('contentIndexing', _kt('Content Indexing'),
 				_kt('View and configure content indexing for search.'));
 				$this->registerAdminPage('indexingstatus', 'IndexingStatusDispatcher', 'contentIndexing',
 				_kt('Document Indexer and External Resource Dependancy Status'), _kt('This report will show the status of external dependencies and the document indexer.'),
 				'../search2/reporting/IndexingStatus.php', null);
-				
+
 				$this->registerAdminPage('lucenestatistics', 'LuceneStatisticsDispatcher', 'contentIndexing',
 				_kt('Document Indexer Statistics'), _kt('This report will show the Lucene Document Indexing Statistics '),
 				'../search2/reporting/LuceneStatistics.php', null);
@@ -391,7 +391,7 @@ class KTCorePlugin extends KTPlugin {
         $this->registerAdminPage('generalconfigpage', 'GeneralConfigPageDispatcher', 'sysConfig',
             _kt('General Settings'), _kt('View and modify settings for KnowledgeTree.'),
             'admin/configSettings.php', null);
-                
+
         if($restrictedEnv !== true)
         {
         	$this->registerAdminPage('searchandindexingconfigpage', 'SearchAndIndexingConfigPageDispatcher', 'sysConfig',
