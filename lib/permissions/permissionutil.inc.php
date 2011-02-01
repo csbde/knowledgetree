@@ -532,6 +532,15 @@ class KTPermissionUtil {
         	{
         		return true;
         	}
+
+        	// If admin mode is set and the user is not a system administrator, check if they are a unit admin
+        	$folder = $oFolderOrDocument;
+        	if ($oFolderOrDocument instanceof Document || $oFolderOrDocument instanceof DocumentProxy) {
+        	    $folder = $oFolderOrDocument->getFolderID();
+        	}
+        	if (Permission::isUnitAdministratorForFolder($user, $folder)) {
+        	    return true;
+        	}
         }
 
         if($permission instanceof KTPermission){
