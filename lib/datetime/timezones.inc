@@ -262,7 +262,7 @@ class TimezoneConversion
 	    /** Find Timezone Offset */
 	    foreach ($this->getPhpTimezones() as $timezone_name) 
 	    {
-			if ($timezone_name == $timezone)
+			if ($timezone_name['timezone_id'] == $timezone)
 			{
 				// Create two timezone objects, one for UTC and one for the other user defined
 				// Create two DateTime objects that will contain the same Unix timestamp, but
