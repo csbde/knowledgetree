@@ -502,6 +502,7 @@ class KTPage {
 
 	/* LEGACY */
 	public $deprecationWarning = 'Legacy UI API: ';
+
 	public function setCentralPayload($sCentral) {
 	    $this->contents = $sCentral;
 		$this->addError($this->deprecationWarning . 'called <strong>setCentralPayload</strong>');
@@ -586,7 +587,7 @@ class KTPage {
         			$this->userMenu['preferences']['url'] = $sBaseUrl.'/preferences.php';
         		}
 
-        		if (KTPluginUtil::pluginIsActive ( 'gettingstarted.plugin' )) {
+        		if (KTPluginUtil::pluginIsActive('gettingstarted.plugin')) {
         		    $heading = _kt('Getting Started');
         		    $this->userMenu['gettingstarted']['url'] = KTUtil::kt_url() . str_replace(KT_DIR, '', KTPluginUtil::getPluginPath('gettingstarted.plugin') . 'GettingStarted.php');
         		    $this->userMenu['gettingstarted']['extra'] = 'name="gettingStartedModal"';
@@ -628,23 +629,21 @@ class KTPage {
         require_once(KT_LIB_DIR . '/browse/feedback.inc.php');
         $userFeedback = new Feedback();
 
-        //TODO: need to refactor - is this the correct way to add this?
+        // TODO: need to refactor - is this the correct way to add this?
         $loadDND = true;
 		if (ACCOUNT_ROUTING_ENABLED) {
 			$fFolderId = KTUtil::arrayGet($_REQUEST, 'fFolderId', 1);
-			// Disable drag and drop for shared user landing browse folder view
-			if ($this->user->getDisabled() == 4 && $fFolderId == 1)
-			{
+			// Disable drag and drop for shared user landing browse folder view and for any non-(folder)browse section
+			if (($this->componentClass != 'browse_collections') || (($this->user->getDisabled() == 4) && ($fFolderId == 1))) {
 				$loadDND = false;
 			}
-			if ($this->user->getDisabled() == 4 && $loadDND)
-			{
-				require_once(KT_LIB_DIR . '/render_helpers/sharedContent.inc');
 
+			if (($this->user->getDisabled() == 4) && $loadDND) {
+				require_once(KT_LIB_DIR . '/render_helpers/sharedContent.inc');
 				$loadDND = (SharedContent::getPermissions($this->user->getId(), null, $fFolderId, 'folder') == 0) ? false : true;
 			}
-			if ($loadDND)
-			{
+
+			if ($loadDND) {
 				$uploadProgress = new DragDrop();
 				$uploadProgressRendered = $uploadProgress->render();
 			}
@@ -661,6 +660,7 @@ class KTPage {
 			       	'feedback' => $userFeedback->getDisplay(),
         			'uploadProgress' => $uploadProgressRendered
 				);
+
         if ($oConfig->get('ui/automaticRefresh', false)) {
             $aTemplateData['refreshTimeout'] = (int)$oConfig->get('session/sessionTimeout') + 3;
         }
