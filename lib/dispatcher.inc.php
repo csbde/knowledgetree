@@ -512,7 +512,9 @@ class KTStandardDispatcher extends KTDispatcher {
         global $default;
         global $sectionName;
 
-        $this->oPage->setSection($this->sSection);
+        // NOTE this is now done at the initial dispatch level since it is needed prior to output stage;
+        //      check that it works with this removed and then take it out completely...
+        /*$this->oPage->setSection($this->sSection);*/
         $this->oPage->setBreadcrumbs($this->aBreadcrumbs);
         $this->oPage->setPageContents($data);
         $this->oPage->setUser($this->oUser);
