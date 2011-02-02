@@ -5,7 +5,7 @@
  * KnowledgeTree Community Edition
  * Document Management Made Simple
  * Copyright (C) 2008, 2009, 2010 KnowledgeTree Inc.
- * 
+ *
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License version 3 as published by the
@@ -43,11 +43,9 @@ require_once(KT_DIR . '/plugins/comments/comments.php');
 
 // {{{ KTDocumentDetailsAction
 class KTWorkflowViewlet extends KTDocumentViewlet {
-    var $sName = 'ktcore.viewlets.document.workflow';
-
-	var $showIfWrite = true;
-	var $showIfRead = true;
-	
+    public $sName = 'ktcore.viewlets.document.workflow';
+	public $_sShowPermission = 'ktcore.permissions.write';
+    
     function display_viewlet() {
         $oKTTemplating =& KTTemplating::getSingleton();
         $oTemplate =& $oKTTemplating->loadTemplate("ktcore/document/viewlets/workflow");
@@ -124,11 +122,8 @@ class KTWorkflowViewlet extends KTDocumentViewlet {
 
 // {{{ KTDocumentActivityFeedAction
 class KTDocumentActivityFeedAction extends KTDocumentViewlet {
-    var $sName = 'ktcore.viewlet.document.activityfeed';
+    public $sName = 'ktcore.viewlet.document.activityfeed';
 
-	var $showIfWrite = true;
-	var $showIfRead = true;
-	
     function display_viewlet() {
 
         $aTransactions = array();
@@ -147,18 +142,18 @@ class KTDocumentActivityFeedAction extends KTDocumentViewlet {
         }
 
         $aTransactions = $res;
-        
+
         $mainArray = array();
-        
-        
+
+
 
         // Set the namespaces where not in the transactions lookup
         foreach($aTransactions as $key => $transaction){
             if(empty($transaction['transaction_name'])){
                 $aTransactions[$key]['transaction_name'] = $this->_getActionNameForNamespace($transaction['transaction_namespace']);
             }
-            
-            
+
+
             $mainArray[] = array(
                 'name' => $transaction['user_name'],
                 'email' => md5(strtolower($transaction['email'])),
@@ -169,7 +164,7 @@ class KTDocumentActivityFeedAction extends KTDocumentViewlet {
                 'type' => 'transaction'
             );
         }
-        
+
     	$aMetadataVersions = KTDocumentMetadataVersion::getByDocument($this->oDocument);
         $aVersions = array();
         foreach ($aMetadataVersions as $oVersion) {
@@ -179,17 +174,17 @@ class KTDocumentActivityFeedAction extends KTDocumentViewlet {
              }else if($version->getMetadataStatusID() != VERSION_DELETED){
                 $aVersions[] = $version;
              }
-             
+
             $mainArray[] = array(
                 'name' => $this->getUserForId($version->getVersionCreatorId()),
                 'transaction_name' => 'New Document Version',
-                'datetime' => $version->getVersionCreated(),
+                'datetime' => $version->getDisplayVersionCreated(),
                 'version' => $version->getMajorVersionNumber().'.'.$version->getMinorVersionNumber(),
                 'comment' => '',
                 'type' => 'version'
             );
-        }        
-        
+        }
+
         $comments = Comments::get_comments($this->oDocument->getId());
         foreach ($comments as $comment)
         {
@@ -203,16 +198,16 @@ class KTDocumentActivityFeedAction extends KTDocumentViewlet {
                 'type' => 'comment'
             );
         }
-        
+
 		// Sort by Date
         usort($mainArray, array($this, 'sortTable'));
-		
+
 		// Reverse so that top most is on top
 		$mainArray = array_reverse($mainArray);
 
 		$oKTTemplating =& KTTemplating::getSingleton();
         $oTemplate =& $oKTTemplating->loadTemplate("ktcore/document/viewlets/activity_feed");
-		
+
         $aTemplateData = array(
               'context' => $this,
               'document_id' => $this->oDocument->getId(),
@@ -221,16 +216,16 @@ class KTDocumentActivityFeedAction extends KTDocumentViewlet {
         );
         return $oTemplate->render($aTemplateData);
     }
-    
+
     function sortTable($a, $b)
-    {        
+    {
         $d1 = new DateTime($a['datetime']);
         $d2 = new DateTime($b['datetime']);
-        
+
         if ($d1 == $d2) {
             //return 1;
         }
-        
+
         return $d1 >= $d2 ? 1: -1;
     }
 
@@ -241,16 +236,16 @@ class KTDocumentActivityFeedAction extends KTDocumentViewlet {
         $sName = ucwords($sName);
         return $sName;
     }
-    
+
     function getUserForId($iUserId) {
         $u = User::get($iUserId);
         if (PEAR::isError($u) || ($u == false)) { return _kt('User no longer exists'); }
         return $u->getName();
     }
-	
+
 	function getEmailForId($iUserId) {
         $u = User::get($iUserId);
-		
+
         if (PEAR::isError($u) || ($u == false)) { return _kt('User no longer exists'); }
         return $u->getEmail();
     }

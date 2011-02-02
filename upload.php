@@ -352,18 +352,11 @@
 	$item['title'] = $oDocument->getName();
 	$item['filesize'] = KTUtil::filesizeToString($oDocument->getFileSize());
 	$item['mimeicon'] = $mimeIcon;
-	$item['created_date'] = $oDocument->getCreatedDateTime();
-	$item['modified_date'] = $oDocument->getLastModifiedDate();
-
+	$item['created_date'] = $oDocument->getDisplayCreatedDateTime();
+	$item['modified_date'] = $oDocument->getDisplayLastModifiedDate();
 	$json['success'] = $item;
 
 	echo(json_encode($json));
-
-	//$documentID = $oDocument->getId();
-	//$fileTitle = $oDocument->getName();
-
-	//$output = '{"jsonrpc" : "2.0", "success" : {"id":"'.$documentID.'", "filename":"'.$fileName.'", "title":"'.$fileTitle.'", "owned_by":"'.$oOwner->getName().'", "created_by":"'.$oCreator->getName().'", "created_date":"'.$oDocument->getCreatedDateTime().'", "modified_by":"'.$oModifier->getName().'", "modified_date":"'.$oDocument->getLastModifiedDate().'", "mimeicon":"'.$mimeIcon.'"}, "id" : "id"}';
-
 	exit(0);
 
 ?>

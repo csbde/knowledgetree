@@ -2170,7 +2170,7 @@ class KTAPI_Document extends KTAPI_FolderItem
 		}
 
 		// get the creation date
-		$detail['created_date'] = $document->getCreatedDateTime();
+		$detail['created_date'] = $document->getDisplayCreatedDateTime();
 
 		// get the checked out user
 		$userid = $document->getCheckedOutUserID();
@@ -2198,7 +2198,7 @@ class KTAPI_Document extends KTAPI_FolderItem
 		list($major, $minor, $fix) = explode('.', $default->systemVersion);
 		if ($major == 3 && $minor >= 5)
 		{
-			$detail['checked_out_date'] = $document->getCheckedOutDate();
+			$detail['checked_out_date'] = $document->getDisplayCheckedOutDate();
 		}
 		else
 		{
@@ -2229,7 +2229,7 @@ class KTAPI_Document extends KTAPI_FolderItem
 		}
 
 		// get the modified date
-		$detail['updated_date'] = $detail['modified_date'] = $document->getLastModifiedDate();
+		$detail['updated_date'] = $detail['modified_date'] = $document->getDisplayLastModifiedDate();
 
 		// get the owner
 		$userid = $document->getOwnerID();
@@ -2538,7 +2538,7 @@ class KTAPI_Document extends KTAPI_FolderItem
         	$version['user'] = $username;
         	$version['metadata_version'] = $document->getMetadataVersion();
         	$version['content_version'] = $document->getVersion();
-			$version['datetime'] = $document->getVersionCreated();
+			$version['datetime'] = $document->getDisplayVersionCreated();
         	if ($wsversion >= 2)
         	{
         		$version['metadata_version'] = (int) $version['metadata_version'];
