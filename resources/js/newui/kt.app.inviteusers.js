@@ -18,7 +18,6 @@ kt.app.inviteusers = new function() {
     //scope protector. inside this object referrals to self happen via 'self' rather than 'this' to make sure we call the functionality within the right scope.
     var self = this;
 
-    //a storage container for various DOM elements that need to be accessed repeatedly
     var elems = this.elems = {};
 
     //Initializes the upload widget on creation. Currently does preloading of resources.
