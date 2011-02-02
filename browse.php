@@ -280,7 +280,7 @@ class BrowseDispatcher extends KTStandardDispatcher {
 			$iFolderId = $oDocument->getFolderId();
 		}
 
-		if (!Permission::userIsSystemAdministrator() && !Permission::isUnitAdministratorForFolder($this->oUser, $iFolderId)) {
+		if (!Permission::userIsSystemAdministrator() && !Permission::userIsUnitAdministrator()) {
 			$this->errorRedirectToMain(_kt('You are not an administrator'));
 		}
 
@@ -325,7 +325,7 @@ class BrowseDispatcher extends KTStandardDispatcher {
 			$iFolderId = $oDocument->getFolderId();
 		}
 
-		if (!Permission::userIsSystemAdministrator() && !Permission::isUnitAdministratorForFolder($this->oUser, $iFolderId)) {
+		if (!Permission::userIsSystemAdministrator() && !Permission::userIsUnitAdministrator()) {
 			$this->errorRedirectToMain(_kt('You are not an administrator'));
 		}
 

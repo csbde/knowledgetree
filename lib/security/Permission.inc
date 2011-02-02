@@ -264,6 +264,29 @@ class Permission {
         return false;
     }
 
+    function userIsUnitAdministrator($iUserID = '')
+    {
+        if ($iUserID == '') {
+            $iUserID = $_SESSION['userID'];
+        }
+
+        if (empty($iUserID)) {
+        	return false;
+        }
+
+        $sql = "SELECT gl.unit_id FROM groups_lookup gl, users_groups_link ug
+                WHERE gl.id = ug.group_id AND is_unit_admin = 1 AND user_id = {$iUserID}";
+
+        $result = DBUtil::getResultArrayKey($sql, 'unit_id');
+
+        if(empty($result) || PEAR::isError($result)){
+            return false;
+        }
+
+        $_SESSION['UnitIDs'] = $result;
+        return true;
+    }
+
     /**
      * Tell us if the administrator is in admin mode
      *
