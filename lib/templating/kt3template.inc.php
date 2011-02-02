@@ -54,6 +54,7 @@ require_once(KT_DIR . '/search2/search/search.inc.php');
 require_once(KT_LIB_DIR . "/users/shareduserutil.inc.php");
 
 class KTPage {
+
     public $hide_section = false;
 	public $secondary_title = null;
 
@@ -101,39 +102,108 @@ class KTPage {
 
     /* Whether or not to sanitize info */
     public $allowHTML = false;
-    
-    /* further initialisation */
-    function KTPage() {
+
+    private $initialised = false;
+
+    // TODO create init function which will deal with loading of css and js, rather than constructor;
+    //      will allow setting of section prior to determining what additionals to load.
+
+    // TODO deal with login page, it will hit the default same as dashboard, but must not (nothing much needs to load on login page...)
+
+    public function __construct() { }
+
+    /**
+     * Initialises css and javascript according to component class.
+     * Initialises menus and portlets.
+     *
+     * @param string $section
+     */
+    public function init($section = null)
+    {
+        if ($this->initialised) { return ; }
+
         global $default;
+
+        if (!empty($section)) {
+            $this->setSection($section);
+        }
+
         $oConfig = KTConfig::getSingleton();
+
+        /*
+
+        Component classes not yet covered...
+
+            case 'search':
+                $this->componentLabel = _kt('Search');
+                $this->componentClass = 'search';
+                break;
+
+            case 'preferences':
+                $this->componentLabel = _kt('Preferences');
+                $this->componentClass = 'preferences';
+                break;
+
+        */
+
+        // set inclusion map
+        // TODO this maybe happens elsewhere and is laoded into the config object?
+        // TODO consider 'all' option, which means will appear on any page.  These could be loaded in addition
+        //      to ones matching the current filter.
+        $cssIncludes = array('resources/css/newui/newui.upload.css' => array('browse_collections', 'dashboard'));
+        $jsIncludes = array(
+                        'thirdpartyjs/jquery/plugins/ajaxupload/fileuploader.js' => array('browse_collections', 'dashboard'),
+                        'resources/js/newui/kt.app.upload.js' => array('browse_collections', 'dashboard'),
+	                    'resources/js/newui/kt.app.inviteusers.js' => array('browse_collections', 'document_details', 'dashboard', 'administration'),
+                        'resources/js/newui/kt.app.sharewithusers.js' => array('browse_collections', 'document_details'),
+            	        'resources/js/jquery.blockui.js' => array('browse_collections', 'document_details', 'dashboard', 'administration')
+                      );
 
         // set the system url
         $this->systemURL = $oConfig->get('ui/systemUrl');
 
+        // hack for now, just to test
+        /*$adminPage = preg_match('/admin\.php$/', $_SERVER['SCRIPT_FILENAME']);
+        // $adminPage = false;
+        if ($adminPage) {
+            $this->componentClass = 'admin';
+        }*/
+
+        // testing
+        /*$this->componentClass = 'browse_collections';*/
+
         /* default css files initialisation */
         $aCSS = Array(
-           "thirdpartyjs/extjs/resources/css/ext-all.css",
-           "resources/css/kt-framing.css",
-           "resources/css/kt-contenttypes.css",
-           "resources/css/kt-headings.css",
-           "resources/css/kt-new-ui.css",
-           'resources/css/newui/newui.upload.css',
-           "resources/css/newui/dropdown.css",
+           'thirdpartyjs/extjs/resources/css/ext-all.css',
+           'resources/css/kt-framing.css',
+           'resources/css/kt-contenttypes.css',
+           'resources/css/kt-headings.css',
+           'resources/css/kt-new-ui.css',
+           'resources/css/newui/dropdown.css',
 		   /* REWORK INTO SINGLE STYLE SHEET */
-		   "resources/css/newui/dropdown_styles.css",
+		   'resources/css/newui/dropdown_styles.css',
         );
+
+        // load area specific files
+        foreach ($cssIncludes as $cssFile => $includeLocations) {
+            if (in_array($this->componentClass, $includeLocations)) {
+                $aCSS[] = $cssFile;
+            }
+        }
+
         $this->requireCSSResources($aCSS);
 
-        if($oConfig->get('ui/morphEnabled') == '1'){
+        if ($oConfig->get('ui/morphEnabled') == '1') {
         	$morphTheme = $oConfig->get('ui/morphTo');
         	$this->requireThemeCSSResource('skins/kts_'.$oConfig->get('ui/morphTo').'/kt-morph.css');
         	$this->requireThemeCSSResource('skins/kts_'.$oConfig->get('ui/morphTo').'/kt-ie-morph.css', true);
         }
+
         // IE only
-        $this->requireCSSResource("resources/css/kt-ie-icons.css", true);
+        $this->requireCSSResource('resources/css/kt-ie-icons.css', true);
 
         /* default js files initialisation */
-        // TODO : Remove js based on user type.
+        // TODO : Remove js based on user type.  Also based on location.  This is a major problem with running EVERYTHING through generic code...what use is uploader code on a page which does not support uploads in the UI?
         $aJS = Array();
 
 		$aJS[] = 'thirdpartyjs/MochiKit/MochiKitPacked.js';
@@ -149,28 +219,36 @@ class KTPage {
 //        $aJS[] = 'thirdpartyjs/plupload/js/plupload.min.js';
 //        $aJS[] = 'thirdpartyjs/plupload/js/plupload.html5.min.js';
 //        $aJS[] = 'thirdpartyjs/plupload/js/jquery.plupload.queue.min.js';
-        $aJS[] = 'thirdpartyjs/jquery/plugins/ajaxupload/fileuploader.js';
-        $aJS[] = 'thirdpartyjs/jquery/plugins/loading/jquery.loading.1.6.4.min.js';
         $aJS[] = 'resources/js/newui/ktjapi.all.js';
         $aJS[] = 'resources/js/newui/kt.containers.js';
         $aJS[] = 'resources/js/newui/kt.lib.js';
         $aJS[] = 'resources/js/newui/kt.api.js';
-        $aJS[] = 'resources/js/newui/kt.app.upload.js';
+
         // Shared users cannot re-share or invite users to the system.
-        if(!SharedUserUtil::isSharedUser())
-        {
-	        $aJS[] = 'resources/js/newui/kt.app.sharewithusers.js';
-	        $aJS[] = 'resources/js/newui/kt.app.inviteusers.js';
-	        $aJS[] = 'resources/js/jquery.blockui.js';
+        if (SharedUserUtil::isSharedUser()) {
+            unset($jsIncludes['resources/js/newui/kt.app.sharewithusers.js']);
+            unset($jsIncludes['resources/js/newui/kt.app.inviteusers.js']);
+            unset($jsIncludes['resources/js/jquery.blockui.js']);
         }
+
         $aJS[] = 'resources/js/newui/newUIFunctionality.js';
         $aJS[] = 'resources/js/newui/jquery.helper.js';
         $aJS[] = 'resources/js/newui/buttontabs.jquery.js';
 
+        // load area specific files
+        foreach ($jsIncludes as $jsFile => $includeLocations) {
+            if (in_array($this->componentClass, $includeLocations)) {
+                $aJS[] = $jsFile;
+            }
+        }
+
         $this->requireJSResources($aJS);
 
         // this is horrid, but necessary.
-		$this->requireJSStandalone('addLoadEvent(partial(initDeleteProtection, "' . _kt('Are you sure you wish to delete this item?') . '"));');
+        // hack for now, just to test
+        if ($this->componentClass != 'administration') {
+            $this->requireJSStandalone('addLoadEvent(partial(initDeleteProtection, "' . _kt('Are you sure you wish to delete this item?') . '"));');
+        }
 
         /* menu initialisation*/
         // FIXME:  how do we want to handle the menu?
@@ -179,62 +257,71 @@ class KTPage {
         /* portlet initialisation */
         $this->show_portlets = true;
         /* breadcrumbs */
+
+        $this->initialised = true;
     }
 
 	// initiliase the menu.
-    function initMenu() {
+    public function initMenu()
+    {
     	// FIXME:  we lost the getDefaultAction stuff - do we care?
     	// note that key == action. this is _important_, since we crossmatch the breadcrumbs against this for "active"
     	$sBaseUrl = KTUtil::kt_url();
 
     	$this->menu = array();
-    	if(!SharedUserUtil::isSharedUser())
-    	{
-    		$this->menu['dashboard'] = array('label' => _kt("Dashboard"), 'url' => $sBaseUrl.'/dashboard.php');
+
+    	if (!SharedUserUtil::isSharedUser()) {
+    		$this->menu['dashboard'] = array('label' => _kt('Dashboard'), 'url' => $sBaseUrl . '/dashboard.php');
     	}
-		$this->menu['browse'] = array('label' => _kt("Browse All Documents"), 'url' => $sBaseUrl.'/browse.php');
-    	if(ACCOUNT_ROUTING_ENABLED) {
+
+    	$this->menu['browse'] = array('label' => _kt('Browse All Documents'), 'url' => $sBaseUrl . '/browse.php');
+
+    	if (ACCOUNT_ROUTING_ENABLED) {
     		$sLiveUrl = KTLiveUtil::ktlive_url();
-			$this->menu['applications'] = array('label' => _kt("Applications"), 'url' => $sLiveUrl.'/applications.php');
+			$this->menu['applications'] = array('label' => _kt('Applications'), 'url' => $sLiveUrl . '/applications.php');
 		}
-		$this->menu['administration'] = array('label' => _kt("Settings"));
+
+		$this->menu['administration'] = array('label' => _kt('Settings'));
 
 		// Implement an electronic signature for accessing the admin section, it will appear every 10 minutes
     	global $default;
-    	if($default->enableAdminSignatures && $_SESSION['electronic_signature_time'] < time()){
+    	if ($default->enableAdminSignatures && ($_SESSION['electronic_signature_time'] < time())) {
     	    $sUrl = KTPluginUtil::getPluginPath('electronic.signatures.plugin', true);
     	    $heading = _kt('You are attempting to access Settings');
     	    $this->menu['administration']['url'] = '#';
     	    $this->menu['administration']['onclick'] = "javascript: showSignatureForm('{$sUrl}', '{$heading}', 'dms.administration.administration_section_access', 'admin', '{$sBaseUrl}/admin.php', 'redirect');";
-    	}else{
+    	} else {
     	    $this->menu['administration']['url'] = $sBaseUrl.'/admin.php';
     	}
     }
 
-
-    function setTitle($sTitle) {
+    public function setTitle($sTitle)
+    {
 		$this->title = $sTitle;
     }
 
     /* javascript handling */
     // require that the specified JS file is referenced.
-    function requireJSResource($sResourceURL) {
-	$this->js_resources[$sResourceURL] = 1; // use the keys to prevent multiple copies.
+    public function requireJSResource($sResourceURL)
+    {
+        $this->js_resources[$sResourceURL] = 1; // use the keys to prevent multiple copies.
     }
 
     // require that the specified JS files are referenced.
-    function requireJSResources($aResourceURLs) {
+    public function requireJSResources($aResourceURLs)
+    {
         foreach ($aResourceURLs as $sResourceURL) {
             $this->js_resources[$sResourceURL] = 1;
         }
     }
 
     // list the distinct js resources.
-    function getJSResources() {
+    public function getJSResources()
+    {
     	// get js resources specified within the plugins
     	// these need to be added to the session because KTPage is initialised after the plugins are loaded.
-    	if(isset($GLOBALS['page_js_resources']) && !empty($GLOBALS['page_js_resources'])){
-    		foreach($GLOBALS['page_js_resources'] as $js){
+    	if (isset($GLOBALS['page_js_resources']) && !empty($GLOBALS['page_js_resources'])) {
+    		foreach($GLOBALS['page_js_resources'] as $js) {
     			$this->js_resources[$js] = 1;
     		}
     	}
@@ -242,17 +329,21 @@ class KTPage {
         return array_keys($this->js_resources);
     }
 
-    function requireJSStandalone($sJavascript) {
+    public function requireJSStandalone($sJavascript)
+    {
         $this->js_standalone[$sJavascript] = 1; // use the keys to prevent multiple copies.
     }
+
     // list the distinct js resources.
-    function getJSStandalone() {
+    public function getJSStandalone()
+    {
         return array_keys($this->js_standalone);
     }
 
     /* css handling */
     // require that the specified CSS file is referenced.
-    function requireCSSResource($sResourceURL, $ieOnly = false) {
+    public function requireCSSResource($sResourceURL, $ieOnly = false)
+    {
         if ($ieOnly !== true) {
             $this->css_resources[$sResourceURL] = 1; // use the keys to prevent multiple copies.
 		} else {
@@ -261,7 +352,8 @@ class KTPage {
     }
 
     // require that the specified CSS file is referenced.
-    function requireThemeCSSResource($sResourceURL, $ieOnly = false) {
+    public function requireThemeCSSResource($sResourceURL, $ieOnly = false)
+    {
         if ($ieOnly !== true) {
             $this->theme_css_resources[$sResourceURL] = 1; // use the keys to prevent multiple copies.
 		} else {
@@ -270,149 +362,174 @@ class KTPage {
     }
 
     // require that the specified CSS files are referenced.
-    function requireCSSResources($aResourceURLs) {
+    public function requireCSSResources($aResourceURLs)
+    {
         foreach ($aResourceURLs as $sResourceURL) {
             $this->css_resources[$sResourceURL] = 1;
         }
     }
 
     // Adds an onload function - only one can be set
-    function setBodyOnload($onload)
+    public function setBodyOnload($onload)
     {
         $this->onload = $onload;
     }
 
-    function getBodyOnload()
+    public function getBodyOnload()
     {
         return $this->onload;
     }
 
     // list the distinct CSS resources.
-    function getCSSResources() {
+    public function getCSSResources()
+    {
         return array_keys($this->css_resources);
     }
 
     // list the distinct CSS resources.
-    function getCSSExternal() {
+    public function getCSSExternal()
+    {
         return array_keys($this->css_external);
     }
 
     // list the distinct CSS resources.
-    function getThemeCSSResources() {
+    public function getThemeCSSResources()
+    {
         return array_keys($this->theme_css_resources);
     }
 
-	function getCSSResourcesForIE() {
+	public function getCSSResourcesForIE()
+	{
         return array_keys($this->ie_only_css);
     }
 
-    function getThemeCSSResourcesForIE() {
+    public function getThemeCSSResourcesForIE()
+    {
         return array_keys($this->theme_ie_only_css);
     }
 
-    function requireCSSStandalone($sCSS) {
+    public function requireCSSStandalone($sCSS)
+    {
         $this->css_standalone[$sCSS] = 1;
     }
 
-    function requireCSSExternal($sCSS) {
+    public function requireCSSExternal($sCSS)
+    {
         $this->css_external[$sCSS] = 1;
     }
 
-    function getCSSStandalone() {
+    public function getCSSStandalone()
+    {
         return array_keys($this->css_standalone);
     }
 
-    function setPageContents($contents) { $this->contents = $contents; }
-    function setShowPortlets($bShow) { $this->show_portlets = $bShow; }
+    public function setPageContents($contents) { $this->contents = $contents; }
+    public function setShowPortlets($bShow) { $this->show_portlets = $bShow; }
 
     /* set the breadcrumbs.  the first item is the area name.
        the rest are breadcrumbs. */
-    function setBreadcrumbs($aBreadcrumbs) {
+    public function setBreadcrumbs($aBreadcrumbs)
+    {
         $breadLength = count($aBreadcrumbs);
+
         if ($breadLength != 0) {
             $this->breadcrumbSection = $this->_actionhelper($aBreadcrumbs[0]);
-	    // handle the menu
-	    if (($aBreadcrumbs[0]["action"]) && ($this->menu[$aBreadcrumbs[0]["action"]])) {
-		$this->menu[$aBreadcrumbs[0]["action"]]["active"] = 1;
-	    }
+            // handle the menu
+            if (($aBreadcrumbs[0]['action']) && ($this->menu[$aBreadcrumbs[0]['action']])) {
+                $this->menu[$aBreadcrumbs[0]['action']]['active'] = 1;
+            }
         }
+
         if ($breadLength > 1) {
-            $this->breadcrumbs = array_map(array(&$this, "_actionhelper"), array_slice($aBreadcrumbs, 1));
+            $this->breadcrumbs = array_map(array(&$this, '_actionhelper'), array_slice($aBreadcrumbs, 1));
         }
     }
 
-    function setBreadcrumbDetails($sBreadcrumbDetails) { $this->breadcrumbDetails = $sBreadcrumbDetails; }
-	function setUser($oUser) { $this->user = $oUser; }
+    public function setBreadcrumbDetails($sBreadcrumbDetails) { $this->breadcrumbDetails = $sBreadcrumbDetails; }
+	public function setUser($oUser) { $this->user = $oUser; }
+    public function setContentClass($sClass) { $this->content_class = $sClass; }
 
-    function setContentClass($sClass) { $this->content_class = $sClass; }
-
-    // FIXME refactor setSection to be generic, not an if-else.
+    // FIXME refactor setSection to be generic, not a conditional.
     // assume this is admin for now.
-    function setSection($sSection) {
-	    if ($sSection == 'administration') {
-			$this->componentLabel = _kt('Settings');
-			$this->componentClass = 'administration';
-			$this->menu['administration']['active'] = 1;
-		} else if ($sSection == 'dashboard') {
-		    $this->componentLabel = _kt('Dashboard');
-            $this->componentClass = 'dashboard';
-		} else if ($sSection == 'browse') {
-		    $this->componentLabel = _kt('Browse Documents');
-            $this->componentClass = 'browse_collections';
-		} else if ($sSection == 'view_details') {
-		    $this->componentLabel = _kt('Document Details');
-            $this->componentClass = 'document_details';
-		} else if ($sSection == 'search') {
-		    $this->componentLabel = _kt('Search');
-            $this->componentClass = 'search';
-		} else if ($sSection == 'preferences') {
-		    $this->componentLabel = _kt('Preferences');
-            $this->componentClass = 'preferences';
-	    } else {
-			$this->componentLabel = _kt('Dashboard');
-			$this->componentClass = 'dashboard';
-		}
+    public function setSection($sSection)
+    {
+        switch ($sSection) {
+            case 'administration':
+                $this->componentLabel = _kt('Settings');
+                $this->componentClass = 'administration';
+                $this->menu['administration']['active'] = 1;
+                break;
 
+            case 'dashboard':
+                $this->componentLabel = _kt('Dashboard');
+                $this->componentClass = 'dashboard';
+                break;
+
+            case 'browse':
+                $this->componentLabel = _kt('Browse Documents');
+                $this->componentClass = 'browse_collections';
+                break;
+
+            case 'view_details':
+                $this->componentLabel = _kt('Document Details');
+                $this->componentClass = 'document_details';
+                break;
+
+            case 'search':
+                $this->componentLabel = _kt('Search');
+                $this->componentClass = 'search';
+                break;
+
+            case 'preferences':
+                $this->componentLabel = _kt('Preferences');
+                $this->componentClass = 'preferences';
+                break;
+
+            default:
+                $this->componentLabel = _kt('Dashboard');
+                $this->componentClass = 'dashboard';
+        }
 	}
 
-	function addError($sError) { array_push($this->errStack, $sError); }
-	function addInfo($sInfo) { array_push($this->infoStack, $sInfo); }
+	public function addError($sError) { array_push($this->errStack, $sError); }
+	public function addInfo($sInfo) { array_push($this->infoStack, $sInfo); }
 
 	/** no-one cares what a portlet is, but it should be renderable, and have its ->title member set. */
-	function addPortlet($oPortlet) {
+	public function addPortlet($oPortlet)
+	{
 	    array_push($this->portlets, $oPortlet);
 	}
 
 	/* LEGACY */
-	public $deprecationWarning = "Legacy UI API: ";
-	function setCentralPayload($sCentral) {
+	public $deprecationWarning = 'Legacy UI API: ';
+	public function setCentralPayload($sCentral) {
 	    $this->contents = $sCentral;
-		$this->addError($this->deprecationWarning . "called <strong>setCentralPayload</strong>");
+		$this->addError($this->deprecationWarning . 'called <strong>setCentralPayload</strong>');
 	}
 
-	function setOnloadJavascript($appendix) { $this->addError($this->deprecationWarning . "called <strong>setOnloadJavascript (no-act)</strong>"); }
-	function setDHtmlScrolling($appendix) { $this->addError($this->deprecationWarning . "called <strong>setDHTMLScrolling (no-act)</strong>"); }
-	function setFormAction($appendix) { $this->addError($this->deprecationWarning . "called <strong>setFormAction (no-act)</strong>"); }
-	function setSubmitMethod($appendix) { $this->addError($this->deprecationWarning . "called <strong>setSubmitMethod (no-act)</strong>"); }
-	function setHasRequiredFields($appendix) { $this->addError($this->deprecationWarning . "called <strong>setHasRequiredFields (no-act)</strong>"); }
-	function setAdditionalJavascript($appendix) { $this->addError($this->deprecationWarning . "called <strong>setAdditionalJavascript (no-act)</strong>"); }
+	public function setOnloadJavascript($appendix) { $this->addError($this->deprecationWarning . 'called <strong>setOnloadJavascript (no-act)</strong>'); }
+	public function setDHtmlScrolling($appendix) { $this->addError($this->deprecationWarning . 'called <strong>setDHTMLScrolling (no-act)</strong>'); }
+	public function setFormAction($appendix) { $this->addError($this->deprecationWarning . 'called <strong>setFormAction (no-act)</strong>'); }
+	public function setSubmitMethod($appendix) { $this->addError($this->deprecationWarning . 'called <strong>setSubmitMethod (no-act)</strong>'); }
+	public function setHasRequiredFields($appendix) { $this->addError($this->deprecationWarning . 'called <strong>setHasRequiredFields (no-act)</strong>'); }
+	public function setAdditionalJavascript($appendix) { $this->addError($this->deprecationWarning . 'called <strong>setAdditionalJavascript (no-act)</strong>'); }
 
-	function hideSection() { $this->hide_section = true; }
-	function setSecondaryTitle($sSecondary) { $this->secondary_title = $sSecondary; }
+	public function hideSection() { $this->hide_section = true; }
+	public function setSecondaryTitle($sSecondary) { $this->secondary_title = $sSecondary; }
 
     /* final render call. */
-    function render()
+    public function render()
     {
 		global $default;
         $oConfig = KTConfig::getSingleton();
 
         if (empty($this->contents)) {
-            $this->contents = "";
+            $this->contents = '';
         }
 
-        if (is_string($this->contents) && (trim($this->contents) === "")) {
-            $this->addError(_kt("This page did not produce any content"));
-            $this->contents = "";
+        if (is_string($this->contents) && (trim($this->contents) === '')) {
+            $this->addError(_kt('This page did not produce any content'));
+            $this->contents = '';
         }
 
         if (!is_string($this->contents)) {
@@ -443,7 +560,7 @@ class KTPage {
         if (!(PEAR::isError($this->user) || is_null($this->user) || $this->user->isAnonymous())) {
             $isAdmin = Permission::userIsSystemAdministrator($this->user->getId());
 
-            if($isAdmin){
+            if ($isAdmin) {
                 $bCanAdd = true;
                 if (KTPluginUtil::pluginIsActive('ktdms.wintools')) {
                     $path = KTPluginUtil::getPluginPath('ktdms.wintools');
@@ -451,16 +568,16 @@ class KTPage {
                     $bCanAdd = BaobabKeyUtil::canAddUser();
                 }
 
-                if($bCanAdd === true){
+                if ($bCanAdd === true) {
                     $this->userMenu['inviteuser'] = array('label' => _kt('Invite Users'), 'url' => '#');
-                    $this->userMenu['inviteuser']['onclick'] = "javascript:kt.app.inviteusers.showInviteWindow();";
+                    $this->userMenu['inviteuser']['onclick'] = 'javascript:kt.app.inviteusers.showInviteWindow();';
                 }
             }
 
-        	if ($oConfig->get("user_prefs/restrictPreferences", false) && !$isAdmin) {
+        	if ($oConfig->get('user_prefs/restrictPreferences', false) && !$isAdmin) {
         		$this->userMenu['logout'] = array('label' => _kt('Logout'), 'url' => $sBaseUrl.'/presentation/logout.php');
         	} else {
-        		if($default->enableESignatures) {
+        		if ($default->enableESignatures) {
         			$sUrl = KTPluginUtil::getPluginPath('electronic.signatures.plugin', true);
         			$heading = _kt('You are attempting to modify Preferences');
         			$this->userMenu['preferences']['url'] = '#';
@@ -500,7 +617,7 @@ class KTPage {
         }
 
         $sContentType = 'Content-type: ' . $this->contentType;
-        if(!empty($this->charset)) {
+        if (!empty($this->charset)) {
         	$sContentType .= '; charset=' . $this->charset;
         };
 
@@ -516,17 +633,17 @@ class KTPage {
 		if (ACCOUNT_ROUTING_ENABLED) {
 			$fFolderId = KTUtil::arrayGet($_REQUEST, 'fFolderId', 1);
 			// Disable drag and drop for shared user landing browse folder view
-			if($this->user->getDisabled() == 4 && $fFolderId == 1)
+			if ($this->user->getDisabled() == 4 && $fFolderId == 1)
 			{
 				$loadDND = false;
 			}
-			if($this->user->getDisabled() == 4 && $loadDND)
+			if ($this->user->getDisabled() == 4 && $loadDND)
 			{
 				require_once(KT_LIB_DIR . '/render_helpers/sharedContent.inc');
-				
+
 				$loadDND = (SharedContent::getPermissions($this->user->getId(), null, $fFolderId, 'folder') == 0) ? false : true;
 			}
-			if($loadDND)
+			if ($loadDND)
 			{
 				$uploadProgress = new DragDrop();
 				$uploadProgressRendered = $uploadProgress->render();
@@ -536,16 +653,16 @@ class KTPage {
         $oTemplating =& KTTemplating::getSingleton();
         $oTemplate = $oTemplating->loadTemplate($this->template);
         $aTemplateData = array(
-        			"page" => $this,
-			       	"systemversion" => $default->systemVersion,
-			       	"versionname" => $default->versionName,
+        			'page' => $this,
+			       	'systemversion' => $default->systemVersion,
+			       	'versionname' => $default->versionName,
 					'smallVersion' => $default->versionTier,
 			       	'savedSearches'=> $savedSearches,
 			       	'feedback' => $userFeedback->getDisplay(),
         			'uploadProgress' => $uploadProgressRendered
 				);
-        if ($oConfig->get("ui/automaticRefresh", false)) {
-            $aTemplateData['refreshTimeout'] = (int)$oConfig->get("session/sessionTimeout") + 3;
+        if ($oConfig->get('ui/automaticRefresh', false)) {
+            $aTemplateData['refreshTimeout'] = (int)$oConfig->get('session/sessionTimeout') + 3;
         }
 
         //TODO: need to refactor - is this the correct way to add this?
@@ -569,46 +686,51 @@ class KTPage {
     }
 
 	/**   helper functions */
-	// returns an array ("url", "label")
-    function _actionhelper($aActionTuple) {
-        $aTuple = Array("label" => $aActionTuple["name"]);
-        if ($aActionTuple["action"]) {
-           $aTuple["url"] = generateControllerLink($aActionTuple["action"], $aActionTuple["query"]);
-        } else if ($aActionTuple["url"]) {
-           $sUrl = $aActionTuple["url"];
+	// returns an array ('url', 'label')
+    public function _actionhelper($aActionTuple)
+    {
+        $aTuple = Array('label' => $aActionTuple['name']);
+        if ($aActionTuple['action']) {
+           $aTuple['url'] = generateControllerLink($aActionTuple['action'], $aActionTuple['query']);
+        } else if ($aActionTuple['url']) {
+           $sUrl = $aActionTuple['url'];
            $sQuery = KTUtil::arrayGet($aActionTuple, 'query');
            if ($sQuery) {
                $sUrl = KTUtil::addQueryString($sUrl, $sQuery);
            }
-		   $aTuple["url"] = $sUrl;
-        } else if ($aActionTuple["query"]) {
-           $aTuple['url'] = KTUtil::addQueryStringSelf($aActionTuple["query"]);
+		   $aTuple['url'] = $sUrl;
+        } else if ($aActionTuple['query']) {
+           $aTuple['url'] = KTUtil::addQueryStringSelf($aActionTuple['query']);
 		} else {
-		   $aTuple["url"] = false;
+		   $aTuple['url'] = false;
 		}
 
 		return $aTuple;
     }
 
-    function setHelp($sHelpPage) {
+    public function setHelp($sHelpPage)
+    {
 	   $this->helpPage = $sHelpPage;
     }
 
-    function getHelpURL() {
-	if (empty($this->helpPage)) {
-	    return null;
-	}
+    public function getHelpURL()
+    {
+        if (empty($this->helpPage)) {
+            return null;
+        }
 
-	return KTUtil::ktLink('help.php',$this->helpPage);
+        return KTUtil::ktLink('help.php',$this->helpPage);
     }
 
-    function getReqTime() {
+    public function getReqTime()
+    {
         $microtime_simple = explode(' ', microtime());
         $finaltime = (float) $microtime_simple[1] + (float) $microtime_simple[0];
-        return sprintf("%.3f", ($finaltime - $GLOBALS['_KT_starttime']));
+        return sprintf('%.3f', ($finaltime - $GLOBALS['_KT_starttime']));
     }
 
-    function getDisclaimer() {
+    public function getDisclaimer()
+    {
         $oRegistry =& KTPluginRegistry::getSingleton();
         $oPlugin =& $oRegistry->getPlugin('ktstandard.disclaimers.plugin');
         if (!PEAR::isError($oPlugin) && !is_null($oPlugin)) {
@@ -617,6 +739,7 @@ class KTPage {
             return;
         }
     }
+
 }
 
 ?>
