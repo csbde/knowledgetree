@@ -92,11 +92,11 @@ class AdminSplashDispatcher extends KTAdminDispatcher {
         }
 
 		foreach (array('contentManagement', 'contentSetup', 'contentIndexing') as $leftcat) {
-        	$leftmenu[$leftcat] = $categories[$leftcat];
+        	$leftmenu[$leftcat] = isset($categories[$leftcat]) ? $categories[$leftcat] : '';
         }
 
 		foreach (array('accountInformation', 'userSetup', 'sysConfig') as $rightcat) {
-			$rightmenu[$rightcat] = $categories[$rightcat];
+			$rightmenu[$rightcat] = isset($categories[$rightcat]) ? $categories[$rightcat] : '';
 		}
 
         $aTemplateData = array(
