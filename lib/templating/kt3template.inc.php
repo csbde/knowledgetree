@@ -173,25 +173,25 @@ class KTPage {
         /*$this->componentClass = 'browse_collections';*/
 
         /* default css files initialisation */
-        $aCSS = Array(
-           'thirdpartyjs/extjs/resources/css/ext-all.css',
-           'resources/css/kt-framing.css',
-           'resources/css/kt-contenttypes.css',
-           'resources/css/kt-headings.css',
-           'resources/css/kt-new-ui.css',
-           'resources/css/newui/dropdown.css',
-		   /* REWORK INTO SINGLE STYLE SHEET */
-		   'resources/css/newui/dropdown_styles.css',
+        $css = array(
+            'thirdpartyjs/extjs/resources/css/ext-all.css',
+            'resources/css/kt-framing.css',
+            'resources/css/kt-contenttypes.css',
+            'resources/css/kt-headings.css',
+            'resources/css/kt-new-ui.css',
+            'resources/css/newui/dropdown.css',
+            /* REWORK INTO SINGLE STYLE SHEET */
+            'resources/css/newui/dropdown_styles.css',
         );
 
         // load area specific files
         foreach ($cssIncludes as $cssFile => $includeLocations) {
             if (in_array($this->componentClass, $includeLocations)) {
-                $aCSS[] = $cssFile;
+                $css[] = $cssFile;
             }
         }
 
-        $this->requireCSSResources($aCSS);
+        $this->requireCSSResources($css);
 
         if ($oConfig->get('ui/morphEnabled') == '1') {
         	$morphTheme = $oConfig->get('ui/morphTo');
@@ -204,25 +204,25 @@ class KTPage {
 
         /* default js files initialisation */
         // TODO : Remove js based on user type.  Also based on location.  This is a major problem with running EVERYTHING through generic code...what use is uploader code on a page which does not support uploads in the UI?
-        $aJS = Array();
+        $js = Array();
 
-		$aJS[] = 'thirdpartyjs/MochiKit/MochiKitPacked.js';
-        $aJS[] = 'resources/js/kt-utility.js';
-        $aJS[] = 'presentation/i18nJavascript.php';
+		$js[] = 'thirdpartyjs/MochiKit/MochiKitPacked.js';
+        $js[] = 'resources/js/kt-utility.js';
+        $js[] = 'presentation/i18nJavascript.php';
 
-        $aJS[] = 'thirdpartyjs/extjs/adapter/ext/ext-base.js';
-        $aJS[] = 'thirdpartyjs/extjs/ext-all.js';
-        $aJS[] = 'thirdpartyjs/jquery/jquery-1.4.2.min.js';
-        $aJS[] = 'thirdpartyjs/jquery/jquery_noconflict.js';
-        $aJS[] = 'thirdpartyjs/jquery/plugins/urlparser/jquery.url.js';
-        $aJS[] = 'resources/js/search2widget.js';
-//        $aJS[] = 'thirdpartyjs/plupload/js/plupload.min.js';
-//        $aJS[] = 'thirdpartyjs/plupload/js/plupload.html5.min.js';
-//        $aJS[] = 'thirdpartyjs/plupload/js/jquery.plupload.queue.min.js';
-        $aJS[] = 'resources/js/newui/ktjapi.all.js';
-        $aJS[] = 'resources/js/newui/kt.containers.js';
-        $aJS[] = 'resources/js/newui/kt.lib.js';
-        $aJS[] = 'resources/js/newui/kt.api.js';
+        $js[] = 'thirdpartyjs/extjs/adapter/ext/ext-base.js';
+        $js[] = 'thirdpartyjs/extjs/ext-all.js';
+        $js[] = 'thirdpartyjs/jquery/jquery-1.4.2.min.js';
+        $js[] = 'thirdpartyjs/jquery/jquery_noconflict.js';
+        $js[] = 'thirdpartyjs/jquery/plugins/urlparser/jquery.url.js';
+        $js[] = 'resources/js/search2widget.js';
+//        $js[] = 'thirdpartyjs/plupload/js/plupload.min.js';
+//        $js[] = 'thirdpartyjs/plupload/js/plupload.html5.min.js';
+//        $js[] = 'thirdpartyjs/plupload/js/jquery.plupload.queue.min.js';
+        $js[] = 'resources/js/newui/ktjapi.all.js';
+        $js[] = 'resources/js/newui/kt.containers.js';
+        $js[] = 'resources/js/newui/kt.lib.js';
+        $js[] = 'resources/js/newui/kt.api.js';
 
         // Shared users cannot re-share or invite users to the system.
         if (SharedUserUtil::isSharedUser()) {
@@ -231,18 +231,19 @@ class KTPage {
             unset($jsIncludes['resources/js/jquery.blockui.js']);
         }
 
-        $aJS[] = 'resources/js/newui/newUIFunctionality.js';
-        $aJS[] = 'resources/js/newui/jquery.helper.js';
-        $aJS[] = 'resources/js/newui/buttontabs.jquery.js';
+        $js[] = 'resources/js/newui/newUIFunctionality.js';
+        $js[] = 'resources/js/newui/jquery.helper.js';
+        $js[] = 'resources/js/newui/buttontabs.jquery.js';
 
         // load area specific files
         foreach ($jsIncludes as $jsFile => $includeLocations) {
             if (in_array($this->componentClass, $includeLocations)) {
-                $aJS[] = $jsFile;
+                $js[] = $jsFile;
             }
         }
 
-        $this->requireJSResources($aJS);
+        $combinationFile = $this->combineResources($js, 'js');
+        $this->requireJSResources(array($combinationFile));
 
         // this is horrid, but necessary.
         // hack for now, just to test
@@ -300,7 +301,25 @@ class KTPage {
 		$this->title = $sTitle;
     }
 
+    private function combineResources($resources, $ext)
+    {
+        $combined = '';
+        foreach ($resources as $resource) {
+        	$combined .= "/* $resource */\n" . file_get_contents(KT_DIR . "/$resource") . "\n";
+        }
+
+        $hash = sha1($combined);
+        $combinationFile = "resources/tmp/{$this->componentClass}.$ext";
+        $compare = @sha1_file(KT_DIR . "/$combinationFile");
+        if ($hash != $compare) {
+            file_put_contents(KT_DIR . "/$combinationFile", $combined);
+        }
+
+        return $combinationFile;
+    }
+
     /* javascript handling */
+
     // require that the specified JS file is referenced.
     public function requireJSResource($sResourceURL)
     {
