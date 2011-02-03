@@ -73,6 +73,9 @@ class RoleAllocation extends KTEntity {
 	// aggregate:  set (for this alloc) the array('user' => array(), 'group' => array()).
 	function setAllowed($aAllowed) {
 		$oDescriptor = KTPermissionUtil::getOrCreateDescriptor($aAllowed); // fully done, etc.
+		if ($oDescriptor === false) {
+		    return false;
+		}
 		$this->iPermissionDescriptorId = $oDescriptor->getId();
 	}
 

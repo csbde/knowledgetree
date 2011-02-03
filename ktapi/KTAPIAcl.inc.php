@@ -1045,6 +1045,8 @@ final class KTAPI_PermissionAllocation extends KTAPI_AllocationBase
 
         $permissionObject = KTPermissionObject::get($folderItemObject->getPermissionObjectId());
 
+        DBUtil::startTransaction();
+
         // transform the map into the structure expected
 
         foreach ($permissions as $permission)
@@ -1081,10 +1083,21 @@ final class KTAPI_PermissionAllocation extends KTAPI_AllocationBase
                 }
             }
 
-            KTPermissionUtil::setPermissionForId($permission, $permissionObject, $allowed);
+            $res = KTPermissionUtil::setPermissionForId($permission, $permissionObject, $allowed);
+            if ($res === false) {
+                DBUtil::rollback();
+                return $res;
+            }
+
         }
 
-        KTPermissionUtil::updatePermissionLookupForPO($permissionObject);
+        $res = KTPermissionUtil::updatePermissionLookupForPO($permissionObject);
+        if ($res === false) {
+            DBUtil::rollback();
+            return $res;
+        }
+
+        DBUtil::commit();
 
         // set the copy to be that of the modified version.
 

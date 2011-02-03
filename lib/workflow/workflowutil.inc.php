@@ -754,6 +754,9 @@ class KTWorkflowUtil {
         if (PEAR::isError($oDescriptor)) {
             return $oDescriptor;
         }
+        if ($oDescriptor === false) {
+		    return PEAR::raiseError('Permissions descriptor could not be created - check the logs for details');
+		}
         $iOldDescriptorId = $oState->getInformDescriptorId();
         $oState->setInformDescriptorId($oDescriptor->getId());
         $res = $oState->update();

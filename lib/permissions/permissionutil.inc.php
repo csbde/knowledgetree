@@ -98,26 +98,17 @@ class KTPermissionUtil {
      */
     function getOrCreateDescriptor ($aAllowed) {
         $sDescriptor = KTPermissionUtil::generateDescriptor($aAllowed);
-        $oDescriptor =& KTPermissionDescriptor::getByDescriptor(md5($sDescriptor));
+        $oDescriptor = KTPermissionDescriptor::getByDescriptor(md5($sDescriptor));
         if (PEAR::isError($oDescriptor)) {
-            $oOriginalDescriptor = $oDescriptor;
+            $error = $oDescriptor->getMessage();
 
             $oDescriptor =& KTPermissionDescriptor::createFromArray(array(
                 "descriptortext" => $sDescriptor,
             ));
             if (PEAR::isError($oDescriptor)) {
-                print '<pre>';
-                print_r($aAllowed);
-                print "-----------\n";
-                print "getOrCreateDescriptor get error (should be 'not found'):";
-                print "-----------\n";
-                print_r($oOriginalDescriptor);
-                print "-----------\n";
-                print "getOrCreateDescriptor create error (should not happen):";
-                print "-----------\n";
-                print_r($oDescriptor);
-                print '</pre>';
-                exit(0);
+                global $default;
+                $default->log->error('FATAL ERROR! KTPermissionUtil->getOrCreateDescriptor: Cannot create descriptor - ' . $oDescriptor->getMessage() . ' Error on getByDescriptor - ' . $error);
+                return false;
             }
             $oDescriptor->saveAllowed($aAllowed);
 
@@ -171,8 +162,11 @@ class KTPermissionUtil {
      * previous assignment.
      */
     function setPermissionForID($sPermission, $iObjectID, $aAllowed) {
-        $oPermissionAssignment =& KTPermissionUtil::getOrCreateAssignment($sPermission, $iObjectID);
-        $oDescriptor =& KTPermissionUtil::getOrCreateDescriptor($aAllowed);
+        $oPermissionAssignment = KTPermissionUtil::getOrCreateAssignment($sPermission, $iObjectID);
+        $oDescriptor = KTPermissionUtil::getOrCreateDescriptor($aAllowed);
+        if($oDescriptor === false){
+            return false;
+        }
         $oPermissionAssignment->setPermissionDescriptorID($oDescriptor->getID());
         $res = $oPermissionAssignment->update();
         return $res;
@@ -225,6 +219,9 @@ class KTPermissionUtil {
 		$aMapPermDesc = array();
 		foreach ($aMapPermAllowed as $iPermissionId => $aAllowed) {
 		  $oLookupPD = KTPermissionUtil::getOrCreateDescriptor($aAllowed);
+		  if($oLookupPD === false){
+              return false;
+          }
 		  $aMapPermDesc[$iPermissionId] = $oLookupPD->getID();
 		}
 
@@ -494,6 +491,9 @@ class KTPermissionUtil {
             $aMapPermDesc = array();
             foreach ($aMapPermAllowed as $iPermissionId => $aAllowed) {
                 $oLookupPD = KTPermissionUtil::getOrCreateDescriptor($aAllowed);
+                if($oLookupPD === false){
+                    return false;
+                }
                 $aMapPermDesc[$iPermissionId] = $oLookupPD->getID();
             }
 
@@ -751,7 +751,7 @@ class KTPermissionUtil {
 
         // All objects using this PO must be new and must need their
         // lookups updated...
-        KTPermissionUtil::updatePermissionLookupForPO($oNewPO);
+        return KTPermissionUtil::updatePermissionLookupForPO($oNewPO);
     }
     // }}}
 
@@ -847,7 +847,7 @@ class KTPermissionUtil {
 
         Document::clearAllCaches();
 
-        KTPermissionUtil::updatePermissionLookupForPO($oNewPO);
+        return KTPermissionUtil::updatePermissionLookupForPO($oNewPO);
     }
     // }}}
 
@@ -981,6 +981,9 @@ class KTPermissionUtil {
             $aMapPermDesc = array();
             foreach ($aMapPermLookup as $iPermissionId => $aAllowed) {
                 $oLookupPD = KTPermissionUtil::getOrCreateDescriptor($aAllowed);
+                if($oLookupPD === false){
+                    return false;
+                }
                 $aMapPermDesc[$iPermissionId] = $oLookupPD->getID();
             }
         }
@@ -1175,6 +1178,9 @@ class KTPermissionUtil {
         $aMapPermDesc = array();
         foreach ($aMapPermAllowed as $iPermissionId => $aAllowed) {
             $oLookupPD = KTPermissionUtil::getOrCreateDescriptor($aAllowed);
+            if($oLookupPD === false){
+                return false;
+            }
             $aMapPermDesc[$iPermissionId] = $oLookupPD->getID();
         }
 
@@ -1267,6 +1273,9 @@ class KTPermissionUtil {
         $aMapPermDesc = array();
         foreach ($aMapPermAllowed as $iPermissionId => $aAllowed) {
             $oLookupPD = KTPermissionUtil::getOrCreateDescriptor($aAllowed);
+            if($oLookupPD === false){
+                return false;
+            }
             $aMapPermDesc[$iPermissionId] = $oLookupPD->getID();
         }
 
