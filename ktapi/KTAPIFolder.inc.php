@@ -700,6 +700,14 @@ class KTAPI_Folder extends KTAPI_FolderItem {
 
         list($permissionString, $permissionParams, $permissionJoin) = $res;
 
+        if (isset($_SESSION['adminmode']) && ($_SESSION['adminmode']+0)) {
+            if(Permission::adminIsInAdminMode() || Permission::isUnitAdministratorForFolder($user, $this->folder)){
+                $permissionString = true;
+                $permissionParams = array();
+                $permissionJoin = '';
+            }
+        }
+
         $where = "WHERE $permissionString AND F.parent_id = ?";
         // deal with options
         $fQueryOptions = $queryOptions;
@@ -761,6 +769,14 @@ class KTAPI_Folder extends KTAPI_FolderItem {
         }
 
         list($permissionString, $permissionParams, $permissionJoin) = $res;
+
+        if (isset($_SESSION['adminmode']) && ($_SESSION['adminmode']+0)) {
+            if(Permission::adminIsInAdminMode() || Permission::isUnitAdministratorForFolder($user, $this->folder)){
+                $permissionString = true;
+                $permissionParams = array();
+                $permissionJoin = '';
+            }
+        }
 
         $contentVersionJoin = 'INNER JOIN document_content_version DCV ON DCV.document_id = D.id INNER JOIN document_metadata_version DMV ON DMV.content_version_id = DCV.id';
         $where = "WHERE D.status_id = 1 AND $permissionString AND D.folder_id = ?";
@@ -1385,18 +1401,18 @@ class KTAPI_Folder extends KTAPI_FolderItem {
     public function getChanges($timestamp, $depth = 1, $what = 'DF')
     {
     	//$GLOBALS['default']->log->debug("getChanges $timestamp $depth '$what'");
-			
+
     	//array to store all the changes
     	$changes = array();
 
 		//get the user; used to determine permissions
     	$user = $this->ktapi->get_user();
-    	
+
     	//has the current folder changed in relevant ways?
     	$this->renamedSince($timestamp, $user, $changes);
     	$this->movedSince($timestamp, $user, $changes);
     	$this->updatedSince($timestamp, $user, $changes);
-    	
+
     	//have to check more than just myself?
     	if ($depth != 0)
     	{
@@ -1405,14 +1421,14 @@ class KTAPI_Folder extends KTAPI_FolderItem {
 	    	$this->childrenRenamedSince($timestamp, $what, $user, $changes);
 	    	$this->childrenMovedSince($timestamp, $what, $user, $changes);
 	    	$this->childrenUpdatedSince($timestamp, $what, $user, $changes);
-	
+
 	    	//$GLOBALS['default']->log->debug('getChanges created '.print_r($changes, true));
-	
+
 	    	//have to check more than just my immediate children?
 	    	if ($depth != 1)
 	    	{
 	    		$this->getChangesRecursive($timestamp, $depth, $what, $user, $changes);
-	
+
 	    		//$GLOBALS['default']->log->debug('getChanges recursive '.print_r($changes, true));
 	    	}
     	}
@@ -1455,7 +1471,7 @@ class KTAPI_Folder extends KTAPI_FolderItem {
 	        if (PEAR::isError($res)) {
 	            return $res;
 	        }
-	
+
 	        list($sPermissionSQL, $aPermissionParams, $sPermissionJoin) = $res;
 
         	$sSelect1SQL = 'F.id AS folder_id FROM '. KTUtil::getTableName('folders') . ' AS F ';
@@ -1464,9 +1480,9 @@ class KTAPI_Folder extends KTAPI_FolderItem {
 	    	$Where2SQL = 'FT.transaction_namespace = \'ktcore.transactions.delete\' AND FT.parent_id = ?';
 	    	$aOptions = array('orderby' => 'folder_id ASC');
 	    	$sOptionSQL = DBUtil::getDbOptions($aOptions);
-	    	
+
 	    	$sSQL = "SELECT $sSelect1SQL $sPermissionJoin WHERE $sPermissionSQL AND $sWhere1SQL UNION SELECT $sSelect2SQL WHERE $Where2SQL $sOptionSQL";
-	        
+
 	        $aParams = array_merge($aPermissionParams, array($this->folderid), array($this->folderid));
 
 	        $results = DBUtil::getResultArray(array($sSQL, $aParams));
@@ -1474,16 +1490,16 @@ class KTAPI_Folder extends KTAPI_FolderItem {
 	        {
 	            return new KTAPI_Error(KTAPI_ERROR_INTERNAL_ERROR, $results );
 	        }
-	        
+
 	        $folder_permission = &KTPermission::getByName(KTAPI_PERMISSION_VIEW_FOLDER);
-	        
+
 	        foreach ($results as $result)
 	        {
 	        	$folder = &Folder::get($result['folder_id']);
 	        	if(!PEAR::isError($folder))
 	        	{
 					$ktapi_folder = &$this->ktapi->get_folder_by_id($folder->getId());
-					
+
 					// get the changes for the current folder
 					$ktapi_folder->childrenCreatedSince($timestamp, $what, $user, $changes);
 					$ktapi_folder->childrenDeletedSince($timestamp, $what, $user, $changes);
@@ -1492,7 +1508,7 @@ class KTAPI_Folder extends KTAPI_FolderItem {
 					$ktapi_folder->childrenUpdatedSince($timestamp, $what, $user, $changes);
 
 					// now recurse!
-					if ($fullTree || ($depth > 1)) 
+					if ($fullTree || ($depth > 1))
 					{
 						$ktapi_folder->getChangesRecursive($timestamp, $depth - 1, $what, $user, $changes);
 					}
@@ -1510,7 +1526,7 @@ class KTAPI_Folder extends KTAPI_FolderItem {
     public static function deletedSince($folderID, $timestamp)
     {
     	//$GLOBALS['default']->log->debug("deletedSince $folderID $timestamp");
-    	
+
         $sQuery = 'SELECT FT.folder_id AS id, FT.datetime AS change_date, FT.parent_id AS parent_id FROM ' . KTUtil::getTableName('folder_transactions') . ' AS FT ' .
         'WHERE FT.transaction_namespace = \'ktcore.transactions.delete\' AND FT.folder_id = ? AND FT.datetime > ? ORDER BY FT.datetime ASC';
 
@@ -1528,34 +1544,34 @@ class KTAPI_Folder extends KTAPI_FolderItem {
         	$this->assemble_folder_array($folder, $contents);
         	$contents[$key]['change_type'] = 'D';
 			$contents[$key]['items'] = array();*/
-        	
+
         	$contents[] = array(
 				'id' => $result['id'],
         		'item_type' => 'F',
         		'parent_id' => $result['parent_id'],
         		'changes' => array(
-					'change_type' => 'D', 
+					'change_type' => 'D',
 					'change_date' => $result['change_date']
-				)	        		
+				)
         	);
-        }        
-        
+        }
+
         //$GLOBALS['default']->log->debug('deletedSince folders '.print_r($contents, true));
-        
+
         return $contents;
     }
-    
+
 	public function renamedSince($timestamp, $user, &$contents = array())
     {
     	//$GLOBALS['default']->log->debug("renamedSince timestamp $timestamp");
-    	
+
     	$sSelectQuery = 'F.id, FT.datetime AS change_date ' .
         'FROM ' . KTUtil::getTableName('folder_transactions') . ' AS FT INNER JOIN ' . KTUtil::getTableName('folders') . ' AS F ON F.id = FT.folder_id ';
-    	
+
     	$sWhereQuery = 'FT.transaction_namespace = \'ktcore.transactions.rename\' AND FT.folder_id = ? AND FT.datetime > ? ';
 
         $aParams = array($this->folderid, $timestamp);
-        
+
         $aOptions = array('orderby' => 'FT.datetime ASC');
 
         $results = $this->getPermissionSQL($sSelectQuery, $sWhereQuery, $aParams, $aOptions, $user, KTAPI_PERMISSION_VIEW_FOLDER, 'F');
@@ -1575,25 +1591,25 @@ class KTAPI_Folder extends KTAPI_FolderItem {
 
 				// $GLOBALS['default']->log->debug('renamedSince assembled contents '.print_r($contents, true));
         }
-        
+
         //$GLOBALS['default']->log->debug('renamedSince folders '.print_r($contents, true));
     }
-    
+
 	public function movedSince($timestamp, $user, &$contents = array())
     {
     	//$GLOBALS['default']->log->debug("movedSince timestamp $timestamp");
-    	    	
+
     	$sSelectQuery = 'F.id, FT.datetime AS change_date ' .
         'FROM ' . KTUtil::getTableName('folder_transactions') . ' AS FT INNER JOIN ' . KTUtil::getTableName('folders') . ' AS F ON F.id = FT.folder_id ';
-    	
+
     	$sWhereQuery = 'FT.transaction_namespace = \'ktcore.transactions.move\' AND FT.folder_id = ? AND FT.datetime > ? ';
 
         $aParams = array($this->folderid, $timestamp);
-        
+
         $aOptions = array('orderby' => 'FT.datetime ASC');
 
         $results = $this->getPermissionSQL($sSelectQuery, $sWhereQuery, $aParams, $aOptions, $user, KTAPI_PERMISSION_VIEW_FOLDER, 'F');
-        
+
         if (is_null($results) || PEAR::isError($results))
         {
             return new KTAPI_Error(KTAPI_ERROR_INTERNAL_ERROR, $results);
@@ -1615,21 +1631,21 @@ class KTAPI_Folder extends KTAPI_FolderItem {
 				// $GLOBALS['default']->log->debug('renamedSince assembled contents '.print_r($contents, true));
             }
         }
-        
+
         //$GLOBALS['default']->log->debug('movedSince folders '.print_r($contents, true));
     }
-    
+
 	public function updatedSince($timestamp, $user, &$contents = array())
     {
     	//$GLOBALS['default']->log->debug("updatedSince timestamp $timestamp");
 
         $sSelectQuery = 'F.id, FT.datetime AS change_date ' .
         'FROM ' . KTUtil::getTableName('folder_transactions') . ' AS FT INNER JOIN ' . KTUtil::getTableName('folders') . ' AS F ON F.id = FT.folder_id ';
-    	
+
     	$sWhereQuery = 'FT.transaction_namespace = \'ktcore.transactions.permissions_change\' AND FT.folder_id = ? AND FT.datetime > ? ';
 
         $aParams = array($this->folderid, $timestamp);
-        
+
         $aOptions = array('orderby' => 'FT.datetime ASC');
 
         $results = $this->getPermissionSQL($sSelectQuery, $sWhereQuery, $aParams, $aOptions, $user, KTAPI_PERMISSION_VIEW_FOLDER, 'F');
@@ -1649,7 +1665,7 @@ class KTAPI_Folder extends KTAPI_FolderItem {
 
 			// $GLOBALS['default']->log->debug('renamedSince assembled contents '.print_r($contents, true));
         }
-        
+
         //$GLOBALS['default']->log->debug('updatedSince folders '.print_r($contents, true));
     }
 
@@ -1665,13 +1681,13 @@ class KTAPI_Folder extends KTAPI_FolderItem {
         {
 	        $sSelectQuery = 'F.id, FT.datetime AS change_date ' .
 	        'FROM ' . KTUtil::getTableName('folder_transactions') . ' AS FT INNER JOIN ' . KTUtil::getTableName('folders') . ' AS F ON F.id = FT.folder_id ';
-	    	
+
 	    	$sWhereQuery = '(FT.transaction_namespace = \'ktcore.transactions.create\' OR FT.transaction_namespace = \'ktcore.transactions.copy\') AND F.parent_id = ? AND FT.datetime > ? ';
-	
+
 	        $aParams = array($this->folderid, $timestamp);
-	        
+
 	        $aOptions = array('orderby' => 'FT.datetime ASC');
-	
+
 	        $results = $this->getPermissionSQL($sSelectQuery, $sWhereQuery, $aParams, $aOptions, $user, KTAPI_PERMISSION_VIEW_FOLDER, 'F');
 	        if (is_null($results) || PEAR::isError($results))
 	        {
@@ -1694,16 +1710,16 @@ class KTAPI_Folder extends KTAPI_FolderItem {
 
         // need to do documents?
         if(strpos($what, 'D') !== false)
-        {        	
+        {
         	$sSelectQuery = 'D.id, DT.datetime AS change_date ' .
 	        'FROM ' . KTUtil::getTableName('document_transactions') . ' AS DT INNER JOIN ' . KTUtil::getTableName('documents') . ' AS D ON D.id = DT.document_id ';
-	    	
+
 	    	$sWhereQuery = '(DT.transaction_namespace = \'ktcore.transactions.create\' OR DT.transaction_namespace = \'ktcore.transactions.copy\') AND DT.parent_id = ? AND DT.datetime > ? ';
-	
+
 	        $aParams = array($this->folderid, $timestamp);
-	        
+
 	        $aOptions = array('orderby' => 'DT.datetime ASC');
-	
+
 	        $results = $this->getPermissionSQL($sSelectQuery, $sWhereQuery, $aParams, $aOptions, $user, KTAPI_PERMISSION_READ, 'D');
 	        if (is_null($results) || PEAR::isError($results))
 	        {
@@ -1733,19 +1749,19 @@ class KTAPI_Folder extends KTAPI_FolderItem {
     public function childrenDeletedSince($timestamp, $what = 'DF', $user, &$contents = array())
     {
     	//$GLOBALS['default']->log->debug("deletedSince timestamp $timestamp \'$what\'");
-    	
+
     	//need to do folders?
         if (strpos($what, 'F') !== false)
         {
         	 $sSelectQuery = 'FT.folder_id AS id, FT.datetime AS change_date, FT.parent_id AS parent_id ' .
 	        'FROM ' . KTUtil::getTableName('folder_transactions') . ' AS FT ';
-	    	
+
 	    	$sWhereQuery = 'FT.transaction_namespace = \'ktcore.transactions.delete\' AND FT.parent_id = ? AND FT.datetime > ? ';
-	
+
 	        $aParams = array($this->folderid, $timestamp);
-	        
+
 	        $aOptions = array('orderby' => 'FT.datetime ASC');
-	
+
 	        $results = $this->getPermissionSQL($sSelectQuery, $sWhereQuery, $aParams, $aOptions, $user, KTAPI_PERMISSION_VIEW_FOLDER, 'F');
 	        if (is_null($results) || PEAR::isError($results))
 	        {
@@ -1758,51 +1774,51 @@ class KTAPI_Folder extends KTAPI_FolderItem {
 	        	$this->assemble_folder_array($folder, $contents);
 	        	$contents[$key]['change_type'] = 'D';
 				$contents[$key]['items'] = array();*/
-	        	
+
 	        	$contents[] = array(
 					'id' => $result['id'],
 	        		'item_type' => 'F',
 	        		'parent_id' => $result['parent_id'],
 	        		'changes' => array(
-						'change_type' => 'D', 
+						'change_type' => 'D',
 						'change_date' => $result['change_date']
-					)	        		
+					)
 	        	);
-	        }        
-	        
+	        }
+
 	        //$GLOBALS['default']->log->debug('deletedSince folders '.print_r($contents, true));
         }
-        
+
         //TODO: what about archived documents? Or is that picked up by documents modified?
         //need to do documents?
         if (strpos($what, 'D') !== false)
         {
 	        $sSelectQuery = 'D.id, DT.datetime AS change_date, DT.parent_id AS parent_id '.
 	        'FROM ' . KTUtil::getTableName('document_transactions') . ' AS DT INNER JOIN ' . KTUtil::getTableName('documents') . ' AS D ON D.id = DT.document_id ';
-	    	
+
 	    	$sWhereQuery = 'DT.transaction_namespace = \'ktcore.transactions.delete\' AND DT.parent_id = ? AND DT.datetime > ? ';
-	
+
 	        $aParams = array($this->folderid, $timestamp);
-	        
+
 	        $aOptions = array('orderby' => 'DT.datetime ASC');
-	
+
 	        $results = $this->getPermissionSQL($sSelectQuery, $sWhereQuery, $aParams, $aOptions, $user, KTAPI_PERMISSION_READ, 'D');
 	        if (is_null($results) || PEAR::isError($results))
 	        {
 	            return new KTAPI_Error(KTAPI_ERROR_INTERNAL_ERROR, $results );
 	        }
-	        
+
 	        foreach ($results as $result) {
 	        	$contents[] = array(
 					'id' => $result['id'],
 	        		'item_type' => 'D',
-	        		'parent_id' => $result['parent_id'],	   
+	        		'parent_id' => $result['parent_id'],
 	        		'changes' => array(
-						'change_type' => 'D', 
+						'change_type' => 'D',
 						'change_date' => $result['change_date']
-	        		)     		
+	        		)
 	        	);
-	        	     	
+
 	        	/*$oDocument = &Document::get($document['id']);
 
 	        	if (KTPermissionUtil::userHasPermissionOnItem($user, $read_permission, $oDocument)) {
@@ -1816,7 +1832,7 @@ class KTAPI_Folder extends KTAPI_FolderItem {
 					);
 	    		}*/
 	        }
-	        
+
 	        //$GLOBALS['default']->log->debug('deletedSince documents '.print_r($contents, true));
         }
     }
@@ -1835,13 +1851,13 @@ class KTAPI_Folder extends KTAPI_FolderItem {
         {
         	$sSelectQuery = 'F.id, FT.datetime AS change_date ' .
 	        'FROM ' . KTUtil::getTableName('folder_transactions') . ' AS FT INNER JOIN ' . KTUtil::getTableName('folders') . ' AS F ON F.id = FT.folder_id ';
-	    	
+
 	    	$sWhereQuery = 'FT.transaction_namespace = \'ktcore.transactions.rename\' AND F.parent_id = ? AND FT.datetime > ? ';
-	
+
 	        $aParams = array($this->folderid, $timestamp);
-	        
+
 	        $aOptions = array('orderby' => 'FT.datetime ASC');
-	
+
 	        $results = $this->getPermissionSQL($sSelectQuery, $sWhereQuery, $aParams, $aOptions, $user, KTAPI_PERMISSION_VIEW_FOLDER, 'F');
 	        if (is_null($results) || PEAR::isError($results))
 	        {
@@ -1850,7 +1866,7 @@ class KTAPI_Folder extends KTAPI_FolderItem {
 
 	    	foreach ($results as $result) {
 	        	$folder = &Folder::get($result['id']);
-	        	
+
 				$this->assemble_folder_array($folder, $contents);
 
 				$contents[count($contents) - 1]['changes'] = array(
@@ -1869,13 +1885,13 @@ class KTAPI_Folder extends KTAPI_FolderItem {
         {
 	        $sSelectQuery = 'D.id, DT.datetime AS change_date '.
 	        'FROM ' . KTUtil::getTableName('document_transactions') . ' AS DT INNER JOIN ' . KTUtil::getTableName('documents') . ' AS D ON D.id = DT.document_id ';
-	    	
+
 	    	$sWhereQuery = 'DT.transaction_namespace = \'ktcore.transactions.rename\' AND DT.parent_id = ? AND DT.datetime > ? ';
-	
+
 	        $aParams = array($this->folderid, $timestamp);
-	        
+
 	        $aOptions = array('orderby' => 'DT.datetime ASC');
-	
+
 	        $results = $this->getPermissionSQL($sSelectQuery, $sWhereQuery, $aParams, $aOptions, $user, KTAPI_PERMISSION_READ, 'D');
 	        if (is_null($results) || PEAR::isError($results))
 	        {
@@ -1887,7 +1903,7 @@ class KTAPI_Folder extends KTAPI_FolderItem {
 
 	        foreach ($results as $result) {
 	        	$document = &Document::get($result['id']);
-	        	
+
     			$this->assemble_document_array($document, $contents);
 
     			$contents[count($contents) - 1]['changes'] = array(
@@ -1912,13 +1928,13 @@ class KTAPI_Folder extends KTAPI_FolderItem {
         {
         	$sSelectQuery = 'F.id, FT.datetime AS change_date, FT.parent_id AS transaction_parent_id ' .
 	        'FROM ' . KTUtil::getTableName('folder_transactions') . ' AS FT INNER JOIN ' . KTUtil::getTableName('folders') . ' AS F ON F.id = FT.folder_id ';
-	    	
+
 	    	$sWhereQuery = 'FT.transaction_namespace = \'ktcore.transactions.move\' AND FT.parent_id = ? AND FT.datetime > ? ';
-	
+
 	        $aParams = array($this->folderid, $timestamp);
-	        
+
 	        $aOptions = array('orderby' => 'FT.datetime ASC');
-	
+
 	        $results = $this->getPermissionSQL($sSelectQuery, $sWhereQuery, $aParams, $aOptions, $user, KTAPI_PERMISSION_VIEW_FOLDER, 'F');
 	        if (is_null($results) || PEAR::isError($results))
 	        {
@@ -1927,7 +1943,7 @@ class KTAPI_Folder extends KTAPI_FolderItem {
 
 	        foreach ($results as $result) {
 	        	$folder = &Folder::get($result['id']);
-	        	
+
 				$this->assemble_folder_array($folder, $contents);
 
 				$contents[count($contents) - 1]['changes'] = array(
@@ -1947,13 +1963,13 @@ class KTAPI_Folder extends KTAPI_FolderItem {
         {
 	        $sSelectQuery = 'D.id, DT.datetime AS change_date, DT.parent_id AS transaction_parent_id '.
 	        'FROM ' . KTUtil::getTableName('document_transactions') . ' AS DT INNER JOIN ' . KTUtil::getTableName('documents') . ' AS D ON D.id = DT.document_id ';
-	    	
+
 	    	$sWhereQuery = 'DT.transaction_namespace = \'ktcore.transactions.move\' AND DT.parent_id = ? AND DT.datetime > ? ';
-	
+
 	        $aParams = array($this->folderid, $timestamp);
-	        
+
 	        $aOptions = array('orderby' => 'DT.datetime ASC');
-	
+
 	        $results = $this->getPermissionSQL($sSelectQuery, $sWhereQuery, $aParams, $aOptions, $user, KTAPI_PERMISSION_READ, 'D');
 	        if (is_null($results) || PEAR::isError($results))
 	        {
@@ -1962,7 +1978,7 @@ class KTAPI_Folder extends KTAPI_FolderItem {
 
 	        foreach ($results as $result) {
 	        	$document = &Document::get($result['id']);
-	        	
+
     			$this->assemble_document_array($document, $contents);
 
     			$contents[count($contents) - 1]['changes'] = array(
@@ -1988,13 +2004,13 @@ class KTAPI_Folder extends KTAPI_FolderItem {
         {
 	       	$sSelectQuery = 'F.id, FT.datetime AS change_date ' .
 	        'FROM ' . KTUtil::getTableName('folder_transactions') . ' AS FT INNER JOIN ' . KTUtil::getTableName('folders') . ' AS F ON F.id = FT.folder_id ';
-	    	
+
 	    	$sWhereQuery = 'FT.transaction_namespace = \'ktcore.transactions.permissions_change\' AND FT.parent_id = ? AND FT.datetime > ? ';
-	
+
 	        $aParams = array($this->folderid, $timestamp);
-	        
+
 	        $aOptions = array('orderby' => 'FT.datetime ASC');
-	
+
 	        $results = $this->getPermissionSQL($sSelectQuery, $sWhereQuery, $aParams, $aOptions, $user, KTAPI_PERMISSION_VIEW_FOLDER, 'F');
 	        if (is_null($results) || PEAR::isError($results))
 	        {
@@ -2003,7 +2019,7 @@ class KTAPI_Folder extends KTAPI_FolderItem {
 
 	        foreach ($results as $result) {
 	        	$folder = &Folder::get($result['id']);
-	        	
+
 				$this->assemble_folder_array($folder, $contents);
 
 				$contents[count($contents) - 1]['changes'] = array(
@@ -2020,18 +2036,18 @@ class KTAPI_Folder extends KTAPI_FolderItem {
         if (strpos($what, 'D') !== false)
         {
 	    	//TODO: ktcore.transactions.ownership_change?
-	    	
+
 	    	$sSelectQuery = 'D.id, DT.datetime AS change_date '.
 	        'FROM ' . KTUtil::getTableName('document_transactions') . ' AS DT INNER JOIN ' . KTUtil::getTableName('documents') . ' AS D ON D.id = DT.document_id ';
-	    	
+
 	    	$sWhereQuery = 'DT.transaction_namespace IN (\'ktcore.transactions.update\', \'ktcore.transactions.check_in\', \'ktcore.transactions.check_out\', '.
 	    		'\'ktcore.transactions.force_checkin\', \'ktcore.transactions.immutable\', \'ktcore.transactions.permissions_change\') '.
 	    		'AND DT.parent_id = ? AND DT.datetime > ? ';
-	
+
 	        $aParams = array($this->folderid, $timestamp);
-	        
+
 	        $aOptions = array('orderby' => 'DT.datetime ASC');
-	
+
 	        $results = $this->getPermissionSQL($sSelectQuery, $sWhereQuery, $aParams, $aOptions, $user, KTAPI_PERMISSION_READ, 'D');
 	        if (is_null($results) || PEAR::isError($results))
 	        {
@@ -2040,7 +2056,7 @@ class KTAPI_Folder extends KTAPI_FolderItem {
 
 	        foreach ($results as $result) {
 	        	$document = &Document::get($result['id']);
-	        	
+
     			$this->assemble_document_array($document, $contents);
 
     			$contents[count($contents) - 1]['changes'] = array(
@@ -2052,32 +2068,32 @@ class KTAPI_Folder extends KTAPI_FolderItem {
 
         // $GLOBALS['default']->log->debug('updatedSince contents '.print_r($contents, true));
     }
-   
+
     /**
-     * 
+     *
      * @param $user
      */
     private function getPermissionSQL($sSelectSQL, $sWhereSQL, $aSQLParams, $aOptions, $oUser, $permission, $sWhat)//, $where)
     {
     	//$GLOBALS['default']->log->debug("getPermissionSQL $sSelectSQL $sWhereSQL");
-    	
+
     	$res = KTSearchUtil::permissionToSQL($oUser, $permission, $sWhat);
         if (PEAR::isError($res)) {
             return $res;
         }
 
         list($sPermissionSQL, $aPermissionParams, $sPermissionJoin) = $res;
-        
+
         //$GLOBALS['default']->log->debug("getPermissionSQL PermissionSQL: $sPermissionSQL permissionParams: ".print_r($aPermissionParams, true)." permissionJoin: $sPermissionJoin");
 
         $sOptionSQL = DBUtil::getDbOptions($aOptions);
-        
+
         $sSQL = "SELECT $sSelectSQL $sPermissionJoin WHERE $sPermissionSQL AND $sWhereSQL $sOptionSQL";
 
         //$GLOBALS['default']->log->debug("getPermissionSQL sql: $sSQL");
-        
+
         $results = DBUtil::getResultArray(array($sSQL, array_merge($aPermissionParams, $aSQLParams)));
-        
+
         return $results;
     }
 
