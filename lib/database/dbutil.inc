@@ -203,8 +203,7 @@ class DBUtil {
         }
 
         //Log it
-        if (isset($default->queryLog) && $default->queryLog->isDebugEnabled())
-        {
+        if (isset($default->queryLog) && $default->queryLog->isDebugEnabled()) {
             $default->queryLog->debug(self::lastQuery($db));
         }
 
@@ -297,6 +296,7 @@ class DBUtil {
         while ($aRow = $result->fetchRow()) {
             $aReturn[] = $aRow[$key];
         }
+
         $result->free();
 
         return $aReturn;
