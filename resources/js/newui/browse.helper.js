@@ -54,6 +54,7 @@ kt.pages.browse = new function() {
     // NOTE if you change the limit here, you should also change it on the server side
     //      (although the code should function fine if you don't, as this value operates as an override...)
     self.limit = 5;
+    self.retryIn = 3000;
 
     this.addDocumentItem = function(item) {
         item.is_shortcut = item.is_shortcut ? '' : ' not_supported';
@@ -70,12 +71,11 @@ kt.pages.browse = new function() {
     };
 
     this.viewPage = function(pageNum, folderId, fetch) {
-        if (self.loading) { return; }
+        if (self.loading) { return self.retry(pageNum, folderId, fetch); }
 
         // TODO consider rather just returning if pageNum < 1?
         if (pageNum < 1) { pageNum = 1; }
         var pageItem = jQuery('.paginate>li.page_' + pageNum);
-
         if (pageItem.length <= 0) { return; }
 
         // if the selected page was already loaded, display immediately
@@ -108,6 +108,13 @@ kt.pages.browse = new function() {
             });
         }
     };
+
+    this.retry = function(pageNum, folderId, fetch) {
+        jQuery.loading(false);
+        jQuery.loading(true, { text: 'Busy, please wait...trying again in ' + (self.retryIn / 1000) + ' seconds', max: self.retryIn });
+        setTimeout(function() { self.viewPage(pageNum, folderId, fetch); }, self.retryIn);
+        return;
+    }
 
     this.checkRange = function(requested) {
         requested = Number(requested);

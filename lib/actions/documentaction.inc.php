@@ -259,7 +259,7 @@ class KTDocumentAction extends KTStandardDispatcher {
 		{
 			return false;
 		}
-		// Check if action needs to be hidden for
+		// Check if action needs to be hidden
 		else if(!$this->showIfRead)
 		{
 			if($this->getPermission() == 1)

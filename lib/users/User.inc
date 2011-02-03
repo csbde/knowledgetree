@@ -40,6 +40,7 @@
 require_once(KT_LIB_DIR . '/database/dbutil.inc');
 require_once(KT_LIB_DIR . '/ktentity.inc');
 require_once(KT_LIB_DIR . "/util/sanitize.inc");
+require_once(KT_LIB_DIR . '/datetime/datetimeutil.inc.php');
 
 define('ADMIN_USER_ID', 1);
 
@@ -177,6 +178,9 @@ class User extends KTEntity {
     function getDisabled() { return $this->bDisabled; }
     function setDisabled($mValue) { $this->bDisabled = $mValue; }
 
+    /* Timezone getters */
+    function getLocaleLastLogin() { return datetimeutil::getLocaleDate($this->dLastLogin); }
+    
     /* return the key for storing dashboard in system settings */
     function _getDashboardStateKey() {
         return 'dashboard-state-' . $this->getId();
