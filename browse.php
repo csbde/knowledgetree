@@ -137,12 +137,13 @@ class BrowseDispatcher extends KTStandardDispatcher {
 	    ));
 	    $collection->render();*/
 
+	    global $default;
 	    /**
 		 * New ktapi based method
 		 */
 	    $aBulkActions = KTBulkActionUtil::getAllBulkActions();
 
-	    if (ACCOUNT_ROUTING_ENABLED && liveAccounts::isTrialAccount()) {
+	    if (ACCOUNT_ROUTING_ENABLED && $default->tier == 'trial') {
 	        $this->includeOlark();
 	    }
 
