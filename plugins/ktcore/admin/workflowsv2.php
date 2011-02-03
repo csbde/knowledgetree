@@ -5,7 +5,7 @@
  * KnowledgeTree Community Edition
  * Document Management Made Simple
  * Copyright (C) 2008, 2009, 2010 KnowledgeTree Inc.
- * 
+ *
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License version 3 as published by the
@@ -288,7 +288,7 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
 	        if (PEAR::isError($res)) {
             	return $this->errorRedirectToMain(sprintf(_kt("Unable to copy disabled state actions: %s"), $res->getMessage()));
         	}
-            
+
             $this->copyStateNotifications ($oOldState, $oNewState);
         }
 
@@ -1000,7 +1000,7 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
         $data = $res['results'];
         $errors = $res['errors'];
         $extra_errors = array();
-        
+
         $data['name'] = sanitizeForHTML($data['name']);
 
         // check if any *other* states have this name.
@@ -1092,7 +1092,7 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
         $data = $res['results'];
         $errors = $res['errors'];
         $extra_errors = array();
-        
+
         $data['name'] = sanitizeForHTML($data['name']);
 
         // check if any *other* states have this name.
@@ -1349,7 +1349,7 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
             }
         }
         $emptydescriptor = KTPermissionUtil::getOrCreateDescriptor(array());
-        if (PEAR::isError($emptydescriptor)) {
+        if (PEAR::isError($emptydescriptor) || $emptydescriptor === false) {
             $this->errorRedirectTo("managepermissions", sprintf(_kt("Failed to create assignment: %s"), $emptydescriptor->getMessage()));
         }
         foreach ($active as $perm_id => $discard) {
@@ -1521,7 +1521,9 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
         foreach ($aStatePermAssigns as $oPermAssign) {
             $aAllowed = (array) $aPermissionAllowed[$oPermAssign->getPermissionId()]; // is already role, group, etc.
             $oDescriptor = KTPermissionUtil::getOrCreateDescriptor($aAllowed);
-            if (PEAR::isError($oDescriptor)) { $this->errorRedirectTo('allocatepermissions', _kt('Failed to allocate as specified.')); }
+            if (PEAR::isError($oDescriptor) || $oDescriptor === false) {
+                $this->errorRedirectTo('allocatepermissions', _kt('Failed to allocate as specified.'));
+            }
 
             $oPermAssign->setDescriptorId($oDescriptor->getId());
             $res = $oPermAssign->update();
@@ -1529,6 +1531,9 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
         }
 
         KTPermissionUtil::updatePermissionLookupForState($this->oState);
+
+        // Ensure permissions are updated for users
+        KTPermissionUtil::clearCache();
 
         $this->successRedirectTo('managepermissions', _kt('Permissions Allocated.'));
     }
