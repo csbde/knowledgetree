@@ -55,6 +55,8 @@ class datetimeutil
 	 */
 	static public function getLocaleDate($date, $toTimezone = true)
 	{
+		// Make sure a date has been passed
+		if(is_null($date)) return $date;
 		// Create time conversion object
 		$tzc = new TimezoneConversion();
 		// Set the date to convert
