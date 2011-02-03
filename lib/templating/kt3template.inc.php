@@ -150,6 +150,7 @@ class KTPage {
 //        $aJS[] = 'thirdpartyjs/plupload/js/plupload.html5.min.js';
 //        $aJS[] = 'thirdpartyjs/plupload/js/jquery.plupload.queue.min.js';
         $aJS[] = 'thirdpartyjs/jquery/plugins/ajaxupload/fileuploader.js';
+        $aJS[] = 'thirdpartyjs/jquery/plugins/loading/jquery.loading.1.6.4.min.js';
         $aJS[] = 'resources/js/newui/ktjapi.all.js';
         $aJS[] = 'resources/js/newui/kt.containers.js';
         $aJS[] = 'resources/js/newui/kt.lib.js';

@@ -1473,8 +1473,8 @@ LOCK TABLES `system_settings` WRITE;
 /*!40000 ALTER TABLE `system_settings` DISABLE KEYS */;
 INSERT INTO `system_settings` VALUES
 (1,'lastIndexUpdate','0'),
-(2,'knowledgeTreeVersion','3.7.0.9'),
-(3,'databaseVersion','3.7.0.9'),
+(2,'knowledgeTreeVersion','3.7.1.0'),
+(3,'databaseVersion','3.7.1.0'),
 (4,'server_name','127.0.0.1');
 /*!40000 ALTER TABLE `system_settings` ENABLE KEYS */;
 UNLOCK TABLES;
@@ -1811,9 +1811,10 @@ INSERT INTO `upgrades` VALUES
 (257,'sql*3.7.0.9*0*3.7.0.9/transaction_types.sql','Database upgrade to version 3.7.0.9: Transaction types','2011-01-10 00:00:00',1,'upgrade*3.7.0.9*99*upgrade3.7.0.9'),
 (258,'sql*3.7.0.9*0*3.7.0.9/permission_cache.sql','Database upgrade to version 3.7.0.9: Permission cache','2011-01-10 00:00:00',1,'upgrade*3.7.0.9*99*upgrade3.7.0.9'),
 (259,'upgrade*3.7.0.9*99*upgrade3.7.0.9','Upgrade from version 3.7.0.8 to 3.7.0.9','2011-01-10 00:00:00',1,'upgrade*3.7.0.9*99*upgrade3.7.0.9'),
-(260,'sql*3.7.1.0*0*3.7.1.0/session_management.sql','Database upgrade to version 3.7.0.9: Session Management','2011-01-18 00:00:00',1,'upgrade*3.7.0.9*99*upgrade3.7.0.9'),
-(261,'sql*3.7.1.0*0*3.7.1.0/timezone_settings.sql','Database upgrade to version 3.7.0.9: Timezone Settings','2011-01-10 00:00:00',1,'upgrade*3.7.0.9*99*upgrade3.7.0.9'),
-(262,'upgrade*3.7.1.0*99*upgrade3.7.1.0','Upgrade from version 3.7.0.9 to 3.7.1.0','2011-01-18 00:00:00',1,'upgrade*3.7.1.0*99*upgrade3.7.1.0');
+(260,'sql*3.7.1.0*0*3.7.1.0/session_management.sql','Database upgrade to version 3.7.1.0: Session Management','2011-01-18 00:00:00',1,'upgrade*3.7.1.0*99*upgrade3.7.1.0'),
+(261,'sql*3.7.1.0*0*3.7.1.0/timezone_settings.sql','Database upgrade to version 3.7.1.0: Timezone Settings','2011-01-10 00:00:00',1,'upgrade*3.7.1.0*99*upgrade3.7.1.0'),
+(262,'sql*3.7.1.0*0*3.7.1.0/folder_changes.sql','Database upgrade to version 3.7.1.0: Folder Changes','2011-02-02 00:00:00',1,'upgrade*3.7.1.0*99*upgrade3.7.1.0'),
+(263,'upgrade*3.7.1.0*99*upgrade3.7.1.0','Upgrade from version 3.7.0.9 to 3.7.1.0','2011-02-02 00:00:00',1,'upgrade*3.7.1.0*99*upgrade3.7.1.0');
 /*!40000 ALTER TABLE `upgrades` ENABLE KEYS */;
 UNLOCK TABLES;
 

@@ -183,10 +183,10 @@ class KTDocumentCore extends KTEntity {
     function getLinkedDocumentId(){ return $this->iLinkedDocumentId;}
     function setLinkedDocumentId($iNewValue){ $this->iLinkedDocumentId = $iNewValue;}
 
-    // Timezone getters
-    function getDisplayCreatedDateTime() { return datetimeutil::getDisplayDate($this->dCreated); }
-    function getDisplayLastModifiedDate() { return empty($this->dModified) ? $this->dModified : datetimeutil::getDisplayDate($this->dModified); }
-    function getDisplayCheckedOutDate() { return empty($this->dCheckedOut) ? $this->dCheckedOut : datetimeutil::getDisplayDate($this->dCheckedOut); }
+    /* Timezone getters */
+    function getDisplayCreatedDateTime() { return datetimeutil::getLocaleDate($this->dCreated); }
+    function getDisplayLastModifiedDate() { return empty($this->dModified) ? $this->dModified : datetimeutil::getLocaleDate($this->dModified); }
+    function getDisplayCheckedOutDate() { return empty($this->dCheckedOut) ? $this->dCheckedOut : datetimeutil::getLocaleDate($this->dCheckedOut); }
     
     /**
      * Returns the ID of the real document.

@@ -40,27 +40,65 @@ require_once('timezones.inc');
 
 class datetimeutil
 {
-	public function __construct()
-	{
-		
-	}
+	/**
+	 * Constructor
+	 *
+	 */
+	public function __construct() {}
 	
-	static public function getDisplayDate($date)
+	/**
+	 * Returns an offset date formated for display or queries.
+	 *
+	 * @param string $date - date value
+	 * @param string $toTimezone - convert to or from
+	 * @return string $date - offset date
+	 */
+	static public function getLocaleDate($date, $toTimezone = true)
 	{
+		// Make sure a date has been passed
+		if(is_null($date)) return $date;
 		// Create time conversion object
 		$tzc = new TimezoneConversion();
 		// Set the date to convert
 		$tzc->setProperty('Datetime', $date);
 		// Retrieve system timezone
 		$oConfig = KTConfig::getSingleton();
-		$tzvalue = $oConfig->get('tweaks/setTimezone', 'UTC');
+		$tzvalue = $oConfig->get('timezone/setTimezone', 'UTC');
+		// Check if it is UTC and return
+		if($tzvalue == 'UTC') { return $date; }
 		// Set the timezone
 		$tzc->setProperty('Timezone', $tzvalue);
-		
-		return $tzc->convertDateTime();
+		// Convert timezone
+		return $tzc->convertDateTime($toTimezone);
 	}
 	
+	/**
+	 * Convert time to UTC
+	 *
+	 * @param unknown_type $date
+	 * @return unknown
+	 */
+	static public function convertToUTC($date)
+	{
+		// Create time conversion object, set format to ISO 8601 (YYYY-MM-DDThh:mm:ss+UTC offset eg 2004-02-12T15:19:21+00:00)
+		$tzc = new TimezoneConversion('c');
+		// Set the date to convert
+		$tzc->setProperty('Datetime', $date);
+		// set zone to UTC
+		$tzc->setProperty('Timezone', 'UTC');
+		// Convert timezone
+		return $tzc->convertDateTime();
+	}
 
-
+	/**
+	 * Return timezone
+	 *
+	 */
+	static public function getTimeZone()
+	{
+		// Retrieve system timezone
+		$oConfig = KTConfig::getSingleton();
+		return $oConfig->get('timezone/setTimezone', 'UTC');
+	}
 }
 ?>

@@ -102,7 +102,7 @@ class KTDocumentMetadataVersion extends KTEntity {
     function getWorkflowStateId() { return $this->iWorkflowStateId; }
     function setWorkflowStateId($mValue) { $this->iWorkflowStateId = $mValue; }
     // Timezone getters
-    function getDisplayVersionCreated() { return datetimeutil::getDisplayDate($this->dVersionCreated); }
+    function getDisplayVersionCreated() { return datetimeutil::getLocaleDate($this->dVersionCreated); }
     // }}}
 
     function __construct() {

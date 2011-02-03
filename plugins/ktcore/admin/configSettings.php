@@ -235,12 +235,12 @@ class BaseConfigDispatcher extends KTAdminDispatcher
         		$oClass = new $options['class']();
 	        	$value = ($value == 'default') ? $defaultValue : $value;
 	        	$input .= $oClass->renderRegionLabel();
-	        	$input .= "<select id='country_select' name='country_select'>&nbsp;&nbsp;";
+	        	$input .= '<select onchange="javascript:{kt.datetime.change_region();}" id="country_select" name="country_select">&nbsp;&nbsp;';
 	        	$input .= $oClass->renderRegions($value);
 	        	$input .= '</select>';
 	        	$input .= '<br/><br/>';
 	        	$input .= $oClass->renderTimezoneLabel();
-	        	$input .= "<select class='timezones' id='{$id}' name='configArray[{$id}]'>&nbsp;&nbsp;";
+	        	$input .= "<select class='countryList' id='{$id}' name='configArray[{$id}]'>&nbsp;&nbsp;";
 	        	$input .= $oClass->renderTimezones($value);
 	        	$input .= '</select>';
 	        	
