@@ -651,7 +651,7 @@ class KTAPI_Folder extends KTAPI_FolderItem {
         }
 
         if (strpos($what, 'F') !== false) {
-            $folderContents = $this->getFolderListing($user, $queryOptions, $what, $fullTree, $calculateTotal, $totalFolders);
+            $folderContents = $this->getFolderListing($user, $queryOptions, $depth, $what, $fullTree, $calculateTotal, $totalFolders);
             if (PEAR::isError($folderContents)) {
                 return $folderContents;
             }
@@ -665,10 +665,6 @@ class KTAPI_Folder extends KTAPI_FolderItem {
                 return $documentContents;
             }
         }
-
-        // now sort the array of Documents according to title
-        // not needed anymore because we join on content and metadata versions and sort by metadata name (document title)
-        /*usort($documentContents, array($this, 'compare_title'));*/
 
         $totalItems = $totalFolders + $totalDocuments;
         $contents = array_merge($documentContents, $folderContents);
@@ -689,7 +685,7 @@ class KTAPI_Folder extends KTAPI_FolderItem {
      * @param int $totalFolders
      * @return array
      */
-    private function getFolderListing($user, $queryOptions, $what, $fullTree = false, $calculateTotal = false, &$totalFolders = 0)
+    private function getFolderListing($user, $queryOptions, $depth = 1, $what = 'FS', $fullTree = false, $calculateTotal = false, &$totalFolders = 0)
     {
         $folderContents = array();
 
@@ -759,7 +755,7 @@ class KTAPI_Folder extends KTAPI_FolderItem {
      * @param int $remaining
      * @return array
      */
-    private function getDocumentListing($user, $queryOptions, $what, $calculateTotal = false, &$totalDocuments = 0, $remaining = -1)
+    private function getDocumentListing($user, $queryOptions, $what = 'DS', $calculateTotal = false, &$totalDocuments = 0, $remaining = -1)
     {
         $documentContents = array();
 
@@ -784,7 +780,7 @@ class KTAPI_Folder extends KTAPI_FolderItem {
         $optionString = DBUtil::getDbOptions($queryOptions);
 
         if ($calculateTotal) {
-            $totalSql = "SELECT count(D.id) as document_ids FROM documents as D $permissionJoin $where GROUP BY D.id";
+            $totalSql = "SELECT count(D.id) as document_ids FROM (documents as D INNER JOIN documents as DJ ON D.id = DJ.id) $permissionJoin $where GROUP BY D.id";
             $totalDocuments = DBUtil::getResultArrayKey(array($totalSql, array_merge($permissionParams, array($this->folderid))), 'document_ids');
             if (PEAR::isError($totalDocuments)) {
                 // FIXME not what we want?
@@ -795,7 +791,7 @@ class KTAPI_Folder extends KTAPI_FolderItem {
 
         // do we need to fetch anything or do we just need the count for paging?
         if ($remaining != 0) {
-            $sql = "SELECT D.id as document_id FROM documents as D $contentVersionJoin $permissionJoin $where $optionString";
+            $sql = "SELECT distinct D.id as document_id FROM documents as D $contentVersionJoin $permissionJoin $where AND DCV.id = (SELECT max(DCV2.id) FROM document_content_version DCV2 WHERE DCV2.document_id = D.id) AND DMV.id = (SELECT max(DMV2.id) FROM document_metadata_version DMV2 WHERE DMV2.document_id = D.id) $optionString";
             $document_children = DBUtil::getResultArrayKey(array($sql, array_merge($permissionParams, array($this->folderid))), 'document_id');
             if (PEAR::isError($document_children)) {
                 // FIXME not what we want?
@@ -808,6 +804,11 @@ class KTAPI_Folder extends KTAPI_FolderItem {
                 $this->assemble_document_array($document, $documentContents, $what);
             }
         }
+
+        // now sort the array of Documents according to title
+        // NOTE This is still needed because the combination of 'distinct' and 'order by' in the query does NOT return
+        //      what you might expect - duplicated objects end up in the incorrect place in the order
+        /*usort($documentContents, array($this, 'compare_title'));*/
 
         return $documentContents;
     }
@@ -2277,8 +2278,7 @@ class KTAPI_Folder extends KTAPI_FolderItem {
         $owned_by = $this->_resolve_user($document->getOwnerID());
 
         $mimetypeid = $document->getMimeTypeID();
-		if (!array_key_exists($mimetypeid, $mime_cache))
-		{
+		if (!array_key_exists($mimetypeid, $mime_cache)) {
 			$type = KTMime::getMimeTypeName($mimetypeid);
 			$icon = KTMime::getIconPath($mimetypeid);
 			$display = KTMime::getFriendlyNameForString($type);
