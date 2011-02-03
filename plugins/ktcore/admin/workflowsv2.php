@@ -1532,6 +1532,9 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
 
         KTPermissionUtil::updatePermissionLookupForState($this->oState);
 
+        // Ensure permissions are updated for users
+        KTPermissionUtil::clearCache();
+
         $this->successRedirectTo('managepermissions', _kt('Permissions Allocated.'));
     }
 

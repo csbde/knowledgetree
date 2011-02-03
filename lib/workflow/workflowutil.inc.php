@@ -192,8 +192,10 @@ class KTWorkflowUtil {
 
 
         // FIXME does this function as expected?
-
         KTPermissionUtil::updatePermissionLookup($oDocument);
+
+        // Ensure permissions are updated for users
+        KTPermissionUtil::clearCache();
 
         if (isset($iStartStateId)) {
             $oTargetState = KTWorkflowState::get($iStartStateId);
@@ -631,6 +633,9 @@ class KTWorkflowUtil {
 
 		KTPermissionUtil::updatePermissionLookup($oDocument);
         KTWorkflowUtil::informUsersForState($oTargetState, KTWorkflowUtil::getInformedForState($oTargetState), $oDocument, $oUser, $sComments);
+
+        // Ensure permissions are updated for users
+        KTPermissionUtil::clearCache();
 
         return true;
     }
