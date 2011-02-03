@@ -174,7 +174,6 @@ class KTPage {
 
         /* default css files initialisation */
         $css = array(
-            'thirdpartyjs/extjs/resources/css/ext-all.css',
             'resources/css/kt-framing.css',
             'resources/css/kt-contenttypes.css',
             'resources/css/kt-headings.css',
@@ -191,6 +190,9 @@ class KTPage {
             }
         }
 
+        $combinationFile = $this->combineResources($css, 'css');
+        // third party css, because we cannot so easily control absolute url content
+        $css = array('thirdpartyjs/extjs/resources/css/ext-all.css', $combinationFile);
         $this->requireCSSResources($css);
 
         if ($oConfig->get('ui/morphEnabled') == '1') {
