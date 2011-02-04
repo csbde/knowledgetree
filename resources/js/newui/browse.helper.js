@@ -90,7 +90,7 @@ kt.pages.browse = new function() {
         if (fetch && self.checkRange(pageNum)) {
             self.loading = true;
             if (!loaded) {
-                jQuery.loading.css.background = 'yellow';
+                jQuery.loading.css.background = '#FFFEA1';
                 jQuery.loading(true, { text: 'Loading...', effect: 'update' });
             }
 
