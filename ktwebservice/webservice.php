@@ -484,12 +484,16 @@ class KTWebService {
     function get_server_date_time()
     {    	
     	$datetime = gmdate("c");
+  		
+    	//convert it to the localized date
+    	$date = datetimeutil::getLocaleDate($datetime);
+    	//convert to Unix epoch
+    	$date = strtotime($date);
     	
-    	//$utc_str = gmdate("M d Y H:i:s", time());
-  		//$utc = strtotime($utc_str);
+    	//$GLOBALS['default']->log->debug('get_server_date_time '.(string)$date);
     	
     	$response['status_code'] = KTWS_SUCCESS;
-    	$response['message'] = $datetime;
+    	$response['message'] = (string)$date;
     	
     	return new SOAP_Value('return', "{urn:$this->namespace}kt_response", $response);
     }
@@ -4070,8 +4074,14 @@ class KTWebService {
     }
 	
 	
-	
-	function get_folder_changes($session_id, $folder_ids, $change_id = 0, $depth = 1)
+	/**
+	 * 
+	 * @param $session_id
+	 * @param $folder_ids
+	 * @param $timestamp
+	 * @param $depth
+	 */
+	function get_folder_changes($session_id, $folder_ids, $timestamp = 0, $depth = 1)
 	{
 		//$GLOBALS['default']->log->debug("get_folder_changes $folder_id $change_id");
 		
@@ -4081,16 +4091,17 @@ class KTWebService {
     		return new SOAP_Value('return', "{urn:$this->namespace}kt_response", $kt);
     	}
     	
-    	$result = &$kt->get_folder_changes($folder_ids, $change_id, $depth, 'DF');
+    	$result = &$kt->get_folder_changes($folder_ids, $timestamp, $depth, 'DF');
     	
-    	//$GLOBALS['default']->log->debug('get_folder_changes result '.print_r($result, true));
+    	$GLOBALS['default']->log->debug('get_folder_changes result '.print_r($result, true));
     	
 		if ($result['status_code'] !== 0)
 		{
 		    $return = array(
-	    		'status_code' => KTWS_ERR_PROBLEM,
+	    		'status_code' => 0,
 				'message' => $result['message'],
-	        	'change_id' => (string)$result['change_id'],
+	        	'timestamp' => (string)$result['timestamp'],
+		    	'changes' => NULL
 	    	);
 		}
 		
@@ -4125,7 +4136,7 @@ class KTWebService {
 			$return = array(
 				'status_code' => KTWS_SUCCESS,
 				'message' => '',
-	        	'change_id' => (string)$result['change_id'],
+	        	'timestamp' => (string)$result['timestamp'],
 	    		'changes' => new SOAP_Value('changes', "{urn:$this->namespace}kt_folder_changes", $changes)
 			);
 		}
@@ -4303,7 +4314,7 @@ class KTWebService {
 	         	array(
 					'status_code' => 'int',
 					'message' => 'string',
-	        		'change_id' => 'string' ,
+	        		'timestamp' => 'string' ,
 	        		'changes' => "{urn:$this->namespace}kt_folder_changes",
 	         	);
 	         	
@@ -5533,7 +5544,7 @@ class KTWebService {
     	if ($this->version >= 3)
     	{    			
     		$this->__dispatch_map['get_folder_changes'] = 
-    			array('in' => array('session_id' => 'string', 'folder_ids' => "{urn:$this->namespace}kt_folder_ids", 'change_id' => 'string', 'depth' => 'int' ),
+    			array('in' => array('session_id' => 'string', 'folder_ids' => "{urn:$this->namespace}kt_folder_ids", 'timestamp' => 'string', 'depth' => 'int' ),
     			'out' => array( 'return' => "{urn:$this->namespace}kt_folder_change_response" )
     			);
     			

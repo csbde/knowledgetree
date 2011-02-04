@@ -313,8 +313,8 @@ class KTAPI {
 		if (is_null($this->session))
 		{
 			return array(
-				"status_code" => 1,
-				"message" => "Your session is not active"
+				'status_code' => 1,
+				'message' => 'Your session is not active'
 			);
 		}
 		/* We need to create a new instance of KTAPI to get another user */
@@ -328,8 +328,8 @@ class KTAPI {
 		$user_ktapi->session_logout();
 
 		return array(
-			"status_code" => 0,
-			"results" => $permissions->permissions
+			'status_code' => 0,
+			'results' => $permissions->permissions
 		);
 	}
 
@@ -346,8 +346,8 @@ class KTAPI {
 		if (is_null($this->session))
 		{
 			return array(
-				"status_code" => 1,
-				"message" => "Your session is not active"
+				'status_code' => 1,
+				'message' => 'Your session is not active'
 				);
 		}
 		/* We need to create a new instance of KTAPI to get another user */
@@ -358,8 +358,8 @@ class KTAPI {
 
 		if (get_class($document) == 'PEAR_Error') {
 			return array(
-				"status_code" => 0,
-				"results" => null
+				'status_code' => 0,
+				'results' => null
 			);
 		}
 
@@ -368,8 +368,8 @@ class KTAPI {
 		$user_ktapi->session_logout();
 
 		return array(
-			"status_code" => 0,
-			"results" => $permissions->permissions
+			'status_code' => 0,
+			'results' => $permissions->permissions
 		);
 	}
 
@@ -392,8 +392,8 @@ class KTAPI {
 		if (is_null($this->session))
 		{
 			return array(
-				"status_code" => 1,
-				"message" => "Your session is not active"
+				'status_code' => 1,
+				'message' => 'Your session is not active'
 			);
 		}
 
@@ -403,8 +403,8 @@ class KTAPI {
 		$detail = $permissions->permissions;
 		if (!in_array("Manage security", $detail)) {
 			return array(
-				"status_code" => 1,
-				"message" => "User does not have permission to manage security"
+				'status_code' => 1,
+				'message' => 'User does not have permission to manage security'
 			);
 		}
 
@@ -417,8 +417,8 @@ class KTAPI {
 		{
 			$user_ktapi->session_logout();
 			return array(
-				"status_code" => 1,
-				"message" => $folder->getMessage()
+				'status_code' => 1,
+				'message' => $folder->getMessage()
 			);
 		}
 
@@ -426,8 +426,8 @@ class KTAPI {
 		if (PEAR::isError($permission)) {
 			$user_ktapi->session_logout();
 			return array(
-				"status_code" => 1,
-				"message" => $permission->getMessage()
+				'status_code' => 1,
+				'message' => $permission->getMessage()
 			);
 		}
 
@@ -435,8 +435,8 @@ class KTAPI {
 		if (PEAR::isError($user)) {
 			$user_ktapi->session_logout();
 			return array(
-				"status_code" => 1,
-				"message" => $user->getMessage()
+				'status_code' => 1,
+				'message' => $user->getMessage()
 			);
 		}
 
@@ -446,7 +446,7 @@ class KTAPI {
 		$permissions->save();
 
 		return array(
-			"status_code" => 0
+			'status_code' => 0
 		);
 	}
 
@@ -468,8 +468,8 @@ class KTAPI {
 		if (is_null($this->session))
 		{
 			return array(
-				"status_code" => 1,
-				"message" => "Your session is not active"
+				'status_code' => 1,
+				'message' => 'Your session is not active'
 			);
 		}
 
@@ -479,8 +479,8 @@ class KTAPI {
 		$detail = $permissions->permissions;
 		if (!in_array("Manage security", $detail)) {
 			return array(
-				"status_code" => 1,
-				"message" => "User does not have permission to manage security"
+				'status_code' => 1,
+				'message' => 'User does not have permission to manage security'
 			);
 		}
 
@@ -488,24 +488,24 @@ class KTAPI {
 		if (PEAR::isError($folder))
 		{
 			return array(
-				"status_code" => 1,
-				"message" => $folder->getMessage()
+				'status_code' => 1,
+				'message' => $folder->getMessage()
 			);
 		}
 
 		$permission = KTAPI_Permission::getByNamespace($namespace);
 		if (PEAR::isError($permission)) {
 			return array(
-				"status_code" => 1,
-				"message" => $permission->getMessage()
+				'status_code' => 1,
+				'message' => $permission->getMessage()
 			);
 		}
 
 		$role = KTAPI_Role::getByName($role);
 		if (PEAR::isError($role)) {
 			return array(
-				"status_code" => 1,
-				"message" => $role->getMessage()
+				'status_code' => 1,
+				'message' => $role->getMessage()
 			);
 		}
 
@@ -515,7 +515,7 @@ class KTAPI {
 		$permissions->save();
 
 		return array(
-			"status_code" => 0
+			'status_code' => 0
 		);
 	}
 
@@ -537,8 +537,8 @@ class KTAPI {
 		if (is_null($this->session))
 		{
 			return array(
-				"status_code" => 1,
-				"message" => "Your session is not active"
+				'status_code' => 1,
+				'message' => 'Your session is not active'
 			);
 		}
 
@@ -548,8 +548,8 @@ class KTAPI {
 		$detail = $permissions->permissions;
 		if (!in_array("Manage security", $detail)) {
 			return array(
-				"status_code" => 1,
-				"message" => "User does not have permission to manage security"
+				'status_code' => 1,
+				'message' => 'User does not have permission to manage security'
 			);
 		}
 
@@ -557,24 +557,24 @@ class KTAPI {
 		if (PEAR::isError($folder))
 		{
 			return array(
-				"status_code" => 1,
-				"message" => $folder->getMessage()
+				'status_code' => 1,
+				'message' => $folder->getMessage()
 			);
 		}
 
 		$permission = KTAPI_Permission::getByNamespace($namespace);
 		if (PEAR::isError($permission)) {
 			return array(
-				"status_code" => 1,
-				"message" => $permission->getMessage()
+				'status_code' => 1,
+				'message' => $permission->getMessage()
 			);
 		}
 
 		$group = KTAPI_Group::getByName($group);
 		if (PEAR::isError($group)) {
 			return array(
-				"status_code" => 1,
-				"message" => $group->getMessage()
+				'status_code' => 1,
+				'message' => $group->getMessage()
 			);
 		}
 
@@ -584,7 +584,7 @@ class KTAPI {
 		$permissions->save();
 
 		return array(
-			"status_code" => 0
+			'status_code' => 0
 		);
 	}
 
@@ -1013,7 +1013,7 @@ class KTAPI {
 			$response['status_code'] = 1;
 			if (is_null($rows))
 			{
-				$response['message'] = "No types";
+				$response['message'] = 'No types';
 			} else {
 				$response['message'] = $rows->getMessage();
 			}
@@ -5272,8 +5272,8 @@ class KTAPI {
 			//$GLOBALS['default']->log->error('KTAPI get_folder_total_files folder error '.$folder->getMessage());
 			
 			return array(
-				"status_code" => 1,
-				"message" => $folder->getMessage()
+				'status_code' => 1,
+				'message' => $folder->getMessage()
 			);
 		}
 		
@@ -5303,8 +5303,8 @@ class KTAPI {
 			//$GLOBALS['default']->log->error('KTAPI is_folder_empty folder error '.$folder->getMessage());
 			
 			return array(
-				"status_code" => 0,
-				"message" => 'true'
+				'status_code' => 0,
+				'message' => 'true'
 			);
 		}
 		
@@ -5333,42 +5333,63 @@ class KTAPI {
      */
 	public function get_folder_changes($folder_ids, $timestamp, $depth = 1, $what = 'DF')
 	{
-		//$GLOBALS['default']->log->debug("KTAPI get_folder_changes ".print_r($folder_ids, true)." $timestamp $depth '$what'");
+		$GLOBALS['default']->log->debug("KTAPI get_folder_changes ".print_r($folder_ids, true)." $timestamp $depth '$what'");
 		
 		$results = array();
 		$changes = array();
 		
 		$hasChanges = FALSE;
 		
+		//generate the new timestamp; do it BEFORE checking for changes!
+		$datetime = gmdate("c");
+    	$new_timestamp = datetimeutil::getLocaleDate($datetime);
+    	$new_timestamp = (string)strtotime($new_timestamp);
+    	
+    	//$GLOBALS['default']->log->debug("KTAPI get_folder_changes new timestamp $new_timestamp");
+		
 		foreach($folder_ids as $folder_id)
 		{
 			$folder = KTAPI_Folder::get($this, $folder_id);
-			//TODO: need to do this? Or can we expect it to be in UTC?
-			//OR should we accept a time and then convert to epoch?
-			$time = datetimeutil::convertToUTC(date("c", (int)$timestamp));
+			
+			//convert to UTC since we are getting the localized time
+			$time = datetimeutil::convertToUTC(date('Y-m-d H:i:s', (int)$timestamp));
 			if (PEAR::isError($folder))
 			{
-				//$GLOBALS['default']->log->error('KTAPI get_folder_changes folder error '.$folder->getMessage());
+				$GLOBALS['default']->log->error('KTAPI get_folder_changes folder error message '.$folder->getMessage());
+				//$GLOBALS['default']->log->error('KTAPI get_folder_changes folder error '.print_r($folder, true));
+				//TODO: interpret this as a folder delete!!
+
+				$changes1 = array();
+				$changes2 = array();
 				
-				//since a PEAR error is raised when a get is done on a folder that has been deleted,
-				//need to check for that case
-				$changes = KTAPI_Folder::deletedSince($folder_id, $time);
+				//since a PEAR error is raised when a get is done on a folder that has been deleted
+				//or where user does not have permissions, need to check for those cases
+				$changes1 = KTAPI_Folder::deletedSince($folder_id, $time);
+				
+				
+				if (count($changes1) == 0)
+				{
+					$changes2 = KTAPI_Folder::permissionsRemovedSince($folder_id, $time);
+				}
+				
+				$changes = array_merge($changes1, $changes2);
 				
 				if (count($changes) > 0)
 				{
 					$hasChanges = TRUE;
 							
 					$results[$folder_id] = array(
-						"status_code" => 0,
-						"message" => "Folder has changes",
-						"changes" => $changes
+						'status_code' => 0,
+						'message' => 'Folder has changes',
+						'changes' => $changes
 					);
 				}
 				else
 				{
 					$results[] = array(
-						"status_code" => 1,
-						"message" => $folder->getMessage()
+						'status_code' => 0,
+						'message' => $folder->getMessage(),
+						'changes' => array(),
 					);
 				}
 			}
@@ -5381,9 +5402,9 @@ class KTAPI {
 				if (count($changes) == 0)
 				{				
 					$results[$folder_id] = array(
-						"status_code" => 1, 
-						"message" => KTAPI_ERROR_FOLDER_NO_CHANGES,
-						"changes" => array(),
+						'status_code' => 0, 
+						'message' => KTAPI_ERROR_FOLDER_NO_CHANGES,
+						'changes' => array(),
 					);
 				}
 				else
@@ -5391,23 +5412,21 @@ class KTAPI {
 					$hasChanges = TRUE;
 							
 					$results[$folder_id] = array(
-						"status_code" => 0,
-						"message" => "Folder has changes",
-						"changes" => $changes
+						'status_code' => 0,
+						'message' => 'Folder has changes',
+						'changes' => $changes
 					);
 				}
 			}
 		}
-		
-		$new_timestamp = time();
-		
+				
 		//$GLOBALS['default']->log->debug("KTAPI get_folder_changes converted new timestamp $new_timestamp");
 		
 		return array(
-			"status_code" => $hasChanges ? 0 : 1,
-			"message" => $hasChanges ? "There are changes." : "No changes.",
-			"change_id" => $new_timestamp,
-			"result" => $results
+			'status_code' => $hasChanges ? 0 : 1,
+			'message' => $hasChanges ? 'There are changes.' : 'No changes.',
+			'timestamp' => $new_timestamp,
+			'result' => $results
 		);
 	}
 

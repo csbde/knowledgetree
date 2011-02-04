@@ -1402,34 +1402,56 @@ class KTAPI_Folder extends KTAPI_FolderItem {
     public function getChanges($timestamp, $depth = 1, $what = 'DF')
     {
     	//$GLOBALS['default']->log->debug("getChanges $timestamp $depth '$what'");
-
+    	
+    	//get the user; used to determine permissions
+    	$user = $this->ktapi->get_user();
+    	
+    	$folderPermissionsSQL = array();
+    	$filePermissionsSQL = array();
+    	
+    	//cache the permissions for this call
+    	if (strpos($what, 'F') !== false)
+        {    	
+	    	$folderPermissionsSQL = KTSearchUtil::permissionToSQL($user, KTAPI_PERMISSION_VIEW_FOLDER, 'F');
+	    	
+	    	//$GLOBALS['default']->log->debug('getChanges folderPermissionsSQL '.print_r($folderPermissionsSQL, true));
+	    	
+	        if (PEAR::isError($folderPermissionsSQL)) {
+	            $folderPermissionsSQL = array();
+	        }
+        }
+    	if (strpos($what, 'D') !== false)
+        {    	
+	    	$filePermissionsSQL = KTSearchUtil::permissionToSQL($user, KTAPI_PERMISSION_READ, 'D');
+	        if (PEAR::isError($filePermissionsSQL)) {
+	            $filePermissionsSQL = array();
+	        }
+        }
+			
     	//array to store all the changes
     	$changes = array();
-
-		//get the user; used to determine permissions
-    	$user = $this->ktapi->get_user();
-
-    	//has the current folder changed in relevant ways?
-    	$this->renamedSince($timestamp, $user, $changes);
-    	$this->movedSince($timestamp, $user, $changes);
-    	$this->updatedSince($timestamp, $user, $changes);
-
+    	
+    	//has the current folder itself changed in relevant ways?
+    	$this->renamedSince($timestamp, $folderPermissionsSQL, $changes);
+    	$this->movedSince($timestamp, $folderPermissionsSQL, $changes);
+    	$this->updatedSince($timestamp, $folderPermissionsSQL, $changes);
+    	
     	//have to check more than just myself?
     	if ($depth != 0)
     	{
-	    	$this->childrenCreatedSince($timestamp, $what, $user, $changes);
-	    	$this->childrenDeletedSince($timestamp, $what, $user, $changes);
-	    	$this->childrenRenamedSince($timestamp, $what, $user, $changes);
-	    	$this->childrenMovedSince($timestamp, $what, $user, $changes);
-	    	$this->childrenUpdatedSince($timestamp, $what, $user, $changes);
-
+	    	$this->childrenCreatedSince($timestamp, $what, $folderPermissionsSQL, $filePermissionsSQL, $changes);
+	    	$this->childrenDeletedSince($timestamp, $what, $folderPermissionsSQL, $filePermissionsSQL, $changes);
+	    	$this->childrenRenamedSince($timestamp, $what, $folderPermissionsSQL, $filePermissionsSQL, $changes);
+	    	$this->childrenMovedSince($timestamp, $what, $folderPermissionsSQL, $filePermissionsSQL, $changes);
+	    	$this->childrenUpdatedSince($timestamp, $what, $folderPermissionsSQL, $filePermissionsSQL, $changes);
+	
 	    	//$GLOBALS['default']->log->debug('getChanges created '.print_r($changes, true));
 
 	    	//have to check more than just my immediate children?
 	    	if ($depth != 1)
 	    	{
-	    		$this->getChangesRecursive($timestamp, $depth, $what, $user, $changes);
-
+	    		$this->getChangesRecursive($timestamp, $depth, $what, $user, $folderPermissionsSQL, $filePermissionsSQL, $changes);
+	
 	    		//$GLOBALS['default']->log->debug('getChanges recursive '.print_r($changes, true));
 	    	}
     	}
@@ -1449,9 +1471,9 @@ class KTAPI_Folder extends KTAPI_FolderItem {
      *
      * @return number
      */
-	private function getChangesRecursive($timestamp, $depth = 1, $what = 'DF', $user, &$changes = array())
+	private function getChangesRecursive($timestamp, $depth = 1, $what = 'DF', $user, $folderPermissionsSQL, $filePermissionsSQL, &$changes = array())
     {
-    	// $GLOBALS['default']->log->debug("getChangesRecursive timestamp $timestamp depth $depth ".print_r($changes, true));
+    	//$GLOBALS['default']->log->debug("getChangesRecursive timestamp $timestamp depth $depth ".print_r($changes, true));
 
     	// are we fetching the entire tree?
         // Set a static boolean value which will instruct recursive calls to ignore the depth parameter;
@@ -1491,9 +1513,7 @@ class KTAPI_Folder extends KTAPI_FolderItem {
 	        {
 	            return new KTAPI_Error(KTAPI_ERROR_INTERNAL_ERROR, $results );
 	        }
-
-	        $folder_permission = &KTPermission::getByName(KTAPI_PERMISSION_VIEW_FOLDER);
-
+	        
 	        foreach ($results as $result)
 	        {
 	        	$folder = &Folder::get($result['folder_id']);
@@ -1502,16 +1522,16 @@ class KTAPI_Folder extends KTAPI_FolderItem {
 					$ktapi_folder = &$this->ktapi->get_folder_by_id($folder->getId());
 
 					// get the changes for the current folder
-					$ktapi_folder->childrenCreatedSince($timestamp, $what, $user, $changes);
-					$ktapi_folder->childrenDeletedSince($timestamp, $what, $user, $changes);
-					$ktapi_folder->childrenRenamedSince($timestamp, $what, $user, $changes);
-					$ktapi_folder->childrenMovedSince($timestamp, $what, $user, $changes);
-					$ktapi_folder->childrenUpdatedSince($timestamp, $what, $user, $changes);
+					$ktapi_folder->childrenCreatedSince($timestamp, $what, $folderPermissionsSQL, $filePermissionsSQL, $changes);
+					$ktapi_folder->childrenDeletedSince($timestamp, $what, $folderPermissionsSQL, $filePermissionsSQL, $changes);
+					$ktapi_folder->childrenRenamedSince($timestamp, $what, $folderPermissionsSQL, $filePermissionsSQL, $changes);
+					$ktapi_folder->childrenMovedSince($timestamp, $what, $folderPermissionsSQL, $filePermissionsSQL, $changes);
+					$ktapi_folder->childrenUpdatedSince($timestamp, $what, $folderPermissionsSQL, $filePermissionsSQL, $changes);
 
 					// now recurse!
 					if ($fullTree || ($depth > 1))
 					{
-						$ktapi_folder->getChangesRecursive($timestamp, $depth - 1, $what, $user, $changes);
+						$ktapi_folder->getChangesRecursive($timestamp, $depth - 1, $what, $user, $folderPermissionsSQL, $filePermissionsSQL, $changes);
 					}
 	        	}
 	        }
@@ -1526,43 +1546,114 @@ class KTAPI_Folder extends KTAPI_FolderItem {
      */
     public static function deletedSince($folderID, $timestamp)
     {
-    	//$GLOBALS['default']->log->debug("deletedSince $folderID $timestamp");
-
+    	//$GLOBALS['default']->log->debug("static deletedSince $folderID $timestamp");
+    	
+    	$contents = array();
+    	
         $sQuery = 'SELECT FT.folder_id AS id, FT.datetime AS change_date, FT.parent_id AS parent_id FROM ' . KTUtil::getTableName('folder_transactions') . ' AS FT ' .
         'WHERE FT.transaction_namespace = \'ktcore.transactions.delete\' AND FT.folder_id = ? AND FT.datetime > ? ORDER BY FT.datetime ASC';
 
         $aParams = array($folderID, $timestamp);
 
         $results = DBUtil::getResultArray(array($sQuery, $aParams));
-        if (is_null($results) || PEAR::isError($results))
+        
+        if (!is_null($results) && !PEAR::isError($results))
         {
-            return new KTAPI_Error(KTAPI_ERROR_INTERNAL_ERROR, $results);
+        	//if there is a result, then it has been deleted!
+    		if (count($results) > 0)
+	        {
+	        	foreach ($results as $result) 
+	            {		 
+		        	$contents[] = array(
+						'id' => $result['id'],
+		        		'item_type' => 'F',
+		        		'parent_id' => $result['parent_id'],
+		        		'changes' => array(
+							'change_type' => 'D',
+							'change_date' => $result['change_date']
+						)
+		        	); 
+	            }  	
+	        }
+	        
+	        //need to check whether ANY parent folder has been deleted because result will be that this folder has also been deleted
+	        //have to do it in this roundabout way since child folder delete transaction are not recorded!
+	        //don't do this for the root folder!
+	        else if ($folderID > 1)
+	        {
+		        $sQuery = 'SELECT F.parent_folder_ids FROM '.KTUtil::getTableName('folders').' AS F WHERE F.id = ?';
+		        $aParams = array($folderID);
+		
+		        $results = DBUtil::getResultArrayKey(array($sQuery, $aParams), 'parent_folder_ids');
+		        
+		        //$GLOBALS['default']->log->debug('deletedSince results '.print_r($results, true));
+		        
+		    	if (!is_null($results) && !PEAR::isError($results))
+		        {
+		        	if (count($results) == 0)
+		        	{
+		        		$contents[] = array(
+							'id' => $folderID,
+			        		'item_type' => 'F',
+			        		'parent_id' => 'n/a',
+			        		'changes' => array(
+								'change_type' => 'D',
+								'change_date' => 'n/a'
+							)
+			        	); 
+		        	}
+	        	}
+	        }
         }
-
-        foreach ($results as $result) {
-        	// can't do this since folder is deleted and thus does not exist in folders table anymore!
-        	/*$oFolder = Folder::get((int)$folderID);
-        	$this->assemble_folder_array($folder, $contents);
-        	$contents[$key]['change_type'] = 'D';
-			$contents[$key]['items'] = array();*/
-
-        	$contents[] = array(
-				'id' => $result['id'],
-        		'item_type' => 'F',
-        		'parent_id' => $result['parent_id'],
-        		'changes' => array(
-					'change_type' => 'D',
-					'change_date' => $result['change_date']
-				)
-        	);
-        }
-
+        
         //$GLOBALS['default']->log->debug('deletedSince folders '.print_r($contents, true));
-
+        
         return $contents;
     }
+    
+    /**
+     * Checks whether a folder's permissions have changed
+     * Have to make it a static function as cannot get a $this handle on a folder
+     * that a user does not have permissions on!
+     * 
+     * @param unknown_type $folderID
+     * @param unknown_type $timestamp
+     */
+	public static function permissionsRemovedSince($folderID, $timestamp)
+    {
+    	//$GLOBALS['default']->log->debug("static permissionsRemovedSince $folderID $timestamp");
+    	
+    	$contents = array();
+    	
+        $sQuery = 'SELECT FT.folder_id AS id, FT.datetime AS change_date, FT.parent_id AS parent_id FROM ' . KTUtil::getTableName('folder_transactions') . ' AS FT ' .
+        'WHERE FT.transaction_namespace = \'ktcore.transactions.permissions_change\' AND FT.folder_id = ? AND FT.datetime > ? ORDER BY FT.datetime DESC LIMIT 1';
 
-	public function renamedSince($timestamp, $user, &$contents = array())
+        $aParams = array($folderID, $timestamp);
+
+        $results = DBUtil::getResultArray(array($sQuery, $aParams));
+        
+        if (!is_null($results) && !PEAR::isError($results))
+        {
+	        foreach ($results as $result) 
+	        {
+	        	$contents[] = array(
+					'id' => $result['id'],
+	        		'item_type' => 'F',
+	        		'parent_id' => $result['parent_id'],
+	        		'changes' => array(
+						'change_type' => 'U',
+						'change_date' => $result['change_date']
+					)
+	        	);
+	        } 
+	    }       
+        
+        //$GLOBALS['default']->log->debug('permissionsRemovedSince folders '.print_r($contents, true));
+        
+        return $contents;
+    }
+    
+	public function renamedSince($timestamp, $folderPermissionsSQL, &$contents = array())
     {
     	//$GLOBALS['default']->log->debug("renamedSince timestamp $timestamp");
 
@@ -1575,28 +1666,28 @@ class KTAPI_Folder extends KTAPI_FolderItem {
 
         $aOptions = array('orderby' => 'FT.datetime ASC');
 
-        $results = $this->getPermissionSQL($sSelectQuery, $sWhereQuery, $aParams, $aOptions, $user, KTAPI_PERMISSION_VIEW_FOLDER, 'F');
-        if (is_null($results) || PEAR::isError($results))
-        {
-            return new KTAPI_Error(KTAPI_ERROR_INTERNAL_ERROR, $results);
+        $results = $this->buildChangesSQL($sSelectQuery, $sWhereQuery, $folderPermissionsSQL, $aParams, $aOptions);
+        
+        if (!is_null($results) && !PEAR::isError($results))
+        {            
+	    	foreach ($results as $result) 
+	    	{
+	        	$folder = &Folder::get($result['id']);
+				$this->assemble_folder_array($folder, $contents);
+	
+				$contents[count($contents) - 1]['changes'] = array(
+					'change_type' => 'R',
+					'change_date' => $result['change_date']
+				);
+	
+					// $GLOBALS['default']->log->debug('renamedSince assembled contents '.print_r($contents, true));
+	        }
         }
-
-    	foreach ($results as $result) {
-        	$folder = &Folder::get($result['id']);
-			$this->assemble_folder_array($folder, $contents);
-
-			$contents[count($contents) - 1]['changes'] = array(
-				'change_type' => 'R',
-				'change_date' => $result['change_date']
-			);
-
-				// $GLOBALS['default']->log->debug('renamedSince assembled contents '.print_r($contents, true));
-        }
-
+        
         //$GLOBALS['default']->log->debug('renamedSince folders '.print_r($contents, true));
     }
-
-	public function movedSince($timestamp, $user, &$contents = array())
+    
+	public function movedSince($timestamp, $folderPermissionsSQL, &$contents = array())
     {
     	//$GLOBALS['default']->log->debug("movedSince timestamp $timestamp");
 
@@ -1609,34 +1700,74 @@ class KTAPI_Folder extends KTAPI_FolderItem {
 
         $aOptions = array('orderby' => 'FT.datetime ASC');
 
-        $results = $this->getPermissionSQL($sSelectQuery, $sWhereQuery, $aParams, $aOptions, $user, KTAPI_PERMISSION_VIEW_FOLDER, 'F');
-
-        if (is_null($results) || PEAR::isError($results))
+        $results = $this->buildChangesSQL($sSelectQuery, $sWhereQuery, $folderPermissionsSQL, $aParams, $aOptions);
+                
+        $totalResults = array();
+        
+    	if (!is_null($results) && !PEAR::isError($results))
         {
-            return new KTAPI_Error(KTAPI_ERROR_INTERNAL_ERROR, $results);
+            $totalResults = array_merge($totalResults, $results);
         }
-
-        $folder_permission = &KTPermission::getByName(KTAPI_PERMISSION_VIEW_FOLDER);
-        $user = $this->ktapi->get_user();
-
-    	foreach ($results as $result) {
-        	$folder = &Folder::get($result['id']);
-			if (KTPermissionUtil::userHasPermissionOnItem($user, $folder_permission, $folder)) {
+        
+        //also have to check whether ANY parent folder has been moved because result will be that this folder has also been moved
+        //have to do it in this roundabout way since child moves are not recorded!
+        //don't do this for the root folder!
+        if ($this->folderid > 1)
+        {
+        	//$GLOBALS['default']->log->debug('movedSince checking for parents');
+        	
+	        $sQuery = 'SELECT F.parent_folder_ids FROM '.KTUtil::getTableName('folders').' AS F WHERE F.id = ?';
+	        $aParams = array($this->folderid);
+	
+	        $results = DBUtil::getResultArrayKey(array($sQuery, $aParams), 'parent_folder_ids');
+	        
+	        //$GLOBALS['default']->log->debug('movedSince results2 '.print_r($results2, true));
+	        
+	        if (!is_null($results) && !PEAR::isError($results))
+	        {
+	        	//get all the parent folder IDs	
+	        	$folderIDs = explode(',', $results[0]);
+	        	
+	        	//$GLOBALS['default']->log->debug('movedSince exploded folderIDs '.print_r($folderIDs, true));
+	        	
+	        	foreach ($folderIDs as $folderID) 
+	        	{
+	        		$aParams = array($folderID, $timestamp);
+	        		
+	        		$result = $this->buildChangesSQL($sSelectQuery, $sWhereQuery, $folderPermissionsSQL, $aParams, $aOptions);
+	        		
+	        		if (count($result) > 0)
+	        		{
+	        			//$GLOBALS['default']->log->debug('movedSince I am set '.print_r($result, true));
+	        			
+	        			$totalResults = array_merge($totalResults, $result);
+	        			
+	        			//don't need to look any further!
+	        			break;
+	        		} 
+	        	}
+	        }
+        }
+        
+        if (!is_null($totalResults) && !PEAR::isError($totalResults))
+        {
+	    	foreach ($totalResults as $result) {
+	        	$folder = &Folder::get($result['id']);
 				$this->assemble_folder_array($folder, $contents);
-
+	
 				$contents[count($contents) - 1]['changes'] = array(
 					'change_type' => 'M',
 					'change_date' => $result['change_date']
 				);
-
+	
 				// $GLOBALS['default']->log->debug('renamedSince assembled contents '.print_r($contents, true));
-            }
+	        }
         }
 
         //$GLOBALS['default']->log->debug('movedSince folders '.print_r($contents, true));
     }
-
-	public function updatedSince($timestamp, $user, &$contents = array())
+    
+	public function updatedSince($timestamp, $folderPermissionsSQL, &$contents = array())
     {
     	//$GLOBALS['default']->log->debug("updatedSince timestamp $timestamp");
 
@@ -1649,22 +1780,21 @@ class KTAPI_Folder extends KTAPI_FolderItem {
 
         $aOptions = array('orderby' => 'FT.datetime ASC');
 
-        $results = $this->getPermissionSQL($sSelectQuery, $sWhereQuery, $aParams, $aOptions, $user, KTAPI_PERMISSION_VIEW_FOLDER, 'F');
-        if (is_null($results) || PEAR::isError($results))
+        $results = $this->buildChangesSQL($sSelectQuery, $sWhereQuery, $folderPermissionsSQL, $aParams, $aOptions);
+        
+        if (!is_null($results) && !PEAR::isError($results))
         {
-            return new KTAPI_Error(KTAPI_ERROR_INTERNAL_ERROR, $results);
-        }
-
-    	foreach ($results as $result) {
-        	$folder = &Folder::get($result['id']);
-			$this->assemble_folder_array($folder, $contents);
-
-			$contents[count($contents) - 1]['changes'] = array(
-				'change_type' => 'U',
-				'change_date' => $result['change_date']
-			);
-
-			// $GLOBALS['default']->log->debug('renamedSince assembled contents '.print_r($contents, true));
+	    	foreach ($results as $result) {
+	        	$folder = &Folder::get($result['id']);
+				$this->assemble_folder_array($folder, $contents);
+	
+				$contents[count($contents) - 1]['changes'] = array(
+					'change_type' => 'U',
+					'change_date' => $result['change_date']
+				);
+	
+				// $GLOBALS['default']->log->debug('renamedSince assembled contents '.print_r($contents, true));
+	        }
         }
 
         //$GLOBALS['default']->log->debug('updatedSince folders '.print_r($contents, true));
@@ -1675,8 +1805,10 @@ class KTAPI_Folder extends KTAPI_FolderItem {
      *
      * @return array of folders
      */
-    public function childrenCreatedSince($timestamp, $what = 'DF', $user, &$contents = array())
+    public function childrenCreatedSince($timestamp, $what = 'DF', $folderPermissionsSQL, $filePermissionsSQL, &$contents = array())
     {
+    	//$GLOBALS['default']->log->debug("childrenCreatedSince timestamp $timestamp");
+    	
         // need to do folders?
         if (strpos($what, 'F') !== false)
         {
@@ -1688,8 +1820,8 @@ class KTAPI_Folder extends KTAPI_FolderItem {
 	        $aParams = array($this->folderid, $timestamp);
 
 	        $aOptions = array('orderby' => 'FT.datetime ASC');
-
-	        $results = $this->getPermissionSQL($sSelectQuery, $sWhereQuery, $aParams, $aOptions, $user, KTAPI_PERMISSION_VIEW_FOLDER, 'F');
+	
+	        $results = $this->buildChangesSQL($sSelectQuery, $sWhereQuery, $folderPermissionsSQL, $aParams, $aOptions);
 	        if (is_null($results) || PEAR::isError($results))
 	        {
 	            return new KTAPI_Error(KTAPI_ERROR_INTERNAL_ERROR, $results );
@@ -1720,8 +1852,8 @@ class KTAPI_Folder extends KTAPI_FolderItem {
 	        $aParams = array($this->folderid, $timestamp);
 
 	        $aOptions = array('orderby' => 'DT.datetime ASC');
-
-	        $results = $this->getPermissionSQL($sSelectQuery, $sWhereQuery, $aParams, $aOptions, $user, KTAPI_PERMISSION_READ, 'D');
+	
+	        $results = $this->buildChangesSQL($sSelectQuery, $sWhereQuery, $filePermissionsSQL, $aParams, $aOptions);
 	        if (is_null($results) || PEAR::isError($results))
 	        {
 	            return new KTAPI_Error(KTAPI_ERROR_INTERNAL_ERROR, $results );
@@ -1747,7 +1879,7 @@ class KTAPI_Folder extends KTAPI_FolderItem {
      *
      * @return array of folders
      */
-    public function childrenDeletedSince($timestamp, $what = 'DF', $user, &$contents = array())
+    public function childrenDeletedSince($timestamp, $what = 'DF', $folderPermissionsSQL, $filePermissionsSQL, &$contents = array())
     {
     	//$GLOBALS['default']->log->debug("deletedSince timestamp $timestamp \'$what\'");
 
@@ -1762,8 +1894,8 @@ class KTAPI_Folder extends KTAPI_FolderItem {
 	        $aParams = array($this->folderid, $timestamp);
 
 	        $aOptions = array('orderby' => 'FT.datetime ASC');
-
-	        $results = $this->getPermissionSQL($sSelectQuery, $sWhereQuery, $aParams, $aOptions, $user, KTAPI_PERMISSION_VIEW_FOLDER, 'F');
+	
+	        $results = $this->buildChangesSQL($sSelectQuery, $sWhereQuery, $folderPermissionsSQL, $aParams, $aOptions);
 	        if (is_null($results) || PEAR::isError($results))
 	        {
 	            return new KTAPI_Error(KTAPI_ERROR_INTERNAL_ERROR, $results);
@@ -1781,7 +1913,7 @@ class KTAPI_Folder extends KTAPI_FolderItem {
 	        		'item_type' => 'F',
 	        		'parent_id' => $result['parent_id'],
 	        		'changes' => array(
-						'change_type' => 'D',
+						'change_type' => 'D', 
 						'change_date' => $result['change_date']
 					)
 	        	);
@@ -1802,8 +1934,8 @@ class KTAPI_Folder extends KTAPI_FolderItem {
 	        $aParams = array($this->folderid, $timestamp);
 
 	        $aOptions = array('orderby' => 'DT.datetime ASC');
-
-	        $results = $this->getPermissionSQL($sSelectQuery, $sWhereQuery, $aParams, $aOptions, $user, KTAPI_PERMISSION_READ, 'D');
+	
+	        $results = $this->buildChangesSQL($sSelectQuery, $sWhereQuery, $filePermissionsSQL, $aParams, $aOptions);
 	        if (is_null($results) || PEAR::isError($results))
 	        {
 	            return new KTAPI_Error(KTAPI_ERROR_INTERNAL_ERROR, $results );
@@ -1813,9 +1945,9 @@ class KTAPI_Folder extends KTAPI_FolderItem {
 	        	$contents[] = array(
 					'id' => $result['id'],
 	        		'item_type' => 'D',
-	        		'parent_id' => $result['parent_id'],
+	        		'parent_id' => $result['parent_id'],	   
 	        		'changes' => array(
-						'change_type' => 'D',
+						'change_type' => 'D', 
 						'change_date' => $result['change_date']
 	        		)
 	        	);
@@ -1843,7 +1975,7 @@ class KTAPI_Folder extends KTAPI_FolderItem {
      *
      * @return array of folders
      */
-    public function childrenRenamedSince($timestamp, $what = 'DF', $user, &$contents = array())
+    public function childrenRenamedSince($timestamp, $what = 'DF', $folderPermissionsSQL, $filePermissionsSQL, &$contents = array())
     {
     	// $GLOBALS['default']->log->debug("renamedSince timestamp $timestamp");
 
@@ -1858,8 +1990,8 @@ class KTAPI_Folder extends KTAPI_FolderItem {
 	        $aParams = array($this->folderid, $timestamp);
 
 	        $aOptions = array('orderby' => 'FT.datetime ASC');
-
-	        $results = $this->getPermissionSQL($sSelectQuery, $sWhereQuery, $aParams, $aOptions, $user, KTAPI_PERMISSION_VIEW_FOLDER, 'F');
+	
+	        $results = $this->buildChangesSQL($sSelectQuery, $sWhereQuery, $folderPermissionsSQL, $aParams, $aOptions);
 	        if (is_null($results) || PEAR::isError($results))
 	        {
 	            return new KTAPI_Error(KTAPI_ERROR_INTERNAL_ERROR, $results);
@@ -1892,8 +2024,8 @@ class KTAPI_Folder extends KTAPI_FolderItem {
 	        $aParams = array($this->folderid, $timestamp);
 
 	        $aOptions = array('orderby' => 'DT.datetime ASC');
-
-	        $results = $this->getPermissionSQL($sSelectQuery, $sWhereQuery, $aParams, $aOptions, $user, KTAPI_PERMISSION_READ, 'D');
+	
+	        $results = $this->buildChangesSQL($sSelectQuery, $sWhereQuery, $filePermissionsSQL, $aParams, $aOptions);
 	        if (is_null($results) || PEAR::isError($results))
 	        {
 	            return new KTAPI_Error(KTAPI_ERROR_INTERNAL_ERROR, $results );
@@ -1920,7 +2052,7 @@ class KTAPI_Folder extends KTAPI_FolderItem {
      *
      * @return array of folders
      */
-    public function childrenMovedSince($timestamp, $what = 'DF', $user, &$contents = array())
+    public function childrenMovedSince($timestamp, $what = 'DF', $folderPermissionsSQL, $filePermissionsSQL, &$contents = array())
     {
     	//$GLOBALS['default']->log->debug("childrenMovedSince timestamp $timestamp '$what'");
 
@@ -1935,8 +2067,8 @@ class KTAPI_Folder extends KTAPI_FolderItem {
 	        $aParams = array($this->folderid, $timestamp);
 
 	        $aOptions = array('orderby' => 'FT.datetime ASC');
-
-	        $results = $this->getPermissionSQL($sSelectQuery, $sWhereQuery, $aParams, $aOptions, $user, KTAPI_PERMISSION_VIEW_FOLDER, 'F');
+	
+	        $results = $this->buildChangesSQL($sSelectQuery, $sWhereQuery, $folderPermissionsSQL, $aParams, $aOptions);
 	        if (is_null($results) || PEAR::isError($results))
 	        {
 	            return new KTAPI_Error(KTAPI_ERROR_INTERNAL_ERROR, $results);
@@ -1970,8 +2102,8 @@ class KTAPI_Folder extends KTAPI_FolderItem {
 	        $aParams = array($this->folderid, $timestamp);
 
 	        $aOptions = array('orderby' => 'DT.datetime ASC');
-
-	        $results = $this->getPermissionSQL($sSelectQuery, $sWhereQuery, $aParams, $aOptions, $user, KTAPI_PERMISSION_READ, 'D');
+	
+	        $results = $this->buildChangesSQL($sSelectQuery, $sWhereQuery, $filePermissionsSQL, $aParams, $aOptions);
 	        if (is_null($results) || PEAR::isError($results))
 	        {
 	            return new KTAPI_Error(KTAPI_ERROR_INTERNAL_ERROR, $results );
@@ -1996,14 +2128,14 @@ class KTAPI_Folder extends KTAPI_FolderItem {
      *
      * @return array of folders
      */
-    public function childrenUpdatedSince($timestamp, $what = 'DF', $user, &$contents = array())
+    public function childrenUpdatedSince($timestamp, $what = 'DF', $folderPermissionsSQL, $filePermissionsSQL, &$contents = array())
     {
-    	// $GLOBALS['default']->log->debug("updatedSince $timestamp $what");
+    	//$GLOBALS['default']->log->debug("childrenUpdatedSince $timestamp $what");
 
     	// need to do folders?
         if (strpos($what, 'F') !== false)
         {
-	       	$sSelectQuery = 'F.id, FT.datetime AS change_date ' .
+	       	$sSelectQuery = 'F.id, FT.datetime AS change_date, FT.transaction_namespace AS change_type ' .
 	        'FROM ' . KTUtil::getTableName('folder_transactions') . ' AS FT INNER JOIN ' . KTUtil::getTableName('folders') . ' AS F ON F.id = FT.folder_id ';
 
 	    	$sWhereQuery = 'FT.transaction_namespace = \'ktcore.transactions.permissions_change\' AND FT.parent_id = ? AND FT.datetime > ? ';
@@ -2011,8 +2143,8 @@ class KTAPI_Folder extends KTAPI_FolderItem {
 	        $aParams = array($this->folderid, $timestamp);
 
 	        $aOptions = array('orderby' => 'FT.datetime ASC');
-
-	        $results = $this->getPermissionSQL($sSelectQuery, $sWhereQuery, $aParams, $aOptions, $user, KTAPI_PERMISSION_VIEW_FOLDER, 'F');
+	
+	        $results = $this->buildChangesSQL($sSelectQuery, $sWhereQuery, $folderPermissionsSQL, $aParams, $aOptions);
 	        if (is_null($results) || PEAR::isError($results))
 	        {
 	            return new KTAPI_Error(KTAPI_ERROR_INTERNAL_ERROR, $results);
@@ -2024,7 +2156,7 @@ class KTAPI_Folder extends KTAPI_FolderItem {
 				$this->assemble_folder_array($folder, $contents);
 
 				$contents[count($contents) - 1]['changes'] = array(
-					'change_type' => 'U',
+					'change_type' => 'UP',
 					'change_date' => $result['change_date']
 				);
 				// $GLOBALS['default']->log->debug('updatedSince assembled contents '.print_r($contents, true));
@@ -2038,7 +2170,7 @@ class KTAPI_Folder extends KTAPI_FolderItem {
         {
 	    	//TODO: ktcore.transactions.ownership_change?
 
-	    	$sSelectQuery = 'D.id, DT.datetime AS change_date '.
+	    	$sSelectQuery = 'D.id, DT.datetime AS change_date, DT.transaction_namespace AS change_type '.
 	        'FROM ' . KTUtil::getTableName('document_transactions') . ' AS DT INNER JOIN ' . KTUtil::getTableName('documents') . ' AS D ON D.id = DT.document_id ';
 
 	    	$sWhereQuery = 'DT.transaction_namespace IN (\'ktcore.transactions.update\', \'ktcore.transactions.check_in\', \'ktcore.transactions.check_out\', '.
@@ -2048,8 +2180,8 @@ class KTAPI_Folder extends KTAPI_FolderItem {
 	        $aParams = array($this->folderid, $timestamp);
 
 	        $aOptions = array('orderby' => 'DT.datetime ASC');
-
-	        $results = $this->getPermissionSQL($sSelectQuery, $sWhereQuery, $aParams, $aOptions, $user, KTAPI_PERMISSION_READ, 'D');
+	
+	        $results = $this->buildChangesSQL($sSelectQuery, $sWhereQuery, $filePermissionsSQL, $aParams, $aOptions);
 	        if (is_null($results) || PEAR::isError($results))
 	        {
 	            return new KTAPI_Error(KTAPI_ERROR_INTERNAL_ERROR, $results );
@@ -2059,9 +2191,38 @@ class KTAPI_Folder extends KTAPI_FolderItem {
 	        	$document = &Document::get($result['id']);
 
     			$this->assemble_document_array($document, $contents);
+    			
+    			$GLOBALS['default']->log->debug('updatedSince change type '.$result['change_type']);
+    			
+	        	//extract the change type				
+				switch($result['change_type'])
+				{
+					case 'ktcore.transactions.update':
+						$changeType = 'U';
+						break;
+					case 'ktcore.transactions.check_in':
+						$changeType = 'UCI';
+						break;
+					case 'ktcore.transactions.check_out':
+						$changeType = 'UCO';
+						break;
+					case 'ktcore.transactions.force_checkin':
+						$changeType = 'UCI';
+						break;
+					case 'ktcore.transactions.immutable':
+						$changeType = 'UI';
+						break;
+						case 'ktcore.transactions.immutable':
+						$changeType = 'UP';
+						break;
+					default:
+						$changeType = 'U';						
+				}
+				
+				$GLOBALS['default']->log->debug("updatedSince extracted change type $changeType");
 
     			$contents[count($contents) - 1]['changes'] = array(
-					'change_type' => 'U',
+					'change_type' => $changeType,
 					'change_date' => $result['change_date']
 				);
 	        }
@@ -2074,25 +2235,20 @@ class KTAPI_Folder extends KTAPI_FolderItem {
      *
      * @param $user
      */
-    private function getPermissionSQL($sSelectSQL, $sWhereSQL, $aSQLParams, $aOptions, $oUser, $permission, $sWhat)//, $where)
+    private function buildChangesSQL($sSelectSQL, $sWhereSQL, $aPermissionsSQL, $aSQLParams, $aOptions)
     {
-    	//$GLOBALS['default']->log->debug("getPermissionSQL $sSelectSQL $sWhereSQL");
-
-    	$res = KTSearchUtil::permissionToSQL($oUser, $permission, $sWhat);
-        if (PEAR::isError($res)) {
-            return $res;
-        }
-
-        list($sPermissionSQL, $aPermissionParams, $sPermissionJoin) = $res;
-
-        //$GLOBALS['default']->log->debug("getPermissionSQL PermissionSQL: $sPermissionSQL permissionParams: ".print_r($aPermissionParams, true)." permissionJoin: $sPermissionJoin");
+    	//$GLOBALS['default']->log->debug("buildChangesSQL $sSelectSQL $sWhereSQL ".print_r($aPermissionsSQL, true));
+    	
+        list($sPermissionSQL, $aPermissionParams, $sPermissionJoin) = $aPermissionsSQL;
+        
+        //$GLOBALS['default']->log->debug("buildChangesSQL PermissionSQL: $sPermissionSQL permissionParams: ".print_r($aPermissionParams, true)." permissionJoin: $sPermissionJoin");
 
         $sOptionSQL = DBUtil::getDbOptions($aOptions);
 
         $sSQL = "SELECT $sSelectSQL $sPermissionJoin WHERE $sPermissionSQL AND $sWhereSQL $sOptionSQL";
 
-        //$GLOBALS['default']->log->debug("getPermissionSQL sql: $sSQL");
-
+        //$GLOBALS['default']->log->debug("buildChangesSQL sql: $sSQL");
+        
         $results = DBUtil::getResultArray(array($sSQL, array_merge($aPermissionParams, $aSQLParams)));
 
         return $results;
@@ -2278,7 +2434,8 @@ class KTAPI_Folder extends KTAPI_FolderItem {
         $owned_by = $this->_resolve_user($document->getOwnerID());
 
         $mimetypeid = $document->getMimeTypeID();
-		if (!array_key_exists($mimetypeid, $mime_cache)) {
+		if (!array_key_exists($mimetypeid, $mime_cache))
+		{
 			$type = KTMime::getMimeTypeName($mimetypeid);
 			$icon = KTMime::getIconPath($mimetypeid);
 			$display = KTMime::getFriendlyNameForString($type);
