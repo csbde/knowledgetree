@@ -2496,11 +2496,12 @@ class KTAPI_Document extends KTAPI_FolderItem
         	return new KTAPI_Error(KTAPI_ERROR_INTERNAL_ERROR, $transactions  );
         }
 
-		$wsversion = $this->ktapi->getVersion();
 		foreach($transactions as $key=>$transaction)
 		{
 			$transactions[$key]['version'] = (float) $transaction['version'];
+			$transactions[$key]['datetime'] = datetimeutil::getLocaleDate($transactions[$key]['datetime']);
 		}
+
 
         return $transactions;
 	}
