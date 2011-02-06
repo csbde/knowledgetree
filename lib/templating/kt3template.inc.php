@@ -101,7 +101,7 @@ class KTPage {
 
     /* Whether or not to sanitize info */
     public $allowHTML = false;
-    
+
     /* further initialisation */
     function KTPage() {
         global $default;
@@ -523,7 +523,7 @@ class KTPage {
 			if($this->user->getDisabled() == 4 && $loadDND)
 			{
 				require_once(KT_LIB_DIR . '/render_helpers/sharedContent.inc');
-				
+
 				$loadDND = (SharedContent::getPermissions($this->user->getId(), null, $fFolderId, 'folder') == 0) ? false : true;
 			}
 			if($loadDND)
@@ -544,6 +544,7 @@ class KTPage {
 			       	'feedback' => $userFeedback->getDisplay(),
         			'uploadProgress' => $uploadProgressRendered
 				);
+
         if ($oConfig->get("ui/automaticRefresh", false)) {
             $aTemplateData['refreshTimeout'] = (int)$oConfig->get("session/sessionTimeout") + 3;
         }
