@@ -178,18 +178,24 @@ class TimezoneConversion
 	public function getPhpTimezones($currentCountry = false, $gmtOffset = false)
 	{
 		$list_of_zones = array();
+		// Get full list of php timezones
 		$timezones = DateTimeZone::listAbbreviations();
+		// Iterate over regions
 		foreach ($timezones as $region => $timezone_info)
 		{
+			// Iterate over timezones
 			foreach ($timezone_info as $azone)
 			{
 				$timezone = $azone['timezone_id'];
 				$aValue = explode('/', $timezone);
 				$country = isset($aValue[1]) ? $aValue[0] : 'Other';
+				// Check if timezone name exists
 				if($timezone != '')
 				{
+					// Check for duplicates
 					if(!in_array($timezone, $list_of_zones))
 					{
+						// Test if a specific country has been selected
 						if($currentCountry === false)
 						{
 							$list_of_zones[$timezone]['timezone_id'] = $timezone;
@@ -199,14 +205,20 @@ class TimezoneConversion
 						{
 							if($country == $currentCountry)
 							{
-								$list_of_zones[$timezone]['timezone_id'] = $timezone;
-								if($gmtOffset) $list_of_zones[$timezone]['offset'] = round(($azone['offset']/3600));
+								// Check for duplicates
+								if(!isset($list_of_zones[$timezone]))
+								{
+									$list_of_zones[$timezone]['timezone_id'] = $timezone;
+									if($gmtOffset)
+										$list_of_zones[$timezone]['offset'] = round(($azone['offset']/3600));
+								}
 							}
 						}
 					}
 				}
 			}
 		}
+		// Sort by name
 		array_multisort($list_of_zones);
 		
 		return $list_of_zones;
