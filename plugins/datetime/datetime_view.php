@@ -40,6 +40,12 @@ require_once(KT_LIB_DIR . '/datetime/timezones.inc');
 
 class datetime_view extends KTAdminDispatcher
 {
+	/**
+	 * Load datetime js and css
+	 * As this is a view class,
+	 * assume we will need them both.
+	 *
+	 */
 	public function __construct()
 	{
         global $main;
@@ -91,11 +97,21 @@ class datetime_view extends KTAdminDispatcher
 		return $ddoptions;
 	}
 	
+	/**
+	 * Return a "Region" label
+	 *
+	 * @return string
+	 */
 	static public function renderRegionLabel()
 	{
 		return "<label for='region'>Select Region</label>&nbsp;&nbsp;&nbsp;&nbsp;";
 	}
 	
+	/**
+	 * Return a "Location" label
+	 *
+	 * @return string
+	 */
 	static public function renderTimezoneLabel()
 	{
 		return "<label for='timezone'>Select Location</label>&nbsp;&nbsp;";
