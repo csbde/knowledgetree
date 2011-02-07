@@ -152,7 +152,7 @@ class KTPage {
 	                    'resources/js/newui/kt.app.inviteusers.js' => array('browse_collections', 'document_details', 'dashboard', 'administration'),
                         'resources/js/newui/kt.app.sharewithusers.js' => array('browse_collections', 'document_details'),
             	        'resources/js/jquery.blockui.js' => array('browse_collections', 'document_details', 'dashboard', 'administration'),
-            	        'thirdpartyjs/jquery/plugins/loading/jquery.loading.1.6.4.min.js' => array('browse_collections', 'document_details', 'dashboard', 'administration')
+            	        'thirdpartyjs/jquery/plugins/loading/jquery.loading.1.6.4.min.js' => array('browse_collections')
                       );
 
         // set the system url
