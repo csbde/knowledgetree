@@ -5330,10 +5330,11 @@ class KTAPI {
      * @param int $folder_id
      * @param string changeid
      * @param int $depth
+     * @param string $what
      */
 	public function get_folder_changes($folder_ids, $timestamp, $depth = 1, $what = 'DF')
 	{
-		$GLOBALS['default']->log->debug("KTAPI get_folder_changes ".print_r($folder_ids, true)." $timestamp $depth '$what'");
+		//$GLOBALS['default']->log->debug("KTAPI get_folder_changes ".print_r($folder_ids, true)." $timestamp $depth '$what'");
 		
 		$results = array();
 		$changes = array();
@@ -5355,7 +5356,7 @@ class KTAPI {
 			$time = datetimeutil::convertToUTC(date('Y-m-d H:i:s', (int)$timestamp));
 			if (PEAR::isError($folder))
 			{
-				$GLOBALS['default']->log->error('KTAPI get_folder_changes folder error message '.$folder->getMessage());
+				//$GLOBALS['default']->log->error('KTAPI get_folder_changes folder error message '.$folder->getMessage());
 				//$GLOBALS['default']->log->error('KTAPI get_folder_changes folder error '.print_r($folder, true));
 				//TODO: interpret this as a folder delete!!
 
@@ -5428,6 +5429,42 @@ class KTAPI {
 			'timestamp' => $new_timestamp,
 			'result' => $results
 		);
+	}
+	
+	/**
+	 * Does a document have any "binary changes", i.e. has its content truly changed 
+	 * 
+	 * @param int $document_id
+	 * @param float $from_version
+	 * @param float $to_version
+	 */
+	public function document_has_binary_changes($document_id, $from_version, $to_version)
+	{
+		//$GLOBALS['default']->log->debug("KTAPI document_has_binary_changes $document_id $from_version $to_version");
+		
+		$document = $this->get_document_by_id($document_id);
+		
+		if (PEAR::isError($document))
+		{
+			return array(
+				'status_code' => 1,
+				'message' => $document->getMessage()
+			);
+		}
+		
+		$result = $document->hasBinaryChanges($from_version, $to_version); 
+		
+		$response['status_code'] = 0;
+		
+		$response['message'] = 'false';
+		
+		if($result) {
+			$response['message'] = 'true';
+		}
+		
+		//$GLOBALS['default']->log->debug('KTAPI document_has_binary_changes response '.print_r($response, true));
+	    
+	    return $response; 
 	}
 
 }

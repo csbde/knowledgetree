@@ -1222,6 +1222,7 @@ class KTAPI_Folder extends KTAPI_FolderItem {
         foreach ($transactions as $key=>$transaction)
         {
             $transactions[$key]['version'] =(float) $transaction['version'];
+            $transactions[$key]['datetime'] = datetimeutil::getLocaleDate($transactions[$key]['datetime']);
         }
 
         return $transactions;
@@ -1570,7 +1571,7 @@ class KTAPI_Folder extends KTAPI_FolderItem {
 		        		'parent_id' => $result['parent_id'],
 		        		'changes' => array(
 							'change_type' => 'D',
-							'change_date' => $result['change_date']
+							'change_date' => datetimeutil::getLocaleDate($result['change_date'])
 						)
 		        	); 
 	            }  	
@@ -1642,7 +1643,7 @@ class KTAPI_Folder extends KTAPI_FolderItem {
 	        		'parent_id' => $result['parent_id'],
 	        		'changes' => array(
 						'change_type' => 'U',
-						'change_date' => $result['change_date']
+						'change_date' => datetimeutil::getLocaleDate($result['change_date'])
 					)
 	        	);
 	        } 
@@ -1677,7 +1678,7 @@ class KTAPI_Folder extends KTAPI_FolderItem {
 	
 				$contents[count($contents) - 1]['changes'] = array(
 					'change_type' => 'R',
-					'change_date' => $result['change_date']
+					'change_date' => datetimeutil::getLocaleDate($result['change_date'])
 				);
 	
 					// $GLOBALS['default']->log->debug('renamedSince assembled contents '.print_r($contents, true));
@@ -1757,7 +1758,7 @@ class KTAPI_Folder extends KTAPI_FolderItem {
 	
 				$contents[count($contents) - 1]['changes'] = array(
 					'change_type' => 'M',
-					'change_date' => $result['change_date']
+					'change_date' => datetimeutil::getLocaleDate($result['change_date'])
 				);
 	
 				// $GLOBALS['default']->log->debug('renamedSince assembled contents '.print_r($contents, true));
@@ -1789,8 +1790,8 @@ class KTAPI_Folder extends KTAPI_FolderItem {
 				$this->assemble_folder_array($folder, $contents);
 	
 				$contents[count($contents) - 1]['changes'] = array(
-					'change_type' => 'U',
-					'change_date' => $result['change_date']
+					'change_type' => 'UP',
+					'change_date' => datetimeutil::getLocaleDate($result['change_date'])
 				);
 	
 				// $GLOBALS['default']->log->debug('renamedSince assembled contents '.print_r($contents, true));
@@ -1834,7 +1835,7 @@ class KTAPI_Folder extends KTAPI_FolderItem {
 
 				$contents[count($contents) - 1]['changes'] = array(
 					'change_type' => 'C',
-					'change_date' => $result['change_date']
+					'change_date' => datetimeutil::getLocaleDate($result['change_date'])
 				);
 	        }
 
@@ -1866,7 +1867,7 @@ class KTAPI_Folder extends KTAPI_FolderItem {
 
     			$contents[count($contents) - 1]['changes'] = array(
 					'change_type' => 'C',
-					'change_date' => $result['change_date']
+					'change_date' => datetimeutil::getLocaleDate($result['change_date'])
 				);
 	        }
 
@@ -1886,16 +1887,14 @@ class KTAPI_Folder extends KTAPI_FolderItem {
     	//need to do folders?
         if (strpos($what, 'F') !== false)
         {
-        	 $sSelectQuery = 'FT.folder_id AS id, FT.datetime AS change_date, FT.parent_id AS parent_id ' .
-	        'FROM ' . KTUtil::getTableName('folder_transactions') . ' AS FT ';
-
-	    	$sWhereQuery = 'FT.transaction_namespace = \'ktcore.transactions.delete\' AND FT.parent_id = ? AND FT.datetime > ? ';
-
+        	$sQuery = 'SELECT FT.folder_id AS id, FT.datetime AS change_date, FT.parent_id AS parent_id ' .
+	        'FROM ' . KTUtil::getTableName('folder_transactions') . ' AS FT '.
+	    	'WHERE FT.transaction_namespace = \'ktcore.transactions.delete\' AND FT.parent_id = ? AND FT.datetime > ? ';
+        		        
 	        $aParams = array($this->folderid, $timestamp);
 
-	        $aOptions = array('orderby' => 'FT.datetime ASC');
-	
-	        $results = $this->buildChangesSQL($sSelectQuery, $sWhereQuery, $folderPermissionsSQL, $aParams, $aOptions);
+        	$results = DBUtil::getResultArray(array($sQuery, $aParams));	        
+	        
 	        if (is_null($results) || PEAR::isError($results))
 	        {
 	            return new KTAPI_Error(KTAPI_ERROR_INTERNAL_ERROR, $results);
@@ -1914,7 +1913,7 @@ class KTAPI_Folder extends KTAPI_FolderItem {
 	        		'parent_id' => $result['parent_id'],
 	        		'changes' => array(
 						'change_type' => 'D', 
-						'change_date' => $result['change_date']
+						'change_date' => datetimeutil::getLocaleDate($result['change_date'])
 					)
 	        	);
 	        }
@@ -1948,7 +1947,7 @@ class KTAPI_Folder extends KTAPI_FolderItem {
 	        		'parent_id' => $result['parent_id'],	   
 	        		'changes' => array(
 						'change_type' => 'D', 
-						'change_date' => $result['change_date']
+						'change_date' => datetimeutil::getLocaleDate($result['change_date'])
 	        		)
 	        	);
 
@@ -2004,7 +2003,7 @@ class KTAPI_Folder extends KTAPI_FolderItem {
 
 				$contents[count($contents) - 1]['changes'] = array(
 					'change_type' => 'R',
-					'change_date' => $result['change_date']
+					'change_date' => datetimeutil::getLocaleDate($result['change_date'])
 				);
 
 				// $GLOBALS['default']->log->debug('renamedSince assembled contents '.print_r($contents, true));
@@ -2041,7 +2040,7 @@ class KTAPI_Folder extends KTAPI_FolderItem {
 
     			$contents[count($contents) - 1]['changes'] = array(
 					'change_type' => 'R',
-					'change_date' => $result['change_date']
+					'change_date' => datetimeutil::getLocaleDate($result['change_date'])
 				);
 	        }
         }
@@ -2081,7 +2080,7 @@ class KTAPI_Folder extends KTAPI_FolderItem {
 
 				$contents[count($contents) - 1]['changes'] = array(
 					'change_type' => 'M',
-					'change_date' => $result['change_date'],
+					'change_date' => datetimeutil::getLocaleDate($result['change_date']),
 					'previous_parent_id' => $result['transaction_parent_id']
 				);
 
@@ -2116,7 +2115,7 @@ class KTAPI_Folder extends KTAPI_FolderItem {
 
     			$contents[count($contents) - 1]['changes'] = array(
 					'change_type' => 'M',
-					'change_date' => $result['change_date'],
+					'change_date' => datetimeutil::getLocaleDate($result['change_date']),
     				'previous_parent_id' => $result['transaction_parent_id']
 				);
 	        }
@@ -2157,7 +2156,7 @@ class KTAPI_Folder extends KTAPI_FolderItem {
 
 				$contents[count($contents) - 1]['changes'] = array(
 					'change_type' => 'UP',
-					'change_date' => $result['change_date']
+					'change_date' => datetimeutil::getLocaleDate($result['change_date'])
 				);
 				// $GLOBALS['default']->log->debug('updatedSince assembled contents '.print_r($contents, true));
 	        }
@@ -2212,7 +2211,7 @@ class KTAPI_Folder extends KTAPI_FolderItem {
 					case 'ktcore.transactions.immutable':
 						$changeType = 'UI';
 						break;
-						case 'ktcore.transactions.immutable':
+						case 'ktcore.transactions.permissions_change':
 						$changeType = 'UP';
 						break;
 					default:
@@ -2223,7 +2222,7 @@ class KTAPI_Folder extends KTAPI_FolderItem {
 
     			$contents[count($contents) - 1]['changes'] = array(
 					'change_type' => $changeType,
-					'change_date' => $result['change_date']
+					'change_date' => datetimeutil::getLocaleDate($result['change_date'])
 				);
 	        }
         }
