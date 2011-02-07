@@ -154,7 +154,7 @@ class BrowseView {
             $this->setPagingOptions($options['offset'], $options['limit']);
             $folderContentItems = $this->getFolderContent($folderId);
             if (count($folderContentItems['documents']) + count($folderContentItems['folders']) > 0) {
-                $responseData = $this->buildFolderView($folderContentItems);
+                $responseData = $this->buildFolderView($folderId, $folderContentItems);
             }
         }
 
@@ -190,7 +190,7 @@ class BrowseView {
 
         $totalItems = 0;
         $folderContentItems = $this->getFolderContent($folderId, $totalItems);
-        $folderView = $this->buildFolderView($folderContentItems, $editable);
+        $folderView = $this->buildFolderView($folderId, $folderContentItems, $editable);
         $response['folderContents'] = join($folderView);
 
         // Adding Fragments for drag & drop client side processing
@@ -224,7 +224,7 @@ class BrowseView {
         return $folderItems;
     }
 
-    private function buildFolderView($folderContentItems, $editable)
+    private function buildFolderView($folderId, $folderContentItems, $editable = null)
     {
         $folderItems = $this->getFolderItems($folderContentItems);
         $itemCount = count($folderItems);
