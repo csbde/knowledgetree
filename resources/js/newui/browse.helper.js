@@ -209,7 +209,6 @@ kt.pages.browse = new function() {
     };
 
     this.selectAllItems = function() {
-        console.log('selecting all on this page');
         jQuery('.page.page_' + self.curPage + ' .item .checkbox > input:checkbox:enabled').each(function() {
             if (!this.checked) { jQuery(this).click(); }
             jQuery(this).parents('.item').addClass('highlighted');
