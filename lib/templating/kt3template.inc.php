@@ -105,11 +105,6 @@ class KTPage {
 
     private $initialised = false;
 
-    // TODO create init function which will deal with loading of css and js, rather than constructor;
-    //      will allow setting of section prior to determining what additionals to load.
-
-    // TODO deal with login page, it will hit the default same as dashboard, but must not (nothing much needs to load on login page...)
-
     public function __construct() { }
 
     /**
@@ -156,21 +151,12 @@ class KTPage {
                         'resources/js/newui/kt.app.upload.js' => array('browse_collections', 'dashboard'),
 	                    'resources/js/newui/kt.app.inviteusers.js' => array('browse_collections', 'document_details', 'dashboard', 'administration'),
                         'resources/js/newui/kt.app.sharewithusers.js' => array('browse_collections', 'document_details'),
-            	        'resources/js/jquery.blockui.js' => array('browse_collections', 'document_details', 'dashboard', 'administration')
+            	        'resources/js/jquery.blockui.js' => array('browse_collections', 'document_details', 'dashboard', 'administration'),
+            	        'thirdpartyjs/jquery/plugins/loading/jquery.loading.1.6.4.min.js' => array('browse_collections', 'document_details', 'dashboard', 'administration')
                       );
 
         // set the system url
         $this->systemURL = $oConfig->get('ui/systemUrl');
-
-        // hack for now, just to test
-        /*$adminPage = preg_match('/admin\.php$/', $_SERVER['SCRIPT_FILENAME']);
-        // $adminPage = false;
-        if ($adminPage) {
-            $this->componentClass = 'admin';
-        }*/
-
-        // testing
-        /*$this->componentClass = 'browse_collections';*/
 
         /* default css files initialisation */
         $css = array(
@@ -205,7 +191,6 @@ class KTPage {
         $this->requireCSSResource('resources/css/kt-ie-icons.css', true);
 
         /* default js files initialisation */
-        // TODO : Remove js based on user type.  Also based on location.  This is a major problem with running EVERYTHING through generic code...what use is uploader code on a page which does not support uploads in the UI?
         $js = Array();
 
 		$js[] = 'thirdpartyjs/MochiKit/MochiKitPacked.js';
@@ -225,7 +210,7 @@ class KTPage {
         $js[] = 'resources/js/newui/kt.containers.js';
         $js[] = 'resources/js/newui/kt.lib.js';
         $js[] = 'resources/js/newui/kt.api.js';
-
+        $aJS[] = 'resources/js/newui/kt.app.upload.js';
         // Shared users cannot re-share or invite users to the system.
         if (SharedUserUtil::isSharedUser()) {
             unset($jsIncludes['resources/js/newui/kt.app.sharewithusers.js']);
