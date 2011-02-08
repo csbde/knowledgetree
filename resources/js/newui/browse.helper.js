@@ -227,7 +227,7 @@ kt.pages.browse = new function() {
     }
 
     this.setBulkActionMenuStatus = function() {
-        var selectedItems = jQuery('.page.page_' + self.curPage + ' .item .checkbox>input:checkbox:checked:enabled').length;
+        var selectedItems = jQuery('.itemContainer .item .checkbox>input:checkbox:checked:enabled').length;
         if (selectedItems > 0) {
         	jQuery('.browseView.bulkActionMenu td:first-child').removeClass('disabled');
         	jQuery('.browseView.bulkActionMenu td:first-child input[type="submit"]').attr('disabled', '');
