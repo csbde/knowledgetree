@@ -154,7 +154,7 @@ class BrowseView {
             $this->setPagingOptions($options['offset'], $options['limit']);
             $folderContentItems = $this->getFolderContent($folderId);
             if (count($folderContentItems['documents']) + count($folderContentItems['folders']) > 0) {
-                $responseData = $this->buildFolderView($folderContentItems);
+                $responseData = $this->buildFolderView($folderId, $folderContentItems);
             }
         }
 
@@ -190,7 +190,7 @@ class BrowseView {
 
         $totalItems = 0;
         $folderContentItems = $this->getFolderContent($folderId, $totalItems);
-        $folderView = $this->buildFolderView($folderContentItems);
+        $folderView = $this->buildFolderView($folderId, $folderContentItems, $editable);
         $response['folderContents'] = join($folderView);
 
         // Adding Fragments for drag & drop client side processing
@@ -224,7 +224,7 @@ class BrowseView {
         return $folderItems;
     }
 
-    private function buildFolderView($folderContentItems)
+    private function buildFolderView($folderId, $folderContentItems, $editable = null)
     {
         $folderItems = $this->getFolderItems($folderContentItems);
         $itemCount = count($folderItems);
@@ -335,7 +335,6 @@ class BrowseView {
 	 */
     public function noFilesOrFoldersMessage($folderId = null, $editable = true)
     {
-        $folderMessage = '<h2>There\'s nothing in this folder yet!</h2>';
         if (SharedUserUtil::isSharedUser()) {
             $folderMessage = '<h2>There\'s no shared content in this folder yet!</h2>';
             $perm = SharedContent::getPermissions($_SESSION['userID'], $folderId, null, 'folder');
@@ -345,6 +344,9 @@ class BrowseView {
             else {
                 $editable = false;
             }
+        }
+        else {
+            $folderMessage = '<h2>There\'s nothing in this folder yet!</h2>';
         }
 
         if (!$editable) {

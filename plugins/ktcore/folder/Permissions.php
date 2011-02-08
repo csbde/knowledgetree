@@ -270,7 +270,7 @@ class KTFolderPermissionsAction extends KTFolderAction {
         );
         $this->oValidator->notErrorFalse($oTransaction, $aOptions);
 
-        KTPermissionUtil::copyPermissionObject($this->oFolder);
+        return KTPermissionUtil::copyPermissionObject($this->oFolder);
     }
 
 
@@ -294,7 +294,10 @@ class KTFolderPermissionsAction extends KTFolderAction {
                 $this->errorRedirectToMain(_kt('This folder does not override its permissions'), sprintf('fFolderId=%d', $iFolderId));
             }
             $this->startTransaction();
-    	    $this->_copyPermissions();
+    	    if ($this->_copyPermissions() === false) {
+    	        $this->rollbackTransaction();
+    	        return $this->errorRedirectToMain(_kt('Could not override folder permissions'), sprintf('fFolderId=%d', $iFolderId));
+    	    }
             $this->commitTransaction();
             $oPO = KTPermissionObject::get($this->oFolder->getPermissionObjectId());
         }
@@ -476,65 +479,27 @@ class KTFolderPermissionsAction extends KTFolderAction {
         $aFoo = $_REQUEST['foo'];
         $aPermissions = KTPermission::getList();
 
-		/*
-		--- This section has been commented out to remove these checks when permissions
-		--- are updated.
-		---------------------------------------------------------------------------------
-
-		//-------------------
-        //This section is used to make sure that a user doesn't disable the admin groups
-        //Manage security permission or the Manage Security permission of a group they
-        //are currently a member of.
-
-        // Check which groups have permission to manage security
-        $aNewGroups = (isset($aFoo[4]['group']) ? $aFoo[4]['group'] : array());
-        $aNewRoles = (isset($aFoo[4]['role']) ? $aFoo[4]['role'] : array());
-
-        $iUserId = $this->oUser->getId();
-
-        //Check that they aren't removing the sys admin Manage Security permission
-        //1 in this case is the admin group.
-        if(!in_array('1', $aNewGroups))
-        {
-        	$this->addErrorMessage(_kt('You cannot remove the Manage Security permission from the System Administrators Group'));
-            $this->redirectTo('edit', 'fFolderId=' . $this->oFolder->getId());
-            exit(0);
-        }
-
-
-        //Check that they aren't removing the Manage Security permission from a group
-        //They are a member of.
-        if(!GroupUtil::checkUserInGroups($iUserId, array(1)))
-        {
-	        //Ensure the user is not removing his/her own permission to update the folder permissions (manage security)
-	        if(!in_array(-3, $aNewRoles))
-	        {
-
-	            if(!GroupUtil::checkUserInGroups($iUserId, $aNewGroups))
-	            {
-	                // If user no longer has permission, return an error.
-	                $this->addErrorMessage(_kt('You cannot remove the Manage Security permission from a group you belong to.'));
-	                $this->redirectTo('edit', 'fFolderId=' . $this->oFolder->getId());
-	                exit(0);
-	            }
-
-	        }
-        }
-		//-----------------
-        */
-
         require_once(KT_LIB_DIR . '/documentmanagement/observers.inc.php');
-        $oPO = KTPermissionObject::get($this->oFolder->getPermissionObjectId());
+        $iObjectId = $this->oFolder->getPermissionObjectId();
+        $iFolderId = $this->oFolder->getId();
+        $oPO = KTPermissionObject::get($iObjectId);
 
         foreach ($aPermissions as $oPermission) {
             $iPermId = $oPermission->getId();
 
             $aAllowed = KTUtil::arrayGet($aFoo, $iPermId, array());
-            KTPermissionUtil::setPermissionForId($oPermission, $oPO, $aAllowed);
+            $res = KTPermissionUtil::setPermissionForId($oPermission, $oPO, $aAllowed);
+
+            if ($res === false) {
+                $this->rollbackTransaction();
+                $this->addErrorMessage(_kt('An error occurred while updating the permissions, please try again later'));
+                $this->redirectToMain('action=edit&fFolderId=' . $this->oFolder->getId());
+                exit;
+            }
         }
 
         $oTransaction = KTFolderTransaction::createFromArray(array(
-            'folderid' => $this->oFolder->getId(),
+            'folderid' => $iFolderId,
             'comment' => _kt('Updated permissions'),
             'transactionNS' => 'ktcore.transactions.permissions_change',
             'userid' => $_SESSION['userID'],
@@ -543,7 +508,7 @@ class KTFolderPermissionsAction extends KTFolderAction {
             ));
         $aOptions = array(
             'defaultmessage' => _kt('Error updating permissions'),
-            'redirect_to' => array('edit', sprintf('fFolderId=%d', $this->oFolder->getId())),
+            'redirect_to' => array('edit', sprintf('fFolderId=%d', $iFolderId)),
             );
         $this->oValidator->notErrorFalse($oTransaction, $aOptions);
 
@@ -552,7 +517,15 @@ class KTFolderPermissionsAction extends KTFolderAction {
         $oChannel =& KTPermissionChannel::getSingleton();
         $oChannel->addObserver($po);
 
-        KTPermissionUtil::updatePermissionLookupForPO($oPO);
+        KTUtil::startTiming(__FUNCTION__);
+        //KTPermissionUtil::updatePermissionLookupForPO($oPO);
+        $res = KTPermissionUtil::updatePermissionLookupForObject($iObjectId, $iFolderId);
+        KTUtil::logTiming(__FUNCTION__);
+        if ($res === false) {
+            $this->rollbackTransaction();
+            $this->errorRedirectTo('edit', _kt('An error occurred while updating the permissions'), 'fFolderId=' . $this->oFolder->getId());
+            exit;
+        }
 
         $this->commitTransaction();
 
@@ -581,7 +554,12 @@ class KTFolderPermissionsAction extends KTFolderAction {
         );
         $this->oValidator->notErrorFalse($oTransaction, $aOptions);
 
-        KTPermissionUtil::inheritPermissionObject($this->oFolder);
+        $res = KTPermissionUtil::inheritPermissionObject($this->oFolder);
+        if ($res === false) {
+            $this->rollbackTransaction();
+            $this->errorRedirectTo('main', _kt('Error, permissions could not be updated'),
+                array('fFolderId' => $this->oFolder->getId()));
+        }
         return $this->successRedirectTo('main', _kt('Permissions updated'),
                 array('fFolderId' => $this->oFolder->getId()));
     }
@@ -622,7 +600,13 @@ class KTFolderPermissionsAction extends KTFolderAction {
         $this->oValidator->notError($oDynamicCondition, $aOptions);
         $res = $oDynamicCondition->saveAssignment($aPermissionIds);
         $this->oValidator->notError($res, $aOptions);
-        KTPermissionUtil::updatePermissionLookupForPO($oPO);
+        $res = KTPermissionUtil::updatePermissionLookupForPO($oPO);
+        if ($res === false) {
+            $this->rollbackTransaction();
+            $this->errorRedirectTo('edit', _kt('An error occurred while adding the dynamic permission'), 'fFolderId=' . $this->oFolder->getId());
+            exit;
+        }
+        $this->commitTransaction();
         $this->successRedirectTo('edit', _kt('Dynamic permission added'), 'fFolderId=' . $this->oFolder->getId());
     }
 
@@ -653,7 +637,13 @@ class KTFolderPermissionsAction extends KTFolderAction {
         $this->oValidator->notErrorFalse($oTransaction, $aOptions);
 
         $oPO = KTPermissionObject::get($this->oFolder->getPermissionObjectId());
-        KTPermissionUtil::updatePermissionLookupForPO($oPO);
+        $res = KTPermissionUtil::updatePermissionLookupForPO($oPO);
+        if ($res === false) {
+            $this->rollbackTransaction();
+            $this->errorRedirectTo('edit', _kt('An error occurred while removing the dynamic permission'), 'fFolderId=' . $this->oFolder->getId());
+            exit;
+        }
+        $this->commitTransaction();
         $this->successRedirectTo('edit', _kt('Dynamic permission removed'), 'fFolderId=' . $this->oFolder->getId());
     }
 }
