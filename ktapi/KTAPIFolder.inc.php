@@ -2169,7 +2169,7 @@ class KTAPI_Folder extends KTAPI_FolderItem {
         {
 	    	//TODO: ktcore.transactions.ownership_change?
 
-	    	$sSelectQuery = 'D.id, DT.datetime AS change_date, DT.transaction_namespace AS change_type '.
+	    	$sSelectQuery = 'D.id, DT.datetime AS change_date, DT.transaction_namespace AS change_type, DT.comment AS comment '.
 	        'FROM ' . KTUtil::getTableName('document_transactions') . ' AS DT INNER JOIN ' . KTUtil::getTableName('documents') . ' AS D ON D.id = DT.document_id ';
 
 	    	$sWhereQuery = 'DT.transaction_namespace IN (\'ktcore.transactions.update\', \'ktcore.transactions.check_in\', \'ktcore.transactions.check_out\', '.
@@ -2191,13 +2191,32 @@ class KTAPI_Folder extends KTAPI_FolderItem {
 
     			$this->assemble_document_array($document, $contents);
     			
-    			$GLOBALS['default']->log->debug('updatedSince change type '.$result['change_type']);
+    			//$GLOBALS['default']->log->debug('updatedSince change type '.$result['change_type']);
     			
 	        	//extract the change type				
 				switch($result['change_type'])
 				{
 					case 'ktcore.transactions.update':
 						$changeType = 'U';
+						//$GLOBALS['default']->log->debug('updatedSince comment '.$result['comment']);
+						
+						//this type is a bit generic, but the only way to refine it is to parse
+						//the comment!
+						if(strpos(strtolower($result['comment']), 'archived') !== false)
+						{
+							//$GLOBALS['default']->log->debug('updatedSince ARCHIVED');
+							$changeType = 'UA';
+						}
+						if(strpos(strtolower($result['comment']), 'restored') !== false)
+						{
+							//$GLOBALS['default']->log->debug('updatedSince RESTORED');
+							$changeType = 'UR';
+						}
+						if(strpos(strtolower($result['metadata updated']), 'restored') !== false)
+						{
+							//$GLOBALS['default']->log->debug('updatedSince METADATA UPDATED');
+							$changeType = 'UM';
+						}
 						break;
 					case 'ktcore.transactions.check_in':
 						$changeType = 'UCI';
@@ -2218,7 +2237,7 @@ class KTAPI_Folder extends KTAPI_FolderItem {
 						$changeType = 'U';						
 				}
 				
-				$GLOBALS['default']->log->debug("updatedSince extracted change type $changeType");
+				//$GLOBALS['default']->log->debug("updatedSince extracted change type $changeType");
 
     			$contents[count($contents) - 1]['changes'] = array(
 					'change_type' => $changeType,
