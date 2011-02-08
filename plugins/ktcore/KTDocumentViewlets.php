@@ -172,15 +172,14 @@ class KTDocumentActivityFeedAction extends KTDocumentViewlet {
 
     	$aMetadataVersions = KTDocumentMetadataVersion::getByDocument($this->oDocument);
         $aVersions = array();
+        $prevContentVersion = 0;
         foreach ($aMetadataVersions as $oVersion) {
              $version = Document::get($this->oDocument->getId(), $oVersion->getId());
-             if($showall){
-                $aVersions[] = $version;
-             }else if($version->getMetadataStatusID() != VERSION_DELETED){
-                $aVersions[] = $version;
-             }
 
-            $mainArray[] = array(
+             // For each content version there can be multiple metadata versions
+             // Allow the earliest metadata version to override the later ones
+             $contentVersion = $version->getContentVersionId();
+             $aVersions[$contentVersion] = array(
                 'name' => $this->getUserForId($version->getVersionCreatorId()),
                 'transaction_name' => _kt('New Document Version'),
                 'datetime' => $version->getDisplayVersionCreated(),
@@ -190,6 +189,7 @@ class KTDocumentActivityFeedAction extends KTDocumentViewlet {
                 'type' => 'version'
             );
         }
+        $mainArray = array_merge($mainArray, $aVersions);
 
         $comments = Comments::get_comments($this->oDocument->getId());
         foreach ($comments as $comment)
