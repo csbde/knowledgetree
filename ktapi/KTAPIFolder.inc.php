@@ -639,8 +639,8 @@ class KTAPI_Folder extends KTAPI_FolderItem {
         }
 
         $what = strtoupper($what);
-        $read_permission = &KTPermission::getByName(KTAPI_PERMISSION_READ);
-        $folder_permission = &KTPermission::getByName(KTAPI_PERMISSION_VIEW_FOLDER);
+        /*$read_permission = &KTPermission::getByName(KTAPI_PERMISSION_READ);
+        $folder_permission = &KTPermission::getByName(KTAPI_PERMISSION_VIEW_FOLDER);*/
         $user = $this->ktapi->get_user();
         $contents = $folderContents = $documentContents = array();
 
@@ -735,8 +735,7 @@ class KTAPI_Folder extends KTAPI_FolderItem {
                 $items = array();
             }
 
-            $what = (strpos($what, 'S') !== false) ? 'FS' : 'F';
-            $this->assemble_folder_array($folder, $folderContents, $what, $items);
+            $this->assemble_folder_array($folder, $folderContents, (strpos($what, 'S') !== false) ? 'FS' : 'F', $items);
         }
 
         return $folderContents;
