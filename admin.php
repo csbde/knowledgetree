@@ -81,7 +81,8 @@ class AdminSplashDispatcher extends KTAdminDispatcher {
         $this->oPage->hideSection();
         $oTemplating =& KTTemplating::getSingleton();
 
-        if (ACCOUNT_ROUTING_ENABLED && liveAccounts::isTrialAccount()) {
+        global $default;
+        if (ACCOUNT_ROUTING_ENABLED && $default->tier == 'trial') {
             $this->includeOlark();
         }
 
