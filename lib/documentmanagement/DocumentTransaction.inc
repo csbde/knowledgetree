@@ -249,6 +249,7 @@ class DocumentTransaction extends KTEntity {
 				$oDocumentTransaction->sIP = $sql->f("ip");
 				$oDocumentTransaction->sFileName = $sql->f("filename");
 				$oDocumentTransaction->bAdminMode = $sql->f("admin_mode");
+				$oDocumentTransaction->iParentID = $sql->f("parent_id");
 
 	            return $oDocumentTransaction;
 	        }

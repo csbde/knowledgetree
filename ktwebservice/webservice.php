@@ -484,12 +484,16 @@ class KTWebService {
     function get_server_date_time()
     {    	
     	$datetime = gmdate("c");
+  		
+    	//convert it to the localized date
+    	$date = datetimeutil::getLocaleDate($datetime);
+    	//convert to Unix epoch
+    	$date = strtotime($date);
     	
-    	//$utc_str = gmdate("M d Y H:i:s", time());
-  		//$utc = strtotime($utc_str);
+    	//$GLOBALS['default']->log->debug('get_server_date_time '.(string)$date);
     	
     	$response['status_code'] = KTWS_SUCCESS;
-    	$response['message'] = $datetime;
+    	$response['message'] = (string)$date;
     	
     	return new SOAP_Value('return', "{urn:$this->namespace}kt_response", $response);
     }
@@ -4070,8 +4074,14 @@ class KTWebService {
     }
 	
 	
-	
-	function get_folder_changes($session_id, $folder_ids, $change_id = 0, $depth = 1)
+	/**
+	 * 
+	 * @param $session_id
+	 * @param $folder_ids
+	 * @param $timestamp
+	 * @param $depth
+	 */
+	function get_folder_changes($session_id, $folder_ids, $timestamp = 0, $depth = 1)
 	{
 		//$GLOBALS['default']->log->debug("get_folder_changes $folder_id $change_id");
 		
@@ -4081,16 +4091,17 @@ class KTWebService {
     		return new SOAP_Value('return', "{urn:$this->namespace}kt_response", $kt);
     	}
     	
-    	$result = &$kt->get_folder_changes($folder_ids, $change_id, $depth, 'DF');
+    	$result = &$kt->get_folder_changes($folder_ids, $timestamp, $depth, 'DF');
     	
-    	//$GLOBALS['default']->log->debug('get_folder_changes result '.print_r($result, true));
+    	$GLOBALS['default']->log->debug('get_folder_changes result '.print_r($result, true));
     	
 		if ($result['status_code'] !== 0)
 		{
 		    $return = array(
-	    		'status_code' => KTWS_ERR_PROBLEM,
+	    		'status_code' => 0,
 				'message' => $result['message'],
-	        	'change_id' => (string)$result['change_id'],
+	        	'timestamp' => (string)$result['timestamp'],
+		    	'changes' => NULL
 	    	);
 		}
 		
@@ -4125,7 +4136,7 @@ class KTWebService {
 			$return = array(
 				'status_code' => KTWS_SUCCESS,
 				'message' => '',
-	        	'change_id' => (string)$result['change_id'],
+	        	'timestamp' => (string)$result['timestamp'],
 	    		'changes' => new SOAP_Value('changes', "{urn:$this->namespace}kt_folder_changes", $changes)
 			);
 		}
@@ -4135,7 +4146,54 @@ class KTWebService {
     	return new SOAP_Value('return', "{urn:$this->namespace}kt_folder_change_response", $return);
 	}
 	
-	
+	/**
+	 * 
+	 * @param $session_id
+	 * @param $document_id
+	 * @param $from_version
+	 * @param $to_version
+	 */
+	function document_has_binary_changes($session_id, $document_id, $from_version, $to_version)
+	{
+		//$GLOBALS['default']->log->debug("document_has_binary_changes $document_id $from_version $to_version");
+		
+		//first some sanity-checking
+		if ($from_version <= 0.0 || $to_version <= 0.0)
+		{
+			$response = KTWebService::_status(KTWS_ERR_PROBLEM, 'Version(s) not valid.');
+		}
+		else if ($from_version == $to_version)
+		{
+			$response = KTWebService::_status(KTWS_SUCCESS, 'false');
+		}
+		else if ($to_version < $from_version)
+		{
+			$response = KTWebService::_status(KTWS_ERR_PROBLEM, '\'From\' version must precede \'To\' version.');
+		}
+		else
+		{
+			$kt = &$this->get_ktapi($session_id );
+			if (is_array($kt))
+	    	{
+	    		return new SOAP_Value('return', "{urn:$this->namespace}kt_response", $kt);
+	    	}
+	    	
+	    	$result = &$kt->document_has_binary_changes($document_id, $from_version, $to_version);
+	    	
+	    	//$GLOBALS['default']->log->debug('document_has_binary_changes result '.print_r($result, true));
+	    	
+	    	if ($result['status_code'] === 0)
+			{
+			    $response = KTWebService::_status(KTWS_SUCCESS, $result['message']);
+			}
+			else
+			{
+			    $response = KTWebService::_status(KTWS_ERR_PROBLEM, $result['message']);
+			}
+		}
+    	
+    	return new SOAP_Value('return', "{urn:$this->namespace}kt_response", $response);
+	}
 	
     private function setTypeDefinitions()
     {
@@ -4303,7 +4361,7 @@ class KTWebService {
 	         	array(
 					'status_code' => 'int',
 					'message' => 'string',
-	        		'change_id' => 'string' ,
+	        		'timestamp' => 'string' ,
 	        		'changes' => "{urn:$this->namespace}kt_folder_changes",
 	         	);
 	         	
@@ -5529,17 +5587,22 @@ class KTWebService {
             {
             	$this->__dispatch_map['get_client_policies']['in'] = array('session_id' => 'string', 'client' => 'string');
             }
-            
+          
     	if ($this->version >= 3)
     	{    			
     		$this->__dispatch_map['get_folder_changes'] = 
-    			array('in' => array('session_id' => 'string', 'folder_ids' => "{urn:$this->namespace}kt_folder_ids", 'change_id' => 'string', 'depth' => 'int' ),
-    			'out' => array( 'return' => "{urn:$this->namespace}kt_folder_change_response" )
+    			array('in' => array('session_id' => 'string', 'folder_ids' => "{urn:$this->namespace}kt_folder_ids", 'timestamp' => 'string', 'depth' => 'int' ),
+    				'out' => array( 'return' => "{urn:$this->namespace}kt_folder_change_response" )
+    			);
+    			
+    		$this->__dispatch_map['document_has_binary_changes'] = 
+    			array('in' => array('session_id' => 'string', 'document_id' => 'int', 'from_version' => 'float', 'to_version' => 'float' ),
+    				'out' => array( 'return' => "{urn:$this->namespace}kt_response" )
     			);
     			
     		$this->__dispatch_map['get_folder_total_files'] = 
     			array('in' => array('session_id' => 'string', 'folder_id' => 'int' ),
-    			'out' => array( 'return' => "{urn:$this->namespace}kt_folder_size_response" )
+    				'out' => array( 'return' => "{urn:$this->namespace}kt_folder_size_response" )
     			);
     	}                        
     }
