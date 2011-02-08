@@ -47,7 +47,7 @@ class KTWorkflowViewlet extends KTDocumentViewlet {
 	public $_sShowPermission = 'ktcore.permissions.write';
     public $showIfRead = false;
     public $showIfWrite = true;
-    
+
     function display_viewlet() {
         $oKTTemplating =& KTTemplating::getSingleton();
         $oTemplate =& $oKTTemplating->loadTemplate("ktcore/document/viewlets/workflow");
@@ -127,7 +127,7 @@ class KTDocumentActivityFeedAction extends KTDocumentViewlet {
     public $sName = 'ktcore.viewlet.document.activityfeed';
     public $showIfRead = true;
     public $showIfWrite = true;
-    
+
     function display_viewlet() {
 
         $aTransactions = array();
@@ -163,6 +163,7 @@ class KTDocumentActivityFeedAction extends KTDocumentViewlet {
                 'email' => md5(strtolower($transaction['email'])),
                 'transaction_name' => $transaction['transaction_name'],
                 'datetime' => getDateTimeDifference($transaction['datetime']),
+                'actual_datetime' => $transaction['datetime'],
                 'version' => $transaction['version'],
                 'comment' => $transaction['comment'],
                 'type' => 'transaction'
@@ -181,8 +182,9 @@ class KTDocumentActivityFeedAction extends KTDocumentViewlet {
 
             $mainArray[] = array(
                 'name' => $this->getUserForId($version->getVersionCreatorId()),
-                'transaction_name' => 'New Document Version',
+                'transaction_name' => _kt('New Document Version'),
                 'datetime' => $version->getDisplayVersionCreated(),
+                'actual_datetime' => $version->getVersionCreated(),
                 'version' => $version->getMajorVersionNumber().'.'.$version->getMinorVersionNumber(),
                 'comment' => '',
                 'type' => 'version'
@@ -197,6 +199,7 @@ class KTDocumentActivityFeedAction extends KTDocumentViewlet {
                 'email' => md5(strtolower($this->getEmailForId($comment['user_id']))),
                 'transaction_name' => 'Comment',
                 'datetime' => getDateTimeDifference($comment['date']),
+                'actual_datetime' => $comment['date'],
                 'version' => '',
                 'comment' => $comment['comment'],
                 'type' => 'comment'
@@ -223,14 +226,10 @@ class KTDocumentActivityFeedAction extends KTDocumentViewlet {
 
     function sortTable($a, $b)
     {
-        $d1 = new DateTime($a['datetime']);
-        $d2 = new DateTime($b['datetime']);
+        $d1 = new DateTime($a['actual_datetime']);
+        $d2 = new DateTime($b['actual_datetime']);
 
-        if ($d1 == $d2) {
-            //return 1;
-        }
-
-        return $d1 >= $d2 ? 1: -1;
+        return $d1 > $d2 ? 1: -1;
     }
 
     function _getActionNameForNamespace($sNamespace) {
