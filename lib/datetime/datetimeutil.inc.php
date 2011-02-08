@@ -80,8 +80,8 @@ class datetimeutil
 	 */
 	static public function convertToUTC($date)
 	{
-		// Create time conversion object, set format to ISO 8601 (YYYY-MM-DDThh:mm:ss+UTC offset eg 2004-02-12T15:19:21+00:00)
-		$tzc = new TimezoneConversion('c');
+		// Create time conversion object
+		$tzc = new TimezoneConversion('Y-m-d H:i:s');
 		// Set the date to convert
 		$tzc->setProperty('Datetime', $date);
 		// set zone to UTC
