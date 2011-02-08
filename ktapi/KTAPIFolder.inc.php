@@ -2212,7 +2212,7 @@ class KTAPI_Folder extends KTAPI_FolderItem {
 							//$GLOBALS['default']->log->debug('updatedSince RESTORED');
 							$changeType = 'UR';
 						}
-						if(strpos(strtolower($result['metadata updated']), 'restored') !== false)
+						if(strpos(strtolower($result['comment']), 'metadata updated') !== false)
 						{
 							//$GLOBALS['default']->log->debug('updatedSince METADATA UPDATED');
 							$changeType = 'UM';
