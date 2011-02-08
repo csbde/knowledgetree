@@ -774,7 +774,8 @@ class KTAPI_Folder extends KTAPI_FolderItem {
             }
         }
 
-        $contentVersionJoin = 'INNER JOIN document_content_version DCV ON DCV.document_id = D.id INNER JOIN document_metadata_version DMV ON DMV.content_version_id = DCV.id';
+        $contentVersionJoin = 'INNER JOIN document_metadata_version DMV ON DMV.id = D.metadata_version_id
+			                   INNER JOIN document_content_version DCV ON DCV.id = DMV.content_version_id ';
         $where = "WHERE D.status_id = 1 AND $permissionString AND D.folder_id = ?";
         $queryOptions['orderby'] = 'DMV.name';
         $optionString = DBUtil::getDbOptions($queryOptions);
@@ -791,7 +792,7 @@ class KTAPI_Folder extends KTAPI_FolderItem {
 
         // do we need to fetch anything or do we just need the count for paging?
         if ($remaining != 0) {
-            $sql = "SELECT distinct D.id as document_id FROM documents as D $contentVersionJoin $permissionJoin $where AND DCV.id = (SELECT max(DCV2.id) FROM document_content_version DCV2 WHERE DCV2.document_id = D.id) AND DMV.id = (SELECT max(DMV2.id) FROM document_metadata_version DMV2 WHERE DMV2.document_id = D.id) $optionString";
+            $sql = "SELECT distinct D.id as document_id FROM documents as D $contentVersionJoin $permissionJoin $where $optionString";
             $document_children = DBUtil::getResultArrayKey(array($sql, array_merge($permissionParams, array($this->folderid))), 'document_id');
             if (PEAR::isError($document_children)) {
                 // FIXME not what we want?

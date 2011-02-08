@@ -178,35 +178,56 @@ class TimezoneConversion
 	public function getPhpTimezones($currentCountry = false, $gmtOffset = false)
 	{
 		$list_of_zones = array();
+		// Get full list of php timezones
 		$timezones = DateTimeZone::listAbbreviations();
+		// Iterate over regions
 		foreach ($timezones as $region => $timezone_info)
 		{
+			// Iterate over timezones
 			foreach ($timezone_info as $azone)
 			{
 				$timezone = $azone['timezone_id'];
 				$aValue = explode('/', $timezone);
 				$country = isset($aValue[1]) ? $aValue[0] : 'Other';
+				// Check if timezone name exists
 				if($timezone != '')
 				{
+					// Check for duplicates
 					if(!in_array($timezone, $list_of_zones))
 					{
+						// Test if a specific country has been selected
 						if($currentCountry === false)
 						{
-							$list_of_zones[$timezone]['timezone_id'] = $timezone;
-							if($gmtOffset) $list_of_zones[$timezone]['offset'] = round(($azone['offset']/3600));
+							// Check for duplicates
+							if(!isset($list_of_zones[$timezone]))
+							{
+								$list_of_zones[$timezone]['timezone_id'] = $timezone;
+								if($gmtOffset) 
+								{
+									$list_of_zones[$timezone]['offset'] = $this->getTimeZoneOffset($timezone);
+								}
+							}
 						}
 						else
 						{
 							if($country == $currentCountry)
 							{
-								$list_of_zones[$timezone]['timezone_id'] = $timezone;
-								if($gmtOffset) $list_of_zones[$timezone]['offset'] = round(($azone['offset']/3600));
+								// Check for duplicates
+								if(!isset($list_of_zones[$timezone]))
+								{
+									$list_of_zones[$timezone]['timezone_id'] = $timezone;
+									if($gmtOffset)
+									{
+										$list_of_zones[$timezone]['offset'] = $this->getTimeZoneOffset($timezone);
+									}
+								}
 							}
 						}
 					}
 				}
 			}
 		}
+		// Sort by name
 		array_multisort($list_of_zones);
 		
 		return $list_of_zones;
@@ -255,43 +276,32 @@ class TimezoneConversion
   	 * Function to get 'Timezone Offset' from Timezone name
   	 *
   	 * @param string $timezone
-  	 * @return unknown
+  	 * @return string
   	 */
   	public function getTimeZoneOffset($timezone = 'GMT') 
   	{
 	    /** Find Timezone Offset */
-	    foreach ($this->getPhpTimezones() as $timezone_name) 
-	    {
-			if ($timezone_name['timezone_id'] == $timezone)
-			{
-				// Create two timezone objects, one for UTC and one for the other user defined
-				// Create two DateTime objects that will contain the same Unix timestamp, but
-				// have different timezones attached to them.
-				// Then get the offset using the users timezone and passing the utc timezone object
-				$utcDateTimeZone = new DateTimeZone('UTC');
-				try {
-					$userDateTimeZone = new DateTimeZone($timezone);
-				} catch (Exception $e)
-				{
-					return 0;
-				}
-				$utcDateTime = new DateTime("now", $utcDateTimeZone);
-				$userDateTime = new DateTime("now", $userDateTimeZone);
-				$timeOffset = $userDateTimeZone->getOffset($utcDateTime);
-				if($timeOffset != 0)
-				{
-					$offset = ($timeOffset/3600);
-					
-					return $offset;
-				}
-				else
-				{
-					return 0;
-				}
-			}
-	    }
+		// Create two timezone objects, one for UTC and one for the other user defined
+		// Create two DateTime objects that will contain the same Unix timestamp, but
+		// have different timezones attached to them.
+		// Then get the offset using the users timezone and passing the utc timezone object
+		$utcDateTimeZone = new DateTimeZone('UTC');
+		try {
+			$userDateTimeZone = new DateTimeZone($timezone);
+		} catch (Exception $e)
+		{
+			return 0;
+		}
+		$utcDateTime = new DateTime("now", $utcDateTimeZone);
+		$userDateTime = new DateTime("now", $userDateTimeZone);
+		$timeOffset = $userDateTimeZone->getOffset($utcDateTime);
+		if($timeOffset != 0)
+		{
+			$offset = ($timeOffset/3600);
+			
+			return $offset;
+		}
 
-	    // TODO : Log unknown timezone.
     	return 0;
 	}
 }

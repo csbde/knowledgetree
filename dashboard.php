@@ -143,7 +143,8 @@ class DashboardDispatcher extends KTStandardDispatcher {
 
         $ktOlarkPopup = null;
         // temporarily disabled
-        if (ACCOUNT_ROUTING_ENABLED && liveAccounts::isTrialAccount() && isset($_SESSION['isFirstLogin'])) {
+        global $default;
+        if (ACCOUNT_ROUTING_ENABLED && $default->tier == 'trial' && isset($_SESSION['isFirstLogin'])) {
             $js = preg_replace('/.*[\/\\\\]plugins/', 'plugins', KT_LIVE_DIR) . '/resources/js/olark/olark.js';
             $this->oPage->requireJsResource($js);
             // add popup to page
