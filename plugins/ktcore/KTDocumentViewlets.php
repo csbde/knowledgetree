@@ -47,7 +47,7 @@ class KTWorkflowViewlet extends KTDocumentViewlet {
 	public $_sShowPermission = 'ktcore.permissions.write';
     public $showIfRead = false;
     public $showIfWrite = true;
-    
+
     function display_viewlet() {
         $oKTTemplating =& KTTemplating::getSingleton();
         $oTemplate =& $oKTTemplating->loadTemplate("ktcore/document/viewlets/workflow");
@@ -127,29 +127,31 @@ class KTDocumentActivityFeedAction extends KTDocumentViewlet {
     public $sName = 'ktcore.viewlet.document.activityfeed';
     public $showIfRead = true;
     public $showIfWrite = true;
-    
-    function display_viewlet() {
 
-        $aTransactions = array();
-        // FIXME create a sane "view user information" page somewhere.
-        // FIXME do we really need to use a raw db-access here?  probably...
-        $sQuery = 'SELECT DTT.name AS transaction_name, DT.transaction_namespace, U.name AS user_name, U.email as email, DT.version AS version, DT.comment AS comment, DT.datetime AS datetime ' .
-            'FROM ' . KTUtil::getTableName('document_transactions') . ' AS DT INNER JOIN ' . KTUtil::getTableName('users') . ' AS U ON DT.user_id = U.id ' .
-            'LEFT JOIN ' . KTUtil::getTableName('transaction_types') . ' AS DTT ON DTT.namespace = DT.transaction_namespace ' .
-            'WHERE DT.document_id = ? ORDER BY DT.datetime DESC';
-        $aParams = array($this->oDocument->getId());
-
-        $res = DBUtil::getResultArray(array($sQuery, $aParams));
-        if (PEAR::isError($res)) {
-           var_dump($res); // FIXME be graceful on failure.
-           exit(0);
-        }
-
-        $aTransactions = $res;
-
+    function display_viewlet()
+    {
+        $iDocumentId = $this->oDocument->getId();
         $mainArray = array();
 
+        /* *** Get the document transactions *** */
+        $sQuery = 'SELECT DTT.name AS transaction_name, DT.transaction_namespace, U.name AS user_name, U.email as email,
+            DT.version AS version, DT.comment AS comment, DT.datetime AS datetime
+            FROM ' . KTUtil::getTableName('document_transactions') . ' AS DT
+            INNER JOIN ' . KTUtil::getTableName('users') . ' AS U ON DT.user_id = U.id
+            LEFT JOIN ' . KTUtil::getTableName('transaction_types') . ' AS DTT ON DTT.namespace = DT.transaction_namespace
+            WHERE DT.document_id = ?
+            ORDER BY DT.id DESC';
+            //  ORDER BY DT.datetime DESC => replaced the order by so that they come out in the order they were added, reversed.
+        $aParams = array($iDocumentId);
 
+        $aTransactions = array();
+        $res = DBUtil::getResultArray(array($sQuery, $aParams));
+        if (PEAR::isError($res)) {
+            global $default;
+            $default->log->error('Error getting the transactions - ' . $res->getMessage());
+            $res = array();
+        }
+        $aTransactions = $res;
 
         // Set the namespaces where not in the transactions lookup
         foreach($aTransactions as $key => $transaction){
@@ -163,58 +165,80 @@ class KTDocumentActivityFeedAction extends KTDocumentViewlet {
                 'email' => md5(strtolower($transaction['email'])),
                 'transaction_name' => $transaction['transaction_name'],
                 'datetime' => getDateTimeDifference($transaction['datetime']),
+                'actual_datetime' => $transaction['datetime'],
                 'version' => $transaction['version'],
                 'comment' => $transaction['comment'],
                 'type' => 'transaction'
             );
         }
 
-    	$aMetadataVersions = KTDocumentMetadataVersion::getByDocument($this->oDocument);
-        $aVersions = array();
-        foreach ($aMetadataVersions as $oVersion) {
-             $version = Document::get($this->oDocument->getId(), $oVersion->getId());
-             if($showall){
-                $aVersions[] = $version;
-             }else if($version->getMetadataStatusID() != VERSION_DELETED){
-                $aVersions[] = $version;
-             }
+        /* *** Get the document versions *** */
+    	$aMetadataVersions = KTDocumentMetadataVersion::getByDocumentContent($iDocumentId);
+    	if (PEAR::isError($aMetadataVersions)) {
+            global $default;
+            $default->log->error('Error getting the versions - ' . $aMetadataVersions->getMessage());
+            $aMetadataVersions = array();
+        }
 
-            $mainArray[] = array(
-                'name' => $this->getUserForId($version->getVersionCreatorId()),
-                'transaction_name' => 'New Document Version',
-                'datetime' => $version->getDisplayVersionCreated(),
-                'version' => $version->getMajorVersionNumber().'.'.$version->getMinorVersionNumber(),
+        $aVersions = array();
+        $prevContentVersion = 0;
+        foreach ($aMetadataVersions as $version) {
+             // For each content version there can be multiple metadata versions
+             // Allow the earliest metadata version to override the later ones
+             $contentVersion = $version['content_version_id'];
+             if($contentVersion == $prevContentVersion) {
+                 continue;
+             }
+             $prevContentVersion = $contentVersion;
+
+             $aVersions[] = array(
+                'name' => $version['name'],
+                'transaction_name' => _kt('New Document Version'),
+                'datetime' => datetimeutil::getLocaleDate($version['datetime']),
+                'actual_datetime' => $version['datetime'],
+                'version' => $version['major_version'] . '.' . $version['minor_version'],
                 'comment' => '',
                 'type' => 'version'
             );
         }
 
-        $comments = Comments::get_comments($this->oDocument->getId());
-        foreach ($comments as $comment)
-        {
-            $mainArray[] = array(
-                'name' => $this->getUserForId($comment['user_id']),
-                'email' => md5(strtolower($this->getEmailForId($comment['user_id']))),
-                'transaction_name' => 'Comment',
-                'datetime' => getDateTimeDifference($comment['date']),
-                'version' => '',
-                'comment' => $comment['comment'],
-                'type' => 'comment'
-            );
+        $aVersions = array_reverse($aVersions);
+        $mainArray = array_merge($mainArray, $aVersions);
+
+        /* *** Get the document comments *** */
+        try {
+            $comments = Comments::get_comments($iDocumentId);
+            foreach ($comments as $comment)
+            {
+                $mainArray[] = array(
+                    'name' => $comment['user_name'],
+                    'email' => md5(strtolower($comment['email'])),
+                    'transaction_name' => _kt('Comment'),
+                    'datetime' => getDateTimeDifference($comment['date']),
+                    'actual_datetime' => $comment['date'],
+                    'version' => '',
+                    'comment' => $comment['comment'],
+                    'type' => 'comment'
+                );
+            }
+        } catch (Exception $e) {
+            global $default;
+            $default->log->error('Error getting the comments - ' . $e->getMessage());
+            $comments = array();
         }
 
 		// Sort by Date
         usort($mainArray, array($this, 'sortTable'));
 
 		// Reverse so that top most is on top
-		$mainArray = array_reverse($mainArray);
+		//$mainArray = array_reverse($mainArray);
 
 		$oKTTemplating =& KTTemplating::getSingleton();
-        $oTemplate =& $oKTTemplating->loadTemplate("ktcore/document/viewlets/activity_feed");
+        $oTemplate = $oKTTemplating->loadTemplate("ktcore/document/viewlets/activity_feed");
 
         $aTemplateData = array(
               'context' => $this,
-              'document_id' => $this->oDocument->getId(),
+              'document_id' => $iDocumentId,
               'document' => $this->oDocument,
               'versions' => $mainArray,
         );
@@ -223,14 +247,10 @@ class KTDocumentActivityFeedAction extends KTDocumentViewlet {
 
     function sortTable($a, $b)
     {
-        $d1 = new DateTime($a['datetime']);
-        $d2 = new DateTime($b['datetime']);
+        $d1 = new DateTime($a['actual_datetime']);
+        $d2 = new DateTime($b['actual_datetime']);
 
-        if ($d1 == $d2) {
-            //return 1;
-        }
-
-        return $d1 >= $d2 ? 1: -1;
+        return $d1 < $d2 ? 1: -1;
     }
 
     function _getActionNameForNamespace($sNamespace) {

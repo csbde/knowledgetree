@@ -4,7 +4,7 @@
 <table width="95%">
     <tr>
         <td align="center">
-            <div class="adminheadings settingHeads"> {i18n} Account Settings {/i18n} </div>
+            <div class="adminheadings settingHeads"> {i18n}Account Settings{/i18n} </div>
 
             <div id="leftmenu" class="menuitems">
             	{foreach item=aCategory from=$rightmenu}
@@ -23,7 +23,7 @@
             </div>
         </td>
         <td align="center">
-            <div class="adminheadings settingHeads"> {i18n} Content Settings {/i18n}</div>
+            <div class="adminheadings settingHeads"> {i18n}Content Settings{/i18n}</div>
 
             <div id="rightmenu" class="menuitems">
             	{foreach item=aCategory from=$leftmenu}

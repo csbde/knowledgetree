@@ -50,6 +50,8 @@ require_once(KT_LIB_DIR . '/browse/PartialQuery.inc.php');
 require_once(KT_LIB_DIR . '/widgets/forms.inc.php');
 require_once(KT_LIB_DIR . "/util/sanitize.inc");
 
+require_once(KT_LIB_DIR . "/datetime/datetimeutil.inc.php");
+
 // {{{ KTDocumentDetailsAction
 class KTDocumentDetailsAction extends KTDocumentAction {
 
@@ -101,6 +103,8 @@ class KTDocumentTransactionHistoryAction extends KTDocumentAction {
             if (empty($transaction['transaction_name'])) {
                 $aTransactions[$key]['transaction_name'] = $this->_getActionNameForNamespace($transaction['transaction_namespace']);
             }
+            // Get the datetime offset
+            $aTransactions[$key]['datetime'] = datetimeutil::getLocaleDate($aTransactions[$key]['datetime']);
         }
 
 
