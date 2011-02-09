@@ -170,6 +170,19 @@ class KTDocumentMetadataVersion extends KTEntity {
         ));
     }
 
+    function getByDocumentContent($oDocument)
+    {
+        $iDocumentId = KTUtil::getId($oDocument);
+
+        $sql = "SELECT m.content_version_id, m.version_created as datetime, c.major_version, c.minor_version, m.version_creator_id, u.name, u.email
+                FROM document_content_version c, document_metadata_version m, users u
+                WHERE c.id = m.content_version_id AND m.version_creator_id = u.id AND m.document_id = {$iDocumentId}
+                ORDER by m.id ASC";
+
+        $res = DBUtil::getResultArray($sql);
+        return $res;
+    }
+
     function bumpMetadataVersion() {
         $this->iMetadataVersion++;
     }
