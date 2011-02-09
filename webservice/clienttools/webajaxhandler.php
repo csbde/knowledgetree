@@ -97,7 +97,7 @@ class webAjaxHandler {
     private function structArray($structString = null, $arr = null)
     {
         $struct = array_flip(split(',', (string)$structString));
-        return array_merge($struct, is_array($arr)?$arr:array());
+        return array_merge($struct, is_array($arr) ? $arr : array());
     }
 
     /**
@@ -117,7 +117,7 @@ class webAjaxHandler {
             $this->ret->setDebug('Service could not be loaded', $request['service']);
         }
 
-        $this->ret->setdebug('dispatch_request', 'The service class loaded');
+        $this->ret->setdebug('dispatch_request','The service class loaded');
 
         if (method_exists($service, $request['function'])) {
             $this->ret->setDebug('dispatch_execution', 'The service method was found. Executing');
@@ -159,15 +159,13 @@ class webAjaxHandler {
     {
         $folder = 'services/';
         $contents = scandir($folder);
-
         $dir = array();
-        foreach ($contents as $item) {
+        foreach($contents as $item) {
             if (is_dir($folder.$item) && ($item != '.') && ($item!=='..')) {
                 $dir[] = $item;
             }
         }
         rsort($dir);
-
         return $dir;
     }
 
