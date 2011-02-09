@@ -67,7 +67,6 @@ class datetime_view extends KTAdminDispatcher
 		foreach ($tzc->getPhpRegions() as $region)
 		{
 			$selected = ($region == $currentRegion) ? 'selected' : '';
-			//$ddoptions .= '<option onclick="javascript:{change_region(\'' . $region. '\');}" value="' . $region . '" ' . $selected . '> ' . $region . '</option>';
 			$ddoptions .= '<option value="' . $region . '" ' . $selected . '> ' . $region . '</option>';
 		}
 		
