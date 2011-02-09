@@ -438,12 +438,12 @@ class KTFolderUtil {
 
         //foreach($aFolderIds as $folderID) {
         $oTransaction = KTFolderTransaction::createFromArray(array(
-            'folderid' => $oFolder->getId(),
+            'folderid' => $oStartFolder->getId(),
             'comment' => _kt('Folder deleted'),
             'transactionNS' => 'ktcore.transactions.delete',
             'userid' => $oUser->getId(),
             'ip' => Session::getClientIP(),
-        	'parentid' => $oFolder->getParentID(),
+        	'parentid' => $oStartFolder->getParentID(),
         ));
         //}
 
