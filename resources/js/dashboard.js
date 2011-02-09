@@ -242,12 +242,13 @@ KTDashboard.prototype = {
     },
 
     'unserialize' : function(state) {
-        var bucket = DIV({'style':'display:none'});
+    	// No idea why this hides all the dashlets
+/*        var bucket = DIV({'style':'display:none'});
         appendChildNodes(document.body, bucket);
         forEach(this.getDashletBlocks(), function(d) {
                     if(d.id && !hasElementClass(d, 'empty')) {
                         appendChildNodes(bucket, d);
-                    }});
+                    }});*/
 
         var hasClosed = false;
 
