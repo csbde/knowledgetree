@@ -53,10 +53,11 @@ class Comments
             throw new Exception('Document ID must be numeric', 1);
         }
 
-        $sql = "SELECT c.id, c.user_id, c.comment, c.date_created AS date, u.name AS user_name, u.username AS user_username FROM document_comments c
-            INNER JOIN users u on u.id = c.user_id
-            WHERE document_id = {$document_id}
-            ORDER BY date_created {$order}";
+        $sql = "SELECT c.id, c.user_id, c.comment, c.date_created AS date, u.name AS user_name, u.username AS user_username, u.email
+                FROM document_comments c
+                INNER JOIN users u on u.id = c.user_id
+                WHERE document_id = {$document_id}
+                ORDER BY date_created {$order}";
 
         $list = DBUtil::getResultArray($sql);
 
