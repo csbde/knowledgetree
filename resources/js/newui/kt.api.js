@@ -175,7 +175,19 @@ kt.api = new function() {
 
 	/* Template related functions */
 
+	this.preload = function(fragments, execs) {
+	    for (var idx = 0; idx < fragments.length; ++idx) {
+	        kt.api.preloadFragment(fragments[idx]);
+	    }
+
+	    for (var idx = 0; idx < execs.length; ++idx) {
+	        kt.api.preloadExecutable(execs[idx]);
+	    }
+	}
+
 	this.preloadFragment = function(fragName, params) {
+	    // TODO don't load anything which does not submit params?  Need to know more about how this works, but currently
+	    //      at least some pages issue requests which have no purpose...
 		if (!kt.lib.Object.is_object(params)) { params = {}; }
 		params = kt.lib.Object.extend({name:fragName}, params);
 		var func = 'template.getFragment';

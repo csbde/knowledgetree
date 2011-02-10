@@ -9,6 +9,8 @@ if (typeof(kt.api) == 'undefined') { kt.api={}; }
  */
 kt.app.sharewithusers = new function() {
 
+    // I don't think both of these are needed, what's the difference between a get and an exec for a fragment?
+
 	//contains a list of fragments that will get preloaded
     var fragments = this.fragments = ['users/invite.shared.dialog'];
 
@@ -21,12 +23,7 @@ kt.app.sharewithusers = new function() {
 
     //Initializes the upload widget on creation. Currently does preloading of resources.
     this.init = function() {
-        for (var idx in execs) {
-            kt.api.preloadExecutable(execs[idx]);
-        }
-        for (var idx in fragments) {
-            kt.api.preloadFragment(fragments[idx]);
-        }
+        kt.api.preload(fragments, execs);
     }
 
     //Container for the EXTJS window

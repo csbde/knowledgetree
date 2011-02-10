@@ -4,13 +4,19 @@ if (typeof(kt.app) == 'undefined') { kt.app = {}; }
 /* Initializing kt.api if it wasn't initialized before */
 if (typeof(kt.api) == 'undefined') { kt.api = {}; }
 
+// TODO find out why fragments load on page start and also when executing an action.
+//      do ALL fragments behave like this (all exec ones, all get ones, all both?)
+//      Should we just let them load on demand instead?????
+
 /**
  * Dialog for inviting new licensed users to the system
  */
 kt.app.inviteusers = new function() {
 
+    // What is the actual difference between a get and an exec for fragments?
+
 	//contains a list of fragments that will get preloaded
-    var fragments = this.fragments = ['users/invite.shared.dialog'];
+    var fragments = this.fragments = [];
 
     //contains a list of executable fragments that will get preloaded
     var execs = this.execs = ['users/invite.dialog', 'users/invite.confirm.dialog'];
@@ -22,12 +28,7 @@ kt.app.inviteusers = new function() {
 
     //Initializes the upload widget on creation. Currently does preloading of resources.
     this.init = function() {
-        for (var idx in execs) {
-            kt.api.preloadExecutable(execs[idx]);
-        }
-        for (var idx in fragments) {
-            kt.api.preloadFragment(fragments[idx]);
-        }
+        kt.api.preload(fragments, execs);
     }
 
     //Container for the EXTJS window

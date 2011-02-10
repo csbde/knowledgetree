@@ -12,7 +12,7 @@ kt.lib.String = new function() {
 		}
 		return ret;
 	};
-	
+
 };
 
 kt.lib.Object = new function() {
@@ -30,6 +30,7 @@ kt.lib.Object = new function() {
 						obj[prop] = extObj[prop];
 					};
 				}
+
 				return obj;
 			} catch(e) {kt.evt.triggerErrorLog('kt.lib.Object.extend', e);};
 		};
@@ -62,7 +63,7 @@ kt.lib.Object = new function() {
 		}
 		return defaultValue;
 	};
-	
+
 };
 
 kt.lib.shortcut = {
