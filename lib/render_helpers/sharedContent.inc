@@ -2,7 +2,7 @@
 /**
  * $Id$
  *
- * Represents a user as per the users table in the database.
+ * Shared content database object
  *
  * KnowledgeTree Community Edition
  * Document Management Made Simple

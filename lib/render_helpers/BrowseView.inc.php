@@ -345,11 +345,11 @@ class BrowseView {
                 $editable = false;
             }
         }
-        else {
-            $folderMessage = '<h2>There\'s nothing in this folder yet!</h2>';
-        }
 
         if (!$editable) {
+        	if ($folderMessage == '') {
+        		$folderMessage = '<h2>You don\'t have permissions to view the contents of this folder!</h2>';
+        	}
             return "<span class='notification'>
 						$folderMessage
 			</span>";
@@ -433,7 +433,9 @@ class BrowseView {
     {
         $canDelete = Permission::userHasDeleteFolderPermission($folder);
         $canWrite = Permission::userHasFolderWritePermission($folder);
-
+		$canRead = Permission::userHasFolderReadPermission($folder);
+		// Check if user has no permission to folder.
+		if (!$canDelete && !$canWrite && !$canRead) { return ''; }
         $tpl = '<table class="browseView bulkActionMenu" cellspacing="0" cellpadding="0"><tr><td>
 		<input type="checkbox" class="select_all" />
 		<input type="hidden" value="" name="sListCode"><input type="hidden" value="bulkaction" name="action">
@@ -454,7 +456,11 @@ class BrowseView {
             unset($parts['ktcore.actions.bulk.move']);
             unset($parts['ktcore.actions.bulk.archive']);
         }
-
+        if(!$canRead)
+        {
+            unset($parts['ktcore.actions.bulk.copy']);
+            unset($parts['ktlive.actions.bulk.export']);
+        }
         //parts order: Copy, move, archive, delete, download all
         $tpl .= join($parts);
         $tpl .= '</td><td class="status" style="width: 200px; text-align: right;"></td></tr></table>';
