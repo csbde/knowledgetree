@@ -1,3 +1,45 @@
+.doc_view {
+	color: #666;
+}
+
+#sidebar {
+	width: 215px;
+	position: relative;
+	margin-top: 5px;
+	
+}
+
+#sidebar h2 {
+	border-bottom: 1px solid #ccc;
+	font-size: 13px;
+	color: #666;
+	text-shadow: 0px 1px white;
+	padding: 3px 10px;
+	background: #ddd;
+}
+#sidebar_item p {
+	padding:10px;
+}
+#sidebar_item ul {
+	margin: 10px;
+}
+#sidebar_item {
+	border-bottom: 1px solid #ccc;	
+}
+#sidebar_item:last-child {
+	border-bottom: none;
+}
+object#website {
+	border: 1px solid #ccc;
+}
+
+#column_right,
+#title_row {
+	
+}
+#title_row {
+	width: 745px;
+}
 div.viewletworkflow {
 	-moz-border-radius: 5px;
 	-moz-box-shadow: -1px -1px 5px #666677;
@@ -14,7 +56,128 @@ div.viewletworkflow {
 	margin: 0px;
 	display: block;
 }
+button {
+	font-family: sans-serif !important;
+}
+.buttons a,
+.buttons input  {
+	-moz-border-radius: 2px;
+	-webkit-border-radius: 2px;
+	border-radius: 2px;
+	behavior: url('border-radius.htc');
+	border: 1px solid #ccc !important;
+	text-shadow: 0px 1px white;
+	display: inline-block;
+	color: #666 !important;
+	font-size: 10px;
+	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffff', endColorstr='#dddddd') !important; /* for IE */
+	background: -webkit-gradient(linear, left top, left bottom, from(#fff), to(#ddd)) !important; /* for webkit browsers */
+	background: -moz-linear-gradient(top,  #fff,  #ddd) !important; /* for firefox 3.6+ */
+	position: relative;
+	padding: 1px 0px;
+}
+#content .buttons span.edit_online,
+#content .buttons span.Share {
+	padding: 0px 5px 0px 26px;
+	color: #666;
+	text-decoration: none;
+}
+#content .buttons a.edit_online{
+	top: -6px;
+}
+.buttons button {
+	padding: 5px 5px 5px 25px;
+	
+}
 
+.yui-button {
+	padding-right: 20px!important;
+	display: inline-block;
+	vertical-align: text-bottom;
+}
+.yui-button button, .yui-button a {
+	border: none;
+	display: block;
+	margin: 0px;
+}
+.yui-button button {
+	color: #666;
+	text-shadow: 0px 1px white;
+	font-size: 10px;
+	border-right: 1px solid #ccc !important;
+	background-color: transparent;
+	cursor: pointer;
+	
+}
+.buttons .yui-button span.first-child {
+	background: -webkit-gradient(linear, left top, left bottom, from(#fff), to(#ddd));
+	display: block;
+}
+.buttons .yui-button-active span.first-child {
+	background: -webkit-gradient(linear, left top, left bottom, from(#ddd), to(#fff));
+}
+
+
+span.yui-split-button {
+	background: -webkit-gradient(linear, left top, left bottom, from(#fff), to(#ddd)) !important;
+	-moz-border-radius: 2px;
+	-webkit-border-radius: 2px;
+	border-radius: 2px;
+	behavior: url('border-radius.htc');
+	border: 1px solid #ccc !important;
+
+}
+span.yui-split-button:before {
+	content: "▾";
+	float: right;
+	position: relative;
+	right: -14px;
+	height: 0px;
+	font-family: sans-serif;
+	font-weight: normal;
+	font-size: 12px;
+}
+span.yui-split-button-activeoption {
+	background: -webkit-gradient(linear, left top, left bottom, from(#ddd), to(#fff)) !important;
+	color: #ccc;
+}
+div.bd {
+    zoom: normal;
+    padding: 0px 10px 0px 30px;
+}
+div.bd:hover {
+	background: #fcf6c7;
+}
+.yui-overlay {
+    position: absolute;
+    visibility: hidden;
+    border: solid 1px #ccc;
+    border-top: 0px;
+    padding: 4px 0px;
+    background-color: #fff;
+	-webkit-box-shadow: #BBB 0px 0px 5px;
+	font-size: 10px;
+	min-width: 100px;
+}
+.yui-overlay hr {
+	border-color: #ccc!important;
+}
+.buttons a:hover,
+.buttons span:hover,
+.buttons input:hover {
+	-moz-box-shadow: 0px 0px 5px #bbb;
+	-webkit-box-shadow: 0px 0px 5px #bbb;
+	box-shadow: 0px 0px 5px #bbb;
+	/* For IE 8 */
+	-ms-filter: "progid:DXImageTransform.Microsoft.Shadow(Strength=5, Direction=120, Color='#bbbbbb')";
+	/* For IE 5.5 - 7 */
+	filter: progid:DXImageTransform.Microsoft.Shadow(Strength=5, Direction=120, Color='#bbbbbb');
+}
+.buttons a span {
+	padding: 0px 5px 0px 0px;
+	display: inherit;
+	height: 21px;
+}
 .buttonTabs{
 	height: 30px;
 	padding: 0px;
@@ -97,7 +260,7 @@ div.viewletworkflow {
 }
 
 .doc_view .doc_header_item .doc_field_title {
-	margin: 0px 10px 0px 10px;
+	margin: 0px 10px 0px 0px;
 	text-align: right;
 	font-weight: bold;
 	font-size: 12px;
@@ -121,7 +284,7 @@ div.viewletworkflow {
 	font-family: "Verdana", "Arial", sans-serif;
 	letter-spacing: 0.0em;
 	font-size: 13px;
-	margin-left: 10px;
+	/*margin-left: 10px;*/
 	color:#999999;
 }
 
@@ -138,7 +301,8 @@ div.viewletworkflow {
 	font-weight: 500;
 	clear: both;
 	display: block;
-	margin: 15px 0px 5px 0px;
+/*	margin: 15px 0px 5px 0px; */
+	margin-left: -1px;
 	line-height:120%;
 	width:70%;
 }
@@ -168,6 +332,9 @@ div.viewletworkflow {
 	font-weight: normal;
 }
 
+.actions a {
+	font-size: 11px;
+}
 
 /*
     ACTIVITY FEED
@@ -177,14 +344,15 @@ div.viewletworkflow {
     margin-right: 70px;
     font-family: Arial,Helvetica,sans-serif;
     font-size: 12px;
-    padding: 5px;
+    padding: 2px;
+    line-height: 15px;
 }
 
 .activityfeed .item{
     display: block;
     clear: both;
     float: none;
-    margin-bottom: 30px;
+    margin-bottom: 20px;
 }
 
 .activityfeed .item:last-child{
@@ -192,24 +360,21 @@ div.viewletworkflow {
 }
 
 .activityfeed .icon{
-    width: 48px;
-    height: 48px;
-    margin-right: 15px;
-    margin-bottom: 30px;
-    /*border: 1px solid #A10000;*/
+/*  width: 48px;  */
+/*  height: 48px; */
+/*  margin-right: 15px; */
+/*  margin-bottom: 30px; */
+/*	border: 1px solid #A10000;*/
     float: left;
     display: block;
     clear: none;
 }
 
 .activityfeed .activityfeed_content{
-    -webkit-border-radius: 6px;
-    -moz-border-radius: 6px;
-    border: 1px solid #CCCCCC;
-    margin-left: 60px;
-    padding: 2px 2px 2px 10px;
-    overflow: auto;
-    background-color: #eeeeee;
+    margin-left: 40px;
+    overflow: hidden;
+    word-wrap: break-word;
+    width: 260px;
 }
 
 .activityfeed .metaflag{
@@ -217,36 +382,44 @@ div.viewletworkflow {
     float: right;
     background: #A10000 url('../../graphics/newui/tagarrow.gif') left center no-repeat;
     color: #FFFFFF;
-    margin-right: -60px;
+    margin-right: -100px;
     margin-top: -25px;
     display: block;
     font-size: 11px;
     padding: 2px 2px 2px 15px;
-    width: 50px;
+    width: 25px;
 
 }
 
 .activityfeed .activityfeed_content .date{
+	display: block;
     font-weight: bold;
-    color: #69A137;
+    font-size: smaller;
+    color: #999;
 
 }
 .activityfeed .activityfeed_content .user{
     font-weight: bold;
 }
 .activityfeed .activityfeed_content .description{
-    display: block;
-    padding: 2px 10px;
+	width: inherit;
+    padding: 2px 5px;
     color: #AAAAAAA;
 	white-space: normal;
 }
-
+span.doc_info {
+	font-size: 12px;
+	font-family: sans-serif;
+	font-weight: normal;
+	line-height: 15px;
+	
+}
 .activityfeed .item.comment .activityfeed_content{
-    background-color: #dfe6fd;
+ /*   background-color: #dfe6fd;*/
 }
 
 #commentsarea {
-	margin-bottom: 10px;
+	margin-bottom: 15px;
 }
 
 #commentsarea table {
@@ -254,18 +427,19 @@ div.viewletworkflow {
 }
 #commentsarea td {
 	margin: 0;
-	padding: 15px 15px 15px 0;
+	padding: 7px 5px;
 	vertical-align: top;
 }
 
 #commentsarea td div.form_actions{
-	margin-top: 15px;
+	margin-top: 13px;
 }
 
-#commentsbox {
-	width: 100%;
-	height: 25px;
-	font-size: 15px;
+#content #commentsbox {
+	width: 225px !important;
+	height: 15px;
+	font-size: 14px;
+	padding:5px;
 }
 
 #commentssaveajax {
@@ -276,15 +450,40 @@ div.viewletworkflow {
 
 .activityfeed .item.newcomment .activityfeed_content{
     background-color: #FFEDAC;
+    padding: 0px 10px 10px 5px; 
 }
-
+#activity_feed_container {
+	width: 300px;
+}
+.activityfeed img {
+	width: 32px;
+}
 .newcomment {
 	display: none;
 }
-
+.doc_description {
+	padding-right: 35px;
+	color: #666;
+}
 .doc_view .notice{
 	color: #A10000;
 	padding: 10px 10px 10px 15px;
+}
+
+.share_url {
+	font-size: 11px;
+	padding-left: 22px;
+	background: url('../../graphics/newui/icons/link.png') no-repeat!important;
+}
+/* Form default text dissapear on focus */
+.defaultText { 
+	width: 300px; 
+}
+    
+.defaultTextActive { 
+	color: #a1a1a1; 
+	font-family: sans-serif;
+
 }
 
 /* GENERATED FROM SCSS - to modify please check scripts/scss/notifications.scss */

@@ -35,12 +35,12 @@ check_root_privileges()
 }
 
 
-if [ -f /etc/zce.rc ];then
-    . /etc/zce.rc
-else
-    echo "/etc/zce.rc doesn't exist!"
-    exit 1;
-fi
+#if [ -f /etc/zce.rc ];then
+#    . /etc/zce.rc
+#else
+#    echo "/etc/zce.rc doesn't exist!"
+#    exit 1;
+#fi
 check_root_privileges
 
 # OpenOffice
@@ -48,8 +48,9 @@ SOFFICEFILE=soffice
 SOFFICE_PIDFILE=$INSTALL_PATH/var/log/soffice.bin.pid
 SOFFICE_PID=""
 SOFFICE_PORT="8100"
-SOFFICEBIN=/usr/share/ktdms-office/ktdms-office/openoffice/program/soffice
+#SOFFICEBIN=/usr/share/ktdms-office/ktdms-office/openoffice/program/soffice
 #SOFFICEBIN=/usr/bin/soffice
+SOFFICEBIN=/opt/openoffice.org3/program/soffice
 SOFFICE="$SOFFICEBIN -nofirststartwizard -nologo -headless -accept=socket,host=127.0.0.1,port=$SOFFICE_PORT;urp;StarOffice.ServiceManager"
 SOFFICE_STATUS=""
 

@@ -53,7 +53,33 @@ jQuery(document).ready(function() {
 	});
 })(jQuery);
 
-
+/**
+ * Functions to clear default form text
+ */
+(function($){
+	$(document).ready(function()
+	{
+	    $(".defaultText").focus(function(srcc)
+	    {
+	        if ($(this).val() == $(this)[0].title)
+	        {
+	            $(this).removeClass("defaultTextActive");
+	            $(this).val("");
+	        }
+	    });
+	    
+	    $(".defaultText").blur(function()
+	    {
+	        if ($(this).val() == "")
+	        {
+	            $(this).addClass("defaultTextActive");
+	            $(this).val($(this)[0].title);
+	        }
+	    });
+	    
+	    $(".defaultText").blur();        
+	});
+})(jQuery);
 /**
  * Functions to float the footer. setFooter() is called from <body> onLoad()
  */

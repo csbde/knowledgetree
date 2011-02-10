@@ -30,6 +30,11 @@ class browseViewUtil
     			break;
     	}
 	}
+<<<<<<< Updated upstream:lib/render_helpers/browseView.helper.php
+=======
+<<<<<<< Updated upstream:lib/render_helpers/browseView.helper.php
+=======
+>>>>>>> Stashed changes:lib/render_helpers/browseView.helper.php
 }
 
 class sharedUserBrowseAsView extends browseView
@@ -44,10 +49,450 @@ class sharedUserBrowseAsView extends browseView
 	 */
 	public function getFolderContent($folderId, $sortField = 'title', $asc = true)
 	{
+<<<<<<< Updated upstream:lib/render_helpers/browseView.helper.php
+
+=======
 
 	}
 }
 
+/**
+ * Shared user browse view class
+ *
+ */
+class sharedUserBrowseView extends browseView
+{
+	private $oUser = null;
+
+	/**
+	 * Get the folder listing
+	 *
+	 * @param string $folderId
+	 * @param string $sortField
+	 * @param string $asc
+	 * @return mixed $ret
+	 */
+	public function getFolderContent($folderId, $sortField = 'title', $asc = true)
+	{
+		$user_id = $_SESSION['userID'];
+		$this->oUser = is_null($this->oUser) ? User::get($user_id) : $this->oUser;
+		$disabled = $this->oUser->getDisabled();
+
+		$oSharedContent = new SharedContent();
+		$aSharedContent = $oSharedContent->getUsersSharedContents($user_id, $folderId);
+		$ret = array(	'folders' => array(),
+						'documents'=>array()
+					);
+		foreach ($aSharedContent['documents'] as $item)
+		{
+			$item['user_id'] = $user_id;
+			$item['user_disabled'] = $disabled;
+			$item['item_type'] = 'D';
+			$item['version'] = $item['major_version'] . '.' .$item['minor_version'];
+			$ret['documents'][] = $this->browseViewItems($item, $folderId);
+		}
+
+		foreach ($aSharedContent['folders'] as $item)
+		{
+			$item['item_type'] = 'F';
+			$item['mime_type'] = 'folder';
+			$item['mime_icon_path'] = 'folder';
+			$item['mime_display'] = 'Folder';
+			$ret['folders'][] = $this->browseViewItems($item, $folderId);
+		}
+
+		if (isset($sortField))
+		{
+			$ret['documents'] = ktvar::sortArrayMatrixByKeyValue($ret['documents'], $sortField, $asc);
+			$ret['folders'] = ktvar::sortArrayMatrixByKeyValue($ret['folders'], $sortField, $asc);
+		}
+
+		return $ret;
+	}
+
+	public function renderBulkActionMenu($items, $folder)
+	{
+		return '';
+	}
+
+	public function renderDocumentItem($item = null, $empty = false, $shortcut = false)
+	{
+	 	$fileNameCutoff = 100;
+	 	$ns = ' not_supported';
+		$permissions = SharedContent::canAccessDocument($item['user_id'], $item['id'], null, 1);
+		$hasCheckedOut = ($_SESSION['userID'] == $item['checked_out_by_id']);
+
+		// Icons
+		$iconFile = 'resources/mimetypes/newui/' . KTMime::getIconPath($item['mimetypeid']) . '.png';
+		$item['icon_exists'] = file_exists(KT_DIR . '/' . $iconFile);
+		$item['icon_file'] = $iconFile;
+		if ($item['icon_exists']) {
+			$item['mimeicon'] = str_replace('\\', '/', $GLOBALS['default']->rootUrl . '/' . $iconFile);
+			$item['mimeicon'] = "background-image: url(" . $item['mimeicon'] . ")";
+		} else {
+			$item['mimeicon'] = '';
+		}
+
+		// Create link, which will always be of a document and not a shortcut
+		$item['document_link'] = KTUtil::buildUrl('view.php', array('fDocumentId'=> $item['id']));
+		$item['filename'] = (strlen($item['filename']) > $fileNameCutoff) ? substr($item['filename'], 0, $fileNameCutoff - 3) . "..." : $item['filename'];
+		$item['has_workflow'] = '';
+		$item['is_immutable'] = ($item['is_immutable'] == 1) ? true : false;
+		$item['is_immutable'] = $item['is_immutable'] ? '' : $ns;
+		$item['is_checkedout'] = $item['checked_out_date'] ? '' : $ns;
+
+		// Check parent folder if user type is shared (disabled == 4)
+		if (isset($item['object_permissions'])) {
+			// check permissions based on object_permissions, if set, or shared user access if shared user
+			// and check if the user has checkd out the document
+		    $item['actions.checkout'] = ($item['object_permissions'] == 0) ? $ns : ($item['checked_out_date'] ? $ns : '');
+		    $item['actions.checkin'] = ($item['object_permissions'] == 0 || !$hasCheckedOut) ? $ns : ($item['is_checked_out'] == 0 ? $ns : '');
+			$item['actions.cancel_checkout'] = ($item['object_permissions'] == 0 || !$hasCheckedOut) ? $ns : ($item['is_checked_out'] == 0 ? $ns : '');
+		}
+		else if ($item['user_disabled'] == 4) {
+		    // check permissions on parent folder if document not present in shared content for user
+		    $item['actions.checkout'] = ($permissions == false) ? $ns : $item['checked_out_date'] ? '' : $ns;
+		    $item['actions.checkin'] = ($permissions == false) ? $ns : (($item['is_checked_out'] == 0) ? '' : $ns);
+			$item['actions.cancel_checkout'] = ($permissions == false) ? $ns : (($item['is_checked_out'] == 0) ? '' : $ns);
+		}
+
+		//Modifications to perform when the document has been checked out
+		if ($item['checked_out_date']) {
+			list($item['checked_out_date_d'], $item['checked_out_date_t']) = split(" ", $item['checked_out_date']);
+		}
+
+		if ($item['is_immutable'] == '') {
+			$item['actions.checkin'] = $ns;
+			$item['actions.checkout'] = $ns;
+			$item['actions.cancel_checkout'] = $ns;
+			$item['actions.alerts'] = $ns;
+			$item['actions.email'] = $ns;
+			$item['actions.change_owner'] = $ns;
+			$item['actions.finalize_document'] = $ns;
+		}
+
+		$item['separatorA'] = $item['actions.copy'] == '' ? '' : $ns;
+		$item['separatorB'] = $item['actions.download'] == '' || $item['actions.instantview'] == '' ? '' : $ns;
+		$item['separatorC'] = $item['actions.checkout'] == '' || $item['actions.checkin'] == '' || $item['actions.cancel_checkout'] == '' ? '' : $ns;
+		$item['separatorD'] = $item['actions.alert'] == '' || $item ['actions.email'] == '' ? '' : $ns;
+
+		if ($item['is_immutable'] == '') {
+			$item['separatorB'] = $item['separatorC'] = $item['separatorD'] = $ns;
+		}
+
+		// Check if the thumbnail exists
+        $dev_no_thumbs = (isset($_GET['noThumbs']) || $_SESSION['browse_no_thumbs']) ? true : false;
+        $_SESSION['browse_no_thumbs'] = $dev_no_thumbs;
+        $item['thumbnail'] = '';
+        $item['thumbnailclass'] = 'nopreview';
+
+        // When item is null, thumbnails won't exist so skip the check
+        if (!$dev_no_thumbs)
+        {
+            // Check if the document has a thumbnail rendition -> has_rendition = 2, 3, 6, 7
+            // 0 = nothing, 1 = pdf, 2 = thumbnail, 4 = flash
+            // 1+2 = 3: pdf & thumbnail; 1+4 = 5: pdf & flash; 2+4 = 6: thumbnail & flash; 1+2+4 = 7: all
+            // If the flag hasn't been set, check against storage and update the flag - for documents where the flag hasn't been set
+            $check = false;
+            if (is_null($item['has_rendition']))
+            {
+                $oStorage = KTStorageManagerUtil::getSingleton();
+				$oDocument = Document::get($item['id']);
+				if (!PEAR::isError($oDocument))
+				{
+	                $varDir = $GLOBALS['default']->varDirectory;
+	                $thumbnailCheck = $varDir . '/thumbnails/' . $item['id'] . '.jpg';
+	                if ($oStorage->file_exists($thumbnailCheck)) {
+	                    $oDocument->setHasRendition(2);
+	                    $check = true;
+	                } else {
+	                    $oDocument->setHasRendition(0);
+	                }
+	                $oDocument->update();
+				}
+            }
+
+            if ($check || in_array($item['has_rendition'], array(2, 3, 6, 7)))
+            {
+                $item['thumbnail'] = '<img src="plugins/thumbnails/thumbnail_view.php?documentId=' . $item['id'] . '" onClick="document.location.replace(\'view.php?fDocumentId=' . $item['id'] . '#preview\');">';
+                $item['thumbnailclass'] = 'preview';
+            }
+        }
+
+		// Default - hide edit online
+		$item['allowdoczohoedit'] = '';
+		if ($this->zohoEnabled) {
+			if (Zoho::resolve_type($oDocument))
+			{
+				if ($item['actions.checkout'] != $ns) {
+					$item['allowdoczohoedit'] = '<li class="action_zoho_document"><a href="javascript:;" onclick="zohoEdit(\'' . $item['id'] . '\')">Edit Document Online</a></li>';
+				}
+			}
+		}
+
+		// Get the name of the user that checked out document
+		if (!is_null($item['checked_out_by_id']))
+		{
+			$coUser = User::get($item['checked_out_by_id']);
+			$item['checked_out_by'] = $coUser->getName();
+		}
+
+		$checkbox = '';
+		// Sanitize document title
+		$item['title'] = sanitizeForHTML($item['title']);
+		$item['filesize'] = KTUtil::filesizeToString($item['filesize']);
+
+		$tpl='
+			<span class="doc browseView 1">
+				<table cellspacing="0" cellpadding="0" width="100%" border="0" class="doc item ddebug">
+					<tr>
+						' . $checkbox . '
+						<td class="doc icon_cell" width="1">
+							<div class="doc icon" style="[mimeicon]">
+								<span class="immutable_info[is_immutable]">
+									<span>This document has been <strong>finalized</strong> and can no longer be modified.</span>
+									</span>
+								<span class="checked_out[is_checkedout]">
+									<span>This document is <strong>checked-out</strong> by <strong>[checked_out_by]</strong> and cannot be edited until it is Checked-in.</span>
+								</span>
+								<span class="doc [thumbnailclass]">[thumbnail]</span>
+							</div>
+						</td>
+						<td class="doc summary_cell fdebug">
+							<ul class="doc actionMenu">
+								<!-- li class="actionIcon comments"></li -->
+								<li class="actionIcon actions">
+									<ul>
+										<li class="action_download [actions.download]"><a href="action.php?kt_path_info=ktcore.actions.document.view&fDocumentId=[id]">Download</a></li>
+										<li class="action_instant_view [actions.instant_view]"><a href="[document_link]#preview">Instant View</a></li>
+										[allowdoczohoedit]
+
+										<li class="action_checkout [actions.checkout]"><a href="action.php?kt_path_info=ktcore.actions.document.checkout&fDocumentId=[id]">Check-out</a></li>
+										<li class="action_cancel_checkout [actions.cancel_checkout]"><a href="action.php?kt_path_info=ktcore.actions.document.cancelcheckout&fDocumentId=[id]">Cancel Check-out</a></li>
+										<li class="action_checkin [actions.checkin]"><a href="action.php?kt_path_info=ktcore.actions.document.checkin&fDocumentId=[id]">Check-in</a></li>
+									</ul>
+								</li>
+							</ul>
+							<div class="title"><a class="clearLink" href="[document_link]" style="">[title]</a></div>
+
+							<div class="detail">
+							<span class="item"> Owner: <span class="user">[owned_by]</span></span><span class="item">Created: <span class="date">[created_date]</span> by <span class="user">[created_by]</span></span><span class="item">Updated: <span class="date">[modified_date]</span> by <span class="user">[modified_by]</span></span><span class="item">File size: <span class="user">[filesize]</span></span>
+							</div>
+						</td>
+					</tr>
+					<tr>
+						<td class="expanderField" colspan="3">
+							<span class="expanderWidget comments">
+								<H1>Comments</H1>
+								<span>The comment display and add widget will be inserted here.</span>
+							</span>
+							<span class="expanderWidget properties">
+								<H1>Properties</H1>
+								<span>The properties display and edit widget will be inserted here.</span>
+							</span>
+						</td>
+					</tr>
+				</table>
+			</span>
+		';
+
+		if ($empty) { return '<span class="fragment document" style="display:none;">' . $tpl . '</span>'; }
+
+		return ktVar::parseString($tpl, $item);
+	}
+
+	public function renderFolderItem($item = null, $empty = false, $shortcut = false)
+	{
+		$item['link'] = KTUtil::buildUrl('browse.php', array('fFolderId'=> $item['id']));
+		$checkbox = '';
+		// Sanitize folder title
+		$item['title'] = sanitizeForHTML($item['title']);
+		$tpl='
+			<span class="doc browseView">
+			<table cellspacing="0" cellpadding="0" width="100%" border="0" class="folder item">
+				<tr>
+					' . $checkbox . '
+					<td class="folder icon_cell" width="1">
+						<div class="folder icon">
+						</div>
+					</td>
+					<td class="folder summary_cell">
+						<div class="title"><a class="clearLink" href="[link]">[title]</a></div>
+						<div class="detail"><span class="item">Created by: <span class="creator">[created_by]</span></span></div>
+					</td>
+				</tr>
+			</table>
+			</span>';
+
+		if ($empty) { return '<span class="fragment folder" style="display:none;">' . $tpl . '</span>'; }
+
+		return ktVar::parseString($tpl,$item);
+	}
+
+	/**
+	 * Sanitize a browse view items attributes
+	 *
+	 * @param array $item
+	 * @param int $folderId
+	 * @return array $item
+	 */
+
+	private function browseViewItems($item, $folderId)
+	{
+		foreach ($item as $key=> $value)
+		{
+			if ($value == 'n/a')
+			{
+				$item[$key] = null;
+			}
+		}
+		$item['container_folder_id'] = $folderId;
+
+		return $item;
+>>>>>>> Stashed changes:lib/render_helpers/browseView.helper.php
+	}
+}
+/**
+ * Default user browse view class
+ *
+ */
+class userBrowseView extends browseView
+{
+
+}
+
+/**
+ * Browse view base class
+ *
+ */
+class browseView {
+
+	public function __construct()
+	{
+		if (KTPluginUtil::pluginIsActive('zoho.plugin')) {
+			$this->zohoEnabled = true;
+			require_once(KT_PLUGIN_DIR . '/ktlive/zoho/zoho.inc.php');
+		} else {
+			$this->zohoEnabled = false;
+		}
+
+		// Include new browse view css
+		$oPage = $GLOBALS['main'];
+		$oPage->requireCSSResource("resources/css/newui/browseView.css?" . rand());
+	}
+
+	public function getJavaScript()
+	{
+		$javaScript = '';
+
+		if ($this->zohoEnabled) {
+			$javaScript .= '<script type="text/javascript">' . Zoho::editScript() . '</script>';
+		}
+
+		return $javaScript;
+	}
+
+	public function renderBrowseFolder($folderId = null)
+	{
+		$response = array();
+		$response['bulkActionMenu'] = $this->renderBulkActionMenu($aBulkActions);
+		$folderContentItems = $this->getCurrentFolderContent($this->oFolder->getId());
+
+		$folderView = $pre_folderView = array();
+		foreach ($folderContentItems['folders'] as $item) {
+		    $pre_folderView[] = $this->renderFolderItem($item);
+		}
+		foreach ($folderContentItems['documents'] as $item) {
+		    $pre_folderView[] = $this->renderDocumentItem($item);
+		}
+
+		$pageCount = 1;
+		$perPage = 15;
+		$itemCount = count($pre_folderView);
+		$curItem = 0;
+
+		$folderView[] = '<div class="page page_' . $pageCount . ' ">';
+		foreach ($pre_folderView as $item) {
+			++$curItem;
+		    //Start Next Page
+			if ($curItem > $perPage) {
+				++$pageCount;
+				$curItem = 1;
+				$folderView[] = '</div><div class="page page_' . $pageCount . ' ">';
+			}
+
+			$folderView[] = $item;
+		}
+
+		if ($itemCount <= 0) {
+			$userHasWritePermissions = true; // Need to fix this
+			$folderView[] = $this->noFilesOrFoldersMessage($folderId, $userHasWritePermissions);
+		}
+		$folderView[] = "</div>";
+
+		$response['folderContents'] = join($folderView);
+		$response['fragments'] = '';
+		$response['fragments'] .= $this->renderDocumentItem(null, true);
+		$response['fragments'] .= $this->renderFolderItem(null, true);
+		$response['pagination'] = $this->paginateByDiv($pageCount, 'page', 'paginate', 'item', "kt.pages.browse.viewPage('[page]');", "kt.pages.browse.prevPage();", "kt.pages.browse.nextPage();");
+	}
+
+	/**
+	 * Get the folder listing
+	 *
+	 * @param string $folderId
+	 * @param string $sortField
+	 * @param string $asc
+	 * @return mixed $ret
+	 */
+	public function getFolderContent($folderId, $sortField = 'title', $asc = true)
+	{
+		$user_id = $_SESSION['userID'];
+		$this->oUser = is_null($this->oUser) ? User::get($user_id) : $this->oUser;
+		$disabled = $this->oUser->getDisabled();
+
+		$kt = new KTAPI(3);
+		$session = $kt->start_system_session($this->oUser->getUsername());
+
+		//Get folder content, depth = 1, types= Directory, File, Shortcut, webserviceversion override
+		$folder = &$kt->get_folder_contents($folderId, 1, 'DFS');
+		$items = $folder['results']['items'];
+		$ret = array('folders' => array(), 'documents' => array());
+
+		foreach ($items as $item) {
+			foreach ($item as $key => $value) {
+				if ($value == 'n/a') { $item[$key] = null; }
+			}
+			$item['user_id'] = $user_id;
+			$item['user_disabled'] = $disabled;
+			$item['container_folder_id'] = $folderId;
+
+			switch($item['item_type']) {
+				case 'F':
+					$item['is_shortcut'] = false;
+					$ret['folders'][] = $item;
+					break;
+				case 'D':
+					$item['is_shortcut'] = false;
+					$ret['documents'][] = $item;
+					break;
+				case 'S':
+					$item['is_shortcut'] = true;
+					if ($item['mime_type'] == 'folder') {
+						$ret['folders'][] = $item;
+					} else {
+						$ret['documents'][] = $item;
+					}
+					break;
+			}
+		}
+
+		if (isset($sortField)) {
+			$ret['documents'] = ktvar::sortArrayMatrixByKeyValue($ret['documents'], $sortField, $asc);
+			$ret['folders'] = ktvar::sortArrayMatrixByKeyValue($ret['folders'], $sortField, $asc);
+		}
+
+<<<<<<< Updated upstream:lib/render_helpers/browseView.helper.php
 /**
  * Shared user browse view class
  *
@@ -483,6 +928,8 @@ class browseView {
 			$ret['folders'] = ktvar::sortArrayMatrixByKeyValue($ret['folders'], $sortField, $asc);
 		}
 
+=======
+>>>>>>> Stashed changes:lib/render_helpers/browseView.helper.php
 		return $ret;
 	}
 
@@ -829,7 +1276,11 @@ class browseView {
 							<div class="title"><a class="clearLink" href="[document_link]" style="">[title]</a></div>
 
 							<div class="detail">
+<<<<<<< Updated upstream:lib/render_helpers/browseView.helper.php
 								<span class="item">Owner: <span class="user">[owned_by]</span></span><span class="item">Created: <span class="date">[created_date]</span> by <span class="user">[created_by]</span></span><span class="item">Updated: <span class="date">[modified_date]</span> by <span class="user">[modified_by]</span></span><span class="item">File size: <span class="user">[filesize]</span></span>
+=======
+								<!--<span class="item">Owner: <span class="user">[owned_by]</span></span>--><span class="item">Created: <span class="date">[created_date]</span> by <span class="user">[created_by]</span></span><!-- <span class="item">Updated: <span class="date">[modified_date]</span> by <span class="user">[modified_by]</span></span>--><span class="item">File size: <span class="user">[filesize]</span></span>
+>>>>>>> Stashed changes:lib/render_helpers/browseView.helper.php
 							</div>
 						</td>
 						<td>
@@ -957,6 +1408,10 @@ class browseView {
 
 		return ktVar::parseString($tpl, $item);
 	}
+<<<<<<< Updated upstream:lib/render_helpers/browseView.helper.php
+=======
+>>>>>>> Stashed changes:lib/render_helpers/browseView.helper.php
+>>>>>>> Stashed changes:lib/render_helpers/browseView.helper.php
 
 }
 ?>

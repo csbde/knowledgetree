@@ -42,9 +42,10 @@
 							container.find('.buttonTabContents').fadeOut(opts.animSpeed);
 							container.find('.buttonTabContents.'+$(this).text()).fadeIn(opts.animSpeed);
 						}else{
-							container.find('.buttonTabContents').hide();
+							//container.find('.buttonTabContents').hide();
 							container.find('.buttonTabContents.'+$(this).text()).show();
 						}
+						
 					});
 				});
 				

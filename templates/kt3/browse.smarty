@@ -30,6 +30,10 @@
 {/if}
 <!-- <link rel="stylesheet" type="text/css" href="{php}echo "{$GLOBALS['default']->rootUrl}/resources/css/newui/browseView.css?".rand();{/php}" />
 -->
+<table>
+<tr>
+	<td width="745" valign="top">
+
 <form action="{$browseutil->getActionBaseUrl()}" method="post">
 
 {if ($isEditable)}
@@ -44,9 +48,14 @@
 {if ($isEditable)}
 <div class="dropzone" id="datadrop">
 {/if}
-<div class="standardBorder itemContainer" style="min-width: 800px;">
-	{$bulkActionMenu}
+<div class=" itemContainer" style="width: 720px;">
+	<div class="newActions browseView bulkActionMenu" style="float:right">
+		<a href="" ><span class="new-folder">New Folder</span></a>
+		<a href="{php}echo "{$GLOBALS['default']->rootUrl}action.php?kt_path_info=zoho.new.document&fFolderId=";{/php}{$folder_id}" ><span class="new-onlinedoc">New Document</span></a>
+		<a href="javascript:kt.app.upload.showUploadWindow();"><span class="upload">Upload</span></a>
+	</div>	
 	{$folderContents}
+	{$bulkActionMenu}
 	<div style="width:100%; text-align: center">{$pagination}</div>
 </div>
 {$fragments}
@@ -102,6 +111,11 @@
 
 {/if}
 
+<<<<<<< Updated upstream:templates/kt3/browse.smarty
+=======
+<<<<<<< Updated upstream:templates/kt3/browse.smarty
+=======
+>>>>>>> Stashed changes:templates/kt3/browse.smarty
 {* we break encapsulation pretty badly here. *}
 {literal}
 <script>
@@ -297,4 +311,27 @@
 })(jQuery);
 </script>
 {/literal}
+<<<<<<< Updated upstream:templates/kt3/browse.smarty
+=======
+</td>
+<td valign="top" id="sidebar" class="standardBorder" height="100%" width="215">
+	<div id="sidebar_item" >
+		<h2>
+			Account Info
+		</h2>
+		<p style="font-size: 11px; color: #666;">
+			Plan: Starter <br/>
+			Storage: 61.83 MB of Unlimited<br/>
+			Documents: 156 of Unlimited<br/>
+			<p style="text-align:right; font-size: 11px;">
+				<a href="" class="sidebarUpgradeBn">Upgrade Now</a><br/>
+			</p>
+			<br/>
+		</p>
+	</div>
+</td>
+</tr>
+</table>
+>>>>>>> Stashed changes:templates/kt3/browse.smarty
+>>>>>>> Stashed changes:templates/kt3/browse.smarty
 <!-- FILE_END: kt3/fieldsets/browse.smarty -->

@@ -191,7 +191,7 @@ class KTPage {
     	{
     		$this->menu['dashboard'] = array('label' => _kt("Dashboard"), 'url' => $sBaseUrl.'/dashboard.php');
     	}
-		$this->menu['browse'] = array('label' => _kt("Browse All Documents"), 'url' => $sBaseUrl.'/browse.php');
+		$this->menu['browse'] = array('label' => _kt("Documents"), 'url' => $sBaseUrl.'/browse.php');
     	if(ACCOUNT_ROUTING_ENABLED) {
     		$sLiveUrl = KTLiveUtil::ktlive_url();
 			$this->menu['applications'] = array('label' => _kt("Applications"), 'url' => $sLiveUrl.'/applications.php');
