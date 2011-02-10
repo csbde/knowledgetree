@@ -30,7 +30,7 @@ class LdapUserManager extends LdapManager {
 
         $this->searchAttributes = KTUtil::arrayGet($config, 'searchattributes');
         if (empty($this->searchAttributes)) {
-            $this->searchAttributes = array('cn', 'mail', 'sAMAccountName', 'uid');
+            $this->searchAttributes = array('cn', 'mail', 'sAMAccountName');
         }
 
 	    if (!empty($attributes) && is_array($attributes)) {

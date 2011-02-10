@@ -34,7 +34,7 @@ can <strong>restore</strong> them as necessary.{/i18n}</p>
       <td><input type="checkbox" name="selected_docs[]" value="{$oDoc->getId()}"/></td>
       <td>{$oDoc->getName()|sanitize}</td>
 {*      <td>{getCrumbStringForDocument document=$oDoc}</td> *}
-      <td>{$oDoc->getLastModifiedDate()}</td>
+      <td>{$oDoc->getDisplayLastModifiedDate()}</td>
       <td>{$oDoc->getLastDeletionComment()}</td>
     </tr>
     {/foreach}

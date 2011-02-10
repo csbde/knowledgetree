@@ -1,0 +1,220 @@
+<html>
+<head>
+    <title>jQuery Loading Demo</title>
+    <style>
+body { font-size: 11pt; }
+#top { font-size: 1.2em; }
+.box {
+    margin: 0px 5px;
+    padding: 5px;
+    border: 1px dotted black;
+}
+#main { height: 22em }
+#main, input, select, button { font-size: 12px; }
+.select {
+    color: #666;
+    font-style: italic;
+    float: right;
+    font-size: 10pt;
+}
+label {
+    margin-left: 20px;
+    margin-top: 2px;
+}
+#control {
+    margin-top: 8px;
+}
+#red {
+    width: 90;
+    height: 70;
+    background: red;
+    padding: 15px;
+}
+#yellow {
+    width: 200;
+    height: 200;
+    background: yellow;
+    margin: 10px;
+    position: absolute;
+    left: 300px;
+}
+#control, #options {
+    width: 180px;
+    background: #eee;
+}
+/* all this loading css is optional style sugar;
+   it'll work fine without it. just not look pretty. */
+.loading {
+    background: #FFC129;
+    color: black;
+    font-weight: bold;
+    padding: 3px;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+}
+.loading-img, .loading-element {
+    background: transparent;
+    padding: 0px;
+}
+.loading.top {
+    -moz-border-radius-topleft: 0px;
+    -moz-border-radius-topright: 0px;
+    -webkit-border-top-left-radius: 0px;
+    -webkit-border-top-right-radius: 0px;
+}
+.loading.left {
+    -moz-border-radius-topleft: 0px;
+    -moz-border-radius-bottomleft: 0px;
+    -webkit-border-top-left-radius: 0px;
+    -webkit-border-bottom-left-radius: 0px;
+}
+.loading.bottom {
+    -moz-border-radius-bottomleft: 0px;
+    -moz-border-radius-bottomright: 0px;
+    -webkit-border-bottom-left-radius: 0px;
+    -webkit-border-bottom-right-radius: 0px;
+}
+.loading.right {
+    -moz-border-radius-topright: 0px;
+    -moz-border-radius-bottomright: 0px;
+    -webkit-border-top-right-radius: 0px;
+    -webkit-border-bottom-right-radius: 0px;
+}
+.loading-masked { overflow: hidden; }
+.loading-error {
+    color: #FFF;
+    background: red;
+}
+    </style>
+<!-- overflow:hidden in IE is currently breaking mask calcs :( -->
+<!--[if IE]>
+    <style type="text/css">
+.loading-masked { overflow: visible; }
+    </style>
+<![endif]-->
+    <script type="text/javascript" src="../../jquery.1.4.2.js"></script>
+    <script type="text/javascript" src="jquery.loading.1.6.3.js"></script>
+    <script type="text/javascript" src="../../trunk/jquery.values.js"></script>
+    <script type="text/javascript" src="../log/log.js"></script>
+    <script type="text/javascript">
+$(function() {
+    // set default text
+    $.values('text', $.loading.text);
+
+    $('#toggle').click(function() {
+        var opts = $.values();
+        // treat empty strings as undefined
+        for (var k in opts) if (opts[k] == '') delete opts[k];
+        // toggle away!
+        if (opts.select) {
+            $(opts.select).loading(opts);
+        } else {
+            $.loading(opts);
+        }
+    });
+    // don't let masks lock up the demo
+    $(document).bind('loadingStart', function(e, opts) {
+        var $target = $(e.target);
+        if (!opts.max && opts.mask && (opts.page || $target.is('#main'))) {
+            setTimeout(function() {
+                if ($target.data('loading')) {
+                    $target.loading(false);
+                    log("Cancelled loading to unblock demo!");
+                }
+            }, 5000);
+        }
+    });
+});
+    </script>
+</head>
+<body>
+<div id="top" class="box">
+    <span class="select">#top.box</span>
+    <span title="More options are available than shown too">Defaults are shown.</span>
+    Tweak the settings and toggle away!<br>
+    View the source code to see how little effort these all take on your part. :)
+</div>
+<br clear="all">
+<div id="main" class="box">
+    <span class="select">#main.box</span>
+    <div id="yellow" class="fill">
+        <span class="select">#yellow.fill</span>
+        <div id="red" class="fill">
+            <span class="select">#red.fill</span>
+        </div>
+    </div>
+    <div id="control">
+    $('<select name="select" title="The empty option calls $.loading() instead.">
+        <option></option>
+        <option>#red</option>
+        <option>#yellow</option>
+        <option>#main</option>
+        <option>#top</option>
+        <option>.box</option>
+        <option>.fill</option>
+        <option>div</option>
+    </select>').loading({
+    <div id="options" title="These are just the defaults, all options are optional! :)">
+        <label for="align">align:</label>
+        '<select name="align">
+            <option></option>
+            <option>top-left</option>
+            <option>top-center</option>
+            <option>top-right</option>
+            <option>center-left</option>
+            <option>center</option>
+            <option>center-right</option>
+            <option>bottom-left</option>
+            <option>bottom-center</option>
+            <option>bottom-right</option>
+        </select>',<br>
+        <label for="pulse">pulse:</label>
+        '<select name="pulse">
+            <option></option>
+            <option selected="true">working error</option>
+            <option>working</option>
+            <option>error</option>
+            <option>type</option>
+            <option>fade</option>
+            <option>ellipsis</option>
+            <option>fade error</option>
+            <option>working type</option>
+        </select>',<br>
+        <label for="select">text:</label>
+        '<input type="text" name="text" value="" size="10">',<br>
+        <label for="img">img: 'loading.gif'</label>
+        <input type="checkbox" name="img" value="loading.gif">,<br>
+        <label for="element">element:</label>
+        <select name="element">
+            <option></option>
+            <option>#red</option>
+            <option>#yellow</option>
+            <option>#top</option>
+            <option>#toggle</option>
+            <option>:text</option>
+        </select>,<br>
+        <label for="delay">delay:</label>
+        <select name="delay">
+            <option></option>
+            <option>200</option>
+            <option>1000</option>
+            <option>2000</option>
+            <option>5000</option>
+        </select>,<br>
+        <label for="max">max:</label>
+        <select name="max">
+            <option></option>
+            <option>5000</option>
+            <option>10000</option>
+            <option>30000</option>
+            <option>60000</option>
+        </select>,<br>
+        <label for="mask">mask: true</label>
+        <input type="checkbox" name="mask" value="true">
+        </div>
+    });
+    <button id="toggle">Run</button>
+    </div>
+</div>
+</body>
+</html>

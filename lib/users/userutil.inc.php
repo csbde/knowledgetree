@@ -282,6 +282,7 @@ class KTUserUtil {
                     'transactionNS' => 'ktcore.transactions.share',
                     'userid' => $_SESSION['userID'],
                     'ip' => Session::getClientIP(),
+    	        	'parentid' => $shareContent['object_id'],	//TODO: need to get the parent ID here!
                 ));
     	    }
     	}
@@ -545,7 +546,7 @@ class KTUserUtil {
             					'link' => self::createContentLink($objectTypeName, $objectId),
             					'title' => $objectName,
             					'message' => nl2br($message),
-            					'type' => $objectType,
+            					'type' => ($objectTypeName == 'document') ? 'D' : 'F',
             				);
         }
 

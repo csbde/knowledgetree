@@ -60,7 +60,7 @@ class KTDocumentAction extends KTStandardDispatcher {
     var $sHelpPage = 'ktcore/browse.html';
 
     var $sSection = 'view_details';
-    
+    /** Shared user mutators to deal with bypassing permissions */
 	var $showIfRead = false;
 	var $showIfWrite = false;
 
@@ -259,7 +259,7 @@ class KTDocumentAction extends KTStandardDispatcher {
 		{
 			return false;
 		}
-		// Check if action needs to be hidden for
+		// Check if action needs to be hidden
 		else if(!$this->showIfRead)
 		{
 			if($this->getPermission() == 1)

@@ -35,7 +35,7 @@
  * Contributor( s): ______________________________________
  */
 
-
+require_once(KT_DIR . '/lib/memcache/MemCacheUtil.helper.php');
 /**
  * Uses the permissions cache to determine whether the current user has access to an object (folder / document)
  *
@@ -54,7 +54,7 @@ class PermissionCache
      * @access private
      * @var PermissionMemCache
      */
-    private $memcache;
+    private $memcache = false;
 
     /**
      * The name of the cache table
@@ -160,6 +160,7 @@ class PermissionCache
             $this->memcache->invalidateMemcachePermissions();
         }
         unset($_SESSION['Permissions_Cache']);
+        unset($_SESSION['Permissions_Namespace']);
         return true;
     }
 
@@ -741,9 +742,7 @@ class PermissionMemCache
      */
     private function initMemcache()
     {
-        if(MemCacheUtil::$enabled){
-            return true;
-        }
+        if(MemCacheUtil::$enabled) { return true; }
 
         $oConfig = KTConfig::getSingleton();
         $enabled = $oConfig->setMemcache();

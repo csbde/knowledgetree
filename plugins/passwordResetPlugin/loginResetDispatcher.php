@@ -50,10 +50,6 @@ require_once(KT_LIB_DIR . '/help/helpreplacement.inc.php');
 require_once(KT_LIB_DIR . '/widgets/fieldWidgets.php');
 require_once(KT_LIB_DIR . '/util/ktutil.inc');
 
-if (ACCOUNT_ROUTING_ENABLED) {
-    require_once(KT_LIVE_DIR . '/helpers/liveAccounts.helper.php');
-}
-
 class loginResetDispatcher extends KTDispatcher {
 
     function do_main() {
@@ -137,7 +133,7 @@ class loginResetDispatcher extends KTDispatcher {
         $js[] = '/thirdpartyjs/extjs/adapter/ext/ext-base.js';
         $js[] = '/thirdpartyjs/extjs/ext-all.js';
         // temporarily disabled
-        if (ACCOUNT_ROUTING_ENABLED && liveAccounts::isTrialAccount()) {
+        if (ACCOUNT_ROUTING_ENABLED && $default->tier == 'trial') {
             $js[] = preg_replace('/.*[\/\\\\]plugins/', '/plugins', KT_LIVE_DIR) . '/resources/js/olark/olark.js';
             $oPage->setBodyOnload("javascript: ktOlark.popupTrigger('Hi, do you need help logging in?', 30000);");
         }
