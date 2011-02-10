@@ -18,10 +18,10 @@ class webAjaxHandler {
     public $standardServices = array('system');
     public $parameters = array();
 
+    // TODO do we need to reset the error conditions if a response object is passed in?
     public function __construct(&$response = null, &$kt)
     {
-        //========================= Preparations
-        // set the response object
+        // Preparations
         if (get_class($response) == 'jsonResponseObject') {
             $this->ret = &$response;
         }
@@ -34,13 +34,13 @@ class webAjaxHandler {
         $this->rawRequestObject = isset($_GET['request']) ? $_GET['request'] : (isset($_POST['request']) ? $_POST['request'] : '');
         $this->ret->addDebug('php version', PHP_VERSION);
 
-        //========================= 1. Parse Json
+        // Parse Json
         $this->req = new jsonWrapper($this->rawRequestObject);
         $this->auth = $this->structArray('session,token', $this->req->jsonArray['auth']);
         $this->request = $this->structArray('service,function,parameters', $this->req->jsonArray['request']);
         $this->ret->addDebug('Raw Request', $this->rawRequestObject);
 
-        //Add additional parameters
+        // Add additional parameters
         $add_params = array_merge($_GET, $_POST);
         unset($add_params['request'], $add_params['datasource']);
         $this->request['parameters'] = array_merge($this->request['parameters'], $add_params);
@@ -58,16 +58,12 @@ class webAjaxHandler {
         }
         else {
             $this->ret->addError('KnowledgeTree Object not Received in '.__CLASS__.' constructor. Quitting.');
-            return $this->render();
         }
-
-        $this->dispatch();
-
-        return $this->render();
     }
 
     /**
 	 * Alias for responseobject->log
+	 *
 	 * @param $str
 	 * @return void
 	 */
@@ -78,6 +74,7 @@ class webAjaxHandler {
 
     /**
 	 * Alias for responseobject->error
+	 *
 	 * @param $errMsg
 	 * @return void
 	 */
@@ -102,6 +99,7 @@ class webAjaxHandler {
 
     /**
 	 * Dispatch to the specified service
+	 *
 	 * @return void
 	 */
     public function dispatch()
@@ -171,6 +169,7 @@ class webAjaxHandler {
 
     /**
 	 * Get the latest service version. Ajax from the Website always make use of the latest version available.
+	 *
 	 * @return unknown_type
 	 */
     public function getLatestServiceVersion()
@@ -181,12 +180,23 @@ class webAjaxHandler {
 
     /**
 	 * Render the output
+	 *
 	 * @return unknown_type
 	 */
     public function render()
     {
         echo $this->ret->getJson();
         return true;
+    }
+
+    /**
+     * Alias for responseobject->hasErrors
+     *
+     * @return boolean
+     */
+    public function hasErrors()
+    {
+        return $this->ret->hasErrors();
     }
 
 }

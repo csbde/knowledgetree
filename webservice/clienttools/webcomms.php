@@ -70,5 +70,10 @@ if (PEAR::isError($session)) {
 $kt->start_system_session($session->user->getUserName());
 
 $handler = new webAjaxHandler($ret, $kt);
+if (!$handler->hasErrors()) {
+    $handler->dispatch();
+}
+
+$handler->render();
 
 ?>
