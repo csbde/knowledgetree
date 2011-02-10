@@ -1,52 +1,178 @@
 
+
+<!--<link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/2.8.2r1/build/button/assets/skins/sam/button.css">-->
+{$context->oPage->requireJSResource('thirdpartyjs/yui2/yahoo-dom-event.js')}
+
+<script type="text/javascript" src="http://yui.yahooapis.com/2.8.2r1/build/container/container_core-min.js"></script>
+<script type="text/javascript" src="http://yui.yahooapis.com/2.8.2r1/build/menu/menu-min.js"></script>
+<script type="text/javascript" src="http://yui.yahooapis.com/2.8.2r1/build/element/element-min.js"></script>
+<script type="text/javascript" src="http://yui.yahooapis.com/2.8.2r1/build/button/button-min.js"></script>
+
 <!-- FILE: ktcore/document/view.smarty -->
-	<table border="0" width="100%" class="doc_view">
+<table>
+<tr>
+	<td width="745">
+	<table border="0" width="720" class="doc_view">
 		<tr>
-			<td width="1" valign="top" style="padding-right: 15px;"><span id="doc_thumb" style="float:left;" /></td>
-			<td height="1" valign="top">
-				<h2 class="doc_file_title">
+			<td colspan="2" id="title_row">
+				
+				<span  class="doc_file_title" style="display:inline;">
+					{i18n}{$document->getName()|sanitize}{/i18n}
+				</span>
+				<div id="document_status_area">
+					<a class="workflow disabled" href=""></a>
+					<a class="alert disabled" href=""></a>
+					<a class="subscribe selected" href=""></a>
+
+				</div>
+					
+				
+				<p>{$document->getFileName()} {}</p>
+				
+			</td>
+			
+		</tr>
+		<tr>
+			<!-- <td style="display:none;" width="1" valign="top" style="padding-right: 15px;"><span id="doc_thumb" style="float:left;" /></td> -->
+			<td height="1" valign="top" width="350">
+				
+				<div class="doc_description">
 					{if $document->getImmutable()}<img src="{php}echo "{$GLOBALS['default']->rootUrl}/resources/graphics/newui/docview_immutable.png";{/php}" style="display: inline-block" alt="{i18n}Finalized{/i18n}"  title="{i18n}Finalized{/i18n}" />{/if}
 					{if $document->getIsCheckedOut()}<img src="{php}echo "{$GLOBALS['default']->rootUrl}/resources/graphics/newui/docview_checkedout.png";{/php}" style="display: inline-block" alt="{i18n}Checked-Out{/i18n}"  title="{i18n}Checked Out{/i18n}" />{/if}
-					{i18n}{$document->getName()|sanitize}{/i18n}
-					<span class="doc_version" style="display: block; margin-top: 5px;">
-						<strong>Ver</strong> {$document->getMajorVersionNumber()}.{$document->getMinorVersionNumber()}  - <strong>File Size</strong> {$fieldsetDisplayHelper->_sizeHelper($document->getSize())}
+					<br/>
+					<span class="doc_info" style="display: block; margin-top: 5px;">
+						Version <a href="">{$document->getMajorVersionNumber()}.{$document->getMinorVersionNumber()}</a> | Last Modified by: <a href="">{$doc_data.lastModifier}</a> on <a href="">{$document->getLastModifiedDate()|date_format:"%B %e, %Y at %H:%M"}</a> | Created by: <a href="">{$doc_data.creator}</a> on <a href="">{$document->getCreatedDateTime()|date_format:"%B %e, %Y at %H:%M"}</a> | A </strong> {$fieldsetDisplayHelper->_sizeHelper($document->getSize())} document. 
 						{if $document->getIsCheckedOut()}
 							<span class="doc_checkedout"> <strong>Checked-out By:</strong> {$sCheckoutUser}</span>
 						{/if}
-					</span>
-				</h2>
-				<hr style="border: none; background-color: #E3E3E3; width: 98%; height: 1px; margin-left: 10px; margin-bottom: 15px;" align="left" />
-				<div>
-					<span class="doc_header_item">
-						<span class="doc_field_title">Created by:</span> <span class="doc_user_link">{$doc_data.creator}</span> on <span class="doc_field_value">{$document->getDisplayCreatedDateTime()|date_format:"%B %e, %Y <b>at</b> %H:%M"}</span>
-					</span>
-					<span class="doc_header_item">
-						<span class="doc_field_title">Last Modified by:</span> <span class="doc_user_link">{$doc_data.lastModifier}</span> on <span class="doc_field_value">{$document->getDisplayLastModifiedDate()|date_format:"%B %e, %Y <b>at</b> %H:%M"}</span>
+						
+					<br><br/>
+					<div class="tags">
+						<a href="">Invoice</a>
+						<a href="">Purchase</a>
+						<a href="">Acme Corp</a>
+						<a href="">April</a>
+					</div>
+					
+					<br/>
+					<br/>
+					<table style="padding: 0px margin: 0px;">
+						<tr>
+							<td width="100">Document Type</td>
+							<td><a href="">Invoices</a></td>
+						</tr>
+						<tr>
+							<td width="100">Custom Property</td>
+							<td><a href="">Property Value</a></td>
+						</tr>
+						<tr>
+							<td width="100">Custom Property</td>
+							<td><a href="">Property Value</a></td>
+						</tr>
+						<tr>
+							<td width="100">Custom Property</td>
+							<td><a href="">Property Value</a></td>
+						</tr>
+
+					</table>
+					
+			
+      
+  
 					</span>
 				</div>
+				<!-- <hr style="border: none; background-color: #E3E3E3; width: 98%; height: 1px; margin-left: 10px; margin-bottom: 15px;" align="left" /> -->
+				<div>
+					
+					<span class="doc_header_item">
+
+						<span class="doc_field_title"></span>
+					</span>
+
+							<div id="activity_feed_container" style="margin-top:1em;"></div>
+							<div id="new_comment_form"></div>
+
+					
+				</div>
+			</td>
+			<td valign="top" id="column_right">
+				<div class="buttons" style="margin-bottom: 10px;">
+		<input type="button" class="download" id="download" name="download" value="Download"> 
+		<div id="splitbutton3menu" class="yui-overlay"> 
+    	<div class="bd">Download PDF</div> 
+    	</div>
+       {if $document->getIsCheckedOut()}
+		<input type="button" id="checkin" name="checkin" value="Checkin"> 
+			<div id="splitbutton4menu" class="yui-overlay"> 
+    			<div class="bd">Checkin & download</div> 
+    			<div class="bd">Add new version</div> 
+    		</div>
+    	{else}
+    	<input type="button" id="checkout" name="checkout" value="Checkout"> 
+			<div id="splitbutton5menu" class="yui-overlay"> 
+    			<div class="bd">Checkout and download</div> 
+    			<div class="bd">Add new version</div> 
+    		</div>
+		{/if}
+		<a class="edit_online" id="edit_online" href=""><span class="edit_online">Edit Online</span></a>
+		<input type="button" class="more" id="more" name="more" value="More..."> 
+			<div id="splitbutton6menu" class="yui-overlay"> 
+    		<div class="bd">Move</div> 
+    		<div class="bd">Copy</div> 
+    		<div class="bd">Rename</div>
+    		<hr/> 
+    		<div class="bd">Permissions</div> 
+    		<div class="bd">Change Owner</div> 
+    	</div>
+    	
+		<script>
+			{literal}
+				var oSplitButton3 = new YAHOO.widget.Button("download", { type: "split", menu: "splitbutton3menu" }); 
+				var oSplitButton4 = new YAHOO.widget.Button("checkin", { type: "split", menu: "splitbutton4menu" }); 
+				var oSplitButton5 = new YAHOO.widget.Button("checkout", { type: "split", menu: "splitbutton5menu" });
+				var oSplitButton6 = new YAHOO.widget.Button("more", { type: "split", menu: "splitbutton6menu" });
+			{/literal}
+		</script>
+
+			
+</div>				{if !empty($live_preview)}
+					<div style="margin-top:1em;">{$live_preview}</div>
+				{else}
+			<div class="thumb-shadow" style="float: right;">
+				<img src="{php}echo "{$GLOBALS['default']->rootUrl}plugins/thumbnails/thumbnail_view.php?documentId=";{/php}{$document_id}"/>
+			</div>
+			{/if}
+			<div class="buttons" style="margin: 15px 20px 15px 0px; display:inline-block;">
+				<a href=""><span class="Share">Share</span></a>
+			</div>
+				<a href=""><span class="share_url">This page URL</span></a>
+				<a href=""><span class="share_url">Download URL</span></a>
+				<a href=""><span class="share_url">Preview URL</span></a> 
+  			</div>
+   
 			</td>
 
 		</tr>
 		<tr>
 			<td colspan="2" valign="top">
 				<ul class="view_doc_tabs">
-					<li class="page_activity" title="Activity">
+					<!-- <li class="page_activity" title="Activity">
 						<table class="kt_collection" style="clear: both;"><tr><td>
 							<div id="activity_feed_container" style="margin-top:1em;"></div>
 							<div id="new_comment_form"></div>
 						</table>
-					</li>
+					</li>-->
 
-					{if !empty($live_preview)}
+					<!--{if !empty($live_preview)}
 						<li class="page_preview"  title="View">
 							<table class="kt_collection" style="clear: both;"><tr><td>
 								<div style="margin-top:1em;">{$live_preview}</div>
 							</table>
 						</li>
-					{/if}
-
-					<li class="page_properties" title="Properties">
-						<table class="kt_collection" style="clear: both;"><tr><td>
+					{/if}-->
+					
+					<!--<li class="page_properties" title="Properties">-->
+						<table class="kt_collection" style="display:none; clear: both;"><tr><td>
 							{if ($hasNotifications & bCanEdit)}
 								<div class="notification">
 
@@ -120,20 +246,54 @@
 			</td>
 			{if !empty($viewlet_data2)}
                 <td valign="top" width="225px">
-            		<!--  Document "Views" -->
+            	
             		<div id="document-views">
+            		<div class="thumb-shadow" style="display:none;"></div>
             			{$viewlet_data2}
             		</div>
+            		
                 </td>
             {/if}
 		</tr>
 	</table>
 
 	{if !empty($viewlet_data)}
-		<!--  Document "Views" -->
-		<div style="display: none;">
-			{$viewlet_data}
+		<div>
+			 {$viewlet_data}
 		</div>
     {/if}
+    </td>
+    	<td valign="top" id="sidebar" class="standardBorder" height="100%" width="215">
+				<div id="sidebar_item" >
+					<h2>
+	    				Account <span class="acc_settings"><a href="">settings</a></span>
+	    			</h2>
+	    			<p style="font-size: 11px; padding: 10px; color: #666;">
+	    				Plan: Starter <br/>
+	    				Storage: 61.83 MB of Unlimited<br/>
+	    				Documents: 156 of Unlimited<br/>
+	    				<p style="text-align:right; font-size: 11px;">
+	    					<a href="" class="sidebarUpgradeBn">Upgrade Now</a><br/>
+	    				</p>
+	    				<br/>
+	    			</p>
+				</div>
+				<div id="sidebar_item" >
+					<h2>
+	    				Other Documents in this folder
+	    			</h2>
+	    				<ul>
+	    					<li style="font-size: 11px;"><a href="">INV 203</a></li>
+	    					<li style="font-size: 11px;"><a href="">INV 269</a></li>
+	    				</ul>
+			</div>
+	
+	
 
+
+
+
+	</td> 
+	</tr> 
+</table>
 <!-- FILE_END: ktcore/document/view.smarty -->
