@@ -3,6 +3,7 @@
 include_once('../../ktapi/ktapi.inc.php');
 error_reporting(E_ERROR);
 
+// FIXME Should we not turn this off for production?
 define('COMMS_DEBUG', true);
 // Be careful altering this inside the services area - it should never be set to 0 as that could cause runaway processes
 define('COMMS_TIMEOUT', 60 * 3);
@@ -51,6 +52,7 @@ include_once('webajaxhandler.php');
 include_once('serviceHelper.php');
 include_once('client_service.php');
 include_once('clienttools_syslog.php');
+include_once('requesthandler.php');
 
 $ret = new jsonResponseObject();
 if (isset($_GET['datasource'])) {
@@ -69,11 +71,18 @@ if (PEAR::isError($session)) {
 
 $kt->start_system_session($session->user->getUserName());
 
-$handler = new webAjaxHandler($ret, $kt);
-if (!$handler->hasErrors()) {
-    $handler->dispatch();
-}
+// get the request (or package of requests)
+$requestHandler = new requestHandler();
+$requests = $requestHandler->getRequests();
 
-$handler->render();
+foreach ($requests as $request) {
+    $handler = new webAjaxHandler($request, $requestHandler->getRawRequest(), $ret, $kt);
+    if (!$handler->hasErrors()) {
+        $handler->dispatch();
+    }
+
+    // TODO package results
+    $handler->render();
+}
 
 ?>

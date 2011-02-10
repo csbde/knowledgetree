@@ -8,9 +8,11 @@ class webAjaxHandler {
     protected $errors = array();
 
     public $ret = null;
+    // bad naming - should not have a $req and $request
     public $req = null;
     public $version = null;
     public $auth = null;
+    // bad naming - should not have a $req and $request
     public $request = null;
     public $kt = null;
     public $authenticator = null;
@@ -19,7 +21,7 @@ class webAjaxHandler {
     public $parameters = array();
 
     // TODO do we need to reset the error conditions if a response object is passed in?
-    public function __construct(&$response = null, &$kt)
+    public function __construct($req, $raw, &$response = null, &$kt)
     {
         // Preparations
         if (get_class($response) == 'jsonResponseObject') {
@@ -29,13 +31,11 @@ class webAjaxHandler {
             $this->ret = new jsonResponseObject();
         }
 
+        $this->req = $req;
+        $this->rawRequestObject = $raw;
         $this->ret->location = 'webajaxhandler';
         $this->remoteIp = (getenv('HTTP_X_FORWARDED_FOR')) ? getenv('HTTP_X_FORWARDED_FOR') : getenv('REMOTE_ADDR');
-        $this->rawRequestObject = isset($_GET['request']) ? $_GET['request'] : (isset($_POST['request']) ? $_POST['request'] : '');
         $this->ret->addDebug('php version', PHP_VERSION);
-
-        // Parse Json
-        $this->req = new jsonWrapper($this->rawRequestObject);
         $this->auth = $this->structArray('session,token', $this->req->jsonArray['auth']);
         $this->request = $this->structArray('service,function,parameters', $this->req->jsonArray['request']);
         $this->ret->addDebug('Raw Request', $this->rawRequestObject);

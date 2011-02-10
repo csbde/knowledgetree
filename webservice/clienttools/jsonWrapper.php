@@ -60,7 +60,7 @@ class jsonResponseObject {
         if ($varname == null) {
             return $this->data;
         }
-        else{
+        else {
             return isset($this->data[$varname]) ? $this->data[$varname] : null;
         }
     }
@@ -123,7 +123,7 @@ class jsonResponseObject {
         if ($this->isDataSource) {
             $response = json_encode($response['data']);
         }
-        else{
+        else {
             $response = json_encode($response);
         }
 
@@ -138,6 +138,7 @@ class jsonWrapper {
 
     public $raw = '';
     public $jsonArray = array();
+    public $packaged = false;
 
     public function __construct($content = null)
     {
@@ -148,8 +149,8 @@ class jsonWrapper {
         }
 
         // check for a request package vs single request
-        // TODO test invalid parameters for packaged requests
-        if (is_array($content['package'])) {
+        if (!empty($content['package']) && is_array($content['package'])) {
+            $this->packaged = true;
             foreach ($content['package'] as $key => $request) {
                 $this->checkParameters($content['package'][$key]);
             }
