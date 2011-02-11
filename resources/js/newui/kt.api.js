@@ -1,4 +1,5 @@
 kt.api = new function() {
+
 	this.cacheTimeout = 20;
 	this.persistentDataCacheTimeout = 30000;
 

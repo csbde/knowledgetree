@@ -56,7 +56,6 @@ ktjapi = new function() {
 		}
 	}
 
-
 	/**
 	 * Function for showing the registered spinner image when the system is busy with an ajax call
 	 */
@@ -133,8 +132,8 @@ ktjapi = new function() {
 		return results;
 	};
 
-	this.callMethod = function(func, params,callback, sync, errorFunct, cacheTimeout, customTimeout) {
-		var afunc = ('' + func).split(/\./);
+	this.callMethod = function(func, params, callback, sync, errorFunct, cacheTimeout, customTimeout) {
+	    var afunc = ('' + func).split(/\./);
 		var reqObj = this.createPackage(afunc[0], afunc[1], params);
 
 		//Make sure cacheTimeout is dealt with

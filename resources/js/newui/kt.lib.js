@@ -67,6 +67,7 @@ kt.lib.Object = new function() {
 };
 
 kt.lib.shortcut = {
+
 	'all_shortcuts':{},// All the shortcuts are stored in this array
 	'add': function(shortcut_combination,callback,opt) {
 		// Provide a set of default options
@@ -289,9 +290,11 @@ kt.lib.shortcut = {
 		else if (ele.removeEventListener) { ele.removeEventListener(type, callback, false); }
 		else { ele['on'+type] = false; }
 	}
+
 }
 
 kt.lib.meta = new function() {
+
 	this.data = {};
 
 	this.set = function(elem, name, value) {
@@ -335,4 +338,5 @@ kt.lib.meta = new function() {
 
         return id;
 	}
+
 }
