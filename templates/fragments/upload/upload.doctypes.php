@@ -1,22 +1,27 @@
 <?php
+
 include_once('../../ktapi/ktapi.inc.php');
 
 $KT = new KTAPI(3);
 //$KT->get(3);// Set it to Use Web Version 3
 
 //Pick up the session
-$session=KTAPI_UserSession::getCurrentBrowserSession($KT);
+$session = KTAPI_UserSession::getCurrentBrowserSession($KT);
 $KT->start_system_session($session->user->getUserName());
 
-function getDocTypes(){
-	$types=DocumentType::getList();
-	$ret=array();
-	foreach($types as $type){
-		$ret[$type->aFieldArr['id']]=$type->aFieldArr;
-	}
-	return $ret;
-}
+if (!function_exists('getDocTypes')) {
+    function getDocTypes()
+    {
+        $types = DocumentType::getList();
 
+        $ret = array();
+        foreach ($types as $type) {
+            $ret[$type->aFieldArr['id']] = $type->aFieldArr;
+        }
+
+        return $ret;
+    }
+}
 
 ?>
     <div id="uploaddialog">
@@ -28,8 +33,8 @@ function getDocTypes(){
         			<select class="ul_doctype" onChange="kt.app.upload.changeGlobalDoctype(this.options[this.selectedIndex].value);">
         				<?php
         				  $docTypes=getDocTypes();
-        				  foreach($docTypes as $docTypeId => $docType):
-        				   if(!$docType['disabled']):
+        				  foreach ($docTypes as $docTypeId => $docType) :
+        				   if (!$docType['disabled']) :
         				?>
         				<option value="<?php echo $docTypeId; ?>" ><?php echo $docType['name']; ?></option>
 
