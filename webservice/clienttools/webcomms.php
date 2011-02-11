@@ -81,8 +81,17 @@ foreach ($requests as $request) {
         $handler->dispatch();
     }
 
-    // TODO package results
+    ob_start();
     $handler->render();
+    $output[] = ob_get_clean();
+}
+
+if (count($output) == 1) {
+    echo $output[0];
+}
+else {
+    // not 100% happy with this, but...it works
+    echo implode('|', $output);
 }
 
 ?>

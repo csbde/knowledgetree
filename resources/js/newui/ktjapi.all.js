@@ -158,23 +158,26 @@ ktjapi = new function() {
 		//Definition of the success function
 		//TODO: Extract from this location and point to an external function?
 		var success = (function(callback) {
-			return function(ds,st,xhr) {
-				xhr = xhr.responseText;
-				try {
-					var data = ktjapi._lib.String.json.decode(xhr);
+			return function(ds, st, xhr) {
+				var data;
+			    xhr = xhr.responseText;
+			    try {
+				    var response = xhr.split('|');
+				    for (var idx = 0; idx < response.length; ++idx) {
+				        data = ktjapi._lib.String.json.decode(response[idx]);
+				        if (data.errors.hadErrors > 0) {
+				            for (var i = 0; i < data.errors.errors.length; i++) {}
+				        } else {
+				            ktjapi.setCache(data.request.request, data);
+				        }
+				        if (typeof(callback) == 'function') { callback(data); }
+				    }
 				} catch(e) {
-					data = {auth:{}, data:{}, status:{random_token:'', session_id:''}, request:{}, raw:xhr, errors:{hadErrors:1, errors:[{message:'JSON From Server Incorrect', type:''}]}};
+					alert('oops, exception :: ' + e.description);
+				    data = {auth:{}, data:{}, status:{random_token:'', session_id:''}, request:{}, raw:xhr, errors:{hadErrors:1, errors:[{message:'JSON From Server Incorrect', type:''}]}};
 					ktjapi.evt.trigger(ktjapi.cfg.get('JSONerrorEventName'), data);
 					//return;
 				}
-//				ktjapi.cfg.set('security.token', data.status.random_token);
-//				ktjapi.cfg.set('server.session', data.status.session_id);
-				if (data.errors.hadErrors > 0) {
-					for (var i = 0; i < data.errors.errors.length; i++) {}
-				} else {
-					ktjapi.setCache(data.request.request, data);
-				}
-				if (typeof(callback) == 'function') { callback(data); }
 			};
 		} (callback));
 
@@ -191,6 +194,18 @@ ktjapi = new function() {
 		var evt = 'ktjapi_event:' + func;
 		return uri.url;
 	};
+
+	this.handleData = function(data, callback) {
+	    // ktjapi.cfg.set('security.token', data.status.random_token);
+	    // ktjapi.cfg.set('server.session', data.status.session_id);
+	    alert('had errors?: ' + data.errors.hadErrors)
+	    if (data.errors.hadErrors > 0) {
+	        for (var i = 0; i < data.errors.errors.length; i++) {}
+	    } else {
+	        ktjapi.setCache(data.request.request, data);
+	    }
+	    if (typeof(callback) == 'function') { callback(data); }
+	}
 
 	/**
 	 * Create the request object
@@ -986,7 +1001,7 @@ ktjapi.ajax = new function() {
 	/**
 	 * Perform a POST request
 	 */
-	this.postRequest=function(url, data, success, errors, sync) {
+	this.postRequest = function(url, data, success, errors, sync) {
 		var sync = sync ? true : false;
 		var success = (typeof(success) == 'function') ? success : function() {};
 		var errors = (typeof(errors) == 'function') ? errors : function() {};

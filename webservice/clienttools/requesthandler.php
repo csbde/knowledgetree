@@ -20,6 +20,7 @@ class requestHandler {
                 // NOTE we may want to do a deep copy, as cloning leaves internal variables which are objects as shared
                 //      deep copy can be achieved by $clone = unserialize(serialize($object1));
                 //      This incurs a potential performance hit (how much?) so we'll go with shallow copy for now.
+                //      (for an even better method, see: http://ca3.php.net/language.oop5.cloning)
                 $request = clone $req;
                 foreach ($request->jsonArray['request']['parameters']['name'] as $key => $internalParam) {
                     if ($internalParam != $param) {
@@ -29,6 +30,8 @@ class requestHandler {
                 $request->jsonArray['request']['parameters']['name'] = $param;
                 $this->requests[] = $request;
             }
+
+            unset($req);
         }
         else {
             $this->requests[] = $req;
