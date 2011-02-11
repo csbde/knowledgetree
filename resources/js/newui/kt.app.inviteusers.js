@@ -15,23 +15,25 @@ kt.app.inviteusers = new function() {
 
     // What is the actual difference between a get and an exec for fragments?
 
-	//contains a list of fragments that will get preloaded
+	// contains a list of fragments that will get preloaded
     var fragments = this.fragments = [];
 
-    //contains a list of executable fragments that will get preloaded
+    // contains a list of executable fragments that will get preloaded
     var execs = this.execs = ['users/invite.dialog', 'users/invite.confirm.dialog'];
+    var packaged = this.packaged = [execs];
 
-    //scope protector. inside this object referrals to self happen via 'self' rather than 'this' to make sure we call the functionality within the right scope.
+    // scope protector. inside this object referrals to self happen via 'self' rather than 'this'
+    // to make sure we call the functionality within the right scope.
     var self = this;
 
     var elems = this.elems = {};
 
-    //Initializes the upload widget on creation. Currently does preloading of resources.
+    // Initializes the upload widget on creation. Currently does preloading of resources.
     this.init = function() {
-        kt.api.preload(fragments, execs);
+        kt.api.preload(fragments, packaged);
     }
 
-    //Container for the EXTJS window
+    // Container for the EXTJS window
     this.inviteWindow = null;
 
     // send the invites and add the users to the system

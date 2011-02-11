@@ -148,30 +148,16 @@ class jsonWrapper {
             throw new jsonContentException('Invalid JSON input', jsonContentException::INPUT_ERROR);
         }
 
-        // check for a request package vs single request
-        if (!empty($content['package']) && is_array($content['package'])) {
-            $this->packaged = true;
-            foreach ($content['package'] as $key => $request) {
-                $this->checkParameters($content['package'][$key]);
-            }
-        }
-        else {
-            $this->checkParameters($content);
-        }
-
-        $this->jsonArray = $content;
-    }
-
-    /**
-     * Check the request parameters to ensure they are in array format
-     *
-     * @param array $content
-     */
-    private function checkParameters(&$content)
-    {
         if (!is_array($content['request']['parameters'])) {
             $content['request']['parameters'] = array();
         }
+
+        // check for a request package vs single request
+        if (is_array($content['request']['parameters']['name'])) {
+            $this->packaged = true;
+        }
+
+        $this->jsonArray = $content;
     }
 
     public function getVersion()
