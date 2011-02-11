@@ -173,7 +173,6 @@ ktjapi = new function() {
 				        if (typeof(callback) == 'function') { callback(data); }
 				    }
 				} catch(e) {
-					alert('oops, exception :: ' + e.description);
 				    data = {auth:{}, data:{}, status:{random_token:'', session_id:''}, request:{}, raw:xhr, errors:{hadErrors:1, errors:[{message:'JSON From Server Incorrect', type:''}]}};
 					ktjapi.evt.trigger(ktjapi.cfg.get('JSONerrorEventName'), data);
 					//return;

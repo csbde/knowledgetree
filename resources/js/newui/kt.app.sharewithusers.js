@@ -9,13 +9,14 @@ if (typeof(kt.api) == 'undefined') { kt.api={}; }
  */
 kt.app.sharewithusers = new function() {
 
-    // I don't think both of these are needed, what's the difference between a get and an exec for a fragment?
-
-	//contains a list of fragments that will get preloaded
-    var fragments = this.fragments = ['users/invite.shared.dialog'];
+    //contains a list of fragments that will get preloaded
+    var fragments = this.fragments = [];
 
     //contains a list of executable fragments that will get preloaded
+    // NOTE: 'users/invite.shared.dialog' was in fragments also - need to figure out the difference between execs and fragments
     var execs = this.execs = ['users/invite.shared.dialog', 'users/invite.shared.confirm.dialog'];
+    // strongly suggested that you package the execs and fragments like this - then they will go off in a single call
+    var execPackage = this.execPackage = [execs];
 
     //scope protector. inside this object referrals to self happen via 'self' rather than 'this' to make sure we call the functionality within the right scope.
     var self = this;
@@ -23,7 +24,7 @@ kt.app.sharewithusers = new function() {
 
     //Initializes the upload widget on creation. Currently does preloading of resources.
     this.init = function() {
-        kt.api.preload(fragments, execs);
+        kt.api.preload(fragments, execPackage);
     }
 
     //Container for the EXTJS window
