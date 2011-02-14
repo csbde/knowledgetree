@@ -47,6 +47,8 @@ require_once(KT_LIB_DIR . "/roles/Role.inc");
 require_once(KT_LIB_DIR . "/roles/roleallocation.inc.php");
 require_once(KT_LIB_DIR . "/permissions/permissionutil.inc.php");
 require_once(KT_LIB_DIR . '/mime.inc.php');
+require_once(KT_LIB_DIR . "/util/ktutil.inc");
+
 /* This page is run via an AJAX call from the update.js for this plugin.
 * It checks to see if both the dropdocuments folder and the users personal folder exist.
 * If they don't, it creates them and assigns permission and roles accordingly.
@@ -203,7 +205,7 @@ class MyDropDocumentsPage extends KTStandardDispatcher {
             }
         }
 
-        $location = 'browse.php?fFolderId='.$iMyDocsFolderID;
+        $location = KTUtil::buildUrl('browse.php', array('fFolderId'=>$iMyDocsFolderID));
         $sReturnTable .= '</tbody>'.
         '</table>'.
         '<br>'.

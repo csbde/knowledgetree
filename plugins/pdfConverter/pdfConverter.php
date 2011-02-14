@@ -91,7 +91,7 @@ class pdfConverter extends BaseProcessor
         $path = $oStorage->temporaryFile($this->document);
         $ext = KTMime::getFileType($this->document->getMimeTypeID());
         $mimetype = KTMime::getMimeTypeName($this->document->getMimeTypeID());
-			
+
         if(!$oStorage->file_exists($path)){
             global $default;
             $default->log->debug('PDF Converter: Document, id: '.$this->document->iId.', does not exist at given storage path: '.$path);
@@ -215,7 +215,7 @@ class pdfConverter extends BaseProcessor
 	    	// Get contents and send to converter
         	$result = $this->xmlrpc->convertDocument($sourceFile, $targetFile, $this->ooHost, $this->ooPort);
 		}
-		
+
         if(is_string($result)){
             $default->log->error('PDF Converter Plugin: Conversion to PDF Failed');
             $oStorage->unlink($sourceFile);
@@ -243,10 +243,30 @@ class pdfConverter extends BaseProcessor
         $res = @copy($targetFile, $pdfFile);
         $oStorage->unlink($sourceFile);
         $oStorage->unlink($targetFile);
+
+
+		// Check pdf exists and set the flag in the DB
+		if($oStorage->file_exists($pdfFile)){
+		    // 0 = nothing, 1 = pdf, 2 = thumbnail, 4 = flash
+		    // 1+2 = 3: pdf & thumbnail; 1+4 = 5: pdf & flash; 2+4 = 6: thumbnail & flash; 1+2+4 = 7: all
+		    $flag = $this->document->getHasRendition();
+
+		    if(is_numeric($flag)){
+		        if(in_array($flag, array(0,2,4,6))){
+                    $flag = $flag + 1;
+		        }
+		    }else {
+		        $flag = 1;
+		    }
+
+		    $this->document->setHasRendition($flag);
+		    $this->document->update();
+		}
+
         return true;
 
     }
-    
+
     function convertTiff($sourceFile, $targetFile) {
     	global $default;
 		$pathConvert = (!empty($default->convertPath)) ? $default->convertPath : 'convert'; // Retrieve convert location

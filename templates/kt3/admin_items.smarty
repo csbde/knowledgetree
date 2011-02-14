@@ -11,13 +11,19 @@
 	{$jscript}
 	{/if}
 	{if ($items === null)}
-	<p class="descriptiveText">{i18n}No items in the category.{/i18n}</p>
+		{if ($message)}
+			<p class="descriptiveText">{i18n}{$message}{/i18n}</p>
+		{else}
+			<p class="descriptiveText">{i18n}No items in the category.{/i18n}</p>
+		{/if}
 	{else}
-	   {foreach item=aItem from=$items}
-	   <div style="margin-top:5px;">
-		   <a href="{ktLink base="admin.php" subpath="`$aItem.fullname`"}">{$aItem.title}</a>
-		   <div class="descriptiveText">{$aItem.description}</div>
-	   </div>
-	   {/foreach}
+		{if ($items)}
+			{foreach item=aItem from=$items}
+				<div style="margin-top:5px;">
+					<a href="{ktLink base="admin.php" subpath="`$aItem.fullname`"}">{$aItem.title}</a>
+					<div class="descriptiveText">{$aItem.description}</div>
+				</div>
+			{/foreach}
+		{/if}
 	{/if}
 </div>

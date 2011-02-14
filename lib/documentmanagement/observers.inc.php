@@ -77,7 +77,7 @@ class JavascriptObserver {
     }
 
     function receiveMessage(&$msg) {
-        if (is_a($msg, 'KTUploadNewFile')) {
+        if ($msg instanceof KTUploadNewFile) {
             printf('<script language="javascript">kt_add_document_newFile("%s")</script>', $msg->getString());
             return;
         }
@@ -124,7 +124,7 @@ class KTSinglePageObserver {
     }
 
     function receiveMessage(&$msg) {
-        if (is_a($msg, 'KTUploadNewFile')) {
+        if ($msg instanceof KTUploadNewFile) {
             print "<h2>" . $msg->getString() . "</h2>";
             return;
         }

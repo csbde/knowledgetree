@@ -289,6 +289,7 @@ CREATE TABLE `document_content_version` (
   `minor_version` int(11) NOT NULL default '0',
   `storage_path` varchar(1024) default NULL,
   `md5hash` char(32) default NULL,
+  `has_rendition` INT(4),
   PRIMARY KEY  (`id`),
   KEY `document_id` (`document_id`),
   KEY `mime_id` (`mime_id`),
@@ -636,7 +637,6 @@ CREATE TABLE `download_files` (
   `filesize` int(10) unsigned,
   `content_version` int(10) unsigned,
   `hash` varchar(100) NOT NULL,
-  PRIMARY KEY  (`document_id`,`session`),
   CONSTRAINT `download_files_ibfk_1` FOREIGN KEY (`document_id`) REFERENCES `documents` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -1225,6 +1225,16 @@ CREATE TABLE `permission_dynamic_conditions` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
+-- Table structure for table `permission_fast_cache`
+--
+
+create table `permission_fast_cache` (
+    `user_id` INT(11) NOT NULL,
+    `descriptor_id` INT(11) NOT NULL,
+    KEY `user_id` (`user_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
 -- Table structure for table `permission_lookup_assignments`
 --
 
@@ -1455,6 +1465,21 @@ CREATE TABLE `search_saved_events` (
   `document_id` int(11) NOT NULL,
   PRIMARY KEY  (`document_id`),
   CONSTRAINT `search_saved_events_ibfk_1` FOREIGN KEY (`document_id`) REFERENCES `documents` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+--
+-- Table structure for table `shared_content`
+--
+
+CREATE TABLE IF NOT EXISTS `shared_content` (
+  `user_id` int(11) NOT NULL,
+  `system_user_id` int(11) NOT NULL,
+  `object_id` int(11) NOT NULL,
+  `type` enum('folder','document') NOT NULL DEFAULT 'document',
+  `permissions` int(1) NOT NULL DEFAULT 0,
+  `parent_id` int(11) DEFAULT NULL,
+  KEY `user_id` (`user_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --

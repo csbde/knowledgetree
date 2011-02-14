@@ -1,0 +1,104 @@
+@import "mixins";
+
+$borderColors: #CCCCCC;
+$background: #EEEEEE;
+
+body{
+	padding: 10px;
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 14px;
+}
+
+
+.page{
+	max-width: 800px;
+	margin: auto;
+}
+
+.collapsebox{
+	position: relative;
+	@include corners(10px);
+	background-color: $background;
+	border: 1px solid darken($background,20%);
+	display: block;
+	margin-bottom: 15px;
+	
+	.title{
+		position: absolute;
+		top: -10px;
+		left: 10px;
+		background-color: darken($background,10%);
+		border: 1px solid darken($background,20%);
+		padding: 2px 5px;
+		text-shadow: #333333 1px 1px 3px;
+		font-size: 14px;
+		@include corners(5px);
+	}
+	
+	.control{
+		position: absolute;
+		top: -10px;
+		right: 20px;
+		background-color: $background;
+		padding: 0px 5px;
+		border: 1px solid $borderColors;
+		@include corners(5px);
+		margin: 0px;
+		font-size: 14px;
+		font-weight: bold;
+		&:hover{
+			cursor: pointer;
+		}
+	}
+	
+	&.response{
+		$background: #EBE8C7;
+		background-color: $background;
+		border: 1px solid darken($background,20%);
+		.title{
+			background-color: darken($background,10%);
+			border: 1px solid darken($background,20%);
+		}	
+	}
+	
+	&.altered{
+		$background: #E0B4B9;
+		background-color: $background;
+		border: 1px solid darken($background,20%);
+		.title{
+			background-color: darken($background,10%);
+			border: 1px solid darken($background,20%);
+		}
+	}
+		
+	&.snapshot{
+		$background: #A9F0A1;
+		background-color: $background;
+		border: 1px solid darken($background,20%);
+		.title{
+			background-color: darken($background,10%);
+			border: 1px solid darken($background,20%);
+		}
+	}
+	
+	&.collapsed{
+		.body{
+			display: none;
+		}
+	}
+	
+	.body{
+		margin: 0px 10px 10px 10px;
+		display: block;
+	}
+}
+
+span.row{
+	display: inline-block;
+	width: 100%;
+}
+
+textarea{
+	width: 100%;
+	height: 100px;
+}

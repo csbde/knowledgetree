@@ -118,15 +118,8 @@ class Document {
     function getDocumentTypeID() { return $this->_oDocumentMetadataVersion->getDocumentTypeId(); }
     function setDocumentTypeID($sNewValue) { $this->_oDocumentMetadataVersion->setDocumentTypeId($sNewValue); }
 
-    function getName($truncate=NULL) { 
-    	$ret=$this->_oDocumentMetadataVersion->getName();
-    	$truncate=(int)$truncate;
-    	if($truncate>0){
-    		if(strlen($ret)>$truncate){
-    			$ret=substr($ret,0,$truncate-3).'...';
-    		}
-    	} 
-    	return $ret;
+    function getName() {
+    	return $this->_oDocumentMetadataVersion->getName();
     }
     function setName($sNewValue) { $this->_oDocumentMetadataVersion->setName($sNewValue); }
 
@@ -178,6 +171,9 @@ class Document {
 
     function getStoragePath() { return $this->_oDocumentContentVersion->getStoragePath(); }
     function setStoragePath($sNewValue) { $this->_oDocumentContentVersion->setStoragePath($sNewValue); }
+
+    function getHasRendition() { return $this->_oDocumentContentVersion->getHasRendition(); }
+    function setHasRendition($iNewValue) { $this->_oDocumentContentVersion->setHasRendition($iNewValue); }
 
 
 
@@ -621,12 +617,12 @@ class Document {
         }
         $iId = $oDocument->_oDocumentCore->getId();
         $aContentVersion["documentid"] = $iId;
-        
+
         $oDocument->_oDocumentContentVersion = KTDocumentContentVersion::createFromArray($aContentVersion);
         if (PEAR::isError($oDocument->_oDocumentContentVersion)) { return $oDocument->_oDocumentContentVersion; }
         $aMetadataVersion["documentid"] = $iId;
         $aMetadataVersion["contentversionid"] = $oDocument->_oDocumentContentVersion->getId();
-        
+
         $oDocument->_oDocumentMetadataVersion = KTDocumentMetadataVersion::createFromArray($aMetadataVersion);
         if (PEAR::isError($oDocument->_oDocumentMetadataVersion)) { return $oDocument->_oDocumentMetadataVersion; }
         $oDocument->_oDocumentCore->setMetadataVersionId($oDocument->_oDocumentMetadataVersion->getId());
@@ -714,6 +710,35 @@ class Document {
         return $result;
     }
     // }}}
+    
+	function getContentVersionStatus($version)
+    {
+        $aVersion = explode('.', $version);
+        $major = $aVersion[0];
+        $minor = $aVersion[1];
+
+        $doc_id = $this->iId;
+        
+        $query = "
+        		select dmv.status_id as status_id from document_content_version dcv 
+        		inner join document_metadata_version dmv on dcv.id = dmv.content_version_id 
+        		where dcv.document_id = $doc_id and dcv.major_version = $major and dcv.minor_version = $minor";
+
+        $result = DBUtil::getOneResultKey($query, 'status_id');
+        
+        $GLOBALS['default']->log->debug('getContentVersionStatus result '.print_r($result, true));
+
+        if(empty($result)){
+            return PEAR::raiseError("Requested content version, $version, does not exist.");
+        }
+
+        if(PEAR::isError($result)){
+            return $result;
+        }
+
+        return $result;
+        
+    }
 
     // {{{ getMetadataVersionIdFromVersion
     static function getMetadataVersionIdFromVersion($doc_id, $version)

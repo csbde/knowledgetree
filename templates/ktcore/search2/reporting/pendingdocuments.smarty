@@ -38,7 +38,7 @@
 
 {foreach key=key from=$pending_docs item=pendingDocs}
 <tr>
-    <td><a href="{$root_url}/view.php?fDocumentId={$pendingDocs.document_id}">{$pendingDocs.filename|mb_truncate:50:'...':true}</a></td>
+    <td><a href="{url file="$root_url/view.php" fDocumentId=$pendingDocs.document_id}">{$pendingDocs.filename|mb_truncate:50:'...':true}</a></td>
 	<td>{if $pendingDocs.extractor}{$pendingDocs.extractor}{else}<p><font color="#FF9933">{i18n}n/a{/i18n}</font></p>{/if}</td>
 	<td>{$pendingDocs.indexdate}</td>
 </tr>

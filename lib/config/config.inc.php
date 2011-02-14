@@ -80,11 +80,12 @@ class KTConfig {
 
     function setMemcache()
     {
-    	$oPear = new PEAR();
-        if(MemCacheUtil::$enabled){
+        if(MemCacheUtil::$enabled)
+        {
             return true;
         }
-		
+    	
+		$isEnabled = false;
         $ktconfpath = KT_PLUGIN_DIR . '/ktlive/config/kt-path';
         if (file_exists($ktconfpath))
         {
@@ -94,15 +95,12 @@ class KTConfig {
         		$this->confPath = '/etc/kt/kt.cnf';
         	}
         }
-        else 
+        else
         {
         	$this->confPath = '/etc/kt/kt.cnf';
         }
-
-		$c = new Config;
-        $root =& $c->parseConfig($this->confPath, "IniCommented");
-
-        if ($oPear->isError($root)) {
+        $root = $this->parseConfig($this->confPath);
+        if ($root == false) {
             return false;
         }
 
@@ -123,7 +121,7 @@ class KTConfig {
         if($server_list == false){
                 return false;
         }
-        $filename = $this->getCacheFilename();
+        //$filename = $this->getCacheFilename();
 
         $server_arr = explode('|', $server_list);
         $servers = array();
@@ -142,13 +140,20 @@ class KTConfig {
         }
 
         try {
-            $isEnabled=MemCacheUtil::init($servers);
+            	$isEnabled=MemCacheUtil::init($servers);
         }catch (Exception $e){
             return false;
         }
 
 
         return $isEnabled;
+    }
+
+    public static function parseConfig($filename){
+        if(!file_exists($filename))
+            return false;
+        $c = new Config();
+        return $c->parseConfig($filename, "IniCommented");
     }
 
     public static function logErrors(){
@@ -179,7 +184,6 @@ class KTConfig {
             return false;
         }
 
-
         $config_cache = unserialize($config_str);
         $this->flat = $config_cache['flat'];
         $this->flatns = $config_cache['flatns'];
@@ -206,12 +210,13 @@ class KTConfig {
 
         if(ACCOUNT_ROUTING_ENABLED)
         {
-        	//if(!isset($_SESSION[LIVE_MEMCACHE_OVERRIDE]))
-        	//{
-            	$this->setMemcache();
-            	MemCacheUtil::set($filename, $config_cache);
-            	return true;
-        	//}
+            	if($this->setMemcache())
+                {
+                    MemCacheUtil::set($filename, $config_cache);
+                    return true;
+                }
+
+            	return false;
         }
 
         @file_put_contents($filename, $config_cache);
@@ -241,8 +246,7 @@ class KTConfig {
         //Load config data from the database
         $sQuery = 'select group_name, item, value, default_value from config_settings';
         $confResult = DBUtil::getResultArray($sQuery);
-		$oPear = new PEAR();
-        if($oPear->isError($confResult)){
+		if(PEAR::isError($confResult)){
             return $confResult;
         }
 
@@ -273,14 +277,10 @@ class KTConfig {
 	// {{{ readDBConfig()
 	function readDBConfig()
 	{
-	    $pear = new PEAR();
         $filename = $this->getConfigFilename();
-
-		$c = new Config;
-        $root =& $c->parseConfig($filename, "IniCommented");
-
-        if ($pear->isError($root)) {
-            return $root;
+        $root = $this->parseConfig($filename);
+        if ($root == false) {
+            return false;
         }
 
         $conf = $root->toArray();
@@ -315,7 +315,6 @@ class KTConfig {
      **/
 	function setupDB () {
         global $default;
-		$oPear = new PEAR();
         require_once('DB.php');
 
         // DBCompat allows phplib API compatibility
@@ -328,16 +327,15 @@ class KTConfig {
         // KTEntity is the database-backed base class
         require_once(KT_LIB_DIR . '/ktentity.inc');
 
-        $prefix = defined('USE_DB_ADMIN_USER')?'Admin':'';
-
+        $prefix = defined('USE_DB_ADMIN_USER') ? 'Admin' : '';
 		$sUser = 'db/dbUser';
 		$sPass = 'db/dbPass';
 
-		if ($prefix == 'Admin')
-		{
+		if ($prefix == 'Admin') {
 			$sUser = 'db/dbAdminUser';
 			$sPass = 'db/dbAdminPass';
 		}
+		
 		$dsn = array(
             'phptype'  => $this->flatns['db/dbType'],
             'username' => $this->flatns[$sUser],
@@ -347,22 +345,21 @@ class KTConfig {
             'port' => isset($this->flatns['db/dbPort']) ? $this->flatns['db/dbPort'] : ''
         );
         $default->_db = $dsn;
-    
-               
+
         /**
         * Check to see if replication is set to TRUE
-        * If Replication is set to TRUE then it means 
+        * If Replication is set to TRUE then it means
         * that mysql-slaves are active
         * So we will read config to get the hostnames
         **/
         $replication = $this->flatns['db/dbReplication'];
-        
+
         if($replication == 'true'){
             $slave_list  = $this->flatns['db/dbSlaves'];
             $slave_hostnames = explode('|', $slave_list);
             $working_connections = array();
             $slave_dns = array();
-            $errors=array();    
+            $errors=array();
             foreach ($slave_hostnames as $available_slaves){
                 if(empty($available_slaves)){
                     continue;
@@ -376,10 +373,12 @@ class KTConfig {
                     'port' => isset($this->flatns['db/dbPort']) ? $this->flatns['db/dbPort'] : ''
                     );
             }
+            
             //Set slave connections defined
             $default->_slave = $slave_dns;
             return true;
         }
+        
        return true;
     }
 
@@ -416,7 +415,6 @@ class KTConfig {
     }
 
     function expand($val) {
-        $pear = new PEAR();
         if (strpos($val, '$') === false) {
             return $val;
         }
@@ -424,7 +422,7 @@ class KTConfig {
         while(($m = preg_match('/\$\{([^}]+)\}/', $v, $matches))) {
             array_push($this->expanding, $matches[1]);
             $r = $this->get($matches[1]);
-            if ($pear->isError($r)) {
+            if (PEAR::isError($r)) {
                 return $r;
             }
             $v = str_replace($matches[0], $r, $v);
@@ -452,7 +450,6 @@ class KTConfig {
      */
     function set($var = null, $value = null, $can_edit = null) {
         global $default;
-        $pear = new PEAR();
 
         if ($var == null) {
             return false;
@@ -470,7 +467,7 @@ class KTConfig {
 
         $sql = "SELECT id from config_settings WHERE item = '$var' and group_name = '$groupName'";
         $configId = DBUtil::getOneResultKey($sql,'id');
-        if ($pear->isError($configId))
+        if (PEAR::isError($configId))
         {
             $default->log->error(sprintf(_kt("Couldn't get the config id:%s"), $configId->getMessage()));
             return false;
@@ -483,7 +480,7 @@ class KTConfig {
             }
             $configId = DBUtil::autoInsert('config_settings', array('item' => $var ,'value' => $value, 'group_name' => $groupName, 'can_edit' => $can_edit));
 
-            if ($pear->isError($configId))
+            if (PEAR::isError($configId))
             {
                 $default->log->error(sprintf(_kt("Couldn't insert config value:%s"), $configId->getMessage()));
                 return false;
@@ -496,7 +493,7 @@ class KTConfig {
                 $fieldValues['can_edit'] = $can_edit;
             }
             $res = DBUtil::autoUpdate('config_settings', $fieldValues, $configId);
-            if ($pear->isError($res)) {
+            if (PEAR::isError($res)) {
                 $default->log->error(sprintf(_kt("Couldn't update config value: %s"), $res->getMessage()));
                 return false;
             }
@@ -542,12 +539,9 @@ class KTConfig {
      * @return unknown
      */
     function loadFile($filename, $bDefault = false) {
-        $pear = new PEAR();
-        $c = new Config;
-        $root =& $c->parseConfig($filename, "IniCommented");
-
-        if ($pear->isError($root)) {
-            return $root;
+        $root = $this->parseConfig($filename);
+        if ($root == false) {
+            return false;
         }
 
         $this->aFileRoot[$filename] =& $root;

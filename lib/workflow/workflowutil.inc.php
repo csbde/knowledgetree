@@ -413,7 +413,7 @@ class KTWorkflowUtil {
     function getWorkflowForDocument ($oDocument, $aOptions = null) {
         $ids = KTUtil::arrayGet($aOptions, 'ids', false);
 
-        if (is_a($oDocument, 'KTDocumentCore')) {
+        if ($oDocument instanceof KTDocumentCore) {
             $oDocument = $oDocument->getId();
         }
 
@@ -445,7 +445,7 @@ class KTWorkflowUtil {
 
         $ids = KTUtil::arrayGet($aOptions, 'ids', false);
 
-        if (is_a($oDocument, 'KTDocumentCore')) {
+        if ($oDocument instanceof KTDocumentCore) {
             $oDocument = $oDocument->getId();
         }
 

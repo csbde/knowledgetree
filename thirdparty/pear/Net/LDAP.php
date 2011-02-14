@@ -156,7 +156,7 @@ class Net_LDAP extends PEAR
             return $ldap_check;
         }
 
-        @$obj = & new Net_LDAP($config);
+        @$obj = new Net_LDAP($config);
 
         // todo? better errorhandling for setConfig()?
 
@@ -527,13 +527,13 @@ class Net_LDAP extends PEAR
     */
     function add(&$entry)
     {
-        if (false === is_a($entry, 'Net_LDAP_Entry')) {
+        if (false === $entry instanceof Net_LDAP_Entry) {
             return PEAR::raiseError('Parameter to Net_LDAP::add() must be a Net_LDAP_Entry object.');
         }
         if (@ldap_add($this->_link, $entry->dn(), $entry->getValues())) {
             // entry successfully added, we should update its $ldap reference
             // in case it is not set so far (fresh entry)
-            if (!is_a($entry->getLDAP(), 'Net_LDAP')) {
+            if (!$entry->getLDAP() instanceof Net_LDAP) {
                 $entry->setLDAP($this);
             }
             // store, that the entry is present inside the directory
@@ -561,7 +561,7 @@ class Net_LDAP extends PEAR
     */
     function delete($dn, $recursive = false)
     {
-        if (is_a($dn, 'Net_LDAP_Entry')) {
+        if ($dn instanceof Net_LDAP_Entry) {
              $dn = $dn->dn();
         }
         if (false === is_string($dn)) {
@@ -635,7 +635,7 @@ class Net_LDAP extends PEAR
                 return $entry;
             }
         }
-        if (!is_a($entry, 'Net_LDAP_Entry')) {
+        if (!($entry instanceof Net_LDAP_Entry)) {
             return PEAR::raiseError("Parameter is not a string nor an entry object!");
         }
 
@@ -712,7 +712,7 @@ class Net_LDAP extends PEAR
             $filter = $this->_config['filter'];
         }
 
-        if (is_a($filter, 'Net_LDAP_Filter')) {
+        if ($filter instanceof Net_LDAP_Filter) {
             $filter = $filter->asString(); // convert Net_LDAP_Filter to string representation
         }
 
@@ -763,10 +763,10 @@ class Net_LDAP extends PEAR
         if ($err = @ldap_errno($this->_link)) {
             if ($err == 32) {
                 // Errorcode 32 = no such object, i.e. a nullresult.
-                return $obj = & new Net_LDAP_Search ($search, $this, $attributes);
+                return $obj = new Net_LDAP_Search ($search, $this, $attributes);
             } elseif ($err == 4) {
                 // Errorcode 4 = sizelimit exeeded.
-                return $obj = & new Net_LDAP_Search ($search, $this, $attributes);
+                return $obj = new Net_LDAP_Search ($search, $this, $attributes);
             } elseif ($err == 87) {
                 // bad search filter
                 return $this->raiseError($this->errorMessage($err) . "($filter)", $err);
@@ -775,7 +775,7 @@ class Net_LDAP extends PEAR
                 return $this->raiseError($this->errorMessage($err) . $msg, $err);
             }
         } else {
-            return $obj = & new Net_LDAP_Search($search, $this, $attributes);
+            return $obj = new Net_LDAP_Search($search, $this, $attributes);
         }
     }
 
@@ -973,10 +973,10 @@ class Net_LDAP extends PEAR
         } else {
             $entry_o =& $entry;
         }
-        if (!is_a($entry_o, 'Net_LDAP_Entry')) {
+        if (!($entry_o instanceof Net_LDAP_Entry)) {
             return PEAR::raiseError('Parameter $entry is expected to be a Net_LDAP_Entry object! (If DN was passed, conversion failed)');
         }
-        if (null !== $target_ldap && !is_a($target_ldap, 'Net_LDAP')) {
+        if (null !== $target_ldap && !($target_ldap instanceof Net_LDAP)) {
             return PEAR::raiseError('Parameter $target_ldap is expected to be a Net_LDAP object!');
         }
 
@@ -1025,14 +1025,14 @@ class Net_LDAP extends PEAR
     */
     function &copy(&$entry, $newdn)
     {
-        if (!is_a($entry, 'Net_LDAP_Entry')) {
+        if (!($entry instanceof Net_LDAP_Entry)) {
             return PEAR::raiseError('Parameter $entry is expected to be a Net_LDAP_Entry object!');
         }
 
         $newentry = Net_LDAP_Entry::createFresh($newdn, $entry->getValues());
         $result   = $this->add($newentry);
 
-        if (is_a($result, 'Net_LDAP_Error')) {
+        if ($result instanceof Net_LDAP_Error) {
             return $result;
         } else {
             return $newentry;
@@ -1132,9 +1132,9 @@ class Net_LDAP extends PEAR
     * @access public
     * @return boolean
     */
-    function isError($var)
+    static function isError($var)
     {
-        return (is_a($var, "Net_LDAP_Error") || parent::isError($var));
+        return (($var instanceof Net_LDAP_Error) || parent::isError($var));
     }
 
     /**
@@ -1195,8 +1195,8 @@ class Net_LDAP extends PEAR
     */
     function &schema($dn = null)
     {
-        if (false == is_a($this->_schema, 'Net_LDAP_Schema')) {
-            $this->_schema = & new Net_LDAP_Schema();
+        if (false == $this->_schema instanceof Net_LDAP_Schema) {
+            $this->_schema = new Net_LDAP_Schema();
 
             if (is_null($dn)) {
                 // get the subschema entry via root dse

@@ -3,6 +3,7 @@
 require_once(KT_LIB_DIR . '/actions/folderaction.inc.php');
 require_once(KT_LIB_DIR . '/plugins/plugin.inc.php');
 require_once(KT_LIB_DIR . '/plugins/pluginregistry.inc.php');
+require_once(KT_LIB_DIR . "/util/ktutil.inc"); 
 
 class FolderIndexAction extends KTFolderAction
 {
@@ -51,7 +52,7 @@ class FolderIndexAction extends KTFolderAction
     	$full_path = $folder->getFullPath();
     	$this->addInfoMessage(sprintf(_kt("All documents under the folder '%s' have been scheduled for indexing."), $full_path));
 
-    	redirect("browse.php?fFolderId=$folderid");
+    	redirect(KTUtil::buildUrl('browse.php', array('fFolderId'=>$folderid)));
     	exit;
     }
 }

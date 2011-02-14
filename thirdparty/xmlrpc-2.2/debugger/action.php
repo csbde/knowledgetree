@@ -64,10 +64,10 @@ td {padding: 0.5em; font-family: monospace;}
 
     if ($port != "")
     {
-      $client =& new $clientclass($path, $host, $port);
+      $client = new $clientclass($path, $host, $port);
       $server = "$host:$port$path";
     } else {
-      $client =& new $clientclass($path, $host);
+      $client = new $clientclass($path, $host);
       $server = "$host$path";
     }
     if ($protocol == 2)
@@ -156,20 +156,20 @@ td {padding: 0.5em; font-family: monospace;}
         // fall thru intentionally
       case 'describe':
       case 'wrap':
-        $msg[0] =& new $msgclass('system.methodHelp', null, $id);
+        $msg[0] = new $msgclass('system.methodHelp', null, $id);
         $msg[0]->addparam(new xmlrpcval($method));
-        $msg[1] =& new $msgclass('system.methodSignature', null, $id+1);
+        $msg[1] = new $msgclass('system.methodSignature', null, $id+1);
         $msg[1]->addparam(new xmlrpcval($method));
         $actionname = 'Description of method "'.$method.'"';
         break;
       case 'list':
-        $msg[0] =& new $msgclass('system.listMethods', null, $id);
+        $msg[0] = new $msgclass('system.listMethods', null, $id);
         $actionname = 'List of available methods';
         break;
       case 'execute':
         if (!payload_is_safe($payload))
           die("Tsk tsk tsk, please stop it or I will have to call in the cops!");
-        $msg[0] =& new $msgclass($method, null, $id);
+        $msg[0] = new $msgclass($method, null, $id);
         // hack! build xml payload by hand
         if ($wstype == 1)
         {

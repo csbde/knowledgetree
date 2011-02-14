@@ -1,0 +1,1 @@
+UPDATE roles SET name = 'Licensed Users' WHERE id = -4;

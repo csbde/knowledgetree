@@ -53,8 +53,9 @@
     {/foreach}
 
     <br><hr>
-    <input type="submit" name="AlterConfig" value="{i18n}Save Config Settings{/i18n}" />
-
+    <div class="form_actions">
+        <input type="submit" name="AlterConfig" value="{i18n}Save Config Settings{/i18n}" />
+    </div>
 {else}
 
     <p style='padding-top: 15px;padding-bottom: 15px;'>

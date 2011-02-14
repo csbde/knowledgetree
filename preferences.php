@@ -5,7 +5,7 @@
  * KnowledgeTree Community Edition
  * Document Management Made Simple
  * Copyright (C) 2008, 2009, 2010 KnowledgeTree Inc.
- *  
+ *
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License version 3 as published by the
@@ -61,6 +61,10 @@ class PreferencesDispatcher extends KTStandardDispatcher {
     function form_main() {
         $oForm = new KTForm;
 
+        // Check if using the username or email address
+        $oConfig = KTConfig::getSingleton();
+        $useEmail = $oConfig->get('user_prefs/useEmailLogin', false);
+
         $oForm->setOptions(array(
             'context' => &$this,
             'identifier' => 'ktcore.preferences.main',
@@ -72,39 +76,46 @@ class PreferencesDispatcher extends KTStandardDispatcher {
         ));
 
         // widgets
-        $oForm->setWidgets(array(
-            array('ktcore.widgets.string', array(
+        $widgets = array();
+        $widgets[] = array('ktcore.widgets.string', array(
                 'label' => _kt('Name'),
                 'required' => true,
                 'name' => 'name',
                 'value' => sanitizeForHTML($this->oUser->getName()),
-                'autocomplete' => false)),
-            array('ktcore.widgets.string', array(
+                'autocomplete' => false));
+
+        if($useEmail === false)
+        {
+            $widgets[] = array('ktcore.widgets.string', array(
                 'label' => _kt('Email Address'),
                 'required' => true,
                 'name' => 'email_address',
                 'value' => sanitizeForHTML($this->oUser->getEmail()),
-                'autocomplete' => false)),
-            array('ktcore.widgets.boolean', array(
+                'autocomplete' => false));
+        }
+
+        $widgets[] = array('ktcore.widgets.boolean', array(
                 'label' => _kt('Email Notifications'),
                 'description' => _kt('Check to allow notifications to be sent to your email address.'),
                 'required' => false,
                 'name' => 'email_notifications',
                 'value' => $this->oUser->getEmailNotification(),
-                'autocomplete' => false)),
-        ));
+                'autocomplete' => false));
 
-        $oForm->setValidators(array(
-            array('ktcore.validators.string', array(
+        $oForm->setWidgets($widgets);
+        $validators[] = array('ktcore.validators.string', array(
                 'test' => 'name',
-                'output' => 'name')),
-            array('ktcore.validators.emailaddress', array(
-                'test' => 'email_address',
-                'output' => 'email_address')),
-            array('ktcore.validators.boolean', array(
+                'output' => 'name'));
+		$validators[] = array('ktcore.validators.boolean', array(
                 'test' => 'email_notifications',
-                'output' => 'email_notifications')),
-        ));
+                'output' => 'email_notifications'));
+        if($useEmail === false)
+        {
+			$validators[] = array('ktcore.validators.emailaddress', array(
+	                'test' => 'email_address',
+	                'output' => 'email_address'));
+        }
+        $oForm->setValidators($validators);
 
         return $oForm;
 
@@ -166,9 +177,9 @@ class PreferencesDispatcher extends KTStandardDispatcher {
         if ($iSourceId) {
             $bChangePassword = false;
         }
-        
+
         $adminPortlet = new KTAdminModePortlet();
-        
+
         $aTemplateData = array(
               "context" => $this,
               'edit_form' => $oForm,
@@ -237,7 +248,9 @@ class PreferencesDispatcher extends KTStandardDispatcher {
         $this->startTransaction();
         $oUser =& $this->oUser;
         $oUser->setName($res['name']);
-        $oUser->setEmail($res['email_address']);
+        $oConfig = KTConfig::getSingleton();
+        $useEmail = $oConfig->get('user_prefs/useEmailLogin', false);
+        if($useEmail === false) { $oUser->setEmail($res['email_address']); }
         $oUser->setEmailNotification($res['email_notifications']);
 
 

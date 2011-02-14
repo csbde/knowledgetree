@@ -211,7 +211,7 @@ class SOAP_WSDL extends SOAP_Base
      */
     function parseURL($wsdl_uri)
     {
-        $parser =& new $this->wsdlParserClass($wsdl_uri, $this, $this->docs);
+        $parser = new $this->wsdlParserClass($wsdl_uri, $this, $this->docs);
 
         if ($parser->fault) {
             $this->_raiseSoapFault($parser->fault);
@@ -788,7 +788,7 @@ class SOAP_WSDL extends SOAP_Base
             require_once 'SOAP/Client.php';
             eval($proxy);
         }
-        $proxy =& new $classname;
+        $proxy = new $classname;
 
         return $proxy;
     }
@@ -1156,7 +1156,7 @@ class SOAP_WSDL_Parser extends SOAP_Base
     function SOAP_WSDL_Parser($uri, &$wsdl, $docs = false)
     {
         parent::SOAP_Base('WSDLPARSER');
-        $this->cache =& new SOAP_WSDL_Cache($wsdl->cacheUse,
+        $this->cache = new SOAP_WSDL_Cache($wsdl->cacheUse,
                                             $wsdl->cacheMaxAge,
                                             $wsdl->cacheDir);
         $this->uri = $uri;
@@ -1682,7 +1682,7 @@ class SOAP_WSDL_Parser extends SOAP_Base
 
                 $this->wsdl->imports[$attrs['namespace']] = $attrs;
                 $import_parser_class = get_class($this);
-                $import_parser =& new $import_parser_class($uri, $this->wsdl, $this->docs);
+                $import_parser = new $import_parser_class($uri, $this->wsdl, $this->docs);
                 if ($import_parser->fault) {
                     unset($this->wsdl->imports[$attrs['namespace']]);
                     return false;

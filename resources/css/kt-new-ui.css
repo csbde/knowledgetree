@@ -222,6 +222,10 @@ ul.buttonsList li a.check_in {
 	background: url('../graphics/newui/midbar_checkin.png') 7px -3px no-repeat;
 }
 
+ul.buttonsList li a.create_doc_online {
+    background: url('../graphics/newui/midbar_document_add.png') 7px 0px no-repeat;
+}
+
 
 ul.buttonsList li:hover {
 	background: url('../graphics/newui/actionBarButtonDepressed.png') repeat-x top right;
@@ -232,7 +236,7 @@ ul.buttonsList li:hover > *.dir, ul.buttonsList li:hover span.dir:hover {
 	background: url('../graphics/newui/menuHoverLeft.png') no-repeat;
 }
  */
- 
+
 div#logobar {
 	margin:2px 15px;
 }
@@ -292,6 +296,29 @@ div#activationNotice {
 	font-size: 80%;
 }
 
+div#planNotice {
+	background: url('../graphics/newui/notice.png') no-repeat top right;
+	width: 192px;
+	height: 50px;
+	float: right;
+	text-align: left;
+	padding: 5px 4px 0 4px;
+	font-size: 100%;
+}
+
+div#planNotice #tag {
+	color: #0074A4;
+	font-size: 85%;
+	font-weight: lighter;
+	vertical-align: top;
+}
+
+div#planNotice #info {
+    color: #616161;
+	font-size: 80%;
+	font-weight: lighter;
+}
+
 div#activationNotice span {
 	color: #0074A4;
 	font-weight: bold;
@@ -313,6 +340,10 @@ span#uploadProgress .title {
 div#uploadProgress .progress {
 	padding-top: 5px;
 	font-size: 16px;
+}
+
+.uploadProgress.error {
+	background: url('../graphics/newui/notice_red.png') no-repeat top right !important;
 }
 
 #content select.perpageselect {
@@ -354,8 +385,109 @@ div.widgetRow {
 div.widgetItem {
 	position: relative;
 	float: left;
-	/*left: 100%;*/
-	/*border: 1px solid blue;*/
 }
 
+/* Admin Page Landing */
 
+div.menuitems {
+	-moz-border-radius: 15px 15px 15px 15px;
+	-webkit-border-radius: 15px 15px 15px 15px;
+	border-radius: 15px 15px 15px 15px;
+	-moz-box-shadow: 0 0 5px #C6C6B7;
+	-webkit-box-shadow: 0 0 5px #C6C6B7;
+	box-shadow: 0 0 5px #C6C6B7;
+	border: 1px solid #C1C1C1;
+	padding: 30px;
+	width: 370px;
+	position: relative;
+	text-align: left;
+}
+
+div.adminheadings {
+	position:relative;
+	top: 20px;
+	/*left: -75px;*/
+	/*width:220px;*/
+	height:30px;
+    font-family:"Arial", sans-serif;
+    font-weight:bold;
+    font-style:normal;
+    font-size:24px;
+    color: Gray;
+    z-index:1;
+    background-color:white;
+    text-align:center;
+}
+
+div.stats {
+	-moz-border-radius: 15px 15px 15px 15px;
+	-webkit-border-radius: 15px 15px 15px 15px;
+	border-radius: 15px 15px 15px 15px;
+	-moz-box-shadow: 0 0 5px #C6C6B7;
+	-webkit-box-shadow: 0 0 5px #C6C6B7;
+	box-shadow: 0 0 5px #C6C6B7;
+	border: 1px solid #C1C1C1;
+	padding: 15px;
+	width: 370px;
+	position: relative;
+	height: 300px;
+}
+
+.settingHeads {
+    left: -75px;
+    width: 220px;
+}
+
+.upgradeHead {
+    width: 120px;
+    left: 80px;
+}
+
+.usageHead {
+    width: 95px;
+    left: 30px;
+}
+
+div#usageStats {
+	width: 300px;
+	padding-top: 30px;
+}
+
+div#upgradePlan {
+    margin-left: 50px;
+    padding-top: 30px;
+	width:400px;
+	/*overflow:scroll;*/
+}
+
+#usageStats table {
+    color: #999;
+}
+
+#usageStats td {
+    padding-bottom: 6px;
+    vertical-align: top;
+}
+
+.usage {
+	color: #5899B9;
+	font-size:16px;
+	font-variant: normal;
+	text-transform: capitalize;
+	/*border-bottom:1px dotted #E1E0E2;
+	/*width:235px;
+	font-weight:bold;*/
+}
+
+span.astat {
+	font-weight:bold;
+}
+
+span.sharingtree {
+	background:url("../graphics/newui/home.png") no-repeat;
+	color:transparent !important;
+	margin:0;
+	overflow:hidden;
+	padding:0;
+	width:25px;
+}

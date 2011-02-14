@@ -36,7 +36,7 @@ class Rest_Reflection_Prototype
 
         if (is_array($params)) {
             foreach ($params as $param) {
-                if (!$param instanceof Rest_Reflection_Parameter) {
+                if (!($param instanceof Rest_Reflection_Parameter)) {
                     require_once 'rest/Exception.php';
                     throw new Rest_Exception('One or more params are invalid');
                 }

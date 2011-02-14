@@ -121,7 +121,7 @@ class Spreadsheet_Excel_Reader {
         0x30 => '%1.0f'); //"##0.0E0";
 
     function Spreadsheet_Excel_Reader(){
-        $this->_ole =& new OLERead();
+        $this->_ole = new OLERead();
         $this->setUTFEncoder('iconv');
 
     }
@@ -178,7 +178,7 @@ class Spreadsheet_Excel_Reader {
         /*
         $res = $this->_ole->read($sFileName);
 
-        if ($this->isError($res)) {
+        if (PEAR::isError($res)) {
 //		var_dump($res);		
             return $this->raiseError($res);
         }

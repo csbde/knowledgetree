@@ -4,7 +4,7 @@
 <li>{i18n}the local copy of the checked-out document has been lost{/i18n};</li>
 <li>{i18n}the user who did the check-out is not currently available to check it back in{/i18n}.</li>
 </ul>
-{i18n}Use the <strong>force checkin</strong> action in the listing below to
+{i18n}Use the <strong>force check-in</strong> action in the listing below to
 override the checked-out status.{/i18n}</p>
 <!-- FIXME set classes here for listing. -->
 {if (count($documents) !== 0)}
@@ -27,7 +27,7 @@ value=$oDocument->getCheckedOutUserId()}{php}$oUser =
 User::get($this->_tpl_vars['iUserId']);  if (!PEAR::isError($oUser)) { print
 $oUser->getName(); } else { print _kt("N/A"); }{/php}</td>
             <td class="descriptiveText">{$oDocument->getDisplayPath()}</td>
-            <td><a href="{addQS}action=confirm&fDocumentId={$oDocument->getId()}{/addQS}">{i18n}force checkin{/i18n}</a></td>
+            <td><a href="{addQS}action=confirm&fDocumentId={$oDocument->getId()}{/addQS}">{i18n}force check-in{/i18n}</a></td>
         </tr>
       {/foreach}
     </tbody>

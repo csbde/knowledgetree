@@ -116,7 +116,7 @@ class PHPUnit_TestResult {
      */
     function addListener(&$listener) {
         if (is_object($listener) &&
-            is_a($listener, 'PHPUnit_TestListener')) {
+            $listener instanceof PHPUnit_TestListener) {
             $this->_listeners[] = &$listener;
         }
     }

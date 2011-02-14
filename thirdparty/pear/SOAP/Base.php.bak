@@ -418,7 +418,7 @@ class SOAP_Base extends SOAP_Base_Object
 
     function _isSoapValue(&$value)
     {
-        return is_a($value, 'SOAP_Value');
+        return ($value instanceof SOAP_Value) ;
     }
 
     function _serializeValue(&$value, $name = '', $type = false,
@@ -464,7 +464,7 @@ class SOAP_Base extends SOAP_Base_Object
                     // Hide private vars.
                     if ($k[0] == '_') continue;
                     if (is_object($vars[$k])) {
-                        if (is_a($vars[$k], 'SOAP_Value')) {
+                        if ($vars[$k] instanceof SOAP_Value) {
                             $xmlout_value .= $vars[$k]->serialize($this);
                         } else {
                             // XXX get the members and serialize them instead
@@ -653,7 +653,7 @@ class SOAP_Base extends SOAP_Base_Object
         $type = gettype($value);
         switch ($type) {
         case 'object':
-            if (is_a($value, 'soap_value')) {
+            if ($value instanceof soap_value) {
                 $type = $value->type;
             } else {
                 $type = 'Struct';
@@ -668,7 +668,7 @@ class SOAP_Base extends SOAP_Base_Object
                 $ar_size = count($value);
                 reset($value);
                 $key1 = key($value);
-                if ($ar_size > 0 && is_a($key1, 'SOAP_Value')) {
+                if ($ar_size > 0 && $key1 instanceof SOAP_Value) {
                     // FIXME: for non-wsdl structs that are all the same type
                     $key2 = key($value);
                     if ($ar_size > 1 &&

@@ -52,6 +52,7 @@ require_once(KT_LIB_DIR . "/util/sanitize.inc");
 
 // {{{ KTDocumentDetailsAction
 class KTDocumentDetailsAction extends KTDocumentAction {
+
     var $sName = 'ktcore.actions.document.displaydetails';
 
     function do_main() {
@@ -62,12 +63,11 @@ class KTDocumentDetailsAction extends KTDocumentAction {
     function getDisplayName() {
         return _kt('Display Details');
     }
+
 }
-// }}}
 
-
-// {{{ KTDocumentHistoryAction
 class KTDocumentTransactionHistoryAction extends KTDocumentAction {
+
     var $sName = 'ktcore.actions.document.transactionhistory';
 
     function getDisplayName() {
@@ -97,8 +97,8 @@ class KTDocumentTransactionHistoryAction extends KTDocumentAction {
         $aTransactions = $res;
 
         // Set the namespaces where not in the transactions lookup
-        foreach($aTransactions as $key => $transaction){
-            if(empty($transaction['transaction_name'])){
+        foreach($aTransactions as $key => $transaction) {
+            if (empty($transaction['transaction_name'])) {
                 $aTransactions[$key]['transaction_name'] = $this->_getActionNameForNamespace($transaction['transaction_namespace']);
             }
         }
@@ -114,6 +114,7 @@ class KTDocumentTransactionHistoryAction extends KTDocumentAction {
               'document' => $this->oDocument,
               'transactions' => $aTransactions,
         );
+
         return $oTemplate->render($aTemplateData);
     }
 
@@ -126,11 +127,9 @@ class KTDocumentTransactionHistoryAction extends KTDocumentAction {
     }
 
 }
-// }}}
 
-
-// {{{ KTDocumentHistoryAction
 class KTDocumentVersionHistoryAction extends KTDocumentAction {
+
     var $sName = 'ktcore.actions.document.versionhistory';
 
     function getDisplayName() {
@@ -153,9 +152,9 @@ class KTDocumentVersionHistoryAction extends KTDocumentAction {
         $aVersions = array();
         foreach ($aMetadataVersions as $oVersion) {
              $version = Document::get($this->oDocument->getId(), $oVersion->getId());
-             if($showall){
+             if ($showall) {
                 $aVersions[] = $version;
-             }else if($version->getMetadataStatusID() != VERSION_DELETED){
+             } else if ($version->getMetadataStatusID() != VERSION_DELETED) {
                 $aVersions[] = $version;
              }
         }
@@ -186,11 +185,11 @@ class KTDocumentVersionHistoryAction extends KTDocumentAction {
         $bShowVersionCompare = false;
         $sUrl = false;
 
-        if($isActive){
+        if ($isActive) {
             $oRegistry =& KTPluginRegistry::getSingleton();
             $oPlugin =& $oRegistry->getPlugin('document.comparison.plugin');
 
-            if($oPlugin->loadHelpers()){
+            if ($oPlugin->loadHelpers()) {
                 $sUrl = $oPlugin->getPagePath('DocumentComparison');
                 $file = $oPlugin->_aPages['document.comparison.plugin/DocumentComparison'][2];
 
@@ -213,6 +212,7 @@ class KTDocumentVersionHistoryAction extends KTDocumentAction {
               'bShowVersionCompare' => $bShowVersionCompare,
               'sUrl' => $sUrl
         );
+
         return $oTemplate->render($aTemplateData);
     }
 
@@ -229,7 +229,8 @@ class KTDocumentVersionHistoryAction extends KTDocumentAction {
             return $this->redirectToMain(_kt('The document you selected was invalid'));
         }
 
-        if (!Permission::userHasDocumentReadPermission($oDocument)) {
+        //if (!Permission::userHasDocumentReadPermission($oDocument)) {
+        if (!$this->userHasDocumentReadPermission($oDocument)) {
             return $this->errorRedirectToMain(_kt('You are not allowed to view this document'));
         }
         $this->oDocument =& $oDocument;
@@ -251,6 +252,7 @@ class KTDocumentVersionHistoryAction extends KTDocumentAction {
               'versions' => $aVersions,
               'downloadaction' => $oAction,
         );
+
         return $oTemplate->render($aTemplateData);
     }
 
@@ -274,11 +276,14 @@ class KTDocumentVersionHistoryAction extends KTDocumentAction {
         }
 
         redirect(KTUtil::ktLink('view.php',null,implode('&', $frag)));
+        // can't use clean urls, they break the functionality.
+        //redirect(KTUtil::buildUrl(KTUtil::ktLink('view.php'), $frag));
     }
 
     function getUserForId($iUserId) {
         $u = User::get($iUserId);
         if (PEAR::isError($u) || ($u == false)) { return _kt('User no longer exists'); }
+
         return $u->getName();
     }
 
@@ -302,6 +307,7 @@ class KTDocumentVersionHistoryAction extends KTDocumentAction {
             'fDocumentId' => $this->oDocument->getId(),
             'oVersion' => $oVersion,
         );
+
         return $oTemplate->render($aTemplateData);
     }
 
@@ -316,7 +322,7 @@ class KTDocumentVersionHistoryAction extends KTDocumentAction {
 
         $res = KTDocumentUtil::deleteVersion($this->oDocument, $iVersionId, $sReason);
 
-        if(PEAR::isError($res)){
+        if (PEAR::isError($res)) {
             $this->addErrorMessage($res->getMessage());
             redirect(KTDocumentAction::getURL());
             exit(0);
@@ -324,19 +330,20 @@ class KTDocumentVersionHistoryAction extends KTDocumentAction {
 
         // Record the transaction
         $aOptions['version'] = sprintf('%d.%d', $oVersion->getMajorVersionNumber(), $oVersion->getMinorVersionNumber());
-        $oDocumentTransaction = & new DocumentTransaction($this->oDocument, _kt('Document version deleted'), 'ktcore.transactions.delete_version', $aOptions);
+        $oDocumentTransaction = new DocumentTransaction($this->oDocument, _kt('Document version deleted'), 'ktcore.transactions.delete_version', $aOptions);
         $oDocumentTransaction->create();
 
         redirect(KTDocumentAction::getURL());
     }
+
 }
-// }}}
 
-
-// {{{ KTDocumentViewAction
 class KTDocumentViewAction extends KTDocumentAction {
+
     var $sName = 'ktcore.actions.document.view';
     var $sIconClass = 'download';
+	var $showIfWrite = true;
+	var $showIfRead = true;
 
     function getDisplayName() {
         return _kt('Download');
@@ -359,21 +366,7 @@ class KTDocumentViewAction extends KTDocumentAction {
         $aOptions = array();
         $iVersion = KTUtil::arrayGet($_REQUEST, 'version');
         session_write_close();
-        if ($iVersion) {
-            $oVersion = KTDocumentContentVersion::get($iVersion);
-            $aOptions['version'] = sprintf('%d.%d', $oVersion->getMajorVersionNumber(), $oVersion->getMinorVersionNumber());
-            $res = $oStorage->downloadVersion($this->oDocument, $iVersion);
-        } else {
-            $res = $oStorage->download($this->oDocument);
-        }
-
-        if ($res === false) {
-            $this->addErrorMessage(_kt('The file you requested is not available.'));
-            redirect(generateControllerLink('viewDocument',sprintf(_kt('fDocumentId=%d'),$this->oDocument->getId())));
-            exit(0);
-        }
-
-        $oDocumentTransaction = & new DocumentTransaction($this->oDocument, _kt('Document downloaded'), 'ktcore.transactions.download', $aOptions);
+        $oDocumentTransaction = new DocumentTransaction($this->oDocument, _kt('Document downloaded'), 'ktcore.transactions.download', $aOptions);
         $oDocumentTransaction->create();
 
 		$oKTTriggerRegistry = KTTriggerRegistry::getSingleton();
@@ -394,26 +387,41 @@ class KTDocumentViewAction extends KTDocumentAction {
         // fire subscription alerts for the downloaded document
         $oKTConfig =& KTConfig::getSingleton();
         $bNotifications = ($oKTConfig->get('export/enablenotifications', 'on') == 'on') ? true : false;
-        if($bNotifications){
+        if ($bNotifications) {
             $oSubscriptionEvent = new SubscriptionEvent();
             $oFolder = Folder::get($this->oDocument->getFolderID());
             $oSubscriptionEvent->DownloadDocument($this->oDocument, $oFolder);
         }
 
+        if ($iVersion) {
+            $oVersion = KTDocumentContentVersion::get($iVersion);
+            $aOptions['version'] = sprintf('%d.%d', $oVersion->getMajorVersionNumber(), $oVersion->getMinorVersionNumber());
+            $res = $oStorage->downloadVersion($this->oDocument, $iVersion);
+        } else {
+            $res = $oStorage->download($this->oDocument);
+        }
+
+        if ($res === false) {
+            session_start();
+            $this->addErrorMessage(_kt('The file you requested is not available.'));
+            redirect(generateControllerLink('viewDocument',sprintf(_kt('fDocumentId=%d'),$this->oDocument->getId())));
+            exit(0);
+        }
+
         exit(0);
     }
+
 }
-// }}}
 
-// {{{ KTDocumentCheckOutAction
 class KTDocumentCheckOutAction extends KTDocumentAction {
+
     var $sName = 'ktcore.actions.document.checkout';
-
     var $_sShowPermission = 'ktcore.permissions.write';
-
     var $_bMutator = true;
     var $_bMutationAllowedByAdmin = false;
     var $sIconClass = 'checkout';
+	var $showIfWrite = true;
+	var $showIfRead = false;
 
     function getDisplayName() {
         return _kt('Checkout');
@@ -426,7 +434,7 @@ class KTDocumentCheckOutAction extends KTDocumentAction {
 
         return parent::getInfo();
     }
-    
+
     function getButton() {
         $btn = array();
         $btn['display_text'] = _kt('Checkout');
@@ -439,6 +447,7 @@ class KTDocumentCheckOutAction extends KTDocumentAction {
         if ($res !== true) {
             return $res;
         }
+
         // since we actually check the doc out, then download it ...
         if (($_REQUEST[$this->event_var] == 'checkout_final') && ($this->oDocument->getCheckedOutUserID() == $_SESSION['userID'])) {
              return true;
@@ -450,6 +459,7 @@ class KTDocumentCheckOutAction extends KTDocumentAction {
             controllerRedirect('viewDocument', 'fDocumentId=' .  $this->oDocument->getId());
             exit(0);
         }
+
         return true;
     }
 
@@ -465,14 +475,14 @@ class KTDocumentCheckOutAction extends KTDocumentAction {
 
         // Electronic Signature if enabled
         global $default;
-        if($default->enableESignatures){
+        if ($default->enableESignatures) {
             $widgets[] = array('ktcore.widgets.info', array(
                     'label' => _kt('This action requires authentication'),
                     'description' => _kt('Please provide your user credentials as confirmation of this action.'),
                     'name' => 'info'
                 ));
             $widgets[] = array('ktcore.widgets.string', array(
-                    'label' => _kt('Username'),
+                    'label' => ($default->useEmailLogin) ? _kt('Email Address') : _kt('Username'),
                     'name' => 'sign_username',
                     'required' => true
                 ));
@@ -483,11 +493,13 @@ class KTDocumentCheckOutAction extends KTDocumentAction {
                 ));
         }
 
-        $widgets[] = array('ktcore.widgets.reason', array(
-                'label' => _kt('Note'),
-				'required' => false,
-                'name' => 'reason',
-            ));
+        if ($this->oConfig->get('actionreasons/globalReasons') || $default->enableESignatures) {
+            $widgets[] = array('ktcore.widgets.reason', array(
+                    'label' => _kt('Note'),
+    				'required' => ($default->enableESignatures) ? true : false,
+                    'name' => 'reason',
+                ));
+        }
         $widgets[] = array('ktcore.widgets.boolean', array(
                 'label' => _kt('Download this file?'),
                 'name' => 'download_file',
@@ -496,19 +508,21 @@ class KTDocumentCheckOutAction extends KTDocumentAction {
 
         $oForm->setWidgets($widgets);
 
-        $validators[] = array('ktcore.validators.string', array(
-                'test' => 'reason',
-                'min_length' => 1,
-                'max_length' => 250,
-                'output' => 'reason',
-            ));
+        if ($this->oConfig->get('actionreasons/globalReasons') || $default->enableESignatures) {
+            $validators[] = array('ktcore.validators.string', array(
+                    'test' => 'reason',
+                    'min_length' => 1,
+                    'max_length' => 250,
+                    'output' => 'reason',
+                ));
+        }
         $validators[] = array('ktcore.validators.boolean', array(
                 'test' => 'download_file',
                 'output' => 'download_file',
             ));
 
 
-        if($default->enableESignatures){
+        if ($default->enableESignatures) {
             $validators[] = array('electonic.signatures.validators.authenticate', array(
                 'object_id' => $this->oDocument->iId,
                 'type' => 'document',
@@ -533,11 +547,11 @@ class KTDocumentCheckOutAction extends KTDocumentAction {
             'context' => &$this,
             'form' => $oForm,
         ));
+
         return $oTemplate->render();
     }
 
     function do_checkout() {
-
         $oForm = $this->form_checkout();
         $res = $oForm->validate();
         if (!empty($res['errors'])) {
@@ -547,15 +561,13 @@ class KTDocumentCheckOutAction extends KTDocumentAction {
         $data = $res['results'];
 
         $oTemplate =& $this->oValidator->validateTemplate('ktcore/action/checkout_final');
-        $sReason = $data['reason'];
+        $sReason = isset($data['reason']) ? $data['reason'] : _kt('Document Checked Out.');
 
         $this->startTransaction();
         $res = KTDocumentUtil::checkout($this->oDocument, $sReason, $this->oUser);
         if (PEAR::isError($res)) {
             return $this->errorRedirectToMain(sprintf(_kt('Failed to check out the document: %s'), $res->getMessage()));
         }
-
-
 
         $this->commitTransaction();
 
@@ -569,6 +581,7 @@ class KTDocumentCheckOutAction extends KTDocumentAction {
             'context' => &$this,
             'reason' => $sReason,
         ));
+
         return $oTemplate->render();
     }
 
@@ -595,23 +608,24 @@ class KTDocumentCheckOutAction extends KTDocumentAction {
         $oStorage->download($this->oDocument, true);
         exit(0);
     }
+
 }
-// }}}
 
-// {{{ KTDocumentCheckInAction
 class KTDocumentCheckInAction extends KTDocumentAction {
-    var $sName = 'ktcore.actions.document.checkin';
 
+    var $sName = 'ktcore.actions.document.checkin';
     var $_sShowPermission = 'ktcore.permissions.write';
     var $sIconClass = 'checkin';
+	var $showIfWrite = true;
+	var $showIfRead = false;
 
     function getDisplayName() {
-        return _kt('Checkin');
+        return _kt('Check-in');
     }
 
     function getButton() {
         $btn = array();
-        $btn['display_text'] = _kt('Checkin');
+        $btn['display_text'] = _kt('Check-in');
         $btn['arrow_class'] = 'check_in';
         return $btn;
     }
@@ -624,6 +638,7 @@ class KTDocumentCheckInAction extends KTDocumentAction {
         if ($this->oDocument->getCheckedOutUserID() != $this->oUser->getId()) {
             return null;
         }
+
         return parent::getInfo();
     }
 
@@ -632,6 +647,7 @@ class KTDocumentCheckInAction extends KTDocumentAction {
         if ($res !== true) {
             return $res;
         }
+
         $postExpected = KTUtil::arrayGet($_REQUEST, 'postExpected');
         $postReceived = KTUtil::arrayGet($_REQUEST, 'postReceived');
         if (!empty($postExpected)) {
@@ -641,19 +657,21 @@ class KTDocumentCheckInAction extends KTDocumentAction {
             );
             $this->oValidator->notEmpty($postReceived, $aErrorOptions);
         }
+
         if (!$this->oDocument->getIsCheckedOut()) {
             $_SESSION['KTErrorMessage'][] = _kt('This document is not checked out');
             controllerRedirect('viewDocument', 'fDocumentId=' .  $this->oDocument->getId());
             exit(0);
         }
+
         if ($this->oDocument->getCheckedOutUserID() != $this->oUser->getId()) {
             $_SESSION['KTErrorMessage'][] = _kt('This document is checked out, but not by you');
             controllerRedirect('viewDocument', 'fDocumentId=' .  $this->oDocument->getId());
             exit(0);
         }
+
         return true;
     }
-
 
     function form_main() {
         global $default;
@@ -663,7 +681,7 @@ class KTDocumentCheckInAction extends KTDocumentAction {
             'actionparams' => 'postExpected=1&fDocumentId='.$this->oDocument->getId(),
             'fail_action' => 'main',
             'cancel_url' => KTBrowseUtil::getUrlForDocument($this->oDocument),
-            'submit_label' => _kt('Checkin'),
+            'submit_label' => _kt('Check-in'),
             'context' => &$this,
             'file_upload' => true,         // otherwise the post is not received.
         ));
@@ -672,9 +690,9 @@ class KTDocumentCheckInAction extends KTDocumentAction {
         $minor_inc = sprintf('%d.%d', $this->oDocument->getMajorVersionNumber(), $this->oDocument->getMinorVersionNumber()+1);
 
         // Modify description according to whether the disableForceFilenameOption is set
-        if($default->disableForceFilenameOption){
+        if ($default->disableForceFilenameOption) {
             $description = sprintf(_kt('Please specify the file you wish to upload. The file must have the same name as the original: <b>%s</b>'), htmlentities($this->oDocument->getFilename(),ENT_QUOTES,'UTF-8'));
-        }else{
+        } else {
             $description = sprintf(_kt('Please specify the file you wish to upload.  Unless you also indicate that you are changing its filename (see "Force Original Filename" below), this will need to be called <b>%s</b>'), htmlentities($this->oDocument->getFilename(),ENT_QUOTES,'UTF-8'));
         }
 
@@ -696,14 +714,14 @@ class KTDocumentCheckInAction extends KTDocumentAction {
         );
 
         // Electronic Signature if enabled
-        if($default->enableESignatures){
+        if ($default->enableESignatures) {
             $aWidgets[] = array('ktcore.widgets.info', array(
                     'label' => _kt('This action requires authentication'),
                     'description' => _kt('Please provide your user credentials as confirmation of this action.'),
                     'name' => 'info'
                 ));
             $aWidgets[] = array('ktcore.widgets.string', array(
-                    'label' => _kt('Username'),
+                    'label' => ($default->useEmailLogin) ? _kt('Email Address') : _kt('Username'),
                     'name' => 'sign_username',
                     'required' => true
                 ));
@@ -714,20 +732,16 @@ class KTDocumentCheckInAction extends KTDocumentAction {
                 ));
         }
 
-        $aWidgets[] = array('ktcore.widgets.reason', array(
-                'label' => _kt('Note'),
-				'required' => false,
-                'name' => 'reason',
-            ));
+        if ($this->oConfig->get('actionreasons/globalReasons') || $default->enableESignatures) {
+            $aWidgets[] = array('ktcore.widgets.reason', array(
+                    'label' => _kt('Note'),
+    				'required' => ($default->enableESignatures) ? true : false,
+                    'name' => 'reason',
+                ));
+        }
 
         // Set the validators for the widgets
         $aValidators = array(
-            array('ktcore.validators.string', array(
-                'test' => 'reason',
-                'min_length' => 1,
-                'max_length' => 250,
-                'output' => 'reason',
-            )),
             array('ktcore.validators.boolean', array(
                 'test' => 'major_update',
                 'output' => 'major_update',
@@ -738,7 +752,16 @@ class KTDocumentCheckInAction extends KTDocumentAction {
             )),
         );
 
-        if($default->enableESignatures){
+        if ($this->oConfig->get('actionreasons/globalReasons') || $default->enableESignatures) {
+            $aValidators[]=array('ktcore.validators.string', array(
+                    'test' => 'reason',
+                    'min_length' => 1,
+                    'max_length' => 250,
+                    'output' => 'reason',
+            ));
+        }
+
+        if ($default->enableESignatures) {
             $aValidators[] = array('electonic.signatures.validators.authenticate', array(
                 'object_id' => $this->oDocument->iId,
                 'type' => 'document',
@@ -749,7 +772,7 @@ class KTDocumentCheckInAction extends KTDocumentAction {
         }
 
         // Add the "Force Original Filename" option if applicable
-        if(!$default->disableForceFilenameOption){
+        if (!$default->disableForceFilenameOption) {
             $aWidgets[] = array('ktcore.widgets.boolean',array(
                 'label' => _kt('Force Original Filename'),
                 'description' => sprintf(_kt('If this is checked, the uploaded document must have the same filename as the original: <strong>%s</strong>'), htmlentities($this->oDocument->getFilename(),ENT_QUOTES,'UTF-8')),
@@ -766,12 +789,12 @@ class KTDocumentCheckInAction extends KTDocumentAction {
         // Add widgets and validators to the form
         $oForm->setWidgets($aWidgets);
         $oForm->setValidators($aValidators);
+
         return $oForm;
     }
 
-
     function do_main() {
-        $this->oPage->setBreadcrumbDetails(_kt('Checkin'));
+        $this->oPage->setBreadcrumbDetails(_kt('Check-in'));
         $oTemplate =& $this->oValidator->validateTemplate('ktcore/action/checkin');
 
         $oForm = $this->form_main();
@@ -780,6 +803,7 @@ class KTDocumentCheckInAction extends KTDocumentAction {
             'context' => &$this,
             'form' => $oForm,
         ));
+
         return $oTemplate->render();
     }
 
@@ -791,12 +815,12 @@ class KTDocumentCheckInAction extends KTDocumentAction {
 
         // If the filename is different to the original check if "Force Original Filename" is set and return an error if it is.
         $docFileName = $this->oDocument->getFilename();
-        if($data['file']['name'] != $docFileName){
+        if ($data['file']['name'] != $docFileName) {
             global $default;
 
-            if($default->disableForceFilenameOption){
+            if ($default->disableForceFilenameOption) {
                 $extra_errors['file'] = sprintf(_kt('The file you uploaded was not called "%s". The file must have the same name as the original file.'), htmlentities($docFileName,ENT_QUOTES,'UTF-8'));
-            }else if ($data['forcefilename']) {
+            } else if ($data['forcefilename']) {
                 $extra_errors['file'] = sprintf(_kt('The file you uploaded was not called "%s". If you wish to change the filename, please set "Force Original Filename" below to false. '), htmlentities($docFileName,ENT_QUOTES,'UTF-8'));
             }
         }
@@ -805,7 +829,7 @@ class KTDocumentCheckInAction extends KTDocumentAction {
             return $oForm->handleError(null, $extra_errors);
         }
 
-        $sReason = $data['reason'];
+        $sReason = isset($data['reason']) ? $data['reason'] : _kt('Document Checked In.');
         $sCurrentFilename = $docFileName;
         $sNewFilename = $data['file']['name'];
         $aOptions = array();
@@ -834,18 +858,20 @@ class KTDocumentCheckInAction extends KTDocumentAction {
         redirect(KTBrowseUtil::getUrlForDocument($this->oDocument));
         exit(0);
     }
+
 }
-// }}}
 
-
-// {{{ KTDocumentCancelCheckOutAction
 class KTDocumentCancelCheckOutAction extends KTDocumentAction {
+
     var $sName = 'ktcore.actions.document.cancelcheckout';
 
     var $_sShowPermission = 'ktcore.permissions.write';
     var $bAllowInAdminMode = true;
     var $bInAdminMode = null;
     var $sIconClass = 'cancel_checkout';
+
+	var $showIfWrite = true;
+	var $showIfRead = false;
 
     function getDisplayName() {
         return _kt('Cancel Checkout');
@@ -855,6 +881,7 @@ class KTDocumentCancelCheckOutAction extends KTDocumentAction {
         if (!$this->oDocument->getIsCheckedOut()) {
             return null;
         }
+
         if (is_null($this->bInAdminMode)) {
             $oFolder = Folder::get($this->oDocument->getFolderId());
             if (KTBrowseUtil::inAdminMode($this->oUser, $oFolder)) {
@@ -864,9 +891,11 @@ class KTDocumentCancelCheckOutAction extends KTDocumentAction {
         } else if ($this->bInAdminMode == true) {
             return parent::getInfo();
         }
+
         if ($this->oDocument->getCheckedOutUserID() != $this->oUser->getId()) {
             return null;
         }
+
         return parent::getInfo();
     }
 
@@ -876,11 +905,13 @@ class KTDocumentCancelCheckOutAction extends KTDocumentAction {
         if ($res !== true) {
             return $res;
         }
+
         if (!$this->oDocument->getIsCheckedOut()) {
             $_SESSION['KTErrorMessage'][] = _kt('This document is not checked out');
             controllerRedirect('viewDocument', 'fDocumentId=' .  $this->oDocument->getId());
             exit(0);
         }
+
         // hard override if we're in admin mode for this doc.
         if (is_null($this->bInAdminMode)) {
             $oFolder = Folder::get($this->oDocument->getFolderId());
@@ -891,11 +922,13 @@ class KTDocumentCancelCheckOutAction extends KTDocumentAction {
         } else if ($this->bInAdminMode == true) {
             return true;
         }
+
         if ($this->oDocument->getCheckedOutUserID() != $this->oUser->getId()) {
             $_SESSION['KTErrorMessage'][] = _kt('This document is checked out, but not by you');
             controllerRedirect('viewDocument', 'fDocumentId=' .  $this->oDocument->getId());
             exit(0);
         }
+
         return true;
     }
 
@@ -911,14 +944,14 @@ class KTDocumentCancelCheckOutAction extends KTDocumentAction {
 
         // Electronic Signature if enabled
         global $default;
-        if($default->enableESignatures){
+        if ($default->enableESignatures) {
             $widgets[] = array('ktcore.widgets.info', array(
                     'label' => _kt('This action requires authentication'),
                     'description' => _kt('Please provide your user credentials as confirmation of this action.'),
                     'name' => 'info'
                 ));
             $widgets[] = array('ktcore.widgets.string', array(
-                    'label' => _kt('Username'),
+                    'label' => ($default->useEmailLogin) ? _kt('Email Address') : _kt('Username'),
                     'name' => 'sign_username',
                     'required' => true
                 ));
@@ -929,23 +962,27 @@ class KTDocumentCancelCheckOutAction extends KTDocumentAction {
                 ));
         }
 
-        $widgets[] = array('ktcore.widgets.reason', array(
-                'label' => _kt('Note'),
-			    'required' => false,
-                'name' => 'reason',
-            ));
+        if ($this->oConfig->get('actionreasons/globalReasons') || $default->enableESignatures) {
+            $widgets[] = array('ktcore.widgets.reason', array(
+                    'label' => _kt('Note'),
+    			    'required' => ($default->enableESignatures) ? true : false,
+                    'name' => 'reason',
+                ));
+        }
 
         $oForm->setWidgets($widgets);
 
-        $validators[] = array('ktcore.validators.string', array(
-                'test' => 'reason',
-                'min_length' => 1,
-                'max_length' => 250,
-                'output' => 'reason',
-            ));
+        if ($this->oConfig->get('actionreasons/globalReasons') || $default->enableESignatures) {
+            $validators[] = array('ktcore.validators.string', array(
+                    'test' => 'reason',
+                    'min_length' => 1,
+                    'max_length' => 250,
+                    'output' => 'reason',
+                ));
+        }
 
         // Electronic signature validation - does the authentication
-        if($default->enableESignatures){
+        if ($default->enableESignatures) {
             $validators[] = array('electonic.signatures.validators.authenticate', array(
                 'object_id' => $this->oDocument->iId,
                 'type' => 'document',
@@ -962,7 +999,12 @@ class KTDocumentCancelCheckOutAction extends KTDocumentAction {
 
     function do_main() {
         $this->oPage->setBreadcrumbDetails(_kt('cancel checkout'));
-        $oTemplate =& $this->oValidator->validateTemplate('ktcore/action/cancel_checkout');
+        if (ACCOUNT_ROUTING_ENABLED) {
+        	$oTemplate =& $this->oValidator->validateTemplate('core/action/cancel_checkout');
+        }
+        else {
+        	$oTemplate =& $this->oValidator->validateTemplate('ktcore/action/cancel_checkout');
+        }
 
         $oForm = $this->form_main();
 
@@ -971,6 +1013,7 @@ class KTDocumentCancelCheckOutAction extends KTDocumentAction {
             'form' => $oForm,
             'document' => $this->oDocument,
         ));
+
         return $oTemplate->render();
     }
 
@@ -994,23 +1037,23 @@ class KTDocumentCancelCheckOutAction extends KTDocumentAction {
         }
 
         // checkout cancelled transaction
-        $oDocumentTransaction = & new DocumentTransaction($this->oDocument, $data['reason'], 'ktcore.transactions.force_checkin');
+        $reason=isset($data['reason']) ? $data['reason'] : _kt('Document Checkout Cancelled.');
+        $oDocumentTransaction = new DocumentTransaction($this->oDocument, $reason, 'ktcore.transactions.force_checkin');
         $res = $oDocumentTransaction->create();
         if (PEAR::isError($res) || ($res === false)) {
             $this->rollbackTransaction();
             return $this->errorRedirectToMain(_kt('Failed to force the document\'s checkin.'),sprintf('fDocumentId=%d'),$this->oDocument->getId());
         }
+
         $this->commitTransaction();
         redirect(KTBrowseUtil::getUrlForDocument($this->oDocument));
     }
+
 }
-// }}}
 
-
-// {{{ KTDocumentDeleteAction
 class KTDocumentDeleteAction extends KTDocumentAction {
-    var $sName = 'ktcore.actions.document.delete';
 
+    var $sName = 'ktcore.actions.document.delete';
     var $_sShowPermission = 'ktcore.permissions.delete';
     var $_bMutator = true;
 
@@ -1050,7 +1093,6 @@ class KTDocumentDeleteAction extends KTDocumentAction {
             'context' => &$this,
         ));
 
-
         return $oForm;
     }
 
@@ -1066,14 +1108,14 @@ class KTDocumentDeleteAction extends KTDocumentAction {
 
         // Electronic Signature if enabled
         global $default;
-        if($default->enableESignatures){
+        if ($default->enableESignatures) {
             $widgets[] = array('ktcore.widgets.info', array(
                     'label' => _kt('This action requires authentication'),
                     'description' => _kt('Please provide your user credentials as confirmation of this action.'),
                     'name' => 'info'
                 ));
             $widgets[] = array('ktcore.widgets.string', array(
-                    'label' => _kt('Username'),
+                    'label' => ($default->useEmailLogin) ? _kt('Email Address') : _kt('Username'),
                     'name' => 'sign_username',
                     'required' => true
                 ));
@@ -1084,22 +1126,22 @@ class KTDocumentDeleteAction extends KTDocumentAction {
                 ));
         }
 
-        $widgets[] = array('ktcore.widgets.reason', array(
-                'label' => _kt('Note'),
-			    'required' => false,
-                'name' => 'reason',
-            ));
-
-        $oForm->setWidgets($widgets);
-
-        $validators[] = array('ktcore.validators.string', array(
+        $getReason = $this->oDocument->getImmutable() || $this->oConfig->get('actionreasons/globalReasons') || $default->enableESignatures;
+        if ($getReason) {
+            $widgets[] = array('ktcore.widgets.reason', array(
+                    'label' => _kt('Note'),
+    			    'required' => ($default->enableESignatures) ? true : false,
+                    'name' => 'reason',
+                ));
+            $validators[] = array('ktcore.validators.string', array(
                 'test' => 'reason',
                 'min_length' => 1,
                 'max_length' => 250,
                 'output' => 'reason',
             ));
+        }
 
-        if($default->enableESignatures){
+        if ($default->enableESignatures) {
             $validators[] = array('electonic.signatures.validators.authenticate', array(
                 'object_id' => $this->oDocument->iId,
                 'type' => 'document',
@@ -1109,6 +1151,7 @@ class KTDocumentDeleteAction extends KTDocumentAction {
             ));
         }
 
+        $oForm->setWidgets($widgets);
         $oForm->setValidators($validators);
 
         return $oForm;
@@ -1116,20 +1159,23 @@ class KTDocumentDeleteAction extends KTDocumentAction {
 
     function do_main() {
         $this->oPage->setBreadcrumbDetails(_kt('Delete'));
+
     	//check if we need confirmation for symblolic links linking to this document
-		if(count($this->oDocument->getSymbolicLinks())>0 && KTutil::arrayGet($_REQUEST,'postReceived') != 1){
+		if (count($this->oDocument->getSymbolicLinks())>0 && KTutil::arrayGet($_REQUEST,'postReceived') != 1) {
         	$this->redirectTo("confirm");
         }
+
         $oTemplate =& $this->oValidator->validateTemplate('ktcore/action/delete');
         $oForm = $this->form_main();
         $oTemplate->setData(array(
             'context' => &$this,
             'form' => $oForm,
         ));
+
         return $oTemplate->render();
     }
 
-    function do_confirm(){
+    function do_confirm() {
     	$this->oPage->setBreadcrumbDetails(_kt('Confirm delete'));
     	$oTemplate =& $this->oValidator->validateTemplate('ktcore/action/delete_confirm');
         $oForm = $this->form_confirm();
@@ -1137,6 +1183,7 @@ class KTDocumentDeleteAction extends KTDocumentAction {
             'context' => &$this,
             'form' => $oForm,
         ));
+
         return $oTemplate->render();
     }
 
@@ -1148,7 +1195,7 @@ class KTDocumentDeleteAction extends KTDocumentAction {
             return $oForm->handleError();
         }
 
-        $sReason = $data['reason'];
+        $sReason = isset($data['reason']) ? $data['reason'] : _kt('Document Deleted.');
 
         $fFolderId = $this->oDocument->getFolderId();
         $res = KTDocumentUtil::delete($this->oDocument, $sReason);
@@ -1161,14 +1208,12 @@ class KTDocumentDeleteAction extends KTDocumentAction {
         controllerRedirect('browse', 'fFolderId=' .  $fFolderId);
         exit(0);
     }
+
 }
-// }}}
 
-
-// {{{ KTDocumentMoveAction
 class KTDocumentMoveAction extends KTDocumentAction {
-    var $sName = 'ktcore.actions.document.move';
 
+    var $sName = 'ktcore.actions.document.move';
     var $_sShowPermission = 'ktcore.permissions.write';
     var $_bMutator = true;
 
@@ -1180,6 +1225,7 @@ class KTDocumentMoveAction extends KTDocumentAction {
         if ($this->oDocument->getIsCheckedOut()) {
             return null;
         }
+
         return parent::getInfo();
     }
 
@@ -1188,6 +1234,7 @@ class KTDocumentMoveAction extends KTDocumentAction {
         if ($res !== true) {
             return $res;
         }
+
         if ($this->oDocument->getIsCheckedOut()) {
             $_SESSION['KTErrorMessage'][]= _kt('This document can\'t be moved because it is checked out');
             controllerRedirect('viewDocument', 'fDocumentId=' .  $this->oDocument->getId());
@@ -1197,6 +1244,7 @@ class KTDocumentMoveAction extends KTDocumentAction {
         $iFolderId = KTUtil::arrayGet($_REQUEST, 'fFolderId', $this->oDocument->getFolderId());
         $this->oFolder = $this->oValidator->validateFolder($iFolderId);
         $this->oDocumentFolder = $this->oValidator->validateFolder($this->oDocument->getFolderId());
+
         return true;
     }
 
@@ -1230,17 +1278,16 @@ class KTDocumentMoveAction extends KTDocumentAction {
                 'folder_id' => $this->oDocument->getFolderID()
         ));
 
-
         // Electronic Signature if enabled
         global $default;
-        if($default->enableESignatures){
+        if ($default->enableESignatures) {
             $widgets[] = array('ktcore.widgets.info', array(
                     'label' => _kt('This action requires authentication'),
                     'description' => _kt('Please provide your user credentials as confirmation of this action.'),
                     'name' => 'info'
                 ));
             $widgets[] = array('ktcore.widgets.string', array(
-                    'label' => _kt('Username'),
+                    'label' => ($default->useEmailLogin) ? _kt('Email Address') : _kt('Username'),
                     'name' => 'sign_username',
                     'required' => true
                 ));
@@ -1251,28 +1298,32 @@ class KTDocumentMoveAction extends KTDocumentAction {
                 ));
         }
 
-
-        $widgets[] = array('ktcore.widgets.reason', array(
-                'label' => _kt('Note'),
-			    'required' => false,
-                'name' => 'reason',
-        ));
+        if ($this->oConfig->get('actionreasons/globalReasons') || $default->enableESignatures) {
+            $widgets[] = array('ktcore.widgets.reason', array(
+                    'label' => _kt('Note'),
+    			    'required' => ($default->enableESignatures) ? true : false,
+                    'name' => 'reason',
+            ));
+        }
 
         $oForm->setWidgets($widgets);
 
-        $validators[] = array('ktcore.validators.string', array(
-                'test' => 'reason',
-                'min_length' => 1,
-                'max_length' => 250,
-                'output' => 'reason',
-        ));
+        if ($this->oConfig->get('actionreasons/globalReasons') || $default->enableESignatures) {
+            $validators[] = array('ktcore.validators.string', array(
+                    'test' => 'reason',
+                    'min_length' => 1,
+                    'max_length' => 250,
+                    'output' => 'reason',
+            ));
+        }
+
         $validators[] = array('ktcore.validators.entity', array(
                 'class' => 'Folder',
                 'test' => 'browse',
                 'output' => 'browse',
         ));
 
-        if($default->enableESignatures){
+        if ($default->enableESignatures) {
             $validators[] = array('electonic.signatures.validators.authenticate', array(
                 'object_id' => $this->oDocument->iId,
                 'type' => 'document',
@@ -1297,6 +1348,7 @@ class KTDocumentMoveAction extends KTDocumentAction {
                     'required' => true,
                 ))
             );
+
             $oForm->addValidator(
                 array('ktcore.validators.string', array(
                     'output' => 'name',
@@ -1313,6 +1365,7 @@ class KTDocumentMoveAction extends KTDocumentAction {
                     'required' => true,
                 ))
             );
+
             $oForm->addValidator(
                 array('ktcore.validators.string', array(
                     'output' => 'filename',
@@ -1320,6 +1373,7 @@ class KTDocumentMoveAction extends KTDocumentAction {
                 ))
             );
         }
+
         return $oForm;
     }
 
@@ -1328,7 +1382,7 @@ class KTDocumentMoveAction extends KTDocumentAction {
         $res = $oForm->validate();
         $errors = $res['errors'];
         $data = $res['results'];
-        $sReason = $data['reason'];
+        $sReason = isset($data['reason']) ? $data['reason'] : _kt('Document Moved.');
         $extra_errors = array();
 
         if (!is_null($data['browse'])) {
@@ -1342,6 +1396,7 @@ class KTDocumentMoveAction extends KTDocumentAction {
                 } else {
                     $name = $this->oDocument->getName();
                 }
+
                 if ($bNameClash) {
                     $extra_errors['name'] = _kt('A document with this title already exists in your chosen folder.  Please choose a different folder, or specify a new title for the copied document.');
             }
@@ -1353,6 +1408,7 @@ class KTDocumentMoveAction extends KTDocumentAction {
                 } else {
                     $filename = $this->oDocument->getFilename();
                 }
+
                 if ($bFileClash) {
                     $extra_errors['filename'] = _kt('A document with this filename already exists in your chosen folder.  Please choose a different folder, or specify a new filename for the copied document.');
                 }
@@ -1391,10 +1447,9 @@ class KTDocumentMoveAction extends KTDocumentAction {
     }
 
 }
-// }}}
-
 
 class KTDocumentCopyColumn extends TitleColumn {
+
     function KTDocumentCopyColumn($sLabel, $sName, $oDocument) {
         $this->oDocument = $oDocument;
         parent::TitleColumn($sLabel, $sName);
@@ -1402,12 +1457,13 @@ class KTDocumentCopyColumn extends TitleColumn {
     function buildFolderLink($aDataRow) {
         return KTUtil::addQueryString($_SERVER['PHP_SELF'], sprintf('fDocumentId=%d&fFolderId=%d', $this->oDocument->getId(), $aDataRow['folder']->getId()));
     }
+
 }
 
 // {{{ KTDocumentMoveAction
 class KTDocumentCopyAction extends KTDocumentAction {
-    var $sName = 'ktcore.actions.document.copy';
 
+    var $sName = 'ktcore.actions.document.copy';
     var $_sShowPermission = 'ktcore.permissions.read';
 
     function getDisplayName() {
@@ -1427,14 +1483,17 @@ class KTDocumentCopyAction extends KTDocumentAction {
         if ($res !== true) {
             return $res;
         }
+
         if ($this->oDocument->getIsCheckedOut()) {
             $_SESSION['KTErrorMessage'][]= _kt('This document can\'t be copied because it is checked out');
             controllerRedirect('viewDocument', 'fDocumentId=' .  $this->oDocument->getId());
             exit(0);
         }
+
         $iFolderId = KTUtil::arrayGet($_REQUEST, 'fFolderId', $this->oDocument->getFolderId());
         $this->oFolder = $this->oValidator->validateFolder($iFolderId);
         $this->oDocumentFolder = $this->oValidator->validateFolder($this->oDocument->getFolderId());
+
         return true;
     }
 
@@ -1466,14 +1525,14 @@ class KTDocumentCopyAction extends KTDocumentAction {
 
         // Electronic Signature if enabled
         global $default;
-        if($default->enableESignatures){
+        if ($default->enableESignatures) {
             $widgets[] = array('ktcore.widgets.info', array(
                     'label' => _kt('This action requires authentication'),
                     'description' => _kt('Please provide your user credentials as confirmation of this action.'),
                     'name' => 'info'
                 ));
             $widgets[] = array('ktcore.widgets.string', array(
-                    'label' => _kt('Username'),
+                    'label' => ($default->useEmailLogin) ? _kt('Email Address') : _kt('Username'),
                     'name' => 'sign_username',
                     'required' => true
                 ));
@@ -1484,28 +1543,33 @@ class KTDocumentCopyAction extends KTDocumentAction {
                 ));
         }
 
-        $widgets[] = array('ktcore.widgets.reason', array(
+        if ($this->oConfig->get('actionreasons/globalReasons') || $default->enableESignatures) {
+            $widgets[] = array('ktcore.widgets.reason', array(
                 'label' => _kt('Note'),
-				'required' => false,
+				'required' => ($default->enableESignatures) ? true : false,
                 'name' => 'reason',
             ));
+        }
 
         $oForm->setWidgets($widgets);
 
         $validators = array();
-        $validators[] = array('ktcore.validators.string', array(
-                'test' => 'reason',
-                'min_length' => 1,
-                'max_length' => 250,
-                'output' => 'reason',
-            ));
+        if ($this->oConfig->get('actionreasons/globalReasons') || $default->enableESignatures) {
+            $validators[] = array('ktcore.validators.string', array(
+                    'test' => 'reason',
+                    'min_length' => 1,
+                    'max_length' => 250,
+                    'output' => 'reason',
+                ));
+        }
+
         $validators[] = array('ktcore.validators.entity', array(
                 'class' => 'Folder',
                 'test' => 'browse',
                 'output' => 'browse',
             ));
 
-        if($default->enableESignatures){
+        if ($default->enableESignatures) {
             $validators[] = array('electonic.signatures.validators.authenticate', array(
                 'object_id' => $this->oDocument->iId,
                 'type' => 'document',
@@ -1530,6 +1594,7 @@ class KTDocumentCopyAction extends KTDocumentAction {
                     'required' => true,
                 ))
             );
+
             $oForm->addValidator(
                 array('ktcore.validators.string', array(
                     'output' => 'name',
@@ -1546,6 +1611,7 @@ class KTDocumentCopyAction extends KTDocumentAction {
                     'required' => true,
                 ))
             );
+
             $oForm->addValidator(
                 array('ktcore.validators.string', array(
                     'output' => 'filename',
@@ -1553,6 +1619,7 @@ class KTDocumentCopyAction extends KTDocumentAction {
                 ))
             );
         }
+
         return $oForm;
     }
 
@@ -1567,7 +1634,7 @@ class KTDocumentCopyAction extends KTDocumentAction {
         $res = $oForm->validate();
         $errors = $res['errors'];
         $data = $res['results'];
-        $sReason = $data['reason'];
+        $sReason = isset($data['reason']) ? $data['reason'] : _kt('Document Copied.');
         $extra_errors = array();
 
         if (!is_null($data['browse'])) {
@@ -1578,6 +1645,7 @@ class KTDocumentCopyAction extends KTDocumentAction {
             } else {
                 $name = $this->oDocument->getName();
             }
+
             if ($bNameClash) {
                 $extra_errors['name'] = _kt('A document with this title already exists in your chosen folder.  Please choose a different folder, or specify a new title for the copied document.');
             }
@@ -1590,6 +1658,7 @@ class KTDocumentCopyAction extends KTDocumentAction {
             } else {
                 $filename = $this->oDocument->getFilename();
             }
+
             if ($bFileClash) {
                 $extra_errors['filename'] = _kt('A document with this filename already exists in your chosen folder.  Please choose a different folder, or specify a new filename for the copied document.');
             }
@@ -1629,14 +1698,16 @@ class KTDocumentCopyAction extends KTDocumentAction {
         controllerRedirect('viewDocument', 'fDocumentId=' .  $oNewDoc->getId());
         exit(0);
     }
-}
-// }}}
 
-// {{{ KTDocumentArchiveAction
+}
+
 class KTDocumentArchiveAction extends KTDocumentAction {
+
     var $sName = 'ktcore.actions.document.archive';
     var $_sShowPermission = 'ktcore.permissions.write';
     var $_bMutator = false;
+	var $showIfWrite = false;
+	var $showIfRead = false;
 
     function getDisplayName() {
         return _kt('Archive');
@@ -1646,6 +1717,7 @@ class KTDocumentArchiveAction extends KTDocumentAction {
         if ($this->oDocument->getIsCheckedOut()) {
             return null;
         }
+
         return parent::getInfo();
     }
 
@@ -1676,14 +1748,14 @@ class KTDocumentArchiveAction extends KTDocumentAction {
 
         // Electronic Signature if enabled
         global $default;
-        if($default->enableESignatures){
+        if ($default->enableESignatures) {
             $widgets[] = array('ktcore.widgets.info', array(
                     'label' => _kt('This action requires authentication'),
                     'description' => _kt('Please provide your user credentials as confirmation of this action.'),
                     'name' => 'info'
                 ));
             $widgets[] = array('ktcore.widgets.string', array(
-                    'label' => _kt('Username'),
+                    'label' => ($default->useEmailLogin) ? _kt('Email Address') : _kt('Username'),
                     'name' => 'sign_username',
                     'required' => true
                 ));
@@ -1694,22 +1766,26 @@ class KTDocumentArchiveAction extends KTDocumentAction {
                 ));
         }
 
-        $widgets[] = array('ktcore.widgets.reason', array(
-                'label' => _kt('Note'),
-			    'required' => false,
-                'name' => 'reason',
-            ));
+        if ($this->oConfig->get('actionreasons/globalReasons') || $default->enableESignatures) {
+            $widgets[] = array('ktcore.widgets.reason', array(
+                    'label' => _kt('Note'),
+    			    'required' => ($default->enableESignatures) ? true : false,
+                    'name' => 'reason',
+                ));
+        }
 
         $oForm->setWidgets($widgets);
 
-        $validators[] = array('ktcore.validators.string', array(
+        if ($this->oConfig->get('actionreasons/globalReasons') || $default->enableESignatures) {
+            $validators[] = array('ktcore.validators.string', array(
                 'test' => 'reason',
                 'min_length' => 1,
                 'max_length' => 250,
                 'output' => 'reason',
             ));
+        }
 
-        if($default->enableESignatures){
+        if ($default->enableESignatures) {
             $validators[] = array('electonic.signatures.validators.authenticate', array(
                 'object_id' => $this->oDocument->iId,
                 'type' => 'document',
@@ -1726,7 +1802,7 @@ class KTDocumentArchiveAction extends KTDocumentAction {
 
     function do_main() {
 		//if there are symbolic links linking to this document we need confirmation
-    	if(count($this->oDocument->getSymbolicLinks())>0 && KTutil::arrayGet($_REQUEST,'postReceived') != 1){
+    	if (count($this->oDocument->getSymbolicLinks())>0 && KTutil::arrayGet($_REQUEST,'postReceived') != 1) {
         	$this->redirectTo("confirm");
         }
         $this->oPage->setBreadcrumbDetails(_kt('Archive Document'));
@@ -1738,10 +1814,11 @@ class KTDocumentArchiveAction extends KTDocumentAction {
             'context' => &$this,
             'form' => $oForm,
         ));
+
         return $oTemplate->render();
     }
 
-	function do_confirm(){
+	function do_confirm() {
     	$this->oPage->setBreadcrumbDetails(_kt('Confirm archive'));
     	$oTemplate =& $this->oValidator->validateTemplate('ktcore/action/archive_confirm');
         $oForm = $this->form_confirm();
@@ -1749,11 +1826,11 @@ class KTDocumentArchiveAction extends KTDocumentAction {
             'context' => &$this,
             'form' => $oForm,
         ));
+
         return $oTemplate->render();
     }
 
     function do_archive() {
-
         $oForm = $this->form_main();
         $res = $oForm->validate();
         $data = $res['results'];
@@ -1761,11 +1838,11 @@ class KTDocumentArchiveAction extends KTDocumentAction {
             return $oForm->handleError();
         }
 
-        $sReason = $data['reason'];
+        $sReason = isset($data['reason']) ? $data['reason'] : _kt('Document Archived.');
 
         $res = KTDocumentUtil::archive($this->oDocument, $sReason);
 
-        if(PEAR::isError($res)){
+        if (PEAR::isError($res)) {
             $_SESSION['KTErrorMessage'][] = $res->getMessage();
             controllerRedirect('viewDocument', 'fDocumentId=' .  $this->oDocument->getId());
             exit(0);
@@ -1775,21 +1852,27 @@ class KTDocumentArchiveAction extends KTDocumentAction {
         controllerRedirect('browse', 'fFolderId=' .  $this->oDocument->getFolderID());
         exit(0);
     }
-}
-// }}}
 
-// {{{ KTDocumentWorkflowAction
+}
+
 class KTDocumentWorkflowAction extends KTDocumentAction {
+
     var $sName = 'ktcore.actions.document.workflow';
     var $_sShowPermission = 'ktcore.permissions.read';
-
     var $sHelpPage = 'ktcore/user/workflow.html';
+	var $showIfWrite = true;
+	var $showIfRead = false;
 
     function predispatch() {
         $this->persistParams(array('fTransitionId'));
     }
 
     function getDisplayName() {
+        $oUser = User::get($_SESSION['userID']);
+        if (!KTPermissionUtil::userHasPermissionOnItem($oUser, 'ktcore.permissions.workflow', $this->oDocument)) {
+            return '';
+        }
+
         return _kt('Workflow');
     }
 
@@ -1797,6 +1880,7 @@ class KTDocumentWorkflowAction extends KTDocumentAction {
         if ($this->oDocument->getIsCheckedOut()) {
             return null;
         }
+
         return parent::getInfo();
     }
 
@@ -1812,13 +1896,13 @@ class KTDocumentWorkflowAction extends KTDocumentAction {
 
         // If the document is checked out - set transitions and workflows to empty and set checkedout to true
         $bIsCheckedOut = $this->oDocument->getIsCheckedOut();
-        if ($bIsCheckedOut){
+        if ($bIsCheckedOut) {
             $aTransitions = array();
             $aWorkflows = array();
             $transition_fields = array();
             $bHasPerm = FALSE;
 
-        }else{
+        } else {
             $aTransitions = KTWorkflowUtil::getTransitionsForDocumentUser($oDocument, $oUser);
 
             $aWorkflows = KTWorkflow::getList('start_state_id IS NOT NULL AND enabled = 1 ');
@@ -1831,11 +1915,10 @@ class KTDocumentWorkflowAction extends KTDocumentAction {
             $fieldErrors = null;
 
             $transition_fields = array();
-
             if ($aTransitions) {
                 $aVocab = array();
                 foreach ($aTransitions as $oTransition) {
-                	if(is_null($oTransition) || PEAR::isError($oTransition)){
+                	if (is_null($oTransition) || PEAR::isError($oTransition)) {
                 		continue;
                 	}
 
@@ -1853,7 +1936,7 @@ class KTDocumentWorkflowAction extends KTDocumentAction {
 
         // Add an electronic signature
     	global $default;
-    	if($default->enableESignatures){
+    	if ($default->enableESignatures) {
     	    $sUrl = KTPluginUtil::getPluginPath('electronic.signatures.plugin', true);
     	    $heading = _kt('You are attempting to modify the document workflow');
     	    $submit['type'] = 'button';
@@ -1861,7 +1944,7 @@ class KTDocumentWorkflowAction extends KTDocumentAction {
 
     	    $heading2 = _kt('You are attempting to transition the document workflow');
     	    $submit2['onclick'] = "javascript: showSignatureForm('{$sUrl}', '{$heading2}', 'ktcore.transactions.transition_workflow', 'document', 'transition_wf_form', 'submit', {$this->oDocument->iId});";
-    	}else{
+    	} else {
     	    $submit['type'] = 'submit';
     	    $submit['onclick'] = '';
     	    $submit2['onclick'] = '';
@@ -1879,6 +1962,7 @@ class KTDocumentWorkflowAction extends KTDocumentAction {
             'submit' => $submit,
             'submit2' => $submit2
         );
+
         return $oTemplate->render($aTemplateData);
     }
 
@@ -1889,12 +1973,13 @@ class KTDocumentWorkflowAction extends KTDocumentAction {
         } else {
             $oWorkflow = null;
         }
+
         $res = KTWorkflowUtil::startWorkflowOnDocument($oWorkflow, $oDocument);
         if (PEAR::isError($res)) {
             $this->errorRedirectToMain($res->message, sprintf('fDocumentId=%s',$oDocument->getId()));
         }
-        $this->successRedirectToMain(_kt('Workflow started'),
-                array('fDocumentId' => $oDocument->getId()));
+
+        $this->successRedirectToMain(_kt('Workflow started'), array('fDocumentId' => $oDocument->getId()));
         exit(0);
     }
 
@@ -1912,7 +1997,8 @@ class KTDocumentWorkflowAction extends KTDocumentAction {
         $oUser =& User::get($_SESSION['userID']);
         $res = KTWorkflowUtil::performTransitionOnDocument($oTransition, $oDocument, $oUser, $sComments);
 
-        if(!Permission::userHasDocumentReadPermission($oDocument)) {
+        //if (!Permission::userHasDocumentReadPermission($oDocument)) {
+        if (!$this->userHasDocumentReadPermission($oDocument)) {
             $this->commitTransaction();
             $_SESSION['KTInfoMessage'][] = _kt('Transition performed') . '. ' . _kt('You no longer have permission to view this document');
             controllerRedirect('browse', sprintf('fFolderId=%d', $oDocument->getFolderId()));
@@ -1923,12 +2009,10 @@ class KTDocumentWorkflowAction extends KTDocumentAction {
     }
 
     function form_quicktransition() {
-
         $oForm = new KTForm;
-
-        if($this->oDocument->getIsCheckedOut()){
+        if ($this->oDocument->getIsCheckedOut()) {
             $this->addErrorMessage(_kt('The workflow cannot be changed while the document is checked out.'));
-        }else{
+        } else {
             $oForm->setOptions(array(
                 'identifier' => 'ktcore.workflow.quicktransition',
                 'submit_label' => _kt('Perform Transition'),
@@ -1938,34 +2022,33 @@ class KTDocumentWorkflowAction extends KTDocumentAction {
                 'cancel_url' => KTBrowseUtil::getUrlForDocument($this->oDocument),
             ));
 
-        // Electronic Signature if enabled
-        global $default;
-        if($default->enableESignatures){
-            $widgets[] = array('ktcore.widgets.info', array(
-                    'label' => _kt('This action requires authentication'),
-                    'description' => _kt('Please provide your user credentials as confirmation of this action.'),
-                    'name' => 'info'
-                ));
-            $widgets[] = array('ktcore.widgets.string', array(
-                    'label' => _kt('Username'),
-                    'name' => 'sign_username',
-                    'required' => true
-                ));
-            $widgets[] = array('ktcore.widgets.password', array(
-                    'label' => _kt('Password'),
-                    'name' => 'sign_password',
-                    'required' => true
-                ));
-        }
+            // Electronic Signature if enabled
+            global $default;
+            if ($default->enableESignatures) {
+                $widgets[] = array('ktcore.widgets.info', array(
+                        'label' => _kt('This action requires authentication'),
+                        'description' => _kt('Please provide your user credentials as confirmation of this action.'),
+                        'name' => 'info'
+                    ));
+                $widgets[] = array('ktcore.widgets.string', array(
+                        'label' => ($default->useEmailLogin) ? _kt('Email Address') : _kt('Username'),
+                        'name' => 'sign_username',
+                        'required' => true
+                    ));
+                $widgets[] = array('ktcore.widgets.password', array(
+                        'label' => _kt('Password'),
+                        'name' => 'sign_password',
+                        'required' => true
+                    ));
+            }
 
+            $widgets[] = array('ktcore.widgets.reason', array(
+                        'label' => _kt('Note'),
+		  			'required' => ($default->enableESignatures) ? true : false,
+                      'name' => 'reason',
+                    ));
 
-        $widgets[] = array('ktcore.widgets.reason', array(
-                    'label' => _kt('Note'),
-					'required' => false,
-                    'name' => 'reason',
-                ));
-
-        $oForm->setWidgets($widgets);
+            $oForm->setWidgets($widgets);
 
             $oForm->setValidators(array(
                 array('ktcore.validators.string', array(
@@ -1976,16 +2059,15 @@ class KTDocumentWorkflowAction extends KTDocumentAction {
                 )),
             ));
 
-        if($default->enableESignatures){
-            $oForm->addValidator(array('electonic.signatures.validators.authenticate', array(
-                'object_id' => $this->oDocument->iId,
-                'type' => 'document',
-                'action' => 'ktcore.transactions.transition_workflow',
-                'test' => 'info',
-                'output' => 'info'
-            )));
-        }
-
+            if ($default->enableESignatures) {
+                $oForm->addValidator(array('electonic.signatures.validators.authenticate', array(
+                    'object_id' => $this->oDocument->iId,
+                    'type' => 'document',
+                    'action' => 'ktcore.transactions.transition_workflow',
+                    'test' => 'info',
+                    'output' => 'info'
+                )));
+            }
         }
 
         return $oForm;
@@ -1997,8 +2079,8 @@ class KTDocumentWorkflowAction extends KTDocumentAction {
 
         $transition_id = $_REQUEST['fTransitionId'];
         $oTransition = KTWorkflowTransition::get($transition_id);
-
         $oForm = $this->form_quicktransition();
+
         return $oForm->renderPage(sprintf(_kt('Perform Transition: %s'), $oTransition->getName()));
     }
 
@@ -2017,7 +2099,8 @@ class KTDocumentWorkflowAction extends KTDocumentAction {
 
         $res = KTWorkflowUtil::performTransitionOnDocument($oTransition, $this->oDocument, $this->oUser, sanitizeForHTML($data['reason']));
 
-        if(!Permission::userHasDocumentReadPermission($this->oDocument)) {
+        //if (!Permission::userHasDocumentReadPermission($this->oDocument)) {
+        if (!$this->userHasDocumentReadPermission($this->oDocument)) {
             $this->commitTransaction();
             $_SESSION['KTInfoMessage'][] = _kt('Transition performed') . '. ' . _kt('You no longer have permission to view this document');
             controllerRedirect('browse', sprintf('fFolderId=%d', $this->oDocument->getFolderId()));
@@ -2029,9 +2112,9 @@ class KTDocumentWorkflowAction extends KTDocumentAction {
     }
 
 }
-// }}}
 
 class KTOwnershipChangeAction extends KTDocumentAction {
+
     var $sName = 'ktcore.actions.document.ownershipchange';
     var $_sShowPermission = 'ktcore.permissions.security';
 
@@ -2078,6 +2161,7 @@ class KTOwnershipChangeAction extends KTDocumentAction {
             'context' => $this,
             'form' => $change_form,
         ));
+
         return $oTemplate->render();
     }
 
@@ -2107,8 +2191,12 @@ class KTOwnershipChangeAction extends KTDocumentAction {
             $this->errorRedirectToMain(sprintf(_kt('Failed to update document: %s'), $res->getMessage()), sprintf('fDocumentId=%d', $this->oDocument->getId()));
         }
 
+        // create the document transaction record
+        $documentTransaction = new DocumentTransaction($this->oDocument, 'Ownership changed', 'ktcore.transactions.ownership_change');
+        $documentTransaction->create();
+
         $this->successRedirectToMain(_kt('Ownership changed.'), sprintf('fDocumentId=%d', $this->oDocument->getId()));
     }
-}
 
+}
 ?>

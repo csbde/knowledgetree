@@ -5,7 +5,7 @@
  * KnowledgeTree Community Edition
  * Document Management Made Simple
  * Copyright (C) 2008, 2009, 2010 KnowledgeTree Inc.
- * 
+ *
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License version 3 as published by the
@@ -38,6 +38,7 @@
 
 require_once(KT_LIB_DIR . "/documentmanagement/Document.inc");
 require_once(KT_LIB_DIR . "/foldermanagement/Folder.inc");
+
 require_once(KT_LIB_DIR . "/permissions/permission.inc.php");
 require_once(KT_LIB_DIR . "/permissions/permissionassignment.inc.php");
 require_once(KT_LIB_DIR . "/permissions/permissiondescriptor.inc.php");
@@ -45,6 +46,9 @@ require_once(KT_LIB_DIR . "/permissions/permissionlookup.inc.php");
 require_once(KT_LIB_DIR . "/permissions/permissionlookupassignment.inc.php");
 require_once(KT_LIB_DIR . "/permissions/permissionobject.inc.php");
 require_once(KT_LIB_DIR . "/permissions/permissiondynamiccondition.inc.php");
+
+require_once(KT_LIB_DIR . '/security/PermissionCache.php');
+
 require_once(KT_LIB_DIR . "/groups/GroupUtil.php");
 require_once(KT_LIB_DIR . "/roles/roleallocation.inc.php");
 require_once(KT_LIB_DIR . "/roles/documentroleallocation.inc.php");
@@ -192,6 +196,8 @@ class KTPermissionUtil {
      * It may be that you don't have or want to have the root item for a
      * permission object that you do have and have updates - then use
      * this.
+     *
+     * @static
      */
     function updatePermissionLookupForPO($oPO) {
         $sWhere = 'permission_object_id = ?';
@@ -235,7 +241,14 @@ class KTPermissionUtil {
 
 			foreach ($aIds as $iId)
 	        {
-    	        $oDocument =& Document::get($iId);
+    	        $oDocument = Document::get($iId);
+
+    	        if(PEAR::isError($oDocument)){
+    	            $GLOBALS['default']->log->error("Couldn't update document permissions ({$iId}): {$oDocument->getMessage()}");
+    	            unset($oDocument);
+    	            continue;
+    	        }
+
         	    KTPermissionUtil::updatePermissionLookup($oDocument, $aOptions);
 
         	    $metadataid = $oDocument->getMetadataVersionId();
@@ -252,6 +265,13 @@ class KTPermissionUtil {
 				unset($oDocument);
         	}
         }
+
+        /* *** */
+
+        // Clear the cached permissions to force an update of the cache
+        self::clearCache();
+
+        /* *** */
 
        /* $aDocuments =& Document::getList(array($sWhere, $aParams));
         if (!PEAR::isError($aDocuments)) {
@@ -270,7 +290,7 @@ class KTPermissionUtil {
      * To be used any time a folder permission object is changed.
      */
     function updatePermissionLookupRecursive(&$oDocumentOrFolder) {
-        if (is_a($oDocumentOrFolder, 'Document')) {
+        if ($oDocumentOrFolder instanceof Document) {
             // XXX: metadata versions may need attention here
             KTPermissionUtil::updatePermissionLookup($oDocumentOrFolder);
             return;
@@ -301,8 +321,8 @@ class KTPermissionUtil {
      * non-recursively.
      */
     function updatePermissionLookup(&$oFolderOrDocument, $aOptions = null) {
-        $is_a_folder = is_a($oFolderOrDocument, 'Folder');
-		$is_a_document = is_a($oFolderOrDocument, 'Document') || is_a($oFolderOrDocument, 'KTDocumentCore');
+        $is_a_folder = ($oFolderOrDocument instanceof Folder) ;
+		$is_a_document = ($oFolderOrDocument instanceof Document) || ($oFolderOrDocument instanceof KTDocumentCore) ;
 
 		//ensure that the document shortcut is being updated.
 		if($is_a_document && $oFolderOrDocument->isSymbolicLink()){
@@ -329,7 +349,7 @@ class KTPermissionUtil {
         if ($is_a_folder) {
             $msg = sprintf("Updating folder %s", join('/', $oFolderOrDocument->getPathArray()));
         } else {
-            if (is_a($oFolderOrDocument, 'Document')) {
+            if ($oFolderOrDocument instanceof Document) {
             	//modify the message to reflect that a shortcut is begin updated
             	if($oFolderOrDocument->isSymbolicLink()){
             		$msg = sprintf("Updating shortcut to %s", $oFolderOrDocument->getName());
@@ -488,15 +508,76 @@ class KTPermissionUtil {
      * object, by virtue of a direct or indirect assignment due to the
      * user, its groups, its roles, or the roles assigned to its groups,
      * and so forth.
+     *
+     * @param int $user The id of the user | The user object
+     * @param string $permission The permission string to check eg ktcore.permissions.read | The permission object
+     * @param object $oFolderOrDocument The folder or document object on which the user has permissions.
+     * @return bool
      */
-    function userHasPermissionOnItem($oUser, $oPermission, $oFolderOrDocument) {
+    function userHasPermissionOnItem($user, $permission, $oFolderOrDocument)
+    {
+        KTUtil::startTiming(__FUNCTION__);
+
+        if (isset($_SESSION['adminmode']) && $_SESSION['adminmode'] === true) {
+            return true;
+        }
+
+        if($permission instanceof KTPermission){
+            $permission = $permission->getName();
+        }
+
+        if (!is_string($permission)) {
+            $GLOBALS['default']->log->error('Incorrect permission format received, should be a string.');
+            return false;
+        }
+
+        if($user instanceof User || $user instanceof UserProxy){
+            $user = $user->iId;
+        }
+
+        if(!is_numeric($user)){
+            $GLOBALS['default']->log->error('Incorrect user id format received, should be numeric.');
+            return false;
+        }
+
+        if (PEAR::isError($oFolderOrDocument) || $oFolderOrDocument == null) {
+            $msg = '';
+            if(PEAR::isError($oFolderOrDocument)){
+                $msg = '- '.$oFolderOrDocument->getMessage();
+            }
+            $GLOBALS['default']->log->error('Error on the folder or document object '.$msg);
+            return false;
+        }
+
+
+        $lookup_id = $oFolderOrDocument->getPermissionLookupID();
+
+        // Get the users permissions from cache
+	    $cache = PermissionCache::getSingleton();
+	    $check = $cache->checkPermission($lookup_id, $permission, $user);
+	    KTUtil::logTiming(__FUNCTION__);
+	    return $check;
+
+	    /* *** Old version *** *
+
+        KTUtil::startTiming(__FUNCTION__);
+
+        $oPermission = $permission;
+        $oUser = $user;
+
+        if(is_numeric($oUser)) {
+            $oUser = User::get($oUser);
+        }
+
         if (is_string($oPermission)) {
              $oPermission =& KTPermission::getByName($oPermission);
         }
         if (PEAR::isError($oPermission)) {
+            KTUtil::logTiming(__FUNCTION__);
             return false;
         }
         if (PEAR::isError($oFolderOrDocument) || $oFolderOrDocument == null) {
+            KTUtil::logTiming(__FUNCTION__);
             return false;
         }
 
@@ -505,7 +586,7 @@ class KTPermissionUtil {
         $iPermId = $oPermission->getID();
         $iDocId = $oFolderOrDocument->getID();
         $lookup = 'folders';
-        if(is_a($oFolderOrDocument, 'Document') || is_a($oFolderOrDocument, 'DocumentProxy')){
+        if(($oFolderOrDocument instanceof Document) || $oFolderOrDocument instanceof DocumentProxy){
             $lookup = 'docs';
         }
         // check if permission has been set
@@ -519,6 +600,7 @@ class KTPermissionUtil {
         if (PEAR::isError($oPLA)) {
             //print $oPL->getID();
             KTPermissionUtil::$permArr[$iPermId][$lookup][$iDocId] = false;
+            KTUtil::logTiming(__FUNCTION__);
             return false;
         }
         $oPD = KTPermissionDescriptor::get($oPLA->getPermissionDescriptorID());
@@ -528,14 +610,28 @@ class KTPermissionUtil {
 
         // check for permissions
         $aGroups = GroupUtil::listGroupsForUserExpand($oUser);
-        if ($oPD->hasRoles(array(-3))) { return true; } // everyone has access.
-        else if ($oPD->hasUsers(array($oUser))) { return true; }
-        else if ($oPD->hasGroups($aGroups)) { return true; }
-        else if ($oPD->hasRoles(array(-4)) && !$oUser->isAnonymous()) { return true; }
+        if ($oPD->hasRoles(array(-3))) {
+            KTUtil::logTiming(__FUNCTION__, 'roles');
+            return true;
+        } // everyone has access.
+        else if ($oPD->hasUsers(array($oUser))) {
+            KTUtil::logTiming(__FUNCTION__, 'everyone');
+            return true;
+        }
+        else if ($oPD->hasGroups($aGroups)) {
+            KTUtil::logTiming(__FUNCTION__, 'groups');
+            return true;
+        }
+        else if ($oPD->hasRoles(array(-4)) && !$oUser->isAnonymous() && $oUser->isLicensed()) {
+            KTUtil::logTiming(__FUNCTION__, 'anon');
+            return true;
+        }
 
         // permission isn't true, set to false
         KTPermissionUtil::$permArr[$iPermId][$lookup][$iDocId] = false;
+        KTUtil::logTiming(__FUNCTION__, 'final');
         return false;
+        */
     }
     // }}}
 
@@ -608,7 +704,7 @@ class KTPermissionUtil {
             $oNewDC->saveAssignment($oOrigDC->getAssignment());
         }
 
-        if (!is_a($oDocumentOrFolder, 'Folder')) {
+        if (!($oDocumentOrFolder instanceof Folder)) {
             KTPermissionUtil::updatePermissionLookup($oDocumentOrFolder);
             return;
         }
@@ -657,13 +753,13 @@ class KTPermissionUtil {
 
         // Documents might be permission owner, but then they'd be the
         // only users of that permission object.
-        if (is_a($oParentObject, 'Document')) {
+        if ($oParentObject instanceof Document) {
             return true;
         }
 
         // If you're a document and your permission owner isn't a
         // document, that means it's some ancestor, and thus not you.
-        if (is_a($oDocumentOrFolder, 'Document')) {
+        if ($oDocumentOrFolder instanceof Document) {
             return false;
         }
 
@@ -699,7 +795,7 @@ class KTPermissionUtil {
         $oDocumentOrFolder->setPermissionObjectID($iNewPOID);
         $oDocumentOrFolder->update();
 
-        if (is_a($oDocumentOrFolder, 'Document')) {
+        if ($oDocumentOrFolder instanceof Document) {
             // If we're a document, no niggly children to worry about.
             KTPermissionUtil::updatePermissionLookup($oDocumentOrFolder);
             return;
@@ -788,6 +884,20 @@ class KTPermissionUtil {
         return kt_array_merge($aPermissionDescriptors, $aUserDescriptors, $aRoleDescriptors);
     }
     // }}}
+
+    /**
+     * Clear the cached permissions
+     *
+     * @static
+     * @access public
+     */
+    static function clearCache()
+    {
+        // Invalidate the cached permissions to force an update of the cache
+        $cache = PermissionCache::getSingleton();
+        $cache->invalidateCache();
+    }
+
 }
 
 class KTPermissionChannel {

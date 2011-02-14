@@ -63,7 +63,7 @@ Use the Ctrl key to multi-select user names.{/i18n}</p>
 </tbody></table>
 
       <div class="form_actions">
-         <input type="{$input.type}" value="{i18n}save changes{/i18n}" onclick="{$input.onclick}" />
+         <input type="{$input.type}" value="{i18n}Save Changes{/i18n}" onclick="{$input.onclick}" />
          {capture assign=link}{addQS}fFolderId={$context->oFolder->getId()}{/addQS}{/capture}
          <input type="submit" name="kt_cancel[{$link}]" value="{i18n}Cancel{/i18n}" />
       </div>

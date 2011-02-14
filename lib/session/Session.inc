@@ -7,7 +7,7 @@
  * KnowledgeTree Community Edition
  * Document Management Made Simple
  * Copyright (C) 2008, 2009, 2010 KnowledgeTree Inc.
- * 
+ *
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License version 3 as published by the
@@ -67,6 +67,15 @@ class Session {
 
         if ($oUser->getDisabled() == 1) {
             return PEAR::raiseError(_kt('Your account has been disabled. Please contact a <a href="http://www.knowledgetree.com/contact-us">KnowledgeTree support representative</a> for your region.'));
+        }
+
+        if(isset($_SESSION["userID"]) && $_SESSION["userID"] != $iUserId){
+            // if the session exists and has a different userId - recreate it
+            $sessionID = session_id();
+            DBUtil::whereDelete($default->sessions_table, array('session_id' => $sessionID));
+
+            session_destroy();
+            session_start();
         }
 
         // bind user id to session
@@ -283,10 +292,10 @@ class Session {
         // now check if the timeout has been exceeded
         $lastused = $aRow["lastused"];
         $diff = time() - strtotime($lastused);
-        
+
         //To make sure the sessionTimeout setting is nonzero
        	if($default->sessionTimeout<=0)$default->sessionTimeout=1200;
-       	
+
         if($diff <= $default->sessionTimeout) {
             // update last used timestamp
             $aFV = array(
@@ -320,13 +329,13 @@ class Session {
      */
     function getClientIP() {
         // get client ip
-        if (getenv("REMOTE_ADDR")) {
-            $ip = getenv("REMOTE_ADDR");
-        } elseif(getenv("HTTP_X_FORWARDED_FOR")) {
-            $forwardedip = getenv("HTTP_X_FORWARDED_FOR");
-            list($ip,$ip2,$ip3,$ip4)= split (",", $forwardedip);
-        } elseif (getenv("HTTP_CLIENT_IP")) {
-            $ip = getenv("HTTP_CLIENT_IP");
+        if (getenv('REMOTE_ADDR')) {
+            $ip = getenv('REMOTE_ADDR');
+        } elseif(getenv('HTTP_X_FORWARDED_FOR')) {
+            $forwardedip = getenv('HTTP_X_FORWARDED_FOR');
+            list($ip,$ip2,$ip3,$ip4)= split (',', $forwardedip);
+        } elseif (getenv('HTTP_CLIENT_IP')) {
+            $ip = getenv('HTTP_CLIENT_IP');
         }
         return $ip;
     }

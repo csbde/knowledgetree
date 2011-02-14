@@ -49,54 +49,59 @@
 require_once(KT_LIB_DIR . "/plugins/pluginregistry.inc.php");
 require_once(KT_LIB_DIR . "/templating/templating.inc.php");
 require_once(KT_LIB_DIR . "/session/control.inc");
+require_once(KT_LIB_DIR . "/util/ktVar.php");
 require_once(KT_DIR . '/search2/search/search.inc.php');
+require_once(KT_LIB_DIR . "/users/shareduserutil.inc.php");
 
 class KTPage {
-    var $hide_section = false;
-	var $secondary_title = null;
+    public $hide_section = false;
+	public $secondary_title = null;
 
     /** resources are "filename"->1 to allow subcomponents to require items. */
-    var $js_resources = Array();
-    var $css_resources = Array();
-    var $theme_css_resources = Array();
-	var $ie_only_css = Array();
-	var $theme_ie_only_css = Array();
-    var $js_standalone = Array();
-    var $css_standalone = Array();
-    var $onload = false;
+    public $js_resources = Array();
+    public $css_resources = Array();
+    public $theme_css_resources = Array();
+	public $ie_only_css = Array();
+	public $theme_ie_only_css = Array();
+    public $js_standalone = Array();
+    public $css_standalone = Array();
+    public $onload = false;
 
 	/** context-relevant information */
-	var $errStack = Array();
-	var $booleanLink = false;
-    var $infoStack = Array();
-	var $portlets = Array();
-	var $show_portlets = true;
+	public $errStack = Array();
+	public $booleanLink = false;
+    public $infoStack = Array();
+	public $portlets = Array();
+	public $show_portlets = true;
 
     /** miscellaneous items */
-    var $title = '';
-    var $systemName = APP_NAME;
-    var $systemURL = 'http://www.knowledgetree.com/';
-    var $breadcrumbs = false;
-    var $breadcrumbDetails = false;
-    var $breadcrumbSection = false;
-    var $menu = null;
-    var $userMenu = null;
-    var $helpPage = null;
+    public $title = '';
+    public $systemName = APP_NAME;
+    public $systemURL = 'http://www.knowledgetree.com/';
+    public $breadcrumbs = false;
+    public $breadcrumbDetails = false;
+    public $breadcrumbSection = false;
+    public $menu = null;
+    public $userMenu = null;
+    public $helpPage = null;
 
     /** the "component".  Used to set the page header (see documentation for explanation). */
-    var $componentLabel = 'Browse Documents';
-    var $componentClass = 'browse_collections';
+    public $componentLabel = 'Browse Documents';
+    public $componentClass = 'browse_collections';
 
     /** $contents is the center of the page.  In KT < 3, this was CentralPayload. */
-    var $contents = '';
+    public $contents = '';
 
-    var $template = "kt3/standard_page";
+    public $template = "kt3/standard_page";
 
-    var $contentType = 'text/html';
-    var $charset = 'UTF-8';
+    public $contentType = 'text/html';
+    public $charset = 'UTF-8';
 
-    var $content_class;
+    public $content_class;
 
+    /* Whether or not to sanitize info */
+    public $allowHTML = false;
+    
     /* further initialisation */
     function KTPage() {
         global $default;
@@ -112,12 +117,10 @@ class KTPage {
            "resources/css/kt-contenttypes.css",
            "resources/css/kt-headings.css",
            "resources/css/kt-new-ui.css",
-
-
+           'resources/css/newui/newui.upload.css',
            "resources/css/newui/dropdown.css",
-
 		   /* REWORK INTO SINGLE STYLE SHEET */
-		   "resources/css/newui/dropdown_styles.css"
+		   "resources/css/newui/dropdown_styles.css",
         );
         $this->requireCSSResources($aCSS);
 
@@ -130,6 +133,7 @@ class KTPage {
         $this->requireCSSResource("resources/css/kt-ie-icons.css", true);
 
         /* default js files initialisation */
+        // TODO : Remove js based on user type.
         $aJS = Array();
 
 		$aJS[] = 'thirdpartyjs/MochiKit/MochiKitPacked.js';
@@ -142,12 +146,26 @@ class KTPage {
         $aJS[] = 'thirdpartyjs/jquery/jquery_noconflict.js';
         $aJS[] = 'thirdpartyjs/jquery/plugins/urlparser/jquery.url.js';
         $aJS[] = 'resources/js/search2widget.js';
+//        $aJS[] = 'thirdpartyjs/plupload/js/plupload.min.js';
+//        $aJS[] = 'thirdpartyjs/plupload/js/plupload.html5.min.js';
+//        $aJS[] = 'thirdpartyjs/plupload/js/jquery.plupload.queue.min.js';
+        $aJS[] = 'thirdpartyjs/jquery/plugins/ajaxupload/fileuploader.js';
+        $aJS[] = 'resources/js/newui/ktjapi.all.js';
         $aJS[] = 'resources/js/newui/kt.containers.js';
         $aJS[] = 'resources/js/newui/kt.lib.js';
+        $aJS[] = 'resources/js/newui/kt.api.js';
+        $aJS[] = 'resources/js/newui/kt.app.upload.js';
+        // Shared users cannot re-share or invite users to the system.
+        if(!SharedUserUtil::isSharedUser())
+        {
+	        $aJS[] = 'resources/js/newui/kt.app.sharewithusers.js';
+	        $aJS[] = 'resources/js/newui/kt.app.inviteusers.js';
+	        $aJS[] = 'resources/js/jquery.blockui.js';
+        }
         $aJS[] = 'resources/js/newui/newUIFunctionality.js';
         $aJS[] = 'resources/js/newui/jquery.helper.js';
         $aJS[] = 'resources/js/newui/buttontabs.jquery.js';
-        
+
         $this->requireJSResources($aJS);
 
         // this is horrid, but necessary.
@@ -169,7 +187,10 @@ class KTPage {
     	$sBaseUrl = KTUtil::kt_url();
 
     	$this->menu = array();
-    	$this->menu['dashboard'] = array('label' => _kt("Dashboard"), 'url' => $sBaseUrl.'/dashboard.php');
+    	if(!SharedUserUtil::isSharedUser())
+    	{
+    		$this->menu['dashboard'] = array('label' => _kt("Dashboard"), 'url' => $sBaseUrl.'/dashboard.php');
+    	}
 		$this->menu['browse'] = array('label' => _kt("Browse All Documents"), 'url' => $sBaseUrl.'/browse.php');
     	if(ACCOUNT_ROUTING_ENABLED) {
     		$sLiveUrl = KTLiveUtil::ktlive_url();
@@ -271,6 +292,11 @@ class KTPage {
     }
 
     // list the distinct CSS resources.
+    function getCSSExternal() {
+        return array_keys($this->css_external);
+    }
+
+    // list the distinct CSS resources.
     function getThemeCSSResources() {
         return array_keys($this->theme_css_resources);
     }
@@ -285,6 +311,10 @@ class KTPage {
 
     function requireCSSStandalone($sCSS) {
         $this->css_standalone[$sCSS] = 1;
+    }
+
+    function requireCSSExternal($sCSS) {
+        $this->css_external[$sCSS] = 1;
     }
 
     function getCSSStandalone() {
@@ -353,7 +383,7 @@ class KTPage {
 	}
 
 	/* LEGACY */
-	var $deprecationWarning = "Legacy UI API: ";
+	public $deprecationWarning = "Legacy UI API: ";
 	function setCentralPayload($sCentral) {
 	    $this->contents = $sCentral;
 		$this->addError($this->deprecationWarning . "called <strong>setCentralPayload</strong>");
@@ -410,7 +440,23 @@ class KTPage {
         $sBaseUrl = KTUtil::kt_url();
 
         if (!(PEAR::isError($this->user) || is_null($this->user) || $this->user->isAnonymous())) {
-        	if ($oConfig->get("user_prefs/restrictPreferences", false) && !Permission::userIsSystemAdministrator($this->user->getId())) {
+            $isAdmin = Permission::userIsSystemAdministrator($this->user->getId());
+
+            if($isAdmin){
+                $bCanAdd = true;
+                if (KTPluginUtil::pluginIsActive('ktdms.wintools')) {
+                    $path = KTPluginUtil::getPluginPath('ktdms.wintools');
+                    require_once($path . 'baobabkeyutil.inc.php');
+                    $bCanAdd = BaobabKeyUtil::canAddUser();
+                }
+
+                if($bCanAdd === true){
+                    $this->userMenu['inviteuser'] = array('label' => _kt('Invite Users'), 'url' => '#');
+                    $this->userMenu['inviteuser']['onclick'] = "javascript:kt.app.inviteusers.showInviteWindow();";
+                }
+            }
+
+        	if ($oConfig->get("user_prefs/restrictPreferences", false) && !$isAdmin) {
         		$this->userMenu['logout'] = array('label' => _kt('Logout'), 'url' => $sBaseUrl.'/presentation/logout.php');
         	} else {
         		if($default->enableESignatures) {
@@ -420,42 +466,30 @@ class KTPage {
         			$this->userMenu['preferences']['onclick'] = "javascript: showSignatureForm('{$sUrl}', '{$heading}', 'dms.administration.accessing_preferences', 'system', '{$sBaseUrl}/preferences.php', 'redirect');";
         		} else {
         			$this->userMenu['preferences']['url'] = $sBaseUrl.'/preferences.php';
-        		}		
+        		}
 
-				if (KTPluginUtil::pluginIsActive ( 'gettingstarted.plugin' )) {
-					require_once(KT_PLUGIN_DIR . '/commercial/gettingstarted/GettingStarted.php');
-					$gettingStarted = new GettingStarted();
-					$gettingStartedRendered = $gettingStarted->render();
-					
-					$sUrl = KTPluginUtil::getPluginPath('gettingstarted.plugin', true);
-					$heading = _kt('Getting Started');
-					$this->userMenu['gettingstarted']['url'] = '#';
-					$this->userMenu['gettingstarted']['extra'] = 'name="gettingStartedModal"';
-        			//$this->userMenu['gettingstarted']['onclick'] = "javascript: doMask();";
-        			$this->userMenu['gettingstarted']['label'] = '<span>Getting Started</span>';
-				}
-				
+        		if (KTPluginUtil::pluginIsActive ( 'gettingstarted.plugin' )) {
+        		    $heading = _kt('Getting Started');
+        		    $this->userMenu['gettingstarted']['url'] = KTUtil::kt_url() . str_replace(KT_DIR, '', KTPluginUtil::getPluginPath('gettingstarted.plugin') . 'GettingStarted.php');
+        		    $this->userMenu['gettingstarted']['extra'] = 'name="gettingStartedModal"';
+        		    //$this->userMenu['gettingstarted']['onclick'] = "javascript: doMask();";
+        		    $this->userMenu['gettingstarted']['label'] = '<span>Getting Started</span>';
+        		}
+
 				$this->userMenu['supportpage'] = array('label' => _kt('Get Help'), 'url' => $sBaseUrl.'/support.php', 'extra'=>'target="_blank"');
-				
         		//	        $this->userMenu['preferences'] = array('label' => _kt('Preferences'), 'url' => $sBaseUrl.'/preferences.php');
         		$this->userMenu['preferences']['label'] = '<span class="normalTransformText">'.$this->user->getName().'</span>';
-
 				// About Moved to Footer
 				//$this->userMenu['aboutkt'] = array('label' => _kt('About'), 'url' => $sBaseUrl.'/about.php');
-
-
-
 				$this->userMenu['logout'] = array('label' => _kt('Logout'), 'url' => $sBaseUrl.'/presentation/logout.php');
         	}
         } else {
         	$this->userMenu['login'] = array('label' => _kt('Login'), 'url' => $sBaseUrl.'/login.php');
         }
 
-
 		// For new Layout, we need to reverse Menu,
 		// so that right most items appear first
 		$this->userMenu = array_reverse($this->userMenu);
-
 
         // FIXME we need a more complete solution to navigation restriction
         if (!is_null($this->menu['administration']) && !is_null($this->user)) {
@@ -475,11 +509,27 @@ class KTPage {
 
         require_once(KT_LIB_DIR . '/browse/feedback.inc.php');
         $userFeedback = new Feedback();
-		
+
         //TODO: need to refactor - is this the correct way to add this?
-		if(ACCOUNT_ROUTING_ENABLED){
-			$uploadProgress = new DragDrop();
-			$uploadProgressRendered = $uploadProgress->render();
+        $loadDND = true;
+		if (ACCOUNT_ROUTING_ENABLED) {
+			$fFolderId = KTUtil::arrayGet($_REQUEST, 'fFolderId', 1);
+			// Disable drag and drop for shared user landing browse folder view
+			if($this->user->getDisabled() == 4 && $fFolderId == 1)
+			{
+				$loadDND = false;
+			}
+			if($this->user->getDisabled() == 4 && $loadDND)
+			{
+				require_once(KT_LIB_DIR . '/render_helpers/sharedContent.inc');
+				
+				$loadDND = (SharedContent::getPermissions($this->user->getId(), null, $fFolderId, 'folder') == 0) ? false : true;
+			}
+			if($loadDND)
+			{
+				$uploadProgress = new DragDrop();
+				$uploadProgressRendered = $uploadProgress->render();
+			}
 		}
 
         $oTemplating =& KTTemplating::getSingleton();
@@ -496,7 +546,7 @@ class KTPage {
         if ($oConfig->get("ui/automaticRefresh", false)) {
             $aTemplateData['refreshTimeout'] = (int)$oConfig->get("session/sessionTimeout") + 3;
         }
-        
+
         //TODO: need to refactor - is this the correct way to add this?
         if (KTPluginUtil::pluginIsActive ( 'gettingstarted.plugin' )) {
         	$aTemplateData['gettingStarted'] = $gettingStartedRendered;
@@ -516,7 +566,6 @@ class KTPage {
         // unlike the rest of KT, we use echo here.
         echo $oTemplate->render($aTemplateData);
     }
-
 
 	/**   helper functions */
 	// returns an array ("url", "label")
@@ -541,7 +590,7 @@ class KTPage {
     }
 
     function setHelp($sHelpPage) {
-	$this->helpPage = $sHelpPage;
+	   $this->helpPage = $sHelpPage;
     }
 
     function getHelpURL() {

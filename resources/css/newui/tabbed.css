@@ -1,0 +1,128 @@
+ul.tabbed {
+    font-family:"Arial", sans-serif;
+    font-weight: bold;
+    font-size: 11px;
+}
+
+ul.tabbed ul {
+    width: 160px; /* Width of dropdown list */
+	font-size: 11px;
+}
+
+ul.tabbed ul li {
+	font-weight: normal;
+}
+
+ul.tabbed li {
+    line-height: 39px;
+	padding: 0;
+	border: none;
+	float:left;
+}
+    
+ul.tabbed li li {
+    text-transform: none;
+}
+
+ul.tabbed a,
+ul.tabbed span {
+	display: block;
+}
+
+
+ul.tabbed a:link, ul.tabbed a,
+ul.tabbed a:visited	{ color: #697474; text-decoration: none; }
+ul.tabbed a.active		{ color: #697474; }
+ul.tabbed a.active	{ color: #697474; }
+
+
+ul.tabbed *.dir {
+	color: #697474;
+	padding-right: 20px;
+	padding-left: 10px;
+	background-image: url(../../graphics/newui/midbardivider.png);
+	background-position: right;
+	background-repeat: no-repeat;
+}
+
+ul.tabbed li.active,
+ul.tabbed li.active {
+	background: url('../../graphics/newui/menuHoverRight.png') no-repeat top right;
+}
+
+ul.tabbed li li.active {
+    background: url(../../graphics/newui/grad2.png) 0 100% repeat-x;
+}
+
+ul.tabbed li.active > *.dir, ul.tabbed li.active *.dir.active {
+	color: #FFF;
+	background: url('../../graphics/newui/menuHoverLeft.png') no-repeat;
+}
+
+ul.tabbed li.roundleft {
+    background: #FFF url('../../graphics/newui/midbarleft.png') no-repeat top left;
+    width: 13px;
+    margin: 0;
+}
+
+div#midright {
+	float: right;
+	
+}
+
+span#midrightcorner {
+	background: #fff url('../../graphics/newui/midbarright.png') no-repeat top right;float: right;
+	width: 11px;
+	overflow: hidden;
+}
+
+ul.tabbed ul li {
+    background-color: #FFF;	
+	margin-left: 5px;
+    margin-right: 5px;
+	line-height: normal;
+	border-bottom: 1px solid #F3F3F3;
+}
+
+ul.tabbed ul li a{
+	padding: 5px;
+}
+
+ul.tabbed ul li.active {
+	padding: 5px;
+	font-weight: bold;
+	display: block;
+}
+
+ul.tabbed ul li.active.active {
+	background: #FFF; /* REQUIRED!! */
+}
+
+ul.tabbed ul li strong{
+	padding: 5px;
+	font-weight: bold;
+	display: block;
+}
+
+ul.tabbed ul li img{
+	vertical-align: text-bottom;
+}
+
+
+/* Rounds the bottom corners of the last item*/
+ul.tabbed ul li:last-child {
+    border: none;
+}
+
+/* Rounds the bottom corners of the drop down menu*/
+ul.tabbed ul {
+	background-color: #FFF;
+    border: 8px solid #CCCCCC; /* For older browsers
+    /*border: 8px solid rgba(0, 0, 0, 0.2);*/
+    
+    -moz-border-radius-bottomleft: 10px;
+    -webkit-border-bottom-left-radius: 10px;
+    -moz-border-radius-bottomright: 10px;
+    -webkit-border-bottom-right-radius: 10px;
+    
+}

@@ -46,7 +46,7 @@ class KTPlugin {
     var $iOrder = 0;
     var $sFriendlyName = null;
     var $sSQLDir = null;
-    
+
     var $autoRegister = false;
     var $showInAdmin = true;
 
@@ -153,13 +153,13 @@ class KTPlugin {
     }
 
 //registerLocation($sName, $sClass, $sCategory, $sTitle, $sDescription, $sDispatcherFilePath = null, $sURL = null)
-    function registerAdminPage($sName, $sClass, $sCategory, $sTitle, $sDescription, $sFilename) {
+    function registerAdminPage($sName, $sClass, $sCategory, $sTitle, $sDescription, $sFilename, $sURL = null, $order = 0) {
         $sFullname = $sCategory . '/' . $sName;
         $sFilename = $this->_fixFilename($sFilename);
         $this->_aAdminPages[$sFullname] = array($sName, $sClass, $sCategory, $sTitle, $sDescription, $sFilename, null, $this->sNamespace);
 
         // Register helper in DB
-        $params = $sName.'|'.$sClass.'|'.$sCategory.'|'.$sTitle.'|'.$sDescription.'|'.$sFilename.'|'.null.'|'.$this->sNamespace;
+        $params = $sName.'|'.$sClass.'|'.$sCategory.'|'.$sTitle.'|'.$sDescription.'|'.$sFilename.'|'.null.'|'.$this->sNamespace .'|'. $order;
         $this->registerPluginHelper($sFullname, $sClass, $sFilename, $params, 'general', 'admin_page');
     }
 
@@ -320,7 +320,7 @@ class KTPlugin {
         $params = $sClassname.'|'.$sNamespace.'|'.$sPath;
         $this->registerPluginHelper($sNamespace, $sClassname, $sPath, $params, 'process', 'processor');
     }
-    
+
     /**
      * Register search criteria for a plugin
      * See Search2/search/fieldRegistry.inc.php
@@ -404,7 +404,7 @@ class KTPlugin {
         require_once(KT_LIB_DIR . '/plugins/pluginentity.inc.php');
         $oEntity = KTPluginEntity::getByNamespace($this->sNamespace);
         if (PEAR::isError($oEntity)) {
-            if (is_a($oEntity, 'KTEntityNoObjects')) {
+            if ($oEntity instanceof KTEntityNoObjects) {
                 // plugin not registered in database
 
                 // XXX: nbm: Show an error on the page that a plugin
@@ -413,7 +413,7 @@ class KTPlugin {
             }
             return false;
         }
-        if (!is_a($oEntity, 'KTPluginEntity')) {
+        if (!($oEntity instanceof KTPluginEntity)) {
             print "isRegistered\n";
             var_dump($oEntity);
             exit(0);
@@ -774,7 +774,7 @@ class KTPlugin {
             $this->setup();
             return $oEntity;
         }
-        if(PEAR::isError($oEntity) && !is_a($oEntity, 'KTEntityNoObjects')){
+        if(PEAR::isError($oEntity) && !($oEntity instanceof KTEntityNoObjects)){
             $default->log->error("Plugin register: the plugin {$friendly_name}, namespace: {$this->sNamespace} returned an error: ".$oEntity->getMessage());
             return $oEntity;
         }

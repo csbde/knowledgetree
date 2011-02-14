@@ -96,7 +96,7 @@ class HTTP_Client
     */
     function HTTP_Client($defaultRequestParams = null, $defaultHeaders = null)
     {
-        $this->_cookieManager =& new HTTP_Client_CookieManager();
+        $this->_cookieManager = new HTTP_Client_CookieManager();
         if (isset($defaultHeaders)) {
             $this->setDefaultHeader($defaultHeaders);
         }
@@ -143,7 +143,7 @@ class HTTP_Client
     */
     function &_createRequest($url, $method = HTTP_REQUEST_METHOD_GET)
     {
-        $req =& new HTTP_Request($url, $this->_defaultRequestParams);
+        $req = new HTTP_Request($url, $this->_defaultRequestParams);
         $req->setMethod($method);
         foreach ($this->_defaultHeaders as $name => $value) {
             $req->addHeader($name, $value);
@@ -383,7 +383,7 @@ class HTTP_Client
     */
     function attach(&$listener, $propagate = false)
     {
-        if (!is_a($listener, 'HTTP_Request_Listener')) {
+        if (!($listener instanceof HTTP_Request_Listener)) {
             return false;
         }
         $this->_listeners[$listener->getId()] =& $listener;
@@ -401,7 +401,7 @@ class HTTP_Client
     */
     function detach(&$listener)
     {
-        if (!is_a($listener, 'HTTP_Request_Listener') || 
+        if (!($listener instanceof HTTP_Request_Listener) || 
             !isset($this->_listeners[$listener->getId()])) {
             return false;
         }

@@ -92,7 +92,7 @@ class APIAclTestCase extends KTUnitTestCase {
     function testAllocatingMembersToRoles()
     {
         $folder = $this->ktapi->get_folder_by_name('test123');
-        if(!$folder instanceof KTAPI_Folder){
+        if(!($folder instanceof KTAPI_Folder)){
             $folder = $this->root->add_folder('test123');
         }
         $folder_id = $folder->get_folderid();
@@ -135,7 +135,7 @@ class APIAclTestCase extends KTUnitTestCase {
     function testRoleAllocationInheritance()
     {
         $folder = $this->ktapi->get_folder_by_name('test123');
-        if(!$folder instanceof KTAPI_Folder){
+        if(!($folder instanceof KTAPI_Folder)){
             $folder = $this->root->add_folder('test123');
         }
         $folder_id = $folder->get_folderid();
@@ -304,7 +304,7 @@ class APIAclTestCase extends KTUnitTestCase {
     {
         $root = $this->ktapi->get_root_folder();
         $folder = $this->ktapi->get_folder_by_name('test123');
-        if(!$folder instanceof KTAPI_Folder){
+        if(!($folder instanceof KTAPI_Folder)){
             $folder = $root->add_folder('test123');
         }
         $allocation = KTAPI_RoleAllocation::getAllocation($this->ktapi, $folder);
@@ -375,7 +375,7 @@ class APIAclTestCase extends KTUnitTestCase {
     {
         $root = $this->ktapi->get_root_folder();
         $folder = $this->ktapi->get_folder_by_name('test123');
-        if(!$folder instanceof KTAPI_Folder){
+        if(!($folder instanceof KTAPI_Folder)){
             $folder = $root->add_folder('test123');
         }
 

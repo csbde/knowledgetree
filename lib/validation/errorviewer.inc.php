@@ -77,7 +77,7 @@ class KTErrorViewerRegistry {
         // Reverse, since hopefully the best/first match will be added
         // after the other matches.
         foreach (array_reverse($this->aViewers) as $sHandlerClass => $sClass) {
-            if (is_a($oError, $sClass)) {
+            if ($oError instanceof $sClass) {
                 return new $sHandlerClass($oError);
             }
         }

@@ -1,0 +1,69 @@
+<span class="ul_meta_row">
+	<span class="ul_meta_label" id="ul_meta_label_[id]">[name]
+		<span class="ul_meta_label_descr">[description]</span>
+	</span>
+	<span id="span_ul_meta_field_date_[id]" class="ul_meta_field"></span>
+</span>
+
+<script type="text/javascript">
+
+Ext.onReady(function(){
+
+	if([is_mandatory] == '1') {
+    	//jQuery('#ul_meta_field_date_[id]').addClass('required');
+		jQuery('#ul_meta_label_[id]').append("<img class='ul_required_tag' src='/resources/graphics/newui/required_tag.png'/>");
+
+		//register as required field
+		kt.dragdrop.metadata.registerRequiredFieldNotDone('ul_meta_field_[id]');
+	}
+	
+    var df = new Ext.form.DateField({
+    	format: 'Y-m-d', //YYYY-MMM-DD
+        width: 200,
+        id: 'ul_meta_field_date_[id]',
+        cls: 'ul_meta_fullField ul_meta_field_[id] date',
+        enableKeyEvents: true,
+        listeners: {
+            'select': function(dateField, date){
+    			//console.log('select '+dateField.getValue());
+        		try {
+			    	var month = parseInt(date.getMonth()) + 1;
+			    	if (month < 10) {
+			    		month = '0'+month;
+			    	}
+			    	var day = date.getDate();
+			    	if (day < 10) {
+			    		day = '0'+day;
+			    	}
+			    	var myDate = date.getFullYear() + '-' + month + '-' + day;
+			    	kt.dragdrop.metadata.setMetaData('[id]', myDate);
+        		} catch (err) {
+            		//console.log('error in date');
+        			kt.dragdrop.metadata.registerRequiredFieldNotDone('ul_meta_field_[id]');
+    				kt.dragdrop.metadata.checkRequiredFieldsCompleted();
+            		kt.dragdrop.metadata.setMetaData('[id]', '');
+                }
+			},
+			'valid': function(dateField) {
+				//console.log('valid '+dateField.getValue());
+				if (dateField.getValue() == 0) {
+					kt.dragdrop.metadata.registerRequiredFieldNotDone('ul_meta_field_[id]');
+					kt.dragdrop.metadata.checkRequiredFieldsCompleted();
+				} else {
+					kt.dragdrop.metadata.registerRequiredFieldDone('ul_meta_field_[id]');
+					kt.dragdrop.metadata.checkRequiredFieldsCompleted();
+				}
+			},
+			'invalid': function(dateField) {
+				//console.log('invalid '+dateField.getValue());
+				kt.dragdrop.metadata.registerRequiredFieldNotDone('ul_meta_field_[id]');
+				kt.dragdrop.metadata.checkRequiredFieldsCompleted();
+			}
+    	}
+   	});
+
+    df.render('span_ul_meta_field_date_[id]');
+
+});
+
+</script>

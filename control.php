@@ -5,32 +5,32 @@
  * KnowledgeTree Community Edition
  * Document Management Made Simple
  * Copyright (C) 2008, 2009, 2010 KnowledgeTree Inc.
- *  
- * 
+ *
+ *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License version 3 as published by the
  * Free Software Foundation.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
  * details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- * 
- * You can contact KnowledgeTree Inc., PO Box 7775 #87847, San Francisco, 
+ *
+ * You can contact KnowledgeTree Inc., PO Box 7775 #87847, San Francisco,
  * California 94120-7775, or email info@knowledgetree.com.
- * 
+ *
  * The interactive user interfaces in modified source and object code versions
  * of this program must display Appropriate Legal Notices, as required under
  * Section 5 of the GNU General Public License version 3.
- * 
+ *
  * In accordance with Section 7(b) of the GNU General Public License version 3,
  * these Appropriate Legal Notices must retain the display of the "Powered by
- * KnowledgeTree" logo and retain the original copyright notice. If the display of the 
+ * KnowledgeTree" logo and retain the original copyright notice. If the display of the
  * logo is not reasonably feasible for technical reasons, the Appropriate Legal Notices
- * must display the words "Powered by KnowledgeTree" and retain the original 
+ * must display the words "Powered by KnowledgeTree" and retain the original
  * copyright notice.
  * Contributor( s): ______________________________________
  *
@@ -44,9 +44,10 @@ if(!$iu->isSystemInstalled()) {
 	$iu->redirect("setup/wizard");
 	exit(0);
 }
+
 // main library routines and defaults
 require_once('config/dmsDefaults.php');
-
+require_once(KT_LIB_DIR . '/util/ktutil.inc');
 /**
  * Controller page -- controls the web application by responding to a set of
  * defined actions.  The controller performs session handling, page-level
@@ -64,20 +65,32 @@ if ($action != 'login') {
 
     // check the session, but don't redirect if the check fails
     $ret = checkSessionAndRedirect(false);
+    $redirectToBrowse = $oKTConfig->get('KnowledgeTree/redirectToBrowse', false);
     if ($ret === true) {
         //get around the problem with search
         if (strcmp($_REQUEST['fForStandardSearch'], 'yes') == 0) {
             $action = 'standardSearch';
         } else if (!isset($action)) {
-        // session check succeeds, so default action should be the dashboard if no action was specified
-            $action = 'dashboard';
+            // session check succeeds, so default action should be the dashboard or browse if set if no action was specified
+            if ($redirectToBrowse){
+                $action = 'browse';
+            }else{
+                $action = 'dashboard';
+            }
         }
     } else {
         // session check fails, so default action should be the login form if no action was specified
         $oKTConfig = KTConfig::getSingleton();
         $dest = 'login';
-        if ($oKTConfig->get('allowAnonymousLogin', false)) { $dest = 'dashboard'; }
-            
+        if ($oKTConfig->get('allowAnonymousLogin', false)) {
+
+            if ($redirectToBrowse){
+                $dest = 'browse';
+            }else{
+                $dest = 'dashboard';
+            }
+        }
+
         if (!isset($action)) {
             $action = $dest;
         } elseif ($action <> $dest) {
@@ -101,14 +114,22 @@ if ($action != 'login') {
 
 // we appear to have some encoding/decoding issues, so we need to force-check for %30 type situations
 $queryString = KTUtil::arrayGet($_REQUEST, 'qs', '');
+$queryStringArray = array();
 if (is_array($queryString)) {
     $aStrings = array();
     foreach ($queryString as $k => $v) {
         $aStrings[] = $k . '=' . $v;
+		$queryStringArray[$k] = $v;
     }
     $queryString = join('&', $aStrings);
 } elseif (count(preg_match('#\%#', $queryString) != 0)) {
     $queryString = urldecode($queryString);
+	
+	$arr = explode('=', $queryString);
+	
+	if (count($arr) > 0) {
+		$queryStringArray[$arr[0]] = $arr[1];
+	}
 }
 
 if (empty($queryString)) {
@@ -126,9 +147,9 @@ if (empty($queryString)) {
     }
 }
 
-if ($action == 'dashboard') { 
+if ($action == 'dashboard') {
     $oKTConfig = KTConfig::getSingleton();
-    if(!$oKTConfig->get('useNewDashboard')) $action = 'olddashboard'; 
+    if(!$oKTConfig->get('useNewDashboard')) $action = 'olddashboard';
 }
 
 // retrieve the page from the sitemap (checks whether this user has access to the requested page)
@@ -146,19 +167,27 @@ if (!$page) {
     // strip querystring from the page returned from the sitemap
     // before setting page authorisation flag (since checkSession checks page level
     // access by checking $_SESSION["pageAccess"][$_SERVER["PHP_SELF"] ie. without querystring(?)
-    
-    $paramStart=strpos($page, '?');
-    if ($paramStart !== false) {
-        $accessPage = substr($page, 0, $paramStart);
-    } else {
-        $accessPage = $page;
-    }
-    $_SESSION['pageAccess'][$accessPage] = true;
-    // if we have a querystring add it on
-    if (strlen($queryString) > 0) {
-    	$page .= ($paramStart !== false)?'&':'?';
-    	$page .= $queryString;
-        $default->log->info("control.php: about to redirect to $page");
+	
+	$cleanUrlPages = array("/browse.php", "/view.php");
+	
+	if (in_array($page, $cleanUrlPages)) {
+		$page = KTUtil::buildUrl($page, $queryStringArray);
+		$default->log->info("control.php: about to redirect to $page");
+	} else {
+		$paramStart=strpos($page, '?');
+		if ($paramStart !== false) {
+			$accessPage = substr($page, 0, $paramStart);
+		} else {
+			$accessPage = $page;
+		}
+		$_SESSION['pageAccess'][$accessPage] = true;
+		// if we have a querystring add it on
+		if (strlen($queryString) > 0) {
+			$page .= ($paramStart !== false)?'&':'?';
+			$page .= $queryString;
+			$default->log->info("control.php: about to redirect to $page");
+		}
+		
     }
     redirect($page);
 }

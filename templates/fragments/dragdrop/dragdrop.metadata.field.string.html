@@ -1,0 +1,34 @@
+<span class="ul_meta_row">
+	<span class="ul_meta_label" id="ul_meta_label_[id]">[name]
+		<span class="ul_meta_label_descr">[description]</span>
+	</span>
+	<span class="ul_meta_field">
+		<input id="ul_meta_field_[id]" type="text" class="ul_meta_fullField ul_meta_field_[id]" onChange="kt.dragdrop.metadata.setMetaData('[id]', this.value);"></input>
+	</span>
+</span>
+
+<script type="text/javascript">
+
+Ext.onReady(function(){
+
+	if([is_mandatory] == '1') {
+		//jQuery('#ul_meta_field_[id]').addClass('required');
+		jQuery('#ul_meta_label_[id]').append("<img class='ul_required_tag' src='/resources/graphics/newui/required_tag.png'/>");
+
+		//register as required field
+		kt.dragdrop.metadata.registerRequiredFieldNotDone('ul_meta_field_[id]');
+
+		jQuery('#ul_meta_field_[id]').keyup(function() {
+			if (jQuery.trim(jQuery('#ul_meta_field_[id]').val()).length == 0){
+				kt.dragdrop.metadata.registerRequiredFieldNotDone('ul_meta_field_[id]');
+				kt.dragdrop.metadata.checkRequiredFieldsCompleted();
+			} else {
+				kt.dragdrop.metadata.registerRequiredFieldDone('ul_meta_field_[id]');
+				kt.dragdrop.metadata.checkRequiredFieldsCompleted();
+			}
+		});
+	}
+
+});
+
+</script>

@@ -52,7 +52,7 @@ require_once(realpath(dirname(__FILE__) . '/../config/dmsDefaults.php'));
 require_once(KT_LIB_DIR . '/filelike/fsfilelike.inc.php');
 require_once(KT_LIB_DIR . '/foldermanagement/folderutil.inc.php');
 require_once(KT_LIB_DIR . '/browse/DocumentCollection.inc.php');
-require_once(KT_LIB_DIR . "/browse/columnregistry.inc.php");
+require_once(KT_LIB_DIR . '/browse/columnregistry.inc.php');
 
 define('KTAPI_DIR', KT_DIR . '/ktapi');
 
@@ -65,6 +65,7 @@ require_once(KTAPI_DIR .'/KTAPICollection.inc.php');
 require_once(KTAPI_DIR .'/KTAPIBulkActions.inc.php');
 require_once(KTAPI_DIR .'/KTAPITrigger.inc.php');
 require_once(KTAPI_DIR .'/KTAPIConditionalMetadata.inc.php');
+require_once(KTAPI_DIR .'/KTAPIUser.inc.php');
 
 require_once(KT_LIB_DIR . '/users/shareduserutil.inc.php');
 require_once(KT_LIB_DIR . '/render_helpers/sharedContent.inc');
@@ -77,8 +78,8 @@ require_once(KT_LIB_DIR . '/render_helpers/sharedContent.inc');
 * @package KTAPI
 * @version Version 0.9
 */
-abstract class KTAPI_FolderItem
-{
+abstract class KTAPI_FolderItem {
+
 	/**
 	* This is a reference to the core KTAPI controller
 	*
@@ -124,8 +125,8 @@ abstract class KTAPI_FolderItem
 * @package KTAPI
 * @version Version 0.9
 */
-class KTAPI_Error extends PEAR_Error
-{
+class KTAPI_Error extends PEAR_Error {
+
  	/**
  	* This method determines if there is an error in the object itself or just a common error
  	*
@@ -144,6 +145,7 @@ class KTAPI_Error extends PEAR_Error
 			parent::PEAR_Error($msg);
 		}
 	}
+
 }
 
 /**
@@ -153,8 +155,7 @@ class KTAPI_Error extends PEAR_Error
 * @package KTAPI
 * @version Version 0.9
 */
-class KTAPI_DocumentTypeError extends KTAPI_Error
-{
+class KTAPI_DocumentTypeError extends KTAPI_Error {
 
 }
 
@@ -166,8 +167,8 @@ class KTAPI_DocumentTypeError extends KTAPI_Error
 * @version Version 0.9
 */
 
-class KTAPI
-{
+class KTAPI {
+
 	/**
 	* This is the current session.
 	*
@@ -176,22 +177,35 @@ class KTAPI
 	* @var object $session The KTAPI_Session object
 	*/
 	protected $session = null;
-
 	protected $version = 3;
-
     private $esig_enabled;
-	
 	public $webserviceVersion;
+
+	public function __construct($version = null)
+	{
+	    if (is_numeric($version)) {
+	        $this->version = $version;
+	    } else {
+	        $this->version = LATEST_WEBSERVICE_VERSION;
+	    }
+
+	    $this->esig_enabled = $this->electronic_sig_enabled();
+	}
 
     public function get($webserviceVersion = '')
     {
         $this->esig_enabled = $this->electronic_sig_enabled();
-		
+
 		if ($webserviceVersion == '') {
 			$this->webserviceVersion = LATEST_WEBSERVICE_VERSION;
 		} else {
 			$this->webserviceVersion = $webserviceVersion;
 		}
+    }
+
+    public function getVersion()
+    {
+        return $this->version;
     }
 
  	/**
@@ -282,7 +296,7 @@ class KTAPI
 	public function get_permission_types() {
 		$types = array();
 		$list = KTAPI_Permission::getList();
-		foreach($list as $val) {
+		foreach ($list as $val) {
 			$types[$val->getNameSpace()] = $val->getName();
 		}
 		return $types;
@@ -297,7 +311,8 @@ class KTAPI
 	* @param int
 	*
 	*/
-	public function get_folder_permissions($username, $folder_id) {
+	public function get_folder_permissions($username, $folder_id)
+	{
 		if (is_null($this->session))
 		{
 			return array(
@@ -319,7 +334,6 @@ class KTAPI
 			"status_code" => 0,
 			"results" => $permissions->permissions
 		);
-
 	}
 
 	/**
@@ -330,7 +344,8 @@ class KTAPI
 	 * @param int
 	 *
 	 */
-	public function get_document_permissions($username, $document_id) {
+	public function get_document_permissions($username, $document_id)
+	{
 		if (is_null($this->session))
 		{
 			return array(
@@ -359,7 +374,6 @@ class KTAPI
 			"status_code" => 0,
 			"results" => $permissions->permissions
 		);
-
 	}
 
 	/**
@@ -390,7 +404,7 @@ class KTAPI
 		$folder = KTAPI_Folder::get($this, $folder_id);
 		$permissions = $folder->getPermissionAllocation();
 		$detail = $permissions->permissions;
-		if(!in_array("Manage security", $detail)) {
+		if (!in_array("Manage security", $detail)) {
 			return array(
 				"status_code" => 1,
 				"message" => "User does not have permission to manage security"
@@ -402,7 +416,7 @@ class KTAPI
 		$user_ktapi->start_system_session($username);
 
 		$folder = KTAPI_Folder::get($user_ktapi, $folder_id);
-		if(PEAR::isError($folder))
+		if (PEAR::isError($folder))
 		{
 			$user_ktapi->session_logout();
 			return array(
@@ -412,7 +426,7 @@ class KTAPI
 		}
 
 		$permission = KTAPI_Permission::getByNamespace($namespace);
-		if(PEAR::isError($permission)) {
+		if (PEAR::isError($permission)) {
 			$user_ktapi->session_logout();
 			return array(
 				"status_code" => 1,
@@ -421,7 +435,7 @@ class KTAPI
 		}
 
 		$user = KTAPI_User::getByUsername($username);
-		if(PEAR::isError($user)) {
+		if (PEAR::isError($user)) {
 			$user_ktapi->session_logout();
 			return array(
 				"status_code" => 1,
@@ -466,7 +480,7 @@ class KTAPI
 		$folder = KTAPI_Folder::get($this, $folder_id);
 		$permissions = $folder->getPermissionAllocation();
 		$detail = $permissions->permissions;
-		if(!in_array("Manage security", $detail)) {
+		if (!in_array("Manage security", $detail)) {
 			return array(
 				"status_code" => 1,
 				"message" => "User does not have permission to manage security"
@@ -474,7 +488,7 @@ class KTAPI
 		}
 
 		$folder = KTAPI_Folder::get($this, $folder_id);
-		if(PEAR::isError($folder))
+		if (PEAR::isError($folder))
 		{
 			return array(
 				"status_code" => 1,
@@ -483,7 +497,7 @@ class KTAPI
 		}
 
 		$permission = KTAPI_Permission::getByNamespace($namespace);
-		if(PEAR::isError($permission)) {
+		if (PEAR::isError($permission)) {
 			return array(
 				"status_code" => 1,
 				"message" => $permission->getMessage()
@@ -491,7 +505,7 @@ class KTAPI
 		}
 
 		$role = KTAPI_Role::getByName($role);
-		if(PEAR::isError($role)) {
+		if (PEAR::isError($role)) {
 			return array(
 				"status_code" => 1,
 				"message" => $role->getMessage()
@@ -535,7 +549,7 @@ class KTAPI
 		$folder = KTAPI_Folder::get($this, $folder_id);
 		$permissions = $folder->getPermissionAllocation();
 		$detail = $permissions->permissions;
-		if(!in_array("Manage security", $detail)) {
+		if (!in_array("Manage security", $detail)) {
 			return array(
 				"status_code" => 1,
 				"message" => "User does not have permission to manage security"
@@ -543,7 +557,7 @@ class KTAPI
 		}
 
 		$folder = KTAPI_Folder::get($this, $folder_id);
-		if(PEAR::isError($folder))
+		if (PEAR::isError($folder))
 		{
 			return array(
 				"status_code" => 1,
@@ -552,7 +566,7 @@ class KTAPI
 		}
 
 		$permission = KTAPI_Permission::getByNamespace($namespace);
-		if(PEAR::isError($permission)) {
+		if (PEAR::isError($permission)) {
 			return array(
 				"status_code" => 1,
 				"message" => $permission->getMessage()
@@ -560,7 +574,7 @@ class KTAPI
 		}
 
 		$group = KTAPI_Group::getByName($group);
-		if(PEAR::isError($group)) {
+		if (PEAR::isError($group)) {
 			return array(
 				"status_code" => 1,
 				"message" => $group->getMessage()
@@ -589,14 +603,14 @@ class KTAPI
  	public function can_user_access_object_requiring_permission(&$object, $permission)
  	{
 		assert(!is_null($object));
- 		assert(is_a($object,'DocumentProxy') || is_a($object,'FolderProxy') || is_a($object,'Document') || is_a($object,'Folder'));
+ 		assert(($object instanceof DocumentProxy) || ($object instanceof FolderProxy) || ($object instanceof Document) || $object instanceof Folder);
  		/*
-        if(is_null($object) || PEAR::isError($object)){
+        if (is_null($object) || PEAR::isError($object)) {
             $error = $object;
             return $object;
         }
 
-        if(!is_a($object,'DocumentProxy') && !is_a($object,'FolderProxy') && !is_a($object,'Document') && !is_a($object,'Folder')){
+        if (!($object instanceof DocumentProxy) && !($object instanceof FolderProxy) && !($object instanceof Document) && !($object instanceof Folder)) {
             $error = new KTAPI_Error(KTAPI_ERROR_INTERNAL_ERROR, $rows);
             return $error;
         }
@@ -691,7 +705,7 @@ class KTAPI
  	*/
  	public function get_documents_by_oem_no($oem_no, $idsOnly=true)
  	{
-		$sql = array("SELECT id FROM documents WHERE oem_no=?",$oem_no);
+		$sql = array("SELECT id FROM documents WHERE oem_no=?", $oem_no);
 		$rows = DBUtil::getResultArray($sql);
 		if (is_null($rows) || PEAR::isError($rows))
 		{
@@ -700,7 +714,7 @@ class KTAPI
 		else
 		{
 			$results = array();
-			foreach($rows as $row)
+			foreach ($rows as $row)
 			{
 				$documentid = $row['id'];
 
@@ -720,7 +734,7 @@ class KTAPI
 	* @param string $app The originating application type Webservices|Webdav|Webapp
 	* @return object $session_object SUCCESS - The KTAPI_Session object | FAILURE - an error object
 	*/
-	public function & get_active_session($session, $ip=null, $app='ws')
+	public function & get_active_session($session, $ip = null, $app = 'ws')
 	{
 		if (!is_null($this->session))
 		{
@@ -739,20 +753,20 @@ class KTAPI
 		$this->session = &$session_object;
 		return $session_object;
 	}
-	
-	public function &getCurrentBrowserSession(&$ktapi,$sessionId = null) {
+
+	public function &getCurrentBrowserSession(&$ktapi, $sessionId = null) {
 		if (! is_null ( $this->session )) {
 			$error = new PEAR_Error ( 'A session is currently active.' );
 			return $error;
 		}
-		
+
 		$session_object = &KTAPI_UserSession::getCurrentBrowserSession ($ktapi);
-		
+
 		if (is_null ( $session_object ) || PEAR::isError ( $session_object )) {
 			$error = new PEAR_Error ( 'Session is invalid' );
 			return $error;
 		}
-		
+
 		$this->session = &$session_object;
 		return $session_object;
 	}
@@ -768,7 +782,7 @@ class KTAPI
 	* @param string $app The originating application type Webservices|Webdav|Webapp
 	* @return object $session SUCCESS - The KTAPI_Session object | FAILURE - an error object
 	*/
-	public function & start_session($username, $password, $ip=null, $app='ws')
+	public function & start_session($username, $password, $ip = null, $app = 'ws')
 	{
 		if (!is_null($this->session))
 		{
@@ -801,18 +815,18 @@ class KTAPI
 	*/
 	public function & start_system_session($username = null)
 	{
-		if(is_null($username))
+		if (is_null($username))
 		{
 			$user = User::get(1);
 		} else {
 			$user = User::getByUserName($username);
 		}
 
-		if(PEAR::isError($user)) {
+		if (PEAR::isError($user)) {
 			return new PEAR_Error('Username invalid');
 		}
 
-		$session = & new KTAPI_SystemSession($this, $user);
+		$session = new KTAPI_SystemSession($this, $user);
 		$this->session = $session;
 
 		return $session;
@@ -825,7 +839,7 @@ class KTAPI
 	* @param string $ip The users ip address
 	* @return object $session SUCCESS - The KTAPI_Session object | FAILURE - an error object
 	*/
-	function &start_anonymous_session($ip=null)
+	function &start_anonymous_session($ip = null)
 	{
 		if (!is_null($this->session))
 		{
@@ -967,7 +981,7 @@ class KTAPI
 	*/
 	public function get_link_type_id($linktype)
 	{
-		$sql = array("SELECT id FROM document_link_types WHERE name=?",$linktype);
+		$sql = array("SELECT id FROM document_link_types WHERE name=?", $linktype);
 		$row = DBUtil::getOneResult($sql);
 		if (is_null($row) || PEAR::isError($row))
 		{
@@ -998,7 +1012,7 @@ class KTAPI
 		else
 		{
 			$results = array();
-			foreach($rows as $row)
+			foreach ($rows as $row)
 			{
 				$results[] = $row['name'];
 			}
@@ -1020,7 +1034,7 @@ class KTAPI
 		if (is_null($rows) || PEAR::isError($rows))
 		{
 			$response['status_code'] = 1;
-			if(is_null($rows))
+			if (is_null($rows))
 			{
 				$response['message'] = "No types";
 			} else {
@@ -1032,7 +1046,7 @@ class KTAPI
 		else
 		{
 			$results = array();
-			foreach($rows as $row)
+			foreach ($rows as $row)
 			{
 				$results[] = $row['name'];
 			}
@@ -1056,7 +1070,7 @@ class KTAPI
     	// now get document type specifc ids
     	$typeid =$this->get_documenttypeid($document_type);
 
-    	if (is_a($typeid, 'KTAPI_DocumentTypeError'))
+    	if ($typeid instanceof KTAPI_DocumentTypeError)
     	{
 			return $typeid;
     	}
@@ -1208,7 +1222,7 @@ class KTAPI
 		else
 		{
 			$results = array();
-			foreach($rows as $row)
+			foreach ($rows as $row)
 			{
 				$results[] = $row['name'];
 			}
@@ -1237,7 +1251,7 @@ class KTAPI
 			return new PEAR_Error(KTAPI_ERROR_INTERNAL_ERROR);
 		}
 		$results=array();
-		foreach($rows as $row)
+		foreach ($rows as $row)
 		{
 			$result=array(
 				'name' => $row['name'],
@@ -1280,7 +1294,7 @@ class KTAPI
 		else
 		{
 			$results = array();
-			foreach($rows as $row)
+			foreach ($rows as $row)
 			{
 				$results[] = $row['name'];
 			}
@@ -1296,7 +1310,7 @@ class KTAPI
 	 * @param string $filter
 	 * @return array of Subscription
 	 */
-	public function getSubscriptions($filter=null)
+	public function getSubscriptions($filter = null)
 	{
 	    $user = $this->get_user();
 	    $userId = $user->getID();
@@ -1319,7 +1333,7 @@ class KTAPI
      * $items['folders'][] = $folder_id;
      *
      * $response = $ktapi->performBulkAction('move', $items, 'Reason for moving', $target_folder_id);
-     * if($response['status_code'] != 0) return 'ERROR';
+     * if ($response['status_code'] != 0) return 'ERROR';
      *
      * </code>
      *
@@ -1346,17 +1360,17 @@ class KTAPI
 
         $response['status_code'] = 1;
 
-        if(!is_array($items)){
+        if (!is_array($items)) {
             $response['message'] = sprintf(_kt("The list of id's must be an array of format array('documents' => array(1,2), 'folders' => array(2,3)). Received: %s") , $items);
             return $response;
         }
 
-        if(empty($items)){
+        if (empty($items)) {
             $response['message'] = _kt('No items found to perform the action on.');
             return $response;
         }
 
-        if(!is_string($action)){
+        if (!is_string($action)) {
             $response['message'] = sprintf(_kt("The bulk action to perform must be a string. Received: %s") , $action);
             return $response;
         }
@@ -1366,36 +1380,36 @@ class KTAPI
         $methods = $bulkActions->getMethods();
 
         $exists = false;
-        foreach ($methods as $method){
-            if($method->getName() == $action){
+        foreach ($methods as $method) {
+            if ($method->getName() == $action) {
                 $actionMethod = $method;
                 $exists = true;
                 break;
             }
         }
 
-        if(!$exists) {
+        if (!$exists) {
             $response['message'] = sprintf(_kt("The requested action has not been implemented: %s") , $action);
             return $response;
         }
 
         // Create the document and folder objects
         $objects = array();
-        if(isset($items['folders'])){
-            foreach($items['folders'] as $item) {
+        if (isset($items['folders'])) {
+            foreach ($items['folders'] as $item) {
                 $folder = $this->get_folder_by_id($item);
                 $objects[] = $folder;
             }
         }
 
-        if(isset($items['documents'])){
-            foreach($items['documents'] as $item) {
+        if (isset($items['documents'])) {
+            foreach ($items['documents'] as $item) {
                 $document = $this->get_document_by_id($item);
                 $objects[] = $document;
             }
         }
 
-        if(empty($objects)){
+        if (empty($objects)) {
             $response['message'] = _kt('No folder or document items found to perform the action on.');
             return $response;
         }
@@ -1404,8 +1418,8 @@ class KTAPI
         $ktapi_bulkactions = new KTAPI_BulkActions($this);
 
         // Get target folder object if required
-        if(in_array($action, array('move', 'copy'))){
-            if(!is_int($target_folder_id) || empty($target_folder_id)){
+        if (in_array($action, array('move', 'copy'))) {
+            if (!is_int($target_folder_id) || empty($target_folder_id)) {
                 $response['message'] = _kt('No target folder has been specified.');
                 return $response;
             }
@@ -1413,28 +1427,28 @@ class KTAPI
 
             // call the action
             $result = $ktapi_bulkactions->$action($objects, $target, $reason);
-        }else if($action == 'immute'){
+        } else if ($action == 'immute') {
             // call the action
             $result = $ktapi_bulkactions->$action($objects);
-        }else {
+        } else {
             // call the action
             $result = $ktapi_bulkactions->$action($objects, $reason);
         }
 
-        if(PEAR::isError($result)) {
+        if (PEAR::isError($result)) {
             $response['message'] = sprintf(_kt("The bulk action failed: %s") , $result->getMessage());
             return $response;
         }
 
         // if failed items are returned - flatten the objects
-        if(is_array($result)){
-            if(isset($result['docs'])){
-                foreach ($result['docs'] as $key => $item){
+        if (is_array($result)) {
+            if (isset($result['docs'])) {
+                foreach ($result['docs'] as $key => $item) {
                     $result['docs'][$key]['object'] = $item['object']->get_detail();
                 }
             }
-            if(isset($result['folders'])){
-                foreach ($result['folders'] as $key => $item){
+            if (isset($result['folders'])) {
+                foreach ($result['folders'] as $key => $item) {
                     $result['folders'][$key]['object'] = $item['object']->get_detail();
                 }
             }
@@ -1461,8 +1475,8 @@ class KTAPI
         $response['status_code'] = 1;
 
         // check the filter
-        if(!empty($filter)) {
-            if(!is_string($filter)){
+        if (!empty($filter)) {
+            if (!is_string($filter)) {
                 $response['message'] = _kt('Filter should be a string.');
                 return $response;
             }
@@ -1474,7 +1488,7 @@ class KTAPI
 
         $listing = KTAPI_Role::getList($filter);
 
-        if(PEAR::isError($listing)){
+        if (PEAR::isError($listing)) {
             $response['message'] = $listing->getMessage();
             return $response;
         }
@@ -1504,7 +1518,7 @@ class KTAPI
     public function get_role_by_id($role_id)
     {
         $response['status_code'] = 1;
-        if(!is_numeric($role_id)){
+        if (!is_numeric($role_id)) {
             $response['message'] = _kt('Role id must be numeric.');
             return $response;
 
@@ -1512,7 +1526,7 @@ class KTAPI
 
         $role = KTAPI_Role::getById($role_id);
 
-        if(PEAR::isError($role)) {
+        if (PEAR::isError($role)) {
             $response['message'] = $role->getMessage();
             return $response;
         }
@@ -1537,7 +1551,7 @@ class KTAPI
     public function get_role_by_name($role_name)
     {
         $response['status_code'] = 1;
-        if(!is_string($role_name)){
+        if (!is_string($role_name)) {
             $response['message'] = _kt('Role name must be a string.');
             return $response;
 
@@ -1545,7 +1559,7 @@ class KTAPI
 
         $role = KTAPI_Role::getByName($role_name);
 
-        if(PEAR::isError($role)) {
+        if (PEAR::isError($role)) {
             $response['message'] = $role->getMessage();
             return $response;
         }
@@ -1570,7 +1584,7 @@ class KTAPI
     public function get_role_allocation_for_folder($folder_id)
     {
         $response['status_code'] = 1;
-        if(!is_numeric($folder_id)){
+        if (!is_numeric($folder_id)) {
             $response['message'] = _kt('Folder id must be numeric.');
             return $response;
 
@@ -1578,7 +1592,7 @@ class KTAPI
 
         $folder = $this->get_folder_by_id($folder_id);
 
-        if(PEAR::isError($folder)) {
+        if (PEAR::isError($folder)) {
             $response['message'] = $folder->getMessage();
             return $response;
         }
@@ -1610,7 +1624,7 @@ class KTAPI
         if ($response['status_code'] == 1) return $response;
 
         $response['status_code'] = 1;
-        if(!is_numeric($user_id)){
+        if (!is_numeric($user_id)) {
             $response['message'] = _kt('User id must be numeric.');
             return $response;
         }
@@ -1636,7 +1650,7 @@ class KTAPI
         if ($response['status_code'] == 1) return $response;
 
         $response['status_code'] = 1;
-        if(!is_numeric($group_id)){
+        if (!is_numeric($group_id)) {
             $response['message'] = _kt('Group id must be numeric.');
             return $response;
         }
@@ -1662,7 +1676,7 @@ class KTAPI
         if ($response['status_code'] == 1) return $response;
 
         $response['status_code'] = 1;
-        if(!is_numeric($user_id)){
+        if (!is_numeric($user_id)) {
             $response['message'] = _kt('User id must be numeric.');
             return $response;
         }
@@ -1688,7 +1702,7 @@ class KTAPI
         if ($response['status_code'] == 1) return $response;
 
         $response['status_code'] = 1;
-        if(!is_numeric($group_id)){
+        if (!is_numeric($group_id)) {
             $response['message'] = _kt('Group id must be numeric.');
             return $response;
         }
@@ -1747,35 +1761,35 @@ class KTAPI
 
         // Check input information
         $response['status_code'] = 1;
-        if(!is_numeric($folder_id)){
+        if (!is_numeric($folder_id)) {
             $response['message'] = _kt('Folder id must be numeric.');
             return $response;
         }
 
-        if(!is_numeric($role_id)){
+        if (!is_numeric($role_id)) {
             $response['message'] = _kt('Role id must be numeric.');
             return $response;
         }
 
-        if(!is_array($members)){
+        if (!is_array($members)) {
             $response['message'] = _kt("The list of members must be in the format: array('users' => array(1,2), 'groups' => array(2,4)).')");
             return $response;
         }
 
-        if(!isset($members['users']) && !isset($members['groups'])){
+        if (!isset($members['users']) && !isset($members['groups'])) {
             $response['message'] = _kt("The list of members must be in the format: array('users' => array(1,2), 'groups' => array(2,4)).')");
             return $response;
         }
 
         // Get folder and role objects
         $folder = $this->get_folder_by_id($folder_id);
-        if(PEAR::isError($folder)) {
+        if (PEAR::isError($folder)) {
             $response['message'] = $folder->getMessage();
             return $response;
         }
 
         $role = KTAPI_Role::getById($role_id);
-        if(PEAR::isError($role)) {
+        if (PEAR::isError($role)) {
             $response['message'] = $role->getMessage();
             return $response;
         }
@@ -1785,13 +1799,13 @@ class KTAPI
 
         // Get member objects and add them to the role
         // Users
-        if(isset($members['users'])){
+        if (isset($members['users'])) {
 
-            foreach($members['users'] as $user_id){
+            foreach ($members['users'] as $user_id) {
                 // Get the user object
                 $member = KTAPI_User::getById($user_id);
 
-                if(PEAR::isError($member)) {
+                if (PEAR::isError($member)) {
                     $response['message'] = $member->getMessage();
                     return $response;
                 }
@@ -1802,13 +1816,13 @@ class KTAPI
         }
 
         // Groups
-        if(isset($members['groups'])){
+        if (isset($members['groups'])) {
 
-            foreach($members['groups'] as $group_id){
+            foreach ($members['groups'] as $group_id) {
                 // Get the group object
                 $member = KTAPI_Group::getById($group_id);
 
-                if(PEAR::isError($member)) {
+                if (PEAR::isError($member)) {
                     $response['message'] = $member->getMessage();
                     return $response;
                 }
@@ -1842,19 +1856,19 @@ class KTAPI
 
         // Get folder and role objects
         $folder = $this->get_folder_by_id($folder_id);
-        if(PEAR::isError($folder)) {
+        if (PEAR::isError($folder)) {
             $response['message'] = $folder->getMessage();
             return $response;
         }
 
         $role = KTAPI_Role::getById($role_id);
-        if(PEAR::isError($role)) {
+        if (PEAR::isError($role)) {
             $response['message'] = $role->getMessage();
             return $response;
         }
 
         // get the member object
-        switch($member_type){
+        switch($member_type) {
             case 'user':
                 $member = KTAPI_User::getById($member_id);
                 break;
@@ -1866,7 +1880,7 @@ class KTAPI
                return $response;
         }
 
-        if(PEAR::isError($member)) {
+        if (PEAR::isError($member)) {
             $response['message'] = $member->getMessage();
             return $response;
         }
@@ -1900,15 +1914,15 @@ class KTAPI
 
         // Get folder and role objects
         $folder = $this->get_folder_by_id($folder_id);
-        if(PEAR::isError($folder)) {
+        if (PEAR::isError($folder)) {
             $response['message'] = $folder->getMessage();
             return $response;
         }
 
         $role = null;
-        if(!empty($role_id)){
+        if (!empty($role_id)) {
             $role = KTAPI_Role::getById($role_id);
-            if(PEAR::isError($role)) {
+            if (PEAR::isError($role)) {
                 $response['message'] = $role->getMessage();
                 return $response;
             }
@@ -1942,7 +1956,7 @@ class KTAPI
 
         // Get folder object
         $folder = $this->get_folder_by_id($folder_id);
-        if(PEAR::isError($folder)) {
+        if (PEAR::isError($folder)) {
             $response['message'] = $folder->getMessage();
             return $response;
         }
@@ -1974,7 +1988,7 @@ class KTAPI
 
         // Get folder object
         $folder = $this->get_folder_by_id($folder_id);
-        if(PEAR::isError($folder)) {
+        if (PEAR::isError($folder)) {
             $response['message'] = $folder->getMessage();
             return $response;
         }
@@ -1988,7 +2002,6 @@ class KTAPI
         return $response;
     }
 
-
     /* *** Refactored web services functions *** */
 
     /**
@@ -1999,12 +2012,12 @@ class KTAPI
      * @param string $ip The users IP address
      * @return array Response 'results' contain the session id | 'message' contains the error message on failure
      */
-    function anonymous_login($ip=null)
+    public function anonymous_login($ip = null)
     {
         $session = $this->start_anonymous_session($ip);
-        if(PEAR::isError($session)){
+        if (PEAR::isError($session)) {
     	    $response['status_code'] = 1;
-    	    $response['message']= $session->getMessage();
+    	    $response['message'] = $session->getMessage();
     	    return $response;
         }
 
@@ -2026,12 +2039,12 @@ class KTAPI
      * @param string $ip Optional. The users IP address
      * @return array Response 'results' contain the session id | 'message' contains the error message on failure
      */
-    function login($username, $password, $ip=null)
+    public function login($username, $password, $ip = null)
     {
-        $session = $this->start_session($username,$password, $ip);
-        if(PEAR::isError($session)){
+        $session = $this->start_session($username, $password, $ip);
+        if (PEAR::isError($session)) {
     	    $response['status_code'] = 1;
-    	    $response['message']= $session->getMessage();
+    	    $response['message'] = $session->getMessage();
     	    return $response;
         }
 
@@ -2049,12 +2062,12 @@ class KTAPI
 	 * @access public
      * @return array Response Empty on success | 'message' contains the error message on failure
      */
-    function logout()
+    public function logout()
     {
         $session = &$this->get_session();
-        if(PEAR::isError($session)){
+        if (PEAR::isError($session)) {
     	    $response['status_code'] = 1;
-    	    $response['message']= $session->getMessage();
+    	    $response['message'] = $session->getMessage();
     	    return $response;
         }
         $session->logout();
@@ -2071,13 +2084,13 @@ class KTAPI
      * @param integer $folder_id The id of the folder
      * @return array Response 'results' contains kt_folder_detail | 'message' contains error message on failure
      */
-    function get_folder_detail($folder_id)
+    public function get_folder_detail($folder_id)
     {
     	$folder = &$this->get_folder_by_id($folder_id);
 		if (PEAR::isError($folder))
     	{
     	    $response['status_code'] = 1;
-    	    $response['message']= $folder->getMessage();
+    	    $response['message'] = $folder->getMessage();
     	    return $response;
     	}
         $response['status_code'] = 0;
@@ -2095,19 +2108,19 @@ class KTAPI
      * @return array Response 'results' contains kt_folder_shortcuts | 'message' contains error message on failure
      *
      */
-    function get_folder_shortcuts($folder_id)
+    public function get_folder_shortcuts($folder_id)
     {
         $folder = $this->get_folder_by_id($folder_id);
-        if(PEAR::isError($folder)) {
+        if (PEAR::isError($folder)) {
     	    $response['status_code'] = 1;
-    	    $response['message']= $folder->getMessage();
+    	    $response['message'] = $folder->getMessage();
     	    return $response;
         }
 
         $shortcuts = $folder->get_shortcuts();
-    	if(PEAR::isError($shortcuts)) {
+    	if (PEAR::isError($shortcuts)) {
     	    $response['status_code'] = 1;
-    	    $response['message']= $shortcuts->getMessage();
+    	    $response['message'] = $shortcuts->getMessage();
     	    return $response;
     	}
 
@@ -2125,12 +2138,12 @@ class KTAPI
      * @param string $folder_name The name of the folder
      * @return array Response 'results' contains kt_folder_detail | 'message' contains error message on failure
      */
-    function get_folder_detail_by_name($folder_name, $parent_id = 1)
+    public function get_folder_detail_by_name($folder_name, $parent_id = 1)
     {
         $folder = &$this->get_folder_by_name($folder_name, $parent_id);
-        if(PEAR::isError($folder)) {
+        if (PEAR::isError($folder)) {
     	    $response['status_code'] = 1;
-    	    $response['message']= $folder->getMessage();
+    	    $response['message'] = $folder->getMessage();
     	    return $response;
         }
 
@@ -2150,23 +2163,22 @@ class KTAPI
      * @param string $what Filter on what should be returned, takes a combination of the following: D = documents, F = folders, S = shortcuts
      * @return array Response 'results' contains kt_folder_contents | 'message' contains error message on failure
      */
-    function get_folder_contents($folder_id, $depth=1, $what='DFS',$overrideWebServiceVersion=null)
+    public function get_folder_contents($folder_id, $depth = 1, $what = 'DFS')
     {
-    	//Calculate the offset and limit
-   	
         $folder = &$this->get_folder_by_id($folder_id);
-        if(PEAR::isError($folder)){
+        if (PEAR::isError($folder)) {
     	    $response['status_code'] = 1;
-    	    $response['message']= $folder->getMessage();
+    	    $response['message'] = $folder->getMessage();
     	    return $response;
         }
-        $listing = $folder->get_listing($depth, $what,$overrideWebServiceVersion);
+
+        $listing = $folder->get_listing($depth, $what);
 
     	$contents = array(
-    		'folder_id' => $folder_id+0,
-    		'folder_name'=>$folder->get_folder_name(),
-    		'full_path'=>$folder->get_full_path(),
-    		'items'=>$listing
+    		'folder_id' => $folder_id + 0,
+    		'folder_name' => $folder->get_folder_name(),
+    		'full_path' => $folder->get_full_path(),
+    		'items' => $listing
     	);
 
     	$response['status_code'] = 0;
@@ -2175,7 +2187,50 @@ class KTAPI
 
     	return $response;
     }
-	
+
+    /**
+     * Returns the contents of a folder - list of contained documents and folders.
+     * Unlike get_folder_contents this function has a default of folders only, and no depth parameter.
+     *
+     * The main purpose is to return a navigable tree view of the repository.
+     *
+     * This function does not accept a depth parameter.
+     *
+     * TODO determine whether to set the depth higher than 100
+     * TODO adjust underlying code to allow a depth of 0 or -1 to mean "keep going until there is no more"
+     *
+	 * @author KnowledgeTree Team
+	 * @access public
+     * @param integer $folder_id The id of the folder
+     * @param string $what Filter on what should be returned, takes a combination of the following: D = documents, F = folders, S = shortcuts
+     * @param
+     * @return array Response 'results' contains kt_folder_contents | 'message' contains error message on failure
+     */
+    public function get_folder_tree($folder_id, $what = 'F')
+    {
+        $folder = &$this->get_folder_by_id($folder_id);
+        if (PEAR::isError($folder)) {
+    	    $response['status_code'] = 1;
+    	    $response['message'] = $folder->getMessage();
+    	    return $response;
+        }
+
+        $listing = $folder->get_listing(-1, $what);
+
+    	$contents = array(
+    		'folder_id' => $folder_id + 0,
+    		'folder_name' => $folder->get_folder_name(),
+    		'full_path' => $folder->get_full_path(),
+    		'items' => $listing
+    	);
+
+    	$response['status_code'] = 0;
+    	$response['message'] = '';
+    	$response['results'] = $contents;
+
+    	return $response;
+    }
+
 	/**
      * Returns the list of documents attached to a tag
      *
@@ -2186,50 +2241,46 @@ class KTAPI
      * @param string $what Filter on what should be returned, takes a combination of the following: D = documents, F = folders, S = shortcuts
      * @return array Response 'results' contains kt_folder_contents | 'message' contains error message on failure
      */
-    function get_tag_contents($tag, $depth=1, $what='DFS',$overrideWebServiceVersion=null)
+    public function get_tag_contents($tag, $depth = 1, $what = 'DFS')
     {
-    	require_once(KT_PLUGIN_DIR . "/tagcloud/TagCloudUtil.inc.php");
-		
+    	require_once(KT_PLUGIN_DIR . '/tagcloud/TagCloudUtil.inc.php');
+
 		$tagQuery = new TagQuery($this->get_user(), $tag);
-		
+
 		$documentIdsWithTag = $tagQuery->getDocuments(1000, 0, 'filename', 'ASC');
-		
+
 		if (count($documentIdsWithTag) == 0) {
 			$documents = array();
 		} else {
-			
 			$documentIds = '';
 			$comma = '';
-			
-			foreach ($documentIdsWithTag as $docId)
-			{
+
+			foreach ($documentIdsWithTag as $docId) {
 				$documentIds .= $comma."'{$docId['id']}'";
 				$comma = ', ';
 			}
-			
+
 			// Has to be a better way of doing this
-			$documents =  Document::getList ( array (' id IN ('.$documentIds.')', ''));
-			
+			$documents =  Document::getList ( array (' id IN (' . $documentIds . ')', ''));
 			$documentsArray = array();
-			
 			foreach ($documents as $document)
 			{
 				$ktapiDocument = KTAPI_Document::get($this, $document->getId());
-				
+
 				if (PEAR::isError($ktapiDocument)) {
-					
+
 				} else {
 					$documentsArray[] = $ktapiDocument->get_detail();
 				}
 			}
-			
+
 			$documents = $documentsArray;
 		}
-		
+
     	$response['status_code'] = 0;
     	$response['message'] = '';
     	$response['results'] = $documents;
-		
+
     	return $response;
     }
 
@@ -2242,7 +2293,7 @@ class KTAPI
      * @param string $folder_name The name of the new folder
      * @return array Response 'results' contains kt_folder_detail | 'message' contains error message on failure
      */
-    function create_folder($folder_id, $folder_name, $sig_username = '', $sig_password = '', $reason = '')
+    public function create_folder($folder_id, $folder_name, $sig_username = '', $sig_password = '', $reason = '')
     {
         $response = $this->_check_electronic_signature($document_id, $sig_username, $sig_password, $reason, $reason,
                                                       'ktcore.transactions.add');
@@ -2252,14 +2303,14 @@ class KTAPI
     	if (PEAR::isError($folder))
     	{
     	    $response['status_code'] = 1;
-    	    $response['message']= $folder->getMessage();
+    	    $response['message'] = $folder->getMessage();
     	    return $response;
     	}
     	$newfolder = $folder->add_folder($folder_name);
     	if (PEAR::isError($newfolder))
         {
             $response['status_code'] = 1;
-    	    $response['message']= $newfolder->getMessage();
+    	    $response['message'] = $newfolder->getMessage();
     	    return $response;
         }
     	$response['status_code'] = 0;
@@ -2277,7 +2328,7 @@ class KTAPI
      * @param integer $source_folder_id Id of the folder to which the shortcut will point.
      * @return array Response 'results' contains kt_shortcut_detail | 'message' contains error message on failure
      */
-    function create_folder_shortcut($target_folder_id, $source_folder_id, $sig_username = '', $sig_password = '', $reason = '')
+    public function create_folder_shortcut($target_folder_id, $source_folder_id, $sig_username = '', $sig_password = '', $reason = '')
     {
         $response = $this->_check_electronic_signature($document_id, $sig_username, $sig_password, $reason, $reason,
                                                       'ktcore.transactions.create_shortcut');
@@ -2287,7 +2338,7 @@ class KTAPI
     	if (PEAR::isError($folder))
     	{
     	    $response['status_code'] = 1;
-    	    $response['message']= $folder->getMessage();
+    	    $response['message'] = $folder->getMessage();
     	    return $response;
     	}
 
@@ -2295,7 +2346,7 @@ class KTAPI
     	if (PEAR::isError($source_folder))
     	{
     	    $response['status_code'] = 1;
-    	    $response['message']= $source_folder->getMessage();
+    	    $response['message'] = $source_folder->getMessage();
     	    return $response;
     	}
 
@@ -2303,7 +2354,7 @@ class KTAPI
     	if (PEAR::isError($shortcut))
     	{
     	    $response['status_code'] = 1;
-    	    $response['message']= $shortcut->getMessage();
+    	    $response['message'] = $shortcut->getMessage();
     	    return $response;
     	}
 
@@ -2322,7 +2373,7 @@ class KTAPI
      * @param integer $source_document_id Id of the document to which the shortcut will point
      * @return array Response 'results' contains kt_document_detail | 'message' contains error message on failure
      */
-    function create_document_shortcut($target_folder_id, $source_document_id, $sig_username = '', $sig_password = '', $reason = '')
+    public function create_document_shortcut($target_folder_id, $source_document_id, $sig_username = '', $sig_password = '', $reason = '')
     {
         $response = $this->_check_electronic_signature($document_id, $sig_username, $sig_password, $reason, $reason,
                                                       'ktcore.transactions.create_shortcut');
@@ -2332,7 +2383,7 @@ class KTAPI
     	if (PEAR::isError($folder))
     	{
     	    $response['status_code'] = 1;
-    	    $response['message']= $folder->getMessage();
+    	    $response['message'] = $folder->getMessage();
     	    return $response;
     	}
 
@@ -2340,7 +2391,7 @@ class KTAPI
     	if (PEAR::isError($source_document))
     	{
     	    $response['status_code'] = 1;
-    	    $response['message']= $source_document->getMessage();
+    	    $response['message'] = $source_document->getMessage();
     	    return $response;
     	}
 
@@ -2348,7 +2399,7 @@ class KTAPI
     	if (PEAR::isError($shortcut))
     	{
     	    $response['status_code'] = 1;
-    	    $response['message']= $shortcut->getMessage();
+    	    $response['message'] = $shortcut->getMessage();
     	    return $response;
     	}
 
@@ -2367,7 +2418,7 @@ class KTAPI
      * @param string $reason The reason for performing the deletion
      * @return array Response | 'message' contains error message on failure
      */
-    function delete_folder($folder_id, $reason, $sig_username = '', $sig_password = '')
+    public function delete_folder($folder_id, $reason, $sig_username = '', $sig_password = '')
     {
         $response = $this->_check_electronic_signature($folder_id, $sig_username, $sig_password, $reason, $reason,
                                                       'ktcore.transactions.delete');
@@ -2377,7 +2428,7 @@ class KTAPI
 		if (PEAR::isError($folder))
     	{
     	    $response['status_code'] = 1;
-    	    $response['message']= $folder->getMessage();
+    	    $response['message'] = $folder->getMessage();
     	    return $response;
     	}
 
@@ -2385,7 +2436,7 @@ class KTAPI
     	if (PEAR::isError($result))
     	{
     	    $response['status_code'] = 1;
-    	    $response['message']= $result->getMessage();
+    	    $response['message'] = $result->getMessage();
     	    return $response;
     	}
 
@@ -2402,7 +2453,7 @@ class KTAPI
      * @param string $newname The new name of the folder
      * @return array Response | 'message' contains error message on failure
      */
-    function rename_folder($folder_id, $newname, $sig_username = '', $sig_password = '', $reason = '')
+    public function rename_folder($folder_id, $newname, $sig_username = '', $sig_password = '', $reason = '')
     {
         $response = $this->_check_electronic_signature($folder_id, $sig_username, $sig_password, $reason, $reason,
                                                       'ktcore.transactions.rename');
@@ -2412,14 +2463,14 @@ class KTAPI
 		if (PEAR::isError($folder))
     	{
     	    $response['status_code'] = 1;
-    	    $response['message']= $folder->getMessage();
+    	    $response['message'] = $folder->getMessage();
     	    return $response;
     	}
     	$result = $folder->rename($newname);
     	if (PEAR::isError($result))
     	{
     	    $response['status_code'] = 1;
-    	    $response['message']= $result->getMessage();
+    	    $response['message'] = $result->getMessage();
     	    return $response;
     	}
 
@@ -2437,7 +2488,7 @@ class KTAPI
      * @param string $reason The reason for performing the copy
      * @return array Response | 'message' contains error message on failure
      */
-    function copy_folder($source_id, $target_id, $reason, $sig_username = '', $sig_password = '')
+    public function copy_folder($source_id, $target_id, $reason, $sig_username = '', $sig_password = '')
     {
         $response = $this->_check_electronic_signature($source_id, $sig_username, $sig_password, $reason, $reason,
                                                       'ktcore.transactions.copy');
@@ -2447,7 +2498,7 @@ class KTAPI
     	if (PEAR::isError($src_folder))
     	{
     	    $response['status_code'] = 1;
-    	    $response['message']= $src_folder->getMessage();
+    	    $response['message'] = $src_folder->getMessage();
     	    return $response;
     	}
 
@@ -2455,7 +2506,7 @@ class KTAPI
     	if (PEAR::isError($tgt_folder))
     	{
     	    $response['status_code'] = 1;
-    	    $response['message']= $tgt_folder->getMessage();
+    	    $response['message'] = $tgt_folder->getMessage();
     	    return $response;
     	}
 
@@ -2463,13 +2514,13 @@ class KTAPI
     	if (PEAR::isError($result))
     	{
     	    $response['status_code'] = 1;
-    	    $response['message']= $result->getMessage();
+    	    $response['message'] = $result->getMessage();
     	    return $response;
     	}
 
     	$response['status_code'] = 0;
 
-    	if($this->version >= 2){
+    	if ($this->version >= 2) {
         	$sourceName = $src_folder->get_folder_name();
         	$targetPath = $tgt_folder->get_full_path();
 
@@ -2490,7 +2541,7 @@ class KTAPI
      * @param string $reason The reason for performing the move
      * @return array Response | 'message' contains error message on failure
      */
-    function move_folder($source_id, $target_id, $reason, $sig_username = '', $sig_password = '')
+    public function move_folder($source_id, $target_id, $reason, $sig_username = '', $sig_password = '')
     {
         $response = $this->_check_electronic_signature($source_id, $sig_username, $sig_password, $reason, $reason,
                                                       'ktcore.transactions.move');
@@ -2500,7 +2551,7 @@ class KTAPI
     	if (PEAR::isError($src_folder))
     	{
     	    $response['status_code'] = 1;
-    	    $response['message']= $src_folder->getMessage();
+    	    $response['message'] = $src_folder->getMessage();
     	    return $response;
     	}
 
@@ -2508,7 +2559,7 @@ class KTAPI
     	if (PEAR::isError($tgt_folder))
     	{
     	    $response['status_code'] = 1;
-    	    $response['message']= $tgt_folder->getMessage();
+    	    $response['message'] = $tgt_folder->getMessage();
     	    return $response;
     	}
 
@@ -2516,13 +2567,13 @@ class KTAPI
     	if (PEAR::isError($result))
     	{
     	    $response['status_code'] = 1;
-    	    $response['message']= $result->getMessage();
+    	    $response['message'] = $result->getMessage();
     	    return $response;
     	}
 
     	$response['status_code'] = 0;
 
-    	if($this->version >= 2){
+    	if ($this->version >= 2) {
         	$response['results'] = $this->get_folder_detail($source_id);
     		return $response;
     	}
@@ -2544,12 +2595,12 @@ class KTAPI
     	if (PEAR::isError($result))
     	{
     	    $response['status_code'] = 1;
-    	    $response['message']= $result->getMessage();
+    	    $response['message'] = $result->getMessage();
     	    return $response;
     	}
 
-   		$response['status_code']= 0;
-   		$response['results']= $result;
+   		$response['status_code'] = 0;
+   		$response['results'] = $result;
 
     	return $response;
 
@@ -2566,12 +2617,12 @@ class KTAPI
     	if (PEAR::isError($result))
     	{
     	    $response['status_code'] = 1;
-    	    $response['message']= $result->getMessage();
+    	    $response['message'] = $result->getMessage();
 
     		return $response;
     	}
 
-   		$response['status_code']= 0;
+   		$response['status_code'] = 0;
    		$response['results'] = $result;
 
     	return $response;
@@ -2595,7 +2646,7 @@ class KTAPI
     	if (PEAR::isError($document))
     	{
     	    $response['status_code'] = 1;
-    	    $response['message']= $document->getMessage();
+    	    $response['message'] = $document->getMessage();
     	    return $response;
     	}
 
@@ -2603,7 +2654,7 @@ class KTAPI
     	if (PEAR::isError($detail))
     	{
     	    $response['status_code'] = 1;
-    	    $response['message']= $detail->getMessage();
+    	    $response['message'] = $detail->getMessage();
     	    return $response;
     	}
 
@@ -2758,7 +2809,7 @@ class KTAPI
     public function get_role_allocation_for_document($document_id)
     {
         $document = $this->get_document_by_id($document_id);
-        if(PEAR::isError($document)){
+        if (PEAR::isError($document)) {
             $response['status_code'] = 1;
             $response['message'] = $document->getMessage();
             return $response;
@@ -2787,13 +2838,13 @@ class KTAPI
     public function email_document($document_id, $members, $content = '', $attach = true)
     {
         $response['status_code'] = 1;
-        if(!isset($members['users']) && !isset($members['groups']) && !isset($members['external'])){
+        if (!isset($members['users']) && !isset($members['groups']) && !isset($members['external'])) {
             $response['message'] = _kt("No recipients were provided. The list of recipients should be in the format: array('users' => array(1,2), 'groups' => array(3,1), 'external' => array('name@email.com')).");
             return $response;
         }
 
         $document = $this->get_document_by_id($document_id);
-        if(PEAR::isError($document)){
+        if (PEAR::isError($document)) {
             $response['message'] = $document->getMessage();
             return $response;
         }
@@ -2802,12 +2853,12 @@ class KTAPI
 
         // Get member objects and add them to the role
         // Users
-        if(isset($members['users'])){
-            foreach($members['users'] as $user_id){
+        if (isset($members['users'])) {
+            foreach ($members['users'] as $user_id) {
                 // Get the user object
                 $member = KTAPI_User::getById($user_id);
 
-                if(PEAR::isError($member)) {
+                if (PEAR::isError($member)) {
                     $response['message'] = $member->getMessage();
                     return $response;
                 }
@@ -2818,12 +2869,12 @@ class KTAPI
         }
 
         // Groups
-        if(isset($members['groups'])){
-            foreach($members['groups'] as $group_id){
+        if (isset($members['groups'])) {
+            foreach ($members['groups'] as $group_id) {
                 // Get the group object
                 $member = KTAPI_Group::getById($group_id);
 
-                if(PEAR::isError($member)) {
+                if (PEAR::isError($member)) {
                     $response['message'] = $member->getMessage();
                     return $response;
                 }
@@ -2834,8 +2885,8 @@ class KTAPI
         }
 
         // External recipients
-        if(isset($members['external'])){
-            foreach ($members['external'] as $email_address){
+        if (isset($members['external'])) {
+            foreach ($members['external'] as $email_address) {
                 // Add to recipients list
                 $recipients[] = $member;
             }
@@ -2864,14 +2915,14 @@ class KTAPI
     public function get_document_shortcuts($document_id)
     {
     	$document = $this->get_document_by_id($document_id);
-    	if(PEAR::isError($document)){
+    	if (PEAR::isError($document)) {
     	    $response['status_code'] = 1;
     		$response['message'] = $document->getMessage();
     		return $response;
     	}
 
     	$shortcuts = $document->get_shortcuts();
-    	if(PEAR::isError($shortcuts)){
+    	if (PEAR::isError($shortcuts)) {
     	    $response['status_code'] = 1;
     		$response['message'] = $shortcuts->getMessage();
     		return $response;
@@ -2940,14 +2991,14 @@ class KTAPI
 		$add_result = $this->add_small_document($folder_id, $title, $filename, $documenttype, $base64,
                                                 $sig_username, $sig_password, $reason);
 
-		if($add_result['status_code'] != 0){
+		if ($add_result['status_code'] != 0) {
 		    return $add_result;
 		}
 
 		$document_id = $add_result['results']['document_id'];
 
 		$update_result = $this->update_document_metadata($document_id, $metadata, $sysdata, $sig_username, $sig_password, $reason);
-		if($update_result['status_code'] != 0){
+		if ($update_result['status_code'] != 0) {
 		    $this->delete_document($document_id, 'Rollback because metadata could not be added', false);
 			return $update_result;
 		}
@@ -2966,7 +3017,7 @@ class KTAPI
 
 		return $update_result;
     }
-    
+
     /**
      * Wrapper for add_document_with_metadata supporting json encoded metadata and sysdata for REST requests
      */
@@ -2976,7 +3027,7 @@ class KTAPI
 		$metadata = json_decode($metadata);
 		$sysdata = json_decode($sysdata);
 
-		return $this->add_document_with_metadata($folder_id, $title, $filename, $documenttype, $tempfilename, $metadata, $sysdata, 
+		return $this->add_document_with_metadata($folder_id, $title, $filename, $documenttype, $tempfilename, $metadata, $sysdata,
 		                                         $sig_username, $sig_password, $reason);
     }
 
@@ -2986,14 +3037,14 @@ class KTAPI
 		$add_result = $this->add_document($folder_id, $title, $filename, $documenttype, $tempfilename,
                                           $sig_username, $sig_password, $reason);
 
-		if($add_result['status_code'] != 0){
+		if ($add_result['status_code'] != 0) {
 		    return $add_result;
 		}
 
 		$document_id = $add_result['results']['document_id'];
 
 		$update_result = $this->update_document_metadata($document_id, $metadata, $sysdata, $sig_username, $sig_password, $reason);
-		if($update_result['status_code'] != 0){
+		if ($update_result['status_code'] != 0) {
 		    $this->delete_document($document_id, 'Rollback because metadata could not be added', false);
 		    return $update_result;
 		}
@@ -3029,7 +3080,7 @@ class KTAPI
     	$documents = $this->get_documents_by_oem_no($oem_no);
 
     	$collection = array();
-    	foreach($documents as $documentId)
+    	foreach ($documents as $documentId)
     	{
 			$detail = $this->get_document_detail($documentId, $detail);
 			if ($detail['status_code'] != 0)
@@ -3080,7 +3131,7 @@ class KTAPI
     	}
 
 		// simulate the upload
-		$tempfilename = $upload_manager->uploaded($filename,$tempfilename, 'A');
+		$tempfilename = $upload_manager->uploaded($filename, $tempfilename, 'A');
 
 		// add the document
     	$document = &$folder->add_document($title, $filename, $documenttype, $tempfilename);
@@ -3157,13 +3208,13 @@ class KTAPI
        	$add_result = $this->checkin_small_document($document_id,  $filename, $reason, $base64, $major_update,
                                                     $sig_username, $sig_password);
 
-       	if($add_result['status_code'] != 0){
+       	if ($add_result['status_code'] != 0) {
        		return $add_result;
        	}
 
        	$update_result = $this->update_document_metadata($document_id, $metadata, $sysdata, $sig_username, $sig_password, $reason);
 
-       	if($update_result['status_code'] != 0){
+       	if ($update_result['status_code'] != 0) {
        		return $update_result;
        	}
 
@@ -3192,12 +3243,12 @@ class KTAPI
        	$add_result = $this->checkin_document($document_id,  $filename, $reason, $tempfilename, $major_update,
                                               $sig_username, $sig_password);
 
-       	if($add_result['status_code'] != 0){
+       	if ($add_result['status_code'] != 0) {
        		return $add_result;
        	}
 
        	$update_result = $this->update_document_metadata($session_id, $document_id, $metadata, $sysdata, $sig_username, $sig_password, $reason);
-       	if($update_result['status_code'] != 0){
+       	if ($update_result['status_code'] != 0) {
        		return $update_result;
        	}
 
@@ -3245,7 +3296,7 @@ class KTAPI
     	}
 
     	// simulate the upload
-		$tempfilename = $upload_manager->uploaded($filename,$tempfilename, 'C');
+		$tempfilename = $upload_manager->uploaded($filename, $tempfilename, 'C');
 
     	$document = &$this->get_document_by_id($document_id);
 		if (PEAR::isError($document))
@@ -3461,7 +3512,7 @@ class KTAPI
      * @param int $document_id
      * @return kt_response.
      */
-    public function download_document($document_id, $version=null)
+    public function download_document($document_id, $version = null)
     {
     	$document = &$this->get_document_by_id($document_id);
 		if (PEAR::isError($document))
@@ -3499,7 +3550,7 @@ class KTAPI
      * @param int $document_id
      * @return kt_response.
      */
-    public function download_small_document($document_id, $version=null)
+    public function download_small_document($document_id, $version = null)
     {
     	$document = &$this->get_document_by_id($document_id);
 		if (PEAR::isError($document))
@@ -3621,7 +3672,7 @@ class KTAPI
      * @param string $newfilename
      * @return array
      */
- 	public function copy_document($document_id,$folder_id,$reason,$newtitle=null,$newfilename=null, $sig_username = '', $sig_password = '')
+ 	public function copy_document($document_id, $folder_id, $reason, $newtitle = null, $newfilename = null, $sig_username = '', $sig_password = '')
  	{
         $response = $this->_check_electronic_signature($document_id, $sig_username, $sig_password, $reason, $reason,
                                                       'ktcore.transactions.copy');
@@ -3667,7 +3718,7 @@ class KTAPI
  	 * @param string $newfilename
  	 * @return array
  	 */
- 	public function move_document($document_id,$folder_id,$reason,$newtitle=null,$newfilename=null, $sig_username = '', $sig_password = '')
+ 	public function move_document($document_id, $folder_id, $reason, $newtitle = null, $newfilename = null, $sig_username = '', $sig_password = '')
  	{
         $response = $this->_check_electronic_signature($document_id, $sig_username, $sig_password, $reason, $reason,
                                                       'ktcore.transactions.move');
@@ -3713,9 +3764,9 @@ class KTAPI
 	 * @access public
  	 * @param int $document_id
  	 * @param string $newtitle
- 	 * @return arry
+ 	 * @return array
  	 */
- 	public function rename_document_title($document_id,$newtitle, $sig_username = '', $sig_password = '', $reason = '')
+ 	public function rename_document_title($document_id, $newtitle, $sig_username = '', $sig_password = '', $reason = '')
  	{
         $response = $this->_check_electronic_signature($document_id, $sig_username, $sig_password, $reason, $reason,
                                                       'ktcore.transactions.rename');
@@ -3749,7 +3800,7 @@ class KTAPI
  	 * @param string $newfilename
  	 * @return array
  	 */
- 	public function rename_document_filename($document_id,$newfilename, $sig_username = '', $sig_password = '', $reason = '')
+ 	public function rename_document_filename($document_id, $newfilename, $sig_username = '', $sig_password = '', $reason = '')
  	{
         $response = $this->_check_electronic_signature($document_id, $sig_username, $sig_password, $reason, $reason,
                                                       'ktcore.transactions.rename');
@@ -3819,7 +3870,7 @@ class KTAPI
      * @param string $workflow
      * @return array
      */
-    public function start_document_workflow($document_id,$workflow, $sig_username = '', $sig_password = '', $reason = '')
+    public function start_document_workflow($document_id, $workflow, $sig_username = '', $sig_password = '', $reason = '')
     {
         $response = $this->_check_electronic_signature($document_id, $sig_username, $sig_password, $reason, $reason,
                                                       'ktcore.transactions.workflow_state_transition');
@@ -3887,7 +3938,7 @@ class KTAPI
      * @param string $reason
      * @return array
      */
-    public function perform_document_workflow_transition($document_id,$transition,$reason, $sig_username = '', $sig_password = '')
+    public function perform_document_workflow_transition($document_id, $transition, $reason, $sig_username = '', $sig_password = '')
     {
         $response = $this->_check_electronic_signature($document_id, $sig_username, $sig_password, $reason, $reason,
                                                       'ktcore.transactions.workflow_state_transition');
@@ -3901,11 +3952,11 @@ class KTAPI
 			return $response;
     	}
 
-    	$result = $document->perform_workflow_transition($transition,$reason);
+    	$result = $document->perform_workflow_transition($transition, $reason);
 		if (PEAR::isError($result))
     	{
     		$response['status_code'] = 1;
-    		$response['message'] = $result>getMessage();
+    		$response['message'] = $result->getMessage();
 			return $response;
     	}
 
@@ -3941,12 +3992,12 @@ class KTAPI
 				$selection=$metadata[$i]['fields'][$j]['selection'];
 				$new = array();
 
-				foreach($selection as $item)
+				foreach ($selection as $item)
 				{
 					$new[] = array(
 						'id'=>null,
-						'name'=>$item,
-						'value'=>$item,
+						'name' => $item,
+						'value' => $item,
 						'parent_id'=>null
 					);
 				}
@@ -3968,7 +4019,7 @@ class KTAPI
 	 * @param array $metadata
 	 * @return array
 	 */
-	public function update_document_metadata($document_id, $metadata, $sysdata=null, $sig_username = '', $sig_password = '', $reason = '')
+	public function update_document_metadata($document_id, $metadata, $sysdata = null, $sig_username = '', $sig_password = '', $reason = '')
 	{
         $response = $this->_check_electronic_signature($document_id, $sig_username, $sig_password, $reason, $reason,
                                                       'ktcore.transactions.metadata_update');
@@ -4283,7 +4334,7 @@ class KTAPI
 	 * @access public
 	* @return array $response The formatted response array
 	 */
-	public function get_client_policies($client=null)
+	public function get_client_policies($client = null)
 	{
 		$config = KTConfig::getSingleton();
 
@@ -4365,7 +4416,7 @@ class KTAPI
 		}
 
 		$response['message'] = '';
-		if(empty($results)){
+		if (empty($results)) {
     		$response['message'] = _kt('Your search did not return any results');
 		}
 		$response['status_code'] = 0;
@@ -4386,14 +4437,14 @@ class KTAPI
 	public function create_saved_search($name, $query)
 	{
 	    $savedSearch = new savedSearches($this);
-	    if(PEAR::isError($savedSearch)){
+	    if (PEAR::isError($savedSearch)) {
 	        $response['status_code'] = 1;
 	        $response['message'] = $savedSearch->getMessage();
 	        return $response;
 	    }
 
 	    $result = $savedSearch->create($name, $query);
-	    if(PEAR::isError($result)){
+	    if (PEAR::isError($result)) {
 	        $response['status_code'] = 1;
 	        $response['message'] = $result->getMessage();
 	        return $response;
@@ -4417,20 +4468,20 @@ class KTAPI
 	public function get_saved_search($searchID)
 	{
 	    $savedSearch = new savedSearches($this);
-	    if(PEAR::isError($savedSearch)){
+	    if (PEAR::isError($savedSearch)) {
 	        $response['status_code'] = 1;
 	        $response['message'] = $savedSearch->getMessage();
 	        return $response;
 	    }
 
 	    $result = $savedSearch->get_saved_search($searchID);
-	    if(PEAR::isError($result)){
+	    if (PEAR::isError($result)) {
 	        $response['status_code'] = 1;
 	        $response['message'] = $result->getMessage();
 	        return $response;
 	    }
 
-	    if(empty($result)){
+	    if (empty($result)) {
 	        $response['status_code'] = 1;
 	        $response['message'] = _kt('No saved searches found');
 	        return $response;
@@ -4453,20 +4504,20 @@ class KTAPI
 	public function get_saved_search_list()
 	{
 	    $savedSearch = new savedSearches($this);
-	    if(PEAR::isError($savedSearch)){
+	    if (PEAR::isError($savedSearch)) {
 	        $response['status_code'] = 1;
 	        $response['message'] = $savedSearch->getMessage();
 	        return $response;
 	    }
 
 	    $result = $savedSearch->get_list();
-	    if(PEAR::isError($result)){
+	    if (PEAR::isError($result)) {
 	        $response['status_code'] = 1;
 	        $response['message'] = $result->getMessage();
 	        return $response;
 	    }
 
-	    if(empty($result)){
+	    if (empty($result)) {
 	        $response['status_code'] = 1;
 	        $response['message'] = _kt('No saved searches found');
 	        return $response;
@@ -4490,14 +4541,14 @@ class KTAPI
 	public function delete_saved_search($searchID)
 	{
 	    $savedSearch = new savedSearches($this);
-	    if(PEAR::isError($savedSearch)){
+	    if (PEAR::isError($savedSearch)) {
 	        $response['status_code'] = 1;
 	        $response['message'] = $savedSearch->getMessage();
 	        return $response;
 	    }
 
 	    $result = $savedSearch->delete($searchID);
-	    if(PEAR::isError($result)){
+	    if (PEAR::isError($result)) {
 	        $response['status_code'] = 1;
 	        $response['message'] = $result->getMessage();
 	        return $response;
@@ -4520,21 +4571,21 @@ class KTAPI
 	public function run_saved_search($searchID)
 	{
 	    $savedSearch = new savedSearches($this);
-	    if(PEAR::isError($savedSearch)){
+	    if (PEAR::isError($savedSearch)) {
 	        $response['status_code'] = 1;
 	        $response['message'] = $savedSearch->getMessage();
 	        return $response;
 	    }
 
 	    $results = $savedSearch->run_saved_search($searchID);
-	    if(PEAR::isError($results)){
+	    if (PEAR::isError($results)) {
 	        $response['status_code'] = 1;
 	        $response['message'] = $results->getMessage();
 	        return $response;
 	    }
 
 	    $response['message'] = '';
-	    if(empty($results)){
+	    if (empty($results)) {
 	        $response['message'] = _kt('Your saved search did not return any results');
 	    }
 	    $response['status_code'] = 0;
@@ -4572,7 +4623,7 @@ class KTAPI
 	public function get_user_by_id($userID)
 	{
         $user = KTAPI_User::getById($userID);
-        if(PEAR::isError($user)){
+        if (PEAR::isError($user)) {
             $response['status_code'] = 1;
             $response['message'] = $user->getMessage();
             return $response;
@@ -4597,7 +4648,7 @@ class KTAPI
 	public function get_user_by_username($username)
 	{
         $user = KTAPI_User::getByUsername($username);
-        if(PEAR::isError($user)){
+        if (PEAR::isError($user)) {
             $response['status_code'] = 1;
             $response['message'] = $user->getMessage();
             return $response;
@@ -4635,7 +4686,7 @@ class KTAPI
 	public function get_user_by_name($name)
 	{
         $user = KTAPI_User::getByName($name);
-        if(PEAR::isError($user)){
+        if (PEAR::isError($user)) {
             $response['status_code'] = 1;
             $response['message'] = $user->getMessage();
             return $response;
@@ -4661,12 +4712,12 @@ class KTAPI
 	public function get_user_list($filter = NULL, $options = NULL)
 	{
         $users = KTAPI_User::getList($filter, $options);
-        if(PEAR::isError($users)){
+        if (PEAR::isError($users)) {
             $response['status_code'] = 1;
             $response['message'] = $users->getMessage();
             return $response;
         }
-        foreach($users as $user){
+        foreach ($users as $user) {
             $results[] = $this->_get_user_details($user);
         }
         $response['message'] = '';
@@ -4687,7 +4738,7 @@ class KTAPI
 	public function is_document_subscribed($documentID)
 	{
 	    $document = $this->get_document_by_id($documentID);
-	    if(PEAR::isError($document)){
+	    if (PEAR::isError($document)) {
 	        $response['message'] = $document->getMessage();
 	        $response['status_code'] = 1;
 	        return $response;
@@ -4696,9 +4747,9 @@ class KTAPI
 	    $result = $document->isSubscribed();
         $response['message'] = '';
         $response['status_code'] = 0;
-	    if($result){
+	    if ($result) {
 	        $response['results']['subscribed'] = 'TRUE';
-	    }else{
+	    } else {
 	        $response['results']['subscribed'] = 'FALSE';
 	    }
         return $response;
@@ -4715,18 +4766,18 @@ class KTAPI
 	public function subscribe_to_document($documentID)
 	{
 	    $document = $this->get_document_by_id($documentID);
-	    if(PEAR::isError($document)){
+	    if (PEAR::isError($document)) {
 	        $response['message'] = $document->getMessage();
 	        $response['status_code'] = 1;
 	        return $response;
 	    }
 
 	    $result = $document->subscribe();
-	    if($result === TRUE){
+	    if ($result === TRUE) {
             $response['message'] = '';
             $response['status_code'] = 0;
 	        $response['results']['action_result'] = 'TRUE';
-	    }else{
+	    } else {
             $response['message'] = $result;
             $response['status_code'] = 1;
 	    }
@@ -4744,18 +4795,18 @@ class KTAPI
 	public function unsubscribe_from_document($documentID)
 	{
 	    $document = $this->get_document_by_id($documentID);
-	    if(PEAR::isError($document)){
+	    if (PEAR::isError($document)) {
 	        $response['message'] = $document->getMessage();
 	        $response['status_code'] = 1;
 	        return $response;
 	    }
 
 	    $result = $document->unsubscribe();
-	    if($result === TRUE){
+	    if ($result === TRUE) {
             $response['message'] = '';
             $response['status_code'] = 0;
 	        $response['results']['action_result'] = 'TRUE';
-	    }else{
+	    } else {
             $response['message'] = $result;
             $response['status_code'] = 1;
 	    }
@@ -4773,7 +4824,7 @@ class KTAPI
 	public function is_folder_subscribed($folderID)
 	{
 	    $folder = $this->get_folder_by_id($folderID);
-	    if(PEAR::isError($folder)){
+	    if (PEAR::isError($folder)) {
 	        $response['message'] = $folder->getMessage();
 	        $response['status_code'] = 1;
 	        return $response;
@@ -4782,9 +4833,9 @@ class KTAPI
 	    $result = $folder->isSubscribed();
         $response['message'] = '';
         $response['status_code'] = 0;
-	    if($result){
+	    if ($result) {
 	        $response['results']['subscribed'] = 'TRUE';
-	    }else{
+	    } else {
 	        $response['results']['subscribed'] = 'FALSE';
 	    }
         return $response;
@@ -4801,18 +4852,18 @@ class KTAPI
 	public function subscribe_to_folder($folderID)
 	{
 	    $folder = $this->get_folder_by_id($folderID);
-	    if(PEAR::isError($folder)){
+	    if (PEAR::isError($folder)) {
 	        $response['message'] = $folder->getMessage();
 	        $response['status_code'] = 1;
 	        return $response;
 	    }
 
 	    $result = $folder->subscribe();
-	    if($result === TRUE){
+	    if ($result === TRUE) {
             $response['message'] = '';
             $response['status_code'] = 0;
 	        $response['results']['action_result'] = 'TRUE';
-	    }else{
+	    } else {
             $response['message'] = $result;
             $response['status_code'] = 1;
 	    }
@@ -4830,24 +4881,24 @@ class KTAPI
 	public function unsubscribe_from_folder($folderID)
 	{
 	    $folder = $this->get_folder_by_id($folderID);
-	    if(PEAR::isError($folder)){
+	    if (PEAR::isError($folder)) {
 	        $response['message'] = $folder->getMessage();
 	        $response['status_code'] = 1;
 	        return $response;
 	    }
 
 	    $result = $folder->unsubscribe();
-	    if($result === TRUE){
+	    if ($result === TRUE) {
             $response['message'] = '';
             $response['status_code'] = 0;
 	        $response['results']['action_result'] = 'TRUE';
-	    }else{
+	    } else {
             $response['message'] = $result;
             $response['status_code'] = 1;
 	    }
         return $response;
 	}
-	
+
 	/**
 	* Method to check whether content version is the latest for a specific document
 	*
@@ -4858,7 +4909,7 @@ class KTAPI
 	* @return bool $response The formatted response array
 	*/
 	public function is_latest_version($documentID, $contentID)
-	{		
+	{
 		$document = $this->get_document_by_id($documentID);
 
  		$maxcontentID = $document->get_content_version();
@@ -4915,7 +4966,7 @@ class KTAPI
     {
         $eSignature = new ESignature('api');
         $result = $eSignature->sign($username, $password, $comment, $action, $details);
-        if(!$result){
+        if (!$result) {
             $this->esig_error = $eSignature->getError();
         }
 
@@ -4951,33 +5002,39 @@ class KTAPI
 
         return $response;
     }
-	
+
 	/**
 	 * Method to get the Recently Viewed Documents
 	 *
 	 * @author KnowledgeTree Team
 	 * @access public
 	 */
-	public function getRecentlyViewedDocuments()
+	public function getRecentlyViewedDocuments($aOptions = NULL)
 	{
 		if (KTPluginUtil::pluginIsActive('brad.UserHistory.plugin')) {
 			$path = KTPluginUtil::getPluginPath('brad.UserHistory.plugin');
             require_once($path.'UserHistoryActions.php');
 			$user = $this->get_user();
-			
+
 			if (is_null($user) || PEAR::isError($user))
 			{
 				$result =  new PEAR_Error(KTAPI_ERROR_USER_INVALID);
 				return $result;
 			}
-			
-			return UserHistoryDocumentEntry::getByUser($user);
-			
+
+			//limit to 5 by default
+			if (!isset($aOptions['limit']))
+			{
+				$aOptions['limit'] = 5;
+			}
+
+			return UserHistoryDocumentEntry::getByUser($user, $aOptions);
+
 		} else {
 			return array();
 		}
 	}
-	
+
 	/**
 	 * Method to get the Recently Viewed Folders
 	 *
@@ -4990,20 +5047,20 @@ class KTAPI
 			$path = KTPluginUtil::getPluginPath('brad.UserHistory.plugin');
             require_once($path.'UserHistoryActions.php');
 			$user = $this->get_user();
-			
+
 			if (is_null($user) || PEAR::isError($user))
 			{
 				$result =  new PEAR_Error(KTAPI_ERROR_USER_INVALID);
 				return $result;
 			}
-			
+
 			return UserHistoryFolderEntry::getByUser($user);
-			
+
 		} else {
 			return array();
 		}
 	}
-	
+
 	/**
      * Method to check whether the installation is a commercial edition of KnowledgeTree
      *
@@ -5017,10 +5074,10 @@ class KTAPI
         if (!KTPluginUtil::pluginIsActive('ktdms.wintools')) {
             return false;
         }
-		
+
 		return (BaobabKeyUtil::getLicenseCount() >= MIN_LICENSES);
 	}
-	
+
 	/**
 	 * Method to get the Conditional Metadata Rules
 	 *
@@ -5030,10 +5087,10 @@ class KTAPI
 	public function getConditionalMetadataRules()
 	{
         $ktapi_condRules = new KTAPI_ConditionalMetadata($this);
-		
+
 		return $ktapi_condRules->getConditionalMetadataRules();
 	}
-	
+
 	/**
 	 * Method to get the Conditional Metadata Connections
 	 *
@@ -5043,14 +5100,185 @@ class KTAPI
 	public function getConditionalMetadataConnections()
 	{
         $ktapi_condRules = new KTAPI_ConditionalMetadata($this);
-		
+
 		return $ktapi_condRules->getConditionalMetadataConnections();
 	}
-	
-	
-	
-}
 
+	//COMMENTS
+	/**
+     * Method to check whether Comments plugin is enabled
+     *
+     * @author KnowledgeTree Team
+	 * @access public
+     * @return bool $enabled true or false
+     */
+    public function comments_enabled()
+    {
+        // Check that the Comments plugin is active and available, return false if not.
+        if (KTPluginUtil::pluginIsActive('comment.feeds.plugin')) {
+        	$path = KTPluginUtil::getPluginPath('comment.feeds.plugin');
+        	try {
+        	    require_once($path . 'comments.php');
+        	}
+        	catch (Exception $e) {
+        	    return false;
+        	}
+
+        	return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Get the list of comments on a document ordered by the date created
+     *
+     * @param int $document_id
+     * @return array
+     */
+    public function get_comments($document_id, $order = 'DESC')
+    {
+    	$GLOBALS['default']->log->debug("KTAPI get_comments $document_id $order");
+
+    	$response = array('status_code' => null, 'message' => null, 'results' => null);
+
+    	if ($this->comments_enabled()) {
+    		try {
+		        $comments = Comments::get_comments($document_id, $order);
+		        $GLOBALS['default']->log->debug("COMMENTS_API get comments " . print_r($comments, true));
+
+		        foreach ($comments as $key => $comment) {
+		            // set correct return value types for SOAP webservice
+		            $comments[$key]['id'] = (int) $comment['id'];
+		            $comments[$key]['user_id'] = (int) $comment['user_id'];
+		            $comments[$key]['version'] = (int) $comment['version'];
+		            // filter values not relevant to comments but relevant to web page feed
+		            // in which comments appear.
+		            unset($comments[$key]['action']);
+		            unset($comments[$key]['version']);
+		        }
+
+		        $response['status_code'] = 0;
+		        $response['results'] = $comments;
+    		}
+    		catch (Exception $e) {
+    			$GLOBALS['default']->log->error("COMMENTS_API get comments error {$e->getMessage()}");
+		        $response['status_code'] = 1;
+		        $response['message'] = $e->getMessage();
+    		}
+    	}
+
+    	return $response;
+    }
+
+    /**
+     * Add a comment on a document
+     *
+     * @param int $document_id
+     * @param string $comment
+     */
+    public function add_comment($document_id, $comment)
+    {
+    	$GLOBALS['default']->log->debug("KTAPI add_comment $document_id $comment");
+
+    	$response = array('status_code' => null, 'message' => null, 'results' => null);
+
+    	if ($this->comments_enabled()) {
+    		try {
+    			$result = Comments::add_comment($document_id, $comment);
+    			$response['status_code'] = 0;
+		        $response['results'] = $result;
+    		}
+    		catch (Exception $e) {
+    			$GLOBALS['default']->log->error("COMMENTS_API add comment error {$e->getMessage()}");
+    			$response['status_code'] = 1;
+		        $response['message'] = $e->getMessage();
+    		}
+    	}
+
+    	return $response;
+    }
+
+	/**
+     * Returns the most recent document owned by a user
+     *
+     * @param int $user_name
+     * @param int $limit
+     */
+    public function get_most_recent_documents_owned($user_name, $limit = 10)
+    {
+    	$GLOBALS['default']->log->debug("KTAPI get_most_recent_documents_owned $user_name $limit");
+
+    	$user = KTAPI_User::getByUsername($user_name);
+    	if (is_null($user) || PEAR::isError($user))
+		{
+			$result =  new PEAR_Error(KTAPI_ERROR_USER_INVALID);
+			return $result;
+		}
+
+    	$documents = $user->mostRecentDocumentsOwned($limit);
+
+		return $documents;
+    }
+
+	/**
+     * Gets a document's clean uri
+     *
+     * @param int $document_id
+     */
+    public function get_clean_uri($document_id)
+	{
+		$GLOBALS['default']->log->debug("KTAPI get_clean_uri $document_id");
+
+		$oDocument = &Document::get($document_id);
+
+		if (is_null($oDocument) || PEAR::isError($oDocument))
+		{
+			$response['message'] = $oDocument->getMessage();
+	        $response['status_code'] = 1;
+	        return $response;
+		}
+
+		$url = KTBrowseUtil::getUrlForDocument($oDocument);
+
+		$GLOBALS['default']->log->debug("KTAPI get_clean_uri uri $url");
+
+		$response['message'] = $url;
+	    $response['status_code'] = 0;
+
+		return $response;
+	}
+
+	/**
+     * Gets a user's Gravatar
+     *
+     * @param int $user_name
+     * @param int $limit
+     */
+    public function get_user_gravatar($user_name)
+	{
+		$GLOBALS['default']->log->debug("KTAPI get_user_gravatar $user_name");
+
+		$oUser = &User::getByUserName($user_name);
+
+		if (is_null($oUser) || PEAR::isError($oUser))
+		{
+			$response['message'] = $oUser->getMessage();
+	        $response['status_code'] = 1;
+	        return $response;
+		}
+
+		$gravatar_url = "http://www.gravatar.com/avatar/".md5($oUser->getEmail());
+
+		$GLOBALS['default']->log->debug("KTAPI get_user_gravatar uri $gravatar_url");
+
+		$response['message'] = $gravatar_url;
+	    $response['status_code'] = 0;
+
+		return $response;
+	}
+
+}
 
 /**
 * This class handles the saved search functionality within the API
@@ -5059,8 +5287,8 @@ class KTAPI
 * @package KTAPI
 * @version Version 0.9
 */
-class savedSearches
-{
+class savedSearches {
+
      /**
      * Instance of the KTAPI object
      *
@@ -5168,15 +5396,17 @@ class savedSearches
 	public function run_saved_search($searchID)
 	{
 		$search = $this->get_saved_search($searchID);
-		if(is_null($search) || PEAR::isError($search)){
+		if (is_null($search) || PEAR::isError($search)) {
 		    $results = new PEAR_Error('Invalid saved search');
 		    return $results;
 		}
 		$query = $search[0]['expression'];
 
 	    $results = processSearchExpression($query);
+
 		return $results;
 	}
+
 }
 
 ?>

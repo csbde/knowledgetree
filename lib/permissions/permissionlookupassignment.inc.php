@@ -103,7 +103,7 @@ class KTPermissionLookupAssignment extends KTEntity {
     	
     	if($params['permission_id']==null || $params['permission_lookup_id']==null){
     		$debug=array($oPermission,$oLookup);
-    		echo '<pre>'.print_r($debug,true).'</pre>'; exit;
+    		return PEAR::raiseError(_kt("Permissions could not be determined"));
     	}
     	
         $ret=KTEntityUtil::getByDict('KTPermissionLookupAssignment',$params);

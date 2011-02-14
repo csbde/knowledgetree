@@ -371,7 +371,7 @@ class upgradeDatabase extends Step
     }
 
     private function showResult($res, $errors = null) {
-        if ($res && is_a($res, 'Upgrade_Already_Applied')) {
+        if ($res && $res instanceof Upgrade_Already_Applied) {
             return '<span style="color: orange">Already applied</span>';
         }
         if ($res === true) {

@@ -691,7 +691,7 @@ class APITestCase extends KTUnitTestCase {
         $this->assertIsA($folder, 'KTAPI_Folder');
         $this->assertNoErrors();
         // confirm folder id matches expected
-        if (is_a($folder, 'KTAPI_Folder')) {
+        if ($folder instanceof KTAPI_Folder) {
         	$this->assertEqual($folders[$parentId][$folder->get_folderid()], $folderName);
         }
         
@@ -727,7 +727,7 @@ class APITestCase extends KTUnitTestCase {
         $this->assertIsA($folder, 'KTAPI_Folder');
         $this->assertNoErrors();
         // confirm folder id matches expected
-        if (is_a($folder, 'KTAPI_Folder')) {
+        if ($folder instanceof KTAPI_Folder) {
         	$this->assertEqual($folders[$parentId][$folder->get_folderid()], $folderName);
         }
         
@@ -740,7 +740,7 @@ class APITestCase extends KTUnitTestCase {
         $this->assertIsA($folder, 'KTAPI_Folder');
         $this->assertNoErrors();
         // confirm folder id matches expected
-        if (is_a($folder, 'KTAPI_Folder')) {
+        if ($folder instanceof KTAPI_Folder) {
         	$this->assertEqual($folders[$parentId][$folder->get_folderid()], $folderName);
         }
         
@@ -763,7 +763,7 @@ class APITestCase extends KTUnitTestCase {
         $this->assertIsA($folder, 'KTAPI_Folder');
         $this->assertNoErrors();
         // confirm folder id matches expected
-        if (is_a($folder, 'KTAPI_Folder')) {
+        if ($folder instanceof KTAPI_Folder) {
         	$this->assertEqual($folders[$parentId][$folder->get_folderid()], $folderName);
         }
 

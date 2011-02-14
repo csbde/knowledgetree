@@ -329,7 +329,7 @@ class APIElectronicSignaturesTestCase extends KTUnitTestCase {
         if (!$this->esig_enabled) return null;
 
         $folder = $this->ktapi->get_folder_by_name('test123');
-        if(!$folder instanceof KTAPI_Folder){
+        if(!($folder instanceof KTAPI_Folder)){
             $folder = $this->root->add_folder('test123');
         }
         $folder_id = $folder->get_folderid();
@@ -383,7 +383,7 @@ class APIElectronicSignaturesTestCase extends KTUnitTestCase {
         if (!$this->esig_enabled) return null;
 
         $folder = $this->ktapi->get_folder_by_name('test123');
-        if(!$folder instanceof KTAPI_Folder){
+        if(!($folder instanceof KTAPI_Folder)){
             $folder = $this->root->add_folder('test123');
         }
         $folder_id = $folder->get_folderid();
