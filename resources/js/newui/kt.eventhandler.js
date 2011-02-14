@@ -33,7 +33,7 @@ kt.eventhandler = new function() {
                     fragments[fragments.length] = self.events[idx][1][idx2];
                 }
             }
-            if (self.events[idx][2] == 'exec') {
+            else if (self.events[idx][2] == 'exec') {
                 if (typeof execs == 'undefined') {
                     var execs = [];
                     var execCallback = self.events[idx][0];
