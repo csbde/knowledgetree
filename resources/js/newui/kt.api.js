@@ -178,8 +178,8 @@ kt.api = new function() {
 
 	this.preload = function(fragments, execs, register) {
 	    for (var idx = 0; idx < fragments.length; ++idx) {
-	        if ((register != 'undefined') && register) {
-                kt.eventhandler.register(kt.api.preloadFragment, fragments[idx]);
+	        if ((typeof register != 'undefined') && register) {
+                kt.eventhandler.register(kt.api.preloadFragment, fragments[idx], 'fragment');
 	        }
 	        else {
 	            kt.api.preloadFragment(fragments[idx]);
@@ -187,8 +187,8 @@ kt.api = new function() {
 	    }
 
 	    for (var idx = 0; idx < execs.length; ++idx) {
-	        if ((register != 'undefined') && register) {
-                kt.eventhandler.register(kt.api.preloadExecutable, execs[idx]);
+	        if ((typeof register != 'undefined') && register) {
+                kt.eventhandler.register(kt.api.preloadExecutable, execs[idx], 'exec');
 	        }
 	        else {
 	            kt.api.preloadExecutable(execs[idx]);
