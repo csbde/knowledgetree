@@ -176,13 +176,23 @@ kt.api = new function() {
 
 	/* Template related functions */
 
-	this.preload = function(fragments, execs) {
+	this.preload = function(fragments, execs, register) {
 	    for (var idx = 0; idx < fragments.length; ++idx) {
-	        kt.api.preloadFragment(fragments[idx]);
+	        if ((register != 'undefined') && register) {
+                kt.eventhandler.register(kt.api.preloadFragment, fragments[idx]);
+	        }
+	        else {
+	            kt.api.preloadFragment(fragments[idx]);
+	        }
 	    }
 
 	    for (var idx = 0; idx < execs.length; ++idx) {
-	        kt.api.preloadExecutable(execs[idx]);
+	        if ((register != 'undefined') && register) {
+                kt.eventhandler.register(kt.api.preloadExecutable, execs[idx]);
+	        }
+	        else {
+	            kt.api.preloadExecutable(execs[idx]);
+	        }
 	    }
 	}
 

@@ -148,7 +148,8 @@ class KTPage {
         $cssIncludes = array('resources/css/newui/newui.upload.css' => array('browse_collections', 'dashboard'));
         $jsIncludes = array(
                         'thirdpartyjs/jquery/plugins/ajaxupload/fileuploader.js' => array('browse_collections', 'dashboard'),
-                        'resources/js/newui/kt.app.upload.js' => array('browse_collections', 'dashboard'),
+                        'resources/js/newui/kt.eventhandler.js' => array('browse_collections', 'document_details', 'dashboard', 'administration'),
+	                    'resources/js/newui/kt.app.upload.js' => array('browse_collections', 'dashboard'),
 	                    'resources/js/newui/kt.app.inviteusers.js' => array('browse_collections', 'document_details', 'dashboard', 'administration'),
                         'resources/js/newui/kt.app.sharewithusers.js' => array('browse_collections', 'document_details'),
             	        'resources/js/jquery.blockui.js' => array('browse_collections', 'document_details', 'dashboard', 'administration'),
@@ -237,6 +238,10 @@ class KTPage {
         if ($this->componentClass != 'administration') {
             $this->requireJSStandalone('addLoadEvent(partial(initDeleteProtection, "' . _kt('Are you sure you wish to delete this item?') . '"));');
         }
+
+        /* event handling */
+        global $main;
+        $main->setBodyOnLoad('javascript: kt.eventhandler.run();');
 
         /* menu initialisation*/
         // FIXME:  how do we want to handle the menu?

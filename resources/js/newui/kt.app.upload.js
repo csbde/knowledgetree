@@ -35,7 +35,7 @@ kt.app.upload = new function() {
 
 	// Initializes the upload widget on creation. Currently does preloading of resources.
 	this.init = function() {
-		kt.api.preload(fragmentPackage, execPackage);
+		kt.api.preload(fragmentPackage, execPackage, true);
 	}
 
 	// Container for the EXTJS window

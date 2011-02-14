@@ -24,7 +24,7 @@ kt.app.sharewithusers = new function() {
 
     //Initializes the upload widget on creation. Currently does preloading of resources.
     this.init = function() {
-        kt.api.preload(fragments, execPackage);
+        kt.api.preload(fragments, execPackage, true);
     }
 
     //Container for the EXTJS window
