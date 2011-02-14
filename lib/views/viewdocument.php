@@ -264,6 +264,7 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
 			'document' => $oDocument,
 			'documentName' => $oDocument->getName(),
 			'document_data' => $document_data,
+        	'document_types' => array(array('id' => 1, 'name' => 'Default'), array('id' => 2, 'name' => 'Invoice'), array('id' => 3, 'name' => 'Contract')),
 			'fieldsets' => $fieldsets,
 			'viewlet_data' => $viewlet_data,
 			'viewlet_data2' => $viewlet_data2,

@@ -3,10 +3,14 @@
 <!--<link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/2.8.2r1/build/button/assets/skins/sam/button.css">-->
 {$context->oPage->requireJSResource('thirdpartyjs/yui2/yahoo-dom-event.js')}
 
-<script type="text/javascript" src="http://yui.yahooapis.com/2.8.2r1/build/container/container_core-min.js"></script>
+<!--<script type="text/javascript" src="http://yui.yahooapis.com/2.8.2r1/build/container/container_core-min.js"></script>
 <script type="text/javascript" src="http://yui.yahooapis.com/2.8.2r1/build/menu/menu-min.js"></script>
 <script type="text/javascript" src="http://yui.yahooapis.com/2.8.2r1/build/element/element-min.js"></script>
-<script type="text/javascript" src="http://yui.yahooapis.com/2.8.2r1/build/button/button-min.js"></script>
+<script type="text/javascript" src="http://yui.yahooapis.com/2.8.2r1/build/button/button-min.js"></script>-->
+
+<script type="text/javascript" src="/thirdpartyjs/jquery/plugins/editableset/jquery.editable-set.js"> </script>
+<script type="text/javascript" src="/resources/js/newui/kt_documentPropertyEditor.js"> </script>
+
 
 <!-- FILE: ktcore/document/view.smarty -->
 <table>
@@ -56,25 +60,67 @@
 					
 					<br/>
 					<br/>
+										
+					<div class='documenttype'> 
 					<table style="padding: 0px margin: 0px;">
 						<tr>
-							<td width="100">Document Type</td>
-							<td><a href="">Invoices</a></td>
+							<td width="200">Document Type</td>
+							<td><span data-name='documenttype' data-options='[{foreach from=$document_types key=aKey item=documentType}
+								["{$documentType.name}", "{$documentType.id}"],{/foreach}]' data-type='select'>Default</span></td>
+						</tr>
+					</table>
+					</div>
+					<div class='editable'> 
+					<table style="padding: 0px margin: 0px;">
+						<tr>
+							<td width="200">Text box</td>
+							<td><span data-name='robot[application_attributes][name]' data-type='textarea'>A very long-winded value</span></td>
 						</tr>
 						<tr>
-							<td width="100">Custom Property</td>
-							<td><a href="">Property Value</a></td>
+							<td width="200">Text Field</td>
+							<td><span data-name='robot[application_attributes][name]'>Value</span></td>
 						</tr>
 						<tr>
-							<td width="100">Custom Property</td>
-							<td><a href="">Property Value</a></td>
+							<td width="200">Select</td>
+							<td><span data-name='customer[hair_color]' data-options='[["Brown", "brown"], ["Blonde", "blonde"], ["Red", "red"]]' data-type='select'>Brown</span></td>
 						</tr>
 						<tr>
-							<td width="100">Custom Property</td>
-							<td><a href="">Property Value</a></td>
+							<td width="200">Multi Select</td>
+							<td><span data-name='robot[application_attributes][name]'>Value</span></td>
+						</tr>
+						<tr>
+							<td width="200">Date</td>
+							<td class="edit_date">2011/02/11</td>
+						</tr>
+						<tr>
+							<td width="200">Checkbox</td>
+							<td><span data-name='robot[application_attributes][intentions]' data-checked_value='true' data-type='checkbox'>Yes</span></td>
 						</tr>
 
 					</table>
+					</div>
+					<div><span class="more">more...</span></div>
+					<div class="slide" style="display:none">
+					<table style="padding: 0px margin: 0px;">
+						<tr>
+							<td width="100">Document Type</td>
+							<td>Invoices</td>
+						</tr>
+						<tr>
+							<td width="100">Custom Property</td>
+							<td class="edit">Property Value</td>
+						</tr>
+						<tr>
+							<td width="100">Custom Property</td>
+							<td>Property Value</td>
+						</tr>
+						<tr>
+							<td width="100">Custom Property</td>
+							<td>Property Value</td>
+						</tr>
+
+					</table>
+					</div>
 					
 			
       
