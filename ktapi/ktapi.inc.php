@@ -5135,6 +5135,7 @@ class KTAPI {
 		            // in which comments appear.
 		            unset($comments[$key]['action']);
 		            unset($comments[$key]['version']);
+		            unset($comments[$key]['email']);
 		        }
 
 		        $response['status_code'] = 0;
@@ -5255,7 +5256,7 @@ class KTAPI {
 
 		return $response;
 	}
-	
+
 	/**
      * Reports the total number of documents and their total size
      *
@@ -5264,28 +5265,28 @@ class KTAPI {
 	public function get_folder_total_documents($folder_id)
 	{
 		//$GLOBALS['default']->log->debug("KTAPI get_folder_total_files $folder_id");
-		
+
 		$folder = KTAPI_Folder::get($this, $folder_id);
-		
+
 		if (PEAR::isError($folder))
 		{
 			//$GLOBALS['default']->log->error('KTAPI get_folder_total_files folder error '.$folder->getMessage());
-			
+
 			return array(
 				'status_code' => 1,
 				'message' => $folder->getMessage()
 			);
 		}
-		
+
 		$result = $folder->get_total_documents();
-		
+
 		$response['status_code'] = 0;
-		
+
 		$response = array_merge($response, $result);
-	    
+
 	    return $response;
 	}
-	
+
 	/**
      * Reports whether a folder contains any documents and/or subfolders
      *
@@ -5294,36 +5295,36 @@ class KTAPI {
 	public function is_folder_empty($folder_id)
 	{
 		//$GLOBALS['default']->log->debug("KTAPI is_folder_empty $folder_id");
-		
+
 		$folder = KTAPI_Folder::get($this, $folder_id);
-		
+
 		//if we get an error on the folder, we assume that it is empty!
 		if (PEAR::isError($folder))
 		{
 			//$GLOBALS['default']->log->error('KTAPI is_folder_empty folder error '.$folder->getMessage());
-			
+
 			return array(
 				'status_code' => 0,
 				'message' => 'true'
 			);
 		}
-		
+
 		$result = $folder->is_empty();
-		
+
 		//$GLOBALS['default']->log->debug("KTAPI is_folder_empty result $result");
-		
+
 		$response['status_code'] = 0;
-		
+
 		$response['message'] = 'false';
-		
+
 		if($result) {
 			$response['message'] = 'true';
 		}
-	    
+
 	    return $response;
 	}
-		
-	
+
+
 	/**
      * Determines whether and how a folder has changed
      *
@@ -5335,23 +5336,23 @@ class KTAPI {
 	public function get_folder_changes($folder_ids, $timestamp, $depth = 1, $what = 'DF')
 	{
 		//$GLOBALS['default']->log->debug("KTAPI get_folder_changes ".print_r($folder_ids, true)." $timestamp $depth '$what'");
-		
+
 		$results = array();
 		$changes = array();
-		
+
 		$hasChanges = FALSE;
-		
+
 		//generate the new timestamp; do it BEFORE checking for changes!
 		$datetime = gmdate("c");
     	$new_timestamp = datetimeutil::getLocaleDate($datetime);
     	$new_timestamp = (string)strtotime($new_timestamp);
-    	
+
     	//$GLOBALS['default']->log->debug("KTAPI get_folder_changes new timestamp $new_timestamp");
-		
+
 		foreach($folder_ids as $folder_id)
 		{
 			$folder = KTAPI_Folder::get($this, $folder_id);
-			
+
 			//convert to UTC since we are getting the localized time
 			$time = datetimeutil::convertToUTC(date('Y-m-d H:i:s', (int)$timestamp));
 			if (PEAR::isError($folder))
@@ -5362,23 +5363,23 @@ class KTAPI {
 
 				$changes1 = array();
 				$changes2 = array();
-				
+
 				//since a PEAR error is raised when a get is done on a folder that has been deleted
 				//or where user does not have permissions, need to check for those cases
 				$changes1 = KTAPI_Folder::deletedSince($folder_id, $time);
-				
-				
+
+
 				if (count($changes1) == 0)
 				{
 					$changes2 = KTAPI_Folder::permissionsRemovedSince($folder_id, $time);
 				}
-				
+
 				$changes = array_merge($changes1, $changes2);
-				
+
 				if (count($changes) > 0)
 				{
 					$hasChanges = TRUE;
-							
+
 					$results[$folder_id] = array(
 						'status_code' => 0,
 						'message' => 'Folder has changes',
@@ -5395,23 +5396,23 @@ class KTAPI {
 				}
 			}
 			else
-			{				
+			{
 				//get the changes!
 				$changes = $folder->getChanges($time, $depth, $what);
-				
+
 				//no changes for this folder
 				if (count($changes) == 0)
-				{				
+				{
 					$results[$folder_id] = array(
-						'status_code' => 0, 
+						'status_code' => 0,
 						'message' => KTAPI_ERROR_FOLDER_NO_CHANGES,
 						'changes' => array(),
 					);
 				}
 				else
-				{				
+				{
 					$hasChanges = TRUE;
-							
+
 					$results[$folder_id] = array(
 						'status_code' => 0,
 						'message' => 'Folder has changes',
@@ -5420,9 +5421,9 @@ class KTAPI {
 				}
 			}
 		}
-				
+
 		//$GLOBALS['default']->log->debug("KTAPI get_folder_changes converted new timestamp $new_timestamp");
-		
+
 		return array(
 			'status_code' => $hasChanges ? 0 : 1,
 			'message' => $hasChanges ? 'There are changes.' : 'No changes.',
@@ -5430,10 +5431,10 @@ class KTAPI {
 			'result' => $results
 		);
 	}
-	
+
 	/**
-	 * Does a document have any "binary changes", i.e. has its content truly changed 
-	 * 
+	 * Does a document have any "binary changes", i.e. has its content truly changed
+	 *
 	 * @param int $document_id
 	 * @param float $from_version
 	 * @param float $to_version
@@ -5441,9 +5442,9 @@ class KTAPI {
 	public function document_has_binary_changes($document_id, $from_version, $to_version)
 	{
 		//$GLOBALS['default']->log->debug("KTAPI document_has_binary_changes $document_id $from_version $to_version");
-		
+
 		$document = $this->get_document_by_id($document_id);
-		
+
 		if (PEAR::isError($document))
 		{
 			return array(
@@ -5451,20 +5452,20 @@ class KTAPI {
 				'message' => $document->getMessage()
 			);
 		}
-		
-		$result = $document->hasBinaryChanges($from_version, $to_version); 
-		
+
+		$result = $document->hasBinaryChanges($from_version, $to_version);
+
 		$response['status_code'] = 0;
-		
+
 		$response['message'] = 'false';
-		
+
 		if($result) {
 			$response['message'] = 'true';
 		}
-		
+
 		//$GLOBALS['default']->log->debug('KTAPI document_has_binary_changes response '.print_r($response, true));
-	    
-	    return $response; 
+
+	    return $response;
 	}
 
 }
