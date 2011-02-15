@@ -171,7 +171,7 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
         //   any of the plumbing to do it, so we handle this here.
         $fieldsets = array();
         // we always have a generic.
-        array_push($fieldsets, new GenericFieldsetDisplay());
+        //array_push($fieldsets, new GenericFieldsetDisplay());
 
         $fieldsetDisplayReg =& KTFieldsetDisplayRegistry::getSingleton();
         $aDocFieldsets = KTMetadataUtil::fieldsetsForDocument($oDocument);

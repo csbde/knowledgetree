@@ -1,6 +1,6 @@
  
 <!-- FILE: kt3/fieldsets/simple.smarty -->
-	<div class="detail_fieldset">
+	<div class="detail_fieldset editablemetadata">
 	    <h3>{$fieldset->getName()}</h3>
 	        <p class="descriptiveText">
 	        {$description}
@@ -11,15 +11,7 @@
 	    <tr class="{cycle values=even,odd} {if $smarty.foreach.fields.first}first{/if}">
 	        <th>{$aFieldPair.field->getName()}</th>
 	        <td>
-	        {if ($aFieldPair.value !== null)}
-				{if ($aFieldPair.field->getIsHTML())}
-					{$aFieldPair.value}
-				{else}
-					{$aFieldPair.value|sanitize}
-				{/if}
-	        {else}
-				<span class="descriptiveText">{i18n}no value{/i18n}</span>
-			{/if}
+	        <span class="descriptiveText" data-name='{$field.name}' data-type='{$field.type}'>{$aFieldPair.value}</span>
 	        </td>
 	    </tr>
 	      {/foreach}
