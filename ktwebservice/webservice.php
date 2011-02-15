@@ -4195,6 +4195,13 @@ class KTWebService {
     	return new SOAP_Value('return', "{urn:$this->namespace}kt_response", $response);
 	}
 	
+	function verify_folders_total_size($session_id, $include_folder_ids, $exclude_folder_ids)
+	{
+		$response = KTWebService::_status(KTWS_SUCCESS, '');
+		
+		return new SOAP_Value('return', "{urn:$this->namespace}kt_response", $response);
+	}
+	
     private function setTypeDefinitions()
     {
         $this->__typedef["{urn:$this->namespace}kt_response"] =
@@ -5597,6 +5604,11 @@ class KTWebService {
     			
     		$this->__dispatch_map['document_has_binary_changes'] = 
     			array('in' => array('session_id' => 'string', 'document_id' => 'int', 'from_version' => 'float', 'to_version' => 'float' ),
+    				'out' => array( 'return' => "{urn:$this->namespace}kt_response" )
+    			);
+    			
+    		$this->__dispatch_map['verify_folders_total_size'] = 
+    			array('in' => array('session_id' => 'string', 'include_folder_ids' => "{urn:$this->namespace}kt_folder_ids", 'exclude_folder_ids' => "{urn:$this->namespace}kt_folder_ids" ),
     				'out' => array( 'return' => "{urn:$this->namespace}kt_response" )
     			);
     			
