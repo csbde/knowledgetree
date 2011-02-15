@@ -1,0 +1,66 @@
+<div class="doc_description">
+{if $document->getImmutable()}<img src="{php}echo "{$GLOBALS['default']->rootUrl}/resources/graphics/newui/docview_immutable.png";{/php}" style="display: inline-block" alt="{i18n}Finalized{/i18n}"  title="{i18n}Finalized{/i18n}" />{/if}
+					{if $document->getIsCheckedOut()}<img src="{php}echo "{$GLOBALS['default']->rootUrl}/resources/graphics/newui/docview_checkedout.png";{/php}" style="display: inline-block" alt="{i18n}Checked-Out{/i18n}"  title="{i18n}Checked Out{/i18n}" />{/if}
+					<br/>
+					<span class="doc_info" style="display: block; margin-top: 5px;">
+						Version <a href="">{$document->getMajorVersionNumber()}.{$document->getMinorVersionNumber()}</a> | Last Modified by: <a href="">{$doc_data.lastModifier}</a> on <a href="">{$document->getLastModifiedDate()|date_format:"%B %e, %Y at %H:%M"}</a> | Created by: <a href="">{$doc_data.creator}</a> on <a href="">{$document->getCreatedDateTime()|date_format:"%B %e, %Y at %H:%M"}</a> | A </strong> {$fieldsetDisplayHelper->_sizeHelper($document->getSize())} document. 
+						{if $document->getIsCheckedOut()}
+							<span class="doc_checkedout"> <strong>Checked-out By:</strong> {$sCheckoutUser}</span>
+						{/if}
+						
+					<br><br/>
+					<div class="tags">
+						<a href="">Invoice</a>
+						<a href="">Purchase</a>
+						<a href="">Acme Corp</a>
+						<a href="">April</a>
+					</div>
+					
+					<br/>
+					<br/>
+										
+					<div > 
+					<table style="padding: 0px margin: 0px;">
+						<tr>
+							<td width="200">Document Type</td>
+							<td class='documenttype'><span id='documentTypeID' data-name='documenttype' data-options='[{foreach from=$document_types key=aKey item=documentType}
+								["{$documentType.name}", "{$documentType.id}"],{/foreach}]' data-type='select'>Default</span></td>
+						</tr>
+					</table>
+					</div>
+					<div>
+					{foreach item=oFieldset from=$fieldsets}
+						{$oFieldset->render($document_data)}
+					{/foreach}
+					</div>
+					
+					<div><span class="more">more...</span></div>
+					<div class="slide" style="display:none">
+					<table style="padding: 0px margin: 0px;">
+						<tr>
+							<td width="100">Document Type</td>
+							<td>Invoices</td>
+						</tr>
+						<tr>
+							<td width="100">Custom Property</td>
+							<td class="edit">Property Value</td>
+						</tr>
+						<tr>
+							<td width="100">Custom Property</td>
+							<td>Property Value</td>
+						</tr>
+						<tr>
+							<td width="100">Custom Property</td>
+							<td>Property Value</td>
+						</tr>
+
+					</table>
+					</div>
+					
+			
+      
+  
+					</span>
+				</div>
+				<!-- <hr style="border: none; background-color: #E3E3E3; width: 98%; height: 1px; margin-left: 10px; margin-bottom: 15px;" align="left" /> -->
+				</div>
