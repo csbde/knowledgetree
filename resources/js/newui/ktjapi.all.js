@@ -141,7 +141,7 @@ ktjapi = new function() {
 			cacheTimeout += 0; //Cast it to a number
 			if (cacheTimeout > 0) {
 				var date = new Date();
-				reqObj.request.expires = date.getTime()+(cacheTimeout*1000);
+				reqObj.request.expires = date.getTime() + (cacheTimeout * 1000);
 
 			}
 		};
@@ -187,7 +187,6 @@ ktjapi = new function() {
 		//TODO: Externalize this
 
 		var uri = this.createURL(reqObj, false, false);
-
 		this.ajax.getRequest(uri.url, success, errorFunct, sync ? true : false, customTimeout);
 
 		var evt = 'ktjapi_event:' + func;
@@ -197,12 +196,12 @@ ktjapi = new function() {
 	this.handleData = function(data, callback) {
 	    // ktjapi.cfg.set('security.token', data.status.random_token);
 	    // ktjapi.cfg.set('server.session', data.status.session_id);
-	    alert('had errors?: ' + data.errors.hadErrors)
 	    if (data.errors.hadErrors > 0) {
 	        for (var i = 0; i < data.errors.errors.length; i++) {}
 	    } else {
 	        ktjapi.setCache(data.request.request, data);
 	    }
+
 	    if (typeof(callback) == 'function') { callback(data); }
 	}
 
@@ -323,7 +322,7 @@ ktjapi = new function() {
 	 * Set the cache entry for a particular query
 	 */
 	this.setCache = function(reqParams, cacheObj) {
-		if (reqParams.expires>0) {
+		if (reqParams.expires > 0) {
 			var rid = this.getCacheId(reqParams);
 			this._cache[rid] = {
 				data:cacheObj,
@@ -447,6 +446,7 @@ ktjapi._lib = new function() {
 				id = id + char_;
 			}
 		}
+
 		return id;
 	};
 
@@ -468,6 +468,7 @@ ktjapi._lib = new function() {
 			id = this.randomId(prefix, size);
 		} while (this._data.uniqueIdentifiers[id] != undefined);
 		this._data.uniqueIdentifiers[id] = true;
+
 		return id;
 	};
 
@@ -489,6 +490,7 @@ ktjapi._lib = new function() {
 			cObj = cObj[path[i++]];
 			if (cObj === undefined) { success = false; }
 		} while (typeof(cObj) == 'object' && i < path.length && !success);
+
 		return cObj;
 	};
 

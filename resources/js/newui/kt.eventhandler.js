@@ -10,8 +10,7 @@ kt.eventhandler = new function() {
 
     this.register = function(callback, parameters, type)
     {
-        if (typeof type == 'undefined') { type == 'unknown' };
-
+        type = (typeof type == 'undefined') ? 'unknown' : type;
         var event = [callback, parameters, type];
         self.events[self.events.length] = event;
     }

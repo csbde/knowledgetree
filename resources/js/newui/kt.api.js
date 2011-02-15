@@ -202,14 +202,14 @@ kt.api = new function() {
 		if (!kt.lib.Object.is_object(params)) { params = {}; }
 		params = kt.lib.Object.extend({name:fragName}, params);
 		var func = 'template.getFragment';
-		var ret = ktjapi.callMethod(func, params, function() {}, false, function() {}, 30000);
+		var ret = ktjapi.callMethod(func, params, function() {}, false, function() {}, 30000, 10000);
 	};
 
 	this.preloadExecutable = function(fragName, params) {
 		if (!kt.lib.Object.is_object(params)) { params = {}; }
 		params = kt.lib.Object.extend({name:fragName}, params);
 		var func = 'template.execFragment';
-		var ret = ktjapi.callMethod(func, params, function() {}, false, function() {}, 30000);
+		var ret = ktjapi.callMethod(func, params, function() {}, false, function() {}, 30000, 10000);
 	};
 
 	this.getFragment = function(fragName, params) {
