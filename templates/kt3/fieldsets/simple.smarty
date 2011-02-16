@@ -1,6 +1,6 @@
  
 <!-- FILE: kt3/fieldsets/simple.smarty -->
-	<div class="detail_fieldset editablemetadata">
+	<div class="detail_fieldset">
 	    <h3>{$fieldset->getName()}</h3>
 	        <p class="descriptiveText">
 	        {$description}
@@ -9,9 +9,24 @@
 	    <table class="metadatatable" cellspacing="0" cellpadding="5">
 	      {foreach item=aFieldPair from=$fieldset_values name=fields}
 	    <tr class="{cycle values=even,odd} {if $smarty.foreach.fields.first}first{/if}">
-	        <th>{$aFieldPair.field->getName()}</th>
+	        <th>{$aFieldPair.name}</th>
 	        <td>
-	        <span class="descriptiveText" data-name='{$field.name}' data-type='{$field.type}'>{$aFieldPair.value}</span>
+	        <span class="descriptiveText" data-name='{$aFieldPair.name}'
+		        {if ($aFieldPair.control_type==='string')}
+		        	 data-type='text'>
+		        {else if ($aFieldPair.control_type==='lookup')}
+		        	data-type='select' data-options='[{foreach from=$aFieldPair.selection key=aKey item=option}["{$option}","{$aKey}"],{/foreach}]'>		        		
+		        {/if}
+	        	{if ($aFieldPair.value !== null)}
+	        		{if ($aFieldPair.control_type==='large text')}
+	        			{$aFieldPair.value}
+	        		{else}
+						{$aFieldPair.value|sanitize}
+					{/if}
+	        	{else}
+					{i18n}no value{/i18n}
+				{/if}
+			</span>
 	        </td>
 	    </tr>
 	      {/foreach}

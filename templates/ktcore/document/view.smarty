@@ -61,15 +61,18 @@
 					<br/>
 					<br/>
 										
-					<div > 
-					<table style="padding: 0px margin: 0px;">
-						<tr>
-							<td width="200">Document Type</td>
-							<td class='documenttype'><span id='documentTypeID' data-name='documenttype' data-options='[{foreach from=$document_types key=aKey item=documentType}
-								["{$documentType.name}", "{$documentType.id}"],{/foreach}]' data-type='select'>Default</span></td>
-						</tr>
+					<div class='documenttype'> 
+					<h3>Document Type</h3>
+					</p>
+	    			<table class="metadatatable" cellspacing="0" cellpadding="5">
+	    			<tr class="even first">
+	    				<th>Document Type</th>
+			        <td>
+			        <span class="descriptiveText" id='documentTypeID' data-name='documenttype' data-options='[{foreach from=$document_types key=aKey item=documentType}
+						["{$documentType->getName()}", "{$documentType->getId()}"],{/foreach}]' data-type='select'>{$document_data.document_type->getName()}</span></td>
 					</table>
 					</div>
+					
 					<div>
 					{foreach item=oFieldset from=$fieldsets}
 						{$oFieldset->render($document_data)}
@@ -78,25 +81,9 @@
 					
 					<div><span class="more">more...</span></div>
 					<div class="slide" style="display:none">
-					<table style="padding: 0px margin: 0px;">
-						<tr>
-							<td width="100">Document Type</td>
-							<td>Invoices</td>
-						</tr>
-						<tr>
-							<td width="100">Custom Property</td>
-							<td class="edit">Property Value</td>
-						</tr>
-						<tr>
-							<td width="100">Custom Property</td>
-							<td>Property Value</td>
-						</tr>
-						<tr>
-							<td width="100">Custom Property</td>
-							<td>Property Value</td>
-						</tr>
-
-					</table>
+					{foreach item=oFieldset from=$generic_fieldsets}
+						{$oFieldset->render($document_data)}
+					{/foreach}
 					</div>
 					
 			

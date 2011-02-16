@@ -145,6 +145,8 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
         $document_data['document'] = $oDocument;
         $document_data['document_type'] =& DocumentType::get($oDocument->getDocumentTypeID());
         $is_valid_doctype = true;
+        
+        $document_types = & DocumentType::getList("disabled=0");
 
         if (PEAR::isError($document_data['document_type'])) {
             $this->oPage->addError(_kt('The document you requested has an invalid <strong>document type</strong>.  Unfortunately, this means that we cannot effectively display it.'));
@@ -169,9 +171,11 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
         //   that adapt the Fieldsets associated with this lot
         //   to the view (i.e. ZX3).   Unfortunately, we don't have
         //   any of the plumbing to do it, so we handle this here.
+        $generic_fieldsets = array();
         $fieldsets = array();
+        
         // we always have a generic.
-        //array_push($fieldsets, new GenericFieldsetDisplay());
+        array_push($generic_fieldsets, new GenericFieldsetDisplay());
 
         $fieldsetDisplayReg =& KTFieldsetDisplayRegistry::getSingleton();
         $aDocFieldsets = KTMetadataUtil::fieldsetsForDocument($oDocument);
@@ -264,8 +268,9 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
 			'document' => $oDocument,
 			'documentName' => $oDocument->getName(),
 			'document_data' => $document_data,
-        	'document_types' => array(array('id' => 1, 'name' => 'Default'), array('id' => 2, 'name' => 'Invoice'), array('id' => 3, 'name' => 'Contract')),
-			'fieldsets' => $fieldsets,
+        	'document_types' => $document_types,
+			'generic_fieldsets' => $generic_fieldsets,
+        	'fieldsets' => $fieldsets,
 			'viewlet_data' => $viewlet_data,
 			'viewlet_data2' => $viewlet_data2,
         	'hasNotifications' => false,

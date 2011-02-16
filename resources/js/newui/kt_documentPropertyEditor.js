@@ -1,5 +1,6 @@
  jQuery(document).ready(function() {
-	 //jQuery('.collapsibleContainer').collapsiblePanel();
+	 //add the "editable" class to the parent's div!
+	 jQuery('.detail_fieldset').parent().addClass('editablemetadata');
 	 
 	 jQuery('.documenttype').editableSet({
 		 action: 'update.php?documentID='+jQuery('#documentTypeID option:selected').val(),

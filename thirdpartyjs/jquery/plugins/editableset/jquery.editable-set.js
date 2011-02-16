@@ -203,7 +203,7 @@
           
           // Assign the default type to 'text'
           attrs['data-type'] = attrs['data-type'] || 'text';
-          var type = attrs['data-type'];
+          var type = attrs['data-type'];	//.replace(/[\t\v\f\r \u00a0\u2000-\u200b\u2028-\u2029\u3000]+/g, '');  
           
           // If the specified type exists...proceed
           if( $.editableSet.types[type] ) {
@@ -301,7 +301,9 @@
       
       text: {
         element : function(object, attrs) {
-          var newObject = $.fn.editableSet.attributor( $('<input />'), attrs );
+			//strip whitespace
+		  attrs.value = attrs.value.replace(/\s+/g, '');
+		  var newObject = $.fn.editableSet.attributor( $('<input />'), attrs );
           $(object).replaceWith( newObject );
         }
       },
@@ -370,9 +372,19 @@
       
       select: {
         element : function(object, attrs) { 
+			var dataOptions = attrs['data-options'];
+			//TODO: first need to remove all whitespace?
+			//need to check whether we need to chop off trailing ','
+			var lastIndexOfComma = attrs['data-options'].lastIndexOf(',');
+			if (lastIndexOfComma > 0 && ((attrs['data-options'].length - lastIndexOfComma) <=2) )
+			{
+				dataOptions = attrs['data-options'].slice(0, lastIndexOfComma)+']';
+			}
 			//var dataOptions = attrs['data-options'].replace(/,\s\]$/, ']');
-          var options = JSON.parse( attrs['data-options'].replace(/,\s\]$/, ']') );  
-          var selectedValue = attrs.value;
+          var options = JSON.parse(dataOptions);	// attrs['data-options'].replace(/,\s\]$/, ']') ); 
+			
+			//strip all whitespace!
+          var selectedValue = attrs.value.replace(/\s+/g, '');
           
           // Clean up the attributes
           delete attrs['data-type'];
@@ -388,16 +400,18 @@
             for( option in options ) {
               // Extract the values and texts appropriately
               var selectTextAndValue = $.fn.editableSet.extractTextAndValue( options, option );
-            
-              $('<option />', {
-                value : selectTextAndValue.value,
-                text  : selectTextAndValue.text
-              }).appendTo( newObject );
+			  
+				if(selectTextAndValue.value != 'undefined' || selectTextAndValue.text != 'undefined') {
+				  $('<option />', {
+					value : selectTextAndValue.value,
+					text  : selectTextAndValue.text
+				  }).appendTo( newObject );
+			  }
             }            
           })();
           
           $(object).replaceWith( newObject );
-          
+		  
           // Apply the +selected+ attribute
           $('option[text="'+selectedValue+'"]', newObject).attr( 'selected', true );
           $('option[value="'+selectedValue+'"]', newObject).attr( 'selected', true );
