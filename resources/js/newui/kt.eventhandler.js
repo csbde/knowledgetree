@@ -21,6 +21,8 @@ kt.eventhandler = new function() {
     //      in the meantime, "for you, special price" ;)
     this.run = function()
     {
+        if (self.events.length < 1) { return; }
+
         for (idx = 0; idx < self.events.length; ++idx) {
             if (self.events[idx][2] == 'fragment') {
                 if (typeof fragments == 'undefined') {
@@ -48,8 +50,8 @@ kt.eventhandler = new function() {
         }
 
         // deal with fragment loading
-        fragmentCallback(fragments);
-        execCallback(execs);
+        if (typeof fragmentCallback == 'function') { fragmentCallback(fragments); }
+        if (typeof execCallback == 'function') { execCallback(execs); }
     }
 
 }
