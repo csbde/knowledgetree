@@ -46,6 +46,9 @@
  *
  */
 
+// set this to false for debugging javascript
+define ('LOAD_JS_MIN', true);
+
 require_once(KT_LIB_DIR . "/plugins/pluginregistry.inc.php");
 require_once(KT_LIB_DIR . "/templating/templating.inc.php");
 require_once(KT_LIB_DIR . "/session/control.inc");
@@ -123,6 +126,14 @@ class KTPage {
             $this->setSection($section);
         }
 
+        if (LOAD_JS_MIN) {
+            $jsResourceLocation = 'jsmin';
+            $jsExt = 'min.js';
+        }
+        else {
+            $jsResourceLocation = $jsExt = 'js';
+        }
+
         $oConfig = KTConfig::getSingleton();
 
         /*
@@ -148,10 +159,10 @@ class KTPage {
         $cssIncludes = array('resources/css/newui/newui.upload.css' => array('browse_collections', 'dashboard'));
         $jsIncludes = array(
                         'thirdpartyjs/jquery/plugins/ajaxupload/fileuploader.js' => array('browse_collections', 'dashboard'),
-                        'resources/js/newui/kt.eventhandler.js' => array('browse_collections', 'document_details', 'dashboard', 'administration'),
-	                    'resources/js/newui/kt.app.upload.js' => array('browse_collections', 'dashboard'),
-	                    'resources/js/newui/kt.app.inviteusers.js' => array('browse_collections', 'document_details', 'dashboard', 'administration'),
-                        'resources/js/newui/kt.app.sharewithusers.js' => array('browse_collections', 'document_details'),
+                        "resources/$jsResourceLocation/newui/kt.eventhandler.$jsExt" => array('browse_collections', 'document_details', 'dashboard', 'administration'),
+	                    "resources/$jsResourceLocation/newui/kt.app.upload.$jsExt" => array('browse_collections', 'dashboard'),
+	                    "resources/$jsResourceLocation/newui/kt.app.inviteusers.$jsExt" => array('browse_collections', 'document_details', 'dashboard', 'administration'),
+                        "resources/$jsResourceLocation/newui/kt.app.sharewithusers.$jsExt" => array('browse_collections', 'document_details'),
             	        'resources/js/jquery.blockui.js' => array('browse_collections', 'document_details', 'dashboard', 'administration'),
             	        'thirdpartyjs/jquery/plugins/loading/jquery.loading.1.6.4.min.js' => array('browse_collections')
                       );
@@ -207,21 +218,20 @@ class KTPage {
 //        $js[] = 'thirdpartyjs/plupload/js/plupload.min.js';
 //        $js[] = 'thirdpartyjs/plupload/js/plupload.html5.min.js';
 //        $js[] = 'thirdpartyjs/plupload/js/jquery.plupload.queue.min.js';
-        $js[] = 'resources/js/newui/ktjapi.all.js';
-        $js[] = 'resources/js/newui/kt.containers.js';
-        $js[] = 'resources/js/newui/kt.lib.js';
-        $js[] = 'resources/js/newui/kt.api.js';
-        $aJS[] = 'resources/js/newui/kt.app.upload.js';
+        $js[] = "resources/$jsResourceLocation/newui/ktjapi.all.$jsExt";
+        $js[] = "resources/$jsResourceLocation/newui/kt.containers.$jsExt";
+        $js[] = "resources/$jsResourceLocation/newui/kt.lib.$jsExt";
+        $js[] = "resources/$jsResourceLocation/newui/kt.api.$jsExt";
         // Shared users cannot re-share or invite users to the system.
         if (SharedUserUtil::isSharedUser()) {
-            unset($jsIncludes['resources/js/newui/kt.app.sharewithusers.js']);
-            unset($jsIncludes['resources/js/newui/kt.app.inviteusers.js']);
-            unset($jsIncludes['resources/js/jquery.blockui.js']);
+            unset($jsIncludes["resources/$jsResourceLocation/newui/kt.app.sharewithusers.$jsExt"]);
+            unset($jsIncludes["resources/$jsResourceLocation/newui/kt.app.inviteusers.$jsExt"]);
+            unset($jsIncludes["resources/$jsResourceLocation/jquery.blockui.$jsExt"]);
         }
 
-        $js[] = 'resources/js/newui/newUIFunctionality.js';
-        $js[] = 'resources/js/newui/jquery.helper.js';
-        $js[] = 'resources/js/newui/buttontabs.jquery.js';
+        $js[] = "resources/$jsResourceLocation/newui/newUIFunctionality.$jsExt";
+        $js[] = "resources/$jsResourceLocation/newui/jquery.helper.$jsExt";
+        $js[] = "resources/$jsResourceLocation/newui/buttontabs.jquery.$jsExt";
 
         // load area specific files
         foreach ($jsIncludes as $jsFile => $includeLocations) {
