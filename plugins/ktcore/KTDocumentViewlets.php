@@ -277,4 +277,33 @@ class KTDocumentActivityFeedAction extends KTDocumentViewlet {
 }
 // }}}
 
+// {{{ KTDocumentDetailsAction
+class KTInlineEditViewlet extends KTDocumentViewlet {
+    public $sName = 'ktcore.viewlets.document.inline.edit';
+	public $_sShowPermission = 'ktcore.permissions.write';
+    public $showIfRead = true;
+    public $showIfWrite = true;
+
+    function display_viewlet() {
+        $oKTTemplating =& KTTemplating::getSingleton();
+        $oTemplate =& $oKTTemplating->loadTemplate("ktcore/document/viewlets/inline_edit");
+        if (is_null($oTemplate)) { return ""; }
+		// Get document fieldsets
+		$fieldsets = array();
+        $fieldsetDisplayReg = KTFieldsetDisplayRegistry::getSingleton();
+        $aDocFieldsets = KTMetadataUtil::fieldsetsForDocument($this->oDocument);
+        foreach ($aDocFieldsets as $oFieldset) {
+            $displayClass = $fieldsetDisplayReg->getHandler($oFieldset->getNamespace());
+            array_push($fieldsets, new $displayClass($oFieldset));
+        }
+        
+        $oTemplate->setData(array(
+            'context' => $this,
+            'document' => $this->oDocument,
+            'fieldsetDisplayHelper' => new KTFieldsetDisplay(),
+        ));
+        return $oTemplate->render();
+    }
+}
+// }}}
 ?>
