@@ -163,7 +163,7 @@ class KTPage {
 	                    "resources/$jsResourceLocation/newui/kt.app.upload.$jsExt" => array('browse_collections', 'dashboard'),
 	                    "resources/$jsResourceLocation/newui/kt.app.inviteusers.$jsExt" => array('browse_collections', 'document_details', 'dashboard', 'administration'),
                         "resources/$jsResourceLocation/newui/kt.app.sharewithusers.$jsExt" => array('browse_collections', 'document_details'),
-            	        'resources/js/jquery.blockui.js' => array('browse_collections', 'document_details', 'dashboard', 'administration'),
+            	        "resources/$jsResourceLocation/jquery.blockui.$jsExt" => array('browse_collections', 'document_details', 'dashboard', 'administration'),
             	        'thirdpartyjs/jquery/plugins/loading/jquery.loading.1.6.4.min.js' => array('browse_collections')
                       );
 
@@ -206,7 +206,7 @@ class KTPage {
         $js = Array();
 
 		$js[] = 'thirdpartyjs/MochiKit/MochiKitPacked.js';
-        $js[] = 'resources/js/kt-utility.js';
+        $js[] = "resources/$jsResourceLocation/kt-utility.$jsExt";
         $js[] = 'presentation/i18nJavascript.php';
 
         $js[] = 'thirdpartyjs/extjs/adapter/ext/ext-base.js';
@@ -214,7 +214,7 @@ class KTPage {
         $js[] = 'thirdpartyjs/jquery/jquery-1.4.2.min.js';
         $js[] = 'thirdpartyjs/jquery/jquery_noconflict.js';
         $js[] = 'thirdpartyjs/jquery/plugins/urlparser/jquery.url.js';
-        $js[] = 'resources/js/search2widget.js';
+        $js[] = "resources/$jsResourceLocation/search2widget.$jsExt";
 //        $js[] = 'thirdpartyjs/plupload/js/plupload.min.js';
 //        $js[] = 'thirdpartyjs/plupload/js/plupload.html5.min.js';
 //        $js[] = 'thirdpartyjs/plupload/js/jquery.plupload.queue.min.js';
@@ -305,13 +305,17 @@ class KTPage {
 
     private function combineResources($resources, $ext)
     {
+        // Will have to make sure appropriate permissions are set (or choose a different directory)
+        $resourceLocation = 'tmp';
+        if (!is_dir(KT_DIR . "/$resourceLocation")) { mkdir(KT_DIR . "/$resourceLocation"); }
+
         $combined = '';
         foreach ($resources as $resource) {
         	$combined .= "/* $resource */\n" . file_get_contents(KT_DIR . "/$resource") . "\n";
         }
 
         $hash = sha1($combined);
-        $combinationFile = "resources/tmp/{$this->componentClass}.$ext";
+        $combinationFile = "resources/$resourceLocation/{$this->componentClass}.$ext";
         $compare = @sha1_file(KT_DIR . "/$combinationFile");
         if ($hash != $compare) {
             file_put_contents(KT_DIR . "/$combinationFile", $combined);
