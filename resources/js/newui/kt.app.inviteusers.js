@@ -17,10 +17,10 @@ kt.app.inviteusers = new function() {
 
 	// contains a list of fragments that will get preloaded
     var fragments = this.fragments = [];
+    var fragmentPackage = this.fragmentPackage = [fragments]
 
     // contains a list of executable fragments that will get preloaded
     var execs = this.execs = ['users/invite.dialog', 'users/invite.confirm.dialog'];
-    // strongly suggested that you package the execs and fragments like this - then they will go off in a single call
     var execPackage = this.execPackage = [execs];
 
     // scope protector. inside this object referrals to self happen via 'self' rather than 'this'
@@ -31,7 +31,7 @@ kt.app.inviteusers = new function() {
 
     // Initializes the upload widget on creation. Currently does preloading of resources.
     this.init = function() {
-        kt.api.preload(fragments, execPackage, true);
+        kt.api.preload(fragmentPackage, execPackage, true);
     }
 
     // Container for the EXTJS window

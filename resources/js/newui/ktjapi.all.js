@@ -142,7 +142,6 @@ ktjapi = new function() {
             if (cacheTimeout > 0) {
                 var date = new Date();
                 reqObj.request.expires = date.getTime() + (cacheTimeout * 1000);
-
             }
         };
 
@@ -222,6 +221,7 @@ ktjapi = new function() {
         'expires'	:0
         }
         };
+
         return reqObj;
     };
 
@@ -239,6 +239,7 @@ ktjapi = new function() {
         } else {
             obj = elem + '';
         }
+
         return obj;
     };
 
@@ -258,7 +259,7 @@ ktjapi = new function() {
         //		params.f = reqObj.request.service+'.'+reqObj.request['function'];
 
         //Mark the URL as a datasource (send back only the data, no other metadata)
-        if (datasource)params.datasource = 1;
+        if (datasource) { params.datasource = 1; }
         params.request = ktjapi._lib.String.json.encode(reqObj);
 
         //container for the different parts of the url
@@ -307,7 +308,9 @@ ktjapi = new function() {
             'function'		:reqParams['function'],
             parameters		:reqParams.parameters
         };
+
         reqid = ktjapi._lib.String.md5(ktjapi._lib.String.json.encode(cObj));
+
         return reqid;
     };
 
