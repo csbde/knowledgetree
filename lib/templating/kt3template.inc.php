@@ -158,13 +158,16 @@ class KTPage {
         //      to ones matching the current filter.
         $cssIncludes = array('resources/css/newui/newui.upload.css' => array('browse_collections', 'dashboard', 'document_details', 'administration'));
         $jsIncludes = array(
-                        'thirdpartyjs/jquery/plugins/ajaxupload/fileuploader.js' => array('browse_collections', 'dashboard'),
+                        'thirdpartyjs/MochiKit/MochiKitPacked.js' => array('browse_collections'),
+                        'thirdpartyjs/jquery/plugins/ajaxupload/fileuploader.min.js' => array('browse_collections', 'dashboard'),
+            	        'thirdpartyjs/jquery/plugins/loading/jquery.loading.1.6.4.min.js' => array('browse_collections', 'dashboard'),
                         "resources/$jsResourceLocation/newui/kt.eventhandler.$jsExt" => array('browse_collections', 'document_details', 'dashboard', 'administration'),
 	                    "resources/$jsResourceLocation/newui/kt.app.upload.$jsExt" => array('browse_collections', 'dashboard'),
 	                    "resources/$jsResourceLocation/newui/kt.app.inviteusers.$jsExt" => array('browse_collections', 'document_details', 'dashboard', 'administration'),
                         "resources/$jsResourceLocation/newui/kt.app.sharewithusers.$jsExt" => array('browse_collections', 'document_details'),
             	        "resources/$jsResourceLocation/jquery.blockui.$jsExt" => array('browse_collections', 'document_details', 'dashboard', 'administration'),
-            	        'thirdpartyjs/jquery/plugins/loading/jquery.loading.1.6.4.min.js' => array('browse_collections')
+            	        //'resources/js/toggleselect.js' => array('browse_collections'),
+                        "resources/$jsResourceLocation/newui/browse.helper.$jsExt" => array('browse_collections')
                       );
 
         // set the system url
@@ -195,8 +198,8 @@ class KTPage {
 
         if ($oConfig->get('ui/morphEnabled') == '1') {
         	$morphTheme = $oConfig->get('ui/morphTo');
-        	$this->requireThemeCSSResource('skins/kts_'.$oConfig->get('ui/morphTo').'/kt-morph.css');
-        	$this->requireThemeCSSResource('skins/kts_'.$oConfig->get('ui/morphTo').'/kt-ie-morph.css', true);
+        	$this->requireThemeCSSResource('skins/kts_' . $oConfig->get('ui/morphTo') . '/kt-morph.css');
+        	$this->requireThemeCSSResource('skins/kts_' . $oConfig->get('ui/morphTo') . '/kt-ie-morph.css', true);
         }
 
         // IE only
@@ -244,7 +247,6 @@ class KTPage {
         $this->requireJSResources(array($combinationFile));
 
         // this is horrid, but necessary.
-        // hack for now, just to test
         if ($this->componentClass != 'administration') {
             $this->requireJSStandalone('addLoadEvent(partial(initDeleteProtection, "' . _kt('Are you sure you wish to delete this item?') . '"));');
         }
