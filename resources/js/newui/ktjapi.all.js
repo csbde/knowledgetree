@@ -122,13 +122,13 @@ ktjapi = new function() {
         return url;
     };
 
-    this.retrieve = function(func, params, cacheTimeout) {
+    this.retrieve = function(func, params, cacheTimeout, customTimeout) {
         var results;
         var success = function(data) {
             results = data;
         };
 
-        this.callMethod(func, params, success, true, function() {}, cacheTimeout);
+        this.callMethod(func, params, success, true, function() {}, cacheTimeout, customTimeout);
         return results;
     };
 

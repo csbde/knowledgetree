@@ -129,10 +129,10 @@ kt.api = new function() {
         var synchronous = false;
         var func = 'siteapi.inviteUsers';
         if (callback === true) {
-            var data = ktjapi.retrieve(func, params, 200);
+            var data = ktjapi.retrieve(func, params, 200, 30000);
             return data;
         } else {
-            ktjapi.callMethod(func, params, callback, synchronous, errorCallback, 200);
+            ktjapi.callMethod(func, params, callback, synchronous, errorCallback, 200, 30000);
             return;
         }
     };
@@ -145,10 +145,10 @@ kt.api = new function() {
         var synchronous = false;
         var func = 'siteapi.inviteUsers';
         if (callback === true) {
-            var data = ktjapi.retrieve(func, params, 200);
+            var data = ktjapi.retrieve(func, params, 200, 30000);
             return data;
         } else {
-            ktjapi.callMethod(func, params, callback, synchronous, errorCallback, 200);
+            ktjapi.callMethod(func, params, callback, synchronous, errorCallback, 200, 30000);
             return;
         }
     };
