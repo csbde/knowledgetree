@@ -156,7 +156,7 @@ class KTPage {
         // TODO this maybe happens elsewhere and is laoded into the config object?
         // TODO consider 'all' option, which means will appear on any page.  These could be loaded in addition
         //      to ones matching the current filter.
-        $cssIncludes = array('resources/css/newui/newui.upload.css' => array('browse_collections', 'dashboard'));
+        $cssIncludes = array('resources/css/newui/newui.upload.css' => array('browse_collections', 'dashboard', 'document_details', 'administration'));
         $jsIncludes = array(
                         'thirdpartyjs/jquery/plugins/ajaxupload/fileuploader.js' => array('browse_collections', 'dashboard'),
                         "resources/$jsResourceLocation/newui/kt.eventhandler.$jsExt" => array('browse_collections', 'document_details', 'dashboard', 'administration'),
