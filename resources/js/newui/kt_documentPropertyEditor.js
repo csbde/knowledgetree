@@ -51,10 +51,10 @@
 				
 				jQuery.each(value, function(index, value)
 				{
-					//console.log(index);
+					//console.log('inner');
 					//console.dir(value);
 					
-					//console.log(value.name+' '+value.value);
+					console.log(value.name+' '+value.value);
 	
 					var dataType='text';
 	
@@ -73,7 +73,7 @@
 					var dataOptions = '';
 	
 					//console.dir(value.selection);
-					if (value.selection.length > 0)
+					if (value.selection && value.selection.length > 0)
 					{
 						dataOptions = '[';
 	

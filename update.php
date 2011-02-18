@@ -156,7 +156,8 @@ require_once(KT_LIB_DIR . '/widgets/FieldsetDisplayRegistry.inc.php');
 		}
 		
 		$GLOBALS['default']->log->debug('update SimpleFieldsetDisplay fieldsresult '.print_r($fieldsresult, true));
-		$fieldset_values[] = array('fieldset' => $oFieldset, 'fields' => $fieldsresult);
+		//$fieldset_values[] = array('fieldset' => $oFieldset, 'fields' => $fieldsresult);
+		$fieldset_values[] = $fieldsresult;
 		
 		//$fieldset_values['fieldset'] = $oFieldset;
 		//$fieldset_values['fields'] = $fieldsresult;
@@ -196,7 +197,7 @@ require_once(KT_LIB_DIR . '/widgets/FieldsetDisplayRegistry.inc.php');
 	//assemble the item
 	$item['documentTypeID'] = $oDocumentType->getId();
 	$item['documentTypeName'] = $oDocumentType->getName();
-	//$item['fieldsets'] = $fieldsets;
+	$item['fieldsets'] = $fieldsets;
 	$item['fieldsetValues'] = $fieldset_values;
 	//$item['document_types'] = $document_types;
 	
