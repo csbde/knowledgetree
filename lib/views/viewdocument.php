@@ -182,11 +182,15 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
         $fieldsetDisplayReg =& KTFieldsetDisplayRegistry::getSingleton();
         $aDocFieldsets = KTMetadataUtil::fieldsetsForDocument($oDocument);
         foreach ($aDocFieldsets as $oFieldset) {
-        	//$GLOBALS['default']->log->debug('oFieldset '.print_r($oFieldset, true));
-            $displayClass = $fieldsetDisplayReg->getHandler($oFieldset->getNamespace());
-            
-            //$GLOBALS['default']->log->debug('fieldsetdisplayclass '.print_r(new $displayClass($oFieldset), true));
-            array_push($fieldsets, new $displayClass($oFieldset));
+        	//Tag Cloud displayed elsewhere
+        	if ($oFieldset->getNamespace() != 'tagcloud')
+			{
+	        	//$GLOBALS['default']->log->debug('oFieldset '.print_r($oFieldset, true));
+	            $displayClass = $fieldsetDisplayReg->getHandler($oFieldset->getNamespace());
+	            
+	            //$GLOBALS['default']->log->debug('fieldsetdisplayclass '.print_r(new $displayClass($oFieldset), true));
+	            array_push($fieldsets, new $displayClass($oFieldset));
+			}
         }
         
         //$GLOBALS['default']->log->debug('fieldset '.print_r($fieldsets, true));

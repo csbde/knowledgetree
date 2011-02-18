@@ -3,7 +3,7 @@
 //require_once('config/dmsDefaults.php');
 require_once('ktapi/ktapi.inc.php');
 require_once(KT_LIB_DIR . '/widgets/fieldsetDisplay.inc.php');
-require_once(KT_LIB_DIR . '/widgets/FieldsetDisplayRegistry.inc.php');
+//require_once(KT_LIB_DIR . '/widgets/FieldsetDisplayRegistry.inc.php');
 
 	function getID()
 	{
@@ -49,156 +49,127 @@ require_once(KT_LIB_DIR . '/widgets/FieldsetDisplayRegistry.inc.php');
 	$oDocument->setDocumentTypeID($_POST['documentTypeID']);
 	
 	$oDocumentType = DocumentType::get($_POST['documentTypeID']);
-	
-	//$GLOBALS['default']->log->debug('update oDocument '.print_r($oDocument, true));
-	
-	$fieldsetDisplayReg =& KTFieldsetDisplayRegistry::getSingleton();
   
-	$fieldsets = array();
+	$metadata = array();
+	$fieldsetsresult = array();
 	
-	//$aDocFieldsets = KTMetadataUtil::fieldsetsForDocument($oDocument);
-	$aDocFieldsets = $oDocumentType->getFieldsets();
-	$GLOBALS['default']->log->debug('update fieldsets '.print_r($aDocFieldsets, true));
+	$fieldsets = $oDocumentType->getFieldsets();
+	//$GLOBALS['default']->log->debug('update fieldsets '.print_r($aDocFieldsets, true));
 	
-	foreach ($aDocFieldsets as $oFieldset) 
-	{		
-		/*//$GLOBALS['default']->log->debug('update fieldset '.print_r($oFieldset, true));
-		//$GLOBALS['default']->log->debug('update fieldset namespace '.$oFieldset->getNamespace());
-		$displayClass = $fieldsetDisplayReg->getHandler($oFieldset->getNamespace());
-		//$GLOBALS['default']->log->debug('update fieldset displayClass '.print_r($displayClass, true));
-		$fieldsetdisplay = new $displayClass($oFieldset);
-		//$GLOBALS['default']->log->debug('update fieldsetdisplay '.print_r($fieldsetdisplay, true));
-		
-		array_push($fieldsets, new $displayClass($oFieldset));*/
-		
-		$GLOBALS['default']->log->debug('update fieldset '.print_r($oFieldset, true));
-		
-		$fields = $oFieldset->getFields();
-		
-		$GLOBALS['default']->log->debug('update fields '.print_r($fields, true));
-		
-		$fieldsresult = array();
-		
-		foreach ($fields as $field)   
-		 {
-			$value = '';
+	foreach ($fieldsets as $fieldset) 
+	{	
+		//Tag Cloud displayed elsewhere
+		if ($fieldset->getNamespace() != 'tagcloud')
+		{		
+			//assemble the fieldset values		
+			$fieldsetsresult = array(
+				'fieldsetid' => $fieldset->getId(),
+				'name' => $fieldset->getName(),
+				'description' => $fieldset->getDescription()
+			);
+			
+			//$GLOBALS['default']->log->debug('update fieldset '.print_r($fieldset, true));
+			
+			$fields = $fieldset->getFields();
+			
+			//$GLOBALS['default']->log->debug('update fields '.print_r($fields, true));
+			
+			$fieldsresult = array();
+			
+			foreach ($fields as $field)   
+			{
+				$value = '';
 	
-			$fieldvalue = DocumentFieldLink::getByDocumentAndField($oDocument, $field);
-
+				//TODO: won't the value always be null since we are getting new fields?
+				/*$fieldvalue = DocumentFieldLink::getByDocumentAndField($oDocument, $field);
+				
+				$GLOBALS['default']->log->debug("fields fieldvalue $fieldvalue");
+	
 				if (!is_null($fieldvalue) && (!PEAR::isError($fieldvalue)))
-                {
-                	$value = $fieldvalue->getValue();
-                }
-
-                // Old
-                //$controltype = 'string';
-                // Replace with true
-                $controltype = strtolower($field->getDataType());
-                
-                $GLOBALS['default']->log->debug("update SimpleFieldsetDisplay field controltype $controltype");
-
-                if ($field->getHasLookup())
-                {
-                	$controltype = 'lookup';
-                    if ($field->getHasLookupTree())
-                    {
-                    	$controltype = 'tree';
-                    }
-                }
-
-                // Options - Required for Custom Properties
-                $options = array();
-
-                if ($field->getInetLookupType() == 'multiwithcheckboxes' || $field->getInetLookupType() == 'multiwithlist') {
-                    $controltype = 'multiselect';
-                }
-                
-                $GLOBALS['default']->log->debug("update SimpleFieldsetDisplay field controltype2 $controltype");
-
-                switch ($controltype)
-                {
-                	case 'lookup':
-                		$selection = KTAPI::get_metadata_lookup($field->getId());
-                		break;
-                	case 'tree':
-                		$selection = KTAPI::get_metadata_tree($field->getId());
-                		break;
-                    case 'large text':
-                        $options = array(
-                                'ishtml' => $field->getIsHTML(),
-                                'maxlength' => $field->getMaxLength()
-                            );
-                        $selection= array();
-                        break;
-                    case 'multiselect':
-                        $selection = KTAPI::get_metadata_lookup($field->getId());
-                        $options = array(
-                                'type' => $field->getInetLookupType()
-                            );
-                        break;
-                	default:
-                		$selection= array();
-                }
-
-
-                $fieldsresult[] = array(
-                	'fieldid' => $field->getId(),
-                	'name' => $field->getName(),
-                	'required' => $field->getIsMandatory(),
-                    'value' => $value == '' ? null : $value,
-                    'blankvalue' => $value=='' ? '1' : '0',
-                    'description' => $field->getDescription(),
-                    'control_type' => $controltype,
-                    'selection' => $selection,
-                    'options' => $options,
-
-                );
+				{
+					$value = $fieldvalue->getValue();
+				}
+				
+				$GLOBALS['default']->log->debug("field value $value");*/
+	
+				$controltype = strtolower($field->getDataType());
+	
+				//$GLOBALS['default']->log->debug("update SimpleFieldsetDisplay field controltype $controltype");
+	
+				if ($field->getHasLookup())
+				{
+					$controltype = 'lookup';
+					if ($field->getHasLookupTree())
+					{
+						$controltype = 'tree';
+					}
+				}
+	
+				// Options - Required for Custom Properties
+				$options = array();
+	
+				if ($field->getInetLookupType() == 'multiwithcheckboxes' || $field->getInetLookupType() == 'multiwithlist') {
+					$controltype = 'multiselect';
+				}
+	
+				//$GLOBALS['default']->log->debug("update SimpleFieldsetDisplay field controltype2 $controltype");
+	
+				switch ($controltype)
+				{
+					case 'lookup':
+						$selection = KTAPI::get_metadata_lookup($field->getId());
+					break;
+					case 'tree':
+						$selection = KTAPI::get_metadata_tree($field->getId());
+					break;
+					case 'large text':
+						$options = array(
+							'ishtml' => $field->getIsHTML(),
+							'maxlength' => $field->getMaxLength()
+						);
+	
+						$selection= array();
+					break;
+					case 'multiselect':
+						$selection = KTAPI::get_metadata_lookup($field->getId());
+						$options = array(
+							'type' => $field->getInetLookupType()
+						);
+					break;
+					default:
+						$selection= array();	                
+				}
+	
+				//assemble the field values
+				$fieldsresult[] = array(
+					'fieldid' => $field->getId(),
+					'name' => $field->getName(),
+					'required' => $field->getIsMandatory(),
+					'value' => $value == '' ? null : $value,
+					'blankvalue' => $value=='' ? '1' : '0',
+					'description' => $field->getDescription(),
+					'control_type' => $controltype,
+					'selection' => $selection,
+					'options' => $options
+				);
+			}
+			
+			//$GLOBALS['default']->log->debug('update SimpleFieldsetDisplay fieldsresult '.print_r($fieldsresult, true));
+			
+			$fieldsetsresult['fields'] = $fieldsresult;
+			$metadata[] = $fieldsetsresult; 
+			//$metadata[] = array('fieldset' => $fieldsetsresult, 'fields' => $fieldsresult);
+			//$fieldset_values[] = $fieldsresult;
 		}
-		
-		$GLOBALS['default']->log->debug('update SimpleFieldsetDisplay fieldsresult '.print_r($fieldsresult, true));
-		//$fieldset_values[] = array('fieldset' => $oFieldset, 'fields' => $fieldsresult);
-		$fieldset_values[] = $fieldsresult;
-		
-		//$fieldset_values['fieldset'] = $oFieldset;
-		//$fieldset_values['fields'] = $fieldsresult;
 	}
 	
-	$GLOBALS['default']->log->debug('fieldset_values '.print_r($fieldset_values, true));
-		
-	
-	
-	//$document_types = & DocumentType::getList("disabled=0");
-	
-	//$GLOBALS['default']->log->debug('update oDocumentType '.print_r($oDocumentType, true));  
-	/*file_put_contents('update.txt', 'documentType '.print_r($oDocumentType, true), FILE_APPEND);  
-	if (PEAR::isError($oDocumentType)) {   		
-		$GLOBALS['default']->log->error("update DocumentType: {$oDocumentType->getMessage()}");   	
-		//file_put_contents('update.txt', "update DocumentType: {$oDocumentType->getMessage()}", FILE_APPEND);	
-		exit(0);
-	}*/
-	
-	//$oDocument = Document::get(15928);
-	/*$oOwner = User::get($oDocument->getOwnerID());
-	$oCreator = User::get($oDocument->getCreatorID());
-	$oModifier = User::get($oDocument->getModifiedUserId());*/
-	
-	/*$fieldsets = $oDocumentType->getFieldsets();	
-	$GLOBALS['default']->log->debug('update fieldsets '.print_r($fieldsets, true));
-	$fieldsetDisplayReg =& KTFieldsetDisplayRegistry::getSingleton();
-	foreach ($fieldsets as $fieldset) {
-		$GLOBALS['default']->log->debug('update fieldset '.print_r($fieldset, true));
-		$GLOBALS['default']->log->debug('update fieldset namespace '.$fieldset->getNamespace());
-		$displayClass = $fieldsetDisplayReg->getHandler($fieldset->getNamespace());
-		$GLOBALS['default']->log->debug('update fieldset displayClass '.print_r($displayClass, true));
-		$fieldsetdisplay = new $displayClass($fieldset);
-		$GLOBALS['default']->log->debug('update fieldsetdisplay '.print_r($fieldsetdisplay, true));
-	}*/
+	//$GLOBALS['default']->log->debug('metadata '.print_r($metadata, true));
 	
 	//assemble the item
 	$item['documentTypeID'] = $oDocumentType->getId();
 	$item['documentTypeName'] = $oDocumentType->getName();
-	$item['fieldsets'] = $fieldsets;
-	$item['fieldsetValues'] = $fieldset_values;
+	//$item['fieldsets'] = $fieldsets;
+	$item['metadata'] = $metadata;
 	//$item['document_types'] = $document_types;
 	
 	$json['success'] = $item;

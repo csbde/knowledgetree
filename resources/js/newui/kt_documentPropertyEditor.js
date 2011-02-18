@@ -1,7 +1,7 @@
  jQuery(document).ready(function() {
  //jQuery(function() {
 	 //add the "editable" class to the parent's div!
-	 jQuery('.detail_fieldset').parent().addClass('editablemetadata');
+	 //jQuery('.detail_fieldset').parent().addClass('editablemetadata');
 	 
 	 jQuery('.documenttype').editableSet({
 		 action: 'update.php',
@@ -32,29 +32,30 @@
 			var editableDiv = jQuery('<div>').addClass('editablemetadata');
 
 			//create div for each fieldset
-			jQuery.each(data.success.fieldsetValues, function(index, value)
+			jQuery.each(data.success.metadata, function(index, value)
 			{
-				//console.log(index);
+				//console.log('outer: '+index);
 				//console.dir(value)
 				
 				var fieldsetDiv = jQuery('<div>').addClass('detail_fieldset');
-				var header = jQuery('<h3>').text(index);
+				var header = jQuery('<h3>').text(value.name).attr('title', value.description);
 				fieldsetDiv.append(header);
-				var par = jQuery('<p>').addClass('descriptiveText').text('Description goes here?');
-				fieldsetDiv.append(par);
+				//var par = jQuery('<p>').addClass('descriptiveText').text('Description goes here?');
+				//fieldsetDiv.append(par);
+				
 				//fieldsetDiv.append('<h3>').text(index).append('<p>').addClass('descriptiveText').text('Description goes here?');
 
 				//create the fields
-				var table = jQuery('<table>').addClass('metadatatable simple').attr('cellspacing', '0').attr('cellpadding', '5');
+				var table = jQuery('<table>').addClass('metadatatable').attr('cellspacing', '0').attr('cellpadding', '5');
 			
 				var counter = 0;
 				
-				jQuery.each(value, function(index, value)
+				jQuery.each(value.fields, function(index, value)
 				{
-					//console.log('inner');
+					//console.log('inner: '+index);
 					//console.dir(value);
 					
-					console.log(value.name+' '+value.value);
+					//console.log(value.name+' '+value.value);
 	
 					var dataType='text';
 	
@@ -92,6 +93,7 @@
 					}
 	
 					var tableHeader = jQuery('<th>').text(value.name);
+					tableHeader.attr('title', value.description);
 					tableRow.append(tableHeader);
 
 					var span = jQuery('<span>').addClass('descriptiveText').attr('data-name', value.name).attr('data-type', dataType);
@@ -138,7 +140,7 @@
 	 	 }
 	 });
 	 
-	 jQuery('.editablemetadata').editableSet({
+	 jQuery('.detail_fieldset').editableSet({
 	 	action: 'update.php',
 	 	onSave: function(){
 		 
