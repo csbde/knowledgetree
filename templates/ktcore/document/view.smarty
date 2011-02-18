@@ -62,14 +62,13 @@
 					<br/>
 										
 					<div class='documenttype'> 
-					<h3>Document Type</h3>
-					</p>
 	    			<table class="metadatatable" cellspacing="0" cellpadding="5">
 	    			<tr class="even first">
 	    				<th>Document Type</th>
 			        <td>
-			        <span class="descriptiveText" id='documentTypeID' data-name='documenttype' data-options='[{foreach from=$document_types key=aKey item=documentType}
+			        <span class="descriptiveText" id='documentTypeID' data-name='documentTypeID' data-options='[{foreach from=$document_types key=aKey item=documentType}
 						["{$documentType->getName()}", "{$documentType->getId()}"],{/foreach}]' data-type='select'>{$document_data.document_type->getName()}</span></td>
+						<input type='hidden' name='documentID' value={$document->getId()} />
 					</table>
 					</div>
 					
@@ -78,8 +77,9 @@
 						{$oFieldset->render($document_data)}
 					{/foreach}
 					</div>
-					
+					<br/>
 					<div><span class="more">more...</span></div>
+					<br/>
 					<div class="slide" style="display:none">
 					{foreach item=oFieldset from=$generic_fieldsets}
 						{$oFieldset->render($document_data)}

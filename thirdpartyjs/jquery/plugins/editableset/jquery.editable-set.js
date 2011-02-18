@@ -53,8 +53,7 @@
       }
 
       // PUT the form and update the child elements
-      $.put( action, params, function( data, textStatus ) {
-
+      $.post( action, params, function( data, textStatus ) {
         // Parse the data if necessary
         data = $.parseJSON( data ) ? $.parseJSON( data ) : data;
 
@@ -385,6 +384,7 @@
 			
 			//strip all whitespace!
           var selectedValue = attrs.value.replace(/\s+/g, '');
+		  //console.log('selected :'+selectedValue+':');
           
           // Clean up the attributes
           delete attrs['data-type'];
@@ -412,9 +412,13 @@
           
           $(object).replaceWith( newObject );
 		  
+		  //console.dir( $(newObject));
           // Apply the +selected+ attribute
-          $('option[text="'+selectedValue+'"]', newObject).attr( 'selected', true );
-          $('option[value="'+selectedValue+'"]', newObject).attr( 'selected', true );
+		  //console.dir( $('option[text="'+selectedValue+'"]', newObject));
+		  //console.dir( $('option[value="'+selectedValue+'"]', newObject));
+          $(newObject).val( "Tester" );
+		  //$('option[text="'+selectedValue+'"]', newObject).attr( 'selected', true );
+          //$('option[value="'+selectedValue+'"]', newObject).attr( 'selected', true );
         }
       },
       

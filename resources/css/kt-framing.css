@@ -814,10 +814,8 @@ a.main_nav_item {
 /*  --- table version --- */
 
 .metadatatable {
-    border-width: 0 1px 0 1px;
-    border-style: solid;
-    border-color: #ccc;
     width: 100%;
+    font-size: 12px;
 }
 
 .metadatatable.narrow {
@@ -826,23 +824,19 @@ a.main_nav_item {
 
 .metadatatable .first th,
 .metadatatable .first td {
-    border-top: 1px solid #ccc;
 }
 
 .metadatatable th {
     text-align: left;
-    width: 30% !important;
-    border-bottom: 1px dotted #ccc;
+    width: 40% !important;
     vertical-align: top;
-    padding: 0.5em;
-    background-color: #eee;
+    padding: 2px 0px;
     font-weight: normal;
 }
 
 .metadatatable td {
-    border-bottom: 1px dotted #ccc;
     vertical-align: top;
-    padding: 0.5em;
+    padding: 2px 0px;
     font-weight: bold;
 }
 
@@ -856,6 +850,10 @@ a.main_nav_item {
 
 .metadatatable td.previous.different {
     background-color: #e9dda8;
+}
+
+.metadatatable select {
+    font-size: 12px;
 }
 
 .document_details .document_history thead th {
@@ -898,7 +896,7 @@ a.main_nav_item {
 .detail_fieldset
 {
     display: block;
-    margin-top: 1em;
+    margin-top: 10px;
     overflow: hidden;
 }
 

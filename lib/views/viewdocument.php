@@ -156,6 +156,8 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
         // we want to grab all the md for this doc, since its faster that way.
         $mdlist =& DocumentFieldLink::getByDocument($oDocument);
 
+        $GLOBALS['default']->log->debug('mdlist '.print_r($mdlist, true));
+        
         $field_values = array();
         foreach ($mdlist as $oFieldLink) {
             $field_values[$oFieldLink->getDocumentFieldID()] = $oFieldLink->getValue();
@@ -180,9 +182,14 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
         $fieldsetDisplayReg =& KTFieldsetDisplayRegistry::getSingleton();
         $aDocFieldsets = KTMetadataUtil::fieldsetsForDocument($oDocument);
         foreach ($aDocFieldsets as $oFieldset) {
+        	//$GLOBALS['default']->log->debug('oFieldset '.print_r($oFieldset, true));
             $displayClass = $fieldsetDisplayReg->getHandler($oFieldset->getNamespace());
+            
+            //$GLOBALS['default']->log->debug('fieldsetdisplayclass '.print_r(new $displayClass($oFieldset), true));
             array_push($fieldsets, new $displayClass($oFieldset));
         }
+        
+        //$GLOBALS['default']->log->debug('fieldset '.print_r($fieldsets, true));
 
         $checkout_user = 'Unknown user';
         if ($oDocument->getIsCheckedOut() == 1) {
