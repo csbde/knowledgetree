@@ -47,7 +47,9 @@
  */
 
 // set this to false for debugging javascript
-define ('LOAD_JS_MIN', true);
+define('LOAD_JS_MIN', true);
+// set true to combine js into one file.  This appears to retard performance at least in FF and possibly others.
+define('COMBINE_JS', false);
 
 require_once(KT_LIB_DIR . "/plugins/pluginregistry.inc.php");
 require_once(KT_LIB_DIR . "/templating/templating.inc.php");
@@ -243,8 +245,13 @@ class KTPage {
             }
         }
 
-        $combinationFile = $this->combineResources($js, 'js');
-        $this->requireJSResources(array($combinationFile));
+        if (COMBINE_JS) {
+            $combinationFile = $this->combineResources($js, 'js');
+            $this->requireJSResources(array($combinationFile));
+        }
+        else {
+            $this->requireJSResources($js);
+        }
 
         // this is horrid, but necessary.
         if ($this->componentClass != 'administration') {
