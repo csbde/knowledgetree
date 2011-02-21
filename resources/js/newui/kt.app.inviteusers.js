@@ -17,7 +17,7 @@ kt.app.inviteusers = new function() {
 
 	// contains a list of fragments that will get preloaded
     var fragments = this.fragments = [];
-    var fragmentPackage = this.fragmentPackage = [fragments]
+    var fragmentPackage = this.fragmentPackage = []
 
     // contains a list of executable fragments that will get preloaded
     var execs = this.execs = ['users/invite.dialog', 'users/invite.confirm.dialog'];
