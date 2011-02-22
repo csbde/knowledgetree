@@ -56,6 +56,72 @@ div.viewletworkflow {
 	margin: 0px;
 	display: block;
 }
+.action_buttons .action {
+	display: inline-block;
+	border: 1px solid #ccc;
+	border-radius: 2px;
+	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffff', endColorstr='#dddddd') !important; /* for IE */
+	background: -webkit-gradient(linear, left top, left bottom, from(#fff), to(#ddd)) !important; /* for webkit browsers */
+	background: -moz-linear-gradient(top,  #fff,  #ddd) !important; /* for firefox 3.6+ */
+	height: 25px;
+	position: relative;
+}
+
+.action_buttons.above {
+	display: block;
+	height: 30px;
+	width: 375px;
+}
+.button {
+	padding: 2px 5px 2px 25px;
+	font-size: 11px;
+	height: 25px;
+	display: inline-block;
+}
+.edit-online {
+	padding-right: 10px;
+}
+.split {
+	border-left: 1px solid #CCC;
+	display: inline-block;
+	font-size: 9px;
+	height: 20px;
+	margin: 0px;
+	padding: 3px 4px;
+	cursor: pointer;
+}
+.split.selected {
+	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#dddddd', endColorstr='#ffffff') !important; /* for IE */
+	background: -webkit-gradient(linear, left top, left bottom, from(#ddd), to(#fff)) !important; /* for webkit browsers */
+	background: -moz-linear-gradient(top,  #ddd,  #fff) !important; /* for firefox 3.6+ */
+	border-bottom: 1px solid #FFF;
+}
+#content ul.splitmenu {
+	display:none; 
+	position: absolute; 
+	background: white;
+	border: 1px solid #CCC;
+	margin-top: -4px;
+	right: 0px;
+	min-width: 120px;
+	margin-right: -1px;	
+	font-size: 11px;
+	padding: 0px;
+}
+#content ul#checkin {
+	width: 150px;
+}
+.splitmenu li {
+	list-style: none;
+	border-bottom: 1px solid #CCC;
+	padding: 2px 5px 2px 35px;
+}
+.splitmenu li:hover {
+	background: #f2ebae;
+}
+.splitmenu li:last-child {
+	border-bottom: 0px;
+}
 button {
 	font-family: sans-serif !important;
 }
@@ -64,7 +130,7 @@ button {
 	-moz-border-radius: 2px;
 	-webkit-border-radius: 2px;
 	border-radius: 2px;
-	behavior: url('border-radius.htc');
+	behavior: url('../resources/css/border-radius.htc');
 	border: 1px solid #ccc !important;
 	text-shadow: 0px 1px white;
 	display: inline-block;
@@ -90,78 +156,6 @@ button {
 	
 }
 
-.yui-button {
-	padding-right: 20px!important;
-	display: inline-block;
-	vertical-align: text-bottom;
-}
-.yui-button button, .yui-button a {
-	border: none;
-	display: block;
-	margin: 0px;
-}
-.yui-button button {
-	color: #666;
-	text-shadow: 0px 1px white;
-	font-size: 10px;
-	border-right: 1px solid #ccc !important;
-	background-color: transparent;
-	cursor: pointer;
-	
-}
-.buttons .yui-button span.first-child {
-	background: -webkit-gradient(linear, left top, left bottom, from(#fff), to(#ddd));
-	display: block;
-}
-.buttons .yui-button-active span.first-child {
-	background: -webkit-gradient(linear, left top, left bottom, from(#ddd), to(#fff));
-}
-
-
-span.yui-split-button {
-	background: -webkit-gradient(linear, left top, left bottom, from(#fff), to(#ddd)) !important;
-	-moz-border-radius: 2px;
-	-webkit-border-radius: 2px;
-	border-radius: 2px;
-	behavior: url('border-radius.htc');
-	border: 1px solid #ccc !important;
-
-}
-span.yui-split-button:before {
-	content: "▾";
-	float: right;
-	position: relative;
-	right: -14px;
-	height: 0px;
-	font-family: sans-serif;
-	font-weight: normal;
-	font-size: 12px;
-}
-span.yui-split-button-activeoption {
-	background: -webkit-gradient(linear, left top, left bottom, from(#ddd), to(#fff)) !important;
-	color: #ccc;
-}
-div.bd {
-    zoom: normal;
-    padding: 0px 10px 0px 30px;
-}
-div.bd:hover {
-	background: #fcf6c7;
-}
-.yui-overlay {
-    position: absolute;
-    visibility: hidden;
-    border: solid 1px #ccc;
-    border-top: 0px;
-    padding: 4px 0px;
-    background-color: #fff;
-	-webkit-box-shadow: #BBB 0px 0px 5px;
-	font-size: 10px;
-	min-width: 100px;
-}
-.yui-overlay hr {
-	border-color: #ccc!important;
-}
 .buttons a:hover,
 .buttons span:hover,
 .buttons input:hover {

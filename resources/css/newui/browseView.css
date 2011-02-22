@@ -4,12 +4,16 @@
 
 #content { overflow: visible; }
 
-.standardBorder { -webkit-border-radius: 2px; 
-	-moz-border-radius: 2px; 
-	border-radius: 2px; 
+.standardBorder { 
 	border: 1px solid #ccc; 
 	margin: 5px 0px; 
-	background: #eee; }
+	background: #eee; 
+	
+	-webkit-border-radius: 2px; 
+	-moz-border-radius: 2px; 
+	border-radius: 2px;
+	behavior: url('../resources/css/border-radius.htc');
+	}
 
 .debugElem { border: 1px solid transparent; }
 .debugElem:hover { border: 1px solid #A10000; }

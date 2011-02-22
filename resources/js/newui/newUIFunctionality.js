@@ -17,8 +17,7 @@ jQuery(document).ready(function() {
 
 });
 
-
-
+			
 /** 
  * Documents View Page
  */
