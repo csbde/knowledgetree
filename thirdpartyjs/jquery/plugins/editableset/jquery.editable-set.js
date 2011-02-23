@@ -301,7 +301,8 @@
       text: {
         element : function(object, attrs) {
 			//strip whitespace
-		  attrs.value = attrs.value.replace(/\s+/g, '');
+		  //attrs.value = attrs.value.replace(/\s+/g, '');
+		  attrs.value = $.trim(attrs.value);
 		  var newObject = $.fn.editableSet.attributor( $('<input />'), attrs );
           $(object).replaceWith( newObject );
         }
@@ -372,19 +373,17 @@
       select: {
         element : function(object, attrs) { 
 			var dataOptions = attrs['data-options'];
-			//TODO: first need to remove all whitespace?
 			//need to check whether we need to chop off trailing ','
 			var lastIndexOfComma = attrs['data-options'].lastIndexOf(',');
 			if (lastIndexOfComma > 0 && ((attrs['data-options'].length - lastIndexOfComma) <=2) )
 			{
 				dataOptions = attrs['data-options'].slice(0, lastIndexOfComma)+']';
 			}
-			//var dataOptions = attrs['data-options'].replace(/,\s\]$/, ']');
-          var options = JSON.parse(dataOptions);	// attrs['data-options'].replace(/,\s\]$/, ']') ); 
+			
+			var options = JSON.parse(dataOptions);
 			
 			//strip all whitespace!
-          var selectedValue = attrs.value.replace(/\s+/g, '');
-		  //console.log('selected :'+selectedValue+':');
+			var selectedValue = $.trim(attrs.value);
           
           // Clean up the attributes
           delete attrs['data-type'];
@@ -409,16 +408,19 @@
 			  }
             }            
           })();
+		  
+		  //now select the selected (jQuery NOT working!)
+		  for (var idx = 0; idx < newObject[0].options.length; idx++) {
+			if (newObject[0].options[idx].text == selectedValue) {
+				newObject[0].selectedIndex = idx;
+			}
+		  }
           
           $(object).replaceWith( newObject );
 		  
-		  //console.dir( $(newObject));
-          // Apply the +selected+ attribute
-		  //console.dir( $('option[text="'+selectedValue+'"]', newObject));
-		  //console.dir( $('option[value="'+selectedValue+'"]', newObject));
-          $(newObject).val( "Tester" );
+          // Apply the +selected+ attribute;
+		  //$('option[value="'+selectedValue+'"]', newObject).attr( 'selected', true );
 		  //$('option[text="'+selectedValue+'"]', newObject).attr( 'selected', true );
-          //$('option[value="'+selectedValue+'"]', newObject).attr( 'selected', true );
         }
       },
       

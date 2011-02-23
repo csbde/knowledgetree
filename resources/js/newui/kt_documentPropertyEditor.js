@@ -1,5 +1,5 @@
- jQuery(document).ready(function() {
- //jQuery(function() {
+// jQuery(document).ready(function() {
+jQuery(function() {
 	 //add the "editable" class to the parent's div!
 	 //jQuery('.detail_fieldset').parent().addClass('editablemetadata');
 	 
@@ -7,6 +7,8 @@
 		 action: 'update.php',
 		 //dataType: 'json',
 		 onSave: function(){
+			 //console.log('after save documentidembedded: '+jQuery('#documentidembedded').html());
+			 //jQuery('.editablemetadata').attr('rel', 'updateTest.php?documentID='+jQuery('#documentidembedded').html());
 			 
 		 	//console.dir(jQuery('#documentTypeID'));
 		 	//console.log(jQuery('#documentTypeID option:selected').val());
@@ -14,43 +16,55 @@
 	 	},
 	 	repopulate: function(){},
 		afterSave: function(data, status){
-			//console.log('afterSave '+status);
-			//console.dir(data);
-			//console.log(data.success.documentTypeID+' '+data.success.documentTypeName);
-
-			//TODO: need to set the new selected value!
-			//jQuery('#documentTypeID').val(data.success.id);
-
-			//var docTypeDiv = jQuery('.documenttype');
-			//docTypeDiv.append(jQuery())
-
-		 	//here we need to reset the document fields to reflect the new document type
+			//here we need to reset the document fields to reflect the new document type
+		
+			//update the Document Type span text
+			jQuery('#documentTypeID').html(data.success.documentTypeName);
+			
+		 	//reset the document fields to reflect the new document type
 			jQuery('.editablemetadata').empty();
 			jQuery('.editablemetadata').remove();
 
 			//create the new editable div
 			var editableDiv = jQuery('<div>').addClass('editablemetadata');
-
+			//NB: set its rel attribute because this is used as the "action" url
+			editableDiv.attr('rel', 'persistMetadata.php?documentID='+jQuery('#documentidembedded').html());
+			
 			//create div for each fieldset
-			jQuery.each(data.success.metadata, function(index, value)
+			jQuery.each(data.success.metadata, function(index, fieldset)
 			{
 				//console.log('outer: '+index);
 				//console.dir(value)
 				
 				var fieldsetDiv = jQuery('<div>').addClass('detail_fieldset');
-				var header = jQuery('<h3>').text(value.name).attr('title', value.description);
+				var header = jQuery('<h3>').text(fieldset.name).attr('title', fieldset.description);
 				fieldsetDiv.append(header);
+				
+				//<input type='hidden' name='documentID' value={$document->getId()
+				
+				//var hiddenInput = jQuery('input').attr({
+					//type:'hidden', 
+					//name:value.fieldsetid
+				//});
+				
+				//var hiddenInput = jQuery('<input type=\"hidden\" name=fieldset_\"'+value.fieldsetid+'\" value=\"'+value.fieldsetid+'\"/>');
+				
+				//var hiddenInput = jQuery('input').attr('name', value.fieldsetid);
+				//jQuery(hiddenInput).attr('type', 'hidden');
+				//fieldsetDiv.append(hiddenInput);
+				
 				//var par = jQuery('<p>').addClass('descriptiveText').text('Description goes here?');
 				//fieldsetDiv.append(par);
 				
 				//fieldsetDiv.append('<h3>').text(index).append('<p>').addClass('descriptiveText').text('Description goes here?');
 
-				//create the fields
+				//create the div to contain the fields
 				var table = jQuery('<table>').addClass('metadatatable').attr('cellspacing', '0').attr('cellpadding', '5');
 			
 				var counter = 0;
 				
-				jQuery.each(value.fields, function(index, value)
+				//now create each field's widget
+				jQuery.each(fieldset.fields, function(index, field)
 				{
 					//console.log('inner: '+index);
 					//console.dir(value);
@@ -59,7 +73,7 @@
 	
 					var dataType='text';
 	
-					switch(value.control_type)
+					switch(field.control_type)
 					{
 						case 'string':
 							dataType='text';
@@ -74,11 +88,11 @@
 					var dataOptions = '';
 	
 					//console.dir(value.selection);
-					if (value.selection && value.selection.length > 0)
+					if (field.selection && field.selection.length > 0)
 					{
 						dataOptions = '[';
 	
-						jQuery.each(value.selection, function(index, value){
+						jQuery.each(field.selection, function(index, value){
 							//console.log('selection \"'+value+'\",\"'+index+'\"');
 							dataOptions += '[\"'+value+'\",\"'+index+'\"],';
 						});
@@ -92,14 +106,14 @@
 						tableRow.addClass('first');
 					}
 	
-					var tableHeader = jQuery('<th>').text(value.name);
-					tableHeader.attr('title', value.description);
+					var tableHeader = jQuery('<th>').text(field.name);
+					tableHeader.attr('title', field.description);
 					tableRow.append(tableHeader);
 
-					var span = jQuery('<span>').addClass('descriptiveText').attr('data-name', value.name).attr('data-type', dataType);
+					var span = jQuery('<span>').addClass('descriptiveText').attr('data-name', field.fieldid).attr('data-type', dataType).attr('id', 'field_'+field.fieldid);
 	
 					//if (value.value != null)
-					span.text(value.value == null ? 'no value' : value.value);
+					span.text(field.value == null ? 'no value' : field.value);
 	
 					if (dataOptions.length > 0)
 					{
@@ -125,9 +139,11 @@
 			jQuery('.documenttype').after(editableDiv);
 			
 			jQuery('.editablemetadata').editableSet({
-			 	action: 'update.php',
+			 	action: 'persistMetadata.php',
 			 	onSave: function(){
-				 
+			 		//console.log('here I am');
+			 		//jQuery('.editablemetadata').attr('rel', 'updateTest.php?documentID='+jQuery('#documentidembedded').html());
+			 		
 				 	//console.dir(jQuery('#documentTypeID'));
 				 	//console.log(jQuery('#documentTypeID option:selected').val());
 					//jQuery('.documenttype').attr('rel', 'update.php?documentID='+jQuery('#documentTypeID option:selected').val());
@@ -136,7 +152,7 @@
 				 	//here we need to reset the document fields to reflect the new document type
 				 	
 			 	}
-		 	}); 
+		 	});
 	 	 }
 	 });
 	 
@@ -148,9 +164,29 @@
 		 	//console.log(jQuery('#documentTypeID option:selected').val());
 			//jQuery('.documenttype').attr('rel', 'update.php?documentID='+jQuery('#documentTypeID option:selected').val());
 	 	},
-	 	afterSave: function(){
-		 	//here we need to reset the document fields to reflect the new document type
+	 	afterSave: function(data, status){
+		 	//here we need to populate the fields with the new values
+		 	//console.dir(data);
 		 	
+		 	jQuery.each(data.success.fields, function(index, field)
+			{
+				//console.dir(field);
+				
+				//console.log(field.control_type);
+				
+				//TODO: need to cycle through each control type!
+				switch(field.control_type)
+				{
+					case 'string':
+						//console.log('found string '+field.value)
+						jQuery('#field_'+field.fieldid).html(field.value);
+					break;
+					case 'lookup':
+						jQuery('#field_'+field.fieldid).html(field.value);
+					break;
+							
+				}
+			});
 	 	}
  	}); 
 	 
@@ -177,3 +213,105 @@
 	 };*/
 	 
 });
+ 
+ /*if(typeof(kt.metadata)=='undefined')kt.metadata={};
+ kt.metadata.createEditableMetadata = function(metadata){
+	 //console.log('createEditableMetadata');
+ 
+	//create the new editable div
+	var editableDiv = jQuery('<div>').addClass('editablemetadata');
+
+	//create div for each fieldset
+	jQuery.each(metadata, function(index, value)
+	{
+		//console.log('outer: '+index);
+		//console.dir(value)
+		
+		var fieldsetDiv = jQuery('<div>').addClass('detail_fieldset');
+		var header = jQuery('<h3>').text(value.name).attr('title', value.description);
+		fieldsetDiv.append(header);
+		//var par = jQuery('<p>').addClass('descriptiveText').text('Description goes here?');
+		//fieldsetDiv.append(par);
+		
+		//fieldsetDiv.append('<h3>').text(index).append('<p>').addClass('descriptiveText').text('Description goes here?');
+
+		//create the fields
+		var table = jQuery('<table>').addClass('metadatatable').attr('cellspacing', '0').attr('cellpadding', '5');
+	
+		var counter = 0;
+		
+		jQuery.each(value.fields, function(index, value)
+		{
+			//console.log('inner: '+index);
+			//console.dir(value);
+			
+			//console.log(value.name+' '+value.value);
+
+			var dataType='text';
+
+			switch(value.control_type)
+			{
+				case 'string':
+					dataType='text';
+				break;
+				case 'lookup':
+					dataType='select';
+				break;
+				default:
+					dataType='text';
+			}
+
+			var dataOptions = '';
+
+			//console.dir(value.selection);
+			if (value.selection && value.selection.length > 0)
+			{
+				dataOptions = '[';
+
+				jQuery.each(value.selection, function(index, value){
+					//console.log('selection \"'+value+'\",\"'+index+'\"');
+					dataOptions += '[\"'+value+'\",\"'+index+'\"],';
+				});
+
+				dataOptions += ']';
+			}
+
+			var tableRow = jQuery('<tr>').addClass(counter++%2==1 ? 'odd' : 'even');
+			if (counter == 1)
+			{
+				tableRow.addClass('first');
+			}
+
+			var tableHeader = jQuery('<th>').text(value.name);
+			tableHeader.attr('title', value.description);
+			tableRow.append(tableHeader);
+
+			var span = jQuery('<span>').addClass('descriptiveText').attr('data-name', value.name).attr('data-type', dataType);
+
+			//if (value.value != null)
+			span.text(value.value == null ? 'no value' : value.value);
+
+			if (dataOptions.length > 0)
+			{
+				//console.log('dataOptions '+dataOptions);
+				span.attr('data-options', dataOptions);
+			}
+
+			var td = jQuery('<td>');
+
+			td.append(span);
+
+			tableRow.append(td);
+
+			table.append(tableRow);
+
+		});
+
+		fieldsetDiv.append(table);
+
+		editableDiv.append(fieldsetDiv);
+	});
+		
+	return editableDiv;
+ };*/
+ 

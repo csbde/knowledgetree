@@ -61,18 +61,17 @@
 					<br/>
 					<br/>
 										
-					<div class='documenttype'> 
+					<div class="documenttype" rel="update.php?documentID={$document->getId()}"> 
 	    			<table class="metadatatable" cellspacing="0" cellpadding="5">
 	    			<tr class="even first">
 	    				<th>Document Type</th>
 			        <td>
 			        <span class="descriptiveText" id='documentTypeID' data-name='documentTypeID' data-options='[{foreach from=$document_types key=aKey item=documentType}
-						["{$documentType->getName()}", "{$documentType->getId()}"],{/foreach}]' data-type='select'>{$document_data.document_type->getName()}</span></td>
-						<input type='hidden' name='documentID' value={$document->getId()} />
+						["{$documentType->getName()}","{$documentType->getId()}"],{/foreach}]' data-type='select'>{$document_data.document_type->getName()}</span></td>
 					</table>
 					</div>
 					
-					<div>
+					<div class="editablemetadata">
 					{foreach item=oFieldset from=$fieldsets}
 						{$oFieldset->render($document_data)}
 					{/foreach}

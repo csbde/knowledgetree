@@ -3,35 +3,6 @@
 //require_once('config/dmsDefaults.php');
 require_once('ktapi/ktapi.inc.php');
 require_once(KT_LIB_DIR . '/widgets/fieldsetDisplay.inc.php');
-//require_once(KT_LIB_DIR . '/widgets/FieldsetDisplayRegistry.inc.php');
-
-	function getID()
-	{
-		echo 'getID';
-		
-		//$GLOBALS['default']->log->debug("update entire request ".print_r($_REQUEST, true));
-
-	    if(isset($_REQUEST['documentID'])){
-	       return (int)$_REQUEST['documentID'];
-	    }
-
-	    /*$id = 1;
-	    $uri = $_REQUEST['cleanFolderID'];
-
-		// Check for slash
-		if (substr($uri, 0, 1) == '/') {
-		    $uri = substr($uri, 1);
-		}
-
-		// Remove Query String
-		$uri = preg_replace('/(\?.*)/i', '', $uri);
-
-		if (substr($uri, 0, 2) == '00') {
-			$id = KTUtil::decodeId(substr($uri, 2));
-		}*/
-
-		return $id;
-	}
 	
 	// HTTP headers for no cache etc
 	header('Content-type: text/plain; charset=UTF-8');
@@ -41,22 +12,31 @@ require_once(KT_LIB_DIR . '/widgets/fieldsetDisplay.inc.php');
 	header("Cache-Control: post-check=0, pre-check=0", false);
 	header("Pragma: no-cache");
 	
-	//file_put_contents('update.txt', 'update.php', FILE_APPEND);
-	//file_put_contents('update.txt', 'document type ID '.$_POST['documenttype'], FILE_APPEND);
-	//$GLOBALS['default']->log->debug('update.php '.print_r($_POST, true));
+	$GLOBALS['default']->log->debug('update documentID '.$_POST['documentID']);
+	$GLOBALS['default']->log->debug('update documentTypeID '.$_POST['documentTypeID']);
 	
-	$oDocument = Document::get($_POST['documentID']);
-	$oDocument->setDocumentTypeID($_POST['documentTypeID']);
+	$iDocumentID = (int)$_REQUEST['documentID'];
+	$iDocumentTypeID = (int)$_POST['documentTypeID'];
+	
+	//now update the document type
+	setDocumentType($iDocumentID, $iDocumentTypeID);
 	
 	$oDocumentType = DocumentType::get($_POST['documentTypeID']);
   
 	$metadata = array();
 	$fieldsetsresult = array();
 	
-	$fieldsets = $oDocumentType->getFieldsets();
-	//$GLOBALS['default']->log->debug('update fieldsets '.print_r($aDocFieldsets, true));
+	// first get generic ids
+    $generic_fieldsets = KTFieldset::getGenericFieldsets(array('ids' => false));
+    //$GLOBALS['default']->log->debug('update generic_fieldsets '.print_r($generic_fieldsets, true));
 	
-	foreach ($fieldsets as $fieldset) 
+	$fieldsets = $oDocumentType->getFieldsets();
+	
+	$total_fieldsets = array_merge($fieldsets, $generic_fieldsets);
+	
+	//$GLOBALS['default']->log->debug('update total_fieldsets '.print_r($total_fieldsets, true));
+	
+	foreach ($total_fieldsets as $fieldset) 
 	{	
 		//Tag Cloud displayed elsewhere
 		if ($fieldset->getNamespace() != 'tagcloud')
@@ -68,11 +48,7 @@ require_once(KT_LIB_DIR . '/widgets/fieldsetDisplay.inc.php');
 				'description' => $fieldset->getDescription()
 			);
 			
-			//$GLOBALS['default']->log->debug('update fieldset '.print_r($fieldset, true));
-			
 			$fields = $fieldset->getFields();
-			
-			//$GLOBALS['default']->log->debug('update fields '.print_r($fields, true));
 			
 			$fieldsresult = array();
 			
@@ -80,21 +56,7 @@ require_once(KT_LIB_DIR . '/widgets/fieldsetDisplay.inc.php');
 			{
 				$value = '';
 	
-				//TODO: won't the value always be null since we are getting new fields?
-				/*$fieldvalue = DocumentFieldLink::getByDocumentAndField($oDocument, $field);
-				
-				$GLOBALS['default']->log->debug("fields fieldvalue $fieldvalue");
-	
-				if (!is_null($fieldvalue) && (!PEAR::isError($fieldvalue)))
-				{
-					$value = $fieldvalue->getValue();
-				}
-				
-				$GLOBALS['default']->log->debug("field value $value");*/
-	
 				$controltype = strtolower($field->getDataType());
-	
-				//$GLOBALS['default']->log->debug("update SimpleFieldsetDisplay field controltype $controltype");
 	
 				if ($field->getHasLookup())
 				{
@@ -111,8 +73,6 @@ require_once(KT_LIB_DIR . '/widgets/fieldsetDisplay.inc.php');
 				if ($field->getInetLookupType() == 'multiwithcheckboxes' || $field->getInetLookupType() == 'multiwithlist') {
 					$controltype = 'multiselect';
 				}
-	
-				//$GLOBALS['default']->log->debug("update SimpleFieldsetDisplay field controltype2 $controltype");
 	
 				switch ($controltype)
 				{
@@ -154,36 +114,119 @@ require_once(KT_LIB_DIR . '/widgets/fieldsetDisplay.inc.php');
 				);
 			}
 			
-			//$GLOBALS['default']->log->debug('update SimpleFieldsetDisplay fieldsresult '.print_r($fieldsresult, true));
-			
 			$fieldsetsresult['fields'] = $fieldsresult;
-			$metadata[] = $fieldsetsresult; 
-			//$metadata[] = array('fieldset' => $fieldsetsresult, 'fields' => $fieldsresult);
-			//$fieldset_values[] = $fieldsresult;
+			$metadata[] = $fieldsetsresult;
 		}
 	}
 	
-	//$GLOBALS['default']->log->debug('metadata '.print_r($metadata, true));
-	
-	//assemble the item
+	//assemble the item to return
 	$item['documentTypeID'] = $oDocumentType->getId();
 	$item['documentTypeName'] = $oDocumentType->getName();
-	//$item['fieldsets'] = $fieldsets;
 	$item['metadata'] = $metadata;
-	//$item['document_types'] = $document_types;
 	
 	$json['success'] = $item;
 	
 	echo(json_encode($json));
 	exit(0);
 	
+	function setDocumentType($iDocumentID, $iDocumentTypeID) 
+	{
+		//$GLOBALS['default']->log->debug("update setDocumentType $iDocumentID $iDocumentTypeID");
+		
+        $oDocument =& Document::get($iDocumentID);
+        if (is_null($oDocument) || ($oDocument === false)) {
+            $GLOBALS['default']->log->error('The Document does not exist.');
+            return false;
+        }
+        $newType =& DocumentType::get($iDocumentTypeID);
+        if (is_null($newType) || ($newType === false)) {
+            //$GLOBALS['default']->log->error('The DocumentType does not exist.');
+            return false;
+        }
+
+        $oldType = DocumentType::get($oDocument->getDocumentTypeID( ));
+        $oDocument->setDocumentTypeID($iDocumentTypeID);
+
+        // we need to find fieldsets that _were_ in the old one, and _delete_ those.
+        $for_delete = array( );
+        
+        $oldFieldsets = KTFieldset::getForDocumentType($oldType);
+        $newFieldsets = KTFieldset::getForDocumentType($newType);
+
+        // prune from MDPack.
+        foreach ($oldFieldsets as $oFieldset) {
+            $old_fields = $oFieldset->getFields( );
+            foreach ($old_fields as $oField) {
+                $for_delete[$oField->getId( )] = 1;
+            }
+        }
+
+        foreach ($newFieldsets as $oFieldset) {
+            $new_fields = $oFieldset->getFields( );
+            foreach ($new_fields as $oField) {
+                unset($for_delete[$oField->getId( )]);
+            }
+        }
+
+        $newPack = array( );
+        foreach ($field_values as $MDPack) {
+            if (!array_key_exists($MDPack[0]->getId( ), $for_delete)) {
+                $newPack[] = $MDPack;
+            }
+        }
+        $field_values = $newPack;
+
+        $oDocumentTransaction = & new DocumentTransaction( $oDocument, 'update metadata.', 'ktcore.transactions.update');
+        
+        $res = $oDocumentTransaction->create( );
+        if ( PEAR::isError( $res)) {
+            $GLOBALS['default']->log->error('Failed to create transaction.');
+            return false;
+        }
+
+        $res = $oDocument->update( );
+        if ( PEAR::isError( $res)) {
+            $this->rollbackTransaction( );
+            $GLOBALS['default']->log->error('Failed to change basic details about the document...');
+            return false;
+        }
+
+        $res = KTDocumentUtil::saveMetadata($oDocument, $field_values);
+
+        //$GLOBALS['default']->log->debug("update setDocumentType result $res");
+        
+        if(!PEAR::isError($res) || !is_null($res) )	
+        {
+            $oKTTriggerRegistry = KTTriggerRegistry::getSingleton();
+            $aTriggers = $oKTTriggerRegistry->getTriggers('edit', 'postValidate');
+
+            foreach ($aTriggers as $aTrigger)
+            {
+                $sTrigger = $aTrigger[0];
+                $oTrigger = new $sTrigger;
+                $aInfo = array(
+                "document" => $oDocument,
+                "aOptions" => $field_values,
+                );
+                $oTrigger->setInfo($aInfo);
+                $ret = $oTrigger->postValidate();
+            }
+
+            return true;
+        } else {
+            $this->rollbackTransaction( );
+            $GLOBALS['default']->log->error('An Error occurred in _setTransitionWorkFlowState');
+            return false;
+        }
+    }
+	
 	//parse_str(file_get_contents("php://input"),$post_vars);
     //file_put_contents('update.txt', print_r($post_vars, true), FILE_APPEND);
 	
-	file_put_contents('update.txt', 'post specific '.$_POST['documenttype'], FILE_APPEND);
+	/*file_put_contents('update.txt', 'post specific '.$_POST['documenttype'], FILE_APPEND);
 	file_put_contents('update.txt', 'whole post '.print_r($_POST, true), FILE_APPEND);
 	//file_put_contents('update.txt', 'whole get'.print_r($_GET, true), FILE_APPEND);
-	file_put_contents('update.txt', 'whole request '.print_r($_REQUEST, true), FILE_APPEND);
+	file_put_contents('update.txt', 'whole request '.print_r($_REQUEST, true), FILE_APPEND);*/
 
 	//$GLOBALS['default']->log->debug("update documentID resolves to $documentID");
 

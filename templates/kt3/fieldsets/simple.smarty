@@ -1,14 +1,14 @@
  
 <!-- FILE: kt3/fieldsets/simple.smarty -->
-	<div class="detail_fieldset">
+	<div class="detail_fieldset"  rel="persistMetadata.php?documentID={$document->getId()}">
 	    <h3 title='{$description}'>{$fieldset->getName()}</h3>
 	
-	    <table class="metadatatable simple" cellspacing="0" cellpadding="5">
+	    <table class="metadatatable" cellspacing="0" cellpadding="5">
 	      {foreach item=aFieldPair from=$fieldset_values name=fields}
 	    <tr class="{cycle values=even,odd} {if $smarty.foreach.fields.first}first{/if}">
 	        <th>{$aFieldPair.name}</th>
 	        <td>
-	        <span class="descriptiveText" data-name='{$aFieldPair.name}'
+	        <span class="descriptiveText" id="field_{$aFieldPair.fieldid}" data-name="{$aFieldPair.fieldid}"
 		        {if ($aFieldPair.control_type==='string')}
 		        	 data-type='text'>
 		        {else if ($aFieldPair.control_type==='lookup')}
