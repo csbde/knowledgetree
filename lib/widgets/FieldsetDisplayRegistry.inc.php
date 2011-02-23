@@ -77,7 +77,7 @@ class KTFieldsetDisplayRegistry {
                 $default->log->error('Could not resolve Fieldset by namespace: ' . $nsname . '. Error: ' . $oFieldset->getMessage());
                 return 'SimpleFieldsetDisplay';
             }
-            if (is_a($oFieldset, 'KTEntityNoObjects'))
+            if ($oFieldset instanceof KTEntityNoObjects)
             {
                 global $default;
                 $default->log->error('Could not resolve Fieldset by namespace: ' . $nsname . '. Error: KTEntityNoObjects returned.');

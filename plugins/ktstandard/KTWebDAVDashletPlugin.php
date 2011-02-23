@@ -79,6 +79,7 @@ class KTWebDAVDashlet extends KTBaseDashlet {
         if (KTPluginUtil::pluginIsActive('ktdms.wintools')) {
             $isComm = true;
         }
+        
         $webdavUrl = $sURL.'/ktwebdav/ktwebdav.php';
 
         $aTemplateData = array(

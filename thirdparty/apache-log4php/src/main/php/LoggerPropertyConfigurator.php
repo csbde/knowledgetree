@@ -478,7 +478,7 @@ class LoggerPropertyConfigurator implements LoggerConfigurator {
                     } elseif (strpos($key, LOG4PHP_LOGGER_PROPERTY_CONFIGURATOR_LOGGER_PREFIX) === 0) {
                     $loggerName = substr($key, strlen(LOG4PHP_LOGGER_PROPERTY_CONFIGURATOR_LOGGER_PREFIX));
                 }
-                $logger =& $hierarchy->getLogger($loggerName, $this->loggerFactory);
+                $logger = $hierarchy->getLogger($loggerName, $this->loggerFactory);
                     // synchronized(logger) {
                     $this->parseCategory($props, $logger, $key, $loggerName, $value);
                     $this->parseAdditivityForLogger($props, $logger, $loggerName);

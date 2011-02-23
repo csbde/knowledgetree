@@ -224,6 +224,7 @@ class KTBulkExportAction extends KTFolderAction {
             'transactionNS' => 'ktstandard.transactions.bulk_export',
             'userid' => $_SESSION['userID'],
             'ip' => Session::getClientIP(),
+        	'parentid' => $this->oFolder->getParentID(),
         ));
 
         $sReturn = '<p>'._kt('Creating zip file. Compressing and archiving in progress ...').'</p>';

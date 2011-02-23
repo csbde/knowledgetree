@@ -169,7 +169,7 @@ final class Zend
 
         $exception = new $class($message, $code);
 
-        if (!$exception instanceof Exception) {
+        if (!($exception instanceof Exception)) {
             throw new Zend_Exception('Invalid exception class used in Zend::exception()');
         }
 

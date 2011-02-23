@@ -14,14 +14,14 @@
         <script type="text/javascript" src="{$rootUrl}{$item}"> </script>
     {/foreach}
 </head>
-<body >
+<body {if $page->onload}onload="{$page->getBodyOnload()}"{/if}>
 <div id="loginbox_outer"  {if ($disclaimer)} class="hasDisclaimer" {/if} style="width:800px;">
 	<div class="header">
 
 	</div>
 	<div class="content" style="display:block; min-height: 550px; ">
 		<div class="promotions-block" style="display:block; height:400px; position:relative; float: right; margin:50px 15px 0px 0px; ">
-		<iframe style="-webkit-box-shadow: #667 0px 0px 5px; -moz-box-shadow: #667 0px 0px 5px; border: 1px solid #616161; border-radius: 15px;-moz-border-radius: 15px; padding: 25px;" class="iframe-filter" width="350" height="400" src="https://app.knowledgetree.com/iframe/login-promo" scrolling="no" frameBorder="0" style="border: 0;"></iframe>
+		<iframe style="-webkit-box-shadow: #667 0px 0px 5px; -moz-box-shadow: #667 0px 0px 5px; border: 1px solid #616161; border-radius: 15px;-moz-border-radius: 15px; padding: 25px;" class="iframe-filter" width="350" height="400" src="https://app.knowledgetree.com/iframe/login-promo?pi_list_email={$username}" scrolling="no" frameBorder="0" style="border: 0;"></iframe>
 		</div>
 
 		<div class="login-box" style="display:block; margin-left: 20px;">
@@ -29,7 +29,7 @@
 				<input type="hidden" name="action" value="login" />
 				<input type="hidden" name="cookieverify" value="{$cookietest}" />
 				<input type="hidden" name="redirect" value="{$redirect}" />
-				
+
 				<div id="login_form" >
 
 				    <p class="descriptive-text">{i18n}Login to your account{/i18n}</p>
@@ -44,10 +44,14 @@
 					    	</div>
 					{/if}
 
-					<label for="username">{i18n}Username{/i18n}</label>
-					<input type="text" id="username" name="username" value="{$username}"/>
+					{if $use_email}
+					   <label for="username">{i18n}Email Address{/i18n}</label>
+				   {else}
+					   <label for="username">{i18n}Username{/i18n}</label>
+				   {/if}
+					<input type="text" id="username" name="username" value="{$username}" />
 					<label for="password">{i18n}Password{/i18n}</label>
-					<input type="password" id="password" name="password"/>
+					<input type="password" id="password" name="password" />
 
 					{* Disabling language dropdown until translations are finished
 					<label for="language">{i18n}Language{/i18n}</label>
@@ -69,10 +73,19 @@
 		            <form name="forgot_form" action="" method="POST">
 	    	    	<p class="descriptive-text">{i18n}Forgot password{/i18n}</p>
 	    	    	<div id="messages" class="ktErrorMessage"></div>
+	    	    	{if $use_email}
+					<p class="instruction-text">{i18n}Enter your email address. A link will be mailed to you in order to verify your email address.{/i18n}</p>
+					{else}
 					<p class="instruction-text">{i18n}Enter your username and email address. A link will be mailed to you in order to verify your email address.{/i18n}</p>
-	    	    	<label for="reset_username">{i18n}Username{/i18n}</label>
-	    			<input type="text" id="reset_username" name="reset_username" />
-	    			<br />
+					{/if}
+					{if $use_email}
+	    				<input type=hidden id=reset_username name=reset_username value=null />
+
+	    			{else}
+	    	    		<label for="reset_username">{i18n}Username{/i18n}</label>
+	    				<input type="text" id="reset_username" name="reset_username" />
+	    				<br />
+	    			{/if}
 	    			<label for="reset_email">{i18n}Email Address{/i18n}</label>
 	 				<input type="text" id="reset_email" name="reset_email" />
 	 				<br />
@@ -87,22 +100,34 @@
 
     	    	<div id="reset_box" class="reset_box">
 	    	    	<form name="reset_form" action="" method="POST">
-	        	    	<p class="descriptive-text">{i18n}Please enter your username and email address.{/i18n}</p>
-
-	        	    	<label for="new_username">{i18n}Username{/i18n}</label>
-	        			<input type="text" id="new_username" name="new_username" value=""/><br />
-
-	        			<label for="new_email">{i18n}Email Address{/i18n}</label>
-		 				<input type="text" id="new_email" name="new_email" value=""/><br />
+	    	    		{if $use_email}
+	        	    		<p class="descriptive-text">{i18n}Please enter a new password.{/i18n}</p>
+						{else}
+							<p class="descriptive-text">{i18n}Please enter your username and email address.{/i18n}</p>
+						{/if}
+						{if $use_email}
+							<input type="hidden" id="new_email" name="new_email" value={$new_email} />
+						{else}
+		        	    	<label for="new_username">{i18n}Username{/i18n}</label>
+		        			<input type="text" id="new_username" name="new_username" value="" /><br />
+	        				<label for="new_email">{i18n}Email Address{/i18n}</label>
+		 					<input type="text" id="new_email" name="new_email" value=""/><br />
+						{/if}
 
 		 				<label for="new_password">{i18n}New password{/i18n}</label>
-		 				<input type="password" id="new_password" name="new_password" value=""/><br />
+		 				<input type="password" id="new_password" name="new_password" value="" />
 
-		 				<label for="new_password_repeat">{i18n}Confirm new password{/i18n}</label>
-		 				<input type="password" id="new_password_repeat" name="new_password_repeat" value=""/><br />
+						{if $use_email}
+
+						{else}
+							<br />
+			 				<label for="new_password_repeat">{i18n}Confirm new password{/i18n}</label>
+			 				<input type="password" id="new_password_repeat" name="new_password_repeat" value="" />
+			 				<br />
+		 				{/if}
 
 		 				<div class="form-actions">
-		 				    <input type="button" onclick='javascript: resetPassword("{$sUrl}resetPassword");' value="{i18n}Reset password{/i18n}" />
+		 				    <input type="button" onclick='javascript: resetPassword("{$sUrl}resetPassword", "{$sRedirect}");' value="{i18n}Reset password{/i18n}" />
 		 				    <input type="button" onclick="javascript: hideResetBox();" value="{i18n}Cancel{/i18n}" />
 		 				</div>
 	    	    	</form>
@@ -114,16 +139,16 @@
 
 
 		<div class="footer" style="clear:both;"><span style="display:block; float:right;">Call: 1 877.900.0350</span>
-		<a href="http://www.knowledgetree.com/blog">{i18n}Blog{/i18n}</a> &nbsp;| <a href="http://support.knowledgetree.com">{i18n}Support{/i18n}</a> &nbsp;|  &nbsp;<a href="http://www.knowledgetree.com/privacy">{i18n}Privacy{/i18n}</a>&nbsp; | &nbsp;<a href="http://www.knowledgetree.com/legal">{i18n}Legal{/i18n}</a>&nbsp; |&nbsp; &copy; 2010 KnowledgeTree Inc.&nbsp;
+		<a href="http://www.knowledgetree.com/blog">{i18n}Blog{/i18n}</a> &nbsp;| <a href="http://support.knowledgetree.com">{i18n}Support{/i18n}</a> &nbsp;|  &nbsp;<a href="http://www.knowledgetree.com/privacy">{i18n}Privacy{/i18n}</a>&nbsp; | &nbsp;<a href="http://www.knowledgetree.com/legal">{i18n}Legal{/i18n}</a>&nbsp; |&nbsp; &copy; 2011 KnowledgeTree Inc.&nbsp;
 		</div>
 	</div>
 </div>
 
-	{if $reset_password}
-    	<script type="text/javascript">showResetBox();</script>
-    {else}
-    	<script type="text/javascript">hideResetBox(); document.getElementById("username").focus();</script>
-    {/if}
+{if $reset_password}
+   	<script type="text/javascript">showResetBox();</script>
+{else}
+   	<script type="text/javascript">hideResetBox(); document.getElementById("username").focus();</script>
+{/if}
 
 </body>
 </html>

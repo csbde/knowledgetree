@@ -5,7 +5,7 @@
  * KnowledgeTree Community Edition
  * Document Management Made Simple
  * Copyright (C) 2008, 2009, 2010 KnowledgeTree Inc.
- *  
+ *
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License version 3 as published by the
@@ -44,10 +44,12 @@ require_once(KT_LIB_DIR . '/widgets/portlet.inc.php');
 require_once(KT_LIB_DIR . '/plugins/KTAdminNavigation.php');
 
 class AdminSplashDispatcher extends KTAdminDispatcher {
+
     var $category = '';
     var $sSection = 'administration';
 
-    function AdminSplashDispatcher() {
+    function AdminSplashDispatcher()
+    {
         $this->aBreadcrumbs = array(
             array('url' => KTUtil::getRequestScriptName($_SERVER), 'name' => _kt('Settings')),
         );
@@ -55,11 +57,11 @@ class AdminSplashDispatcher extends KTAdminDispatcher {
         parent::KTAdminDispatcher();
     }
 
-    function do_main() {
+    function do_main()
+    {
         if ($this->category !== '') {
             return $this->do_viewCategory();
         };
-
 
         // are we categorised, or not?
         $oRegistry =& KTAdminNavigationRegistry::getSingleton();
@@ -76,8 +78,13 @@ class AdminSplashDispatcher extends KTAdminDispatcher {
             }
         }
 
-        $this->oPage->title = _kt('Settings') . ': ';
+        $this->oPage->hideSection();
         $oTemplating =& KTTemplating::getSingleton();
+
+        global $default;
+        if (ACCOUNT_ROUTING_ENABLED && $default->tier == 'trial') {
+            $this->includeOlark();
+        }
 
         if ($condensed_admin) {
             $oTemplate = $oTemplating->loadTemplate('kt3/admin_fulllist');
@@ -85,36 +92,76 @@ class AdminSplashDispatcher extends KTAdminDispatcher {
             $oTemplate = $oTemplating->loadTemplate('kt3/admin_categories');
         }
 
+        //$lefCats = array('contentManagement', 'contentSetup', 'contentIndexing');
+        $rightCats = array('accountInformation', 'userSetup', 'sysConfig');
+        foreach ($categories as $cat) {
+            if (in_array($cat['name'], $rightCats)) {
+                $rightmenu[$cat['name']] = $categories[$cat['name']];
+            } else {
+                $leftmenu[$cat['name']] = $categories[$cat['name']];
+            }
+        }
+
+        /*
+		foreach (array('contentManagement', 'contentSetup', 'contentIndexing') as $leftcat) {
+        	$leftmenu[$leftcat] = $categories[$leftcat];
+        }
+
+		foreach (array('accountInformation', 'userSetup', 'sysConfig') as $rightcat) {
+			$rightmenu[$rightcat] = $categories[$rightcat];
+		}
+		*/
+
         $aTemplateData = array(
               'context' => $this,
               'categories' => $categories,
+              'leftmenu' => $leftmenu,
+              'rightmenu' => $rightmenu,
               'all_items' => $aAllItems,
               'baseurl' => $_SERVER['PHP_SELF'],
         );
+
         return $oTemplate->render($aTemplateData);
     }
 
-    function do_viewCategory() {
+    function do_viewCategory()
+    {
         // are we categorised, or not?
         $category = KTUtil::arrayGet($_REQUEST, 'fCategory', $this->category);
 
         //Removing bad contentSetup/fieldmanagement links from the Document Metadata and Workflow Configuration page.
-		$oPage =& $GLOBALS['main'];	
+		$oPage =& $GLOBALS['main'];
+
 		if ($category == 'contentSetup') {
 			$aJavascript[] = 'thirdpartyjs/jquery/jquery-1.4.2.js';
 			$oPage->requireJSResources($aJavascript);
 			$jscript .= "<script src='resources/js/kt_hideadminlink.js' type='text/javascript'></script>";
 		}
+
 		$aJavascript[] = 'resources/js/newui/hide_system_links.js';
 		$oPage->requireJSResources($aJavascript);
-	
+
         $oRegistry =& KTAdminNavigationRegistry::getSingleton();
         $aCategory = $oRegistry->getCategory($category);
-		
-        $aItems = $oRegistry->getItemsForCategory($category);
-        asort($aItems);
+        if(ACCOUNT_ROUTING_ENABLED && $category == 'contentIndexing')
+        {
+			$aItems = null;
+			$message = 'Indexing of full-text content in KnowledgeTree is carried out through shared queue processes using SOLR. <br/>Content Indexing statistics coming soon!';
+        }
+        else
+        {
+        	$aItems = $oRegistry->getItemsForCategory($category);
+        	$message = null;
+        }
+
+        if (count($aItems) == 1) {
+            // skip the list of admin pages and go direct to the first / only page
+            $url = KTUtil::ktLink('admin.php', $aItems[0]['fullname']);
+            redirect($url);
+        }
+
         $this->aBreadcrumbs[] = array('name' => $aCategory['title'], 'url' => KTUtil::ktLink('admin.php',$category));
-		
+
         $this->oPage->title = _kt('Settings') . ': ' . $aCategory['title'];
         $oTemplating =& KTTemplating::getSingleton();
         $oTemplate = $oTemplating->loadTemplate('kt3/admin_items');
@@ -124,14 +171,23 @@ class AdminSplashDispatcher extends KTAdminDispatcher {
               'items' => $aItems,
               'baseurl' =>  $_SERVER['PHP_SELF'],
         	  'jscript' => $jscript,
+        	  'message' => $message,
         );
-        //echo "<pre>".print_r($aTemplateData,true),'</pre>';exit;
+
         return $oTemplate->render($aTemplateData);
     }
+
+    private function includeOlark()
+	{
+	    $user = User::get($_SESSION['userID']);
+	    $js = preg_replace('/.*[\/\\\\]plugins/', 'plugins', KT_LIVE_DIR) . '/resources/js/olark/olark.js';
+	    $this->oPage->requireJsResource($js);
+	    $this->oPage->setBodyOnload("javascript: ktOlark.setUserData('" . $user->getName() . "', '" . $user->getEmail() . "');");
+	}
+
 }
 
 $sub_url = KTUtil::arrayGet($_SERVER, 'PATH_INFO');
-
 $sub_url = trim($sub_url);
 $sub_url= trim($sub_url, '/');
 
@@ -150,7 +206,6 @@ if (empty($sub_url)) {
        $oDispatcher->aBreadcrumbs = array();
        $oDispatcher->aBreadcrumbs[] = array('action' => 'administration', 'name' => _kt('Settings'));
        $oDispatcher->aBreadcrumbs[] = array('name' => $aCategory['title'], 'url' => KTUtil::ktLink('admin.php',$aParts[0]));
-
     } else {
        // FIXME (minor) redirect to no-suburl?
        $oDispatcher = new AdminSplashDispatcher();
@@ -161,14 +216,12 @@ if (empty($sub_url)) {
 // Implement an electronic signature for accessing the admin section, it will appear every 10 minutes
 global $main;
 global $default;
-if($default->enableAdminSignatures && $_SESSION['electronic_signature_time'] < time()){
+if ($default->enableAdminSignatures && ($_SESSION['electronic_signature_time'] < time())) {
     $sBaseUrl = KTUtil::kt_url();
     $sUrl = KTPluginUtil::getPluginPath('electronic.signatures.plugin', true);
     $heading = _kt('You are attempting to access Settings');
     $main->setBodyOnload("javascript: showSignatureForm('{$sUrl}', '{$heading}', 'dms.administration.administration_section_access', 'admin', '{$sBaseUrl}/browse.php', 'close');");
 }
 
-
 $oDispatcher->dispatch(); // we _may_ be redirected at this point (see KTAdminNavigation)
-
 ?>

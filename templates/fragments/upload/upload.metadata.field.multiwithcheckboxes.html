@@ -1,0 +1,102 @@
+<span class="ul_meta_row">
+	<span class="ul_meta_label" id="ul_meta_label_[id]">[name]
+		<span class="ul_meta_label_descr">[description]</span>
+	</span>	
+	<span class="ul_meta_field">
+		<span class="ul_meta_fullField ul_meta_field_[id]" id="ul_meta_field_[id]"></span>
+	</span>
+</span>
+
+<script type="text/javascript">
+
+Ext.onReady(function(){
+
+	var cachedVal = kt.app.upload.getMetaItem(jQuery('#ul_meta_field_[id]')).getMetaData([id]);
+	
+	if([is_mandatory] == '1') {
+	   	//jQuery('#ul_meta_field_[id]').addClass('required');
+		jQuery('#ul_meta_label_[id]').append("<img class='ul_required_tag' src='/resources/graphics/newui/required_tag.png'/>");
+
+		if(cachedVal == undefined) {
+			//register as required field
+			kt.app.upload.getMetaItem(jQuery('#ul_meta_field_[id]')).registerRequiredFieldNotDone('ul_meta_field_[id]');
+		}
+	}
+
+	//get the checkbox values
+    var data = new Array();
+    var i = 0;
+    for (var key1 in [checkbox_lookup_values]) {	
+    	if (typeof [checkbox_lookup_values][key1] !== 'function') {
+			for (var key2 in ([checkbox_lookup_values][key1])) {
+				var key = key2.replace('id','');
+				var value = [checkbox_lookup_values][key1][key2];
+				if (typeof value !== 'function') {
+					data[i++] = new Array(key, value);
+				}
+			}
+    	}
+	}
+    
+    var container = jQuery('#ul_meta_field_[id]')[0];
+
+    for(var i = 0; i < data.length; i++) {        
+    	var chkbox = document.createElement("input");
+    	chkbox.id = "ul_meta_field_checkbox_[id]_"+i;
+    	
+    	chkbox.type = "checkbox";
+		chkbox.name = data[i][0];
+
+    	var label = document.createElement("label");
+    	label.className = "ul_meta_field_checkbox_label";
+    	label.htmFor = "ul_meta_field_checkbox_[id]_"+i;
+    	var labelText = document.createTextNode(chkbox.value = data[i][1]);
+    	label.appendChild(labelText);
+
+    	container.appendChild(document.createElement("br"));
+    	container.appendChild(chkbox);  
+    	container.appendChild(label);  	
+    	container.appendChild(document.createElement("br"));
+    	
+    	//populate the field
+    	if(cachedVal != undefined && cachedVal.indexOf(data[i][1]) >= 0) {
+			chkbox.checked = true;
+        }
+
+    	//now add the change event
+    	jQuery('input#ul_meta_field_checkbox_[id]_'+i).change(function() {
+        	var j = 0;
+        	//to store the selected checkbox IDs
+            var selected = '';
+
+            //iterate through all the checkboxes to see which are checked
+            for(var k = 0; k < data.length; k++) {
+            	var el = jQuery('input#ul_meta_field_checkbox_[id]_'+k);
+				if(el.attr('checked')) {
+        	    	selected += el.attr('value')+', ';
+        	    } 
+        	}
+
+            //chop off trailing comma
+        	if (selected.length > 2) {
+        		selected = selected.substr(0, selected.length-2);
+        	}
+
+        	//if marked as mandatory, check whether all done
+        	if([is_mandatory] == '1') {
+	        	if (selected.length > 0) {
+	        		kt.app.upload.getMetaItem(jQuery('#ul_meta_field_[id]')).registerRequiredFieldDone('ul_meta_field_[id]');
+	        	} else {
+	        		kt.app.upload.getMetaItem(jQuery('#ul_meta_field_[id]')).registerRequiredFieldNotDone('ul_meta_field_[id]');
+	            }
+        	}
+			
+			kt.app.upload.getMetaItem(this).setMetaData('[id]', selected)
+		});
+    }  
+
+   
+    
+});
+
+</script>

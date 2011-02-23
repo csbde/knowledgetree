@@ -63,12 +63,15 @@ class KTFolderRenameAction extends KTFolderAction {
     }
 
     function do_main() {
+    	// Use client-side validation
+    	global $main;
+    	$main->requireJSResource("resources/js/validation/validate_folder_name.js"); // Get the JS
         $this->oPage->setBreadcrumbDetails(_kt("rename"));
         $this->oPage->setTitle(_kt('Rename'));
         $oTemplate =& $this->oValidator->validateTemplate('ktcore/folder/rename');
 
         $fields = array();
-        $fields[] = new KTStringWidget(_kt('New folder name'), _kt(''), 'foldername', $this->oFolder->getName(), $this->oPage, true);
+        $fields[] = new KTStringWidget(_kt('New folder name'), _kt(''), 'foldername', $this->oFolder->getName(), $this->oPage, true, 'folder_name');
 
         global $default;
         if($default->enableESignatures){

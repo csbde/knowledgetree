@@ -47,6 +47,7 @@
 require_once(CMIS_DIR . '/classes/CMISObject.inc.php');
 require_once(CMIS_DIR . '/classes/CMISFolderPropertyCollection.inc.php');
 require_once(CMIS_DIR . '/util/CMISUtil.inc.php');
+require_once(KT_LIB_DIR . "/util/ktutil.inc");
 
 class CMISFolderObject extends CMISObject {
 
@@ -108,8 +109,7 @@ class CMISFolderObject extends CMISObject {
         $uri = preg_replace_callback('/([^:]\/)\//',
                                      create_function('$matches', 'return $matches[1];'),
                                      $this->uri
-                                     . '/browse.php?fFolderId='
-                                     . $objectProperties['id']);
+                                     . KTUtil::buildUrl('/browse.php', array('fFolderId'=>$objectProperties['id'])));
         // TODO this url is probably incorrect...needs to be checked
 //        $this->_setPropertyInternal('uri', $uri);
         $this->_setPropertyInternal('uri', '');

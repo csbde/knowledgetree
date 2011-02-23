@@ -37,6 +37,8 @@
 
 require_once(KT_LIB_DIR . '/dispatcher.inc.php');
 require_once(KT_LIB_DIR . '/templating/templating.inc.php');
+require_once(KT_LIB_DIR . '/util/ktVar.php');
+
 
 class BaseConfigDispatcher extends KTAdminDispatcher
 {
@@ -80,13 +82,32 @@ class BaseConfigDispatcher extends KTAdminDispatcher
 	}
 
 	/**
+	 * Set an individual configuration setting (Used in global reasons setting to en-/disable other settings)
+	 * 
+	 * @param $item
+	 * @param $value
+	 * @return unknown_type
+	 */
+	private function setConfigSetting($item=NULL,$value=NULL){
+		$query="SELECT item, value FROM config_settings WHERE item='{$item}' LIMIT 1";
+		$results=DBUtil::getResultArray($query);
+		if(count($results)<=0)Throw new Exception("Config Setting '{$item}' could not be set because it could not be found.");
+		$row=$results[0];
+		if($item['value'] != $value){
+			if(!is_num($value) && !is_bool($value))$value="'{$value}'";
+			$query="UPDATE config_settings SET(value={$value} WHERE item='{$item}' LIMIT 1";
+			$results=DBUtil::runQuery($query);
+		}
+	}
+	
+	/**
 	 * Get the configuration settings
 	 *
 	 * @return array
 	 */
 	function getSettings() {
 	    $query = "SELECT g.display_name AS group_display, g.description AS group_description,
-            s.id, s.display_name, s.description, s.value, s.default_value, s.type, s.options
+            s.id, s.item, s.display_name, s.description, s.value, s.default_value, s.type, s.options
             FROM config_groups g
             INNER JOIN config_settings s ON g.name = s.group_name
             WHERE category = '{$this->category}' AND s.can_edit = 1
@@ -207,7 +228,25 @@ class BaseConfigDispatcher extends KTAdminDispatcher
 	            $input .= isset($options['label']) ? "<label for='{$id}'>{$options['label']}</label>&nbsp;&nbsp;" : '';
 	            $input .= "<input name='configArray[{$id}]' value='{$value}' size = '5'>";
 	            break;
-
+	            
+	        case 'class':
+	        	if(!file_exists($options['file'])) { return ; }
+        		require_once($options['file']);
+        		$oClass = new $options['class']();
+	        	$value = ($value == 'default') ? $defaultValue : $value;
+	        	$input .= $oClass->renderRegionLabel();
+	        	$input .= '<select onchange="javascript:{kt.datetime.change_region();}" id="country_select" name="country_select">&nbsp;&nbsp;';
+	        	$input .= $oClass->renderRegions($value);
+	        	$input .= '</select>';
+	        	$input .= '<br/><br/>';
+	        	$input .= $oClass->renderTimezoneLabel();
+	        	$input .= "<select class='countryList' id='{$id}' name='configArray[{$id}]'>&nbsp;&nbsp;";
+	        	$input .= $oClass->renderTimezones($value);
+	        	$input .= '</select>';
+	        	
+	        	
+	        	break;
+	        	
 	        case 'string':
             default:
 	            // Prepend a label if set
@@ -326,6 +365,72 @@ class EmailConfigPageDispatcher extends BaseConfigDispatcher
             'name' => _kt('Email Settings'),
         );
         return parent::check();
+    }
+}
+
+class ActionReasonsDispatcher extends BaseConfigDispatcher
+{
+    function check() {
+        $this->category = 'Document Action Settings';
+        $this->name = _kt('Document Action Settings');
+
+        $this->aBreadcrumbs[] = array(
+            'url' => $_SERVER['PHP_SELF'],
+            'name' => _kt('Document Action Settings'),
+        );
+        return parent::check();
+    }
+    
+	
+    
+    /**
+     * Extending the original saveSettings to intercept changes
+     * 
+     * @see plugins/ktcore/admin/BaseConfigDispatcher#saveSettings($currentSettings, $log)
+     */
+	public function saveSettings($currentSettings, $log = false){
+    	$currentSettings=parent::saveSettings($currentSettings,$log);
+    	$item=$this->getItemSettings('globalReasons',$currentSettings);
+    	$this->update($item['value']);
+    	return $currentSettings;
+    }
+    
+	/**
+	 * Get configuration settings for a single item
+	 * 
+	 * @param $itemName
+	 * @return array()
+	 */
+	private function getItemSettings($itemName=NULL,$currentSettings=NULL){
+		$settings=is_array($currentSettings)?$currentSettings:$this->getSettings();
+		foreach($settings as $item){
+			if($item['item']==$itemName) return $item;
+		}
+		return null;
+	}
+	
+	/**
+	 * Update all other touched settings
+	 * 
+	 * @param $enabled
+	 * @return void
+	 */
+	private function update($enabled=NULL){
+    	$affected_settings=array(
+    		'clientToolPolicies/captureReasonsDelete',
+    		'clientToolPolicies/captureReasonsCheckin',
+    		'clientToolPolicies/captureReasonsCheckout',
+    		'clientToolPolicies/captureReasonsCancelCheckout',
+    		'clientToolPolicies/captureReasonsCopyInKT',
+    		'clientToolPolicies/captureReasonsMoveInKT',
+    		'addInPolicies/captureReasonsCheckin',
+    		'addInPolicies/captureReasonsCheckout'
+    	);
+    	$oConfig=KTConfig::getSingleton();
+    	foreach($affected_settings as $setting){
+    		$oConfig->set($setting,$enabled);
+    	}
+    	$oConfig->readConfig();
     }
 }
 

@@ -7,7 +7,7 @@
  * KnowledgeTree Community Edition
  * Document Management Made Simple
  * Copyright (C) 2008, 2009, 2010 KnowledgeTree Inc.
- * 
+ *
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License version 3 as published by the
@@ -177,11 +177,12 @@ class KTEntity {
         $oCache->remove($group, $this->iId);
         $this->clearCachedGroups();
         if ($this->iId >= 0) {
-            if($dereference){
+            if ($dereference) {
             	$res = DBUtil::deReference($this->_table(), $this->iId);
-            }else{
+            } else {
             	$res = DBUtil::autoDelete($this->_table(), $this->iId);
             }
+
             if (PEAR::isError($res)) {
                 if ($this->_bUsePearError === false) {
                     $_SESSION['errorMessage'] = $res->toString();
@@ -190,8 +191,10 @@ class KTEntity {
                     return $res;
                 }
             }
+
             return true;
         }
+
         $_SESSION["errorMessage"] = "Can't delete an object that isn't in the database";;
         return false;
     }
@@ -212,12 +215,14 @@ class KTEntity {
             }
             $iId = $this->iId;
         }
+
         $sClassName = get_class($this);
         // cache at lowest possible level.
         $oCache =& KTCache::getSingleton();
+
         $group = sprintf("%s/%s", $sClassName , 'id');
         list($bCached, $mCached) = $oCache->get($group, $iId);
-        $bCached=$mCached=false;
+        $bCached = $mCached = false;
         if ($bCached && EVIL_CACHE_GRIND) {
             if (KTLOG_CACHE) $default->log->debug(sprintf(_kt("Found and testing object cache for class %s, id %d"), $sClassName, $iId));
 
@@ -280,15 +285,109 @@ class KTEntity {
             }
             $oCache->set($group, $iId, $res);  // finally, cache if its "good".
         }
+
         $vk = array_flip($this->_aFieldToSelect);
         $aLoadInfo = array();
         foreach ($res[0] as $k => $v) {
             $aLoadInfo[$vk[$k]] = $v;
         }
+
         $res = $this->loadFromArray($aLoadInfo);
         if (PEAR::isError($res)) {
             return $res;
         }
+    }
+
+    function getProperties() {
+        global $default;
+        $iId = $this->iId;
+        $sClassName = get_class($this);
+        // cache at lowest possible level.
+        $oCache =& KTCache::getSingleton();
+        $group = sprintf("%s/%s", $sClassName , 'id');
+        list($bCached, $mCached) = $oCache->get($group, $iId);
+        $bCached=$mCached=false;
+        if ($bCached && EVIL_CACHE_GRIND) {
+            if (KTLOG_CACHE) $default->log->debug(sprintf(_kt("Found and testing object cache for class %s, id %d"), $sClassName, $iId));
+
+            $table = $this->_table();
+            $select = $this->_getSqlSelection();
+            $sQuery = "SELECT $select FROM $table WHERE id = ?";
+            $aParams = array($iId);
+
+            $res = DBUtil::getResultArray(array($sQuery, $aParams));
+            // we _have_ a cache:  error is a disaster
+            if (PEAR::isError($res) || (count($res) === 0) || (count($res) > 1)) {
+                $oCache->alertFailure($sClassName, array('<strong>SERIOUS FAILURE:</strong> real object is an error, cache claims "valid".'));
+                return $res;
+            }
+
+            // now compare the sub-values.
+            $aFailures = array();
+            $sEntClass = get_class($this);
+
+            foreach ($res as $sKey => $aVal) {
+                if ($mCached[$sKey] != $res[$sKey]) {
+                    $id = $aVal['id'];
+                    foreach ($aVal as $sField => $sStored) {
+                        if ($mCached[$sKey][$sField] != $sStored) {
+                            $aFailures[] = sprintf("For %d field %s, stored value is %s, but cached value is %s", $id, $sField, $sStored, $mCached[$sKey][$sField]);
+                        }
+                    }
+                    // $aFailures[] = $sKey;
+                }
+            }
+
+            if (!empty($aFailures)) {
+                $oCache->alertFailure($sClassName, $aFailures);
+            }
+
+            $res = $mCached;
+        } else if ($bCached) {
+            global $default;
+            if (KTLOG_CACHE) $default->log->debug(sprintf("Using object cache for class %s, id %d", $sClassName, $iId));
+            $res = $mCached;
+            /* */
+        } else {
+            if (KTLOG_CACHE) $default->log->debug(sprintf("No object cache for class %s, id %d", $sClassName, $iId));
+            $table = $this->_table();
+            $select = $this->_getSqlSelection();
+            $sQuery = "SELECT $select FROM $table WHERE id = ?";
+            $aParams = array($iId);
+
+            $res = DBUtil::getResultArray(array($sQuery, $aParams));
+
+            if (PEAR::isError($res)) {
+               return $res;
+            }
+
+            if (count($res) === 0) {
+                return PEAR::raiseError(_kt("No such ID: ") . $iId);
+            }
+
+            if (count($res) > 1) {
+                return PEAR::raiseError(_kt("Multiple matches for ID: ") . $iId);
+            }
+            $oCache->set($group, $iId, $res);  // finally, cache if its "good".
+        }
+
+        $vk = array_flip($this->_aFieldToSelect);
+        $aLoadInfo = array();
+        foreach ($res[0] as $k => $v) {
+            $aLoadInfo[$vk[$k]] = $v;
+        }
+
+        $res = $this->loadFromArray($aLoadInfo);
+        if (PEAR::isError($res)) {
+            return $res;
+        }
+
+        $properties = array();
+        foreach($this->_aFieldToSelect as $key => $val) {
+        	$properties[$val] = $aLoadInfo[$key];
+        }
+
+        return $properties;
     }
 
     function loadFromArray ($aOptions) {
@@ -301,9 +400,11 @@ class KTEntity {
             if ($sElement === false) {
                 return PEAR::raiseError(_kt('Setting a non-existent field: ') . $sField);
             }
+
             if (PEAR::isError($sElement)) {
                 return $sElement;
             }
+
             $ret = $this->_set($sElement, $sValue);
             if (PEAR::isError($ret)) {
                 return $ret;
@@ -435,7 +536,7 @@ class KTEntityUtil {
 
         // Merge in the standard options for the class
         $aBaseOpts = call_user_func(array($sClassName, "_ktentityOptions"));
-        if(!is_array($aBaseOpts)){
+        if (!is_array($aBaseOpts)) {
             $aBaseOpts = array();
         }
         $aOptions = array_merge($aBaseOpts, $aOptions);
@@ -461,9 +562,9 @@ class KTEntityUtil {
         /* *** Construct the query *** */
 
         $sQuery = '';
-        if($bIDs !== false){
+        if ($bIDs !== false) {
             $sQuery = "SELECT $sIDField FROM $sTable";
-        }else{
+        } else {
             $oObject = new $sClassName;
             $select = $oObject->_getSqlSelection();
             $sQuery = "SELECT {$select} FROM $sTable";
@@ -472,11 +573,11 @@ class KTEntityUtil {
         // Append the where clause
         $sWhere = '';
         $aParams = array();
-        if(isset($aWhereClause[0]) && !empty($aWhereClause[0])){
+        if (isset($aWhereClause[0]) && !empty($aWhereClause[0])) {
             // check whether the WHERE or ORDER has already been included in the query string
             $check = substr($aWhereClause[0], 0, 5);
 
-            if($check != 'WHERE' && $check != 'ORDER'){
+            if ($check != 'WHERE' && $check != 'ORDER') {
                 $sWhere = 'WHERE ';
             }
             $sWhere .= $aWhereClause[0];
@@ -486,14 +587,14 @@ class KTEntityUtil {
         }
 
         // Append the order by
-        if($sOrderBy != false){
+        if ($sOrderBy != false) {
             $sQuery .= " ORDER BY $sOrderBy";
         }
 
         // Append a limit and offset
-        if($iLimit != false){
+        if ($iLimit != false) {
             $sLimit = '';
-            if($iOffset != false){
+            if ($iOffset != false) {
                 $sLimit .= "$iOffset, ";
             }
             $sLimit .= $iLimit;
@@ -509,15 +610,9 @@ class KTEntityUtil {
 
         list($bCached, $mCached) = $oCache->get($group, $vals);
 
-
-        
-        
-        
-        
-        
         /* *** Execute the query *** */
         // If only id's are requested, return them
-        if($bIDs){
+        if ($bIDs) {
             $aIDs = DBUtil::getResultArrayKey(array($sQuery, $aParams), $sIDField);
             return $aIDs;
         }
@@ -580,9 +675,9 @@ class KTEntityUtil {
         //$useProxy = $config->get('cache/proxyCacheEnabled');
         foreach ($aMultiArray as $aArray) {
 
-            //if($useProxy){
+            //if ($useProxy) {
                 $iId = (int)$aArray['id'];
-                if(empty($iId)){
+                if (empty($iId)) {
                     $iId = null;
                 }
                 $sProxyClass = KTEntityUtil::_getProxyClass($sClassName);
@@ -612,7 +707,7 @@ class KTEntityUtil {
         $iId = (int)$iId;
         // Use a proxy class if enabled
         $config =& KTConfig::getSingleton();
-        //if($config->get('cache/proxyCacheEnabled')){
+        //if ($config->get('cache/proxyCacheEnabled')) {
             $sProxyClass = KTEntityUtil::_getProxyClass($sClassName);
             $oObject =new $sProxyClass($iId);
             $res = $oObject->getId();
@@ -651,9 +746,9 @@ class KTEntityUtil {
 
         $oKTConfig =& KTConfig::getSingleton();
         $sDirectory = $oKTConfig->get('cache/proxyCacheDirectory');
-        if (defined('ACCOUNT_ROUTING_ENABLED')) 
+        if (defined('ACCOUNT_ROUTING_ENABLED'))
         {
-        	if(ACCOUNT_ROUTING_ENABLED)
+        	if (ACCOUNT_ROUTING_ENABLED)
         	{
         		$sDirectory .= '/' . ACCOUNT_NAME;
         	}
@@ -698,7 +793,7 @@ class KTEntityUtil {
         $allcode[] = sprintf('var $aFieldArr = null;%s', "\n");
 
         foreach ($methods as $sMethod) {
-        	if(substr($sMethod, 0, 2) == '__') {
+        	if (substr($sMethod, 0, 2) == '__') {
 				/* We don't want magic functions in our proxy classes */
 				continue;
 			}
@@ -720,9 +815,9 @@ class KTEntityUtil {
                 return $oObject;
             }
             $oObject =new %s;
-            if(!empty($this->aFieldArr)){
+            if (!empty($this->aFieldArr)) {
                 $res = $oObject->loadFromArray($this->aFieldArr);
-            }else{
+            } else {
                 $res = $oObject->load($this->iId);
             }
             if (PEAR::isError($res)) {
@@ -847,7 +942,8 @@ class KTEntityUtil {
                 if ($bNoneOk) {
                     return null;
                 }
-                return new KTEntityNoObjects();
+                $ktEntityNoObjects = new KTEntityNoObjects();
+                return $ktEntityNoObjects;
             }
             if (count($aObjects) > 1) {
                 return PEAR::raiseError(_kt("Multiple objects returned"));

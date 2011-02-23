@@ -36,18 +36,17 @@
  */
 
 // TODO: do we have to serialise/unserialise the results. this is not optimal!!!
+// NOTE: suggest json encoding for space saving at least
 
 session_start();
-require_once("config/dmsDefaults.php");
+
+require_once('config/dmsDefaults.php');
 require_once(KT_DIR . '/search2/indexing/indexerCore.inc.php');
-
-require_once(KT_LIB_DIR . "/unitmanagement/Unit.inc");
-
-require_once(KT_LIB_DIR . "/templating/templating.inc.php");
-require_once(KT_LIB_DIR . "/dispatcher.inc.php");
-require_once(KT_LIB_DIR . "/widgets/forms.inc.php");
-require_once(KT_LIB_DIR . "/actions/bulkaction.php");
-
+require_once(KT_LIB_DIR . '/unitmanagement/Unit.inc');
+require_once(KT_LIB_DIR . '/templating/templating.inc.php');
+require_once(KT_LIB_DIR . '/dispatcher.inc.php');
+require_once(KT_LIB_DIR . '/widgets/forms.inc.php');
+require_once(KT_LIB_DIR . '/actions/bulkaction.php');
 require_once(KT_LIB_DIR . '/browse/DocumentCollection.inc.php');
 require_once(KT_LIB_DIR . '/documentmanagement/Document.inc');
 require_once(KT_LIB_DIR . '/browse/PartialQuery.inc.php');
@@ -55,7 +54,6 @@ require_once(KT_LIB_DIR . '/browse/PartialQuery.inc.php');
 function search2queryCompare($a, $b)
 {
 	global $search2queryColumn, $search2queryOrder;
-
 
 	if ($a->$search2queryColumn == $b->$search2queryColumn)
 	{
@@ -68,9 +66,8 @@ function search2queryCompare($a, $b)
 	if ($search2queryOrder == 'asc')
 		return $result;
 	else
-		return - $result;
+		return -$result;
 }
-
 
 /**
  * Assists with old browse search results
@@ -145,8 +142,8 @@ function search2QuerySort($sSortColumn, $sSortOrder)
  * Search2Query is used to provide allow the old browse search to work
  *
  */
-class Search2Query extends PartialQuery
-{
+class Search2Query extends PartialQuery {
+
     function _count($type)
     {
         $count = 0;
@@ -167,6 +164,7 @@ class Search2Query extends PartialQuery
     {
         return $this->_count('Folder');
     }
+
     function getDocumentCount()
     {
         return $this->_count('Document');
@@ -212,8 +210,8 @@ class Search2Query extends PartialQuery
     {
   	    return $this->getItems('Document', $iBatchStart, $iBatchSize, $sSortColumn, $sSortOrder);
     }
-}
 
+}
 
 class SearchDispatcher extends KTStandardDispatcher {
 
@@ -251,13 +249,20 @@ class SearchDispatcher extends KTStandardDispatcher {
      */
     private function processQuery($query)
     {
+        // if query is empty after removing any which contain only spaces, return an error
+        $query = trim(preg_replace('/\([a-z]* +[^ ]* +"[ ]*"\)/i', '', $query));
+        if (empty($query)) {
+            $this->errorRedirectTo('guiBuilder', _kt('Could not process query.  No valid search terms found (query contains only spaces and disallowed characters.)'));
+        }
+
     	try
     	{
      		$expr = parseExpression($query);
 
     		// bit of a hack
     		// check for the isDeleted and isArchived keywords affecting status in the query
-    		if(strpos($query, 'IsDeleted') !== false || strpos($query, 'IsArchived') !== false){
+    		if (strpos($query, 'IsDeleted') !== false || strpos($query, 'IsArchived') !== false)
+    		{
     		    $expr->setIncludeStatus(false);
     		}
 
@@ -293,7 +298,7 @@ class SearchDispatcher extends KTStandardDispatcher {
     	redirect(KTUtil::kt_url().'/dashboard.php');
     }
 
-    function do_refresh(){
+    function do_refresh() {
         // Get query from session
         $query = $_SESSION['search2_query'];
 
@@ -305,45 +310,50 @@ class SearchDispatcher extends KTStandardDispatcher {
      * Processes a query sent by HTTP POST in searchQuery.
      *
      */
+    // FIXME the string replacement of certain chars was causing some problem which I cannot recall (check jira?)
     function do_process()
     {
     	if (empty($_REQUEST['txtQuery']))
     	{
     		$this->errorRedirectTo('searchResults', _kt('Please reattempt the query. The query is missing.'));
     	}
-    	$query = $_REQUEST['txtQuery'];
 
+    	$query = $_REQUEST['txtQuery'];
     	// Strip out returns - they cause a js error [unterminated string literal]
     	$query = str_replace(array("\r\n", "\r", "\n"), array(' ', ' ', ' '), $query);
-    	$query = strip_tags($query);
+    	// NOTE strip_tags can cause problems if unclosed tags are in the query string;
+    	//      reinstate if needed, probably somewhere further down in the code.
+//    	$query = strip_tags($query);
 
     	$_SESSION['search2_quick'] = 0;
     	$_SESSION['search2_general'] = 0;
-    	if (isset($_REQUEST['cbQuickQuery']) && $_REQUEST['cbQuickQuery'] +0 == 1)
+    	if (isset($_REQUEST['cbQuickQuery']) && ($_REQUEST['cbQuickQuery'] + 0 == 1))
     	{
     		$_SESSION['search2_quick'] = 1;
-    		if (stripos($query, 'generaltext') !== false || stripos($query, 'metadata') !== false)
+    		// NOTE the original version checked metadata, not just generaltext, but since metadata is not
+    		//      using the indexer search engine any escaping needed should be done on building the query;
+    		//      either that or ALL db based queries, not just metadata, would need this done here.
+    		//      To add metadata to the expression, change 'generaltext' to '(generaltext|metadata)'
+            if (preg_match_all('/generaltext +([^ ]*) +"([^"]*)"/i', $query, $out))
     		{
-    			preg_match('/([^"]*")(.*)(".)$/', $query, $out);
-    			//$new_query = substr($out[2],1,-1);
-    			$new_query = $out[2];
-    			$term = $out[1];
-    			$term_close = $out[3];
+    		    $special_chars = array('+', '&&', '||', '(', ')', '{', '}', '[', ']', '^', '"', '~', '*', '?', ':', '<', '>', '\\');
+    		    // the query parts will be found in the final array element
+    		    $matches = array_pop($out);
+    		    foreach ($matches as $key => $match) {
+    		        // run a replace on the quoted part
+    		        $match = str_replace($special_chars, ' ', $match);
+    		        $query = str_replace("\"{$matches[$key]}\"", "\"{$match}\"", $query);
+    		    }
 
-    		    $special_chars = array('+', '-', '&&', '||', '(', ')', '{', '}', '[', ']', '^', '"', '~', '*', '?', ':', '<', '>', '\\');
-//                $replacement = array('\+', '\-', '\&\&', '\|\|', '\!', '\(', '\)', '\{', '\}', '\[', '\]', '\^', '\"', '\~', '\*', '\?', '\:');
-
-                $updated_query = str_replace($special_chars, ' ', $new_query);
-
-    			$_SESSION['search2_quickQuery'] = $updated_query;
-    			$query = $term.$updated_query.$term_close;
+    		    $_SESSION['search2_quickQuery'] = '';
     		}
     	}
     	else
     	{
 			$_SESSION['search2_quickQuery'] = '';
     	}
-    	if (isset($_REQUEST['cbQuickGeneral']) && $_REQUEST['cbQuickGeneral'] +0 == 1)
+
+    	if (isset($_REQUEST['cbQuickGeneral']) && ($_REQUEST['cbQuickGeneral'] + 0 == 1))
     	{
     		$_SESSION['search2_general'] = 1;
     	}
@@ -389,7 +399,6 @@ class SearchDispatcher extends KTStandardDispatcher {
     function do_processSaved()
     {
     	list($name, $expr) = $this->getSavedExpression();
-
 		$this->processQuery($expr);
     }
 
@@ -420,7 +429,6 @@ class SearchDispatcher extends KTStandardDispatcher {
             'show_documents' => true,
         ));
 
-
         $aOptions = $collection->getEnvironOptions(); // extract data from the environment
 
         $aOptions['empty_message'] = _kt("No documents or folders match this query.");
@@ -441,10 +449,9 @@ class SearchDispatcher extends KTStandardDispatcher {
             'browseutil' => new KTBrowseUtil(),
             'returnaction' => 'search2',
         );
+
         return $oTemplate->render($aTemplateData);
-        }
-
-
+	}
 
     /**
      * Renders the search results.
@@ -455,7 +462,7 @@ class SearchDispatcher extends KTStandardDispatcher {
     {
         if (array_key_exists('format', $_GET))
         {
-            switch ($_GET['format']){
+            switch ($_GET['format']) {
                 case 'searchengine':
                     $_SESSION['search2resultFormat'] = 'searchengine';
                     break;
@@ -466,7 +473,7 @@ class SearchDispatcher extends KTStandardDispatcher {
         }
         else
         {
-            if(!array_key_exists('search2resultFormat', $_SESSION)){
+            if (!array_key_exists('search2resultFormat', $_SESSION)) {
                 global $default;
                 $_SESSION['search2resultFormat'] = $default->resultsDisplayFormat;
             }
@@ -484,9 +491,9 @@ class SearchDispatcher extends KTStandardDispatcher {
     	$oTemplating =& KTTemplating::getSingleton();
         $oTemplate = $oTemplating->loadTemplate("ktcore/search2/search_results");
 
-       KTEntityUtil::_proxyCreate('KTDocumentContentVersion','KTDocumentContentVersionProxy');
-       KTEntityUtil::_proxyCreate('KTDocumentCore','KTDocumentCoreProxy');
-       KTEntityUtil::_proxyCreate('KTDocumentMetadataVersion','KTDocumentMetadataVersionProxy');
+        KTEntityUtil::_proxyCreate('KTDocumentContentVersion','KTDocumentContentVersionProxy');
+        KTEntityUtil::_proxyCreate('KTDocumentCore','KTDocumentCoreProxy');
+        KTEntityUtil::_proxyCreate('KTDocumentMetadataVersion','KTDocumentMetadataVersionProxy');
 
         $results = unserialize($_SESSION['search2_results']);
 
@@ -500,7 +507,7 @@ class SearchDispatcher extends KTStandardDispatcher {
         $display_order = $_SESSION['display_order'];
         $selected_order = array('f' => '', 'd' => '', 's' => '');
 
-        switch ($display_order){
+        switch ($display_order) {
             case 's':
                 $selected_order['s'] = 'selected';
                 $resultArray = $results['shortfolders'];
@@ -557,15 +564,15 @@ class SearchDispatcher extends KTStandardDispatcher {
         $maxPages = ceil($numRecs / $resultsPerPage) ;
         if ($pageOffset <= 0 || $pageOffset > $maxPages)
         {
-        	$pageOffset = 1;
+            $pageOffset = 1;
         }
 
-         $firstRec = ($pageOffset-1) * $resultsPerPage;
-         $lastRec = $firstRec + $resultsPerPage;
-         if ($lastRec > $numRecs)
-         {
-         	$lastRec = $numRecs;
-         }
+        $firstRec = ($pageOffset-1) * $resultsPerPage;
+        $lastRec = $firstRec + $resultsPerPage;
+        if ($lastRec > $numRecs)
+        {
+            $lastRec = $numRecs;
+        }
 
         $display = array_slice($results,$firstRec ,$resultsPerPage);
 
@@ -574,6 +581,7 @@ class SearchDispatcher extends KTStandardDispatcher {
         {
         	$startOffset = 1;
         }
+
         $endOffset = $pageOffset + $maxPageMove;
         if ($endOffset > $maxPages)
         {
@@ -716,7 +724,6 @@ class SearchDispatcher extends KTStandardDispatcher {
         }
 
         $this->successRedirectTo('manage', _kt('The saved search was deleted successfully.'));
-
 	}
 
 	function do_guiBuilder()
@@ -757,8 +764,6 @@ class SearchDispatcher extends KTStandardDispatcher {
         $this->oPage->title = _kt("Query Editor");
         $oTemplating =& KTTemplating::getSingleton();
         $oTemplate = $oTemplating->loadTemplate("ktcore/search2/adv_query_search");
-
-
         $registry = ExprFieldRegistry::getRegistry();
         $aliases = $registry->getAliasNames();
         sort($aliases);
@@ -783,8 +788,10 @@ class SearchDispatcher extends KTStandardDispatcher {
               'iSavedSearchId'=>$this->savedSearchId
 
         );
+
         return $oTemplate->render($aTemplateData);
 	}
+
 }
 
 $oDispatcher = new SearchDispatcher();

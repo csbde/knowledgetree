@@ -1,0 +1,40 @@
+<span class="ul_meta_row">
+	<span class="ul_meta_label" id="ul_meta_label_[id]">[name]
+		<span class="ul_meta_label_descr">[description]</span>
+	</span>
+	<span class="ul_meta_field">
+		<input id="ul_meta_field_[id]" type="text" class="ul_meta_fullField ul_meta_field_[id]" onChange="kt.app.upload.getMetaItem(this).setMetaData('[id]',this.value);"></input>
+	</span>
+</span>
+
+<script type="text/javascript">
+
+Ext.onReady(function(){
+
+	//populate field!
+	var val = kt.app.upload.getMetaItem(jQuery('#ul_meta_field_[id]')).getMetaData([id]);
+	if(val != undefined){
+		jQuery('#ul_meta_field_[id]').val(val);
+	}
+
+	if([is_mandatory] == '1') {
+		//jQuery('#ul_meta_field_[id]').addClass('required');
+		jQuery('#ul_meta_label_[id]').append("<img class='ul_required_tag' src='/resources/graphics/newui/required_tag.png'/>");
+		
+		if (val == undefined || val.length == 0){
+			//register as required field
+			kt.app.upload.getMetaItem(jQuery('#ul_meta_field_[id]')).registerRequiredFieldNotDone('ul_meta_field_[id]');
+		}
+
+		jQuery('#ul_meta_field_[id]').change(function() {
+			if (jQuery.trim(jQuery(this).val()).length == 0){
+				kt.app.upload.getMetaItem(this).registerRequiredFieldNotDone('ul_meta_field_[id]');
+			} else {
+				kt.app.upload.getMetaItem(this).registerRequiredFieldDone('ul_meta_field_[id]');
+			}
+		});
+	}
+
+});
+
+</script>

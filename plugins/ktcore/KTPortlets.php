@@ -5,32 +5,32 @@
  * KnowledgeTree Community Edition
  * Document Management Made Simple
  * Copyright (C) 2008, 2009, 2010 KnowledgeTree Inc.
- * 
- * 
+ *
+ *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License version 3 as published by the
  * Free Software Foundation.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
  * details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- * 
- * You can contact KnowledgeTree Inc., PO Box 7775 #87847, San Francisco, 
+ *
+ * You can contact KnowledgeTree Inc., PO Box 7775 #87847, San Francisco,
  * California 94120-7775, or email info@knowledgetree.com.
- * 
+ *
  * The interactive user interfaces in modified source and object code versions
  * of this program must display Appropriate Legal Notices, as required under
  * Section 5 of the GNU General Public License version 3.
- * 
+ *
  * In accordance with Section 7(b) of the GNU General Public License version 3,
  * these Appropriate Legal Notices must retain the display of the "Powered by
- * KnowledgeTree" logo and retain the original copyright notice. If the display of the 
+ * KnowledgeTree" logo and retain the original copyright notice. If the display of the
  * logo is not reasonably feasible for technical reasons, the Appropriate Legal Notices
- * must display the words "Powered by KnowledgeTree" and retain the original 
+ * must display the words "Powered by KnowledgeTree" and retain the original
  * copyright notice.
  * Contributor( s): ______________________________________
  *
@@ -89,9 +89,9 @@ class KTBrowseModePortlet extends KTPortlet {
     }
 
     function render() {
-		
+
 		return null;
-		
+
         // this is unfortunate, but such is life.
         $current_action = KTUtil::arrayGet($_REQUEST, 'fBrowseMode', null);
         $modes = array(
@@ -126,21 +126,21 @@ class KTAdminModePortlet extends KTPortlet {
     function KTAdminModePortlet() {
         parent::KTPortlet(_kt("Administrator mode"));
     }
-	
+
 	/**
 	 * Method to render the Portlet
 	 *
 	 * This portlet is hidden by default,
 	 * but manually called from the preferences page
-	 * 
-	 * @param boolean $forceRender 
+	 *
+	 * @param boolean $forceRender
 	 */
     function render($forceRender=FALSE) {
-		
+
 		if (!$forceRender) {
 			return null;
 		} else {
-			
+
 			$iFolderId = KTUtil::arrayGet($_REQUEST, 'fFolderId', 1);
 			$iDocumentId = KTUtil::arrayGet($_REQUEST, 'fDocumentId');
 			if (!$iFolderId && !$iDocumentId) {
@@ -155,22 +155,22 @@ class KTAdminModePortlet extends KTPortlet {
 			}
 			require_once(KT_LIB_DIR . '/security/Permission.inc');
 			$oUser =& User::get($_SESSION['userID']);
-			if (!Permission::userIsSystemAdministrator($oUser) && !Permission::isUnitAdministratorForFolder($oUser, $iFolderId)) {
+			if (!Permission::userIsSystemAdministrator($oUser) && !Permission::userIsUnitAdministrator()) {
 				return null;
 			}
 			require_once(KT_LIB_DIR . '/browse/browseutil.inc.php');
-	
+
 			$oTemplating =& KTTemplating::getSingleton();
 			$oTemplate = $oTemplating->loadTemplate("kt3/portlets/admin_mode_portlet");
-	
+
 			$toggleMode = 'action=disableAdminMode';
 			if (KTUtil::arrayGet($_SESSION, 'adminmode', false) == false) {
 				$toggleMode = 'action=enableAdminMode';
 			}
 			$QS = sprintf('fDocumentId=%s&fFolderId=%s&%s',$iDocumentId, $iFolderId, $toggleMode);
-	
+
 			$toggleUrl = KTUtil::addQueryString(KTBrowseUtil::getBrowseBaseUrl(), $QS);
-	
+
 			$aTemplateData = array(
 				"context" => $this,
 				'toggleurl' => $toggleUrl,
@@ -206,3 +206,5 @@ class KTAdminSectionNavigation extends KTPortlet {
         return $oTemplate->render($aTemplateData);
     }
 }
+
+?>

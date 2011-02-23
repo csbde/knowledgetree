@@ -12,9 +12,13 @@
 		
 		<div class="form_actions">
 			<!-- Search button -->
-			<input type="submit" value="{i18n}search for groups{/i18n}" />
+			<input type="submit" value="{i18n}Search For Groups{/i18n}" />
 		</div>
 	</div>
+	
+	<br />
+	<br />
+	<br />
 	
 <div class="widgetRow">
 
@@ -74,10 +78,10 @@
 <div class="widgetRow">
 	<div class="form_actions">
 		<!-- View all groups -->
-		<a style="background: none repeat scroll 0% 0% transparent;" href="{i18n arg_link=$link}#link#{/i18n}">{i18n}View all groups{/i18n}</a>
+		<!--<a style="background: none repeat scroll 0% 0% transparent;" href="{i18n arg_link=$link}#link#{/i18n}">{i18n}View All Groups{/i18n}</a>-->
 		
 		<!-- Add a new group -->
-		<a style="background: none repeat scroll 0% 0% transparent;" href="{addQS}action=addGroup{/addQS}">{i18n}Add group{/i18n}</a>
+		<a style="background: none repeat scroll 0% 0% transparent;" href="{addQS}action=addGroup{/addQS}">{i18n}Add Group{/i18n}</a>
 	</div>
 </div>
 

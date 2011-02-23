@@ -54,7 +54,7 @@ class Rest_Definition implements Countable, Iterator
         if (is_array($method)) {
             require_once 'classes/rest/method/Definition.php';
             $method = new Rest_Method_Definition($method);
-        } elseif (!$method instanceof Rest_Method_Definition) {
+        } elseif (!($method instanceof Rest_Method_Definition)) {
             require_once 'Exception.php';
             throw new Rest_Exception('Invalid method provided');
         }

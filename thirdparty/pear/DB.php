@@ -589,9 +589,9 @@ class DB
      *
      * @return bool  whether $value is DB_Error object
      */
-    function isError($value)
+    static function isError($value)
     {
-        return is_a($value, 'DB_Error');
+        return ($value instanceof DB_Error) ;
     }
 
     // }}}
@@ -625,7 +625,7 @@ class DB
      *
      * @return boolean  whether $query is a data manipulation query
      */
-    function isManip($query)
+    public static function isManip($query)
     {
         $manips = 'INSERT|UPDATE|DELETE|REPLACE|'
                 . 'CREATE|DROP|'

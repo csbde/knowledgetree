@@ -46,8 +46,8 @@ class IndexerInconsistencyException extends Exception {};
 
 // TODO: Query Result Items code should be moved into the Search section. It has less to do with indexing...
 
-class QueryResultItem
-{
+class QueryResultItem {
+    
     protected $id;
     protected $title;
     protected $rank;
@@ -130,10 +130,11 @@ class QueryResultItem
         }
         throw new Exception("Unknown property '$property' to set on QueryResultItem");
     }
+    
 }
 
-class ProxyResultItem extends QueryResultItem
-{
+class ProxyResultItem extends QueryResultItem {
+    
     protected $proxy;
     protected $proxyId;
 
@@ -174,10 +175,11 @@ class ProxyResultItem extends QueryResultItem
             return $this->proxy->$method($value);
         }
     }
+    
 }
 
-class DocumentResultItem extends QueryResultItem
-{
+class DocumentResultItem extends QueryResultItem {
+    
     protected $filesize;
     protected $live;
     protected $version;
@@ -206,7 +208,7 @@ class DocumentResultItem extends QueryResultItem
     protected $oemDocumentNo;
     protected $inclStatus = true;
 
-    public function __construct($document_id, $rank=null, $title=null, $text=null, $fullpath = null, $inclStatus = true)
+    public function __construct($document_id, $rank = null, $title = null, $text = null, $fullpath = null, $inclStatus = true)
     {
         parent::__construct($document_id, $title, $rank, $text, $fullpath);
         $this->live = true;
@@ -241,7 +243,7 @@ class DocumentResultItem extends QueryResultItem
 				WHERE
 					d.id=$this->id";
 
-        if($this->inclStatus){
+        if ($this->inclStatus) {
             $sql .= " AND d.status_id = 1";
         }
 
@@ -327,6 +329,7 @@ class DocumentResultItem extends QueryResultItem
     public function getWorkflow() { return $this->getWorkflow(); }
     public function getWorkflowStateOnly() { return (string)$this->workflowState; }
     public function getWorkflowState() { return $this->getWorkflowStateOnly(); }
+    
     public function getWorkflowAndState() {
         if (is_null($this->workflow))
         {
@@ -334,6 +337,7 @@ class DocumentResultItem extends QueryResultItem
         }
         return "$this->workflow - $this->workflowState";
     }
+    
     public function getMimeType() { return (string) $this->mimeType; }
     public function getMimeIconPath() { return (string) $this->mimeIconPath; }
     public function getMimeDisplay() { return (string) $this->mimeDisplay; }
@@ -350,6 +354,7 @@ class DocumentResultItem extends QueryResultItem
     public function getStoragePath() { return $this->storagePath; }
     public function getDocumentType() { return $this->documentType; }
     public function getPermissions() { return KTAPI_Document::get_permission_string($this->Document); }
+    
     public function getCanBeReadByUser() {
         if (!$this->live)
         return false;
@@ -359,10 +364,11 @@ class DocumentResultItem extends QueryResultItem
         return true;
         return false;
     }
+    
 }
 
-class FolderResultItem extends QueryResultItem
-{
+class FolderResultItem extends QueryResultItem {
+    
     protected $folder;
     protected $createdBy;
     protected $parentId;
@@ -398,15 +404,15 @@ class FolderResultItem extends QueryResultItem
 
 }
 
-class DocumentShortcutResultItem extends ProxyResultItem
-{
+class DocumentShortcutResultItem extends ProxyResultItem {
+    
     public function getDocumentID() { return $this->getId(); }
     public function getMimeIconPath() { return $this->proxy->getMimeIconPath() . '_shortcut'; }
 
 }
 
-class FolderShortcutResultItem extends ProxyResultItem
-{
+class FolderShortcutResultItem extends ProxyResultItem {
+    
     var $parentId;
     var $linkedId;
     var $full_path;
@@ -424,8 +430,8 @@ function MatchResultCompare($a, $b)
     return ($a->Rank < $b->Rank) ? -1 : 1;
 }
 
-abstract class Indexer
-{
+abstract class Indexer {
+    
     /**
 	 * Cache of extractors
 	 *
@@ -644,14 +650,14 @@ abstract class Indexer
 
         $default->log->debug("index: Queuing indexing of $document_id");
 
-		if(ACCOUNT_ROUTING_ENABLED) {
+		if (ACCOUNT_ROUTING_ENABLED) {
 			$oQueueDispatcher = liveIncludes::getSQSQueue();
         	// Document added, create indexing complex event
-        	$oQueueDispatcher->addProcess('indexing', $document);
+        	$oQueueDispatcher->addProcess('indexing', $document, $document->getSize());
 		}
         // If we're indexing a discussion, re-processing is not needed.
-        if($what === 'D'){
-        	if(ACCOUNT_ROUTING_ENABLED) {
+        if ($what === 'D') {
+        	if (ACCOUNT_ROUTING_ENABLED) {
 				// Send complex event
 				$oQueueDispatcher->sendToQueue();
         	}
@@ -668,10 +674,10 @@ abstract class Indexer
         DBUtil::runQuery($sql);
 
         $default->log->debug("Processing queue: Queuing document for processing - $document_id");
-        if(ACCOUNT_ROUTING_ENABLED)
+        if (ACCOUNT_ROUTING_ENABLED)
         {
         	// Document added, create processing complex event
-			$oQueueDispatcher->addProcess('processing', $document);
+        	$oQueueDispatcher->addProcess('processing', $document, $document->getSize());
 			// Send complex event
 			$oQueueDispatcher->sendToQueue();
         }
@@ -700,7 +706,7 @@ abstract class Indexer
     {
         $sql = "UPDATE index_files SET processdate = null";
         DBUtil::runQuery($sql);
-        if(ACCOUNT_ROUTING_ENABLED)
+        if (ACCOUNT_ROUTING_ENABLED)
         {
 	        $sql = "SELECT document_id FROM index_files;";
 	        $results = DBUtil::getResultArray($sql);
@@ -708,7 +714,7 @@ abstract class Indexer
 				$document = Document::get($res['document_id']);
 	        	// Document added, create indexing complex event
 				$oQueueDispatcher = liveIncludes::getSQSQueue();
-	        	$oQueueDispatcher->addProcess('indexing', $document);
+	        	$oQueueDispatcher->addProcess('indexing', $document, $document->getSize());
 				// Send complex event
 	        	$oQueueDispatcher->sendToQueue();
 			}
@@ -719,11 +725,12 @@ abstract class Indexer
     {
         $sql = "UPDATE index_files SET processdate=null, status_msg=null WHERE document_id=$documentId";
         DBUtil::runQuery($sql);
-        if(ACCOUNT_ROUTING_ENABLED)
+        if (ACCOUNT_ROUTING_ENABLED)
         {
         	// Document added, create indexing complex event
+        	$document = Document::get($documentId);
 			$oQueueDispatcher = liveIncludes::getSQSQueue();
-        	$oQueueDispatcher->addProcess('indexing', $document);
+        	$oQueueDispatcher->addProcess('indexing', $document, $document->getSize());
         	// Send complex event
         	$oQueueDispatcher->sendToQueue();
         }
@@ -742,7 +749,7 @@ abstract class Indexer
         $sql = "INSERT INTO index_files(document_id, user_id, what) SELECT id, $userid, 'A' FROM documents WHERE status_id=1 and id not in (select document_id from index_files)";
         DBUtil::runQuery($sql);
 
-        if(ACCOUNT_ROUTING_ENABLED)
+        if (ACCOUNT_ROUTING_ENABLED)
         {
 	        $sql = "SELECT document_id FROM index_files;";
 	        $results = DBUtil::getResultArray($sql);
@@ -750,7 +757,7 @@ abstract class Indexer
 				$document = Document::get($res['document_id']);
 	        	// Document added, create indexing complex event
 				$oQueueDispatcher = liveIncludes::getSQSQueue();
-	        	$oQueueDispatcher->addProcess('indexing', $document);
+	        	$oQueueDispatcher->addProcess('indexing', $document, $document->getSize());
 	        	// Send complex event
 	        	$oQueueDispatcher->sendToQueue();
 			}
@@ -767,7 +774,7 @@ abstract class Indexer
         $sql = "INSERT INTO process_queue(document_id, date_added) SELECT id, now() FROM documents WHERE status_id=1 and id not in (select document_id from process_queue)";
         DBUtil::runQuery($sql);
 
-        if(ACCOUNT_ROUTING_ENABLED)
+        if (ACCOUNT_ROUTING_ENABLED)
         {
 	        $sql = "SELECT document_id FROM process_queue;";
 	        $results = DBUtil::getResultArray($sql);
@@ -775,7 +782,7 @@ abstract class Indexer
 				$document = Document::get($res['document_id']);
 	        	// Document added, create indexing complex event
 				$oQueueDispatcher = liveIncludes::getSQSQueue();
-	        	$oQueueDispatcher->addProcess('processing', $document);
+	        	$oQueueDispatcher->addProcess('processing', $document, $document->getSize());
 	        	// Send complex event to sqs queue
 	        	$oQueueDispatcher->sendToQueue();
 			}
@@ -787,7 +794,7 @@ abstract class Indexer
         $userid=$_SESSION['userID'];
         if (empty($userid)) $userid=1;
 
-        if (!$folder instanceof Folder && !$folder instanceof FolderProxy)
+        if (!($folder instanceof Folder) && !($folder instanceof FolderProxy))
         {
             throw new Exception('Folder expected');
         }
@@ -796,7 +803,7 @@ abstract class Indexer
 
         $sql = "INSERT INTO index_files(document_id, user_id, what) SELECT id, $userid, 'A' FROM documents WHERE full_path like '{$full_path}/%' AND status_id=1 and id not in (select document_id from index_files)";
         DBUtil::runQuery($sql);
-        if(ACCOUNT_ROUTING_ENABLED)
+        if (ACCOUNT_ROUTING_ENABLED)
         {
         	// Folder documents added
 	        $sql = "SELECT id, $userid, 'A' FROM documents WHERE full_path like '{$full_path}/%' AND status_id=1 and id not in (select document_id from index_files);";
@@ -805,7 +812,7 @@ abstract class Indexer
 				$document = Document::get($res['document_id']);
 	        	// Document added, create indexing complex event
 				$oQueueDispatcher = liveIncludes::getSQSQueue();
-	        	$oQueueDispatcher->addProcess('indexing', $document);
+	        	$oQueueDispatcher->addProcess('indexing', $document, $document->getSize());
 	        	// Send complex event to sqs queue
 	        	$oQueueDispatcher->sendToQueue();
 			}
@@ -837,7 +844,7 @@ abstract class Indexer
         $sql = 'UPDATE index_files SET processdate = null where processdate is not null and status_msg is null';
         $res = DBUtil::runQuery($sql);
 
-        if(PEAR::isError($res)){
+        if (PEAR::isError($res)) {
             $default->log->error("Indexer::clearoutDeleted: something happened ".$res->getMessage);
         }
 
@@ -899,7 +906,7 @@ abstract class Indexer
         $content = $oStorage->file_get_contents($filename);
 
         // if the file is empty skip the filter - document was probably empty
-        if(empty($content)){
+        if (empty($content)) {
             global $default;
             $default->log->debug('No text was extracted from the document. Either it was empty or there was a problem with the extraction');
             return true;
@@ -1711,7 +1718,7 @@ abstract class Indexer
     public function indexDocuments($max=null)
     {
         global $default;
-        if($default->enableIndexing){
+        if ($default->enableIndexing) {
             $this->preIndexingSetup();
 
             if (is_null($max))
@@ -1722,7 +1729,7 @@ abstract class Indexer
             $queue = $this->getDocumentsQueue($max);
 
             // Process queue
-            foreach($queue as $item){
+            foreach($queue as $item) {
                 // index document
                 $this->processDocument($item);
             }
@@ -1965,7 +1972,7 @@ abstract class Indexer
             }
 
             $extractor = new $class();
-            if (!is_a($extractor, $baseclass))
+            if (!($extractor instanceof $baseclass))
             {
                 $default->log->error(sprintf(_kt("diagnose(): '%s' is not of type DocumentExtractor"), $class));
                 continue;
@@ -2000,12 +2007,13 @@ abstract class Indexer
      *
      * @param boolean $clear. Optional. Defaults to false.
      */
-    public function registerTypes($clear=false)
+    public function registerTypes($clear = false)
     {
         if ($clear)
         {
             $this->clearExtractors();
         }
+        
         $dir = opendir(SearchHelper::correctPath($this->extractorPath));
         while (($file = readdir($dir)) !== false)
         {
@@ -2047,9 +2055,9 @@ abstract class Indexer
      *
      * @param int $docid
      */
-    public static function unqueueDocument($docid, $reason=false, $level='debug')
+    public static function unqueueDocument($docid, $reason = false, $level = 'debug')
     {
-        $sql = "DELETE FROM index_files WHERE document_id=$docid";
+        $sql = "DELETE FROM index_files WHERE document_id = $docid";
         DBUtil::runQuery($sql);
         if ($reason !== false)
         {
@@ -2063,9 +2071,9 @@ abstract class Indexer
      *
      * @param int $docid
      */
-    public static function unqueueDocFromProcessing($docid, $reason=false, $level='debug')
+    public static function unqueueDocFromProcessing($docid, $reason = false, $level = 'debug')
     {
-        $sql = "DELETE FROM process_queue WHERE document_id=$docid";
+        $sql = "DELETE FROM process_queue WHERE document_id = $docid";
         $result = DBUtil::runQuery($sql);
 
         if ($reason !== false)
@@ -2163,6 +2171,7 @@ abstract class Indexer
         $directory = $config->get('indexer/luceneDirectory');
         return $directory;
     }
+    
 }
 
 ?>

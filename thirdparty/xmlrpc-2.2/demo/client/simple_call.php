@@ -41,7 +41,7 @@
 			$varargs = func_get_args();
 			$client = array_shift($varargs);
 			$remote_function_name = array_shift($varargs);
-			if (!is_a($client, 'xmlrpc_client') || !is_string($remote_function_name))
+			if (!($client instanceof xmlrpc_client) || !is_string($remote_function_name))
 			{
 				return false;
 			}

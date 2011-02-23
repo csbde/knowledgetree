@@ -1,0 +1,81 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+	<title>{i18n arg_appname="$appname"}Login | #appname#{/i18n}</title>
+
+	{foreach from=$css item=item}
+        <link rel="stylesheet" href="{$rootUrl}{$item}" type="text/css" />
+    {/foreach}
+
+ 	<link rel="stylesheet" href="{$rootUrl}/resources/css/kt-login.css" type="text/css" />
+
+ 	{foreach from=$js item=item}
+        <script type="text/javascript" src="{$rootUrl}{$item}"> </script>
+    {/foreach}
+</head>
+<body >
+<div id="loginbox_outer"  {if ($disclaimer)} class="hasDisclaimer" {/if} style="width:800px;">
+	<div class="header">
+
+	</div>
+	<div class="content" style="display:block; min-height: 550px; ">
+		<div class="promotions-block" style="display:block; height:400px; position:relative; float: right; margin:50px 15px 0px 0px; ">
+		<iframe style="-webkit-box-shadow: #667 0px 0px 5px; -moz-box-shadow: #667 0px 0px 5px; border: 1px solid #616161; border-radius: 15px;-moz-border-radius: 15px; padding: 25px;" class="iframe-filter" width="350" height="400" src="https://app.knowledgetree.com/iframe/login-promo" scrolling="no" frameBorder="0" style="border: 0;"></iframe>
+		</div>
+
+		<div class="login-box" style="display:block; margin-left: 20px;">
+			<form class="login-form" action="{$smarty.server.PHP_SELF}" method="POST" name="login">
+				<input type="hidden" name="key" value="{$key}" />
+
+				<div id="login_form" >
+
+				    <p class="descriptive-text">{i18n}Login to your account{/i18n}</p>
+
+					{if ($errorMessage != null)}
+					    <div class="ktErrorMessage">
+					    	{if ($errorMessage == $errorMessageConfirm)}
+					    		{$errorMessage}
+					    	{else}
+					    		{$errorMessage|sanitize}
+					    	{/if}
+					    	</div>
+					{/if}
+
+				   {if $use_email}
+				   {else}
+					   <label for="username">{i18n}Username{/i18n}</label>
+					   <input type="text" id="username" name="username" value="{$username}"/>
+				   {/if}
+
+					<label for="fullname">{i18n}Full Name{/i18n}</label>
+					<input type="text" id="fullname" name="fullname" value="{$fullname}"/>
+
+					<label for="password">{i18n}Password{/i18n}</label>
+					<input type="password" id="password" name="password"/>
+
+					<label for="confirm_password">{i18n}Confirm Password{/i18n}</label>
+					<input type="password" id="confirm_password" name="confirm_password"/>
+
+					</select>
+						<div class="form-actions">
+							<br/>
+				   			<input type="submit" name="save" value="{i18n}Login{/i18n}" /><br/><br/><br/>
+				   		</div>
+					</div>
+	    		</form>
+
+
+    		</div>
+
+		</div>
+
+
+		<div class="footer" style="clear:both;"><span style="display:block; float:right;">Call: 1 877.900.0350</span>
+		<a href="http://www.knowledgetree.com/blog">{i18n}Blog{/i18n}</a> &nbsp;| <a href="http://support.knowledgetree.com">{i18n}Support{/i18n}</a> &nbsp;|  &nbsp;<a href="http://www.knowledgetree.com/privacy">{i18n}Privacy{/i18n}</a>&nbsp; | &nbsp;<a href="http://www.knowledgetree.com/legal">{i18n}Legal{/i18n}</a>&nbsp; |&nbsp; &copy; 2011 KnowledgeTree Inc.&nbsp;
+		</div>
+	</div>
+</div>
+
+</body>
+</html>

@@ -133,4 +133,4 @@
     <div class="dashboard_block_empty" id="end-right">&nbsp;</div>
 </div>
 
-
+{$ktOlarkPopup}

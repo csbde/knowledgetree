@@ -7,7 +7,7 @@
  * KnowledgeTree Community Edition
  * Document Management Made Simple
  * Copyright (C) 2008, 2009, 2010 KnowledgeTree Inc.
- * 
+ *
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License version 3 as published by the
@@ -40,6 +40,7 @@
 require_once(KT_LIB_DIR . '/database/dbutil.inc');
 require_once(KT_LIB_DIR . '/ktentity.inc');
 require_once(KT_LIB_DIR . "/util/sanitize.inc");
+require_once(KT_LIB_DIR . '/datetime/datetimeutil.inc.php');
 
 define('ADMIN_USER_ID', 1);
 
@@ -177,6 +178,9 @@ class User extends KTEntity {
     function getDisabled() { return $this->bDisabled; }
     function setDisabled($mValue) { $this->bDisabled = $mValue; }
 
+    /* Timezone getters */
+    function getLocaleLastLogin() { return datetimeutil::getLocaleDate($this->dLastLogin); }
+    
     /* return the key for storing dashboard in system settings */
     function _getDashboardStateKey() {
         return 'dashboard-state-' . $this->getId();
@@ -483,7 +487,17 @@ class User extends KTEntity {
         return DBUtil::getOneResultKey(array($sQuery, $aParams), 'number');
     }
 
+    function getNumberInvitedUsers() {
+        $sQuery = sprintf('SELECT COUNT(id) AS number FROM %s WHERE disabled = ? AND id > 1', KTUtil::getTableName('users'));
+        $aParams = array(3);
+        return DBUtil::getOneResultKey(array($sQuery, $aParams), 'number');
+    }
+
     function isAnonymous() { return $this->iId == -2; }
+
+    function isLicensed() {
+        return ($this->bDisabled != 4);
+    }
 
     function disable() {
         $this->setDisabled(1);
@@ -542,6 +556,11 @@ class User extends KTEntity {
 	    $this->setAuthenticationDetailsBool2(null);
 
         $this->update();
+
+        // delete any sessions related to the user
+        $sql = "delete from active_sessions where user_id = {$tempUserID}";
+        DBUtil::runQuery($sql);
+
         if (KTPluginUtil::pluginIsActive('ktdms.wintools')) {
             $path = KTPluginUtil::getPluginPath('ktdms.wintools');
             require_once($path . 'baobabkeyutil.inc.php');

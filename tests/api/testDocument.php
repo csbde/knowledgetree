@@ -303,12 +303,12 @@ class APIDocumentTestCase extends KTUnitTestCase {
         // create another random file
         $randomFile = APIDocumentHelper::createRandomFile('updating the previous content');
         $this->assertTrue($this->oStorage->isFile($randomFile));
-        $document->checkin('testname369.txt', 'Updating test checkin document', $randomFile);
+        $document->checkin('testname369.txt', 'Updating test check-in document', $randomFile);
         
         // document should be checked in
         $document = $this->ktapi->get_document_by_id($documentid);
         $this->assertFalse($document->is_checked_out());
-        $document->delete('Testing document checkin');
+        $document->delete('Testing document check-in');
         $document->expunge();
     }
 

@@ -10,6 +10,9 @@
     {foreach item=sResourceURL from=$page->getCSSResources()}
        <link rel="stylesheet" type="text/css" href="{$rootUrl}/{$sResourceURL}" />
     {/foreach}
+    {foreach item=sResourceURL from=$page->getCSSExternal()}
+       <link rel="stylesheet" type="text/css" href="{$sResourceURL}" />
+    {/foreach}
     {if $config->get("ui/morphEnabled") == '1'}
 	{foreach item=sResourceURL from=$page->getThemeCSSResources()}
 	<link rel="stylesheet" type="text/css" href="{$rootUrl}/{$sResourceURL}" />
@@ -57,7 +60,7 @@
     {foreach item=sJavascript from=$page->getJSStandalone()}
        <script type="text/javascript">
        var rootURL = "{$absoluteRootUrl}";
-       var quickQuery = "{$search2_quickQuery}";
+       var quickQuery = '{$search2_quickQuery}';
 	{$sJavascript}
        </script>
     {/foreach}
@@ -69,10 +72,10 @@
 <body {if (!$page->show_portlets)}class="noportlets"{/if} {if $page->onload}onload="{$page->getBodyOnload()}"{/if} onresize="kt.lib.setFooter()">
 
 	<div id="wrapper">
-	
+
 		<input type="hidden" name="kt-core-baseurl" id="kt-core-baseurl" value="{$rootUrl}" />
 		<div id="pageHeader">
-		
+
 			{if (!$page->hide_navbar)}
 			<div id="topnavbar">
 				<ul class="floatleft">
@@ -88,7 +91,7 @@
 					{/foreach}
 				</ul>
 					<script language="javascript">
-					
+
 					var sSearchTranslations =
 						[
 
@@ -128,14 +131,14 @@
 					</script>
 				<ul class="floatright">
 					<li class="roundright"></li> <!-- block for right round corner -->
-					
+
 					<!-- Right most items come first -->
 					{if ($page->getHelpURL() != null)}<!--<li><a href="{$page->getHelpURL()}"><img src="thirdparty/icon-theme/16x16/apps/help-browser.gif" align="absmiddle" border="0" /></a></li>-->{/if}
-					
-					
+
+
 					<!-- user menu -->
 
-						
+
 						{if !empty($page->userMenu)}
 							<!-- &middot; -->
 						{/if}
@@ -172,27 +175,38 @@
 				{$uploadProgress}
 				<div class="floatClear"></div>
 			</div>
-			
+
 			<div id="middle_nav">
 				<ul id="nav" class="dropdown dropdown-horizontal">
 					<li class="roundleft">&nbsp;</li> <!-- block for left round corner -->
 						{foreach item=oPortlet from=$page->portlets}
 							{assign var=portlet_output value=$oPortlet->render() }
 							{if $portlet_output}
-							<li><span class="dir">{$oPortlet->getTitle()}</span> 
+							<li><span class="dir">{$oPortlet->getTitle()}</span>
 										{$portlet_output}
 							</li>
 							{/if}
 						{/foreach}
 				</ul>
-				<div id="bigbuttons"></div>
+				<div id="bigbuttons">
+					{if $page->submenuitems}
+						<ul id="nav" class="tabbed">
+						{foreach item=oSubMenuItem from=$page->submenuitems}
+							{assign var=portlet_output value=$oSubMenuItem->render()}
+							{if $portlet_output}
+							{$portlet_output}
+							{/if}
+						{/foreach}
+						</ul>
+					{/if}
+				</div>
 				<div id="midright">
-					
+
 					<span id="midrightcorner">&nbsp;</span>
 					<div id="newSearchQuery"></div>
 				</div>
 			</div>
-			
+
 			{if (!$page->hide_section)}
 			<div id="breadcrumbs">
 					<table width="100%">
@@ -238,13 +252,13 @@
 		</div>
 		<div id="pageBody">
 			<div id="content" {if $page->content_class}class="{$page->content_class}"{/if}>
-			
+
 				{if (!$page->hide_section)}
 					<h1 class="{$page->componentClass}"><span class="fahrner">{$page->componentLabel}</span>
 						{if ($page->getHelpURL() != null)}<a class="ktHelp" href="{$page->getHelpURL()}">Help</a> {/if}
 					</h1>
 				{/if}
-					
+
 				<!-- Error messages added here. -->
 				{if (!empty($page->errStack))}
 					<div class="ktError">
@@ -282,7 +296,11 @@
 						<div class="info_dashlet_leftrepeat_bottom"></div>
 						<div class="info_list">
 						{foreach item=sInfo from=$page->infoStack}
-							<div class="info_item">{$sInfo|sanitize}</div>
+							{if (!$page->allowHTML)}
+								<div class="info_item">{$sInfo|sanitize}</div>
+							{else}
+								<div class="info_item">{$sInfo}</div>
+							{/if}
 						{/foreach}
 						</div>
 						<div class="info_dashlet_topleft_small"></div>
@@ -294,14 +312,14 @@
 						<div class="info_dashlet_bottomright"></div>
 					</div>
 				{/if}
-				
+
 				<!-- Content added here. -->
 				{$page->contents}
-				
+
 				<div class="floatClear"></div>
-				
+
 			</div><!-- end of content -->
-		</div> 
+		</div>
 	</div>
 
 	<div id="footer"> <!-- Change me to HTML5! -->
@@ -309,9 +327,9 @@
 			<a href="{$rootUrl}/dashboard.php"><img src="{$rootUrl}/resources/graphics/newui/footer_powered_by.png" border="0" alt="Powered by KnowledgeTree" title="Powered by KnowledgeTree"/></a>
 		</div>
 		<div id="footerRight">
-			{i18n}&copy; 2008-2010 <a href="http://www.knowledgetree.com/about/legal" target="_blank">KnowledgeTree Inc.</a>{/i18n}
-			{i18n}All rights reserved.{/i18n}
-			| <a href="http://www.knowledgetree.com/company" target="_blank">{i18n}About{/i18n}</a>
+			{i18n}&copy; 2011 <a href="http://www.knowledgetree.com/about/legal" target="_blank">KnowledgeTree Inc.</a>{/i18n}
+			<!--{i18n}All rights reserved.{/i18n}
+			| <a href="http://www.knowledgetree.com/company" target="_blank">{i18n}About{/i18n}</a>-->
 		</div>
 	</div>
 

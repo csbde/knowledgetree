@@ -5,7 +5,7 @@
  * KnowledgeTree Community Edition
  * Document Management Made Simple
  * Copyright (C) 2008, 2009, 2010 KnowledgeTree Inc.
- * 
+ *
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License version 3 as published by the
@@ -65,7 +65,7 @@ class KTDocumentPermissionsAction extends KTDocumentAction {
     var $_bAdminAlwaysAvailable = true;
 
     function getDisplayName() {
-        return _kt('Sharing');
+        return _kt('Permissions');
     }
 
     function do_main() {
@@ -456,6 +456,7 @@ class KTRoleAllocationPlugin extends KTFolderAction {
             'transactionNS' => 'ktcore.transactions.role_allocations_change',
             'userid' => $_SESSION['userID'],
             'ip' => Session::getClientIP(),
+        	'parentid' => $this->oFolder->getParentID(),
         ));
         $aOptions = array(
             'defaultmessage' => _kt('Error creating allocation'),
@@ -525,6 +526,7 @@ class KTRoleAllocationPlugin extends KTFolderAction {
             'transactionNS' => 'ktcore.transactions.role_allocations_change',
             'userid' => $_SESSION['userID'],
             'ip' => Session::getClientIP(),
+        	'parentid' => $this->oFolder->getParentID(),
         ));
         $aOptions = array(
             'defaultmessage' => _kt('Problem assigning role to parent allocation'),
@@ -735,6 +737,7 @@ class KTRoleAllocationPlugin extends KTFolderAction {
             'transactionNS' => 'ktcore.transactions.role_allocations_change',
             'userid' => $_SESSION['userID'],
             'ip' => Session::getClientIP(),
+        	'parentid' => $this->oFolder->getParentID(),
         ));
         $aOptions = array(
             'defaultmessage' => _kt('Problem assigning role users'),
@@ -790,6 +793,7 @@ class KTRoleAllocationPlugin extends KTFolderAction {
             'transactionNS' => 'ktcore.transactions.role_allocations_change',
             'userid' => $_SESSION['userID'],
             'ip' => Session::getClientIP(),
+        	'parentid' => $this->oFolder->getParentID(),
         ));
         $aOptions = array(
             'defaultmessage' => _kt('Problem assigning role groups'),
@@ -858,6 +862,9 @@ class KTRoleAllocationPlugin extends KTFolderAction {
 				}
 			}
 		}
+
+		// Force the permissions cache to update
+		KTPermissionUtil::clearCache();
 	}
 }
 

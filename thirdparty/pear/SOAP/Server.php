@@ -346,7 +346,7 @@ class SOAP_Server extends SOAP_Base
     function buildResult(&$method_response, &$return_type,
                          $return_name = 'return', $namespace = '')
     {
-        if (is_a($method_response, 'SOAP_Value')) {
+        if ($method_response instanceof SOAP_Value) {
             $return_val = array($method_response);
         } else {
             if (is_array($return_type) && is_array($method_response)) {
@@ -356,7 +356,7 @@ class SOAP_Server extends SOAP_Base
                     if (is_numeric($key)) {
                         $key = 'item';
                     }
-                    if (is_a($method_response[$i], 'SOAP_Value')) {
+                    if ($method_response[$i] instanceof SOAP_Value) {
                         $return_val[] =& $method_response[$i++];
                     } else {
                         $qn = new QName($key, $namespace);
@@ -400,7 +400,7 @@ class SOAP_Server extends SOAP_Base
         $header_results = array();
 
         if ($request_headers) {
-            if (!is_a($request_headers, 'SOAP_Value')) {
+            if (!($request_headers instanceof SOAP_Value)) {
                 $this->_raiseSoapFault('Parser did not return SOAP_Value object: ' . $request_headers, '', '', 'Server');
                 return null;
             }
@@ -478,7 +478,7 @@ class SOAP_Server extends SOAP_Base
         if (!$request_val = $parser->getResponse()) {
             return null;
         }
-        if (!is_a($request_val, 'SOAP_Value')) {
+        if (!($request_val instanceof SOAP_Value)) {
             $this->_raiseSoapFault('Parser did not return SOAP_Value object: ' . $request_val, '', '', 'Server');
             return null;
         }
@@ -532,7 +532,7 @@ class SOAP_Server extends SOAP_Base
         if (PEAR::isError($request)) {
             $fault = &$this->_raiseSoapFault($request);
             return $fault;
-        } else if (!is_a($request, 'SOAP_Value')) {
+        } else if (!($request instanceof SOAP_Value)) {
             $fault = &$this->_raiseSoapFault('Invalid data in server::__decodeRequest');
             return $fault;
         }

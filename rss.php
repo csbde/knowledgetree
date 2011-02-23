@@ -145,7 +145,7 @@ if (!validateUser($_SERVER['PHP_AUTH_USER'], $_SERVER['PHP_AUTH_PW'])) {
 function validateUser($username, $password){
     //return DBAuthenticator::checkPassword($username, $password);
     $oUser =& User::getByUsername($username);
-    if(PEAR::isError($oUser) || is_a($oUser, 'KTEntityNoObjects')){
+    if(PEAR::isError($oUser) || $oUser instanceof KTEntityNoObjects){
         return false;
     }
 

@@ -38,6 +38,7 @@
 
 require_once(KT_LIB_DIR . '/ktentity.inc');
 require_once(KT_LIB_DIR . "/util/sanitize.inc");
+require_once(KT_LIB_DIR . '/datetime/datetimeutil.inc.php');
 
 class KTDocumentMetadataVersion extends KTEntity {
     var $_bUsePearError = true;
@@ -100,6 +101,8 @@ class KTDocumentMetadataVersion extends KTEntity {
     function setWorkflowId($mValue) { $this->iWorkflowId = $mValue; }
     function getWorkflowStateId() { return $this->iWorkflowStateId; }
     function setWorkflowStateId($mValue) { $this->iWorkflowStateId = $mValue; }
+    // Timezone getters
+    function getDisplayVersionCreated() { return datetimeutil::getLocaleDate($this->dVersionCreated); }
     // }}}
 
     function __construct() {
@@ -165,6 +168,19 @@ class KTDocumentMetadataVersion extends KTEntity {
             'multi' => true,
             'orderby' => 'version_created DESC, metadata_version DESC',
         ));
+    }
+
+    function getByDocumentContent($oDocument)
+    {
+        $iDocumentId = KTUtil::getId($oDocument);
+
+        $sql = "SELECT m.content_version_id, m.version_created as datetime, c.major_version, c.minor_version, m.version_creator_id, u.name, u.email
+                FROM document_content_version c, document_metadata_version m, users u
+                WHERE c.id = m.content_version_id AND m.version_creator_id = u.id AND m.document_id = {$iDocumentId}
+                ORDER by m.id ASC";
+
+        $res = DBUtil::getResultArray($sql);
+        return $res;
     }
 
     function bumpMetadataVersion() {

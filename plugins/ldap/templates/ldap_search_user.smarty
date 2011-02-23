@@ -1,0 +1,58 @@
+{$context->oPage->requireJSResource('resources/js/toggleselect.js')}
+
+<form method="POST" action="{$smarty.server.PHP_SELF}">
+<p class="descriptiveText">{i18n}Since there may be many users in the
+system, please provide a few letters from the person's user name to
+begin.{/i18n}</p>
+
+<input type="hidden" name="action" value="addUserFromSource" />
+<input type="hidden" name="source_id" value="{$source->getId()}" />
+<fieldset><legend>{i18n}Search for user{/i18n}</legend>
+{foreach from=$fields item=oWidget}
+  {$oWidget->render()}
+{/foreach}
+<div class="form_actions">
+   <input type="submit" value="{i18n}search for users{/i18n}" />
+</div>
+</fieldset>
+</form>
+
+{if !$search_results}
+      <div class="ktInfoMessage">
+         <!-- never show a very large set, if you can help it. -->
+         <span>{i18n}No search specified, or no results for your search.  Please choose some criteria from the list above to find users.{/i18n}</span>
+      </div>
+{else}
+<form method="POST" action="{$smarty.server.PHP_SELF}">
+<input type="hidden" name="action" value="addUserFromSource" />
+<input type="hidden" name="source_id" value="{$source->getId()}" />
+<input type="hidden" name="massimport" value="{$massimport}" />
+<table class="listing">
+<thead>
+   <tr>
+      <th style="width:2em">{if $massimport}<input type="checkbox" onclick="toggleSelectFor(this, 'id')" title="toggle all" />{/if}</th>
+      <th>{i18n}Name{/i18n}</th>
+      <th>{i18n}Distinguished Name (LDAP DN){/i18n}</th>
+   </tr>
+</thead>
+<tbody>
+   <!-- do we want to batch here? -->
+     {foreach item=potential_user from=$search_results}
+     <tr>
+{if $massimport}
+        <td><input type="checkbox" name="id[]" value="{$potential_user.dn}" /></td>
+{else}
+        <td><input type="radio" name="id" value="{$potential_user.dn}" /></td>
+{/if}
+	<td>{$potential_user.cn}</td>
+        <td>{$potential_user.dn}</td>
+     </tr>
+     {/foreach}
+<!--
+
+-->
+</tbody>
+</table>
+<input type="submit" name="submit[chosen]" value="{i18n}Add{/i18n}" />
+</form>
+{/if}

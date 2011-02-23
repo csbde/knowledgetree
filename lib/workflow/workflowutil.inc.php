@@ -192,8 +192,10 @@ class KTWorkflowUtil {
 
 
         // FIXME does this function as expected?
-
         KTPermissionUtil::updatePermissionLookup($oDocument);
+
+        // Ensure permissions are updated for users
+        KTPermissionUtil::clearCache();
 
         if (isset($iStartStateId)) {
             $oTargetState = KTWorkflowState::get($iStartStateId);
@@ -413,7 +415,7 @@ class KTWorkflowUtil {
     function getWorkflowForDocument ($oDocument, $aOptions = null) {
         $ids = KTUtil::arrayGet($aOptions, 'ids', false);
 
-        if (is_a($oDocument, 'KTDocumentCore')) {
+        if ($oDocument instanceof KTDocumentCore) {
             $oDocument = $oDocument->getId();
         }
 
@@ -445,7 +447,7 @@ class KTWorkflowUtil {
 
         $ids = KTUtil::arrayGet($aOptions, 'ids', false);
 
-        if (is_a($oDocument, 'KTDocumentCore')) {
+        if ($oDocument instanceof KTDocumentCore) {
             $oDocument = $oDocument->getId();
         }
 
@@ -467,6 +469,27 @@ class KTWorkflowUtil {
         return KTWorkflowState::get($iWorkflowStateId);
     }
     // }}}
+
+    function getDocumentsInWorkflowStatesForPermissionObject($iObjectId)
+    {
+        $query = "SELECT d.id, d.permission_lookup_id, m.workflow_state_id from documents d, document_metadata_version m
+                WHERE d.metadata_version_id = m.id AND d.permission_object_id = {$iObjectId} AND m.workflow_state_id is not null";
+
+        $result = DBUtil::getResultArray($query);
+        return $result;
+    }
+
+    function getWorkflowStatesForPermissionObject ($iObjectId)
+    {
+        $query = "SELECT DISTINCT(workflow_state_id) FROM workflow_state_permission_assignments w
+                    WHERE workflow_state_id IN (
+                        SELECT m.workflow_state_id from documents d, document_metadata_version m
+                        WHERE d.metadata_version_id = m.id AND d.permission_object_id = {$iObjectId}
+                    )";
+
+        $result = DBUtil::getResultArrayKey($query, 'workflow_state_id');
+        return $result;
+    }
 
     // {{{ getTransitionsForDocumentUser
     /**
@@ -611,6 +634,9 @@ class KTWorkflowUtil {
 		KTPermissionUtil::updatePermissionLookup($oDocument);
         KTWorkflowUtil::informUsersForState($oTargetState, KTWorkflowUtil::getInformedForState($oTargetState), $oDocument, $oUser, $sComments);
 
+        // Ensure permissions are updated for users
+        KTPermissionUtil::clearCache();
+
         return true;
     }
     // }}}
@@ -733,6 +759,9 @@ class KTWorkflowUtil {
         if (PEAR::isError($oDescriptor)) {
             return $oDescriptor;
         }
+        if ($oDescriptor === false) {
+		    return PEAR::raiseError('Permissions descriptor could not be created - check the logs for details');
+		}
         $iOldDescriptorId = $oState->getInformDescriptorId();
         $oState->setInformDescriptorId($oDescriptor->getId());
         $res = $oState->update();

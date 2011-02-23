@@ -585,7 +585,7 @@ class kt extends client_service  {
 		$tempfilename=$params['tempfilename'];
 		$application=$this->AuthInfo['appType'];
 
-    	$this->addDebug('Checkin',"checkin_document('$session_id',$document_id,'$filename','$reason','$tempfilename', '$application')");
+    	$this->addDebug('Check-in',"checkin_document('$session_id',$document_id,'$filename','$reason','$tempfilename', '$application')");
     	$kt=&$this->KT;
 
     	// we need to add some security to ensure that people don't frig the checkin process to access restricted files.

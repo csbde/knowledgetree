@@ -32,7 +32,11 @@
 					    	</div>
 					{/if}
 
-					<label for="username">{i18n}Username{/i18n}</label>
+					{if $use_email}
+					   <label for="username">{i18n}Email Address{/i18n}</label>
+				   {else}
+					   <label for="username">{i18n}Username{/i18n}</label>
+					{/if}
 					<input type="text" id="username" name="username" value="{$username}"/>
 					<label for="password">{i18n}Password{/i18n}</label>
 					<input type="password" id="password" name="password"/>
@@ -58,7 +62,7 @@
 
 
 		<div class="footer"><span style="display:block; float:right;">Call: 1 877.900.0350</span>
-		<a href="http://www.knowledgetree.com/blog">{i18n}Blog{/i18n}</a> &nbsp;| <a href="http://support.knowledgetree.com">{i18n}Support{/i18n}</a> &nbsp;|  &nbsp;<a href="http://www.knowledgetree.com/privacy">{i18n}Privacy{/i18n}</a>&nbsp; | &nbsp;<a href="http://www.knowledgetree.com/legal">{i18n}Legal{/i18n}</a>&nbsp; |&nbsp; &copy; 2010 KnowledgeTree Inc.&nbsp;
+		<a href="http://www.knowledgetree.com/blog">{i18n}Blog{/i18n}</a> &nbsp;| <a href="http://support.knowledgetree.com">{i18n}Support{/i18n}</a> &nbsp;|  &nbsp;<a href="http://www.knowledgetree.com/privacy">{i18n}Privacy{/i18n}</a>&nbsp; | &nbsp;<a href="http://www.knowledgetree.com/legal">{i18n}Legal{/i18n}</a>&nbsp; |&nbsp; &copy; 2011 KnowledgeTree Inc.&nbsp;
 		</div>
 	</div>
 </div>

@@ -40,20 +40,25 @@ require_once(KT_LIB_DIR . '/plugins/pluginentity.inc.php');
 require_once(KT_LIB_DIR . '/plugins/pluginregistry.inc.php');
 
 class KTPluginResourceRegistry {
+
     var $aResources = array();
 
-    function &getSingleton() {
+    function &getSingleton()
+    {
         if (!KTUtil::arrayGet($GLOBALS, 'oKTPluginResourceRegistry')) {
             $GLOBALS['oKTPluginResourceRegistry'] = new KTPluginResourceRegistry;
         }
+
         return $GLOBALS['oKTPluginResourceRegistry'];
     }
 
-    function registerResource($sPath) {
+    function registerResource($sPath)
+    {
         $this->aResources[$sPath] = true;
     }
 
-    function isRegistered($sPath) {
+    function isRegistered($sPath)
+    {
         if (KTUtil::arrayGet($this->aResources, $sPath)) {
             return true;
         }
@@ -63,9 +68,11 @@ class KTPluginResourceRegistry {
         }
         return false;
     }
+
 }
 
 class KTPluginUtil {
+
 	const CACHE_FILENAME = 'kt_plugins.cache';
 
 	/**
@@ -76,17 +83,14 @@ class KTPluginUtil {
 	{
 		$config = KTConfig::getSingleton();
 		$cachePlugins = $config->get('cache/cachePlugins', false);
-		if (!$cachePlugins)
-		{
+		if (!$cachePlugins) {
 			return false;
 		}
 
 		$cacheDir = $config->get('cache/cacheDirectory');
-
 		$written = file_put_contents($cacheDir . '/' . KTPluginUtil::CACHE_FILENAME , serialize($array));
 
-		if (!$written)
-		{
+		if (!$written) {
 			global $default;
 
 			$default->log->warn('savePluginCache - The cache did not write anything.');
@@ -104,13 +108,12 @@ class KTPluginUtil {
 	{
 		$config = KTConfig::getSingleton();
 		$cachePlugins = $config->get('cache/cachePlugins', false);
-		if (!$cachePlugins)
-		{
+		if (!$cachePlugins) {
 			return false;
 		}
-		$cacheDir = $config->get('cache/cacheDirectory');
 
-		$cacheFile=$cacheDir  . '/' . KTPluginUtil::CACHE_FILENAME;
+		$cacheDir = $config->get('cache/cacheDirectory');
+		$cacheFile = $cacheDir  . '/' . KTPluginUtil::CACHE_FILENAME;
 		@unlink($cacheFile);
 	}
 
@@ -123,25 +126,23 @@ class KTPluginUtil {
 	{
 		$config = KTConfig::getSingleton();
 		$cachePlugins = $config->get('cache/cachePlugins', false);
-		if (!$cachePlugins)
-		{
+		if (!$cachePlugins) {
 			return false;
 		}
-		$cacheDir = $config->get('cache/cacheDirectory');
 
-		$cacheFile=$cacheDir  . '/' . KTPluginUtil::CACHE_FILENAME;
-		if (!is_file($cacheFile))
-		{
+		$cacheDir = $config->get('cache/cacheDirectory');
+		$cacheFile = $cacheDir  . '/' . KTPluginUtil::CACHE_FILENAME;
+		if (!is_file($cacheFile)) {
 			return false;
 		}
 
 		$cache = file_get_contents($cacheFile);
 
 		// we check for an empty cache in case there was a problem. We rather try and reload everything otherwise.
-		if (strlen($cache) == 0)
-		{
+		if (strlen($cache) == 0) {
 			return false;
 		}
+
 		if (!class_exists('KTPluginEntityProxy')) {
             KTEntityUtil::_proxyCreate('KTPluginEntity', 'KTPluginEntityProxy');
         }
@@ -154,11 +155,11 @@ class KTPluginUtil {
      *
      * @param unknown_type $sType
      */
-    static function loadPlugins ($sType) {
-
+    static function loadPlugins ($sType)
+    {
         // Check the current page - can be extended.
         // Currently we only distinguish between the dashboard and everything else.
-        if($sType != 'dashboard'){
+        if ($sType != 'dashboard') {
           $sType = 'general';
         }
 
@@ -172,10 +173,10 @@ class KTPluginUtil {
            WHERE p.disabled = 0 AND h.classtype='plugin' ORDER BY p.orderby";
         $aPluginHelpers = DBUtil::getResultArray($query);
 
-        if(PEAR::isError($aPluginHelpers)){
+        if (PEAR::isError($aPluginHelpers)) {
             global $default;
-            $default->log->debug('Error in pluginutil: '.$aPluginHelpers->getMessage());
-            return false;
+            $default->log->error('Error in pluginutil: '.$aPluginHelpers->getMessage());
+            return $aPluginHelpers;
         }
 
         // Check that there are plugins and if not, register them
@@ -191,7 +192,7 @@ class KTPluginUtil {
         }
 
         // Create plugin objects
-        foreach ($aPluginHelpers as $aItem){
+        foreach ($aPluginHelpers as $aItem) {
             $classname = $aItem['classname'];
             $path = $aItem['pathname'];
 
@@ -199,14 +200,18 @@ class KTPluginUtil {
                 if ((strpos($path, KT_DIR) === false)) {
                     $path = KT_DIR . '/' . $path;
                 }
-                require_once($path);
 
-            	$oPlugin = new $classname($path);
-            	if($oPlugin->load()){
-            	   $aPlugins[] = $oPlugin;
-            	}else{
-            	    $aDisabled[] = "'{$aItem['plugin']}'";
-            	}
+                if (file_exists($path))
+                {
+	                require_once($path);
+
+	            	$oPlugin = new $classname($path);
+	            	if ($oPlugin->load()) {
+	            	   $aPlugins[] = $oPlugin;
+	            	} else {
+	            	    $aDisabled[] = "'{$aItem['plugin']}'";
+	            	}
+                }
             }
         }
 
@@ -216,13 +221,12 @@ class KTPluginUtil {
         $query = 'SELECT h.* FROM plugin_helper h
             INNER JOIN plugins p ON (p.namespace = h.plugin)
         	WHERE p.disabled = 0 ';//WHERE viewtype='{$sType}'";
-        if(!empty($sDisabled)){
+        if (!empty($sDisabled)) {
         	   $query .= " AND h.plugin NOT IN ($sDisabled) ";
         }
         $query .= ' ORDER BY p.orderby';
 
         $aPluginList = DBUtil::getResultArray($query);
-
         KTPluginUtil::load($aPluginList);
 
         // Load the template locations - ignore disabled plugins
@@ -233,13 +237,14 @@ class KTPluginUtil {
 
         $aLocations = DBUtil::getResultArray($query);
 
-        if(!empty($aLocations)){
+        if (!empty($aLocations)) {
             $oTemplating =& KTTemplating::getSingleton();
-            foreach ($aLocations as $location){
+            foreach ($aLocations as $location) {
                 $aParams = explode('|', $location['object']);
                 call_user_func_array(array(&$oTemplating, 'addLocation2'), $aParams);
             }
         }
+
         return true;
     }
 
@@ -248,8 +253,8 @@ class KTPluginUtil {
      *
      * @param array $aPlugins
      */
-    function load($aPlugins) {
-
+    function load($aPlugins)
+    {
         require_once(KT_LIB_DIR . '/actions/actionregistry.inc.php');
         require_once(KT_LIB_DIR . '/actions/portletregistry.inc.php');
         require_once(KT_LIB_DIR . '/triggers/triggerregistry.inc.php');
@@ -285,9 +290,8 @@ class KTPluginUtil {
         $oInterceptorRegistry =& KTInterceptorRegistry::getSingleton();
         $oKTPluginRegistry =& KTPluginRegistry::getSingleton();
 
-
         // Loop through the loaded plugins and register them for access
-        foreach ($aPlugins as $plugin){
+        foreach ($aPlugins as $plugin) {
             $sName = $plugin['namespace'];
         	$sParams = $plugin['object'];
         	$aParams = explode('|', $sParams);
@@ -296,38 +300,38 @@ class KTPluginUtil {
         	switch ($sClassType) {
         	    case 'portlet':
         	        $aLocation = unserialize($aParams[0]);
-        	        if($aLocation != false){
+        	        if ($aLocation != false) {
         	           $aParams[0] = $aLocation;
         	        }
-                    if(isset($aParams[3])){
+                    if (isset($aParams[3])) {
                         $aParams[3] = KTPluginUtil::getFullPath($aParams[3]);
                     }
         	        call_user_func_array(array(&$oPRegistry, 'registerPortlet'), $aParams);
         	        break;
 
         	    case 'trigger':
-                    if(isset($aParams[4])){
+                    if (isset($aParams[4])) {
                         $aParams[4] = KTPluginUtil::getFullPath($aParams[4]);
                     }
         	        call_user_func_array(array(&$oTRegistry, 'registerTrigger'), $aParams);
         	        break;
 
         	    case 'action':
-                    if(isset($aParams[3])){
+                    if (isset($aParams[3])) {
                         $aParams[3] = KTPluginUtil::getFullPath($aParams[3]);
                     }
         	        call_user_func_array(array(&$oARegistry, 'registerAction'), $aParams);
         	        break;
 
         	    case 'page':
-                    if(isset($aParams[2])){
+                    if (isset($aParams[2])) {
                         $aParams[2] = KTPluginUtil::getFullPath($aParams[2]);
                     }
         	        call_user_func_array(array(&$oPageRegistry, 'registerPage'), $aParams);
         	        break;
 
         	    case 'authentication_provider':
-                    if(isset($aParams[3])){
+                    if (isset($aParams[3])) {
                         $aParams[3] = KTPluginUtil::getFullPath($aParams[3]);
                     }
                     $aParams[0] = _kt($aParams[0]);
@@ -341,7 +345,7 @@ class KTPluginUtil {
         	        break;
 
         	    case 'admin_page':
-                    if(isset($aParams[5])){
+                    if (isset($aParams[5])) {
                         $aParams[5] = KTPluginUtil::getFullPath($aParams[5]);
                     }
                     $aParams[3] = _kt($aParams[3]);
@@ -350,21 +354,21 @@ class KTPluginUtil {
         	        break;
 
         	    case 'dashlet':
-                    if(isset($aParams[2])){
+                    if (isset($aParams[2])) {
                         $aParams[2] = KTPluginUtil::getFullPath($aParams[2]);
                     }
         	        call_user_func_array(array(&$oDashletRegistry, 'registerDashlet'), $aParams);
         	        break;
 
         	    case 'i18nlang':
-                    if(isset($aParams[2]) && $aParams[2] != 'default'){
+                    if (isset($aParams[2]) && $aParams[2] != 'default') {
                         $aParams[2] = KTPluginUtil::getFullPath($aParams[2]);
                     }
         	        call_user_func_array(array(&$oi18nRegistry, 'registeri18nLang'), $aParams);
 
 
         	    case 'i18n':
-                    if(isset($aParams[2])){
+                    if (isset($aParams[2])) {
                         $aParams[1] = $aParams[2];
                         unset($aParams[2]);
                     } else {
@@ -378,21 +382,21 @@ class KTPluginUtil {
         	        break;
 
         	    case 'help_language':
-                    if(isset($aParams[2])){
+                    if (isset($aParams[2])) {
                         $aParams[2] = KTPluginUtil::getFullPath($aParams[2]);
                     }
         	        call_user_func_array(array(&$oKTHelpRegistry, 'registerHelp'), $aParams);
         	        break;
 
         	    case 'workflow_trigger':
-                    if(isset($aParams[2])){
+                    if (isset($aParams[2])) {
                         $aParams[2] = KTPluginUtil::getFullPath($aParams[2]);
                     }
         	        call_user_func_array(array(&$oWFTriggerRegistry, 'registerWorkflowTrigger'), $aParams);
         	        break;
 
         	    case 'column':
-                    if(isset($aParams[3])){
+                    if (isset($aParams[3])) {
                         $aParams[3] = KTPluginUtil::getFullPath($aParams[3]);
                     }
                     $aParams[0] = _kt($aParams[0]);
@@ -405,14 +409,14 @@ class KTPluginUtil {
         	        break;
 
         	    case 'notification_handler':
-                    if(isset($aParams[2])){
+                    if (isset($aParams[2])) {
                         $aParams[2] = KTPluginUtil::getFullPath($aParams[2]);
                     }
         	        call_user_func_array(array(&$oNotificationHandlerRegistry, 'registerNotificationHandler'), $aParams);
         	        break;
 
         	    case 'template_location':
-                    if(isset($aParams[1])){
+                    if (isset($aParams[1])) {
                         $aParams[1] = KTPluginUtil::getFullPath($aParams[1]);
                     }
         	        call_user_func_array(array(&$oTemplating, 'addLocation2'), $aParams);
@@ -420,38 +424,38 @@ class KTPluginUtil {
 
         	    case 'criterion':
             	    $aInit = unserialize($aParams[3]);
-            	    if($aInit != false){
+            	    if ($aInit != false) {
         	           $aParams[3] = $aInit;
             	    }
-                    if(isset($aParams[2])){
+                    if (isset($aParams[2])) {
                         $aParams[2] = KTPluginUtil::getFullPath($aParams[2]);
                     }
         	        call_user_func_array(array(&$oCriteriaRegistry, 'registerCriterion'), $aParams);
         	        break;
 
         	    case 'widget':
-                    if(isset($aParams[2])){
+                    if (isset($aParams[2])) {
                         $aParams[2] = KTPluginUtil::getFullPath($aParams[2]);
                     }
         	        call_user_func_array(array(&$oWidgetFactory, 'registerWidget'), $aParams);
         	        break;
 
         	    case 'validator':
-                    if(isset($aParams[2])){
+                    if (isset($aParams[2])) {
                         $aParams[2] = KTPluginUtil::getFullPath($aParams[2]);
                     }
         	        call_user_func_array(array(&$oValidatorFactory, 'registerValidator'), $aParams);
         	        break;
 
         	    case 'interceptor':
-                    if(isset($aParams[2])){
+                    if (isset($aParams[2])) {
                         $aParams[2] = KTPluginUtil::getFullPath($aParams[2]);
                     }
         	        call_user_func_array(array(&$oInterceptorRegistry, 'registerInterceptor'), $aParams);
         	        break;
 
         	    case 'plugin':
-                    if(isset($aParams[2])){
+                    if (isset($aParams[2])) {
                         $aParams[2] = KTPluginUtil::getFullPath($aParams[2]);
                     }
         	        $oKTPluginRegistry->_aPluginDetails[$sName] = $aParams;
@@ -463,10 +467,12 @@ class KTPluginUtil {
     /**
      * Get the absolute path
      */
-    function getFullPath($sPath = '') {
-        if(empty($sPath)){
+    function getFullPath($sPath = '')
+    {
+        if (empty($sPath)) {
             return '';
         }
+
         $sPath = (KTUtil::isAbsolutePath($sPath)) ? $sPath : KT_DIR . '/' . $sPath;
         return $sPath;
     }
@@ -475,7 +481,8 @@ class KTPluginUtil {
      * This loads the plugins in the plugins folder. It searches for files ending with 'Plugin.php'.
      * This is called by the 'Reread plugins' action in the web interface.
      */
-    function registerPlugins () {
+    function registerPlugins ()
+    {
         global $default;
 
         // Path to lock file
@@ -483,7 +490,7 @@ class KTPluginUtil {
         $lockFile = $cacheDir.'plugin_register.lock';
 
         // Check if the lock file exists
-        if(KTPluginUtil::doCheck($lockFile)){
+        if (KTPluginUtil::doCheck($lockFile)) {
             return true;
         }
 
@@ -498,7 +505,7 @@ class KTPluginUtil {
      */
     function doCheck($lockFile)
     {
-        if(file_exists($lockFile)){
+        if (file_exists($lockFile)) {
             // If it does exist, do a stat on it to check when it was created.
             // if it was accessed more than 5 minutes ago then delete it and proceed with the plugin registration
             // otherwise wait till lock file is deleted signalling that the registration is complete and return.
@@ -506,37 +513,41 @@ class KTPluginUtil {
             $stat = stat($lockFile);
 
             $time = time() - (60 * 5);
-            if($stat['mtime'] > $time){
+            if ($stat['mtime'] > $time) {
 
                 $cnt = 0;
 
-                while(file_exists($lockFile)){
+                while(file_exists($lockFile)) {
                     $cnt++;
                     sleep(2);
 
                     // if we've been waiting too long - typically it should only take a few seconds so 2 mins is too much time.
-                    if($cnt > 60){
+                    if ($cnt > 60) {
                         @unlink($lockFile);
                         return false;
                     }
                 }
                 return true;
             }
+
             @unlink($lockFile);
         }
+
         return false;
     }
 
     /* Get the priority of the plugin */
-    function getPluginPriority($sFile) {
+    function getPluginPriority($sFile)
+    {
     	$defaultPriority = 10;
     	$priority = array(
     		"ktcore" => 1,
     		"ktstandard" => 2,
     		"i18n" => 3
     	);
+
     	foreach($priority as $pattern => $priority) {
-    		if(ereg($pattern, $sFile)) {
+    		if (ereg($pattern, $sFile)) {
     			return $priority;
     		}
     	}
@@ -564,7 +575,7 @@ class KTPluginUtil {
 
         KTPluginUtil::_walk(KT_DIR . '/plugins', $files);
         foreach ($files as $sFile) {
-            $plugin_ending = "Plugin.php";
+            $plugin_ending = 'Plugin.php';
             if (substr($sFile, -strlen($plugin_ending)) === $plugin_ending) {
             	/* Set default priority */
             	$plugins[$sFile] = KTPluginUtil::getPluginPriority($sFile);
@@ -608,14 +619,14 @@ class KTPluginUtil {
                 $oPluginEntity->setUnavailable(true);
                 $oPluginEntity->setDisabled(true);
                 $res = $oPluginEntity->update();
-            }elseif ($oPluginEntity->getUnavailable()){
+            } else if ($oPluginEntity->getUnavailable()) {
                 $oPluginEntity->setUnavailable(false);
                 $oPluginEntity->setDisabled(false);
                 $res = $oPluginEntity->update();
             }
         }
-        KTPluginEntity::clearAllCaches();
 
+        KTPluginEntity::clearAllCaches();
         KTPluginUtil::_deleteSmartyFiles();
         require_once(KT_LIB_DIR . '/cache/cache.inc.php');
         $oCache =& KTCache::getSingleton();
@@ -624,7 +635,8 @@ class KTPluginUtil {
         //KTPluginUtil::removePluginCache();
     }
 
-    function _deleteSmartyFiles() {
+    function _deleteSmartyFiles()
+    {
         $oConfig =& KTConfig::getSingleton();
         $dir = sprintf('%s/%s', $oConfig->get('urls/varDirectory'), 'tmp');
 
@@ -632,6 +644,7 @@ class KTPluginUtil {
         if (empty($dh)) {
             return;
         }
+
         $aFiles = array();
         while (false !== ($sFilename = readdir($dh))) {
             if (substr($sFilename, -10) == "smarty.inc") {
@@ -641,15 +654,18 @@ class KTPluginUtil {
                $aFiles[] = sprintf('%s/%s', $dir, $sFilename);
             }
         }
+
         foreach ($aFiles as $sFile) {
             @unlink($sFile);
         }
     }
 
-    function _walk ($path, &$files) {
+    function _walk ($path, &$files)
+    {
         if (!is_dir($path)) {
             return;
         }
+
         $dirh = opendir($path);
         // skip '.', '..', and hidden directories - i.e. anything which begins with a '.'
         while (($entry = readdir($dirh)) !== false) {
@@ -667,17 +683,20 @@ class KTPluginUtil {
         }
     }
 
-    function resourceIsRegistered($path) {
+    function resourceIsRegistered($path)
+    {
         $oRegistry =& KTPluginResourceRegistry::getSingleton();
         return $oRegistry->isRegistered($path);
     }
 
-    function registerResource($path) {
+    function registerResource($path)
+    {
         $oRegistry =& KTPluginResourceRegistry::getSingleton();
         $oRegistry->registerResource($path);
     }
 
-    function readResource($sPath) {
+    function readResource($sPath)
+    {
         global $default;
         $php_file = ".php";
         if (substr($sPath, -strlen($php_file)) === $php_file) {
@@ -710,11 +729,11 @@ class KTPluginUtil {
     {
         $fieldValues = array();
 
-        if(is_bool($list_admin)){
+        if (is_bool($list_admin)) {
             $fieldValues['list_admin'] = $list_admin ? 1 : 0;
         }
 
-        if(is_bool($disable)){
+        if (is_bool($disable)) {
             $fieldValues['disabled'] = $disable ? 1 : 0;
         }
 
@@ -733,12 +752,12 @@ class KTPluginUtil {
     {
         $oEntity = KTPluginEntity::getByNamespace($sNamespace);
 
-        if(PEAR::isError($oEntity)){
+        if (PEAR::isError($oEntity)) {
             return $oEntity;
         }
         $dir = dirname($oEntity->getPath()) . '/';
-                
-        if(!$relative && (strpos($dir, KT_DIR) === false)) {
+
+        if (!$relative && (strpos($dir, KT_DIR) === false)) {
             $dir = KT_DIR . '/' . $dir;
         }
 
@@ -746,7 +765,8 @@ class KTPluginUtil {
     }
 
     // utility function to detect if the plugin is loaded and active.
-    static function pluginIsActive($sNamespace) {
+    static function pluginIsActive($sNamespace)
+    {
 
 		$oReg =& KTPluginRegistry::getSingleton();
 		$plugin = $oReg->getPlugin($sNamespace);
@@ -761,6 +781,7 @@ class KTPluginUtil {
 			return (!$ent->getDisabled());
 		}
     }
+
 }
 
 ?>

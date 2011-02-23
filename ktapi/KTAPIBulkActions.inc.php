@@ -525,7 +525,7 @@ class KTAPI_BulkActions
      */
     private function recurseFolder($folder, $reason = '', $action = 'archive')
     {
-        if(!$folder instanceof KTAPI_Folder){
+        if(!($folder instanceof KTAPI_Folder)){
             return PEAR::raiseError('Object is not an instance of KTAPI_Folder');
         }
 

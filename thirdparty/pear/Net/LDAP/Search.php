@@ -118,7 +118,7 @@ class Net_LDAP_Search extends PEAR
 
         $this->setSearch($search);
 
-        if (is_a($ldap, 'Net_LDAP')) {
+        if ($ldap instanceof Net_LDAP) {
             $this->_ldap =& $ldap;
             $this->setLink($this->_ldap->getLink());
         } else {

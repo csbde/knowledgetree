@@ -113,195 +113,7 @@ abstract class KTAPI_Member extends KTAPI_Dynamic
     public abstract function getName();
 }
 
-/**
- * Encapsulates functionality around a user.
- *
- * @author KnowledgeTree Team
- * @package KTAPI
- * @version 0.9
- */
-class KTAPI_User extends KTAPI_Member
-{
-    /**
-     * Reference to the original User object.
-     *
-     * @access private
-     * @var User
-     */
-    private $user;
 
-    /**
-     * Constructor for KTAPI_User. This is private, and can only be constructed by the static getByXXX() functions.
-     *
-     * @access private
-     * @param User $user
-     */
-    private function __construct($user)
-    {
-        $this->user = $user;
-    }
-
-    /**
-     * Using the id, the user can be resolved.
-     *
-     * @author KnowledgeTree Team
-     * @access public
-     * @static
-     * @param int $id
-     * @return KTAPI_User Returns null if  there is no match.
-     */
-    public static function getById($id)
-    {
-        $user = User::get($id);
-
-        if (PEAR::isError($user))
-        {
-            return $user;
-        }
-
-        return new KTAPI_User($user);
-    }
-
-
-    /**
-     * Using the full name, the user can be resolved.
-     *
-     * @author KnowledgeTree Team
-     * @access public
-     * @static
-     * @param string $name
-     * @return KTAPI_User Returns null if  there is no match.
-     */
-    public static function getByName($name)
-    {
-        $sql = 'SELECT username FROM users where name=?';
-        $username = DBUtil::getOneResultKey(array($sql, array($name)), 'username');
-
-        if (PEAR::isError($username))
-        {
-            return $username;
-        }
-
-        return self::getByUsername($username);
-    }
-
-    /**
-     * Using the username, the user is resolved.
-     *
-     * @author KnowledgeTree Team
-     * @access public
-     * @static
-     * @param string $username
-     * @return KTAPI_User  Returns null if  there is no match.
-     */
-    public static function getByUsername($username)
-    {
-        $user = User::getByUserName($username);
-
-        if (PEAR::isError($user))
-        {
-            return $user;
-        }
-
-        return new KTAPI_User($user);
-    }
-
-    /**
-     * Using the email, the user is resolved.
-     *
-     * @author KnowledgeTree Team
-     * @access public
-     * @static
-     * @param string $email
-     * @return KTAPI_User  Returns null if  there is no match.
-     */
-    public static function getByEmail($email)
-    {
-        $sql = 'SELECT username FROM users where email=?';
-        $username = DBUtil::getOneResultKey(array($sql, $email), 'username');
-
-        if (PEAR::isError($username))
-        {
-            return $username;
-        }
-
-        return self::getByUsername($username);
-    }
-
-    /**
-     * Returns a list of users matching the filter criteria.
-     *
-     * @author KnowledgeTree Team
-     * @access public
-     * @static
-     * @param string $filter
-     * @param array $options
-     * @return array of KTAPI_User
-     */
-    public static function getList($filter = null, $options = null)
-    {
-        $users = User::getList($filter, $options);
-
-        if (PEAR::isError($users))
-        {
-            return $users;
-        }
-
-        $list = array();
-        foreach($users as $user)
-        {
-            $list[] = new KTAPI_User($user);
-        }
-
-        return $list;
-    }
-
-    /**
-     * Return id property. (readonly)
-     *
-     * @author KnowledgeTree Team
-     * @access public
-     * @return integer
-     */
-    public function getId() { return $this->user->getId(); }
-
-    /**
-     * Return username property. (readonly)
-     *
-     * @author KnowledgeTree Team
-     * @access public
-     * @return string
-     */
-    public function getUsername() { return $this->user->getUserName(); }
-
-    /**
-     * Return username property. (readonly)
-     *
-     * @author KnowledgeTree Team
-     * @access public
-     * @return string
-     */
-    public function getPassword() { return $this->user->getPassword(); }
-
-    /**
-     * Return display name property. (readonly)
-     *
-     * @author KnowledgeTree Team
-     * @access public
-     * @return string
-     */
-    public function getName() { return $this->user->getName(); }
-
-    /**
-     * Return email property. (readonly)
-     *
-     * @author KnowledgeTree Team
-     * @access public
-     * @return string
-     */
-    public function getEmail() { return $this->user->getEmail(); }
-
-}
 
 /**
  * Encapsulates functionality around a group.
@@ -810,6 +622,7 @@ abstract class KTAPI_AllocationBase extends KTAPI_Dynamic
                     'transactionNS' => $namespace,
                     'userid' => $_SESSION['userID'],
                     'ip' => Session::getClientIP(),
+                	'parentid' => $object->getParentID(),
                 ));
 
                 break;
@@ -1232,6 +1045,8 @@ final class KTAPI_PermissionAllocation extends KTAPI_AllocationBase
 
         $permissionObject = KTPermissionObject::get($folderItemObject->getPermissionObjectId());
 
+        DBUtil::startTransaction();
+
         // transform the map into the structure expected
 
         foreach ($permissions as $permission)
@@ -1268,10 +1083,21 @@ final class KTAPI_PermissionAllocation extends KTAPI_AllocationBase
                 }
             }
 
-            KTPermissionUtil::setPermissionForId($permission, $permissionObject, $allowed);
+            $res = KTPermissionUtil::setPermissionForId($permission, $permissionObject, $allowed);
+            if ($res === false) {
+                DBUtil::rollback();
+                return $res;
+            }
+
         }
 
-        KTPermissionUtil::updatePermissionLookupForPO($permissionObject);
+        $res = KTPermissionUtil::updatePermissionLookupForPO($permissionObject);
+        if ($res === false) {
+            DBUtil::rollback();
+            return $res;
+        }
+
+        DBUtil::commit();
 
         // set the copy to be that of the modified version.
 
@@ -1808,6 +1634,7 @@ final class KTAPI_RoleAllocation extends KTAPI_AllocationBase
 				}
 			}
 		}
+		KTPermissionUtil::clearCache();
 	}
 
 

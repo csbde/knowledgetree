@@ -257,12 +257,13 @@ class RestSolr
     function query($query)
     {
         $query = str_replace('Content:', 'text:', $query);
+        require_once(KT_LIB_DIR . '/users/shareduserutil.inc.php');
+        $shareduser = (SharedUserUtil::isSharedUser()) ? true : false;
         $query = strtolower($query);
         $offset = 0;
         $limit = 10;
         $result = $this->client->search($query, $offset, $limit, array('hl.fl' => 'text', 'hl' => 'true'));
         $result = json_decode($result->getRawResponse(), true);
-
         //formatting the response to be compatible with current search struct:
         /*
         	["DocumentID"]=>	int(239)
@@ -275,7 +276,10 @@ class RestSolr
         //var_dump($result['response']['docs']); exit;
         $retDocs = array();
         $count = 0;
+        // Filter out based on shared user constraints.
+    	if($shareduser) { $result = $this->shareduser_results($result); }
         foreach($result['response']['docs'] as $document) {
+
             //var_dump($document);
             $retDocs[$count]->DocumentID = $document['id'];
             $retDocs[$count]->Rank = $document['boost'];
@@ -285,14 +289,30 @@ class RestSolr
             $retDocs[$count]->Content = $result['highlighting'][$document['id']]['text'][0];
             $retDocs[$count]->Content = str_replace('<em>', '<b>', $retDocs[$count]->Content);
             $retDocs[$count]->Content = str_replace('</em>', '</b>', $retDocs[$count]->Content);
-
+			if($shareduser) { $retDocs[$count]->SharedUser = true; } else { $retDocs[$count]->SharedUser = false; }
             $count++;
         }
-        //var_dump($retDocs); exit;
-        return $retDocs;
-        //return json_decode($result);
+        
+        return (array) $retDocs;
     }
 
+    function shareduser_results($result)
+    {
+    	require_once(KT_LIB_DIR . '/render_helpers/sharedContent.inc');
+    	$sharedUserDocs = array();
+    	$aSharedDocs = SharedContent::getDocumentIds($_SESSION['userID']);
+    	$shared_results = array();
+    	foreach($result['response']['docs'] as $document) {
+    		if(in_array($document['id'], $aSharedDocs))
+    		{
+    			$sharedUserDocs[] = $document;
+    		}
+    	}
+    	$result['response']['docs'] = $sharedUserDocs;
+    	
+    	return $result;
+    }
+    
     /**
 	 * Updates the discussion text on a given document.
 	 *

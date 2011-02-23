@@ -189,7 +189,7 @@ class LoggerOptionConverter {
 
         if (class_exists($clazz)) {
             $result = @call_user_func(array($clazz, 'toLevel'), $levelName, $defaultValue);
-            if (!is_a($result, 'loggerlevel')) {
+            if (!($result instanceof loggerlevel)) {
                 LoggerLog::debug("LoggerOptionConverter::toLevel():class=[{$clazz}] cannot call toLevel(). Returning default.");            
                 $result = $defaultValue;
             }
@@ -244,7 +244,7 @@ class LoggerOptionConverter {
      */
     public static function findAndSubst($key, $props)
     {
-        $value = @$props[$key];
+        $value = isset($props[$key]) ? $props[$key] : null;
         if(empty($value)) {
             return null;
         }

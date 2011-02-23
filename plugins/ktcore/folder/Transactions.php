@@ -45,10 +45,14 @@ require_once(KT_LIB_DIR . "/documentmanagement/observers.inc.php");
 
 require_once(KT_LIB_DIR . "/documentmanagement/documentutil.inc.php");
 
+require_once(KT_LIB_DIR . "/datetime/datetimeutil.inc.php");
+
 class KTFolderTransactionsAction extends KTFolderAction {
     var $sName = 'ktcore.actions.folder.transactions';
     var $_sShowPermission = "ktcore.permissions.folder_details";
-
+    var $showIfRead = false;
+    var $showIfWrite = false;
+    
     function getDisplayName() {
         return _kt('Folder Activity');
     }
@@ -83,6 +87,8 @@ class KTFolderTransactionsAction extends KTFolderAction {
         	if(empty($transaction['transaction_name'])){
         		$aTransactions[$key]['transaction_name'] = $this->_getActionNameForNamespace($transaction['transaction_namespace']);
         	}
+        	// Get the datetime offset
+        	$aTransactions[$key]['datetime'] = datetimeutil::getLocaleDate($aTransactions[$key]['datetime']);
         }
 
         // render pass.

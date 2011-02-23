@@ -302,12 +302,12 @@ class SearchHelper
 	*/
 	public static function deleteSavedSearch($searchID)
 	{
-		$sysAdmin=Permission::userIsSystemAdministrator();
+		$sysAdmin = Permission::userIsSystemAdministrator();
 
 		$sql = "DELETE FROM search_saved WHERE type='S' AND id=$searchID";
 		if (!$sysAdmin)
 		{
-			$sql .= " AND user_id='".$_SESSION['userID']."'";
+			$sql .= " AND user_id='" . $_SESSION['userID'] . "'";
 		}
 
 		DBUtil::runQuery($sql);
@@ -506,15 +506,15 @@ class SearchHelper
 			return new PEAR_Error(_kt('Fieldset was not found'));
 		}
 
-		$result=array();
+		$result = array();
 		foreach($rs as $item)
 		{
-			$fieldid=$item['id'];
-			$type='normal';
+			$fieldid = $item['id'];
+			$type = 'normal';
 			$options = array();
-			$haslookup =$item['has_lookup'] + 0 > 0;
-			$hastree = ($item['has_lookuptree']+0 > 1);
-			$hasinetlookup=$item['has_inetlookup'] + 0 > 0;
+			$haslookup = $item['has_lookup'] + 0 > 0;
+			$hastree = ($item['has_lookuptree'] + 0 > 1);
+			$hasinetlookup = $item['has_inetlookup'] + 0 > 0;
 			
 			if ($haslookup || $hastree || $hasinetlookup)
 			{
@@ -524,7 +524,7 @@ class SearchHelper
 
 			}
 			
-			$inetlookup_type = "";
+			$inetlookup_type = '';
 			if($hasinetlookup)
 			{
 				$type = 'inetlookup';
@@ -541,21 +541,21 @@ class SearchHelper
 			if ($item['data_type'] == 'USERLIST')
 			{
 				$type = 'lookup';
-				$sql = "SELECT id, name from users WHERE disabled=0";
+				$sql = 'SELECT id, name from users WHERE disabled=0';
 				$options = DBUtil::getResultArray($sql);
 			}
 
 			$ritem = array(
-				'id'=>$fieldid,
-				'name'=>$item['name'],
-				'description'=>$item['description'],
-				'datatype'=>$item['data_type'],
-				'control'=>$type,
+				'id' => $fieldid,
+				'name' => $item['name'],
+				'description' => $item['description'],
+				'datatype' => $item['data_type'],
+				'control' => $type,
 				'inetlookup_type' => $inetlookup_type,
-				'options'=>$options
+				'options' => $options
 			);
 
-			$result[]= $ritem;
+			$result[] = $ritem;
 		}
 		return $result;
 	}
@@ -618,8 +618,7 @@ class SearchHelper
 
 }
 
-
-function getExpressionLocalityString($expr_str, $locality, $length, $start_offset=10)
+function getExpressionLocalityString($expr_str, $locality, $length, $start_offset = 10)
 {
     if ($locality - $start_offset < 0)
     {
@@ -645,7 +644,7 @@ function parseExpression($expr_str)
     $lexer = new SearchCommandLexer($expr_str);
 
 //    $parser->PrintTrace();
-    $use_internal=false;
+    $use_internal = false;
 
     try
     {
@@ -657,9 +656,9 @@ function parseExpression($expr_str)
 
             if (!$parser->isExprOk())
             {
-                $use_internal=true;
-                $expr_str=getExpressionLocalityString($expr_str, $lexer->offset, 20);
-                throw new Exception(sprintf(_kt("Parsing problem near '%s' in '%s' of expression."),$lexer->value,$expr_str));
+                $use_internal = true;
+                $expr_str = getExpressionLocalityString($expr_str, $lexer->offset, 20);
+                throw new Exception(sprintf(_kt("Parsing problem near '%s' in '%s' of expression."), $lexer->value, $expr_str));
             }
         }
 
@@ -668,9 +667,9 @@ function parseExpression($expr_str)
 
         if (!$parser->isExprOk())
         {
-            $use_internal=true;
-            $expr_str=getExpressionLocalityString($expr_str, $lexer->offset, 20);
-            throw new Exception(sprintf(_kt("There is a problem parsing the expression '%s'"),$expr_str));
+            $use_internal = true;
+            $expr_str = getExpressionLocalityString($expr_str, $lexer->offset, 20);
+            throw new Exception(sprintf(_kt("There is a problem parsing the expression '%s'"), $expr_str));
         }
 
     }
@@ -684,7 +683,7 @@ function parseExpression($expr_str)
         {
             throw $e;
         }
-        $expr_str=getExpressionLocalityString($expr_str, $lexer->offset, 20);
+        $expr_str = getExpressionLocalityString($expr_str, $lexer->offset, 20);
         throw new Exception(sprintf(_kt("Parsing problem near '%s' of expression '%s'."), $lexer->value, $expr_str));
     }
 
@@ -710,54 +709,54 @@ function processSearchExpression($query)
     		foreach($rs as $hit)
     		{
     			 $item = array(
-						'document_id' => (int) $hit->DocumentID,
+						'document_id' => (int)$hit->DocumentID,
 
 						'custom_document_no' => 'n/a',
-		                'oem_document_no' => (string) $hit->OemDocumentNo,
+		                'oem_document_no' => (string)$hit->OemDocumentNo,
 
 						'relevance' => (float) $hit->Rank,
-        				'text' => (string)  $noText?'':urlencode($hit->Text),
+        				'text' => (string)$noText ? '' : urlencode($hit->Text),
 
-        				'title' => (string) $hit->Title,
+        				'title' => (string)$hit->Title,
         				'document_type'=> $hit->DocumentType,
-        				'fullpath' => (string) $hit->FullPath,
-        				'filename' => (string) $hit->Filename,
-        				'filesize' => (int) $hit->Filesize,
-        				'folder_id' => (int) $hit->FolderId,
+        				'fullpath' => (string)$hit->FullPath,
+        				'filename' => (string)$hit->Filename,
+        				'filesize' => (int)$hit->Filesize,
+        				'folder_id' => (int)$hit->FolderId,
 
-						'created_by' => (string) $hit->CreatedBy,
-						'created_date' => (string) $hit->DateCreated,
+						'created_by' => (string)$hit->CreatedBy,
+						'created_date' => (string)$hit->DateCreated,
 
-						'modified_by' => (string) $hit->ModifiedBy,
-						'modified_date' => (string) $hit->DateModified,
+						'modified_by' => (string)$hit->ModifiedBy,
+						'modified_date' => (string)$hit->DateModified,
 
-						'checked_out_by' => (string) $hit->CheckedOutUser,
-        				'checked_out_date' => (string) $hit->DateCheckedOut,
+						'checked_out_by' => (string)$hit->CheckedOutUser,
+        				'checked_out_date' => (string)$hit->DateCheckedOut,
 
-						'owned_by' => (string) $hit->Owner,
+						'owned_by' => (string)$hit->Owner,
 
-        				'version' => (float) $hit->Version,
-        				'is_immutable'=> (bool) $hit->Immutable,
-        				'permissions'=> $hit->Permissions,
+        				'version' => (float)$hit->Version,
+        				'is_immutable' => (bool)$hit->Immutable,
+        				'permissions' => $hit->Permissions,
 
-        				'workflow' => (string) $hit->WorkflowOnly,
-        				'workflow_state' => (string) $hit->WorkflowStateOnly,
+        				'workflow' => (string)$hit->WorkflowOnly,
+        				'workflow_state' => (string)$hit->WorkflowStateOnly,
 
-        				'mime_type' => (string) $hit->MimeType,
-        				'mime_icon_path' => (string) $hit->MimeIconPath,
-        				'mime_display' => (string) $hit->MimeDisplay,
+        				'mime_type' => (string)$hit->MimeType,
+        				'mime_icon_path' => (string)$hit->MimeIconPath,
+        				'mime_display' => (string)$hit->MimeDisplay,
 
-						'storage_path' => (string) $hit->StoragePath,
+						'storage_path' => (string)$hit->StoragePath,
 
-						'status' => (string) $hit->Status,
+						'status' => (string)$hit->Status,
 
-        				'is_available' => (bool) $hit->IsAvailable,
+        				'is_available' => (bool)$hit->IsAvailable,
 
     				);
 
     				$results[] = $item;
-
     		}
+    		
     		return $results;
     	}
     	catch(Exception $e)
@@ -768,21 +767,35 @@ function processSearchExpression($query)
 
 function resolveSearchShortcuts($result)
 {
-    $oPermission =& KTPermission::getByName('ktcore.permissions.read');
-    $permId = $oPermission->getID();
+    global $default;
+    
+    $oUser = User::get($_SESSION['userID']);    
+    
+    // check user type, disabled = 4 means shared user, which has a different permissions structure
+    if ($oUser->getDisabled() != 4) {
+        $oPermission =& KTPermission::getByName('ktcore.permissions.read');
+        $permId = $oPermission->getID();
 
-    $oUser = User::get($_SESSION['userID']);
-    $aPermissionDescriptors = KTPermissionUtil::getPermissionDescriptorsForUser($oUser);
-    $sPermissionDescriptors = empty($aPermissionDescriptors)? -1: implode(',', $aPermissionDescriptors);
-
-    $documentIds = implode(',',array_keys($result['docs']));
+        $aPermissionDescriptors = KTPermissionUtil::getPermissionDescriptorsForUser($oUser);
+        $sPermissionDescriptors = empty($aPermissionDescriptors) ? -1 : implode(',', $aPermissionDescriptors);
+    }
+    
+    $documentIds = implode(',', array_keys($result['docs']));
     $linkedDocuments = array();
     if (!empty($documentIds))
     {
-        $sql = "SELECT d.id, d.linked_document_id from documents d ";
-        $sql .= 'INNER JOIN permission_lookups AS PL ON d.permission_lookup_id = PL.id '. "\n";
-        $sql .= 'INNER JOIN permission_lookup_assignments AS PLA ON PL.id = PLA.permission_lookup_id AND PLA.permission_id = '.$permId. " \n";
-        $sql .= " WHERE d.linked_document_id in ($documentIds) AND PLA.permission_descriptor_id IN ($sPermissionDescriptors)";
+        // check user type, disabled = 4 means shared user, which has a different permissions structure
+        if ($oUser->getDisabled() == 4) {
+            $sql = "SELECT d.id, d.linked_document_id from documents d\n";
+            $sql .= " INNER JOIN shared_content sc ON (sc.object_id = d.id) OR (sc.object_id = (SELECT folder_id FROM documents dlink WHERE dlink.id = d.id) AND sc.type = 'folder') AND sc.user_id = {$oUser->getId()}\n";
+            $sql .= " WHERE d.linked_document_id in ($documentIds)";
+        }
+        else {
+            $sql = "SELECT d.id, d.linked_document_id from documents d\n";
+            $sql .= " INNER JOIN permission_lookups AS PL ON d.permission_lookup_id = PL.id \n";
+            $sql .= " INNER JOIN permission_lookup_assignments AS PLA ON PL.id = PLA.permission_lookup_id AND PLA.permission_id = $permId\n";
+            $sql .= " WHERE d.linked_document_id in ($documentIds) AND PLA.permission_descriptor_id IN ($sPermissionDescriptors)";
+        }
 
         $rs = DBUtil::getResultArray($sql);
 
@@ -791,7 +804,12 @@ function resolveSearchShortcuts($result)
             $id = $row['id'];
             $linked_id = $row['linked_document_id'];
 
-            $result['shortdocs'][$id] = new DocumentShortcutResultItem($id, $result['docs'][$linked_id]);
+            try {
+                $result['shortdocs'][$id] = new DocumentShortcutResultItem($id, $result['docs'][$linked_id]);
+            }
+            catch (Exception $e) {
+                $default->log->debug("There was an error getting the shortcut item: {$e->getMessage()}");
+            }
         }
     }
 
@@ -800,27 +818,40 @@ function resolveSearchShortcuts($result)
 
     if (!empty($folderIds))
     {
-
-        $sql = "SELECT f.id, f.parent_id, f.linked_folder_id, f.full_path from folders f ";
-        $sql .= 'INNER JOIN permission_lookups AS PL ON f.permission_lookup_id = PL.id '. "\n";
-        $sql .= 'INNER JOIN permission_lookup_assignments AS PLA ON PL.id = PLA.permission_lookup_id AND PLA.permission_id = '.$permId. " \n";
-        $sql .= " WHERE f.linked_folder_id in ($folderIds) AND PLA.permission_descriptor_id IN ($sPermissionDescriptors)";
-
+        // check user type, disabled = 4 means shared user, which has a different permissions structure
+        if ($oUser->getDisabled() == 4) {
+            $sql = "SELECT f.id, f.parent_id, f.linked_folder_id, f.full_path from folders f\n";
+            $sql .= " INNER JOIN shared_content sc ON (sc.object_id = f.id) OR (sc.object_id = (SELECT parent_id FROM folders flink WHERE flink.id = f.id) AND sc.type = 'folder') AND sc.user_id = {$oUser->getId()}\n";
+            $sql .= " WHERE f.linked_folder_id in ($folderIds)";
+        }
+        else {
+            $sql = "SELECT f.id, f.parent_id, f.linked_folder_id, f.full_path from folders f\n";
+            $sql .= " INNER JOIN permission_lookups AS PL ON f.permission_lookup_id = PL.id\n";
+            $sql .= " INNER JOIN permission_lookup_assignments AS PLA ON PL.id = PLA.permission_lookup_id AND PLA.permission_id = $permId\n";
+            $sql .= " WHERE f.linked_folder_id in ($folderIds) AND PLA.permission_descriptor_id IN ($sPermissionDescriptors)";
+        }
+        
         $rs = DBUtil::getResultArray($sql);
 
         foreach($rs as $row)
         {
             $id = $row['id'];
             $linked_id = $row['linked_folder_id'];
+            
+            try {
+                $shortFolder = new FolderShortcutResultItem($id, $result['folders'][$linked_id]);
+                $shortFolder->parentId = $row['parent_id'];
+                $shortFolder->linkedId = $row['linked_folder_id'];
+                $shortFolder->full_path = $row['full_path'];
 
-            $shortFolder = new FolderShortcutResultItem($id, $result['folders'][$linked_id]);
-            $shortFolder->parentId = $row['parent_id'];
-            $shortFolder->linkedId = $row['linked_folder_id'];
-            $shortFolder->full_path = $row['full_path'];
-
-            $result['shortfolders'][$id] = $shortFolder;
+                $result['shortfolders'][$id] = $shortFolder;
+            }
+            catch (Exception $e) {
+                $default->log->debug("There was an error getting the shortcut item: {$e->getMessage()}");
+            }
         }
     }
+    
     return $result;
 }
 

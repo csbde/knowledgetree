@@ -1,0 +1,40 @@
+html { display: block; margin: 0; background-color: #d5ddf5; height: 100%; }
+
+body { display: block; margin: 0; padding: 20px; }
+
+.main { border-top-left-radius: 5px; border-top-right-radius: 5px; border-bottom-right-radius: 5px; border-bottom-left-radius: 5px; -moz-border-radius-topleft: 5px; -moz-border-radius-topright: 5px; -moz-border-radius-bottomright: 5px; -moz-border-radius-bottomleft: 5px; -webkit-box-shadow: 0pX 0px 15px #3d445c; -moz-box-shadow: 0pX 0px 15px #3d445c; box-shadow: 0pX 0px 15px #3d445c; font-family: Arial, Helvetica, sans-serif; font-size: 11px; color: #333333; background-color: white; width: 400px; height: 100%; border: 1px solid #666666; }
+
+.output { border-top-left-radius: 5px; border-top-right-radius: 5px; border-bottom-right-radius: 5px; border-bottom-left-radius: 5px; -moz-border-radius-topleft: 5px; -moz-border-radius-topright: 5px; -moz-border-radius-bottomright: 5px; -moz-border-radius-bottomleft: 5px; -webkit-box-shadow: 0pX 0px 15px #3d445c; -moz-box-shadow: 0pX 0px 15px #3d445c; box-shadow: 0pX 0px 15px #3d445c; font-family: Arial, Helvetica, sans-serif; font-size: 11px; color: #333333; background-color: #FFFFFF; width: 600px; height: 100%; border: 1px solid #666666; }
+
+.header { font-family: Arial, Helvetica, sans-serif; color: #333333; font-size: 16px; font-weight: bold; padding: 5px 5px 5px 10px; border-bottom: 3px none #999999; background-color: #dddddd; background: -webkit-gradient(linear, left bottom, left top, color-stop(0, #dddddd), color-stop(1, #c4c4c4)); background: -moz-linear-gradient(center bottom, #dddddd 0%, #c4c4c4 100%); -webkit-box-shadow: 0px 1px 3px #666666; -moz-box-shadow: 0px 1px 3px #666666; box-shadow: 0px 1px 3px #666666; }
+.header.top { border-top-left-radius: 5px; border-top-right-radius: 5px; border-bottom-right-radius: 0px; border-bottom-left-radius: 0px; -moz-border-radius-topleft: 5px; -moz-border-radius-topright: 5px; -moz-border-radius-bottomright: 0px; -moz-border-radius-bottomleft: 0px; }
+
+.content { padding: 15px; font-family: Arial, Helvetica, sans-serif; font-size: 11px; color: #333333; }
+
+.inputHeading { text-shadow: 1px 1px 5px #666666; font-size: 14px; font-weight: bold; padding: 4px; }
+
+.inputSection { border: 1px solid #999999; background-color: #FFFFFF; -webkit-box-shadow: 0pX 0px 4px #666666; -moz-box-shadow: 0pX 0px 4px #666666; box-shadow: 0pX 0px 4px #666666; padding: 5px; }
+
+.inputTitle { font-size: 12px; font-weight: bold; text-align: right; padding: 2px; padding-right: 5px; background-color: #EEEEEE; border-right: 1px solid #999999; vertical-align: middle; }
+
+.inputCell { padding: 1px 5px 1px 5px; text-align: left; vertical-align: middle; border-bottom: 1px dotted #CCCCCC; }
+
+.altInputCell { padding: 1px 5px 1px 5px; text-align: left; vertical-align: middle; border-right: 1px solid #999999; border-bottom: 1px dotted #CCCCCC; }
+
+.inputCell:last { border: none; }
+
+.inputDivision { height: 2px; background-color: #CCCCCC; }
+
+.textInput { border: 1px solid #FFFFFF; width: 100%; font-family: Arial, Helvetica, sans-serif; font-size: 11px; }
+
+.textInput:hover, .textInput:focus { background-color: #D1E3FA; border: 1px dotted #3E8BE1; }
+
+.disabled:hover { background-color: #EFCFCF; border: 1px dotted #C95F5F; }
+
+.inputSubmitCell { text-align: right; padding: 2px; padding-right: 5px; background-color: #EEEEEE; vertical-align: middle; }
+
+#error { padding: 2px; font-weight: bold; text-align: center; font-size: 12px; color: #A10000; }
+
+#uri, #datasourceuri { padding: 2px; font-weight: bold; text-align: center; font-size: 14px; border-bottom: 2px solid #CCCCCC; }
+
+.divider { height: 20px; }

@@ -64,6 +64,10 @@ define('KTAPI_ERROR_DOCUMENT_NOT_CHECKED_OUT', 	'The document is not checked out
 define('KTAPI_ERROR_WORKFLOW_INVALID', 			'The workflow could not be resolved.');
 define('KTAPI_ERROR_WORKFLOW_NOT_IN_PROGRESS', 	'The workflow is not in progress.');
 define('KTAPI_ERROR_DOCUMENT_LINK_TYPE_INVALID','The link type could not be resolved.');
+define('KTAPI_ERROR_DOCUMENT_DELETED',			'The document is deleted.');
+define('KTAPI_ERROR_DOCUMENT_ARCHIVED',			'The document is archived.');
+define('KTAPI_ERROR_DOCUMENT_VERSION_DELETED',	'The document version is deleted.');
+define('KTAPI_ERROR_DOCUMENT_UNAVAILABLE',		'The document is not available.');
 
 /**
  * Mapping of permissions to actions.
@@ -87,4 +91,10 @@ define('KTAPI_PERMISSION_DOCUMENT_MOVE',	'ktcore.permissions.write');
 define('KTAPI_PERMISSION_WORKFLOW',			'ktcore.permissions.workflow');
 define('KTAPI_PERMISSION_VIEW_FOLDER',		'ktcore.permissions.folder_details');
 
+/**
+ * Constants used for folder change API
+ * /
+ 
+ */
+define('KTAPI_ERROR_FOLDER_NO_CHANGES',		'The folder does not have any changes.');
 ?>
