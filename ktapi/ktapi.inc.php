@@ -67,6 +67,9 @@ require_once(KTAPI_DIR .'/KTAPITrigger.inc.php');
 require_once(KTAPI_DIR .'/KTAPIConditionalMetadata.inc.php');
 require_once(KTAPI_DIR .'/KTAPIUser.inc.php');
 
+require_once(KT_LIB_DIR . '/users/shareduserutil.inc.php');
+require_once(KT_LIB_DIR . '/render_helpers/sharedContent.inc');
+
 /**
 * This class defines functions that MUST exist in the inheriting class
 *
@@ -626,7 +629,27 @@ class KTAPI {
 			$error = $user;
 			return $error;
 		}
-
+		
+    	if(SharedUserUtil::isSharedUser())
+    	{
+    		if($object instanceof DocumentProxy || $object instanceof Document)
+    		{
+    			if(!SharedContent::canAccessDocument($user->getID(), $object->getID()))
+    			{
+    				return new PEAR_Error(KTAPI_ERROR_INSUFFICIENT_PERMISSIONS);
+    			}
+    		}
+    		elseif ($object instanceof FolderProxy || $object instanceof Folder)
+    		{
+    			if(!SharedContent::canAccessFolder($user->getID(), $object->getID()))
+    			{
+    				return new PEAR_Error(KTAPI_ERROR_INSUFFICIENT_PERMISSIONS);
+    			}
+    		}
+    		
+    		return $user;
+    	}
+    	
 		if (!KTPermissionUtil::userHasPermissionOnItem($user, $permission, $object))
 		{
 			$error = new PEAR_Error(KTAPI_ERROR_INSUFFICIENT_PERMISSIONS);
