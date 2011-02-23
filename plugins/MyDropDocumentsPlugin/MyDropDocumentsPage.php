@@ -419,7 +419,10 @@ class DropFolderCreation
         $oPersonalFolder = $personalFolder->get_folder();
 
         // The folder defines its own permissions - copy the permission object
-        KTPermissionUtil::copyPermissionObject($oPersonalFolder);
+        $res = KTPermissionUtil::copyPermissionObject($oPersonalFolder);
+        if($res === false) {
+            return _kt('Error: Cannot create folder permissions');
+        }
 
         // The role should exist by now.
         if(!$this->roleExistsName('WorkSpaceOwner'))
@@ -471,6 +474,9 @@ class DropFolderCreation
 
         // The folder must define its own permissions so create a copy of the root folder
         KTPermissionUtil::copyPermissionObject($dropDocsFolderObject);
+        if($res === false) {
+            return _kt('Error: Cannot create folder permissions');
+        }
 
         // Each user is added to the WorkSpaceOwner role on their personal folder
         // Check if the role exists and create it if it doesn't
@@ -531,16 +537,24 @@ class DropFolderCreation
             if($oPermission->getHumanName() != 'Delete' && $oPermission->getHumanName() != 'Rename Folder'
             && $oPermission->getHumanName() != 'Manage security' && $oPermission->getHumanName() != 'Manage workflow')
             {
-                KTPermissionUtil::setPermissionForId($oPermission, $oUserPO, $aBothAllowed);
+                $res = KTPermissionUtil::setPermissionForId($oPermission, $oUserPO, $aBothAllowed);
             }
             else
             {
-                KTPermissionUtil::setPermissionForId($oPermission, $oUserPO, $aAdminAllowed);
+                $res = KTPermissionUtil::setPermissionForId($oPermission, $oUserPO, $aAdminAllowed);
             }
+
+            if ($res === false) {
+                return $res;
+            }
+
         }
 
         //UPdate the permission lookup
-        KTPermissionUtil::updatePermissionLookupForPO($oUserPO);
+        $res = KTPermissionUtil::updatePermissionLookupForPO($oUserPO);
+        if ($res === false) {
+            return $res;
+        }
     }
 
     //This function is used for allocating the user to the WorkSpaceOwner role only when the dropdocuments folder
@@ -640,12 +654,19 @@ class DropFolderCreation
         //Iterate through and apply all permissions to the current user and the admin group
         foreach ($aPersonalFolderPermissions as $oPersonalFolderPermission)
         {
-            KTPermissionUtil::setPermissionForId($oPersonalFolderPermission, $oPO, $aAllowed);
+            $res = KTPermissionUtil::setPermissionForId($oPersonalFolderPermission, $oPO, $aAllowed);
+
+            if ($res === false) {
+                return $res;
+            }
 
         }
 
         //Update permission lookup
-        KTPermissionUtil::updatePermissionLookupForPO($oPO);
+        $res = KTPermissionUtil::updatePermissionLookupForPO($oPO);
+        if ($res === false) {
+            return $res;
+        }
     }
 
     function updatePersonalFolderRoleAllocation($oPersonalFolder)

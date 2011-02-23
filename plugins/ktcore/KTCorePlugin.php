@@ -282,8 +282,7 @@ class KTCorePlugin extends KTPlugin {
             _kt('Determine how people will access content.'));
 		$this->registerAdminCategory('sysConfig', _kt('System Configuration'),
             _kt('Configure system settings.'));
-		$this->registerAdminCategory('contentIndexing', _kt('Content Indexing'),
-            _kt('View and configure content indexing for search.'));
+
 
 
         // users and groups
@@ -294,7 +293,7 @@ class KTCorePlugin extends KTPlugin {
         $this->registerAdminPage('groups', 'KTGroupAdminDispatcher', 'userSetup',
             _kt('Manage Groups'), _kt('Add or remove groups from the system.'),
             'admin/groupManagement.php', null, 9);
-        $this->registerAdminPage('units', 'KTUnitAdminDispatcher', 'contentSetup',
+        $this->registerAdminPage('units', 'KTUnitAdminDispatcher', 'userSetup',
             _kt('Control Units'), _kt('Specify which organisational units are available within the repository.'),
             'admin/unitManagement.php', null);
 
@@ -335,40 +334,38 @@ class KTCorePlugin extends KTPlugin {
             'admin/deletedDocuments.php', null);
 
 		//Search and Indexing
-		if($restrictedEnv !== true){
-    		$this->registerAdminPage('managemimetypes', 'ManageMimeTypesDispatcher', 'contentIndexing',
-                _kt('Mime Types'), sprintf(_kt('This report lists all mime types and extensions that can be identified by %s.'), APP_NAME),
-                '../search2/reporting/ManageMimeTypes.php', null);
+		if($restrictedEnv !== true)
+		{
+				$this->registerAdminPage('managemimetypes', 'ManageMimeTypesDispatcher', 'contentIndexing',
+				_kt('Mime Types'), sprintf(_kt('This report lists all mime types and extensions that can be identified by %s.'), APP_NAME),
+				'../search2/reporting/ManageMimeTypes.php', null);
 
-            $this->registerAdminPage('extractorinfo', 'ExtractorInfoDispatcher', 'contentIndexing',
-                _kt('Extractor Information'), _kt('This report lists the text extractors and their supported mime types.'),
-                '../search2/reporting/ExtractorInfo.php', null);
+				$this->registerAdminPage('extractorinfo', 'ExtractorInfoDispatcher', 'contentIndexing',
+				_kt('Extractor Information'), _kt('This report lists the text extractors and their supported mime types.'),
+				'../search2/reporting/ExtractorInfo.php', null);
 
-		}
+				$this->registerAdminPage('indexerrors', 'IndexErrorsDispatcher', 'contentIndexing',
+				_kt('Document Indexing Diagnostics'), _kt('This report will help to diagnose problems with document indexing.'),
+				'../search2/reporting/IndexErrors.php', null);
 
-        $this->registerAdminPage('indexerrors', 'IndexErrorsDispatcher', 'contentIndexing',
-            _kt('Document Indexing Diagnostics'), _kt('This report will help to diagnose problems with document indexing.'),
-            '../search2/reporting/IndexErrors.php', null);
+				$this->registerAdminPage('pendingdocuments', 'PendingDocumentsDispatcher', 'contentIndexing',
+				_kt('Pending Documents Indexing Queue'), _kt('This report lists documents that are waiting to be indexed.'),
+				'../search2/reporting/PendingDocuments.php', null);
 
-		$this->registerAdminPage('pendingdocuments', 'PendingDocumentsDispatcher', 'contentIndexing',
-            _kt('Pending Documents Indexing Queue'), _kt('This report lists documents that are waiting to be indexed.'),
-            '../search2/reporting/PendingDocuments.php', null);
+				$this->registerAdminPage('reschedulealldocuments', 'RescheduleDocumentsDispatcher', 'contentIndexing',
+				_kt('Reschedule all documents'), _kt('This function allows you to re-index your entire repository.'),
+				'../search2/reporting/RescheduleDocuments.php', null);
 
-        $this->registerAdminPage('reschedulealldocuments', 'RescheduleDocumentsDispatcher', 'contentIndexing',
-            _kt('Reschedule all documents'), _kt('This function allows you to re-index your entire repository.'),
-            '../search2/reporting/RescheduleDocuments.php', null);
+				$this->registerAdminCategory('contentIndexing', _kt('Content Indexing'),
+				_kt('View and configure content indexing for search.'));
+				$this->registerAdminPage('indexingstatus', 'IndexingStatusDispatcher', 'contentIndexing',
+				_kt('Document Indexer and External Resource Dependancy Status'), _kt('This report will show the status of external dependencies and the document indexer.'),
+				'../search2/reporting/IndexingStatus.php', null);
 
-        // Admin Pages for Previous Dashlets
-        if($restrictedEnv !== true){
-            $this->registerAdminPage('indexingstatus', 'IndexingStatusDispatcher', 'contentIndexing',
-                _kt('Document Indexer and External Resource Dependancy Status'), _kt('This report will show the status of external dependencies and the document indexer.'),
-                '../search2/reporting/IndexingStatus.php', null);
+				$this->registerAdminPage('lucenestatistics', 'LuceneStatisticsDispatcher', 'contentIndexing',
+				_kt('Document Indexer Statistics'), _kt('This report will show the Lucene Document Indexing Statistics '),
+				'../search2/reporting/LuceneStatistics.php', null);
         }
-
-        $this->registerAdminPage('lucenestatistics', 'LuceneStatisticsDispatcher', 'contentIndexing',
-            _kt('Document Indexer Statistics'), _kt('This report will show the Lucene Document Indexing Statistics '),
-            '../search2/reporting/LuceneStatistics.php', null);
-
 
 
 
@@ -385,17 +382,21 @@ class KTCorePlugin extends KTPlugin {
             _kt('User Interface'), _kt('View and modify settings on Browse View actions, OEM name, automatic refresh, search results restrictions, custom logo details, paths to dot binary, graphics, and log directory, and whether to enable/disable condensed UI, \'open\' from downloads, sort metadata, and skinning.'),
             'admin/configSettings.php', null);
 
-        $this->registerAdminPage('searchandindexingconfigpage', 'SearchAndIndexingConfigPageDispatcher', 'sysConfig',
-            _kt('Search and Indexing'), _kt('View and modify the number of documents indexed / migrated in a cron session, core indexing class, paths to the extractor hook, text extractors, indexing engine, Lucene indexes, and the Java Lucene URL. View and modify search date format, paths to search, indexing fields and libraries, results display format, and results per page.'),
-            'admin/configSettings.php', null);
-
         $this->registerAdminPage('clientconfigpage', 'ClientSettingsConfigPageDispatcher', 'sysConfig',
             _kt('Client Tools'), _kt('View and change settings for the KnowledgeTree Tools Server, Client Tools Policies, WebDAV, and the OpenOffice.org service.'),
             'admin/configSettings.php', null);
 
-        if($restrictedEnv !== true){
+        $this->registerAdminPage('generalconfigpage', 'GeneralConfigPageDispatcher', 'sysConfig',
+            _kt('General Settings'), _kt('View and modify settings for KnowledgeTree.'),
+            'admin/configSettings.php', null);
+
+        if($restrictedEnv !== true)
+        {
+        	$this->registerAdminPage('searchandindexingconfigpage', 'SearchAndIndexingConfigPageDispatcher', 'sysConfig',
+            _kt('Search and Indexing'), _kt('View and modify the number of documents indexed / migrated in a cron session, core indexing class, paths to the extractor hook, text extractors, indexing engine, Lucene indexes, and the Java Lucene URL. View and modify search date format, paths to search, indexing fields and libraries, results display format, and results per page.'),
+            'admin/configSettings.php', null);
             $this->registerAdminPage('generalconfigpage', 'GeneralConfigPageDispatcher', 'sysConfig',
-                _kt('General Settings'), _kt('View and modify settings for the KnowledgeTree cache, custom error message handling, Disk Usage threshold percentages, location of zip binary, paths to external binaries, general server configuration, LDAP authentication, session management, KnowledgeTree storage manager, miscellaneous tweaks, and whether to always display \'Your Checked-out Documents\' dashlet.'),
+                _kt('Server Settings'), _kt('View and modify settings for the KnowledgeTree cache, custom error message handling, Disk Usage threshold percentages, location of zip binary, paths to external binaries, general server configuration, LDAP authentication, session management, KnowledgeTree storage manager, miscellaneous tweaks, and whether to always display \'Your Checked-out Documents\' dashlet.'),
                 'admin/configSettings.php', null);
 
             $this->registerAdminPage('helpmanagement', 'ManageHelpDispatcher', 'sysConfig',
@@ -416,7 +417,8 @@ class KTCorePlugin extends KTPlugin {
             _kt('Manage plugins'), _kt('Register new plugins, disable plugins, and so forth'),
             'admin/plugins.php', null);
 
-        if($restrictedEnv !== true){
+        if($restrictedEnv !== true)
+        {
             $this->registerAdminPage('techsupport', 'KTSupportDispatcher', 'contentIndexing',
                 _kt('Support and System information'), _kt('Information about this system and how to get support.'),
                 'admin/techsupport.php', null);
@@ -431,10 +433,6 @@ class KTCorePlugin extends KTPlugin {
         $this->registerAdminPage('views', 'ManageViewDispatcher', 'contentSetup',
             _kt('Manage views'), _kt('Allows you to specify the columns that are to be used by a particular view (e.g. Browse documents, Search)'),
             'admin/manageViews.php', null);
-
-
-        // plugins
-
     }
 }
 

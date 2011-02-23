@@ -401,6 +401,7 @@ div.menuitems {
 	width: 370px;
 	position: relative;
 	text-align: left;
+	min-height:220px;
 }
 
 div.adminheadings {

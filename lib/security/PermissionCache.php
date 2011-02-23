@@ -160,6 +160,7 @@ class PermissionCache
             $this->memcache->invalidateMemcachePermissions();
         }
         unset($_SESSION['Permissions_Cache']);
+        unset($_SESSION['Permissions_Namespace']);
         return true;
     }
 

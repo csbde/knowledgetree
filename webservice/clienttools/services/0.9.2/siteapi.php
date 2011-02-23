@@ -153,8 +153,8 @@ class siteapi extends client_service {
 					$item['filename'] = $fileName;
 					$item['title'] = $oDocument->getName();
 					$item['mimeicon'] = $mimeIcon;
-					$item['created_date'] = $oDocument->getCreatedDateTime();
-					$item['modified_date'] = $oDocument->getLastModifiedDate();
+					$item['created_date'] = $oDocument->getDisplayCreatedDateTime();
+					$item['modified_date'] = $oDocument->getDisplayLastModifiedDate();
 					$item['item_type'] = 'D';
 					$item['user_id'] = $_SESSION['userID'];
 					$item['isfinalize_document'] = 1;

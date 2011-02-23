@@ -456,6 +456,7 @@ class KTRoleAllocationPlugin extends KTFolderAction {
             'transactionNS' => 'ktcore.transactions.role_allocations_change',
             'userid' => $_SESSION['userID'],
             'ip' => Session::getClientIP(),
+        	'parentid' => $this->oFolder->getParentID(),
         ));
         $aOptions = array(
             'defaultmessage' => _kt('Error creating allocation'),
@@ -525,6 +526,7 @@ class KTRoleAllocationPlugin extends KTFolderAction {
             'transactionNS' => 'ktcore.transactions.role_allocations_change',
             'userid' => $_SESSION['userID'],
             'ip' => Session::getClientIP(),
+        	'parentid' => $this->oFolder->getParentID(),
         ));
         $aOptions = array(
             'defaultmessage' => _kt('Problem assigning role to parent allocation'),
@@ -735,6 +737,7 @@ class KTRoleAllocationPlugin extends KTFolderAction {
             'transactionNS' => 'ktcore.transactions.role_allocations_change',
             'userid' => $_SESSION['userID'],
             'ip' => Session::getClientIP(),
+        	'parentid' => $this->oFolder->getParentID(),
         ));
         $aOptions = array(
             'defaultmessage' => _kt('Problem assigning role users'),
@@ -790,6 +793,7 @@ class KTRoleAllocationPlugin extends KTFolderAction {
             'transactionNS' => 'ktcore.transactions.role_allocations_change',
             'userid' => $_SESSION['userID'],
             'ip' => Session::getClientIP(),
+        	'parentid' => $this->oFolder->getParentID(),
         ));
         $aOptions = array(
             'defaultmessage' => _kt('Problem assigning role groups'),

@@ -1169,6 +1169,7 @@ class KTBrowseBulkExportAction extends KTBulkAction {
             'transactionNS' => 'ktstandard.transactions.bulk_export',
             'userid' => $_SESSION['userID'],
             'ip' => Session::getClientIP(),
+        	'parentid' => $this->oFolder->getParentID(),
         ));
 
         $this->commitTransaction();

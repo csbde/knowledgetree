@@ -91,4 +91,10 @@ define('KTAPI_PERMISSION_DOCUMENT_MOVE',	'ktcore.permissions.write');
 define('KTAPI_PERMISSION_WORKFLOW',			'ktcore.permissions.workflow');
 define('KTAPI_PERMISSION_VIEW_FOLDER',		'ktcore.permissions.folder_details');
 
+/**
+ * Constants used for folder change API
+ * /
+ 
+ */
+define('KTAPI_ERROR_FOLDER_NO_CHANGES',		'The folder does not have any changes.');
 ?>

@@ -81,7 +81,8 @@ class AdminSplashDispatcher extends KTAdminDispatcher {
         $this->oPage->hideSection();
         $oTemplating =& KTTemplating::getSingleton();
 
-        if (ACCOUNT_ROUTING_ENABLED && liveAccounts::isTrialAccount()) {
+        global $default;
+        if (ACCOUNT_ROUTING_ENABLED && $default->tier == 'trial') {
             $this->includeOlark();
         }
 
@@ -91,6 +92,17 @@ class AdminSplashDispatcher extends KTAdminDispatcher {
             $oTemplate = $oTemplating->loadTemplate('kt3/admin_categories');
         }
 
+        //$lefCats = array('contentManagement', 'contentSetup', 'contentIndexing');
+        $rightCats = array('accountInformation', 'userSetup', 'sysConfig');
+        foreach ($categories as $cat) {
+            if (in_array($cat['name'], $rightCats)) {
+                $rightmenu[$cat['name']] = $categories[$cat['name']];
+            } else {
+                $leftmenu[$cat['name']] = $categories[$cat['name']];
+            }
+        }
+
+        /*
 		foreach (array('contentManagement', 'contentSetup', 'contentIndexing') as $leftcat) {
         	$leftmenu[$leftcat] = $categories[$leftcat];
         }
@@ -98,6 +110,7 @@ class AdminSplashDispatcher extends KTAdminDispatcher {
 		foreach (array('accountInformation', 'userSetup', 'sysConfig') as $rightcat) {
 			$rightmenu[$rightcat] = $categories[$rightcat];
 		}
+		*/
 
         $aTemplateData = array(
               'context' => $this,

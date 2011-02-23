@@ -40,6 +40,7 @@
 require_once(KT_LIB_DIR . "/foldermanagement/PhysicalFolderManagement.inc");
 require_once(KT_LIB_DIR . "/documentmanagement/Document.inc");
 require_once(KT_LIB_DIR . "/util/sanitize.inc");
+require_once(KT_LIB_DIR . '/datetime/datetimeutil.inc.php');
 
 class Folder extends KTEntity {
 
@@ -131,6 +132,10 @@ class Folder extends KTEntity {
 	function getLinkedFolderId(){ return $this->iLinkedFolderId;}
 	function setLinkedFolderId($iNewValue){ $this->iLinkedFolderId = $iNewValue;}
 
+	// Timezone getters
+	function getDisplayCreatedDateTime() { return datetimeutil::getLocaleDate($this->dCreated); }
+	function getDisplayLastModifiedDate() { return datetimeutil::getLocaleDate($this->dModified); }
+	
     // {{{ create()
     function create () {
         $oParentFolder =& Folder::get($this->iParentID);

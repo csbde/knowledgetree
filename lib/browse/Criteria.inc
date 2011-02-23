@@ -432,7 +432,7 @@ class DateCreatedCriterion extends BrowseCriterion {
     }
 
     function documentDisplay ($oDocument) {
-        return $oDocument->getCreatedDateTime();
+        return $oDocument->getDisplayCreatedDateTime();
     }
 
     function parameterDisplay($aData) {
@@ -775,7 +775,7 @@ class DateModifiedCriterion extends DateCreatedCriterion {
     }
 
     function documentDisplay ($oDocument) {
-        return $oDocument->getLastModifiedDate();
+        return $oDocument->getDisplayLastModifiedDate();
     }
 }
 
@@ -1049,7 +1049,7 @@ class DateModifiedDeltaCriterion extends DateCreatedDeltaCriterion {
     }
 
     function documentDisplay ($oDocument) {
-        return $oDocument->getLastModifiedDate();
+        return $oDocument->getDisplayLastModifiedDate();
     }
     function getName() {
         return "datemodified";

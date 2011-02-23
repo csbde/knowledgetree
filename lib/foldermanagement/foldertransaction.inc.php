@@ -49,6 +49,7 @@ class KTFolderTransaction extends KTEntity {
         'sTransactionNS' => 'transaction_namespace',
         'iSessionId' => 'session_id',
         'bAdminMode' => 'admin_mode',
+    	'iParentId' => 'parent_id',
     );
 
     var $_bUsePearError = true;

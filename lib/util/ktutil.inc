@@ -1534,6 +1534,8 @@ class KTUtil {
 
         error_log($msg, 3, $logFile);
     }
+    
+    
 }
 
 /**
@@ -1560,6 +1562,7 @@ if (version_compare(phpversion(), '5.0') === -1) {
     }
     ');
 }
+
 
 
 ?>
