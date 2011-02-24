@@ -1,52 +1,217 @@
 
+{$context->oPage->requireJSResource('thirdpartyjs/jquery/jquery-1.4.4.js')}
+{$context->oPage->requireJSResource('thirdpartyjs/extjs/adapter/ext/ext-base.js')}
+
 <!-- FILE: ktcore/document/view.smarty -->
-	<table border="0" width="100%" class="doc_view">
+<table>
+<tr>
+	<td width="745">
+	<table border="0" width="720" class="doc_view">
 		<tr>
-			<td width="1" valign="top" style="padding-right: 15px;"><span id="doc_thumb" style="float:left;" /></td>
-			<td height="1" valign="top">
-				<h2 class="doc_file_title">
+			<td colspan="2" id="title_row">
+				
+				<span  class="doc_file_title" style="display:inline;">
+					{i18n}{$document->getName()|sanitize}{/i18n}
+				</span>
+				<div id="document_status_area">
+					<a class="workflow disabled" href=""></a>
+					<a class="alert disabled" href=""></a>
+					<a class="subscribe selected" href=""></a>
+
+				</div>
+					
+				
+				<p>{$document->getFileName()} {}</p>
+				
+			</td>
+			
+		</tr>
+		<tr>
+			<!-- <td style="display:none;" width="1" valign="top" style="padding-right: 15px;"><span id="doc_thumb" style="float:left;" /></td> -->
+			<td height="1" valign="top" width="350">
+				
+				<div class="doc_description">
 					{if $document->getImmutable()}<img src="{php}echo "{$GLOBALS['default']->rootUrl}/resources/graphics/newui/docview_immutable.png";{/php}" style="display: inline-block" alt="{i18n}Finalized{/i18n}"  title="{i18n}Finalized{/i18n}" />{/if}
 					{if $document->getIsCheckedOut()}<img src="{php}echo "{$GLOBALS['default']->rootUrl}/resources/graphics/newui/docview_checkedout.png";{/php}" style="display: inline-block" alt="{i18n}Checked-Out{/i18n}"  title="{i18n}Checked Out{/i18n}" />{/if}
-					{i18n}{$document->getName()|sanitize}{/i18n}
-					<span class="doc_version" style="display: block; margin-top: 5px;">
-						<strong>Ver</strong> {$document->getMajorVersionNumber()}.{$document->getMinorVersionNumber()}  - <strong>File Size</strong> {$fieldsetDisplayHelper->_sizeHelper($document->getSize())}
+					<br/>
+					<span class="doc_info" style="display: block; margin-top: 5px;">
+						Version <a href="">{$document->getMajorVersionNumber()}.{$document->getMinorVersionNumber()}</a> | Last Modified by: <a href="">{$doc_data.lastModifier}</a> on <a href="">{$document->getLastModifiedDate()|date_format:"%B %e, %Y at %H:%M"}</a> | Created by: <a href="">{$doc_data.creator}</a> on <a href="">{$document->getCreatedDateTime()|date_format:"%B %e, %Y at %H:%M"}</a> | A </strong> {$fieldsetDisplayHelper->_sizeHelper($document->getSize())} document. 
 						{if $document->getIsCheckedOut()}
 							<span class="doc_checkedout"> <strong>Checked-out By:</strong> {$sCheckoutUser}</span>
 						{/if}
-					</span>
-				</h2>
-				<hr style="border: none; background-color: #E3E3E3; width: 98%; height: 1px; margin-left: 10px; margin-bottom: 15px;" align="left" />
-				<div>
-					<span class="doc_header_item">
-						<span class="doc_field_title">Created by:</span> <span class="doc_user_link">{$doc_data.creator}</span> on <span class="doc_field_value">{$document->getDisplayCreatedDateTime()|date_format:"%B %e, %Y <b>at</b> %H:%M"}</span>
-					</span>
-					<span class="doc_header_item">
-						<span class="doc_field_title">Last Modified by:</span> <span class="doc_user_link">{$doc_data.lastModifier}</span> on <span class="doc_field_value">{$document->getDisplayLastModifiedDate()|date_format:"%B %e, %Y <b>at</b> %H:%M"}</span>
+						
+					<br><br/>
+					<div class="tags">
+						<a href="">Invoice</a>
+						<a href="">Purchase</a>
+						<a href="">Acme Corp</a>
+						<a href="">April</a>
+					</div>
+					
+					<br/>
+					<br/>
+					<table style="padding: 0px margin: 0px;">
+						<tr>
+							<td width="100">Document Type</td>
+							<td><a href="">Invoices</a></td>
+						</tr>
+						<tr>
+							<td width="100">Custom Property</td>
+							<td><a href="">Property Value</a></td>
+						</tr>
+						<tr>
+							<td width="100">Custom Property</td>
+							<td><a href="">Property Value</a></td>
+						</tr>
+						<tr>
+							<td width="100">Custom Property</td>
+							<td><a href="">Property Value</a></td>
+						</tr>
+
+					</table>
+					
+			
+      
+  
 					</span>
 				</div>
+				<!-- <hr style="border: none; background-color: #E3E3E3; width: 98%; height: 1px; margin-left: 10px; margin-bottom: 15px;" align="left" /> -->
+				<div>
+					
+					<span class="doc_header_item">
+
+						<span class="doc_field_title"></span>
+					</span>
+
+							<div id="activity_feed_container" style="margin-top:1em;"></div>
+							<div id="new_comment_form"></div>
+
+					
+				</div>
+			</td>
+			<td valign="top" width="375" id="column_right">
+				<div class="" style="margin-bottom: 10px;">
+		<script>
+			{literal}
+			 $(function() {
+			 	
+				$(".split").click(function() {
+				
+					if ($(this).parent().next().is(':visible'))
+					{
+						$(".splitmenu").hide();
+						$(".split").removeClass('selected');
+						
+					}
+					else
+					{
+						$(".splitmenu").hide();
+						$(".split").removeClass('selected');
+						$(this).addClass('selected').parent().next().show();
+						
+					}
+					
+				});
+				
+				 $('html').click(function() {
+				 	$(".splitmenu").hide();
+				 	$(".split").removeClass('selected');
+				 });
+				
+				 $('.split').click(function(event){
+				     event.stopPropagation();
+				 });
+			});
+			
+			
+			{/literal}
+		</script>
+		
+		<div class="action_buttons above">
+		<div class="action">
+			
+			<div class="splitbutton"><a class="button" id="download" href="#">Download</a><span class="split">▼</span></div>
+			<ul class="splitmenu" id="download" style="right: auto; margin-left: -1px; ">
+				<li><a href="" id="download-pdf">Download PDF </a></li>
+			</ul>
+		</div>
+		{if $document->getIsCheckedOut()}
+    		<div class="action">
+				<div class="splitbutton"><a class="button" href="#" id="checkin">Checkin</a><span class="split">▼</span></div>
+				<ul class="splitmenu" id="checkin">
+					<li><a href="" id="checkin-upload">Checkin and Upload</a></li>
+					<li><a href="" id="add-version">Add new Version</a></li>
+				</ul>
+			</div>		
+    	{else}
+    		<div class="action">
+				<div class="splitbutton"><a class="button" href="#">Checkout</a><span class="split">▼</span></div>
+				<ul class="splitmenu" id="checkout">
+					<li><a href="" id="checkin-download">Checkout and Download</a></li>
+					<li><a href="" id="add-version">Add new Version</a></li>
+				</ul>
+			</div>
+    	
+		{/if}
+		<div class="action">
+			<div href="#"><a class="button" id="edit-online" href="">Edit Online</a></div>
+		</div>
+		<div class="action" id="share">
+			<div class="splitbutton"><a class="button" id="share" href="#">Share </a><span class="split">▼</span></div>
+			<ul class="splitmenu" id="share">
+				<li><a href="" id="email">Email</a></li>
+			</ul>
+		</div>
+     
+    	
+    	
+		</div>
+
+			
+</div>				{if !empty($live_preview)}
+					<div style="margin-top:1em;">{$live_preview}</div>
+				{else}
+			<div class="thumb-shadow" style="float: right;">
+				<img src="{php}echo "{$GLOBALS['default']->rootUrl}plugins/thumbnails/thumbnail_view.php?documentId=";{/php}{$document_id}"/>
+			</div>
+			{/if}
+			<div class="action_buttons below" style="display: inline-block;">
+			<div class="action" style="margin-top: 10px;">
+				<div class="splitbutton"><span class="split" href="#" id="more" style="border-left: 0px; font-size: 11px; padding-left: 25px;">More <span style="font-size: 9px;">▼</span></span></div>
+				<ul class="splitmenu" id="more" style="right: auto; margin-left: -1px; ">
+					<li><a href="">Move</a></li>
+					<li><a href="">Copy</a></li>
+				</ul>
+			</div>
+			</div>
+				<a href=""><span class="share_url">This page URL</span></a>
+				<a href=""><span class="share_url">Download URL</span></a>
+				<a href=""><span class="share_url">Preview URL</span></a> 
+  			</div>
+   
 			</td>
 
 		</tr>
 		<tr>
 			<td colspan="2" valign="top">
 				<ul class="view_doc_tabs">
-					<li class="page_activity" title="Activity">
+					<!-- <li class="page_activity" title="Activity">
 						<table class="kt_collection" style="clear: both;"><tr><td>
 							<div id="activity_feed_container" style="margin-top:1em;"></div>
 							<div id="new_comment_form"></div>
 						</table>
-					</li>
+					</li>-->
 
-					{if !empty($live_preview)}
+					<!--{if !empty($live_preview)}
 						<li class="page_preview"  title="View">
 							<table class="kt_collection" style="clear: both;"><tr><td>
 								<div style="margin-top:1em;">{$live_preview}</div>
 							</table>
 						</li>
-					{/if}
-
-					<li class="page_properties" title="Properties">
-						<table class="kt_collection" style="clear: both;"><tr><td>
+					{/if}-->
+					
+					<!--<li class="page_properties" title="Properties">-->
+						<table class="kt_collection" style="display:none; clear: both;"><tr><td>
 							{if ($hasNotifications & bCanEdit)}
 								<div class="notification">
 
@@ -120,20 +285,54 @@
 			</td>
 			{if !empty($viewlet_data2)}
                 <td valign="top" width="225px">
-            		<!--  Document "Views" -->
+            	
             		<div id="document-views">
+            		<div class="thumb-shadow" style="display:none;"></div>
             			{$viewlet_data2}
             		</div>
+            		
                 </td>
             {/if}
 		</tr>
 	</table>
 
 	{if !empty($viewlet_data)}
-		<!--  Document "Views" -->
-		<div style="display: none;">
-			{$viewlet_data}
+		<div>
+			 {$viewlet_data}
 		</div>
     {/if}
+    </td>
+    	<td valign="top" id="sidebar" class="standardBorder" height="100%" width="215">
+				<div id="sidebar_item" >
+					<h2>
+	    				Account <span class="acc_settings"><a href="">settings</a></span>
+	    			</h2>
+	    			<p style="font-size: 11px; padding: 10px; color: #666;">
+	    				Plan: Starter <br/>
+	    				Storage: 61.83 MB of Unlimited<br/>
+	    				Documents: 156 of Unlimited<br/>
+	    				<p style="text-align:right; font-size: 11px;">
+	    					<a href="" class="sidebarUpgradeBn">Upgrade Now</a><br/>
+	    				</p>
+	    				<br/>
+	    			</p>
+				</div>
+				<div id="sidebar_item" >
+					<h2>
+	    				Other Documents in this folder
+	    			</h2>
+	    				<ul>
+	    					<li style="font-size: 11px;"><a href="">INV 203</a></li>
+	    					<li style="font-size: 11px;"><a href="">INV 269</a></li>
+	    				</ul>
+			</div>
+	
+	
 
+
+
+
+	</td> 
+	</tr> 
+</table>
 <!-- FILE_END: ktcore/document/view.smarty -->
