@@ -7,7 +7,7 @@
  * KnowledgeTree Community Edition
  * Document Management Made Simple
  * Copyright (C) 2008, 2009, 2010 KnowledgeTree Inc.
- * 
+ *
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License version 3 as published by the
@@ -135,12 +135,12 @@ class Folder extends KTEntity {
 	// Timezone getters
 	function getDisplayCreatedDateTime() { return datetimeutil::getLocaleDate($this->dCreated); }
 	function getDisplayLastModifiedDate() { return datetimeutil::getLocaleDate($this->dModified); }
-	
+
     // {{{ create()
     function create () {
         $oParentFolder =& Folder::get($this->iParentID);
         $this->iPermissionObjectID = $oParentFolder->getPermissionObjectID();
-        
+
         if (empty($this->dCreated)) {
             $this->dCreated = getCurrentDateTime();
         }
@@ -166,10 +166,10 @@ class Folder extends KTEntity {
     	parent::loadFromArray($aOptions);
 
     	//now load fields from the folder this folder is linking to, if any.
-    	if($this->isSymbolicLink()){
+    	if ($this->isSymbolicLink()){
     		$oLinkedFolder = $this->getLinkedFolder();
 
-            if(PEAR::isError($oLinkedFolder)){
+            if (PEAR::isError($oLinkedFolder)){
                 return PEAR::raiseError(_kt("Linked folder can't be found: ") . $oLinkedFolder->getMessage());
             }
 
@@ -179,33 +179,33 @@ class Folder extends KTEntity {
 
     }
 
-        /**
+    /**
          * Returns a comma delimited string containing the parent folder ids, strips leading /
          *
          * @return String  comma delimited string containing the parent folder ids
          */
-        function generateFolderIDs($iFolderId) {
-            if (empty($iFolderId)) {
-                    return;
-            }
-            $oFolder =& Folder::get($iFolderId);
-            if (PEAR::isError($oFolder)) {
-                return $oFolder;
-            }
-            $iParentId = $oFolder->getParentId();
-            if (empty($iParentId)) {
-                return $oFolder->getId();
-            }
-            $oParentFolder =& Folder::get($iParentId);
-            if (PEAR::isError($oParentFolder)) {
-                return $oParentFolder;
-            }
-            $sParentFolderParentFolderIds = $oParentFolder->getParentFolderIDs();
-            if (empty($sParentFolderParentFolderIds)) {
-                return sprintf('%s,%s', $iParentId, $oFolder->getId());;
-            }
-            return sprintf('%s,%s,%s', $sParentFolderParentFolderIds, $iParentId, $oFolder->getId());
+    function generateFolderIDs($iFolderId) {
+        if (empty($iFolderId)) {
+            return;
         }
+        $oFolder =& Folder::get($iFolderId);
+        if (PEAR::isError($oFolder)) {
+            return $oFolder;
+        }
+        $iParentId = $oFolder->getParentId();
+        if (empty($iParentId)) {
+            return $oFolder->getId();
+        }
+        $oParentFolder =& Folder::get($iParentId);
+        if (PEAR::isError($oParentFolder)) {
+            return $oParentFolder;
+        }
+        $sParentFolderParentFolderIds = $oParentFolder->getParentFolderIDs();
+        if (empty($sParentFolderParentFolderIds)) {
+            return sprintf('%s,%s', $iParentId, $oFolder->getId());;
+        }
+        return sprintf('%s,%s,%s', $sParentFolderParentFolderIds, $iParentId, $oFolder->getId());
+    }
 
 	/**
 	 * Recursively generates forward slash deliminated string giving full path of document
@@ -391,7 +391,7 @@ class Folder extends KTEntity {
      * @return Folder
      */
     function getLinkedFolder(){
-    	if($this->isSymbolicLink()){
+    	if ($this->isSymbolicLink()){
     		return Folder::get($this->getLinkedFolderId());
     	}
     }
@@ -402,8 +402,7 @@ class Folder extends KTEntity {
      * @return Folder the folder
      */
 	function getRealFolder(){
-		if (is_null($this->getLinkedFolderId()))
-        {
+		if (is_null($this->getLinkedFolderId())) {
             return Folder::get($this->getId());
         }
 
@@ -428,7 +427,7 @@ class Folder extends KTEntity {
      */
     function getSymbolicLinks(){
     	$sQuery = 'SELECT * FROM folders ' .
-				'WHERE folders.linked_folder_id =  '.$this->getId();
+				'WHERE folders.linked_folder_id =  ' . $this->getId();
     	return DButil::getResultArray($sQuery);
     }
 
@@ -448,7 +447,7 @@ class Folder extends KTEntity {
 	* Static function.
 	* Get the full path for a folder
 	*
-	* @param 	Primary key of folder to generate path for
+	* @param $iFolderID Primary key of folder to generate path for
 	*
 	* @return String full path of folder
 	*/
@@ -564,7 +563,7 @@ class Folder extends KTEntity {
 		    // mysql is case-insensitive - check using php
 		    foreach ($res as $folder){
     		    $name = isset($folder['name']) ? $folder['name'] : '';
-    		    if($name == $sName){
+    		    if ($name == $sName){
     		        return true;
     		    }
 		    }
