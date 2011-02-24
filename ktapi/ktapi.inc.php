@@ -70,6 +70,9 @@ require_once(KTAPI_DIR .'/KTAPIUser.inc.php');
 require_once(KT_LIB_DIR . '/users/shareduserutil.inc.php');
 require_once(KT_LIB_DIR . '/render_helpers/sharedContent.inc');
 
+require_once(KT_LIB_DIR . '/users/shareduserutil.inc.php');
+require_once(KT_LIB_DIR . '/render_helpers/sharedContent.inc');
+
 /**
 * This class defines functions that MUST exist in the inheriting class
 *
