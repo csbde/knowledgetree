@@ -38,24 +38,41 @@
  */
  
 require_once(KT_LIB_DIR . '/actions/documentaction.inc.php');
+require_once(KT_LIB_DIR . '/subscriptions/Subscription.inc');
+require_once(KT_LIB_DIR . '/subscriptions/subscriptions.inc.php');
 
 class KTDocumentStatusBlock extends KTDocumentViewlet
 {
     public $sName = 'ktcore.blocks.document.status';
 	public $_sShowPermission = 'ktcore.permissions.write';
-    //public $showIfRead = true;
-    //public $showIfWrite = true;
 	
 	public function getDocBlock()
 	{
 		$this->oPage->requireJSResource('resources/js/newui/documents/blocks/view_actions.js');
+		$this->oPage->requireCSSResource('resources/css/newui/documents/blocks/view_actions.css');
 		
-        $oTemplating =& KTTemplating::getSingleton();
-        $oTemplate = $oTemplating->loadTemplate('ktcore/document/blocks/view_actions');
+		$workflowState = 'disabled';
+		$alertState = 'disabled';
+		$subscribeState = 'disabled';
         
+        // Check if user is subscribed
+        $iSubscriptionType = SubscriptionEvent::subTypes('Document');
+        if (Subscription::exists($this->oUser->getId(), $this->oDocument->getId(), $iSubscriptionType)) {
+        	$subscribed = 'enabled';
+        }
+        
+        // Check if document has workflows
+        
+        // Check if document has alerts
+        
+		$oTemplating =& KTTemplating::getSingleton();
+		$oTemplate = $oTemplating->loadTemplate('ktcore/document/blocks/view_actions');
         $aTemplateData = array(
               'context' => $this,
-              
+              'workflowState' => $workflowState,
+              'alertState' => $alertState,
+              'subscribeState' => $subscribeState,
+              'documentId' => $this->oDocument->getId(),
         );
         
         return $oTemplate->render($aTemplateData);

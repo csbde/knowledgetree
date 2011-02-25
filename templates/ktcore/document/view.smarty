@@ -22,6 +22,13 @@
 			
 		</tr>
 		<tr>
+			<table border="0" width="720" class="doc_view">
+				<td>
+					<div id=stateActions> Here </div>
+				</td>
+			</table>
+		</tr>
+		<tr>
 			<!-- <td style="display:none;" width="1" valign="top" style="padding-right: 15px;"><span id="doc_thumb" style="float:left;" /></td> -->
 			<td height="1" valign="top" width="350">
 				
