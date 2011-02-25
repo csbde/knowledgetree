@@ -249,6 +249,8 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
         $oDocumentTransaction = new DocumentTransaction($oDocument, 'Document details page view', 'ktcore.transactions.view');
         $oDocumentTransaction->create();
 
+        $documentBlocks = KTDocumentActionUtil::getDocumentActionsForDocument($this->oDocument, $this->oUser, 'documentblock');
+        
         $aTemplateData = array(
         	'doc_data' => array(
         		'owner' => $ownerUser[0]['name'],
@@ -268,7 +270,8 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
 			'viewlet_data' => $viewlet_data,
 			'viewlet_data2' => $viewlet_data2,
         	'hasNotifications' => false,
-			'fieldsetDisplayHelper' => $FieldsetDisplayHelper
+			'fieldsetDisplayHelper' => $FieldsetDisplayHelper,
+			'documentBlocks' => $documentBlocks,
         );
 
         // Conditionally include live_preview

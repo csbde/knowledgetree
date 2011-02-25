@@ -13,13 +13,8 @@
 				<span  class="doc_file_title" style="display:inline;">
 					{i18n}{$document->getName()|sanitize}{/i18n}
 				</span>
-				<div id="document_status_area">
-					<a class="workflow disabled" href=""></a>
-					<a class="alert disabled" href=""></a>
-					<a class="subscribe selected" href=""></a>
-
-				</div>
-					
+				
+				{$documentBlocks.KTDocumentStatusBlock->getDocBlock()}
 				
 				<p>{$document->getFileName()} {}</p>
 				

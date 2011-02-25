@@ -424,7 +424,7 @@ class KTDocumentActionUtil {
             if (!empty($sPath)) {
                 require_once($sPath);
             }
-            $aObjects[] = new $sClassName($oDocument, $oUser, $oPlugin);
+            $aObjects[$sClassName] = new $sClassName($oDocument, $oUser, $oPlugin);
         }
         return $aObjects;
     }

@@ -1,0 +1,5 @@
+<div id="document_status_area">
+	<a class="workflow disabled" href=""></a>
+	<a class="alert disabled" href=""></a>
+	<a id=subscribe class="subscribe selected" href="javascript:{viewActions.doSubscribe(); return false;}" value={$subscribed}></a>
+</div>
