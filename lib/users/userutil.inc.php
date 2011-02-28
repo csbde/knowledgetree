@@ -244,22 +244,23 @@ class KTUserUtil {
     						'noPerms' => ''
     					);
 
-    	if (($userType == 'shared') && !empty($existingUsers)) {
-    		// TODO : Removed today, will leave here as next week it might be put back!!!...sigh
-    		// $response = self::checkPermissions($response, $existingUsers, $shareContent);
-    		// add content and send notifications
-    		foreach ($existingUsers as $existingUser) {
-    		    // Create shared content
-    		    self::addSharedContent($existingUser['id'], $shareContent['object_id'], $shareContent['object_type'], $shareContent['permission']);
-    		    // TODO if user already exists, add a specific link to the newly shared content and set different link text
-    		    // Send a sharing notification to existing users.
-    		    self::sendNotifications($existingUsers, $shareContent['object_id'], $objectTypeName, $objectName, $shareContent['message']);
-    		}
-
-    		$response['invited'] = count($existingUsers) + (int)$numInvited;
-    	}
-
     	if ($userType == 'shared') {
+    	    if (!empty($existingUsers)) {
+    	        // TODO : Removed today, will leave here as next week it might be put back!!!...sigh
+    	        // $response = self::checkPermissions($response, $existingUsers, $shareContent);
+    	        // add content and send notifications
+    	        foreach ($existingUsers as $existingUser) {
+    	            // Create shared content
+    	            self::addSharedContent($existingUser['id'], $shareContent['object_id'], $shareContent['object_type'], $shareContent['permission']);
+    	        }
+
+    	        // TODO if user already exists, add a specific link to the newly shared content and set different link text
+    	        // Send a sharing notification to existing users.
+    	        self::sendNotifications($existingUsers, $shareContent['object_id'], $objectTypeName, $objectName, $shareContent['message']);
+
+    	        $response['invited'] = count($existingUsers) + (int)$numInvited;
+    	    }
+
     	    /*// get list of users with whom content was shared - this can be found in a combination of $invitedUsers and $existingUsers
     	    $userList = array();
     	    $invited = array_merge($invitedUsers, $existingUsers);
