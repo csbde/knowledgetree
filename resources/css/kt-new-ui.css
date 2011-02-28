@@ -30,13 +30,13 @@ body {
 	position: relative;
 	left: -5px;
 }
-.standardBorder { 
-	border: 1px solid #CCC; 
-	margin: 5px 0px; 
+.standardBorder {
+	border: 1px solid #CCC;
+	margin: 5px 0px;
 	background: #EEE;
-	
-	-webkit-border-radius: 2px; 
-	-moz-border-radius: 2px; 
+
+	-webkit-border-radius: 2px;
+	-moz-border-radius: 2px;
 	border-radius: 2px;
 	behavior: url('../resources/css/border-radius.htc');
 }
@@ -93,7 +93,7 @@ body {
 .browseView.bulkActionMenu a:active {
 	-moz-box-shadow: inset 0px 0px 3px #bbb;
 	-webkit-box-shadow: inset 0px 0px 3px #bbb;
-	box-shadow: inset 0px 0px 3px #bbb; 
+	box-shadow: inset 0px 0px 3px #bbb;
 	-ms-filter: "progid:DXImageTransform.Microsoft.Shadow(Strength=5, Direction=120, Color='#bbbbbb')"; /* For IE 8 */
 	filter: progid:DXImageTransform.Microsoft.Shadow(Strength=5, Direction=120, Color='#bbbbbb'); /* For IE 5.5 - 7 */
 }
@@ -126,7 +126,7 @@ body {
 	border-radius: 2px;
 	behavior: url('../resources/css/border-radius.htc');
 	background-position-y: -34px;
-	
+
 }
 #document_status_area a:active,
 #document_status_area .selected {
@@ -156,7 +156,7 @@ body {
 	-moz-box-shadow: inset 0px 0px 3px #fff;
 	-webkit-box-shadow: inset 0px 0px 3px #fff;
 	box-shadow: inset 0px 0px 3px #fff;
-	text-align: center; 
+	text-align: center;
 	font-size: 13px;
 	font-weight: bold;
 	text-shadow: 0px 1px 0px #fff;
@@ -167,29 +167,30 @@ body {
 	-moz-box-shadow:  0px 0px 3px #ccc;
 	-webkit-box-shadow:  0px 0px 3px #ccc;
 	box-shadow:  0px 0px 3px #ccc;
-	text-decoration: none!important; 
-}	
+	text-decoration: none!important;
+}
 .sidebarUpgradeBn:active {
 	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#dddddd', endColorstr='#ffffff') !important; /* for IE */
 	background: -webkit-gradient(linear, left top, left bottom, from(#ddd), to(#fcfcfc)) !important; /* for webkit browsers */
 	background: -moz-linear-gradient(top,  #ddd,  #fff) !important; /* for firefox 3.6+ */
 	-moz-box-shadow: inset 0px 0px 3px #fff;
 	-webkit-box-shadow: inset 0px 0px 3px #fff;
-	box-shadow: inset 0px 0px 3px #fff; 
+	box-shadow: inset 0px 0px 3px #fff;
 }
 .noportlets #breadcrumbs {
 	width: auto;
 }
+/*-------------------- Breadcrumbs -----------------*/
 #breadcrumbs {
 	background: #EEE;
 	border: 1px solid #CCC;
 	margin: 0px;
 	padding: 0px;
-	padding-right: 5px;
+	padding-right: 15px;
 	color: #EEE;
 	height: 30px;
 	font-size: 1px;
-	
+
 	-moz-border-radius: 2px;
 	-webkit-border-radius: 2px;
 	border-radius: 2px;
@@ -199,13 +200,11 @@ body {
 #breadcrumbs span {
 	color: #888;
 	font-size: 12px;
-	padding-left: 6px;
+	padding-left: 0px;
 	text-shadow: 0px 1px 0px #fff;
 }
 #breadcrumbs a {
-	background: url('../graphics/newui/bc_separator.png') no-repeat 0 0px;
-	background-position: right;
-	padding: 7px 15px 0px 8px;
+	padding: 7px 5px 0px 5px;
 	height: 23px;
 	display: inline-block;
 	font-size:12px;
@@ -220,22 +219,73 @@ body {
 	border-spacing: 0px;
 }
 #breadcrumbs .dashboard {
-	background: url('../graphics/newui/dashboard_icon.png') no-repeat 5px 2px;
+	background: url('../graphics/newui/dashboard_icon.png') no-repeat 5px 3px;
 	width: 26px;
 	text-decoration: none !important;
-	padding-right: 1px;
+	padding-right: 3px;
 	border-right: 1px solid #ccc;
 }
 #breadcrumbs .dashboard:hover {
 	opacity: 0.7;
 }
+/* ------------------ prototype breadcrumbs -------------- */
+.breadCrumb ul {
+	margin: 0;
+	padding: 0;
+	display: block;
+}
+.breadCrumb ul li {
+	display: block;
+	float: left;
+	position: relative;
+	overflow: hidden;
+	padding: 0px 6px 0px 0;
+	font-size: .9167em;
+	background: url(../graphics/newui/bc_separator.png) no-repeat 100% 0;
+}
+.breadCrumb ul li div.chevronOverlay {
+	position: absolute;
+	right: 0;
+	top: 0;
+	z-index: 2;
+}
+.breadCrumb ul li span {
+	display: block;
+	overflow: hidden;
+}
+.breadCrumb ul li span.additional {
+	padding: 7px 0px 0px 4px;
+	margin-left: 5px;
+	height: 23px;
+	display: inline-block;
+	font-size:12px;
+	text-shadow: 0px 1px 0px #fff;
+}
+.breadCrumb ul li a {
+	display: block;
+	position: relative;
+	overflow: hidden;
+	float: left;
+}
+.breadCrumb ul li.first {
+    background: none;
+    padding: 0;
+}
+.breadCrumb ul li.last {
+	background: none;
+	margin-right: 0;
+	padding-right: 0;
+}
+.chevronOverlay {
+	display: none;
+	background: url(../graphics/newui/bc_separator_overlay.png) no-repeat 100% 0;
+	width: 13px;
+	height: 30px;
+}
+/*----End Breadcrumbs----*/
 #txtSearchBar1 {
 	width:155px !important;
 }
-
-
-
-
 #commentsarea table{
 	background: #eee;
 	border: 1px solid #ddd !important;
@@ -252,7 +302,7 @@ body {
 	font-weight: normal;
 	background: url('../graphics/newui/settings_icon.png') no-repeat;
 	padding-left: 25px;
-	
+
 }
 
 
@@ -310,7 +360,7 @@ div#topnavbar a.active {
 	left: -5px;
 }
 ul.floatleft li:first-child,
-ul.floatright li:last-child { 
+ul.floatright li:last-child {
 	background: none !important;
 }
 ul.floatleft li {
@@ -365,7 +415,7 @@ ul.floatleft li.notification {
 }
 #content .form_actions a {
 	padding: 6px 2px 2px 25px !important;
-	border-right: 1px solid #ccc;	
+	border-right: 1px solid #ccc;
 	line-height: 24px;
 }
 .splitbutton #download {
@@ -482,6 +532,8 @@ div.form_actions {
 
 #newSearchQuery {
 	/* margin-top: 5px; */
+	padding: 0px;
+	margin: 0;
 	float: right;
 	padding-right: 0px;
 }
@@ -557,7 +609,7 @@ ul.buttonsList li:hover > *.dir, ul.buttonsList li:hover span.dir:hover {
  */
 
 div#logobar {
-	margin:2px 15px; 
+	margin:2px 15px;
 }
 
 input[type="checkbox"] {
