@@ -2752,7 +2752,7 @@ class KTWebService {
     		$selection = $field['selection'];
     		foreach($selection as $skey => $sitem)
     		{
-    			if (!is_null($item['id']))
+    			if (!is_null($sitem['id']))
     			{
     				$sitem['id'] = (int) $sitem['id'];
     			}
@@ -2871,19 +2871,39 @@ class KTWebService {
 			$num_fields = count($metadata[$i]['fields']);
 			for($j=0;$j<$num_fields;$j++)
 			{
-				$selection=$metadata[$i]['fields'][$j]['selection'];
-				$new = array();
-
-				foreach($selection as $item)
+				if ($metadata[$i]['fields'][$j]['control_type'] != 'tree')
 				{
-					$new[] = array(
-						'id'=>null,
-						'name' => $item,
-						'value' => $item,
-						'parent_id'=>null
-					);
+					$selection = $metadata[$i]['fields'][$j]['selection'];
+					$new = array();
+	
+					foreach ($selection as $item)
+					{	    	
+						$new[] = array(
+							'id' => null,
+							'name' => $item,
+							'value' => $item,
+							'parent_id' => null
+						);
+					}
+					$metadata[$i]['fields'][$j]['selection'] = $new;
 				}
-				$metadata[$i]['fields'][$j]['selection'] = $new;
+				else
+				{					
+					$selection = $metadata[$i]['fields'][$j]['selection'];
+					$new = array();
+	
+					foreach ($selection as $item)
+					{	    	
+						$new[] = array(
+							'id' => $item['tree_id'],
+							'name' => $item['field_name'],
+							'value' => $item['field_name'],
+							'parent_id' => $item['parent_id'],
+							'tree_name' => $item['tree_name']
+						);
+					}
+					$metadata[$i]['fields'][$j]['selection'] = $new;
+				}
 			}
 		}
 
@@ -2938,19 +2958,39 @@ class KTWebService {
 			$num_fields = count($metadata[$i]['fields']);
 			for ($j = 0; $j < $num_fields; $j++)
 			{
-				$selection = $metadata[$i]['fields'][$j]['selection'];
-				$new = array();
-
-				foreach ($selection as $item)
+				if ($metadata[$i]['fields'][$j]['control_type'] != 'tree')
 				{
-					$new[] = array(
-						'id' => null,
-						'name' => $item,
-						'value' => $item,
-						'parent_id' => null
-					);
+					$selection = $metadata[$i]['fields'][$j]['selection'];
+					$new = array();
+	
+					foreach ($selection as $item)
+					{	    	
+						$new[] = array(
+							'id' => null,
+							'name' => $item,
+							'value' => $item,
+							'parent_id' => null
+						);
+					}
+					$metadata[$i]['fields'][$j]['selection'] = $new;
 				}
-				$metadata[$i]['fields'][$j]['selection'] = $new;
+				else
+				{					
+					$selection = $metadata[$i]['fields'][$j]['selection'];
+					$new = array();
+	
+					foreach ($selection as $item)
+					{	    	
+						$new[] = array(
+							'id' => $item['tree_id'],
+							'name' => $item['field_name'],
+							'value' => $item['field_name'],
+							'parent_id' => $item['parent_id'],
+							'tree_name' => $item['tree_name']
+						);
+					}
+					$metadata[$i]['fields'][$j]['selection'] = $new;
+				}
 			}
 		}
 
@@ -4590,6 +4630,10 @@ class KTWebService {
 				'value' => 'string',
         		'parent_id' => 'int'
          	);
+    	if ($this->version >= 3)
+         {
+         	$this->__typedef["{urn:$this->namespace}kt_metadata_selection_item"]['tree_name'] = 'string';
+         }
 
     	$this->__typedef["{urn:$this->namespace}kt_metadata_selection"] =
          	array(
