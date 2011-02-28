@@ -218,14 +218,19 @@ body {
 #breadcrumbs table {
 	border-spacing: 0px;
 }
-#breadcrumbs .dashboard {
-	background: url('../graphics/newui/dashboard_icon.png') no-repeat 5px 3px;
+#breadcrumbs .icon {
 	width: 26px;
 	text-decoration: none !important;
 	padding-right: 3px;
 	border-right: 1px solid #ccc;
 }
-#breadcrumbs .dashboard:hover {
+#breadcrumbs .dashboard {
+	background: url('../graphics/newui/dashboard_icon.png') no-repeat 5px 3px;
+}
+#breadcrumbs .browse {
+	background: url('../graphics/newui/browse_icon.png') no-repeat 5px 3px;
+}
+#breadcrumbs .icon:hover {
 	opacity: 0.7;
 }
 /* ------------------ prototype breadcrumbs -------------- */
@@ -254,7 +259,7 @@ body {
 	overflow: hidden;
 }
 .breadCrumb ul li span.additional {
-	padding: 7px 0px 0px 4px;
+	padding: 7px 6px 0px 4px;
 	margin-left: 5px;
 	height: 23px;
 	display: inline-block;
@@ -268,6 +273,10 @@ body {
 	float: left;
 }
 .breadCrumb ul li.first {
+    background: none;
+    padding: 0;
+}
+.breadCrumb ul li.breadicon {
     background: none;
     padding: 0;
 }

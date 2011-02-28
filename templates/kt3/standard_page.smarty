@@ -76,6 +76,7 @@
                 timeExpansionAnimation: 200,
                 timeCompressionAnimation: 1000,
                 timeInitialCollapse: 100,
+                beginingElementsToLeaveOpen: 1,
                 previewWidth: 10
             });
         })
@@ -233,12 +234,17 @@
 
     					   <div id="breadcrumb" class="breadCrumb">
                             <ul>
-                                <li>
-                                    <a href="{php}echo "{$GLOBALS['default']->rootUrl}dashboard.php"{/php}" class="dashboard">&nbsp;</a>
-                                </li>
+
+                                {if ($page->breadcrumbIcon !== false)}
+                                    <li class="breadicon">
+                                        {foreach item=aIcon from=$page->breadcrumbIcon name=bi}
+                                                <a href="{$aIcon.url}" class="icon {$aIcon.class}" title="{$aIcon.label}">&nbsp;</a>
+                                        {/foreach}
+                                    </li>
+                                {/if}
 
             					{if ($page->breadcrumbSection !== false)}
-            					   <li>
+            					   <li class="breadsection">
                 						{if ($page->breadcrumbSection.url) }
                 							<a href="{$page->breadcrumbSection.url}" class="primary">{$page->breadcrumbSection.label|sanitize}</a>
                 						{else}

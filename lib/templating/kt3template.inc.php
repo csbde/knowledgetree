@@ -81,6 +81,7 @@ class KTPage {
     public $breadcrumbs = false;
     public $breadcrumbDetails = false;
     public $breadcrumbSection = false;
+    public $breadcrumbIcon = false;
     public $menu = null;
     public $userMenu = null;
     public $helpPage = null;
@@ -143,6 +144,7 @@ class KTPage {
         $aJS[] = 'thirdpartyjs/extjs/adapter/ext/ext-base.js';
         $aJS[] = 'thirdpartyjs/extjs/ext-all.js';
         $aJS[] = 'thirdpartyjs/jquery/jquery-1.4.2.min.js';
+        $aJS[] = 'thirdpartyjs/jquery/jquery-1.4.4.min.js';
         $aJS[] = 'thirdpartyjs/jquery/jquery_noconflict.js';
         $aJS[] = 'thirdpartyjs/jquery/plugins/urlparser/jquery.url.js';
         $aJS[] = 'resources/js/search2widget.js';
@@ -188,8 +190,6 @@ class KTPage {
     function initMenu() {
     	// FIXME:  we lost the getDefaultAction stuff - do we care?
     	// note that key == action. this is _important_, since we crossmatch the breadcrumbs against this for "active"
-    	$sBaseUrl = KTUtil::kt_url();
-
     	$this->menu = array();
     	if (!SharedUserUtil::isSharedUser())
     	{
@@ -335,13 +335,39 @@ class KTPage {
         if ($breadLength != 0) {
             $this->breadcrumbSection = $this->_actionhelper($aBreadcrumbs[0]);
 	    // handle the menu
-	    if (($aBreadcrumbs[0]['action']) && ($this->menu[$aBreadcrumbs[0]['action']])) {
-		$this->menu[$aBreadcrumbs[0]['action']]['active'] = 1;
-	    }
+//	    if (($aBreadcrumbs[0]['action']) && ($this->menu[$aBreadcrumbs[0]['action']])) {
+//		$this->menu[$aBreadcrumbs[0]['action']]['active'] = 1;
+//	    }
         }
         if ($breadLength > 1) {
             $this->breadcrumbs = array_map(array(&$this, '_actionhelper'), array_slice($aBreadcrumbs, 1));
         }
+
+        // New menu system (breadcrumbs)
+        $this->breadcrumbIcon = array();
+    	$sBaseUrl = KTUtil::kt_url();
+
+    	$dashboard = false;
+    	if (!SharedUserUtil::isSharedUser()) {
+    	   $dashboard = array('url' => $sBaseUrl.'/dashboard.php', 'class' => 'dashboard', 'label' => _kt('Dashboard'));
+    	}
+    	$browse = array('url' => $sBaseUrl.'/browse.php', 'class' => 'browse', 'label' => _kt('Documents'));
+
+    	switch($aBreadcrumbs[0]['action']) {
+    	    case 'browse':
+    	    case 'action':
+    	        if($dashboard !== false) $this->breadcrumbIcon[] = $dashboard;
+    	        break;
+    	    case 'dashboard':
+    	        $this->breadcrumbIcon[] = $browse;
+    	        break;
+    	    case 'administration':
+    	    default:
+    	        if($dashboard !== false) $this->breadcrumbIcon[] = $dashboard;
+    	        $this->breadcrumbIcon[] = $browse;
+    	}
+
+    	return ;
     }
 
     function setBreadcrumbDetails($sBreadcrumbDetails) { $this->breadcrumbDetails = $sBreadcrumbDetails; }
