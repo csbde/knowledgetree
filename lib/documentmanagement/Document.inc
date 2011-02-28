@@ -175,7 +175,11 @@ class Document {
     function getHasRendition() { return $this->_oDocumentContentVersion->getHasRendition(); }
     function setHasRendition($iNewValue) { $this->_oDocumentContentVersion->setHasRendition($iNewValue); }
 
-
+	// Timezone getters
+	function getDisplayCreatedDateTime() { return $this->_oDocumentCore->getDisplayCreatedDateTime(); }
+    function getDisplayLastModifiedDate() { return $this->_oDocumentCore->getDisplayLastModifiedDate(); }
+    function getDisplayCheckedOutDate() { return $this->_oDocumentCore->getDisplayCheckedOutDate(); }
+    function getDisplayVersionCreated() { return $this->_oDocumentMetadataVersion->getDisplayVersionCreated(); }
 
     /**
      * Returns the symlink document instance

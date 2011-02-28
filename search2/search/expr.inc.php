@@ -249,7 +249,7 @@ class Expr
      */
     public function setParent(&$parent)
     {
-        $this->parent = &$parent;
+        $this->parent =& $parent;
     }
 
     /**
@@ -325,15 +325,15 @@ class Expr
 
         if (isset($options['tofile']))
         {
-            $path=dirname($options['tofile']);
-            $filename=basename($options['tofile']);
+            $path = dirname($options['tofile']);
+            $filename = basename($options['tofile']);
             $ext = pathinfo($filename, PATHINFO_EXTENSION);
             $base = substr($filename, 0, -strlen($ext)-1);
 
             $curdir = getcwd();
             chdir($_ENV['PWD']);
-            $dotfile="$base.$ext";
-            $jpgfile="$base.jpg";
+            $dotfile = "$base.$ext";
+            $jpgfile = "$base.jpg";
             $oStorage->write_file($dotfile, 'wt', $str);
             system("dot -Tjpg -o$jpgfile $dotfile 2>1 >/dev/null ");
 
@@ -341,6 +341,7 @@ class Expr
             {
                 system("eog $jpgfile");
             }
+
             chdir($curdir);
         }
 
@@ -601,7 +602,7 @@ class MetadataField extends DBFieldExpr
 
     public function getInputRequirements()
     {
-        return array('value'=>array('type'=>FieldInputType::TEXT));
+        return array('value' => array('type' => FieldInputType::TEXT));
     }
 
     /**
@@ -1088,28 +1089,28 @@ class SQLQueryBuilder implements QueryBuilder
 	    {
 	        case ExprContext::DOCUMENT:
 	            $this->used_tables = array(
-	               'documents'=>1,
-	               'document_metadata_version'=>1,
-	               'document_content_version'=>0,
-	               'tag_words'=>0,
-	               'document_fields_link'=>0
+	               'documents' => 1,
+	               'document_metadata_version' => 1,
+	               'document_content_version' => 0,
+	               'tag_words' => 0,
+	               'document_fields_link' => 0
 	            );
 
 	            $this->aliases = array(
-	               'documents'=>'d',
-	               'document_metadata_version'=>'dmv',
-	               'document_content_version'=>'dcv',
-	               'tag_words'=>'tw',
-	               'document_fields_link'=>'pdfl'
+	               'documents' => 'd',
+	               'document_metadata_version' => 'dmv',
+	               'document_content_version' => 'dcv',
+	               'tag_words' => 'tw',
+	               'document_fields_link' => 'pdfl'
 	            );
 	            break;
 	        case ExprContext::FOLDER:
 	            $this->used_tables = array(
-	               'folders'=>1,
+	               'folders' => 1,
 	            );
 
 	            $this->aliases = array(
-	               'folders'=>'f',
+	               'folders' => 'f',
 	            );
 	            break;
 	        default:
@@ -1162,13 +1163,13 @@ class SQLQueryBuilder implements QueryBuilder
 	{
 		if ($expr->isMetadataField())
 		{
-			$this->metadata[] = & $parent;
+			$this->metadata[] =& $parent;
 		}
 		else if ($expr->isDBExpr())
 		{
-		    if (($this->context & ($expr->appliesToContext()) == $this->context))
+		    if (($this->context & $expr->appliesToContext()) == $this->context)
 		    {
-		        $this->db[] = & $parent;
+		        $this->db[] =& $parent;
 		        $tablename = $expr->getTable();
 		        if (array_key_exists($tablename, $this->used_tables))
 		        {
@@ -1179,8 +1180,8 @@ class SQLQueryBuilder implements QueryBuilder
 		}
 		else if ($expr->isOpExpr())
 		{
-			$left = & $expr->left();
-			$right = & $expr->right();
+			$left =& $expr->left();
+			$right =& $expr->right();
 			if (DefaultOpCollection::isBoolean($expr))
 			{
 				$this->exploreExprs($left, $expr);
@@ -1444,10 +1445,10 @@ class SQLQueryBuilder implements QueryBuilder
         // check user type, shared users have a different permissions validation structure
         if ($oUser->getDisabled() == 4) {
             if ($this->context == ExprContext::DOCUMENT) {
-                $sql .= " INNER JOIN shared_content sc ON (sc.object_id = d.id) OR (sc.object_id = (SELECT folder_id FROM documents dlink WHERE dlink.id = d.id) AND sc.type = 'folder') AND sc.user_id = {$oUser->getId()}\n";
+                $sql .= " INNER JOIN shared_content sc ON ((sc.object_id = d.id) OR (sc.object_id = (SELECT folder_id FROM documents dlink WHERE dlink.id = d.id) AND sc.type = 'folder')) AND sc.user_id = {$oUser->getId()}\n";
             }
             else if ($this->context == ExprContext::FOLDER) {
-                $sql .= " INNER JOIN shared_content sc ON (sc.object_id = f.id) OR (sc.object_id = (SELECT parent_id FROM folders flink WHERE flink.id = f.id) AND sc.type = 'folder') AND sc.user_id = {$oUser->getId()}\n";
+                $sql .= " INNER JOIN shared_content sc ON ((sc.object_id = f.id) OR (sc.object_id = (SELECT parent_id FROM folders flink WHERE flink.id = f.id) AND sc.type = 'folder')) AND sc.user_id = {$oUser->getId()}\n";
             }
 
             $sql .= ' WHERE ';
@@ -1656,7 +1657,7 @@ class SQLQueryBuilder implements QueryBuilder
 	{
 		$ranker = RankManager::get();
 		$score = 0;
-		foreach ($result as $col=>$val)
+		foreach ($result as $col => $val)
 		{
 			if ($val + 0 == 0)
 			{
@@ -1689,7 +1690,7 @@ class SQLQueryBuilder implements QueryBuilder
 	public function getResultText($result)
 	{
 		$text = array();
-		foreach ($result as $col=>$val)
+		foreach ($result as $col => $val)
 		{
 			if (substr($col, 0, 4) == 'expr' && is_numeric(substr($col, 4)))
 			{
@@ -1910,9 +1911,9 @@ class OpExpr extends Expr
 
         $left->setParent($this);
         $right->setParent($this);
-        $this->left_expr = &$left;
+        $this->left_expr =& $left;
         $this->op = $op;
-        $this->right_expr = &$right;
+        $this->right_expr =& $right;
         $this->not = $not;
         $this->has_text = false;
 
@@ -2169,16 +2170,16 @@ class OpExpr extends Expr
 	protected static function intersect($leftres, $rightres)
     {
         return array(
-            'docs'=>self::_intersect($leftres['docs'],$rightres['docs']),
-            'folders'=>self::_intersect($leftres['folders'],$rightres['folders'])
+            'docs' => self::_intersect($leftres['docs'], $rightres['docs']),
+            'folders' => self::_intersect($leftres['folders'], $rightres['folders'])
         );
     }
 
 	protected static function union($leftres, $rightres)
     {
         return array(
-            'docs'=>self::_union($leftres['docs'],$rightres['docs']),
-            'folders'=>self::_union($leftres['folders'],$rightres['folders'])
+            'docs' => self::_union($leftres['docs'], $rightres['docs']),
+            'folders' => self::_union($leftres['folders'], $rightres['folders'])
         );
     }
 
@@ -2196,10 +2197,12 @@ class OpExpr extends Expr
     	{
     		return $rightres; // small optimisation
     	}
+
     	if (empty($rightres))
     	{
     		return $leftres; // small optimisation
     	}
+
     	$result = array();
 
     	foreach ($leftres as $item)
@@ -2217,6 +2220,7 @@ class OpExpr extends Expr
     			$result[$item->Id] = $item;
     		}
     	}
+
     	return $result;
     }
 

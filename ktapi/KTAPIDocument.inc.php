@@ -2170,7 +2170,7 @@ class KTAPI_Document extends KTAPI_FolderItem
 		}
 
 		// get the creation date
-		$detail['created_date'] = $document->getCreatedDateTime();
+		$detail['created_date'] = $document->getDisplayCreatedDateTime();
 
 		// get the checked out user
 		$userid = $document->getCheckedOutUserID();
@@ -2198,7 +2198,7 @@ class KTAPI_Document extends KTAPI_FolderItem
 		list($major, $minor, $fix) = explode('.', $default->systemVersion);
 		if ($major == 3 && $minor >= 5)
 		{
-			$detail['checked_out_date'] = $document->getCheckedOutDate();
+			$detail['checked_out_date'] = $document->getDisplayCheckedOutDate();
 		}
 		else
 		{
@@ -2229,7 +2229,7 @@ class KTAPI_Document extends KTAPI_FolderItem
 		}
 
 		// get the modified date
-		$detail['updated_date'] = $detail['modified_date'] = $document->getLastModifiedDate();
+		$detail['updated_date'] = $detail['modified_date'] = $document->getDisplayLastModifiedDate();
 
 		// get the owner
 		$userid = $document->getOwnerID();
@@ -2496,11 +2496,12 @@ class KTAPI_Document extends KTAPI_FolderItem
         	return new KTAPI_Error(KTAPI_ERROR_INTERNAL_ERROR, $transactions  );
         }
 
-		$wsversion = $this->ktapi->getVersion();
 		foreach($transactions as $key=>$transaction)
 		{
 			$transactions[$key]['version'] = (float) $transaction['version'];
+			$transactions[$key]['datetime'] = datetimeutil::getLocaleDate($transactions[$key]['datetime']);
 		}
+
 
         return $transactions;
 	}
@@ -2538,7 +2539,7 @@ class KTAPI_Document extends KTAPI_FolderItem
         	$version['user'] = $username;
         	$version['metadata_version'] = $document->getMetadataVersion();
         	$version['content_version'] = $document->getVersion();
-			$version['datetime'] = $document->getVersionCreated();
+			$version['datetime'] = $document->getDisplayVersionCreated();
         	if ($wsversion >= 2)
         	{
         		$version['metadata_version'] = (int) $version['metadata_version'];
@@ -3038,6 +3039,33 @@ class KTAPI_Document extends KTAPI_FolderItem
 				return FALSE;
 			}
 		}
+	}
+	
+	/**
+	 * 
+	 * Determines whether a document has "binary changes", i.e. if it truly has content changes
+	 * (since rename etc also increase the content version). The only way to determine this is by 
+	 * checking whether there has been a check-in in the given version range
+	 * 
+	 * @param float $from_version
+	 * @param float $to_version
+	 */
+	public function hasBinaryChanges($from_version, $to_version)
+	{
+		$sSQL = 'SELECT DT.document_id FROM '.KTUtil::getTableName('document_transactions').' AS DT '.
+			'WHERE DT.document_id = ? AND DT.version >= ? AND DT.version <= ? AND DT.transaction_namespace LIKE \'ktcore.transactions.check_in\' ';
+		//ORDER BY DT.datetime DESC'
+		
+		$aParams = array($this->documentid, $from_version, $to_version);
+
+        $results = DBUtil::getResultArray(array($sSQL, $aParams));
+        
+        if (is_null($results) || PEAR::isError($results))
+        {
+        	return false;
+        }
+        
+        return (count($results) > 0);
 	}
 }
 

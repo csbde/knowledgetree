@@ -2,12 +2,12 @@
 if (typeof(kt.app) == 'undefined') { kt.app = {}; }
 
 /* Initializing kt.api if it wasn't initialized before */
-if(typeof(kt.api)=='undefined')kt.api={};
+if (typeof(kt.api) == 'undefined') { kt.api = {}; }
 
 /**
  * Dialog for inviting new licensed users to the system
  */
-kt.app.inviteusers=new function(){
+kt.app.inviteusers = new function() {
 
 	//contains a list of fragments that will get preloaded
     var fragments = this.fragments = ['users/invite.shared.dialog'];
@@ -42,7 +42,7 @@ kt.app.inviteusers=new function(){
 	        alert('Please enter a valid email address.');
 	    } else {
             group = document.getElementById('invite.grouplist').value;
-			/*jQuery('#extinvitewindow').block({ 
+			/*jQuery('#extinvitewindow').block({
 												message: '<div id="loading_invite_users">',
 												overlayCSS: {
 													backgroundColor: '#00f transparent'

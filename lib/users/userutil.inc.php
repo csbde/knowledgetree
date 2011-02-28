@@ -282,6 +282,7 @@ class KTUserUtil {
                     'transactionNS' => 'ktcore.transactions.share',
                     'userid' => $_SESSION['userID'],
                     'ip' => Session::getClientIP(),
+    	        	'parentid' => $shareContent['object_id'],	//TODO: need to get the parent ID here!
                 ));
     	    }
     	}

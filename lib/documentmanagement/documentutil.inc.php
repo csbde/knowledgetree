@@ -1181,12 +1181,25 @@ class KTDocumentUtil {
         	}
         }
 
+        //$GLOBALS['default']->log->debug('Document transaction folder id '.$oDocument->getFolderID().' or '.$oOrigFolder->getId());
+        
         $oDocumentTransaction = new DocumentTransaction($oDocument, _kt('Document deleted: ') . $sReason, 'ktcore.transactions.delete');
         $oDocumentTransaction->create();
-
+        
         $oDocument->setFolderID(1);
 
         DBUtil::commit();
+        
+        //now update the document_transactions table to reflect the parent folder id
+        $aFV = array(        
+        	'parent_id' => $oOrigFolder->getId(),    
+        );    
+        $aWFV = array(        
+        	'document_id' => $oDocument->getId(),
+        );
+
+        $res = DBUtil::whereUpdate(KTUtil::getTableName('document_transactions'), $aFV, $aWFV);
+        
         // TODO : better way of checking if its a bulk delete
         if (!$bulk_action) {
             // we weren't doing notifications on this one
@@ -1727,6 +1740,19 @@ class KTDocumentUtil {
         $content = $oStorage->file_get_contents($path);
 
         return $content;
+    }
+
+    public static function getDocumentsByPO($iObjectId)
+    {
+        $sql = "SELECT d.id, d.owner_id, d.folder_id, d.parent_folder_ids, d.permission_lookup_id, m.workflow_state_id, d.restore_folder_path
+                FROM documents d, document_metadata_version m
+                WHERE d.metadata_version_id = m.id AND permission_object_id = {$iObjectId}";
+
+        $results = DBUtil::getResultArray($sql);
+        if(PEAR::isError($results)){
+            return 0;
+        }
+        return $results;
     }
 }
 

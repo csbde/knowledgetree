@@ -183,7 +183,7 @@ CREATE TABLE `config_settings` (
   `item` varchar(255) NOT NULL,
   `value` varchar(255) NOT NULL default 'default',
   `default_value` varchar(255) NOT NULL,
-  `type` enum('boolean','string','numeric_string','numeric','radio','dropdown') default 'string',
+  `type` enum('boolean','string','numeric_string','numeric','radio','dropdown', 'class') default 'string',
   `options` mediumtext,
   `can_edit` tinyint(1) NOT NULL default '1',
   PRIMARY KEY  (`id`)
@@ -523,6 +523,7 @@ CREATE TABLE `document_transactions` (
   `transaction_namespace` varchar(255) NOT NULL default 'ktcore.transactions.event',
   `session_id` int(11) default NULL,
   `admin_mode` tinyint(1) NOT NULL default '0',
+  `parent_id` int(11),
   PRIMARY KEY  (`id`),
   KEY `session_id` (`session_id`),
   KEY `document_id` (`document_id`),
@@ -816,6 +817,7 @@ CREATE TABLE `folder_transactions` (
   `transaction_namespace` varchar(255) NOT NULL,
   `session_id` int(11) default NULL,
   `admin_mode` tinyint(1) NOT NULL default '0',
+  `parent_id` int(11),
   PRIMARY KEY  (`id`),
   KEY `folder_id` (`folder_id`),
   KEY `session_id` (`session_id`)

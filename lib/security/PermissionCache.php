@@ -160,6 +160,7 @@ class PermissionCache
             $this->memcache->invalidateMemcachePermissions();
         }
         unset($_SESSION['Permissions_Cache']);
+        unset($_SESSION['Permissions_Namespace']);
         return true;
     }
 
@@ -187,6 +188,7 @@ class PermissionCache
         // Find the descriptors where the user has been removed
         $removed = array_diff($cached, $list);
 
+        $invalidateMemcache = false;
         // Insert all the new descriptors
         if(!empty($new)){
             $fields = array();
@@ -195,7 +197,9 @@ class PermissionCache
             }
 
             $columns = array('user_id', 'descriptor_id');
-            DBUtil::multiInsert($this->table, $columns, $fields);
+            $res = DBUtil::multiInsert($this->table, $columns, $fields);
+
+            $invalidateMemcache = true;
         }
 
         // Delete all the removed descriptors
@@ -203,7 +207,18 @@ class PermissionCache
             foreach ($removed as $descriptor){
                 $fields = array('user_id' => $userId, 'descriptor_id' => $descriptor);
 
-                DBUtil::whereDelete($this->table, $fields);
+                $res = DBUtil::whereDelete($this->table, $fields);
+            }
+
+            $invalidateMemcache = true;
+        }
+
+        // Unset memcached permissions
+        if($invalidateMemcache) {
+            unset($_SESSION['Permissions_Cache'][$userId]);
+
+            if($this->memcache !== false) {
+                $this->memcache->clearUserPermissions($userId);
             }
         }
     }
@@ -671,6 +686,18 @@ class PermissionMemCache
     }
 
     /**
+     * Clear the users permissions
+     *
+     * @access public
+     * @param int $userId The id of the user
+     */
+    public function clearUserPermissions($userId)
+    {
+        $key = $this->namespace . '|' . $userId;
+        $this->clearItem($key);
+    }
+
+    /**
      * Get the namespace to be used when storing permissions
      *
      * @access private
@@ -730,6 +757,19 @@ class PermissionMemCache
     {
         $expiration = (is_numeric($expiration)) ? $expiration : $this->expiration;
         $res = MemCacheUtil::set($key, $value, $expiration);
+        return $res;
+    }
+
+    /**
+     * Clear an item in memcache using a reference key.
+     *
+     * @access private
+     * @param string $key The key of the item in memcache
+     * @return boolean
+     */
+    private function clearItem($key)
+    {
+        $res = MemCacheUtil::clear($key);
         return $res;
     }
 

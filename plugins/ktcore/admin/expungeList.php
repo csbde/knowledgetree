@@ -87,7 +87,7 @@ for($i = $listStart; $i <= $listEnd; $i++){
 				<tr>
 	      <td><input type=\"checkbox\" name=\"selected_docs[]\" value=\"".$aDocuments[$i]->getId()."\"/></td>
 	      <td>".$aDocuments[$i]->getName()."</td>
-	      <td>".$aDocuments[$i]->getLastModifiedDate()."</td>
+	      <td>".$aDocuments[$i]->getDisplayLastModifiedDate()."</td>
 	      <td>".$aDocuments[$i]->getLastDeletionComment()."</td>
 	    </tr>";
 	        

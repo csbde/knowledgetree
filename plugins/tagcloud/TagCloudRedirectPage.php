@@ -31,7 +31,7 @@
 * logo is not reasonably feasible for technical reasons, the Appropriate Legal Notices
 * must display the words "Powered by KnowledgeTree" and retain the original
 * copyright notice.
-* Contributor( s): ______________________________________
+* Contributor(s): ______________________________________
 *
 */
 
@@ -63,9 +63,10 @@ class TagCloudRedirectPage extends KTStandardDispatcher {
 	 *
 	 * @return unknown
 	 */
-    function do_main() {
+    public function do_main()
+    {
         // Clear the session for a new search
-        $url = isset($_REQUEST['tag']) ? 'tag='.urlencode($_REQUEST['tag']).'&decode=true' : '';
+        $url = isset($_REQUEST['tag']) ? ('tag=' . urlencode($_REQUEST['tag']) . '&decode=true') : '';
         $_SESSION['tagList'] = array();
         $this->redirectTo('search', $url);
     }
@@ -73,7 +74,8 @@ class TagCloudRedirectPage extends KTStandardDispatcher {
     /**
      * Recall a previous tag search and remove the tags that were selected after it.
      */
-    function do_recall() {
+    public function do_recall()
+    {
         $tag = $_REQUEST['tag'];
         $pos = $_REQUEST['pos'];
 
@@ -83,15 +85,16 @@ class TagCloudRedirectPage extends KTStandardDispatcher {
 
         $_SESSION['tagList'] = $tagList;
 
-        $url = 'tag='.urlencode($tag).'&decode=true';
+        $url = 'tag=' . urlencode($tag) . '&decode=true';
         $this->redirectTo('search', $url);
     }
 
-    function do_search() {
+    public function do_search()
+    {
         // Get the tag to search for and create search query
         $tag = isset($_REQUEST['tag']) ? $_REQUEST['tag'] : '';
         $decode = isset($_REQUEST['decode']) ? $_REQUEST['decode'] : '';
-        if($decode == 'true'){
+        if ($decode == 'true') {
             $tag = urldecode($tag);
         }
 
@@ -104,25 +107,25 @@ class TagCloudRedirectPage extends KTStandardDispatcher {
 		$this->aBreadcrumbs[] = array('url' => $_SERVER['PHP_SELF'], 'name' => _kt('Tag Cloud Search'));
 
         $tagList = $_SESSION['tagList'];
-        if(!empty($tagList)){
+        if (!empty($tagList)) {
             $aPrevTag = end($tagList);
             $aTagTree = $aPrevTag['tagTree'];
 
             $base = KTUtil::addQueryString('TagCloudRedirection&action=recall', null);
-            foreach($aTagTree as $key => $item){
-                if($tag == $item){
+            foreach ($aTagTree as $key => $item) {
+                if ($tag == $item) {
                     continue;
                 }
                 $url = $base.'&tag='.urlencode($item).'&pos='.$key;
                 $this->aBreadcrumbs[] = array('url' => $url, 'name' => $item);
             }
         }
-        if(!empty($tag)){
+        if (!empty($tag)) {
             $this->aBreadcrumbs[] = array('url' => '', 'name' => $tag);
         }*/
 
         // set page title
-        $sTitle =  _kt('Search Results - Tag:').' '.$tag;
+        $sTitle =  _kt('Search Results - Tag:') . ' ' . $tag;
         $this->oPage->setBreadcrumbDetails($sTitle);
 
         // Set tag cloud portlet
@@ -142,7 +145,7 @@ class TagCloudRedirectPage extends KTStandardDispatcher {
             'rangename' => 'selection',
             'show_folders' => true,
             'show_documents' => true,
-            ));
+           ));
 
         $aOptions = $collection->getEnvironOptions(); // extract data from the environment
 
@@ -166,81 +169,74 @@ class TagCloudRedirectPage extends KTStandardDispatcher {
             'bulkactions' => KTBulkActionUtil::getAllBulkActions(),
             'browseutil' => new KTBrowseUtil(),
             'returnaction' => $returnUrl,
-        );
-		
-		
-		
-		//if(!$aTemplateData['oldBrowse']){
-			$browseViewRender = browseViewUtil::getBrowseView();
-		
-			$aTemplateData['bulkActionMenu']=$browseViewRender->renderBulkActionMenu($aBulkActions);
-			
-			$folderContentItems=$this->getTagContent($tag);
-			
-			
-			
-			$folderView=$pre_folderView=array();
-			//foreach($folderContentItems['folders'] as $item)$pre_folderView[]=$this->renderFolderItem($item);
-			foreach($folderContentItems['documents'] as $item)
+       );
+
+		//if (!$aTemplateData['oldBrowse']) {
+			$browseViewRender = BrowseViewUtil::getBrowseView();
+			$aTemplateData['bulkActionMenu'] = $browseViewRender->renderBulkActionMenu($aBulkActions);
+			$folderContentItems = $this->getTagContent($tag);
+			$folderView = $pre_folderView = array();
+
+			//foreach ($folderContentItems['folders'] as $item)$pre_folderView[]=$this->renderFolderItem($item);
+			foreach ($folderContentItems['documents'] as $item)
 			{
 				$item['id'] = $item['document_id'];
-				
+
 				if ($item['checked_out_date'] == 'n/a') {
 					$item['checked_out_date'] = '';
 				}
-				
-				$pre_folderView[]=$browseViewRender->renderDocumentItem($item);
+
+				$pre_folderView[] = $browseViewRender->renderDocumentItem($item);
 			}
-			
-			$pageCount=1;
-			$perPage=15;
-			$itemCount=count($pre_folderView);
-			$curItem=0;
-			
-			$folderView[]='<div class="page page_'.$pageCount.' ">';
-			foreach($pre_folderView as $item){
-				$curItem++;
-				if($curItem>$perPage){
-					$pageCount++;
-					$curItem=1;
-					$folderView[]='</div><div class="page page_'.$pageCount.' ">';
+
+			$pageCount = 1;
+			$perPage = 15;
+			$itemCount = count($pre_folderView);
+			$curItem = 0;
+
+			$folderView[] = '<div class="page page_' . $pageCount . ' ">';
+			foreach ($pre_folderView as $item) {
+				++$curItem;
+				if ($curItem > $perPage) {
+					++$pageCount;
+					$curItem = 1;
+					$folderView[] = '</div><div class="page page_' . $pageCount . ' ">';
 				}
-				$folderView[]=$item;
+				$folderView[] = $item;
 			}
-			if($itemCount<=0){
-				$folderView[]='<span class="notification" id="empty_message">There are currently no viewable items in this folder.</span>';
+
+			if ($itemCount <= 0) {
+				$folderView[] = '<span class="notification" id="empty_message">There are currently no viewable items in this folder.</span>';
 			}
-			$folderView[]="</div>";
-			
-			$aTemplateData['folderContents']=join($folderView);
-			
-			$aTemplateData['fragments']='';
-			$aTemplateData['fragments'].=$browseViewRender->renderDocumentItem(null,true);
-			$aTemplateData['fragments'].=$browseViewRender->renderFolderItem(null,true);
-			$aTemplateData['pagination']=$browseViewRender->paginateByDiv($pageCount,'page','paginate','item',"kt.pages.browse.viewPage('[page]');","kt.pages.browse.prevPage();","kt.pages.browse.nextPage();");
-			
+
+			$folderView[] = "</div>";
+
+			$aTemplateData['folderContents'] = join($folderView);
+			$aTemplateData['fragments'] = '';
+			$aTemplateData['fragments'] .= $browseViewRender->renderDocumentItem(null, true);
+			$aTemplateData['fragments'] .= $browseViewRender->renderFolderItem(null, true);
+			$aTemplateData['pagination'] = $browseViewRender->paginateByDiv($pageCount, 'page', 'paginate', 'item', "kt.pages.browse.viewPage('[page]');", "kt.pages.browse.prevPage();", "kt.pages.browse.nextPage();");
 			$aTemplateData['javascript'] = $browseViewRender->getJavaScript();
 		//}
-		
-		
+
         return $oTemplate->render($aTemplateData);
     }
-	
-	function getTagContent($tag)
+
+	public function getTagContent($tag)
 	{
-		$oUser=KTEntityUtil::get('User',  $_SESSION['userID']);
-		$KT=new KTAPI();
-		$session=$KT->start_system_session($oUser->getUsername());
-		
-		$results = $KT->get_tag_contents ( $tag );
-		
-		$ret=array('folders'=>array(),'documents'=>$results['results'],'shortcuts'=>array());
-		
+		$oUser = KTEntityUtil::get('User', $_SESSION['userID']);
+		$KT = new KTAPI();
+		$session = $KT->start_system_session($oUser->getUsername());
+
+		$results = $KT->get_tag_contents($tag);
+
+		$ret = array('folders' => array(), 'documents' => $results['results'], 'shortcuts' => array());
+
 		return $ret;
 	}
 
 
-	
-	
+
+
 }
 ?>

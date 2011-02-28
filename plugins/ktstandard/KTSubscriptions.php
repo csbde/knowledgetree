@@ -551,6 +551,7 @@ class KTFolderSubscriptionAction extends KTFolderAction {
                     'transactionNS' => 'ktcore.transactions.subscribe',
                     'userid' => $_SESSION['userID'],
                     'ip' => Session::getClientIP(),
+                	'parentid' => $this->oFolder->getParentID(),
                 ));
 
                 if (PEAR::isError($oTransaction)) {
@@ -628,6 +629,7 @@ class KTFolderUnsubscriptionAction extends KTFolderAction {
                     'transactionNS' => 'ktcore.transactions.unsubscribe',
                     'userid' => $_SESSION['userID'],
                     'ip' => Session::getClientIP(),
+                	'parentid' => $this->oFolder->getParentID(),
                 ));
             } else {
                 $output = _kt('There was a problem unsubscribing you from this folder');
@@ -683,6 +685,7 @@ class KTSubscriptionManagePage extends KTStandardDispatcher {
                             'transactionNS' => 'ktcore.transactions.unsubscribe',
                             'userid' => $_SESSION['userID'],
                             'ip' => Session::getClientIP(),
+                        	'parentid' => $result['folder_id'],	//TODO: need to get parent ID!
                         ));
                         ++$iSuccesses;
                     }
