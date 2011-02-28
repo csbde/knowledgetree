@@ -43,7 +43,7 @@ kt.app.inviteusers = new function() {
 	    } else {
             group = document.getElementById('invite.grouplist').value;
 			/*jQuery('#extinvitewindow').block({
-												message: '<div id="loading_invite_users">',
+												message: '<div id="blue_loading">',
 												overlayCSS: {
 													backgroundColor: '#00f transparent'
 												},

@@ -1970,6 +1970,85 @@ class KTDocumentWorkflowAction extends KTDocumentAction {
         return $oTemplate->render($aTemplateData);
     }
 
+    public function do_ajax()
+    {
+$this->oPage->setBreadcrumbDetails(_kt('workflow'));
+        $oTemplate =& $this->oValidator->validateTemplate('ktcore/workflow/ajax_documentWorkflow');
+        $oDocument =& $this->oValidator->validateDocument($_REQUEST['fDocumentId']);
+
+        $oWorkflow = KTWorkflowUtil::getWorkflowForDocument($oDocument);
+        $oWorkflowState = KTWorkflowUtil::getWorkflowStateForDocument($oDocument);
+
+        $oUser =& User::get($_SESSION['userID']);
+
+        // If the document is checked out - set transitions and workflows to empty and set checkedout to true
+        $bIsCheckedOut = $this->oDocument->getIsCheckedOut();
+        if ($bIsCheckedOut) {
+            $aTransitions = array();
+            $aWorkflows = array();
+            $transition_fields = array();
+            $bHasPerm = FALSE;
+        } else {
+            $aTransitions = KTWorkflowUtil::getTransitionsForDocumentUser($oDocument, $oUser);
+            $aWorkflows = KTWorkflow::getList('start_state_id IS NOT NULL AND enabled = 1 ');
+            $bHasPerm = false;
+            if (KTPermissionUtil::userHasPermissionOnItem($oUser, 'ktcore.permissions.workflow', $oDocument)) {
+                $bHasPerm = true;
+            }
+            $fieldErrors = null;
+            $transition_fields = array();
+            if ($aTransitions) {
+                $aVocab = array();
+                foreach ($aTransitions as $oTransition) {
+                	if (is_null($oTransition) || PEAR::isError($oTransition)) {
+                		continue;
+                	}
+
+                    $aVocab[$oTransition->getId()] = $oTransition->showDescription();
+                }
+                $fieldOptions = array('vocab' => $aVocab);
+                $transition_fields[] = new KTLookupWidget(_kt('Transition'), _kt(''), 'fTransitionId', null, $this->oPage, false, null, $fieldErrors, $fieldOptions);
+                $transition_fields[] = new KTTextWidget(
+                    _kt('Comment'), _kt(''),
+                    'fComments', '',
+                    $this->oPage, false, null, null,
+                    array('cols' => 80, 'rows' => 4));
+            }
+        }
+
+        // Add an electronic signature
+    	global $default;
+    	if ($default->enableESignatures) {
+    	    $sUrl = KTPluginUtil::getPluginPath('electronic.signatures.plugin', true);
+    	    $heading = _kt('You are attempting to modify the document workflow');
+    	    $submit['type'] = 'button';
+    	    $submit['onclick'] = "javascript: showSignatureForm('{$sUrl}', '{$heading}', 'ktcore.transactions.modify_workflow', 'document', 'start_workflow_form', 'submit', {$this->oDocument->iId});";
+
+    	    $heading2 = _kt('You are attempting to transition the document workflow');
+    	    $submit2['onclick'] = "javascript: showSignatureForm('{$sUrl}', '{$heading2}', 'ktcore.transactions.transition_workflow', 'document', 'transition_wf_form', 'submit', {$this->oDocument->iId});";
+    	} else {
+    	    $submit['type'] = 'submit';
+    	    $submit['onclick'] = '';
+    	    $submit2['onclick'] = '';
+    	}
+
+        $aTemplateData = array(
+            'oDocument' => $oDocument,
+            'oWorkflow' => $oWorkflow,
+            'oState' => $oWorkflowState,
+            'aTransitions' => $aTransitions,
+            'aWorkflows' => $aWorkflows,
+            'transition_fields' => $transition_fields,
+            'bHasPerm' => $bHasPerm,
+            'bIsCheckedOut' => $bIsCheckedOut,
+            'submit' => $submit,
+            'submit2' => $submit2
+        );
+
+        echo $oTemplate->render($aTemplateData);
+    	exit(0);
+    }
+    
     function do_startWorkflow() {
         $oDocument =& $this->oValidator->validateDocument($_REQUEST['fDocumentId']);
         if (!empty($_REQUEST['fWorkflowId'])) {

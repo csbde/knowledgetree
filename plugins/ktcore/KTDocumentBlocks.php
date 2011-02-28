@@ -36,7 +36,9 @@
  * Contributor( s): ______________________________________
  *
  */
- 
+
+require_once(KT_LIB_DIR . "/actions/documentviewlet.inc.php");
+require_once(KT_LIB_DIR . "/workflow/workflowutil.inc.php");
 require_once(KT_LIB_DIR . '/actions/documentaction.inc.php');
 require_once(KT_LIB_DIR . '/subscriptions/Subscription.inc');
 require_once(KT_LIB_DIR . '/subscriptions/subscriptions.inc.php');
@@ -46,24 +48,30 @@ class KTDocumentStatusBlock extends KTDocumentViewlet
     public $sName = 'ktcore.blocks.document.status';
 	public $_sShowPermission = 'ktcore.permissions.write';
 	
+	/**
+	 * Create an actions block
+	 *
+	 * @return string
+	 */
 	public function getDocBlock()
 	{
 		$this->oPage->requireJSResource('resources/js/newui/documents/blocks/view_actions.js');
 		$this->oPage->requireCSSResource('resources/css/newui/documents/blocks/view_actions.css');
 		
-		$workflowState = 'disabled';
-		$alertState = 'disabled';
-		$subscribeState = 'disabled';
-        
-        // Check if user is subscribed
-        $iSubscriptionType = SubscriptionEvent::subTypes('Document');
-        if (Subscription::exists($this->oUser->getId(), $this->oDocument->getId(), $iSubscriptionType)) {
-        	$subscribed = 'enabled';
-        }
-        
+		$workflowState = $alertState = $subscribeState = 'disabled';
+
         // Check if document has workflows
-        
+        if ($this->hasWorkflow()) {
+        	$workflowState = 'enabled';
+        }
+        // Check if user is subscribed
+        if ($this->hasSubscriptions()) {
+        	$subscribeState = 'enabled';
+        }
         // Check if document has alerts
+        if($this->hasAlerts()) {
+        	$alertState = 'enabled';
+        }
         
 		$oTemplating =& KTTemplating::getSingleton();
 		$oTemplate = $oTemplating->loadTemplate('ktcore/document/blocks/view_actions');
@@ -76,6 +84,41 @@ class KTDocumentStatusBlock extends KTDocumentViewlet
         );
         
         return $oTemplate->render($aTemplateData);
+	}
+	
+	/**
+	 * Check if the document in context has alerts
+	 *
+	 * @return boolean
+	 */
+	private function hasAlerts()
+	{
+		$now = date('Y-m-d H:i:s');
+		$query = "SELECT id, alert_date FROM document_alerts WHERE document_id = {$this->oDocument->getId()} AND alert_date > '$now' LIMIT 1";
+
+        $results = DBUtil::getResultArray($query);
+        return !empty($results);
+	}
+	
+	/**
+	 * Check if the document in context is in transition
+	 *
+	 * @return boolean
+	 */
+	private function hasWorkflow()
+	{
+		$result = KTWorkflowUtil::getTransitionsForDocumentUser($this->oDocument, $this->oUser);
+		return !empty($result);
+	}
+	
+	/**
+	 * Check if the document in context has subscriptions
+	 *
+	 * @return boolean
+	 */
+	private function hasSubscriptions()
+	{
+        return Subscription::exists($this->oUser->getId(), $this->oDocument->getId(), SubscriptionEvent::subTypes('Document'));
 	}
 }
 ?>

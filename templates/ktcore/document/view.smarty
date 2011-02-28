@@ -24,7 +24,10 @@
 		<tr>
 			<table border="0" width="720" class="doc_view">
 				<td>
-					<div id=stateActions> Here </div>
+					<div id="blue_loading" style='display:none;' />
+				</td>
+				<td>
+					<div id=stateActions value=hidden style='display:none;' />  </div>
 				</td>
 			</table>
 		</tr>

@@ -1,7 +1,7 @@
 <div id="document_status_area">
 	<input id=documentId type=hidden value={$documentId} />
-	<a id=workflow_action class="workflow action {$workflowState}" href="javascript:{ldelim}vActions.displayWorkflows();{rdelim}" value={$workflowState}></a>
-	<a id=alert_action class="alert action {$alertState}" href="javascript:{ldelim}vActions.displayAlerts();{rdelim}" value={$alertState}></a>
+	<a id=workflow_action class="workflow action {$workflowState}" href="javascript:{ldelim}vActions.displayAction('workflows');{rdelim}" value={$workflowState}></a>
+	<a id=alert_action class="alert action {$alertState}" href="javascript:{ldelim}vActions.displayAction('alerts');{rdelim}" value={$alertState}></a>
 	<a id=subscribe_action class="subscribe action {$subscribeState}" href="javascript:{ldelim}vActions.subscribeToDocument();{rdelim}" value={$subscribeState}></a>
 	
 </div>
