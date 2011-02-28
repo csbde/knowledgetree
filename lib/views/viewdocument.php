@@ -181,11 +181,16 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
 
         $fieldsetDisplayReg =& KTFieldsetDisplayRegistry::getSingleton();
         $aDocFieldsets = KTMetadataUtil::fieldsetsForDocument($oDocument);
+        
+        //$GLOBALS['default']->log->debug('viewdocument aDocFieldsets '.print_r($aDocFieldsets, true));
+        
         foreach ($aDocFieldsets as $oFieldset) {
+        	//$GLOBALS['default']->log->debug('viewdocument oFieldset namespace :'.$oFieldset->getNamespace().':');
+        	//$GLOBALS['default']->log->debug('viewdocument oFieldset namespace !=== tagcloud '.$oFieldset->getNamespace() !== 'tagcloud');
         	//Tag Cloud displayed elsewhere
-        	if ($oFieldset->getNamespace() != 'tagcloud')
+        	if ($oFieldset->getNamespace() !== 'tagcloud')
 			{
-	        	//$GLOBALS['default']->log->debug('oFieldset '.print_r($oFieldset, true));
+	        	//$GLOBALS['default']->log->debug('viewdocument oFieldset '.print_r($oFieldset, true));
 	            $displayClass = $fieldsetDisplayReg->getHandler($oFieldset->getNamespace());
 	            
 	            //$GLOBALS['default']->log->debug('fieldsetdisplayclass '.print_r(new $displayClass($oFieldset), true));
@@ -193,7 +198,7 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
 			}
         }
         
-        //$GLOBALS['default']->log->debug('fieldset '.print_r($fieldsets, true));
+        //$GLOBALS['default']->log->debug('viewdocument fieldsets '.print_r($fieldsets, true));
 
         $checkout_user = 'Unknown user';
         if ($oDocument->getIsCheckedOut() == 1) {

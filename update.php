@@ -39,7 +39,7 @@ require_once(KT_LIB_DIR . '/widgets/fieldsetDisplay.inc.php');
 	foreach ($total_fieldsets as $fieldset) 
 	{	
 		//Tag Cloud displayed elsewhere
-		if ($fieldset->getNamespace() != 'tagcloud')
+		if ($fieldset->getNamespace() !== 'tagcloud')
 		{		
 			//assemble the fieldset values		
 			$fieldsetsresult = array(

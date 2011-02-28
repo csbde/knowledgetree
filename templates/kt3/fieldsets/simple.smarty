@@ -8,21 +8,24 @@
 	    <tr class="{cycle values=even,odd} {if $smarty.foreach.fields.first}first{/if}">
 	        <th>{$aFieldPair.name}</th>
 	        <td>
-	        <span class="descriptiveText" id="field_{$aFieldPair.fieldid}" data-name="{$aFieldPair.fieldid}"
 		        {if ($aFieldPair.control_type==='string')}
-		        	 data-type='text'>
-		        {else if ($aFieldPair.control_type==='lookup')}
-		        	data-type='select' data-options='[{foreach from=$aFieldPair.selection key=aKey item=option}["{$option}","{$aKey}"],{/foreach}]'>		        		
-		        {/if}
-	        	{if ($aFieldPair.value !== null)}
-	        		{if ($aFieldPair.control_type==='large text')}
-	        			{$aFieldPair.value}
-	        		{else}
-						{$aFieldPair.value|sanitize}
+		        	<span class="descriptiveText" id="field_{$aFieldPair.fieldid}" data-name="{$aFieldPair.fieldid}" data-type='text'>
+		        {elseif ($aFieldPair.control_type==='lookup')}
+		        	<span class="descriptiveText" id="field_{$aFieldPair.fieldid}" data-name="{$aFieldPair.fieldid}" data-type='select' data-options='[{foreach from=$aFieldPair.selection item=option}["{$option}","{$option}"],{/foreach}]'>	
+		        {elseif ($aFieldPair.control_type==='large text')}
+					<span class="descriptiveText" id="field_{$aFieldPair.fieldid}" data-name="{$aFieldPair.fieldid}" data-type='textarea'>
+				{elseif ($aFieldPair.control_type==='tree')}
+					{include file="kt3/fields/tree.smarty" selection=$aFieldPair.selection depth=1}		
+				{elseif ($aFieldPair.control_type==='multiselect')}
+					{if ($aFieldPair.options.type==='multiwithlist')}
+						 <span class="descriptiveText" id="field_{$aFieldPair.fieldid}" data-name="{$aFieldPair.fieldid}[]" data-type='multiselect' data-options='[{foreach from=$aFieldPair.selection item=option}["{$option}","{$option}"],{/foreach}]'>
+					{elseif ($aFieldPair.options.type==='multiwithcheckboxes')}
+						{foreach from=$aFieldPair.selection item=option}
+							 <span class="descriptiveText" data-name="{$aFieldPair.fieldid}_{$option}" data-type='checkbox' id="{$aFieldPair.fieldid}_{$option}"></span>
+						{/foreach}
 					{/if}
-	        	{else}
-					{i18n}no value{/i18n}
-				{/if}
+		        {/if}
+	        	{$aFieldPair.value}
 			</span>
 	        </td>
 	    </tr>

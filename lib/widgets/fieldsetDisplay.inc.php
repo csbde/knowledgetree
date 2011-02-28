@@ -404,7 +404,7 @@ class SimpleFieldsetDisplay extends KTFieldsetDisplay {
    
 		 foreach ($fields as $field)   
 		 {
-		 	$GLOBALS['default']->log->debug('SimpleFieldsetDisplay field '.print_r($field, true));
+		 	//$GLOBALS['default']->log->debug('SimpleFieldsetDisplay field '.print_r($field, true));
 		 	
                 $value = '';
 
@@ -419,7 +419,7 @@ class SimpleFieldsetDisplay extends KTFieldsetDisplay {
                 // Replace with true
                 $controltype = strtolower($field->getDataType());
                 
-                $GLOBALS['default']->log->debug("SimpleFieldsetDisplay field controltype $controltype");
+                //$GLOBALS['default']->log->debug("SimpleFieldsetDisplay field controltype $controltype");
 
                 if ($field->getHasLookup())
                 {
@@ -437,7 +437,7 @@ class SimpleFieldsetDisplay extends KTFieldsetDisplay {
                     $controltype = 'multiselect';
                 }
                 
-                $GLOBALS['default']->log->debug("SimpleFieldsetDisplay field controltype2 $controltype");
+                //$GLOBALS['default']->log->debug("SimpleFieldsetDisplay field controltype2 $controltype");
 
                 switch ($controltype)
                 {
@@ -469,13 +469,12 @@ class SimpleFieldsetDisplay extends KTFieldsetDisplay {
                 	'fieldid' => $field->getId(),
                 	'name' => $field->getName(),
                 	'required' => $field->getIsMandatory(),
-                    'value' => $value == '' ? null : $value,
+                    'value' => $value == '' ? 'no value' : $value,
                     'blankvalue' => $value=='' ? '1' : '0',
                     'description' => $field->getDescription(),
                     'control_type' => $controltype,
                     'selection' => $selection,
                     'options' => $options,
-
                 );
 
             }

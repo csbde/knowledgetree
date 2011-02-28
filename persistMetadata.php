@@ -31,59 +31,99 @@ require_once(KT_LIB_DIR . '/triggers/triggerregistry.inc.php');
 	$fields = array();
 	
 	//cycle through the POST variables and get all the fields
-	foreach($_POST as $key=>$postVar)
+	foreach($_POST as $key => $postVar)
 	{
 		$GLOBALS['default']->log->debug("persistMetadata postVar $key $postVar");
-		
+				
 		//if(strpos($key, 'field_') !== false)
 		//{
 			//$fieldID = substr($key, 6);
 			//$GLOBALS['default']->log->debug("persistMetadata strpos $fieldID");
 			
+		//will be an array if multi-select
+		/*if(is_array($postVar))
+		{
+			$value = '';
+			
+			foreach($postVar as $var)
+			{
+					$value .= $postVar.',';
+			}
+			
+			//chop off trailing comma
+			trim($value, ',');
+			
+			$field = array(
+				'id' => $key,
+				'value' => $value,
+			);
+		}
+		else
+		{
 			$field = array(
 				'id' => $key,
 				'value' => $postVar,
 			);
-			
-			$oField = DocumentField::get($key);
-			
-			//$GLOBALS['default']->log->debug('persistMetadata oField '.print_r($oField, true));
-			
-	 		if (is_null($oField) || PEAR::isError($oField) || $oField instanceof KTEntityNoObjects)
-	 		{
-	 			$GLOBALS['default']->log->debug("Could not resolve field: $oField->getName() ");	//on fieldset $fieldsetname for document id: $this->documentid");
-	 			// exit graciously
-	 			continue;
-	 		}
+		}*/
+		
+		$oField = DocumentField::get($key);
+		
+		//$GLOBALS['default']->log->debug('persistMetadata oField '.print_r($oField, true));
+		
+ 		if (is_null($oField) || PEAR::isError($oField) || $oField instanceof KTEntityNoObjects)
+ 		{
+ 			$GLOBALS['default']->log->debug("Could not resolve field: $oField->getName() ");	//on fieldset $fieldsetname for document id: $this->documentid");
+ 			// exit graciously
+ 			continue;
+ 		}
 
-	 		$packed[] = array($oField, $postVar);
-	 		
-	 		/*if (++$count == 2)
-	 			break;*/
+		if(is_array($postVar))
+		{
+			$value = '';
 			
-			/*$oFieldset = KTFieldset::getByField($oField);
-			
-			//does this fieldset already exist in the fieldset array?
-			$inArray = array_search($oFieldset, $fieldsets);
-			$GLOBALS['default']->log->debug("persistMetadata inArray $inArray");
-			if ($inArray !== false)//in_array($oFieldset, $fieldsets))
+			foreach($postVar as $var)
 			{
-				$GLOBALS['default']->log->debug('persistMetadata fieldsets[inArray] '.print_r($fieldsets[$inArray], true));
-				$fieldsets[$inArray]['fields'][] = $oField;
-			}
-			else 
-			{
-				$fieldsets[] = $oFieldset;
+					$value .= $var.',';
 			}
 			
-			$GLOBALS['default']->log->debug('persistMetadata fieldsets '.print_r($fieldsets, true));
-			$GLOBALS['default']->log->debug('persistMetadata oFieldset '.print_r($oFieldset, true));*/
-			
-			$fields[] = $field;
-		//}
+			//chop off trailing comma
+			$value = rtrim($value, ",");
+						
+			$packed[] = array($oField, $value);
+		}
+		else
+		{
+			$packed[] = array($oField, $postVar);
+		}
+		
+ 		
+ 		
+ 		/*if (++$count == 2)
+ 			break;*/
+		
+		/*$oFieldset = KTFieldset::getByField($oField);
+		
+		//does this fieldset already exist in the fieldset array?
+		$inArray = array_search($oFieldset, $fieldsets);
+		$GLOBALS['default']->log->debug("persistMetadata inArray $inArray");
+		if ($inArray !== false)//in_array($oFieldset, $fieldsets))
+		{
+			$GLOBALS['default']->log->debug('persistMetadata fieldsets[inArray] '.print_r($fieldsets[$inArray], true));
+			$fieldsets[$inArray]['fields'][] = $oField;
+		}
+		else 
+		{
+			$fieldsets[] = $oFieldset;
+		}
+		
+		$GLOBALS['default']->log->debug('persistMetadata fieldsets '.print_r($fieldsets, true));
+		$GLOBALS['default']->log->debug('persistMetadata oFieldset '.print_r($oFieldset, true));*/
+		
+		//$fields[] = $field;
+	//}
 	}
 	
-	$GLOBALS['default']->log->debug('persistMetadata fields '.print_r($fields, true));
+	//$GLOBALS['default']->log->debug('persistMetadata fields '.print_r($fields, true));
 	$GLOBALS['default']->log->debug('persistMetadata packed '.print_r($packed, true));
 	
 	DBUtil::startTransaction();
@@ -168,7 +208,7 @@ require_once(KT_LIB_DIR . '/triggers/triggerregistry.inc.php');
 	foreach ($fieldsets as $fieldset) 
 	{	
 		//Tag Cloud displayed elsewhere
-		if ($fieldset->getNamespace() != 'tagcloud')
+		if ($fieldset->getNamespace() !== 'tagcloud')
 		{		
 			//assemble the fieldset values		
 			$fieldsetsresult = array(

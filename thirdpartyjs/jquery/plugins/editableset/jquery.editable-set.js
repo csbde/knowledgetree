@@ -344,7 +344,7 @@
           delete attrs['data-type'];
                  
           var newObject = $.fn.editableSet.attributor( $('<textarea />'), attrs );
-          newObject.text( attrs.value );          
+          newObject.text( $.trim(attrs.value) );          
           $(object).replaceWith( newObject );
         }
       },
@@ -366,7 +366,7 @@
           $(object).replaceWith( newObject );
           
           // Now add our hidden input (rails style), so that we can send negative values as well
-          $( '<input />', { type: 'hidden', value: attrs['data-unchecked_value'], name: attrs['data-name'] } ).insertBefore( newObject );
+          //$( '<input />', { type: 'hidden', value: attrs['data-unchecked_value'], name: attrs['data-name'] } ).insertBefore( newObject );
         }
       },
       
@@ -400,7 +400,7 @@
               // Extract the values and texts appropriately
               var selectTextAndValue = $.fn.editableSet.extractTextAndValue( options, option );
 			  
-				if(selectTextAndValue.value != 'undefined' || selectTextAndValue.text != 'undefined') {
+				if(selectTextAndValue.value !== 'undefined' || selectTextAndValue.text !== 'undefined') {
 				  $('<option />', {
 					value : selectTextAndValue.value,
 					text  : selectTextAndValue.text
@@ -410,15 +410,23 @@
           })();
 		  
 		  //now select the selected (jQuery NOT working!)
-		  for (var idx = 0; idx < newObject[0].options.length; idx++) {
+		  /*for (var idx = 0; idx < newObject[0].options.length; idx++) {
 			if (newObject[0].options[idx].text == selectedValue) {
 				newObject[0].selectedIndex = idx;
 			}
-		  }
+		  }*/
           
           $(object).replaceWith( newObject );
+		  	
+		// Apply the +selected+ attribute;
+		for (var idx = 0; idx < newObject[0].options.length; idx++) {
+			if (newObject[0].options[idx].text == selectedValue) {
+				newObject[0].selectedIndex = idx;
+			}
+		}
+          
 		  
-          // Apply the +selected+ attribute;
+		  //newObject.val(selectedValue);
 		  //$('option[value="'+selectedValue+'"]', newObject).attr( 'selected', true );
 		  //$('option[text="'+selectedValue+'"]', newObject).attr( 'selected', true );
         }
@@ -427,11 +435,22 @@
       radio: {
         element : function(object, attrs) {    
           var options = JSON.parse( attrs['data-options'] ).reverse();
+		  
+		  //console.dir(attrs);
+		  //console.log('value '+attrs.value);
+		  //console.log('value2 '+attrs['value']);
+		  
+		  var lastIndexOfComma = options.lastIndexOf(',');
+			if (lastIndexOfComma > 0 && ((options.length - lastIndexOfComma) <=2) )
+			{
+				options = options.slice(0, lastIndexOfComma)+']';
+			}
           
           // Clean up the attributes
           delete attrs['data-options'];
           
-          var originalValue = attrs.value;
+          var originalValue = 'T3';	//attrs.value;
+		  //console.log('originalValue '+originalValue);
           var originalId = attrs['data-name'].replace( /\[|\]/g, '_' );
           
           // Wrap in closure to manage scope
@@ -441,12 +460,22 @@
             
               // Extract the values and texts appropriately
               var radioTextAndValue = $.fn.editableSet.extractTextAndValue( options, option );
-                        
-              // Add the value and id attributes
-              attrs.value = radioTextAndValue.value;
-			  //console.log(radioTextAndValue.value);
-              attrs.id = originalId + radioTextAndValue.value.split( '' ).join( '' ).replace( /\s/, '_' ).toLowerCase(); // Underscorize
               
+			if((radioTextAndValue.value != null || radioTextAndValue.text != null) && typeof radioTextAndValue.value == 'string') {
+			//if(radioTextAndValue !== 'undefined' && (radioTextAndValue.value !== 'undefined' || radioTextAndValue.text !== 'undefined')) {
+			  
+			  // Add the value and id attributes
+              attrs.value = radioTextAndValue.value;
+			  
+				//console.log('radioTextAndValue.value '+radioTextAndValue.value);
+			  
+			  try
+			  {
+				attrs.id = originalId + radioTextAndValue.value.split( '' ).join( '' ).replace( /\s/, '_' ).toLowerCase(); // Underscorize
+              }
+			  catch(er)
+			  {}
+			  
               var newObject = $.fn.editableSet.attributor( $('<input />'), attrs );
                         
               if( newObject.val() === originalValue || radioTextAndValue.text === originalValue ) {
@@ -458,6 +487,7 @@
                 text: radioTextAndValue.text
               }).append( newObject )
               .insertAfter( $(object) );
+			}
             
             }
             
