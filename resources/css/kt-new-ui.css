@@ -4,7 +4,7 @@ body {
 	/*background: url('../graphics/newui/watermark.jpg') no-repeat top center;*/
 	font-family: "Arial", sans-serif !important;
 }
-#wrapper {
+#wrapper, #footer {
 	width: 960px;
 	margin: 0 auto;
 
