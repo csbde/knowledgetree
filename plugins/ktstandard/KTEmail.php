@@ -159,14 +159,16 @@ function sendExternalEmails($aEmailAddresses, $iDocumentID, $sDocumentName, $sCo
 	               <br />
 	               &#160;&#160;&#160;&#160;'.sprintf(_kt('A KnowledgeTree user, %s, wants to share a document with you entitled "%s".'), $oSendingUser->getName(), $sDocumentName).'
 	               <br />
-	               <br />
-	               &#160;&#160;&#160;&#160;<b>'._kt('Message').':</b>
+	               <br />';
+	if (strlen(trim($sComment)) > 1) {
+            $sMessage .= '&#160;&#160;&#160;&#160;<b>'._kt('Message').':</b>
 	               <br />
 	               <br />
 	               &#160;&#160;&#160;&#160;'.$sComment.'
 	               <br />
-	               <br />
-	               &#160;&#160;&#160;&#160;'._kt('<b>KnowledgeTree is easy to use open source document management software</b><br />&#160;&#160;&#160;&#160;that helps businesses collaborate, securely store all critical documents, address<br />&#160;&#160;&#160;&#160;compliance challenges, and improve business processes.').'
+	               <br />';
+	}
+    $sMessage .= '&#160;&#160;&#160;&#160;'._kt('<b>KnowledgeTree is easy to use open source document management software</b><br />&#160;&#160;&#160;&#160;that helps businesses collaborate, securely store all critical documents, address<br />&#160;&#160;&#160;&#160;compliance challenges, and improve business processes.').'
 	               <br />
 	               <br />';
 
@@ -250,8 +252,8 @@ function sendEmailDocument($aDestEmailAddress, $iDocumentID, $sDocumentName, $sC
 	// add the link to the document to the mail
 	$sMessage .= '<br>' . generateControllerLink('viewDocument', "fDocumentID=$iDocumentID", $sDocumentName, true);
 	// add additional comment
-	if (strlen($sComment) > 0) {
-		$sMessage .= '<br><br>' . _kt('Comments') . ':<br>' . nl2br($sComment);
+	if (strlen(trim($sComment)) > 1) {
+		$sMessage .= '<br><br><b>' . _kt('Message') . ':</b><br><br>' . nl2br($sComment);
 	}
     $sTitle = sprintf(_kt("Document (ID %s): %s from %s"), $iDocumentID, $sDocumentName, $oSendingUser->getName());
 
@@ -314,8 +316,8 @@ function sendEmailHyperlink($aDestEmailAddress, $iDocumentID, $sDocumentName, $s
 	// add the link to the document to the mail
 	$sMessage .= '<br>' . generateControllerLink('viewDocument', "fDocumentID=$iDocumentID", $sDocumentName, true);
 	// add optional comment
-	if (strlen($sComment) > 0) {
-		$sMessage .= '<br><br>' . _kt('Comments') . ':<br>' . nl2br($sComment);
+	if (strlen(trim($sComment)) > 1) {
+		$sMessage .= '<br><br><b>' . _kt('Message') . ':</b><br><br>' . nl2br($sComment);
 	}
 	$sMessage .= '</font>';
 	$sTitle = sprintf(_kt("Link (ID %s): %s from %s"), $iDocumentID, $sDocumentName, $oSendingUser->getName());
