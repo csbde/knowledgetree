@@ -7,32 +7,32 @@
  * KnowledgeTree Community Edition
  * Document Management Made Simple
  * Copyright (C) 2008, 2009, 2010 KnowledgeTree Inc.
- * 
- * 
+ *
+ *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License version 3 as published by the
  * Free Software Foundation.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
  * details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- * 
- * You can contact KnowledgeTree Inc., PO Box 7775 #87847, San Francisco, 
+ *
+ * You can contact KnowledgeTree Inc., PO Box 7775 #87847, San Francisco,
  * California 94120-7775, or email info@knowledgetree.com.
- * 
+ *
  * The interactive user interfaces in modified source and object code versions
  * of this program must display Appropriate Legal Notices, as required under
  * Section 5 of the GNU General Public License version 3.
- * 
+ *
  * In accordance with Section 7(b) of the GNU General Public License version 3,
  * these Appropriate Legal Notices must retain the display of the "Powered by
- * KnowledgeTree" logo and retain the original copyright notice. If the display of the 
+ * KnowledgeTree" logo and retain the original copyright notice. If the display of the
  * logo is not reasonably feasible for technical reasons, the Appropriate Legal Notices
- * must display the words "Powered by KnowledgeTree" and retain the original 
+ * must display the words "Powered by KnowledgeTree" and retain the original
  * copyright notice.
  * Contributor( s): ______________________________________
  */
@@ -197,12 +197,12 @@ class KTBrowseUtil {
         // we have made the "default" folder non-root, so we need to be able
         // to reach "Root" (Folder::get(1)).
         //$url = KTUtil::addQueryStringSelf('fFolderId=1');
-        $url = KTUtil::buildUrl('browse.php', array('fFolderId'=>'1'));
-        
-        if (!empty($sAction)) {
-            $url = generateControllerUrl($sAction, 'fFolderId=1');
-        }
-        $aBreadcrumbs[] = array('url' => $url, 'name' => _kt('Folders'));
+//        $url = KTUtil::buildUrl('browse.php', array('fFolderId'=>'1'));
+//
+//        if (!empty($sAction)) {
+//            $url = generateControllerUrl($sAction, 'fFolderId=1');
+//        }
+//        $aBreadcrumbs[] = array('url' => $url, 'name' => _kt('Folders'));
         $oUser = User::get($_SESSION['userID']);
 
         if ($parents != 0) {
@@ -212,7 +212,7 @@ class KTBrowseUtil {
                 $sFolderName = $oThisFolder->getName();
                 //$url = KTUtil::addQueryStringSelf('fFolderId=' . $id);
                 $url = KTUtil::buildUrl('browse.php', array('fFolderId'=>$id));
-                
+
                 if (!empty($sAction)) {
                     $url = generateControllerUrl($sAction, 'fFolderId=' . $id);
                 }
@@ -233,7 +233,7 @@ class KTBrowseUtil {
             $id = $oFolder->getId();
             //$url = KTUtil::addQueryStringSelf('fFolderId=' . $id);
             $url = KTUtil::buildUrl('browse.php', array('fFolderId'=>$id));
-            
+
             if (!empty($sAction)) {
                 $url = generateControllerUrl($sAction, 'fFolderId=' . $id);
             }
@@ -284,7 +284,7 @@ class KTBrowseUtil {
         $sAction = KTUtil::arrayGet($aOptions, 'documentaction');
         //$url = KTUtil::addQueryStringSelf('fDocumentId=' . $oDocument->getId());
         $url = KTUtil::buildUrl('view.php', array('fDocumentId'=>$oDocument->getId()));
-        
+
         if (!empty($sAction)) {
             $url = generateControllerUrl($sAction, 'fDocumentId=' .  $oDocument->getId());
         }
@@ -305,9 +305,9 @@ class KTBrowseUtil {
         if (KTUtil::arrayGet($_SERVER, 'kt_no_extensions')) {
             $sExt = '';
         }
-        
+
         return KTUtil::buildUrl(sprintf('%s/browse%s', $GLOBALS['KTRootUrl'], $sExt), array('fFolderId'=>$iFolderId));
-        
+
         //return sprintf('%s/browse%s?fFolderId=%d', $GLOBALS['KTRootUrl'], $sExt, $iFolderId);
     }
     // }}}
@@ -319,9 +319,9 @@ class KTBrowseUtil {
         if (KTUtil::arrayGet($_SERVER, 'kt_no_extensions')) {
             $sExt = '';
         }
-        
+
         return KTUtil::buildUrl(sprintf('%s/view%s', $GLOBALS['KTRootUrl'], $sExt), array('fDocumentId'=>$iDocumentId));
-        
+
         //return sprintf('%s/view%s?fDocumentId=%d', $GLOBALS['KTRootUrl'], $sExt, $iDocumentId);
     }
     // }}}
@@ -440,7 +440,7 @@ class KTBrowseUtil {
     	{
     		return SharedContent::canAccessFolder($oUser->getID(), $oThisFolder->getID());
     	}
-    	else 
+    	else
     	{
     		return KTPermissionUtil::userHasPermissionOnItem($oUser, $action, $oThisFolder);
     	}
