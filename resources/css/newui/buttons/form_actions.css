@@ -1,0 +1,23 @@
+div.form_actions {
+	float: left;
+	background: url('../../../graphics/newui/gridtoolbarbkg.png') repeat-x;
+	padding: 1px 0px 0px 0px;
+	margin: 0;
+    line-height: 29px;
+    height: 29px;
+}
+
+#content .form_actions div.roundleft {
+    background: #FFF url('../../../graphics/newui/gridtoolbarleft.png');
+    width: 10px;
+    margin: -1px 0px 0px 0px;
+	float: left;
+}
+
+#content .form_actions div.roundright2 {
+    background: #FFF url('../../../graphics/newui/gridtoolbarright.png') 50% 50%;
+    margin: -1px 0px 0px 0px;
+	float: right;
+	width: 9px;
+	padding: 0px;
+}
