@@ -1,7 +1,4 @@
 
-{$context->oPage->requireJSResource('thirdpartyjs/jquery/jquery-1.4.4.js')}
-{$context->oPage->requireJSResource('thirdpartyjs/extjs/adapter/ext/ext-base.js')}
-
 <!-- FILE: ktcore/document/view.smarty -->
 <table>
 <tr>
@@ -9,7 +6,7 @@
 	<table border="0" width="720" class="doc_view">
 		<tr>
 			<td colspan="2" id="title_row">
-				
+
 				<span  class="doc_file_title" style="display:inline;">
 					{i18n}{$document->getName()|sanitize}{/i18n}
 				</span>
@@ -19,27 +16,27 @@
 					<a class="subscribe selected" href=""></a>
 
 				</div>
-					
-				
+
+
 				<p>{$document->getFileName()} {}</p>
-				
+
 			</td>
-			
+
 		</tr>
 		<tr>
 			<!-- <td style="display:none;" width="1" valign="top" style="padding-right: 15px;"><span id="doc_thumb" style="float:left;" /></td> -->
 			<td height="1" valign="top" width="350">
-				
+
 				<div class="doc_description">
-					{if $document->getImmutable()}<img src="{php}echo "{$GLOBALS['default']->rootUrl}/resources/graphics/newui/docview_immutable.png";{/php}" style="display: inline-block" alt="{i18n}Finalized{/i18n}"  title="{i18n}Finalized{/i18n}" />{/if}
-					{if $document->getIsCheckedOut()}<img src="{php}echo "{$GLOBALS['default']->rootUrl}/resources/graphics/newui/docview_checkedout.png";{/php}" style="display: inline-block" alt="{i18n}Checked-Out{/i18n}"  title="{i18n}Checked Out{/i18n}" />{/if}
+					{if $document->getImmutable()}<img src="{$rootUrl}/resources/graphics/newui/docview_immutable.png" style="display: inline-block" alt="{i18n}Finalized{/i18n}"  title="{i18n}Finalized{/i18n}" />{/if}
+					{if $document->getIsCheckedOut()}<img src="{$rootUrl}/resources/graphics/newui/docview_checkedout.png" style="display: inline-block" alt="{i18n}Checked-Out{/i18n}"  title="{i18n}Checked Out{/i18n}" />{/if}
 					<br/>
 					<span class="doc_info" style="display: block; margin-top: 5px;">
-						Version <a href="">{$document->getMajorVersionNumber()}.{$document->getMinorVersionNumber()}</a> | Last Modified by: <a href="">{$doc_data.lastModifier}</a> on <a href="">{$document->getLastModifiedDate()|date_format:"%B %e, %Y at %H:%M"}</a> | Created by: <a href="">{$doc_data.creator}</a> on <a href="">{$document->getCreatedDateTime()|date_format:"%B %e, %Y at %H:%M"}</a> | A </strong> {$fieldsetDisplayHelper->_sizeHelper($document->getSize())} document. 
+						Version <a href="">{$document->getMajorVersionNumber()}.{$document->getMinorVersionNumber()}</a> | Last Modified by: <a href="">{$doc_data.lastModifier}</a> on <a href="">{$document->getLastModifiedDate()|date_format:"%B %e, %Y at %H:%M"}</a> | Created by: <a href="">{$doc_data.creator}</a> on <a href="">{$document->getCreatedDateTime()|date_format:"%B %e, %Y at %H:%M"}</a> | A </strong> {$fieldsetDisplayHelper->_sizeHelper($document->getSize())} document.
 						{if $document->getIsCheckedOut()}
 							<span class="doc_checkedout"> <strong>Checked-out By:</strong> {$sCheckoutUser}</span>
 						{/if}
-						
+
 					<br><br/>
 					<div class="tags">
 						<a href="">Invoice</a>
@@ -47,7 +44,7 @@
 						<a href="">Acme Corp</a>
 						<a href="">April</a>
 					</div>
-					
+
 					<br/>
 					<br/>
 					<table style="padding: 0px margin: 0px;">
@@ -69,15 +66,15 @@
 						</tr>
 
 					</table>
-					
-			
-      
-  
+
+
+
+
 					</span>
 				</div>
 				<!-- <hr style="border: none; background-color: #E3E3E3; width: 98%; height: 1px; margin-left: 10px; margin-bottom: 15px;" align="left" /> -->
 				<div>
-					
+
 					<span class="doc_header_item">
 
 						<span class="doc_field_title"></span>
@@ -86,7 +83,7 @@
 							<div id="activity_feed_container" style="margin-top:1em;"></div>
 							<div id="new_comment_form"></div>
 
-					
+
 				</div>
 			</td>
 			<td valign="top" width="375" id="column_right">
@@ -94,45 +91,45 @@
 		<script>
 			{literal}
 			 $(function() {
-			 	
+
 				$(".split").click(function() {
-				
+
 					if ($(this).parent().next().is(':visible'))
 					{
 						$(".splitmenu").hide();
 						$(".split").removeClass('selected');
-						
+
 					}
 					else
 					{
 						$(".splitmenu").hide();
 						$(".split").removeClass('selected');
 						$(this).addClass('selected').parent().next().show();
-						
+
 					}
-					
+
 				});
-				
+
 				 $('html').click(function() {
 				 	$(".splitmenu").hide();
 				 	$(".split").removeClass('selected');
 				 });
-				
+
 				 $('.split').click(function(event){
 				     event.stopPropagation();
 				 });
 			});
-			
-			
+
+
 			{/literal}
 		</script>
-		
+
 		<div class="action_buttons above">
 		<div class="action">
-			
+
 			<div class="splitbutton"><a class="button" id="download" href="#">Download</a><span class="split">▼</span></div>
 			<ul class="splitmenu" id="download" style="right: auto; margin-left: -1px; ">
-				<li><a href="" id="download-pdf">Download PDF </a></li>
+				<li><a href="" id="download-pdf">{i18n}Download PDF{/i18n}</a></li>
 			</ul>
 		</div>
 		{if $document->getIsCheckedOut()}
@@ -142,7 +139,7 @@
 					<li><a href="" id="checkin-upload">Checkin and Upload</a></li>
 					<li><a href="" id="add-version">Add new Version</a></li>
 				</ul>
-			</div>		
+			</div>
     	{else}
     		<div class="action">
 				<div class="splitbutton"><a class="button" href="#">Checkout</a><span class="split">▼</span></div>
@@ -151,7 +148,7 @@
 					<li><a href="" id="add-version">Add new Version</a></li>
 				</ul>
 			</div>
-    	
+
 		{/if}
 		<div class="action">
 			<div href="#"><a class="button" id="edit-online" href="">Edit Online</a></div>
@@ -162,17 +159,17 @@
 				<li><a href="" id="email">Email</a></li>
 			</ul>
 		</div>
-     
-    	
-    	
+
+
+
 		</div>
 
-			
+
 </div>				{if !empty($live_preview)}
 					<div style="margin-top:1em;">{$live_preview}</div>
 				{else}
 			<div class="thumb-shadow" style="float: right;">
-				<img src="{php}echo "{$GLOBALS['default']->rootUrl}plugins/thumbnails/thumbnail_view.php?documentId=";{/php}{$document_id}"/>
+				<img src="{$rootUrl}plugins/thumbnails/thumbnail_view.php?documentId={$document_id}"/>
 			</div>
 			{/if}
 			<div class="action_buttons below" style="display: inline-block;">
@@ -186,9 +183,9 @@
 			</div>
 				<a href=""><span class="share_url">This page URL</span></a>
 				<a href=""><span class="share_url">Download URL</span></a>
-				<a href=""><span class="share_url">Preview URL</span></a> 
+				<a href=""><span class="share_url">Preview URL</span></a>
   			</div>
-   
+
 			</td>
 
 		</tr>
@@ -209,7 +206,7 @@
 							</table>
 						</li>
 					{/if}-->
-					
+
 					<!--<li class="page_properties" title="Properties">-->
 						<table class="kt_collection" style="display:none; clear: both;"><tr><td>
 							{if ($hasNotifications & bCanEdit)}
@@ -285,12 +282,12 @@
 			</td>
 			{if !empty($viewlet_data2)}
                 <td valign="top" width="225px">
-            	
+
             		<div id="document-views">
             		<div class="thumb-shadow" style="display:none;"></div>
             			{$viewlet_data2}
             		</div>
-            		
+
                 </td>
             {/if}
 		</tr>
@@ -305,34 +302,34 @@
     	<td valign="top" id="sidebar" class="standardBorder" height="100%" width="215">
 				<div id="sidebar_item" >
 					<h2>
-	    				Account <span class="acc_settings"><a href="">settings</a></span>
+					   {i18n}Account{/i18n} <span class="acc_settings"><a href="{$rootUrl}/admin.php">{i18n}settings{/i18n}</a></span>
 	    			</h2>
 	    			<p style="font-size: 11px; padding: 10px; color: #666;">
 	    				Plan: Starter <br/>
 	    				Storage: 61.83 MB of Unlimited<br/>
 	    				Documents: 156 of Unlimited<br/>
 	    				<p style="text-align:right; font-size: 11px;">
-	    					<a href="" class="sidebarUpgradeBn">Upgrade Now</a><br/>
+	    					<a href="{$rootUrl}/plugins/ktlive/subscribe.php" class="sidebarUpgradeBn">{i18n}Upgrade Now{/i18n}</a><br/>
 	    				</p>
 	    				<br/>
 	    			</p>
 				</div>
 				<div id="sidebar_item" >
 					<h2>
-	    				Other Documents in this folder
+	    				My recent documents
 	    			</h2>
 	    				<ul>
 	    					<li style="font-size: 11px;"><a href="">INV 203</a></li>
 	    					<li style="font-size: 11px;"><a href="">INV 269</a></li>
 	    				</ul>
 			</div>
-	
-	
 
 
 
 
-	</td> 
-	</tr> 
+
+
+	</td>
+	</tr>
 </table>
 <!-- FILE_END: ktcore/document/view.smarty -->

@@ -73,7 +73,7 @@ div.viewletworkflow {
 	width: 375px;
 }
 .button {
-	padding: 2px 5px 2px 28px;
+	padding: 2px 5px 2px 25px;
 	font-size: 11px;
 	height: 25px;
 	display: inline-block;
@@ -152,7 +152,7 @@ button {
 	top: -6px;
 }
 .buttons button {
-	padding: 5px 5px 5px 28px;
+	padding: 5px 5px 5px 25px;
 	
 }
 

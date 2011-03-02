@@ -435,10 +435,8 @@ class KTUserAdminDispatcher extends KTAdminDispatcher {
             $this->errorRedirectToMain(_kt('No such user.'), sprintf("old_search=%s&do_search=1", $old_search));
         }
 
-
-
-        $this->aBreadcrumbs[] = array('name' => $oUser->getName());
-        $this->oPage->setBreadcrumbDetails(_kt('edit groups'));
+        $this->aBreadcrumbs[] = array('url' => $_SERVER['PHP_SELF'], 'name' => _kt('User Management'));
+        $this->oPage->setBreadcrumbDetails($oUser->getName() .': ' . _kt('edit groups'));
         $this->oPage->setTitle(sprintf(_kt("Edit %s's groups"), $oUser->getName()));
         // generate a list of groups this user is authorised to assign.
 
