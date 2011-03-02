@@ -10,7 +10,7 @@
 				<span  class="doc_file_title" style="display:inline;">
 					{i18n}{$document->getName()|sanitize}{/i18n}
 				</span>
-				
+				{* Display Actions Block *}
 				{$documentBlocks.KTDocumentStatusBlock->getDocBlock()}
 				
 				<p>{$document->getFileName()} {}</p>
@@ -18,11 +18,12 @@
 			</td>
 
 		</tr>
+		<tr align=center> <td> <div id="blue_loading" style='display:none; margin-left:0px' /> </td> </tr>
 		<tr>
 			<table border="0" width="720" class="doc_view">
-				<td>
-					<div id="blue_loading" style='display:none;' />
-				</td>
+				
+					
+				
 				<td>
 					<div id=stateActions value=hidden style='display:none;' />  </div>
 				</td>
