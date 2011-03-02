@@ -1973,7 +1973,7 @@ class KTDocumentWorkflowAction extends KTDocumentAction {
     public function do_ajax()
     {
 		$this->oPage->setBreadcrumbDetails(_kt('workflow'));
-        $oTemplate = $this->oValidator->validateTemplate('ktcore/workflow/ajax_documentWorkflow');
+        $oTemplate = $this->oValidator->validateTemplate('ktcore/workflow/blocks/documentWorkflowBlocks');
         $oDocument = $this->oValidator->validateDocument($_REQUEST['fDocumentId']);
 
         $oWorkflow = KTWorkflowUtil::getWorkflowForDocument($oDocument);

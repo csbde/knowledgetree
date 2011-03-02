@@ -129,6 +129,11 @@ class KTTreeWidget extends KTBaseWidget { var $sTemplate = "kt3/fields/tree"; }
 //         $aOptions['assigned'] => currently assigned values
 //         $aOptions['bind_add'] (opt) => name of js method to call on add
 //         $aOptions['bind_remove'] (opt) => name of js method to call on remove
-class KTJSONLookupWidget extends KTBaseWidget { var $sTemplate = "kt3/fields/jsonlookup"; }
+class KTJSONLookupWidget extends KTBaseWidget { 
+	var $sTemplate = "kt3/fields/jsonlookup"; 
+	
+	public function setTemplate($template) { $this->sTemplate = $template; } 
+
+}
 
 ?>

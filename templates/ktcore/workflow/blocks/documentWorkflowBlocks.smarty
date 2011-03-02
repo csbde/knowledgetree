@@ -1,5 +1,5 @@
-<link href="/resources/css/newui/buttons/form_actions.css" type="text/css" rel="stylesheet" />
-<script src="/resources/js/newui/buttons/form_actions.js" type="text/javascript"></script>
+<link href="/resources/css/newui/buttons/formActions.css" type="text/css" rel="stylesheet" />
+<script src="/resources/js/newui/buttons/formActions.js" type="text/javascript"></script>
 
 <h2>{i18n}Workflow for{/i18n}: {$oDocument->getName()|sanitize}</h2>
 <br/>
