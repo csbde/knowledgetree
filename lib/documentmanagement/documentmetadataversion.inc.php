@@ -1,4 +1,5 @@
 <?php
+
 /**
  * $Id$
  *
@@ -37,10 +38,11 @@
  */
 
 require_once(KT_LIB_DIR . '/ktentity.inc');
-require_once(KT_LIB_DIR . "/util/sanitize.inc");
+require_once(KT_LIB_DIR . '/util/sanitize.inc');
 require_once(KT_LIB_DIR . '/datetime/datetimeutil.inc.php');
 
 class KTDocumentMetadataVersion extends KTEntity {
+
     var $_bUsePearError = true;
 
     /** Which document we are a version of */
@@ -105,69 +107,83 @@ class KTDocumentMetadataVersion extends KTEntity {
     function getDisplayVersionCreated() { return datetimeutil::getLocaleDate($this->dVersionCreated); }
     // }}}
 
-    function __construct() {
-    	$this->_aFieldToSelect = KTDocumentMetaDataVersion::getFieldsToSelect();
+    function __construct()
+    {
+        $this->_aFieldToSelect = KTDocumentMetaDataVersion::getFieldsToSelect();
     }
 
-    function getFieldsToSelect() {
-    	if(self::$_versionFields == null) {
-    		$sTable = KTUtil::getTableName('document_metadata_version');
-    		$aFields = DBUtil::getResultArray(array("DESCRIBE $sTable"));
-    		$result = array();
-    		for($i=0;$i<count($aFields);$i++) {
-    			$result[KTDocumentMetaDataVersion::getFieldType($aFields[$i]['Type']).KTUtil::camelize($aFields[$i]['Field'])] = $aFields[$i]['Field'];
-    		}
-    		self::$_versionFields = $result;
-    	}
-    	return self::$_versionFields;
+    function getFieldsToSelect()
+    {
+        if (self::$_versionFields == null) {
+            $sTable = KTUtil::getTableName('document_metadata_version');
+            $aFields = DBUtil::getResultArray(array("DESCRIBE $sTable"));
+            if (DB::isError($aFields)) {
+                global $default;
+                $default->log->error("Error describing table $sTable");
+            }
+            else {
+                $result = array();
+                for($i = 0; $i < count($aFields); ++$i) {
+                    $key = KTDocumentMetaDataVersion::getFieldType($aFields[$i]['Type']) . KTUtil::camelize($aFields[$i]['Field']);
+                    $result[$key] = $aFields[$i]['Field'];
+                }
+
+                self::$_versionFields = $result;
+            }
+        }
+
+        return self::$_versionFields;
     }
 
-    function getFieldType($dbType) {
-    	/* Integer test */
-    	if(strpos($dbType, "int") !== FALSE) {
-    		return "i";
-    	}
+    function getFieldType($dbType)
+    {
+        /* Integer test */
+        if (strpos($dbType, 'int') !== FALSE) { return 'i'; }
 
-    	/* Time test */
-    	if(strpos($dbType, "time") !== FALSE) {
-    		return "d";
-    	}
+        /* Time test */
+        if (strpos($dbType, 'time') !== FALSE) { return 'd'; }
 
-    	/* Default */
-    	return "s";
+        /* Default */
+        return 's';
     }
 
-
-    function &createFromArray($aOptions) {
+    function &createFromArray($aOptions)
+    {
         return KTEntityUtil::createFromArray('KTDocumentMetadataVersion', $aOptions);
     }
 
-    function _table() {
+    function _table()
+    {
         return KTUtil::getTableName('document_metadata_version');
     }
 
-    function create() {
+    function create()
+    {
         if (is_null($this->iMetadataVersion)) {
             $this->iMetadataVersion = 0;
         }
+
         if (is_null($this->dVersionCreated)) {
             $this->dVersionCreated = getCurrentDateTime();
         }
+
         return parent::create();
     }
 
-    function &get($iId) {
+    function &get($iId)
+    {
         return KTEntityUtil::get('KTDocumentMetadataVersion', $iId);
     }
 
-    function &getByDocument($oDocument) {
+    function &getByDocument($oDocument)
+    {
         $iDocumentId = KTUtil::getId($oDocument);
-        return KTEntityUtil::getByDict('KTDocumentMetadataVersion', array(
-            'document_id' => $iDocumentId,
-        ), array(
-            'multi' => true,
-            'orderby' => 'version_created DESC, metadata_version DESC',
-        ));
+        return KTEntityUtil::getByDict('KTDocumentMetadataVersion',
+                                       array('document_id' => $iDocumentId),
+                                       array(
+                                            'multi' => true,
+                                            'orderby' => 'version_created DESC, metadata_version DESC',
+                                       ));
     }
 
     function getByDocumentContent($oDocument)
@@ -183,9 +199,11 @@ class KTDocumentMetadataVersion extends KTEntity {
         return $res;
     }
 
-    function bumpMetadataVersion() {
-        $this->iMetadataVersion++;
+    function bumpMetadataVersion()
+    {
+        ++$this->iMetadataVersion;
     }
+
 }
 
 ?>
