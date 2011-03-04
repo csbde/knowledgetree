@@ -1241,11 +1241,6 @@ class KTAPI {
 	*/
 	private function _load_metadata_tree($fieldid, $parentid=0)
 	{
-		/*$results = KTAPI::get_metadata_lookup($fieldid);
-		return $results;*/
-		
-		//$GLOBALS['default']->log->debug("KTAPI _load_metadata_tree $fieldid");
-		
 		$sql = "(SELECT mlt.metadata_lookup_tree_parent AS parentid, ml.treeorg_parent AS treeid, mlt.name AS treename, ml.id AS id, ml.name AS fieldname
 				FROM metadata_lookup ml
 				INNER JOIN (metadata_lookup_tree mlt) ON (ml.treeorg_parent = mlt.id)
@@ -1257,8 +1252,6 @@ class KTAPI {
 				WHERE ml.disabled=0 AND ml.document_field_id=$fieldid AND (ml.treeorg_parent IS NULL OR ml.treeorg_parent = 0))
 				ORDER BY parentid, id";
 		$rows = DBUtil::getResultArray($sql);
-
-		//$GLOBALS['default']->log->debug('KTAPI _load_metadata_tree rows '.print_r($rows, true));
 		
 		$results = array();
 
@@ -1267,31 +1260,10 @@ class KTAPI {
 		}
 		
 		return $results;
-		
-		
-		/*
-		$sql = "SELECT id, name FROM metadata_lookup_tree WHERE document_field_id=$fieldid AND metadata_lookup_tree_parent=$parentid";
-		$rows = DBUtil::getResultArray($sql);
-		if (is_null($rows) || PEAR::isError($rows))
-		{
-			return new PEAR_Error(KTAPI_ERROR_INTERNAL_ERROR);
-		}
-		$results=array();
-		foreach ($rows as $row)
-		{
-			$result=array(
-				'name' => $row['name'],
-				'children' => load($fieldid, $row['id'])
-			);
-			$results[] = $result;
-		}
-		return $results;*/
 	}
 	
 	private function convertToTree(array $flat)
 	{
-		//$GLOBALS['default']->log->debug('KTAPI convertToTree '.print_r($flat, true));
-		
 		$idTree = 'treeid';
 		$idField = 'id';
 		$parentIdField = 'parentid';
@@ -1328,10 +1300,7 @@ class KTAPI {
 
 	    $results = array($root => $indexed[$root]);
 	    
-	    //$GLOBALS['default']->log->debug('KTAPI convertToTree results '.print_r($results, true));
-		//$GLOBALS['default']->log->debug('KTAPI convertToTree results inner '.print_r($results[-1]['fields'][0]['fields'], true));
-	    
-	    return $results[-1]['fields'][0]['fields'];
+	    return $results;	//[-1]['fields'][0]['fields'];
 	}
 
 	/**

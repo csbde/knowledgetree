@@ -1,33 +1,33 @@
  
 <!-- FILE: kt3/fieldsets/simple.smarty -->
-	<div class="detail_fieldset"  rel="persistMetadata.php?documentID={$document->getId()}">
+	<div class="detail_fieldset">
 	    <h3 title='{$description}'>{$fieldset->getName()}</h3>
 	
 	    <table class="metadatatable" cellspacing="0" cellpadding="5">
 	      {foreach item=aFieldPair from=$fieldset_values name=fields}
 	    <tr class="{cycle values=even,odd} {if $smarty.foreach.fields.first}first{/if}">
-	        <th>{$aFieldPair.name}</th>
+	        <th title="{$aFieldPair.description}">{$aFieldPair.name}</th>
 	        <td>
 		        {if ($aFieldPair.control_type==='string')}
-		        	<span class="descriptiveText" id="field_{$aFieldPair.fieldid}" data-name="{$aFieldPair.fieldid}" data-type='text'>
+		        	<span class="descriptiveText" data-name="{$aFieldPair.fieldid}" data-type='text' data-value-id="value_{$aFieldPair.fieldid}"></span>
 		        {elseif ($aFieldPair.control_type==='lookup')}
-		        	<span class="descriptiveText" id="field_{$aFieldPair.fieldid}" data-name="{$aFieldPair.fieldid}" data-type='select' data-options='[{foreach from=$aFieldPair.selection item=option}["{$option}","{$option}"],{/foreach}]'>	
+		        	<span class="descriptiveText" data-name="{$aFieldPair.fieldid}" data-type='select' data-options='[["No selection","no value"],{foreach from=$aFieldPair.selection item=option}["{$option}","{$option}"],{/foreach}]' data-value-id="value_{$aFieldPair.fieldid}"></span>
 		        {elseif ($aFieldPair.control_type==='large text')}
-					<span class="descriptiveText" id="field_{$aFieldPair.fieldid}" data-name="{$aFieldPair.fieldid}" data-type='textarea'>
+					<span class="descriptiveText" data-name="{$aFieldPair.fieldid}" data-type='textarea'></span>
 				{elseif ($aFieldPair.control_type==='tree')}
-					{include file="kt3/fields/tree.smarty" selection=$aFieldPair.selection depth=1}		
+					<span class="descriptiveText" data-name="{$aFieldPair.fieldid}" data-type='tree' data-options='{$aFieldPair.selection}' data-value-id="value_{$aFieldPair.fieldid}"></span>
 				{elseif ($aFieldPair.control_type==='multiselect')}
 					{if ($aFieldPair.options.type==='multiwithlist')}
-						 <span class="descriptiveText" id="field_{$aFieldPair.fieldid}" data-name="{$aFieldPair.fieldid}[]" data-type='multiselect' data-options='[{foreach from=$aFieldPair.selection item=option}["{$option}","{$option}"],{/foreach}]'>
+						 <span class="descriptiveText" data-value-id="value_{$aFieldPair.fieldid}" data-name="{$aFieldPair.fieldid}[]" data-type='multiselect' data-options='[["No selection","no value"],{foreach from=$aFieldPair.selection item=option}["{$option}","{$option}"],{/foreach}]'></span>
 					{elseif ($aFieldPair.options.type==='multiwithcheckboxes')}
-						{foreach from=$aFieldPair.selection item=option}
-							 <span class="descriptiveText" data-name="{$aFieldPair.fieldid}_{$option}" data-type='checkbox' id="{$aFieldPair.fieldid}_{$option}"></span>
-						{/foreach}
+						<span>
+							{foreach from=$aFieldPair.selection item=option}
+								 <span class="descriptiveText" data-checked_value="{$option}" data-name="{$aFieldPair.fieldid}[]" data-type='checkbox' data-value-id="value_{$aFieldPair.fieldid}""></span>
+							{/foreach}
+						</span>
 					{/if}
 		        {/if}
-	        	{$aFieldPair.value}
-			</span>
-	        </td>
+	        <span id="value_{$aFieldPair.fieldid}">{$aFieldPair.value}</span></td>
 	    </tr>
 	      {/foreach}
 	    </table>

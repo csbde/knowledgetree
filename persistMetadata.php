@@ -224,9 +224,11 @@ require_once(KT_LIB_DIR . '/triggers/triggerregistry.inc.php');
 				$value = '';
 				
 				$fieldvalue = DocumentFieldLink::getByDocumentAndField($oDocument, $field);
+				
                 if (!is_null($fieldvalue) && (!PEAR::isError($fieldvalue)))
                 {
                 	$value = $fieldvalue->getValue();
+                	//$GLOBALS['default']->log->debug("persistMetadata fieldsresult fieldvalue $value");
                 }
 	
 				$controltype = strtolower($field->getDataType());

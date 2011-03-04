@@ -1,4 +1,6 @@
-<span data-name="test" data-options='[
+
+
+<span class="descriptiveText" data-name="{$fieldid}" data-value-id="value_{$fieldid}" data-header="{$treename}" data-depth="{$depth}" data-options='[
 	{foreach item=field key=k from=$selection}
 		{if ($field.type==='field')}
 			 "{$field.name}",
@@ -7,9 +9,8 @@
 ]' data-type='radio'></span>
 
 
-{***** {foreach item=field key=k from=$selection}
+{foreach item=field key=k from=$selection}
 	{if ($field.type==='tree')}
-		<span>{$field.treename}</span>
-		{include file="kt3/fields/tree.smarty" selection=$field.fields depth=1}
+		{include file="kt3/fields/tree.smarty" treename=$field.treename selection=$field.fields fieldid=$fieldid depth=$depth+1}
 	{/if}
-{/foreach} ****}
+{/foreach}

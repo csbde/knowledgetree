@@ -1386,7 +1386,7 @@ class KTUtil {
 
 	public static function buildUrl($file, $params=null)
 	{
-		$useCleanURL = FALSE;
+		$useCleanURL = TRUE;
 
 		// Convert to Array
 		if ($params == null) {

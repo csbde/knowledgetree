@@ -72,7 +72,7 @@
 					</table>
 					</div>
 					
-					<div class="editablemetadata">
+					<div class="editablemetadata" rel="persistMetadata.php?documentID={$document->getId()}">
 					{foreach item=oFieldset from=$fieldsets}
 						{$oFieldset->render($document_data)}
 					{/foreach}

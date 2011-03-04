@@ -81,6 +81,13 @@ require_once(KT_LIB_DIR . '/widgets/fieldsetDisplay.inc.php');
 					break;
 					case 'tree':
 						$selection = KTAPI::get_metadata_tree($field->getId());
+						//remove the outer elements of the array as we don't need them!
+						$selection = $selection[-1]['fields'][0];
+						//we need to get rid of values that we do not need else the JSON object we create will be incorrect!
+						SimpleFieldsetDisplay::recursive_unset($selection, array('treeid', 'parentid', 'fieldid'));
+						
+						//now convert to JSON
+						$selection = json_encode($selection);
 					break;
 					case 'large text':
 						$options = array(
@@ -118,6 +125,8 @@ require_once(KT_LIB_DIR . '/widgets/fieldsetDisplay.inc.php');
 			$metadata[] = $fieldsetsresult;
 		}
 	}
+	
+	//$GLOBALS['default']->log->debug('update metadata '.print_r($metadata, true));
 	
 	//assemble the item to return
 	$item['documentTypeID'] = $oDocumentType->getId();
