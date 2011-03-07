@@ -12,7 +12,7 @@ function JSONLookupWidget() {
 }
 
 JSONLookupWidget.prototype = {
-    
+
     /* bind_add and bind_remove are functions to be called with the key:value's of selected items */
 
     'initialize' : function(name, action) {
@@ -21,7 +21,7 @@ JSONLookupWidget.prototype = {
     this.sName = name;
     this.sAction = action;
 
-    
+
     this.oSelectAvail = $('select_' + name + '_avail');
     this.oSelectAssigned = $('select_' + name + '_assigned');
     this.oFilterAvail = $('filter_' + name + '_avail');
@@ -34,12 +34,12 @@ JSONLookupWidget.prototype = {
     this.aItemsAdded = [];
     this.aItemsRemoved = [];
 
-    connect(this.oFilterAvail, 'onkeyup', this, 'onchangeFilter');    
-    connect(this.oFilterAssigned, 'onkeyup', this, 'onchangeSelector');    
+    connect(this.oFilterAvail, 'onkeyup', this, 'onchangeFilter');
+    connect(this.oFilterAssigned, 'onkeyup', this, 'onchangeSelector');
     connect(name + '_add', 'onclick', this, 'onclickAdd');
     connect(name + '_remove', 'onclick', this, 'onclickRemove');
     connect(name + '_show_all', 'onclick', this, 'onclickShowAll');
-    
+
     this.triggers = {};
     this.triggers['add'] = null;
     this.triggers['remove'] = null;
@@ -65,7 +65,7 @@ JSONLookupWidget.prototype = {
         } else if(!this.initialValuesLoaded) {
             act += '&' + queryString({'selected' : '1'});
         }
-    
+
         var d = loadJSONDoc(act);
         d.addErrback(this.errGetValues);
         d.addCallback(checkKTError);
@@ -95,20 +95,20 @@ JSONLookupWidget.prototype = {
                     found = true; break;
                 }
             }
-    
-            if(found) { 
-                continue; 
+
+            if(found) {
+                continue;
             }
-    
-                
+
+
             var aParam = {'value':k};
             if(k == 'off') {
                 aParam['disabled'] = 'disabled';
             }
-    
+
             var val = this.oValues[k];
             var sDisp = val;
-            
+
             if(!isUndefinedOrNull(val['display'])) {
                 var sDisp = val['display'];
                 if(!isUndefinedOrNull(val['selected']) && val['selected'] === true) {
@@ -121,9 +121,9 @@ JSONLookupWidget.prototype = {
             var oO = OPTION(aParam, sDisp);
             aOptions.push(oO);
         }
-    
+
         replaceChildNodes(this.oSelectAvail, aOptions);
-        if(bSelFound) { 
+        if(bSelFound) {
             this.onclickAdd();
         }
     },
@@ -132,13 +132,13 @@ JSONLookupWidget.prototype = {
         if(!isUndefinedOrNull(this.triggers['postInitialize'])) {
             this.triggers['postInitialize']();
         }
-    }, 
-    
+    },
+
 
     'modItems' : function(type, value) {
         var aTarget = (type == 'add') ? 'aItemsAdded' : 'aItemsRemoved';
         var aOtherTarget = (type == 'remove') ? 'aItemsAdded' : 'aItemsRemoved';
-    
+
         // check against other - if other has value, remove it from other, skip next bit
         var aNewOther = [];
         var exists = false;
@@ -156,7 +156,7 @@ JSONLookupWidget.prototype = {
             $(sHidden).value = this[aOtherTarget].join(",");
             return;
         }
-    
+
         exists = false;
         for(i=0; i<this[aTarget].length; i++) {
             if(this[aTarget][i] == value) {
@@ -164,19 +164,19 @@ JSONLookupWidget.prototype = {
             break;
             }
         }
-        
+
         if(!exists) {
             this[aTarget].push(value);
             var sHidden  = this.sName + '_items_' + ((type == 'add') ? 'added' : 'removed');
             $(sHidden).value = this[aTarget].join(",");
         }
-    
+
     },
-    
-    
+
+
     // signals handling
 
-    'onchangeFilter' : function(e) {    
+    'onchangeFilter' : function(e) {
     if(this.savedFilter != this.oFilterAvail.value) {
         this.savedFilter = this.oFilterAvail.value;
         if(!isUndefinedOrNull(this.filterTimer)) {
@@ -189,9 +189,9 @@ JSONLookupWidget.prototype = {
 
     'onchangeSelector' : function(e) {
     if(this.savedSelector != this.oFilterAssigned.value) {
-        this.savedSelector = this.oFilterAssigned.value;        
+        this.savedSelector = this.oFilterAssigned.value;
         forEach(this.oSelectAssigned.options, bind(function(o) {
-        if(!this.savedSelector.length) { 
+        if(!this.savedSelector.length) {
             o.selected = false;
         } else {
             if(o.innerHTML.toLowerCase().search(this.savedSelector) != -1) {
@@ -213,7 +213,7 @@ JSONLookupWidget.prototype = {
             function(o) {
             try {
                 if(o.value == 'off') return;
-                var a = o.selected;                            
+                var a = o.selected;
                 if(a == 'selected' || a === true) {
                 this.modItems('add', o.value);
                 try {
@@ -222,7 +222,7 @@ JSONLookupWidget.prototype = {
                     o.setAttribute('selected', false);
                 }
                 aCurOptions.push(o);
-                
+
                 if(!isUndefinedOrNull(this.triggers['add'])) {
                     this.triggers['add'](this.oValues[o.value]);
                 }
@@ -232,7 +232,7 @@ JSONLookupWidget.prototype = {
                 // forEach(keys(e), function(k) { log(k,':', e[k]); });
             }
     }, this));
-    
+
     aCurOptions.sort(keyComparator('innerHTML'));
     replaceChildNodes(this.oSelectAssigned, aCurOptions);
 
@@ -257,19 +257,19 @@ JSONLookupWidget.prototype = {
     },
 
     'onclickShowAll' : function(e) {
-    this.oFilterAvail.value = '';
-    this.savedFilter = '';
-    this.getValues(true);
-    e.stop();
+        this.oFilterAvail.value = '';
+        this.savedFilter = '';
+        this.getValues(true);
+        e.stop();
     }
 }
 
 function initJSONLookup(name, action) {
     return function() {
-    _aLookupWidgets[name] = new JSONLookupWidget();
-    _aLookupWidgets[name].initialize(name, action);
+        _aLookupWidgets[name] = new JSONLookupWidget();
+        _aLookupWidgets[name].initialize(name, action);
     }
 }
 
 
-             
+
