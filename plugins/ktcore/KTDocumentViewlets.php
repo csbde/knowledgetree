@@ -36,48 +36,44 @@
  *
  */
 
-require_once(KT_LIB_DIR . "/actions/documentviewlet.inc.php");
-require_once(KT_LIB_DIR . "/workflow/workflowutil.inc.php");
-require_once(KT_LIB_DIR . "/database/datetime.inc");
+require_once(KT_LIB_DIR . '/actions/documentviewlet.inc.php');
+require_once(KT_LIB_DIR . '/workflow/workflowutil.inc.php');
+require_once(KT_LIB_DIR . '/database/datetime.inc');
 require_once(KT_DIR . '/plugins/comments/comments.php');
 
-// {{{ KTDocumentDetailsAction
 class KTWorkflowViewlet extends KTDocumentViewlet {
+
     public $sName = 'ktcore.viewlets.document.workflow';
 	public $_sShowPermission = 'ktcore.permissions.write';
     public $showIfRead = false;
     public $showIfWrite = true;
 
-    function display_viewlet() {
+    function display_viewlet()
+    {
         $oKTTemplating =& KTTemplating::getSingleton();
-        $oTemplate =& $oKTTemplating->loadTemplate("ktcore/document/viewlets/workflow");
-        if (is_null($oTemplate)) { return ""; }
+        $oTemplate =& $oKTTemplating->loadTemplate('ktcore/document/viewlets/workflow');
+        if (is_null($oTemplate)) { return ''; }
 
         $oWorkflowState = KTWorkflowState::get($this->oDocument->getWorkflowStateId());
-        if (PEAR::isError($oWorkflowState)) {
-            return "";
-        }
+        if (PEAR::isError($oWorkflowState)) { return ''; }
 
         $aDisplayTransitions = array();
         $aTransitions = KTWorkflowUtil::getTransitionsForDocumentUser($this->oDocument, $this->oUser);
-        if (empty($aTransitions)) {
-            return "";
-        }
+        if (empty($aTransitions)) { return ''; }
 
         // Check if the document has been checked out
         $bIsCheckedOut = $this->oDocument->getIsCheckedOut();
         $iId = $this->oDocument->getId();
-        if($bIsCheckedOut){
+        if ($bIsCheckedOut) {
             // If document is checked out, don't link into the workflow.
             $aDisplayTransitions = array();
-        }else{
+        }
+        else {
             foreach ($aTransitions as $oTransition) {
-            	if(is_null($oTransition) || PEAR::isError($oTransition)){
-                	continue;
-                }
+            	if (is_null($oTransition) || PEAR::isError($oTransition)) { continue; }
 
                 $aDisplayTransitions[] = array(
-                    'url' => KTUtil::ktLink('action.php', 'ktcore.actions.document.workflow', array("fDocumentId" => $iId, "action" => "quicktransition", "fTransitionId" => $oTransition->getId())),
+                    'url' => KTUtil::ktLink('action.php', 'ktcore.actions.document.workflow', array('fDocumentId' => $iId, 'action' => 'quicktransition', 'fTransitionId' => $oTransition->getId())),
                     'name' => $oTransition->getName(),
                 );
             }
@@ -91,20 +87,21 @@ class KTWorkflowViewlet extends KTDocumentViewlet {
             ORDER BY id DESC LIMIT 1;"
 		);
 		$aCommentQuery[] = array($iId);
+
 		$aTransitionComments = DBUtil::getResultArray($aCommentQuery);
 		$oLatestTransitionComment = null;
-		if(!empty($aTransitionComments))
-		{
+
+		if (!empty($aTransitionComments)) {
 			$aRow = $aTransitionComments[0];
 			$oLatestTransitionComment = $aRow['comment'];
 			$iCommentPosition = strpos($oLatestTransitionComment,':'); //comment found after first colon in string
 
-			if($iCommentPosition>0) //if comment found
-			{
+			 // if comment found
+			if ($iCommentPosition > 0) {
 				$oLatestTransitionComment = substr($oLatestTransitionComment, $iCommentPosition+2, (strlen($oLatestTransitionComment)-$iCommentPosition));
 			}
-			else //if no comment found - i.e. first state in workflow
-			{
+			// else first state in workflow
+			else {
 				$oLatestTransitionComment = null;
 			}
 		}
@@ -116,14 +113,15 @@ class KTWorkflowViewlet extends KTDocumentViewlet {
             'state_name' => $oWorkflowState->getName(),
 			'comment' => $oLatestTransitionComment,
         ));
+
         return $oTemplate->render();
     }
+
 }
-// }}}
 
 
-// {{{ KTDocumentActivityFeedAction
 class KTDocumentActivityFeedAction extends KTDocumentViewlet {
+
     public $sName = 'ktcore.viewlet.document.activityfeed';
     public $showIfRead = true;
     public $showIfWrite = true;
@@ -154,11 +152,10 @@ class KTDocumentActivityFeedAction extends KTDocumentViewlet {
         $aTransactions = $res;
 
         // Set the namespaces where not in the transactions lookup
-        foreach($aTransactions as $key => $transaction){
-            if(empty($transaction['transaction_name'])){
+        foreach($aTransactions as $key => $transaction) {
+            if (empty($transaction['transaction_name'])) {
                 $aTransactions[$key]['transaction_name'] = $this->_getActionNameForNamespace($transaction['transaction_namespace']);
             }
-
 
             $mainArray[] = array(
                 'name' => $transaction['user_name'],
@@ -186,9 +183,8 @@ class KTDocumentActivityFeedAction extends KTDocumentViewlet {
              // For each content version there can be multiple metadata versions
              // Allow the earliest metadata version to override the later ones
              $contentVersion = $version['content_version_id'];
-             if($contentVersion == $prevContentVersion) {
-                 continue;
-             }
+             if ($contentVersion == $prevContentVersion) { continue; }
+
              $prevContentVersion = $contentVersion;
 
              $aVersions[] = array(
@@ -208,8 +204,7 @@ class KTDocumentActivityFeedAction extends KTDocumentViewlet {
         /* *** Get the document comments *** */
         try {
             $comments = Comments::get_comments($iDocumentId);
-            foreach ($comments as $comment)
-            {
+            foreach ($comments as $comment) {
                 $mainArray[] = array(
                     'name' => $comment['user_name'],
                     'email' => md5(strtolower($comment['email'])),
@@ -221,7 +216,8 @@ class KTDocumentActivityFeedAction extends KTDocumentViewlet {
                     'type' => 'comment'
                 );
             }
-        } catch (Exception $e) {
+        }
+        catch (Exception $e) {
             global $default;
             $default->log->error('Error getting the comments - ' . $e->getMessage());
             $comments = array();
@@ -234,7 +230,7 @@ class KTDocumentActivityFeedAction extends KTDocumentViewlet {
 		//$mainArray = array_reverse($mainArray);
 
 		$oKTTemplating =& KTTemplating::getSingleton();
-        $oTemplate = $oKTTemplating->loadTemplate("ktcore/document/viewlets/activity_feed");
+        $oTemplate = $oKTTemplating->loadTemplate('ktcore/document/viewlets/activity_feed');
 
         $aTemplateData = array(
               'context' => $this,
@@ -242,6 +238,7 @@ class KTDocumentActivityFeedAction extends KTDocumentViewlet {
               'document' => $this->oDocument,
               'versions' => $mainArray,
         );
+
         return $oTemplate->render($aTemplateData);
     }
 
@@ -253,28 +250,32 @@ class KTDocumentActivityFeedAction extends KTDocumentViewlet {
         return $d1 < $d2 ? 1: -1;
     }
 
-    function _getActionNameForNamespace($sNamespace) {
+    function _getActionNameForNamespace($sNamespace)
+    {
         $aNames = split('\.', $sNamespace);
         $sName = array_pop($aNames);
         $sName = str_replace('_', ' ', $sName);
         $sName = ucwords($sName);
+
         return $sName;
     }
 
-    function getUserForId($iUserId) {
+    function getUserForId($iUserId)
+    {
         $u = User::get($iUserId);
         if (PEAR::isError($u) || ($u == false)) { return _kt('User no longer exists'); }
+
         return $u->getName();
     }
 
-	function getEmailForId($iUserId) {
+	function getEmailForId($iUserId)
+	{
         $u = User::get($iUserId);
-
         if (PEAR::isError($u) || ($u == false)) { return _kt('User no longer exists'); }
+
         return $u->getEmail();
     }
 
 }
-// }}}
 
 ?>

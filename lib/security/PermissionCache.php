@@ -95,7 +95,8 @@ class PermissionCache
 
         try {
             $this->memcache = new PermissionMemCache();
-        }catch (Exception $e) {
+        }
+        catch (Exception $e) {
             $this->memcache = false;
         }
     }
@@ -108,7 +109,7 @@ class PermissionCache
      */
     public static function getSingleton()
     {
-        if(empty(self::$permCache)){
+        if (empty(self::$permCache)) {
             self::$permCache = new PermissionCache();
         }
         return self::$permCache;
@@ -125,13 +126,13 @@ class PermissionCache
      */
     public function checkPermission($lookupId, $permission, $userId = null)
     {
-        if(!is_numeric($lookupId)){
+        if (!is_numeric($lookupId)) {
             return false;
         }
 
         $permId = (isset($this->permMap[$permission])) ? $this->permMap[$permission] : false;
 
-        if(!is_numeric($permId)){
+        if (!is_numeric($permId)) {
             return false;
         }
 
@@ -139,15 +140,15 @@ class PermissionCache
 
         // Validate the users permissions
         // If the userId passed differs from the current user, then validate the cached permissions
-        if($this->memcache !== false){
+        if ($this->memcache !== false) {
             $check = $this->memcache->validateMemcachePermissions();
-            if(!$check || $userId != $_SESSION['userID']){
+            if (!$check || $userId != $_SESSION['userID']) {
                 $this->validateCachedPermissions($userId);
                 unset($_SESSION['Permissions_Cache']);
             }
         }
 
-        if($this->storeByUser){
+        if ($this->storeByUser) {
             return $this->checkCachedPermission2($lookupId, $permId, $userId);
         }
 
@@ -156,11 +157,13 @@ class PermissionCache
 
     public function invalidateCache()
     {
-        if($this->memcache !== false){
+        if ($this->memcache !== false) {
             $this->memcache->invalidateMemcachePermissions();
         }
+
         unset($_SESSION['Permissions_Cache']);
         unset($_SESSION['Permissions_Namespace']);
+
         return true;
     }
 
@@ -174,7 +177,7 @@ class PermissionCache
     {
         $userId = is_numeric($userId) ? $userId : $_SESSION['userID'];
 
-        if(!is_array($list) || empty($list)){
+        if (!is_array($list) || empty($list)) {
             // Get the descriptor ids for the user
             $list = $this->getDescriptors($userId);
         }
@@ -189,9 +192,9 @@ class PermissionCache
         $removed = array_diff($cached, $list);
 
         // Insert all the new descriptors
-        if(!empty($new)){
+        if (!empty($new)) {
             $fields = array();
-            foreach ($new as $descriptor){
+            foreach ($new as $descriptor) {
                 $fields[] = array('user_id' => $userId, 'descriptor_id' => $descriptor);
             }
 
@@ -200,11 +203,26 @@ class PermissionCache
         }
 
         // Delete all the removed descriptors
-        if(!empty($removed)){
-            foreach ($removed as $descriptor){
+        if (!empty($removed)) {
+            foreach ($removed as $descriptor) {
                 $fields = array('user_id' => $userId, 'descriptor_id' => $descriptor);
 
+<<<<<<< Updated upstream
                 DBUtil::whereDelete($this->table, $fields);
+=======
+                $res = DBUtil::whereDelete($this->table, $fields);
+            }
+
+            $invalidateMemcache = true;
+        }
+
+        // Unset memcached permissions
+        if ($invalidateMemcache) {
+            unset($_SESSION['Permissions_Cache'][$userId]);
+
+            if ($this->memcache !== false) {
+                $this->memcache->clearUserPermissions($userId);
+>>>>>>> Stashed changes
             }
         }
     }
@@ -221,9 +239,10 @@ class PermissionCache
                 WHERE user_id = {$userId}";
         $result = DBUtil::getResultArrayKey($sql, 'descriptor_id');
 
-        if(!is_array($result)){
+        if (!is_array($result)) {
             return array();
         }
+
         return $result;
     }
 
@@ -252,20 +271,21 @@ class PermissionCache
      */
     private function checkSystemRoles($permId, $lookupId, $userId)
     {
-        $sql = "select role_id from permission_descriptor_roles d, permission_lookup_assignments pl
+        $sql = "select d.role_id from permission_descriptor_roles d, permission_lookup_assignments pl
                 where d.descriptor_id = pl.permission_descriptor_id
-                AND permission_id = {$permId} AND permission_lookup_id = {$lookupId}";
+                AND pl.permission_id = {$permId} AND pl.permission_lookup_id = {$lookupId}";
 
         $result = DBUtil::getResultArrayKey($sql, 'role_id');
 
-        if(in_array(-3, $result)){
+        if (in_array(-3, $result)) {
             return true;
         }
 
         $oUser = User::get($userId);
-        if(in_array(-4, $result) && !$oUser->isAnonymous() && $oUser->isLicensed()){
+        if (in_array(-4, $result) && !$oUser->isAnonymous() && $oUser->isLicensed()) {
             return true;
         }
+
         return false;
     }
 
@@ -282,18 +302,18 @@ class PermissionCache
         $groupDesc = array();
         $groups = $this->resolveUserGroups($userId);
 
-        if(!empty($groups)){
+        if (!empty($groups)) {
             $groupList = implode(', ', $groups);
 
-            $sql = "select descriptor_id from permission_descriptor_groups d
+            $sql = "select d.descriptor_id from permission_descriptor_groups d
                     where d.group_id in ({$groupList})";
 
             $groupDesc = DBUtil::getResultArrayKey($sql, 'descriptor_id');
         }
 
         // for users
-        $sql = "select descriptor_id from permission_descriptor_users u
-                where user_id = {$userId}";
+        $sql = "select u.descriptor_id from permission_descriptor_users u
+                where u.user_id = {$userId}";
 
         $userDesc = DBUtil::getResultArrayKey($sql, 'descriptor_id');
 
@@ -321,7 +341,7 @@ class PermissionCache
                 WHERE user_id = {$userId}";
         $userGroups = DBUtil::getResultArrayKey($sql, 'group_id');
 
-        if(empty($userGroups)){
+        if (empty($userGroups)) {
             return array();
         }
 
@@ -335,7 +355,7 @@ class PermissionCache
             $intersect = array_intersect($groups, $userGroups);
 
             // if there are groups then add them along with the parent group to the list to check against
-            if(!empty($intersect)) {
+            if (!empty($intersect)) {
                 $checkGroups = array_merge($checkGroups, $intersect);
                 $checkGroups[] = $parent_id;
             }
@@ -343,6 +363,7 @@ class PermissionCache
 
         $checkGroups = array_merge($userGroups, $checkGroups);
         $checkGroups = array_unique($checkGroups);
+
         return $checkGroups;
     }
 
@@ -359,10 +380,10 @@ class PermissionCache
     private function checkCachedPermission($lookupId, $permId, $userId)
     {
         // Check the permissions in memcache
-        if($this->memcache !== false) {
+        if ($this->memcache !== false) {
             $check = $this->memcache->checkPermission($userId, $lookupId, $permId);
 
-            if(is_bool($check)){
+            if (is_bool($check)) {
                 return $check;
             }
 
@@ -372,20 +393,21 @@ class PermissionCache
         }
 
         $sql = "select p.id from permission_lookup_assignments p, permission_fast_cache c
-                where p.permission_descriptor_id = c.descriptor_id AND permission_id = {$permId}
-                AND user_id = {$userId} AND permission_lookup_id = {$lookupId}";
+                where p.permission_descriptor_id = c.descriptor_id AND p.permission_id = {$permId}
+                AND c.user_id = {$userId} AND p.permission_lookup_id = {$lookupId}";
 
         $result = DBUtil::getOneResultKey($sql, 'id');
 
-        if(is_numeric($result) && $result > 0) {
+        if (is_numeric($result) && $result > 0) {
             $check = true;
-        } else {
+        }
+        else {
             // Check system roles
             $check = $this->checkSystemRoles($permId, $lookupId, $userId);
         }
 
         // Set the permission check in memcache
-        if($this->memcache !== false) {
+        if ($this->memcache !== false) {
             $this->memcache->setPermission($userId, $lookupId, $permId, $check);
         }
 
@@ -407,23 +429,25 @@ class PermissionCache
         // Get the users permissions from session
         $permissions = isset($_SESSION['Permissions_Cache'][$userId]) ? $_SESSION['Permissions_Cache'][$userId] : false;
 
-        if($permissions !== false){
-            if(isset($permissions[$lookupId][$permId]) && $permissions[$lookupId][$permId]){
+        if ($permissions !== false) {
+            if (isset($permissions[$lookupId][$permId]) && $permissions[$lookupId][$permId]) {
                 return true;
             }
+
             return $this->checkSystemRoles($permId, $lookupId, $userId);
         }
 
         // If the permissions are not set in session, get them from memcache
-        if($this->memcache !== false) {
+        if ($this->memcache !== false) {
             $permissions = $this->memcache->getUserPermissions($userId);
 
-            if($permissions !== false){
+            if ($permissions !== false) {
                 $_SESSION['Permissions_Cache'][$userId] = $permissions;
 
-                if(isset($permissions[$lookupId][$permId]) && $permissions[$lookupId][$permId]){
+                if (isset($permissions[$lookupId][$permId]) && $permissions[$lookupId][$permId]) {
                     return true;
                 }
+
                 return $this->checkSystemRoles($permId, $lookupId, $userId);
             }
         }
@@ -432,11 +456,11 @@ class PermissionCache
         $this->validateCachedPermissions($userId);
 
         $sql = "SELECT p.permission_id, p.permission_lookup_id FROM permission_lookup_assignments p, permission_fast_cache c
-                WHERE p.permission_descriptor_id = c.descriptor_id AND user_id = {$userId}";
+                WHERE p.permission_descriptor_id = c.descriptor_id AND c.user_id = {$userId}";
 
         $result = DBUtil::getResultArray($sql);
 
-        if(PEAR::isError($result) || empty($result)){
+        if (PEAR::isError($result) || empty($result)) {
             $_SESSION['Permissions_Cache'][$userId] = array();
             return $this->checkSystemRoles($permId, $lookupId, $userId);
         }
@@ -453,13 +477,14 @@ class PermissionCache
         $_SESSION['Permissions_Cache'][$userId] = $permissions;
 
         // Set the permissions in memcache
-        if($this->memcache !== false) {
+        if ($this->memcache !== false) {
             $this->memcache->setUserPermissions($userId, $permissions);
         }
 
-        if(isset($permissions[$lookupId][$permId]) && $permissions[$lookupId][$permId]){
+        if (isset($permissions[$lookupId][$permId]) && $permissions[$lookupId][$permId]) {
             return true;
         }
+
         return $this->checkSystemRoles($permId, $lookupId, $userId);
     }
 
@@ -478,8 +503,8 @@ class PermissionCache
         $cached = DBUtil::getResultArrayKey($sql, 'descriptor_id');
 
         // If cache is empty - return false -> needs update
-        if(empty($cached) || PEAR::isError($cached)){
-            if($update){
+        if (empty($cached) || PEAR::isError($cached)) {
+            if ($update) {
                 $this->updateCacheForUser($userId);
             }
             return false;
@@ -491,16 +516,16 @@ class PermissionCache
         // Check for new descriptors
         $diff = array_diff($descriptors, $cached);
 
-        if(empty($diff)){
+        if (empty($diff)) {
             // Check for removed descriptors
             $diff2 = array_diff($cached, $descriptors);
 
-            if(empty($diff2)){
+            if (empty($diff2)) {
                 return true;
             }
         }
 
-        if($update){
+        if ($update) {
             $this->updateCacheForUser($userId, $descriptors);
         }
 
@@ -552,7 +577,7 @@ class PermissionMemCache
     {
         $enabled = $this->initMemcache();
 
-        if(!$enabled) {
+        if (!$enabled) {
             throw new Exception('Memcache cannot be initialised');
         }
 
@@ -560,7 +585,7 @@ class PermissionMemCache
 
         // Create the key for the namespace using the account name
         $namespaceKey = 'permissions_key';
-        if(ACCOUNT_ROUTING_ENABLED) {
+        if (ACCOUNT_ROUTING_ENABLED) {
             $namespaceKey = ACCOUNT_NAME . '_' . $namespaceKey;
         }
         $this->namespaceKey = $namespaceKey;
@@ -577,13 +602,13 @@ class PermissionMemCache
     {
         $session = (isset($_SESSION['Permissions_Namespace']) && !empty($_SESSION['Permissions_Namespace'])) ? $_SESSION['Permissions_Namespace'] : '';
 
-        if(empty($session)){
+        if (empty($session)) {
             $_SESSION['Permissions_Namespace'] = $this->getNamespace();
             return false;
         }
 
         $namespace = $this->getNamespace();
-        if($session != $namespace){
+        if ($session != $namespace) {
             $_SESSION['Permissions_Namespace'] = $namespace;
             return false;
         }
@@ -635,7 +660,7 @@ class PermissionMemCache
         $key = $this->namespace . '|' . $userId . '|' . $lookupId . '|' . $permId;
         $value = $this->getItem($key);
 
-        if($value === false) {
+        if ($value === false) {
             return 'Error';
         }
 
@@ -682,10 +707,11 @@ class PermissionMemCache
         $namespace = $this->getItem($this->namespaceKey);
 
         // If the key doesn't exist or has expired then set a new one.
-        if(empty($namespace)){
+        if (empty($namespace)) {
             $this->setNamespace();
             $namespace = $this->namespace;
         }
+
         return $namespace;
     }
 
@@ -742,7 +768,7 @@ class PermissionMemCache
      */
     private function initMemcache()
     {
-        if(MemCacheUtil::$enabled) { return true; }
+        if (MemCacheUtil::$enabled) { return true; }
 
         $oConfig = KTConfig::getSingleton();
         $enabled = $oConfig->setMemcache();
