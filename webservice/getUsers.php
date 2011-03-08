@@ -12,6 +12,7 @@
  */
 
 require_once('../config/dmsDefaults.php');
+require_once(KT_LIB_DIR . '/users/User.inc');
 
 $query = KTUtil::arrayGet($_REQUEST, 'q');
 if (empty($query)) {
@@ -19,18 +20,13 @@ if (empty($query)) {
     exit(0);
 }
 
-// just build a static list for test purposes
-$users = array(1 => 'bob', 613 => 'dave', 614 => 'doug', 580 => 'davey crockett', 593 => 'crockett and tubbs', 597 => 'moooo, I\'m a cow');
-
-$return = array();
-foreach ($users as $id => $user) {
-	if (strpos($user, $query) !== false) {
-	    $user = array('id' => $id, 'name' => $user);
-	    $return[] = $user;
-	}
+$userList = User::getList("name like '%$query%' OR username like '%$query%'");
+foreach ($userList as $user) {
+    $name = $user->getName();
+    $users[] = array('id' => $user->getId(), 'name' => !empty($name) ? $name : $user->getUsername());
 }
 
-echo json_encode($return);
+echo json_encode($users);
 exit(0);
 
 ?>
