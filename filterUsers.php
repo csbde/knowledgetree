@@ -20,8 +20,7 @@ if (empty($query)) {
     exit(0);
 }
 
-$userList = User::getList("(name like '%$query%' OR username like '%$query%') AND id > 0 "
-                        . "AND (disabled = 0 OR ((disabled = 3 OR disabled = 4) AND last_login IS NOT NULL))");
+$userList = User::getList("(name like '%$query%' OR username like '%$query%') AND id > 0 AND disabled = 0");
 foreach ($userList as $user) {
     $name = $user->getName();
     $users[] = array('id' => $user->getId(), 'name' => !empty($name) ? $name : $user->getUsername());
