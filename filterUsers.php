@@ -20,7 +20,18 @@ if (empty($query)) {
     exit(0);
 }
 
-$userList = User::getList("(name like '%$query%' OR username like '%$query%') AND id > 0 AND disabled = 0");
+$type = KTUtil::arrayGet($_REQUEST, 'type');
+switch ($type) {
+    case 'group':
+        $where = "(name like '%$query%' OR username like '%$query%') AND id > 0 AND (disabled = 0 OR disabled = 3)";
+        break;
+    case 'alert':
+    default:
+        $where = "(name like '%$query%' OR username like '%$query%') AND id > 0 AND disabled = 0";
+        break;
+}
+
+$userList = User::getList($where);
 foreach ($userList as $user) {
     $name = $user->getName();
     $users[] = array('id' => $user->getId(), 'name' => !empty($name) ? $name : $user->getUsername());

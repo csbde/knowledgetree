@@ -23,7 +23,7 @@ jQuery(document).ready(function($) {
             inputToken: null
         }
     });
-    $("#users").tokenInput("/filterUsers.php", {
+    $("#users").tokenInput("/filterUsers.php?type={/literal}{$options.type}{literal}", {
         // Alter the minChars value to determine how much the user must type before a search is initiated
         minChars: 2,
         prePopulate: [{/literal}{$options.assigned[1]}{literal}],
