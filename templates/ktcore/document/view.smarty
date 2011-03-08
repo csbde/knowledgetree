@@ -1,4 +1,3 @@
-
 <!-- FILE: ktcore/document/view.smarty -->
 <table>
 <tr>
@@ -21,12 +20,6 @@
 		<tr align=center> <td> <div id="blue_loading" style='display:none; margin-left:0px' /> </td> </tr>
 		<tr>
 			<table border="0" width="720" class="doc_view">
-				
-					
-				
-				<td>
-					<div id=stateActions value=hidden style='display:none;' />  </div>
-				</td>
 			</table>
 		</tr>
 		<tr>
