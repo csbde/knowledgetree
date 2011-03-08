@@ -95,8 +95,7 @@ class PermissionCache
 
         try {
             $this->memcache = new PermissionMemCache();
-        }
-        catch (Exception $e) {
+        } catch (Exception $e) {
             $this->memcache = false;
         }
     }
@@ -112,6 +111,7 @@ class PermissionCache
         if (empty(self::$permCache)) {
             self::$permCache = new PermissionCache();
         }
+
         return self::$permCache;
     }
 
@@ -207,22 +207,7 @@ class PermissionCache
             foreach ($removed as $descriptor) {
                 $fields = array('user_id' => $userId, 'descriptor_id' => $descriptor);
 
-<<<<<<< Updated upstream
                 DBUtil::whereDelete($this->table, $fields);
-=======
-                $res = DBUtil::whereDelete($this->table, $fields);
-            }
-
-            $invalidateMemcache = true;
-        }
-
-        // Unset memcached permissions
-        if ($invalidateMemcache) {
-            unset($_SESSION['Permissions_Cache'][$userId]);
-
-            if ($this->memcache !== false) {
-                $this->memcache->clearUserPermissions($userId);
->>>>>>> Stashed changes
             }
         }
     }
@@ -271,9 +256,9 @@ class PermissionCache
      */
     private function checkSystemRoles($permId, $lookupId, $userId)
     {
-        $sql = "select d.role_id from permission_descriptor_roles d, permission_lookup_assignments pl
+        $sql = "select role_id from permission_descriptor_roles d, permission_lookup_assignments pl
                 where d.descriptor_id = pl.permission_descriptor_id
-                AND pl.permission_id = {$permId} AND pl.permission_lookup_id = {$lookupId}";
+                AND permission_id = {$permId} AND permission_lookup_id = {$lookupId}";
 
         $result = DBUtil::getResultArrayKey($sql, 'role_id');
 
@@ -305,15 +290,15 @@ class PermissionCache
         if (!empty($groups)) {
             $groupList = implode(', ', $groups);
 
-            $sql = "select d.descriptor_id from permission_descriptor_groups d
+            $sql = "select descriptor_id from permission_descriptor_groups d
                     where d.group_id in ({$groupList})";
 
             $groupDesc = DBUtil::getResultArrayKey($sql, 'descriptor_id');
         }
 
         // for users
-        $sql = "select u.descriptor_id from permission_descriptor_users u
-                where u.user_id = {$userId}";
+        $sql = "select descriptor_id from permission_descriptor_users u
+                where user_id = {$userId}";
 
         $userDesc = DBUtil::getResultArrayKey($sql, 'descriptor_id');
 
@@ -393,15 +378,14 @@ class PermissionCache
         }
 
         $sql = "select p.id from permission_lookup_assignments p, permission_fast_cache c
-                where p.permission_descriptor_id = c.descriptor_id AND p.permission_id = {$permId}
-                AND c.user_id = {$userId} AND p.permission_lookup_id = {$lookupId}";
+                where p.permission_descriptor_id = c.descriptor_id AND permission_id = {$permId}
+                AND user_id = {$userId} AND permission_lookup_id = {$lookupId}";
 
         $result = DBUtil::getOneResultKey($sql, 'id');
 
         if (is_numeric($result) && $result > 0) {
             $check = true;
-        }
-        else {
+        } else {
             // Check system roles
             $check = $this->checkSystemRoles($permId, $lookupId, $userId);
         }
@@ -433,7 +417,6 @@ class PermissionCache
             if (isset($permissions[$lookupId][$permId]) && $permissions[$lookupId][$permId]) {
                 return true;
             }
-
             return $this->checkSystemRoles($permId, $lookupId, $userId);
         }
 
@@ -447,7 +430,6 @@ class PermissionCache
                 if (isset($permissions[$lookupId][$permId]) && $permissions[$lookupId][$permId]) {
                     return true;
                 }
-
                 return $this->checkSystemRoles($permId, $lookupId, $userId);
             }
         }
@@ -456,7 +438,7 @@ class PermissionCache
         $this->validateCachedPermissions($userId);
 
         $sql = "SELECT p.permission_id, p.permission_lookup_id FROM permission_lookup_assignments p, permission_fast_cache c
-                WHERE p.permission_descriptor_id = c.descriptor_id AND c.user_id = {$userId}";
+                WHERE p.permission_descriptor_id = c.descriptor_id AND user_id = {$userId}";
 
         $result = DBUtil::getResultArray($sql);
 
@@ -533,6 +515,7 @@ class PermissionCache
     }
 
 }
+
 
 /**
  * Stores and retrieves the users permissions from memcache.
