@@ -31,70 +31,208 @@
 	// ===================
 
 	var save = function( self ) {
+		
 		self.editing = false;
 		
 		// onSave callback
 		$.isFunction( opts.onSave ) && opts.onSave.call( self );
+		
+		//assume all required fields have been completed
+		var atLeastOneRequiredNotDone = false;
+		
+		//do we need to check for required fields?
+		if (opts.requiredClass != null && opts.requiredClass != '')
+		{			
+			$('.'+opts.requiredClass, self).each(function(index)
+			{
+				//get the fields id: to chop off the "metadatafield_" prefix
+				var id = ($(this).attr('id').substring($(this).attr('id').indexOf('_')+1));
+				//console.log('I am required '+id);
+				
+				//the first <td> contains the element we are interested in
+				var firstTD = $('td:first', $(this));
+								
+				//the td's class identifies its type				
+				switch(firstTD.attr('class'))
+				{
+					case 'metadata_textbox':
+						var val = $('input:text[name='+id+']').val();
+						
+						if(val == null || val == undefined || val == '' || val == 'no value')
+						{
+							//TODO: mark in UI as not done
+							atLeastOneRequiredNotDone = true;
+						}
+					break;
+					
+					case 'metadata_date':
+						var val = $('input:text[name='+id+']').val();
+						
+						if(val == null || val == undefined || val == '' || val == 'no value')
+						{
+							//TODO: mark in UI as not done
+							atLeastOneRequiredNotDone = true;
+						}
+					break;
+					
+					case 'metadata_tree':						
+						var val = $('input:radio[name='+id+']:checked').val();
+						
+						if(val == null || val == undefined)
+						{
+							//TODO: mark in UI as not done
+							atLeastOneRequiredNotDone = true;
+						}
+					break;
+					
+					case 'metadata_multicheckselect':
+						//array to contain all the selected values
+						var vals = new Array();
+						
+						$('input:checkbox[name="'+id+'[]"]:checked').each(function()
+						{
+						    vals.push($(this).val());
+						});
+						
+						if (vals.length == 0)
+						{
+							//TODO: mark in UI as not done
+							atLeastOneRequiredNotDone = true;
+						}
+					break;
+					
+					case 'metadata_multilistselect':
+						//array to contain all the selected values
+						var vals = new Array();
+						
+						$('select[name="'+id+'[]"] option:selected').each(function()
+						{
+						    vals.push($.trim($(this).val()));
+						});
+						
+						if (vals.length == 0)
+						{
+							atLeastOneRequiredNotDone = true;
+						}
+						else if (vals.length == 1 && vals[0] == 'no value')
+						{
+							atLeastOneRequiredNotDone = true;
+						}
+					break;
+					case 'metadata_singleselect':						
+						//var val = $('#singleselect_'+id).val();
+						var val = $('select[name='+id+']').val();
 
-		var form = $('form', self);
-		var action = form.attr( 'action' );
-
-		// This is needed for rails to identify the request as json
-		if( opts.dataType === 'json' ) {
-			action = action + '.json';
+						if(val == null || val == undefined || val == '' || val == 'no value')
+						{
+							//TODO: mark in UI as not done
+							atLeastOneRequiredNotDone = true;
+						}						
+					break;
+					
+					case 'metadata_textarea':
+						var val = jQuery('textarea[name='+id+']').val();
+						
+						if(val == null || val == undefined || val == '' || val == 'no value')
+						{
+							//TODO: mark in UI as not done
+							atLeastOneRequiredNotDone = true;
+						}
+						
+						
+					break;
+					case 'metadata_htmleditor':
+						var val = jQuery('#'+id).val();	//document.getElementById(id).value;
+						
+						if(val == null || val == undefined || val == 'no value')
+						{
+							//TODO: mark in UI as not done
+							atLeastOneRequiredNotDone = true;
+						}
+						
+					break;
+				}
+				
+				//don't do this as need to mark each field that wasn't complete
+				/*if(atLeastOneRequiredNotDone)
+				{
+					return false;
+				}*/
+			});
+			
+			
+			
 		}
-
-		// Generate the params
-		var params;
-		if( opts.globalSave ) {
-			params = $( 'form', '.editable' ).serialize();
-		} else {
-			params = form.serialize();
+		
+		//if there is even one required field missing, we need to stop the save
+		if(atLeastOneRequiredNotDone)
+		{
+			return false;
 		}
-
-		// PUT the form and update the child elements
-		$.post( action, params, function( data, textStatus ) {
-			// Parse the data if necessary
-			data = $.parseJSON( data ) ? $.parseJSON( data ) : data;
-
-			// Revert to original text
-			if( opts.globalSave ) {
-				$.each( $('.editable'), function( i, value ) {
-					$(value).html( $.fn.editableSet.globals.reversions[i] ).removeClass( 'active' );
-					value.editing = false;
-				});
-			} else {
-				$(self).html( self.revert );
-				$(self).removeClass( 'active' );
+		else
+		{
+			var form = $('form', self);
+			var action = form.attr( 'action' );
+	
+			// This is needed for rails to identify the request as json
+			if( opts.dataType === 'json' ) {
+				action = action + '.json';
 			}
-
-			var spans;
+	
+			// Generate the params
+			var params;
 			if( opts.globalSave ) {
-				$.each( $('.editable'), function(i, editable) {
-					spans = $('span[data-name]', editable);	
+				params = $( 'form', '.editable' ).serialize();
+			} else {
+				params = form.serialize();
+			}
+	
+			// PUT the form and update the child elements
+			$.post( action, params, function( data, textStatus ) {
+				// Parse the data if necessary
+				data = $.parseJSON( data ) ? $.parseJSON( data ) : data;
+	
+				// Revert to original text
+				if( opts.globalSave ) {
+					$.each( $('.editable'), function( i, value ) {
+						$(value).html( $.fn.editableSet.globals.reversions[i] ).removeClass( 'active' );
+						value.editing = false;
+					});
+				} else {
+					$(self).html( self.revert );
+					$(self).removeClass( 'active' );
+				}
+	
+				var spans;
+				if( opts.globalSave ) {
+					$.each( $('.editable'), function(i, editable) {
+						spans = $('span[data-name]', editable);	
+						$.isFunction( opts.repopulate ) && opts.repopulate.call( self, spans, data, opts );
+					});
+				} else {
+					spans = $('span[data-name]', self);
 					$.isFunction( opts.repopulate ) && opts.repopulate.call( self, spans, data, opts );
-				});
-			} else {
-				spans = $('span[data-name]', self);
-				$.isFunction( opts.repopulate ) && opts.repopulate.call( self, spans, data, opts );
-			}
-
-			// afterSave Callback			
-			$.isFunction( opts.afterSave ) && opts.afterSave.call( self, data, textStatus );
-
-		}, 
-		opts.dataType, 
-
-		// onError
-		function( xhr, status, error ) {
-		self.editing = true;
-
-		// Reactivate the fields
-		$(':input', self).attr( 'disabled', false );
-
-		// onError callback
-		$.isFunction( opts.onError ) && opts.onError.call( self, xhr, status );
-		});
+				}
+	
+				// afterSave Callback			
+				$.isFunction( opts.afterSave ) && opts.afterSave.call( self, data, textStatus );
+	
+			}, 
+			opts.dataType, 
+	
+			// onError
+			function( xhr, status, error ) {
+			self.editing = true;
+	
+			// Reactivate the fields
+			$(':input', self).attr( 'disabled', false );
+	
+			// onError callback
+			$.isFunction( opts.onError ) && opts.onError.call( self, xhr, status );
+			});
+			
+			return true;
+		}
 
 	};
 	
@@ -169,9 +307,11 @@
 			type	: "submit",
 			value : "Save",
 			click : function() {
-			save( self );
-			$(':input', self).attr( 'disabled', true );
-			return false;
+				if (save( self ))
+				{
+					$(':input', self).attr( 'disabled', true );
+				}
+				return false;
 			}
 		}).addClass( 'form_submit' ) );
 		
@@ -180,9 +320,9 @@
 			type	: "button",
 			value : "Cancel",
 			click : function() {
-			cancel( self );
-			$(':input', self).attr( 'disabled', true );
-			return false;
+				cancel( self );
+				$(':input', self).attr( 'disabled', true );
+				return false;
 			}
 		}).addClass( 'form_cancel' ) );
 							 
@@ -194,7 +334,7 @@
 			
 			// Pass each of the span attributes to the attrs object
 			$.each( span.attributes, function(i) {
-			attrs[span.attributes[i].name] = span.attributes[i].value;
+				attrs[span.attributes[i].name] = span.attributes[i].value;
 			});
 			
 			// Grab the value from the span's html
@@ -206,7 +346,7 @@
 			
 			// If the specified type exists...proceed
 			if( $.editableSet.types[type] ) {
-			$.editableSet.types[type].element( span, attrs );
+				$.editableSet.types[type].element( span, attrs );
 			}
 			
 		});
@@ -224,18 +364,18 @@
 		
 		// Save if pressing cmd/ctrl + s
 		$(window).bind( 'keydown.editableSet', function(e) {
-		if( e.keyCode == 83 && (e.ctrlKey || e.metaKey) ) {
-			e.preventDefault();
-			save( self );
-		}
+			if( e.keyCode == 83 && (e.ctrlKey || e.metaKey) ) {
+				e.preventDefault();
+				save( self );
+			}
 		});
 				 
 		// Cancel if pressing esc
 		$(window).bind( 'keydown.editableSet', function(e) {
-		if( e.keyCode == 27 ) {
-			e.preventDefault();
-			cancel( self );
-		}
+			if( e.keyCode == 27 ) {
+				e.preventDefault();
+				cancel( self );
+			}
 		});
 	});	
 	};
@@ -247,20 +387,20 @@
 	
 	$.fn.editableSet.attributor = function( newObject, attributes ) {
 		
-	$.each( attributes, function( name, value ) {
-		var attrName = /^data-/.test(name) ? name.substr(5) : name;
-		newObject[0].setAttribute( attrName, value ); // substr omits the 'data-' portion of the attribute
-	});
-	
-	// For the select menu prompt
-	var prompt = attributes['data-prompt'];
-	if( prompt ) {
-		newObject.prepend( $('<option />', {
-		value : '',
-		text	: prompt
-		}) );			
-	}
-	return newObject;
+		$.each( attributes, function( name, value ) {
+			var attrName = /^data-/.test(name) ? name.substr(5) : name;
+			newObject[0].setAttribute( attrName, value ); // substr omits the 'data-' portion of the attribute
+		});
+		
+		// For the select menu prompt
+		var prompt = attributes['data-prompt'];
+		if( prompt ) {
+			newObject.prepend( $('<option />', {
+			value : '',
+			text	: prompt
+			}) );			
+		}
+		return newObject;
 	};
 	
 	
@@ -269,25 +409,25 @@
 	// ======================================================
 	
 	$.fn.editableSet.extractTextAndValue = function( options, option ) {
-	var textAndValue = {};
-	
-	// First, see if it's an array
-	if( options.constructor === Array ) {
-		// Then, see if it's a two-level multidimensional array
-		if( options[0].constructor === Array ) {
-		textAndValue.value = options[option][1];
-		textAndValue.text = options[option][0];
-		} else { // Assume it's a single-dimensional array
-		textAndValue.value = options[option];
-		textAndValue.text = options[option];
+		var textAndValue = {};
+		
+		// First, see if it's an array
+		if( options.constructor === Array ) {
+			// Then, see if it's a two-level multidimensional array
+			if( options[0].constructor === Array ) {
+			textAndValue.value = options[option][1];
+			textAndValue.text = options[option][0];
+			} else { // Assume it's a single-dimensional array
+			textAndValue.value = options[option];
+			textAndValue.text = options[option];
+			}
+		} else { // Assume it's a hash
+			textAndValue.value = option;
+			textAndValue.text = options[option];
 		}
-	} else { // Assume it's a hash
-		textAndValue.value = option;
-		textAndValue.text = options[option];
-	}
-	
-	// Return the object { text: value }
-	return textAndValue;
+		
+		// Return the object { text: value }
+		return textAndValue;
 	};
 	
 	
@@ -353,18 +493,28 @@
 		
 		textarea: {
 			element : function(object, attrs) {	 
+				var val = '';	
+				if (attrs['data-value-id'] != null)
+				{
+					val = $('#'+attrs['data-value-id']).text();
+					//hide the 'value' span
+					$('#'+attrs['data-value-id']).hide();
+				}
+				else
+				{
+					val = $.trim(attrs.value);	//$.trim($('span#'+attrs['data-name']).text());
+				}
 				// Clean up the attributes
 				delete attrs['data-type'];
 					 
 				var newObject = $.fn.editableSet.attributor( $('<textarea />'), attrs );
-				newObject.text( $.trim(attrs.value) );			
+				newObject.text( val );			
 				$(object).replaceWith( newObject );
 			}
 		},
 		
 		checkbox: {
 			element : function(object, attrs) {
-				//console.dir(attrs);
 				var val = '';
 				
 				if (attrs['data-value-id'] != null)
@@ -377,15 +527,6 @@
 				{
 					val = $.trim(attrs.value);
 				}
-				
-				//var label = attrs['data-label'];
-				//console.log('checkbox label '+header);
-				
-				/*var id = attrs['id'].substring(0, attrs['id'].indexOf('_'));
-				//console.log('checkbox id '+id);
-				//hide the 'value' span
-				$('#value_'+id).hide();
-				var val = $('#value_'+id).text();*/
 				
 				attrs['data-checked_value'] = attrs['data-checked_value'] || "true";
 				//attrs['data-unchecked_value'] = attrs['data-unchecked_value'] || "false";
@@ -409,35 +550,18 @@
 				attrs.value = attrs['data-checked_value'];
 				
 				var newObject = $.fn.editableSet.attributor( $('<input />'), attrs );
-				
-				
-				
+
 				$(object).replaceWith( newObject );
 				
-				//if (label !== '') {
 				newObject.before(attrs['data-checked_value']);
-				//}
-				
-				/////////////////////////
-				/*//ul.insertAfter($(object));
-				if (header !== '') {
-					
-					//ul.wrap('<li class="treenode">'+header+'</li>');
-				}
-						
-				// Remove the original span
-				//$(object).remove(); */
-				
+								
 				// Now add our hidden input (rails style), so that we can send negative values as well
 				//$( '<input />', { type: 'hidden', value: attrs['data-unchecked_value'], name: attrs['data-name'] } ).insertBefore( newObject );
 			}
 		},
 		
 		select: {
-			element : function(object, attrs) { 				
-				//console.log('select');
-				//console.dir(attrs);
-				
+			element : function(object, attrs) {				
 				var val = '';
 				
 				if (attrs['data-value-id'] != null)
@@ -460,8 +584,6 @@
 				}
 				
 				var options = JSON.parse(dataOptions);
-				
-				//console.dir(options);
 				
 				//strip all whitespace!
 				var selectedValue = val;	//$.trim(attrs.value);
@@ -489,14 +611,7 @@
 					}
 				}			
 				})();
-				
-				//now select the selected (jQuery NOT working!)
-				/*for (var idx = 0; idx < newObject[0].options.length; idx++) {
-				if (newObject[0].options[idx].text == selectedValue) {
-					newObject[0].selectedIndex = idx;
-				}
-				}*/
-				
+
 				$(object).replaceWith( newObject );
 					
 				// Apply the +selected+ attribute;
@@ -515,12 +630,10 @@
 		
 		radio: {
 			element : function(object, attrs) {		
-				//console.dir(attrs);			
 				var val = '';	
 				if (attrs['data-value-id'] != null)
 				{
 					val = $('#'+attrs['data-value-id']).text();
-					//console.log('radio value '+val);
 					//hide the 'value' span
 					$('#'+attrs['data-value-id']).hide();
 				}
@@ -550,9 +663,7 @@
 				delete attrs['data-options'];
 				delete attrs['data-header'];
 				
-				var originalValue = val;	//attrs.value;
-				//console.log('originalValue '+$.trim(attrs.value));
-				//console.log('originalValue '+originalValue);
+				var originalValue = val;
 				var originalId = attrs['data-name'].replace( /\[|\]/g, '_' );
 						 
 				var ul = jQuery('<ul/>');
@@ -597,13 +708,6 @@
 				}
 				
 				})();
-				
-				var depth = parseInt(attrs['data-depth']);
-				console.log('depth '+depth);
-				for (var i=1; i < depth; i++) {
-					console.log('wrapping '+i);
-					ul.wrap('<ul><li class="leafnode"/></ul>');
-				}
 				
 				ul.insertAfter($(object));
 				if (header !== '') {

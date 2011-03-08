@@ -2,6 +2,7 @@
 
 <!--<link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/2.8.2r1/build/button/assets/skins/sam/button.css">-->
 {$context->oPage->requireJSResource('thirdpartyjs/yui2/yahoo-dom-event.js')}
+{$context->oPage->requireCSSResource('resources/css/kt-treewidget.css')}
 
 <!--<script type="text/javascript" src="http://yui.yahooapis.com/2.8.2r1/build/container/container_core-min.js"></script>
 <script type="text/javascript" src="http://yui.yahooapis.com/2.8.2r1/build/menu/menu-min.js"></script>

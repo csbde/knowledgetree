@@ -1,120 +1,8 @@
-// jQuery(document).ready(function() {
-jQuery(function() {
-	//add the "editable" class to the parent's div!
-	//jQuery('.detail_fieldset').parent().addClass('editablemetadata');
+jQuery(function() 
+{	
+	setDocumentTypeEditable();
 	
-	jQuery('.documenttype').editableSet({
-		action: 'update.php',
-		//dataType: 'json',
-		onSave: function(){
-			 //console.log('after save documentidembedded: '+jQuery('#documentidembedded').html());
-			 //jQuery('.editablemetadata').attr('rel', 'updateTest.php?documentID='+jQuery('#documentidembedded').html());
-			 
-			//console.dir(jQuery('#documentTypeID'));
-			//console.log(jQuery('#documentTypeID option:selected').val());
-			//jQuery('.documenttype').attr('rel', 'update.php?documentID='+jQuery('#documentTypeID option:selected').val());
-		},
-		repopulate: function(){},
-		afterSave: function(data, status){
-			//here we need to reset the document fields to reflect the new document type
-		
-			//update the Document Type span text
-			jQuery('#documentTypeID').html(data.success.documentTypeName);
-			
-			//reset the document fields to reflect the new document type
-			jQuery('.editablemetadata').empty();
-			jQuery('.editablemetadata').remove();
-
-			//create the new editable div
-			var editableDiv = jQuery('<div>').addClass('editablemetadata');
-			//NB: set its rel attribute because this is used as the "action" url
-			editableDiv.attr('rel', 'persistMetadata.php?documentID='+jQuery('#documentidembedded').html());
-			
-			//create div for each fieldset
-			jQuery.each(data.success.metadata, function(index, fieldset)
-			{
-				var fieldsetDiv = jQuery('<div>').addClass('detail_fieldset');
-				var header = jQuery('<h3>').text(fieldset.name).attr('title', fieldset.description);
-				fieldsetDiv.append(header);
-
-				//create the div to contain the fields
-				var table = jQuery('<table>').addClass('metadatatable').attr('cellspacing', '0').attr('cellpadding', '5');
-			
-				var counter = 0;
-				
-				//now create each field's widget
-				jQuery.each(fieldset.fields, function(index, field)
-				{
-					var tableRow = jQuery('<tr>').addClass(counter++%2==1 ? 'odd' : 'even');
-					if (counter == 1)
-					{
-						tableRow.addClass('first');
-					}
-
-					var tableHeader = jQuery('<th>').text(field.name);
-					tableHeader.attr('title', field.description);
-					tableRow.append(tableHeader);
-					
-					var span = getSpan(field);
-
-					var td = jQuery('<td>');
-	
-					td.append(span);
-
-					tableRow.append(td);
-	
-					table.append(tableRow);
-	
-				});
-
-				fieldsetDiv.append(table);
-	
-				editableDiv.append(fieldsetDiv);
-			});
-			
-			jQuery('.documenttype').after(editableDiv);
-			
-			jQuery('.editablemetadata').editableSet({
-				action: 'persistMetadata.php',
-				onSave: function(){
-					//console.log('editablemetadata onSave');
-					//console.log('here I am');
-					//jQuery('.editablemetadata').attr('rel', 'updateTest.php?documentID='+jQuery('#documentidembedded').html());
-					
-					//console.dir(jQuery('#documentTypeID'));
-					//console.log(jQuery('#documentTypeID option:selected').val());
-					//jQuery('.documenttype').attr('rel', 'update.php?documentID='+jQuery('#documentTypeID option:selected').val());
-				},
-				afterSave: function(data, status){
-				 	//here we need to reset the document fields to reflect the new document type
-				 	
-					//console.log('afterSave editablemetadata');
-					//console.dir(data);
-					
-					updateValues(data, status);
-				}
-		 	});
-	 	}
-	});
-	
-	jQuery('.editablemetadata').editableSet({
-		action: 'update.php',
-		onSave: function(){
-			//console.log('editablemetadata onSave');
-			//console.dir(jQuery('#documentTypeID'));
-			//console.log(jQuery('#documentTypeID option:selected').val());
-			//jQuery('.documenttype').attr('rel', 'update.php?documentID='+jQuery('#documentTypeID option:selected').val());
-		},
-		afterSave: function(data, status){
-			//here we need to populate the fields with the new values
-			//console.dir(data);
-			
-			//console.log('afterSave');
-			//console.dir(data);
-			
-			updateValues(data, status);
-		}
-	}); 
+	setMetadataEditable();
 	 
 	 jQuery('.more').click(function() {
 		var slider = jQuery('.slide');
@@ -133,63 +21,67 @@ jQuery(function() {
 		});
 	});
 
-	function updateValues(data, status) {
-		//console.log('updateValues');
-
+	//populate the saved values in the form	
+	function updateValues(data, status) 
+	{
 		jQuery.each(data.success.fields, function(index, field)
-		{	
-			//console.log(field.control_type+' '+field.value);
-
+		{
 			switch(field.control_type)
 			{
 				case 'string':
 					jQuery('#value_'+field.fieldid).text(field.value);
-					//jQuery('#field_'+field.fieldid).html(field.value);
 				break;
 				case 'lookup':
 					jQuery('#value_'+field.fieldid).text(field.value);
-					//jQuery('#field_'+field.fieldid).html(field.value);
 				break;
 				case 'tree':
-					//console.log('about to update tree with '+field.value)
+					jQuery('#value_'+field.fieldid).text(field.value);
+				break;
+				case 'large text':
+					if(field.options.ishtml)
+					{
+						//strip all html tags
+						jQuery('#value_'+field.fieldid).text(field.value.replace(/<\/?[a-z][a-z0-9]*[^<>]*>/ig, ""));
+					}
+					else
+					{
+						jQuery('#value_'+field.fieldid).text(field.value);
+					}
+				break;
+				case 'date':
 					jQuery('#value_'+field.fieldid).text(field.value);
 				break;
 				case 'multiselect':
-					//console.log(field.options.type+' '+field.control_type+' '+field.value);
 					if(field.options.type == 'multiwithlist')
 					{
 						jQuery('#value_'+field.fieldid).text(field.value);
 					}
 					else if(field.options.type == 'multiwithcheckboxes')
 					{
-						//if(field.value != 'no value')
-						//{
-							//console.log(field.options.type+' '+field.control_type+' '+field.value);
 						jQuery('#value_'+field.fieldid).text(field.value);
-							//jQuery('#field_'+field.fieldid).append(field.value);
-							//jQuery('#'+field.fieldid+'_'+field.value).parent().text(field.value);
-						//}
 					}
 				break;
 			}
 		});
 	 };
-	 	 
-	 //here we assemble each widget
-	 function getSpan(field) {		
-		var span = null;
+	 
+	 //assemble each widget required by jEditableSet, and wrap it in a <td>
+	 function getTableCell(field)
+	 {
+	 	var span = null;
 		
+	 	var classType = '';
+	 	
 		switch(field.control_type)
 		{
 			case 'string':
-				dataType = 'text';
+				classType = 'metadata_textbox';
+				var dataType = 'text';
 				
 				span = jQuery('<span>').addClass('descriptiveText').attr('data-name', field.fieldid).attr('data-type', dataType).attr('data-value-id', 'value_'+field.fieldid);
 			break;
-			case 'lookup':
-				//console.log('lookup');
-				//console.dir(field);
-				
+			case 'lookup':				
+				classType = 'metadata_singleselect';
 				var dataType = 'select';
 				var dataOptions = '';
 				
@@ -212,13 +104,18 @@ jQuery(function() {
 				}
 			break;
 			case 'large text':
-				//TODO: HTML field
+				classType = 'metadata_textarea';
 				var dataType = 'textarea';
+				if(parseInt(field.options.ishtml))
+				{
+					type = 'metadata_htmleditor';
+					var dataType = 'htmleditor';
+				}
 				
 				span = jQuery('<span>').addClass('descriptiveText').attr('data-name', field.fieldid).attr('data-type', dataType).attr('data-value-id', 'value_'+field.fieldid);
-				//span.text(field.value == null ? 'no value' : field.value);
 			break;
-			case 'tree':			
+			case 'tree':
+				classType = 'metadata_tree';
 				var dataType = 'tree';
 				var dataOptions = '';
 				
@@ -229,6 +126,7 @@ jQuery(function() {
 			case 'multiselect':
 				if(field.options.type == 'multiwithlist')
 				{
+					classType = 'metadata_multilistselect';
 					var dataType = 'multiselect';
 					var dataOptions = '';
 					
@@ -251,7 +149,8 @@ jQuery(function() {
 					}
 				}
 				else if(field.options.type == 'multiwithcheckboxes')
-				{					
+				{
+					classType = 'multiwithcheckboxes';
 					var datatype = 'checkbox';
 					
 					if (field.selection && field.selection.length > 0)
@@ -268,19 +167,154 @@ jQuery(function() {
 					}
 				}
 			break;
-			/*case 'date':
-				dataType = 'datepicker';
-			break;*/
-			default:
-				dataType = 'text';
+			case 'date':
+				classType = 'metadata_date';
+				var dataType = 'datepicker';
+				span = jQuery('<span>').addClass('descriptiveText').attr('data-name', field.fieldid).attr('data-type', dataType).attr('data-value-id', 'value_'+field.fieldid);
+			break;
+			/*default:
+				type = 'metadata_textbox';
+				var dataType = 'text';*/
 		}
 		
 		var valueSpan = jQuery('<span id="value_'+field.fieldid+'">no value</span>');
 		
 		span.append(valueSpan);
-		 
-		return span;
-	 };
+		
+		var tableCell = jQuery('<td>');
+		
+		tableCell.addClass(classType);
+		
+		tableCell.append(span);
+		
+		return tableCell;
+	 }
+	 
+	 function setDocumentTypeEditable()
+	 {
+	 	jQuery('.documenttype').editableSet({
+			action: 'update.php',
+			onCancel: function(){
+				setMetadataEditable();
+			},
+			onError: function(){
+				setMetadataEditable();
+			},	
+			onSave: function(){
+			},
+			repopulate: function(){},
+			afterSave: function(data, status){
+				//here we need to reset the document fields to reflect the new document type
+			
+				//update the Document Type span text
+				jQuery('#documentTypeID').html(data.success.documentTypeName);
+				
+				//reset the document fields to reflect the new document type
+				jQuery('.editablemetadata').empty();
+				jQuery('.editablemetadata').remove();
+	
+				//create the new editable div
+				var editableDiv = jQuery('<div>').addClass('editablemetadata');
+				//NB: set its rel attribute because this is used as the "action" url
+				editableDiv.attr('rel', 'persistMetadata.php?documentID='+jQuery('#documentidembedded').html());
+				
+				//create div for each fieldset
+				jQuery.each(data.success.metadata, function(index, fieldset)
+				{
+					var fieldsetDiv = jQuery('<div>').addClass('detail_fieldset');
+					var header = jQuery('<h3>').text(fieldset.name).attr('title', fieldset.description);
+					fieldsetDiv.append(header);
+	
+					//create the div to contain the fields
+					var table = jQuery('<table>').addClass('metadatatable').attr('cellspacing', '0').attr('cellpadding', '5');
+				
+					var counter = 0;
+					
+					//now create each field's widget
+					jQuery.each(fieldset.fields, function(index, field)
+					{						
+						var tableRow = jQuery('<tr>').addClass(counter++%2==1 ? 'odd' : 'even');
+						if (counter == 1)
+						{
+							tableRow.addClass('first');
+						}
+						
+						//is the field required?
+						if(field.required)
+						{
+							tableRow.addClass('required');
+						}
+						
+						tableRow.attr('id', 'metadatafield_'+field.fieldid);
+	
+						var tableHeader = jQuery('<th>').text(field.name);
+						tableHeader.attr('title', field.description);
+						tableRow.append(tableHeader);
+						
+						//var span = getSpan(field);
+	
+						//var td = jQuery('<td>');
+		
+						//td.append(span);
+						
+						var tableCell = getTableCell(field);
+	
+						tableRow.append(tableCell);
+		
+						table.append(tableRow);
+		
+					});
+	
+					fieldsetDiv.append(table);
+		
+					editableDiv.append(fieldsetDiv);
+				});
+				
+				jQuery('.documenttype').after(editableDiv);
+				
+				//metadata can be editable again
+				setMetadataEditable();
+		 	}
+		});
+		
+		//if document type is being edited, don't want metadata to be editable!
+		jQuery('.documenttype').dblclick(function() {
+			jQuery('.editablemetadata').unbind();
+		});
+	 }
+	 
+	 function setMetadataEditable()
+	 {
+	 	jQuery('.editablemetadata').editableSet({
+			action: 'persistMetadata.php',
+			requiredClass: 'required',
+			onCancel: function(){
+				setDocumentTypeEditable();
+			},
+			onError: function() {
+				setDocumentTypeEditable();
+			},
+			onSave: function(){
+				var requiredDone = false;	//checkRequiredFieldsDone();
+				
+				if (!requiredDone)
+				{
+					
+				}
+			},
+			afterSave: function(data, status){
+				//now pouplate the just-saved values
+				updateValues(data, status);
+				//document type can be editable again
+				setDocumentTypeEditable();
+			}
+		});
+		
+		//if metadata is being edited, don't want document type to be editable!
+		jQuery('.editablemetadata').dblclick(function() {
+			jQuery('.documenttype').unbind();
+		}); 
+	 }
 	 
 });
  

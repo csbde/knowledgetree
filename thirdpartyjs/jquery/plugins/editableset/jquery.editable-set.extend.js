@@ -80,12 +80,6 @@ jQuery.editableSet.addInputType('tree', {
 				
 		var options = JSON.parse(attrs['data-options']);
 		
-		//console.dir(options);
-		
-		/*var test = '{"Root": {"fields":["T3", "M3", {"SC1":["T1", "M1"]}]}}';//, "cat": [}}';	//, ["SC1":["T1", "M1"]], "SC2":["T2", "M2", ["SubSC2": ["T4", "M4"]]]]}}';
-		console.log(test);
-		var options = JSON.parse(test);*/
-		
 		var html = buildTree(attrs['data-name'], options, '');
 		
 		html = '<ul class="kt_treenodes">'+html+'</ul>';
@@ -106,7 +100,7 @@ function buildTree(fieldid, data, html)
 	{		
 		if (data.treename.toLowerCase() != 'root')
 		{
-			html += '<li class="treenode">'+data.treename;	//'</ul><ul>'+html;	//+'</ul>';
+			html += '<li class="treenode inactive"><a onclick="toggleElementClass(\'active\', this.parentNode);toggleElementClass(\'inactive\', this.parentNode);" class="pathnode">'+data.treename+'</a>';	//'</ul><ul>'+html;	//+'</ul>';
 		}
 		
 		html += '<ul>';
@@ -123,77 +117,117 @@ function buildTree(fieldid, data, html)
 		html += '<li class="leafnode"><input type="radio" value="'+data.name+'" name="'+fieldid+'"/>'+data.name;	//span class="descriptiveText" data-name="'+fieldid+'" data-value-id="value_'+fieldid+'" data-options=\'['+value+']\'/></li>';
 	}
 	
-	/////////////
-	
-	/*jQuery.each(data, function(index, value)
-	{
-		console.log('index '+index);
-		//console.log('data length '+data.length);
-		//if it is an object, recurse
-		if (typeof value == 'object' && typeof value !== 'function')
-		{
-			//console.dir(value);
-			html = buildTree(fieldid, value, html);
-		}
-		else
-		{
-			if (index == 'tree')
-			{
-				if (value.toLowerCase() != 'root')
-				{
-					//console.log('I am a TREE '+value);
-					html += '<li class="treenode">'+value;	//'</ul><ul>'+html;	//+'</ul>';
-				}
-				
-			}
-			else //if (index == 'fields')
-			{ 
-				if (index == 'fields')
-					html += '<ul>';
-				
-				//console.log('I am a FIELD '+value);
-				//html += '<li clas="leafnode"><span class="descriptiveText" data-name="'+fieldid+'" data-value-id="value_'+fieldid+'" data-options=\'['+value+']\'/></li>';
-				html += '<li clas="leafnode"><input type="radio" value="'+value+'"	name="'+fieldid+'"/>'+value;	//span class="descriptiveText" data-name="'+fieldid+'" data-value-id="value_'+fieldid+'" data-options=\'['+value+']\'/></li>';
-				
-				if (index+1 == data.length)
-					html += '</ul>';
-			}
-		}
-	});*/
-	
 	return html;
 };
 
 jQuery.editableSet.addInputType('datepicker', {
 	 /* create input element */
-	element : function(settings, original) {
-		console.log('datepicker');
-		var input = jQuery('<input>');
-		jQuery(this).append(input);
-		//jQuery(input).css('opacity', 0.01);
-		return(input);
-	},
-	/* attach 3rd party plugin to input element */
-	plugin : function(settings, original) {
-		/* Workaround for missing parentNode in IE */
-		var form = this;
-		settings.onblur = 'cancel';
-		jQuery("input", this)
-		.datePicker({createButton:false})
-		.bind('click', function() {
-			//jQuery(this).blur();
-			jQuery(this).dpDisplay();
-			return false;
-		})
-		.bind('dateSelected', function(e, selectedDate, jQuerytd) {
-			jQuery(form).submit();
-		})
-		.bind('dpClosed', function(e, selected) {
-			
-			/* TODO: unneseccary calls reset() */
-			//jQuery(this).blur();
-		})
-		.trigger('change')
-		.click();
+	element : function(object, attrs) {		
+		var val = '';	
+		if (attrs['data-value-id'] != null)
+		{
+			val = jQuery('#'+attrs['data-value-id']).text();
+			//hide the 'value' span
+			jQuery('#'+attrs['data-value-id']).hide();
+		}
+		else
+		{
+			val = jQuery.trim($('span#'+attrs['data-name']).text());
+		}
+		
+		var datePicker = new Ext.form.DateField({
+	    	format: 'Y-m-d', //YYYY-MMM-DD
+	        width: 100,
+	        id: attrs['data-name'],
+	        //cls: 'ul_meta_fullField ul_meta_field_[id] date',
+	        enableKeyEvents: true,
+	        value: val,
+	        listeners: {
+	            'select': function(dateField, date){
+	        		try {
+				    	var month = parseInt(date.getMonth()) + 1;
+				    	if (month < 10) {
+				    		month = '0'+month;
+				    	}
+				    	var day = date.getDate();
+				    	if (day < 10) {
+				    		day = '0'+day;
+				    	}
+				    	var myDate = date.getFullYear() + '-' + month + '-' + day;
+	        		} catch (err) {
+	        		}
+				},
+				'valid': function(dateField) {
+					if (dateField.getValue() == 0) {
+					} else {
+					}
+				},
+				'invalid': function(dateField) {
+				},
+				'change': function(dateField, date) {
+					if (dateField.getValue() == 0) {
+					} else {
+					}
+				}
+	    	}
+   		});
+   	
+   		jQuery(object).replaceWith(jQuery('<span id="ph_'+attrs['data-name']+'"/>'));
+   	
+   		datePicker.render('ph_'+attrs['data-name']);
+	}
+});
+
+jQuery.editableSet.addInputType('htmleditor', {
+	 /* create input element */
+	element : function(object, attrs) {	
+		var val = '';	
+		if (attrs['data-value-id'] != null)
+		{
+			val = jQuery('#'+attrs['data-value-id']).text();
+			//hide the 'value' span
+			jQuery('#'+attrs['data-value-id']).hide();
+		}
+		else
+		{
+			val = jQuery.trim($('span#'+attrs['data-name']).text());
+		}
+		
+		var htmlEd = new Ext.form.HtmlEditor({
+	        width: 290,
+	        height: 200, 
+	        id: attrs['data-name'],
+	        //cls: 'ul_meta_fullField ul_meta_field_[id]',
+	        autoscroll: true,
+	        enableLinks: false,
+	        enableFont: false,
+			enableColors: false,
+			enableAlignments: false,
+			enableSourceEdit: false,
+			value:	val
+			/*listeners: {
+	            'sync': function(editor, text){
+			    	//kt.app.upload.getMetaItem(jQuery('#ul_meta_field_htmlEditor_[id]')).setMetaData('[id]', text);
+	
+					//ensure that not blank text
+	    			if([is_mandatory] == '1') {
+						//remove <br> and &nbsp;
+	    				var trimmed = text.replace(/(<br>)|&nbsp;/g, '').trim();
+	
+						if(requiredDone && trimmed.length == 0) {
+							requiredDone = false;
+							kt.app.upload.getMetaItem(jQuery('#ul_meta_field_htmlEditor_[id]')).registerRequiredFieldNotDone('ul_meta_field_[id]');
+						} else if(!requiredDone) {
+							requiredDone = true;
+							kt.app.upload.getMetaItem(jQuery('#ul_meta_field_htmlEditor_[id]')).registerRequiredFieldDone('ul_meta_field_[id]');
+						}
+	    			}
+				}
+	    	}*/
+	    });
+	   	
+	   	jQuery(object).replaceWith(jQuery('<span id="ph_'+attrs['data-name']+'"/>'));
+	   	
+	   	htmlEd.render('ph_'+attrs['data-name']);
 	}
 });
