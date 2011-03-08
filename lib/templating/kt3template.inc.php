@@ -130,6 +130,7 @@ class KTPage {
         	$this->requireThemeCSSResource('skins/kts_'.$oConfig->get('ui/morphTo').'/kt-morph.css');
         	$this->requireThemeCSSResource('skins/kts_'.$oConfig->get('ui/morphTo').'/kt-ie-morph.css', true);
         }
+        
         // IE only
         $this->requireCSSResource('resources/css/kt-ie-icons.css', true);
 
@@ -143,7 +144,7 @@ class KTPage {
 
         $aJS[] = 'thirdpartyjs/extjs/adapter/ext/ext-base.js';
         $aJS[] = 'thirdpartyjs/extjs/ext-all.js';
-        $aJS[] = 'thirdpartyjs/jquery/jquery-1.4.2.min.js';
+//        $aJS[] = 'thirdpartyjs/jquery/jquery-1.4.2.min.js';
         $aJS[] = 'thirdpartyjs/jquery/jquery-1.4.4.min.js';
         $aJS[] = 'thirdpartyjs/jquery/jquery_noconflict.js';
         $aJS[] = 'thirdpartyjs/jquery/plugins/urlparser/jquery.url.js';
