@@ -11,7 +11,7 @@
  *
  */
 
-require_once('../config/dmsDefaults.php');
+require_once('config/dmsDefaults.php');
 require_once(KT_LIB_DIR . '/users/User.inc');
 
 $query = KTUtil::arrayGet($_REQUEST, 'q');
