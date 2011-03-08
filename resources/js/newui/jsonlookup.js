@@ -274,38 +274,3 @@ function initJSONLookup(name, action) {
         _aLookupWidgets[name].initialize(name, action);
     }
 }
-
-jQuery(document).ready(function($) {
-    $("#users").tokenInput("/webservice/getUsers.php", {
-        // Alter the minChars value to determine how much the user must type before a search is initiated
-        minChars: 2,
-        prePopulate: null,
-        classes: {
-            tokenList: "token-input-list-facebook",
-            token: "token-input-token-facebook",
-            tokenDelete: "token-input-delete-token-facebook",
-            selectedToken: "token-input-selected-token-facebook",
-            highlightedToken: "token-input-highlighted-token-facebook",
-            dropdown: "token-input-dropdown-facebook",
-            dropdownItem: "token-input-dropdown-item-facebook",
-            dropdownItem2: "token-input-dropdown-item2-facebook",
-            selectedDropdownItem: "token-input-selected-dropdown-item-facebook",
-            inputToken: "token-input-input-token-facebook"
-        }
-    });
-    $("#groups_roles").selectInput(document.getElementById('select_members_avail'), {
-        prePopulate: null,
-        classes: {
-            tokenList: "token-input-list-facebook",
-            token: "token-input-token-facebook",
-            tokenDelete: "token-input-delete-token-facebook",
-            selectedToken: "token-input-selected-token-facebook",
-            highlightedToken: "token-input-highlighted-token-facebook",
-            dropdown: null,
-            dropdownItem: null,
-            dropdownItem2: null,
-            selectedDropdownItem: null,
-            inputToken: null
-        }
-    });
-});
