@@ -92,7 +92,8 @@ class KTCorePlugin extends KTPlugin {
 
         // Viewlets
         $this->registerAction('documentviewlet', 'KTWorkflowViewlet', 'ktcore.viewlets.document.workflow', 'KTDocumentViewlets.php');
-
+		$this->registerAction('documentviewlet', 'KTInlineEditViewlet', 'ktcore.viewlets.document.inline.edit', 'KTDocumentViewlets.php');
+		
         // Notifications
         $this->registerNotificationHandler('KTAssistNotification', 'ktcore/assist', 'KTAssist.php');
         $this->registerNotificationHandler('KTSubscriptionNotification', 'ktcore/subscriptions', KT_LIB_DIR . '/dashboard/Notification.inc.php');

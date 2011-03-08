@@ -1241,25 +1241,66 @@ class KTAPI {
 	*/
 	private function _load_metadata_tree($fieldid, $parentid=0)
 	{
-		$results = KTAPI::get_metadata_lookup($fieldid);
-		return $results;
-		/*
-		$sql = "SELECT id, name FROM metadata_lookup_tree WHERE document_field_id=$fieldid AND metadata_lookup_tree_parent=$parentid";
+		$sql = "(SELECT mlt.metadata_lookup_tree_parent AS parentid, ml.treeorg_parent AS treeid, mlt.name AS treename, ml.id AS id, ml.name AS fieldname
+				FROM metadata_lookup ml
+				INNER JOIN (metadata_lookup_tree mlt) ON (ml.treeorg_parent = mlt.id)
+				WHERE ml.disabled=0 AND ml.document_field_id=$fieldid)
+				UNION
+				(SELECT -1 AS parentid, 0 AS treeid, \"Root\" AS treename, ml.id AS id, ml.name AS fieldname
+				FROM metadata_lookup ml
+				LEFT JOIN (metadata_lookup_tree mlt) ON (ml.treeorg_parent = mlt.id)
+				WHERE ml.disabled=0 AND ml.document_field_id=$fieldid AND (ml.treeorg_parent IS NULL OR ml.treeorg_parent = 0))
+				ORDER BY parentid, id";
 		$rows = DBUtil::getResultArray($sql);
-		if (is_null($rows) || PEAR::isError($rows))
-		{
-			return new PEAR_Error(KTAPI_ERROR_INTERNAL_ERROR);
+		
+		$results = array();
+
+		if (sizeof($rows) > 0) {
+			$results = KTAPI::convertToTree($rows);
 		}
-		$results=array();
-		foreach ($rows as $row)
-		{
-			$result=array(
-				'name' => $row['name'],
-				'children' => load($fieldid, $row['id'])
-			);
-			$results[] = $result;
-		}
-		return $results;*/
+		
+		return $results;
+	}
+	
+	private function convertToTree(array $flat)
+	{
+		$idTree = 'treeid';
+		$idField = 'id';
+		$parentIdField = 'parentid';
+
+		$root = 0;
+
+	    $indexed = array();
+	    // first pass - get the array indexed by the primary id
+	   	foreach ($flat as $row) {
+        	$treeID = $row[$idTree];
+        	if (!isset($indexed[$treeID])) {
+        		$indexed[$treeID] = array('treeid' => $treeID,
+        									'parentid' => $row[$parentIdField],
+        									'treename' => $row['treename'],
+        									'type' => 'tree');//$row;
+	        	$indexed[$treeID]['fields'] = array();
+        	}
+
+	        $indexed[$treeID]['fields'][$row[$idField]] = array('fieldid' => $row[$idField],
+	        													'parentid' => $treeID,
+	        													'name' =>  $row['fieldname'],
+	        													'type' => 'field');
+
+	        if ($row[$parentIdField] < $root) {
+	        	$root = $row[$parentIdField];
+	        }
+	    }
+
+	    //second pass
+	    //$root = 0;
+	    foreach ($indexed as $id => $row) {
+	        $indexed[$row[$parentIdField]]['fields'][$id] =& $indexed[$id];
+	    }
+
+	    $results = array($root => $indexed[$root]);
+	    
+	    return $results;	//[-1]['fields'][0]['fields'];
 	}
 
 	/**
