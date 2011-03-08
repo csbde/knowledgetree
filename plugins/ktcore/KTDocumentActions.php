@@ -2050,6 +2050,8 @@ class KTDocumentWorkflowAction extends KTDocumentAction {
     }
     
     function do_startWorkflow() {
+    	$method = KTUtil::arrayGet($_REQUEST, 'method');
+    	if($method == 'ajax') return $this->do_ajax_startWorkflow();
         $oDocument =& $this->oValidator->validateDocument($_REQUEST['fDocumentId']);
         if (!empty($_REQUEST['fWorkflowId'])) {
             $oWorkflow =& $this->oValidator->validateWorkflow($_REQUEST['fWorkflowId']);
@@ -2063,6 +2065,23 @@ class KTDocumentWorkflowAction extends KTDocumentAction {
         }
 
         $this->successRedirectToMain(_kt('Workflow started'), array('fDocumentId' => $oDocument->getId()));
+        exit(0);
+    }
+    
+	function do_ajax_startWorkflow() {
+        $oDocument =& $this->oValidator->validateDocument($_REQUEST['fDocumentId']);
+        if (!empty($_REQUEST['fWorkflowId'])) {
+            $oWorkflow =& $this->oValidator->validateWorkflow($_REQUEST['fWorkflowId']);
+        } else {
+            $oWorkflow = null;
+        }
+
+        $res = KTWorkflowUtil::startWorkflowOnDocument($oWorkflow, $oDocument);
+        if (PEAR::isError($res)) {
+            $this->errorRedirectToMain($res->message, sprintf('fDocumentId=%s',$oDocument->getId()));
+        }
+
+		echo "Workflow Started";
         exit(0);
     }
 
