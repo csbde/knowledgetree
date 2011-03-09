@@ -1,0 +1,13 @@
+<h2>
+   {i18n}Alerts on Document{/i18n}
+</h2>
+<table>
+	{foreach item=alert from=$alerts}
+		<tr>
+			<td> <a href="action.php?kt_path_info=alerts.action.document.alert&fDocumentId={$documentId}">{$alert.alert_date} </a> </td>
+			<td></td>
+			<td> <a class="ktAction ktEdit" href="javascript:{ldelim}alerts.displayAction('{$documentId}');{rdelim}"></a> </td>
+			<td> <a class="ktAction ktDelete" href="javascript:{ldelim}alerts.deleteAction('{$alert.id}', '{$documentId}');{rdelim}"> </a> </td>
+		</tr>
+	{/foreach}
+</table>

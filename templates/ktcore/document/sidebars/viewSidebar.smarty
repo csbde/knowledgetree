@@ -1,0 +1,5 @@
+{foreach item=sidebar key=sideclass from=$sidebars}
+	<div id="sidebar_item" class={$sideclass}>
+		{$sidebar}
+	</div>
+{/foreach}

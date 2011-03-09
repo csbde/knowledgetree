@@ -238,8 +238,8 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
 
         $viewlet_data = implode(' ', $aViewlets);
         $viewlet_data = trim($viewlet_data);
-        $viewlet_data2 = implode(' ', $aViewlets2);
-        $viewlet_data2 = trim($viewlet_data2);
+//        $viewlet_data2 = implode(' ', $aViewlets2);
+//        $viewlet_data2 = trim($viewlet_data2);
 
         $content_class = 'view';
         if (!empty($viewlet_data)) {
@@ -269,7 +269,10 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
         $oDocumentTransaction = new DocumentTransaction($oDocument, 'Document details page view', 'ktcore.transactions.view');
         $oDocumentTransaction->create();
 
-        $documentBlocks = KTDocumentActionUtil::getDocumentActionsForDocument($this->oDocument, $this->oUser, 'documentblock');
+        $blocks = KTDocumentActionUtil::getDocumentActionsForDocument($this->oDocument, $this->oUser, 'documentblock');
+        $documentBlocks = isset($blocks[0]) ? $blocks[0] : array();
+        $sidebars = KTDocumentActionUtil::getDocumentActionsForDocument($this->oDocument, $this->oUser, 'documentsidebar');
+        $documentSidebars = isset($sidebars[0]) ? $sidebars[0] : array();
         
         $aTemplateData = array(
         	'doc_data' => array(
@@ -290,10 +293,11 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
 			'generic_fieldsets' => $generic_fieldsets,
         	'fieldsets' => $fieldsets,
 			'viewlet_data' => $viewlet_data,
-			'viewlet_data2' => $viewlet_data2,
+			//'viewlet_data2' => $viewlet_data2,
         	'hasNotifications' => false,
 			'fieldsetDisplayHelper' => $FieldsetDisplayHelper,
 			'documentBlocks' => $documentBlocks,
+			'documentSidebars' => $documentSidebars,
         );
 
         // Conditionally include live_preview

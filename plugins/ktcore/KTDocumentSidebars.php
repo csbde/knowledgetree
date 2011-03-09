@@ -1,5 +1,4 @@
 <?php
-
 /**
  * $Id$
  *
@@ -40,80 +39,72 @@
 require_once(KT_LIB_DIR . "/actions/documentviewlet.inc.php");
 require_once(KT_LIB_DIR . "/workflow/workflowutil.inc.php");
 require_once(KT_LIB_DIR . '/actions/documentaction.inc.php');
-require_once(KT_LIB_DIR . '/subscriptions/Subscription.inc');
-require_once(KT_LIB_DIR . '/subscriptions/subscriptions.inc.php');
+require_once(KT_PLUGIN_DIR . '/commercial/alerts/alertUtil.inc.php');
 
-class KTDocumentStatusBlock extends KTDocumentViewlet {
-    public $sName = 'ktcore.blocks.document.status';
+class KTDocumentSidebar extends KTDocumentViewlet {
+    public $sName = 'ktcore.blocks.document.sidebars';
 	public $_sShowPermission = 'ktcore.permissions.read';
 	
 	/**
-	 * Create an actions block
+	 * Create a sidebar block
 	 *
 	 * @return string
 	 */
-	public function getDocBlock() {
-		$this->oPage->requireJSResource('resources/js/newui/documents/blocks/blockActions.js');
-		$this->oPage->requireCSSResource('resources/css/newui/documents/blocks/blockActions.css');
+	public function getDocSideBar() {
+		$this->oPage->requireJSResource('resources/js/newui/documents/sidebars/sidebarActions.js');
+		$this->oPage->requireCSSResource('resources/css/newui/documents/sidebars/sidebarActions.css');
 		
-		$workflowState = $alertState = $subscribeState = 'disabled';
-
-        // Check if document has workflows
-        if ($this->hasWorkflow()) {
-        	$workflowState = 'enabled';
-        }
-        // Check if user is subscribed
-        if ($this->hasSubscriptions()) {
-        	$subscribeState = 'enabled';
-        }
-        // Check if document has alerts
-        if($this->hasAlerts()) {
-        	$alertState = 'enabled';
-        }
+        $sidebars['accounts_info'] = $this->getAccountInfo();
+        $sidebars['recently_viewed'] = $this->getRecentlyViewed();
+        $sidebars['current_alerts'] = $this->getCurrentAlerts();
         
-		$oTemplating =& KTTemplating::getSingleton();
-		$oTemplate = $oTemplating->loadTemplate('ktcore/document/blocks/viewActions');
+		$oTemplating = KTTemplating::getSingleton();
+		$oTemplate = $oTemplating->loadTemplate('ktcore/document/sidebars/viewSidebar');
         $aTemplateData = array(
               'context' => $this,
-              'workflowState' => $workflowState,
-              'alertState' => $alertState,
-              'subscribeState' => $subscribeState,
+              'sidebars' => $sidebars,
               'documentId' => $this->oDocument->getId(),
         );
         
         return $oTemplate->render($aTemplateData);
 	}
 	
-	/**
-	 * Check if the document in context has alerts
-	 *
-	 * @return boolean
-	 */
-	private function hasAlerts() {
-		$now = date('Y-m-d H:i:s');
-		$query = "SELECT id, alert_date FROM document_alerts WHERE document_id = {$this->oDocument->getId()} AND alert_date > '$now' LIMIT 1";
 
-        $results = DBUtil::getResultArray($query);
-        return !empty($results);
+	public function getAccountInfo() {
+		$oTemplating = KTTemplating::getSingleton();
+		$oTemplate = $oTemplating->loadTemplate('ktcore/document/sidebars/accountInfo');
+        $aTemplateData = array(
+              'context' => $this,
+              'documentId' => $this->oDocument->getId(),
+        );
+        
+        return $oTemplate->render($aTemplateData);
 	}
 	
-	/**
-	 * Check if the document in context is in transition
-	 *
-	 * @return boolean
-	 */
-	private function hasWorkflow() {
-		$result = KTWorkflowUtil::getTransitionsForDocumentUser($this->oDocument, $this->oUser);
-		return !empty($result);
+	public function getRecentlyViewed() {
+		$oTemplating = KTTemplating::getSingleton();
+		$oTemplate = $oTemplating->loadTemplate('ktcore/document/sidebars/recentlyViewed');
+        $aTemplateData = array(
+              'context' => $this,
+              'documentId' => $this->oDocument->getId(),
+        );
+        
+        return $oTemplate->render($aTemplateData);
 	}
 	
-	/**
-	 * Check if the document in context has subscriptions
-	 *
-	 * @return boolean
-	 */
-	private function hasSubscriptions() {
-        return Subscription::exists($this->oUser->getId(), $this->oDocument->getId(), SubscriptionEvent::subTypes('Document'));
+	private function getCurrentAlerts() {
+		$oTemplating = KTTemplating::getSingleton();
+		$oTemplate = $oTemplating->loadTemplate('ktcore/document/sidebars/alerts');
+		$alertUtil = new alertUtil();
+		$alerts = $alertUtil->getAlertByDocument($this->oDocument->getId());
+        $aTemplateData = array(
+			'context' => $this,
+			'alerts' => $alerts,
+			
+			'documentId' => $this->oDocument->getId(),
+        );
+        
+        return $oTemplate->render($aTemplateData);
 	}
 }
 ?>
