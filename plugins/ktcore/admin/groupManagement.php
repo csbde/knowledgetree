@@ -265,10 +265,10 @@ class KTGroupAdminDispatcher extends KTAdminDispatcher {
         }*/
 
         $assigned['users'] = array();
-        foreach ($initialUsers as $user) {
-            $name = $user->getName();
-            if (empty($name)) { $name = $user->getUserName(); }
-            $assigned['users'][] = "{id: '{$user->getId()}', name: '$name'}";
+        foreach ($initialUsers as $member) {
+            $name = $member->getName();
+            if (empty($name)) { $name = $member->getUserName(); }
+            $assigned['users'][] = "{id: '{$member->getId()}', name: '$name'}";
         }
 
         $jsonWidget = new KTJSONNewUiLookupWidget(_kt('Users'),
@@ -488,7 +488,37 @@ class KTGroupAdminDispatcher extends KTAdminDispatcher {
         $this->oPage->setBreadcrumbDetails(_kt('manage members'));
         $this->oPage->setTitle(sprintf(_kt('Manage members of %s'), $group->getName()));
 
-        $aMemberGroupsUnkeyed = $group->getMemberGroups();
+        $groups = array('null' => 'Select group');
+        $groupList = GroupUtil::listGroups();
+        foreach ($groupList as $subGroup) {
+            if ($group->getId() == $subGroup->getId()) { continue; }
+            $groups["group_{$subGroup->getId()}"] = $subGroup->getName();
+        }
+
+        $memberGroups = $group->getMemberGroups();
+
+        $assigned['groups_roles'] = array();
+        foreach ($memberGroups as $member) {
+            $assigned['groups_roles'][] = "{id: 'group_{$member->getId()}', name: '{$member->getName()}'}";
+        }
+
+        $jsonWidget = new KTJSONNewUiLookupWidget(_kt('Groups'),
+            _kt('Select the users which should be part of this group. Once you have added all the users that you require, press <strong>save changes</strong>.'),
+            'members', '',
+            $this->oPage,
+            false,
+            null,
+            null,
+            array(
+                'action' => 'getUsers',
+                'groups_roles' => $groups,
+                'assigned' => array(implode(',', $assigned['groups_roles'])),
+                'type' => 'groups',
+                'parts' => 'groups'
+            )
+        );
+
+        /*$aMemberGroupsUnkeyed = $group->getMemberGroups();
         $aMemberGroups = array();
         $aMemberIDs = array();
         foreach ($aMemberGroupsUnkeyed as $oMemberGroup) {
@@ -502,18 +532,18 @@ class KTGroupAdminDispatcher extends KTAdminDispatcher {
                           array('action'   => sprintf('getSubGroups&group_id=%d', $group->getID()),
                             'assigned' => $aMemberGroups,
                             'multi'    => 'true',
-                            'size'     => '8'));
+                            'size'     => '8'));*/
 
-        $oTemplating =& KTTemplating::getSingleton();
-        $oTemplate = $oTemplating->loadTemplate('ktcore/principals/groups_managesubgroups');
-        $aTemplateData = array(
-                'context' => $this,
-                'edit_group' => $group,
-                'widget' => $jsonWidget,
-                'old_search' => $old_search,
+        $templating =& KTTemplating::getSingleton();
+        $template = $templating->loadTemplate('ktcore/principals/groups_managesubgroups');
+        $templateData = array(
+            'context' => $this,
+            'edit_group' => $group,
+            'widget' => $jsonWidget,
+            'old_search' => $old_search,
         );
 
-        return $oTemplate->render($aTemplateData);
+        return $template->render($templateData);
     }
 
     function json_getSubGroups()
@@ -575,15 +605,52 @@ class KTGroupAdminDispatcher extends KTAdminDispatcher {
 
         $group = $this->getGroupFromRequest();
 
-        $groupAdded = KTUtil::arrayGet($_REQUEST, 'groups_items_added','');
+        /*$groupAdded = KTUtil::arrayGet($_REQUEST, 'groups_items_added','');
         $groupRemoved = KTUtil::arrayGet($_REQUEST, 'groups_items_removed','');
 
         $aGroupToAddIDs = explode(',', $groupAdded);
-        $aGroupToRemoveIDs = explode(',', $groupRemoved);
+        $aGroupToRemoveIDs = explode(',', $groupRemoved);*/
 
         $this->startTransaction();
 
+        // Detect existing sub-groups (and diff with current, to see which were removed.)
+        $currentGroups = $group->getMemberGroups();
+        // Probably should add a function for just getting this info, but shortcut for now.
+        foreach ($currentGroups as $key => $subGroup) {
+            $currentGroups[$key] = $subGroup->getName();
+        }
+
+        // Remove any current sub-groups for this group.
+        if (!empty($currentGroups) && !GroupUtil::removeSubGroupsForGroup($group)) {
+            $this->errorRedirectToMain(sprintf(_kt('Unable to remove existing sub-groups')), sprintf('old_search=%s&do_search=1', $old_search));
+        }
+
+        // Insert submitted groups for this user.
+
         $groupsAdded = array();
+        // TODO I am sure we can do this much better, create a single insert query instead of one per added group.
+        $groups = trim(KTUtil::arrayGet($_REQUEST, 'groups_roles'), ',');
+        if (!empty($groups)) {
+            $groups = explode(',', $groups);
+            foreach ($groups as $idString) {
+                $idData = explode('_', $idString);
+                $subGroup = Group::get($idData[1]);
+
+                $res = $group->addMemberGroup($subGroup);
+                if (PEAR::isError($res) || $res == false) {
+                    $this->errorRedirectToMain(sprintf(_kt('Failed to add %s to %s'), $subGroup->getName(), $group->getName()), sprintf('old_search=%s&do_search=1', $old_search));
+                    exit(0);
+                }
+                else {
+                    $groupsAdded[] = $subGroup->getName();
+                }
+            }
+        }
+
+        $groupsRemoved = array_diff($currentGroups, $groupsAdded);
+        $groupsAdded = array_diff($groupsAdded, $currentGroups);
+
+        /*$groupsAdded = array();
         $groupsRemoved = array();
 
         foreach ($aGroupToAddIDs as $iMemberGroupID ) {
@@ -612,7 +679,7 @@ class KTGroupAdminDispatcher extends KTAdminDispatcher {
                     $groupsRemoved[] = $oMemberGroup->getName();
                 }
             }
-        }
+        }*/
 
         $msg = '';
         if (!empty($groupsAdded)) { $msg .= ' ' . _kt('Added') . ': ' . implode(', ', $groupsAdded) . '. '; }

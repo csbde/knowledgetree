@@ -276,6 +276,27 @@ class GroupUtil {
         return true;
     }
 
+    /**
+     * Removes all group/sub-group links.
+     * Intended for removing all users from a group.
+     *
+     * @param object $group
+     */
+    public static function removeSubGroupsForGroup($group)
+    {
+        global $default;
+
+        $query = "DELETE FROM {$default->groups_groups_table} WHERE parent_group_id = {$group->getId()}";
+        $res = DBUtil::runQuery($query);
+        if (PEAR::isError($res)) {
+            global $default;
+            $default->log->error("Error removing sub-groups for group {$group->getId()} [{$group->getName()}]");
+            return false;
+        }
+
+        return true;
+    }
+
     function _invertGroupArray($aGroupArray)
     {
         $aRet = array();
