@@ -133,10 +133,7 @@ class Group extends KTEntity {
 	 *
 	 * @return Group populated Group object on successful query, false otherwise and set $_SESSION['errorMessage']
 	 */
-    function & get($iId)
-    {
-        return KTEntityUtil::get('Group', $iId);
-    }
+    function & get($iId) { return KTEntityUtil::get('Group', $iId); }
 
     /**
 	 * Static function
@@ -167,15 +164,11 @@ class Group extends KTEntity {
 
     /**
 	 * Returns an array of Users in this group.
+	 * Legacy api.
      *
 	 * @param 	Boolean		Return Disabled Users or Not (defaults false)
-	 *
 	 */
-    function &getUsers($disabled = false)
-    {
-        // legacy api.
-        return $this->getMembers($disabled);
-    }
+    function &getUsers($disabled = false) { return $this->getMembers($disabled); }
 
     function &getMembers($disabled = false)
     {
