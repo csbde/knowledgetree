@@ -270,3 +270,8 @@ function initJSONLookup(name, action) {
     _aLookupWidgets[name].initialize(name, action);
 	}
 }
+
+function initJSONLookupAjax(name, action) {
+    _aLookupWidgets[name] = new JSONLookupWidget();
+    _aLookupWidgets[name].initialize(name, action);
+}

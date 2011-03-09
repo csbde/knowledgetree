@@ -305,7 +305,7 @@
     </td>
     	<td valign="top" id="sidebar" class="standardBorder" height="100%" width="215">
 		{* Display Actions Block *}
-		{$documentSidebars->getDocSidebar()}
+		{$documentSidebars->getDocSidebars()}
 	</td>
 	</tr>
 </table>

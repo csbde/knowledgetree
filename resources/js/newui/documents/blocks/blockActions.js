@@ -65,8 +65,8 @@ alertActions.prototype.displayAction = function(alertId) {
 		title = 'Add a new alert'
 		address = 'action.php?action=ajax&kt_path_info=alerts.action.document.alert&fDocumentId=' + documentId
 	} else {
-		width = '500px'
-		height = '600px'
+		width = '600px'
+		height = '350px'
 		title = 'Edit alert'
 		address = 'action.php?action=ajaxEdit&kt_path_info=alerts.action.document.alert&fDocumentId=' + documentId + '&alert=' + alertId
 	}
@@ -93,7 +93,7 @@ alertActions.prototype.displayAction = function(alertId) {
 		url: address,
 		success: function(data) {
 			jQuery('#add_alert').html(data)
-			initJSONLookup('members', getMembers)
+			initJSONLookupAjax('members', getMembers)
 		},
 		error: function(response, code) {
 			alert('Error. Could not create add alert form.'+response + code)
@@ -103,12 +103,12 @@ alertActions.prototype.displayAction = function(alertId) {
 
 /* Delete alert */
 alertActions.prototype.deleteAction = function(alertId, documentId) {
-	var address = this.baseUrl + 'kt_path_info=alerts.action.document.alert&fDocumentId=' + documentId + 'action=delete&;alert=' + alertId
+	var address = 'action.php?kt_path_info=alerts.action.document.alert&fDocumentId=' + documentId + '&action=ajaxDelete&alert=' + alertId
 	jQuery.ajax({
 		type: "POST",
 		url: address,
 		success: function(data) {
-			jQuery('#add_alert').html(data)
+			alerts.refeshAlertsAction(documentId)
 		},
 		error: function(response, code) {
 			alert('Error. Could not delete alert.'+response + code)
@@ -116,6 +116,39 @@ alertActions.prototype.deleteAction = function(alertId, documentId) {
 	});
 }
 
+/* Refresh all alert actions */
+alertActions.prototype.refeshAlertsAction = function(documentId) {
+	this.refeshSidebar(documentId)
+	this.refeshSidebar(documentId)
+}
+
+alertActions.prototype.refeshAction = function(documentId) {
+	var address = 'action.php?kt_path_info=ktcore.blocks.document.status&fDocumentId=' + documentId + '&action=ajaxGetDocBlock'
+	jQuery.ajax({
+		type: "POST",
+		url: address,
+		success: function(data) {
+			jQuery('.document_status_area').html(data)
+		},
+		error: function(response, code) {
+			alert('Error. Could not reload document actions.'+response + code)
+		}
+	});	
+}
+
+alertActions.prototype.refeshSidebar = function(documentId) {
+	var address = 'action.php?kt_path_info=ktcore.sidebar.alert&fDocumentId=' + documentId + '&action=ajaxGetSidebar'
+	jQuery.ajax({
+		type: "POST",
+		url: address,
+		success: function(data) {
+			jQuery('.current_alerts').html(data)
+		},
+		error: function(response, code) {
+			alert('Error. Could not reload alerts.'+response + code)
+		}
+	});	
+}
 
 var alerts = new alertActions()
 

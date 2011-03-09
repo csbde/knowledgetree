@@ -84,6 +84,11 @@ class KTDocumentStatusBlock extends KTDocumentViewlet {
         return $oTemplate->render($aTemplateData);
 	}
 	
+	public function do_ajaxGetDocBlock() {
+		echo $this->getDocBlock();
+		exit(0);
+	}
+	
 	/**
 	 * Check if the document in context has alerts
 	 *

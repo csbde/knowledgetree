@@ -42,21 +42,20 @@ require_once(KT_LIB_DIR . '/actions/documentaction.inc.php');
 require_once(KT_PLUGIN_DIR . '/commercial/alerts/alertUtil.inc.php');
 
 class KTDocumentSidebar extends KTDocumentViewlet {
-    public $sName = 'ktcore.blocks.document.sidebars';
+    public $sName = 'ktcore.sidebars.document';
 	public $_sShowPermission = 'ktcore.permissions.read';
+	
+	public function getCSSName() {}
 	
 	/**
 	 * Create a sidebar block
 	 *
 	 * @return string
 	 */
-	public function getDocSideBar() {
+	public function getDocSideBars() {
 		$this->oPage->requireJSResource('resources/js/newui/documents/sidebars/sidebarActions.js');
 		$this->oPage->requireCSSResource('resources/css/newui/documents/sidebars/sidebarActions.css');
-		
-        $sidebars['accounts_info'] = $this->getAccountInfo();
-        $sidebars['recently_viewed'] = $this->getRecentlyViewed();
-        $sidebars['current_alerts'] = $this->getCurrentAlerts();
+		$sidebars = KTDocumentActionUtil::getDocumentActionsForDocument($this->oDocument, $this->oUser, 'documentsidebar');
         
 		$oTemplating = KTTemplating::getSingleton();
 		$oTemplate = $oTemplating->loadTemplate('ktcore/document/sidebars/viewSidebar');
@@ -69,8 +68,12 @@ class KTDocumentSidebar extends KTDocumentViewlet {
         return $oTemplate->render($aTemplateData);
 	}
 	
+}
 
-	public function getAccountInfo() {
+class KTAccountsSidebar extends KTDocumentSidebar {
+    public $sName = 'ktcore.sidebar.account';
+	
+	public function getSidebar() {
 		$oTemplating = KTTemplating::getSingleton();
 		$oTemplate = $oTemplating->loadTemplate('ktcore/document/sidebars/accountInfo');
         $aTemplateData = array(
@@ -80,8 +83,12 @@ class KTDocumentSidebar extends KTDocumentViewlet {
         
         return $oTemplate->render($aTemplateData);
 	}
+}
+
+class KTRecentlyViewedSidebar extends KTDocumentSidebar {
+	public $sName = 'ktcore.sidebar.recentview';
 	
-	public function getRecentlyViewed() {
+	public function getSidebar() {
 		$oTemplating = KTTemplating::getSingleton();
 		$oTemplate = $oTemplating->loadTemplate('ktcore/document/sidebars/recentlyViewed');
         $aTemplateData = array(
@@ -91,8 +98,14 @@ class KTDocumentSidebar extends KTDocumentViewlet {
         
         return $oTemplate->render($aTemplateData);
 	}
+}
+
+class KTAlertSidebar extends KTDocumentSidebar {
+	public $sName = 'ktcore.sidebar.alert';
 	
-	private function getCurrentAlerts() {
+	public function getCSSName() { return 'current_alerts'; }
+	
+	public function getSidebar() {
 		$oTemplating = KTTemplating::getSingleton();
 		$oTemplate = $oTemplating->loadTemplate('ktcore/document/sidebars/alerts');
 		$alertUtil = new alertUtil();
@@ -100,11 +113,17 @@ class KTDocumentSidebar extends KTDocumentViewlet {
         $aTemplateData = array(
 			'context' => $this,
 			'alerts' => $alerts,
-			
 			'documentId' => $this->oDocument->getId(),
         );
         
         return $oTemplate->render($aTemplateData);
 	}
+	
+	public function do_ajaxGetSidebar() {
+		echo $this->getSidebar();
+		exit(0);
+	}
 }
+
+
 ?>
