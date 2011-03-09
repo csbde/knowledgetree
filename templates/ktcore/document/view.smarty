@@ -1,3 +1,8 @@
+{$context->oPage->requireCSSResource('resources/css/kt-treewidget.css')}
+<script type="text/javascript" src="/thirdpartyjs/jquery/plugins/editableset/jquery.editable-set.js"> </script>
+<script type="text/javascript" src="/thirdpartyjs/jquery/plugins/editableset/jquery.editable-set.extend.js"> </script>
+<script type="text/javascript" src="/resources/js/newui/kt_documentPropertyEditor.js"> </script>
+
 <!-- FILE: ktcore/document/view.smarty -->
 <table>
 <tr>
@@ -46,29 +51,34 @@
 
 					<br/>
 					<br/>
-					<table style="padding: 0px margin: 0px;">
-						<tr>
-							<td width="100">Document Type</td>
-							<td><a href="">Invoices</a></td>
-						</tr>
-						<tr>
-							<td width="100">Custom Property</td>
-							<td><a href="">Property Value</a></td>
-						</tr>
-						<tr>
-							<td width="100">Custom Property</td>
-							<td><a href="">Property Value</a></td>
-						</tr>
-						<tr>
-							<td width="100">Custom Property</td>
-							<td><a href="">Property Value</a></td>
-						</tr>
-
+										
+					<div class="documenttype" rel="update.php?documentID={$document->getId()}"> 
+	    			<table class="metadatatable" cellspacing="0" cellpadding="5">
+	    			<tr class="even first">
+	    				<th>Document Type</th>
+			        <td>
+			        <span class="descriptiveText" id='documentTypeID' data-name='documentTypeID' data-options='[{foreach from=$document_types key=aKey item=documentType}
+						["{$documentType->getName()}","{$documentType->getId()}"],{/foreach}]' data-type='select'>{$document_data.document_type->getName()}</span></td>
 					</table>
-
-
-
-
+					</div>
+					
+					<div class="editablemetadata" rel="persistMetadata.php?documentID={$document->getId()}">
+					{foreach item=oFieldset from=$fieldsets}
+						{$oFieldset->render($document_data)}
+					{/foreach}
+					</div>
+					<br/>
+					<div><span class="more">more...</span></div>
+					<br/>
+					<div class="slide" style="display:none">
+					{foreach item=oFieldset from=$generic_fieldsets}
+						{$oFieldset->render($document_data)}
+					{/foreach}
+					</div>
+					
+			
+      
+  
 					</span>
 				</div>
 				<!-- <hr style="border: none; background-color: #E3E3E3; width: 98%; height: 1px; margin-left: 10px; margin-bottom: 15px;" align="left" /> -->
@@ -126,14 +136,14 @@
 		<div class="action_buttons above">
 		<div class="action">
 
-			<div class="splitbutton"><a class="button" id="download" href="#">Download</a><span class="split">▼</span></div>
+			<div class="splitbutton"><a class="button" id="download" href="#">Download</a><span class="split">?</span></div>
 			<ul class="splitmenu" id="download" style="right: auto; margin-left: -1px; ">
 				<li><a href="" id="download-pdf">{i18n}Download PDF{/i18n}</a></li>
 			</ul>
 		</div>
 		{if $document->getIsCheckedOut()}
     		<div class="action">
-				<div class="splitbutton"><a class="button" href="#" id="checkin">Checkin</a><span class="split">▼</span></div>
+				<div class="splitbutton"><a class="button" href="#" id="checkin">Checkin</a><span class="split">?</span></div>
 				<ul class="splitmenu" id="checkin">
 					<li><a href="" id="checkin-upload">Checkin and Upload</a></li>
 					<li><a href="" id="add-version">Add new Version</a></li>
@@ -141,7 +151,7 @@
 			</div>
     	{else}
     		<div class="action">
-				<div class="splitbutton"><a class="button" href="#">Checkout</a><span class="split">▼</span></div>
+				<div class="splitbutton"><a class="button" href="#">Checkout</a><span class="split">?</span></div>
 				<ul class="splitmenu" id="checkout">
 					<li><a href="" id="checkin-download">Checkout and Download</a></li>
 					<li><a href="" id="add-version">Add new Version</a></li>
@@ -153,7 +163,7 @@
 			<div href="#"><a class="button" id="edit-online" href="">Edit Online</a></div>
 		</div>
 		<div class="action" id="share">
-			<div class="splitbutton"><a class="button" id="share" href="#">Share </a><span class="split">▼</span></div>
+			<div class="splitbutton"><a class="button" id="share" href="#">Share </a><span class="split">?</span></div>
 			<ul class="splitmenu" id="share">
 				<li><a href="" id="email">Email</a></li>
 			</ul>
@@ -173,7 +183,7 @@
 			{/if}
 			<div class="action_buttons below" style="display: inline-block;">
 			<div class="action" style="margin-top: 10px;">
-				<div class="splitbutton"><span class="split" href="#" id="more" style="border-left: 0px; font-size: 11px; padding-left: 25px;">More <span style="font-size: 9px;">▼</span></span></div>
+				<div class="splitbutton"><span class="split" href="#" id="more" style="border-left: 0px; font-size: 11px; padding-left: 25px;">More <span style="font-size: 9px;">?</span></span></div>
 				<ul class="splitmenu" id="more" style="right: auto; margin-left: -1px; ">
 					<li><a href="">Move</a></li>
 					<li><a href="">Copy</a></li>

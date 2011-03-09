@@ -144,14 +144,10 @@ class KTPage {
 
         $aJS[] = 'thirdpartyjs/extjs/adapter/ext/ext-base.js';
         $aJS[] = 'thirdpartyjs/extjs/ext-all.js';
-//        $aJS[] = 'thirdpartyjs/jquery/jquery-1.4.2.min.js';
         $aJS[] = 'thirdpartyjs/jquery/jquery-1.4.4.min.js';
         $aJS[] = 'thirdpartyjs/jquery/jquery_noconflict.js';
         $aJS[] = 'thirdpartyjs/jquery/plugins/urlparser/jquery.url.js';
         $aJS[] = 'resources/js/search2widget.js';
-//        $aJS[] = 'thirdpartyjs/plupload/js/plupload.min.js';
-//        $aJS[] = 'thirdpartyjs/plupload/js/plupload.html5.min.js';
-//        $aJS[] = 'thirdpartyjs/plupload/js/jquery.plupload.queue.min.js';
         $aJS[] = 'thirdpartyjs/jquery/plugins/ajaxupload/fileuploader.js';
         $aJS[] = 'thirdpartyjs/jquery/plugins/loading/jquery.loading.1.6.4.min.js';
         $aJS[] = 'resources/js/newui/ktjapi.all.js';
