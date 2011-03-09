@@ -181,9 +181,9 @@
 				</ul>
 			</div>
 			</div>
-				<a href=""><span class="share_url">This page URL</span></a>
-				<a href=""><span class="share_url">Download URL</span></a>
-				<a href=""><span class="share_url">Preview URL</span></a>
+				<a href=""><span class="share_url">{i18n}This page URL{/i18n}</span></a>
+				<a href=""><span class="share_url">{i18n}Download URL{/i18n}</span></a>
+				<a href=""><span class="share_url">{i18n}Preview URL{/i18n}</span></a>
   			</div>
 
 			</td>

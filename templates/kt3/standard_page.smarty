@@ -77,6 +77,7 @@
                 timeCompressionAnimation: 1000,
                 timeInitialCollapse: 100,
                 beginingElementsToLeaveOpen: 1,
+                endElementsToLeaveOpen: 3,
                 previewWidth: 10
             });
         })
@@ -177,6 +178,10 @@
 				{$feedback}
 				{$uploadProgress}
 
+				<div style="position: absolute; top: 35px; right: 0">
+				    <div id="newSearchQuery"></div>
+				</div>
+
 				<div class="floatClear"></div>
 				<!--<ul class="floatleft">-->
 					<!--<li class="roundleft"></li>--> <!-- block for left round corner -->
@@ -225,14 +230,11 @@
 
 			{if (!$page->hide_section)}
 			    <div id="breadcrumbs">
-					<table width="100%">
+					<table width="960px">
 					<tr>
-    					<!--<td valign=top align=left width="100">
-    					<span class="additional"><nobr>{i18n}You are here{/i18n}: </span>
-    					</td>-->
-    					<td valign=top align=left width="745">
+    					<td valign=top align=left >
 
-    					   <div id="breadcrumb" class="breadCrumb">
+					       <div id="breadcrumb" class="breadCrumb">
                             <ul>
 
                                 {if ($page->breadcrumbIcon !== false)}
@@ -242,6 +244,7 @@
                                         {/foreach}
                                     </li>
                                 {/if}
+
 
             					{if ($page->breadcrumbSection !== false)}
             					   <li class="breadsection">
@@ -257,7 +260,7 @@
             						{foreach item=aCrumb from=$page->breadcrumbs name=bc}
             						    <li>
                 							{if ($aCrumb.url) }
-                								<a href="{$aCrumb.url}">{$aCrumb.label|mb_truncate:40:"...":true|sanitize}</a>
+                								<a href="{$aCrumb.url}">{$aCrumb.label|mb_truncate:20:"...":true|sanitize}</a>
                 							{else}
                 								<span class="additional">{$aCrumb.label|mb_truncate:40:"...":true|sanitize}</span>
                 							{/if}
@@ -274,11 +277,28 @@
                             </ul>
                         </div>
 
+
     					</td>
-    					<td width="300">
-    					   Lots of stuff
-    					</td>
-    					<td width="215"><div id="newSearchQuery"></div></td>
+    					{if ($page->breadcrumbBtns !== false)}
+        					<td width="100" valign="top" align=left>
+        					   <div class="breadcrumbBtns">
+        					       <nobr>
+        					           {foreach item=aBtn from=$page->breadcrumbBtns name=btn}
+        					               <a href="{$aBtn.url}" ><span class="{$aBtn.class}">{$aBtn.label}</span></a>
+        					           {/foreach}
+
+        					           <!--
+        					       <a href="{$rootUrl}action.php?kt_path_info=ktcore.actions.folder.addFolder&fFolderId=" ><span class="new-folder">{i18n}New Folder{/i18n}</span></a>
+                            		<a href="{$rootUrl}action.php?kt_path_info=zoho.new.document&fFolderId=";" ><span class="new-onlinedoc">{i18n}New Document{/i18n}</span></a>
+                            		<a href="javascript:kt.app.upload.showUploadWindow();"><span class="upload">{i18n}Upload{/i18n}</span></a>
+                            		-->
+                            		</nobr>
+    					       </div>
+        					</td>
+    					{/if}
+    					<!--
+    					<td width="225"><div id="newSearchQuery"></div></td>
+    					-->
     					<td id="add-dashlet"></td>
 					</tr>
 					</table>

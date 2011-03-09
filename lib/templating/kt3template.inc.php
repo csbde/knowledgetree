@@ -82,6 +82,7 @@ class KTPage {
     public $breadcrumbDetails = false;
     public $breadcrumbSection = false;
     public $breadcrumbIcon = false;
+    public $breadcrumbBtns = false;
     public $menu = null;
     public $userMenu = null;
     public $helpPage = null;
@@ -371,6 +372,12 @@ class KTPage {
     }
 
     function setBreadcrumbDetails($sBreadcrumbDetails) { $this->breadcrumbDetails = $sBreadcrumbDetails; }
+
+    function addBreadcrumbBtn($aBreadcrumbBtn)
+    {
+        $this->breadcrumbBtns[] = $aBreadcrumbBtn;
+    }
+
 	function setUser($oUser) { $this->user = $oUser; }
 
     function setContentClass($sClass) { $this->content_class = $sClass; }

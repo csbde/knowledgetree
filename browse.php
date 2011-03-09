@@ -161,8 +161,22 @@ class BrowseDispatcher extends KTStandardDispatcher {
 
 	    // ?don't quite know why this is in here. Someone reports that it is there for search browsing which seem to be disabled
 	    if ($this->oFolder) {
+
+    		global $main;
+    		$folderId = $this->oFolder->getId();
+    		$rootUrl = KTUtil::kt_url();
+
+    		// Add buttons to the menu bar
+    		$newFolder = array('url' => "{$rootUrl}/action.php?kt_path_info=ktcore.actions.folder.addFolder&fFolderId={$folderId}", 'class' => 'new-folder', 'label' => _kt('New Folder'));
+    		$newDoc = array('url' => "{$rootUrl}/action.php?kt_path_info=zoho.new.document&fFolderId={$folderId}", 'class' => 'new-onlinedoc', 'label' => _kt('New Document'));
+    		$upload = array('url' => 'javascript:kt.app.upload.showUploadWindow();', 'class' => 'upload', 'label' => _kt('Upload'));
+
+    		$main->addBreadcrumbBtn($newFolder);
+    		$main->addBreadcrumbBtn($newDoc);
+    		$main->addBreadcrumbBtn($upload);
+
 	        $renderHelper = BrowseViewUtil::getBrowseView();
-	        $renderData = $renderHelper->renderBrowseFolder($this->oFolder->getId(), $aBulkActions, $this->oFolder, $this->editable);
+	        $renderData = $renderHelper->renderBrowseFolder($folderId, $aBulkActions, $this->oFolder, $this->editable);
 	        $aTemplateData = array_merge($aTemplateData, $renderData);
 	    }
 

@@ -19,7 +19,7 @@ body {
 #logobar {
 	margin: 0px 0px 5px 0px !important;
 	padding-top: 5px;
-	padding-bottom: 5px;
+	padding-bottom: 12px;
 }
 
 #content {
@@ -189,7 +189,7 @@ body {
 	padding-right: 15px;
 	color: #EEE;
 	height: 30px;
-	font-size: 1px;
+	font-size: 11px;
 
 	-moz-border-radius: 2px;
 	-webkit-border-radius: 2px;
@@ -199,7 +199,6 @@ body {
 }
 #breadcrumbs span {
 	color: #888;
-	font-size: 12px;
 	padding-left: 0px;
 	text-shadow: 0px 1px 0px #fff;
 }
@@ -207,7 +206,6 @@ body {
 	padding: 7px 5px 0px 5px;
 	height: 23px;
 	display: inline-block;
-	font-size:12px;
 	text-shadow: 0px 1px 0px #fff;
 }
 #breadcrumbs a:hover {
@@ -291,6 +289,54 @@ body {
 	width: 13px;
 	height: 30px;
 }
+
+#breadcrumbs .breadcrumbBtns {
+    margin: 3px 3px;
+    height: 30px;
+}
+#breadcrumbs .breadcrumbBtns a {
+    height: 16px;
+    margin-right: 3px;
+    padding: 5px 0 2px 2px;
+    background: #F6F6F6;
+    border: 1px solid #CCC;
+	-moz-border-radius: 3px;
+	-webkit-border-radius: 3px;
+	border-radius: 3px;
+	behavior: url('../resources/css/border-radius.htc');
+}
+#breadcrumbs .breadcrumbBtns a:hover {
+	text-decoration: none !important;
+	border: 1px solid #DDD;
+	-moz-border-radius: 3px;
+	-webkit-border-radius: 3px;
+	border-radius: 3px;
+	behavior: url('../resources/css/border-radius.htc');
+	background: #FBFBFB !important;
+}
+#breadcrumbs .breadcrumbBtns a:active {
+	-moz-box-shadow: inset 0px 0px 3px #bbb;
+	-webkit-box-shadow: inset 0px 0px 3px #bbb;
+	box-shadow: inset 0px 0px 3px #bbb;
+	-ms-filter: "progid:DXImageTransform.Microsoft.Shadow(Strength=5, Direction=120, Color='#bbbbbb')"; /* For IE 8 */
+	filter: progid:DXImageTransform.Microsoft.Shadow(Strength=5, Direction=120, Color='#bbbbbb'); /* For IE 5.5 - 7 */
+}
+
+#breadcrumbs .breadcrumbBtns span {
+	padding: 6px 5px 0px 22px;
+	font-size: 11px;
+}
+#breadcrumbs .breadcrumbBtns span.upload {
+	background: url('../graphics/newui/browseview_upload.png') no-repeat 2px 4px !important;
+}
+#breadcrumbs .breadcrumbBtns span.new-folder {
+	background: url('../graphics/newui/folder_add.png') no-repeat 2px 3px !important;
+}
+#breadcrumbs .breadcrumbBtns span.new-onlinedoc {
+	background: url('../graphics/newui/document_add.png') no-repeat 2px 3px !important;
+}
+
+
 /*----End Breadcrumbs----*/
 #txtSearchBar1 {
 	width:155px !important;
@@ -543,7 +589,7 @@ div.form_actions {
 	/* margin-top: 5px; */
 	padding: 0px;
 	margin: 0;
-	float: right;
+	/*float: right;*/
 	padding-right: 0px;
 }
 
