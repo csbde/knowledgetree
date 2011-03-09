@@ -3053,7 +3053,7 @@ class KTAPI_Document extends KTAPI_FolderItem
 	public function hasBinaryChanges($from_version, $to_version)
 	{		
 		$sSQL = 'SELECT DT.document_id FROM '.KTUtil::getTableName('document_transactions').' AS DT '.
-			'WHERE DT.document_id = '.$this->documentid.' AND DT.version >= '.$from_version.' AND DT.version <= '.$to_version.
+			'WHERE DT.document_id = '.$this->documentid.' AND DT.version > '.$from_version.' AND DT.version <= '.$to_version.
 			' AND DT.transaction_namespace LIKE \'ktcore.transactions.check_in\' ';		
 
         $results = DBUtil::getResultArray($sSQL);

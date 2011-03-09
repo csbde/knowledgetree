@@ -4198,7 +4198,7 @@ class KTWebService {
 		//$GLOBALS['default']->log->debug("document_has_binary_changes $document_id $from_version $to_version");
 		
 		//first some sanity-checking
-		if ($from_version <= 0.0 || $to_version <= 0.0)
+		if ($from_version < 0.0 || $to_version <= 0.0)
 		{
 			$response = KTWebService::_status(KTWS_ERR_PROBLEM, 'Version(s) not valid.');
 		}
