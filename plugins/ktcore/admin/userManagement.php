@@ -844,7 +844,7 @@ class KTUserAdminDispatcher extends KTAdminDispatcher {
 
         $this->startTransaction();
 
-        // Detect existing group memberships and diff with current to see which were removed.
+        // Detect existing group memberships (and diff with current, to see which were removed.)
         $currentGroups = GroupUtil::listGroupsForUser($user);
         // Probably should add a function for just getting this info, but shortcut for now.
         foreach ($currentGroups as $key => $group) {
@@ -858,6 +858,7 @@ class KTUserAdminDispatcher extends KTAdminDispatcher {
 
         // Insert submitted groups for this user.
 
+        $groupsAdded = array();
         $addWarnings = array();
         // TODO I am sure we can do this much better, create a single insert query instead of one per added group.
         $groups = trim(KTUtil::arrayGet($_REQUEST, 'groups_roles'), ',');

@@ -235,7 +235,8 @@ class GroupUtil {
     }
 
     /**
-     * Removes all user/group links
+     * Removes all user/group links.
+     * Intended for removing all groups from a user.
      *
      * @param object $user
      */
@@ -248,6 +249,27 @@ class GroupUtil {
         if (PEAR::isError($res)) {
             global $default;
             $default->log->error("Error removing groups for user {$user->getId()} [{$user->getName()}]");
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Removes all group/user links.
+     * Intended for removing all users from a group.
+     *
+     * @param object $group
+     */
+    public static function removeUsersForGroup($group)
+    {
+        global $default;
+
+        $query = "DELETE FROM {$default->users_groups_table} WHERE group_id = {$group->getId()}";
+        $res = DBUtil::runQuery($query);
+        if (PEAR::isError($res)) {
+            global $default;
+            $default->log->error("Error removing users for group {$group->getId()} [{$group->getName()}]");
             return false;
         }
 
