@@ -205,7 +205,7 @@ class GroupUtil {
         return $sName;
     }
 
-    function listGroupsForUser ($oUser, $aOptions = null)
+    function listGroupsForUser($oUser, $aOptions = null)
     {
         global $default;
         $iUserId = KTUtil::getId($oUser);
@@ -214,9 +214,7 @@ class GroupUtil {
         $where = KTUtil::arrayGet($aOptions, 'where', false);
 
         $sQuery = "SELECT group_id FROM {$default->users_groups_table} WHERE user_id = ?";
-        if ($where) {
-            $sQuery .= " AND $where";
-        }
+        if ($where) { $sQuery .= " AND $where"; }
 
         $aParams = array($iUserId);
         $aGroupIDs = DBUtil::getResultArrayKey(array($sQuery, $aParams), 'group_id');
@@ -226,16 +224,34 @@ class GroupUtil {
                 $aGroups[] = $iGroupID;
                 continue;
             }
+
             $oGroup = Group::get($iGroupID);
-            if (PEAR::isError($oGroup)) {
-                continue;
-            }
-            if ($oGroup === false) {
-                continue;
-            }
+            if (PEAR::isError($oGroup) || ($oGroup === false)) { continue; }
+
             $aGroups[] = $oGroup;
         }
+
         return $aGroups;
+    }
+
+    /**
+     * Removes all user/group links
+     *
+     * @param object $user
+     */
+    public static function removeGroupsForUser($user)
+    {
+        global $default;
+
+        $query = "DELETE FROM {$default->users_groups_table} WHERE user_id = {$user->getId()}";
+        $res = DBUtil::runQuery($query);
+        if (PEAR::isError($res)) {
+            global $default;
+            $default->log->error("Error removing groups for user {$user->getId()} [{$user->getName()}]");
+            return false;
+        }
+
+        return true;
     }
 
     function _invertGroupArray($aGroupArray)
@@ -272,7 +288,7 @@ class GroupUtil {
         return GroupUtil::expandGroupArray($aDirectGroups);
     }
 
-    function _listGroupIDsForUserExpand ($oUser)
+    function _listGroupIDsForUserExpand($oUser)
     {
         $iUserId = KTUtil::getId($oUser);
         global $default;
@@ -316,7 +332,7 @@ class GroupUtil {
         return $aGroupIDs;
     }
 
-    function listGroupsForUserExpand ($oUser, $aOptions = null)
+    function listGroupsForUserExpand($oUser, $aOptions = null)
     {
         $ids = KTUtil::arrayGet($aOptions, 'ids', false);
         $aGroupIDs = GroupUtil::_listGroupIDsForUserExpand($oUser);
@@ -334,6 +350,7 @@ class GroupUtil {
             if ($oGroup === false) {
                 continue;
             }
+
             $aGroups[] = $oGroup;
         }
 
@@ -365,12 +382,14 @@ class GroupUtil {
     function buildGroupArray()
     {
         global $default;
+
         $aDirectGroups = array();
         $aGroupMemberships = DBUtil::getResultArray("SELECT parent_group_id, member_group_id FROM {$default->groups_groups_table}");
         $aGroups =& Group::getList();
         foreach ($aGroups as $oGroup) {
             $aDirectGroups[$oGroup->getID()] = array();
         }
+
         foreach ($aGroupMemberships as $aRow) {
             $aList = KTUtil::arrayGet($aDirectGroups, $aRow['parent_group_id'], array());
             $aList[] = $aRow['member_group_id'];
@@ -438,16 +457,15 @@ class GroupUtil {
         $res = DBUtil::getOneResult(array($sQuery, $aParams));
         if (PEAR::isError($res)) {
             return $res;
-        } else if (is_null($res)) {
+        }
+        else if (is_null($res)) {
             return null; // not a member
-        } // else {
+        }
 
         $oSubgroup = Group::get($res['group_id']);
         if (PEAR::isError($oSubgroup)) { return $oSubgroup; }
 
         return sprintf(_kt('%s is a member of %s'), $oUser->getName(), $oSubgroup->getName()); // could be error, but errors are caught.
-
-        // }
     }
 
     function clearGroupCacheForUser($oUser)
