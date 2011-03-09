@@ -83,6 +83,7 @@ class KTPage {
     public $breadcrumbSection = false;
     public $breadcrumbIcon = false;
     public $breadcrumbBtns = false;
+    public $showDashboardBtn = false;
     public $menu = null;
     public $userMenu = null;
     public $helpPage = null;
@@ -131,7 +132,7 @@ class KTPage {
         	$this->requireThemeCSSResource('skins/kts_'.$oConfig->get('ui/morphTo').'/kt-morph.css');
         	$this->requireThemeCSSResource('skins/kts_'.$oConfig->get('ui/morphTo').'/kt-ie-morph.css', true);
         }
-        
+
         // IE only
         $this->requireCSSResource('resources/css/kt-ie-icons.css', true);
 
