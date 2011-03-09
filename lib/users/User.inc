@@ -291,11 +291,7 @@ class User extends KTEntity {
 	{
 		$sQuery = 'UPDATE ' . $this->_table() . ' SET ';
 		$aParams = array();
-
-		$blacklist = array(
-			'sPassword' => 1,
-		);
-
+		$blacklist = array('sPassword' => 1);
 		$aParts = array(); // quick workaround to make the join less hurtful.
 
 		foreach ($this->_aFieldToSelect as $attr => $column) {
@@ -512,11 +508,7 @@ class User extends KTEntity {
     }
 
     function isAnonymous() { return $this->iId == -2; }
-
-    function isLicensed()
-    {
-        return ($this->bDisabled != 4);
-    }
+    function isLicensed() { return ($this->bDisabled != 4); }
 
     function disable()
     {
