@@ -229,5 +229,22 @@ jQuery.editableSet.addInputType('htmleditor', {
 	   	jQuery(object).replaceWith(jQuery('<span id="ph_'+attrs['data-name']+'"/>'));
 	   	
 	   	htmlEd.render('ph_'+attrs['data-name']);
+	   	
+	   	if (attrs['data-maxsize'] != null)
+		{
+			var maxSize = '';
+			try
+			{
+				maxSize = parseInt(attrs['data-maxsize']);
+				
+				newObject.data['maxsize'] = parseInt(maxSize); //max character limit
+				
+				newObject.unbind('keypress.restrict').bind('keypress.restrict', function(e){
+					restrict(newObject, e);
+				});
+			}
+			catch(er)
+			{}
+		}
 	}
 });

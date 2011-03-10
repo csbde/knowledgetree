@@ -1,7 +1,7 @@
 <?php
 
-//require_once('config/dmsDefaults.php');
-require_once('ktapi/ktapi.inc.php');
+require_once('../../config/dmsDefaults.php');
+require_once(KT_DIR . '/ktapi/ktapi.inc.php');
 require_once(KT_LIB_DIR . '/widgets/fieldsetDisplay.inc.php');
 	
 	// HTTP headers for no cache etc
@@ -12,14 +12,14 @@ require_once(KT_LIB_DIR . '/widgets/fieldsetDisplay.inc.php');
 	header("Cache-Control: post-check=0, pre-check=0", false);
 	header("Pragma: no-cache");
 	
-	$GLOBALS['default']->log->debug('update documentID '.$_POST['documentID']);
-	$GLOBALS['default']->log->debug('update documentTypeID '.$_POST['documentTypeID']);
+	//$GLOBALS['default']->log->debug('update documentID '.$_POST['documentID']);
+	//$GLOBALS['default']->log->debug('update documentTypeID '.$_POST['documentTypeID']);
 	
 	$iDocumentID = (int)$_REQUEST['documentID'];
 	$iDocumentTypeID = (int)$_POST['documentTypeID'];
 	
 	//now update the document type
-	setDocumentType($iDocumentID, $iDocumentTypeID);
+	//setDocumentType($iDocumentID, $iDocumentTypeID);
 	
 	$oDocumentType = DocumentType::get($_POST['documentTypeID']);
   
@@ -228,15 +228,5 @@ require_once(KT_LIB_DIR . '/widgets/fieldsetDisplay.inc.php');
             return false;
         }
     }
-	
-	//parse_str(file_get_contents("php://input"),$post_vars);
-    //file_put_contents('update.txt', print_r($post_vars, true), FILE_APPEND);
-	
-	/*file_put_contents('update.txt', 'post specific '.$_POST['documenttype'], FILE_APPEND);
-	file_put_contents('update.txt', 'whole post '.print_r($_POST, true), FILE_APPEND);
-	//file_put_contents('update.txt', 'whole get'.print_r($_GET, true), FILE_APPEND);
-	file_put_contents('update.txt', 'whole request '.print_r($_REQUEST, true), FILE_APPEND);*/
-
-	//$GLOBALS['default']->log->debug("update documentID resolves to $documentID");
 
 ?>

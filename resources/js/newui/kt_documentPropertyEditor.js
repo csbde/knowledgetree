@@ -193,7 +193,7 @@ jQuery(function()
 	 function setDocumentTypeEditable()
 	 {
 	 	jQuery('.documenttype').editableSet({
-			action: 'update.php',
+			action: './lib/widgets/changeDocumentType.php',
 			onCancel: function(){
 				setMetadataEditable();
 			},
@@ -216,7 +216,7 @@ jQuery(function()
 				//create the new editable div
 				var editableDiv = jQuery('<div>').addClass('editablemetadata');
 				//NB: set its rel attribute because this is used as the "action" url
-				editableDiv.attr('rel', 'persistMetadata.php?documentID='+jQuery('#documentidembedded').html());
+				editableDiv.attr('rel', './lib/widgets/persistMetadata.php?documentID='+jQuery('#documentidembedded').html());
 				
 				//create div for each fieldset
 				jQuery.each(data.success.metadata, function(index, fieldset)
@@ -277,7 +277,12 @@ jQuery(function()
 		 	}
 		});
 		
-		//if document type is being edited, don't want metadata to be editable!
+		setMetadataUneditable();
+	 }
+	 
+	 function setMetadataUneditable()
+	 {
+	 	//if document type is being edited, don't want metadata to be editable!
 		jQuery('.documenttype').dblclick(function() {
 			jQuery('.editablemetadata').unbind();
 		});
@@ -286,7 +291,7 @@ jQuery(function()
 	 function setMetadataEditable()
 	 {
 	 	jQuery('.editablemetadata').editableSet({
-			action: 'persistMetadata.php',
+			action: './lib/widgets/persistMetadata.php',
 			requiredClass: 'required',
 			onCancel: function(){
 				setDocumentTypeEditable();
@@ -310,7 +315,13 @@ jQuery(function()
 			}
 		});
 		
-		//if metadata is being edited, don't want document type to be editable!
+		setDocumentTypeUneditable();
+		setMetadataUneditable();
+	 }
+	 
+	 function setDocumentTypeUneditable()
+	 {
+	 	//if metadata is being edited, don't want document type to be editable!
 		jQuery('.editablemetadata').dblclick(function() {
 			jQuery('.documenttype').unbind();
 		}); 

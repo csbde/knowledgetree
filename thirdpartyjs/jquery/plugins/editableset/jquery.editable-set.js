@@ -503,12 +503,31 @@
 				else
 				{
 					val = $.trim(attrs.value);	//$.trim($('span#'+attrs['data-name']).text());
-				}
+				}				
+				
 				// Clean up the attributes
 				delete attrs['data-type'];
 					 
 				var newObject = $.fn.editableSet.attributor( $('<textarea />'), attrs );
-				newObject.text( val );			
+				newObject.text( val );
+				
+				if (attrs['data-maxsize'] != null)
+				{
+					var maxSize = '';
+					try
+					{
+						maxSize = parseInt(attrs['data-maxsize']);
+						
+						newObject.data['maxsize'] = parseInt(maxSize); //max character limit
+						
+						newObject.unbind('keypress.restrict').bind('keypress.restrict', function(e){
+							restrict(newObject, e);
+						});
+					}
+					catch(er)
+					{}
+				}
+				
 				$(object).replaceWith( newObject );
 			}
 		},
@@ -725,6 +744,20 @@
 		$.editableSet.types[name] = input;
 	}
 	};
+	
+	//restricts field to x characters
+	var restrict=function(field, e){
+		//keycodes that are not checked, even when limit has been reached.
+		var uncheckedkeycodes=/(8)|(13)|(16)|(17)|(18)/;
+		var keyunicode=e.charCode || e.keyCode;
+		if (!uncheckedkeycodes.test(keyunicode)){
+			if (field.val().length >= field.data['maxsize']){ //if characters entered exceed allowed
+				if (e.preventDefault)
+					e.preventDefault();
+				return false;
+			}
+		}
+	}
 	
 	
 	/* 

@@ -32,7 +32,7 @@
 -->
 <table>
 <tr>
-	<td width="745" valign="top">
+	<td width="720" valign="top">
 
 <form action="{$browseutil->getActionBaseUrl()}" method="post">
 
@@ -48,12 +48,14 @@
 <div class="dropzone" id="datadrop">
 {/if}
 
-<div class=" itemContainer" style="width: 720px;">
+<div class=" itemContainer" style="width: 700px;">
+<!--
 	<div class="newActions browseView bulkActionMenu" style="float:right">
 		<a href="{$rootUrl}action.php?kt_path_info=ktcore.actions.folder.addFolder&fFolderId={$context->oFolder->getId()}" ><span class="new-folder">New Folder</span></a>
 		<a href="{$rootUrl}action.php?kt_path_info=zoho.new.document&fFolderId={$context->oFolder->getId()}";" ><span class="new-onlinedoc">New Document</span></a>
 		<a href="javascript:kt.app.upload.showUploadWindow();"><span class="upload">Upload</span></a>
 	</div>
+	-->
 	{$folderContents}
 	{$bulkActionMenu}
 

@@ -1,8 +1,8 @@
-var hidelinks={};
+var hidelinks = {};
 
-hidelinks.doHide=true;
+hidelinks.doHide = true;
 
-hidelinks.linkList={
+hidelinks.linkList = {
 		'System Config :: Client Tools'				:'admin.php?kt_path_info=sysConfig/clientconfigpage',
 //		'System Config :: Email'					:'admin.php?kt_path_info=sysConfig/emailconfigpage',
 		'System Config :: Internationalization'		:'admin.php?kt_path_info=sysConfig/i18nconfigpage',
@@ -11,21 +11,21 @@ hidelinks.linkList={
 		'Content Setup :: Manage Views'				:'admin.php?kt_path_info=contentSetup/views',
 };
 
-hidelinks.hideLink=function(urii){
-	var elem=jQuery("a[href*="+urii+"]")
-	elem=elem.parent();
+hidelinks.hideLink = function(urii) {
+	var elem = jQuery("a[href*="+urii+"]")
+	elem = elem.parent();
 	elem.remove();
 	//elem.css('background-color','red');
 }
 
-hidelinks.run=function(){
-	if(!hidelinks.doHide)return;
-	for(var key in hidelinks.linkList){
-		var urii=hidelinks.linkList[key];
+hidelinks.run = function() {
+	if (!hidelinks.doHide)return;
+	for (var key in hidelinks.linkList) {
+		var urii = hidelinks.linkList[key];
 		hidelinks.hideLink(urii);
 	}
 }
 
-jQuery(document).ready(function(){
+jQuery(document).ready(function() {
 	hidelinks.run();
 });

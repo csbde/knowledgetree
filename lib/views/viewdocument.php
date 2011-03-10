@@ -35,7 +35,7 @@
  */
 
 class ViewDocumentDispatcher extends KTStandardDispatcher {
-    
+
     public $sName = 'ktcore.actions.document.displaydetails';
     public $sSection = 'view_details';
     public $sHelpPage = 'ktcore/browse.html';
@@ -218,9 +218,9 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
                 break;
             }
         }
-        
+
 		$bCanEdit = true;
-		
+
         // viewlets
         $aViewlets = array();
         $aViewlets2 = array();
@@ -262,7 +262,7 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
         $ownerUser = KTUserUtil::getUserField($oDocument->getOwnerID(), 'name');
         $creatorUser = KTUserUtil::getUserField($oDocument->getCreatorID(), 'name');
         $lastModifierUser = KTUserUtil::getUserField($oDocument->getModifiedUserId(), 'name');
-        
+
         $FieldsetDisplayHelper = new KTFieldsetDisplay();
 
         // create the document transaction record
@@ -306,8 +306,8 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
         // Setting Document Notifications Status
         if ($oDocument->getIsCheckedOut() || $oDocument->getImmutable()) { $aTemplateData['hasNotifications'] = true; }
 
-        $this->oPage->setBreadcrumbDetails(_kt("Document Details"));
-        
+        //$this->oPage->setBreadcrumbDetails(_kt("Document Details"));
+
         return $oTemplate->render($aTemplateData);
     }
 
@@ -516,6 +516,6 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
         if (PEAR::isError($u) || ($u == false)) { return _kt('User no longer exists'); }
         return $u->getName();
     }
-    
+
 }
 ?>

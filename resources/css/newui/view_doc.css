@@ -1,9 +1,10 @@
-.doc_view {
+.doc_view,
+#activity_feed_container {
 	color: #666;
 }
 
 #sidebar {
-	width: 215px;
+	width: 235px;
 	position: relative;
 	margin-top: 5px;
 	
@@ -73,7 +74,7 @@ div.viewletworkflow {
 	width: 375px;
 }
 .button {
-	padding: 2px 5px 2px 25px;
+	padding: 2px 5px 2px 26px;
 	font-size: 11px;
 	height: 25px;
 	display: inline-block;
@@ -365,10 +366,10 @@ button {
 }
 
 .activityfeed .activityfeed_content{
-    margin-left: 40px;
+    margin-left: 60px;
     overflow: hidden;
     word-wrap: break-word;
-    width: 260px;
+    width: 560px;
 }
 
 .activityfeed .metaflag{
@@ -430,7 +431,7 @@ span.doc_info {
 }
 
 #content #commentsbox {
-	width: 225px !important;
+	width: 600px !important;
 	height: 15px;
 	font-size: 14px;
 	padding:5px;
@@ -450,13 +451,13 @@ span.doc_info {
 	width: 300px;
 }
 .activityfeed img {
-	width: 32px;
+	width: 48px;
 }
 .newcomment {
 	display: none;
 }
 .doc_description {
-	padding-right: 35px;
+	padding-right: 10px;
 	color: #666;
 }
 .doc_view .notice{
