@@ -4268,6 +4268,7 @@ class KTWebService {
          
          if ($this->version >= 3) {
          	$this->__typedef["{urn:$this->namespace}kt_folder_detail"]['linked_folder_id'] = 'int';
+         	$this->__typedef["{urn:$this->namespace}kt_folder_detail"]['clean_uri'] = 'string';
 
          	$this->__typedef["{urn:$this->namespace}kt_document_comment"] = array(
          		'id' => 'int',

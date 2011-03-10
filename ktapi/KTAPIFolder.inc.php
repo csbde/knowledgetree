@@ -233,6 +233,9 @@ class KTAPI_Folder extends KTAPI_FolderItem {
 
         // get the modified date
         $detail['updated_date'] = $detail['modified_date'] = $folder->getDisplayLastModifiedDate();
+        
+        //clean uri
+        $detail['clean_uri'] = KTBrowseUtil::getUrlForfolder($folder);
 
         return $detail;
     }
@@ -1578,7 +1581,7 @@ class KTAPI_Folder extends KTAPI_FolderItem {
 	        }
 	        
 	        //need to check whether ANY parent folder has been deleted because result will be that this folder has also been deleted
-	        //have to do it in this roundabout way since child folder delete transaction are not recorded!
+	        //have to do it in this roundabout way since child folder delete transactions are not recorded!
 	        //don't do this for the root folder!
 	        else if ($folderID > 1)
 	        {
@@ -1653,6 +1656,15 @@ class KTAPI_Folder extends KTAPI_FolderItem {
         
         return $contents;
     }
+    
+    /*public function pathChanged()
+    {
+    	SELECT F.id, FT.datetime AS change_date FROM folder_transactions AS FT INNER JOIN folders AS F ON F.id = FT.folder_id
+		WHERE FT.transaction_namespace = 'ktcore.transactions.move' AND FT.folder_id IN (1,1216,1268, 1272) -- AND FT.datetime > ?
+		UNION
+		SELECT F.id, FT.datetime AS change_date FROM folder_transactions AS FT INNER JOIN folders AS F ON F.id = FT.folder_id
+		WHERE FT.transaction_namespace = 'ktcore.transactions.rename' AND FT.folder_id IN (1,1216, 1268, 1272) -- AND FT.datetime > ?
+    }*/
     
 	public function renamedSince($timestamp, $folderPermissionsSQL, &$contents = array())
     {
