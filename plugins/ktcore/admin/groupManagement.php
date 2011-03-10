@@ -518,22 +518,6 @@ class KTGroupAdminDispatcher extends KTAdminDispatcher {
             )
         );
 
-        /*$aMemberGroupsUnkeyed = $group->getMemberGroups();
-        $aMemberGroups = array();
-        $aMemberIDs = array();
-        foreach ($aMemberGroupsUnkeyed as $oMemberGroup) {
-            $aMemberIDs[] = $oMemberGroup->getID();
-            $aMemberGroups[$oMemberGroup->getID()] = $oMemberGroup;
-        }
-
-        $jsonWidget = new KTJSONLookupWidget(_kt('Groups'),
-                          _kt('Select the groups from the left-hand list that you would like to add to this group and then click the <b>right pointing arrows</b>. Once you have added all the groups that you require, press <b>save changes</b>. Only groups that are logically capable of being included in this group will be available to be added.'),
-                          'groups', '', $this->oPage, false, null, null,
-                          array('action'   => sprintf('getSubGroups&group_id=%d', $group->getID()),
-                            'assigned' => $aMemberGroups,
-                            'multi'    => 'true',
-                            'size'     => '8'));*/
-
         $templating =& KTTemplating::getSingleton();
         $template = $templating->loadTemplate('ktcore/principals/groups_managesubgroups');
         $templateData = array(
