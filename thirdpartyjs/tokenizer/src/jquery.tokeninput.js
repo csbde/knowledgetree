@@ -323,6 +323,10 @@ $.TokenList = function (input, settings) {
     // Add a token to the token list based on user input
     function add_token (item) {
         var li_data = $.data(item.get(0), "tokeninput");
+
+        // Prevent duplicates
+        if ($.inArray(li_data.id, saved_tokens) != -1) { return false; }
+
         var this_token = insert_token(li_data.id, li_data.name);
         var callback = settings.onAdd;
 
@@ -339,6 +343,7 @@ $.TokenList = function (input, settings) {
         hidden_input.val(hidden_input.val() + id_string);
 
         token_count++;
+        saved_tokens[saved_tokens.length] = li_data.id;
 
         if(settings.tokenLimit != null && token_count >= settings.tokenLimit) {
             input_box.hide();
@@ -417,6 +422,10 @@ $.TokenList = function (input, settings) {
         }
 
         token_count--;
+        index = $.inArray(token_data.id, saved_tokens);
+        if (index != -1) {
+            saved_tokens.splice(index, 1);
+        }
 
         if (settings.tokenLimit != null) {
             input_box

@@ -146,15 +146,6 @@ $.SelectTokenList = function (input, src, settings) {
 
                 $.data(this_token.get(0), "tokeninput", {"id": li_data[i].id, "name": li_data[i].name});
 
-                // TODO switch this to keeping focus on the select list?
-                // Clear input box and make sure it keeps focus
-//                input_box
-//                    .val("")
-//                    .focus();
-
-                // Don't show the help dropdown, they've got the idea
-//                hide_dropdown();
-
                 // Save this token id
                 var id_string = li_data[i].id + ","
                 hidden_input.val(hidden_input.val() + id_string);
@@ -189,32 +180,24 @@ $.SelectTokenList = function (input, src, settings) {
 
     // Add a token to the token list based on user input
     function add_token (id, value) {
+        // Prevent duplicates
+        if ($.inArray(id, saved_tokens) != -1) { return false; }
+
         var li_data = {id: id, name: value};
-//        li_data.id = id;
-//        li_data.name = value;
         var this_token = insert_token(li_data.id, li_data.name);
         var callback = settings.onAdd;
-
-        // TODO switch this to keeping focus on the select list?
-        // Clear input box and make sure it keeps focus
-//        input_box
-//            .val("")
-//            .focus();
-
-        // Don't show the help dropdown, they've got the idea
-//        hide_dropdown();
 
         // Save this token id
         var id_string = li_data.id + ","
         hidden_input.val(hidden_input.val() + id_string);
 
         token_count++;
+        saved_tokens[saved_tokens.length] = id;
 
         // TODO this will have to disable the select input.
         //      Since we won't likely be limiting selections, probably not required.
         if(settings.tokenLimit != null && token_count >= settings.tokenLimit) {
             input_box.hide();
-//            hide_dropdown();
         }
 
         // Execute the onAdd callback if defined
@@ -227,12 +210,6 @@ $.SelectTokenList = function (input, src, settings) {
     function select_token (token) {
         token.addClass(settings.classes.selectedToken);
         selected_token = token.get(0);
-
-        // Hide input box
-//        input_box.val("");
-
-        // Hide dropdown if it is visible (eg if we clicked to select token)
-//        hide_dropdown();
     }
 
     // Deselect a token in the token list
@@ -289,14 +266,10 @@ $.SelectTokenList = function (input, src, settings) {
         }
 
         token_count--;
-
-        // TODO switch this to keeping focus on the select list?
-//        if (settings.tokenLimit != null) {
-//            input_box
-//                .show()
-//                .val("")
-//                .focus();
-//        }
+        index = $.inArray(token_data.id, saved_tokens);
+        if (index != -1) {
+            saved_tokens.splice(index, 1);
+        }
 
         // Execute the onDelete callback if defined
         if($.isFunction(callback)) {
