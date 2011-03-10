@@ -125,9 +125,11 @@ class KTDocumentActivityFeedAction extends KTDocumentViewlet {
     public $sName = 'ktcore.viewlet.document.activityfeed';
     public $showIfRead = true;
     public $showIfWrite = true;
-
+	private $displayMax = 10;
+	
     function display_viewlet()
     {
+		$this->oPage->requireJSResource('resources/js/newui/documents/viewlets/comments.js');
         $iDocumentId = $this->oDocument->getId();
         $mainArray = array();
 
@@ -200,7 +202,7 @@ class KTDocumentActivityFeedAction extends KTDocumentViewlet {
 
         $aVersions = array_reverse($aVersions);
         $mainArray = array_merge($mainArray, $aVersions);
-
+		$comments = array();
         /* *** Get the document comments *** */
         try {
             $comments = Comments::get_comments($iDocumentId);
@@ -237,6 +239,8 @@ class KTDocumentActivityFeedAction extends KTDocumentViewlet {
               'document_id' => $iDocumentId,
               'document' => $this->oDocument,
               'versions' => $mainArray,
+              'displayMax' => $this->displayMax,
+              'commentsCount' => count($mainArray),
         );
 
         return $oTemplate->render($aTemplateData);
