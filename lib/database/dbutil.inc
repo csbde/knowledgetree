@@ -400,7 +400,7 @@ class DBUtil {
 
         $statement = "INSERT INTO `{$sTable}` ";
 
-        if(!empty($aColumns)){
+        if (!empty($aColumns)) {
             $statement .= '(`'. implode('`, `', $aColumns) .'`) ';
         }
 
