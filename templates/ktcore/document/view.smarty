@@ -6,8 +6,8 @@
 <!-- FILE: ktcore/document/view.smarty -->
 <table>
 <tr>
-	<td width="745">
-	<table border="0" width="720" class="doc_view">
+	<td width="720">
+	<table border="0" width="700" class="doc_view">
 		<tr>
 			<td colspan="2" id="title_row">
 
@@ -78,68 +78,54 @@
 					</span>
 				</div>
 				<!-- <hr style="border: none; background-color: #E3E3E3; width: 98%; height: 1px; margin-left: 10px; margin-bottom: 15px;" align="left" /> -->
-				<div>
-
-					<span class="doc_header_item">
-
-						<span class="doc_field_title"></span>
-					</span>
-
-							<div id="activity_feed_container" style="margin-top:1em;"></div>
-							<div id="new_comment_form"></div>
-
-
-				</div>
 			</td>
 			<td valign="top" width="375" id="column_right">
 				<div class="" style="margin-bottom: 10px;">
 		<script>
 			{literal}
-			 $(function() {
+			 jQuery(function() {
 
-				$(".split").click(function() {
+				jQuery(".split").click(function() {
 
-					if ($(this).parent().next().is(':visible'))
+					if (jQuery(this).parent().next().is(':visible'))
 					{
-						$(".splitmenu").hide();
-						$(".split").removeClass('selected');
+						jQuery(".splitmenu").hide();
+						jQuery(".split").removeClass('selected');
 
 					}
 					else
 					{
-						$(".splitmenu").hide();
-						$(".split").removeClass('selected');
-						$(this).addClass('selected').parent().next().show();
+						jQuery(".splitmenu").hide();
+						jQuery(".split").removeClass('selected');
+						jQuery(this).addClass('selected').parent().next().show();
 
 					}
 
 				});
 
-				 $('html').click(function() {
-				 	$(".splitmenu").hide();
-				 	$(".split").removeClass('selected');
+				 jQuery('html').click(function() {
+				 	jQuery(".splitmenu").hide();
+				 	jQuery(".split").removeClass('selected');
 				 });
 
-				 $('.split').click(function(event){
+				jQuery('.split').click(function(event){
 				     event.stopPropagation();
 				 });
 			});
-
-
 			{/literal}
 		</script>
 
 		<div class="action_buttons above">
 		<div class="action">
 
-			<div class="splitbutton"><a class="button" id="download" href="#">Download</a><span class="split">?</span></div>
+			<div class="splitbutton"><a class="button" id="download" href="#">Download</a><span class="split">&#9660;</span></div>
 			<ul class="splitmenu" id="download" style="right: auto; margin-left: -1px; ">
 				<li><a href="" id="download-pdf">{i18n}Download PDF{/i18n}</a></li>
 			</ul>
 		</div>
 		{if $document->getIsCheckedOut()}
     		<div class="action">
-				<div class="splitbutton"><a class="button" href="#" id="checkin">Checkin</a><span class="split">?</span></div>
+				<div class="splitbutton"><a class="button" href="#" id="checkin">Checkin</a><span class="split">&#9660;</span></div>
 				<ul class="splitmenu" id="checkin">
 					<li><a href="" id="checkin-upload">Checkin and Upload</a></li>
 					<li><a href="" id="add-version">Add new Version</a></li>
@@ -147,7 +133,7 @@
 			</div>
     	{else}
     		<div class="action">
-				<div class="splitbutton"><a class="button" href="#">Checkout</a><span class="split">?</span></div>
+				<div class="splitbutton"><a class="button" href="#">Checkout</a><span class="split">&#9660;</span></div>
 				<ul class="splitmenu" id="checkout">
 					<li><a href="" id="checkin-download">Checkout and Download</a></li>
 					<li><a href="" id="add-version">Add new Version</a></li>
@@ -159,7 +145,7 @@
 			<div href="#"><a class="button" id="edit-online" href="">Edit Online</a></div>
 		</div>
 		<div class="action" id="share">
-			<div class="splitbutton"><a class="button" id="share" href="#">Share </a><span class="split">?</span></div>
+			<div class="splitbutton"><a class="button" id="share" href="#">Share </a><span class="split">&#9660;</span></div>
 			<ul class="splitmenu" id="share">
 				<li><a href="" id="email">Email</a></li>
 			</ul>
@@ -179,7 +165,7 @@
 			{/if}
 			<div class="action_buttons below" style="display: inline-block;">
 			<div class="action" style="margin-top: 10px;">
-				<div class="splitbutton"><span class="split" href="#" id="more" style="border-left: 0px; font-size: 11px; padding-left: 25px;">More <span style="font-size: 9px;">?</span></span></div>
+				<div class="splitbutton"><span class="split" href="#" id="more" style="border-left: 0px; font-size: 11px; padding-left: 25px;">More <span style="font-size: 9px;">&#9660;</span></span></div>
 				<ul class="splitmenu" id="more" style="right: auto; margin-left: -1px; ">
 					<li><a href="">Move</a></li>
 					<li><a href="">Copy</a></li>
@@ -194,107 +180,17 @@
 			</td>
 
 		</tr>
-		<tr>
-			<td colspan="2" valign="top">
-				<ul class="view_doc_tabs">
-					<!-- <li class="page_activity" title="Activity">
-						<table class="kt_collection" style="clear: both;"><tr><td>
+			<td colspan="2"> 
+				<div>
+					<span class="doc_header_item">
+						<span class="doc_field_title"></span>
+					</span>
 							<div id="activity_feed_container" style="margin-top:1em;"></div>
 							<div id="new_comment_form"></div>
-						</table>
-					</li>-->
-
-					<!--{if !empty($live_preview)}
-						<li class="page_preview"  title="View">
-							<table class="kt_collection" style="clear: both;"><tr><td>
-								<div style="margin-top:1em;">{$live_preview}</div>
-							</table>
-						</li>
-					{/if}-->
-
-					<!--<li class="page_properties" title="Properties">-->
-						<table class="kt_collection" style="display:none; clear: both;"><tr><td>
-							{if ($hasNotifications & bCanEdit)}
-								<div class="notification">
-
-									{if ($document->getIsCheckedOut() & $canCheckin)}
-										<span class="item">
-											Other users will not be able to edit this document until you
-												<a href="/action.php?kt_path_info=ktcore.actions.document.checkin&fDocumentId={$document_id}">check it back in</a>
-												 or
-												<a href="/action.php?kt_path_info=ktcore.actions.document.cancelcheckout&fDocumentId={$document_id}">cancel the checkout</a>.
-										</span>
-									{/if}
-
-									{if ($document->getIsCheckedOut() & !$canCheckin)}
-										<span class="item">
-											This document is currently checked out by {$sCheckoutUser}. You will not be able to edit the document until it is checked back in.
-										</span>
-									{/if}
-
-									{if ($document->getImmutable() == true)}
-										<span class="item">
-											This document has been finalized and cannot be edited further.
-										</span>
-									{/if}
-
-
-								{if 1==2}
-									{if ($document->getIsCheckedOut() == 1)}
-										{capture assign=checkout_user}<strong>{$sCheckoutUser}</strong>{/capture}
-										{if ($isCheckoutUser)}
-											<div class="ktInfoMessage">
-												<span>{i18n}This document is currently checked out by <strong>you</strong>. If this is incorrect, or you no longer need to make changes to it, please cancel the checkout.{/i18n}</span>
-											</div>
-										{else}
-											{if ($canCheckin)}
-												<div class="ktInfoMessage">
-												<span>{i18n arg_checkoutuser=$checkout_user}This document is currently checked out by #checkoutuser#, but you
-												have sufficient priviledges to cancel their checkout.{/i18n}</span>
-												</div>
-											{else}
-												<div class="ktInfoMessage">
-													<span>{i18n arg_checkoutuser=$checkout_user arg_appname="$appname"}This document is currently checked out by #checkoutuser#.  You cannot make
-												changes until that user checks it in.  If you have urgent modifications to make, please
-												contact your #appname# Administrator.{/i18n}</span>
-												</div>
-											{/if}
-										{/if}
-									{/if}
-
-									{if ($document->getImmutable() == true)}
-										<div class="ktInfoMessage">
-											<span>{i18n}This document is immutable.  No further content changes can be
-										made to this document, and only administrators (in administration mode)
-										can make changes to the metadata or can move or delete it.{/i18n}
-										{if 1}
-											  {i18n}If you require assistance from an administrator to perform one of
-											these tasks, use the Request Assistance action.{/i18n}
-										{/if}
-										</span>
-										</div>
-									{/if}
-								{/if}
-								</div>
-							{/if}
-						{foreach item=oFieldset from=$fieldsets}
-							{$oFieldset->render($document_data)}
-						{/foreach}
-						</td></tr></table>
-					</li>
-
-				</ul>
+				</div>
 			</td>
-			{if !empty($viewlet_data2)}
-                <td valign="top" width="225px">
-
-            		<div id="document-views">
-            		<div class="thumb-shadow" style="display:none;"></div>
-            			{$viewlet_data2}
-            		</div>
-
-                </td>
-            {/if}
+		<tr>
+		
 		</tr>
 	</table>
 
