@@ -59,17 +59,11 @@ class KTDocumentStatusBlock extends KTDocumentViewlet {
 		$workflowState = $alertState = $subscribeState = 'disabled';
 
         // Check if document has workflows
-        if ($this->hasWorkflow()) {
-        	$workflowState = 'enabled';
-        }
+        if ($this->hasWorkflow()) { $workflowState = 'enabled'; }
         // Check if user is subscribed
-        if ($this->hasSubscriptions()) {
-        	$subscribeState = 'enabled';
-        }
+        if ($this->hasSubscriptions()) { $subscribeState = 'enabled'; }
         // Check if document has alerts
-        if($this->hasAlerts()) {
-        	$alertState = 'enabled';
-        }
+        if($this->hasAlerts()) { $alertState = 'enabled'; }
         
 		$oTemplating =& KTTemplating::getSingleton();
 		$oTemplate = $oTemplating->loadTemplate('ktcore/document/blocks/viewActions');

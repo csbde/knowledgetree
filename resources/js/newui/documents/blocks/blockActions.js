@@ -49,7 +49,9 @@ function alertActions() {
 	this.baseUrl = ''
 }
 
-/* Display alerts window */
+/* 
+* Display alerts window 
+*/
 alertActions.prototype.displayAction = function(alertId) {
 	var width
 	var height	
@@ -58,15 +60,13 @@ alertActions.prototype.displayAction = function(alertId) {
 	
 	var documentId = jQuery('#documentId').attr('value')
 	var alertState = jQuery('#alertState').attr('value')
-	
+	width = '600px'
+	height = '350px'
+		
 	if(alertId == undefined) {
-		width = '600px'
-		height = '350px'
 		title = 'Add a new alert'
 		address = 'action.php?action=ajax&kt_path_info=alerts.action.document.alert&fDocumentId=' + documentId
 	} else {
-		width = '600px'
-		height = '350px'
 		title = 'Edit alert'
 		address = 'action.php?action=ajaxEdit&kt_path_info=alerts.action.document.alert&fDocumentId=' + documentId + '&alert=' + alertId
 	}
@@ -101,7 +101,53 @@ alertActions.prototype.displayAction = function(alertId) {
 	});
 }
 
-/* Delete alert */
+/* 
+* Display alerts window 
+*/
+alertActions.prototype.displayHistory = function() {
+	var width
+	var height	
+	var title
+	var address
+	
+	var documentId = jQuery('#documentId').attr('value')
+	
+	width = '685px'
+	height = '350px'
+	title = 'Alerts History'
+	address = 'action.php?action=ajaxHistory&kt_path_info=alerts.action.document.alert&fDocumentId=' + documentId
+
+	// create html for form
+	vActions.createForm('alert', title)
+    // create the window
+    this.win = new Ext.Window({
+        applyTo     : 'alerts',
+        layout      : 'fit',
+        width       : width,
+        height      : height,
+        closeAction :'destroy',
+        y           : 75,
+        shadow: false,
+        modal: true
+    });
+    
+    this.win.show()
+    
+	jQuery.ajax({
+		type: "POST",
+		url: address,
+		success: function(data) {
+			jQuery('#add_alert').html(data)
+		},
+		error: function(response, code) {
+			alert('Error. Could not create add alert form.'+response + code)
+		}
+	});
+}
+
+/* 
+* Delete alert 
+*/
 alertActions.prototype.deleteAction = function(alertId, documentId) {
 	var address = 'action.php?kt_path_info=alerts.action.document.alert&fDocumentId=' + documentId + '&action=ajaxDelete&alert=' + alertId
 	jQuery.ajax({
@@ -116,12 +162,17 @@ alertActions.prototype.deleteAction = function(alertId, documentId) {
 	});
 }
 
-/* Refresh all alert actions */
+/* 
+* Refresh all alert actions 
+*/
 alertActions.prototype.refeshAlertsAction = function(documentId) {
 	this.refeshSidebar(documentId)
 	this.refeshSidebar(documentId)
 }
 
+/* 
+* Refresh block 
+*/
 alertActions.prototype.refeshAction = function(documentId) {
 	var address = 'action.php?kt_path_info=ktcore.blocks.document.status&fDocumentId=' + documentId + '&action=ajaxGetDocBlock'
 	jQuery.ajax({
@@ -136,6 +187,9 @@ alertActions.prototype.refeshAction = function(documentId) {
 	});	
 }
 
+/* 
+* Refresh alert sidebar
+*/
 alertActions.prototype.refeshSidebar = function(documentId) {
 	var address = 'action.php?kt_path_info=ktcore.sidebar.alert&fDocumentId=' + documentId + '&action=ajaxGetSidebar'
 	jQuery.ajax({
@@ -160,7 +214,9 @@ function workflowActions() {
 	this.baseUrl = 'action.php?action=ajax&'
 }
 
-/* Display workflow window */
+/* 
+* Display workflow window 
+*/
 workflowActions.prototype.displayAction = function() {
 	var width
 	var height	
@@ -211,7 +267,9 @@ var workflow = new workflowActions()
 
 function subscriptionActions() {}
 
-/* Makes an ajax request to undate subscriptions for a user */
+/* 
+* Makes an ajax request to undate subscriptions for a user 
+*/
 subscriptionActions.prototype.subscribeToDocument = function() {
 	var status = jQuery('#subscribe_action').attr('value')
 	var documentId = jQuery('#documentId').attr('value')
@@ -227,7 +285,9 @@ subscriptionActions.prototype.subscribeToDocument = function() {
 	jQuery.ajax({ url: address,	dataType: "html", type: "POST", cache: false, success: function(data) {	return data; } } );
 }
 
-/* Toggle the action for alerts */
+/* 
+* Toggle the action for alerts 
+*/
 subscriptionActions.prototype.toggleAction = function(action, status) {
 	if(status == 'disabled') {
 		jQuery('#' + action + '_action').attr('class', action + ' action enabled')

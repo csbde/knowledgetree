@@ -53,8 +53,6 @@ class KTDocumentSidebar extends KTDocumentViewlet {
 	 * @return string
 	 */
 	public function getDocSideBars() {
-		$this->oPage->requireJSResource('resources/js/newui/documents/sidebars/sidebarActions.js');
-		$this->oPage->requireCSSResource('resources/css/newui/documents/sidebars/sidebarActions.css');
 		$sidebars = KTDocumentActionUtil::getDocumentActionsForDocument($this->oDocument, $this->oUser, 'documentsidebar');
         
 		$oTemplating = KTTemplating::getSingleton();
@@ -109,10 +107,12 @@ class KTAlertSidebar extends KTDocumentSidebar {
 		$oTemplating = KTTemplating::getSingleton();
 		$oTemplate = $oTemplating->loadTemplate('ktcore/document/sidebars/alerts');
 		$alertUtil = new alertUtil();
-		$alerts = $alertUtil->getAlertByDocument($this->oDocument->getId());
+		$alerts = $alertUtil->getAlertsByDocument($this->oDocument->getId());
         $aTemplateData = array(
 			'context' => $this,
 			'alerts' => $alerts,
+			'alertsMaxDisplay' => 5,
+			'alertsCount' => count($alerts),
 			'documentId' => $this->oDocument->getId(),
         );
         
