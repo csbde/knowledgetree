@@ -18,7 +18,7 @@
 				
 				{$documentBlocks.KTDocumentStatusBlock->getDocBlock()}
 				
-				<p>{$document->getFileName()} {}</p>
+				<p>{$document->getFileName()} </p>
 
 			</td>
 
@@ -48,7 +48,7 @@
 					<br/>
 					<br/>
 										
-					<div class="documenttype" rel="update.php?documentID={$document->getId()}"> 
+					<div class="documenttype" rel="{$rootUrl}/lib/widgets/changeDocumentType.php?documentID={$document->getId()}"> 
 	    			<table class="metadatatable" cellspacing="0" cellpadding="5">
 	    			<tr class="even first">
 	    				<th>Document Type</th>
@@ -58,7 +58,7 @@
 					</table>
 					</div>
 					
-					<div class="editablemetadata" rel="persistMetadata.php?documentID={$document->getId()}">
+					<div class="editablemetadata" rel="{$rootUrl}/lib/widgets/persistMetadata.php?documentID={$document->getId()}">
 					{foreach item=oFieldset from=$fieldsets}
 						{$oFieldset->render($document_data)}
 					{/foreach}

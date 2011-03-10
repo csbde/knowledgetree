@@ -1,6 +1,7 @@
 <?php
 
-require_once('ktapi/ktapi.inc.php');
+require_once('../../config/dmsDefaults.php');
+require_once(KT_DIR . '/ktapi/ktapi.inc.php');
 require_once(KT_LIB_DIR . '/triggers/triggerregistry.inc.php');
 
 	// HTTP headers for no cache etc
@@ -11,10 +12,6 @@ require_once(KT_LIB_DIR . '/triggers/triggerregistry.inc.php');
 	header("Cache-Control: post-check=0, pre-check=0", false);
 	header("Pragma: no-cache");
 	
-	/*if(isset($_REQUEST['folderID'])){
-	       return (int)$_REQUEST['folderID'];
-	    }*/
-	
 	//first get the document object
 	$oDocument = Document::get($_REQUEST['documentID']);
 	if (PEAR::isError($oDocument)) {
@@ -22,57 +19,22 @@ require_once(KT_LIB_DIR . '/triggers/triggerregistry.inc.php');
    		return false;
     }
 	    
-	$GLOBALS['default']->log->debug('persistMetadata REQUEST '.print_r($_REQUEST, true));
+	//$GLOBALS['default']->log->debug('persistMetadata REQUEST '.print_r($_REQUEST, true));
 
-	$GLOBALS['default']->log->debug('persistMetadata POST '.print_r($_POST, true));
-	
-	//$fieldsets = array();
+	//$GLOBALS['default']->log->debug('persistMetadata POST '.print_r($_POST, true));
 	
 	$fields = array();
 	
 	//cycle through the POST variables and get all the fields
 	foreach($_POST as $key => $postVar)
 	{
-		$GLOBALS['default']->log->debug("persistMetadata postVar $key $postVar");
-				
-		//if(strpos($key, 'field_') !== false)
-		//{
-			//$fieldID = substr($key, 6);
-			//$GLOBALS['default']->log->debug("persistMetadata strpos $fieldID");
-			
-		//will be an array if multi-select
-		/*if(is_array($postVar))
-		{
-			$value = '';
-			
-			foreach($postVar as $var)
-			{
-					$value .= $postVar.',';
-			}
-			
-			//chop off trailing comma
-			trim($value, ',');
-			
-			$field = array(
-				'id' => $key,
-				'value' => $value,
-			);
-		}
-		else
-		{
-			$field = array(
-				'id' => $key,
-				'value' => $postVar,
-			);
-		}*/
+		//$GLOBALS['default']->log->debug("persistMetadata postVar $key $postVar");
 		
 		$oField = DocumentField::get($key);
 		
-		//$GLOBALS['default']->log->debug('persistMetadata oField '.print_r($oField, true));
-		
  		if (is_null($oField) || PEAR::isError($oField) || $oField instanceof KTEntityNoObjects)
  		{
- 			$GLOBALS['default']->log->debug("Could not resolve field: $oField->getName() ");	//on fieldset $fieldsetname for document id: $this->documentid");
+ 			//$GLOBALS['default']->log->debug("Could not resolve field: $oField->getName() ");	//on fieldset $fieldsetname for document id: $this->documentid");
  			// exit graciously
  			continue;
  		}
@@ -95,36 +57,9 @@ require_once(KT_LIB_DIR . '/triggers/triggerregistry.inc.php');
 		{
 			$packed[] = array($oField, $postVar);
 		}
-		
- 		
- 		
- 		/*if (++$count == 2)
- 			break;*/
-		
-		/*$oFieldset = KTFieldset::getByField($oField);
-		
-		//does this fieldset already exist in the fieldset array?
-		$inArray = array_search($oFieldset, $fieldsets);
-		$GLOBALS['default']->log->debug("persistMetadata inArray $inArray");
-		if ($inArray !== false)//in_array($oFieldset, $fieldsets))
-		{
-			$GLOBALS['default']->log->debug('persistMetadata fieldsets[inArray] '.print_r($fieldsets[$inArray], true));
-			$fieldsets[$inArray]['fields'][] = $oField;
-		}
-		else 
-		{
-			$fieldsets[] = $oFieldset;
-		}
-		
-		$GLOBALS['default']->log->debug('persistMetadata fieldsets '.print_r($fieldsets, true));
-		$GLOBALS['default']->log->debug('persistMetadata oFieldset '.print_r($oFieldset, true));*/
-		
-		//$fields[] = $field;
-	//}
 	}
 	
-	//$GLOBALS['default']->log->debug('persistMetadata fields '.print_r($fields, true));
-	$GLOBALS['default']->log->debug('persistMetadata packed '.print_r($packed, true));
+	//$GLOBALS['default']->log->debug('persistMetadata packed '.print_r($packed, true));
 	
 	DBUtil::startTransaction();
 
@@ -201,7 +136,7 @@ require_once(KT_LIB_DIR . '/triggers/triggerregistry.inc.php');
 	//now get the fields again so that we can send back the updated data
 	$fieldsets = (array) KTMetadataUtil::fieldsetsForDocument($oDocument, $oDocument->getDocumentTypeID());
 	
-	$GLOBALS['default']->log->debug('persistMetadata fieldsets '.print_r($fieldsets, true));
+	//$GLOBALS['default']->log->debug('persistMetadata fieldsets '.print_r($fieldsets, true));
 	
 	$fieldsresult = array();
 	
@@ -294,7 +229,7 @@ require_once(KT_LIB_DIR . '/triggers/triggerregistry.inc.php');
 		}
 	}
 	
-	$GLOBALS['default']->log->debug('persistMetadata fieldsresult '.print_r($fieldsresult, true));
+	//$GLOBALS['default']->log->debug('persistMetadata fieldsresult '.print_r($fieldsresult, true));
 	
 	//assemble the item to return
 	$item['fields'] = $fieldsresult;
