@@ -580,10 +580,6 @@ a.main_nav_item {
     text-decoration: underline;
 }
 
-#content .descriptiveText
-{
-    color: #666;
-}
 
 #content .descriptiveText.important {
     padding-left: 25px;
@@ -828,16 +824,16 @@ a.main_nav_item {
 
 .metadatatable th {
     text-align: left;
-    width: 40% !important;
+    width: 42% !important;
     vertical-align: top;
-    padding: 2px 0px;
+    padding: 2px 5px 2px 0px;
     font-weight: normal;
 }
 
 .metadatatable td {
     vertical-align: top;
     padding: 2px 0px;
-    font-weight: bold;
+	color: #2F6594;
 }
 
 .metadatatable .versioned td {
@@ -902,10 +898,30 @@ a.main_nav_item {
 
 .detail_fieldset h3
 {
-    margin: 0em 0 0.25em 0;
+    margin: 0em 0 2px 0;
+    padding-bottom: 5px;
+    font-size: 13px;
+    border-bottom: 1px dotted #CCC;
+    font-weight: normal;
 }
 
+.doc_description .more {
+	display: block;
+	padding: 2px 10px;
+	width: 290px;
+	margin: 0px auto;
+	background: #EEE;
+	border: 1px solid #CCC;
+	border-radius: 2px;
+	text-align: center;
+	text-shadow: 0px 1px 0px white;
+}
 
+.doc_info .active {
+	border: 1px solid #b0d1e5;
+	background: #d7e3ea;
+	padding: 2px 5px;
+}
 /* ----------------------- collection view ----------------------------- */
 
 .kt_collection
