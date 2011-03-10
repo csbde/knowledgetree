@@ -220,6 +220,9 @@ class KTAPI_Folder extends KTAPI_FolderItem {
 
         $detail['modified_by'] = $detail['updated_by'] = $username;
         $detail['updated_date'] = $detail['modified_date'] = $folder->getDisplayLastModifiedDate();
+        
+        //clean uri
+        $detail['clean_uri'] = KTBrowseUtil::getUrlForfolder($folder);
 
         return $detail;
     }
@@ -1421,7 +1424,8 @@ class KTAPI_Folder extends KTAPI_FolderItem {
     	$this->renamedSince($timestamp, $folderPermissionsSQL, $changes);
     	$this->movedSince($timestamp, $folderPermissionsSQL, $changes);
     	$this->updatedSince($timestamp, $folderPermissionsSQL, $changes);
-
+    	$this->pathChangedSince($timestamp, $changes);
+    	
     	//have to check more than just myself?
     	if ($depth != 0)
     	{
@@ -1563,7 +1567,7 @@ class KTAPI_Folder extends KTAPI_FolderItem {
 	        }
 
 	        //need to check whether ANY parent folder has been deleted because result will be that this folder has also been deleted
-	        //have to do it in this roundabout way since child folder delete transaction are not recorded!
+	        //have to do it in this roundabout way since child folder delete transactions are not recorded!
 	        //don't do this for the root folder!
 	        else if ($folderID > 1)
 	        {
@@ -1639,6 +1643,46 @@ class KTAPI_Folder extends KTAPI_FolderItem {
         return $contents;
     }
 
+    /**
+     * Checks whether a folder's path has changed
+     * i.e. whether itself or any parent has been moved or renamed
+     * 
+     * @param unknown_type $timestamp
+     */
+    public function pathChangedSince($timestamp, &$contents = array())
+    {		
+		$aParentFolderIDs = explode(',', $this->folder->getParentFolderIDs());        
+                
+        $sParamsPlaceholders = DBUtil::paramArray($aParentFolderIDs);
+        				
+        $sQuery = 	'SELECT F.id, FT.datetime AS change_date ' .
+        			'FROM ' . KTUtil::getTableName('folder_transactions') . ' AS FT INNER JOIN ' . KTUtil::getTableName('folders') . ' AS F ON F.id = FT.folder_id '.
+        			'WHERE (FT.transaction_namespace = \'ktcore.transactions.rename\' OR FT.transaction_namespace = \'ktcore.transactions.rename\') '.
+        			'AND (FT.folder_id = ? OR FT.folder_id IN ( '.$sParamsPlaceholders.' )) AND FT.datetime > ? ';
+
+        $aParams = array_merge(array($this->folderid), $aParentFolderIDs, array($timestamp));
+        
+        $results = DBUtil::getResultArray(array($sQuery, $aParams));
+                
+        //$GLOBALS['default']->log->debug('pathChanged results '.print_r($results, true));
+        
+        if (!is_null($results) && !PEAR::isError($results))
+        {            
+	    	foreach ($results as $result) 
+	    	{
+	        	$folder = &Folder::get($result['id']);
+				$this->assemble_folder_array($folder, $contents);
+	
+				$contents[count($contents) - 1]['changes'] = array(
+					'change_type' => 'UPC',
+					'change_date' => datetimeutil::getLocaleDate($result['change_date'])
+				);
+	
+					// $GLOBALS['default']->log->debug('renamedSince assembled contents '.print_r($contents, true));
+	        }
+        }
+    }
+    
 	public function renamedSince($timestamp, $folderPermissionsSQL, &$contents = array())
     {
     	//$GLOBALS['default']->log->debug("renamedSince timestamp $timestamp");
