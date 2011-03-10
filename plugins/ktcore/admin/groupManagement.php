@@ -271,7 +271,7 @@ class KTGroupAdminDispatcher extends KTAdminDispatcher {
             $assigned['users'][] = "{id: '{$member->getId()}', name: '$name'}";
         }
 
-        $jsonWidget = new KTJSONNewUiLookupWidget(_kt('Users'),
+        $jsonWidget = new KTJSONLookupWidget(_kt('Users'),
             _kt('Select the users which should be part of this group. Once you have added all the users that you require, press <strong>save changes</strong>.'),
             'members', '',
             $this->oPage,
@@ -502,7 +502,7 @@ class KTGroupAdminDispatcher extends KTAdminDispatcher {
             $assigned['groups_roles'][] = "{id: 'group_{$member->getId()}', name: '{$member->getName()}'}";
         }
 
-        $jsonWidget = new KTJSONNewUiLookupWidget(_kt('Groups'),
+        $jsonWidget = new KTJSONLookupWidget(_kt('Groups'),
             _kt('Select the users which should be part of this group. Once you have added all the users that you require, press <strong>save changes</strong>.'),
             'members', '',
             $this->oPage,

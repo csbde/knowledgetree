@@ -494,7 +494,7 @@ class KTUserAdminDispatcher extends KTAdminDispatcher {
             $assigned['groups_roles'][] = "{id: 'group_{$group->getId()}', name: '{$group->getName()}'}";
         }
 
-        $oJSONWidget = new KTJSONNewUiLookupWidget(_kt('Groups'),
+        $jsonWidget = new KTJSONLookupWidget(_kt('Groups'),
             _kt('Select the groups which this user should belong to from the drop down list. Remove groups by clicking the X.  Once you have added all the groups that you require, press <strong>save changes</strong>.'),
             'members', '',
             $this->oPage,
@@ -517,7 +517,7 @@ class KTUserAdminDispatcher extends KTAdminDispatcher {
             'unused_groups' => $aFreeGroups,
             'user_groups' => $aUserGroups,
             'edit_user' => $oUser,
-            'widget' => $oJSONWidget,
+            'widget' => $jsonWidget,
             'old_search' => $old_search,
         );
 
