@@ -1247,7 +1247,9 @@ class KTAPI {
 		/*$results = KTAPI::get_metadata_lookup($fieldid);
 		return $results;*/
 		
-		//$GLOBALS['default']->log->debug("KTAPI _load_metadata_tree $fieldid");
+		$convertToTree = true;
+		
+		$GLOBALS['default']->log->debug("KTAPI _load_metadata_tree '$fieldid $convertToTree'");
 		
 		$sql = "(SELECT mlt.metadata_lookup_tree_parent AS parent_id, ml.treeorg_parent AS tree_id, mlt.name AS tree_name, ml.id AS id, ml.name AS field_name
 				FROM metadata_lookup ml
@@ -1300,7 +1302,7 @@ class KTAPI {
 	
 	private function convertToTree(array $flat)
 	{
-		//$GLOBALS['default']->log->debug('KTAPI convertToTree '.print_r($flat, true));
+		$GLOBALS['default']->log->debug('KTAPI convertToTree '.print_r($flat, true));
 		
 		$idTree = 'tree_id';
 		$idField = 'id';
@@ -1309,25 +1311,40 @@ class KTAPI {
 		$root = 0;
 
 	    $indexed = array();
+	    $path = '';
+	    $treepath = '';
 	    // first pass - get the array indexed by the primary id
 	   	foreach ($flat as $row) {
+	   		$GLOBALS['default']->log->debug('KTAPI convertToTree row '.print_r($row, true));
         	$treeID = $row[$idTree];
+        	
         	if (!isset($indexed[$treeID])) {
+        		$path = '';
+        		$treepath .= $row['tree_name'];
         		$indexed[$treeID] = array('tree_id' => $treeID,
         									'parent_id' => $row[$parentIdField],
         									'tree_name' => $row['tree_name'],
-        									'type' => 'tree');//$row;
+        									'type' => 'tree');
 	        	$indexed[$treeID]['fields'] = array();
         	}
 
+        	$path .= $treepath.'\\'.$row['field_name'];
+        	
+        	$GLOBALS['default']->log->debug("convertToTree path $path");
+        	
 	        $indexed[$treeID]['fields'][$row[$idField]] = array('field_id' => $row[$idField],
 	        													'parent_id' => $treeID,
-	        													'name' =>  $row['field_name'],
+	        													'field_name' =>  $row['field_name'],
+	        													'path' => $path,
 	        													'type' => 'field');
 
 	        if ($row[$parentIdField] < $root) {
 	        	$root = $row[$parentIdField];
 	        }
+	        
+	        $path = '';
+	        
+	        $GLOBALS['default']->log->debug('KTAPI convertToTree indexed '.print_r($indexed, true));
 	    }
 
 	    //file_put_contents('convertToTree.txt', "\n\rroot $root ".print_r($indexed, true), FILE_APPEND);
@@ -1340,10 +1357,10 @@ class KTAPI {
 
 	    $results = array($root => $indexed[$root]);
 	    
-	    //$GLOBALS['default']->log->debug('KTAPI convertToTree results '.print_r($results, true));
-		//$GLOBALS['default']->log->debug('KTAPI convertToTree results inner '.print_r($results[-1]['fields'][0]['fields'], true));
+	    $GLOBALS['default']->log->debug('KTAPI convertToTree results inner 1 '.print_r($results[-1]['fields'], true));
+		$GLOBALS['default']->log->debug('KTAPI convertToTree results inner 2 '.print_r($results[-1]['fields'][0]['fields'], true));
 	    
-	    return $results[-1]['fields'][0]['fields'];
+	    return $results[-1]['fields'];	//[0]['fields'];
 	}
 
 	/**

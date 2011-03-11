@@ -80,18 +80,20 @@ class datetimeutil
 	 */
 	static public function convertToUTC($date)
 	{
-	    return self::getLocaleDate($date, false);
+		$GLOBALS['default']->log->debug('convertToUTC 1 '.self::getLocaleDate($date, false));
+	    //return self::getLocaleDate($date, false);
 
-	    /*
 		// Create time conversion object
 		$tzc = new TimezoneConversion('Y-m-d H:i:s');
 		// Set the date to convert
 		$tzc->setProperty('Datetime', $date);
 		// set zone to UTC
 		$tzc->setProperty('Timezone', 'UTC');
+		
+		$GLOBALS['default']->log->debug('convertToUTC 2 '.$tzc->convertDateTime());
+		
 		// Convert timezone
 		return $tzc->convertDateTime();
-		*/
 	}
 
 	/**

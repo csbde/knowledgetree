@@ -2864,6 +2864,8 @@ class KTWebService {
     		$this->debug("get_document_type_metadata - cannot get document type metadata - "  . $metadata->getMessage(), $session_id);
     		return new SOAP_Value('return', "{urn:$this->namespace}kt_metadata_response", $response);
     	}
+    	
+    	$GLOBALS['default']->log->debug('get_document_type_metadata '.print_r($metadata, true));
 
 		$num_metadata=count($metadata);
 		for($i=0;$i<$num_metadata;$i++)
@@ -2887,13 +2889,24 @@ class KTWebService {
 					}
 					$metadata[$i]['fields'][$j]['selection'] = $new;
 				}
+				//process tree
 				else
-				{					
+				{
+					//recursively do the tree
 					$selection = $metadata[$i]['fields'][$j]['selection'];
-					$new = array();
-	
-					foreach ($selection as $item)
-					{	    	
+					
+					$GLOBALS['default']->log->debug('get_document_type_metadata tree selection '.print_r($selection, true));
+					
+					$tree = array();
+					
+					KTWebService::_populate_tree($selection, $tree);
+					
+					$GLOBALS['default']->log->debug('get_document_type_metadata tree temp '.print_r($tree, true));
+						
+					/*foreach ($selection as $item)
+					{
+						$GLOBALS['default']->log->debug('get_document_type_metadata tree item '.print_r($item, true));
+						
 						$new[] = array(
 							'id' => $item['tree_id'],
 							'name' => $item['field_name'],
@@ -2901,18 +2914,52 @@ class KTWebService {
 							'parent_id' => $item['parent_id'],
 							'tree_name' => $item['tree_name']
 						);
-					}
-					$metadata[$i]['fields'][$j]['selection'] = $new;
+					}*/
+					$metadata[$i]['fields'][$j]['selection'] = $tree;
 				}
 			}
 		}
+		
+		$GLOBALS['default']->log->debug('get_document_type_metadata metadata '.print_r($metadata, true));
 
     	$response = array(
     		'status_code' => KTWS_SUCCESS,
     		'message' => '',
     		'metadata' => $metadata);
+    		
+    	$return = KTWebService::_encode_metadata_response($response);
+    	
+    	$GLOBALS['default']->log->debug('get_document_type_metadata return '.print_r($return, true));
 
-    	return KTWebService::_encode_metadata_response($response);
+    	return $return;
+	}
+	
+	function _populate_tree($selection, &$tree)
+	{
+		$GLOBALS['default']->log->debug('_populate_tree selection '.print_r($selection, true));
+		
+		foreach ($selection as $item)
+		{
+			$GLOBALS['default']->log->debug('_populate_tree item '.print_r($item, true));
+			
+			if ($item['type'] == 'tree')
+			{
+				KTWebService::_populate_tree($item['fields'], &$tree);
+			}
+		
+			else 
+			{			
+				$tree[] = array(
+					'id' => $item['field_id'],
+					'name' => $item['field_name'],
+					'value' => $item['field_name'],
+					'parent_id' => $item['parent_id'],
+					'path' => $item['path'],
+					//'field_id' => $item['field_id'],
+					//'tree_name' => $item['tree_name']
+				);
+			}
+		}
 	}
 
     /**
@@ -4123,7 +4170,7 @@ class KTWebService {
 	 */
 	function get_folder_changes($session_id, $folder_ids, $timestamp = 0, $depth = 1)
 	{
-		//$GLOBALS['default']->log->debug("get_folder_changes $folder_id $change_id");
+		$GLOBALS['default']->log->debug("get_folder_changes $folder_id $timestamp");
 		
 		$kt = &$this->get_ktapi($session_id );
 		if (is_array($kt))
@@ -4633,7 +4680,8 @@ class KTWebService {
          	);
     	if ($this->version >= 3)
          {
-         	$this->__typedef["{urn:$this->namespace}kt_metadata_selection_item"]['tree_name'] = 'string';
+         	$this->__typedef["{urn:$this->namespace}kt_metadata_selection_item"]['path'] = 'string';
+         	//$this->__typedef["{urn:$this->namespace}kt_metadata_selection_item"]['tree_name'] = 'string';
          }
 
     	$this->__typedef["{urn:$this->namespace}kt_metadata_selection"] =
