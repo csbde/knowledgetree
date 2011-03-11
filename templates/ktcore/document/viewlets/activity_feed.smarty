@@ -27,24 +27,41 @@
 
     
 <div class="activityfeed" style="border: 0px solid #000000">
-        
 
-{foreach item=version from=$versions}
-        {if $version.type=='version'}
+{assign var='count' value='0'}
+
+	{foreach item=version from=$versions}
+	    {if $count == $displayMax}
+	    	</div>
+	    	<div class="activityfeed" style="border: 0px solid #000000">
+	    	<div class="items hidden transactions">
+	    {/if}
+	    {if $version.type=='version'}
 	        <span class="metaflag">{$version.version}</span>
-        {else}
-	        <div class="item {$version.type}">
-	            <div class="icon"><img src="http://www.gravatar.com/avatar/{$version.email}?s=48" alt="{$version.name}" title="{$version.name}" /></div>
+	    {else}
+	    	<div class="item {$version.type}">
+	            <div class="icon">
+	            	<img src="http://www.gravatar.com/avatar/{$version.email}?s=48" alt="{$version.name}" title="{$version.name}" />
+	            </div>
 	            <div class="activityfeed_content">
 	                <span class="user">{$version.name}</span>
 	                <span class="description">{$version.comment|sanitize|nl2br}</span>
 	                <span class="date">{$version.datetime}</span>
 	            </div>
 	        </div>
-        {/if}
-        
-{/foreach}
-    </div>
+	    {/if}
+	    {assign var="count" value=$count+1}
+	{/foreach}
+
+	</div>
+</div>
+    <br/>
+    {if $commentsCount > $displayMax}
+		<span class=more_transactions>
+			<span class=more_comments> {$displayMax} of {$commentsCount} transactions. </span>
+			<a class=comment_more_text href="javascript:{ldelim}comments.toggleMore();{rdelim}">More</a>
+		</span>
+	{/if}
 </div>
 
 {literal}

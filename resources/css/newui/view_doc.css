@@ -3,6 +3,10 @@
 	color: #666;
 }
 
+#activity_feed_container div.activityfeed div.items.hidden {
+	display:none;
+}
+
 #sidebar {
 	width: 235px;
 	position: relative;

@@ -263,6 +263,13 @@ JSONLookupWidget.prototype = {
 }
 
 function initJSONLookup(name, action) {
+	return function() {
+    _aLookupWidgets[name] = new JSONLookupWidget();
+    _aLookupWidgets[name].initialize(name, action);
+	}
+}
+
+function initJSONLookupAjax(name, action) {
     _aLookupWidgets[name] = new JSONLookupWidget();
     _aLookupWidgets[name].initialize(name, action);
 }

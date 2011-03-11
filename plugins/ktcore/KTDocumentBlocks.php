@@ -43,47 +43,45 @@ require_once(KT_LIB_DIR . '/actions/documentaction.inc.php');
 require_once(KT_LIB_DIR . '/subscriptions/Subscription.inc');
 require_once(KT_LIB_DIR . '/subscriptions/subscriptions.inc.php');
 
-class KTDocumentStatusBlock extends KTDocumentViewlet
-{
+class KTDocumentStatusBlock extends KTDocumentViewlet {
     public $sName = 'ktcore.blocks.document.status';
-	public $_sShowPermission = 'ktcore.permissions.write';
+	public $_sShowPermission = 'ktcore.permissions.read';
 	
 	/**
 	 * Create an actions block
 	 *
 	 * @return string
 	 */
-	public function getDocBlock()
-	{
-		$this->oPage->requireJSResource('resources/js/newui/documents/blocks/viewActions.js');
-		$this->oPage->requireCSSResource('resources/css/newui/documents/blocks/viewActions.css');
+	public function getDocBlock($wrapper = true) {
+		$this->oPage->requireJSResource('resources/js/newui/documents/blocks/blockActions.js');
+		$this->oPage->requireCSSResource('resources/css/newui/documents/blocks/blockActions.css');
 		
 		$workflowState = $alertState = $subscribeState = 'disabled';
 
         // Check if document has workflows
-        if ($this->hasWorkflow()) {
-        	$workflowState = 'enabled';
-        }
+        if ($this->hasWorkflow()) { $workflowState = 'enabled'; }
         // Check if user is subscribed
-        if ($this->hasSubscriptions()) {
-        	$subscribeState = 'enabled';
-        }
+        if ($this->hasSubscriptions()) { $subscribeState = 'enabled'; }
         // Check if document has alerts
-        if($this->hasAlerts()) {
-        	$alertState = 'enabled';
-        }
+        if($this->hasAlerts()) { $alertState = 'enabled'; }
         
 		$oTemplating =& KTTemplating::getSingleton();
-		$oTemplate = $oTemplating->loadTemplate('ktcore/document/blocks/view_actions');
+		$oTemplate = $oTemplating->loadTemplate('ktcore/document/blocks/viewActions');
         $aTemplateData = array(
               'context' => $this,
               'workflowState' => $workflowState,
               'alertState' => $alertState,
               'subscribeState' => $subscribeState,
               'documentId' => $this->oDocument->getId(),
+              'wrapper' => $wrapper,
         );
         
         return $oTemplate->render($aTemplateData);
+	}
+	
+	public function do_ajaxGetDocBlock() {
+		echo $this->getDocBlock(false);
+		exit(0);
 	}
 	
 	/**
@@ -91,8 +89,7 @@ class KTDocumentStatusBlock extends KTDocumentViewlet
 	 *
 	 * @return boolean
 	 */
-	private function hasAlerts()
-	{
+	private function hasAlerts() {
 		$now = date('Y-m-d H:i:s');
 		$query = "SELECT id, alert_date FROM document_alerts WHERE document_id = {$this->oDocument->getId()} AND alert_date > '$now' LIMIT 1";
 
@@ -105,8 +102,7 @@ class KTDocumentStatusBlock extends KTDocumentViewlet
 	 *
 	 * @return boolean
 	 */
-	private function hasWorkflow()
-	{
+	private function hasWorkflow() {
 		$result = KTWorkflowUtil::getTransitionsForDocumentUser($this->oDocument, $this->oUser);
 		return !empty($result);
 	}
@@ -116,8 +112,7 @@ class KTDocumentStatusBlock extends KTDocumentViewlet
 	 *
 	 * @return boolean
 	 */
-	private function hasSubscriptions()
-	{
+	private function hasSubscriptions() {
         return Subscription::exists($this->oUser->getId(), $this->oDocument->getId(), SubscriptionEvent::subTypes('Document'));
 	}
 }

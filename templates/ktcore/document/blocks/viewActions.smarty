@@ -1,4 +1,6 @@
+{if $wrapper}
 <div id="document_status_area">
+{/if}
 	<input id=documentId type=hidden value={$documentId} />
 	<input id=workflowState type=hidden value={$workflowState} />
 	<input id=alertState type=hidden value={$alertState} />
@@ -8,5 +10,7 @@
 	
 	<a id=alert_action class="alert action {$alertState}" href="javascript:{ldelim}alerts.displayAction();{rdelim}" value={$alertState}></a>
 	<a id=subscribe_action class="subscribe action {$subscribeState}" href="javascript:{ldelim}subscription.subscribeToDocument();{rdelim}" value={$subscribeState}></a>
-	
+
+{if $wrapper}
 </div>
+{/if}

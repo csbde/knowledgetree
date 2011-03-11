@@ -5,12 +5,12 @@
 var win
 var baseUrl
 
-function viewActions() {}
+function blockActions() {}
 
 /*
 * Create the html required to initialise the signature panel
 */
-viewActions.prototype.createForm = function(form, title) {
+blockActions.prototype.createForm = function(form, title) {
 	var inner = '';
 	p = document.getElementById('pageBody').appendChild(document.createElement('div'));
 	p.id = form + 's-panel';
@@ -22,11 +22,11 @@ viewActions.prototype.createForm = function(form, title) {
 /*
 * Close displayed dialog
 */
-viewActions.prototype.closeDisplay = function(form) {
+blockActions.prototype.closeDisplay = function(form) {
 	jQuery('#' + form + 's-panel').remove()
 }
 
-viewActions.prototype.getUrl = function(address, title) {
+blockActions.prototype.getUrl = function(address, title) {
 	address = 'action.php?action=ajax&' + address
 	jQuery.ajax({ url: address,	dataType: "html", type: "POST", cache: false, 
 					beforeSend: function() { 
@@ -39,32 +39,36 @@ viewActions.prototype.getUrl = function(address, title) {
 	});
 }
 
-var vActions = new viewActions()
+var vActions = new blockActions()
 
 // ============================================================
 // Alerts Actions
 // ============================================================
 
 function alertActions() {
-	this.baseUrl = 'action.php?action=ajax&'
+	this.baseUrl = ''
 }
 
-/* Display workflow window */
-alertActions.prototype.displayAction = function(alert_id) {
+/* 
+* Display alerts window 
+*/
+alertActions.prototype.displayAction = function(alertId) {
 	var width
 	var height	
 	var title
-	var documentId = jQuery('#documentId').attr('value')
-	var workflowState = jQuery('#alertState').attr('value')
+	var address
 	
-	if(alert_id == undefined) {
-		width = '600px'
-		height = '350px'
+	var documentId = jQuery('#documentId').attr('value')
+	var alertState = jQuery('#alertState').attr('value')
+	width = '600px'
+	height = '350px'
+		
+	if(alertId == undefined) {
 		title = 'Add a new alert'
+		address = 'action.php?action=ajax&kt_path_info=alerts.action.document.alert&fDocumentId=' + documentId
 	} else {
-		width = '500px'
-		height = '600px'
 		title = 'Edit alert'
+		address = 'action.php?action=ajaxEdit&kt_path_info=alerts.action.document.alert&fDocumentId=' + documentId + '&alert=' + alertId
 	}
 	// create html for form
 	vActions.createForm('alert', title)
@@ -82,7 +86,6 @@ alertActions.prototype.displayAction = function(alert_id) {
     
     this.win.show()
     
-    var address = this.baseUrl + 'kt_path_info=alerts.action.document.alert&fDocumentId=' + documentId
     var getMembers = 'action.php?kt_path_info=alerts.action.document.alert&action=json&json_action=getMembers&fDocumentId=' + documentId
     
 	jQuery.ajax({
@@ -90,12 +93,115 @@ alertActions.prototype.displayAction = function(alert_id) {
 		url: address,
 		success: function(data) {
 			jQuery('#add_alert').html(data)
-			initJSONLookup('members', getMembers)
+			initJSONLookupAjax('members', getMembers)
 		},
 		error: function(response, code) {
 			alert('Error. Could not create add alert form.'+response + code)
 		}
 	});
+}
+
+/* 
+* Display alerts window 
+*/
+alertActions.prototype.displayHistory = function() {
+	var width
+	var height	
+	var title
+	var address
+	
+	var documentId = jQuery('#documentId').attr('value')
+	
+	width = '685px'
+	height = '350px'
+	title = 'Alerts History'
+	address = 'action.php?action=ajaxHistory&kt_path_info=alerts.action.document.alert&fDocumentId=' + documentId
+
+	// create html for form
+	vActions.createForm('alert', title)
+    // create the window
+    this.win = new Ext.Window({
+        applyTo     : 'alerts',
+        layout      : 'fit',
+        width       : width,
+        height      : height,
+        closeAction :'destroy',
+        y           : 75,
+        shadow: false,
+        modal: true
+    });
+    
+    this.win.show()
+    
+	jQuery.ajax({
+		type: "POST",
+		url: address,
+		success: function(data) {
+			jQuery('#add_alert').html(data)
+		},
+		error: function(response, code) {
+			alert('Error. Could not create add alert form.'+response + code)
+		}
+	});
+}
+
+/* 
+* Delete alert 
+*/
+alertActions.prototype.deleteAction = function(alertId, documentId) {
+	var address = 'action.php?kt_path_info=alerts.action.document.alert&fDocumentId=' + documentId + '&action=ajaxDelete&alert=' + alertId
+	jQuery.ajax({
+		type: "POST",
+		url: address,
+		success: function(data) {
+			alerts.refeshAlertsAction(documentId)
+		},
+		error: function(response, code) {
+			alert('Error. Could not delete alert.'+response + code)
+		}
+	});
+}
+
+/* 
+* Refresh all alert actions 
+*/
+alertActions.prototype.refeshAlertsAction = function(documentId) {
+	this.refeshSidebar(documentId)
+	this.refeshAction(documentId)
+}
+
+/* 
+* Refresh block 
+*/
+alertActions.prototype.refeshAction = function(documentId) {
+	var address = 'action.php?kt_path_info=ktcore.blocks.document.status&fDocumentId=' + documentId + '&action=ajaxGetDocBlock'
+	jQuery.ajax({
+		type: "POST",
+		url: address,
+		success: function(data) {
+			jQuery('#document_status_area').html(data)
+		},
+		error: function(response, code) {
+			alert('Error. Could not reload document actions.'+response + code)
+		}
+	});	
+}
+
+/* 
+* Refresh alert sidebar
+*/
+alertActions.prototype.refeshSidebar = function(documentId) {
+	var address = 'action.php?kt_path_info=ktcore.sidebar.alert&fDocumentId=' + documentId + '&action=ajaxGetSidebar'
+	jQuery.ajax({
+		type: "POST",
+		url: address,
+		success: function(data) {
+			jQuery('.current_alerts').html(data)
+		},
+		error: function(response, code) {
+			alert('Error. Could not reload alerts.'+response + code)
+		}
+	});	
 }
 
 var alerts = new alertActions()
@@ -108,7 +214,9 @@ function workflowActions() {
 	this.baseUrl = 'action.php?action=ajax&'
 }
 
-/* Display workflow window */
+/* 
+* Display workflow window 
+*/
 workflowActions.prototype.displayAction = function() {
 	var width
 	var height	
@@ -159,7 +267,9 @@ var workflow = new workflowActions()
 
 function subscriptionActions() {}
 
-/* Makes an ajax request to undate subscriptions for a user */
+/* 
+* Makes an ajax request to undate subscriptions for a user 
+*/
 subscriptionActions.prototype.subscribeToDocument = function() {
 	var status = jQuery('#subscribe_action').attr('value')
 	var documentId = jQuery('#documentId').attr('value')
@@ -175,7 +285,9 @@ subscriptionActions.prototype.subscribeToDocument = function() {
 	jQuery.ajax({ url: address,	dataType: "html", type: "POST", cache: false, success: function(data) {	return data; } } );
 }
 
-/* Toggle the action for alerts */
+/* 
+* Toggle the action for alerts 
+*/
 subscriptionActions.prototype.toggleAction = function(action, status) {
 	if(status == 'disabled') {
 		jQuery('#' + action + '_action').attr('class', action + ' action enabled')

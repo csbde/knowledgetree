@@ -15,8 +15,7 @@
 					{i18n}{$document->getName()|sanitize}{/i18n}
 				</span>
 				{* Display Actions Block *}
-				
-				{$documentBlocks.KTDocumentStatusBlock->getDocBlock()}
+				{$documentBlocks->getDocBlock()}
 				
 				<p>{$document->getFileName()} {}</p>
 
@@ -201,35 +200,8 @@
     {/if}
     </td>
     	<td valign="top" id="sidebar" class="standardBorder" height="100%" width="215">
-				<div id="sidebar_item" >
-					<h2>
-					   {i18n}Account{/i18n} <span class="acc_settings"><a href="{$rootUrl}/admin.php">{i18n}settings{/i18n}</a></span>
-	    			</h2>
-	    			<p style="font-size: 11px; padding: 10px; color: #666;">
-	    				Plan: Starter <br/>
-	    				Storage: 61.83 MB of Unlimited<br/>
-	    				Documents: 156 of Unlimited<br/>
-	    				<p style="text-align:right; font-size: 11px;">
-	    					<a href="{$rootUrl}/plugins/ktlive/subscribe.php" class="sidebarUpgradeBn">{i18n}Upgrade Now{/i18n}</a><br/>
-	    				</p>
-	    				<br/>
-	    			</p>
-				</div>
-				<div id="sidebar_item" >
-					<h2>
-	    				My recent documents
-	    			</h2>
-	    				<ul>
-	    					<li style="font-size: 11px;"><a href="">INV 203</a></li>
-	    					<li style="font-size: 11px;"><a href="">INV 269</a></li>
-	    				</ul>
-			</div>
-
-
-
-
-
-
+		{* Display Actions Block *}
+		{$documentSidebars->getDocSidebars()}
 	</td>
 	</tr>
 </table>

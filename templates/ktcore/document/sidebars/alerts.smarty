@@ -1,0 +1,27 @@
+<link href="resources/css/newui/documents/sidebars/alerts.css" type="text/css" rel="stylesheet" />
+<script src="resources/js/newui/documents/sidebars/alerts.js" type="text/javascript"></script>
+
+{if $alerts}
+	<h2> {i18n}Alerts on Document{/i18n} </h2>
+	<span class=more_alerts>
+		<a href="javascript:{ldelim}alerts.displayHistory();{rdelim}">View Alert History</a>
+	</span>
+	<ul>
+		{assign var='count' value='0'}
+		{foreach item=alert from=$alerts}
+			{if $count < 5} <li> {else} <li class=hidden_alerts> {/if}
+				<a href="javascript:{ldelim}alerts.displayAction('{$alert.id}');{rdelim}"> {$alert.date} </a>
+				<a class="action_icon ktDelete" href="javascript:{ldelim}alerts.deleteAction('{$alert.id}', '{$documentId}');{rdelim}"></a>
+				<a class="action_icon ktEdit" href="javascript:{ldelim}alerts.displayAction('{$alert.id}');{rdelim}"></a>
+				
+			</li>
+			{assign var="count" value=$count+1}
+		{/foreach}
+	</ul>
+	{if $alertsCount > $alertsMaxDisplay}
+		<span class=more_alerts>
+			<span class=more_summary> {$alertsMaxDisplay} of {$alertsCount} alerts. </span>
+			<a class=more_text href="javascript:{ldelim}alertSidebar.toggleMoreAlerts();{rdelim}">More</a>
+		</span>
+	{/if}
+{/if}
