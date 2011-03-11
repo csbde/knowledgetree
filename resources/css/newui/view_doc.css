@@ -347,7 +347,10 @@ button {
     display: block;
     clear: both;
     float: none;
-    margin-bottom: 20px;
+    border-bottom: 1px solid #DDD;
+    margin-bottom: 10px;
+    padding-bottom: 10px;
+    width: 600px;
 }
 
 .activityfeed .item:last-child{
@@ -369,7 +372,9 @@ button {
     margin-left: 60px;
     overflow: hidden;
     word-wrap: break-word;
-    width: 560px;
+    width: 525px;
+    min-height: 50px;
+
 }
 
 .activityfeed .metaflag{
@@ -377,8 +382,8 @@ button {
     float: right;
     background: #A10000 url('../../graphics/newui/tagarrow.gif') left center no-repeat;
     color: #FFFFFF;
-    margin-right: -100px;
-    margin-top: -25px;
+    margin-right: -40px;
+    margin-top: -20px;
     display: block;
     font-size: 11px;
     padding: 2px 2px 2px 15px;
@@ -431,12 +436,17 @@ span.doc_info {
 }
 
 #content #commentsbox {
-	width: 600px !important;
+	width: 580px !important;
 	height: 15px;
 	font-size: 14px;
 	padding:5px;
+	margin-top: 1px;
 }
-
+#content input#comment_post {
+	font-size: 13px;
+	width: 70px!important;
+	font-weight: bold;
+}
 #commentssaveajax {
 	display: none;
 	padding: 10px;
@@ -448,7 +458,7 @@ span.doc_info {
     padding: 0px 10px 10px 5px; 
 }
 #activity_feed_container {
-	width: 300px;
+	width: 700px;
 }
 .activityfeed img {
 	width: 48px;
