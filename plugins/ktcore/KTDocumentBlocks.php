@@ -52,7 +52,7 @@ class KTDocumentStatusBlock extends KTDocumentViewlet {
 	 *
 	 * @return string
 	 */
-	public function getDocBlock() {
+	public function getDocBlock($wrapper = true) {
 		$this->oPage->requireJSResource('resources/js/newui/documents/blocks/blockActions.js');
 		$this->oPage->requireCSSResource('resources/css/newui/documents/blocks/blockActions.css');
 		
@@ -73,13 +73,14 @@ class KTDocumentStatusBlock extends KTDocumentViewlet {
               'alertState' => $alertState,
               'subscribeState' => $subscribeState,
               'documentId' => $this->oDocument->getId(),
+              'wrapper' => $wrapper,
         );
         
         return $oTemplate->render($aTemplateData);
 	}
 	
 	public function do_ajaxGetDocBlock() {
-		echo $this->getDocBlock();
+		echo $this->getDocBlock(false);
 		exit(0);
 	}
 	

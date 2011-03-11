@@ -167,7 +167,7 @@ alertActions.prototype.deleteAction = function(alertId, documentId) {
 */
 alertActions.prototype.refeshAlertsAction = function(documentId) {
 	this.refeshSidebar(documentId)
-	this.refeshSidebar(documentId)
+	this.refeshAction(documentId)
 }
 
 /* 
@@ -179,7 +179,7 @@ alertActions.prototype.refeshAction = function(documentId) {
 		type: "POST",
 		url: address,
 		success: function(data) {
-			jQuery('.document_status_area').html(data)
+			jQuery('#document_status_area').html(data)
 		},
 		error: function(response, code) {
 			alert('Error. Could not reload document actions.'+response + code)
