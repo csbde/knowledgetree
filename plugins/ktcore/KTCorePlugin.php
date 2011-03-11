@@ -96,6 +96,12 @@ class KTCorePlugin extends KTPlugin {
 		
         // Blocks
         $this->registerAction('documentblock', 'KTDocumentStatusBlock', 'ktcore.blocks.document.status', 'KTDocumentBlocks.php');
+        
+        // Document Sidebar
+        $this->registerAction('mainsidebar', 'KTDocumentSidebar', 'ktcore.sidebars.document', 'KTDocumentSidebars.php');
+        $this->registerAction('documentsidebar', 'KTAccountsSidebar', 'ktcore.sidebar.account', 'KTDocumentSidebars.php');
+        $this->registerAction('documentsidebar', 'KTRecentlyViewedSidebar', 'ktcore.sidebar.recentviews', 'KTDocumentSidebars.php');
+        $this->registerAction('documentsidebar', 'KTAlertSidebar', 'ktcore.sidebar.alert', 'KTDocumentSidebars.php');
 		
         // Notifications
         $this->registerNotificationHandler('KTAssistNotification', 'ktcore/assist', 'KTAssist.php');

@@ -71,7 +71,7 @@ class KTDocumentAction extends KTStandardDispatcher {
      *
      * To be set in child class.
      *
-     * Set this to false if you want an action to be available for immutable documents, 
+     * Set this to false if you want an action to be available for immutable documents,
      * true if you want the action prevented for immutable documents.
  	 *
  	 * @access public
@@ -91,14 +91,14 @@ class KTDocumentAction extends KTStandardDispatcher {
             array('action' => 'browse', 'name' => _kt('Browse')),
         );
         $this->persistParams('fDocumentId');
-		
+
         parent::KTStandardDispatcher();
     }
 
     function setDocument(&$oDocument) {
         $this->oDocument =& $oDocument;
     }
-    
+
     function setUser(&$oUser) {
         $this->oUser =& $oUser;
     }
@@ -214,8 +214,9 @@ class KTDocumentAction extends KTStandardDispatcher {
               'documentaction' => 'viewDocument',
               'folderaction' => 'browse',
         );
-        $this->aBreadcrumbs = kt_array_merge($this->aBreadcrumbs,
-            KTBrowseUtil::breadcrumbsForDocument($this->oDocument, $aOptions));
+
+        $crumbs = KTBrowseUtil::breadcrumbsForDocument($this->oDocument, $aOptions);
+        $this->aBreadcrumbs = kt_array_merge($this->aBreadcrumbs, $crumbs);
 
     	$actions = KTDocumentActionUtil::getDocumentActionsForDocument($this->oDocument, $this->oUser, 'documentinfo');
         $oPortlet = new KTActionPortlet(sprintf(_kt('Info')));
@@ -235,7 +236,7 @@ class KTDocumentAction extends KTStandardDispatcher {
     function do_main() {
         return _kt('Dispatcher component of action not implemented.');
     }
-    
+
     /**
      * Check permissions on document for shared user
      *
@@ -267,10 +268,10 @@ class KTDocumentAction extends KTStandardDispatcher {
 				return true;
 			}
 		}
-		
+
 		return false;
     }
-    
+
     /**
      * Set the shared object permission
      *
@@ -282,7 +283,7 @@ class KTDocumentAction extends KTStandardDispatcher {
 		$iFolderId = $this->oDocument->getFolderID();
 		return SharedContent::getPermissions($iUserId, $iDocumentId, $iFolderId, 'document');
     }
-    
+
     function userHasDocumentReadPermission($oDocument)
     {
     	if(SharedUserUtil::isSharedUser())
@@ -290,7 +291,7 @@ class KTDocumentAction extends KTStandardDispatcher {
     		$res = $this->getPermission();
     		if($res == 1) return true; elseif ($res == 0) return false; else return false;
     	}
-    	else 
+    	else
     	{
     		return Permission::userHasDocumentReadPermission($oDocument);
     	}
@@ -424,7 +425,7 @@ class KTDocumentActionUtil {
             if (!empty($sPath)) {
                 require_once($sPath);
             }
-            $aObjects[$sClassName] = new $sClassName($oDocument, $oUser, $oPlugin);
+            $aObjects[] = new $sClassName($oDocument, $oUser, $oPlugin);
         }
         return $aObjects;
     }

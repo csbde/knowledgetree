@@ -3,7 +3,8 @@ var _aLookupWidgets = {};
 function getJSONLookupWidget(name) {
     if (!isUndefinedOrNull(_aLookupWidgets[name])) {
         return _aLookupWidgets[name];
-    } else {
+    }
+    else {
         return false;
     }
 }
@@ -13,7 +14,6 @@ function JSONLookupWidget() { }
 JSONLookupWidget.prototype = {
 
     /* bind_add and bind_remove are functions to be called with the key:value's of selected items */
-
     'initialize' : function(name, action) {
         bindMethods(this);
 
@@ -51,15 +51,16 @@ JSONLookupWidget.prototype = {
         this.triggers[event] = func;
     },
 
-    // value handling
-
+    // values handling
     'getValues' : function(all) {
         var act = this.sAction;
         if (!isUndefinedOrNull(all)) {
             act += '&' + queryString({'filter' : '%'});
-        } else if (this.savedFilter) {
+        }
+        else if (this.savedFilter) {
             act += '&' + queryString({'filter' : this.savedFilter});
-        } else if (!this.initialValuesLoaded) {
+        }
+        else if (!this.initialValuesLoaded) {
             act += '&' + queryString({'selected' : '1'});
         }
 
@@ -86,17 +87,16 @@ JSONLookupWidget.prototype = {
     'renderValues' : function() {
         var aOptions = [];
         var bSelFound = false;
-        for (var k in this.oValues) {
+        for(var k in this.oValues) {
             var found = false;
-            for (var i = 0; i < this.oSelectAssigned.options.length; i++) {
+            for(var i = 0; i < this.oSelectAssigned.options.length; i++) {
                 if (this.oSelectAssigned.options[i].value == k) {
-                    found = true; break;
+                    found = true;
+                    break;
                 }
             }
 
-            if (found) {
-                continue;
-            }
+            if (found) { continue; }
 
             var aParam = {'value':k};
             if (k == 'off') {
@@ -121,7 +121,6 @@ JSONLookupWidget.prototype = {
         }
 
         replaceChildNodes(this.oSelectAvail, aOptions);
-
         if (bSelFound) {
             this.onclickAdd();
         }
@@ -141,10 +140,11 @@ JSONLookupWidget.prototype = {
         var aNewOther = [];
         var exists = false;
         var i = 0;
-        for (i = 0; i < this[aOtherTarget].length; i++) {
+        for(i = 0; i < this[aOtherTarget].length; i++) {
             if (this[aOtherTarget][i] != value) {
                 aNewOther.push(this[aOtherTarget][i]);
-            } else {
+            }
+            else {
                 exists = true;
             }
         }
@@ -152,12 +152,12 @@ JSONLookupWidget.prototype = {
         if (exists) {
             this[aOtherTarget] = aNewOther;
             var sHidden  = this.sName + '_items_' + ((type == 'remove') ? 'added' : 'removed');
-            $(sHidden).value = this[aOtherTarget].join(",");
+            $(sHidden).value = this[aOtherTarget].join(',');
             return;
         }
 
         exists = false;
-        for (i = 0; i < this[aTarget].length; i++) {
+        for(i = 0; i < this[aTarget].length; i++) {
             if (this[aTarget][i] == value) {
                 exists = true;
                 break;
@@ -167,13 +167,12 @@ JSONLookupWidget.prototype = {
         if (!exists) {
             this[aTarget].push(value);
             var sHidden  = this.sName + '_items_' + ((type == 'add') ? 'added' : 'removed');
-            $(sHidden).value = this[aTarget].join(",");
+            $(sHidden).value = this[aTarget].join(',');
         }
 
     },
 
     // signal handling
-
     'onchangeFilter' : function(e) {
         if (this.savedFilter != this.oFilterAvail.value) {
             this.savedFilter = this.oFilterAvail.value;
@@ -192,10 +191,12 @@ JSONLookupWidget.prototype = {
             forEach(this.oSelectAssigned.options, bind(function(o) {
                 if (!this.savedSelector.length) {
                     o.selected = false;
-                } else {
+                }
+                else {
                     if (o.innerHTML.toLowerCase().search(this.savedSelector) != -1) {
                         o.selected = true;
-                    } else {
+                    }
+                    else {
                         o.selected = false;
                     }
                 }
@@ -216,16 +217,19 @@ JSONLookupWidget.prototype = {
                     this.modItems('add', o.value);
                     try {
                         o.selected = false;
-                    } catch(e) {
+                    }
+                    catch(e) {
                         o.setAttribute('selected', false);
                     }
+
                     aCurOptions.push(o);
 
                     if (!isUndefinedOrNull(this.triggers['add'])) {
                         this.triggers['add'](this.oValues[o.value]);
                     }
                 }
-            } catch(e) {
+            }
+            catch(e) {
                 log('exception');
                 // forEach(keys(e), function(k) { log(k,':', e[k]); });
             }
@@ -233,6 +237,7 @@ JSONLookupWidget.prototype = {
 
         aCurOptions.sort(keyComparator('innerHTML'));
         replaceChildNodes(this.oSelectAssigned, aCurOptions);
+
     },
 
     'onclickRemove' : function(e) {
@@ -245,7 +250,8 @@ JSONLookupWidget.prototype = {
                     'id' : o.value.substring(1) };
                     this.triggers['remove'](obj);
                 }
-            } else {
+            }
+            else {
                 aOptions.push(o);
             }
         }, this));
@@ -263,13 +269,8 @@ JSONLookupWidget.prototype = {
 }
 
 function initJSONLookup(name, action) {
-	return function() {
-    _aLookupWidgets[name] = new JSONLookupWidget();
-    _aLookupWidgets[name].initialize(name, action);
-	}
-}
-
-function initJSONLookupAjax(name, action) {
-    _aLookupWidgets[name] = new JSONLookupWidget();
-    _aLookupWidgets[name].initialize(name, action);
+    return function() {
+        _aLookupWidgets[name] = new JSONLookupWidget();
+        _aLookupWidgets[name].initialize(name, action);
+    }
 }
