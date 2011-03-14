@@ -50,6 +50,8 @@
 define('LOAD_JS_MIN', false);
 // set true to combine js into one file.  This appears to retard performance at least in FF and possibly others.
 define('COMBINE_JS', false);
+// set true to combine css into one file.  Performance benefits uncertain.
+define('COMBINE_CSS', false);
 
 require_once(KT_LIB_DIR . "/plugins/pluginregistry.inc.php");
 require_once(KT_LIB_DIR . "/templating/templating.inc.php");
@@ -193,14 +195,14 @@ class KTPage {
             }
         }
 
-        if (COMBINE_JS) {
+        if (COMBINE_CSS) {
             $combinationFile = $this->combineResources($css, 'css');
             // third party css, because we cannot so easily control absolute url content
             $css = array('thirdpartyjs/extjs/resources/css/ext-all.css', $combinationFile);
             $this->requireCSSResources($css);
         }
         else {
-            $css[] = 'thirdpartyjs/extjs/resources/css/ext-all.css';
+            array_unshift($css, 'thirdpartyjs/extjs/resources/css/ext-all.css');
             $this->requireCSSResources($css);
         }
 
