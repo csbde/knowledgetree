@@ -193,10 +193,16 @@ class KTPage {
             }
         }
 
-        $combinationFile = $this->combineResources($css, 'css');
-        // third party css, because we cannot so easily control absolute url content
-        $css = array('thirdpartyjs/extjs/resources/css/ext-all.css', $combinationFile);
-        $this->requireCSSResources($css);
+        if (COMBINE_JS) {
+            $combinationFile = $this->combineResources($css, 'css');
+            // third party css, because we cannot so easily control absolute url content
+            $css = array('thirdpartyjs/extjs/resources/css/ext-all.css', $combinationFile);
+            $this->requireCSSResources($css);
+        }
+        else {
+            $css[] = 'thirdpartyjs/extjs/resources/css/ext-all.css';
+            $this->requireCSSResources($css);
+        }
 
         if ($oConfig->get('ui/morphEnabled') == '1') {
         	$morphTheme = $oConfig->get('ui/morphTo');
