@@ -2752,7 +2752,7 @@ class KTWebService {
     		$selection = $field['selection'];
     		foreach($selection as $skey => $sitem)
     		{
-    			if (!is_null($item['id']))
+    			if (!is_null($sitem['id']))
     			{
     				$sitem['id'] = (int) $sitem['id'];
     			}
@@ -2871,19 +2871,39 @@ class KTWebService {
 			$num_fields = count($metadata[$i]['fields']);
 			for($j=0;$j<$num_fields;$j++)
 			{
-				$selection=$metadata[$i]['fields'][$j]['selection'];
-				$new = array();
-
-				foreach($selection as $item)
+				if ($metadata[$i]['fields'][$j]['control_type'] != 'tree')
 				{
-					$new[] = array(
-						'id'=>null,
-						'name' => $item,
-						'value' => $item,
-						'parent_id'=>null
-					);
+					$selection = $metadata[$i]['fields'][$j]['selection'];
+					$new = array();
+	
+					foreach ($selection as $item)
+					{	    	
+						$new[] = array(
+							'id' => null,
+							'name' => $item,
+							'value' => $item,
+							'parent_id' => null
+						);
+					}
+					$metadata[$i]['fields'][$j]['selection'] = $new;
 				}
-				$metadata[$i]['fields'][$j]['selection'] = $new;
+				else
+				{					
+					$selection = $metadata[$i]['fields'][$j]['selection'];
+					$new = array();
+	
+					foreach ($selection as $item)
+					{	    	
+						$new[] = array(
+							'id' => $item['tree_id'],
+							'name' => $item['field_name'],
+							'value' => $item['field_name'],
+							'parent_id' => $item['parent_id'],
+							'tree_name' => $item['tree_name']
+						);
+					}
+					$metadata[$i]['fields'][$j]['selection'] = $new;
+				}
 			}
 		}
 
@@ -2938,19 +2958,39 @@ class KTWebService {
 			$num_fields = count($metadata[$i]['fields']);
 			for ($j = 0; $j < $num_fields; $j++)
 			{
-				$selection = $metadata[$i]['fields'][$j]['selection'];
-				$new = array();
-
-				foreach ($selection as $item)
+				if ($metadata[$i]['fields'][$j]['control_type'] != 'tree')
 				{
-					$new[] = array(
-						'id' => null,
-						'name' => $item,
-						'value' => $item,
-						'parent_id' => null
-					);
+					$selection = $metadata[$i]['fields'][$j]['selection'];
+					$new = array();
+	
+					foreach ($selection as $item)
+					{	    	
+						$new[] = array(
+							'id' => null,
+							'name' => $item,
+							'value' => $item,
+							'parent_id' => null
+						);
+					}
+					$metadata[$i]['fields'][$j]['selection'] = $new;
 				}
-				$metadata[$i]['fields'][$j]['selection'] = $new;
+				else
+				{					
+					$selection = $metadata[$i]['fields'][$j]['selection'];
+					$new = array();
+	
+					foreach ($selection as $item)
+					{	    	
+						$new[] = array(
+							'id' => $item['tree_id'],
+							'name' => $item['field_name'],
+							'value' => $item['field_name'],
+							'parent_id' => $item['parent_id'],
+							'tree_name' => $item['tree_name']
+						);
+					}
+					$metadata[$i]['fields'][$j]['selection'] = $new;
+				}
 			}
 		}
 
@@ -4158,7 +4198,7 @@ class KTWebService {
 		//$GLOBALS['default']->log->debug("document_has_binary_changes $document_id $from_version $to_version");
 		
 		//first some sanity-checking
-		if ($from_version <= 0.0 || $to_version <= 0.0)
+		if ($from_version < 0.0 || $to_version <= 0.0)
 		{
 			$response = KTWebService::_status(KTWS_ERR_PROBLEM, 'Version(s) not valid.');
 		}
@@ -4195,6 +4235,13 @@ class KTWebService {
     	return new SOAP_Value('return', "{urn:$this->namespace}kt_response", $response);
 	}
 	
+	function verify_folders_total_size($session_id, $include_folder_ids, $exclude_folder_ids)
+	{
+		$response = KTWebService::_status(KTWS_SUCCESS, '');
+		
+		return new SOAP_Value('return', "{urn:$this->namespace}kt_response", $response);
+	}
+	
     private function setTypeDefinitions()
     {
         $this->__typedef["{urn:$this->namespace}kt_response"] =
@@ -4221,6 +4268,7 @@ class KTWebService {
          
          if ($this->version >= 3) {
          	$this->__typedef["{urn:$this->namespace}kt_folder_detail"]['linked_folder_id'] = 'int';
+         	$this->__typedef["{urn:$this->namespace}kt_folder_detail"]['clean_uri'] = 'string';
 
          	$this->__typedef["{urn:$this->namespace}kt_document_comment"] = array(
          		'id' => 'int',
@@ -4583,6 +4631,10 @@ class KTWebService {
 				'value' => 'string',
         		'parent_id' => 'int'
          	);
+    	if ($this->version >= 3)
+         {
+         	$this->__typedef["{urn:$this->namespace}kt_metadata_selection_item"]['tree_name'] = 'string';
+         }
 
     	$this->__typedef["{urn:$this->namespace}kt_metadata_selection"] =
          	array(
@@ -5597,6 +5649,11 @@ class KTWebService {
     			
     		$this->__dispatch_map['document_has_binary_changes'] = 
     			array('in' => array('session_id' => 'string', 'document_id' => 'int', 'from_version' => 'float', 'to_version' => 'float' ),
+    				'out' => array( 'return' => "{urn:$this->namespace}kt_response" )
+    			);
+    			
+    		$this->__dispatch_map['verify_folders_total_size'] = 
+    			array('in' => array('session_id' => 'string', 'include_folder_ids' => "{urn:$this->namespace}kt_folder_ids", 'exclude_folder_ids' => "{urn:$this->namespace}kt_folder_ids" ),
     				'out' => array( 'return' => "{urn:$this->namespace}kt_response" )
     			);
     			
