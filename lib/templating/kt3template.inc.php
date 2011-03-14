@@ -47,7 +47,7 @@
  */
 
 // set this to false for debugging javascript
-define('LOAD_JS_MIN', true);
+define('LOAD_JS_MIN', false);
 // set true to combine js into one file.  This appears to retard performance at least in FF and possibly others.
 define('COMBINE_JS', false);
 
