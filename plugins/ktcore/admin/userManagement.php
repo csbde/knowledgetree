@@ -468,16 +468,18 @@ class KTUserAdminDispatcher extends KTAdminDispatcher {
         * is there _any_ way to fix that?
         */
 
-        $groups = array('null' => 'Select group');
+        $groups = array();
         $groupList = GroupUtil::listGroups();
         foreach ($groupList as $group) {
-            $groups["group_{$group->getId()}"] = $group->getName();
+            $groups["group_{$group->getId()}"]['name'] = $group->getName();
+            $groups["group_{$group->getId()}"]['active'] = 1;
         }
 
         $assigned['groups_roles'] = array();
         $userGroups = GroupUtil::listGroupsForUser($oUser);
         foreach ($userGroups as $key => $group) {
             $assigned['groups_roles'][] = "{id: 'group_{$group->getId()}', name: '{$group->getName()}'}";
+            $groups["group_{$group->getId()}"]['active'] = 0;
         }
 
         $jsonWidget = new KTJSONLookupWidget(_kt('Groups'),
@@ -492,7 +494,9 @@ class KTUserAdminDispatcher extends KTAdminDispatcher {
                 'groups_roles' => $groups,
                 'assigned' => array(implode(',', $assigned['groups_roles'])),
                 'type' => 'groups',
-                'parts' => 'groups'
+                'parts' => 'groups',
+                'selection_default' => 'Select group',
+                'optgroups' => false
             )
         );
 

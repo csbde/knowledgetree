@@ -76,10 +76,21 @@ jQuery(document).ready(function($) {
             <td><label for="select_{$name}_avail">{$label}</label></td>
             <td style="vertical-align: top">
                 <select style="width:100%" name="{$name}" id="select_{$name}_avail">
-                {foreach item=lookup key=lookup_key from=$options.groups_roles}
-                    <option value="{$lookup_key}">{$lookup}</option>
-                    <!--<option value="{$lookup_key}" {if ($value == $lookup_key)}selected="selected"{/if}>{$lookup}</option>-->
-                {/foreach}
+                <option value="" disabled="disabled" selected>{$options.selection_default}</option>
+                {if $options.optgroups}
+                    {foreach item=lookup key=lookup_key from=$options.groups_roles}
+                        <optgroup label="{$lookup_key}">
+                            {foreach item=option key=option_key from=$lookup}
+                                <option id="{$option_key}" value="{$option_key}" {if $option.active == 0}disabled="true"{/if}>{$option.name}</option>
+                            {/foreach}
+                        </optgroup>
+                    {/foreach}
+                {else}
+                    {foreach item=option key=option_key from=$options.groups_roles}
+                        {$option}
+                        <option value="{$option_key}" {if $option.active == 0}disabled="true"{/if}>{$option.name}</option>
+                    {/foreach}
+                {/if}
                 </select>
             </td>
         </tr>

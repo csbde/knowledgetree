@@ -280,10 +280,11 @@ class KTGroupAdminDispatcher extends KTAdminDispatcher {
             null,
             array(
                 'action' => 'getUsers',
-                'groups_roles' => $groupUsers,
                 'assigned' => array('', implode(',', $assigned['users'])),
                 'type' => 'users',
-                'parts' => 'users'
+                'parts' => 'users',
+                'selection_default' => 'Select groups and roles',
+                'optgroups' => false
             )
         );
 
@@ -488,11 +489,12 @@ class KTGroupAdminDispatcher extends KTAdminDispatcher {
         $this->oPage->setBreadcrumbDetails(_kt('manage members'));
         $this->oPage->setTitle(sprintf(_kt('Manage members of %s'), $group->getName()));
 
-        $groups = array('null' => 'Select group');
+        $groups = array();
         $groupList = GroupUtil::listGroups();
         foreach ($groupList as $subGroup) {
             if ($group->getId() == $subGroup->getId()) { continue; }
-            $groups["group_{$subGroup->getId()}"] = $subGroup->getName();
+            $groups["group_{$subGroup->getId()}"]['name'] = $subGroup->getName();
+            $groups["group_{$subGroup->getId()}"]['active'] = 1;
         }
 
         $memberGroups = $group->getMemberGroups();
@@ -500,6 +502,7 @@ class KTGroupAdminDispatcher extends KTAdminDispatcher {
         $assigned['groups_roles'] = array();
         foreach ($memberGroups as $member) {
             $assigned['groups_roles'][] = "{id: 'group_{$member->getId()}', name: '{$member->getName()}'}";
+            $groups["group_{$member->getId()}"]['active'] = 0;
         }
 
         $jsonWidget = new KTJSONLookupWidget(_kt('Groups'),
@@ -514,7 +517,9 @@ class KTGroupAdminDispatcher extends KTAdminDispatcher {
                 'groups_roles' => $groups,
                 'assigned' => array(implode(',', $assigned['groups_roles'])),
                 'type' => 'groups',
-                'parts' => 'groups'
+                'parts' => 'groups',
+                'selection_default' => 'Select group',
+                'optgroups' => false
             )
         );
 
