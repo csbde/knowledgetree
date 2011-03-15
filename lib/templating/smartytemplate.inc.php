@@ -7,7 +7,7 @@
  * KnowledgeTree Community Edition
  * Document Management Made Simple
  * Copyright (C) 2008, 2009, 2010 KnowledgeTree Inc.
- * 
+ *
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License version 3 as published by the
@@ -52,12 +52,6 @@ class KTSmartyTemplate extends KTTemplate {
         $sVarDirectory = $oConfig->get('urls/varDirectory');
         $smarty->compile_dir = $oConfig->get('urls/tmpDirectory');
 
-//        foreach (array($sVarDirectory . '/tmp', '/tmp') as $sPath) {
-//            if (is_writeable($sPath)) {
-//                $smarty->compile_dir = $sPath;
-//                break;
-//            }
-//        }
         if (is_array($aDict)) {
             $iLen = count($aDict);
             $aKeys = array_keys($aDict);
@@ -66,6 +60,7 @@ class KTSmartyTemplate extends KTTemplate {
                 $smarty->assign_by_ref($sKey, $aDict[$sKey]);
             }
         }
+
         if (is_array($this->aDict)) {
             $iLen = count($this->aDict);
             $aKeys = array_keys($this->aDict);
@@ -74,6 +69,7 @@ class KTSmartyTemplate extends KTTemplate {
                 $smarty->assign_by_ref($sKey, $this->aDict[$sKey]);
             }
         }
+
         $KTConfig =& KTConfig::getSingleton();
 
         // needed for a very, very few places.
@@ -84,15 +80,13 @@ class KTSmartyTemplate extends KTTemplate {
         $absroot .= $hostname;
         $absroot .= $KTConfig->get("KnowledgeTree/rootUrl");
 
-        if (isset($_SESSION['search2_quick']))
-        {
+        if (isset($_SESSION['search2_quick'])) {
         	$search2_quick = $_SESSION['search2_quick'];
         	$search2_general = $_SESSION['search2_general'];
         	$search2_quickQuery = trim($_SESSION['search2_quickQuery']);
-        	if ($search2_quickQuery == '')
-        	{
+        	/*if ($search2_quickQuery == '') {
         		$search2_quickQuery = '';
-        	}
+        	}*/
         }
         else
         {
@@ -315,8 +309,8 @@ class KTSmartyTemplate extends KTTemplate {
     function ktLink($params, &$smarty) {
         return KTUtil::ktLink($params['base'], $params['subpath'], $params['query']);
     }
-	
-	
+
+
 	function buildUrl($params, &$smarty) {
 		if (isset($params['file'])) {
 			$file = $params['file'];
@@ -338,7 +332,7 @@ class KTSmartyTemplate extends KTTemplate {
 
     function getCrumbStringForDocument($params, &$smarty) {
 	$aBreadcrumbs = KTBrowseUtil::breadcrumbsForDocument($params['document'], array('final'=>true));
-	if(PEAR::isError($aBreadcrumbs)) {
+	if (PEAR::isError($aBreadcrumbs)) {
 	    return _kt('No breadcrumbs available');
 	}
 
