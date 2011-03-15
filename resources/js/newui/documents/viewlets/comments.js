@@ -2,10 +2,10 @@ function commentsViewlet() {}
 
 commentsViewlet.prototype.toggleMore = function() {
 	var state = jQuery('.comment_more_text').html()
-	if(state =='More') { 
-		jQuery('.comment_more_text').html('Hide')
+	if(state =='more...') { 
+		jQuery('.comment_more_text').html('hide')
 	} else {
-		jQuery('.comment_more_text').html('More')
+		jQuery('.comment_more_text').html('more...')
 	}
 	jQuery('.more_comments').toggle()
 	jQuery('.items.hidden.transactions').toggle()
