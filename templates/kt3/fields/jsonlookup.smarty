@@ -1,59 +1,8 @@
 <link rel="stylesheet" href="/thirdpartyjs/jquery/plugins/tokenizer/styles/token-input-facebook.css" type="text/css"/>
-{$context->oPage->requireJSResource('resources/js/newui/jsonlookup.js')}
-{$context->oPage->requireJSResource('thirdpartyjs/jquery/plugins/tokenizer/src/jquery.tokeninput.js')}
-{$context->oPage->requireJSResource('thirdpartyjs/jquery/plugins/tokenizer/src/jquery.selectinput.js')}
-{capture assign=sJavascript}addLoadEvent(initJSONLookup('{$name}','{addQS}action=json&json_action={$options.action}{/addQS}')){/capture}
-{$context->oPage->requireJSStandalone($sJavascript)}
-
-{if $options.parts == 'all' || $options.parts == 'groups'}
-{literal}
-<script type="text/javascript">
-jQuery(document).ready(function($) {
-    $("#groups_roles").selectInput(document.getElementById('select_members_avail'), {
-        prePopulate: [{/literal}{$options.assigned[0]}{literal}],
-        classes: {
-            tokenList: "token-input-list-facebook",
-            token: "token-input-token-facebook",
-            tokenDelete: "token-input-delete-token-facebook",
-            selectedToken: "token-input-selected-token-facebook",
-            highlightedToken: "token-input-highlighted-token-facebook",
-            dropdown: null,
-            dropdownItem: null,
-            dropdownItem2: null,
-            selectedDropdownItem: null,
-            inputToken: null
-        }
-    });
-});
-</script>
-{/literal}
-{/if}
-
-{if $options.parts == 'all' || $options.parts == 'users'}
-{literal}
-<script type="text/javascript">
-jQuery(document).ready(function($) {
-    $("#users").tokenInput("/filterUsers.php", {
-        // Alter the minChars value to determine how much the user must type before a search is initiated
-        minChars: 2,
-        prePopulate: [{/literal}{$options.assigned[1]}{literal}],
-        classes: {
-            tokenList: "token-input-list-facebook",
-            token: "token-input-token-facebook",
-            tokenDelete: "token-input-delete-token-facebook",
-            selectedToken: "token-input-selected-token-facebook",
-            highlightedToken: "token-input-highlighted-token-facebook",
-            dropdown: "token-input-dropdown-facebook",
-            dropdownItem: "token-input-dropdown-item-facebook",
-            dropdownItem2: "token-input-dropdown-item2-facebook",
-            selectedDropdownItem: "token-input-selected-dropdown-item-facebook",
-            inputToken: "token-input-input-token-facebook"
-        }
-    });
-});
-</script>
-{/literal}
-{/if}
+<script type="text/javascript" src="/resources/js/newui/jsonlookup.js"></script>
+<script type="text/javascript" src="/thirdpartyjs/jquery/plugins/tokenizer/src/jquery.tokeninput.js"></script>
+<script type="text/javascript" src="/thirdpartyjs/jquery/plugins/tokenizer/src/jquery.selectinput.js"></script>
+<!--{$context->oPage->requireJSStandalone($sJavascript)}-->
 
 <div class="field {if ($has_errors)}error{/if}">
 
@@ -100,6 +49,26 @@ jQuery(document).ready(function($) {
                 <input type="text" name="groups_roles" id="groups_roles"/>
             </td>
         </tr>
+
+        {literal}
+        <script type="text/javascript">
+            jQuery("#groups_roles").selectInput(document.getElementById('select_members_avail'), {
+                prePopulate: [{/literal}{$options.assigned[0]}{literal}],
+                classes: {
+                    tokenList: "token-input-list-facebook",
+                    token: "token-input-token-facebook",
+                    tokenDelete: "token-input-delete-token-facebook",
+                    selectedToken: "token-input-selected-token-facebook",
+                    highlightedToken: "token-input-highlighted-token-facebook",
+                    dropdown: null,
+                    dropdownItem: null,
+                    dropdownItem2: null,
+                    selectedDropdownItem: null,
+                    inputToken: null
+                }
+            });
+        </script>
+        {/literal}
         {/if}
 
         {if $options.parts == 'all' || $options.parts == 'users'}
@@ -112,13 +81,36 @@ jQuery(document).ready(function($) {
                 <input type="text" name="users" id="users"/>
             </td>
         </tr>
+
+        {literal}
+        <script type="text/javascript">
+            jQuery("#users").tokenInput("/filterUsers.php", {
+                // Alter the minChars value to determine how much the user must type before a search is initiated
+                minChars: 2,
+                prePopulate: [{/literal}{$options.assigned[1]}{literal}],
+                classes: {
+                    tokenList: "token-input-list-facebook",
+                    token: "token-input-token-facebook",
+                    tokenDelete: "token-input-delete-token-facebook",
+                    selectedToken: "token-input-selected-token-facebook",
+                    highlightedToken: "token-input-highlighted-token-facebook",
+                    dropdown: "token-input-dropdown-facebook",
+                    dropdownItem: "token-input-dropdown-item-facebook",
+                    dropdownItem2: "token-input-dropdown-item2-facebook",
+                    selectedDropdownItem: "token-input-selected-dropdown-item-facebook",
+                    inputToken: "token-input-input-token-facebook"
+                }
+            });
+        </script>
+        {/literal}
         {/if}
 
     </tbody>
     </table>
 
-    <input name="{$name}_items_added" id="{$name}_items_added" type="hidden" />
-    <input name="{$name}_items_removed" id="{$name}_items_removed" type="hidden" />
     <input type="hidden" name="kt_core_fieldsets_expect[{$name}]" value ="1" />
 
 </div>
+
+{if $options.parts == 'all' || $options.parts == 'users'}
+{/if}
