@@ -1,41 +1,41 @@
  
 <!-- FILE: kt3/fieldsets/simple.smarty -->
-	<div class="detail_fieldset">
+	<div class="detail_fieldset" rel="{$rootUrl}/lib/widgets/persistMetadata.php?documentID={$document->getId()}&fieldsetID={$fieldset->getId()}">
 	    <h3 title='{$description}'>{$fieldset->getName()}</h3>
 	
 	    <table class="metadatatable" cellspacing="0" cellpadding="5">
 	      {foreach item=aFieldPair from=$fieldset_values name=fields}
-	    <tr class="{cycle values=even,odd} {if $smarty.foreach.fields.first}first{/if} {if ($aFieldPair.required)}required{/if}" id="metadatafield_{$aFieldPair.fieldid}">
+	    <tr class="metadatarow {if ($aFieldPair.required==='1')}required{/if}" id="metadatafield_{$aFieldPair.fieldid}">
 	        <th title="{$aFieldPair.description} {if ($aFieldPair.options.maxlength)} max: {$aFieldPair.options.maxlength}{/if}">{$aFieldPair.name}</th>
 		        {if ($aFieldPair.control_type==='string')}
 		        	<td class="metadata_textbox">
-		        	<span class="descriptiveText" data-name="{$aFieldPair.fieldid}" data-type='text' data-value-id="value_{$aFieldPair.fieldid}" {if ($aFieldPair.required)}data-required="true"{/if} />
+		        	<span class="descriptiveText" data-name="{$aFieldPair.fieldid}" data-type='text' data-value-id="value_{$aFieldPair.fieldid}" {if ($aFieldPair.required)}data-required="true"{/if}></span>
 		        {elseif ($aFieldPair.control_type==='lookup')}
 		        	<td class="metadata_singleselect">
-		        	<span class="descriptiveText" id="singleselect_{$aFieldPair.fieldid}" data-name="{$aFieldPair.fieldid}" data-type='select' data-options='[["No selection","no value"],{foreach from=$aFieldPair.selection item=option}["{$option}","{$option}"],{/foreach}]' data-value-id="value_{$aFieldPair.fieldid}" />
+		        	<span class="descriptiveText" id="singleselect_{$aFieldPair.fieldid}" data-name="{$aFieldPair.fieldid}" data-type='select' data-options='[["No selection","no value"],{foreach from=$aFieldPair.selection item=option}["{$option}","{$option}"],{/foreach}]' data-value-id="value_{$aFieldPair.fieldid}"></span>
 		        {elseif ($aFieldPair.control_type==='large text')}
 		        	{if ($aFieldPair.options.ishtml)}
 		        		<td class="metadata_htmleditor">
-						<span class="descriptiveText" id="richtexteditor_{$aFieldPair.fieldid}" data-name="{$aFieldPair.fieldid}" data-type='htmleditor' data-value-id="value_{$aFieldPair.fieldid}" {if ($aFieldPair.options.maxlength)}data-maxsize="{$aFieldPair.options.maxlength}"{/if} />
+						<span class="descriptiveText" id="richtexteditor_{$aFieldPair.fieldid}" data-name="{$aFieldPair.fieldid}" data-type='htmleditor' data-value-id="value_{$aFieldPair.fieldid}" {if ($aFieldPair.options.maxlength)}data-maxsize="{$aFieldPair.options.maxlength}"{/if}></span>
 					{else}
 						<td class="metadata_textarea">
-						<span class="descriptiveText" id="textarea_{$aFieldPair.fieldid}" data-name="{$aFieldPair.fieldid}" data-type='textarea' data-value-id="value_{$aFieldPair.fieldid}" {if ($aFieldPair.options.maxlength)}data-maxsize="{$aFieldPair.options.maxlength}"{/if} />
+						<span class="descriptiveText" id="textarea_{$aFieldPair.fieldid}" data-name="{$aFieldPair.fieldid}" data-type='textarea' data-value-id="value_{$aFieldPair.fieldid}" {if ($aFieldPair.options.maxlength)}data-maxsize="{$aFieldPair.options.maxlength}"{/if}></span>
 					{/if}
 				{elseif ($aFieldPair.control_type==='date')}
 					<td class="metadata_date">
-					<span class="descriptiveText" data-name="{$aFieldPair.fieldid}" data-type='datepicker' data-value-id="value_{$aFieldPair.fieldid}" />
+					<span class="descriptiveText" data-name="{$aFieldPair.fieldid}" data-type='datepicker' data-value-id="value_{$aFieldPair.fieldid}"></span>
 				{elseif ($aFieldPair.control_type==='tree')}
 					<td class="metadata_tree">
-					<span class="descriptiveText" data-name="{$aFieldPair.fieldid}" data-type='tree' data-options='{$aFieldPair.selection}' data-value-id="value_{$aFieldPair.fieldid}" {if ($aFieldPair.required)}data-required="true"{/if} />
+					<span class="descriptiveText" data-name="{$aFieldPair.fieldid}" data-type='tree' data-options='{$aFieldPair.selection}' data-value-id="value_{$aFieldPair.fieldid}" {if ($aFieldPair.required)}data-required="true"{/if} /></span>
 				{elseif ($aFieldPair.control_type==='multiselect')}
 					{if ($aFieldPair.options.type==='multiwithlist')}
 						<td class="metadata_multilistselect">
-						<span class="descriptiveText" data-value-id="value_{$aFieldPair.fieldid}" data-name="{$aFieldPair.fieldid}[]" data-type='multiselect' data-options='[["No selection","no value"],{foreach from=$aFieldPair.selection item=option}["{$option}","{$option}"],{/foreach}]' {if ($aFieldPair.required)}data-required="true"{/if} />
+						<span class="descriptiveText" data-value-id="value_{$aFieldPair.fieldid}" data-name="{$aFieldPair.fieldid}[]" data-type='multiselect' data-options='[["No selection","no value"],{foreach from=$aFieldPair.selection item=option}["{$option}","{$option}"],{/foreach}]' {if ($aFieldPair.required)}data-required="true"{/if}></span>
 					{elseif ($aFieldPair.options.type==='multiwithcheckboxes')}
 						<td class="metadata_multicheckselect">
 						<span>
 							{foreach from=$aFieldPair.selection item=option}
-								 <span class="descriptiveText" data-checked_value="{$option}" data-name="{$aFieldPair.fieldid}[]" data-type='checkbox' data-value-id="value_{$aFieldPair.fieldid}" />
+								 <span class="descriptiveText" data-checked_value="{$option}" data-name="{$aFieldPair.fieldid}[]" data-type='checkbox' data-value-id="value_{$aFieldPair.fieldid}"></span>
 							{/foreach}
 						</span>
 					{/if}

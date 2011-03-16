@@ -19,7 +19,7 @@ require_once(KT_LIB_DIR . '/widgets/fieldsetDisplay.inc.php');
 	$iDocumentTypeID = (int)$_POST['documentTypeID'];
 	
 	//now update the document type
-	//setDocumentType($iDocumentID, $iDocumentTypeID);
+	updateDocumentType($iDocumentID, $iDocumentTypeID);
 	
 	$oDocumentType = DocumentType::get($_POST['documentTypeID']);
   
@@ -129,6 +129,7 @@ require_once(KT_LIB_DIR . '/widgets/fieldsetDisplay.inc.php');
 	//$GLOBALS['default']->log->debug('update metadata '.print_r($metadata, true));
 	
 	//assemble the item to return
+	$item['documentID'] = $iDocumentID;
 	$item['documentTypeID'] = $oDocumentType->getId();
 	$item['documentTypeName'] = $oDocumentType->getName();
 	$item['metadata'] = $metadata;
@@ -138,95 +139,100 @@ require_once(KT_LIB_DIR . '/widgets/fieldsetDisplay.inc.php');
 	echo(json_encode($json));
 	exit(0);
 	
-	function setDocumentType($iDocumentID, $iDocumentTypeID) 
+	function updateDocumentType($iDocumentID, $iDocumentTypeID) 
 	{
-		//$GLOBALS['default']->log->debug("update setDocumentType $iDocumentID $iDocumentTypeID");
+		//$GLOBALS['default']->log->debug("changeDocumentType updateDocumentType $iDocumentID $iDocumentTypeID");
 		
         $oDocument =& Document::get($iDocumentID);
         if (is_null($oDocument) || ($oDocument === false)) {
             $GLOBALS['default']->log->error('The Document does not exist.');
             return false;
         }
-        $newType =& DocumentType::get($iDocumentTypeID);
-        if (is_null($newType) || ($newType === false)) {
-            //$GLOBALS['default']->log->error('The DocumentType does not exist.');
-            return false;
-        }
-
-        $oldType = DocumentType::get($oDocument->getDocumentTypeID( ));
-        $oDocument->setDocumentTypeID($iDocumentTypeID);
-
-        // we need to find fieldsets that _were_ in the old one, and _delete_ those.
-        $for_delete = array( );
         
-        $oldFieldsets = KTFieldset::getForDocumentType($oldType);
-        $newFieldsets = KTFieldset::getForDocumentType($newType);
-
-        // prune from MDPack.
-        foreach ($oldFieldsets as $oFieldset) {
-            $old_fields = $oFieldset->getFields( );
-            foreach ($old_fields as $oField) {
-                $for_delete[$oField->getId( )] = 1;
-            }
-        }
-
-        foreach ($newFieldsets as $oFieldset) {
-            $new_fields = $oFieldset->getFields( );
-            foreach ($new_fields as $oField) {
-                unset($for_delete[$oField->getId( )]);
-            }
-        }
-
-        $newPack = array( );
-        foreach ($field_values as $MDPack) {
-            if (!array_key_exists($MDPack[0]->getId( ), $for_delete)) {
-                $newPack[] = $MDPack;
-            }
-        }
-        $field_values = $newPack;
-
-        $oDocumentTransaction = & new DocumentTransaction( $oDocument, 'update metadata.', 'ktcore.transactions.update');
-        
-        $res = $oDocumentTransaction->create( );
-        if ( PEAR::isError( $res)) {
-            $GLOBALS['default']->log->error('Failed to create transaction.');
-            return false;
-        }
-
-        $res = $oDocument->update( );
-        if ( PEAR::isError( $res)) {
-            $this->rollbackTransaction( );
-            $GLOBALS['default']->log->error('Failed to change basic details about the document...');
-            return false;
-        }
-
-        $res = KTDocumentUtil::saveMetadata($oDocument, $field_values);
-
-        //$GLOBALS['default']->log->debug("update setDocumentType result $res");
-        
-        if(!PEAR::isError($res) || !is_null($res) )	
-        {
-            $oKTTriggerRegistry = KTTriggerRegistry::getSingleton();
-            $aTriggers = $oKTTriggerRegistry->getTriggers('edit', 'postValidate');
-
-            foreach ($aTriggers as $aTrigger)
-            {
-                $sTrigger = $aTrigger[0];
-                $oTrigger = new $sTrigger;
-                $aInfo = array(
-                "document" => $oDocument,
-                "aOptions" => $field_values,
-                );
-                $oTrigger->setInfo($aInfo);
-                $ret = $oTrigger->postValidate();
-            }
-
-            return true;
-        } else {
-            $this->rollbackTransaction( );
-            $GLOBALS['default']->log->error('An Error occurred in _setTransitionWorkFlowState');
-            return false;
-        }
+        //only change the doctype if a new doctype has been selected!
+        if ($oDocument->getDocumentTypeID() != $iDocumentTypeID)
+		{
+	        $newType =& DocumentType::get($iDocumentTypeID);
+	        if (is_null($newType) || ($newType === false)) {
+	            //$GLOBALS['default']->log->error('The DocumentType does not exist.');
+	            return false;
+	        }
+	
+	        $oldType = DocumentType::get($oDocument->getDocumentTypeID());
+	        $oDocument->setDocumentTypeID($iDocumentTypeID);
+	
+	        // we need to find fieldsets that _were_ in the old one, and _delete_ those.
+	        $for_delete = array( );
+	        
+	        $oldFieldsets = KTFieldset::getForDocumentType($oldType);
+	        $newFieldsets = KTFieldset::getForDocumentType($newType);
+	
+	        // prune from MDPack.
+	        foreach ($oldFieldsets as $oFieldset) {
+	            $old_fields = $oFieldset->getFields();
+	            foreach ($old_fields as $oField) {
+	                $for_delete[$oField->getId()] = 1;
+	            }
+	        }
+	
+	        foreach ($newFieldsets as $oFieldset) {
+	            $new_fields = $oFieldset->getFields( );
+	            foreach ($new_fields as $oField) {
+	                unset($for_delete[$oField->getId()]);
+	            }
+	        }
+	
+	        $newPack = array( );
+	        foreach ($field_values as $MDPack) {
+	            if (!array_key_exists($MDPack[0]->getId(), $for_delete)) {
+	                $newPack[] = $MDPack;
+	            }
+	        }
+	        $field_values = $newPack;
+	
+	        $oDocumentTransaction = & new DocumentTransaction($oDocument, 'update metadata.', 'ktcore.transactions.update');
+	        
+	        $res = $oDocumentTransaction->create( );
+	        if ( PEAR::isError( $res)) {
+	            $GLOBALS['default']->log->error('Failed to create transaction.');
+	            return false;
+	        }
+	
+	        $res = $oDocument->update( );
+	        if ( PEAR::isError( $res)) {
+	            $this->rollbackTransaction( );
+	            $GLOBALS['default']->log->error('Failed to change basic details about the document...');
+	            return false;
+	        }
+	
+	        $res = KTDocumentUtil::saveMetadata($oDocument, $field_values);
+	
+	        //$GLOBALS['default']->log->debug("update setDocumentType result $res");
+	        
+	        if(!PEAR::isError($res) || !is_null($res))	
+	        {
+	            $oKTTriggerRegistry = KTTriggerRegistry::getSingleton();
+	            $aTriggers = $oKTTriggerRegistry->getTriggers('edit', 'postValidate');
+	
+	            foreach ($aTriggers as $aTrigger)
+	            {
+	                $sTrigger = $aTrigger[0];
+	                $oTrigger = new $sTrigger;
+	                $aInfo = array(
+	                "document" => $oDocument,
+	                "aOptions" => $field_values,
+	                );
+	                $oTrigger->setInfo($aInfo);
+	                $ret = $oTrigger->postValidate();
+	            }
+	
+	            return true;
+	        } else {
+	            $this->rollbackTransaction();
+	            $GLOBALS['default']->log->error('An Error occurred in _setTransitionWorkFlowState');
+	            return false;
+	        }
+		}
     }
 
 ?>

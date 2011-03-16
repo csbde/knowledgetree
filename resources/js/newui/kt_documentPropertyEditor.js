@@ -4,23 +4,32 @@ jQuery(function()
 	
 	setMetadataEditable();
 	 
-	 jQuery('.more').click(function() {
-		var slider = jQuery('.slide');
-		if (slider.is(":visible"))
-		{
-			jQuery('.more').text('more...');
-		}
-		else
-		{
-			jQuery('.more').text('less...');
-		}
+	setExpandableFieldsets();
+	
+	//warn user that navigating away while file(s) are being uploaded will cancel upload
+	window.onbeforeunload = function() {		
+		var atLeastOneRequiredNotDone = false;
 		
-		slider.slideToggle('slow', function() {
-			// Animation complete
+		jQuery('.required').each(function(index, value){
+			//get the fields id: to chop off the "metadatafield_" prefix
+			var id = (jQuery(this).attr('id').substring(jQuery(this).attr('id').indexOf('_')+1));
 			
+			//the first <td> contains the element we are interested in
+			//var firstTD = jQuery('td:first', jQuery(this));
+			
+			var valueSpan = jQuery('#value_'+id);	//, firstTD);
+			
+			if(valueSpan.text() == null || valueSpan.text() == undefined || valueSpan.text() == '' || valueSpan.text() == 'no value')
+			{
+				console.log('I have not been completed '+id);
+				atLeastOneRequiredNotDone = true;
+				jQuery(this).css('background-color', '#FFCCFF');
+			}
 		});
-	});
-
+		
+		return atLeastOneRequiredNotDone ? 'If you leave this page now, your metadata will be in an inconsistent state.' : undefined;
+	};
+	
 	//populate the saved values in the form	
 	function updateValues(data, status) 
 	{
@@ -150,7 +159,7 @@ jQuery(function()
 				}
 				else if(field.options.type == 'multiwithcheckboxes')
 				{
-					classType = 'multiwithcheckboxes';
+					classType = 'metadata_multicheckselect';
 					var datatype = 'checkbox';
 					
 					if (field.selection && field.selection.length > 0)
@@ -194,6 +203,8 @@ jQuery(function()
 	 {
 	 	jQuery('.documenttype').editableSet({
 			action: './lib/widgets/changeDocumentType.php',
+			//event:	'click',
+			showSpinner: true,
 			onCancel: function(){
 				setMetadataEditable();
 			},
@@ -201,10 +212,13 @@ jQuery(function()
 				setMetadataEditable();
 			},	
 			onSave: function(){
+				
 			},
 			repopulate: function(){},
 			afterSave: function(data, status){
-				//here we need to reset the document fields to reflect the new document type
+				//jQuery('#doctype_spinner').remove();
+				
+				//reset the document fields to reflect the new document type
 			
 				//update the Document Type span text
 				jQuery('#documentTypeID').html(data.success.documentTypeName);
@@ -216,14 +230,17 @@ jQuery(function()
 				//create the new editable div
 				var editableDiv = jQuery('<div>').addClass('editablemetadata');
 				//NB: set its rel attribute because this is used as the "action" url
-				editableDiv.attr('rel', './lib/widgets/persistMetadata.php?documentID='+jQuery('#documentidembedded').html());
+				//editableDiv.attr('rel', './lib/widgets/persistMetadata.php?documentID='+jQuery('#documentidembedded').html());
 				
 				//create div for each fieldset
 				jQuery.each(data.success.metadata, function(index, fieldset)
-				{
+				{					
 					var fieldsetDiv = jQuery('<div>').addClass('detail_fieldset');
 					var header = jQuery('<h3>').text(fieldset.name).attr('title', fieldset.description);
 					fieldsetDiv.append(header);
+					
+					//NB: set its rel attribute because this is used as the "action" url
+					fieldsetDiv.attr('rel', './lib/widgets/persistMetadata.php?documentID='+data.success.documentID+'&fieldsetID='+fieldset.fieldsetid);
 	
 					//create the div to contain the fields
 					var table = jQuery('<table>').addClass('metadatatable').attr('cellspacing', '0').attr('cellpadding', '5');
@@ -233,14 +250,15 @@ jQuery(function()
 					//now create each field's widget
 					jQuery.each(fieldset.fields, function(index, field)
 					{						
-						var tableRow = jQuery('<tr>').addClass(counter++%2==1 ? 'odd' : 'even');
+						var tableRow = jQuery('<tr>').addClass('metadatarow');
+						/*tableRow.addClass(counter++%2==1 ? 'odd' : 'even');
 						if (counter == 1)
 						{
 							tableRow.addClass('first');
-						}
+						}*/
 						
 						//is the field required?
-						if(field.required)
+						if(string2bool(field.required))
 						{
 							tableRow.addClass('required');
 						}
@@ -266,11 +284,22 @@ jQuery(function()
 					});
 	
 					fieldsetDiv.append(table);
-		
+							
+					
+					
 					editableDiv.append(fieldsetDiv);
 				});
 				
 				jQuery('.documenttype').after(editableDiv);
+				
+				//need to insert the 'more ... less' slider widget after 2nd fieldset
+				if(data.success.metadata.length > 2)
+				{
+					jQuery('.detail_fieldset:eq(1)').after('<br/><div><span class="more">More...</span></div><br/>');
+					jQuery('.detail_fieldset:gt(1)').wrapAll('<div class="slide" style="display:none" />');
+					
+					setExpandableFieldsets();
+				}
 				
 				//metadata can be editable again
 				setMetadataEditable();
@@ -284,14 +313,17 @@ jQuery(function()
 	 {
 	 	//if document type is being edited, don't want metadata to be editable!
 		jQuery('.documenttype').dblclick(function() {
-			jQuery('.editablemetadata').unbind();
+			jQuery('.detail_fieldset').unbind();
+			//$(window).unbind( '.editableSet' );
 		});
 	 }
 	 
 	 function setMetadataEditable()
 	 {
-	 	jQuery('.editablemetadata').editableSet({
+	 	jQuery('.detail_fieldset').editableSet({
 			action: './lib/widgets/persistMetadata.php',
+			//event:	'click',
+			showSpinner: true,
 			requiredClass: 'required',
 			onCancel: function(){
 				setDocumentTypeEditable();
@@ -300,12 +332,12 @@ jQuery(function()
 				setDocumentTypeEditable();
 			},
 			onSave: function(){
-				var requiredDone = false;	//checkRequiredFieldsDone();
+				/*var requiredDone = false;	//checkRequiredFieldsDone();
 				
 				if (!requiredDone)
 				{
 					
-				}
+				}*/
 			},
 			afterSave: function(data, status){
 				//now pouplate the just-saved values
@@ -315,16 +347,43 @@ jQuery(function()
 			}
 		});
 		
+		//jQuery('.detail_fieldset').safetynet({message: "You didn't save your work yet!"});
+				
 		setDocumentTypeUneditable();
 		setMetadataUneditable();
 	 }
 	 
 	 function setDocumentTypeUneditable()
 	 {
+	 	console.log('setDocumentTypeUneditable');
 	 	//if metadata is being edited, don't want document type to be editable!
 		jQuery('.editablemetadata').dblclick(function() {
 			jQuery('.documenttype').unbind();
 		}); 
+	 }
+	 
+	 function setExpandableFieldsets()
+	 {
+	 	jQuery('.more').click(function() {
+			var slider = jQuery('.slide');
+			if (slider.is(":visible"))
+			{
+				jQuery('.more').text('more...');
+			}
+			else
+			{
+				jQuery('.more').text('less...');
+			}
+			
+			slider.slideToggle('slow', function() {
+				// Animation complete
+				
+			});
+		});
+		
+		/*.hover(function() {
+			jQuery(this).css('cursor', 'pointer');
+		})*/ 
 	 }
 	 
 });

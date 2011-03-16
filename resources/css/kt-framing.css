@@ -856,6 +856,10 @@ a.main_nav_item {
     font-size: 12px;
 }
 
+.metadatatable .required {
+    background-color: #FFFF66
+}
+
 .document_details .document_history thead th {
     text-align: left;
     border-bottom: 1px solid #666;
