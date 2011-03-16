@@ -172,12 +172,15 @@ class Group extends KTEntity {
 		return $this->getMembers($disabled);
 	}
 
-    function &getMembers($disabled = false) {
+    function &getMembers($disabled = false, $idsOnly = false) {
         global $default;
         require_once(KT_LIB_DIR . '/users/User.inc');
         $sQuery = "SELECT user_id FROM $default->users_groups_table WHERE group_id = ?";
         $aParams = array($this->getId());
         $aUserIds = DBUtil::getResultArrayKey(array($sQuery, $aParams), "user_id");
+        if ($idsOnly) {
+        	return $aUserIds;
+        }
         $aMembers = array();
         foreach ($aUserIds as $iUserId) {
             $oUser = User::get($iUserId);
