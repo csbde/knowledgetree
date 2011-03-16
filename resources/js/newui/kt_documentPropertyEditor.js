@@ -199,7 +199,7 @@ jQuery(function()
 	 function setDocumentTypeEditable()
 	 {
 	 	jQuery('.documenttype').editableSet({
-			action: './lib/widgets/changeDocumentType.php',
+			action: './presentation/lookAndFeel/knowledgeTree/widgets/changeDocumentType.php',
 			//event:	'click',
 			showSpinner: true,
 			onCancel: function(){
@@ -220,82 +220,91 @@ jQuery(function()
 			repopulate: function(){},
 			afterSave: function(data, status){				
 				//reset the document fields to reflect the new document type
-			
-				//update the Document Type span text
-				jQuery('#documentTypeID').html(data.success.documentTypeName);
-				
-				//reset the document fields to reflect the new document type
-				jQuery('.editablemetadata').empty();
-				jQuery('.editablemetadata').remove();
-	
-				//create the new editable div
-				var editableDiv = jQuery('<div>').addClass('editablemetadata');
-				//NB: set its rel attribute because this is used as the "action" url
-				//editableDiv.attr('rel', './lib/widgets/persistMetadata.php?documentID='+jQuery('#documentidembedded').html());
-				
-				//create div for each fieldset
-				jQuery.each(data.success.metadata, function(index, fieldset)
-				{					
-					var fieldsetDiv = jQuery('<div>').addClass('detail_fieldset');
-					var header = jQuery('<h3>').text(fieldset.name).attr('title', fieldset.description);
-					fieldsetDiv.append(header);
-					
-					//NB: set its rel attribute because this is used as the "action" url
-					fieldsetDiv.attr('rel', './lib/widgets/persistMetadata.php?documentID='+data.success.documentID+'&fieldsetID='+fieldset.fieldsetid);
-	
-					//create the div to contain the fields
-					var table = jQuery('<table>').addClass('metadatatable').attr('cellspacing', '0').attr('cellpadding', '5');
-				
-					var counter = 0;
-					
-					//now create each field's widget
-					jQuery.each(fieldset.fields, function(index, field)
-					{						
-						var tableRow = jQuery('<tr>').addClass('metadatarow');
-						/*tableRow.addClass(counter++%2==1 ? 'odd' : 'even');
-						if (counter == 1)
-						{
-							tableRow.addClass('first');
-						}*/
-						
-						//is the field required?
-						if(string2bool(field.required))
-						{
-							tableRow.addClass('required');
-						}
-						
-						tableRow.attr('id', 'metadatafield_'+field.fieldid);
-	
-						var tableHeader = jQuery('<th>').text(field.name);
-						tableHeader.attr('title', field.description);
-						tableRow.append(tableHeader);
-						
-						var tableCell = getTableCell(field);
-	
-						tableRow.append(tableCell);
-		
-						table.append(tableRow);
-					});
-	
-					fieldsetDiv.append(table);
-					
-					editableDiv.append(fieldsetDiv);
-				});
-				
-				jQuery('.documenttype').after(editableDiv);
-				
-				//need to insert the 'more ... less' slider widget after 2nd fieldset
-				if(data.success.metadata.length > 2)
+								
+				if(data && data.success)
 				{
-					jQuery('.detail_fieldset:eq(1)').after('<br/><div><span class="more">More...</span></div><br/>');
-					jQuery('.detail_fieldset:gt(1)').wrapAll('<div class="slide" style="display:none" />');
+					//update the Document Type span text
+					jQuery('#documentTypeID').html(data.success.documentTypeName);
 					
-					setExpandableFieldsets();
+					//reset the document fields to reflect the new document type
+					jQuery('.editablemetadata').empty();
+					jQuery('.editablemetadata').remove();
+		
+					//create the new editable div
+					var editableDiv = jQuery('<div>').addClass('editablemetadata');
+					//NB: set its rel attribute because this is used as the "action" url
+					//editableDiv.attr('rel', './lib/widgets/persistMetadata.php?documentID='+jQuery('#documentidembedded').html());
+					
+					//create div for each fieldset
+					jQuery.each(data.success.metadata, function(index, fieldset)
+					{					
+						var fieldsetDiv = jQuery('<div>').addClass('detail_fieldset');
+						var header = jQuery('<h3>').text(fieldset.name).attr('title', fieldset.description);
+						fieldsetDiv.append(header);
+						
+						//NB: set its rel attribute because this is used as the "action" url
+						fieldsetDiv.attr('rel', './presentation/lookAndFeel/knowledgeTree/widgets/persistMetadata.php?documentID='+data.success.documentID);	//+'&fieldsetID='+fieldset.fieldsetid);
+		
+						//create the div to contain the fields
+						var table = jQuery('<table>').addClass('metadatatable').attr('cellspacing', '0').attr('cellpadding', '5');
+					
+						var counter = 0;
+						
+						//now create each field's widget
+						jQuery.each(fieldset.fields, function(index, field)
+						{						
+							var tableRow = jQuery('<tr>').addClass('metadatarow');
+							/*tableRow.addClass(counter++%2==1 ? 'odd' : 'even');
+							if (counter == 1)
+							{
+								tableRow.addClass('first');
+							}*/
+							
+							//is the field required?
+							if(string2bool(field.required))
+							{
+								tableRow.addClass('required');
+							}
+							
+							tableRow.attr('id', 'metadatafield_'+field.fieldid);
+		
+							var tableHeader = jQuery('<th>').text(field.name);
+							tableHeader.attr('title', field.description);
+							tableRow.append(tableHeader);
+							
+							var tableCell = getTableCell(field);
+		
+							tableRow.append(tableCell);
+			
+							table.append(tableRow);
+						});
+		
+						fieldsetDiv.append(table);
+						
+						editableDiv.append(fieldsetDiv);
+					});
+					
+					jQuery('.documenttype').after(editableDiv);
+					
+					//need to insert the 'more ... less' slider widget after 2nd fieldset
+					if(data.success.metadata.length > 2)
+					{
+						jQuery('.detail_fieldset:eq(1)').after('<br/><div><span class="more">More...</span></div><br/>');
+						jQuery('.detail_fieldset:gt(1)').wrapAll('<div class="slide" style="display:none" />');
+						
+						setExpandableFieldsets();
+					}
+					
+					//metadata can be editable again
+					setMetadataEditable();
+					setDocumentTypeEditable();
 				}
-				
-				//metadata can be editable again
-				setMetadataEditable();
-				setDocumentTypeEditable();
+				else
+				{
+					//metadata can be editable again
+					setMetadataEditable();
+					setDocumentTypeEditable();
+				}
 		 	}
 		});
 	 }
@@ -303,7 +312,7 @@ jQuery(function()
 	 function setMetadataEditable()
 	 {
 	 	jQuery('.detail_fieldset').editableSet({
-			action: './lib/widgets/persistMetadata.php',
+			action: './presentation/lookAndFeel/knowledgeTree/widgets/persistMetadata.php',
 			//event:	'click',
 			showSpinner: true,
 			requiredClass: 'required',
