@@ -4,7 +4,7 @@
 {if $alerts}
 	<h2> {i18n}Alerts on Document{/i18n} </h2>
 	<span class=more_alerts>
-		<a href="javascript:{ldelim}alerts.displayHistory();{rdelim}">View Alert History</a>
+		<a href="action.php?kt_path_info=alerts.action.document.alert&fDocumentId={$documentId}&action=alertReport">View Alert History</a>
 	</span>
 	<ul>
 		{assign var='count' value='0'}
