@@ -6,7 +6,7 @@ jQuery(function()
 	 
 	setExpandableFieldsets();
 	
-	//warn user that navigating away while file(s) are being uploaded will cancel upload
+	//warn user that navigating away if required metadata not complete
 	window.onbeforeunload = function() {		
 		var atLeastOneRequiredNotDone = false;
 		
@@ -14,10 +14,7 @@ jQuery(function()
 			//get the fields id: to chop off the "metadatafield_" prefix
 			var id = (jQuery(this).attr('id').substring(jQuery(this).attr('id').indexOf('_')+1));
 			
-			//the first <td> contains the element we are interested in
-			//var firstTD = jQuery('td:first', jQuery(this));
-			
-			var valueSpan = jQuery('#value_'+id);	//, firstTD);
+			var valueSpan = jQuery('#value_'+id);
 			
 			if(valueSpan.text() == null || valueSpan.text() == undefined || valueSpan.text() == '' || valueSpan.text() == 'no value')
 			{
@@ -207,17 +204,21 @@ jQuery(function()
 			showSpinner: true,
 			onCancel: function(){
 				setMetadataEditable();
+				setDocumentTypeEditable();
+			},
+			beforeLoad: function() {
+				jQuery('.documenttype').unbind();
+				jQuery('.detail_fieldset').unbind();
 			},
 			onError: function(){
 				setMetadataEditable();
+				setDocumentTypeEditable();
 			},	
 			onSave: function(){
 				
 			},
 			repopulate: function(){},
-			afterSave: function(data, status){
-				//jQuery('#doctype_spinner').remove();
-				
+			afterSave: function(data, status){				
 				//reset the document fields to reflect the new document type
 			
 				//update the Document Type span text
@@ -269,23 +270,14 @@ jQuery(function()
 						tableHeader.attr('title', field.description);
 						tableRow.append(tableHeader);
 						
-						//var span = getSpan(field);
-	
-						//var td = jQuery('<td>');
-		
-						//td.append(span);
-						
 						var tableCell = getTableCell(field);
 	
 						tableRow.append(tableCell);
 		
 						table.append(tableRow);
-		
 					});
 	
 					fieldsetDiv.append(table);
-							
-					
 					
 					editableDiv.append(fieldsetDiv);
 				});
@@ -303,18 +295,8 @@ jQuery(function()
 				
 				//metadata can be editable again
 				setMetadataEditable();
+				setDocumentTypeEditable();
 		 	}
-		});
-		
-		setMetadataUneditable();
-	 }
-	 
-	 function setMetadataUneditable()
-	 {
-	 	//if document type is being edited, don't want metadata to be editable!
-		jQuery('.documenttype').dblclick(function() {
-			jQuery('.detail_fieldset').unbind();
-			//$(window).unbind( '.editableSet' );
 		});
 	 }
 	 
@@ -327,39 +309,26 @@ jQuery(function()
 			requiredClass: 'required',
 			onCancel: function(){
 				setDocumentTypeEditable();
+				setMetadataEditable();
+			},
+			beforeLoad: function() {
+				jQuery('.documenttype').unbind();
+				jQuery('.detail_fieldset').unbind();
 			},
 			onError: function() {
 				setDocumentTypeEditable();
+				setMetadataEditable();
 			},
 			onSave: function(){
-				/*var requiredDone = false;	//checkRequiredFieldsDone();
-				
-				if (!requiredDone)
-				{
-					
-				}*/
 			},
 			afterSave: function(data, status){
 				//now pouplate the just-saved values
 				updateValues(data, status);
 				//document type can be editable again
 				setDocumentTypeEditable();
+				setMetadataEditable();
 			}
 		});
-		
-		//jQuery('.detail_fieldset').safetynet({message: "You didn't save your work yet!"});
-				
-		setDocumentTypeUneditable();
-		setMetadataUneditable();
-	 }
-	 
-	 function setDocumentTypeUneditable()
-	 {
-	 	console.log('setDocumentTypeUneditable');
-	 	//if metadata is being edited, don't want document type to be editable!
-		jQuery('.editablemetadata').dblclick(function() {
-			jQuery('.documenttype').unbind();
-		}); 
 	 }
 	 
 	 function setExpandableFieldsets()
