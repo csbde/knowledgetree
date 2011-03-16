@@ -48,7 +48,7 @@
 					<br/>
 					<br/>
 										
-					<div class="documenttype" rel={$rootUrl}/lib/widgets/changeDocumentType.php?documentID={$document->getId()}"> 
+					<div class="documenttype" rel={$rootUrl}/presentation/lookAndFeel/knowledgeTree/widgets/changeDocumentType.php?documentID={$document->getId()}"> 
 	    			<table class="metadatatable" cellspacing="0" cellpadding="5">
 	    			<tr class="metadatarow even first">
 	    				<th>Document Type</th>

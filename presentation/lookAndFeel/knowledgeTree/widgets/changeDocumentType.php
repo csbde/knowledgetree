@@ -1,6 +1,6 @@
 <?php
 
-require_once('../../config/dmsDefaults.php');
+require_once('../../../../config/dmsDefaults.php');
 require_once(KT_DIR . '/ktapi/ktapi.inc.php');
 require_once(KT_LIB_DIR . '/widgets/fieldsetDisplay.inc.php');
 	

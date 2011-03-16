@@ -183,6 +183,9 @@
 		}
 		else
 		{
+			//reset background of required fields to yellow
+			//$('.required', self).css('background-color', '#FFFF66');
+			
 			var form = $('form', self);
 			var action = form.attr( 'action' );
 	
@@ -374,20 +377,20 @@
 		$(window).unbind( '.editableSet' );
 		
 		// Save if pressing cmd/ctrl + s
-		$(window).bind( 'keydown.editableSet', function(e) {
+		/*$(window).bind( 'keydown.editableSet', function(e) {
 			if( e.keyCode == 83 && (e.ctrlKey || e.metaKey) ) {
 				e.preventDefault();
 				save( self );
 			}
-		});
+		});*/
 				 
 		// Cancel if pressing esc
-		$(window).bind( 'keydown.editableSet', function(e) {
+		/*$(window).bind( 'keydown.editableSet', function(e) {
 			if( e.keyCode == 27 ) {
 				e.preventDefault();
 				cancel( self );
 			}
-		});
+		});*/
 	});	
 	};
 	
