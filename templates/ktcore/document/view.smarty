@@ -47,9 +47,9 @@
 					<br/>
 					<br/>
 										
-					<div class="documenttype" rel="update.php?documentID={$document->getId()}"> 
+					<div class="documenttype" rel="{$rootUrl}/lib/widgets/changeDocumentType.php?documentID={$document->getId()}"> 
 	    			<table class="metadatatable" cellspacing="0" cellpadding="5">
-	    			<tr class="even first">
+	    			<tr class="metadatarow even first">
 	    				<th>Document Type</th>
 			        <td>
 			        <span class="descriptiveText" id='documentTypeID' data-name='documentTypeID' data-options='[{foreach from=$document_types key=aKey item=documentType}
@@ -57,23 +57,20 @@
 					</table>
 					</div>
 					
-					<div class="editablemetadata" rel="persistMetadata.php?documentID={$document->getId()}">
-					{foreach item=oFieldset from=$fieldsets}
-						{$oFieldset->render($document_data)}
+					<div class="editablemetadata">
+					{foreach item=oFieldset from=$fieldsets name=fieldsets}
+						{if $smarty.foreach.fieldsets.index == 2}
+							<br/>
+							<div><span class="more">More...</span></div>
+							<br/>
+							<div class="slide" style="display:none">
+						{/if}
+							{$oFieldset->render($document_data)}
+						{if $smarty.foreach.fieldsets.last &&  $smarty.foreach.fieldsets.total >= 3}
+							</div>
+						{/if}
 					{/foreach}
 					</div>
-					<br/>
-					<div><span class="more">More...</span></div>
-					<br/>
-					<div class="slide" style="display:none">
-					{foreach item=oFieldset from=$generic_fieldsets}
-						{$oFieldset->render($document_data)}
-					{/foreach}
-					</div>
-					
-			
-      
-  
 					</span>
 				</div>
 				<!-- <hr style="border: none; background-color: #E3E3E3; width: 98%; height: 1px; margin-left: 10px; margin-bottom: 15px;" align="left" /> -->

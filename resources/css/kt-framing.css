@@ -852,6 +852,10 @@ a.main_nav_item {
     font-size: 12px;
 }
 
+.metadatatable .required {
+    background-color: #FFFF66
+}
+
 #content .doc_info input.form_submit {
 	background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(white), to(#DDD)) !important;
 	border: 1px solid #AAA;
