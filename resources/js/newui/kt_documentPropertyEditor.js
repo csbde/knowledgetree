@@ -18,7 +18,7 @@ jQuery(function()
 			
 			if(valueSpan.text() == null || valueSpan.text() == undefined || valueSpan.text() == '' || valueSpan.text() == 'no value')
 			{
-				console.log('I have not been completed '+id);
+				//console.log('I have not been completed '+id);
 				atLeastOneRequiredNotDone = true;
 				jQuery(this).css('background-color', '#FFCCFF');
 			}
