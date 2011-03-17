@@ -1646,7 +1646,7 @@ class KTAPI_Folder extends KTAPI_FolderItem {
 	        		'item_type' => 'F',
 	        		'parent_id' => $result['parent_id'],
 	        		'changes' => array(
-						'change_type' => 'U',
+						'change_type' => 'UP',
 						'change_date' => datetimeutil::getLocaleDate($result['change_date'])
 					)
 	        	);
@@ -1685,8 +1685,8 @@ class KTAPI_Folder extends KTAPI_FolderItem {
         {            
 	    	foreach ($results as $result) 
 	    	{
-	        	$folder = &Folder::get($result['id']);
-				$this->assemble_folder_array($folder, $contents);
+	        	//$folder = &Folder::get($result['id']);
+				$this->assemble_folder_array($this->folder, $contents);
 	
 				$contents[count($contents) - 1]['changes'] = array(
 					'change_type' => 'UPC',
@@ -2274,7 +2274,7 @@ class KTAPI_Folder extends KTAPI_FolderItem {
 					case 'ktcore.transactions.immutable':
 						$changeType = 'UI';
 						break;
-						case 'ktcore.transactions.permissions_change':
+					case 'ktcore.transactions.permissions_change':
 						$changeType = 'UP';
 						break;
 					default:

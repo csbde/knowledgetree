@@ -5419,7 +5419,7 @@ class KTAPI {
      */
 	public function get_folder_changes($folder_ids, $timestamp, $depth = 1, $what = 'DF')
 	{
-		//$GLOBALS['default']->log->debug("KTAPI get_folder_changes ".print_r($folder_ids, true)." $timestamp $depth '$what'");
+		$GLOBALS['default']->log->debug("KTAPI get_folder_changes ".print_r($folder_ids, true)." $timestamp $depth '$what'");
 
 		$results = array();
 		$changes = array();
@@ -5431,14 +5431,17 @@ class KTAPI {
     	$new_timestamp = datetimeutil::getLocaleDate($datetime);
     	$new_timestamp = (string)strtotime($new_timestamp);
 
-    	//$GLOBALS['default']->log->debug("KTAPI get_folder_changes new timestamp $new_timestamp");
+    	$GLOBALS['default']->log->debug("KTAPI get_folder_changes new timestamp $new_timestamp");
 
 		foreach($folder_ids as $folder_id)
 		{
 			$folder = KTAPI_Folder::get($this, $folder_id);
 
 			//convert to UTC since we are getting the localized time
-			$time = datetimeutil::convertToUTC(date('Y-m-d H:i:s', (int)$timestamp));
+			$time = datetimeutil::convertToUTC(date('Y-m-d H:i:s', (int)$timestamp));			
+			
+			$GLOBALS['default']->log->debug("KTAPI get_folder_changes time $time");
+			
 			if (PEAR::isError($folder))
 			{
 				//$GLOBALS['default']->log->error('KTAPI get_folder_changes folder error message '.$folder->getMessage());
