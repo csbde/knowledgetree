@@ -1,4 +1,5 @@
 <?php
+
 /**
  * $Id$
  *
@@ -42,6 +43,7 @@ require_once(KT_DIR . "/thirdparty/Smarty/Smarty.class.php");
 require_once(KT_LIB_DIR . "/i18n/i18nregistry.inc.php");
 
 class KTSmartyTemplate extends KTTemplate {
+
     function KTSmartyTemplate ($sPath) {
         $this->KTTemplate($sPath);
     }
@@ -88,8 +90,7 @@ class KTSmartyTemplate extends KTTemplate {
         		$search2_quickQuery = '';
         	}*/
         }
-        else
-        {
+        else {
 			$search2_quick=0;
 			$search2_general=1;
 			$search2_quickQuery = '';
@@ -122,6 +123,7 @@ class KTSmartyTemplate extends KTTemplate {
         $smarty->register_function('getUrlForFolder', array('KTSmartyTemplate', 'getUrlForFolder'));
         $smarty->register_function('getCrumbStringForDocument', array('KTSmartyTemplate', 'getCrumbStringForDocument'));
         $smarty->register_function('url', array('KTSmartyTemplate', 'buildUrl'));
+
         return $smarty->fetch($this->sPath);
     }
 
@@ -129,9 +131,11 @@ class KTSmartyTemplate extends KTTemplate {
         if (!is_array($arr)) {
             $arr = array();
         }
+
         if (substr($var[0], 0, 4) == "arg_") {
             $arr['#' . substr($var[0], 4) . '#'] = $var[1];
         }
+
         return $arr;
     }
 
@@ -139,19 +143,23 @@ class KTSmartyTemplate extends KTTemplate {
         if (empty($content)) {
             return;
         }
+
         if (!empty($params)) {
             $flattened = array_map(null, array_keys($params), array_values($params));
             $replacements = array_reduce($flattened, array('KTSmartyTemplate', '_i18n_get_args'), "");
         } else {
             $replacements = array();
         }
+
         $sDomain = KTUtil::arrayGet($params, 'i18n_domain');
         if (empty($sDomain)) {
             $sDomain = $smarty->get_template_vars('i18n_domain');
         }
+
         if (empty($sDomain)) {
             $sDomain = 'knowledgeTree';
         }
+
         $oRegistry =& KTi18nRegistry::getSingleton();
         $oi18n =& $oRegistry->geti18n($sDomain);
         $content = trim($content);
@@ -159,8 +167,8 @@ class KTSmartyTemplate extends KTTemplate {
             '@ *[\n\r]+@' => ' ',
         );
         $content = preg_replace(array_keys($replace), array_values($replace), $content);
-
         $content = $oi18n->gettext($content);
+
         return str_replace(array_keys($replacements), array_values($replacements), $content);
     }
 
@@ -169,9 +177,11 @@ class KTSmartyTemplate extends KTTemplate {
         if (!is_null($context)) {
             $content = $context->meldPersistQuery($content);
         }
+
         if (empty($content)) {
             return;
         }
+
         return KTUtil::addQueryStringSelf($content);
     }
 
@@ -195,10 +205,12 @@ class KTSmartyTemplate extends KTTemplate {
             $params['values'][] = '';
             $params['output'][] = _kt('None');
         }
+
         foreach ($entities as $oEntity) {
             $params['values'][] = $oEntity->getId();
             $params['output'][] = call_user_func(array(&$oEntity, $method));
         }
+
         unset($params['entities']);
 
         return smarty_function_html_options($params, $smarty);
@@ -210,13 +222,14 @@ class KTSmartyTemplate extends KTTemplate {
             $smarty->trigger_error("assign: missing 'name' parameter");
             return;
         }
+
         $bool = KTUtil::arrayGet($params, 'bool');
         if (is_null($bool)) {
             $smarty->trigger_error("assign: missing 'bool' parameter");
             return;
         }
-        $value = KTUtil::arrayGet($params, 'value', 1);
 
+        $value = KTUtil::arrayGet($params, 'value', 1);
         $label = KTUtil::arrayGet($params, 'label');
 
         if ($bool) {
@@ -229,6 +242,7 @@ class KTSmartyTemplate extends KTTemplate {
         if ($label) {
             $ret = sprintf('<label>%s%s</label>', $ret, $label);
         }
+
         return $ret;
     }
 
@@ -292,7 +306,6 @@ class KTSmartyTemplate extends KTTemplate {
         return KTUtil::addQueryString($url, $qs);
     }
 
-
     /*
      * ktLink generates a fully prepared link for KT.
      *
@@ -310,7 +323,6 @@ class KTSmartyTemplate extends KTTemplate {
         return KTUtil::ktLink($params['base'], $params['subpath'], $params['query']);
     }
 
-
 	function buildUrl($params, &$smarty) {
 		if (isset($params['file'])) {
 			$file = $params['file'];
@@ -318,9 +330,9 @@ class KTSmartyTemplate extends KTTemplate {
 		} else {
 			$file = '';
 		}
+
         return KTUtil::buildUrl($file, $params);
     }
-
 
     function addQueryStringSelf($qs) {
         return KTUtil::addQueryStringSelf($qs);
@@ -331,21 +343,18 @@ class KTSmartyTemplate extends KTTemplate {
     }
 
     function getCrumbStringForDocument($params, &$smarty) {
-	$aBreadcrumbs = KTBrowseUtil::breadcrumbsForDocument($params['document'], array('final'=>true));
-	if (PEAR::isError($aBreadcrumbs)) {
-	    return _kt('No breadcrumbs available');
-	}
+        $aBreadcrumbs = KTBrowseUtil::breadcrumbsForDocument($params['document'], array('final'=>true));
+        if (PEAR::isError($aBreadcrumbs)) {
+            return _kt('No breadcrumbs available');
+        }
 
-	$aCrumbs = array();
-	foreach($aBreadcrumbs as $aBreadcrumb) {
-	    $aCrumbs[] = $aBreadcrumb['name'];
-	}
+        $aCrumbs = array();
+        foreach($aBreadcrumbs as $aBreadcrumb) {
+            $aCrumbs[] = $aBreadcrumb['name'];
+        }
 
-	return implode('/', $aCrumbs);
+        return implode('/', $aCrumbs);
     }
-
-
-
 
 }
 
