@@ -1,6 +1,6 @@
 <?php
 
-require_once('../../config/dmsDefaults.php');
+require_once('../../../../config/dmsDefaults.php');
 require_once(KT_DIR . '/ktapi/ktapi.inc.php');
 require_once(KT_LIB_DIR . '/triggers/triggerregistry.inc.php');
 
@@ -60,6 +60,10 @@ require_once(KT_LIB_DIR . '/triggers/triggerregistry.inc.php');
 	}
 	
 	//$GLOBALS['default']->log->debug('persistMetadata packed '.print_r($packed, true));
+	
+	$packed = mergeMetadata($oDocument, $packed);
+	
+	//$GLOBALS['default']->log->debug('persistMetadata packed after merge'.print_r($packed, true));
 	
 	DBUtil::startTransaction();
 
@@ -238,5 +242,64 @@ require_once(KT_LIB_DIR . '/triggers/triggerregistry.inc.php');
 	
 	echo(json_encode($json));
 	exit(0);
+	
+	/**
+	 * Take the new metadata fields, and merge them into the document's existing metadata
+	 *
+	 * @param unknown_type $oDocument
+	 * @param unknown_type $aNewMetadata
+	 * @return unknown
+	 */
+	function mergeMetadata($oDocument, $aNewMetadata)
+	{
+		$aCurrentMetadata = (array) KTMetadataUtil::fieldsetsForDocument($oDocument);
+    	
+    	//$GLOBALS['default']->log->debug('mergeMetadata aCurrentMetadata '.print_r($aCurrentMetadata, true));
+    	
+    	$aMDPacked = array();
+    	
+    	foreach($aCurrentMetadata as $oCurrentFieldset)
+    	{
+    		//$GLOBALS['default']->log->debug('mergeMetadata oCurrentFieldset '.print_r($oCurrentFieldset, true));
+    		
+    		$oCurrentFields = $oCurrentFieldset->getFields();
+			
+			foreach ($oCurrentFields as $oCurrentField)   
+			{
+				//$GLOBALS['default']->log->debug('mergeMetadata oCurrentField '.print_r($oCurrentField, true));
+
+				$iCurrentID = $oCurrentField->getId();
+				
+				$sNewValue = '';
+				
+				$sFieldValue = DocumentFieldLink::getByDocumentAndField($oDocument, $oCurrentField);
+				if (!is_null($sFieldValue) && (!PEAR::isError($sFieldValue)))
+				{
+					$sNewValue = $sFieldValue->getValue();
+				}
+				
+				//$GLOBALS['default']->log->debug("mergeMetadata oCurrentField ID $iCurrentID Value $sNewValue");
+
+				foreach($aNewMetadata as $aInfo)
+				{
+					list($oNewField, $sValue) = $aInfo;
+					
+					$iNewID = $oNewField->getId();
+					
+					if($iCurrentID === $iNewID)
+					{
+						//use this value as the 'packed' value
+						$sNewValue = $sValue;
+					}
+				}
+				
+				$aMDPacked[] = array($oCurrentField, $sNewValue);
+			}
+		}
+		
+		//$GLOBALS['default']->log->debug('mergeMetadata aMDPacked '.print_r($aMDPacked, true));
+		
+		return $aMDPacked;
+	}
 
 ?>

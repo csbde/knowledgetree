@@ -825,13 +825,13 @@ a.main_nav_item {
 .metadatatable th {
     text-align: left;
     width: 42% !important;
-    vertical-align: top;
+    vertical-align: middle;
     padding: 2px 5px 2px 0px;
     font-weight: normal;
 }
 
 .metadatatable td {
-    vertical-align: top;
+    vertical-align: middle;
     padding: 2px 0px;
 	color: #2F6594;
 }
@@ -852,6 +852,24 @@ a.main_nav_item {
     font-size: 12px;
 }
 
+.metadatatable .required {
+    background-color: #FFFF66
+}
+
+#content .doc_info input.form_submit {
+	background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(white), to(#DDD)) !important;
+	border: 1px solid #AAA;
+	color: #2F6594;
+	font-size: 11px;
+	padding: 0px 5px 2px;
+	margin: 0px 5px 5px 0px;
+	border-radius: 2px 2px;
+}
+#content .doc_info select,
+#content .doc_info input {
+	color: #666;
+	font-size: 11px;
+}
 .document_details .document_history thead th {
     text-align: left;
     border-bottom: 1px solid #666;
@@ -895,7 +913,10 @@ a.main_nav_item {
     margin-top: 10px;
     overflow: hidden;
 }
-
+.documenttype:hover,
+.detail_fieldset:hover {
+	background: url(../../resources/graphics/newui/icons/edit.png) no-repeat right top;
+}
 .detail_fieldset h3
 {
     margin: 0em 0 2px 0;

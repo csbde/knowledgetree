@@ -83,6 +83,7 @@ class KTPage {
     public $breadcrumbSection = false;
     public $breadcrumbIcon = false;
     public $breadcrumbBtns = false;
+    public $showDashboardBtn = false;
     public $menu = null;
     public $userMenu = null;
     public $helpPage = null;

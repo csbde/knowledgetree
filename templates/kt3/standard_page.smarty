@@ -299,7 +299,11 @@
     					<!--
     					<td width="225"><div id="newSearchQuery"></div></td>
     					-->
-    					<td id="add-dashlet"></td>
+    					{if ($page->showDashboardBtn !== false)}
+        					<td width="80px">
+        					   <span id="add-dashlet"></span>
+        					</td>
+    					{/if}
 					</tr>
 					</table>
 				</div>

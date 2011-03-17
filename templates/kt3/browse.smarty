@@ -113,7 +113,7 @@
 <td valign="top" id="sidebar" class="standardBorder" height="100%" width="215">
 	<div id="sidebar_item" >
 		<h2>
-			Account Info
+		  {i18n}Account Info{/i18n} <span class="acc_settings"><a href="{$rootUrl}/admin.php">{i18n}settings{/i18n}</a></span>
 		</h2>
 		<p style="font-size: 11px; color: #666;">
 			Plan: Starter <br/>

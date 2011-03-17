@@ -85,7 +85,8 @@ class DashboardDispatcher extends KTStandardDispatcher {
         $aDashlets = $oDashletRegistry->getDashlets($this->oUser);
 
         $this->sSection = 'dashboard';
-        $this->oPage->setBreadcrumbDetails(_kt('Home'));
+        $this->oPage->showDashboardBtn = true;
+        //$this->oPage->setBreadcrumbDetails(_kt('Home'));
         $this->oPage->title = _kt('Dashboard');
         //$this->oPage->hideSection();
 

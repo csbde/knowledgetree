@@ -32,6 +32,11 @@
 
 	var save = function( self ) {
 		
+		if (opts.showSpinner)
+		{
+			$('tr.metadatarow', self).append('<img class="spinner" src="/resources/graphics/newui/loading.gif" style="float: right;"/>');
+		}	
+		
 		self.editing = false;
 		
 		// onSave callback
@@ -60,7 +65,7 @@
 						
 						if(val == null || val == undefined || val == '' || val == 'no value')
 						{
-							//TODO: mark in UI as not done
+							$(this).css('background-color', '#FFCCFF');
 							atLeastOneRequiredNotDone = true;
 						}
 					break;
@@ -70,7 +75,7 @@
 						
 						if(val == null || val == undefined || val == '' || val == 'no value')
 						{
-							//TODO: mark in UI as not done
+							$(this).css('background-color', '#FFCCFF');
 							atLeastOneRequiredNotDone = true;
 						}
 					break;
@@ -80,7 +85,7 @@
 						
 						if(val == null || val == undefined)
 						{
-							//TODO: mark in UI as not done
+							$(this).css('background-color', '#FFCCFF');
 							atLeastOneRequiredNotDone = true;
 						}
 					break;
@@ -96,7 +101,7 @@
 						
 						if (vals.length == 0)
 						{
-							//TODO: mark in UI as not done
+							$(this).css('background-color', '#FFCCFF');
 							atLeastOneRequiredNotDone = true;
 						}
 					break;
@@ -112,10 +117,12 @@
 						
 						if (vals.length == 0)
 						{
+							$(this).css('background-color', '#FFCCFF');
 							atLeastOneRequiredNotDone = true;
 						}
 						else if (vals.length == 1 && vals[0] == 'no value')
 						{
+							$(this).css('background-color', '#FFCCFF');
 							atLeastOneRequiredNotDone = true;
 						}
 					break;
@@ -125,28 +132,28 @@
 
 						if(val == null || val == undefined || val == '' || val == 'no value')
 						{
-							//TODO: mark in UI as not done
+							$(this).css('background-color', '#FFCCFF');
 							atLeastOneRequiredNotDone = true;
 						}						
 					break;
 					
 					case 'metadata_textarea':
-						var val = jQuery('textarea[name='+id+']').val();
+						var val = $('textarea[name='+id+']').val();
 						
 						if(val == null || val == undefined || val == '' || val == 'no value')
 						{
-							//TODO: mark in UI as not done
+							$(this).css('background-color', '#FFCCFF');
 							atLeastOneRequiredNotDone = true;
 						}
 						
 						
 					break;
 					case 'metadata_htmleditor':
-						var val = jQuery('#'+id).val();	//document.getElementById(id).value;
+						var val = $('#'+id).val();	//document.getElementById(id).value;
 						
 						if(val == null || val == undefined || val == 'no value')
 						{
-							//TODO: mark in UI as not done
+							$(this).css('background-color', '#FFCCFF');
 							atLeastOneRequiredNotDone = true;
 						}
 						
@@ -167,10 +174,18 @@
 		//if there is even one required field missing, we need to stop the save
 		if(atLeastOneRequiredNotDone)
 		{
+			if (opts.showSpinner)
+			{
+				$('.spinner').remove();
+			}
+		
 			return false;
 		}
 		else
 		{
+			//reset background of required fields to yellow
+			//$('.required', self).css('background-color', '#FFFF66');
+			
 			var form = $('form', self);
 			var action = form.attr( 'action' );
 	
@@ -212,11 +227,10 @@
 				} else {
 					spans = $('span[data-name]', self);
 					$.isFunction( opts.repopulate ) && opts.repopulate.call( self, spans, data, opts );
-				}
+				}			
 	
 				// afterSave Callback			
 				$.isFunction( opts.afterSave ) && opts.afterSave.call( self, data, textStatus );
-	
 			}, 
 			opts.dataType, 
 	
@@ -230,7 +244,7 @@
 			// onError callback
 			$.isFunction( opts.onError ) && opts.onError.call( self, xhr, status );
 			});
-			
+						
 			return true;
 		}
 
@@ -259,38 +273,38 @@
 		var self = this; // Because 'this' changes with scope
 		
 		$(self).bind( opts.event, function(e) {
-		e.preventDefault();
-		e.stopPropagation();
-		
-		if( self.editing ) {
-			return;
-		}
-		
-		self.editing = true;
-		self.revert = $(self).html();
-		
-		// Assign an action dynamically
-		if( $(this).attr( 'rel' ) ) {
-			opts.action = $(this).attr( 'rel' );		
-		}
-		
-		if( opts.globalSave ) {
-			$.each( $('.editable'), function(i, value) {
-				$.fn.editableSet.globals.reversions.push( $(value).html() );
-			});
-		}
-		
-		// beforeLoad callback
-		$.isFunction( opts.beforeLoad ) && opts.beforeLoad.call( self );
-				
-		// Create the form wrapper
-		$(self).wrapInner( $('<form />', {
-			action : opts.action,
-			method : 'POST'
-		}) ).addClass( 'active' );
-		
-		if( opts.titleElement ) {
-			// Move the newly encapsulated titleElement outside of the form
+			e.preventDefault();
+			e.stopPropagation();
+			
+			if( self.editing ) {
+				return;
+			}
+			
+			self.editing = true;
+			self.revert = $(self).html();
+			
+			// Assign an action dynamically
+			if( $(this).attr( 'rel' ) ) {
+				opts.action = $(this).attr( 'rel' );		
+			}
+			
+			if( opts.globalSave ) {
+				$.each( $('.editable'), function(i, value) {
+					$.fn.editableSet.globals.reversions.push( $(value).html() );
+				});
+			}
+			
+			// beforeLoad callback
+			$.isFunction( opts.beforeLoad ) && opts.beforeLoad.call( self );
+					
+			// Create the form wrapper
+			$(self).wrapInner( $('<form />', {
+				action : opts.action,
+				method : 'POST'
+			}) ).addClass( 'active' );
+			
+			if( opts.titleElement ) {
+				// Move the newly encapsulated titleElement outside of the form
 			$(opts.titleElement, self).insertBefore( $('form', self) );			
 		}
 
@@ -363,20 +377,20 @@
 		$(window).unbind( '.editableSet' );
 		
 		// Save if pressing cmd/ctrl + s
-		$(window).bind( 'keydown.editableSet', function(e) {
+		/*$(window).bind( 'keydown.editableSet', function(e) {
 			if( e.keyCode == 83 && (e.ctrlKey || e.metaKey) ) {
 				e.preventDefault();
 				save( self );
 			}
-		});
+		});*/
 				 
 		// Cancel if pressing esc
-		$(window).bind( 'keydown.editableSet', function(e) {
+		/*$(window).bind( 'keydown.editableSet', function(e) {
 			if( e.keyCode == 27 ) {
 				e.preventDefault();
 				cancel( self );
 			}
-		});
+		});*/
 	});	
 	};
 	
@@ -685,7 +699,7 @@
 				var originalValue = val;
 				var originalId = attrs['data-name'].replace( /\[|\]/g, '_' );
 						 
-				var ul = jQuery('<ul/>');
+				var ul = $('<ul/>');
 				
 				// Wrap in closure to manage scope
 				(function() {
@@ -793,94 +807,94 @@
 
 	var repopulate = function( editableSpan, data, opts ) {
 	
-	$.each( editableSpan, function(index, span) {
-
-		var fieldName = $(span).attr( 'data-name' );
-		var associatedModels = {};
-		// Only perform repopulation for spans with the name attribute
-		if( fieldName ) {
-		// First, extract the model name
-		// e.g. 'patient', by grabbing all characters before the first '['
-		var model = opts.model || fieldName.substr( 0, fieldName.indexOf( '[' ) );
-		
-		// Then replace all brackets with underscores for ease later on and remove the model name from the fieldName
-		// e.g. 'patient[former_employer_attributes][0][address_attributes][street1]' => 'former_employer_attributes_0_address_attributes_street1'
-		var modellessFieldName = fieldName.replace( /\]\[|\[|\]/g, '_' ).replace( model, '' ).replace( /^_+|_+$/g, '' );				
-
-		// Next, pull out the digits and the 'attributes' so that we can define our associated models and attribute
-		// e.g. ['former_employer', 'address', 'street1']
-		var associatedModelAndAttributeSplit = modellessFieldName.split( /\d+_/ ).join( '' ).split( /_attributes_/ );
-		
-		// If we have associations, map them, otherwise move on
-		if( associatedModelAndAttributeSplit.length > 1 ) {
-			// Now using the associatedModelAndAttributeSplit we can build our map of associated models and their indices (if they have them)
-			// e.g. { 'former_employer': 0, 'address': false }
-			var associationIndex;
-			$.each( associatedModelAndAttributeSplit, function(i, associatedModel) {
+		$.each( editableSpan, function(index, span) {
+	
+			var fieldName = $(span).attr( 'data-name' );
+			var associatedModels = {};
+			// Only perform repopulation for spans with the name attribute
+			if( fieldName ) {
+			// First, extract the model name
+			// e.g. 'patient', by grabbing all characters before the first '['
+			var model = opts.model || fieldName.substr( 0, fieldName.indexOf( '[' ) );
 			
-			// We don't need to run this on the last element because it is the attribute, not an associated model
-			if( i < associatedModelAndAttributeSplit.length-1 ) {
-				// Build a matcher based off of the associated model's name
-				var indexMatcher = new RegExp( associatedModel + '_attributes_(\\d+)' );
-							
-				// First get the match
-				// Run that regexp on the "model-less" field name
-				// e.g. match results => ['former_employer_attributes_0', '0']
-				associationIndex = modellessFieldName.match( indexMatcher );
-				
-				// Then extract just the digits
-				// e.g. '0'
-				if( associationIndex ) {
-				associationIndex = associationIndex[1]; // [1] To grab the captured digits
-				}
-				// Push the associated model and its index (if it has one) to the associatedModels object
+			// Then replace all brackets with underscores for ease later on and remove the model name from the fieldName
+			// e.g. 'patient[former_employer_attributes][0][address_attributes][street1]' => 'former_employer_attributes_0_address_attributes_street1'
+			var modellessFieldName = fieldName.replace( /\]\[|\[|\]/g, '_' ).replace( model, '' ).replace( /^_+|_+$/g, '' );				
+	
+			// Next, pull out the digits and the 'attributes' so that we can define our associated models and attribute
+			// e.g. ['former_employer', 'address', 'street1']
+			var associatedModelAndAttributeSplit = modellessFieldName.split( /\d+_/ ).join( '' ).split( /_attributes_/ );
+			
+			// If we have associations, map them, otherwise move on
+			if( associatedModelAndAttributeSplit.length > 1 ) {
+				// Now using the associatedModelAndAttributeSplit we can build our map of associated models and their indices (if they have them)
 				// e.g. { 'former_employer': 0, 'address': false }
-				associatedModels[associatedModel] = associationIndex || false;
-			}
-			});				
-		}
-		
-		// Set +attribute+ to the last element in the array
-		// e.g. 'street1'
-		var attribute = associatedModelAndAttributeSplit.pop();
-		
-		// Make a copy of our data, mostly to preserve the data namespace and to avoid confusion later on
-		// Grab the data using the root model if necessary (for example, in Rails the model will be included in the json response by default)
-		var selectedData = data[model] || data, 
-			value;
-		
-		// If there are no associated models it's an attribute of our primary model, set the value
-		if( $.isEmptyObject( associatedModels ) ) {
-			value = selectedData[attribute];
-		} else {
-
-			// Loop through each of the associated models and assign the corresponding value
-			// Wrap this in a closure so we can manage the scope
-			(function() {
-			var associatedModel;
-			for( associatedModel in associatedModels ) {
+				var associationIndex;
+				$.each( associatedModelAndAttributeSplit, function(i, associatedModel) {
+				
+				// We don't need to run this on the last element because it is the attribute, not an associated model
+				if( i < associatedModelAndAttributeSplit.length-1 ) {
+					// Build a matcher based off of the associated model's name
+					var indexMatcher = new RegExp( associatedModel + '_attributes_(\\d+)' );
 								
-				selectedData = selectedData[associatedModel];
-				// If our associated model has a non-false index, that means it is part of an array and we need to provide the index
-				if( associatedModels[associatedModel] ) {
-				selectedData = selectedData[associatedModels[associatedModel]];				 
+					// First get the match
+					// Run that regexp on the "model-less" field name
+					// e.g. match results => ['former_employer_attributes_0', '0']
+					associationIndex = modellessFieldName.match( indexMatcher );
+					
+					// Then extract just the digits
+					// e.g. '0'
+					if( associationIndex ) {
+					associationIndex = associationIndex[1]; // [1] To grab the captured digits
+					}
+					// Push the associated model and its index (if it has one) to the associatedModels object
+					// e.g. { 'former_employer': 0, 'address': false }
+					associatedModels[associatedModel] = associationIndex || false;
 				}
+				});				
+			}
 			
-				// Sometimes the dataset may be empty
-				if( typeof selectedData !== "undefined" && typeof selectedData[attribute] !== "undefined" ) {
+			// Set +attribute+ to the last element in the array
+			// e.g. 'street1'
+			var attribute = associatedModelAndAttributeSplit.pop();
+			
+			// Make a copy of our data, mostly to preserve the data namespace and to avoid confusion later on
+			// Grab the data using the root model if necessary (for example, in Rails the model will be included in the json response by default)
+			var selectedData = data[model] || data, 
+				value;
+			
+			// If there are no associated models it's an attribute of our primary model, set the value
+			if( $.isEmptyObject( associatedModels ) ) {
 				value = selectedData[attribute];
-				}
-			}			
-			})();
-		}
-		
-		// Assign the determined value to the span
-		if( typeof value !== undefined ) {
-			$(span).text( value );
-		}
-		
-		}							
-	});
+			} else {
+	
+				// Loop through each of the associated models and assign the corresponding value
+				// Wrap this in a closure so we can manage the scope
+				(function() {
+				var associatedModel;
+				for( associatedModel in associatedModels ) {
+									
+					selectedData = selectedData[associatedModel];
+					// If our associated model has a non-false index, that means it is part of an array and we need to provide the index
+					if( associatedModels[associatedModel] ) {
+					selectedData = selectedData[associatedModels[associatedModel]];				 
+					}
+				
+					// Sometimes the dataset may be empty
+					if( typeof selectedData !== "undefined" && typeof selectedData[attribute] !== "undefined" ) {
+					value = selectedData[attribute];
+					}
+				}			
+				})();
+			}
+			
+			// Assign the determined value to the span
+			if( typeof value !== undefined ) {
+				$(span).text( value );
+			}
+			
+			}							
+		});
 	};
 	
 	
@@ -889,18 +903,19 @@
 	// ===================
 	
 	$.fn.editableSet.defaults = {
-	event			 : 'dblclick',
-	action			: '/',
-	beforeLoad		: $.noop,
-	afterLoad		 : $.noop,
-	onCancel			: $.noop,
-	onSave			: $.noop,
-	afterSave		 : $.noop,
-	onError			 : $.noop,
-	titleElement		: false,
-	globalSave		: false,
-	dataType			: 'script',
-	repopulate		: repopulate
+		event			: 'dblclick',
+		action			: '/',
+		beforeLoad		: $.noop,
+		afterLoad		: $.noop,
+		onCancel		: $.noop,
+		onSave			: $.noop,
+		afterSave		: $.noop,
+		onError			: $.noop,
+		titleElement	: false,
+		globalSave		: false,
+		dataType		: 'script',
+		repopulate		: repopulate,
+		icon			: ''
 	};
 	
 	
@@ -909,7 +924,7 @@
 	// ======================
 	
 	$.fn.editableSet.globals = {
-	reversions	: []
+		reversions	: []
 	};
 	
 })(jQuery);
@@ -918,25 +933,25 @@
 // From http://homework.nwsnet.de/news/9132_put-and-delete-with-jquery
 function _ajax_request(url, data, callback, type, method, error) {
 	if( jQuery.isFunction( data ) ) {
-	callback = data;
-	data = {};
+		callback = data;
+		data = {};
 	}
 
 	return jQuery.ajax({
-	type: method,
-	url: url,
-	data: data,
-	success: callback,
-	dataType: type,
-	error: error
+		type: method,
+		url: url,
+		data: data,
+		success: callback,
+		dataType: type,
+		error: error
 	});
 }
 
 jQuery.extend({
 	put: function(url, data, callback, type, error) {
-	return _ajax_request( url, data, callback, type, 'PUT', error );
+		return _ajax_request( url, data, callback, type, 'PUT', error );
 	},
 	delete_: function(url, data, callback, type, error) {
-	return _ajax_request( url, data, callback, type, 'DELETE', error );
+		return _ajax_request( url, data, callback, type, 'DELETE', error );
 	}
 });

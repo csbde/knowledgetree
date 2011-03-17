@@ -130,6 +130,7 @@ class KTDocumentActivityFeedAction extends KTDocumentViewlet {
     function display_viewlet()
     {
 		$this->oPage->requireJSResource('resources/js/newui/documents/viewlets/comments.js');
+		$this->oPage->requireCSSResource('resources/css/newui/documents/viewlets/comments.css');
         $iDocumentId = $this->oDocument->getId();
         $mainArray = array();
 
