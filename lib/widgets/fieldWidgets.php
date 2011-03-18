@@ -1,4 +1,5 @@
 <?php
+
 /**
  * $Id$
  *
@@ -45,6 +46,7 @@
 require_once(KT_LIB_DIR . '/templating/templating.inc.php');
 
 class KTBaseWidget {
+
     var $sLabel = '';
     var $sDescription = '';
     var $sName = '';
@@ -53,23 +55,19 @@ class KTBaseWidget {
     var $bRequired = false;
     var $aOptions = null;
     var $aErrors = null;
-
     var $value = null;
-
-
-    // very quick overrides.
     var $sTemplate = 'kt3/fields/base';
 
-    function KTBaseWidget($sLabel, $sDescription, $sName, $value, &$oPage, $bRequired = false, $sId = null, $aErrors = null, $aOptions = null) {
-        $this->sLabel = $sLabel;
-        $this->sDescription = $sDescription;
-        $this->sName = $sName;
+    function KTBaseWidget($label, $description, $name, $value, &$page, $required = false, $id = null, $errors = null, $options = null) {
+        $this->sLabel = $label;
+        $this->sDescription = $description;
+        $this->sName = $name;
         $this->value = $value;
-        $this->oPage =& $oPage;
-        $this->bRequired = $bRequired;
-        $this->sId = $sId;
-        $this->aOptions = $aOptions;
-        $this->aErrors = $aErrors;
+        $this->oPage =& $page;
+        $this->bRequired = $required;
+        $this->sId = $id;
+        $this->aOptions = $options;
+        $this->aErrors = $errors;
 
         if (is_null($this->aOptions)) { $this->aOptions = array(); }
         // default to being a bit bigger.
@@ -79,13 +77,13 @@ class KTBaseWidget {
     function render() {
         // very simple, general purpose passthrough.  Chances are this is sufficient,
         // just override the template being used.
-        $bHasErrors = false;
-        if (count($this->aErrors) != 0) { $bHasErrors = true; }
+        $hasErrors = false;
+        if (count($this->aErrors) != 0) { $hasErrors = true; }
         //var_dump($this->aErrors);
-        $oTemplating =& KTTemplating::getSingleton();
-        $oTemplate = $oTemplating->loadTemplate($this->sTemplate);
+        $templating =& KTTemplating::getSingleton();
+        $template = $templating->loadTemplate($this->sTemplate);
 
-        $aTemplateData = array(
+        $templateData = array(
             'context' => $this,
             'label' => $this->sLabel,
             'description' => $this->sDescription,
@@ -96,13 +94,14 @@ class KTBaseWidget {
             'id' => $this->sId,
             'has_value' => ($this->value !== null),
             'value' => $this->value,
-            'has_errors' => $bHasErrors,
+            'has_errors' => $hasErrors,
             'errors' => $this->aErrors,
             'options' => $this->aOptions,
         );
 
-        return $oTemplate->render($aTemplateData);
+        return $template->render($templateData);
     }
+
 }
 
 /* Ultra simple items, could be extended later (e.g. JS)*/
@@ -110,9 +109,7 @@ class KTStringWidget extends KTBaseWidget { var $sTemplate = 'kt3/fields/base'; 
 class KTPasswordWidget extends KTBaseWidget { var $sTemplate = 'kt3/fields/password'; }
 class KTIntegerWidget extends KTBaseWidget { var $sTemplate = 'kt3/fields/base'; }
 class KTTextWidget extends KTBaseWidget { var $sTemplate = 'kt3/fields/text'; }
-
 class KTCheckboxWidget extends KTBaseWidget { var $sTemplate = 'kt3/fields/checkbox'; }
-
 class KTFileUploadWidget extends KTBaseWidget { var $sTemplate = 'kt3/fields/fileupload'; }
 class KTStaticTextWidget extends KTBaseWidget { var $sTemplate = 'kt3/fields/statictext'; }
 
