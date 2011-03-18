@@ -852,9 +852,9 @@ a.main_nav_item {
     font-size: 12px;
 }
 
-.metadatatable .required {
-    background-color: #FFFF66
-}
+/*.metadatatable .required {
+	background-color: #FFFF66
+}*/
 
 #content .doc_info input.form_submit {
 	background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(white), to(#DDD)) !important;
@@ -913,10 +913,39 @@ a.main_nav_item {
     margin-top: 10px;
     overflow: hidden;
 }
-.metadata_control {
-	background: url(../../resources/graphics/newui/icons/edit.png) no-repeat right top;
+.metadatarow.required {
+	background-color: #FFFF66;
+}
+.metadatarow.required.incomplete {
+	background-color: #FFCCFF;
+}
+.doctype_control {
+	cursor: pointer;
 	float: right;
 	min-width: 20px;
+}
+.doctype_control.edit {
+	background: url(../../resources/graphics/newui/icons/edit.png) no-repeat right top;
+}
+.doctype_control.undo {
+	background: url(../../resources/graphics/newui/icons/undo.png) no-repeat right top;
+}
+.doctype_control.spin {
+	background: url(../../resources/graphics/newui/loading.gif) no-repeat right top;
+}
+.metadata_control {
+	cursor: pointer;
+	float: right;
+	min-width: 20px;	
+}
+.metadata_control.edit {
+	background: url(../../resources/graphics/newui/icons/edit.png) no-repeat right top;
+}
+.metadata_control.undo {
+	background: url(../../resources/graphics/newui/icons/undo.png) no-repeat right top;
+}
+.metadata_control.spin {
+	background: url(../../resources/graphics/newui/loading.gif) no-repeat right top;
 }
 .detail_fieldset h3
 {
