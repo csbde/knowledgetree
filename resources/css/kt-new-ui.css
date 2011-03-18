@@ -9,7 +9,9 @@ body {
 	margin: 0 auto;
 
 }
-
+textarea {
+	font-family: Arial;
+}
 /* ------------------ Experimental UI --------------------- */
 
 #planNotice,
@@ -162,7 +164,8 @@ body {
 
 }
 #breadcrumbs span {
-	color: #888;
+	text-transform: none;
+	color: #2F6594;
 	padding-left: 0px;
 	text-shadow: 0px 1px 0px #fff;
 }
@@ -260,18 +263,15 @@ body {
 }
 #breadcrumbs .breadcrumbBtns a {
     height: 16px;
-    margin-right: 3px;
-    padding: 5px 0 2px 2px;
-    background: #F6F6F6;
-    border: 1px solid #CCC;
-	-moz-border-radius: 3px;
-	-webkit-border-radius: 3px;
+    margin-right: 2px;
+    padding: 4px 0 2px 2px;
+    border: 1px solid #EEE!important;
 	border-radius: 3px;
 	behavior: url('../resources/css/border-radius.htc');
 }
 #breadcrumbs .breadcrumbBtns a:hover {
 	text-decoration: none !important;
-	border: 1px solid #DDD;
+	border: 1px solid #CCC!important;
 	-moz-border-radius: 3px;
 	-webkit-border-radius: 3px;
 	border-radius: 3px;
@@ -287,7 +287,7 @@ body {
 }
 
 #breadcrumbs .breadcrumbBtns span {
-	padding: 6px 5px 0px 22px;
+	padding: 5px 5px 5px 22px;
 	font-size: 11px;
 }
 #breadcrumbs .breadcrumbBtns span.upload {
@@ -438,7 +438,7 @@ ul.floatleft li.notification {
 	line-height: 24px;
 }
 .splitbutton #download {
-	background: url('../graphics/newui/docview_download.png') no-repeat px 7px !important;
+	background: url('../graphics/newui/docview_download.png') no-repeat 7px 7px !important;
 }
 .splitbutton #checkout {
 	background: url('../graphics/newui/checkedout.png') no-repeat 7px 4px;
@@ -550,7 +550,7 @@ div.form_actions {
 }
 
 #newSearchQuery {
-	/* margin-top: 5px; */
+	margin-top: -10px;
 	padding: 0px;
 	margin: 0;
 	/*float: right;*/
@@ -886,4 +886,7 @@ span.sharingtree {
 	padding:0;
 	width:25px;
 }
+/*Alerts Modal*/
+
+
 

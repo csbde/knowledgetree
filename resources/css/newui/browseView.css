@@ -35,7 +35,7 @@
 
 .item td.checkbox { vertical-align: middle; }
 
-.page .notification { display: block; text-align: center; width: auto; -webkit-box-shadow: 0px 0px 10px black; -moz-box-shadow: 0px 0px 10px black; box-shadow: 0px 0px 10px black; border: 1px solid #999999; background-color: #EEEEEE; margin: 20px 100px; padding: 20px; color: #989090 !important; }
+.page .notification { display: block; text-align: center; width: auto; -webkit-box-shadow: 0px 0px 2px #666; -moz-box-shadow: 0px 0px 2px #666; box-shadow: 0px 0px 2px #666; border: 1px solid #999999; background-color: #EEEEEE; margin: 20px 0px; padding: 20px; color: #989090 !important; }
 .page .notification h2 { color: #989090 !important; }
 .page .notification table { width: 100%; text-align: left; margin-top: 20px; }
 .page .notification table div.roundnum { background-color: #80C1DE; color: #FFF; font-size: 20px; -webkit-border-radius: 50px; -moz-border-radius: 50px; border-radius: 50px; width: 30px; height: 30px; text-align: center; vertical-align: bottom; }

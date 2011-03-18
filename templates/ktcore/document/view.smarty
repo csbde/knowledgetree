@@ -24,7 +24,7 @@
 		</tr>
 		<tr>
 			<!-- <td style="display:none;" width="1" valign="top" style="padding-right: 15px;"><span id="doc_thumb" style="float:left;" /></td> -->
-			<td height="1" valign="top" width="350">
+			<td height="1" valign="top" width="310">
 
 				<div class="doc_description">
 					{if $document->getImmutable()}<img src="{$rootUrl}/resources/graphics/newui/docview_immutable.png" style="display: inline-block" alt="{i18n}Finalized{/i18n}"  title="{i18n}Finalized{/i18n}" />{/if}
@@ -47,9 +47,9 @@
 					<br/>
 					<br/>
 										
-					<div class="documenttype" rel={$rootUrl}/presentation/lookAndFeel/knowledgeTree/widgets/changeDocumentType.php?documentID={$document->getId()}"> 
+					<div class="documenttype" rel="update.php?documentID={$document->getId()}"> 
 	    			<table class="metadatatable" cellspacing="0" cellpadding="5">
-	    			<tr class="metadatarow even first">
+	    			<tr class="even first">
 	    				<th>Document Type</th>
 			        <td>
 			        <span class="descriptiveText" id='documentTypeID' data-name='documentTypeID' data-options='[{foreach from=$document_types key=aKey item=documentType}
@@ -57,20 +57,23 @@
 					</table>
 					</div>
 					
-					<div class="editablemetadata">
-					{foreach item=oFieldset from=$fieldsets name=fieldsets}
-						{if $smarty.foreach.fieldsets.index == 2}
-							<br/>
-							<div><span class="more">More...</span></div>
-							<br/>
-							<div class="slide" style="display:none">
-						{/if}
-							{$oFieldset->render($document_data)}
-						{if $smarty.foreach.fieldsets.last &&  $smarty.foreach.fieldsets.total >= 3}
-							</div>
-						{/if}
+					<div class="editablemetadata" rel="persistMetadata.php?documentID={$document->getId()}">
+					{foreach item=oFieldset from=$fieldsets}
+						{$oFieldset->render($document_data)}
 					{/foreach}
 					</div>
+					<br/>
+					<div><span class="more">More...</span></div>
+					<br/>
+					<div class="slide" style="display:none">
+					{foreach item=oFieldset from=$generic_fieldsets}
+						{$oFieldset->render($document_data)}
+					{/foreach}
+					</div>
+					
+			
+      
+  
 					</span>
 				</div>
 				<!-- <hr style="border: none; background-color: #E3E3E3; width: 98%; height: 1px; margin-left: 10px; margin-bottom: 15px;" align="left" /> -->

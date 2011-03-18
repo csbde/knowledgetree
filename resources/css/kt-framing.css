@@ -2443,58 +2443,67 @@ div.extjs_form_actions {
 #popup_content .error {
     background: #ffdd80  url(../../resources/graphics/denied.gif) 2px center no-repeat;
 }
-
+.ext-el-mask {
+	background: transparent;
+}
+.x-window {
+	background: rgba(0,0,0,0.3);
+	padding: 10px;
+}
 .x-window-tl .x-window-header {
-    color: #FFF;
+    color: #2F6594;
+    font-size: 16px;
+    text-shadow: 0px 1px 0px white;
 }
 
 .x-window-tc {
-	background: url(../graphics/portlet_bg.png) repeat-x 0 0;
+	background:#EEE;
 	overflow:hidden;
     zoom:1;
+    padding: 5px;
 }
 
 .x-window-tl {
-	background: url(../graphics/portlet_corner_topleft.png) no-repeat 0 0;
-	padding-left:6px;
+	border-bottom: 1px solid #CCC;
+	padding-left:0px;
     zoom:1;
     z-index:1;
     position:relative;
 }
 
 .x-window-tr {
-	background: url(../graphics/portlet_corner_topright_2.png) no-repeat right 0;
-	padding-right:6px;
+	border:0px;
+	padding-right:0px;
 }
 
 .x-window-bc {
 	background: #FFF;
     zoom:1;
+    border:0px;
 }
 .x-window-bl {
-    border-left:1px solid #AFAFAF;
-    border-bottom:1px solid #AFAFAF;
+	border:0px;
 	background:  #FFF;
 	padding-left:6px;
     zoom:1;
 }
 .x-window-br {
-    border-right:1px solid #AFAFAF;
+    border-right:0px solid #AFAFAF;
 	background:  #FFF;
 	padding-right:6px;
     zoom:1;
 }
 
 .x-window-ml {
-    border-left:1px solid #AFAFAF;
+    border-left:0px solid #AFAFAF;
 	background:  #FFF;
-	padding-left:6px;
+	padding-left:0px;
     zoom:1;
 }
 .x-window-mr {
-    border-right:1px solid #AFAFAF;
+    border-right:0px solid #AFAFAF;
 	background:  #FFF;
-	padding-right:6px;
+	padding-right:0px;
     zoom:1;
 }
 
