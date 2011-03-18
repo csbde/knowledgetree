@@ -31,12 +31,6 @@
 		// ===================
 	
 		var save = function( self ) {
-			
-			if (opts.showSpinner)
-			{
-				$('tr.metadatarow', self).append('<img class="spinner" src="/resources/graphics/newui/loading.gif" style="float: right;"/>');
-			}	
-			
 			self.editing = false;
 			
 			// onSave callback
@@ -48,7 +42,7 @@
 			//do we need to check for required fields?
 			if (opts.requiredClass != null && opts.requiredClass != '')
 			{			
-				$('.'+opts.requiredClass, self).each(function(index)
+				$('.'+opts.requiredClass, $(self)).each(function(index)
 				{
 					//get the fields id: to chop off the "metadatafield_" prefix
 					var id = ($(this).attr('id').substring($(this).attr('id').indexOf('_')+1));
@@ -65,7 +59,7 @@
 							
 							if(val == null || val == undefined || val == '' || val == 'no value')
 							{
-								$(this).css('background-color', '#FFCCFF');
+								$(this).addClass('incomplete');
 								atLeastOneRequiredNotDone = true;
 							}
 						break;
@@ -75,7 +69,7 @@
 							
 							if(val == null || val == undefined || val == '' || val == 'no value')
 							{
-								$(this).css('background-color', '#FFCCFF');
+								$(this).addClass('incomplete');
 								atLeastOneRequiredNotDone = true;
 							}
 						break;
@@ -85,7 +79,7 @@
 							
 							if(val == null || val == undefined)
 							{
-								$(this).css('background-color', '#FFCCFF');
+								$(this).addClass('incomplete');
 								atLeastOneRequiredNotDone = true;
 							}
 						break;
@@ -101,7 +95,7 @@
 							
 							if (vals.length == 0)
 							{
-								$(this).css('background-color', '#FFCCFF');
+								$(this).addClass('incomplete');
 								atLeastOneRequiredNotDone = true;
 							}
 						break;
@@ -117,12 +111,12 @@
 							
 							if (vals.length == 0)
 							{
-								$(this).css('background-color', '#FFCCFF');
+								$(this).addClass('incomplete');
 								atLeastOneRequiredNotDone = true;
 							}
 							else if (vals.length == 1 && vals[0] == 'no value')
 							{
-								$(this).css('background-color', '#FFCCFF');
+								$(this).addClass('incomplete');
 								atLeastOneRequiredNotDone = true;
 							}
 						break;
@@ -132,7 +126,7 @@
 	
 							if(val == null || val == undefined || val == '' || val == 'no value')
 							{
-								$(this).css('background-color', '#FFCCFF');
+								$(this).addClass('incomplete');
 								atLeastOneRequiredNotDone = true;
 							}						
 						break;
@@ -142,18 +136,18 @@
 							
 							if(val == null || val == undefined || val == '' || val == 'no value')
 							{
-								$(this).css('background-color', '#FFCCFF');
+								$(this).addClass('incomplete');
 								atLeastOneRequiredNotDone = true;
 							}
 							
 							
 						break;
 						case 'metadata_htmleditor':
-							var val = $('#'+id).val();	//document.getElementById(id).value;
+							var val = $('#'+id).val();
 							
 							if(val == null || val == undefined || val == 'no value')
 							{
-								$(this).css('background-color', '#FFCCFF');
+								$(this).addClass('incomplete');
 								atLeastOneRequiredNotDone = true;
 							}
 							
@@ -173,18 +167,13 @@
 			
 			//if there is even one required field missing, we need to stop the save
 			if(atLeastOneRequiredNotDone)
-			{
-				if (opts.showSpinner)
-				{
-					$('.spinner').remove();
-				}
-			
+			{			
 				return false;
 			}
 			else
 			{
 				//reset background of required fields to yellow
-				//$('.required', self).css('background-color', '#FFFF66');
+				$('.required', $(self)).removeClass('incomplete');
 				
 				var form = $('form', self);
 				var action = form.attr( 'action' );
@@ -272,17 +261,12 @@
 		return this.each( function(index, value) {
 			var self = this; // Because 'this' changes with scope
 			
-			//console.log(index);
-			//console.dir(value);
-			
 			var control = null;
 			var event = opts.event;
 			
-			//var control = jQuery('.'+opts.controlClass);
-			if(opts.control)
+			if(opts.controlClass)
 			{
-				//console.dir(opts.control);
-				control = $('.'+opts.control, self);	//opts.control;
+				control = $('.'+opts.controlClass, $(self));
 				event = 'click';
 			}
 			else
@@ -343,12 +327,23 @@
 						{
 							$(':input', self).attr( 'disabled', true );
 						}
+						else
+						{
+							$.isFunction( opts.onRequiredNotDone ) && opts.onRequiredNotDone.call( self );
+						}
 						return false;
 					}
 				}).addClass( 'form_submit' ) );
 				
+				//add the 'Undo' icon
+				$('.'+opts.controlClass, $(self)).removeClass('edit').addClass('undo');	//.css('background', 'url(/resources/graphics/newui/icons/heart.png) no-repeat right top');
+				$('.'+opts.controlClass, $(self)).one('click', function(e){
+					cancel( self );
+					//$(':input', self).attr( 'disabled', true );	
+				});			
+				
 				// Append the 'Cancel' button
-				appendable.append( $('<input />', {
+				/*appendable.append( $('<input />', {
 					type	: "button",
 					value : "Cancel",
 					click : function() {
@@ -356,7 +351,7 @@
 						$(':input', self).attr( 'disabled', true );
 						return false;
 					}
-				}).addClass( 'form_cancel' ) );
+				}).addClass( 'form_cancel' ) );*/
 									 
 				// Find each span with a +data-name+, loop through and replace with input
 				var spans = $('span[data-name]', self);
