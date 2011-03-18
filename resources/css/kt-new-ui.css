@@ -890,3 +890,10 @@ span.sharingtree {
 
 
 
+label span.required
+{
+    margin-left: 0.5em;
+    padding-left: 10px;
+    color: white;
+    background: transparent url(../../resources/graphics/required.png) center left no-repeat;
+}

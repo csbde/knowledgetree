@@ -36,27 +36,23 @@
  *
  */
 
-require_once(KT_LIB_DIR . "/actions/documentviewlet.inc.php");
-require_once(KT_LIB_DIR . "/workflow/workflowutil.inc.php");
-require_once(KT_LIB_DIR . '/actions/documentaction.inc.php');
-require_once(KT_PLUGIN_DIR . '/commercial/alerts/alertUtil.inc.php');
+require_once(KT_LIB_DIR . "/actions/folderviewlet.inc.php");
 
-class KTDocumentSidebar extends KTDocumentViewlet {
-    public $sName = 'ktcore.sidebars.document';
+class KTFolderSidebar extends KTFolderViewlet {
+    public $sName = 'ktcore.sidebars.folder';
 	public $_sShowPermission = 'ktcore.permissions.read';
 	public $order = 1;
 	
 	public function getCSSName() {}
-	public function getOrder() {
-		return $this->order;
-	}
+	public function getOrder() { return $this->order; }
+	
 	/**
 	 * Create a sidebar block
 	 *
 	 * @return string
 	 */
-	public function getDocSideBars() {
-		$sidebars = KTDocumentActionUtil::getDocumentActionsForDocument($this->oDocument, $this->oUser, 'documentsidebar');
+	public function getFolderSideBars() {
+		$sidebars = KTFolderActionUtil::getFolderActionsForFolder($this->oFolder, $this->oUser, 'foldersidebar');
 		$ordered = array();
         foreach ($sidebars as $sidebar) {
         	if(isset($ordered[$sidebar->getOrder()])) {
@@ -66,35 +62,14 @@ class KTDocumentSidebar extends KTDocumentViewlet {
         	}
         }
 		$oTemplating = KTTemplating::getSingleton();
-		$oTemplate = $oTemplating->loadTemplate('ktcore/document/sidebars/viewSidebar');
+		$oTemplate = $oTemplating->loadTemplate('ktcore/folder/sidebars/viewSidebar');
         $aTemplateData = array(
               'context' => $this,
               'sidebars' => $ordered,
-              'documentId' => $this->oDocument->getId(),
-        );
-        
-        return $oTemplate->render($aTemplateData);
-	}
-	
-}
-
-class KTRecentlyViewedSidebar extends KTDocumentSidebar {
-	public $sName = 'ktcore.sidebar.recentview';
-	public $order = 2;
-	
-	public function getSidebar() {
-		$oTemplating = KTTemplating::getSingleton();
-		$oTemplate = $oTemplating->loadTemplate('ktcore/document/sidebars/recentlyViewed');
-        $aTemplateData = array(
-              'context' => $this,
-              'documentId' => $this->oDocument->getId(),
         );
         
         return $oTemplate->render($aTemplateData);
 	}
 }
-
-
-
 
 ?>

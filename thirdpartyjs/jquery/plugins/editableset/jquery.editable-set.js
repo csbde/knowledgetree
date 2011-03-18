@@ -19,379 +19,392 @@
 
 	$.fn.editableSet = function( options ) {
 
-	// =================
-	// = Build Options =
-	// =================
-	
-	var opts = $.extend( {}, $.fn.editableSet.defaults, options );
-	
-	
-	// ===================
-	// = Define the Save =
-	// ===================
-
-	var save = function( self ) {
+		// =================
+		// = Build Options =
+		// =================
 		
-		if (opts.showSpinner)
-		{
-			$('tr.metadatarow', self).append('<img class="spinner" src="/resources/graphics/newui/loading.gif" style="float: right;"/>');
-		}	
-		
-		self.editing = false;
-		
-		// onSave callback
-		$.isFunction( opts.onSave ) && opts.onSave.call( self );
-		
-		//assume all required fields have been completed
-		var atLeastOneRequiredNotDone = false;
-		
-		//do we need to check for required fields?
-		if (opts.requiredClass != null && opts.requiredClass != '')
-		{			
-			$('.'+opts.requiredClass, self).each(function(index)
-			{
-				//get the fields id: to chop off the "metadatafield_" prefix
-				var id = ($(this).attr('id').substring($(this).attr('id').indexOf('_')+1));
-				//console.log('I am required '+id);
+		var opts = $.extend( {}, $.fn.editableSet.defaults, options );
 				
-				//the first <td> contains the element we are interested in
-				var firstTD = $('td:first', $(this));
-								
-				//the td's class identifies its type				
-				switch(firstTD.attr('class'))
+		
+		// ===================
+		// = Define the Save =
+		// ===================
+	
+		var save = function( self ) {
+			self.editing = false;
+			
+			// onSave callback
+			$.isFunction( opts.onSave ) && opts.onSave.call( self );
+			
+			//assume all required fields have been completed
+			var atLeastOneRequiredNotDone = false;
+			
+			//do we need to check for required fields?
+			if (opts.requiredClass != null && opts.requiredClass != '')
+			{			
+				$('.'+opts.requiredClass, $(self)).each(function(index)
 				{
-					case 'metadata_textbox':
-						var val = $('input:text[name='+id+']').val();
-						
-						if(val == null || val == undefined || val == '' || val == 'no value')
-						{
-							$(this).css('background-color', '#FFCCFF');
-							atLeastOneRequiredNotDone = true;
-						}
-					break;
+					//get the fields id: to chop off the "metadatafield_" prefix
+					var id = ($(this).attr('id').substring($(this).attr('id').indexOf('_')+1));
+					//console.log('I am required '+id);
 					
-					case 'metadata_date':
-						var val = $('input:text[name='+id+']').val();
+					//the first <td> contains the element we are interested in
+					var firstTD = $('td:first', $(this));
+									
+					//the td's class identifies its type				
+					switch(firstTD.attr('class'))
+					{
+						case 'metadata_textbox':
+							var val = $('input:text[name='+id+']').val();
+							
+							if(val == null || val == undefined || val == '' || val == 'no value')
+							{
+								$(this).addClass('incomplete');
+								atLeastOneRequiredNotDone = true;
+							}
+						break;
 						
-						if(val == null || val == undefined || val == '' || val == 'no value')
-						{
-							$(this).css('background-color', '#FFCCFF');
-							atLeastOneRequiredNotDone = true;
-						}
-					break;
+						case 'metadata_date':
+							var val = $('input:text[name='+id+']').val();
+							
+							if(val == null || val == undefined || val == '' || val == 'no value')
+							{
+								$(this).addClass('incomplete');
+								atLeastOneRequiredNotDone = true;
+							}
+						break;
+						
+						case 'metadata_tree':						
+							var val = $('input:radio[name='+id+']:checked').val();
+							
+							if(val == null || val == undefined)
+							{
+								$(this).addClass('incomplete');
+								atLeastOneRequiredNotDone = true;
+							}
+						break;
+						
+						case 'metadata_multicheckselect':
+							//array to contain all the selected values
+							var vals = new Array();
+							
+							$('input:checkbox[name="'+id+'[]"]:checked').each(function()
+							{
+							    vals.push($(this).val());
+							});
+							
+							if (vals.length == 0)
+							{
+								$(this).addClass('incomplete');
+								atLeastOneRequiredNotDone = true;
+							}
+						break;
+						
+						case 'metadata_multilistselect':
+							//array to contain all the selected values
+							var vals = new Array();
+							
+							$('select[name="'+id+'[]"] option:selected').each(function()
+							{
+							    vals.push($.trim($(this).val()));
+							});
+							
+							if (vals.length == 0)
+							{
+								$(this).addClass('incomplete');
+								atLeastOneRequiredNotDone = true;
+							}
+							else if (vals.length == 1 && vals[0] == 'no value')
+							{
+								$(this).addClass('incomplete');
+								atLeastOneRequiredNotDone = true;
+							}
+						break;
+						case 'metadata_singleselect':						
+							//var val = $('#singleselect_'+id).val();
+							var val = $('select[name='+id+']').val();
+	
+							if(val == null || val == undefined || val == '' || val == 'no value')
+							{
+								$(this).addClass('incomplete');
+								atLeastOneRequiredNotDone = true;
+							}						
+						break;
+						
+						case 'metadata_textarea':
+							var val = $('textarea[name='+id+']').val();
+							
+							if(val == null || val == undefined || val == '' || val == 'no value')
+							{
+								$(this).addClass('incomplete');
+								atLeastOneRequiredNotDone = true;
+							}
+							
+							
+						break;
+						case 'metadata_htmleditor':
+							var val = $('#'+id).val();
+							
+							if(val == null || val == undefined || val == 'no value')
+							{
+								$(this).addClass('incomplete');
+								atLeastOneRequiredNotDone = true;
+							}
+							
+						break;
+					}
 					
-					case 'metadata_tree':						
-						var val = $('input:radio[name='+id+']:checked').val();
-						
-						if(val == null || val == undefined)
-						{
-							$(this).css('background-color', '#FFCCFF');
-							atLeastOneRequiredNotDone = true;
-						}
-					break;
-					
-					case 'metadata_multicheckselect':
-						//array to contain all the selected values
-						var vals = new Array();
-						
-						$('input:checkbox[name="'+id+'[]"]:checked').each(function()
-						{
-						    vals.push($(this).val());
-						});
-						
-						if (vals.length == 0)
-						{
-							$(this).css('background-color', '#FFCCFF');
-							atLeastOneRequiredNotDone = true;
-						}
-					break;
-					
-					case 'metadata_multilistselect':
-						//array to contain all the selected values
-						var vals = new Array();
-						
-						$('select[name="'+id+'[]"] option:selected').each(function()
-						{
-						    vals.push($.trim($(this).val()));
-						});
-						
-						if (vals.length == 0)
-						{
-							$(this).css('background-color', '#FFCCFF');
-							atLeastOneRequiredNotDone = true;
-						}
-						else if (vals.length == 1 && vals[0] == 'no value')
-						{
-							$(this).css('background-color', '#FFCCFF');
-							atLeastOneRequiredNotDone = true;
-						}
-					break;
-					case 'metadata_singleselect':						
-						//var val = $('#singleselect_'+id).val();
-						var val = $('select[name='+id+']').val();
-
-						if(val == null || val == undefined || val == '' || val == 'no value')
-						{
-							$(this).css('background-color', '#FFCCFF');
-							atLeastOneRequiredNotDone = true;
-						}						
-					break;
-					
-					case 'metadata_textarea':
-						var val = $('textarea[name='+id+']').val();
-						
-						if(val == null || val == undefined || val == '' || val == 'no value')
-						{
-							$(this).css('background-color', '#FFCCFF');
-							atLeastOneRequiredNotDone = true;
-						}
-						
-						
-					break;
-					case 'metadata_htmleditor':
-						var val = $('#'+id).val();	//document.getElementById(id).value;
-						
-						if(val == null || val == undefined || val == 'no value')
-						{
-							$(this).css('background-color', '#FFCCFF');
-							atLeastOneRequiredNotDone = true;
-						}
-						
-					break;
-				}
-				
-				//don't do this as need to mark each field that wasn't complete
-				/*if(atLeastOneRequiredNotDone)
-				{
-					return false;
-				}*/
-			});
-			
-			
-			
-		}
-		
-		//if there is even one required field missing, we need to stop the save
-		if(atLeastOneRequiredNotDone)
-		{
-			if (opts.showSpinner)
-			{
-				$('.spinner').remove();
-			}
-		
-			return false;
-		}
-		else
-		{
-			//reset background of required fields to yellow
-			//$('.required', self).css('background-color', '#FFFF66');
-			
-			var form = $('form', self);
-			var action = form.attr( 'action' );
-	
-			// This is needed for rails to identify the request as json
-			if( opts.dataType === 'json' ) {
-				action = action + '.json';
-			}
-	
-			// Generate the params
-			var params;
-			if( opts.globalSave ) {
-				params = $( 'form', '.editable' ).serialize();
-			} else {
-				params = form.serialize();
-			}
-	
-			// PUT the form and update the child elements
-			$.post( action, params, function( data, textStatus ) {
-				// Parse the data if necessary
-				data = $.parseJSON( data ) ? $.parseJSON( data ) : data;
-	
-				// Revert to original text
-				if( opts.globalSave ) {
-					$.each( $('.editable'), function( i, value ) {
-						$(value).html( $.fn.editableSet.globals.reversions[i] ).removeClass( 'active' );
-						value.editing = false;
-					});
-				} else {
-					$(self).html( self.revert );
-					$(self).removeClass( 'active' );
-				}
-	
-				var spans;
-				if( opts.globalSave ) {
-					$.each( $('.editable'), function(i, editable) {
-						spans = $('span[data-name]', editable);	
-						$.isFunction( opts.repopulate ) && opts.repopulate.call( self, spans, data, opts );
-					});
-				} else {
-					spans = $('span[data-name]', self);
-					$.isFunction( opts.repopulate ) && opts.repopulate.call( self, spans, data, opts );
-				}			
-	
-				// afterSave Callback			
-				$.isFunction( opts.afterSave ) && opts.afterSave.call( self, data, textStatus );
-			}, 
-			opts.dataType, 
-	
-			// onError
-			function( xhr, status, error ) {
-			self.editing = true;
-	
-			// Reactivate the fields
-			$(':input', self).attr( 'disabled', false );
-	
-			// onError callback
-			$.isFunction( opts.onError ) && opts.onError.call( self, xhr, status );
-			});
-						
-			return true;
-		}
-
-	};
-	
-	
-	// =====================
-	// = Define the Cancel =
-	// =====================
-
-	var cancel = function(self) {
-		self.editing = false;
-
-		// Revert to original text
-		$(self).html( self.revert ).removeClass( 'active' );
-
-		// Callback
-		$.isFunction( opts.onCancel ) && opts.onCancel.call( self );
-	};
-	
-	
-	// ===========
-	// = Public = 
-	// ===========
-	return this.each( function() {
-		var self = this; // Because 'this' changes with scope
-		
-		$(self).bind( opts.event, function(e) {
-			e.preventDefault();
-			e.stopPropagation();
-			
-			if( self.editing ) {
-				return;
-			}
-			
-			self.editing = true;
-			self.revert = $(self).html();
-			
-			// Assign an action dynamically
-			if( $(this).attr( 'rel' ) ) {
-				opts.action = $(this).attr( 'rel' );		
-			}
-			
-			if( opts.globalSave ) {
-				$.each( $('.editable'), function(i, value) {
-					$.fn.editableSet.globals.reversions.push( $(value).html() );
+					//don't do this as need to mark each field that wasn't complete
+					/*if(atLeastOneRequiredNotDone)
+					{
+						return false;
+					}*/
 				});
+				
+				
+				
 			}
 			
-			// beforeLoad callback
-			$.isFunction( opts.beforeLoad ) && opts.beforeLoad.call( self );
-					
-			// Create the form wrapper
-			$(self).wrapInner( $('<form />', {
-				action : opts.action,
-				method : 'POST'
-			}) ).addClass( 'active' );
-			
-			if( opts.titleElement ) {
-				// Move the newly encapsulated titleElement outside of the form
-			$(opts.titleElement, self).insertBefore( $('form', self) );			
-		}
-
-		// Define the 'appendable' element for the submit and cancel buttons
-		var appendable;
-		if( opts.titleElement && $(opts.titleElement, self).length > 0 ) {
-			appendable = $(opts.titleElement, self);
-		} else {
-			appendable = $('form', self);
-		} 
+			//if there is even one required field missing, we need to stop the save
+			if(atLeastOneRequiredNotDone)
+			{			
+				return false;
+			}
+			else
+			{
+				//reset background of required fields to yellow
+				$('.required', $(self)).removeClass('incomplete');
+				
+				var form = $('form', self);
+				var action = form.attr( 'action' );
 		
-		// Append the 'Save' button
-		appendable.append( $('<input />', {
-			type	: "submit",
-			value : "Save",
-			click : function() {
-				if (save( self ))
-				{
-					$(':input', self).attr( 'disabled', true );
+				// This is needed for rails to identify the request as json
+				if( opts.dataType === 'json' ) {
+					action = action + '.json';
 				}
-				return false;
-			}
-		}).addClass( 'form_submit' ) );
 		
-		// Append the 'Cancel' button
-		appendable.append( $('<input />', {
-			type	: "button",
-			value : "Cancel",
-			click : function() {
-				cancel( self );
-				$(':input', self).attr( 'disabled', true );
-				return false;
+				// Generate the params
+				var params;
+				if( opts.globalSave ) {
+					params = $( 'form', '.editable' ).serialize();
+				} else {
+					params = form.serialize();
+				}
+		
+				// PUT the form and update the child elements
+				$.post( action, params, function( data, textStatus ) {
+					// Parse the data if necessary
+					data = $.parseJSON( data ) ? $.parseJSON( data ) : data;
+		
+					// Revert to original text
+					if( opts.globalSave ) {
+						$.each( $('.editable'), function( i, value ) {
+							$(value).html( $.fn.editableSet.globals.reversions[i] ).removeClass( 'active' );
+							value.editing = false;
+						});
+					} else {
+						$(self).html( self.revert );
+						$(self).removeClass( 'active' );
+					}
+		
+					var spans;
+					if( opts.globalSave ) {
+						$.each( $('.editable'), function(i, editable) {
+							spans = $('span[data-name]', editable);	
+							$.isFunction( opts.repopulate ) && opts.repopulate.call( self, spans, data, opts );
+						});
+					} else {
+						spans = $('span[data-name]', self);
+						$.isFunction( opts.repopulate ) && opts.repopulate.call( self, spans, data, opts );
+					}			
+		
+					// afterSave Callback			
+					$.isFunction( opts.afterSave ) && opts.afterSave.call( self, data, textStatus );
+				}, 
+				opts.dataType, 
+		
+				// onError
+				function( xhr, status, error ) {
+				self.editing = true;
+		
+				// Reactivate the fields
+				$(':input', self).attr( 'disabled', false );
+		
+				// onError callback
+				$.isFunction( opts.onError ) && opts.onError.call( self, xhr, status );
+				});
+							
+				return true;
 			}
-		}).addClass( 'form_cancel' ) );
-							 
-		// Find each span with a +data-name+, loop through and replace with input
-		var spans = $('span[data-name]', self);
-		$.each( spans, function(i, span) {
-			// Initialize
-			var attrs = {};
+	
+		};
+		
+		
+		// =====================
+		// = Define the Cancel =
+		// =====================
+	
+		var cancel = function(self) {
+			self.editing = false;
+	
+			// Revert to original text
+			$(self).html( self.revert ).removeClass( 'active' );
+	
+			// Callback
+			$.isFunction( opts.onCancel ) && opts.onCancel.call( self );
+		};
+		
+		
+		// ===========
+		// = Public = 
+		// ===========
+		return this.each( function(index, value) {
+			var self = this; // Because 'this' changes with scope
 			
-			// Pass each of the span attributes to the attrs object
-			$.each( span.attributes, function(i) {
-				attrs[span.attributes[i].name] = span.attributes[i].value;
+			var control = null;
+			var event = opts.event;
+			
+			if(opts.controlClass)
+			{
+				control = $('.'+opts.controlClass, $(self));
+				event = 'click';
+			}
+			else
+			{
+				control = $(self);
+			}
+			//$(self).bind( opts.event, function(e) {
+			control.bind(event+'.editableSet', function(e) {
+				e.preventDefault();
+				e.stopPropagation();
+				
+				if( self.editing ) {
+					return;
+				}
+				
+				self.editing = true;
+				self.revert = $(self).html();
+				
+				// Assign an action dynamically
+				if( $(self).attr( 'rel' ) ) {
+					opts.action = $(self).attr( 'rel' );		
+				}
+				
+				if( opts.globalSave ) {
+					$.each( $('.editable'), function(i, value) {
+						$.fn.editableSet.globals.reversions.push( $(value).html() );
+					});
+				}
+				
+				// beforeLoad callback
+				$.isFunction( opts.beforeLoad ) && opts.beforeLoad.call( self );
+						
+				// Create the form wrapper
+				$(self).wrapInner( $('<form />', {
+					action : opts.action,
+					method : 'POST'
+				}) ).addClass( 'active' );
+				
+				if( opts.titleElement ) {
+					// Move the newly encapsulated titleElement outside of the form
+					$(opts.titleElement, self).insertBefore( $('form', self) );			
+				}
+		
+				// Define the 'appendable' element for the submit and cancel buttons
+				var appendable;
+				if( opts.titleElement && $(opts.titleElement, self).length > 0 ) {
+					appendable = $(opts.titleElement, self);
+				} else {
+					appendable = $('form', self);
+				} 
+				
+				// Append the 'Save' button
+				appendable.append( $('<input />', {
+					type	: "submit",
+					value : "Save",
+					click : function() {
+						if (save( self ))
+						{
+							$(':input', self).attr( 'disabled', true );
+						}
+						else
+						{
+							$.isFunction( opts.onRequiredNotDone ) && opts.onRequiredNotDone.call( self );
+						}
+						return false;
+					}
+				}).addClass( 'form_submit' ) );
+				
+				//add the 'Undo' icon
+				$('.'+opts.controlClass, $(self)).removeClass('edit').addClass('undo');	//.css('background', 'url(/resources/graphics/newui/icons/heart.png) no-repeat right top');
+				$('.'+opts.controlClass, $(self)).one('click', function(e){
+					cancel( self );
+					//$(':input', self).attr( 'disabled', true );	
+				});			
+				
+				// Append the 'Cancel' button
+				/*appendable.append( $('<input />', {
+					type	: "button",
+					value : "Cancel",
+					click : function() {
+						cancel( self );
+						$(':input', self).attr( 'disabled', true );
+						return false;
+					}
+				}).addClass( 'form_cancel' ) );*/
+									 
+				// Find each span with a +data-name+, loop through and replace with input
+				var spans = $('span[data-name]', self);
+				$.each( spans, function(i, span) {
+					// Initialize
+					var attrs = {};
+					
+					// Pass each of the span attributes to the attrs object
+					$.each( span.attributes, function(i) {
+						attrs[span.attributes[i].name] = span.attributes[i].value;
+					});
+					
+					// Grab the value from the span's html
+					attrs.value = $(span).html();
+					
+					// Assign the default type to 'text'
+					attrs['data-type'] = attrs['data-type'] || 'text';
+					var type = attrs['data-type'];	//.replace(/[\t\v\f\r \u00a0\u2000-\u200b\u2028-\u2029\u3000]+/g, '');	
+					
+					// If the specified type exists...proceed
+					if( $.editableSet.types[type] ) {
+						$.editableSet.types[type].element( span, attrs );
+					}
+					
+				});
+				
+				// After Load Callback
+				$.isFunction( opts.afterLoad ) && opts.afterLoad.call( self );
 			});
 			
-			// Grab the value from the span's html
-			attrs.value = $(span).html();
+			// ================
+			// = Key Commands =
+			// ================
 			
-			// Assign the default type to 'text'
-			attrs['data-type'] = attrs['data-type'] || 'text';
-			var type = attrs['data-type'];	//.replace(/[\t\v\f\r \u00a0\u2000-\u200b\u2028-\u2029\u3000]+/g, '');	
+			// Unbind the event namespace so it doesn't compound
+			$(window).unbind( '.editableSet' );
 			
-			// If the specified type exists...proceed
-			if( $.editableSet.types[type] ) {
-				$.editableSet.types[type].element( span, attrs );
-			}
-			
-		});
-		
-		// After Load Callback
-		$.isFunction( opts.afterLoad ) && opts.afterLoad.call( self );
-		});
-		
-		// ================
-		// = Key Commands =
-		// ================
-		
-		// Unbind the event namespace so it doesn't compound
-		$(window).unbind( '.editableSet' );
-		
-		// Save if pressing cmd/ctrl + s
-		/*$(window).bind( 'keydown.editableSet', function(e) {
-			if( e.keyCode == 83 && (e.ctrlKey || e.metaKey) ) {
-				e.preventDefault();
-				save( self );
-			}
-		});*/
-				 
-		// Cancel if pressing esc
-		/*$(window).bind( 'keydown.editableSet', function(e) {
-			if( e.keyCode == 27 ) {
-				e.preventDefault();
-				cancel( self );
-			}
-		});*/
-	});	
+			// Save if pressing cmd/ctrl + s
+			/*$(window).bind( 'keydown.editableSet', function(e) {
+				if( e.keyCode == 83 && (e.ctrlKey || e.metaKey) ) {
+					e.preventDefault();
+					save( self );
+				}
+			});*/
+					 
+			// Cancel if pressing esc
+			/*$(window).bind( 'keydown.editableSet', function(e) {
+				if( e.keyCode == 27 ) {
+					e.preventDefault();
+					cancel( self );
+				}
+			});*/
+		});	
 	};
 	
 	
@@ -914,8 +927,7 @@
 		titleElement	: false,
 		globalSave		: false,
 		dataType		: 'script',
-		repopulate		: repopulate,
-		icon			: ''
+		repopulate		: repopulate
 	};
 	
 	

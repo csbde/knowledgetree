@@ -120,7 +120,7 @@ class BrowseDispatcher extends KTStandardDispatcher {
 
 	public function do_main()
 	{
-	    /**
+	    /**REMOVE
 	     * Old documentcollection method - this would require implementation of the new browse view code in a document collection.
 	     * NewUiCollection is currently imaginary :)
 	     */
@@ -135,14 +135,16 @@ class BrowseDispatcher extends KTStandardDispatcher {
 	    'show_folders' => true,
 	    'show_documents' => true,
 	    ));
-	    $collection->render();*/
+	    $collection->render();
+	    REMOVE**/
 
 	    global $default;
 	    /**
 		 * New ktapi based method
 		 */
 	    $aBulkActions = KTBulkActionUtil::getAllBulkActions();
-
+		$sidebars = KTFolderActionUtil::getFolderActionsForFolder($this->oFolder, $this->oUser, 'mainfoldersidebar');
+		$folderSidebars = isset($sidebars[0]) ? $sidebars[0] : array();
 	    if (ACCOUNT_ROUTING_ENABLED && $default->tier == 'trial') {
 	        $this->includeOlark();
 	    }
@@ -156,7 +158,8 @@ class BrowseDispatcher extends KTStandardDispatcher {
 	    'isEditable' => $this->editable,
 	    'bulkactions' => $aBulkActions,
 	    'browseutil' => new KTBrowseUtil(),
-	    'returnaction' => 'browse'
+	    'returnaction' => 'browse',
+	    'folderSidebars' => $folderSidebars,
 	    );
 
 	    // ?don't quite know why this is in here. Someone reports that it is there for search browsing which seem to be disabled

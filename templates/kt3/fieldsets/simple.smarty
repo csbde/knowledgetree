@@ -1,8 +1,8 @@
  
 <!-- FILE: kt3/fieldsets/simple.smarty -->
 	<div class="detail_fieldset" rel="{$rootUrl}/presentation/lookAndFeel/knowledgeTree/widgets/persistMetadata.php?documentID={$document->getId()}">
-	    <h3 title='{$description}'>{$fieldset->getName()}</h3>
-	
+	    <h3 title='{$description}'>{$fieldset->getName()}<span title="click me" class="metadata_control edit">&nbsp;</span></h3>
+		
 	    <table class="metadatatable" cellspacing="0" cellpadding="5">
 	      {foreach item=aFieldPair from=$fieldset_values name=fields}
 	    <tr class="metadatarow {if ($aFieldPair.required==='1')}required{/if}" id="metadatafield_{$aFieldPair.fieldid}">

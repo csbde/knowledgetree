@@ -55,6 +55,8 @@ class KTDocumentStatusBlock extends KTDocumentViewlet {
 	public function getDocBlock($wrapper = true) {
 		$this->oPage->requireJSResource('resources/js/newui/documents/blocks/blockActions.js');
 		$this->oPage->requireCSSResource('resources/css/newui/documents/blocks/blockActions.css');
+		// TODO : Reference plugin path
+		$this->oPage->requireJSResource('plugins/commercial/alerts/resources/blocks/alertsActions.js');
 		
 		$workflowState = $alertState = $subscribeState = 'disabled';
 

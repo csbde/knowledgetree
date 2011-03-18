@@ -1,26 +1,25 @@
 jQuery(function() 
 {	
 	setDocumentTypeEditable();
-	
+
 	setMetadataEditable();
-	 
+
 	setExpandableFieldsets();
-	
+
 	//warn user that navigating away if required metadata not complete
 	window.onbeforeunload = function() {		
 		var atLeastOneRequiredNotDone = false;
-		
+
 		jQuery('.required').each(function(index, value){
 			//get the fields id: to chop off the "metadatafield_" prefix
 			var id = (jQuery(this).attr('id').substring(jQuery(this).attr('id').indexOf('_')+1));
-			
+
 			var valueSpan = jQuery('#value_'+id);
-			
+
 			if(valueSpan.text() == null || valueSpan.text() == undefined || valueSpan.text() == '' || valueSpan.text() == 'no value')
 			{
-				//console.log('I have not been completed '+id);
 				atLeastOneRequiredNotDone = true;
-				jQuery(this).css('background-color', '#FFCCFF');
+				jQuery(this).addClass('incomplete');
 			}
 		});
 		
@@ -69,11 +68,11 @@ jQuery(function()
 				break;
 			}
 		});
-	 };
-	 
-	 //assemble each widget required by jEditableSet, and wrap it in a <td>
-	 function getTableCell(field)
-	 {
+	};
+	
+	//assemble each widget required by jEditableSet, and wrap it in a <td>
+	function getTableCell(field)
+	{
 	 	var span = null;
 		
 	 	var classType = '';
@@ -139,11 +138,11 @@ jQuery(function()
 					if (field.selection && field.selection.length > 0)
 					{
 						dataOptions = '[["No selection","no value"],';
-	
+
 						jQuery.each(field.selection, function(index, value){
 							dataOptions += '[\"'+value+'\",\"'+value+'\"],';
 						});
-	
+
 						dataOptions += ']';
 					}
 					
@@ -178,9 +177,6 @@ jQuery(function()
 				var dataType = 'datepicker';
 				span = jQuery('<span>').addClass('descriptiveText').attr('data-name', field.fieldid).attr('data-type', dataType).attr('data-value-id', 'value_'+field.fieldid);
 			break;
-			/*default:
-				type = 'metadata_textbox';
-				var dataType = 'text';*/
 		}
 		
 		var valueSpan = jQuery('<span id="value_'+field.fieldid+'">no value</span>');
@@ -194,33 +190,37 @@ jQuery(function()
 		tableCell.append(span);
 		
 		return tableCell;
-	 }
-	 
-	 function setDocumentTypeEditable()
-	 {
-	 	jQuery('.documenttype').editableSet({
+	}
+	
+	function setDocumentTypeEditable()
+	{
+		jQuery('.documenttype').editableSet({
 			action: './presentation/lookAndFeel/knowledgeTree/widgets/changeDocumentType.php',
+			controlClass: 'doctype_control',
 			//event:	'click',
-			showSpinner: true,
 			onCancel: function(){
+				jQuery('.doctype_control').removeClass('undo').addClass('edit');
 				setMetadataEditable();
 				setDocumentTypeEditable();
 			},
 			beforeLoad: function() {
-				jQuery('.documenttype').unbind();
-				jQuery('.detail_fieldset').unbind();
+				/*jQuery('.doctype_control', jQuery(this)).css('background', '');
+				jQuery('.doctype_control').unbind('.editableSet');
+				jQuery('.metadata_control', jQuery(this)).css('background', '');
+				jQuery('.metadata_control').unbind('.editableSet');*/
 			},
 			onError: function(){
 				setMetadataEditable();
 				setDocumentTypeEditable();
 			},	
 			onSave: function(){
-				
+				jQuery('.doctype_control').removeClass('undo').addClass('spin');
 			},
 			repopulate: function(){},
-			afterSave: function(data, status){				
-				//reset the document fields to reflect the new document type
-								
+			afterSave: function(data, status){
+				jQuery('.doctype_control').removeClass('spin').addClass('edit');
+				
+				//reset the document fields to reflect the new document type								
 				if(data && data.success)
 				{
 					//update the Document Type span text
@@ -229,7 +229,7 @@ jQuery(function()
 					//reset the document fields to reflect the new document type
 					jQuery('.editablemetadata').empty();
 					jQuery('.editablemetadata').remove();
-		
+
 					//create the new editable div
 					var editableDiv = jQuery('<div>').addClass('editablemetadata');
 					//NB: set its rel attribute because this is used as the "action" url
@@ -240,11 +240,14 @@ jQuery(function()
 					{					
 						var fieldsetDiv = jQuery('<div>').addClass('detail_fieldset');
 						var header = jQuery('<h3>').text(fieldset.name).attr('title', fieldset.description);
+						var metadataControlSpan = jQuery('<span>').addClass('metadata_control').attr('title', 'click me');
+						metadataControlSpan.html('&nbsp;');
+						header.append(metadataControlSpan);
 						fieldsetDiv.append(header);
 						
 						//NB: set its rel attribute because this is used as the "action" url
 						fieldsetDiv.attr('rel', './presentation/lookAndFeel/knowledgeTree/widgets/persistMetadata.php?documentID='+data.success.documentID);	//+'&fieldsetID='+fieldset.fieldsetid);
-		
+
 						//create the div to contain the fields
 						var table = jQuery('<table>').addClass('metadatatable').attr('cellspacing', '0').attr('cellpadding', '5');
 					
@@ -254,11 +257,6 @@ jQuery(function()
 						jQuery.each(fieldset.fields, function(index, field)
 						{						
 							var tableRow = jQuery('<tr>').addClass('metadatarow');
-							/*tableRow.addClass(counter++%2==1 ? 'odd' : 'even');
-							if (counter == 1)
-							{
-								tableRow.addClass('first');
-							}*/
 							
 							//is the field required?
 							if(string2bool(field.required))
@@ -294,55 +292,77 @@ jQuery(function()
 						
 						setExpandableFieldsets();
 					}
-					
-					//metadata can be editable again
-					setMetadataEditable();
-					setDocumentTypeEditable();
 				}
-				else
-				{
-					//metadata can be editable again
-					setMetadataEditable();
-					setDocumentTypeEditable();
-				}
+				
+				//metadata can be editable again
+				setMetadataEditable();
+				setDocumentTypeEditable();
+				
+				openRequiredMetadata();
 		 	}
 		});
-	 }
-	 
-	 function setMetadataEditable()
-	 {
-	 	jQuery('.detail_fieldset').editableSet({
-			action: './presentation/lookAndFeel/knowledgeTree/widgets/persistMetadata.php',
+	}
+	
+	//when doctype changes, and there are now Required fields, open all the required fieldsets for editing
+	function openRequiredMetadata()
+	{
+		var highestRowCounter = 0;
+		
+		//iterate through the fields and see if any are required
+		jQuery('.detail_fieldset').each(function(index, value){
+			if(jQuery('.metadatarow.required', jQuery(this)).length > 0)
+			{
+				highestRowCounter = index;
+				jQuery('.metadata_control', jQuery(this)).trigger('click');
+			}
+		});
+		
+		if (highestRowCounter > 2)
+		{
+			jQuery('.more').trigger('click');
+		}
+	}
+	
+	function setMetadataEditable()
+	{
+		jQuery('.detail_fieldset').editableSet({
+			action: '',
+			controlClass: 'metadata_control',
 			//event:	'click',
-			showSpinner: true,
 			requiredClass: 'required',
 			onCancel: function(){
+				jQuery('.metadata_control', jQuery(this)).removeClass('undo').addClass('edit');
 				setDocumentTypeEditable();
 				setMetadataEditable();
 			},
 			beforeLoad: function() {
-				jQuery('.documenttype').unbind();
-				jQuery('.detail_fieldset').unbind();
+				/*jQuery('.doctype_control').unbind();*/
+				jQuery('.metadata_control', jQuery(this)).unbind('click');
 			},
 			onError: function() {
 				setDocumentTypeEditable();
 				setMetadataEditable();
 			},
 			onSave: function(){
+				jQuery('.metadata_control', jQuery(this)).removeClass('undo').addClass('spin');
 			},
 			afterSave: function(data, status){
+				jQuery('.metadata_control', jQuery(this)).removeClass('spin').addClass('edit');
 				//now pouplate the just-saved values
 				updateValues(data, status);
 				//document type can be editable again
 				setDocumentTypeEditable();
 				setMetadataEditable();
+			},
+			onRequiredNotDone: function(data, status){
+				jQuery('.metadata_control', jQuery(this)).removeClass('spin').addClass('undo');
 			}
 		});
-	 }
-	 
-	 function setExpandableFieldsets()
-	 {
-	 	jQuery('.more').click(function() {
+	}
+	
+	function setExpandableFieldsets()
+	{
+		jQuery('.more').click(function() {
 			var slider = jQuery('.slide');
 			if (slider.is(":visible"))
 			{
@@ -362,7 +382,7 @@ jQuery(function()
 		/*.hover(function() {
 			jQuery(this).css('cursor', 'pointer');
 		})*/ 
-	 }
-	 
+	}
+	
 });
  
