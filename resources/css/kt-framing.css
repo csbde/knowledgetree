@@ -913,9 +913,10 @@ a.main_nav_item {
     margin-top: 10px;
     overflow: hidden;
 }
-.documenttype:hover,
-.detail_fieldset:hover {
+.metadata_control {
 	background: url(../../resources/graphics/newui/icons/edit.png) no-repeat right top;
+	float: right;
+	min-width: 20px;
 }
 .detail_fieldset h3
 {
