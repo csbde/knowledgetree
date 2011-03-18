@@ -1,7 +1,7 @@
  
 <!-- FILE: kt3/fieldsets/simple.smarty -->
 	<div class="detail_fieldset" rel="{$rootUrl}/presentation/lookAndFeel/knowledgeTree/widgets/persistMetadata.php?documentID={$document->getId()}">
-	    <h3 title='{$description}'>{$fieldset->getName()}<span title="click me" class="metadata_control">&nbsp;</span></h3>
+	    <h3 title='{$description}'>{$fieldset->getName()}<span title="click me" class="metadata_control edit">&nbsp;</span></h3>
 		
 	    <table class="metadatatable" cellspacing="0" cellpadding="5">
 	      {foreach item=aFieldPair from=$fieldset_values name=fields}

@@ -51,9 +51,11 @@
 	    			<table class="metadatatable" cellspacing="0" cellpadding="5">
 	    			<tr class="metadatarow even first">
 	    				<th>Document Type</th>
-			        <td>
-			        <span class="descriptiveText" id='documentTypeID' data-name='documentTypeID' data-options='[{foreach from=$document_types key=aKey item=documentType}
-						["{$documentType->getName()}","{$documentType->getId()}"],{/foreach}]' data-type='select'>{$document_data.document_type->getName()}</span></td>
+				        <td>
+					        <span class="descriptiveText" id='documentTypeID' data-name='documentTypeID' data-options='[{foreach from=$document_types key=aKey item=documentType}
+								["{$documentType->getName()}","{$documentType->getId()}"],{/foreach}]' data-type='select'>{$document_data.document_type->getName()}</span>
+					        <span title="click me" class="doctype_control edit">&nbsp;</span>
+					    </td>
 					</table>
 					</div>
 					
