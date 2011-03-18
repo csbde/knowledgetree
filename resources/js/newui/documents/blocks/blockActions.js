@@ -12,8 +12,10 @@ function blockActions() {}
 */
 blockActions.prototype.createForm = function(form, title) {
 	var inner = '';
-	p = document.getElementById('pageBody').appendChild(document.createElement('div'));
-	p.id = form + 's-panel';
+	if(jQuery('#' + form + 's-panel').attr('id') != form + 's-panel') {
+		p = document.getElementById('pageBody').appendChild(document.createElement('div'));
+		p.id = form + 's-panel';
+	}
 	inner = '<div id="' + form + 's" class="x-hidden"><div class="x-window-header">' + title + '</div><div class="x-window-body">';
     inner = inner + '<div id="popup_content"><div id="add_' + form + '">Loading...</div></div></div></div>';
     p.innerHTML = inner;

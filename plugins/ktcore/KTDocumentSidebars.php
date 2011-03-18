@@ -94,33 +94,7 @@ class KTRecentlyViewedSidebar extends KTDocumentSidebar {
 	}
 }
 
-class KTAlertSidebar extends KTDocumentSidebar {
-	public $sName = 'ktcore.sidebar.alert';
-	public $order = 2;
-	
-	public function getCSSName() { return 'current_alerts'; }
-	
-	public function getSidebar() {
-		$oTemplating = KTTemplating::getSingleton();
-		$oTemplate = $oTemplating->loadTemplate('sidebars/alerts');
-		$alertUtil = new alertUtil();
-		$alerts = $alertUtil->getAlertsByDocument($this->oDocument->getId());
-        $aTemplateData = array(
-			'context' => $this,
-			'alerts' => $alerts,
-			'alertsMaxDisplay' => 5,
-			'alertsCount' => count($alerts),
-			'documentId' => $this->oDocument->getId(),
-        );
-        
-        return $oTemplate->render($aTemplateData);
-	}
-	
-	public function do_ajaxGetSidebar() {
-		echo $this->getSidebar();
-		exit(0);
-	}
-}
+
 
 
 ?>
