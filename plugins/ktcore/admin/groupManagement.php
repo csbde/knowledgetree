@@ -228,10 +228,7 @@ class KTGroupAdminDispatcher extends KTAdminDispatcher {
 
     function do_manageUsers()
     {
-        $oldSearch = KTUtil::arrayGet($_REQUEST, 'old_search');
-
         $group = $this->getGroupFromRequest();
-
         $this->aBreadcrumbs[] = array('name' => $group->getName());
         $this->oPage->setBreadcrumbDetails(_kt('manage members'));
         $this->oPage->setTitle(sprintf(_kt('Manage members of group %s'), $group->getName()));
@@ -257,16 +254,7 @@ class KTGroupAdminDispatcher extends KTAdminDispatcher {
                     );
         $jsonWidget = $this->getJsonWidget('users', $settings);
 
-        $templating =& KTTemplating::getSingleton();
-        $template = $templating->loadTemplate('ktcore/principals/groups_manageusers');
-        $templateData = array(
-            'context' => $this,
-            'edit_group' => $group,
-            'widget' => $jsonWidget,
-            'old_search' => $oldSearch,
-        );
-
-        return $template->render($templateData);
+        return $this->renderTemplateWithWidget($group, $jsonWidget, 'ktcore/principals/groups_manageusers');
     }
 
     private function getGroupFromRequest($message = 'No such group.')
@@ -303,6 +291,20 @@ class KTGroupAdminDispatcher extends KTAdminDispatcher {
         );
 
         return $jsonWidget;
+    }
+
+    private function renderTemplateWithWidget($group, $jsonWidget, $template)
+    {
+        $templating =& KTTemplating::getSingleton();
+        $template = $templating->loadTemplate($template);
+        $templateData = array(
+            'context' => $this,
+            'edit_group' => $group,
+            'widget' => $jsonWidget,
+            'old_search' => KTUtil::arrayGet($_REQUEST, 'old_search'),
+        );
+
+        return $template->render($templateData);
     }
 
     function do_updateUserMembers()
@@ -382,13 +384,9 @@ class KTGroupAdminDispatcher extends KTAdminDispatcher {
         $this->successRedirectToMain($msg, sprintf('old_search=%s&do_search=1', $oldSearch));
     }
 
-    // FIXME copy-paste ...
     function do_manageSubgroups()
     {
-        $oldSearch = KTUtil::arrayGet($_REQUEST, 'old_search');
-
         $group = $this->getGroupFromRequest();
-
         $this->aBreadcrumbs[] = array('name' => $group->getName());
         $this->oPage->setBreadcrumbDetails(_kt('manage members'));
         $this->oPage->setTitle(sprintf(_kt('Manage members of %s'), $group->getName()));
@@ -417,16 +415,7 @@ class KTGroupAdminDispatcher extends KTAdminDispatcher {
                     );
         $jsonWidget = $this->getJsonWidget('sub-groups', $settings, array('groups_roles' => $groups));
 
-        $templating =& KTTemplating::getSingleton();
-        $template = $templating->loadTemplate('ktcore/principals/groups_managesubgroups');
-        $templateData = array(
-            'context' => $this,
-            'edit_group' => $group,
-            'widget' => $jsonWidget,
-            'old_search' => $oldSearch,
-        );
-
-        return $template->render($templateData);
+        return $this->renderTemplateWithWidget($group, $jsonWidget, 'ktcore/principals/groups_managesubgroups');
     }
 
     function _getUnitName($group)
@@ -444,7 +433,6 @@ class KTGroupAdminDispatcher extends KTAdminDispatcher {
         return $unit->getName();
     }
 
-    // FIXME copy-paste ...
     function do_updateGroupMembers()
     {
         $oldSearch = KTUtil::arrayGet($_REQUEST, 'old_search');
