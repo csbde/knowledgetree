@@ -112,18 +112,8 @@
 </td>
 <td valign="top" id="sidebar" class="standardBorder" height="100%" width="215">
 	<div id="sidebar_item" >
-		<h2>
-		  {i18n}Account Info{/i18n} <span class="acc_settings"><a href="{$rootUrl}/admin.php">{i18n}settings{/i18n}</a></span>
-		</h2>
-		<p style="font-size: 11px; color: #666;">
-			Plan: Starter <br/>
-			Storage: 61.83 MB of Unlimited<br/>
-			Documents: 156 of Unlimited<br/>
-			<p style="text-align:right; font-size: 11px;">
-				<a href="" class="sidebarUpgradeBn">Upgrade Now</a><br/>
-			</p>
-			<br/>
-		</p>
+		{* Display Actions Block *}
+		{$folderSidebars->getFolderSidebars()}
 	</div>
 </td>
 </tr>
