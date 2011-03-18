@@ -27,11 +27,11 @@
 
 <!-- we roll both in here. -->
 <form action="{$smarty.server.PHP_SELF}" method="POST">
-		
-		
+
+
 		<table width="100%">
 			<tr>
-				
+
 				<td width="{$colwidth}" valign="top">
 					<div class="field"><label>{i18n}Invite Users{/i18n}</label></div>
 					{if $can_add}
@@ -58,15 +58,15 @@
 					</div>
 					{/if}
 				</td>
-				
+
 				<td width="{$colwidth}">
 					<input type="hidden" name="do_search" value="1" />
 					{capture assign=link}{addQS}show_all=1{/addQS}{/capture}
-				
+
 					{foreach item=oWidget from=$search_fields}
 					  {$oWidget->render()}
 					{/foreach}
-				
+
 					<div class="form_actions">
 						<!-- Search button -->
 						<input type="submit" value="{i18n}Search For Users{/i18n}" />
@@ -83,7 +83,7 @@
 							<div class="form_actions">
 								<input type="submit" name="submit" value="{i18n}Add from source{/i18n}" />
 							</div>
-						
+
 					</div>
 				</td>
 				{/if}
@@ -140,10 +140,10 @@
 							{/if}
 						{/if}
 						</td>
-							
+
 						<td>
 							{if $oUser->getDisabled() != 4}
-								<a href="{addQS}action=editgroups&user_id={$oUser->getId()}&old_search={$old_search}{/addQS}">{i18n}Manage Groups{/i18n}</a>
+								<a href="{addQS}action=editGroups&user_id={$oUser->getId()}&old_search={$old_search}{/addQS}">{i18n}Manage Groups{/i18n}</a>
 							{else}
 								N/A
 							{/if}
@@ -177,10 +177,3 @@
 	{/if}
 
 {/if}
-
-
-
-
-
-
-

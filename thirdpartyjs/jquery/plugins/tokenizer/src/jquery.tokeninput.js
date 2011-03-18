@@ -279,6 +279,9 @@ $.TokenList = function (input, settings) {
                 // Save this token id
                 var id_string = li_data[i].id + ","
                 hidden_input.val(hidden_input.val() + id_string);
+
+                token_count++;
+                saved_tokens[saved_tokens.length] = li_data[i].id;
             }
         }
     }

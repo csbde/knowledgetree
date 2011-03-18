@@ -195,7 +195,7 @@ class KTPage {
     		$this->menu['dashboard'] = array('label' => _kt('Dashboard'), 'url' => $sBaseUrl.'/dashboard.php');
     	}
 		$this->menu['browse'] = array('label' => _kt("Documents"), 'url' => $sBaseUrl.'/browse.php');
-    	if(ACCOUNT_ROUTING_ENABLED) {
+    	if (ACCOUNT_ROUTING_ENABLED) {
     		$sLiveUrl = KTLiveUtil::ktlive_url();
 			$this->menu['applications'] = array('label' => _kt('Applications'), 'url' => $sLiveUrl.'/applications.php');
 		}
@@ -221,7 +221,7 @@ class KTPage {
     /* javascript handling */
     // require that the specified JS file is referenced.
     function requireJSResource($sResourceURL) {
-	$this->js_resources[$sResourceURL] = 1; // use the keys to prevent multiple copies.
+        $this->js_resources[$sResourceURL] = 1; // use the keys to prevent multiple copies.
     }
 
     // require that the specified JS files are referenced.
@@ -355,14 +355,14 @@ class KTPage {
     	switch($aBreadcrumbs[0]['action']) {
     	    case 'browse':
     	    case 'action':
-    	        if($dashboard !== false) $this->breadcrumbIcon[] = $dashboard;
+    	        if ($dashboard !== false) $this->breadcrumbIcon[] = $dashboard;
     	        break;
     	    case 'dashboard':
     	        $this->breadcrumbIcon[] = $browse;
     	        break;
     	    case 'administration':
     	    default:
-    	        if($dashboard !== false) $this->breadcrumbIcon[] = $dashboard;
+    	        if ($dashboard !== false) $this->breadcrumbIcon[] = $dashboard;
     	        $this->breadcrumbIcon[] = $browse;
     	}
 

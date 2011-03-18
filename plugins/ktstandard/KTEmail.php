@@ -433,10 +433,11 @@ class KTDocumentEmailAction extends KTDocumentAction {
 
         $fields = array();
 
-        $groupList = array('null' => 'Select group');
-        $groups = GroupUtil::listGroups();
-        foreach ($groups as $group) {
-            $groupList["group_{$group->getId()}"] = $group->getName();
+        $groups = array();
+        $groupList = GroupUtil::listGroups();
+        foreach ($groupList as $group) {
+            $groups["group_{$group->getId()}"]['name'] = $group->getName();
+            $groups["group_{$group->getId()}"]['active'] = 1;
         }
 
         // Picker to select recipients from system groups
@@ -450,10 +451,12 @@ class KTDocumentEmailAction extends KTDocumentAction {
             null,
             array(
                 'action' => 'getMembers&fDocumentId=' . $this->oDocument->getId(),
-                'groups_roles' => $groupList,
-                'assigned' => null,//array(array(), array()),
+                'groups_roles' => $groups,
+                'assigned' => null,
                 'type' => 'email',
-                'parts' => 'all'
+                'parts' => 'all',
+                'selection_default' => 'Select group',
+                'optgroups' => false
             )
         );
 

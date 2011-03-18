@@ -207,8 +207,8 @@ jQuery(function()
 				setDocumentTypeEditable();
 			},
 			beforeLoad: function() {
-				jQuery('.documenttype').unbind();
-				jQuery('.detail_fieldset').unbind();
+				jQuery('.documenttype').unbind('.editableSet');
+				jQuery('.detail_fieldset').unbind('.editableSet');
 			},
 			onError: function(){
 				setMetadataEditable();
@@ -240,6 +240,9 @@ jQuery(function()
 					{					
 						var fieldsetDiv = jQuery('<div>').addClass('detail_fieldset');
 						var header = jQuery('<h3>').text(fieldset.name).attr('title', fieldset.description);
+						var metadataControlSpan = jQuery('<span>').addClass('metadata_control').attr('title', 'click me');
+						metadataControlSpan.html('&nbsp;');
+						header.append(metadataControlSpan);
 						fieldsetDiv.append(header);
 						
 						//NB: set its rel attribute because this is used as the "action" url
@@ -294,25 +297,47 @@ jQuery(function()
 						
 						setExpandableFieldsets();
 					}
-					
-					//metadata can be editable again
-					setMetadataEditable();
-					setDocumentTypeEditable();
 				}
-				else
-				{
-					//metadata can be editable again
-					setMetadataEditable();
-					setDocumentTypeEditable();
-				}
+				
+				//metadata can be editable again
+				setMetadataEditable();
+				setDocumentTypeEditable();
+				
+				openRequiredMetadata();
 		 	}
 		});
+	 }
+	 
+	 function openRequiredMetadata()
+	 {
+	 	//var foundAtLeastOneRequiredField = false;
+	 	
+	 	var requiredRowCounter = 0;
+	 	
+	 	jQuery('.detail_fieldset').each(function(index, value){
+	 		//console.log(index);
+	 		//console.dir(value);
+	 		//console.log(jQuery('.metadatarow.required', jQuery(this)).length);
+	 		
+	 		if(jQuery('.metadatarow.required', jQuery(this)).length > 0)
+	 		{
+	 			//foundAtLeastOneRequiredField = true;
+	 			requiredRowCounter++;
+	 			jQuery('.metadata_control', jQuery(this)).trigger('click');	//css('background-color', 'red');
+	 		}
+	 	});
+	 	
+	 	if (requiredRowCounter > 2)
+	 	{
+	 		jQuery('.more').trigger('click');
+	 	}
 	 }
 	 
 	 function setMetadataEditable()
 	 {
 	 	jQuery('.detail_fieldset').editableSet({
-			action: './presentation/lookAndFeel/knowledgeTree/widgets/persistMetadata.php',
+			action: '',
+			control: 'metadata_control',
 			//event:	'click',
 			showSpinner: true,
 			requiredClass: 'required',
@@ -321,8 +346,12 @@ jQuery(function()
 				setMetadataEditable();
 			},
 			beforeLoad: function() {
-				jQuery('.documenttype').unbind();
-				jQuery('.detail_fieldset').unbind();
+				//console.log('setMetadataEditable beforeLoad');
+				//jQuery(document).unbind( '.editableSet' );
+				jQuery('.documenttype').unbind('.editableSet');
+				jQuery('.detail_fieldset').unbind('.editableSet');
+				//jQuery('.documenttype').unbind();
+				//jQuery('.detail_fieldset').unbind();
 			},
 			onError: function() {
 				setDocumentTypeEditable();

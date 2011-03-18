@@ -42,9 +42,12 @@ $.SelectTokenList = function (input, src, settings) {
 
     // TODO prevent adding of items already in list
     // Override the src input onchange event to add items to our input list
-    src.onchange = function() {
-        if (src.options[src.selectedIndex].value != 'null') {
-            add_token(src.options[src.selectedIndex].value, src.options[src.selectedIndex].text);
+    var selector = src;
+    selector.onchange = function() {
+        if (selector.options[selector.selectedIndex].value != '') {
+            add_token(selector.options[selector.selectedIndex].value, selector.options[selector.selectedIndex].text);
+            selector.options[selector.selectedIndex].disabled = true;
+            selector.selectedIndex = '';
         }
     };
 
@@ -149,6 +152,9 @@ $.SelectTokenList = function (input, src, settings) {
                 // Save this token id
                 var id_string = li_data[i].id + ","
                 hidden_input.val(hidden_input.val() + id_string);
+
+                token_count++;
+                saved_tokens[saved_tokens.length] = li_data[i].id;
             }
         }
     }
@@ -269,6 +275,7 @@ $.SelectTokenList = function (input, src, settings) {
         index = $.inArray(token_data.id, saved_tokens);
         if (index != -1) {
             saved_tokens.splice(index, 1);
+            $("#" + selector.id + " option[value='" + token_data.id + "']").removeAttr('disabled');
         }
 
         // Execute the onDelete callback if defined
