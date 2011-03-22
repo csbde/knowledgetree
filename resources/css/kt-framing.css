@@ -2474,7 +2474,10 @@ div.extjs_form_actions {
     background: #ffdd80  url(../../resources/graphics/denied.gif) 2px center no-repeat;
 }
 .ext-el-mask {
-	background: transparent;
+	background: whitesmoke;
+}
+.x-shadow {
+	display: none!important;
 }
 .x-window {
 	background: rgba(0,0,0,0.3);
