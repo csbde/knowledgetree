@@ -1672,7 +1672,7 @@ class KTAPI_Folder extends KTAPI_FolderItem {
         				
         $sQuery = 	'SELECT F.id, FT.datetime AS change_date ' .
         			'FROM ' . KTUtil::getTableName('folder_transactions') . ' AS FT INNER JOIN ' . KTUtil::getTableName('folders') . ' AS F ON F.id = FT.folder_id '.
-        			'WHERE (FT.transaction_namespace = \'ktcore.transactions.rename\' OR FT.transaction_namespace = \'ktcore.transactions.rename\') '.
+        			'WHERE (FT.transaction_namespace = \'ktcore.transactions.rename\' OR FT.transaction_namespace = \'ktcore.transactions.move\') '.
         			'AND (FT.folder_id = ? OR FT.folder_id IN ( '.$sParamsPlaceholders.' )) AND FT.datetime >= ? ';
 
         $aParams = array_merge(array($this->folderid), $aParentFolderIDs, array($timestamp));
