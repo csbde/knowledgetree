@@ -61,6 +61,7 @@ class KTDocumentEditAction extends KTDocumentAction {
     var $sIconClass = 'edit_metadata';
 
     function getInfo() {
+        return null;
         if ($this->oDocument->getIsCheckedOut()) {
             return null;
         }

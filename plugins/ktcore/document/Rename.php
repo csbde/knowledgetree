@@ -5,7 +5,7 @@
  * KnowledgeTree Community Edition
  * Document Management Made Simple
  * Copyright (C) 2008, 2009, 2010 KnowledgeTree Inc.
- * 
+ *
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License version 3 as published by the
@@ -53,6 +53,9 @@ class KTDocumentRenameAction extends KTDocumentAction {
 
     var $_sShowPermission = "ktcore.permissions.write";
     var $_bMutator = true;
+
+    var $sIconClass = 'rename';
+    var $sParentBtn = 'more';
 
     function getDisplayName() {
         return _kt('Rename');
