@@ -24,7 +24,7 @@
 		</tr>
 		<tr>
 			<!-- <td style="display:none;" width="1" valign="top" style="padding-right: 15px;"><span id="doc_thumb" style="float:left;" /></td> -->
-			<td height="1" valign="top" width="350">
+			<td height="1" valign="top" width="310">
 
 				<div class="doc_description">
 					{if $document->getImmutable()}<img src="{$rootUrl}/resources/graphics/newui/docview_immutable.png" style="display: inline-block" alt="{i18n}Finalized{/i18n}"  title="{i18n}Finalized{/i18n}" />{/if}
