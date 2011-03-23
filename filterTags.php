@@ -11,7 +11,8 @@
 require_once('config/dmsDefaults.php');
 
 $query = KTUtil::arrayGet($_REQUEST, 'q');
-if (empty($query)) {
+$documentId = KTUtil::arrayGet($_REQUEST, 'document_id');
+if (empty($query) || empty($documentId)) {
     echo '';
     exit(0);
 }
@@ -19,7 +20,10 @@ if (empty($query)) {
 // Always return typed input as selectable option.
 $tags[] = array('id' => $query, 'name' => $query);
 
-$sql = "SELECT id, tag FROM tag_words WHERE tag LIKE '%$query%'";
+$sql = "SELECT tw.id, tw.tag FROM tag_words tw
+        LEFT JOIN document_tags dt
+        ON document_id = $documentId AND dt.tag_id = tw.id
+        WHERE dt.tag_id IS NULL AND tw.tag LIKE '%$query%'";
 $tagResult = DBUtil::getResultArray(array($sql));
 foreach ($tagResult as $id => $tag) {
     $tags[] = array('id' => $tag['id'], 'name' => $tag['tag']);
