@@ -1,205 +1,208 @@
 {$context->oPage->requireCSSResource('resources/css/kt-treewidget.css')}
+<link rel="stylesheet" href="/thirdpartyjs/jquery/plugins/tokenizer/styles/token-input-facebook.css" type="text/css"/>
 <script type="text/javascript" src="/thirdpartyjs/jquery/plugins/editableset/jquery.editable-set.js"> </script>
 <script type="text/javascript" src="/thirdpartyjs/jquery/plugins/editableset/jquery.editable-set.extend.js"> </script>
 <script type="text/javascript" src="/resources/js/newui/kt_documentPropertyEditor.js"> </script>
+<script type="text/javascript" src="/thirdpartyjs/jquery/plugins/tokenizer/src/jquery.tokeninput.js"></script>
 
 <!-- FILE: ktcore/document/view.smarty -->
 <table>
-<tr>
-	<td width="720">
-	<table border="0" width="700" class="doc_view">
-		<tr>
-			<td colspan="2" id="title_row">
+    <tr>
+        <td width="720">
+        <table border="0" width="700" class="doc_view">
+            <tr>
+                <td colspan="2" id="title_row">
+                    <span  class="doc_file_title" style="display:inline;">
+                        {i18n}{$document->getName()|sanitize}{/i18n}
+                    </span>
+                    {* Display Actions Block *}
+                    {$documentBlocks->getDocBlock()}
+                    <p>{$document->getFileName()} {}</p>
+                </td>
+            </tr>
+            <tr>
+                <!-- <td style="display:none;" width="1" valign="top" style="padding-right: 15px;"><span id="doc_thumb" style="float:left;" /></td> -->
+                <td height="1" valign="top" width="350">
+                    <div class="doc_description">
+                        {if $document->getImmutable()}<img src="{$rootUrl}/resources/graphics/newui/docview_immutable.png" style="display: inline-block" alt="{i18n}Finalized{/i18n}"  title="{i18n}Finalized{/i18n}" />{/if}
+                        {if $document->getIsCheckedOut()}<img src="{$rootUrl}/resources/graphics/newui/docview_checkedout.png" style="display: inline-block" alt="{i18n}Checked-Out{/i18n}"  title="{i18n}Checked Out{/i18n}" />{/if}
+                        <br/>
+                        <span class="doc_info" style="display: block; margin-top: 5px;">
+                            Version <a href="">{$document->getMajorVersionNumber()}.{$document->getMinorVersionNumber()}</a> | Last Modified by: <a href="">{$doc_data.lastModifier}</a> on <a href="">{$document->getLastModifiedDate()|date_format:"%B %e, %Y at %H:%M"}</a> | Created by: <a href="">{$doc_data.creator}</a> on <a href="">{$document->getCreatedDateTime()|date_format:"%B %e, %Y at %H:%M"}</a> | A </strong> {$fieldsetDisplayHelper->_sizeHelper($document->getSize())} document.
+                            {if $document->getIsCheckedOut()}
+                                <span class="doc_checkedout"> <strong>Checked-out By:</strong> {$sCheckoutUser}</span>
+                            {/if}
 
-				<span  class="doc_file_title" style="display:inline;">
-					{i18n}{$document->getName()|sanitize}{/i18n}
-				</span>
-				{* Display Actions Block *}
-				{$documentBlocks->getDocBlock()}
-				
-				<p>{$document->getFileName()} {}</p>
+                            <br><br/>
+                            <div class="tags">
+                                Tag Cloud
+                                <br/>
+                                <input type="text" name="tagcloud" id="tagcloud" />
+                            </div>
 
-			</td>
+                            <br/><br/>
 
-		</tr>
-		<tr>
-			<!-- <td style="display:none;" width="1" valign="top" style="padding-right: 15px;"><span id="doc_thumb" style="float:left;" /></td> -->
-			<td height="1" valign="top" width="350">
+                            <div class="documenttype" rel={$rootUrl}/presentation/lookAndFeel/knowledgeTree/widgets/changeDocumentType.php?documentID={$document->getId()}">
+                                <table class="metadatatable" cellspacing="0" cellpadding="5">
+                                    <tr class="metadatarow even first">
+                                        <th>Document Type</th>
+                                        <td>
+                                            <span class="descriptiveText" id='documentTypeID' data-name='documentTypeID' data-options='[{foreach from=$document_types key=aKey item=documentType}
+                                            ["{$documentType->getName()}","{$documentType->getId()}"],{/foreach}]' data-type='select'>{$document_data.document_type->getName()}</span>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
 
-				<div class="doc_description">
-					{if $document->getImmutable()}<img src="{$rootUrl}/resources/graphics/newui/docview_immutable.png" style="display: inline-block" alt="{i18n}Finalized{/i18n}"  title="{i18n}Finalized{/i18n}" />{/if}
-					{if $document->getIsCheckedOut()}<img src="{$rootUrl}/resources/graphics/newui/docview_checkedout.png" style="display: inline-block" alt="{i18n}Checked-Out{/i18n}"  title="{i18n}Checked Out{/i18n}" />{/if}
-					<br/>
-					<span class="doc_info" style="display: block; margin-top: 5px;">
-						Version <a href="">{$document->getMajorVersionNumber()}.{$document->getMinorVersionNumber()}</a> | Last Modified by: <a href="">{$doc_data.lastModifier}</a> on <a href="">{$document->getLastModifiedDate()|date_format:"%B %e, %Y at %H:%M"}</a> | Created by: <a href="">{$doc_data.creator}</a> on <a href="">{$document->getCreatedDateTime()|date_format:"%B %e, %Y at %H:%M"}</a> | A </strong> {$fieldsetDisplayHelper->_sizeHelper($document->getSize())} document.
-						{if $document->getIsCheckedOut()}
-							<span class="doc_checkedout"> <strong>Checked-out By:</strong> {$sCheckoutUser}</span>
-						{/if}
+                            <div class="editablemetadata">
+                                {foreach item=oFieldset from=$fieldsets name=fieldsets}
+                                    {if $smarty.foreach.fieldsets.index == 2}
+                                        <br/>
+                                        <div><span class="more">More...</span></div>
+                                        <br/>
+                                        <div class="slide" style="display:none">
+                                    {/if}
+                                    {$oFieldset->render($document_data)}
+                                    {if $smarty.foreach.fieldsets.last &&  $smarty.foreach.fieldsets.total >= 3}
+                                        </div>
+                                    {/if}
+                                {/foreach}
+                            </div>
+                        </span>
+                    </div>
 
-					<br><br/>
-					<div class="tags">
-						<a href="">Invoice</a>
-						<a href="">Purchase</a>
-						<a href="">Acme Corp</a>
-						<a href="">April</a>
-					</div>
+                    <!-- <hr style="border: none; background-color: #E3E3E3; width: 98%; height: 1px; margin-left: 10px; margin-bottom: 15px;" align="left" /> -->
+                </td>
+                <td valign="top" width="375" id="column_right">
+                    <div class="" style="margin-bottom: 10px;">
+                        <script>
+                            {literal}
+                            jQuery(function() {
+                                jQuery(".split").click(function() {
+                                    if (jQuery(this).parent().next().is(':visible')) {
+                                        jQuery(".splitmenu").hide();
+                                        jQuery(".split").removeClass('selected');
+                                    }
+                                    else {
+                                        jQuery(".splitmenu").hide();
+                                        jQuery(".split").removeClass('selected');
+                                        jQuery(this).addClass('selected').parent().next().show();
+                                    }
+                                });
 
-					<br/>
-					<br/>
-										
-					<div class="documenttype" rel={$rootUrl}/presentation/lookAndFeel/knowledgeTree/widgets/changeDocumentType.php?documentID={$document->getId()}"> 
-	    			<table class="metadatatable" cellspacing="0" cellpadding="5">
-	    			<tr class="metadatarow even first">
-	    				<th>Document Type</th>
-			        <td>
-			        <span class="descriptiveText" id='documentTypeID' data-name='documentTypeID' data-options='[{foreach from=$document_types key=aKey item=documentType}
-						["{$documentType->getName()}","{$documentType->getId()}"],{/foreach}]' data-type='select'>{$document_data.document_type->getName()}</span></td>
-					</table>
-					</div>
-					
-					<div class="editablemetadata">
-					{foreach item=oFieldset from=$fieldsets name=fieldsets}
-						{if $smarty.foreach.fieldsets.index == 2}
-							<br/>
-							<div><span class="more">More...</span></div>
-							<br/>
-							<div class="slide" style="display:none">
-						{/if}
-							{$oFieldset->render($document_data)}
-						{if $smarty.foreach.fieldsets.last &&  $smarty.foreach.fieldsets.total >= 3}
-							</div>
-						{/if}
-					{/foreach}
-					</div>
-					</span>
-				</div>
-				<!-- <hr style="border: none; background-color: #E3E3E3; width: 98%; height: 1px; margin-left: 10px; margin-bottom: 15px;" align="left" /> -->
-			</td>
-			<td valign="top" width="375" id="column_right">
-				<div class="" style="margin-bottom: 10px;">
-		<script>
-			{literal}
-			 jQuery(function() {
+                                jQuery('html').click(function() {
+                                    jQuery(".splitmenu").hide();
+                                    jQuery(".split").removeClass('selected');
+                                });
 
-				jQuery(".split").click(function() {
+                                jQuery('.split').click(function(event){
+                                    event.stopPropagation();
+                                });
+                            });
+                            {/literal}
+                        </script>
 
-					if (jQuery(this).parent().next().is(':visible'))
-					{
-						jQuery(".splitmenu").hide();
-						jQuery(".split").removeClass('selected');
+                        <div class="action_buttons above">
+                            <div class="action">
+                                <div class="splitbutton"><a class="button" id="download" href="#">Download</a><span class="split">&#9660;</span></div>
+                                <ul class="splitmenu" id="download" style="right: auto; margin-left: -1px; ">
+                                    <li><a href="" id="download-pdf">{i18n}Download PDF{/i18n}</a></li>
+                                </ul>
+                            </div>
+                            {if $document->getIsCheckedOut()}
+                                <div class="action">
+                                    <div class="splitbutton"><a class="button" href="#" id="checkin">Checkin</a><span class="split">&#9660;</span></div>
+                                    <ul class="splitmenu" id="checkin">
+                                        <li><a href="" id="checkin-upload">Checkin and Upload</a></li>
+                                        <li><a href="" id="add-version">Add new Version</a></li>
+                                    </ul>
+                                </div>
+                            {else}
+                                <div class="action">
+                                    <div class="splitbutton"><a class="button" href="#">Checkout</a><span class="split">&#9660;</span></div>
+                                    <ul class="splitmenu" id="checkout">
+                                        <li><a href="" id="checkin-download">Checkout and Download</a></li>
+                                        <li><a href="" id="add-version">Add new Version</a></li>
+                                    </ul>
+                                </div>
+                            {/if}
+                            <div class="action">
+                                <div href="#"><a class="button" id="edit-online" href="">Edit Online</a></div>
+                            </div>
+                            <div class="action" id="share">
+                                <div class="splitbutton"><a class="button" id="share" href="#">Share </a><span class="split">&#9660;</span></div>
+                            <ul class="splitmenu" id="share">
+                                <li><a href="" id="email">Email</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                {if !empty($live_preview)}
+                    <div style="margin-top:1em;">{$live_preview}</div>
+                {else}
+                    <div class="thumb-shadow" style="float: right;">
+                        <img src="{$rootUrl}plugins/thumbnails/thumbnail_view.php?documentId={$document_id}"/>
+                    </div>
+                {/if}
+                <div class="action_buttons below" style="display: inline-block;">
+                    <div class="action" style="margin-top: 10px;">
+                        <div class="splitbutton"><span class="split" href="#" id="more" style="border-left: 0px; font-size: 11px; padding-left: 25px;">More <span style="font-size: 9px;">&#9660;</span></span></div>
+                        <ul class="splitmenu" id="more" style="right: auto; margin-left: -1px; ">
+                            <li><a href="">Move</a></li>
+                            <li><a href="">Copy</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <a href=""><span class="share_url">{i18n}This page URL{/i18n}</span></a>
+                <a href=""><span class="share_url">{i18n}Download URL{/i18n}</span></a>
+                <a href=""><span class="share_url">{i18n}Preview URL{/i18n}</span></a>
+            </div>
 
-					}
-					else
-					{
-						jQuery(".splitmenu").hide();
-						jQuery(".split").removeClass('selected');
-						jQuery(this).addClass('selected').parent().next().show();
+            </td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <div>
+                        <span class="doc_header_item">
+                            <span class="doc_field_title"></span>
+                        </span>
+                        <div id="activity_feed_container" style="margin-top:1em;"></div>
+                        <div id="new_comment_form"></div>
+                    </div>
+                </td>
+            </tr>
+	    <tr></tr>
+        </table>
 
-					}
-
-				});
-
-				 jQuery('html').click(function() {
-				 	jQuery(".splitmenu").hide();
-				 	jQuery(".split").removeClass('selected');
-				 });
-
-				jQuery('.split').click(function(event){
-				     event.stopPropagation();
-				 });
-			});
-			{/literal}
-		</script>
-
-		<div class="action_buttons above">
-		<div class="action">
-
-			<div class="splitbutton"><a class="button" id="download" href="#">Download</a><span class="split">&#9660;</span></div>
-			<ul class="splitmenu" id="download" style="right: auto; margin-left: -1px; ">
-				<li><a href="" id="download-pdf">{i18n}Download PDF{/i18n}</a></li>
-			</ul>
-		</div>
-		{if $document->getIsCheckedOut()}
-    		<div class="action">
-				<div class="splitbutton"><a class="button" href="#" id="checkin">Checkin</a><span class="split">&#9660;</span></div>
-				<ul class="splitmenu" id="checkin">
-					<li><a href="" id="checkin-upload">Checkin and Upload</a></li>
-					<li><a href="" id="add-version">Add new Version</a></li>
-				</ul>
-			</div>
-    	{else}
-    		<div class="action">
-				<div class="splitbutton"><a class="button" href="#">Checkout</a><span class="split">&#9660;</span></div>
-				<ul class="splitmenu" id="checkout">
-					<li><a href="" id="checkin-download">Checkout and Download</a></li>
-					<li><a href="" id="add-version">Add new Version</a></li>
-				</ul>
-			</div>
-
-		{/if}
-		<div class="action">
-			<div href="#"><a class="button" id="edit-online" href="">Edit Online</a></div>
-		</div>
-		<div class="action" id="share">
-			<div class="splitbutton"><a class="button" id="share" href="#">Share </a><span class="split">&#9660;</span></div>
-			<ul class="splitmenu" id="share">
-				<li><a href="" id="email">Email</a></li>
-			</ul>
-		</div>
-
-
-
-		</div>
-
-
-</div>				{if !empty($live_preview)}
-					<div style="margin-top:1em;">{$live_preview}</div>
-				{else}
-			<div class="thumb-shadow" style="float: right;">
-				<img src="{$rootUrl}plugins/thumbnails/thumbnail_view.php?documentId={$document_id}"/>
-			</div>
-			{/if}
-			<div class="action_buttons below" style="display: inline-block;">
-			<div class="action" style="margin-top: 10px;">
-				<div class="splitbutton"><span class="split" href="#" id="more" style="border-left: 0px; font-size: 11px; padding-left: 25px;">More <span style="font-size: 9px;">&#9660;</span></span></div>
-				<ul class="splitmenu" id="more" style="right: auto; margin-left: -1px; ">
-					<li><a href="">Move</a></li>
-					<li><a href="">Copy</a></li>
-				</ul>
-			</div>
-			</div>
-				<a href=""><span class="share_url">{i18n}This page URL{/i18n}</span></a>
-				<a href=""><span class="share_url">{i18n}Download URL{/i18n}</span></a>
-				<a href=""><span class="share_url">{i18n}Preview URL{/i18n}</span></a>
-  			</div>
-
-			</td>
-
-		</tr>
-			<td colspan="2"> 
-				<div>
-					<span class="doc_header_item">
-						<span class="doc_field_title"></span>
-					</span>
-							<div id="activity_feed_container" style="margin-top:1em;"></div>
-							<div id="new_comment_form"></div>
-				</div>
-			</td>
-		<tr>
-		
-		</tr>
-	</table>
-
-	{if !empty($viewlet_data)}
-		<div>
-			 {$viewlet_data}
-		</div>
-    {/if}
-    </td>
+        {if !empty($viewlet_data)}
+            <div>{$viewlet_data}</div>
+        {/if}
+        </td>
     	<td valign="top" id="sidebar" class="standardBorder" height="100%" width="215">
-		{* Display Actions Block *}
-		{$documentSidebars->getDocSidebars()}
-	</td>
-	</tr>
+            {* Display Actions Block *}
+            {$documentSidebars->getDocSidebars()}
+        </td>
+    </tr>
 </table>
+{literal}
+<script type="text/javascript">
+    jQuery("#tagcloud").tokenInput("/filterTags.php", {
+        // Alter the minChars value to determine how much the user must type before a search is initiated
+        minChars: 2,
+        prePopulate: [{/literal}{$options.assigned[1]}{literal}],
+        classes: {
+            tokenList: "token-input-list-facebook",
+            token: "token-input-token-facebook",
+            tokenDelete: "token-input-delete-token-facebook",
+            selectedToken: "token-input-selected-token-facebook",
+            highlightedToken: "token-input-highlighted-token-facebook",
+            dropdown: "token-input-dropdown-facebook",
+            dropdownItem: "token-input-dropdown-item-facebook",
+            dropdownItem2: "token-input-dropdown-item2-facebook",
+            selectedDropdownItem: "token-input-selected-dropdown-item-facebook",
+            inputToken: "token-input-input-token-facebook"
+        }
+    });
+</script>
+{/literal}
 <!-- FILE_END: ktcore/document/view.smarty -->
