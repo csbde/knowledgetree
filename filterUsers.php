@@ -3,12 +3,9 @@
 /**
  * NOTES:
  *
- * 1. We are going to want to generate the list of users on first call and then cache this using memcache.
- *    Subsequent calls will retrieve the user list from the memcache store and not the db.
- * 2. It would be nice if this (as well as other sections of the site) didn't have to include dmsDefaults.
+ * 1. It would be nice if this (as well as other sections of the site) didn't have to include dmsDefaults.
  *    I think we should look into a minimal version of dmsDefaults which can be extended to create the full version.
  *    The minimal version can then be loaded for instances like this.
- *
  */
 
 require_once('config/dmsDefaults.php');

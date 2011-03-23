@@ -126,7 +126,7 @@ class KTDocumentActivityFeedAction extends KTDocumentViewlet {
     public $showIfRead = true;
     public $showIfWrite = true;
 	private $displayMax = 10;
-	
+
     function display_viewlet()
     {
 		$this->oPage->requireJSResource('resources/js/newui/documents/viewlets/comments.js');
@@ -249,10 +249,10 @@ class KTDocumentActivityFeedAction extends KTDocumentViewlet {
 
     function sortTable($a, $b)
     {
-        $d1 = new DateTime($a['actual_datetime']);
-        $d2 = new DateTime($b['actual_datetime']);
+        $date1 = new DateTime($a['actual_datetime']);
+        $date2 = new DateTime($b['actual_datetime']);
 
-        return $d1 < $d2 ? 1: -1;
+        return $date1 < $date2 ? 1 : -1;
     }
 
     function _getActionNameForNamespace($sNamespace)
@@ -267,10 +267,10 @@ class KTDocumentActivityFeedAction extends KTDocumentViewlet {
 
     function getUserForId($iUserId)
     {
-        $u = User::get($iUserId);
-        if (PEAR::isError($u) || ($u == false)) { return _kt('User no longer exists'); }
+        $user = User::get($iUserId);
+        if (PEAR::isError($user) || ($user == false)) { return _kt('User no longer exists'); }
 
-        return $u->getName();
+        return $user->getName();
     }
 
 	function getEmailForId($iUserId)
@@ -283,14 +283,15 @@ class KTDocumentActivityFeedAction extends KTDocumentViewlet {
 
 }
 
-// {{{ KTDocumentDetailsAction
 class KTInlineEditViewlet extends KTDocumentViewlet {
+
     public $sName = 'ktcore.viewlets.document.inline.edit';
 	public $_sShowPermission = 'ktcore.permissions.write';
     public $showIfRead = true;
     public $showIfWrite = true;
 
-    function display_viewlet() {
+    function display_viewlet()
+    {
         $oKTTemplating =& KTTemplating::getSingleton();
         $oTemplate =& $oKTTemplating->loadTemplate("ktcore/document/viewlets/inline_edit");
         if (is_null($oTemplate)) { return ""; }
@@ -302,14 +303,16 @@ class KTInlineEditViewlet extends KTDocumentViewlet {
             $displayClass = $fieldsetDisplayReg->getHandler($oFieldset->getNamespace());
             array_push($fieldsets, new $displayClass($oFieldset));
         }
-        
+
         $oTemplate->setData(array(
             'context' => $this,
             'document' => $this->oDocument,
             'fieldsetDisplayHelper' => new KTFieldsetDisplay(),
         ));
+
         return $oTemplate->render();
     }
+
 }
-// }}}
+
 ?>

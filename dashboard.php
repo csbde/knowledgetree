@@ -71,7 +71,6 @@ class DashboardDispatcher extends KTStandardDispatcher {
         // retrieve action items for the user.
         // FIXME what is the userid?
 
-
         // This creates a pseudo portlet to get the upload and add a folder button
         // for the root directory to display them on the dashboard
         $oFolder =& Folder::get(1);
@@ -135,9 +134,11 @@ class DashboardDispatcher extends KTStandardDispatcher {
         if ($sDashboardState == null) {
             $sDSJS .= 'false';
             $sDashboardState = false;
-        } else {
+        }
+        else {
             $sDSJS .= $sDashboardState;
         }
+
         $sDSJS .= ';';
         $this->oPage->requireJSStandalone($sDSJS);
         $this->oPage->requireJSResource('resources/js/dashboard.js');
@@ -212,7 +213,6 @@ class DashboardDispatcher extends KTStandardDispatcher {
         $this->commitTransaction();
         $this->successRedirectToMain('Dashlet disabled.');
     }
-
 
     function json_saveDashboardState() {
         $sState = KTUtil::arrayGet($_REQUEST, 'state', array('error' => true));
