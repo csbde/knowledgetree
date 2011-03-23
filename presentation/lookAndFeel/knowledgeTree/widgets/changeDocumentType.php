@@ -200,7 +200,7 @@ require_once(KT_LIB_DIR . '/widgets/fieldsetDisplay.inc.php');
 	
 	        $res = $oDocument->update( );
 	        if ( PEAR::isError( $res)) {
-	            $this->rollbackTransaction( );
+	            DBUtil::rollback( );
 	            $GLOBALS['default']->log->error('Failed to change basic details about the document...');
 	            return false;
 	        }
@@ -228,7 +228,7 @@ require_once(KT_LIB_DIR . '/widgets/fieldsetDisplay.inc.php');
 	
 	            return true;
 	        } else {
-	            $this->rollbackTransaction();
+	            DBUtil::rollback();
 	            $GLOBALS['default']->log->error('An Error occurred in _setTransitionWorkFlowState');
 	            return false;
 	        }
