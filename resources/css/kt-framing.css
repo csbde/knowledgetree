@@ -88,7 +88,7 @@ body
 
 #navbarLeft {
     position: absolute;
-    background: url(../../resources/graphics/menu_corner_left.png) top left no-repeat;
+    background: url(/resources/graphics/menu_corner_left.png) top left no-repeat;
     width:8px;
     height:2.36em;
     top:0px;
@@ -97,7 +97,7 @@ body
 
 #navbarRight {
     position: absolute;
-    background: url(../../resources/graphics/menu_corner_right.png) top right no-repeat;
+    background: url(/resources/graphics/menu_corner_right.png) top right no-repeat;
     width:8px;
     height:2.36em;
     top:0px;
@@ -108,7 +108,7 @@ body
 {
     position: relative;
     width: auto;
-    background: url(../../resources/graphics/menubg.png) top left repeat-x;
+    background: url(/resources/graphics/menubg.png) top left repeat-x;
     padding: 0em 1em;
     margin-bottom: 1em;
     height: 2.36em;
@@ -139,7 +139,7 @@ body
 }
 
 #navbar ul li.active {
-    background: #6c8c2f url(../../resources/graphics/menubg-active.png) top left repeat-x;
+    background: #6c8c2f url(/resources/graphics/menubg-active.png) top left repeat-x;
     height: 1.4em;
 }
 
@@ -156,7 +156,7 @@ body
 }
 
 #menu_divider {
-    background: url(../../resources/graphics/menu_divider.png) top left no-repeat;
+    background: url(/resources/graphics/menu_divider.png) top left no-repeat;
     width: 2px;
     height: 31px;
 }
@@ -167,7 +167,7 @@ body
 
 /*
 a.main_nav_item {
-    background: transparent url(../../resources/graphics/home-navbar.gif) center left no-repeat;
+    background: transparent url(/resources/graphics/home-navbar.gif) center left no-repeat;
     padding-left: 1.5em;
 }
 */
@@ -231,7 +231,7 @@ a.main_nav_item {
 #portletbar .portlet {
     position: relative;
     margin: 0 0 1.5em 0;
-    background: url(../../resources/graphics/portlet_corner_topleft_collapsed.png) top left no-repeat;
+    background: url(/resources/graphics/portlet_corner_topleft_collapsed.png) top left no-repeat;
     padding: 0 0 0 0;
     border: 0;
     z-index: 2;
@@ -239,7 +239,7 @@ a.main_nav_item {
 
 #portletbar .portlet .portletTopRepeat {
     position: absolute;
-    background: url(../../resources/graphics/portlet_bg_collapsed.png) top left repeat-x;
+    background: url(/resources/graphics/portlet_bg_collapsed.png) top left repeat-x;
     top: 0;
     left: 30px;
     height: 30px;
@@ -250,7 +250,7 @@ a.main_nav_item {
 
 #portletbar .portlet .portletTopRight {
     position: absolute;
-    background: url(../../resources/graphics/portlet_corner_topright_collapsed.png) top right no-repeat;
+    background: url(/resources/graphics/portlet_corner_topright_collapsed.png) top right no-repeat;
     top: 0;
     right: 0px;
     height: 30px;
@@ -263,14 +263,14 @@ a.main_nav_item {
     position: relative;
     margin: 0 0 1.5em 0;
     padding: 0 0 0 0;
-    background: url(../../resources/graphics/portlet_corner_topleft.png) top left no-repeat;
+    background: url(/resources/graphics/portlet_corner_topleft.png) top left no-repeat;
     border: 0;
     z-index: 2;
 }
 
 #portletbar .portlet.expanded .portletTopRepeat {
     position: absolute;
-    background: url(../../resources/graphics/portlet_bg.png) top left repeat-x;
+    background: url(/resources/graphics/portlet_bg.png) top left repeat-x;
     top: 0px;
     left: 30px;
     height: 28px;
@@ -281,7 +281,7 @@ a.main_nav_item {
 
 #portletbar .portlet.expanded .portletTopRight {
     position: absolute;
-    background: url(../../resources/graphics/portlet_corner_topright.png) top right no-repeat;
+    background: url(/resources/graphics/portlet_corner_topright.png) top right no-repeat;
     top: 0;
     right: 0px;
     height: 28px;
@@ -291,7 +291,7 @@ a.main_nav_item {
 }
 
 #portletbar .portlet .portletbody {
-    background: url(../../resources/graphics/portlet_borderright.png) top right repeat-y;
+    background: url(/resources/graphics/portlet_borderright.png) top right repeat-y;
     padding: 0 0 1em 0;
     margin-right: 1px;
     background-color: white;
@@ -338,7 +338,7 @@ a.main_nav_item {
     left: 0px;
     width: 10px;
     height: 10px;
-    background: url(../../resources/graphics/portlet_corner_bottomleft.png) bottom left no-repeat;
+    background: url(/resources/graphics/portlet_corner_bottomleft.png) bottom left no-repeat;
 }
 
 #portletbar .portlet .portletbodyBottomRight {
@@ -347,7 +347,7 @@ a.main_nav_item {
     right: 0px;
     width: 10px;
     height: 10px;
-    background: url(../../resources/graphics/portlet_corner_bottomright.png) bottom right no-repeat;
+    background: url(/resources/graphics/portlet_corner_bottomright.png) bottom right no-repeat;
 }
 
 #portletbar .portlet .portletbodyBottom {
@@ -356,14 +356,14 @@ a.main_nav_item {
     left: 5px;
     height: 3px;
     width: 95%;
-    background: url(../../resources/graphics/portlet_borderbottom.png) bottom left repeat-x;
+    background: url(/resources/graphics/portlet_borderbottom.png) bottom left repeat-x;
 }*/
 
 /* Right-hand side portlet borders */
 /*
 #portletbar .portlet .portletbodyRightTop {
     position: absolute;
-    background: url(../../resources/graphics/portlet_borderright.png) top right repeat-y;
+    background: url(/resources/graphics/portlet_borderright.png) top right repeat-y;
     top: 0px;
     right: 0px;
     width: 5px;
@@ -372,7 +372,7 @@ a.main_nav_item {
 
 #portletbar .portlet .portletbodyRightBottom {
     position: absolute;
-    background: url(../../resources/graphics/portlet_borderright.png) top right repeat-y;
+    background: url(/resources/graphics/portlet_borderright.png) top right repeat-y;
     bottom: 0px;
     right: 0px;
     width: 5px;
@@ -382,7 +382,7 @@ a.main_nav_item {
 
 #portletbar .portlet .portletbodyRightMiddleTop {
     position: absolute;
-    background: url(../../resources/graphics/portlet_borderright.png) top right repeat-y;
+    background: url(/resources/graphics/portlet_borderright.png) top right repeat-y;
     top: 50%;
     right: 0px;
     width: 5px;
@@ -391,7 +391,7 @@ a.main_nav_item {
 
 #portletbar .portlet .portletbodyRightMiddleBottom {
     position: absolute;
-    background: url(../../resources/graphics/portlet_borderright.png) top right repeat-y;
+    background: url(/resources/graphics/portlet_borderright.png) top right repeat-y;
     bottom: 50%;
     right: 0px;
     width: 5px;
@@ -400,7 +400,7 @@ a.main_nav_item {
 
 #portletbar .portlet .portletbodyRightQuartTop {
     position: absolute;
-    background: url(../../resources/graphics/portlet_borderright.png) top right repeat-y;
+    background: url(/resources/graphics/portlet_borderright.png) top right repeat-y;
     top: 15%;
     right: 0px;
     width: 5px;
@@ -409,7 +409,7 @@ a.main_nav_item {
 
 #portletbar .portlet .portletbodyRightQuartBottom {
     position: absolute;
-    background: url(../../resources/graphics/portlet_borderright.png) top right repeat-y;
+    background: url(/resources/graphics/portlet_borderright.png) top right repeat-y;
     bottom: 25%;
     right: 0px;
     width: 5px;
@@ -590,7 +590,7 @@ a.main_nav_item {
 #content .descriptiveText.important {
     padding-left: 25px;
     color: black;
-    background: transparent  url(../../thirdparty/icon-theme/16x16/status/dialog-information.png) center left no-repeat;
+    background: transparent  url(/thirdparty/icon-theme/16x16/status/dialog-information.png) center left no-repeat;
 }
 
 
@@ -627,7 +627,7 @@ a.main_nav_item {
 #content input,
 #content select,
 #content textarea {
-    background:#FFFFFF url(../../thirdpartyjs/extjs/resources/images/default/form/text-bg.gif) repeat-x scroll 0 0;
+    background:#FFFFFF url(/thirdpartyjs/extjs/resources/images/default/form/text-bg.gif) repeat-x scroll 0 0;
 	border:1px solid #B5B8C8;
 	padding:2px 3px;
 }
@@ -717,7 +717,7 @@ a.main_nav_item {
     margin-left: 0.5em;
     padding-left: 10px;
     color: white;
-    background: transparent url(../../resources/graphics/required.png) center left no-repeat;
+    background: transparent url(/resources/graphics/required.png) center left no-repeat;
 }
 
 .errorMessage
@@ -801,7 +801,7 @@ a.main_nav_item {
     background-color: #fff2b8;
 /*
     padding-left: 25px;
-    background: transparent  url(../../thirdparty/icon-theme/16x16/status/dialog-information.png) center left no-repeat;
+    background: transparent  url(/thirdparty/icon-theme/16x16/status/dialog-information.png) center left no-repeat;
 */
 }
 
@@ -809,7 +809,7 @@ a.main_nav_item {
     background-color: #e9dda8;
 /*
     padding-left: 25px;
-    background: transparent  url(../../thirdparty/icon-theme/16x16/status/dialog-information.png) center left no-repeat;
+    background: transparent  url(/thirdparty/icon-theme/16x16/status/dialog-information.png) center left no-repeat;
 */
 }
 
@@ -933,14 +933,14 @@ a.main_nav_item {
     border-left: 1px solid #ccc;
     border-right: 1px solid #ccc;
 
-    background: transparent url(../../resources/graphics/sort_asc.png) center right no-repeat;
+    background: transparent url(/resources/graphics/sort_asc.png) center right no-repeat;
 }
 
 .kt_collection th.sort_on.sort_desc {
     border-left: 1px solid #ccc;
     border-right: 1px solid #ccc;
 
-    background: transparent url(../../resources/graphics/sort_desc.png) center right no-repeat;
+    background: transparent url(/resources/graphics/sort_desc.png) center right no-repeat;
 }
 
 .kt_collection th,
@@ -1031,7 +1031,7 @@ a.main_nav_item {
 
 .ktError .err_item {
     padding-left: 25px;
-    background: #ffdd80 url(../../thirdparty/icon-theme/16x16/status/dialog-warning.png) top left no-repeat;
+    background: #ffdd80 url(/thirdparty/icon-theme/16x16/status/dialog-warning.png) top left no-repeat;
     padding-bottom: 3px;
 }
 
@@ -1051,7 +1051,7 @@ a.main_nav_item {
 
 .ktInfo .info_item {
     padding-left: 25px;
-    background: #DEDEDE url(../../thirdparty/icon-theme/16x16/status/dialog-information.png) top left no-repeat;
+    background: #DEDEDE url(/thirdparty/icon-theme/16x16/status/dialog-information.png) top left no-repeat;
     padding-bottom: 3px;
 }
 
@@ -1075,7 +1075,7 @@ a.main_nav_item {
 /** portlet stuff. */
 #portlet-search-text {
     border: 1px solid black;
-    background: white url(../../resources/graphics/search-button.png) center left no-repeat;
+    background: white url(/resources/graphics/search-button.png) center left no-repeat;
     margin: 0.5em;
     padding: 3px;
     padding-left: 17px;
@@ -1084,7 +1084,7 @@ a.main_nav_item {
 
 #dashlet-search-text {
     border: 1px solid black;
-    background: white url(../../resources/graphics/search-button.png) center left no-repeat;
+    background: white url(/resources/graphics/search-button.png) center left no-repeat;
     margin: 0.5em 0.5em 0.5em 0;
     padding: 3px;
     padding-left: 17px;
@@ -1150,7 +1150,7 @@ The text will be hidden for screen view.  The generic fahrner-ish approach comes
 }
 
 .ktHelp {
-    background: transparent url(../../thirdparty/icon-theme/16x16/apps/help-browser.png) top left no-repeat;
+    background: transparent url(/thirdparty/icon-theme/16x16/apps/help-browser.png) top left no-repeat;
     float: right;
     display: block;
     text-decoration: none;
@@ -1165,18 +1165,18 @@ The text will be hidden for screen view.  The generic fahrner-ish approach comes
 }
 
 /* FIXME when available icon-naming-conformant sets have better coverage, make these more accurate. */
-.ktActionLink.ktDelete, .ktAction.ktDelete { background-image: url(../../resources/graphics/delete.png); }
-.ktActionLink.ktEdit, .ktAction.ktEdit { background-image: url(../../thirdparty/icon-theme/16x16/actions/document-properties.png); }
-.ktActionLink.ktAddUser, .ktAction.ktAddUser { background-image: url(../../thirdparty/icon-theme/16x16/actions/contact-new.png); }
-.ktActionLink.ktAddGroup, .ktAction.ktAddGroup { background-image: url(../../thirdparty/icon-theme/16x16/actions/group-new.png); }
-.ktActionLink.ktAdd, .ktAction.ktAdd { background-image: url(../../thirdparty/icon-theme/16x16/actions/add.png); }
-.ktActionLink.ktDownload, .ktAction.ktDownload { background-image: url(../../resources/graphics/download.png); }
-.ktActionLink.ktBack, .ktAction.ktBack { background-image: url(../../thirdparty/icon-theme/16x16/actions/back.png); }
-.ktActionLink.ktAllowed, .ktAction.ktAllowed { background-image: url(../../resources/graphics/allowed.png); }
-.ktActionLink.ktDenied, .ktAction.ktDenied { background-image: url(../../resources/graphics/denied.png); }
-.ktActionLink.ktMoveUp, .ktAction.ktMoveUp { background-image: url(../../thirdparty/icon-theme/16x16/actions/move-up.png); }
-.ktActionLink.ktMoveDown, .ktAction.ktMoveDown { background-image: url(../../thirdparty/icon-theme/16x16/actions/move-down.png); }
-.ktActionLink.ktPreview, .ktAction.ktPreview { background-image: url(../../resources/tango-icons/system-search.png); }
+.ktActionLink.ktDelete, .ktAction.ktDelete { background-image: url(/resources/graphics/delete.png); }
+.ktActionLink.ktEdit, .ktAction.ktEdit { background-image: url(/thirdparty/icon-theme/16x16/actions/document-properties.png); }
+.ktActionLink.ktAddUser, .ktAction.ktAddUser { background-image: url(/thirdparty/icon-theme/16x16/actions/contact-new.png); }
+.ktActionLink.ktAddGroup, .ktAction.ktAddGroup { background-image: url(/thirdparty/icon-theme/16x16/actions/group-new.png); }
+.ktActionLink.ktAdd, .ktAction.ktAdd { background-image: url(/thirdparty/icon-theme/16x16/actions/add.png); }
+.ktActionLink.ktDownload, .ktAction.ktDownload { background-image: url(/resources/graphics/download.png); }
+.ktActionLink.ktBack, .ktAction.ktBack { background-image: url(/thirdparty/icon-theme/16x16/actions/back.png); }
+.ktActionLink.ktAllowed, .ktAction.ktAllowed { background-image: url(/resources/graphics/allowed.png); }
+.ktActionLink.ktDenied, .ktAction.ktDenied { background-image: url(/resources/graphics/denied.png); }
+.ktActionLink.ktMoveUp, .ktAction.ktMoveUp { background-image: url(/thirdparty/icon-theme/16x16/actions/move-up.png); }
+.ktActionLink.ktMoveDown, .ktAction.ktMoveDown { background-image: url(/thirdparty/icon-theme/16x16/actions/move-down.png); }
+.ktActionLink.ktPreview, .ktAction.ktPreview { background-image: url(/resources/tango-icons/system-search.png); }
 
 /* this is sometimes used separately to get the auto-delete help. */
 .ktDelete { }
@@ -1212,14 +1212,14 @@ The text will be hidden for screen view.  The generic fahrner-ish approach comes
 }
 
 .portlet_button a .big_btn_left {
-    background: transparent url(../../resources/graphics/btn_left.gif) top left no-repeat;
+    background: transparent url(/resources/graphics/btn_left.gif) top left no-repeat;
     width: 10px;
     height: 47px;
     float: left;
 }
 
 .portlet_button a .big_btn_middle {
-    background: transparent url(../../resources/graphics/btn_middle.gif) repeat-x;
+    background: transparent url(/resources/graphics/btn_middle.gif) repeat-x;
     height: 47px;
     float: left;
     text-align: center;
@@ -1235,27 +1235,27 @@ The text will be hidden for screen view.  The generic fahrner-ish approach comes
 }
 
 .portlet_button a .arrow_upload{
-    background: transparent url(../../resources/graphics/btn_right_up.gif) top right no-repeat;
+    background: transparent url(/resources/graphics/btn_right_up.gif) top right no-repeat;
 }
 
 .portlet_button a .arrow_download{
-    background: transparent url(../../resources/graphics/btn_right_down.gif) top right no-repeat;
+    background: transparent url(/resources/graphics/btn_right_down.gif) top right no-repeat;
 }
 
 .portlet_button a:hover .big_btn_left {
-    background: transparent url(../../resources/graphics/btn_left_ro.gif) top left no-repeat;
+    background: transparent url(/resources/graphics/btn_left_ro.gif) top left no-repeat;
 }
 
 .portlet_button a:hover .big_btn_middle {
-    background: transparent url(../../resources/graphics/btn_middle_ro.gif) repeat-x;
+    background: transparent url(/resources/graphics/btn_middle_ro.gif) repeat-x;
 }
 
 .portlet_button a:hover .arrow_upload {
-    background: transparent url(../../resources/graphics/btn_right_ro_up.gif) top right no-repeat;
+    background: transparent url(/resources/graphics/btn_right_ro_up.gif) top right no-repeat;
 }
 
 .portlet_button a:hover .arrow_download {
-    background: transparent url(../../resources/graphics/btn_right_ro_down.gif) top right no-repeat;
+    background: transparent url(/resources/graphics/btn_right_ro_down.gif) top right no-repeat;
 }
 
 
@@ -2372,7 +2372,7 @@ div.extjs_form_actions {
 
 #popup_content .warning {
     padding-left: 20px;
-    background: url(../../thirdparty/icon-theme/16x16/status/dialog-warning.gif) center left no-repeat;
+    background: url(/thirdparty/icon-theme/16x16/status/dialog-warning.gif) center left no-repeat;
 }
 
 #popup_content .input_field {
@@ -2408,7 +2408,7 @@ div.extjs_form_actions {
 }
 
 #popup_content .error {
-    background: #ffdd80  url(../../resources/graphics/denied.gif) 2px center no-repeat;
+    background: #ffdd80  url(/resources/graphics/denied.gif) 2px center no-repeat;
 }
 
 .x-window-tl .x-window-header {

@@ -42,10 +42,10 @@ require_once(KT_LIB_DIR . '/util/KTStopwords.php');
 
 class KTUtil {
 
-	const MIN_IN_SECS = 60;
-	const HOUR_IN_SECS = 3600;
-	const DAY_IN_SECS = 86400;
-	const KB = 1024;
+    const MIN_IN_SECS = 60;
+    const HOUR_IN_SECS = 3600;
+    const DAY_IN_SECS = 86400;
+    const KB = 1024;
     const MB = 1048576;
     const GB = 1073741824;
     const TB = 1099511627776;
@@ -57,51 +57,51 @@ class KTUtil {
      */
     public static function save_base_kt_url()
     {
-    	global $default;
+        global $default;
 
-    	$serverName = $default->server_name;
-    	$serverPort = $default->server_port;
+        $serverName = $default->server_name;
+        $serverPort = $default->server_port;
 
-    	$pos = strpos($serverName, '://');
+        $pos = strpos($serverName, '://');
         if ($pos !== false) {
             $serverName = substr($serverName, $pos + 3);
         }
 
-    	$server = $_SERVER['SERVER_NAME'];
-    	$port = $_SERVER['SERVER_PORT'] + 0;
+        $server = $_SERVER['SERVER_NAME'];
+        $port = $_SERVER['SERVER_PORT'] + 0;
 
-    	// If server_name exists, exit
-    	if (!empty($serverName)) {
-    	    // check that it hasn't changed and update if it has - disabled because it should be set by the system administrator and may have unforeseen consequences
-    	    //if ($port == $serverPort && $server == $serverName) {
-    	       return true;
-    	    //}
-    	}
+        // If server_name exists, exit
+        if (!empty($serverName)) {
+            // check that it hasn't changed and update if it has - disabled because it should be set by the system administrator and may have unforeseen consequences
+            //if ($port == $serverPort && $server == $serverName) {
+            return true;
+            //}
+        }
 
-    	// We don't want to set the servername to localhost, it should be set to the url that will be used normally
-		if (($server == 'localhost') || ($server == '127.0.0.1')) {
-		    return false;
-		}
+        // We don't want to set the servername to localhost, it should be set to the url that will be used normally
+        if (($server == 'localhost') || ($server == '127.0.0.1')) {
+            return false;
+        }
 
-		// If the servername is empty and not localhost - update it
+        // If the servername is empty and not localhost - update it
 
-		// Save the server name and port
-		DBUtil::whereUpdate('config_settings',
-            array('value' => $server),
-            array('item' => 'server_name', 'group_name' => 'server'));
+        // Save the server name and port
+        DBUtil::whereUpdate('config_settings',
+        array('value' => $server),
+        array('item' => 'server_name', 'group_name' => 'server'));
 
         if ($port > 0) {
             DBUtil::whereUpdate('config_settings',
-                array('value' => $port),
-                array('item' => 'server_port', 'group_name' => 'server'));
+            array('value' => $port),
+            array('item' => 'server_port', 'group_name' => 'server'));
         }
 
         // Save the rootUrl
-    	$rootUrl = $default->rootUrl;
+        $rootUrl = $default->rootUrl;
         if (!empty($rootUrl)) {
-    		DBUtil::whereUpdate('config_settings',
-                array('value' => $rootUrl),
-                array('item' => 'rootUrl', 'group_name' => 'KnowledgeTree'));
+            DBUtil::whereUpdate('config_settings',
+            array('value' => $rootUrl),
+            array('item' => 'rootUrl', 'group_name' => 'KnowledgeTree'));
         }
 
         return true;
@@ -130,170 +130,170 @@ class KTUtil {
     }
 
     public static function kt_url()
-	{
-		global $default;
-		static $base_url = null;
+    {
+        global $default;
+        static $base_url = null;
 
-		if (!is_null($base_url)) {
-		    return $base_url;
-		}
+        if (!is_null($base_url)) {
+            return $base_url;
+        }
 
-    	$serverName = $_SERVER['HTTP_HOST'];
+        $serverName = $_SERVER['HTTP_HOST'];
 
-		// $serverName gets set in dmsDefaults using KTUtil::getServerName();
-		if (empty($serverName)) {
-		    // The host has not been set - check if server_name is set in the config_settings
-		    $serverName = KTUtil::getServerName();
-		}
+        // $serverName gets set in dmsDefaults using KTUtil::getServerName();
+        if (empty($serverName)) {
+            // The host has not been set - check if server_name is set in the config_settings
+            $serverName = KTUtil::getServerName();
+        }
 
-		// build up the url
-		$base_url = ($default->sslEnabled ? 'https' : 'http') . '://' . $serverName . $default->rootUrl;
-		// NOTE this appears to (at least) sometimes be an object of stdClass, and not the correct log class;
-		//      to deal with this we check whether it is of type stdClass
-		// TODO see if we can determine the actual class and check that type specifically (code uses factory method)
-		if (!($default instanceof stdClass) && is_object($default->log)) {
-			$default->log->debug("kt_url: base url - $base_url");
-		}
+        // build up the url
+        $base_url = ($default->sslEnabled ? 'https' : 'http') . '://' . $serverName . $default->rootUrl;
+        // NOTE this appears to (at least) sometimes be an object of stdClass, and not the correct log class;
+        //      to deal with this we check whether it is of type stdClass
+        // TODO see if we can determine the actual class and check that type specifically (code uses factory method)
+        if (!($default instanceof stdClass) && is_object($default->log)) {
+            $default->log->debug("kt_url: base url - $base_url");
+        }
 
-		return $base_url;
-	}
+        return $base_url;
+    }
 
-	public static function kt_internal_url()
-	{
-	    global $default;
-	    static $internal_url = null;
+    public static function kt_internal_url()
+    {
+        global $default;
+        static $internal_url = null;
 
-	    if (!is_null($internal_url)) { return $internal_url; }
+        if (!is_null($internal_url)) { return $internal_url; }
 
-	    // build url
-	    $internal_url = !empty($default->internal_server_name) ? $default->internal_server_name : '127.0.0.1';
-	    $internal_url .= !empty($default->internal_server_port) ? ':' . $default->internal_server_port : '';
-	    $internal_url .= !empty($default->rootUrl) ? $default->rootUrl : '';
+        // build url
+        $internal_url = !empty($default->internal_server_name) ? $default->internal_server_name : '127.0.0.1';
+        $internal_url .= !empty($default->internal_server_port) ? ':' . $default->internal_server_port : '';
+        $internal_url .= !empty($default->rootUrl) ? $default->rootUrl : '';
 
-	    $pos = strpos($internal_url, 'http');
+        $pos = strpos($internal_url, 'http');
         if ($pos === false) {
             $port = $default->internal_server_port;
             $internal_url = (($port == 443 || $port == 8443) ? 'https://' : 'http://') . $internal_url;
         }
 
-	    return $internal_url;
-	}
+        return $internal_url;
+    }
 
-	public static function call_page($path)
-	{
-	    global $default;
+    public static function call_page($path)
+    {
+        global $default;
 
-	    // Using curl so we want to run using the internal url
-		$base_url = KTUtil::kt_internal_url();
+        // Using curl so we want to run using the internal url
+        $base_url = KTUtil::kt_internal_url();
 
-		if ((false === $base_url) || empty($base_url)) {
-			$default->log->info("call_page: $path - cannot call script, there is a problem with the internal url. Please check the configuration settings for General Settings => Server Settings.");
-			return;
-		}
+        if ((false === $base_url) || empty($base_url)) {
+            $default->log->info("call_page: $path - cannot call script, there is a problem with the internal url. Please check the configuration settings for General Settings => Server Settings.");
+            return;
+        }
 
-		$full_url = $base_url . '/' . $path;
+        $full_url = $base_url . '/' . $path;
 
-		$default->log->debug("call_page: calling curl with - $full_url");
+        $default->log->debug("call_page: calling curl with - $full_url");
 
-		$ch = curl_init($full_url);
-		curl_setopt($ch,CURLOPT_SSL_VERIFYPEER, false);
-		curl_setopt($ch,CURLOPT_SSL_VERIFYHOST, false);
-		curl_setopt($ch,CURLOPT_FOLLOWLOCATION, true);
-		curl_exec($ch);
-		curl_close($ch);
-	}
+        $ch = curl_init($full_url);
+        curl_setopt($ch,CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($ch,CURLOPT_SSL_VERIFYHOST, false);
+        curl_setopt($ch,CURLOPT_FOLLOWLOCATION, true);
+        curl_exec($ch);
+        curl_close($ch);
+    }
 
-	public static function computePeriod($diff, $suffix = null, $returnArray = false)
-	{
-		if (is_null($suffix)) {
-			$suffix = _kt('ago');
-		}
+    public static function computePeriod($diff, $suffix = null, $returnArray = false)
+    {
+        if (is_null($suffix)) {
+            $suffix = _kt('ago');
+        }
 
-		$days = floor($diff / KTUtil::DAY_IN_SECS);
-		$hours = floor(($diff - $days * KTUtil::DAY_IN_SECS) / KTUtil::HOUR_IN_SECS);
-		$mins = floor(($diff - $days * KTUtil::DAY_IN_SECS - $hours * KTUtil::HOUR_IN_SECS) / KTUtil::MIN_IN_SECS);
-		$secs = $diff % KTUtil::MIN_IN_SECS;
+        $days = floor($diff / KTUtil::DAY_IN_SECS);
+        $hours = floor(($diff - $days * KTUtil::DAY_IN_SECS) / KTUtil::HOUR_IN_SECS);
+        $mins = floor(($diff - $days * KTUtil::DAY_IN_SECS - $hours * KTUtil::HOUR_IN_SECS) / KTUtil::MIN_IN_SECS);
+        $secs = $diff % KTUtil::MIN_IN_SECS;
 
-		$str = '';
-		if ($days > 0) { $str .= sprintf(_kt(' %d day(s)'), $days); }
-		if ($hours > 0) { $str .= sprintf(_kt(' %d hour(s)'), $hours); }
-		if ($mins > 0) { $str .= sprintf(_kt(' %d minute(s)'), $mins); }
+        $str = '';
+        if ($days > 0) { $str .= sprintf(_kt(' %d day(s)'), $days); }
+        if ($hours > 0) { $str .= sprintf(_kt(' %d hour(s)'), $hours); }
+        if ($mins > 0) { $str .= sprintf(_kt(' %d minute(s)'), $mins); }
 
-		// lets loose some granularity. the string does get quite long...
-		if (($days == 0) && ($hours == 0) && ($mins == 0) && ($secs > 0)) {
-		    $str .= sprintf(_kt(' %d second(s)'), $secs);
-		}
+        // lets loose some granularity. the string does get quite long...
+        if (($days == 0) && ($hours == 0) && ($mins == 0) && ($secs > 0)) {
+            $str .= sprintf(_kt(' %d second(s)'), $secs);
+        }
 
-		if (empty($str)) { return _kt('never'); }
+        if (empty($str)) { return _kt('never'); }
 
-		$str .= " $suffix";
+        $str .= " $suffix";
 
-		if ($returnArray) {
-			return array(
-					'str' => $str,
-					'days' => $days,
-					'mins' => $mins,
-					'secs' => $secs
-			);
-		}
+        if ($returnArray) {
+            return array(
+            'str' => $str,
+            'days' => $days,
+            'mins' => $mins,
+            'secs' => $secs
+            );
+        }
 
-		return $str;
-	}
+        return $str;
+    }
 
-	public static function computePeriodToDate($start, $suffix = null, $returnArray = false)
-	{
-		return KTUtil::computePeriod(time() - $start, $suffix, $returnArray);
-	}
+    public static function computePeriodToDate($start, $suffix = null, $returnArray = false)
+    {
+        return KTUtil::computePeriod(time() - $start, $suffix, $returnArray);
+    }
 
-	public static function filesizeToString($filesize)
-	{
-		$filesize = (double)$filesize;
+    public static function filesizeToString($filesize)
+    {
+        $filesize = (double)$filesize;
 
-		if ($filesize >= KTUtil::PB) {
-			return number_format($filesize / KTUtil::PB, 2, '.', ',') . _kt('PB');
-		}
-		elseif ($filesize >= KTUtil::TB) {
-			return number_format($filesize / KTUtil::TB, 2, '.', ',') . _kt('TB');
-		}
-		elseif ($filesize >= KTUtil::GB) {
-			return number_format($filesize / KTUtil::GB, 2, '.', ',') . _kt('GB');
-		}
-		elseif ($filesize >= KTUtil::MB) {
-			return number_format($filesize / KTUtil::MB, 2, '.', ',') . _kt('MB');
-		}
-		elseif ($filesize >= KTUtil::KB) {
-			return number_format($filesize / KTUtil::KB, 2, '.', ',') . _kt('KB');
-		}
-		else {
-			return $filesize . _kt('B');
-		}
-	}
+        if ($filesize >= KTUtil::PB) {
+            return number_format($filesize / KTUtil::PB, 2, '.', ',') . _kt('PB');
+        }
+        elseif ($filesize >= KTUtil::TB) {
+            return number_format($filesize / KTUtil::TB, 2, '.', ',') . _kt('TB');
+        }
+        elseif ($filesize >= KTUtil::GB) {
+            return number_format($filesize / KTUtil::GB, 2, '.', ',') . _kt('GB');
+        }
+        elseif ($filesize >= KTUtil::MB) {
+            return number_format($filesize / KTUtil::MB, 2, '.', ',') . _kt('MB');
+        }
+        elseif ($filesize >= KTUtil::KB) {
+            return number_format($filesize / KTUtil::KB, 2, '.', ',') . _kt('KB');
+        }
+        else {
+            return $filesize . _kt('B');
+        }
+    }
 
-	private static $invalidFilenameCharacters = array('\\', '/', ':', '*', '?', '"', '<', '>', '|', '%', '+', '\'', '`');
+    private static $invalidFilenameCharacters = array('\\', '/', ':', '*', '?', '"', '<', '>', '|', '%', '+', '\'', '`');
 
-	/**
+    /**
 	 * Checks if a filename is valid
 	 *
 	 * @param string $filename
 	 * @return boolean
 	 */
-	public static function isValidFilename($filename)
-	{
-		foreach (KTUtil::$invalidFilenameCharacters as $char) {
-			if (strpos($filename, $char) !== false) { return false; }
-		}
+    public static function isValidFilename($filename)
+    {
+        foreach (KTUtil::$invalidFilenameCharacters as $char) {
+            if (strpos($filename, $char) !== false) { return false; }
+        }
 
-		return true;
-	}
+        return true;
+    }
 
-	public static function replaceInvalidCharacters($filename)
-	{
-		foreach (KTUtil::$invalidFilenameCharacters as $char) {
-			$filename = str_replace($char, '-', $filename);
-		}
+    public static function replaceInvalidCharacters($filename)
+    {
+        foreach (KTUtil::$invalidFilenameCharacters as $char) {
+            $filename = str_replace($char, '-', $filename);
+        }
 
-		return $filename;
-	}
+        return $filename;
+    }
 
     public static function extractGPC()
     {
@@ -308,12 +308,12 @@ class KTUtil {
     {
         $sString = strtoupper($sString);
         if (in_array($sString, array('Y','YES','ON','true'))) {
-        	return true;
+            return true;
         }
         elseif (in_array($sString, array('N', 'NO','OFF','false'))) {
-        	return false;
+            return false;
         }
-		elseif ($sString == '') {
+        elseif ($sString == '') {
             return $empty;
         }
         else {
@@ -362,12 +362,12 @@ class KTUtil {
     }
 
     //this function fudges the strlen. It returns a ? when the character is a multi-byte character.
-	//str len is therefore measured correctly by counting the ?'s.
-	//http://www.phpwact.org/php/i18n/charsets
-	public static function utf8_strlen($string)
-	{
-    	return strlen(utf8_decode($string));
-	}
+    //str len is therefore measured correctly by counting the ?'s.
+    //http://www.phpwact.org/php/i18n/charsets
+    public static function utf8_strlen($string)
+    {
+        return strlen(utf8_decode($string));
+    }
 
     public static function &arrayGet($aArray, $sKey, $mDefault = null, $bDefaultIfEmpty = true)
     {
@@ -461,42 +461,42 @@ class KTUtil {
      * Portably execute a command on any of the supported platforms.
      */
     public static function pexec($aCmd, $aOptions = null) {
-    	if (is_array($aCmd)) {
-    		$sCmd = KTUtil::safeShellString($aCmd);
-    	}
-    	else {
-    		$sCmd = $aCmd;
-    	}
+        if (is_array($aCmd)) {
+            $sCmd = KTUtil::safeShellString($aCmd);
+        }
+        else {
+            $sCmd = $aCmd;
+        }
 
-    	$sAppend = KTUtil::arrayGet($aOptions, 'append');
-    	if ($sAppend) {
-    		$sCmd .= ' >> ' . escapeshellarg($sAppend);
-    	}
+        $sAppend = KTUtil::arrayGet($aOptions, 'append');
+        if ($sAppend) {
+            $sCmd .= ' >> ' . escapeshellarg($sAppend);
+        }
 
-    	$sPopen = KTUtil::arrayGet($aOptions, 'popen');
-    	if ($sPopen) {
-    	    if (OS_WINDOWS) {
+        $sPopen = KTUtil::arrayGet($aOptions, 'popen');
+        if ($sPopen) {
+            if (OS_WINDOWS) {
                 $sCmd = "start /b \"kt\" $sCmd";
-    	    }
+            }
 
-    	    return popen($sCmd, $sPopen);
-    	}
+            return popen($sCmd, $sPopen);
+        }
 
-    	// for exec, check return code and output...
-    	$aRet = array();
-    	$aOutput = array();
-    	$iRet = '';
+        // for exec, check return code and output...
+        $aRet = array();
+        $aOutput = array();
+        $iRet = '';
 
-    	if (OS_WINDOWS) {
-    	    $sCmd = 'call '.$sCmd;
-    	}
+        if (OS_WINDOWS) {
+            $sCmd = 'call '.$sCmd;
+        }
 
-    	exec($sCmd, $aOutput, $iRet);
+        exec($sCmd, $aOutput, $iRet);
 
-    	$aRet['ret'] = $iRet;
-    	$aRet['out'] = $aOutput;
+        $aRet['ret'] = $iRet;
+        $aRet['out'] = $aOutput;
 
-    	return $aRet;
+        return $aRet;
     }
 
     /**
@@ -504,39 +504,39 @@ class KTUtil {
      */
     public static function winexec($aCmd, $aOptions = null)
     {
-    	if (is_array($aCmd)) {
-    		$sCmd = KTUtil::safeShellString($aCmd);
-    	}
-    	else {
-    		$sCmd = $aCmd;
-    	}
+        if (is_array($aCmd)) {
+            $sCmd = KTUtil::safeShellString($aCmd);
+        }
+        else {
+            $sCmd = $aCmd;
+        }
 
-    	$sAppend = KTUtil::arrayGet($aOptions, 'append');
-    	if ($sAppend) {
-    		$sCmd .= ' >> ' . escapeshellarg($sAppend);
-    	}
+        $sAppend = KTUtil::arrayGet($aOptions, 'append');
+        if ($sAppend) {
+            $sCmd .= ' >> ' . escapeshellarg($sAppend);
+        }
 
-    	$sCmd = str_replace('/','\\',$sCmd);
+        $sCmd = str_replace('/','\\',$sCmd);
 
-    	// Set wait to true if the execute must wait for the script to complete before continuing
-    	$wait = true;
+        // Set wait to true if the execute must wait for the script to complete before continuing
+        $wait = true;
         if (isset($aOptions['exec_wait']) && ($aOptions['exec_wait'] == 'false')) {
             $wait = false;
         }
 
-    	// Iterate through the various execute functions till one works.
-  		$WshShell = new COM('WScript.Shell');
+        // Iterate through the various execute functions till one works.
+        $WshShell = new COM('WScript.Shell');
         $res = $WshShell->Run($sCmd, 0, $wait);
 
         if ($res) { return $res; }
 
-    	$sCmd = "start /b \"kt\" $sCmd";
-    	$fp = popen($sCmd, 'r');
-    	fclose($fp);
+        $sCmd = "start /b \"kt\" $sCmd";
+        $fp = popen($sCmd, 'r');
+        fclose($fp);
 
-    	if ($wait) { sleep(1); }
+        if ($wait) { sleep(1); }
 
-    	return 1;
+        return 1;
     }
 
     public static function copyDirectory($sSrc, $sDst, $bMove = false)
@@ -770,9 +770,9 @@ class KTUtil {
         $script_name = $server['SCRIPT_NAME'];
 
         /*
-         * Until script_name is fully inside request_uri, strip off bits
-         * of script_name.
-         */
+        * Until script_name is fully inside request_uri, strip off bits
+        * of script_name.
+        */
 
         //print "Checking if $script_name is in $request_uri\n";
         while ($script_name && strpos($request_uri, $script_name) === false) {
@@ -811,37 +811,37 @@ class KTUtil {
     {
         // Check for the stack command before using the user defined command
         $result = KTUtil::checkForStackCommand($sConfigVar);
-    	if (!empty($result)) { return $result; }
+        if (!empty($result)) { return $result; }
 
-    	$oKTConfig =& KTConfig::getSingleton();
-    	$sCommand = $oKTConfig->get($sConfigVar, $sDefault);
-    	if (empty($sCommand)) { return false; }
+        $oKTConfig =& KTConfig::getSingleton();
+        $sCommand = $oKTConfig->get($sConfigVar, $sDefault);
+        if (empty($sCommand)) { return false; }
 
-    	if (file_exists($sCommand)) { return $sCommand; }
+        if (file_exists($sCommand)) { return $sCommand; }
 
-    	if (file_exists($sCommand . '.exe')) {
-    		return $sCommand . '.exe';
-    	}
+        if (file_exists($sCommand . '.exe')) {
+            return $sCommand . '.exe';
+        }
 
-    	$sExecSearchPath = $oKTConfig->get('KnowledgeTree/execSearchPath');
-    	$sExecSearchPath .= PATH_SEPARATOR . KT_DIR . '/../common/';
-    	$sExecSearchPath .= PATH_SEPARATOR . KT_DIR . '/../bin/xpdf/';
-    	$sExecSearchPath .= PATH_SEPARATOR . KT_DIR . '/../bin/antiword/';
-    	$sExecSearchPath .= PATH_SEPARATOR . KT_DIR . '/../bin/zip/';
-    	$sExecSearchPath .= PATH_SEPARATOR . KT_DIR . '/../bin/unzip/';
+        $sExecSearchPath = $oKTConfig->get('KnowledgeTree/execSearchPath');
+        $sExecSearchPath .= PATH_SEPARATOR . KT_DIR . '/../common/';
+        $sExecSearchPath .= PATH_SEPARATOR . KT_DIR . '/../bin/xpdf/';
+        $sExecSearchPath .= PATH_SEPARATOR . KT_DIR . '/../bin/antiword/';
+        $sExecSearchPath .= PATH_SEPARATOR . KT_DIR . '/../bin/zip/';
+        $sExecSearchPath .= PATH_SEPARATOR . KT_DIR . '/../bin/unzip/';
 
-    	$paths = split(PATH_SEPARATOR, $sExecSearchPath);
-    	foreach ($paths as $path) {
-    		if (file_exists($path . '/' . $sCommand)) {
-    			return $path . '/' . $sCommand;
-    		}
+        $paths = split(PATH_SEPARATOR, $sExecSearchPath);
+        foreach ($paths as $path) {
+            if (file_exists($path . '/' . $sCommand)) {
+                return $path . '/' . $sCommand;
+            }
 
-    		if (file_exists($path . '/' . $sCommand . '.exe')) {
-    			return $path . '/' . $sCommand . '.exe';
-    		}
-    	}
+            if (file_exists($path . '/' . $sCommand . '.exe')) {
+                return $path . '/' . $sCommand . '.exe';
+            }
+        }
 
-    	return false;
+        return false;
     }
 
     /**
@@ -849,99 +849,99 @@ class KTUtil {
      */
     function checkForStackCommand($configCommand)
     {
-    	$config = KTConfig::getSingleton();
-    	$stackPath = realpath(KT_DIR . '/..');
+        $config = KTConfig::getSingleton();
+        $stackPath = realpath(KT_DIR . '/..');
 
-    	switch ($configCommand) {
-    		case 'externalBinary/xls2csv':
-    			if (OS_WINDOWS) {
-					$script = $stackPath . '/bin/catdoc/xls2csv.exe';
-				}
-				else {
-					$script = $stackPath . '/common/bin/xls2csv';
-				}
-				break;
-    		case 'externalBinary/pdftotext':;
-    			if (OS_WINDOWS) {
-    				$script = $stackPath . '/bin/xpdf/pdftotext.exe';
-    			}
-    			else {
-    				$script = $stackPath . '/common/bin/pdftotext';
-    			}
-    			break;
-    		case 'externalBinary/catppt':
-    			if (OS_WINDOWS) {
-    				$script = $stackPath . '/bin/catdoc/catppt.exe';
-    			}
-    			else {
-    				$script = $stackPath . '/common/bin/catppt';
-    			}
-    			break;
-    		case 'externalBinary/pstotext':
-    			if (OS_WINDOWS) {
-    				$script = $stackPath . '/bin/pstotext/pstotext.exe';
-    			}
-    			else {
-    				$script = $stackPath . '/common/bin/pstotext';
-    			}
-    			break;
-    		case 'externalBinary/catdoc':
-    			if (OS_WINDOWS) {
-    				$script = $stackPath . '/bin/catdoc/catdoc.exe';
-    			}
-    			else {
-    				$script = $stackPath . '/common/bin/catdoc';
-    			}
-    			break;
-    		case 'externalBinary/antiword':
-    			if (OS_WINDOWS) {
-    				$script = $stackPath . '/bin/antiword/antiword.exe';
-    			}
-    			else {
-    				$script = $stackPath . '/common/bin/antiword';
-    			}
-    			break;
-    		case 'externalBinary/python':
-    			if (OS_WINDOWS) {
-					$script = $stackPath . '/openoffice/program/python.bat';
-				}
-				else {
-					$script = $stackPath . '/openoffice/program/python';
-				}
-				break;
-    		case 'externalBinary/java':
-    			if (OS_WINDOWS) {
-    				$script = $stackPath . '/java/jre/bin/java.exe';
-    			}
-    			else {
-    				$script = $stackPath . '/java/jre/bin/java';
-    			}
-    			break;
-    		case 'externalBinary/df':
-    			if (OS_WINDOWS) {
-    				$script = $stackPath . '/bin/gnuwin32/df.exe';
-    			}
-    			else {
-    				$script = $stackPath . '/common/bin/df';
-    			}
-    			break;
-    		case 'externalBinary/php':
-    			if (OS_WINDOWS) {
-    				$script = $stackPath . '/php/php.exe';
-    			}
-    			else {
-    				$script = $stackPath . '/php/bin/php';
-    			}
-    			break;
-    		default:
-    			return null;
-    	}
+        switch ($configCommand) {
+            case 'externalBinary/xls2csv':
+                if (OS_WINDOWS) {
+                    $script = $stackPath . '/bin/catdoc/xls2csv.exe';
+                }
+                else {
+                    $script = $stackPath . '/common/bin/xls2csv';
+                }
+                break;
+            case 'externalBinary/pdftotext':;
+            if (OS_WINDOWS) {
+                $script = $stackPath . '/bin/xpdf/pdftotext.exe';
+            }
+            else {
+                $script = $stackPath . '/common/bin/pdftotext';
+            }
+            break;
+            case 'externalBinary/catppt':
+                if (OS_WINDOWS) {
+                    $script = $stackPath . '/bin/catdoc/catppt.exe';
+                }
+                else {
+                    $script = $stackPath . '/common/bin/catppt';
+                }
+                break;
+            case 'externalBinary/pstotext':
+                if (OS_WINDOWS) {
+                    $script = $stackPath . '/bin/pstotext/pstotext.exe';
+                }
+                else {
+                    $script = $stackPath . '/common/bin/pstotext';
+                }
+                break;
+            case 'externalBinary/catdoc':
+                if (OS_WINDOWS) {
+                    $script = $stackPath . '/bin/catdoc/catdoc.exe';
+                }
+                else {
+                    $script = $stackPath . '/common/bin/catdoc';
+                }
+                break;
+            case 'externalBinary/antiword':
+                if (OS_WINDOWS) {
+                    $script = $stackPath . '/bin/antiword/antiword.exe';
+                }
+                else {
+                    $script = $stackPath . '/common/bin/antiword';
+                }
+                break;
+            case 'externalBinary/python':
+                if (OS_WINDOWS) {
+                    $script = $stackPath . '/openoffice/program/python.bat';
+                }
+                else {
+                    $script = $stackPath . '/openoffice/program/python';
+                }
+                break;
+            case 'externalBinary/java':
+                if (OS_WINDOWS) {
+                    $script = $stackPath . '/java/jre/bin/java.exe';
+                }
+                else {
+                    $script = $stackPath . '/java/jre/bin/java';
+                }
+                break;
+            case 'externalBinary/df':
+                if (OS_WINDOWS) {
+                    $script = $stackPath . '/bin/gnuwin32/df.exe';
+                }
+                else {
+                    $script = $stackPath . '/common/bin/df';
+                }
+                break;
+            case 'externalBinary/php':
+                if (OS_WINDOWS) {
+                    $script = $stackPath . '/php/php.exe';
+                }
+                else {
+                    $script = $stackPath . '/php/bin/php';
+                }
+                break;
+            default:
+                return null;
+        }
 
-    	if (is_file($script)) {
-			return $script;
-		}
+        if (is_file($script)) {
+            return $script;
+        }
 
-		return false;
+        return false;
     }
 
     // now accepts strings OR arrays!
@@ -994,14 +994,14 @@ class KTUtil {
 
     public static function addQueryStringSelf($qs)
     {
-		// REDIRECT_URL is different from HTTP_REFERER
-		// It picks up a .htaccess redirect
-		if (isset($_SERVER['REDIRECT_URL'])) {
-			$url = $_SERVER['REDIRECT_URL'];
-		}
-		else {
-			$url = $_SERVER['PHP_SELF'];
-		}
+        // REDIRECT_URL is different from HTTP_REFERER
+        // It picks up a .htaccess redirect
+        if (isset($_SERVER['REDIRECT_URL'])) {
+            $url = $_SERVER['REDIRECT_URL'];
+        }
+        else {
+            $url = $_SERVER['PHP_SELF'];
+        }
 
         return KTUtil::addQueryString($url, $qs);
     }
@@ -1086,8 +1086,8 @@ class KTUtil {
         }
 
         return array(
-            'words' => $words,
-            'phrases' => $phrases,
+        'words' => $words,
+        'phrases' => $phrases,
         );
     }
 
@@ -1130,8 +1130,8 @@ class KTUtil {
         // XXX make this use a cache layer?
         $sTable = KTUtil::getTableName('system_settings');
         $aQuery = array(
-            sprintf('SELECT value FROM %s WHERE name = ?', $sTable),
-            array($name),
+        sprintf('SELECT value FROM %s WHERE name = ?', $sTable),
+        array($name),
         );
 
         $res = DBUtil::getOneResultKey($aQuery, 'value');
@@ -1156,12 +1156,12 @@ class KTUtil {
         if (is_null($current_value)) {
             // insert
             $res = DBUtil::autoInsert(
-                $sTable,
-                array(
-                    'name' => $name,
-                    'value' => $value,
-                ),
-                null // opts
+            $sTable,
+            array(
+            'name' => $name,
+            'value' => $value,
+            ),
+            null // opts
             );
 
             if (PEAR::isError($res)) {
@@ -1174,8 +1174,8 @@ class KTUtil {
         else {
             // update
             $aQuery = array(
-                sprintf('UPDATE %s SET value = ? WHERE name = ?', $sTable),
-                array($value, $name),
+            sprintf('UPDATE %s SET value = ? WHERE name = ?', $sTable),
+            array($value, $name),
             );
 
             $res = DBUtil::runQuery($aQuery);
@@ -1365,95 +1365,95 @@ class KTUtil {
 
     public static function camelize($string)
     {
-    	$result = '';
-    	$parts = explode('_', $string);
-    	for($i = 0; $i < count($parts); ++$i) {
-    		$result .= ucfirst($parts[$i]);
-    	}
+        $result = '';
+        $parts = explode('_', $string);
+        for($i = 0; $i < count($parts); ++$i) {
+            $result .= ucfirst($parts[$i]);
+        }
 
-    	return $result;
+        return $result;
     }
 
     public static function documentIsQueued($document_id = null) {
-    	$sql = "SELECT document_id FROM `process_queue` WHERE document_id='{$document_id}'";
-    	$res = DBUtil::getOneResultKey($sql, 'document_id');
-    	$ret = PEAR::isError($res) ? false : (count($res) > 0 ? true : false);
+        $sql = "SELECT document_id FROM `process_queue` WHERE document_id='{$document_id}'";
+        $res = DBUtil::getOneResultKey($sql, 'document_id');
+        $ret = PEAR::isError($res) ? false : (count($res) > 0 ? true : false);
 
-    	return $ret;
+        return $ret;
     }
 
-	public static function buildUrl($file, $params = null)
-	{
-		$useCleanURL = true;
+    public static function buildUrl($file, $params = null)
+    {
+        $useCleanURL = true;
 
-		// Convert to Array
-		if ($params == null) { $params = array(); }
+        // Convert to Array
+        if ($params == null) { $params = array(); }
 
-		if ($useCleanURL) {
-			return KTUtil::buildCleanUrl($file, $params);
-		}
-		else {
-			return KTUtil::buildNormalUrl($file, $params);
-		}
-	}
+        if ($useCleanURL) {
+            return KTUtil::buildCleanUrl($file, $params);
+        }
+        else {
+            return KTUtil::buildNormalUrl($file, $params);
+        }
+    }
 
-	private static function buildNormalUrl($file, $params)
-	{
-		if (count($params) == 0) {
-			return $file;
-		}
-		else {
-			$file .= '?';
-			$sep = '';
+    private static function buildNormalUrl($file, $params)
+    {
+        if (count($params) == 0) {
+            return $file;
+        }
+        else {
+            $file .= '?';
+            $sep = '';
 
-			foreach ($params as $param => $name) {
-				$file .= $sep . $param . '=' . $name;
-				$sep = '&';
-			}
+            foreach ($params as $param => $name) {
+                $file .= $sep . $param . '=' . $name;
+                $sep = '&';
+            }
 
-			return $file;
-		}
-	}
+            return $file;
+        }
+    }
 
-	private static function buildCleanUrl($file, $params)
-	{
-		switch($file) {
-			case '/view.php':
-			case 'view.php':
-				$config = KTConfig::getSingleton();
-				$rootUrl = $config->get('KnowledgeTree/rootUrl');
-				$url = $rootUrl . '/01' . base_convert($params['fDocumentId'], 10, 36);
+    private static function buildCleanUrl($file, $params)
+    {
+        switch($file) {
+            case '/view.php':
+            case 'view.php':
+                $config = KTConfig::getSingleton();
+                $rootUrl = $config->get('KnowledgeTree/rootUrl');
+                $url = $rootUrl . '/01' . base_convert($params['fDocumentId'], 10, 36);
 
-				// Remove parameter
-				unset($params['fDocumentId']);
-				// Rebuild with additional parameters
-				return KTUtil::buildNormalUrl($url, $params);
-				break;
-			case '/browse.php':
-			case 'browse.php':
-				$config = KTConfig::getSingleton();
-				$rootUrl = $config->get('KnowledgeTree/rootUrl');
+                // Remove parameter
+                unset($params['fDocumentId']);
+                // Rebuild with additional parameters
+                return KTUtil::buildNormalUrl($url, $params);
+                break;
+            case '/browse.php':
+            case 'browse.php':
+                $config = KTConfig::getSingleton();
+                $rootUrl = $config->get('KnowledgeTree/rootUrl');
 
-				if (!isset($params['fFolderId'])) { $params['fFolderId'] = 1; }
+                if (!isset($params['fFolderId'])) { $params['fFolderId'] = 1; }
 
-				$url = $rootUrl . '/00' . base_convert($params['fFolderId'], 10, 36);
+                $url = $rootUrl . '/00' . base_convert($params['fFolderId'], 10, 36);
 
-				// Remove parameter
-				unset($params['fFolderId']);
-				// Rebuild with additional parameters
-				return KTUtil::buildNormalUrl($url, $params);
-				break;
-			default:
-				return KTUtil::buildNormalUrl($file, $params);
-		}
-	}
+                // Remove parameter
+                unset($params['fFolderId']);
+                // Rebuild with additional parameters
+                return KTUtil::buildNormalUrl($url, $params);
+                break;
+            default:
+                return KTUtil::buildNormalUrl($file, $params);
+        }
+    }
 
-	public static function decodeId($id)
-	{
-	    return base_convert($id, 36, 10);
-	}
+    public static function decodeId($id)
+    {
+        return base_convert($id, 36, 10);
+    }
 
-	/**
+    /**
 	 * Encode a string using a key
 	 * http://www.myphpscripts.net/tutorial.php?id=9
 	 *
@@ -1524,30 +1524,84 @@ class KTUtil {
         error_log($msg, 3, $logFile);
     }
 
-    /**
-     * Convert any non-UTF-8 encoding to UTF-8
-     *
-     * Thanks to powtac@gmx.de and php.net for this solution.
-     *
-     * @param string $content
-     * @return string
-     */
-    public static function convertEncoding($content)
+    public static function checkEncoding($input)
     {
-        if (!mb_check_encoding($content, 'UTF-8')
-            || !($content === mb_convert_encoding(mb_convert_encoding($content, 'UTF-32', 'UTF-8' ), 'UTF-8', 'UTF-32'))) {
-            $content = mb_convert_encoding($content, 'UTF-8');
-
-            // not actually going to run this check as all it would be for is logging.  Reinstate if we decide to log.
-            /*if (mb_check_encoding($content, 'UTF-8')) {
-                // log('Converted to UTF-8');
-            }
-            else {
-                // log('Could not converted to UTF-8');
-            }*/
+        if (mb_check_encoding($input,'UTF-8')) {
+            return $input;
         }
 
-        return $content;
+        $byteMap = self::initByteMap();
+        $asciiChar = '[\x00-\x7F]';
+        $contByte = '[\x80-\xBF]';
+        $utf8_2 = '[\xC0-\xDF]' . $contByte;
+        $utf8_3 = '[\xE0-\xEF]' . $contByte . '{2}';
+        $utf8_4 = '[\xF0-\xF7]' . $contByte . '{3}';
+        $utf8_5 = '[\xF8-\xFB]' . $contByte . '{4}';
+        $nibbleGoodChars = "@^($asciiChar+|$utf8_2|$utf8_3|$utf8_4|$utf8_5)(.*)$@s";
+
+        $output = '';
+        $char = '';
+        $rest = '';
+        while ((strlen($input)) > 0) {
+            if (1 == preg_match($nibbleGoodChars, $input, $match)) {
+                $char = $match[1];
+                $rest = $match[2];
+                $output .= $char;
+            }
+            else if (1 == preg_match('@^(.)(.*)$@s', $input, $match)) {
+                $char = $match[1];
+                $rest = $match[2];
+                $output .= $byteMap[$char];
+            }
+
+            $input = $rest;
+        }
+
+        return $output;
+    }
+
+    private static function initByteMap()
+    {
+        $byteMap = array();
+        for ($x = 128; $x < 256; ++$x) {
+            $byteMap[chr($x)] = utf8_encode(chr($x));
+        }
+
+        $cp1252Map = array(
+            "\x80" => "\xE2\x82\xAC",  // EURO SIGN
+            "\x82" => "\xE2\x80\x9A",  // SINGLE LOW-9 QUOTATION MARK
+            "\x83" => "\xC6\x92",      // LATIN SMALL LETTER F WITH HOOK
+            "\x84" => "\xE2\x80\x9E",  // DOUBLE LOW-9 QUOTATION MARK
+            "\x85" => "\xE2\x80\xA6",  // HORIZONTAL ELLIPSIS
+            "\x86" => "\xE2\x80\xA0",  // DAGGER
+            "\x87" => "\xE2\x80\xA1",  // DOUBLE DAGGER
+            "\x88" => "\xCB\x86",      // MODIFIER LETTER CIRCUMFLEX ACCENT
+            "\x89" => "\xE2\x80\xB0",  // PER MILLE SIGN
+            "\x8A" => "\xC5\xA0",      // LATIN CAPITAL LETTER S WITH CARON
+            "\x8B" => "\xE2\x80\xB9",  // SINGLE LEFT-POINTING ANGLE QUOTATION MARK
+            "\x8C" => "\xC5\x92",      // LATIN CAPITAL LIGATURE OE
+            "\x8E" => "\xC5\xBD",      // LATIN CAPITAL LETTER Z WITH CARON
+            "\x91" => "\xE2\x80\x98",  // LEFT SINGLE QUOTATION MARK
+            "\x92" => "\xE2\x80\x99",  // RIGHT SINGLE QUOTATION MARK
+            "\x93" => "\xE2\x80\x9C",  // LEFT DOUBLE QUOTATION MARK
+            "\x94" => "\xE2\x80\x9D",  // RIGHT DOUBLE QUOTATION MARK
+            "\x95" => "\xE2\x80\xA2",  // BULLET
+            "\x96" => "\xE2\x80\x93",  // EN DASH
+            "\x97" => "\xE2\x80\x94",  // EM DASH
+            "\x98" => "\xCB\x9C",      // SMALL TILDE
+            "\x99" => "\xE2\x84\xA2",  // TRADE MARK SIGN
+            "\x9A" => "\xC5\xA1",      // LATIN SMALL LETTER S WITH CARON
+            "\x9B" => "\xE2\x80\xBA",  // SINGLE RIGHT-POINTING ANGLE QUOTATION MARK
+            "\x9C" => "\xC5\x93",      // LATIN SMALL LIGATURE OE
+            "\x9E" => "\xC5\xBE",      // LATIN SMALL LETTER Z WITH CARON
+            "\x9F" => "\xC5\xB8"       // LATIN CAPITAL LETTER Y WITH DIAERESIS
+        );
+
+        foreach($cp1252Map as $k => $v) {
+            $byteMap[$k] = $v;
+        }
+
+        return $byteMap;
     }
 
 }

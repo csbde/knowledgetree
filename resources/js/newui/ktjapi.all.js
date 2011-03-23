@@ -4,488 +4,506 @@ VER: 1.2
 **/
 
 /**
- * ktjapi controllers
- * -----------------
- *
- */
+* ktjapi controllers
+* -----------------
+*
+*/
 
 /**
- * ktjapi data
- * -----------------
- * server.url					the kt server url
- */
+* ktjapi data
+* -----------------
+* server.url					the kt server url
+*/
 
 /**
- * ktjapi handled events
- * ---------------------
- * ktjapi.auth.login				log the user in and get the current session
- * 								[user,pass, session]
- *
- * ktjapi.auth.logout			log the user out
- * 								[]
- */
+* ktjapi handled events
+* ---------------------
+* ktjapi.auth.login				log the user in and get the current session
+* 								[user,pass, session]
+*
+* ktjapi.auth.logout			log the user out
+* 								[]
+*/
 
- /**
-  * ktjapi thrown events [! at the end of an event denotes events that brings ktjapi to a halt]
-  * --------------------
-  * ktjapi_event:server_not_found!		The server was not found
-  * 									[url:'the attempted url', errorDetail:'any detail about the error encountered']
-  *
-  * ktjapi_event:authentication_problem	There was an authentication problem
-  * ktjapi_event:authentication_failed!	There was a permanent authentication problem
-  * ktjapi_event:comms_started			The ajax module is activated
-  * ktjapi_event:comms_ended				The ajax module is shut down
-  *
-  */
+/**
+* ktjapi thrown events [! at the end of an event denotes events that brings ktjapi to a halt]
+* --------------------
+* ktjapi_event:server_not_found!		The server was not found
+* 									[url:'the attempted url', errorDetail:'any detail about the error encountered']
+*
+* ktjapi_event:authentication_problem	There was an authentication problem
+* ktjapi_event:authentication_failed!	There was a permanent authentication problem
+* ktjapi_event:comms_started			The ajax module is activated
+* ktjapi_event:comms_ended				The ajax module is shut down
+*
+*/
 ktjapi = new function() {
 
-	this._cache = {};
-	this._tokens = {};
-	this.debug = true;
-	this.log = false;
+    this._cache = {};
+    this._tokens = {};
+    this.debug = true;
+    this.log = false;
 
-	/**
-	 * Function for setting up the spinner control.
-	 */
-	this.setupSpinner = function() {
-		if (this.cfg.get('spinner', false) !== false) {
-		    if (!this.cfg.get('spinner.setup', false)) {
-		        this.hideSpinner();
-		        this.cfg.set('spinner.setup', true);
-		    }
-		}
-	}
+    /**
+    * Function for setting up the spinner control.
+    */
+    this.setupSpinner = function() {
+        if (this.cfg.get('spinner', false) !== false) {
+            if (!this.cfg.get('spinner.setup', false)) {
+                this.hideSpinner();
+                this.cfg.set('spinner.setup', true);
+            }
+        }
+    }
 
+    /**
+    * Function for showing the registered spinner image when the system is busy with an ajax call
+    */
+    this.showSpinner = function() {
+        var spinner = document.getElementById(this.cfg.get('spinner'));
+        try {
+            if (typeof(spinner.style) != 'undefined') {
+                spinner.style.display = '';
+            }
+        } catch(e) {}
+    };
 
-	/**
-	 * Function for showing the registered spinner image when the system is busy with an ajax call
-	 */
-	this.showSpinner = function() {
-		var spinner = document.getElementById(this.cfg.get('spinner'));
-		try {
-			if (typeof(spinner.style) != 'undefined') {
-				spinner.style.display = '';
-			}
-		} catch(e) {}
-	};
+    /**
+    * Function for hiding the registered spinner image when the system have completed an ajax call
+    */
+    this.hideSpinner = function() {
+        var spinner = document.getElementById(this.cfg.get('spinner'));
+        try {
+            if (typeof(spinner.style) != 'undefined') {
+                spinner.style.display = 'none';
+            }
+        } catch(e) {}
+    };
 
-	/**
-	 * Function for hiding the registered spinner image when the system have completed an ajax call
-	 */
-	this.hideSpinner = function() {
-		var spinner = document.getElementById(this.cfg.get('spinner'));
-		try {
-			if (typeof(spinner.style) != 'undefined') {
-				spinner.style.display = 'none';
-			}
-		} catch(e) {}
-	};
+    /**
+    * Constructing the object with defaults
+    */
+    this.init = function() {
+        var settings = {};
+        settings.url = "webservice/clienttools/webcomms.php";
+        settings.timeout = 5000;
+        if (settings.url !== undefined) {
+            this.cfg.set('server.url', settings.url);
+        }
+        //		if (settings.session !== undefined) { this.cfg.set('server.session', settings.session); }
+        //		if (settings.spinner !== undefined) { this.cfg.set('spinner', settings.spinner); }
 
-	/**
-	 * Constructing the object with defaults
-	 */
-	this.init = function() {
-		var settings = {};
-		settings.url = "webservice/clienttools/webcomms.php";
-		settings.timeout = 5000;
-		if (settings.url !== undefined) {
-		    this.cfg.set('server.url', settings.url);
-		}
-//		if (settings.session !== undefined) { this.cfg.set('server.session', settings.session); }
-//		if (settings.spinner !== undefined) { this.cfg.set('spinner', settings.spinner); }
+        //		this.setupSpinner();
 
-//		this.setupSpinner();
+        this.cfg.set('server.timeout', (settings.timeout !== undefined) ? settings.timeout : 2000);
+        this.cfg.set('errorEventName', (settings.errorEventName !== undefined) ? settings.errorEventName : 'AJAX.ERROR');
+        this.cfg.set('JSONerrorEventName', (settings.errorEventName !== undefined) ? settings.errorEventName : 'AJAX_JSON.ERROR');
+    };
 
-		this.cfg.set('server.timeout', (settings.timeout !== undefined) ? settings.timeout : 2000);
-		this.cfg.set('errorEventName', (settings.errorEventName !== undefined) ? settings.errorEventName : 'AJAX.ERROR');
-		this.cfg.set('JSONerrorEventName', (settings.errorEventName !== undefined) ? settings.errorEventName : 'AJAX_JSON.ERROR');
-	};
+    this.error = function(xhr, text, error) {
+        var data = {xhr:xhr, text:text, error:error};
+        ktjapi.evt.trigger(ktjapi.cfg.get('errorEventName'), data);
+    };
 
-	this.error = function(xhr, text, error) {
-		var data = {xhr:xhr, text:text, error:error};
-		ktjapi.evt.trigger(ktjapi.cfg.get('errorEventName'), data);
-	};
+    this.getDataSource = function(func, params, isPost, fullResults) {
+        var url = this.getDataSourceDetail(func, params, isPost, fullResults);
+        return url.url;
+    };
 
-	this.getDataSource = function(func, params, isPost, fullResults) {
-		var url = this.getDataSourceDetail(func, params, isPost, fullResults);
-		return url.url;
-	};
+    this.getDataSourceDetail = function(func, params, isPost, fullResults) {
+        var fullResults = fullResults ? true : false;
+        var isPost = isPost ? true : false;				//force boolean
+        var isPost = false;							//force GET requests
+        var afunc = ('' + func).split(/\./);
+        var reqObj = this.createPackage(afunc[0], afunc[1], params);
 
-	this.getDataSourceDetail = function(func, params, isPost, fullResults) {
-		var fullResults = fullResults ? true : false;
-		var isPost = isPost ? true : false;				//force boolean
-		var isPost = false;							//force GET requests
-		var afunc = ('' + func).split(/\./);
-		var reqObj = this.createPackage(afunc[0], afunc[1], params);
+        var url = this.createURL(reqObj, isPost, !fullResults);
 
-		var url = this.createURL(reqObj, isPost, !fullResults);
+        return url;
+    };
 
-		return url;
-	};
+    this.retrieve = function(func, params, cacheTimeout, customTimeout) {
+        var results;
+        var success = function(data) {
+            results = data;
+        };
 
-	this.retrieve = function(func, params, cacheTimeout) {
-		var results;
-		var success = function(data) {
-				results = data;
-			};
+        this.callMethod(func, params, success, true, function() {}, cacheTimeout, customTimeout);
+        return results;
+    };
 
-		this.callMethod(func, params, success, true, function() {}, cacheTimeout);
-		return results;
-	};
+    this.callMethod = function(func, params, callback, sync, errorFunct, cacheTimeout, customTimeout) {
+        var afunc = ('' + func).split(/\./);
+        var reqObj = this.createPackage(afunc[0], afunc[1], params);
 
-	this.callMethod = function(func, params,callback, sync, errorFunct, cacheTimeout, customTimeout) {
-		var afunc = ('' + func).split(/\./);
-		var reqObj = this.createPackage(afunc[0], afunc[1], params);
+        // Make sure cacheTimeout is dealt with
+        if (typeof(cacheTimeout) !== 'undefined') {
+            cacheTimeout += 0; // Cast it to a number
+            if (cacheTimeout > 0) {
+                var date = new Date();
+                reqObj.request.expires = date.getTime() + (cacheTimeout * 1000);
+            }
+        };
 
-		//Make sure cacheTimeout is dealt with
-		if (typeof(cacheTimeout) !== 'undefined') {
-			cacheTimeout += 0; //Cast it to a number
-			if (cacheTimeout > 0) {
-				var date = new Date();
-				reqObj.request.expires = date.getTime()+(cacheTimeout*1000);
+        // Pick up Cache when relevant and Exists
+        if (this.cacheExists(this.getCacheId(reqObj.request))) {
+            var cache = this.getCache(reqObj.request);
+            if (cache != null) {
+                if (typeof(callback == 'function')) { callback(cache); }
+                return;
+            }
+        }
 
-			}
-		};
+        // Definition of the success function
+        // TODO: Extract from this location and point to an external function?
+        var success = (function(callback) {
+            return function(ds, st, xhr) {
+                var data;
+                xhr = xhr.responseText;
+                try {
+                    var response = xhr.split('|');
+                    for (var idx = 0; idx < response.length; ++idx) {
+                        data = ktjapi._lib.String.json.decode(response[idx]);
+                        if (data.errors.hadErrors > 0) {
+                            for (var i = 0; i < data.errors.errors.length; i++) {}
+                        } else {
+                            ktjapi.setCache(data.request.request, data);
+                        }
+                        if (typeof(callback) == 'function') { callback(data); }
+                    }
+                } catch(e) {
+                    data = {auth:{}, data:{}, status:{random_token:'', session_id:''}, request:{}, raw:xhr, errors:{hadErrors:1, errors:[{message:'JSON From Server Incorrect', type:''}]}};
+                    ktjapi.evt.trigger(ktjapi.cfg.get('JSONerrorEventName'), data);
+                    //return;
+                }
+            };
+        } (callback));
 
-		//Pick up Cache when relevant and Exists
-		if (this.cacheExists(this.getCacheId(reqObj.request))) {
-			var cache = this.getCache(reqObj.request);
-			if (cache != null) {
-				if (typeof(callback == 'function')) { callback(cache); }
-				return;
-			}
-		}
+        // Definition of the error function
+        var errorFunct = typeof(errorFunct) == 'function' ? errorFunct : function() {};
 
-		//Definition of the success function
-		//TODO: Extract from this location and point to an external function?
-		var success = (function(callback) {
-			return function(ds,st,xhr) {
-				xhr = xhr.responseText;
-				try {
-					var data = ktjapi._lib.String.json.decode(xhr);
-				} catch(e) {
-					data = {auth:{}, data:{}, status:{random_token:'', session_id:''}, request:{}, raw:xhr, errors:{hadErrors:1, errors:[{message:'JSON From Server Incorrect', type:''}]}};
-					ktjapi.evt.trigger(ktjapi.cfg.get('JSONerrorEventName'), data);
-					//return;
-				}
-//				ktjapi.cfg.set('security.token', data.status.random_token);
-//				ktjapi.cfg.set('server.session', data.status.session_id);
-				if (data.errors.hadErrors > 0) {
-					for (var i = 0; i < data.errors.errors.length; i++) {}
-				} else {
-					ktjapi.setCache(data.request.request, data);
-				}
-				if (typeof(callback) == 'function') { callback(data); }
-			};
-		} (callback));
+        // URL Generation & performing request
+        // TODO: Externalize this
 
-		//Definition of the error function
-		var errorFunct = typeof(errorFunct) == 'function' ? errorFunct : function() {};
+        var uri = this.createURL(reqObj, false, false);
+        this.ajax.getRequest(uri.url, success, errorFunct, sync ? true : false, customTimeout);
 
-		//URL Generation & performing request
-		//TODO: Externalize this
+        var evt = 'ktjapi_event:' + func;
+        return uri.url;
+    };
 
-		var uri = this.createURL(reqObj, false, false);
+    this.handleData = function(data, callback) {
+        // ktjapi.cfg.set('security.token', data.status.random_token);
+        // ktjapi.cfg.set('server.session', data.status.session_id);
+        if (data.errors.hadErrors > 0) {
+            for (var i = 0; i < data.errors.errors.length; i++) {}
+        } else {
+            ktjapi.setCache(data.request.request, data);
+        }
 
-		this.ajax.getRequest(uri.url, success, errorFunct, sync ? true : false, customTimeout);
+        if (typeof(callback) == 'function') { callback(data); }
+    }
 
-		var evt = 'ktjapi_event:' + func;
-		return uri.url;
-	};
+    /**
+    * Create the request object
+    */
+    this.createPackage = function(service, method, parameters) {
+        var token = this.getNewToken();
+        var reqObj = {
+        'auth'		:{
+        'debug'		:this.debug,
+        'log'		:this.log
+        },
+        'request'	:{
+        'service'	:service,
+        'function'	:method,
+        'parameters':this.ensureObject(parameters),
+        'expires'	:0
+        }
+        };
 
-	/**
-	 * Create the request object
-	 */
-	this.createPackage = function(service, method, parameters) {
-		var token = this.getNewToken();
-		var reqObj = {
-				'auth'		:{
-					'debug'		:this.debug,
-					'log'		:this.log
-				},
-				'request'	:{
-					'service'	:service,
-					'function'	:method,
-					'parameters':this.ensureObject(parameters),
-					'expires'	:0
-				}
-			};
-		return reqObj;
-	};
+        return reqObj;
+    };
 
-	/**
-	 * Ensure that whatever you send in, will come out as object containing only other objects and string properties
-	 */
-	this.ensureObject = function(elem) {
-		var obj = {};
-		if (typeof(elem) == 'object') {
-			for (var prop in elem) {
-				if (elem.hasOwnProperty(prop) && typeof(elem[prop]) !== 'function') {
-					obj[prop] = this.ensureObject(elem[prop]);
-				}
-			}
-		} else {
-			obj = elem + '';
-		}
-		return obj;
-	};
+    /**
+    * Ensure that whatever you send in, will come out as object containing only other objects and string properties
+    */
+    this.ensureObject = function(elem) {
+        var obj = {};
+        if (typeof(elem) == 'object') {
+            for (var prop in elem) {
+                if (elem.hasOwnProperty(prop) && typeof(elem[prop]) !== 'function') {
+                    obj[prop] = this.ensureObject(elem[prop]);
+                }
+            }
+        } else {
+            obj = elem + '';
+        }
 
-	/**
-	 * Create the url based on
-	 *  - reqObject: the container
-	 *  - isPost: boolean for whether to use post or get
-	 *  - datasource: boolean. When set to true, the response will be the result only, and will directly be accessible via the url
-	 */
-	this.createURL = function(reqObj, isPost, datasource) {
-		var isPost = isPost ? true : false;				//force Boolean
-		var datasource = datasource ? true : false;		//force Boolean
-		var params = {};
-		var data = null;
+        return obj;
+    };
 
-		//This is just for visibility: allows one to easily identify the call based on the url
-//		params.f = reqObj.request.service+'.'+reqObj.request['function'];
+    /**
+    * Create the url based on
+    *  - reqObject: the container
+    *  - isPost: boolean for whether to use post or get
+    *  - datasource: boolean. When set to true, the response will be the result only, and will directly be accessible via the url
+    */
+    this.createURL = function(reqObj, isPost, datasource) {
+        var isPost = isPost ? true : false;				//force Boolean
+        var datasource = datasource ? true : false;		//force Boolean
+        var params = {};
+        var data = null;
 
-		//Mark the URL as a datasource (send back only the data, no other metadata)
-		if (datasource)params.datasource = 1;
-		params.request = ktjapi._lib.String.json.encode(reqObj);
+        //This is just for visibility: allows one to easily identify the call based on the url
+        //		params.f = reqObj.request.service+'.'+reqObj.request['function'];
 
-		//container for the different parts of the url
-		var urlParts = [];
+        //Mark the URL as a datasource (send back only the data, no other metadata)
+        if (datasource) { params.datasource = 1; }
+        params.request = ktjapi._lib.String.json.encode(reqObj);
 
-		//populate the different parts of the url into the container
-		for (var varName in params) {
-			urlParts[urlParts.length] = varName + '=' + params[varName];
-		}
+        //container for the different parts of the url
+        var urlParts = [];
 
-		//construct the url differently depending on the request method
-		if (isPost) {
-			var url = this.cfg.get('server.url');
-			var data = urlParts.join('&');
-		} else {
-//			var url = this.cfg.get('server.url') + '?srv&' + urlParts.join('&');
-			var url = this.cfg.get('server.url') + '?' + urlParts.join('&');
-		}
+        //populate the different parts of the url into the container
+        for (var varName in params) {
+            urlParts[urlParts.length] = varName + '=' + params[varName];
+        }
 
-		return {url:url, data:data};
-	};
+        //construct the url differently depending on the request method
+        if (isPost) {
+            var url = this.cfg.get('server.url');
+            var data = urlParts.join('&');
+        } else {
+            //			var url = this.cfg.get('server.url') + '?srv&' + urlParts.join('&');
+            var url = this.cfg.get('server.url') + '?' + urlParts.join('&');
+        }
 
-	//TODO: Remove
-	/**
-	 * getNewToken returns a new token to salt the password / digestToken with
-	 * @return string
-	 */
-	this.getNewToken = function() {
-		//Make sure we only use the token once
-		do {
-			var token = ktjapi._lib.String.md5(Math.random() + '-' + Math.random());
-		} while (typeof(this._tokens[token]) !== 'undefined');
+        return {url:url, data:data};
+    };
 
-		this._tokens[token] = true;
+    //TODO: Remove
+    /**
+    * getNewToken returns a new token to salt the password / digestToken with
+    * @return string
+    */
+    this.getNewToken = function() {
+        //Make sure we only use the token once
+        do {
+            var token = ktjapi._lib.String.md5(Math.random() + '-' + Math.random());
+        } while (typeof(this._tokens[token]) !== 'undefined');
 
-		return token;
-	};
+        this._tokens[token] = true;
 
-	/**
-	 * Generate a new cache id for storing request results locally with a cacheTimeout
-	 */
-	this.getCacheId = function(reqParams) {
-		reqParams = ktjapi._lib.String.json.decode(ktjapi._lib.String.json.encode(reqParams));
-		var cObj = {
-			service			:reqParams.service,
-			'function'		:reqParams['function'],
-			parameters		:reqParams.parameters
-		};
-		reqid = ktjapi._lib.String.md5(ktjapi._lib.String.json.encode(cObj));
-		return reqid;
-	};
+        return token;
+    };
 
-	/**
-	 * Test whether cache exists for a particular query
-	 */
-	this.cacheExists = function(cacheId) {
-		return(typeof(this._cache[cacheId]) !== 'undefined');
-	};
+    /**
+    * Generate a new cache id for storing request results locally with a cacheTimeout
+    */
+    this.getCacheId = function(reqParams) {
+        reqParams = ktjapi._lib.String.json.decode(ktjapi._lib.String.json.encode(reqParams));
+        var cObj = {
+            service			:reqParams.service,
+            'function'		:reqParams['function'],
+            parameters		:reqParams.parameters
+        };
 
-	/**
-	 * Set the cache entry for a particular query
-	 */
-	this.setCache = function(reqParams, cacheObj) {
-		if (reqParams.expires>0) {
-			var rid = this.getCacheId(reqParams);
-			this._cache[rid] = {
-				data:cacheObj,
-				expires: reqParams.expires
-			};
-		}
-	};
+        reqid = ktjapi._lib.String.md5(ktjapi._lib.String.json.encode(cObj));
 
-	/**
-	 * Get the cache entry for a particular query
-	 */
-	this.getCache = function(reqParams) {
-		if (reqParams.expires > 0) {
-			var rid = this.getCacheId(reqParams);
-			if (this.cacheExists(rid)) {
-				var date = new Date();
-				var curTime = date.getTime();
-				if (curTime < this._cache[rid].expires) {
-					var data = this._cache[rid].data;
-					return data;
-				} else {
-					this._cache[rid] = undefined;
-					return null;
-				}
-			}
-		}
-	};
+        return reqid;
+    };
+
+    /**
+    * Test whether cache exists for a particular query
+    */
+    this.cacheExists = function(cacheId) {
+        return(typeof(this._cache[cacheId]) !== 'undefined');
+    };
+
+    /**
+    * Set the cache entry for a particular query
+    */
+    this.setCache = function(reqParams, cacheObj) {
+        if (reqParams.expires > 0) {
+            var rid = this.getCacheId(reqParams);
+            this._cache[rid] = {
+                data:cacheObj,
+                expires: reqParams.expires
+            };
+        }
+    };
+
+    /**
+    * Get the cache entry for a particular query
+    */
+    this.getCache = function(reqParams) {
+        if (reqParams.expires > 0) {
+            var rid = this.getCacheId(reqParams);
+            if (this.cacheExists(rid)) {
+                var date = new Date();
+                var curTime = date.getTime();
+                if (curTime < this._cache[rid].expires) {
+                    var data = this._cache[rid].data;
+                    return data;
+                } else {
+                    this._cache[rid] = undefined;
+                    return null;
+                }
+            }
+        }
+    };
 
 };
 
 /**
- * The configuration object - storing and fetching configuration options
- */
+* The configuration object - storing and fetching configuration options
+*/
 ktjapi.cfg = new function() {
 
-	this._data = {};
+    this._data = {};
 
-	this.get = function(name) {
-		return this._data[name];
-	};
+    this.get = function(name) {
+        return this._data[name];
+    };
 
-	this.set = function(name, value) {
-		this._data[name] = value;
-	};
+    this.set = function(name, value) {
+        this._data[name] = value;
+    };
 
-	this.remove = function(name) {
-		delete(this._data[name]);
-	};
+    this.remove = function(name) {
+        delete(this._data[name]);
+    };
 
-	this.initialize = function(settings) {
-		if (kt.lib.type(settings) == 'object') {
-			for (var name in settings) {
-				this.set(name, settings[name]);
-			};
-		};
-	};
+    this.initialize = function(settings) {
+        if (kt.lib.type(settings) == 'object') {
+            for (var name in settings) {
+                this.set(name, settings[name]);
+            };
+        };
+    };
 
-	this.clear = function() {
-		this._data = {};
-	};
+    this.clear = function() {
+        this._data = {};
+    };
 
 };
 
 /**
- * Function Library
- */
+* Function Library
+*/
 ktjapi._lib = new function() {
 
-	this._data = {};
-	this.getDefault = function() {
-		for (var i = 0; i<arguments.length; i++) {
-			if (typeof(arguments[i]) != 'undefined') {
-			    if ((new String(arguments[i])) != '') { return arguments[i]; }
-			}
-		}
-	};
+    this._data = {};
+    this.getDefault = function() {
+        for (var i = 0; i<arguments.length; i++) {
+            if (typeof(arguments[i]) != 'undefined') {
+                if ((new String(arguments[i])) != '') { return arguments[i]; }
+            }
+        }
+    };
 
-	this.isset = function(variable) {
-		return (kt.lib.type(variable) != undefined);
-	};
+    this.isset = function(variable) {
+        return (kt.lib.type(variable) != undefined);
+    };
 
-	this.is_empty = function(variable) {
-		if (!kt.lib.isset(variable)) { return false; }
-		var tVar = '' + variable;
-		return (tVar != '');
-	};
+    this.is_empty = function(variable) {
+        if (!kt.lib.isset(variable)) { return false; }
+        var tVar = '' + variable;
+        return (tVar != '');
+    };
 
-	this.rand = function(min, max) {
-		min = new Number(this.getDefault(min, 0));
-		max = new Number(this.getDefault(max, 100000000));
-		var scope = max - min;
-		var rnd = Math.ceil((Math.random() * scope) + min);
-		return rnd;
-	};
+    this.rand = function(min, max) {
+        min = new Number(this.getDefault(min, 0));
+        max = new Number(this.getDefault(max, 100000000));
+        var scope = max - min;
+        var rnd = Math.ceil((Math.random() * scope) + min);
+        return rnd;
+    };
 
-	this.type = function(variable) {
-		return typeof(variable);
-	};
+    this.type = function(variable) {
+        return typeof(variable);
+    };
 
-		/**
-	 * Generates a Random ID.
-	 *
-	 * @method
-	 * @param {String} prefix		The prefix to the id. Defaults to '_' if not supplied
-	 * @param {Number} size			The total length of the returned id. Default defined in aframe._cfg.uniqueIdentfierSize.
-	 * @returns {String}			A string consisting of random characters defined in aframe._cfg.randomIdAllowedChars
-	 */
-	this.randomId = function(prefix, size) {
-		var id = ktjapi._lib.getDefault(prefix, '_');
-		size = ktjapi._lib.getDefault(size, 16);
-		var rep = size - ('' + id).length;
-		var chars = new String('abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ01234567890_$');
-		var rndlen = chars.length;
-		//There must be space for at least 5 unique characters after the prefix
-		if (rep <= 5) {
-			//aframe.events.trigger('SYSTEM.ERROR',aframe.events.createErrorEvent(this, 'SYSTEM ERROR', 'Configuration Error:aframe', 'prefix and size parameters allow too few unique id\'s.'));
-		} else {
-			for (var i = 0; i < rep; i++) {
-				var pos = ktjapi._lib.rand(0, rndlen);
-				var char_ = chars[pos-1];
-				id = id + char_;
-			}
-		}
-		return id;
-	};
+    /**
+    * Generates a Random ID.
+    *
+    * @method
+    * @param {String} prefix		The prefix to the id. Defaults to '_' if not supplied
+    * @param {Number} size			The total length of the returned id. Default defined in aframe._cfg.uniqueIdentfierSize.
+    * @returns {String}			A string consisting of random characters defined in aframe._cfg.randomIdAllowedChars
+    */
+    this.randomId = function(prefix, size) {
+        var id = ktjapi._lib.getDefault(prefix, '_');
+        size = ktjapi._lib.getDefault(size, 16);
+        var rep = size - ('' + id).length;
+        var chars = new String('abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ01234567890_$');
+        var rndlen = chars.length;
+        //There must be space for at least 5 unique characters after the prefix
+        if (rep <= 5) {
+            //aframe.events.trigger('SYSTEM.ERROR',aframe.events.createErrorEvent(this, 'SYSTEM ERROR', 'Configuration Error:aframe', 'prefix and size parameters allow too few unique id\'s.'));
+        } else {
+            for (var i = 0; i < rep; i++) {
+                var pos = ktjapi._lib.rand(0, rndlen);
+                var char_ = chars[pos-1];
+                id = id + char_;
+            }
+        }
 
-	/**
-	 * Generates a Unique Random ID. The uniqueness of this ID is limited to the current aFrame execution span.
-	 * As soon as the page is refreshed, the uniqueness will be lost.
-	 *
-	 * @method
-	 * @param {String} prefix		The prefix to the id. Defaults to '_' if not supplied
-	 * @param {Number} size			The total length of the returned id. Default defined in aframe._cfg.uniqueIdentfierSize.
-	 * @returns {String}			A string consisting of random characters defined in aframe._cfg.randomIdAllowedChars
-	 */
-	this.uniqueId = function(prefix, size) {
-		prefix = ktjapi._lib.getDefault(prefix, '_');
-		size = new Number(ktjapi._lib.getDefault(size,16));
-		var id;
-		if (this._data.uniqueIdentifiers === undefined) { this._data.uniqueIdentifiers = {}; }
-		do {
-			id = this.randomId(prefix, size);
-		} while (this._data.uniqueIdentifiers[id] != undefined);
-		this._data.uniqueIdentifiers[id] = true;
-		return id;
-	};
+        return id;
+    };
 
-	/**
-	 * Convert a string "obja.objb.objc" into the actual object located at obja.objb.objc
-	 * the force parameter will ensure that the necessary objects are created if they don't exist
-	 */
-	this.stringToObjectPath = function(str, force) {
-		force = force ? true : false;
-		str = new String(str);
-		var path = str.split(/\./);
-		var i = 0;
-		var cObj = window;
-		var success = true;
-		do {
-			if (force) {
-				if (cObj[path[i]] === undefined) { cObj[path[i]] = new Object(); }
-			}
-			cObj = cObj[path[i++]];
-			if (cObj === undefined) { success = false; }
-		} while (typeof(cObj) == 'object' && i < path.length && !success);
-		return cObj;
-	};
+    /**
+    * Generates a Unique Random ID. The uniqueness of this ID is limited to the current aFrame execution span.
+    * As soon as the page is refreshed, the uniqueness will be lost.
+    *
+    * @method
+    * @param {String} prefix		The prefix to the id. Defaults to '_' if not supplied
+    * @param {Number} size			The total length of the returned id. Default defined in aframe._cfg.uniqueIdentfierSize.
+    * @returns {String}			A string consisting of random characters defined in aframe._cfg.randomIdAllowedChars
+    */
+    this.uniqueId = function(prefix, size) {
+        prefix = ktjapi._lib.getDefault(prefix, '_');
+        size = new Number(ktjapi._lib.getDefault(size,16));
+        var id;
+        if (this._data.uniqueIdentifiers === undefined) { this._data.uniqueIdentifiers = {}; }
+        do {
+            id = this.randomId(prefix, size);
+        } while (this._data.uniqueIdentifiers[id] != undefined);
+        this._data.uniqueIdentifiers[id] = true;
+
+        return id;
+    };
+
+    /**
+    * Convert a string "obja.objb.objc" into the actual object located at obja.objb.objc
+    * the force parameter will ensure that the necessary objects are created if they don't exist
+    */
+    this.stringToObjectPath = function(str, force) {
+        force = force ? true : false;
+        str = new String(str);
+        var path = str.split(/\./);
+        var i = 0;
+        var cObj = window;
+        var success = true;
+        do {
+            if (force) {
+                if (cObj[path[i]] === undefined) { cObj[path[i]] = new Object(); }
+            }
+            cObj = cObj[path[i++]];
+            if (cObj === undefined) { success = false; }
+        } while (typeof(cObj) == 'object' && i < path.length && !success);
+
+        return cObj;
+    };
 
 };
 
 ktjapi._lib.String = new function() {};
 
 /**
- * MD5 External Library.
- */
+* MD5 External Library.
+*/
 ktjapi._lib.String.md5 = function (str) {
 
     // Calculate the md5 hash of a string
@@ -587,13 +605,13 @@ ktjapi._lib.String.md5 = function (str) {
     };
 
     var x=[],
-        k,AA,BB,CC,DD,a,b,c,d,
-        S11=7, S12=12, S13=17, S14=22,
-        S21=5, S22=9 , S23=14, S24=20,
-        S31=4, S32=11, S33=16, S34=23,
-        S41=6, S42=10, S43=15, S44=21;
+    k,AA,BB,CC,DD,a,b,c,d,
+    S11=7, S12=12, S13=17, S14=22,
+    S21=5, S22=9 , S23=14, S24=20,
+    S31=4, S32=11, S33=16, S34=23,
+    S41=6, S42=10, S43=15, S44=21;
 
-//    str = this.utf8_encode(str);
+    //    str = this.utf8_encode(str);
     str = ktjapi._lib.String.utf8.encode(str);
     x = convertToWordArray(str);
     a = 0x67452301; b = 0xEFCDAB89; c = 0x98BADCFE; d = 0x10325476;
@@ -678,222 +696,222 @@ ktjapi._lib.String.md5 = function (str) {
 };
 
 /**
- * External JSON library
- */
+* External JSON library
+*/
 ktjapi._lib.String.json = new function() {
 
-	this.decode = function() {
-		var	filter, result, self, tmp;
-		if ($$("toString")) {
-			switch(arguments.length) {
-				case	2:
-					self = arguments[0];
-					filter = arguments[1];
-					break;
-				case	1:
-					if ($[typeof arguments[0]](arguments[0]) === Function) {
-						self = this;
-						filter = arguments[0];
-					}
-					else
-						self = arguments[0];
-					break;
-				default:
-					self = this;
-					break;
-			};
-			if (rc.test(self)) {
-				try{
-					result = e("(".concat(self, ")"));
-					if (filter && result !== null && (tmp = $[typeof result](result)) && (tmp === Array || tmp === Object)) {
-						for (self in result)
-							result[self] = v(self, result) ? filter(self, result[self]) : result[self];
-					}
-				}
-				catch(z) {}
-			}
-			else {
-				throw new JSONError("bad data");
-			}
-		};
-		return result;
-	};
+    this.decode = function() {
+        var	filter, result, self, tmp;
+        if ($$("toString")) {
+            switch(arguments.length) {
+                case	2:
+                self = arguments[0];
+                filter = arguments[1];
+                break;
+                case	1:
+                if ($[typeof arguments[0]](arguments[0]) === Function) {
+                    self = this;
+                    filter = arguments[0];
+                }
+                else
+                self = arguments[0];
+                break;
+                default:
+                self = this;
+                break;
+            };
+            if (rc.test(self)) {
+                try{
+                    result = e("(".concat(self, ")"));
+                    if (filter && result !== null && (tmp = $[typeof result](result)) && (tmp === Array || tmp === Object)) {
+                        for (self in result)
+                        result[self] = v(self, result) ? filter(self, result[self]) : result[self];
+                    }
+                }
+                catch(z) {}
+            }
+            else {
+                throw new JSONError("bad data");
+            }
+        };
+        return result;
+    };
 
-	/*
-	Method: encode
-		encode a generic JavaScript variable into a valid JSON string.
+    /*
+    Method: encode
+    encode a generic JavaScript variable into a valid JSON string.
 
-	Arguments:
-		[Object] - Optional generic JavaScript variable to encode if method is not an Object prototype.
+    Arguments:
+    [Object] - Optional generic JavaScript variable to encode if method is not an Object prototype.
 
-	Returns:
-		String - Valid JSON string or undefined
+    Returns:
+    String - Valid JSON string or undefined
 
-	Example [Basic]:
-		>var	s =ktjapi._lib.String.json.encode([1,2,3]);
-		>alert(s);	// [1,2,3]
+    Example [Basic]:
+    >var	s =ktjapi._lib.String.json.encode([1,2,3]);
+    >alert(s);	// [1,2,3]
 
-	Example [Prototype]:
-		>Object.prototype.toJSONString = JSON.encode;
-		>
-		>alert([1,2,3].toJSONString());	// [1,2,3]
-	*/
-	this.encode = function() {
-		var	self = arguments.length ? arguments[0] : this,
-			result, tmp;
-		if (self === null)
-			result = "null";
-		else if (self !== undefined && (tmp = $[typeof self](self))) {
-			switch(tmp) {
-				case	Array:
-					result = [];
-					for (var	i = 0, j = 0, k = self.length; j < k; j++) {
-						if (self[j] !== undefined && (tmp =ktjapi._lib.String.json.encode(self[j])))
-							result[i++] = tmp;
-					};
-					result = "[".concat(result.join(","), "]");
-					break;
-				case	Boolean:
-					result = String(self);
-					break;
-				case	Date:
-					result = '"'.concat(self.getFullYear(), '-', d(self.getMonth() + 1), '-', d(self.getDate()), 'T', d(self.getHours()), ':', d(self.getMinutes()), ':', d(self.getSeconds()), '"');
-					break;
-				case	Function:
-					break;
-				case	Number:
-					result = isFinite(self) ? String(self) : "null";
-					break;
-				case	String:
-					result = '"'.concat(self.replace(rs, s).replace(ru, u), '"');
-					break;
-				default:
-					var	i = 0, key;
-					result = [];
-					for (key in self) {
-						if (self[key] !== undefined && (tmp =ktjapi._lib.String.json.encode(self[key])))
-							result[i++] = '"'.concat(key.replace(rs, s).replace(ru, u), '":', tmp);
-					};
-					result = "{".concat(result.join(","), "}");
-					break;
-			}
-		};
-		return result;
-	};
+    Example [Prototype]:
+    >Object.prototype.toJSONString = JSON.encode;
+    >
+    >alert([1,2,3].toJSONString());	// [1,2,3]
+    */
+    this.encode = function() {
+        var	self = arguments.length ? arguments[0] : this,
+        result, tmp;
+        if (self === null)
+        result = "null";
+        else if (self !== undefined && (tmp = $[typeof self](self))) {
+            switch(tmp) {
+                case	Array:
+                result = [];
+                for (var	i = 0, j = 0, k = self.length; j < k; j++) {
+                    if (self[j] !== undefined && (tmp =ktjapi._lib.String.json.encode(self[j])))
+                    result[i++] = tmp;
+                };
+                result = "[".concat(result.join(","), "]");
+                break;
+                case	Boolean:
+                result = String(self);
+                break;
+                case	Date:
+                result = '"'.concat(self.getFullYear(), '-', d(self.getMonth() + 1), '-', d(self.getDate()), 'T', d(self.getHours()), ':', d(self.getMinutes()), ':', d(self.getSeconds()), '"');
+                break;
+                case	Function:
+                break;
+                case	Number:
+                result = isFinite(self) ? String(self) : "null";
+                break;
+                case	String:
+                result = '"'.concat(self.replace(rs, s).replace(ru, u), '"');
+                break;
+                default:
+                var	i = 0, key;
+                result = [];
+                for (key in self) {
+                    if (self[key] !== undefined && (tmp =ktjapi._lib.String.json.encode(self[key])))
+                    result[i++] = '"'.concat(key.replace(rs, s).replace(ru, u), '":', tmp);
+                };
+                result = "{".concat(result.join(","), "}");
+                break;
+            }
+        };
+        return result;
+    };
 
-	/*
-	Method: toDate
-		transforms a JSON encoded Date string into a native Date object.
+    /*
+    Method: toDate
+    transforms a JSON encoded Date string into a native Date object.
 
-	Arguments:
-		[String/Number] - Optional JSON Date string or server time if this method is not a String prototype. Server time should be an integer, based on seconds since 1970/01/01 or milliseconds / 1000 since 1970/01/01.
+    Arguments:
+    [String/Number] - Optional JSON Date string or server time if this method is not a String prototype. Server time should be an integer, based on seconds since 1970/01/01 or milliseconds / 1000 since 1970/01/01.
 
-	Returns:
-		Date - Date object or undefined if string is not a valid Date
+    Returns:
+    Date - Date object or undefined if string is not a valid Date
 
-	Example [Basic]:
-		>var	serverDate = JSON.toDate("2007-04-05T08:36:46");
-		>alert(serverDate.getMonth());	// 3 (months start from 0)
+    Example [Basic]:
+    >var	serverDate = JSON.toDate("2007-04-05T08:36:46");
+    >alert(serverDate.getMonth());	// 3 (months start from 0)
 
-	Example [Prototype]:
-		>String.prototype.parseDate = JSON.toDate;
-		>
-		>alert("2007-04-05T08:36:46".parseDate().getDate());	// 5
+    Example [Prototype]:
+    >String.prototype.parseDate = JSON.toDate;
+    >
+    >alert("2007-04-05T08:36:46".parseDate().getDate());	// 5
 
-	Example [Server Time]:
-		>var	phpServerDate = JSON.toDate(<?php echo time(); ?>);
-		>var	csServerDate = JSON.toDate(<%=(DateTime.Now.Ticks/10000-62135596800000)%>/1000);
+    Example [Server Time]:
+    >var	phpServerDate = JSON.toDate(<?php echo time(); ?>);
+    >var	csServerDate = JSON.toDate(<%=(DateTime.Now.Ticks/10000-62135596800000)%>/1000);
 
-	Example [Server Time Prototype]:
-		>Number.prototype.parseDate = JSON.toDate;
-		>var	phpServerDate = (<?php echo time(); ?>).parseDate();
-		>var	csServerDate = (<%=(DateTime.Now.Ticks/10000-62135596800000)%>/1000).parseDate();
+    Example [Server Time Prototype]:
+    >Number.prototype.parseDate = JSON.toDate;
+    >var	phpServerDate = (<?php echo time(); ?>).parseDate();
+    >var	csServerDate = (<%=(DateTime.Now.Ticks/10000-62135596800000)%>/1000).parseDate();
 
-	Note:
-		This method accepts an integer or numeric string too to mantain compatibility with generic server side time() function.
-		You can convert quickly mtime, ctime, time and other time based values.
-		With languages that supports milliseconds you can send total milliseconds / 1000 (time is set as time * 1000)
-	*/
-	this.toDate = function() {
-		var	self = arguments.length ? arguments[0] : this,
-			result;
-		if (rd.test(self)) {
-			result = new Date;
-			result.setHours(i(self, 11, 2));
-			result.setMinutes(i(self, 14, 2));
-			result.setSeconds(i(self, 17, 2));
-			result.setMonth(i(self, 5, 2) - 1);
-			result.setDate(i(self, 8, 2));
-			result.setFullYear(i(self, 0, 4));
-		}
-		else if (rt.test(self))
-			result = new Date(self * 1000);
-		return result;
-	};
+    Note:
+    This method accepts an integer or numeric string too to mantain compatibility with generic server side time() function.
+    You can convert quickly mtime, ctime, time and other time based values.
+    With languages that supports milliseconds you can send total milliseconds / 1000 (time is set as time * 1000)
+    */
+    this.toDate = function() {
+        var	self = arguments.length ? arguments[0] : this,
+        result;
+        if (rd.test(self)) {
+            result = new Date;
+            result.setHours(i(self, 11, 2));
+            result.setMinutes(i(self, 14, 2));
+            result.setSeconds(i(self, 17, 2));
+            result.setMonth(i(self, 5, 2) - 1);
+            result.setDate(i(self, 8, 2));
+            result.setFullYear(i(self, 0, 4));
+        }
+        else if (rt.test(self))
+        result = new Date(self * 1000);
+        return result;
+    };
 
-	/* Section: Properties - Private */
+    /* Section: Properties - Private */
 
-	/*
-	Property: Private
+    /*
+    Property: Private
 
-	List:
-		Object - 'c' - a dictionary with useful keys / values for fast encode convertion
-		Function - 'd' - returns decimal string rappresentation of a number ("14", "03", etc)
-		Function - 'e' - safe and native code evaulation
-		Function - 'i' - returns integer from string ("01" => 1, "15" => 15, etc)
-		Array - 'p' - a list with different "0" strings for fast special chars escape convertion
-		RegExp - 'rc' - regular expression to check JSON strings (different for IE5 or old browsers and new one)
-		RegExp - 'rd' - regular expression to check a JSON Date string
-		RegExp - 'rs' - regular expression to check string chars to modify using c (char) values
-		RegExp - 'rt' - regular expression to check integer numeric string (for toDate time version evaluation)
-		RegExp - 'ru' - regular expression to check string chars to escape using "\u" prefix
-		Function - 's' - returns escaped string adding "\\" char as prefix ("\\" => "\\\\", etc.)
-		Function - 'u' - returns escaped string, modifyng special chars using "\uNNNN" notation
-		Function - 'v' - returns boolean value to skip object methods or prototyped parameters (length, others), used for optional decode filter function
-		Function - '$' - returns object constructor if it was not cracked (someVar = {}; someVar.constructor = String <= ignore them)
-		Function - '$$' - returns boolean value to check native Array and Object constructors before convertion
-	*/
-	var	c = {"\b":"b","\t":"t","\n":"n","\f":"f","\r":"r", '"':'"',"\\":"\\","/":"/"},
-		d = function(n) {return n<10?"0".concat(n):n;},
-		e = function(c,f,e) {e=eval;delete eval;if (typeof eval==="undefined")eval=e;f=eval(""+c);eval=e;return f;},
-		i = function(e,p,l) {return 1*e.substr(p,l);},
-		p = ["","000","00","0",""],
-		rc = null,
-		rd = /^[0-9]{4}\-[0-9]{2}\-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}$/,
-		rs = /(\x5c|\x2F|\x22|[\x0c-\x0d]|[\x08-\x0a])/g,
-		rt = /^([0-9]+|[0-9]+[,\.][0-9]{1,3})$/,
-		ru = /([\x00-\x07]|\x0b|[\x0e-\x1f])/g,
-		s = function(i,d) {return "\\".concat(c[d]);},
-		u = function(i,d) {
-			var	n=d.charCodeAt(0).toString(16);
-			return "\\u".concat(p[n.length],n);
-		},
-		v = function(k,v) {return $[typeof result](result)!==Function&&(v.hasOwnProperty?v.hasOwnProperty(k):v.constructor.prototype[k]!==v[k]);},
-		$ = {
-			"boolean":function() {return Boolean;},
-			"function":function() {return Function;},
-			"number":function() {return Number;},
-			"object":function(o) {return o instanceof o.constructor?o.constructor:null;},
-			"string":function() {return String;},
-			"undefined":function() {return null;}
-		},
-		$$ = function(m) {
-			function $(c,t) {t=c[m];delete c[m];try{e(c);}catch(z) {c[m]=t;return 1;}};
-			return $(Array)&&$(Object);
-		};
+    List:
+    Object - 'c' - a dictionary with useful keys / values for fast encode convertion
+    Function - 'd' - returns decimal string rappresentation of a number ("14", "03", etc)
+    Function - 'e' - safe and native code evaulation
+    Function - 'i' - returns integer from string ("01" => 1, "15" => 15, etc)
+    Array - 'p' - a list with different "0" strings for fast special chars escape convertion
+    RegExp - 'rc' - regular expression to check JSON strings (different for IE5 or old browsers and new one)
+    RegExp - 'rd' - regular expression to check a JSON Date string
+    RegExp - 'rs' - regular expression to check string chars to modify using c (char) values
+    RegExp - 'rt' - regular expression to check integer numeric string (for toDate time version evaluation)
+    RegExp - 'ru' - regular expression to check string chars to escape using "\u" prefix
+    Function - 's' - returns escaped string adding "\\" char as prefix ("\\" => "\\\\", etc.)
+    Function - 'u' - returns escaped string, modifyng special chars using "\uNNNN" notation
+    Function - 'v' - returns boolean value to skip object methods or prototyped parameters (length, others), used for optional decode filter function
+    Function - '$' - returns object constructor if it was not cracked (someVar = {}; someVar.constructor = String <= ignore them)
+    Function - '$$' - returns boolean value to check native Array and Object constructors before convertion
+    */
+    var	c = {"\b":"b","\t":"t","\n":"n","\f":"f","\r":"r", '"':'"',"\\":"\\","/":"/"},
+    d = function(n) {return n<10?"0".concat(n):n;},
+    e = function(c,f,e) {e=eval;delete eval;if (typeof eval==="undefined")eval=e;f=eval(""+c);eval=e;return f;},
+    i = function(e,p,l) {return 1*e.substr(p,l);},
+    p = ["","000","00","0",""],
+    rc = null,
+    rd = /^[0-9]{4}\-[0-9]{2}\-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}$/,
+    rs = /(\x5c|\x2F|\x22|[\x0c-\x0d]|[\x08-\x0a])/g,
+    rt = /^([0-9]+|[0-9]+[,\.][0-9]{1,3})$/,
+    ru = /([\x00-\x07]|\x0b|[\x0e-\x1f])/g,
+    s = function(i,d) {return "\\".concat(c[d]);},
+    u = function(i,d) {
+        var	n=d.charCodeAt(0).toString(16);
+        return "\\u".concat(p[n.length],n);
+    },
+    v = function(k,v) {return $[typeof result](result)!==Function&&(v.hasOwnProperty?v.hasOwnProperty(k):v.constructor.prototype[k]!==v[k]);},
+    $ = {
+    "boolean":function() {return Boolean;},
+    "function":function() {return Function;},
+    "number":function() {return Number;},
+    "object":function(o) {return o instanceof o.constructor?o.constructor:null;},
+    "string":function() {return String;},
+    "undefined":function() {return null;}
+    },
+    $$ = function(m) {
+        function $(c,t) {t=c[m];delete c[m];try{e(c);}catch(z) {c[m]=t;return 1;}};
+        return $(Array)&&$(Object);
+    };
 
-	try {
-	    rc = new RegExp('^("(\\\\.|[^"\\\\\\n\\r])*?"|[,:{}\\[\\]0-9.\\-+Eaeflnr-u \\n\\r\\t])+?$');
-	}
-	catch(z) {
-	    rc = /^(true|false|null|\[.*\]|\{.*\}|".*"|\d+|\d+\.\d+)$/;
-	}
+    try {
+        rc = new RegExp('^("(\\\\.|[^"\\\\\\n\\r])*?"|[,:{}\\[\\]0-9.\\-+Eaeflnr-u \\n\\r\\t])+?$');
+    }
+    catch(z) {
+        rc = /^(true|false|null|\[.*\]|\{.*\}|".*"|\d+|\d+\.\d+)$/;
+    }
 
 };
 
 /**
- * External UTF8 Library
- */
+* External UTF8 Library
+*/
 ktjapi._lib.String.utf8 = new function() {
 
     this.encode = function (string) {
@@ -957,189 +975,189 @@ ktjapi._lib.String.utf8 = new function() {
 
 //TODO: check why it isn't using jQuery AJAX
 /**
- * Ajax wrapper for jQuery Ajax Functionality
- */
+* Ajax wrapper for jQuery Ajax Functionality
+*/
 ktjapi.ajax = new function() {
 
-	/**
-	 * Perform a GET request
-	 */
-	this.getRequest = function(url, success, errors, sync, customTimeout) {
-		var sync = sync ? true : false;
-		var success = (typeof(success) == 'function') ? success : function() {};
-		var errors = (typeof(errors) == 'function') ? errors : function() {};
+    /**
+    * Perform a GET request
+    */
+    this.getRequest = function(url, success, errors, sync, customTimeout) {
+        var sync = sync ? true : false;
+        var success = (typeof(success) == 'function') ? success : function() {};
+        var errors = (typeof(errors) == 'function') ? errors : function() {};
 
-		var timeout = ktjapi.cfg.get('server.timeout')
-		if (typeof(customTimeout) !== 'undefined') {
-			timeout = customTimeout;
-		}
+        var timeout = ktjapi.cfg.get('server.timeout')
+        if (typeof(customTimeout) !== 'undefined') {
+            timeout = customTimeout;
+        }
 
-		ktjapi.q.ajax({
-			url:		url,
-			success:	success,
-			error:		errors,
-			type:		'GET',
-			timeout:	timeout,
-			async:		!sync
-		});
-	};
+        ktjapi.q.ajax({
+            url:		url,
+            success:	success,
+            error:		errors,
+            type:		'GET',
+            timeout:	timeout,
+            async:		!sync
+        });
+    };
 
-	/**
-	 * Perform a POST request
-	 */
-	this.postRequest=function(url, data, success, errors, sync) {
-		var sync = sync ? true : false;
-		var success = (typeof(success) == 'function') ? success : function() {};
-		var errors = (typeof(errors) == 'function') ? errors : function() {};
+    /**
+    * Perform a POST request
+    */
+    this.postRequest = function(url, data, success, errors, sync) {
+        var sync = sync ? true : false;
+        var success = (typeof(success) == 'function') ? success : function() {};
+        var errors = (typeof(errors) == 'function') ? errors : function() {};
 
-		ktjapi.q.ajax({
-			url:		url,
-			success:	success,
-			error:		errors,
-			type:		'POST',
-			timeout:	ktjapi.cfg.get('server.timeout'),
-			async:		!sync,
-			data: 		data
-		});
-	};
+        ktjapi.q.ajax({
+            url:		url,
+            success:	success,
+            error:		errors,
+            type:		'POST',
+            timeout:	ktjapi.cfg.get('server.timeout'),
+            async:		!sync,
+            data: 		data
+        });
+    };
 
-	/**
-	 * Private function to convert the data object to a POST format
-	 */
-	this._convertObjectToPostData = function(o) {
-		var pd = '';
-		if (typeof(o) == 'object') {
-			for (var i in o) {
-				pd += ((pd.length>1) ? '&' : '') + i + '=' + o[i];
-			}
-		} else {
-			pd = '' + o;
-		}
-		return pd;
-	};
+    /**
+    * Private function to convert the data object to a POST format
+    */
+    this._convertObjectToPostData = function(o) {
+        var pd = '';
+        if (typeof(o) == 'object') {
+            for (var i in o) {
+                pd += ((pd.length>1) ? '&' : '') + i + '=' + o[i];
+            }
+        } else {
+            pd = '' + o;
+        }
+        return pd;
+    };
 
 };
 
 /**
- * ktJapi has it's own event manager model.
- */
+* ktJapi has it's own event manager model.
+*/
 ktjapi.evt = new function() {
 
-       this._evts = {};                                           //Where the event listeners get stored
-       this._DOMevts = {};                                        //Where the DOM event listeners get stored
-       this._ids = {};										   //To make sure eventListenerId's are unique
+    this._evts = {};                                           //Where the event listeners get stored
+    this._DOMevts = {};                                        //Where the DOM event listeners get stored
+    this._ids = {};										   //To make sure eventListenerId's are unique
 
-       /**
-        * Return a unique event Id. For Private use.
-        */
-       this._uniqueEventId = function() {
-           var id = null;
-           do {
-               id = '_'+(new String(Math.random())).replace(/\./, '_');
-           } while (this._ids[id] != undefined);
-           return id;
-       };
+    /**
+    * Return a unique event Id. For Private use.
+    */
+    this._uniqueEventId = function() {
+        var id = null;
+        do {
+            id = '_'+(new String(Math.random())).replace(/\./, '_');
+        } while (this._ids[id] != undefined);
+        return id;
+    };
 
-	   /**
-	    * NOT YET IMPLEMENTED //TODO:
-	    * This function will allow you to hook onto DOM level events using automated event delegation.
-	    */
-       this.DOMlisten = function(selector, eventType, eventListener) {};
+    /**
+    * NOT YET IMPLEMENTED //TODO:
+    * This function will allow you to hook onto DOM level events using automated event delegation.
+    */
+    this.DOMlisten = function(selector, eventType, eventListener) {};
 
-       /**
-        * Add a listener to an event. Make sure your eventListener conforms to the format:
-        * 	Object containing at least one of (funct,funcName,[obj, method])
-	    *              	funct                   A defined function
-        *              	funcName                String name of a defined function
-		*				obj          			Object to bind to
-        *              	method                  String name of obj method to bind to
-        *              	eval                    String to evaluate
-        *              	debug                   Boolean on whether to debug when this listener is fired
-        *              	inspect                 Boolean on whether to inspect the event object passed to the listener
-        */
-       this.listen = function(eventName, eventListener) {
-               if (this._evts[eventName] == undefined) { this._evts[eventName] = {}; }
-               var evtid = this._uniqueEventId();
-               this._evts[eventName][evtid] = eventListener;
-               return evtid;
-       };
+    /**
+    * Add a listener to an event. Make sure your eventListener conforms to the format:
+    * 	Object containing at least one of (funct,funcName,[obj, method])
+    *              	funct                   A defined function
+    *              	funcName                String name of a defined function
+    *				obj          			Object to bind to
+    *              	method                  String name of obj method to bind to
+    *              	eval                    String to evaluate
+    *              	debug                   Boolean on whether to debug when this listener is fired
+    *              	inspect                 Boolean on whether to inspect the event object passed to the listener
+    */
+    this.listen = function(eventName, eventListener) {
+        if (this._evts[eventName] == undefined) { this._evts[eventName] = {}; }
+        var evtid = this._uniqueEventId();
+        this._evts[eventName][evtid] = eventListener;
+        return evtid;
+    };
 
-       /**
-        * Detach an eventListener by it's Id
-        */
-       this.detach = function(listenerId) {
-               if (this.eventListenerExists(listenerId)) {
-                       for (var eventName in this._evts) {
-                               if (this._evts[eventName][listenerId] != undefined) { delete(this._evts[eventName][listenerId]); }
-                       }
-                       delete(this._ids[listenerId]);
-               }
-       };
+    /**
+    * Detach an eventListener by it's Id
+    */
+    this.detach = function(listenerId) {
+        if (this.eventListenerExists(listenerId)) {
+            for (var eventName in this._evts) {
+                if (this._evts[eventName][listenerId] != undefined) { delete(this._evts[eventName][listenerId]); }
+            }
+            delete(this._ids[listenerId]);
+        }
+    };
 
-       /**
-        * Test whether an eventListener exists by it's id
-        */
-       this.eventListenerExists = function(listenerId) {
-               return (this._ids[listenerId] != undefined);
-       };
+    /**
+    * Test whether an eventListener exists by it's id
+    */
+    this.eventListenerExists = function(listenerId) {
+        return (this._ids[listenerId] != undefined);
+    };
 
-       /**
-        * Trigger an event by name. The data could be any data to be used by the eventListener.
-        * the event object passed to the eventListner will take the following form.
-        * 	Object containing the following properties:
-        *              listenerId              The id of the listener executed
-        *              eventName               The name of the event fired
-        *              data                    Data object passed by the event trigger
-        */
-       this.trigger = function(eventName, data) {
-   			if (data === undefined) { data={}; }
+    /**
+    * Trigger an event by name. The data could be any data to be used by the eventListener.
+    * the event object passed to the eventListner will take the following form.
+    * 	Object containing the following properties:
+    *              listenerId              The id of the listener executed
+    *              eventName               The name of the event fired
+    *              data                    Data object passed by the event trigger
+    */
+    this.trigger = function(eventName, data) {
+        if (data === undefined) { data={}; }
 
-       		var event = {
-               eventName       :eventName,
-               data            :data
-       		};
+        var event = {
+            eventName       :eventName,
+            data            :data
+        };
 
-           	var listener = {};
+        var listener = {};
 
-           	if (this._evts[eventName] != undefined) {
-               for (var listenerId in this._evts[eventName]) {
-               	   event.listenerId = listenerId;
-                   listener = this._evts[eventName][listenerId];
+        if (this._evts[eventName] != undefined) {
+            for (var listenerId in this._evts[eventName]) {
+                event.listenerId = listenerId;
+                listener = this._evts[eventName][listenerId];
 
-                   if (listener.eval != undefined) { eval(listener.eval); }
+                if (listener.eval != undefined) { eval(listener.eval); }
 
-                   if (typeof(listener.func) == 'function') { listener.func(event); }
+                if (typeof(listener.func) == 'function') { listener.func(event); }
 
-                   /*if (typeof(listener.obj) == 'object')*/
+                /*if (typeof(listener.obj) == 'object')*/
 
-                   if (listener.obj !== undefined) {
-                   		if (typeof(listener.method) == 'function') {
-                   			listener.method.apply(listener.obj, [event]);
-                   		}
-                   }
+                if (listener.obj !== undefined) {
+                    if (typeof(listener.method) == 'function') {
+                        listener.method.apply(listener.obj, [event]);
+                    }
+                }
 
-                   if (listener.funcName !== undefined) {
-                       try {
-                           window[listener.funcName](event);
-                       } catch(e) {}
-                   }
-               }
-           }
-       };
+                if (listener.funcName !== undefined) {
+                    try {
+                        window[listener.funcName](event);
+                    } catch(e) {}
+                }
+            }
+        }
+    };
 
-       this.triggerError = function(type, title, detail, fatal) {
-       		var data = {
-       			title: title,
-       			detail: detail,
-       			fatal: fatal ? true : false
-       		};
-       		this.trigger('ERROR:' + type, data);
-       };
+    this.triggerError = function(type, title, detail, fatal) {
+        var data = {
+            title: title,
+            detail: detail,
+            fatal: fatal ? true : false
+        };
+        this.trigger('ERROR:' + type, data);
+    };
 
 };
 
 /**
- * Adding jQuery to the ktjapi internals for easier reference
- */
+* Adding jQuery to the ktjapi internals for easier reference
+*/
 ktjapi.q = jQuery;
 ktjapi.init();
