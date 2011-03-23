@@ -291,7 +291,7 @@ button {
 	font-weight: bold;
 }
 
-#content .doc_view .doc_file_title {
+#content .doc_view .documentTitle {
 /*
 	font-family: "Times New Roman, Times, Courier";
 	letter-spacing: 0.08em;
@@ -304,6 +304,10 @@ button {
 	margin-left: -1px;
 	line-height:120%;
 	width:70%;
+}
+
+.documentTitle input[type=text] {
+	font-size: 100%;
 }
 
 .buttonTabContentContainer table.kt_collection {

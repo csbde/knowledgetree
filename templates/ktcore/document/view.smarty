@@ -11,13 +11,18 @@
 		<tr>
 			<td colspan="2" id="title_row">
 
-				<span  class="doc_file_title" style="display:inline;">
-					{i18n}{$document->getName()|sanitize}{/i18n}
-				</span>
+				<div class="documentTitle" rel={$rootUrl}/presentation/lookAndFeel/knowledgeTree/widgets/updateMetadata.php?func=title&documentID={$document->getId()}>
+				<span data-name="documentTitle" data-type='text' data-value-id="value_title" data-required="true"></span>
+					<span id="value_title">{i18n}{$document->getName()|sanitize}{/i18n}</span>
+					<span title="Click to edit" class="editable_control edit">&nbsp;</span>
+				</div>
 				{* Display Actions Block *}
 				{$documentBlocks->getDocBlock()}
-
-				<p>{$document->getFileName()} {}</p>
+				<div class="documentFilename" rel={$rootUrl}/presentation/lookAndFeel/knowledgeTree/widgets/updateMetadata.php?func=filename&documentID={$document->getId()}>
+				<span data-name="documentFilename" data-type='text' data-value-id="value_filename" data-required="true"></span>
+					<span id="value_filename"><p>{$document->getFileName()} {}</p></span>
+					<span title="Click to edit" class="editable_control edit">&nbsp;</span>
+				</div>
 
 			</td>
 
@@ -46,20 +51,20 @@
 
 					<br/>
 					<br/>
-
-					<div class="documenttype" rel={$rootUrl}/presentation/lookAndFeel/knowledgeTree/widgets/changeDocumentType.php?documentID={$document->getId()}">
+										
+					<div class="documentType" rel={$rootUrl}/presentation/lookAndFeel/knowledgeTree/widgets/updateMetadata.php?func=doctype&documentID={$document->getId()}"> 
 	    			<table class="metadatatable" cellspacing="0" cellpadding="5">
 	    			<tr class="metadatarow even first">
 	    				<th>Document Type</th>
 				        <td>
 					        <span class="descriptiveText" id='documentTypeID' data-name='documentTypeID' data-options='[{foreach from=$document_types key=aKey item=documentType}
 								["{$documentType->getName()}","{$documentType->getId()}"],{/foreach}]' data-type='select'>{$document_data.document_type->getName()}</span>
-					        <span title="click me" class="doctype_control edit">&nbsp;</span>
+					        <span title="Click to edit" class="editable_control edit">&nbsp;</span>
 					    </td>
 					</table>
 					</div>
-
-					<div class="editablemetadata">
+					
+					<div class="editableMetadata">
 					{foreach item=oFieldset from=$fieldsets name=fieldsets}
 						{if $smarty.foreach.fieldsets.index == 2}
 							<br/>

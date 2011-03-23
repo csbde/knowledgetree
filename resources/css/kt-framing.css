@@ -922,32 +922,18 @@ a.main_nav_item {
 	background: #ffdddd;
 	border-color: #FF7272;
 }
-.doctype_control {
+.editable_control {
 	cursor: pointer;
 	float: right;
 	min-width: 20px;
 }
-.doctype_control.edit {
+.editable_control.edit {
 	background: url(../../resources/graphics/newui/icons/edit.png) no-repeat right top;
 }
-.doctype_control.undo {
+.editable_control.undo {
 	background: url(../../resources/graphics/newui/icons/undo.png) no-repeat right top;
 }
-.doctype_control.spin {
-	background: url(../../resources/graphics/newui/loading.gif) no-repeat right top;
-}
-.metadata_control {
-	cursor: pointer;
-	float: right;
-	min-width: 20px;	
-}
-.metadata_control.edit {
-	background: url(../../resources/graphics/newui/icons/edit.png) no-repeat right top;
-}
-.metadata_control.undo {
-	background: url(../../resources/graphics/newui/icons/undo.png) no-repeat right top;
-}
-.metadata_control.spin {
+.editable_control.spin {
 	background: url(../../resources/graphics/newui/loading.gif) no-repeat right top;
 }
 .detail_fieldset h3
