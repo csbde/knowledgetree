@@ -913,11 +913,14 @@ a.main_nav_item {
     margin-top: 10px;
     overflow: hidden;
 }
-.metadatarow.required {
-	background-color: #FFFF66;
+#content .doc_description .required input,
+#content .doc_description .required select {
+	background: #FFEDAC;
 }
-.metadatarow.required.incomplete {
-	background-color: #FFCCFF;
+#content .doc_description .required.incomplete input, 
+#content .doc_description .required.incomplete select{
+	background: #ffdddd;
+	border-color: #FF7272;
 }
 .editable_control {
 	cursor: pointer;
