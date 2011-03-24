@@ -1,26 +1,23 @@
 jQuery(function() 
 {	
-	setDocumentTypeEditable();
-	
-	setMetadataEditable();
-	 
+	setEditableRegions();
+
 	setExpandableFieldsets();
-	
+
 	//warn user that navigating away if required metadata not complete
 	window.onbeforeunload = function() {		
 		var atLeastOneRequiredNotDone = false;
-		
+
 		jQuery('.required').each(function(index, value){
 			//get the fields id: to chop off the "metadatafield_" prefix
 			var id = (jQuery(this).attr('id').substring(jQuery(this).attr('id').indexOf('_')+1));
-			
+
 			var valueSpan = jQuery('#value_'+id);
-			
+
 			if(valueSpan.text() == null || valueSpan.text() == undefined || valueSpan.text() == '' || valueSpan.text() == 'no value')
 			{
-				//console.log('I have not been completed '+id);
 				atLeastOneRequiredNotDone = true;
-				jQuery(this).css('background-color', '#FFCCFF');
+				jQuery(this).addClass('incomplete');
 			}
 		});
 		
@@ -69,11 +66,11 @@ jQuery(function()
 				break;
 			}
 		});
-	 };
-	 
-	 //assemble each widget required by jEditableSet, and wrap it in a <td>
-	 function getTableCell(field)
-	 {
+	};
+	
+	//assemble each widget required by jEditableSet, and wrap it in a <td>
+	function getTableCell(field)
+	{
 	 	var span = null;
 		
 	 	var classType = '';
@@ -139,11 +136,11 @@ jQuery(function()
 					if (field.selection && field.selection.length > 0)
 					{
 						dataOptions = '[["No selection","no value"],';
-	
+
 						jQuery.each(field.selection, function(index, value){
 							dataOptions += '[\"'+value+'\",\"'+value+'\"],';
 						});
-	
+
 						dataOptions += ']';
 					}
 					
@@ -178,9 +175,6 @@ jQuery(function()
 				var dataType = 'datepicker';
 				span = jQuery('<span>').addClass('descriptiveText').attr('data-name', field.fieldid).attr('data-type', dataType).attr('data-value-id', 'value_'+field.fieldid);
 			break;
-			/*default:
-				type = 'metadata_textbox';
-				var dataType = 'text';*/
 		}
 		
 		var valueSpan = jQuery('<span id="value_'+field.fieldid+'">no value</span>');
@@ -194,57 +188,151 @@ jQuery(function()
 		tableCell.append(span);
 		
 		return tableCell;
-	 }
-	 
-	 function setDocumentTypeEditable()
-	 {
-	 	jQuery('.documenttype').editableSet({
-			action: './presentation/lookAndFeel/knowledgeTree/widgets/changeDocumentType.php',
+	}
+	
+	function setDocumentTitleEditable()
+	{
+		jQuery('.documentTitle').editableSet({
+			//action: './presentation/lookAndFeel/knowledgeTree/widgets/changeDocumentTitle.php',
+			controlClass: 'editable_control',
 			//event:	'click',
-			showSpinner: true,
 			onCancel: function(){
-				setMetadataEditable();
-				setDocumentTypeEditable();
+				jQuery('.editable_control', jQuery(this)).removeClass('undo').addClass('edit');
+				//setMetadataEditable();
+				//setDocumentTypeEditable();
+				//setDocumentTitleEditable();
+				setEditableRegions();
 			},
 			beforeLoad: function() {
-				jQuery('.documenttype').unbind();
-				jQuery('.detail_fieldset').unbind();
+				/*jQuery('.doctype_control', jQuery(this)).css('background', '');
+				jQuery('.doctype_control').unbind('.editableSet');
+				jQuery('.metadata_control', jQuery(this)).css('background', '');
+				jQuery('.metadata_control').unbind('.editableSet');*/
 			},
 			onError: function(){
-				setMetadataEditable();
-				setDocumentTypeEditable();
+				//setMetadataEditable();
+				//setDocumentTypeEditable();
+				setEditableRegions();
 			},	
 			onSave: function(){
-				
+				jQuery('.editable_control', jQuery(this)).removeClass('undo').addClass('spin');
 			},
 			repopulate: function(){},
-			afterSave: function(data, status){				
-				//reset the document fields to reflect the new document type
-								
+			afterSave: function(data, status){
+				jQuery('.editable_control', jQuery(this)).removeClass('spin').addClass('edit');
+				//setDocumentTitleEditable();
+				
+				if(data && data.success)
+				{
+					jQuery('#value_title').text(data.success.documentTitle);
+				}
+				setEditableRegions();
+			}
+		});
+	}
+	
+	function setDocumentFilenameEditable()
+	{
+		jQuery('.documentFilename').editableSet({
+			//action: './presentation/lookAndFeel/knowledgeTree/widgets/changeDocumentTitle.php',
+			controlClass: 'editable_control',
+			//event:	'click',
+			onCancel: function(){
+				jQuery('.editable_control', jQuery(this)).removeClass('undo').addClass('edit');
+				//setMetadataEditable();
+				//setDocumentTypeEditable();
+				//setDocumentFilenameEditable();
+				setEditableRegions();
+			},
+			beforeLoad: function() {
+				/*jQuery('.doctype_control', jQuery(this)).css('background', '');
+				jQuery('.doctype_control').unbind('.editableSet');
+				jQuery('.metadata_control', jQuery(this)).css('background', '');
+				jQuery('.metadata_control').unbind('.editableSet');*/
+			},
+			onError: function(){
+				//setMetadataEditable();
+				//setDocumentTypeEditable();
+				setEditableRegions();
+			},	
+			onSave: function(){
+				jQuery('.editable_control', jQuery(this)).removeClass('undo').addClass('spin');
+			},
+			repopulate: function(){},
+			afterSave: function(data, status){
+				jQuery('.editable_control', jQuery(this)).removeClass('spin').addClass('edit');
+				//setDocumentTitleEditable();
+				
+				if(data && data.success)
+				{
+					jQuery('#value_filename').text(data.success.documentFilename);
+				}
+				
+				setEditableRegions();
+			}
+		});
+	}
+	
+	function setDocumentTypeEditable()
+	{
+		jQuery('.documentType').editableSet({
+			//action: './presentation/lookAndFeel/knowledgeTree/widgets/changeDocumentType.php',
+			controlClass: 'editable_control',
+			//event:	'click',
+			onCancel: function(){
+				jQuery('.editable_control', jQuery(this)).removeClass('undo').addClass('edit');
+				//setMetadataEditable();
+				//setDocumentTypeEditable();
+				//setDocumentTitleEditable();
+				setEditableRegions();
+			},
+			beforeLoad: function() {
+				/*jQuery('.doctype_control', jQuery(this)).css('background', '');
+				jQuery('.doctype_control').unbind('.editableSet');
+				jQuery('.metadata_control', jQuery(this)).css('background', '');
+				jQuery('.metadata_control').unbind('.editableSet');*/
+			},
+			onError: function(){
+				//setMetadataEditable();
+				//setDocumentTypeEditable();
+				//setDocumentTitleEditable();
+				setEditableRegions();
+			},	
+			onSave: function(){
+				jQuery('.editable_control', jQuery(this)).removeClass('undo').addClass('spin');
+			},
+			repopulate: function(){},
+			afterSave: function(data, status){
+				jQuery('.editable_control', jQuery(this)).removeClass('spin').addClass('edit');
+				
+				//reset the document fields to reflect the new document type								
 				if(data && data.success)
 				{
 					//update the Document Type span text
 					jQuery('#documentTypeID').html(data.success.documentTypeName);
 					
 					//reset the document fields to reflect the new document type
-					jQuery('.editablemetadata').empty();
-					jQuery('.editablemetadata').remove();
-		
+					jQuery('.editableMetadata').empty();
+					jQuery('.editableMetadata').remove();
+
 					//create the new editable div
-					var editableDiv = jQuery('<div>').addClass('editablemetadata');
+					var editableDiv = jQuery('<div>').addClass('editableMetadata');
 					//NB: set its rel attribute because this is used as the "action" url
 					//editableDiv.attr('rel', './lib/widgets/persistMetadata.php?documentID='+jQuery('#documentidembedded').html());
 					
 					//create div for each fieldset
 					jQuery.each(data.success.metadata, function(index, fieldset)
-					{					
+					{
 						var fieldsetDiv = jQuery('<div>').addClass('detail_fieldset');
 						var header = jQuery('<h3>').text(fieldset.name).attr('title', fieldset.description);
+						var metadataControlSpan = jQuery('<span>').addClass('metadata_control').attr('title', 'click me');
+						metadataControlSpan.html('&nbsp;');
+						header.append(metadataControlSpan);
 						fieldsetDiv.append(header);
 						
 						//NB: set its rel attribute because this is used as the "action" url
-						fieldsetDiv.attr('rel', './presentation/lookAndFeel/knowledgeTree/widgets/persistMetadata.php?documentID='+data.success.documentID);	//+'&fieldsetID='+fieldset.fieldsetid);
-		
+						fieldsetDiv.attr('rel', './presentation/lookAndFeel/knowledgeTree/widgets/updateMetadata.php?func=metadata&documentID='+data.success.documentID);	//+'&fieldsetID='+fieldset.fieldsetid);
+
 						//create the div to contain the fields
 						var table = jQuery('<table>').addClass('metadatatable').attr('cellspacing', '0').attr('cellpadding', '5');
 					
@@ -254,11 +342,6 @@ jQuery(function()
 						jQuery.each(fieldset.fields, function(index, field)
 						{						
 							var tableRow = jQuery('<tr>').addClass('metadatarow');
-							/*tableRow.addClass(counter++%2==1 ? 'odd' : 'even');
-							if (counter == 1)
-							{
-								tableRow.addClass('first');
-							}*/
 							
 							//is the field required?
 							if(string2bool(field.required))
@@ -284,7 +367,7 @@ jQuery(function()
 						editableDiv.append(fieldsetDiv);
 					});
 					
-					jQuery('.documenttype').after(editableDiv);
+					jQuery('.documentType').after(editableDiv);
 					
 					//need to insert the 'more ... less' slider widget after 2nd fieldset
 					if(data.success.metadata.length > 2)
@@ -294,55 +377,95 @@ jQuery(function()
 						
 						setExpandableFieldsets();
 					}
-					
-					//metadata can be editable again
-					setMetadataEditable();
-					setDocumentTypeEditable();
 				}
-				else
-				{
-					//metadata can be editable again
-					setMetadataEditable();
-					setDocumentTypeEditable();
-				}
+				
+				//metadata can be editable again
+				//setMetadataEditable();
+				//setDocumentTypeEditable();
+				//setDocumentTitleEditable();
+				setEditableRegions();
+				
+				openRequiredMetadata();
 		 	}
 		});
-	 }
-	 
-	 function setMetadataEditable()
-	 {
-	 	jQuery('.detail_fieldset').editableSet({
-			action: './presentation/lookAndFeel/knowledgeTree/widgets/persistMetadata.php',
+	}
+	
+	//when doctype changes, and there are now Required fields, open all the required fieldsets for editing
+	function openRequiredMetadata()
+	{
+		var highestRowCounter = 0;
+		
+		//iterate through the fields and see if any are required
+		jQuery('.detail_fieldset').each(function(index, value){
+			if(jQuery('.metadatarow.required', jQuery(this)).length > 0)
+			{
+				highestRowCounter = index;
+				jQuery('.metadata_control', jQuery(this)).trigger('click');
+			}
+		});
+		
+		if (highestRowCounter > 2)
+		{
+			jQuery('.more').trigger('click');
+		}
+	}
+	
+	function setMetadataEditable()
+	{
+		jQuery('.detail_fieldset').editableSet({
+			//action: '',
+			controlClass: 'editable_control',
 			//event:	'click',
-			showSpinner: true,
 			requiredClass: 'required',
 			onCancel: function(){
-				setDocumentTypeEditable();
-				setMetadataEditable();
+				jQuery('.editable_control', jQuery(this)).removeClass('undo').addClass('edit');
+				//setDocumentTitleEditable();
+				//setDocumentTypeEditable();
+				//setMetadataEditable();
+				setEditableRegions();
 			},
 			beforeLoad: function() {
-				jQuery('.documenttype').unbind();
-				jQuery('.detail_fieldset').unbind();
+				/*jQuery('.doctype_control').unbind();*/
+				
+				jQuery('.editable_control', jQuery(this)).unbind('click');
 			},
 			onError: function() {
-				setDocumentTypeEditable();
-				setMetadataEditable();
+				//setDocumentTitleEditable();
+				//setDocumentFilenameEditable();
+				//setDocumentTypeEditable();
+				//setMetadataEditable();
+				setEditableRegions();
 			},
 			onSave: function(){
+				jQuery('.editable_control', jQuery(this)).removeClass('undo').addClass('spin');
 			},
 			afterSave: function(data, status){
+				jQuery('.editable_control', jQuery(this)).removeClass('spin').addClass('edit');
 				//now pouplate the just-saved values
 				updateValues(data, status);
 				//document type can be editable again
-				setDocumentTypeEditable();
-				setMetadataEditable();
+				//setDocumentTitleEditable();
+				//setDocumentTypeEditable();
+				//setMetadataEditable();
+				setEditableRegions();
+			},
+			onRequiredNotDone: function(data, status){
+				jQuery('.editable_control', jQuery(this)).removeClass('spin').addClass('undo');
 			}
 		});
-	 }
-	 
-	 function setExpandableFieldsets()
-	 {
-	 	jQuery('.more').click(function() {
+	}
+	
+	function setEditableRegions()
+	{
+		setDocumentTitleEditable();
+		setDocumentFilenameEditable();
+		setDocumentTypeEditable();
+		setMetadataEditable();
+	}
+	
+	function setExpandableFieldsets()
+	{
+		jQuery('.more').click(function() {
 			var slider = jQuery('.slide');
 			if (slider.is(":visible"))
 			{
@@ -362,7 +485,7 @@ jQuery(function()
 		/*.hover(function() {
 			jQuery(this).css('cursor', 'pointer');
 		})*/ 
-	 }
-	 
+	}
+	
 });
  

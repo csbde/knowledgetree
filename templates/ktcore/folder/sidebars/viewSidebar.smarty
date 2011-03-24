@@ -1,6 +1,6 @@
-{counter start=1 assign="count"}
+
 {foreach item=sidebar from=$sidebars}
 	<div id="sidebar_item" class={$sidebar->getCSSName()}>
-		{$sidebars[$count]->getSidebar()}
+		{$sidebar->getSidebar()}
 	</div>
 {/foreach}

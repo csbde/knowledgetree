@@ -138,7 +138,9 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
             $this->aBreadcrumbs = kt_array_merge($this->aBreadcrumbs, KTBrowseUtil::breadcrumbsForDocument($document, $options, $symLinkFolderId));
         }
 
-        $this->addPortlets('Document Details');
+        //$this->addPortlets('Document Details');
+        $actions = KTDocumentActionUtil::getDocumentActionsForDocument($this->oDocument, $this->oUser);
+        $actionBtns = $this->createButtons($actions);
 
         $documentData['document'] = $document;
         $documentData['document_type'] =& DocumentType::get($document->getDocumentTypeID());
@@ -205,6 +207,7 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
             }
         }
 
+        /*
         // is the checkout action active?
         $canCheckin = false;
         foreach ($this->actions as $docAction) {
@@ -217,6 +220,7 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
         }
 
         $canEdit = true;
+        */
 
         // viewlets
         $viewlets = array();
@@ -262,13 +266,11 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
 
         $FieldsetDisplayHelper = new KTFieldsetDisplay();
 
-        // create the document transaction record
-        $documentTransaction = new DocumentTransaction($document, 'Document details page view', 'ktcore.transactions.view');
-        $documentTransaction->create();
+        $this->recordView();
 
         $blocks = KTDocumentActionUtil::getDocumentActionsForDocument($this->oDocument, $this->oUser, 'documentblock');
         $documentBlocks = isset($blocks[0]) ? $blocks[0] : array();
-        $sidebars = KTDocumentActionUtil::getDocumentActionsForDocument($this->oDocument, $this->oUser, 'mainsidebar');
+        $sidebars = KTDocumentActionUtil::getDocumentActionsForDocument($this->oDocument, $this->oUser, 'maindocsidebar');
         $documentSidebars = isset($sidebars[0]) ? $sidebars[0] : array();
 
         $templateData = array(
@@ -280,9 +282,10 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
             'context' => $this,
             'sCheckoutUser' => $checkedOutUser,
             'isCheckoutUser' => ($this->oUser->getId() == $document->getCheckedOutUserId()),
-            'canCheckin' => $canCheckin,
-            'bCanEdit' => $canEdit,
-            'document_id' => $documentId,
+            //'canCheckin' => $canCheckin,
+            //'bCanEdit' => $canEdit,
+            'actionBtns' => $actionBtns,
+	    'document_id' => $documentId,
             'document' => $document,
             'documentName' => $document->getName(),
             'document_data' => $documentData,
@@ -427,7 +430,7 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
         }
 
         // FIXME handle ad-hoc fieldsets.
-        $this->addPortlets();
+        //$this->addPortlets();
         $template = $this->oValidator->validateTemplate('ktcore/document/compare');
         $templateData = array(
             'context' => $this,
@@ -523,5 +526,94 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
         return $u->getName();
     }
 
+    /**
+     * Record the transaction for viewing the page.
+     * Only record once unless the user has viewed a different document and returned to the current one.
+     */
+    private function recordView()
+    {
+        $docId = $this->oDocument->getId();
+        if(isset($_SESSION['current_document']) && $_SESSION['current_document'] == $docId) {
+            // If the document view has already been recorded, don't record it again
+            return ;
+        }
+
+        $documentTransaction = new DocumentTransaction($this->oDocument, 'Document details page view',
+                                                        'ktcore.transactions.view');
+        $documentTransaction->create();
+        $_SESSION['current_document'] = $docId;
+    }
+
+    /**
+     * Get the info for displaying the action buttons on the page
+     *
+     * @param array $actions
+     * @return array
+     */
+    private function createButtons($actions)
+    {
+        $list = array();
+        $menus = array();
+
+        // Create the "more" button
+        $btn = array('btn_position' => 'below', 'url' => '#', 'name' => _kt('More'), 'icon_class' => 'more', 'ns' => 'more');
+        $list[$btn['btn_position']][$btn['ns']] = $btn;
+
+        foreach ($actions as $oAction) {
+            $info = $oAction->getInfo();
+
+            // Skip if action is disabled
+            if(is_null($info)) {
+                continue;
+            }
+
+            // Skip if no name provided - action may be disabled for permissions reasons
+            if(empty($info['name'])) {
+                continue;
+            }
+
+            // Check whether the button has a parent i.e. is in the drop down menu of a split button
+            if(!$info['parent_btn']) {
+                // Determine the position of the button on the page
+                $pos = $info['btn_position'];
+                $list[$pos][$info['ns']] = $info;
+            } else {
+                $menus[$info['parent_btn']]['menu'][$info['ns']] = $info;
+            }
+        }
+
+        if(!empty($menus)) {
+            // Add the menu's to the correct buttons
+            foreach ($list as $key => $item) {
+                foreach ($menus as $subkey => $subitem) {
+                    if(array_key_exists($subkey, $item)) {
+                        // Order alphabetically
+                        $submenu = $subitem['menu'];
+                        uasort($submenu, array($this, 'sort_menus'));
+
+                        $item[$subkey]['menu'] = $submenu;
+                        $list[$key] = $item;
+                    }
+                }
+            }
+        }
+        uasort($list['above'], array($this, 'sort_btns'));
+
+        return $list;
+    }
+
+    function sort_btns($a, $b)
+    {
+        if($a['btn_order'] < $b['btn_order']) return -1;
+        if($a['btn_order'] > $b['btn_order']) return 1;
+        return 0;
+    }
+
+    function sort_menus($a, $b)
+    {
+        if($a['name'] < $b['name']) return -1;
+        if($a['name'] > $b['name']) return 1;
+        return 0;
+    }
 }
 ?>

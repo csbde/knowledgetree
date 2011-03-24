@@ -410,6 +410,8 @@ function validateEmailAddress($emailAddress)
 class KTDocumentEmailAction extends KTDocumentAction {
 
     var $sName = 'ktcore.actions.document.email';
+    var $sIconClass = 'email';
+    var $sParentBtn = 'ktcore.actions.document.sharecontent';
 
     function getDisplayName() { return _kt('Email'); }
 

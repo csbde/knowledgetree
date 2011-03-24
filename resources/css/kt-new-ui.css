@@ -9,7 +9,9 @@ body {
 	margin: 0 auto;
 
 }
-
+textarea {
+	font-family: Arial;
+}
 /* ------------------ Experimental UI --------------------- */
 
 #planNotice,
@@ -162,7 +164,8 @@ body {
 
 }
 #breadcrumbs span {
-	color: #888;
+	text-transform: none;
+	color: #2F6594;
 	padding-left: 0px;
 	text-shadow: 0px 1px 0px #fff;
 }
@@ -260,18 +263,15 @@ body {
 }
 #breadcrumbs .breadcrumbBtns a {
     height: 16px;
-    margin-right: 3px;
-    padding: 5px 0 2px 2px;
-    background: #F6F6F6;
-    border: 1px solid #CCC;
-	-moz-border-radius: 3px;
-	-webkit-border-radius: 3px;
+    margin-right: 2px;
+    padding: 4px 0 2px 2px;
+    border: 1px solid #EEE!important;
 	border-radius: 3px;
 	behavior: url('../resources/css/border-radius.htc');
 }
 #breadcrumbs .breadcrumbBtns a:hover {
 	text-decoration: none !important;
-	border: 1px solid #DDD;
+	border: 1px solid #CCC!important;
 	-moz-border-radius: 3px;
 	-webkit-border-radius: 3px;
 	border-radius: 3px;
@@ -287,7 +287,7 @@ body {
 }
 
 #breadcrumbs .breadcrumbBtns span {
-	padding: 6px 5px 0px 22px;
+	padding: 5px 5px 5px 22px;
 	font-size: 11px;
 }
 #breadcrumbs .breadcrumbBtns span.upload {
@@ -437,23 +437,56 @@ ul.floatleft li.notification {
 	border-right: 1px solid #ccc;
 	line-height: 24px;
 }
-.splitbutton #download {
-	background: url('../graphics/newui/docview_download.png') no-repeat px 7px !important;
-}
-.splitbutton #checkout {
-	background: url('../graphics/newui/checkedout.png') no-repeat 7px 4px;
-}
-.splitbutton #checkin {
-	background: url('../graphics/newui/checkedout.png') no-repeat 7px 4px;
-}
-.splitbutton #add-version {
+.action_buttons #add-version {
 	background: url('../graphics/newui/document_exchange.png') no-repeat 7px 4px;
+}
+.action_buttons #download {
+	background: url('../graphics/newui/icons/download.png') no-repeat 4px 4px !important;
 }
 .action_buttons #edit-online {
 	background: url('../graphics/newui/icons/document_edit.png') no-repeat 7px 4px !important;
 }
-.splitbutton #share {
+.action_buttons #share {
 	background: url('../graphics/newui/icons/users1.png') no-repeat 7px 4px !important;
+}
+.action_buttons #checkout {
+	background: url('../graphics/newui/icons/lock.png') no-repeat 4px 4px;
+}
+.action_buttons #checkin {
+	background: url('../graphics/newui/icons/lock_open.png') no-repeat 4px 4px;
+}
+.action_buttons #cancel-checkout {
+	background: url('../graphics/newui/icons/lock_delete.png') no-repeat 4px 4px;
+}
+.action_buttons #move {
+	background: url('../graphics/newui/icons/cut.png') no-repeat 4px 4px;
+}
+.action_buttons #copy {
+	background: url('../graphics/newui/icons/copy.png') no-repeat 4px 4px;
+}
+.action_buttons #rename {
+	background: url('../graphics/newui/icons/document_edit.png') no-repeat 4px 4px;
+}
+.action_buttons #delete {
+	background: url('../graphics/newui/icons/document_delete.png') no-repeat 4px 4px;
+}
+.action_buttons #archive {
+	/*background: url('../graphics/newui/icons/archive.png') no-repeat 4px 4px;*/
+}
+.action_buttons #finalize {
+	background: url('../graphics/newui/doc_immutable.png') no-repeat 4px 4px;
+}
+.action_buttons #manage-workflow {
+	background: url('../graphics/newui/doc_workflow_info.png') no-repeat 4px 4px;
+}
+.action_buttons #ownership {
+	background: url('../graphics/newui/icons/users3_edit.png') no-repeat 4px 4px;
+}
+.action_buttons #email {
+	background: url('../graphics/newui/icons/mail2.png') no-repeat 4px 4px;
+}
+.action_buttons #download-pdf {
+	background: url('../graphics/mimetypes/pdf.png') no-repeat 4px 4px;
 }
 div.form_actions {
 	float: left;
@@ -550,7 +583,7 @@ div.form_actions {
 }
 
 #newSearchQuery {
-	/* margin-top: 5px; */
+	margin-top: -10px;
 	padding: 0px;
 	margin: 0;
 	/*float: right;*/
@@ -886,4 +919,14 @@ span.sharingtree {
 	padding:0;
 	width:25px;
 }
+/*Alerts Modal*/
 
+
+
+label span.required
+{
+    margin-left: 0.5em;
+    padding-left: 10px;
+    color: white;
+    background: transparent url(../../resources/graphics/required.png) center left no-repeat;
+}

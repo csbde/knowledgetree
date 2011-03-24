@@ -86,7 +86,10 @@ class KTCorePlugin extends KTPlugin {
         $this->registerAction('folderaction', 'KTBulkUploadFolderAction', 'ktcore.actions.folder.bulkUpload', 'folder/BulkUpload.php');
         $this->registerAction('folderaction', 'FolderIndexAction', 'ktcore.search2.index.folder.action', KT_DIR . '/plugins/search2/FolderIndexAction.php');
         $this->registerAction('folderinfo', 'KTFolderTransactionsAction', 'ktcore.actions.folder.transactions', 'folder/Transactions.php');
-
+        
+        // Folder Sidebar
+        $this->registerAction('mainfoldersidebar', 'KTFolderSidebar', 'ktcore.sidebars.folder', 'KTFolderSidebars.php');
+        
         $this->registerAction('documentaction', 'KTDocumentAssistAction', 'ktcore.actions.document.assist', 'KTAssist.php');
         // $this->registerAction('folderaction', 'KTDocumentAssistAction', 'ktcore.actions.folder.assist', 'KTAssist.php');
 
@@ -98,10 +101,8 @@ class KTCorePlugin extends KTPlugin {
         $this->registerAction('documentblock', 'KTDocumentStatusBlock', 'ktcore.blocks.document.status', 'KTDocumentBlocks.php');
         
         // Document Sidebar
-        $this->registerAction('mainsidebar', 'KTDocumentSidebar', 'ktcore.sidebars.document', 'KTDocumentSidebars.php');
-        $this->registerAction('documentsidebar', 'KTAccountsSidebar', 'ktcore.sidebar.account', 'KTDocumentSidebars.php');
+        $this->registerAction('maindocsidebar', 'KTDocumentSidebar', 'ktcore.sidebars.document', 'KTDocumentSidebars.php');
         $this->registerAction('documentsidebar', 'KTRecentlyViewedSidebar', 'ktcore.sidebar.recentviews', 'KTDocumentSidebars.php');
-        $this->registerAction('documentsidebar', 'KTAlertSidebar', 'ktcore.sidebar.alert', 'KTDocumentSidebars.php');
 		
         // Notifications
         $this->registerNotificationHandler('KTAssistNotification', 'ktcore/assist', 'KTAssist.php');

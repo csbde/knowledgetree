@@ -361,10 +361,10 @@ class JavascriptFolderAction extends KTFolderAction {
 
 class KTFolderActionUtil {
     
-    function getFolderActions()
+    function getFolderActions($slot)
     {
         $oRegistry =& KTActionRegistry::getSingleton();
-        return $oRegistry->getActions('folderaction');
+        return $oRegistry->getActions($slot);
     }
     
     function getFolderInfoActions()
@@ -373,11 +373,11 @@ class KTFolderActionUtil {
         return $oRegistry->getActions('folderinfo');
     }
     
-    function &getFolderActionsForFolder($oFolder, $oUser)
+    function &getFolderActionsForFolder($oFolder, $oUser, $slot = 'folderaction')
     {
         $aObjects = array();
         
-        foreach (KTFolderActionUtil::getFolderActions() as $aAction) {
+        foreach (KTFolderActionUtil::getFolderActions($slot) as $aAction) {
             list($sClassName, $sPath, $sPlugin) = $aAction;
             $oRegistry =& KTPluginRegistry::getSingleton();
             $oPlugin =& $oRegistry->getPlugin($sPlugin);
@@ -406,6 +406,7 @@ class KTFolderActionUtil {
         
         return $aObjects;
     }
+    
     
 }
 

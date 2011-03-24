@@ -80,7 +80,10 @@ class KTDocumentAction extends KTStandardDispatcher {
     var $_bMutator = false;
     var $_bMutationAllowedByAdmin = true;
 
-    var $sIconClass;
+    var $sIconClass = '';
+    var $sParentBtn = false;
+    var $sBtnPosition = 'above';
+    var $btnOrder = 5;
 
     function KTDocumentAction($oDocument = null, $oUser = null, $oPlugin = null) {
         $this->oDocument =& $oDocument;
@@ -164,19 +167,29 @@ class KTDocumentAction extends KTStandardDispatcher {
         }
     }
 
+    function getOnClick()
+    {
+        return '';
+    }
+
     function getInfo() {
         if ($this->_show() === false) {
             return null;
         }
 
         $url = $this->getURL();
+        $onClick = $this->getOnClick();
 
         $aInfo = array(
             'description' => $this->sDescription,
             'name' => $this->getDisplayName(),
             'ns' => $this->sName,
             'url' => $url,
+            'onclick' => $onClick,
             'icon_class' => $this->sIconClass,
+            'parent_btn' => $this->sParentBtn,
+            'btn_position' => $this->sBtnPosition,
+            'btn_order' =>$this->btnOrder
         );
 
         $aInfo = $this->customiseInfo($aInfo);
@@ -418,7 +431,8 @@ class KTDocumentActionUtil {
 
     function &getDocumentActionsForDocument(&$oDocument, $oUser, $slot = 'documentaction') {
         $aObjects = array();
-        foreach (KTDocumentActionUtil::getDocumentActionInfo($slot) as $aAction) {
+        $actions = KTDocumentActionUtil::getDocumentActionInfo($slot);
+        foreach ($actions as $aAction) {
             list($sClassName, $sPath, $sPlugin) = $aAction;
             $oRegistry =& KTPluginRegistry::getSingleton();
             $oPlugin =& $oRegistry->getPlugin($sPlugin);
