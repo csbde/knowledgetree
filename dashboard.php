@@ -99,9 +99,14 @@ class DashboardDispatcher extends KTStandardDispatcher {
         foreach ($aDashlets as $oDashlet) {
             if ((strpos(strtolower($oDashlet->sTitle), 'welcome to knowledgetree') !== false) && !empty($aDashletsLeft)) {
                 array_unshift($aDashletsLeft, $oDashlet);
-            } else {
-                if ($i == 0) { $aDashletsLeft[] = $oDashlet; }
-                else {$aDashletsRight[] = $oDashlet; }
+            }
+            else {
+                if ($i == 0) {
+                    $aDashletsLeft[] = $oDashlet;
+                }
+                else {
+                    $aDashletsRight[] = $oDashlet;
+                }
             }
 
             $i += 1;
@@ -130,17 +135,17 @@ class DashboardDispatcher extends KTStandardDispatcher {
 
         // dashboard
         $sDashboardState = $this->oUser->getDashboardState();
-        $sDSJS = 'var savedState = ';
+        $dashboardJavascript = 'var savedState = ';
         if ($sDashboardState == null) {
-            $sDSJS .= 'false';
+            $dashboardJavascript .= 'false';
             $sDashboardState = false;
         }
         else {
-            $sDSJS .= $sDashboardState;
+            $dashboardJavascript .= $sDashboardState;
         }
 
-        $sDSJS .= ';';
-        $this->oPage->requireJSStandalone($sDSJS);
+        $dashboardJavascript .= ';';
+        $this->oPage->requireJSStandalone($dashboardJavascript);
         $this->oPage->requireJSResource('resources/js/dashboard.js');
 
         $ktOlarkPopup = null;

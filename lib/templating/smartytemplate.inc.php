@@ -104,10 +104,10 @@ class KTSmartyTemplate extends KTTemplate {
         $smarty->assign('search2_quick', $search2_quick);
         $smarty->assign('search2_general', $search2_general);
         $smarty->assign('search2_quickQuery', $search2_quickQuery);
-        $smarty->assign("config", $KTConfig);
-        $smarty->assign("appname", $KTConfig->get("ui/appName", "KnowledgeTree"));
-        $smarty->assign("rootUrl", $KTConfig->get("KnowledgeTree/rootUrl"));
-        $smarty->assign("absoluteRootUrl", $absroot);
+        $smarty->assign('config', $KTConfig);
+        $smarty->assign('appname', $KTConfig->get('ui/appName', 'KnowledgeTree'));
+        $smarty->assign('rootUrl', $KTConfig->get('KnowledgeTree/rootUrl'));
+        $smarty->assign('absoluteRootUrl', $absroot);
         $smarty->caching = false;
         $smarty->register_function('entity_select', array('KTSmartyTemplate', 'entity_select'));
         $smarty->register_function('boolean_checkbox', array('KTSmartyTemplate', 'boolean_checkbox'));

@@ -116,6 +116,7 @@ class KTDispatcher {
                 exit(0);
             }
         }
+
         $method = sprintf('%s_main', $this->action_prefix);
         if (array_key_exists($this->event_var, $_REQUEST)) {
             $event = strip_tags($_REQUEST[$this->event_var]);
