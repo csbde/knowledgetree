@@ -192,6 +192,16 @@ jQuery(function()
 	
 	function setDocumentTitleEditable()
 	{
+		jQuery('.documentTitle').hover(
+		function(){
+			jQuery('.editable_control', jQuery(this)).css('visibility', 'visible');
+		},
+		function(){
+			if(jQuery('.editable_control', jQuery(this)).hasClass('edit'))
+			{
+				jQuery('.editable_control', jQuery(this)).css('visibility', 'hidden');
+			}
+		});
 		jQuery('.documentTitle').editableSet({
 			//action: './presentation/lookAndFeel/knowledgeTree/widgets/changeDocumentTitle.php',
 			controlClass: 'editable_control',
@@ -233,6 +243,16 @@ jQuery(function()
 	
 	function setDocumentFilenameEditable()
 	{
+		jQuery('.documentFilename').hover(
+		function(){
+			jQuery('.editable_control', jQuery(this)).css('visibility', 'visible');
+		},
+		function(){
+			/*if(jQuery('.editable_control', jQuery(this)).hasClass('edit'))
+			{
+				jQuery('.editable_control', jQuery(this)).css('visibility', 'hidden');
+			}*/
+		});
 		jQuery('.documentFilename').editableSet({
 			//action: './presentation/lookAndFeel/knowledgeTree/widgets/changeDocumentTitle.php',
 			controlClass: 'editable_control',
@@ -275,6 +295,16 @@ jQuery(function()
 	
 	function setDocumentTypeEditable()
 	{
+		jQuery('.documentType').hover(
+		function(){
+			jQuery('.editable_control', jQuery(this)).css('visibility', 'visible');
+		},
+		function(){
+			if(jQuery('.editable_control', jQuery(this)).hasClass('edit'))
+			{
+				jQuery('.editable_control', jQuery(this)).css('visibility', 'hidden');
+			}
+		});
 		jQuery('.documentType').editableSet({
 			//action: './presentation/lookAndFeel/knowledgeTree/widgets/changeDocumentType.php',
 			controlClass: 'editable_control',
@@ -412,6 +442,16 @@ jQuery(function()
 	
 	function setMetadataEditable()
 	{
+		jQuery('.detail_fieldset').hover(
+		function(){
+			jQuery('.editable_control', jQuery(this)).css('visibility', 'visible');
+		},
+		function(){
+			if(jQuery('.editable_control', jQuery(this)).hasClass('edit'))
+			{
+				jQuery('.editable_control', jQuery(this)).css('visibility', 'hidden');
+			}
+		});
 		jQuery('.detail_fieldset').editableSet({
 			//action: '',
 			controlClass: 'editable_control',

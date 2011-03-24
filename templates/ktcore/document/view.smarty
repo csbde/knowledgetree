@@ -20,7 +20,7 @@
 				{$documentBlocks->getDocBlock()}
 				<div class="documentFilename" rel={$rootUrl}/presentation/lookAndFeel/knowledgeTree/widgets/updateMetadata.php?func=filename&documentID={$document->getId()}>
 				<span data-name="documentFilename" data-type='text' data-value-id="value_filename" data-required="true"></span>
-					<span id="value_filename"><p>{$document->getFileName()} {}</p></span>
+					<span id="value_filename"><p>{$document->getFileName()}</p></span>
 					<span title="Click to edit" class="editable_control edit">&nbsp;</span>
 				</div>
 
@@ -52,7 +52,8 @@
 					<br/>
 					<br/>
 										
-					<div class="documentType" rel={$rootUrl}/presentation/lookAndFeel/knowledgeTree/widgets/updateMetadata.php?func=doctype&documentID={$document->getId()}"> 
+					<div class="documentType" rel={$rootUrl}/presentation/lookAndFeel/knowledgeTree/widgets/updateMetadata.php?func=doctype&documentID={$document->getId()}">
+					<!--<div class="documentType" rel="javascript:kt.api.changeDocumentType({$document->getId()}, {$document->getId()});">-->
 	    			<table class="metadatatable" cellspacing="0" cellpadding="5">
 	    			<tr class="metadatarow even first">
 	    				<th>Document Type</th>
