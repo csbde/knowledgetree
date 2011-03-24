@@ -852,10 +852,12 @@ a.main_nav_item {
     font-size: 12px;
 }
 
-/*.metadatatable .required {
+.metadatarow.required {
 	background-color: #FFFF66
-}*/
-
+}
+.metadatarow.required.incomplete {
+	background-color: #ffdddd
+}
 #content .doc_info input.form_submit {
 	background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(white), to(#DDD)) !important;
 	border: 1px solid #AAA;
@@ -923,6 +925,7 @@ a.main_nav_item {
 	border-color: #FF7272;
 }
 .editable_control {
+	visibility: hidden;
 	cursor: pointer;
 	float: right;
 	min-width: 20px;
