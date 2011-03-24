@@ -336,7 +336,7 @@
 				}).addClass( 'form_submit' ) );
 				
 				//TODO: replace with link!
-				appendable.append($('<a href="'+opts.action+'">Save</a>'));
+				//appendable.append($('<a href="'+opts.action+'">Save</a>'));
 				
 				if(opts.controlClass)
 				{
