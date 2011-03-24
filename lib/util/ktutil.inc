@@ -306,11 +306,11 @@ class KTUtil {
 
     public static function strToBool ($sString, $null = false, $empty = false)
     {
-        $sString = strtoupper($sString);
-        if (in_array($sString, array('Y','YES','ON','true'))) {
+        $sString = strtolower($sString);
+        if (in_array($sString, array('y','yes','on','true'))) {
             return true;
         }
-        elseif (in_array($sString, array('N', 'NO','OFF','false'))) {
+        elseif (in_array($sString, array('n', 'no','off','false'))) {
             return false;
         }
         elseif ($sString == '') {
