@@ -50,7 +50,7 @@ class Redirector {
     function run()
     {
 		// First check for some special cases
-		switch($this->uri) {
+		switch ($this->uri) {
             case 'dashboard': $this->finalizeRun('dashboard.php'); break;
             case 'admin': $this->finalizeRun('admin.php'); break;
             case 'preferences': $this->finalizeRun('preferences.php'); break;

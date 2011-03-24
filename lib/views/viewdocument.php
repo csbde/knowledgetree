@@ -34,6 +34,10 @@
  * Contributor(s): ______________________________________
  */
 
+// probably this should be defined somewhere global, just do it here for now...
+define('DOCUMENT_TAG_FIELD', 2);
+
+
 class ViewDocumentDispatcher extends KTStandardDispatcher {
 
     public $sName = 'ktcore.actions.document.displaydetails';
@@ -297,7 +301,7 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
             'hasNotifications' => false,
             'fieldsetDisplayHelper' => $FieldsetDisplayHelper,
             'documentBlocks' => $documentBlocks,
-            'documentSidebars' => $documentSidebars,
+            'documentSidebars' => $documentSidebars
         );
 
         // Conditionally include live_preview
@@ -533,7 +537,7 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
     private function recordView()
     {
         $docId = $this->oDocument->getId();
-        if(isset($_SESSION['current_document']) && $_SESSION['current_document'] == $docId) {
+        if (isset($_SESSION['current_document']) && $_SESSION['current_document'] == $docId) {
             // If the document view has already been recorded, don't record it again
             return ;
         }
@@ -563,17 +567,17 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
             $info = $oAction->getInfo();
 
             // Skip if action is disabled
-            if(is_null($info)) {
+            if (is_null($info)) {
                 continue;
             }
 
             // Skip if no name provided - action may be disabled for permissions reasons
-            if(empty($info['name'])) {
+            if (empty($info['name'])) {
                 continue;
             }
 
             // Check whether the button has a parent i.e. is in the drop down menu of a split button
-            if(!$info['parent_btn']) {
+            if (!$info['parent_btn']) {
                 // Determine the position of the button on the page
                 $pos = $info['btn_position'];
                 $list[$pos][$info['ns']] = $info;
@@ -582,11 +586,11 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
             }
         }
 
-        if(!empty($menus)) {
+        if (!empty($menus)) {
             // Add the menu's to the correct buttons
             foreach ($list as $key => $item) {
                 foreach ($menus as $subkey => $subitem) {
-                    if(array_key_exists($subkey, $item)) {
+                    if (array_key_exists($subkey, $item)) {
                         // Order alphabetically
                         $submenu = $subitem['menu'];
                         uasort($submenu, array($this, 'sort_menus'));
@@ -604,15 +608,15 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
 
     function sort_btns($a, $b)
     {
-        if($a['btn_order'] < $b['btn_order']) return -1;
-        if($a['btn_order'] > $b['btn_order']) return 1;
+        if ($a['btn_order'] < $b['btn_order']) return -1;
+        if ($a['btn_order'] > $b['btn_order']) return 1;
         return 0;
     }
 
     function sort_menus($a, $b)
     {
-        if($a['name'] < $b['name']) return -1;
-        if($a['name'] > $b['name']) return 1;
+        if ($a['name'] < $b['name']) return -1;
+        if ($a['name'] > $b['name']) return 1;
         return 0;
     }
 }

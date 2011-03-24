@@ -191,7 +191,7 @@
 		</div>
         {/if}
         </td>
-        
+
     	<td valign="top" id="sidebar" class="standardBorder" height="100%" width="215">
             {* Display Actions Block *}
             {$documentSidebars->getDocSidebars()}
@@ -204,7 +204,7 @@
     jQuery("#tagcloud").tokenInput("/filterTags.php?document_id={/literal}{$document_id}{literal}", {
         // Alter the minChars value to determine how much the user must type before a search is initiated
         minChars: 2,
-        prePopulate: [{/literal}{$options.assigned[1]}{literal}],
+        prePopulate: [{/literal}{$tags}{literal}],
         classes: {
             tokenList: "token-input-list-facebook",
             token: "token-input-token-facebook",
