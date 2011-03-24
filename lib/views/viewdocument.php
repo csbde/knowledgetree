@@ -285,7 +285,7 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
             //'canCheckin' => $canCheckin,
             //'bCanEdit' => $canEdit,
             'actionBtns' => $actionBtns,
-	    'document_id' => $documentId,
+	       'document_id' => $documentId,
             'document' => $document,
             'documentName' => $document->getName(),
             'document_data' => $documentData,

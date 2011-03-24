@@ -91,8 +91,8 @@ class KTSmartyTemplate extends KTTemplate {
         	}*/
         }
         else {
-			$search2_quick=0;
-			$search2_general=1;
+			$search2_quick = 0;
+			$search2_general = 1;
 			$search2_quickQuery = '';
 			$_SESSION['search2_quick'] = $search2_quick;
 			$_SESSION['search2_general'] = $search2_general;

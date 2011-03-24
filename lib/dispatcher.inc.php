@@ -67,8 +67,8 @@ class KTDispatcher {
     var $aPersistParams = array();
 
     function KTDispatcher() {
-        $this->oValidator =new KTDispatcherValidation($this);
-        $this->oRedirector =new KTDispatchStandardRedirector($this);
+        $this->oValidator = new KTDispatcherValidation($this);
+        $this->oRedirector = new KTDispatchStandardRedirector($this);
     }
 
     function redispatch($event_var, $action_prefix = null, $orig_dispatcher = null, $parent_url = null) {
