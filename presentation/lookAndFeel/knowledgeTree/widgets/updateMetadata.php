@@ -4,7 +4,7 @@ require_once('../../../../config/dmsDefaults.php');
 require_once(KT_DIR . '/ktapi/ktapi.inc.php');
 require_once(KT_LIB_DIR . '/widgets/fieldsetDisplay.inc.php');
 require_once(KT_LIB_DIR . '/triggers/triggerregistry.inc.php');
-//require_once(KT_LIB_DIR . '/validation/validatorfactory.inc.php');
+require_once(KT_LIB_DIR . '/validation/validatorfactory.inc.php');
 //require_once(KT_PLUGIN_DIR . '/ktcore/KTValidators.php');
 
 	
@@ -124,33 +124,65 @@ require_once(KT_LIB_DIR . '/triggers/triggerregistry.inc.php');
 		$GLOBALS['default']->log->debug("changeDocumentFilename $iDocumentID $sFilename");
 		
 		//TODO: validate if legal filename
-		//$oVF =& KTValidatorFactory::getSingleton();
-		//$GLOBALS['default']->log->debug('changeDocumentFilename validator '.print_r($oVF, true));
+		$oVF =& KTValidatorFactory::getSingleton();
+		$GLOBALS['default']->log->debug('changeDocumentFilename oVF '.print_r($oVF, true));
 		
-		$oUser = User::get($_SESSION['userID']);
+		$oValidator = $oVF->get('ktcore.validators.illegal_char', array(
+            'test' => 'name',
+            'output' => 'name',
+        ));
+        
+        //$GLOBALS['default']->log->debug('changeDocumentFilename oValidator '.print_r($oValidator, true));
+        
+        $res = $oValidator->validate(array('name'=>$sFilename));
+        
+        //$GLOBALS['default']->log->debug('changeDocumentFilename validation result '.print_r($res, true));
+        
+        if (empty($res['errors']))
+        {
+        	//$GLOBALS['default']->log->debug('changeDocumentFilename validation I AM EMPTY');
+        	
+        	$oUser = User::get($_SESSION['userID']);
 		
-		if (PEAR::isError($oUser)) {
-			$GLOBALS['default']->log->error("changeDocumentFilename User {$_SESSION['userID']}: {$oUser->getMessage()}");
-			return false;
-		}
-		
-		$oDocument = &Document::get($iDocumentID);
-		
-		$res = KTDocumentUtil::rename($oDocument, $sFilename, $oUser);
-		
-		if (PEAR::isError($res)) {
-			$GLOBALS['default']->log->error("changeDocumentFilename User {$res->getMessage()}");
-			return false;
+			if (PEAR::isError($oUser)) {
+				$GLOBALS['default']->log->error("changeDocumentFilename User {$_SESSION['userID']}: {$oUser->getMessage()}");
+				return false;
+			}
+			
+			$oDocument = &Document::get($iDocumentID);
+			
+			$res = KTDocumentUtil::rename($oDocument, $sFilename, $oUser);
+			
+			if (PEAR::isError($res)) {
+				$GLOBALS['default']->log->error("changeDocumentFilename User {$res->getMessage()}");
+				return false;
+	        }
+	
+	        //assemble the item to return
+			$item['documentID'] = $iDocumentID;
+			$item['documentFilename'] = $oDocument->getFileName();
+			
+			$json['success'] = $item;
+			
+			echo(json_encode($json));
+			exit(0);
         }
-
-        //assemble the item to return
-		$item['documentID'] = $iDocumentID;
-		$item['documentFilename'] = $oDocument->getFileName();
+        else 
+        {
+        	//$GLOBALS['default']->log->debug('changeDocumentFilename validation I AM NOT EMPTY');
+        	
+        	//assemble the item to return
+			$item['documentID'] = $iDocumentID;
+			$item['documentFilename'] = $sFilename;
+			$item['message'] = $res['errors']['name'];
+			
+			$json['error'] = $item;
+			
+			echo(json_encode($json));
+			exit(0);
+        }
 		
-		$json['success'] = $item;
 		
-		echo(json_encode($json));
-		exit(0);
 	}
 	
 	
@@ -394,7 +426,7 @@ require_once(KT_LIB_DIR . '/triggers/triggerregistry.inc.php');
 		$fields = array();
 		
 		//cycle through the POST variables and get all the fields
-		foreach($aFields as $key => $postVar)
+		foreach($aFields as $key => $field)
 		{
 			//$GLOBALS['default']->log->debug("persistMetadata postVar $key $postVar");
 			
@@ -407,13 +439,13 @@ require_once(KT_LIB_DIR . '/triggers/triggerregistry.inc.php');
 	 			continue;
 	 		}
 	
-			if(is_array($postVar))
+			if(is_array($field))
 			{
 				$value = '';
 				
-				foreach($postVar as $var)
+				foreach($field as $f)
 				{
-						$value .= $var.',';
+						$value .= $f.',';
 				}
 				
 				//chop off trailing comma
@@ -423,7 +455,7 @@ require_once(KT_LIB_DIR . '/triggers/triggerregistry.inc.php');
 			}
 			else
 			{
-				$packed[] = array($oField, $postVar);
+				$packed[] = array($oField, $field);
 			}
 		}
 		

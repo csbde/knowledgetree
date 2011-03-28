@@ -34,197 +34,69 @@
 			self.editing = false;
 			
 			// onSave callback
-			$.isFunction( opts.onSave ) && opts.onSave.call( self );
-			
-			//assume all required fields have been completed
-			var atLeastOneRequiredNotDone = false;
-			
-			//do we need to check for required fields?
-			if (opts.requiredClass != null && opts.requiredClass != '')
-			{			
-				$('.'+opts.requiredClass, $(self)).each(function(index)
-				{
-					//get the fields id: to chop off the "metadatafield_" prefix
-					var id = ($(this).attr('id').substring($(this).attr('id').indexOf('_')+1));
-					//console.log('I am required '+id);
-					
-					//the first <td> contains the element we are interested in
-					var firstTD = $('td:first', $(this));
-									
-					//the td's class identifies its type				
-					switch(firstTD.attr('class'))
-					{
-						case 'metadata_textbox':
-							var val = $('input:text[name='+id+']').val();
-							
-							if(val == null || val == undefined || val == '' || val == 'no value')
-							{
-								$(this).addClass('incomplete');
-								atLeastOneRequiredNotDone = true;
-							}
-						break;
-						
-						case 'metadata_date':
-							var val = $('input:text[name='+id+']').val();
-							
-							if(val == null || val == undefined || val == '' || val == 'no value')
-							{
-								$(this).addClass('incomplete');
-								atLeastOneRequiredNotDone = true;
-							}
-						break;
-						
-						case 'metadata_tree':						
-							var val = $('input:radio[name='+id+']:checked').val();
-							
-							if(val == null || val == undefined)
-							{
-								$(this).addClass('incomplete');
-								atLeastOneRequiredNotDone = true;
-							}
-						break;
-						
-						case 'metadata_multicheckselect':
-							//array to contain all the selected values
-							var vals = new Array();
-							
-							$('input:checkbox[name="'+id+'[]"]:checked').each(function()
-							{
-							    vals.push($(this).val());
-							});
-							
-							if (vals.length == 0)
-							{
-								$(this).addClass('incomplete');
-								atLeastOneRequiredNotDone = true;
-							}
-						break;
-						
-						case 'metadata_multilistselect':
-							//array to contain all the selected values
-							var vals = new Array();
-							
-							$('select[name="'+id+'[]"] option:selected').each(function()
-							{
-							    vals.push($.trim($(this).val()));
-							});
-							
-							if (vals.length == 0)
-							{
-								$(this).addClass('incomplete');
-								atLeastOneRequiredNotDone = true;
-							}
-							else if (vals.length == 1 && vals[0] == 'no value')
-							{
-								$(this).addClass('incomplete');
-								atLeastOneRequiredNotDone = true;
-							}
-						break;
-						case 'metadata_singleselect':						
-							//var val = $('#singleselect_'+id).val();
-							var val = $('select[name='+id+']').val();
-	
-							if(val == null || val == undefined || val == '' || val == 'no value')
-							{
-								$(this).addClass('incomplete');
-								atLeastOneRequiredNotDone = true;
-							}						
-						break;
-						
-						case 'metadata_textarea':
-							var val = $('textarea[name='+id+']').val();
-							
-							if(val == null || val == undefined || val == '' || val == 'no value')
-							{
-								$(this).addClass('incomplete');
-								atLeastOneRequiredNotDone = true;
-							}
-							
-							
-						break;
-						case 'metadata_htmleditor':
-							var val = $('#'+id).val();
-							
-							if(val == null || val == undefined || val == 'no value')
-							{
-								$(this).addClass('incomplete');
-								atLeastOneRequiredNotDone = true;
-							}
-							
-						break;
-					}
-					
-					//don't do this as need to mark each field that wasn't complete
-					/*if(atLeastOneRequiredNotDone)
-					{
-						return false;
-					}*/
-				});
-				
-				
-				
-			}
-			
-			//if there is even one required field missing, we need to stop the save
-			if(atLeastOneRequiredNotDone)
-			{			
-				return false;
-			}
-			else
+			if ($.isFunction( opts.onSave )) 
 			{
-				//reset background of required fields to yellow
-				$('.required', $(self)).removeClass('incomplete');
-				
-				var form = $('form', self);
-				var action = form.attr( 'action' );
-		
-				// This is needed for rails to identify the request as json
-				if( opts.dataType === 'json' ) {
-					action = action + '.json';
+				//does onSave allow us to continue?
+				var ret = opts.onSave.call( self );
+			
+					
+				//'false' returned, so exit!
+				if (ret == false)
+				{
+					return false;
 				}
-		
-				// Generate the params
-				var params;
+			}
+						
+			var form = $('form', self);
+			var action = form.attr( 'action' );
+	
+			// This is needed for rails to identify the request as json
+			if( opts.dataType === 'json' ) {
+				action = action + '.json';
+			}
+	
+			// Generate the params
+			var params;
+			if( opts.globalSave ) {
+				params = $( 'form', '.editable' ).serialize();
+			} else {
+				params = form.serialize();
+			}
+	
+			// PUT the form and update the child elements
+			$.post( action, params, function( data, textStatus ) {
+				// Parse the data if necessary
+				data = $.parseJSON( data ) ? $.parseJSON( data ) : data;
+	
+				// Revert to original text
 				if( opts.globalSave ) {
-					params = $( 'form', '.editable' ).serialize();
+					$.each( $('.editable'), function( i, value ) {
+						$(value).html( $.fn.editableSet.globals.reversions[i] ).removeClass( 'active' );
+						value.editing = false;
+					});
 				} else {
-					params = form.serialize();
+					$(self).html( self.revert );
+					$(self).removeClass( 'active' );
 				}
-		
-				// PUT the form and update the child elements
-				$.post( action, params, function( data, textStatus ) {
-					// Parse the data if necessary
-					data = $.parseJSON( data ) ? $.parseJSON( data ) : data;
-		
-					// Revert to original text
-					if( opts.globalSave ) {
-						$.each( $('.editable'), function( i, value ) {
-							$(value).html( $.fn.editableSet.globals.reversions[i] ).removeClass( 'active' );
-							value.editing = false;
-						});
-					} else {
-						$(self).html( self.revert );
-						$(self).removeClass( 'active' );
-					}
-		
-					var spans;
-					if( opts.globalSave ) {
-						$.each( $('.editable'), function(i, editable) {
-							spans = $('span[data-name]', editable);	
-							$.isFunction( opts.repopulate ) && opts.repopulate.call( self, spans, data, opts );
-						});
-					} else {
-						spans = $('span[data-name]', self);
+	
+				var spans;
+				if( opts.globalSave ) {
+					$.each( $('.editable'), function(i, editable) {
+						spans = $('span[data-name]', editable);	
 						$.isFunction( opts.repopulate ) && opts.repopulate.call( self, spans, data, opts );
-					}			
-		
-					// afterSave Callback			
-					$.isFunction( opts.afterSave ) && opts.afterSave.call( self, data, textStatus );
-				}, 
-				opts.dataType, 
-		
-				// onError
-				function( xhr, status, error ) {
+					});
+				} else {
+					spans = $('span[data-name]', self);
+					$.isFunction( opts.repopulate ) && opts.repopulate.call( self, spans, data, opts );
+				}			
+	
+				// afterSave Callback			
+				$.isFunction( opts.afterSave ) && opts.afterSave.call( self, data, textStatus );
+			}, 
+			opts.dataType, 
+	
+			// onError
+			function( xhr, status, error ) {
 				self.editing = true;
 		
 				// Reactivate the fields
@@ -232,11 +104,9 @@
 		
 				// onError callback
 				$.isFunction( opts.onError ) && opts.onError.call( self, xhr, status );
-				});
-							
-				return true;
-			}
-	
+			});
+						
+			return true;	
 		};
 		
 		
@@ -301,6 +171,7 @@
 						
 				// Create the form wrapper
 				$(self).wrapInner( $('<form />', {
+					//name: 'metadataForm',
 					action : opts.action,
 					method : 'POST'
 				}) ).addClass( 'active' );
@@ -322,7 +193,26 @@
 				appendable.append( $('<input />', {
 					type	: "submit",
 					value : "Save",
+					//name	:"save",
 					click : function() {
+						if (save( self ))
+						{
+							$(':input', self).attr( 'disabled', true );
+						}
+						return false;
+					}
+				}).addClass( 'form_submit' ) );
+				
+				//TODO: replace with link?
+				/*appendable.append( $('<a/>', {  
+				    //id: 'foo',  
+				    href: '#',  
+				    //title: 'Become a Googler',  
+				    //rel: 'external',  
+				   	text: 'Save',
+				   	click : function() {
+				   		document.metadataForm.submit();
+				   		
 						if (save( self ))
 						{
 							$(':input', self).attr( 'disabled', true );
@@ -333,10 +223,10 @@
 						}
 						return false;
 					}
-				}).addClass( 'form_submit' ) );
+				}));
 				
-				//TODO: replace with link!
-				//appendable.append($('<a href="'+opts.action+'">Save</a>'));
+				appendable.append($('<a href="#" onclick="'+opts.action+'">Save</a>'));
+				appendable.append($('<a href="javascript: document.metadataForm.submit();">Save</a>'));*/
 				
 				if(opts.controlClass)
 				{
