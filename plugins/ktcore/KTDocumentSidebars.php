@@ -82,7 +82,7 @@ class KTRecentlyViewedSidebar extends KTDocumentSidebar {
 	public $sName = 'ktcore.sidebar.recentview';
 	public $order = 2;
 	
-	public function getSidebar() {
+	public function display_viewlet() {
 		$oTemplating = KTTemplating::getSingleton();
 		$oTemplate = $oTemplating->loadTemplate('ktcore/document/sidebars/recentlyViewed');
         $aTemplateData = array(
