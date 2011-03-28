@@ -35,7 +35,7 @@
 
 .item td.checkbox { vertical-align: middle; }
 
-.page .notification { display: block; text-align: center; width: auto; -webkit-box-shadow: 0px 0px 10px black; -moz-box-shadow: 0px 0px 10px black; box-shadow: 0px 0px 10px black; border: 1px solid #999999; background-color: #EEEEEE; margin: 20px 100px; padding: 20px; color: #989090 !important; }
+.page .notification { display: block; text-align: center; width: auto; -webkit-box-shadow: 0px 0px 2px #666; -moz-box-shadow: 0px 0px 2px #666; box-shadow: 0px 0px 2px #666; border: 1px solid #999999; background-color: #EEEEEE; margin: 20px 0px; padding: 20px; color: #989090 !important; }
 .page .notification h2 { color: #989090 !important; }
 .page .notification table { width: 100%; text-align: left; margin-top: 20px; }
 .page .notification table div.roundnum { background-color: #80C1DE; color: #FFF; font-size: 20px; -webkit-border-radius: 50px; -moz-border-radius: 50px; border-radius: 50px; width: 30px; height: 30px; text-align: center; vertical-align: bottom; }
@@ -82,7 +82,53 @@
 .doc.browseView .doc.item.highlighted:hover { -webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px; background-color: #b7dded !important; }
 .doc.browseView .doc.icon_cell { padding-right: 5px; margin: 0px; }
 .doc.browseView .doc.icon_cell .doc.icon { background-image: url(/resources/graphics/newui/doc_placeholder_icon.png); width: 32px; height: 32px; position: relative; padding: 0px; margin: 0px; }
-.doc.browseView .doc.icon_cell .doc.icon .doc.preview { position: absolute; min-width: 100px; min-height: 100px; display: none; cursor: pointer; border: 1px solid #dbdbdb; background-color: #f0f0f0; background-image: url(/resources/graphics/newui/preview-loading.gif); background-position: center center; background-repeat: no-repeat; -webkit-box-shadow: 0px 0px 5px #242424; -moz-box-shadow: 0px 0px 5px #242424; box-shadow: 0px 0px 5px #242424; -webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px; padding: 2px; z-index: 20000; left: 15px; top: 20px; overflow: hidden; cursor: pointer; }
+.doc.browseView .doc.icon_cell .doc.icon .doc.preview { 
+	position: absolute; 
+	
+	display: none; 
+	cursor: pointer; 
+	border: 0px; 
+	padding: 2px 2px 2px 15px; 
+	z-index: 20000; 
+	left: 35px; 
+	top: -25px; 
+	overflow: hidden; 
+	cursor: pointer; 
+	
+	}
+.doc.browseView .doc.icon_cell .doc.icon .doc.preview .popoverTip {
+	background: url(../../graphics/newui/popover_tip.png) no-repeat;
+	background-position: center center;
+	width: 20px;
+	height: 20px;
+	display: block;
+	position: absolute;
+	left: -1px;
+	margin: 30px 0px;
+}	
+.doc.browseView .doc.icon_cell .doc.icon .doc.preview .popover {
+	border: 1px solid #CCC;
+	display: block;
+	-webkit-box-shadow: 0px 0px 5px #CCC; 
+	-moz-box-shadow: 0px 0px 5px #CCC; 
+	box-shadow: 0px 0px 5px #CCC; 
+	min-width: 100px; 
+	min-height: 100px;
+	background: #FFF url(/resources/graphics/newui/preview-loading.gif); 
+	background-position: center center; 
+	background-color: none; 
+	background-repeat: no-repeat; 
+	z-index: 20001;
+	-webkit-border-radius: 3px; 
+	-moz-border-radius: 3px; 
+	border-radius: 3px; 
+}
+.doc.browseView .doc.icon_cell .doc.icon .doc.preview img {
+	-webkit-border-radius: 3px; 
+	-moz-border-radius: 3px; 
+	border-radius: 3px; 
+	background: white;
+}
 .doc.browseView .doc.icon_cell .doc.icon:hover .doc.preview { display: block; }
 .doc.browseView .doc.summary_cell .title { display: inline-block; font-size: 14px; font-weight: bold; padding-bottom: 5px; margin-right: 15px; height: 15px; overflow: hidden; }
 .doc.browseView .doc.summary_cell .detail .item { font-weight: bold; margin-right: 10px; }

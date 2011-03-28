@@ -348,6 +348,7 @@ class KTDocumentViewAction extends KTDocumentAction {
     var $sIconClass = 'download';
 	var $showIfWrite = true;
 	var $showIfRead = true;
+	var $btnOrder = 1;
 
     function getDisplayName() {
         return _kt('Download');
@@ -426,6 +427,7 @@ class KTDocumentCheckOutAction extends KTDocumentAction {
     var $sIconClass = 'checkout';
 	var $showIfWrite = true;
 	var $showIfRead = false;
+	var $btnOrder = 2;
 
     function getDisplayName() {
         return _kt('Checkout');
@@ -622,6 +624,7 @@ class KTDocumentCheckInAction extends KTDocumentAction {
     var $sIconClass = 'checkin';
 	var $showIfWrite = true;
 	var $showIfRead = false;
+	var $btnOrder = 2;
 
     function getDisplayName() {
         return _kt('Check-in');
@@ -872,10 +875,12 @@ class KTDocumentCancelCheckOutAction extends KTDocumentAction {
     var $_sShowPermission = 'ktcore.permissions.write';
     var $bAllowInAdminMode = true;
     var $bInAdminMode = null;
-    var $sIconClass = 'cancel_checkout';
+    //var $sIconClass = 'cancel_checkout';
 
 	var $showIfWrite = true;
 	var $showIfRead = false;
+    var $sIconClass = 'cancel-checkout';
+    var $sParentBtn = 'ktcore.actions.document.checkin';
 
     function getDisplayName() {
         return _kt('Cancel Checkout');
@@ -1061,6 +1066,9 @@ class KTDocumentDeleteAction extends KTDocumentAction {
     var $_sShowPermission = 'ktcore.permissions.delete';
     var $_bMutator = true;
 
+    var $sIconClass = 'delete';
+    var $sParentBtn = 'more';
+
     function getDisplayName() {
         return _kt('Delete');
     }
@@ -1220,6 +1228,8 @@ class KTDocumentMoveAction extends KTDocumentAction {
     var $sName = 'ktcore.actions.document.move';
     var $_sShowPermission = 'ktcore.permissions.write';
     var $_bMutator = true;
+    var $sIconClass = 'move';
+    var $sParentBtn = 'more';
 
     function getDisplayName() {
         return _kt('Move');
@@ -1470,6 +1480,9 @@ class KTDocumentCopyAction extends KTDocumentAction {
     var $sName = 'ktcore.actions.document.copy';
     var $_sShowPermission = 'ktcore.permissions.read';
 
+    var $sIconClass = 'copy';
+    var $sParentBtn = 'more';
+
     function getDisplayName() {
         return _kt('Copy');
     }
@@ -1712,6 +1725,8 @@ class KTDocumentArchiveAction extends KTDocumentAction {
     var $_bMutator = false;
 	var $showIfWrite = false;
 	var $showIfRead = false;
+    var $sIconClass = 'archive';
+    var $sParentBtn = 'more';
 
     function getDisplayName() {
         return _kt('Archive');
@@ -1866,6 +1881,8 @@ class KTDocumentWorkflowAction extends KTDocumentAction {
     var $sHelpPage = 'ktcore/user/workflow.html';
 	var $showIfWrite = true;
 	var $showIfRead = false;
+    var $sIconClass = 'manage-workflow';
+    var $sParentBtn = 'more';
 
     function predispatch() {
         $this->persistParams(array('fTransitionId'));
@@ -2048,7 +2065,7 @@ class KTDocumentWorkflowAction extends KTDocumentAction {
         echo $oTemplate->render($aTemplateData);
     	exit(0);
     }
-    
+
     function do_startWorkflow() {
     	$method = KTUtil::arrayGet($_REQUEST, 'method');
     	if($method == 'ajax') return $this->do_ajax_startWorkflow();
@@ -2067,7 +2084,7 @@ class KTDocumentWorkflowAction extends KTDocumentAction {
         $this->successRedirectToMain(_kt('Workflow started'), array('fDocumentId' => $oDocument->getId()));
         exit(0);
     }
-    
+
 	function do_ajax_startWorkflow() {
         $oDocument =& $this->oValidator->validateDocument($_REQUEST['fDocumentId']);
         if (!empty($_REQUEST['fWorkflowId'])) {
@@ -2219,6 +2236,9 @@ class KTOwnershipChangeAction extends KTDocumentAction {
 
     var $sName = 'ktcore.actions.document.ownershipchange';
     var $_sShowPermission = 'ktcore.permissions.security';
+
+    var $sIconClass = 'ownership';
+    var $sParentBtn = 'more';
 
     function getDisplayName() {
         return _kt('Change owner');

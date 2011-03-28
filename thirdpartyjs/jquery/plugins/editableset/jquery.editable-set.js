@@ -335,23 +335,31 @@
 					}
 				}).addClass( 'form_submit' ) );
 				
-				//add the 'Undo' icon
-				$('.'+opts.controlClass, $(self)).removeClass('edit').addClass('undo');	//.css('background', 'url(/resources/graphics/newui/icons/heart.png) no-repeat right top');
-				$('.'+opts.controlClass, $(self)).one('click', function(e){
-					cancel( self );
-					//$(':input', self).attr( 'disabled', true );	
-				});			
+				//TODO: replace with link!
+				//appendable.append($('<a href="'+opts.action+'">Save</a>'));
 				
-				// Append the 'Cancel' button
-				/*appendable.append( $('<input />', {
-					type	: "button",
-					value : "Cancel",
-					click : function() {
+				if(opts.controlClass)
+				{
+					//add the 'Undo' icon
+					$('.'+opts.controlClass, $(self)).removeClass('edit').addClass('undo');	//.css('background', 'url(/resources/graphics/newui/icons/heart.png) no-repeat right top');
+					$('.'+opts.controlClass, $(self)).one('click', function(e){
 						cancel( self );
-						$(':input', self).attr( 'disabled', true );
-						return false;
-					}
-				}).addClass( 'form_cancel' ) );*/
+						//$(':input', self).attr( 'disabled', true );	
+					});
+				}
+				else
+				{				
+					// Append the 'Cancel' button
+					appendable.append( $('<input />', {
+						type	: "button",
+						value : "Cancel",
+						click : function() {
+							cancel( self );
+							$(':input', self).attr( 'disabled', true );
+							return false;
+						}
+					}).addClass( 'form_cancel' ) );
+				}
 									 
 				// Find each span with a +data-name+, loop through and replace with input
 				var spans = $('span[data-name]', self);
