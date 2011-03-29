@@ -2438,7 +2438,7 @@ class KTAPI_Document extends KTAPI_FolderItem
 				break;
 		}
 
-		if (isset($version))
+		if (isset($version) && $version !== '')
 		{
 			$content_version_status_id = $this->document->getContentVersionStatus($version);
 
