@@ -51,7 +51,7 @@
 
 					<br/>
 					<br/>
-										
+
 					<div class="documentType" rel={$rootUrl}/presentation/lookAndFeel/knowledgeTree/widgets/updateMetadata.php?func=doctype&documentID={$document->getId()}">
 					<table class="metadatatable" cellspacing="0" cellpadding="5">
 					<tr class="metadatarow even first">
@@ -63,7 +63,7 @@
 						</td>
 					</table>
 					</div>
-					
+
 					<div class="editableMetadata">
 					{foreach item=oFieldset from=$fieldsets name=fieldsets}
 						{if $smarty.foreach.fieldsets.index == 2}
@@ -120,27 +120,11 @@
 
 		<div class="action_buttons above">
 
-			<div class="splitbutton"><a class="button" id="download" href="#">Download</a><span class="split">&#9660;</span></div>
-			<ul class="splitmenu" id="download" style="right: auto; margin-left: -1px; ">
-				<li><a href="" id="download-pdf">{i18n}Download PDF{/i18n}</a></li>
-			</ul>
-		</div>
-		{if $document->getIsCheckedOut()}
-			<div class="action">
-				<div class="splitbutton"><a class="button" href="#" id="checkin">Checkin</a><span class="split">&#9660;</span></div>
-				<ul class="splitmenu" id="checkin">
-					<li><a href="" id="checkin-upload">Checkin and Upload</a></li>
-					<li><a href="" id="add-version">Add new Version</a></li>
-				</ul>
-			</div>
-		{else}
-			<div class="action">
-				<div class="splitbutton"><a class="button" href="#">Checkout</a><span class="split">&#9660;</span></div>
-				<ul class="splitmenu" id="checkout">
-					<li><a href="" id="checkin-download">Checkout and Download</a></li>
-					<li><a href="" id="add-version">Add new Version</a></li>
-				</ul>
-			</div>
+    		{* Display top row action buttons *}
+            {foreach item=btn from=$actionBtns.above}
+                <div class="action">
+                    {if $btn.menu}
+                        <div class="splitbutton"><a class="button" id="{$btn.icon_class}" href="{$btn.url}" onclick='{$btn.onclick}'>{$btn.name}</a><span class="split">&#9660;</span></div>
 
                         {* Display the drop down menu's on the split buttons *}
                         <ul class="splitmenu" id="{$btn.icon_class}" style="right: auto; margin-left: -1px; ">
