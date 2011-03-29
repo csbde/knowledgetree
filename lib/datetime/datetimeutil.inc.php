@@ -38,8 +38,7 @@
  */
 require_once('timezones.inc');
 
-class datetimeutil
-{
+class datetimeutil {
 	/**
 	 * Constructor
 	 *
@@ -53,12 +52,15 @@ class datetimeutil
 	 * @param string $toTimezone - convert to or from
 	 * @return string $date - offset date
 	 */
-	static public function getLocaleDate($date, $toTimezone = true)
-	{
+	static public function getLocaleDate($date, $toTimezone = true, $aTime = false) {
 		// Make sure a date has been passed
 		if(is_null($date)) return $date;
 		// Create time conversion object
-		$tzc = new TimezoneConversion();
+		if($aTime) {
+			$tzc = new TimezoneConversion('H:i:s');
+		} else {
+			$tzc = new TimezoneConversion();
+		}
 		// Set the date to convert
 		$tzc->setProperty('Datetime', $date);
 		// Retrieve system timezone
@@ -78,28 +80,25 @@ class datetimeutil
 	 * @param unknown_type $date
 	 * @return unknown
 	 */
-	static public function convertToUTC($date)
-	{
-	    return self::getLocaleDate($date, false);
-
-	    /*
-		// Create time conversion object
-		$tzc = new TimezoneConversion('Y-m-d H:i:s');
-		// Set the date to convert
-		$tzc->setProperty('Datetime', $date);
-		// set zone to UTC
-		$tzc->setProperty('Timezone', 'UTC');
-		// Convert timezone
-		return $tzc->convertDateTime();
-		*/
+	static public function convertToUTC($date, $aTime = false) {
+	    return self::getLocaleDate($date, false, $aTime);
+	}
+	
+	/**
+	 * Convert time from UTC
+	 *
+	 * @param unknown_type $date
+	 * @return unknown
+	 */
+	static public function convertFromUTC($date, $aTime = false) {
+	    return self::getLocaleDate($date, true, $aTime);
 	}
 
 	/**
 	 * Return timezone
 	 *
 	 */
-	static public function getTimeZone()
-	{
+	static public function getTimeZone() {
 		// Retrieve system timezone
 		$oConfig = KTConfig::getSingleton();
 		return $oConfig->get('timezone/setTimezone', 'UTC');
