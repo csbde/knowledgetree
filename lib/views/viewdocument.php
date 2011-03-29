@@ -333,6 +333,10 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
             $tags = $fieldValue->getValue();
         }
 
+        if (empty($tags)) {
+            return array();
+        }
+
         $tags = explode(',', $tags);
         foreach ($tags as $key => $tag) {
             $tags[$key] = '{id: "' . $tag . '", name: "' . $tag . '"}';
