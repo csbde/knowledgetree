@@ -47,3 +47,12 @@
 	padding: 1em;
 	overflow: auto;
 }
+
+.tooltip {
+	background:transparent url("../../../../graphics/newui/tooltips/white_arrow.png");
+	font-size:13px;
+	height:70px;
+	width:160px;
+	padding:45px 25px 15px 25px;
+	color:black;	
+}
