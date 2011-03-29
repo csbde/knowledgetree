@@ -26,7 +26,7 @@ $sql = "SELECT tw.id, tw.tag FROM tag_words tw
         WHERE dt.tag_id IS NULL AND tw.tag LIKE '%$query%'";
 $tagResult = DBUtil::getResultArray(array($sql));
 foreach ($tagResult as $id => $tag) {
-    $tags[] = array('id' => $tag['id'], 'name' => $tag['tag']);
+    $tags[] = array('id' => $tag['tag'], 'name' => $tag['tag']);
 }
 
 echo json_encode($tags);
