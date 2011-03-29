@@ -44,22 +44,23 @@ class auth extends client_service {
 
         $user=$kt->get_user_object_by_username($username);
         if(!PEAR::isError($user)){
-			
+
 			$session=new stdClass();
 			$this->Response->setDebug('trying to start session with',array('username'=>$username,'password'=>$params['passhash']));
-			
+
 			$session = $kt->start_session($username, $params['passhash'],NULL,$app_type);
 			if(!PEAR::isError($session)){
 				$this->Response->setStatus('session_id',$session->get_session());
 			}else{
 				$this->setResponse(array('authenticated'=> false, 'message'=> 'Invalid username and/or password.'));
 				$this->addDebug('failed login '.$session->getMessage());
-				$this->addError('Unknown Login Error');
+				//$this->addError('Unknown Login Error');
+				$this->addError('Invalid username and/or password');
 				return false;
 			}
-			
+
 			/*
-			// OLD WAY
+			// OLD WAY = DO NOT DELETE!
 			$password=$user->getPassword();
 			$localPassHash=md5($password.$token);
 			if($localPassHash==$passhash){
@@ -80,7 +81,7 @@ class auth extends client_service {
 				return false;
 			}
 			*/
-			
+
         }else{
         	$this->addError('Incorrect Credentials');
         	//throw new Exception('Unrecognized User');
@@ -90,6 +91,12 @@ class auth extends client_service {
 	}
 
 	public function japiLogin(){
+
+	    return $this->login();
+
+	    // redirecting to login() as this function appears to return the user regardless of the supplied password
+	    // not sure why this happens or when ... but is causing a security risk in ExplorerCP
+	    /*
 		$this->logTrace((__METHOD__.'('.__FILE__.' '.__LINE__.')'),'Enter Function');
 		global $default;
 
@@ -99,6 +106,7 @@ class auth extends client_service {
 		);
 		$this->setResponse($ret);
 		return true;
+		*/
 	}
 
 	public function pickup_session(){
