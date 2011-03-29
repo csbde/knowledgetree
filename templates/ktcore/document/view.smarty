@@ -15,14 +15,14 @@
                 <td colspan="2" id="title_row">
 
 				<div class="documentTitle" rel={$rootUrl}/presentation/lookAndFeel/knowledgeTree/widgets/updateMetadata.php?func=title&documentID={$document->getId()}>
-				<span data-name="documentTitle" data-type='text' data-value-id="value_title" data-required="true"></span>
+				<span data-name="documentTitle" data-type='text' data-value-id="value_title" data-class="required"></span>
 					<span id="value_title">{i18n}{$document->getName()|sanitize}{/i18n}</span>
 					<span title="Click to edit" class="editable_control edit">&nbsp;</span>
 				</div>
                     {* Display Actions Block *}
                     {$documentBlocks->getDocBlock()}
 				<div class="documentFilename" rel={$rootUrl}/presentation/lookAndFeel/knowledgeTree/widgets/updateMetadata.php?func=filename&documentID={$document->getId()}>
-				<span data-name="documentFilename" data-type='text' data-value-id="value_filename" data-required="true"></span>
+				<span data-name="documentFilename" data-type='text' data-value-id="value_filename" data-class="required"></span>
 					<span id="value_filename"><p>{$document->getFileName()}</p></span>
 					<span title="Click to edit" class="editable_control edit">&nbsp;</span>
 				</div>
@@ -37,38 +37,38 @@
                         <br/>
                         <span class="doc_info" style="display: block; margin-top: 5px;">
 						Version <a href="">{$document->getMajorVersionNumber()}.{$document->getMinorVersionNumber()}</a> | Last Modified by: <a href="">{$doc_data.lastModifier}</a> on <a href="">{$document->getLastModifiedDate()|date_format:"%B %e, %Y at %H:%M"}</a> | Created by: <a href="">{$doc_data.creator}</a> on <a href="">{$document->getCreatedDateTime()|date_format:"%B %e, %Y at %H:%M"}</a> | A </strong> {$fieldsetDisplayHelper->_sizeHelper($document->getSize())} document.
-                            {if $document->getIsCheckedOut()}
-                                <span class="doc_checkedout"> <strong>Checked-out By:</strong> {$sCheckoutUser}</span>
-                            {/if}
+						{if $document->getIsCheckedOut()}
+							<span class="doc_checkedout"> <strong>Checked-out By:</strong> {$sCheckoutUser}</span>
+						{/if}
 
-                            <br><br/>
-                            <div class="tags">
-                                Tag Cloud
-                                <br/>
-                                <input type="text" name="tagcloud" id="tagcloud" />
-                                <br/>
-                                <input type="button" value="Save Tags" onclick="kt.tags.submitTags();" />
-                            </div>
+					<br><br/>
 
-                            <br/><br/>
+					<div class="tags">
+                                            Tag Cloud
+                                            <br/>
+                                            <input type="text" name="tagcloud" id="tagcloud" />
+                                            <br/>
+                                            <input type="button" value="Save Tags" onclick="kt.tags.submitTags();" />
+                                        </div>
+
+					<br/>
+					<br/>
 
 					<div class="documentType" rel={$rootUrl}/presentation/lookAndFeel/knowledgeTree/widgets/updateMetadata.php?func=doctype&documentID={$document->getId()}">
-					<!--<div class="documentType" rel="javascript:kt.api.changeDocumentType({$document->getId()}, {$document->getId()});">-->
-                                <table class="metadatatable" cellspacing="0" cellpadding="5">
-                                    <tr class="metadatarow even first">
-                                        <th>Document Type</th>
-                                        <td>
-                                            <span class="descriptiveText" id='documentTypeID' data-name='documentTypeID' data-options='[{foreach from=$document_types key=aKey item=documentType}
-                                            ["{$documentType->getName()}","{$documentType->getId()}"],{/foreach}]' data-type='select'>{$document_data.document_type->getName()}</span>
-					        <span title="Click to edit" class="editable_control edit">&nbsp;</span>
-                                        </td>
-                                    </tr>
-                                </table>
-                            </div>
+					<table class="metadatatable" cellspacing="0" cellpadding="5">
+					<tr class="metadatarow even first">
+						<th>Document Type</th>
+						<td>
+							<span class="descriptiveText" id='documentTypeID' data-name='documentTypeID' data-options='[{foreach from=$document_types key=aKey item=documentType}
+								["{$documentType->getName()}","{$documentType->getId()}"],{/foreach}]' data-type='select'>{$document_data.document_type->getName()}</span>
+							<span title="Click to edit" class="editable_control edit">&nbsp;</span>
+						</td>
+					</table>
+					</div>
 
-                            <div class="editablemetadata">
-                                {foreach item=oFieldset from=$fieldsets name=fieldsets}
-                                    {if $smarty.foreach.fieldsets.index == 2}
+					<div class="editableMetadata">
+					{foreach item=oFieldset from=$fieldsets name=fieldsets}
+						{if $smarty.foreach.fieldsets.index == 2}
 							<br/>
 							<div><span class="more">More...</span></div>
 							<br/>
@@ -108,8 +108,32 @@
 				     event.stopPropagation();
 				 });
 			});
-                            {/literal}
-                        </script>
+			{/literal}
+		</script>
+
+		<div class="action_buttons above">
+
+			<div class="splitbutton"><a class="button" id="download" href="#">Download</a><span class="split">&#9660;</span></div>
+			<ul class="splitmenu" id="download" style="right: auto; margin-left: -1px; ">
+				<li><a href="" id="download-pdf">{i18n}Download PDF{/i18n}</a></li>
+			</ul>
+		</div>
+		{if $document->getIsCheckedOut()}
+			<div class="action">
+				<div class="splitbutton"><a class="button" href="#" id="checkin">Checkin</a><span class="split">&#9660;</span></div>
+				<ul class="splitmenu" id="checkin">
+					<li><a href="" id="checkin-upload">Checkin and Upload</a></li>
+					<li><a href="" id="add-version">Add new Version</a></li>
+				</ul>
+			</div>
+		{else}
+			<div class="action">
+				<div class="splitbutton"><a class="button" href="#">Checkout</a><span class="split">&#9660;</span></div>
+				<ul class="splitmenu" id="checkout">
+					<li><a href="" id="checkin-download">Checkout and Download</a></li>
+					<li><a href="" id="add-version">Add new Version</a></li>
+				</ul>
+			</div>
 
                         <div class="action_buttons above">
                             <div class="action">

@@ -4,6 +4,8 @@ require_once('../../../../config/dmsDefaults.php');
 require_once(KT_DIR . '/ktapi/ktapi.inc.php');
 require_once(KT_LIB_DIR . '/widgets/fieldsetDisplay.inc.php');
 require_once(KT_LIB_DIR . '/triggers/triggerregistry.inc.php');
+require_once(KT_LIB_DIR . '/validation/validatorfactory.inc.php');
+//require_once(KT_PLUGIN_DIR . '/ktcore/KTValidators.php');
 
 	
 	// HTTP headers for no cache etc
@@ -121,36 +123,72 @@ require_once(KT_LIB_DIR . '/triggers/triggerregistry.inc.php');
 	{
 		$GLOBALS['default']->log->debug("changeDocumentFilename $iDocumentID $sFilename");
 		
-		$oUser = User::get($_SESSION['userID']);
+		//TODO: validate if legal filename
+		$oVF =& KTValidatorFactory::getSingleton();
+		$GLOBALS['default']->log->debug('changeDocumentFilename oVF '.print_r($oVF, true));
 		
-		if (PEAR::isError($oUser)) {
-			$GLOBALS['default']->log->error("changeDocumentFilename User {$_SESSION['userID']}: {$oUser->getMessage()}");
-			return false;
-		}
+		$oValidator = $oVF->get('ktcore.validators.illegal_char', array(
+            'test' => 'name',
+            'output' => 'name',
+        ));
+        
+        //$GLOBALS['default']->log->debug('changeDocumentFilename oValidator '.print_r($oValidator, true));
+        
+        $res = $oValidator->validate(array('name'=>$sFilename));
+        
+        //$GLOBALS['default']->log->debug('changeDocumentFilename validation result '.print_r($res, true));
+        
+        if (empty($res['errors']))
+        {
+        	//$GLOBALS['default']->log->debug('changeDocumentFilename validation I AM EMPTY');
+        	
+        	$oUser = User::get($_SESSION['userID']);
 		
-		$oDocument = &Document::get($iDocumentID);
-		
-		$res = KTDocumentUtil::rename($oDocument, $sFilename, $oUser);
-		
-		if (PEAR::isError($res)) {
-			$GLOBALS['default']->log->error("changeDocumentFilename User {$res->getMessage()}");
-			return false;
+			if (PEAR::isError($oUser)) {
+				$GLOBALS['default']->log->error("changeDocumentFilename User {$_SESSION['userID']}: {$oUser->getMessage()}");
+				return false;
+			}
+			
+			$oDocument = &Document::get($iDocumentID);
+			
+			$res = KTDocumentUtil::rename($oDocument, $sFilename, $oUser);
+			
+			if (PEAR::isError($res)) {
+				$GLOBALS['default']->log->error("changeDocumentFilename User {$res->getMessage()}");
+				return false;
+	        }
+	
+	        //assemble the item to return
+			$item['documentID'] = $iDocumentID;
+			$item['documentFilename'] = $oDocument->getFileName();
+			
+			$json['success'] = $item;
+			
+			echo(json_encode($json));
+			exit(0);
         }
-
-        //assemble the item to return
-		$item['documentID'] = $iDocumentID;
-		$item['documentFilename'] = $oDocument->getFileName();
+        else 
+        {
+        	//$GLOBALS['default']->log->debug('changeDocumentFilename validation I AM NOT EMPTY');
+        	
+        	//assemble the item to return
+			$item['documentID'] = $iDocumentID;
+			$item['documentFilename'] = $sFilename;
+			$item['message'] = $res['errors']['name'];
+			
+			$json['error'] = $item;
+			
+			echo(json_encode($json));
+			exit(0);
+        }
 		
-		$json['success'] = $item;
 		
-		echo(json_encode($json));
-		exit(0);
 	}
 	
 	
 	function changeDocumentType($iDocumentID, $iDocumentTypeID) 
 	{		
-		$GLOBALS['default']->log->debug("changeDocumentType updateDocumentType $iDocumentID $iDocumentTypeID");
+		$GLOBALS['default']->log->debug("changeDocumentType $iDocumentID $iDocumentTypeID");
 		
         $oDocument = &Document::get($iDocumentID);
         if (is_null($oDocument) || ($oDocument === false)) {
@@ -160,99 +198,97 @@ require_once(KT_LIB_DIR . '/triggers/triggerregistry.inc.php');
         
         $GLOBALS['default']->log->debug('changeDocumentType oDocument '.print_r($oDocument, true));
         
-        //only change the doctype if a new doctype has been selected!
-        if ($oDocument->getDocumentTypeID() != $iDocumentTypeID)
-		{
-	        $newType =& DocumentType::get($iDocumentTypeID);
-	        if (is_null($newType) || ($newType === false)) {
-	            //$GLOBALS['default']->log->error('The DocumentType does not exist.');
-	            return false;
-	        }
-	
-	        $oldType = DocumentType::get($oDocument->getDocumentTypeID());
-	        $oDocument->setDocumentTypeID($iDocumentTypeID);
-	
-	        // we need to find fieldsets that _were_ in the old one, and _delete_ those.
-	        $for_delete = array();
-	        
-	        $oldFieldsets = KTFieldset::getForDocumentType($oldType);
-	        $newFieldsets = KTFieldset::getForDocumentType($newType);
-	
-	        // prune from MDPack.
-	        foreach ($oldFieldsets as $oFieldset) {
-	            $old_fields = $oFieldset->getFields();
-	            foreach ($old_fields as $oField) {
-	                $for_delete[$oField->getId()] = 1;
-	            }
-	        }
-	
-	        foreach ($newFieldsets as $oFieldset) {
-	            $new_fields = $oFieldset->getFields();
-	            foreach ($new_fields as $oField) {
-	                unset($for_delete[$oField->getId()]);
-	            }
-	        }
-	
-	        $newPack = array( );
-	        foreach ($field_values as $MDPack) {
-	            if (!array_key_exists($MDPack[0]->getId(), $for_delete)) {
-	                $newPack[] = $MDPack;
-	            }
-	        }
-	        $field_values = $newPack;
-	
-	        $oDocumentTransaction = & new DocumentTransaction($oDocument, 'update metadata.', 'ktcore.transactions.update');
-	        
-	        $res = $oDocumentTransaction->create();
-	        if ( PEAR::isError( $res)) {
-	            $GLOBALS['default']->log->error('Failed to create transaction.');
-	            return false;
-	        }
-	
-	        $res = $oDocument->update( );
-	        if ( PEAR::isError( $res)) {
-	            $this->rollbackTransaction( );
-	            $GLOBALS['default']->log->error('Failed to change basic details about the document...');
-	            return false;
-	        }
-	
-	        $res = KTDocumentUtil::saveMetadata($oDocument, $field_values, array('novalidate'=>true));
-	        //$result = KTDocumentUtil::saveMetadata($oDocument, $packed, array('novalidate'=>true));
-	
-	        $GLOBALS['default']->log->debug("updateDocumentType result $res");
-	        
-	        if(!PEAR::isError($res) || !is_null($res))	
-	        {
-	            $oKTTriggerRegistry = KTTriggerRegistry::getSingleton();
-	            $aTriggers = $oKTTriggerRegistry->getTriggers('edit', 'postValidate');
-	
-	            foreach ($aTriggers as $aTrigger)
-	            {
-	                $sTrigger = $aTrigger[0];
-	                $oTrigger = new $sTrigger;
-	                $aInfo = array(
-	                "document" => $oDocument,
-	                "aOptions" => $field_values,
-	                );
-	                $oTrigger->setInfo($aInfo);
-	                $ret = $oTrigger->postValidate();
-	            }
-	        } 
-	        else {
-	            $this->rollbackTransaction();
-	            $GLOBALS['default']->log->error('An Error occurred in _setTransitionWorkFlowState');
-	            
-	            $item['documentID'] = $iDocumentID;
-				$item['documentTypeID'] = $oDocumentType->getId();
-				$item['documentTypeName'] = $oDocumentType->getName();
-				$item['message'] = $res->getMessage();
-				
-				$json['error'] = $item;
-				
-				echo(json_encode($json));
-				exit(0);
-	        }
-		}
+        $newType =& DocumentType::get($iDocumentTypeID);
+        if (is_null($newType) || ($newType === false)) {
+            //$GLOBALS['default']->log->error('The DocumentType does not exist.');
+            return false;
+        }
+
+        $oldType = DocumentType::get($oDocument->getDocumentTypeID());
+        $oDocument->setDocumentTypeID($iDocumentTypeID);
+
+        // we need to find fieldsets that _were_ in the old one, and _delete_ those.
+        $for_delete = array();
+        
+        $oldFieldsets = KTFieldset::getForDocumentType($oldType);
+        $newFieldsets = KTFieldset::getForDocumentType($newType);
+
+        // prune from MDPack.
+        foreach ($oldFieldsets as $oFieldset) {
+            $old_fields = $oFieldset->getFields();
+            foreach ($old_fields as $oField) {
+                $for_delete[$oField->getId()] = 1;
+            }
+        }
+
+        foreach ($newFieldsets as $oFieldset) {
+            $new_fields = $oFieldset->getFields();
+            foreach ($new_fields as $oField) {
+                unset($for_delete[$oField->getId()]);
+            }
+        }
+
+        $newPack = array( );
+        foreach ($field_values as $MDPack) {
+            if (!array_key_exists($MDPack[0]->getId(), $for_delete)) {
+                $newPack[] = $MDPack;
+            }
+        }
+        $field_values = $newPack;
+        
+        $GLOBALS['default']->log->debug('changeDocumentType field_values '.print_r($field_values, true));
+
+        $oDocumentTransaction = & new DocumentTransaction($oDocument, 'update metadata.', 'ktcore.transactions.update');
+        
+        $res = $oDocumentTransaction->create();
+        if ( PEAR::isError( $res)) {
+            $GLOBALS['default']->log->error('Failed to create transaction.');
+            return false;
+        }
+
+        $res = $oDocument->update( );
+        if ( PEAR::isError( $res)) {
+            $this->rollbackTransaction( );
+            $GLOBALS['default']->log->error('Failed to change basic details about the document...');
+            return false;
+        }
+
+        $res = KTDocumentUtil::saveMetadata($oDocument, $field_values, array('novalidate'=>true));
+        //$result = KTDocumentUtil::saveMetadata($oDocument, $packed, array('novalidate'=>true));
+
+        $GLOBALS['default']->log->debug("changeDocumentType result $res");
+        
+        if(!PEAR::isError($res) || !is_null($res))	
+        {
+            $oKTTriggerRegistry = KTTriggerRegistry::getSingleton();
+            $aTriggers = $oKTTriggerRegistry->getTriggers('edit', 'postValidate');
+
+            foreach ($aTriggers as $aTrigger)
+            {
+                $sTrigger = $aTrigger[0];
+                $oTrigger = new $sTrigger;
+                $aInfo = array(
+                "document" => $oDocument,
+                "aOptions" => $field_values,
+                );
+                $oTrigger->setInfo($aInfo);
+                $ret = $oTrigger->postValidate();
+            }
+        } 
+        else {
+            $this->rollbackTransaction();
+            $GLOBALS['default']->log->error('An Error occurred in _setTransitionWorkFlowState');
+            
+            $item['documentID'] = $iDocumentID;
+			$item['documentTypeID'] = $oDocumentType->getId();
+			$item['documentTypeName'] = $oDocumentType->getName();
+			$item['message'] = $res->getMessage();
+			
+			$json['error'] = $item;
+			
+			echo(json_encode($json));
+			exit(0);
+        }
 		
 		$oDocumentType = DocumentType::get($iDocumentTypeID);
 		
@@ -269,7 +305,7 @@ require_once(KT_LIB_DIR . '/triggers/triggerregistry.inc.php');
 		
 		$total_fieldsets = array_merge($fieldsets, $generic_fieldsets);
 		
-		$GLOBALS['default']->log->debug('updateDocumentType total_fieldsets '.print_r($total_fieldsets, true));
+		$GLOBALS['default']->log->debug('changeDocumentType total_fieldsets '.print_r($total_fieldsets, true));
 		
 		foreach ($total_fieldsets as $fieldset) 
 		{	
@@ -361,7 +397,7 @@ require_once(KT_LIB_DIR . '/triggers/triggerregistry.inc.php');
 			}
 		}
 		
-		$GLOBALS['default']->log->debug('updateDocumentType metadata '.print_r($metadata, true));
+		$GLOBALS['default']->log->debug('changeDocumentType metadata '.print_r($metadata, true));
 		
 		//assemble the item to return
 		$item['documentID'] = $iDocumentID;
@@ -390,7 +426,7 @@ require_once(KT_LIB_DIR . '/triggers/triggerregistry.inc.php');
 		$fields = array();
 		
 		//cycle through the POST variables and get all the fields
-		foreach($aFields as $key => $postVar)
+		foreach($aFields as $key => $field)
 		{
 			//$GLOBALS['default']->log->debug("persistMetadata postVar $key $postVar");
 			
@@ -403,13 +439,13 @@ require_once(KT_LIB_DIR . '/triggers/triggerregistry.inc.php');
 	 			continue;
 	 		}
 	
-			if(is_array($postVar))
+			if(is_array($field))
 			{
 				$value = '';
 				
-				foreach($postVar as $var)
+				foreach($field as $f)
 				{
-						$value .= $var.',';
+						$value .= $f.',';
 				}
 				
 				//chop off trailing comma
@@ -419,7 +455,7 @@ require_once(KT_LIB_DIR . '/triggers/triggerregistry.inc.php');
 			}
 			else
 			{
-				$packed[] = array($oField, $postVar);
+				$packed[] = array($oField, $field);
 			}
 		}
 		
