@@ -56,9 +56,9 @@ class TagCloudPlugin extends KTPlugin {
       * @param string $sFilename
       * @return TagCloudPlugin
       */
-    function TagCloudPlugin($sFilename = null)
+    function TagCloudPlugin($filename = null)
     {
-        $res = parent::KTPlugin($sFilename);
+        $res = parent::KTPlugin($filename);
         $this->sFriendlyName = _kt('Tag Cloud Plugin');
         return $res;
     }
@@ -75,27 +75,27 @@ class TagCloudPlugin extends KTPlugin {
         $this->registerPortlet(array(), 'TagCloudPortlet', 'tagcloud.portlet', 'TagCloudPortlet.php');
 
         // Check if the tagcloud fielset entry exists, if not, create it
-        $iFieldsetId = TagCloudPlugin::tagFieldsetExists();
-        if ($iFieldsetId === false) {
-            $oFieldset = TagCloudPlugin::createFieldset();
-            if (PEAR::isError($oFieldset) || is_null($oFieldset)) {
+        $fieldsetId = TagCloudPlugin::tagFieldsetExists();
+        if ($fieldsetId === false) {
+            $fieldset = TagCloudPlugin::createFieldset();
+            if (PEAR::isError($fieldset) || is_null($fieldset)) {
                 return false;
             }
             // make the fieldset id viewable
-            $iFieldsetId = $oFieldset->iId;
+            $fieldsetId = $fieldset->iId;
         }
 
         // Check if the tagcloud document field entry exists, if not, create it
-        $fExists = TagCloudPlugin::tagFieldExists();
-        if ($fExists === false) {
-            $oField = TagCloudPlugin::createDocumentField($iFieldsetId);
-            if (PEAR::isError($oField) || is_null($oField)) {
+        $exists = TagCloudPlugin::tagFieldExists();
+        if ($exists === false) {
+            $field = TagCloudPlugin::createDocumentField($fieldsetId);
+            if (PEAR::isError($field) || is_null($field)) {
                 return false;
             }
         }
 
-        $oTemplating =& KTTemplating::getSingleton();
-        $oTemplating->addLocation('Tag Cloud Plugin', '/plugins/tagcloud/templates');
+        $templating =& KTTemplating::getSingleton();
+        $templating->addLocation('Tag Cloud Plugin', '/plugins/tagcloud/templates');
     }
 
     /**
@@ -106,7 +106,7 @@ class TagCloudPlugin extends KTPlugin {
     function createFieldset()
     {
         // create the fieldsets entry
-        $oFieldset = KTFieldset::createFromArray(array(
+        $fieldset = KTFieldset::createFromArray(array(
             'name' => _kt('Tag Cloud'),
             'description' => _kt('The following tags are associated with your document'),
             'namespace' => 'tagcloud',
@@ -118,7 +118,7 @@ class TagCloudPlugin extends KTPlugin {
             'isSystem' => false,
         ));
 
-        return $oFieldset;
+        return $fieldset;
     }
 
     /**
@@ -151,20 +151,16 @@ class TagCloudPlugin extends KTPlugin {
      */
     function tagFieldExists()
     {
-        $sQuery = 'SELECT df.id AS id FROM document_fields AS df WHERE df.name = \'Tag\'';
-        $sTag = DBUtil::getOneResultKey(array($sQuery), 'id');
+        $query = 'SELECT df.id AS id FROM document_fields AS df WHERE df.name = \'Tag\'';
+        $tag = DBUtil::getOneResultKey(array($query), 'id');
 
-        if (PEAR::isError($sTag)) {
+        if (PEAR::isError($tag)) {
             global $default;
-            $default->log->error('Tag Cloud plugin - error checking tag field: '.$sTag->getMessage());
-            return $sTag;
+            $default->log->error('Tag Cloud plugin - error checking tag field: ' . $tag->getMessage());
+            return $tag;
         }
 
-        if (is_numeric($sTag)) {
-            return $sTag;
-        } else {
-            return false;
-        }
+        return is_numeric($tag)? $tag : false;
     }
 
     /**
@@ -172,26 +168,23 @@ class TagCloudPlugin extends KTPlugin {
      *
      * @return boolean
      */
-    function tagFieldsetExists() {
-        $sQuery = 'SELECT fs.id AS id FROM fieldsets AS fs '.
-                'WHERE namespace = \'tagcloud\'';
-        $iFieldset = DBUtil::getOneResultKey(array($sQuery), 'id');
+    function tagFieldsetExists()
+    {
+        $query = 'SELECT fs.id AS id FROM fieldsets AS fs WHERE namespace = \'tagcloud\'';
+        $fieldsetId = DBUtil::getOneResultKey(array($query), 'id');
 
-        if (PEAR::isError($iFieldset)) {
+        if (PEAR::isError($fieldsetId)) {
             global $default;
-            $default->log->error('Tag Cloud plugin - error checking tag fieldset: '.$iFieldset->getMessage());
-            return $iFieldset;
+            $default->log->error('Tag Cloud plugin - error checking tag fieldset: ' . $fieldsetId->getMessage());
+            return $fieldsetId;
         }
 
-        if (is_numeric($iFieldset)) {
-            return $iFieldset;
-        } else {
-            return false;
-        }
+        return is_numeric($fieldsetId) ? $fieldsetId : false;
     }
+
 }
 
-$oPluginRegistry =& KTPluginRegistry::getSingleton();
-$oPluginRegistry->registerPlugin('TagCloudPlugin', 'ktcore.tagcloud.plugin', __FILE__);
+$pluginRegistry =& KTPluginRegistry::getSingleton();
+$pluginRegistry->registerPlugin('TagCloudPlugin', 'ktcore.tagcloud.plugin', __FILE__);
 
 ?>

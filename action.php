@@ -5,7 +5,7 @@
  * KnowledgeTree Community Edition
  * Document Management Made Simple
  * Copyright (C) 2008, 2009, 2010 KnowledgeTree Inc.
- *  
+ *
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License version 3 as published by the
@@ -57,7 +57,7 @@ $_REQUEST['fReturnData'] = strip_tags($_REQUEST['fReturnData']);
  * then chains onto that action's dispatcher.
  */
 class KTActionDispatcher extends KTStandardDispatcher {
-    
+
     /**
      * Default dispatch
      *
@@ -73,19 +73,19 @@ class KTActionDispatcher extends KTStandardDispatcher {
             $this->error = true;
             $this->errorPage(_kt('No action given'));
         }
-        
+
         $oRegistry =& KTActionRegistry::getSingleton();
         $aActionInfo = $oRegistry->getActionByNsname($action);
         if (empty($aActionInfo)) {
             $this->error = true;
             $this->errorPage(sprintf(_kt('No such action exists in %s'), APP_NAME));
         }
-        
+
         $sFilename = $aActionInfo[1];
         if (!empty($sFilename)) {
             require_once($sFilename);
         }
-        
+
         $oAction = new $aActionInfo[0];
         $oAction->dispatch();
     }
@@ -153,7 +153,7 @@ class KTActionDispatcher extends KTStandardDispatcher {
                 redirect($redirectUrl);
                 exit(0);
             }
-            
+
             $this->errorRedirectToBrowse(_kt('Invalid folder selected.'));
             exit(0);
         }
@@ -165,7 +165,7 @@ class KTActionDispatcher extends KTStandardDispatcher {
                 redirect($redirectUrl);
                 exit(0);
             }
-            
+
             $this->errorRedirectToBrowse(_kt('Please select documents or folders first.'), sprintf('fFolderId=%d', $oFolder->getId()));
             exit(0);
         }
@@ -201,7 +201,7 @@ class KTActionDispatcher extends KTStandardDispatcher {
             print $data;
         }
     }
-    
+
 }
 
 $d = new KTActionDispatcher();
