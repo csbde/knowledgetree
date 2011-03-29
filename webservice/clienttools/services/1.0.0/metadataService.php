@@ -84,7 +84,6 @@ class metadataService extends client_service {
 
         foreach ($currentMetadata as $currentFieldset) {
             $currentFields = $currentFieldset->getFields();
-
             foreach ($currentFields as $currentField) {
                 $currentID = $currentField->getId();
                 $newValue = '';

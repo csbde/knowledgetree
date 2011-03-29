@@ -34,10 +34,6 @@
  * Contributor(s): ______________________________________
  */
 
-// probably this should be defined somewhere global, just do it here for now...
-define('DOCUMENT_TAG_FIELD', 2);
-
-
 class ViewDocumentDispatcher extends KTStandardDispatcher {
 
     public $sName = 'ktcore.actions.document.displaydetails';
@@ -191,8 +187,10 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
         foreach ($docFieldsets as $fieldset) {
             //$GLOBALS['default']->log->debug('viewdocument oFieldset namespace :'.$fieldset->getNamespace().':');
             //$GLOBALS['default']->log->debug('viewdocument oFieldset namespace !=== tagcloud '.$fieldset->getNamespace() !== 'tagcloud');
-            //Tag Cloud displayed elsewhere
-            if ($fieldset->getNamespace() != 'tagcloud') {
+            if ($fieldset->getNamespace() == 'tagcloud') {
+                $tags = $this->getDocumentTags($document, $fieldset);
+            }
+            else {
                 //$GLOBALS['default']->log->debug('viewdocument oFieldset '.print_r($fieldset, true));
                 $displayClass = $fieldsetDisplayReg->getHandler($fieldset->getNamespace());
 
@@ -289,7 +287,7 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
             //'canCheckin' => $canCheckin,
             //'bCanEdit' => $canEdit,
             'actionBtns' => $actionBtns,
-	       'document_id' => $documentId,
+            'document_id' => $documentId,
             'document' => $document,
             'documentName' => $document->getName(),
             'document_data' => $documentData,
@@ -301,7 +299,8 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
             'hasNotifications' => false,
             'fieldsetDisplayHelper' => $FieldsetDisplayHelper,
             'documentBlocks' => $documentBlocks,
-            'documentSidebars' => $documentSidebars
+            'documentSidebars' => $documentSidebars,
+            'tags' => implode(',', $tags)
         );
 
         // Conditionally include live_preview
@@ -317,6 +316,26 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
         //$this->oPage->setBreadcrumbDetails(_kt("Document Details"));
 
         return $template->render($templateData);
+    }
+
+    private function getDocumentTags($document, $fieldset)
+    {
+        // FIXME I think this is horribly inefficient and we should probably get the tags directly.
+        //       Do like this for now and once working look at alternative for speed.
+        $fields = $fieldset->getFields();
+        $fieldId = $fields[0]->getId();
+
+        $fieldValue = DocumentFieldLink::getByDocumentAndField($document, $fields[0]);
+        if (!is_null($fieldValue) && (!PEAR::isError($fieldValue))) {
+            $tags = $fieldValue->getValue();
+        }
+
+        $tags = explode(',', $tags);
+        foreach ($tags as $key => $tag) {
+            $tags[$key] = '{id: "' . $tag . '", name: "' . $tag . '"}';
+        }
+
+        return $tags;
     }
 
     // FIXME refactor out the document-info creation into a single utility function.
