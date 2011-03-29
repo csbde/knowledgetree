@@ -353,7 +353,7 @@ require_once(KT_LIB_DIR . '/validation/validatorfactory.inc.php');
 						case 'tree':
 							$selection = KTAPI::get_metadata_tree($field->getId());
 							//remove the outer elements of the array as we don't need them!
-							$selection = $selection[-1]['fields'][0];
+							$selection = $selection[0];
 							//we need to get rid of values that we do not need else the JSON object we create will be incorrect!
 							SimpleFieldsetDisplay::recursive_unset($selection, array('treeid', 'parentid', 'fieldid'));
 							

@@ -173,12 +173,20 @@ class KTDocumentAction extends KTStandardDispatcher {
     }
 
     function getInfo() {
-        if ($this->_show() === false) {
+        $check = $this->_show();
+        if ($check === false) {
             return null;
         }
 
-        $url = $this->getURL();
-        $onClick = $this->getOnClick();
+        $icon = $this->sIconClass;
+        if ($check === 'disabled') {
+            $url = '#';
+            $onClick = '';
+            //$icon = $this->sIconClass . ' disabled';
+        } else {
+            $url = $this->getURL();
+            $onClick = $this->getOnClick();
+        }
 
         $aInfo = array(
             'description' => $this->sDescription,
@@ -186,10 +194,11 @@ class KTDocumentAction extends KTStandardDispatcher {
             'ns' => $this->sName,
             'url' => $url,
             'onclick' => $onClick,
-            'icon_class' => $this->sIconClass,
+            'icon_class' => $icon,
             'parent_btn' => $this->sParentBtn,
             'btn_position' => $this->sBtnPosition,
-            'btn_order' =>$this->btnOrder
+            'btn_order' =>$this->btnOrder,
+            'status' => $check
         );
 
         $aInfo = $this->customiseInfo($aInfo);
