@@ -28,6 +28,10 @@ $sql = "SELECT tw.id, tw.tag FROM tag_words tw
         WHERE dt.tag_id IS NULL AND tw.tag LIKE '%$query%'";
 $tagResult = DBUtil::getResultArray(array($sql));
 foreach ($tagResult as $id => $tag) {
+    // Skip exact matches to prevent duplication in the list.
+    if ($query == $tag['tag']) {
+        continue;
+    }
     $tags[] = array('id' => $tag['tag'], 'name' => $tag['tag']);
 }
 

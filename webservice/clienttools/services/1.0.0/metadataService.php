@@ -32,7 +32,6 @@ class metadataService extends client_service {
         $user = User::get($_SESSION['userID']);
         $document->startNewMetadataVersion($user);
 
-        // Is this bit actually needed for a tag update?
         $res = $document->update();
         if (PEAR::isError($res)) {
             DBUtil::rollback();
