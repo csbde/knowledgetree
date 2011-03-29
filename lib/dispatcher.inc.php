@@ -67,8 +67,8 @@ class KTDispatcher {
     var $aPersistParams = array();
 
     function KTDispatcher() {
-        $this->oValidator =new KTDispatcherValidation($this);
-        $this->oRedirector =new KTDispatchStandardRedirector($this);
+        $this->oValidator = new KTDispatcherValidation($this);
+        $this->oRedirector = new KTDispatchStandardRedirector($this);
     }
 
     function redispatch($event_var, $action_prefix = null, $orig_dispatcher = null, $parent_url = null) {
@@ -116,6 +116,7 @@ class KTDispatcher {
                 exit(0);
             }
         }
+
         $method = sprintf('%s_main', $this->action_prefix);
         if (array_key_exists($this->event_var, $_REQUEST)) {
             $event = strip_tags($_REQUEST[$this->event_var]);
