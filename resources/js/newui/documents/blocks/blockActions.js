@@ -63,7 +63,7 @@ workflowActions.prototype.displayAction = function() {
 	var documentId = jQuery('#documentId').attr('value');
 	var workflowState = jQuery('#workflowState').attr('value');
 
-	if (workflowState === 'disabled') {
+	if (workflowState == 'disabled') {
 		width = '400px';
 		height = '200px';
 		title = 'Add a new workflow';
@@ -115,7 +115,7 @@ subscriptionActions.prototype.subscribeToDocument = function() {
 	var documentId = jQuery('#documentId').attr('value');
 	var address = '';
 	this.toggleAction('subscribe', status);
-	if (status === 'disabled') {
+	if (status == 'disabled') {
 		address += 'kt_path_info=ktstandard.subscription.documentsubscription&fDocumentId=' + documentId;
 	} else {
 		address += 'kt_path_info=ktstandard.subscription.documentunsubscription&fDocumentId=' + documentId;
@@ -129,7 +129,7 @@ subscriptionActions.prototype.subscribeToDocument = function() {
 * Toggle the action for alerts
 */
 subscriptionActions.prototype.toggleAction = function(action, status) {
-	if (status === 'disabled') {
+	if (status == 'disabled') {
 		jQuery('#' + action + '_action').attr('class', action + ' action enabled');
 		jQuery('#' + action + '_action').attr('value', 'enabled');
 	}
