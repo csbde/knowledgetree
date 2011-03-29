@@ -1320,7 +1320,7 @@ class KTAPI {
         	
         	if (!isset($indexed[$treeID])) {
         		$path = '';
-        		$treepath .= $row['tree_name'];
+        		$treepath .= $row['tree_name'].'\\';
         		$indexed[$treeID] = array('tree_id' => $treeID,
         									'parent_id' => $row[$parentIdField],
         									'tree_name' => $row['tree_name'],
@@ -1328,7 +1328,7 @@ class KTAPI {
 	        	$indexed[$treeID]['fields'] = array();
         	}
 
-        	$path .= $treepath.'\\'.$row['field_name'];
+        	$path .= $treepath.$row['field_name'];
         	
         	$GLOBALS['default']->log->debug("convertToTree path $path");
         	

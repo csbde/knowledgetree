@@ -2895,26 +2895,12 @@ class KTWebService {
 					//recursively do the tree
 					$selection = $metadata[$i]['fields'][$j]['selection'];
 					
-					$GLOBALS['default']->log->debug('get_document_type_metadata tree selection '.print_r($selection, true));
-					
 					$tree = array();
 					
 					KTWebService::_populate_tree($selection, $tree);
 					
-					$GLOBALS['default']->log->debug('get_document_type_metadata tree temp '.print_r($tree, true));
+					$GLOBALS['default']->log->debug('get_document_type_metadata tree after population '.print_r($tree, true));
 						
-					/*foreach ($selection as $item)
-					{
-						$GLOBALS['default']->log->debug('get_document_type_metadata tree item '.print_r($item, true));
-						
-						$new[] = array(
-							'id' => $item['tree_id'],
-							'name' => $item['field_name'],
-							'value' => $item['field_name'],
-							'parent_id' => $item['parent_id'],
-							'tree_name' => $item['tree_name']
-						);
-					}*/
 					$metadata[$i]['fields'][$j]['selection'] = $tree;
 				}
 			}
@@ -2934,32 +2920,33 @@ class KTWebService {
     	return $return;
 	}
 	
-	function _populate_tree($selection, &$tree)
+	function _populate_tree($selection, &$tree, $path = '')
 	{
-		$GLOBALS['default']->log->debug('_populate_tree selection '.print_r($selection, true));
 		
 		foreach ($selection as $item)
-		{
-			$GLOBALS['default']->log->debug('_populate_tree item '.print_r($item, true));
-			
-			if ($item['type'] == 'tree')
+		{			
+			if ($item['type'] == 'field')
 			{
-				KTWebService::_populate_tree($item['fields'], &$tree);
-			}
-		
-			else 
-			{			
 				$tree[] = array(
 					'id' => $item['field_id'],
 					'name' => $item['field_name'],
 					'value' => $item['field_name'],
 					'parent_id' => $item['parent_id'],
-					'path' => $item['path'],
-					//'field_id' => $item['field_id'],
-					//'tree_name' => $item['tree_name']
+					'path' => $path.$item['field_name']
 				);
 			}
-		}
+		
+			else 
+			{				
+				$path .= $item['tree_name'].'\\';
+				
+				KTWebService::_populate_tree($item['fields'], &$tree, $path);
+			
+				//reset path
+				$path = 'Root\\';
+			}			
+		}	
+		
 	}
 
     /**
@@ -3021,22 +3008,19 @@ class KTWebService {
 					}
 					$metadata[$i]['fields'][$j]['selection'] = $new;
 				}
+				//process tree
 				else
-				{					
+				{
 					$selection = $metadata[$i]['fields'][$j]['selection'];
-					$new = array();
-	
-					foreach ($selection as $item)
-					{	    	
-						$new[] = array(
-							'id' => $item['tree_id'],
-							'name' => $item['field_name'],
-							'value' => $item['field_name'],
-							'parent_id' => $item['parent_id'],
-							'tree_name' => $item['tree_name']
-						);
-					}
-					$metadata[$i]['fields'][$j]['selection'] = $new;
+					
+					$tree = array();
+					//recursively do the tree
+					
+					KTWebService::_populate_tree($selection, $tree);
+					
+					$GLOBALS['default']->log->debug('get_document_metadata tree after population '.print_r($tree, true));
+						
+					$metadata[$i]['fields'][$j]['selection'] = $tree;
 				}
 			}
 		}
