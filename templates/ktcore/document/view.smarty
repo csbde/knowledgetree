@@ -48,7 +48,7 @@
                                             <br/>
                                             <input type="text" name="tagcloud" id="tagcloud" />
                                             <br/>
-                                            <input type="button" value="Save Tags" onclick="kt.app.metadata.saveTags();" />
+                                            <input type="button" value="Save Tags" onclick="kt.app.metadata.saveTags({$document_id});" />
                                         </div>
 
 					<br/>

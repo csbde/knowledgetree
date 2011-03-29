@@ -2,10 +2,10 @@ kt.app.metadata = new function() {
 
     var self = this;
 
-    this.saveTags = function()
+    this.saveTags = function(documentId)
     {
         var tags = encodeURIComponent(jQuery('#tagcloud').val());
-        var params = {'tags': tags, 'documentId': 250};
+        var params = {'tags': tags, 'documentId': documentId};
         var synchronous = false;
         var func = 'metadataService.saveTags';
         ktjapi.callMethod(func, params, self.updateSuccessful, synchronous, self.updateFailed, 30000);
