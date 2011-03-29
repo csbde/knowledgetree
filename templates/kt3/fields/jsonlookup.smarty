@@ -84,7 +84,7 @@
 
         {literal}
         <script type="text/javascript">
-            jQuery("#users").tokenInput("/filterUsers.php", {
+            jQuery("#users").tokenInput("/plugins/ktcore/users/filterUsers.php", {
                 // Alter the minChars value to determine how much the user must type before a search is initiated
                 minChars: 2,
                 prePopulate: [{/literal}{$options.assigned[1]}{literal}],

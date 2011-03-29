@@ -11,7 +11,10 @@
  *
  */
 
-require_once('config/dmsDefaults.php');
+$start = strpos(dirname(__FILE__), 'plugins');
+$filePath = substr(dirname(__FILE__), 0, $start);
+
+require_once($filePath . 'config/dmsDefaults.php');
 require_once(KT_LIB_DIR . '/users/User.inc');
 
 $query = KTUtil::arrayGet($_REQUEST, 'q');
