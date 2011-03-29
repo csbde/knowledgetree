@@ -52,7 +52,7 @@
 					<br/>
 					<br/>
 
-					<div class="documentType" rel={$rootUrl}/presentation/lookAndFeel/knowledgeTree/widgets/updateMetadata.php?func=doctype&documentID={$document->getId()}">
+					<div class="documentType" rel="{$rootUrl}/presentation/lookAndFeel/knowledgeTree/widgets/updateMetadata.php?func=doctype&documentID={$document->getId()}">
 					<table class="metadatatable" cellspacing="0" cellpadding="5">
 					<tr class="metadatarow even first">
 						<th>Document Type</th>
@@ -84,40 +84,6 @@
 			</td>
 			<td valign="top" width="375" id="column_right">
 				<div class="" style="margin-bottom: 10px;">
-		<script>
-			{literal}
-			 jQuery(function() {
-
-				jQuery(".split").click(function() {
-
-					if (jQuery(this).parent().next().is(':visible'))
-					{
-						jQuery(".splitmenu").hide();
-						jQuery(".split").removeClass('selected');
-
-					}
-					else
-					{
-						jQuery(".splitmenu").hide();
-						jQuery(".split").removeClass('selected');
-						jQuery(this).addClass('selected').parent().next().show();
-
-					}
-
-				});
-
-				 jQuery('html').click(function() {
-				 	jQuery(".splitmenu").hide();
-				 	jQuery(".split").removeClass('selected');
-				 });
-
-				jQuery('.split').click(function(event){
-				     event.stopPropagation();
-				 });
-			});
-			{/literal}
-		</script>
-
 		<div class="action_buttons above">
 
     		{* Display top row action buttons *}

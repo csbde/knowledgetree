@@ -52,6 +52,36 @@ jQuery(document).ready(function() {
 	});
 })(jQuery);
 
+jQuery(function() {
+
+				jQuery(".split").click(function() {
+
+					if (jQuery(this).parent().next().is(':visible'))
+					{
+						jQuery(".splitmenu").hide();
+						jQuery(".split").removeClass('selected');
+
+					}
+					else
+					{
+						jQuery(".splitmenu").hide();
+						jQuery(".split").removeClass('selected');
+						jQuery(this).addClass('selected').parent().next().show();
+
+					}
+
+				});
+
+				 jQuery('html').click(function() {
+				 	jQuery(".splitmenu").hide();
+				 	jQuery(".split").removeClass('selected');
+				 });
+
+				jQuery('.split').click(function(event){
+				     event.stopPropagation();
+				 });
+			});
+
 /**
  * Functions to clear default form text
  */
