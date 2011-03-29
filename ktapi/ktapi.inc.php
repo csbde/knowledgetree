@@ -1278,12 +1278,16 @@ class KTAPI {
 	   	foreach ($flat as $row) {
         	$treeID = $row[$idTree];
         	if (!isset($indexed[$treeID])) {
+        		$path = '';
+        		$treepath .= $row['tree_name'].'\\';
         		$indexed[$treeID] = array('treeid' => $treeID,
         									'parentid' => $row[$parentIdField],
         									'treename' => $row['treename'],
         									'type' => 'tree');//$row;
 	        	$indexed[$treeID]['fields'] = array();
         	}
+        	
+        	$path .= $treepath.$row['fieldname'];
 
 	        $indexed[$treeID]['fields'][$row[$idField]] = array('fieldid' => $row[$idField],
 	        													'parentid' => $treeID,
@@ -1293,6 +1297,8 @@ class KTAPI {
 	        if ($row[$parentIdField] < $root) {
 	        	$root = $row[$parentIdField];
 	        }
+	        
+	        $path = '';
 	    }
 
 	    //second pass
@@ -1303,7 +1309,10 @@ class KTAPI {
 
 	    $results = array($root => $indexed[$root]);
 	    
-	    return $results;	//[-1]['fields'][0]['fields'];
+	    //return $results;	//[-1]['fields'][0]['fields'];
+	    
+	    //strip out the unneccesary outer array
+	    return $results[-1]['fields'];
 	}
 
 	/**
