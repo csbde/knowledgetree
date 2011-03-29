@@ -60,9 +60,19 @@ class SharedContentDocumentAction extends KTDocumentAction {
     	else {
     	    return _kt('Share');
 
+    	    /*
     	    $onclick = "javascript:{kt.app.sharewithusers.shareContentWindow(\"{$this->oDocument->getId()}\", \"D\", \"{$_SESSION['userID']}\");}";
     	    return "<a href='#' onclick='{$onclick}' >". _kt('Share') .'</a>';
+    	    */
     	}
+    }
+
+    function _show() {
+        $check = parent::_show();
+        if($check === false) {
+            return 'disabled';
+        }
+        return $check;
     }
 
     function getOnClick()

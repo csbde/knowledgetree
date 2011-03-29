@@ -124,7 +124,11 @@
             {foreach item=btn from=$actionBtns.above}
                 <div class="action">
                     {if $btn.menu}
-                        <div class="splitbutton"><a class="button" id="{$btn.icon_class}" href="{$btn.url}" onclick='{$btn.onclick}'>{$btn.name}</a><span class="split">&#9660;</span></div>
+                        {if $btn.status === 'disabled'}
+                            <div class="splitbutton"><span class="button disabled" id="{$btn.icon_class}">{$btn.name}</span><span class="split">&#9660;</span></div>
+                        {else}
+                            <div class="splitbutton"><a class="button" id="{$btn.icon_class}" href="{$btn.url}" onclick='{$btn.onclick}'>{$btn.name}</a><span class="split">&#9660;</span></div>
+                        {/if}
 
                         {* Display the drop down menu's on the split buttons *}
                         <ul class="splitmenu" id="{$btn.icon_class}" style="right: auto; margin-left: -1px; ">
@@ -133,7 +137,11 @@
                             {/foreach}
                         </ul>
                     {else}
-                        <div><a class="button" id="{$btn.icon_class}" href="{$btn.url}" onclick='{$btn.onclick}'>{$btn.name}</a></div>
+                        {if $btn.status === 'disabled'}
+                            <div><span class="button disabled" id="{$btn.icon_class}">{$btn.name}</span></div>
+                        {else}
+                            <div><a class="button" id="{$btn.icon_class}" href="{$btn.url}" onclick='{$btn.onclick}'>{$btn.name}</a></div>
+                        {/if}
                     {/if}
                 </div>
             {/foreach}
@@ -154,7 +162,7 @@
                 {foreach item=btn from=$actionBtns.below}
                     <div class="action">
                         {if $btn.menu}
-                            <div class="splitbutton"><a class="button" id="{$btn.icon_class}" href="{$btn.url}" onclick='{$btn.onclick}'>{$btn.name}</a><span class="split">&#9660;</span></div>
+                            <div class="splitbutton"><span class="button" id="{$btn.icon_class}">{$btn.name}</span><span class="split">&#9660;</span></div>
 
                             {* Display the drop down menu's on the split buttons *}
                             <ul class="splitmenu" id="{$btn.icon_class}">

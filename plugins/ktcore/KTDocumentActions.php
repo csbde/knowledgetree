@@ -433,6 +433,14 @@ class KTDocumentCheckOutAction extends KTDocumentAction {
         return _kt('Checkout');
     }
 
+    function _show() {
+        $check = parent::_show();
+        if($check === false) {
+            return 'disabled';
+        }
+        return $check;
+    }
+
     function getInfo() {
         if ($this->oDocument->getIsCheckedOut()) {
             return null;
