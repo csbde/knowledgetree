@@ -4,7 +4,7 @@
 <script type="text/javascript" src="/thirdpartyjs/jquery/plugins/editableset/jquery.editable-set.extend.js"> </script>
 <script type="text/javascript" src="/resources/js/newui/kt_documentPropertyEditor.js"> </script>
 <script type="text/javascript" src="/thirdpartyjs/jquery/plugins/tokenizer/src/jquery.tokeninput.js"></script>
-<script type="text/javascript" src="/resources/js/newui/tags.js"></script>
+<script type="text/javascript" src="/resources/js/newui/kt.app.tags.js"></script>
 
 <!-- FILE: ktcore/document/view.smarty -->
 <table>
@@ -48,7 +48,7 @@
                                             <br/>
                                             <input type="text" name="tagcloud" id="tagcloud" />
                                             <br/>
-                                            <input type="button" value="Save Tags" onclick="kt.tags.submitTags();" />
+                                            <input type="button" value="Save Tags" onclick="kt.app.tags.submitTags();" />
                                         </div>
 
 					<br/>
