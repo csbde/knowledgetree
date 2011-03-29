@@ -8,10 +8,12 @@
  *    The minimal version can then be loaded for instances like this.
  */
 
-require_once('config/dmsDefaults.php');
+$start = strpos(dirname(__FILE__), 'plugins');
+$filePath = substr(dirname(__FILE__), 0, $start);
+require_once($filePath . 'config/dmsDefaults.php');
 
 $query = KTUtil::arrayGet($_REQUEST, 'q');
-$documentId = KTUtil::arrayGet($_REQUEST, 'document_id');
+$documentId = KTUtil::arrayGet($_REQUEST, 'documentId');
 if (empty($query) || empty($documentId)) {
     echo '';
     exit(0);

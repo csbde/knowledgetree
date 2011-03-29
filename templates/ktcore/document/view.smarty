@@ -4,7 +4,7 @@
 <script type="text/javascript" src="/thirdpartyjs/jquery/plugins/editableset/jquery.editable-set.extend.js"> </script>
 <script type="text/javascript" src="/resources/js/newui/kt_documentPropertyEditor.js"> </script>
 <script type="text/javascript" src="/thirdpartyjs/jquery/plugins/tokenizer/src/jquery.tokeninput.js"></script>
-<script type="text/javascript" src="/resources/js/newui/kt.app.tags.js"></script>
+<script type="text/javascript" src="/resources/js/newui/kt.app.metadata.js"></script>
 
 <!-- FILE: ktcore/document/view.smarty -->
 <table>
@@ -48,7 +48,7 @@
                                             <br/>
                                             <input type="text" name="tagcloud" id="tagcloud" />
                                             <br/>
-                                            <input type="button" value="Save Tags" onclick="kt.app.tags.submitTags();" />
+                                            <input type="button" value="Save Tags" onclick="kt.app.metadata.saveTags();" />
                                         </div>
 
 					<br/>
@@ -203,7 +203,7 @@
 
 {literal}
 <script type="text/javascript">
-    jQuery("#tagcloud").tokenInput("/filterTags.php?document_id={/literal}{$document_id}{literal}", {
+    jQuery("#tagcloud").tokenInput("{/literal}{$tagFilterScript}{literal}", {
         // Alter the minChars value to determine how much the user must type before a search is initiated
         minChars: 2,
         prePopulate: [{/literal}{$tags}{literal}],

@@ -12,6 +12,9 @@ require_once(KT_LIB_DIR . '/documentmanagement/documentutil.inc.php');
 
 class metadataService extends client_service {
 
+    /**
+     * Save submitted tags.
+     */
     public function saveTags($params)
     {
         $document = Document::get($params['documentId']);
@@ -77,6 +80,9 @@ class metadataService extends client_service {
         return true;
     }
 
+    /**
+     * Merge existing metadata with submitted metadata.
+     */
     private function mergeMetadata($document, $newMetadata = array())
     {
         $currentMetadata = (array)KTMetadataUtil::fieldsetsForDocument($document);

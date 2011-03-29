@@ -275,6 +275,8 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
         $sidebars = KTDocumentActionUtil::getDocumentActionsForDocument($this->oDocument, $this->oUser, 'maindocsidebar');
         $documentSidebars = isset($sidebars[0]) ? $sidebars[0] : array();
 
+        $tagPluginPath = KTPluginUtil::getPluginPath('ktcore.tagcloud.plugin', true);
+
         $templateData = array(
             'doc_data' => array(
                 'owner' => $ownerUser[0]['name'],
@@ -300,6 +302,7 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
             'fieldsetDisplayHelper' => $FieldsetDisplayHelper,
             'documentBlocks' => $documentBlocks,
             'documentSidebars' => $documentSidebars,
+            'tagFilterScript' => "/{$tagPluginPath}filterTags.php?documentId=$documentId",
             'tags' => implode(',', $tags)
         );
 
