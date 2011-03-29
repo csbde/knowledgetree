@@ -40,7 +40,6 @@ textarea {
 	-webkit-border-radius: 2px;
 	-moz-border-radius: 2px;
 	border-radius: 2px;
-	behavior: url('../resources/css/border-radius.htc');
 }
 .page {
 	min-width: 700px;
@@ -57,7 +56,6 @@ textarea {
 	-moz-border-radius: 2px;
 	-webkit-border-radius: 2px;
 	border-radius: 2px;
-	behavior: url('../resources/css/border-radius.htc');
 	text-shadow: 0px 1px white;
 	text-decoration: none !important;
 }
@@ -89,7 +87,6 @@ textarea {
 	-moz-border-radius: 3px;
 	-webkit-border-radius: 3px;
 	border-radius: 3px;
-	behavior: url('../resources/css/border-radius.htc');
 	background: #FBFBFB !important;
 }
 .browseView.bulkActionMenu a:active {
@@ -115,7 +112,6 @@ textarea {
 .sidebarUpgradeBn {
 	display: block;
 	border: 1px solid #ccc;
-	behavior: url('../resources/css/border-radius.htc');
 	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffff', endColorstr='#cccccc') !important; /* for IE */
 	background: -webkit-gradient(linear, left top, left bottom, from(#fff), to(#ccc)) !important; /* for webkit browsers */
 	background: -moz-linear-gradient(top,  #fff,  #ccc) !important; /* for firefox 3.6+ */
@@ -160,7 +156,6 @@ textarea {
 	-moz-border-radius: 2px;
 	-webkit-border-radius: 2px;
 	border-radius: 2px;
-	behavior: url('../resources/css/border-radius.htc');
 
 }
 #breadcrumbs span {
@@ -267,7 +262,6 @@ textarea {
     padding: 4px 0 2px 2px;
     border: 1px solid #EEE!important;
 	border-radius: 3px;
-	behavior: url('../resources/css/border-radius.htc');
 }
 #breadcrumbs .breadcrumbBtns a:hover {
 	text-decoration: none !important;
@@ -275,7 +269,6 @@ textarea {
 	-moz-border-radius: 3px;
 	-webkit-border-radius: 3px;
 	border-radius: 3px;
-	behavior: url('../resources/css/border-radius.htc');
 	background: #FBFBFB !important;
 }
 #breadcrumbs .breadcrumbBtns a:active {
@@ -312,7 +305,6 @@ textarea {
 	-moz-border-radius: 2px;
 	-webkit-border-radius: 2px;
 	border-radius: 2px;
-	behavior: url('../resources/css/border-radius.htc');
 }
 
 
@@ -929,4 +921,32 @@ label span.required
     padding-left: 10px;
     color: white;
     background: transparent url(../../resources/graphics/required.png) center left no-repeat;
+}
+
+/*Form Elements */
+
+.modalField {
+	display: inline-block;
+	border: 1px solid #ccc;
+	border-radius: 3px;
+	box-shadow: inset 0px 1px 1px #666;
+	padding: 2px;
+}
+.modalField input {
+	border: none;
+	padding: 2px;
+	background: none;
+}
+.modalField select {
+	border-color: #CCC;
+	background: -webkit-gradient(linear, left top, left bottom, from(#fff), to(#eee)) !important; /* for webkit browsers */;
+}
+.modalField textarea {
+	border: none;
+}
+.modalField .timeEntry_control {
+	background: url(../graphics/newui/updown-stepper.png) no-repeat 0px 0.2px !important;
+	margin: -4px -1px -2px 0px!important;
+	width: 18px!important;
+	height: 22px !important;
 }
