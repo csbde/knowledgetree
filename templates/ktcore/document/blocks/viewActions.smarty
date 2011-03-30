@@ -17,6 +17,6 @@
 
 {literal}
 <script>
-jQuery('.action').tooltip();
+jQuery('.action').tooltip({});
 </script>
 {/literal}
