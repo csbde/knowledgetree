@@ -7,10 +7,10 @@
 <script type="text/javascript" src="/resources/js/newui/kt.app.metadata.js"></script>
 
 <!-- FILE: ktcore/document/view.smarty -->
-<table>
+<table class="main-content">
     <tr>
-        <td width="720">
-        <table border="0" width="700" class="doc_view">
+        <td width="745">
+        <table border="0" width="745" class="doc_view">
             <tr>
                 <td colspan="2" id="title_row">
 

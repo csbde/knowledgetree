@@ -1,8 +1,16 @@
+.doc_view {
+	border-spacing: 0px 0px;
+}
+.doc_view #column_right {
+	padding-right: 10px;
+}
 .doc_view,
 #activity_feed_container {
 	color: #666;
 }
-
+.main-content {
+	border-spacing: 0px 0px;
+}
 #activity_feed_container div.activityfeed div.items.hidden {
 	display:none;
 }
@@ -38,12 +46,9 @@ object#website {
 	border: 1px solid #ccc;
 }
 
-#column_right,
-#title_row {
-
-}
 #title_row {
 	width: 745px;
+	padding-right: 10px;
 }
 div.viewletworkflow {
 	-moz-border-radius: 5px;
@@ -78,7 +83,7 @@ div.viewletworkflow {
 	width: 375px;
 }
 .button {
-	padding: 2px 5px 2px 26px;
+	padding: 2px 5px 2px 24px;
 	font-size: 11px;
 	height: 25px;
 	display: inline-block;
@@ -475,9 +480,11 @@ span.doc_info {
 	display: none;
 }
 .doc_description {
-	padding-right: 10px;
+	padding-right: 15px;
 	color: #666;
+	width: 355px;
 }
+
 .doc_view .notice{
 	color: #A10000;
 	padding: 10px 10px 10px 15px;
