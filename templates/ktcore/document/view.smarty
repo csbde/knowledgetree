@@ -114,41 +114,34 @@
 
 
                         <div class="action_buttons above">
+
+                		{* Display top row action buttons *}
+                        {foreach item=btn from=$actionBtns.above}
                             <div class="action">
+                                {if $btn.menu}
+                                    {if $btn.status === 'disabled'}
+                                        <div class="splitbutton"><span class="button disabled" id="{$btn.icon_class}">{$btn.name}</span><span class="split">&#9660;</span></div>
+                                    {else}
+                                        <div class="splitbutton"><a class="button" id="{$btn.icon_class}" href="{$btn.url}" onclick='{$btn.onclick}'>{$btn.name}</a><span class="split">&#9660;</span></div>
+                                    {/if}
 
-			<div class="splitbutton"><a class="button" id="download" href="#">Download</a><span class="split">&#9660;</span></div>
-			<ul class="splitmenu" id="download" style="right: auto; margin-left: -1px; ">
-				<li><a href="" id="download-pdf">{i18n}Download PDF{/i18n}</a></li>
-			</ul>
-		</div>
-		{if $document->getIsCheckedOut()}
-    		<div class="action">
-				<div class="splitbutton"><a class="button" href="#" id="checkin">Checkin</a><span class="split">&#9660;</span></div>
-				<ul class="splitmenu" id="checkin">
-					<li><a href="" id="checkin-upload">Checkin and Upload</a></li>
-					<li><a href="" id="add-version">Add new Version</a></li>
+                                    {* Display the drop down menu's on the split buttons *}
+                                    <ul class="splitmenu" id="{$btn.icon_class}" style="right: auto; margin-left: -1px; ">
+                                        {foreach item=menuitem from=$btn.menu}
+                                            <li><a class="button" id="{$menuitem.icon_class}" href="{$menuitem.url}" onclick='{$btn.onclick}'>{$menuitem.name}</a></li>
+                                        {/foreach}
                                     </ul>
-			</div>
-                            {else}
-    		<div class="action">
-				<div class="splitbutton"><a class="button" href="#">Checkout</a><span class="split">&#9660;</span></div>
-				<ul class="splitmenu" id="checkout">
-					<li><a href="" id="checkin-download">Checkout and Download</a></li>
-					<li><a href="" id="add-version">Add new Version</a></li>
-				</ul>
-			</div>
-                            {/if}
-		<div class="action">
-			<div href="#"><a class="button" id="edit-online" href="">Edit Online</a></div>
+                                {else}
+                                    {if $btn.status === 'disabled'}
+                                        <div><span class="button disabled" id="{$btn.icon_class}">{$btn.name}</span></div>
+                                    {else}
+                                        <div><a class="button" id="{$btn.icon_class}" href="{$btn.url}" onclick='{$btn.onclick}'>{$btn.name}</a></div>
+                                    {/if}
+                                {/if}
                             </div>
-		<div class="action" id="share">
-			<div class="splitbutton"><a class="button" id="share" href="#">Share </a><span class="split">&#9660;</span></div>
-			<ul class="splitmenu" id="share">
-				<li><a href="" id="email">Email</a></li>
-			</ul>
-		</div>
+                        {/foreach}
 
-                        </div>
+            		</div>
 
 
 </div>				{if !empty($live_preview)}
@@ -159,14 +152,24 @@
                     </div>
                 {/if}
 			<div class="action_buttons below" style="display: inline-block;">
-			<div class="action" style="margin-top: 10px;">
-				<div class="splitbutton"><span class="split" href="#" id="more" style="border-left: 0px; font-size: 11px; padding-left: 25px;">More <span style="font-size: 9px;">&#9660;</span></span></div>
-				<ul class="splitmenu" id="more" style="right: auto; margin-left: -1px; ">
-					<li><a href="">Move</a></li>
-					<li><a href="">Copy</a></li>
-                        </ul>
+        		{* Display top row action buttons *}
+                {foreach item=btn from=$actionBtns.below}
+                    <div class="action">
+                        {if $btn.menu}
+                            <div class="splitbutton"><span class="button" id="{$btn.icon_class}">{$btn.name}</span><span class="split">&#9660;</span></div>
+
+                            {* Display the drop down menu's on the split buttons *}
+                            <ul class="splitmenu" id="{$btn.icon_class}">
+                                {foreach item=menuitem from=$btn.menu}
+                                    <li><a class="button" id="{$menuitem.icon_class}" href="{$menuitem.url}" onclick='{$btn.onclick}'>{$menuitem.name}</a></li>
+                                {/foreach}
+                            </ul>
+                        {else}
+                            <div><a class="button" id="{$btn.icon_class}" href="{$btn.url}" onclick='{$btn.onclick}'>{$btn.name}</a></div>
+                        {/if}
                     </div>
-                </div>
+                {/foreach}
+
                 <a href=""><span class="share_url">{i18n}This page URL{/i18n}</span></a>
                 <a href=""><span class="share_url">{i18n}Download URL{/i18n}</span></a>
                 <a href=""><span class="share_url">{i18n}Preview URL{/i18n}</span></a>
