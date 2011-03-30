@@ -51,6 +51,8 @@ class auth extends client_service {
 			$session = $kt->start_session($username, $params['passhash'],NULL,$app_type);
 			if(!PEAR::isError($session)){
 				$this->Response->setStatus('session_id',$session->get_session());
+				$ret=array('fullName' => $user->getName());
+		        $this->setResponse($ret);
 			}else{
 				$this->setResponse(array('authenticated'=> false, 'message'=> 'Invalid username and/or password.'));
 				$this->addDebug('failed login '.$session->getMessage());
