@@ -5,6 +5,7 @@
 <script type="text/javascript" src="/resources/js/newui/kt_documentPropertyEditor.js"> </script>
 <script type="text/javascript" src="/thirdpartyjs/jquery/plugins/tokenizer/src/jquery.tokeninput.js"></script>
 <script type="text/javascript" src="/resources/js/newui/kt.app.metadata.js"></script>
+<script type="text/javascript" src="/resources/js/newui/documents/viewlets/kt.ui.activityFeed.js"></script>
 
 <!-- FILE: ktcore/document/view.smarty -->
 <table class="main-content">
@@ -182,8 +183,8 @@
                         <span class="doc_header_item">
                             <span class="doc_field_title"></span>
                         </span>
-                        <div id="activity_feed_container" style="margin-top:1em;"></div>
-                        <div id="new_comment_form"></div>
+                        <div id="activityfeed-container" style="margin-top:1em;"></div>
+                        <div id="new-comment-form"></div>
                     </div>
                 </td>
 		<tr>

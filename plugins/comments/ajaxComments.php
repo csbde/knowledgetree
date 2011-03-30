@@ -73,7 +73,7 @@ class AjaxCommentsDispatcher extends KTStandardDispatcher {
 
         echo '<div class="item newcomment">
 	            <div class="icon"><img src="http://www.gravatar.com/avatar/'.md5($this->getEmailForId($_SESSION['userID'])).'?s=48" alt="'.$this->getUserForId($_SESSION['userID']).'" title="'.$this->getUserForId($_SESSION['userID']).'" /></div>
-	            <div class="activityfeed_content">
+	            <div class="activityfeed-content">
 	                <span class="date cutetime">'._kt('Recently').'</span>
 	                <span class="user">'.$this->getUserForId($_SESSION['userID']).'</span>
 

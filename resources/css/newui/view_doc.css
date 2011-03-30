@@ -5,13 +5,18 @@
 	padding-right: 10px;
 }
 .doc_view,
-#activity_feed_container {
+#activityfeed-container {
 	color: #666;
 }
+<<<<<<< HEAD
 .main-content {
 	border-spacing: 0px 0px;
 }
 #activity_feed_container div.activityfeed div.items.hidden {
+=======
+
+#activityfeed-container div.activityfeed div.items.hidden {
+>>>>>>> newui_filter_comments_PT_11065353
 	display:none;
 }
 
@@ -381,7 +386,7 @@ button {
     clear: none;
 }
 
-.activityfeed .activityfeed_content{
+.activityfeed .activityfeed-content{
     margin-left: 60px;
     overflow: hidden;
     word-wrap: break-word;
@@ -404,17 +409,17 @@ button {
 
 }
 
-.activityfeed .activityfeed_content .date{
+.activityfeed .activityfeed-content .date{
 	display: block;
     font-weight: bold;
     font-size: smaller;
     color: #999;
 
 }
-.activityfeed .activityfeed_content .user{
+.activityfeed .activityfeed-content .user{
     font-weight: bold;
 }
-.activityfeed .activityfeed_content .description{
+.activityfeed .activityfeed-content .description{
 	width: inherit;
     padding: 2px 5px;
     color: #AAAAAAA;
@@ -427,7 +432,7 @@ span.doc_info {
 	line-height: 15px;
 
 }
-.activityfeed .item.comment .activityfeed_content{
+.activityfeed .item.comment .activityfeed-content{
  /*   background-color: #dfe6fd;*/
 }
 
@@ -455,7 +460,7 @@ span.doc_info {
 	padding:5px;
 	margin-top: 1px;
 }
-#content input#comment_post {
+#content input#comment-post {
 	font-size: 13px;
 	width: 70px!important;
 	font-weight: bold;
@@ -466,12 +471,26 @@ span.doc_info {
 	margin-bottom: 20px;
 }
 
-.activityfeed .item.newcomment .activityfeed_content{
+.activityfeed .item.newcomment .activityfeed-content{
     background-color: #FFEDAC;
     padding: 0px 10px 10px 5px;
 }
-#activity_feed_container {
+#activityfeed-container {
 	width: 700px;
+}
+#activityfeed-container .activityfeed.item.hidden {
+	display:none;
+}
+
+#activityfeed-container span.activityfeed-more span.activityfeed-more-text {
+    background: none repeat scroll 0 0 #EEEEEE;
+    border: 1px solid #CCCCCC;
+    display: block;
+    margin: 0 auto;
+    padding: 2px 10px;
+    text-align: center;
+    text-shadow: 0 1px 0 white;
+    width: 680px !important;
 }
 .activityfeed img {
 	width: 48px;
@@ -496,11 +515,11 @@ span.doc_info {
 	background: url('../../graphics/newui/icons/link.png') no-repeat!important;
 }
 /* Form default text dissapear on focus */
-.defaultText {
+.default-text {
 	width: 300px;
 }
 
-.defaultTextActive {
+.default-text-active {
 	color: #a1a1a1;
 	font-family: sans-serif;
 

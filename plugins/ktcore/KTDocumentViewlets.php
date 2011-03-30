@@ -129,8 +129,6 @@ class KTDocumentActivityFeedAction extends KTDocumentViewlet {
 
     function display_viewlet()
     {
-		$this->oPage->requireJSResource('resources/js/newui/documents/viewlets/comments.js');
-		$this->oPage->requireCSSResource('resources/css/newui/documents/viewlets/comments.css');
         $iDocumentId = $this->oDocument->getId();
         $mainArray = array();
 
@@ -140,7 +138,7 @@ class KTDocumentActivityFeedAction extends KTDocumentViewlet {
             FROM ' . KTUtil::getTableName('document_transactions') . ' AS DT
             INNER JOIN ' . KTUtil::getTableName('users') . ' AS U ON DT.user_id = U.id
             LEFT JOIN ' . KTUtil::getTableName('transaction_types') . ' AS DTT ON DTT.namespace = DT.transaction_namespace
-            WHERE DT.document_id = ?
+            WHERE DT.document_id = ? AND DT.transaction_namespace NOT LIKE \'ktcore.transactions.view\'
             ORDER BY DT.id DESC';
             //  ORDER BY DT.datetime DESC => replaced the order by so that they come out in the order they were added, reversed.
         $aParams = array($iDocumentId);
