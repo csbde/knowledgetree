@@ -939,6 +939,9 @@ a.main_nav_item {
 	float: none;
 	display: inline-block;
 }
+.editable_control.none {
+	background: none;
+}
 .editable_control.edit {
 	background: url(../../resources/graphics/newui/icons/edit.png) no-repeat right top;
 }
