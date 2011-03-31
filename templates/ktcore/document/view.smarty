@@ -6,6 +6,7 @@
 <script type="text/javascript" src="/thirdpartyjs/jquery/plugins/tokenizer/src/jquery.tokeninput.js"></script>
 <script type="text/javascript" src="/resources/js/newui/kt.app.metadata.js"></script>
 <script type="text/javascript" src="/resources/js/newui/documents/viewlets/kt.ui.activityFeed.js"></script>
+<script type="text/javascript" src="/resources/js/newui/documents/kt.app.docdetails.js"></script>
 
 <!-- FILE: ktcore/document/view.smarty -->
 <table class="main-content">
@@ -88,31 +89,33 @@
 				<div class="" style="margin-bottom: 10px;">
 		<div class="action_buttons above">
 
-    		{* Display top row action buttons *}
-            {foreach item=btn from=$actionBtns.above}
-                <div class="action">
-                    {if $btn.menu}
-                        {if $btn.status === 'disabled'}
-                            <div class="splitbutton"><span class="button disabled" id="{$btn.icon_class}">{$btn.name}</span><span class="split">&#9660;</span></div>
-                        {else}
-                            <div class="splitbutton"><a class="button" id="{$btn.icon_class}" href="{$btn.url}" onclick='{$btn.onclick}'>{$btn.name}</a><span class="split">&#9660;</span></div>
-                        {/if}
+            <nobr>
+        		{* Display top row action buttons *}
+                {foreach item=btn from=$actionBtns.above}
+                    <div class="action">
+                        {if $btn.menu}
+                            {if $btn.status === 'disabled'}
+                                <div class="splitbutton"><span class="button disabled" id="{$btn.icon_class}">{$btn.name}</span><span class="split">&#9660;</span></div>
+                            {else}
+                                <div class="splitbutton"><a class="button" id="{$btn.icon_class}" href="{$btn.url}" onclick='{$btn.onclick}'>{$btn.name}</a><span class="split">&#9660;</span></div>
+                            {/if}
 
-                        {* Display the drop down menu's on the split buttons *}
-                        <ul class="splitmenu" id="{$btn.icon_class}" style="right: auto; margin-left: -1px; ">
-                            {foreach item=menuitem from=$btn.menu}
-                                <li><a class="button" id="{$menuitem.icon_class}" href="{$menuitem.url}" onclick='{$btn.onclick}'>{$menuitem.name}</a></li>
-                            {/foreach}
-                        </ul>
-                    {else}
-                        {if $btn.status === 'disabled'}
-                            <div><span class="button disabled" id="{$btn.icon_class}">{$btn.name}</span></div>
+                            {* Display the drop down menu's on the split buttons *}
+                            <ul class="splitmenu" id="{$btn.icon_class}" style="right: auto; margin-left: -1px; ">
+                                {foreach item=menuitem from=$btn.menu}
+                                    <li><a class="button" id="{$menuitem.icon_class}" href="{$menuitem.url}" onclick='{$btn.onclick}'>{$menuitem.name}</a></li>
+                                {/foreach}
+                            </ul>
                         {else}
-                            <div><a class="button" id="{$btn.icon_class}" href="{$btn.url}" onclick='{$btn.onclick}'>{$btn.name}</a></div>
+                            {if $btn.status === 'disabled'}
+                                <div><span class="button disabled" id="{$btn.icon_class}">{$btn.name}</span></div>
+                            {else}
+                                <div><a class="button" id="{$btn.icon_class}" href="{$btn.url}" onclick='{$btn.onclick}'>{$btn.name}</a></div>
+                            {/if}
                         {/if}
-                    {/if}
-                </div>
-            {/foreach}
+                    </div>
+                {/foreach}
+            </nobr>
 
 		</div>
 
@@ -126,27 +129,30 @@
 			{/if}
 			<div class="action_buttons below" style="display: inline-block; margin-top: 5px;">
 
-        		{* Display top row action buttons *}
-                {foreach item=btn from=$actionBtns.below}
-                    <div class="action">
-                        {if $btn.menu}
-                            <div class="splitbutton"><span class="button" id="{$btn.icon_class}">{$btn.name}</span><span class="split">&#9660;</span></div>
+                <nobr>
+            		{* Display top row action buttons *}
+                    {foreach item=btn from=$actionBtns.below}
+                        <div class="action">
+                            {if $btn.menu}
+                                <div class="splitbutton"><span class="button" id="{$btn.icon_class}">{$btn.name}</span><span class="split">&#9660;</span></div>
 
-                            {* Display the drop down menu's on the split buttons *}
-                            <ul class="splitmenu" id="{$btn.icon_class}">
-                                {foreach item=menuitem from=$btn.menu}
-                                    <li><a class="button" id="{$menuitem.icon_class}" href="{$menuitem.url}" onclick='{$btn.onclick}'>{$menuitem.name}</a></li>
-                                {/foreach}
-                            </ul>
-                        {else}
-                            <div><a class="button" id="{$btn.icon_class}" href="{$btn.url}" onclick='{$btn.onclick}'>{$btn.name}</a></div>
-                        {/if}
-                    </div>
-                {/foreach}
+                                {* Display the drop down menu's on the split buttons *}
+                                <ul class="splitmenu" id="{$btn.icon_class}">
+                                    {foreach item=menuitem from=$btn.menu}
+                                        <li><a class="button" id="{$menuitem.icon_class}" href="{$menuitem.url}" onclick='{$btn.onclick}'>{$menuitem.name}</a></li>
+                                    {/foreach}
+                                </ul>
+                            {else}
+                                <div><a class="button" id="{$btn.icon_class}" href="{$btn.url}" onclick='{$btn.onclick}'>{$btn.name}</a></div>
+                            {/if}
+                        </div>
+                    {/foreach}
 
-                <a href=""><span class="share_url">{i18n}This page URL{/i18n}</span></a>
-                <a href=""><span class="share_url">{i18n}Download URL{/i18n}</span></a>
-                <a href=""><span class="share_url">{i18n}Preview URL{/i18n}</span></a>
+                    {* Display download / preview links *}
+                    {foreach item=btn from=$actionBtns.links}
+                        <a href="{$btn.url}" onclick='{$btn.onclick}'><span class="share_url" id="{$btn.icon_class}">{$btn.name}</span></a>
+                    {/foreach}
+      			</nobr>
             </div>
 
 			</td>

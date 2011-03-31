@@ -62,6 +62,8 @@ class KTDocumentRenameAction extends KTDocumentAction {
     }
 
     function getInfo() {
+        // Disabling action as it is taken care of by the inline-editing
+        return null;
         if ($this->oDocument->getIsCheckedOut()) {
             return null;
         }
