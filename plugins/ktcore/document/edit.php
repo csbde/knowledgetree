@@ -57,10 +57,14 @@ class KTDocumentEditAction extends KTDocumentAction {
     var $sName = 'ktcore.actions.document.edit';
     var $_sShowPermission = 'ktcore.permissions.write';
     var $_bMutator = true;
-    var $sIconClass = 'edit_metadata';
+    var $sIconClass = 'edit-metadata';
+    var $sParentBtn = 'more';
 
     function getInfo()
     {
+        // Disabling info to fit in with new ui
+        return null;
+
         if ($this->oDocument->getIsCheckedOut()) {
             return null;
         }
