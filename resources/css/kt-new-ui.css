@@ -540,6 +540,9 @@ div.form_actions {
 	float: right;
 	display: inline-block;
 }
+#value_filename {
+	display: inline-block;
+}
 
 #content .extjs_form_actions *
 {

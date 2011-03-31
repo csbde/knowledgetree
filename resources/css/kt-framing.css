@@ -934,6 +934,10 @@ a.main_nav_item {
 	float: right;
 	min-width: 20px;
 }
+#title_row .editable_control {
+	float: none;
+	display: inline-block;
+}
 .editable_control.edit {
 	background: url(../../resources/graphics/newui/icons/edit.png) no-repeat right top;
 }
