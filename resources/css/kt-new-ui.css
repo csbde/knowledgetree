@@ -429,6 +429,10 @@ ul.floatleft li.notification {
 	border-right: 1px solid #ccc;
 	line-height: 24px;
 }
+.action_buttons .action .disabled {
+	opacity: 0.5;
+	cursor: default;
+}
 .action_buttons #add-version {
 	background: url('../graphics/newui/document_exchange.png') no-repeat 7px 4px;
 }
@@ -962,4 +966,16 @@ label span.required
 	height: 22px !important;
 	border-top-right-radius: 3px;
 	border-bottom-right-radius: 3px;
+}
+
+
+/*Tag editor*/
+
+#content .token-input-list-facebook {
+	border: none;
+	list-style: none;
+	padding: 0px;
+}
+#content .tags div.token-input-dropdown-facebook {
+	display: none!important;
 }

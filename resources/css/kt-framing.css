@@ -851,13 +851,14 @@ a.main_nav_item {
 .metadatatable select {
     font-size: 12px;
 }
-
+/*
 .metadatarow.required {
 	background-color: #FFFF66
 }
 .metadatarow.required.incomplete {
 	background-color: #ffdddd
 }
+*/
 .metadataError {
 	color: red;
 	font-size: 11px;
