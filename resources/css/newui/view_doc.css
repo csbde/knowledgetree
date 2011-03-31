@@ -8,15 +8,10 @@
 #activityfeed-container {
 	color: #666;
 }
-<<<<<<< HEAD
 .main-content {
 	border-spacing: 0px 0px;
 }
-#activity_feed_container div.activityfeed div.items.hidden {
-=======
-
 #activityfeed-container div.activityfeed div.items.hidden {
->>>>>>> newui_filter_comments_PT_11065353
 	display:none;
 }
 
@@ -503,7 +498,6 @@ span.doc_info {
 	color: #666;
 	width: 355px;
 }
-
 .doc_view .notice{
 	color: #A10000;
 	padding: 10px 10px 10px 15px;
