@@ -45,12 +45,12 @@
 					<br><br/>
 
 					<div class="tags">
-                                            Tag Cloud
-                                            <br/>
-                                            <input type="text" name="tagcloud" id="tagcloud" />
-                                            <br/>
-                                            <input type="button" value="Save Tags" onclick="kt.app.metadata.saveTags({$document_id});" />
-                                        </div>
+						<h3>Tag Cloud<span class="editable_control none">&nbsp;</span></h3>
+                        <br/>
+                        <input type="text" name="tagcloud" id="tagcloud" />
+                        <br/>
+                        <input type="button" value="Save Tags" onclick="kt.app.metadata.saveTags({$document_id});" />
+                    </div>
 
 					<br/>
 					<br/>
