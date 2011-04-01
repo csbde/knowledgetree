@@ -2484,6 +2484,7 @@ div.extjs_form_actions {
 	display: none!important;
 }
 .x-window {
+	background: #cccccc\0/; /* for IE8, cannot handle alpha */
 	background: rgba(0,0,0,0.3);
 	padding: 10px;
 }
