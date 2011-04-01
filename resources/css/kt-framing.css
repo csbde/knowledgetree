@@ -928,26 +928,26 @@ a.main_nav_item {
 	background: #ffdddd;
 	border-color: #FF7272;
 }
-.editable_control {
+.editable-control {
 	visibility: hidden;
 	cursor: pointer;
 	float: right;
 	min-width: 20px;
 }
-#title_row .editable_control {
+#title_row .editable-control {
 	float: none;
 	display: inline-block;
 }
-.editable_control.none {
+.editable-control.none {
 	background: none;
 }
-.editable_control.edit {
+.editable-control.edit {
 	background: url(../../resources/graphics/newui/icons/edit.png) no-repeat right top;
 }
-.editable_control.undo {
+.editable-control.undo {
 	background: url(../../resources/graphics/newui/icons/undo.png) no-repeat right top;
 }
-.editable_control.spin {
+.editable-control.spin {
 	background: url(../../resources/graphics/newui/loading.gif) no-repeat right top;
 }
 .detail_fieldset h3

@@ -9,8 +9,7 @@
 	            </td>
 	            <td style="" valign="middle">
 	                <div class="buttons">
-	                    <input type="hidden" id="comment-documentid" name="documentid" value="{$document->getId()}" />
-	                    <input type="button" id="comment-post" name="comment.post" value="{i18n}Post{/i18n}" style="background: none; height: 28px; width: 50px;" />
+	                    <input type="button" id="comment-post" name="comment.post" onclick="javascript: kt.ui.activityFeed.postComment({$document->getId()}, jQuery('#commentsbox').val());" value="{i18n}Post{/i18n}" style="background: none; height: 28px; width: 50px;" />
 	                </div>
 	            </td>
 	        </tr>
@@ -28,6 +27,8 @@
     </tr>
 </table>
 		
+<div class="activityfeed new-comment"></div>
+
 <div class="activityfeed" style="border: 0px solid #000000">
 
 
@@ -65,55 +66,8 @@
 {literal}
 <script type="text/javascript">
     jQuery(document).ready(function() {
-        
-        {/literal}
-        savingCommentMessage = '<img src="thirdpartyjs/extjs/resources/images/default/tree/loading.gif"> {i18n}Saving Comment{/i18n}';
-        commentSavedMessage = '{i18n}Comment Saved. <a href="javascript:showComment()">Add New Comment</a>{/i18n}';
-        {literal}
-        
-        var newCommentAdded = false;
-        
         jQuery("#commentsbox").autoResize({extraSpace:10});
-        
-        jQuery("#comment_post").click(function() {
-            comment = jQuery("#commentsbox").val();
-            docId = jQuery("#comment_documentid").val();
-            
-            if (comment == '') {
-                alert('{/literal}{i18n}Please enter a comment{/i18n}{literal}');
-                jQuery("#commentsbox").focus();
-            } else {
-                
-                if (newCommentAdded) {
-                    jQuery("div.activityfeed div:first").removeClass('newcomment').addClass('comment');
-                }
-                
-                newCommentAdded = true;
-                jQuery("#commentsarea").hide();
-                jQuery("#commentssaveajax").html(savingCommentMessage).show();
-                
-                jQuery.post("plugins/comments/ajaxComments.php", { action: 'postComment', comment: comment, documentId: docId },
-                    function(data){
-                        jQuery("#commentssaveajax").html(commentSavedMessage);
-                        jQuery("#commentsbox").val('').height('30px');
-                        
-                        jQuery("#commentsarea").show();
-                        jQuery("#commentssaveajax").hide();
-                        
-                        jQuery("div.activityfeed").prepend(data);
-                        jQuery("div.activityfeed div:first").slideDown('slow').animate({ backgroundColor: "#f6f6f6" }, 'fast');
-                    }
-                );
-            }
-            
-        });
     });
-    
-    function showComment() {
-        jQuery("#commentsarea").show();
-        jQuery("#commentssaveajax").hide();
-    }
-
 </script>
 
 

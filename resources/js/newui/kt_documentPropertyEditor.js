@@ -194,18 +194,19 @@ jQuery(function()
 	{
 		jQuery('.documentTitle').hover(
 		function(){
-			jQuery('.editable_control', jQuery(this)).css('visibility', 'visible');
+			jQuery('.editable-control', jQuery(this)).css('visibility', 'visible');
 		},
 		function(){
-			if(jQuery('.editable_control', jQuery(this)).hasClass('edit'))
+			if(jQuery('.editable-control', jQuery(this)).hasClass('edit'))
 			{
-				jQuery('.editable_control', jQuery(this)).css('visibility', 'hidden');
+				jQuery('.editable-control', jQuery(this)).css('visibility', 'hidden');
 			}
 		});
 		jQuery('.documentTitle').editableSet({
-			controlClass: 'editable_control',
+			titleElement: '.save-placeholder',
+			controlClass: 'editable-control',
 			onCancel: function(){
-				jQuery('.editable_control', jQuery(this)).removeClass('undo').addClass('edit');
+				jQuery('.editable-control', jQuery(this)).removeClass('undo').addClass('edit');
 				
 				setEditableRegions();
 			},
@@ -215,7 +216,7 @@ jQuery(function()
 				setEditableRegions();
 			},	
 			onSave: function(){
-				jQuery('.editable_control', jQuery(this)).removeClass('undo').addClass('spin');
+				jQuery('.editable-control', jQuery(this)).removeClass('undo').addClass('spin');
 				
 				//check whether all the required fields have been completed
 				requiredDone = true;
@@ -223,7 +224,7 @@ jQuery(function()
 							
 				if(val == null || val == undefined || val == '' || val == 'no value')
 				{
-					jQuery('.editable_control', jQuery(this)).removeClass('spin').addClass('undo');
+					jQuery('.editable-control', jQuery(this)).removeClass('spin').addClass('undo');
 					//jQuery('input:text[name=documentTitle]', jQuery(this)).css('background-color', 'red');
 					jQuery('input:text[name=documentTitle]', jQuery(this)).addClass('incomplete');
 					requiredDone = false;
@@ -233,8 +234,8 @@ jQuery(function()
 			},
 			repopulate: function(){},
 			afterSave: function(data, status){
-				jQuery('.editable_control', jQuery(this)).removeClass('spin').addClass('edit');
-				jQuery('.editable_control', jQuery(this)).css('visibility', 'hidden');
+				jQuery('.editable-control', jQuery(this)).removeClass('spin').addClass('edit');
+				jQuery('.editable-control', jQuery(this)).css('visibility', 'hidden');
 				
 				setEditableRegions();
 				
@@ -246,7 +247,7 @@ jQuery(function()
 					}
 					else if (data.error)
 					{
-						jQuery('.editable_control', jQuery(this)).trigger('click');
+						jQuery('.editable-control', jQuery(this)).trigger('click');
 						jQuery('input:text[name=documentTitle]', jQuery(this)).val(data.error.documentFilename);
 						jQuery('.form_submit', jQuery(this)).after('<br><span class="metadataError">'+data.error.message+'</span>');
 					}
@@ -259,18 +260,19 @@ jQuery(function()
 	{
 		jQuery('.documentFilename').hover(
 		function(){
-			jQuery('.editable_control', jQuery(this)).css('visibility', 'visible');
+			jQuery('.editable-control', jQuery(this)).css('visibility', 'visible');
 		},
 		function(){
-			if(jQuery('.editable_control', jQuery(this)).hasClass('edit'))
+			if(jQuery('.editable-control', jQuery(this)).hasClass('edit'))
 			{
-				jQuery('.editable_control', jQuery(this)).css('visibility', 'hidden');
+				jQuery('.editable-control', jQuery(this)).css('visibility', 'hidden');
 			}
 		});
 		jQuery('.documentFilename').editableSet({
-			controlClass: 'editable_control',
+			titleElement: '.save-placeholder',
+			controlClass: 'editable-control',
 			onCancel: function(){
-				jQuery('.editable_control', jQuery(this)).removeClass('undo').addClass('edit');
+				jQuery('.editable-control', jQuery(this)).removeClass('undo').addClass('edit');
 				
 				setEditableRegions();
 			},
@@ -280,14 +282,14 @@ jQuery(function()
 				setEditableRegions();
 			},	
 			onSave: function(){
-				jQuery('.editable_control', jQuery(this)).removeClass('undo').addClass('spin');
+				jQuery('.editable-control', jQuery(this)).removeClass('undo').addClass('spin');
 				
 				requiredDone = true;
 				var val = jQuery('input:text[name=documentFilename]').val();
 							
 				if(val == null || val == undefined || val == '' || val == 'no value')
 				{
-					jQuery('.editable_control', jQuery(this)).removeClass('spin').addClass('undo');
+					jQuery('.editable-control', jQuery(this)).removeClass('spin').addClass('undo');
 					//jQuery('input:text[name=documentFilename]', jQuery(this)).css('background-color', 'red');
 					jQuery('input:text[name=documentFilename]', jQuery(this)).addClass('incomplete');
 					requiredDone = false;
@@ -297,8 +299,8 @@ jQuery(function()
 			},
 			repopulate: function(){},
 			afterSave: function(data, status) {
-				jQuery('.editable_control', jQuery(this)).removeClass('spin').addClass('edit');
-				jQuery('.editable_control', jQuery(this)).css('visibility', 'hidden');
+				jQuery('.editable-control', jQuery(this)).removeClass('spin').addClass('edit');
+				jQuery('.editable-control', jQuery(this)).css('visibility', 'hidden');
 				
 				setEditableRegions();
 				
@@ -311,7 +313,7 @@ jQuery(function()
 					else if (data.error)
 					{
 						//console.log(data.error.message);
-						jQuery('.editable_control', jQuery(this)).trigger('click');
+						jQuery('.editable-control', jQuery(this)).trigger('click');
 						//jQuery('input[name=documentFilename]', jQuery(this)).css('background-color', 'red').val(data.error.documentFilename);
 						jQuery('.form_submit', jQuery(this)).after('<br><span class="metadataError">'+data.error.message+'</span>');
 					}
@@ -324,18 +326,18 @@ jQuery(function()
 	{
 		jQuery('.documentType').hover(
 		function(){
-			jQuery('.editable_control', jQuery(this)).css('visibility', 'visible');
+			jQuery('.editable-control', jQuery(this)).css('visibility', 'visible');
 		},
 		function(){
-			if(jQuery('.editable_control', jQuery(this)).hasClass('edit'))
+			if(jQuery('.editable-control', jQuery(this)).hasClass('edit'))
 			{
-				jQuery('.editable_control', jQuery(this)).css('visibility', 'hidden');
+				jQuery('.editable-control', jQuery(this)).css('visibility', 'hidden');
 			}
 		});
 		jQuery('.documentType').editableSet({
-			controlClass: 'editable_control',
+			controlClass: 'editable-control',
 			onCancel: function(){
-				jQuery('.editable_control', jQuery(this)).removeClass('undo').addClass('edit');
+				jQuery('.editable-control', jQuery(this)).removeClass('undo').addClass('edit');
 				
 				setEditableRegions();
 			},
@@ -345,12 +347,12 @@ jQuery(function()
 				setEditableRegions();
 			},	
 			onSave: function(){
-				jQuery('.editable_control', jQuery(this)).removeClass('undo').addClass('spin');
+				jQuery('.editable-control', jQuery(this)).removeClass('undo').addClass('spin');
 			},
 			repopulate: function(){},
 			afterSave: function(data, status){
-				jQuery('.editable_control', jQuery(this)).removeClass('spin').addClass('edit');
-				jQuery('.editable_control', jQuery(this)).css('visibility', 'hidden');
+				jQuery('.editable-control', jQuery(this)).removeClass('spin').addClass('edit');
+				jQuery('.editable-control', jQuery(this)).css('visibility', 'hidden');
 				
 				//reset the document fields to reflect the new document type								
 				if(data && data.success)
@@ -372,7 +374,7 @@ jQuery(function()
 					{
 						var fieldsetDiv = jQuery('<div>').addClass('detail_fieldset');
 						var header = jQuery('<h3>').text(fieldset.name).attr('title', fieldset.description);
-						var metadataControlSpan = jQuery('<span>').addClass('editable_control edit').attr('title', 'Click to edit');
+						var metadataControlSpan = jQuery('<span>').addClass('editable-control edit').attr('title', 'Click to edit');
 						metadataControlSpan.html('&nbsp;');
 						header.append(metadataControlSpan);
 						fieldsetDiv.append(header);
@@ -444,7 +446,7 @@ jQuery(function()
 			if(jQuery('.metadatarow.required', jQuery(this)).length > 0)
 			{
 				highestRowCounter = index;
-				jQuery('.editable_control', jQuery(this)).trigger('click');
+				jQuery('.editable-control', jQuery(this)).trigger('click');
 			}
 		});
 		
@@ -458,31 +460,31 @@ jQuery(function()
 	{
 		jQuery('.detail_fieldset').hover(
 		function(){
-			jQuery('.editable_control', jQuery(this)).css('visibility', 'visible');
+			jQuery('.editable-control', jQuery(this)).css('visibility', 'visible');
 		},
 		function(){
-			if(jQuery('.editable_control', jQuery(this)).hasClass('edit'))
+			if(jQuery('.editable-control', jQuery(this)).hasClass('edit'))
 			{
-				jQuery('.editable_control', jQuery(this)).css('visibility', 'hidden');
+				jQuery('.editable-control', jQuery(this)).css('visibility', 'hidden');
 			}
 		});
 		jQuery('.detail_fieldset').editableSet({
-			controlClass: 'editable_control',
+			controlClass: 'editable-control',
 			onCancel: function(){
-				jQuery('.editable_control', jQuery(this)).removeClass('undo').addClass('edit');
-				jQuery('.editable_control', jQuery(this)).css('visibility', 'hidden');
+				jQuery('.editable-control', jQuery(this)).removeClass('undo').addClass('edit');
+				jQuery('.editable-control', jQuery(this)).css('visibility', 'hidden');
 				
 				setEditableRegions();
 			},
 			beforeLoad: function() {
 				
-				jQuery('.editable_control', jQuery(this)).unbind('click');
+				jQuery('.editable-control', jQuery(this)).unbind('click');
 			},
 			onError: function() {
 				setEditableRegions();
 			},
 			onSave: function(){
-				jQuery('.editable_control', jQuery(this)).removeClass('undo').addClass('spin');
+				jQuery('.editable-control', jQuery(this)).removeClass('undo').addClass('spin');
 				
 				//check whether all required fields have been completed
 				var atLeastOneRequiredNotDone = false;
@@ -607,7 +609,7 @@ jQuery(function()
 				
 				if (atLeastOneRequiredNotDone)
 				{
-					jQuery('.editable_control', jQuery(this)).removeClass('spin').addClass('undo');
+					jQuery('.editable-control', jQuery(this)).removeClass('spin').addClass('undo');
 					//jQuery('input:text[name=documentTitle]', jQuery(this)).css('background-color', 'red');
 					//jQuery('input:text[name=documentTitle]', jQuery(this)).addClass('incomplete');
 				}
@@ -615,8 +617,8 @@ jQuery(function()
 				return !atLeastOneRequiredNotDone;
 			},
 			afterSave: function(data, status){
-				jQuery('.editable_control', jQuery(this)).removeClass('spin').addClass('edit');
-				jQuery('.editable_control', jQuery(this)).css('visibility', 'hidden');
+				jQuery('.editable-control', jQuery(this)).removeClass('spin').addClass('edit');
+				jQuery('.editable-control', jQuery(this)).css('visibility', 'hidden');
 
 				//now pouplate the just-saved values
 				updateValues(data, status);
