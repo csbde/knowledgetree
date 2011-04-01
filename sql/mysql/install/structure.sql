@@ -523,6 +523,7 @@ CREATE TABLE `document_transactions` (
   `transaction_namespace` varchar(255) NOT NULL default 'ktcore.transactions.event',
   `session_id` int(11) default NULL,
   `admin_mode` tinyint(1) NOT NULL default '0',
+  `parent_id` int(11),
   PRIMARY KEY  (`id`),
   KEY `session_id` (`session_id`),
   KEY `document_id` (`document_id`),
@@ -816,6 +817,7 @@ CREATE TABLE `folder_transactions` (
   `transaction_namespace` varchar(255) NOT NULL,
   `session_id` int(11) default NULL,
   `admin_mode` tinyint(1) NOT NULL default '0',
+  `parent_id` int(11),
   PRIMARY KEY  (`id`),
   KEY `folder_id` (`folder_id`),
   KEY `session_id` (`session_id`)

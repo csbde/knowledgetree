@@ -46,12 +46,12 @@
  *
  */
 
-require_once(KT_LIB_DIR . "/plugins/pluginregistry.inc.php");
-require_once(KT_LIB_DIR . "/templating/templating.inc.php");
-require_once(KT_LIB_DIR . "/session/control.inc");
-require_once(KT_LIB_DIR . "/util/ktVar.php");
+require_once(KT_LIB_DIR . '/plugins/pluginregistry.inc.php');
+require_once(KT_LIB_DIR . '/templating/templating.inc.php');
+require_once(KT_LIB_DIR . '/session/control.inc');
+require_once(KT_LIB_DIR . '/util/ktVar.php');
 require_once(KT_DIR . '/search2/search/search.inc.php');
-require_once(KT_LIB_DIR . "/users/shareduserutil.inc.php");
+require_once(KT_LIB_DIR . '/users/shareduserutil.inc.php');
 
 class KTPage {
     public $hide_section = false;
@@ -92,7 +92,7 @@ class KTPage {
     /** $contents is the center of the page.  In KT < 3, this was CentralPayload. */
     public $contents = '';
 
-    public $template = "kt3/standard_page";
+    public $template = 'kt3/standard_page';
 
     public $contentType = 'text/html';
     public $charset = 'UTF-8';
@@ -101,7 +101,7 @@ class KTPage {
 
     /* Whether or not to sanitize info */
     public $allowHTML = false;
-    
+
     /* further initialisation */
     function KTPage() {
         global $default;
@@ -112,25 +112,25 @@ class KTPage {
 
         /* default css files initialisation */
         $aCSS = Array(
-           "thirdpartyjs/extjs/resources/css/ext-all.css",
-           "resources/css/kt-framing.css",
-           "resources/css/kt-contenttypes.css",
-           "resources/css/kt-headings.css",
-           "resources/css/kt-new-ui.css",
+           'thirdpartyjs/extjs/resources/css/ext-all.css',
+           'resources/css/kt-framing.css',
+           'resources/css/kt-contenttypes.css',
+           'resources/css/kt-headings.css',
+           'resources/css/kt-new-ui.css',
            'resources/css/newui/newui.upload.css',
-           "resources/css/newui/dropdown.css",
+           'resources/css/newui/dropdown.css',
 		   /* REWORK INTO SINGLE STYLE SHEET */
-		   "resources/css/newui/dropdown_styles.css",
+		   'resources/css/newui/dropdown_styles.css',
         );
         $this->requireCSSResources($aCSS);
 
-        if($oConfig->get('ui/morphEnabled') == '1'){
+        if ($oConfig->get('ui/morphEnabled') == '1') {
         	$morphTheme = $oConfig->get('ui/morphTo');
         	$this->requireThemeCSSResource('skins/kts_'.$oConfig->get('ui/morphTo').'/kt-morph.css');
         	$this->requireThemeCSSResource('skins/kts_'.$oConfig->get('ui/morphTo').'/kt-ie-morph.css', true);
         }
         // IE only
-        $this->requireCSSResource("resources/css/kt-ie-icons.css", true);
+        $this->requireCSSResource('resources/css/kt-ie-icons.css', true);
 
         /* default js files initialisation */
         // TODO : Remove js based on user type.
@@ -157,7 +157,7 @@ class KTPage {
         $aJS[] = 'resources/js/newui/kt.api.js';
         $aJS[] = 'resources/js/newui/kt.app.upload.js';
         // Shared users cannot re-share or invite users to the system.
-        if(!SharedUserUtil::isSharedUser())
+        if (!SharedUserUtil::isSharedUser())
         {
 	        $aJS[] = 'resources/js/newui/kt.app.sharewithusers.js';
 	        $aJS[] = 'resources/js/newui/kt.app.inviteusers.js';
@@ -188,20 +188,20 @@ class KTPage {
     	$sBaseUrl = KTUtil::kt_url();
 
     	$this->menu = array();
-    	if(!SharedUserUtil::isSharedUser())
+    	if (!SharedUserUtil::isSharedUser())
     	{
-    		$this->menu['dashboard'] = array('label' => _kt("Dashboard"), 'url' => $sBaseUrl.'/dashboard.php');
+    		$this->menu['dashboard'] = array('label' => _kt('Dashboard'), 'url' => $sBaseUrl.'/dashboard.php');
     	}
-		$this->menu['browse'] = array('label' => _kt("Browse All Documents"), 'url' => $sBaseUrl.'/browse.php');
-    	if(ACCOUNT_ROUTING_ENABLED) {
+		$this->menu['browse'] = array('label' => _kt('Browse All Documents'), 'url' => $sBaseUrl.'/browse.php');
+    	if (ACCOUNT_ROUTING_ENABLED) {
     		$sLiveUrl = KTLiveUtil::ktlive_url();
-			$this->menu['applications'] = array('label' => _kt("Applications"), 'url' => $sLiveUrl.'/applications.php');
+			$this->menu['applications'] = array('label' => _kt('Applications'), 'url' => $sLiveUrl.'/applications.php');
 		}
-		$this->menu['administration'] = array('label' => _kt("Settings"));
+		$this->menu['administration'] = array('label' => _kt('Settings'));
 
 		// Implement an electronic signature for accessing the admin section, it will appear every 10 minutes
     	global $default;
-    	if($default->enableAdminSignatures && $_SESSION['electronic_signature_time'] < time()){
+    	if ($default->enableAdminSignatures && $_SESSION['electronic_signature_time'] < time()) {
     	    $sUrl = KTPluginUtil::getPluginPath('electronic.signatures.plugin', true);
     	    $heading = _kt('You are attempting to access Settings');
     	    $this->menu['administration']['url'] = '#';
@@ -233,8 +233,8 @@ class KTPage {
     function getJSResources() {
     	// get js resources specified within the plugins
     	// these need to be added to the session because KTPage is initialised after the plugins are loaded.
-    	if(isset($GLOBALS['page_js_resources']) && !empty($GLOBALS['page_js_resources'])){
-    		foreach($GLOBALS['page_js_resources'] as $js){
+    	if (isset($GLOBALS['page_js_resources']) && !empty($GLOBALS['page_js_resources'])) {
+    		foreach ($GLOBALS['page_js_resources'] as $js) {
     			$this->js_resources[$js] = 1;
     		}
     	}
@@ -332,12 +332,12 @@ class KTPage {
         if ($breadLength != 0) {
             $this->breadcrumbSection = $this->_actionhelper($aBreadcrumbs[0]);
 	    // handle the menu
-	    if (($aBreadcrumbs[0]["action"]) && ($this->menu[$aBreadcrumbs[0]["action"]])) {
-		$this->menu[$aBreadcrumbs[0]["action"]]["active"] = 1;
+	    if (($aBreadcrumbs[0]['action']) && ($this->menu[$aBreadcrumbs[0]['action']])) {
+		$this->menu[$aBreadcrumbs[0]['action']]['active'] = 1;
 	    }
         }
         if ($breadLength > 1) {
-            $this->breadcrumbs = array_map(array(&$this, "_actionhelper"), array_slice($aBreadcrumbs, 1));
+            $this->breadcrumbs = array_map(array(&$this, '_actionhelper'), array_slice($aBreadcrumbs, 1));
         }
     }
 
@@ -384,18 +384,18 @@ class KTPage {
 	}
 
 	/* LEGACY */
-	public $deprecationWarning = "Legacy UI API: ";
+	public $deprecationWarning = 'Legacy UI API: ';
 	function setCentralPayload($sCentral) {
 	    $this->contents = $sCentral;
-		$this->addError($this->deprecationWarning . "called <strong>setCentralPayload</strong>");
+		$this->addError($this->deprecationWarning . 'called <strong>setCentralPayload</strong>');
 	}
 
-	function setOnloadJavascript($appendix) { $this->addError($this->deprecationWarning . "called <strong>setOnloadJavascript (no-act)</strong>"); }
-	function setDHtmlScrolling($appendix) { $this->addError($this->deprecationWarning . "called <strong>setDHTMLScrolling (no-act)</strong>"); }
-	function setFormAction($appendix) { $this->addError($this->deprecationWarning . "called <strong>setFormAction (no-act)</strong>"); }
-	function setSubmitMethod($appendix) { $this->addError($this->deprecationWarning . "called <strong>setSubmitMethod (no-act)</strong>"); }
-	function setHasRequiredFields($appendix) { $this->addError($this->deprecationWarning . "called <strong>setHasRequiredFields (no-act)</strong>"); }
-	function setAdditionalJavascript($appendix) { $this->addError($this->deprecationWarning . "called <strong>setAdditionalJavascript (no-act)</strong>"); }
+	function setOnloadJavascript($appendix) { $this->addError($this->deprecationWarning . 'called <strong>setOnloadJavascript (no-act)</strong>'); }
+	function setDHtmlScrolling($appendix) { $this->addError($this->deprecationWarning . 'called <strong>setDHTMLScrolling (no-act)</strong>'); }
+	function setFormAction($appendix) { $this->addError($this->deprecationWarning . 'called <strong>setFormAction (no-act)</strong>'); }
+	function setSubmitMethod($appendix) { $this->addError($this->deprecationWarning . 'called <strong>setSubmitMethod (no-act)</strong>'); }
+	function setHasRequiredFields($appendix) { $this->addError($this->deprecationWarning . 'called <strong>setHasRequiredFields (no-act)</strong>'); }
+	function setAdditionalJavascript($appendix) { $this->addError($this->deprecationWarning . 'called <strong>setAdditionalJavascript (no-act)</strong>'); }
 
 	function hideSection() { $this->hide_section = true; }
 	function setSecondaryTitle($sSecondary) { $this->secondary_title = $sSecondary; }
@@ -407,12 +407,12 @@ class KTPage {
         $oConfig = KTConfig::getSingleton();
 
         if (empty($this->contents)) {
-            $this->contents = "";
+            $this->contents = '';
         }
 
-        if (is_string($this->contents) && (trim($this->contents) === "")) {
-            $this->addError(_kt("This page did not produce any content"));
-            $this->contents = "";
+        if (is_string($this->contents) && (trim($this->contents) === '')) {
+            $this->addError(_kt('This page did not produce any content'));
+            $this->contents = '';
         }
 
         if (!is_string($this->contents)) {
@@ -443,7 +443,7 @@ class KTPage {
         if (!(PEAR::isError($this->user) || is_null($this->user) || $this->user->isAnonymous())) {
             $isAdmin = Permission::userIsSystemAdministrator($this->user->getId());
 
-            if($isAdmin){
+            if ($isAdmin) {
                 $bCanAdd = true;
                 if (KTPluginUtil::pluginIsActive('ktdms.wintools')) {
                     $path = KTPluginUtil::getPluginPath('ktdms.wintools');
@@ -451,16 +451,16 @@ class KTPage {
                     $bCanAdd = BaobabKeyUtil::canAddUser();
                 }
 
-                if($bCanAdd === true){
+                if ($bCanAdd === true) {
                     $this->userMenu['inviteuser'] = array('label' => _kt('Invite Users'), 'url' => '#');
-                    $this->userMenu['inviteuser']['onclick'] = "javascript:kt.app.inviteusers.showInviteWindow();";
+                    $this->userMenu['inviteuser']['onclick'] = 'javascript:kt.app.inviteusers.showInviteWindow();';
                 }
             }
 
-        	if ($oConfig->get("user_prefs/restrictPreferences", false) && !$isAdmin) {
+        	if ($oConfig->get('user_prefs/restrictPreferences', false) && !$isAdmin) {
         		$this->userMenu['logout'] = array('label' => _kt('Logout'), 'url' => $sBaseUrl.'/presentation/logout.php');
         	} else {
-        		if($default->enableESignatures) {
+        		if ($default->enableESignatures) {
         			$sUrl = KTPluginUtil::getPluginPath('electronic.signatures.plugin', true);
         			$heading = _kt('You are attempting to modify Preferences');
         			$this->userMenu['preferences']['url'] = '#';
@@ -477,7 +477,7 @@ class KTPage {
         		    $this->userMenu['gettingstarted']['label'] = '<span>Getting Started</span>';
         		}
 
-				$this->userMenu['supportpage'] = array('label' => _kt('Get Help'), 'url' => $sBaseUrl.'/support.php', 'extra'=>'target="_blank"');
+				$this->userMenu['supportpage'] = array('label' => _kt('Get Help'), 'url' => $sBaseUrl.'/support.php', 'extra' => 'target="_blank"');
         		//	        $this->userMenu['preferences'] = array('label' => _kt('Preferences'), 'url' => $sBaseUrl.'/preferences.php');
         		$this->userMenu['preferences']['label'] = '<span class="normalTransformText">'.$this->user->getName().'</span>';
 				// About Moved to Footer
@@ -500,7 +500,7 @@ class KTPage {
         }
 
         $sContentType = 'Content-type: ' . $this->contentType;
-        if(!empty($this->charset)) {
+        if (!empty($this->charset)) {
         	$sContentType .= '; charset=' . $this->charset;
         };
 
@@ -516,17 +516,17 @@ class KTPage {
 		if (ACCOUNT_ROUTING_ENABLED) {
 			$fFolderId = KTUtil::arrayGet($_REQUEST, 'fFolderId', 1);
 			// Disable drag and drop for shared user landing browse folder view
-			if($this->user->getDisabled() == 4 && $fFolderId == 1)
+			if ($this->user->getDisabled() == 4 && $fFolderId == 1)
 			{
 				$loadDND = false;
 			}
-			if($this->user->getDisabled() == 4 && $loadDND)
+			if ($this->user->getDisabled() == 4 && $loadDND)
 			{
 				require_once(KT_LIB_DIR . '/render_helpers/sharedContent.inc');
-				
+
 				$loadDND = (SharedContent::getPermissions($this->user->getId(), null, $fFolderId, 'folder') == 0) ? false : true;
 			}
-			if($loadDND)
+			if ($loadDND)
 			{
 				$uploadProgress = new DragDrop();
 				$uploadProgressRendered = $uploadProgress->render();
@@ -536,16 +536,17 @@ class KTPage {
         $oTemplating =& KTTemplating::getSingleton();
         $oTemplate = $oTemplating->loadTemplate($this->template);
         $aTemplateData = array(
-        			"page" => $this,
-			       	"systemversion" => $default->systemVersion,
-			       	"versionname" => $default->versionName,
+        			'page' => $this,
+			       	'systemversion' => $default->systemVersion,
+			       	'versionname' => $default->versionName,
 					'smallVersion' => $default->versionTier,
 			       	'savedSearches'=> $savedSearches,
 			       	'feedback' => $userFeedback->getDisplay(),
         			'uploadProgress' => $uploadProgressRendered
 				);
-        if ($oConfig->get("ui/automaticRefresh", false)) {
-            $aTemplateData['refreshTimeout'] = (int)$oConfig->get("session/sessionTimeout") + 3;
+
+        if ($oConfig->get('ui/automaticRefresh', false)) {
+            $aTemplateData['refreshTimeout'] = (int)$oConfig->get('session/sessionTimeout') + 3;
         }
 
         //TODO: need to refactor - is this the correct way to add this?
@@ -569,22 +570,22 @@ class KTPage {
     }
 
 	/**   helper functions */
-	// returns an array ("url", "label")
+	// returns an array ('url', 'label')
     function _actionhelper($aActionTuple) {
-        $aTuple = Array("label" => $aActionTuple["name"]);
-        if ($aActionTuple["action"]) {
-           $aTuple["url"] = generateControllerLink($aActionTuple["action"], $aActionTuple["query"]);
-        } else if ($aActionTuple["url"]) {
-           $sUrl = $aActionTuple["url"];
+        $aTuple = Array('label' => $aActionTuple['name']);
+        if ($aActionTuple['action']) {
+           $aTuple['url'] = generateControllerLink($aActionTuple['action'], $aActionTuple['query']);
+        } else if ($aActionTuple['url']) {
+           $sUrl = $aActionTuple['url'];
            $sQuery = KTUtil::arrayGet($aActionTuple, 'query');
            if ($sQuery) {
                $sUrl = KTUtil::addQueryString($sUrl, $sQuery);
            }
-		   $aTuple["url"] = $sUrl;
-        } else if ($aActionTuple["query"]) {
-           $aTuple['url'] = KTUtil::addQueryStringSelf($aActionTuple["query"]);
+		   $aTuple['url'] = $sUrl;
+        } else if ($aActionTuple['query']) {
+           $aTuple['url'] = KTUtil::addQueryStringSelf($aActionTuple['query']);
 		} else {
-		   $aTuple["url"] = false;
+		   $aTuple['url'] = false;
 		}
 
 		return $aTuple;
@@ -605,7 +606,7 @@ class KTPage {
     function getReqTime() {
         $microtime_simple = explode(' ', microtime());
         $finaltime = (float) $microtime_simple[1] + (float) $microtime_simple[0];
-        return sprintf("%.3f", ($finaltime - $GLOBALS['_KT_starttime']));
+        return sprintf('%.3f', ($finaltime - $GLOBALS['_KT_starttime']));
     }
 
     function getDisclaimer() {

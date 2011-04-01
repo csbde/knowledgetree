@@ -1,13 +1,10 @@
 /* Initializing kt.app if it wasn't initialized before */
 if (typeof(kt.app)=='undefined')kt.app={};
 
-/* Initializing kt.api if it wasn't initialized before */
-if (typeof(kt.api)=='undefined')kt.api={};
-
 /**
- * The multi-file upload widget. This object contains all the code
- * for the client-side management of single instance of the widget.
- */
+* The multi-file upload widget. This object contains all the code
+* for the client-side management of single instance of the widget.
+*/
 kt.app.upload = new function() {
 
 	// Stores the objects that deal with the individual files being uploaded. Elements in here are of type uploadStructure
@@ -75,7 +72,7 @@ kt.app.upload = new function() {
 		}
 
 		var obj = new self.uploadStructure({'fileName': (fileName + ''), 'elem': item, 'metadata': metadata, 'docTypeId': docTypeId,
-			'has_required_metadata': docTypeHasRequiredFields, 'required_metadata_done': !docTypeHasRequiredFields, 'parent': self});
+		'has_required_metadata': docTypeHasRequiredFields, 'required_metadata_done': !docTypeHasRequiredFields, 'parent': self});
 		kt.lib.meta.set(item[0], 'item', obj);
 		obj.startUpload();
 		self.data.files[fileName] = obj;
@@ -119,15 +116,15 @@ kt.app.upload = new function() {
 	}
 
 	/*this.uniqueFileName = function() {
-		var fileName='';
-		var size=16;
-       var alpha = "abcdefghijklmnopqrstuvwxyz1234567890_";
-       var asize=alpha.length;
-       for (var i=0; i<size; i++) {
-       	fileName=fileName+''+alpha[Math.floor(Math.random()*asize)];
-       }
+	var fileName='';
+	var size=16;
+	var alpha = "abcdefghijklmnopqrstuvwxyz1234567890_";
+	var asize=alpha.length;
+	for (var i=0; i<size; i++) {
+	fileName=fileName+''+alpha[Math.floor(Math.random()*asize)];
+	}
 
-       return fileName;
+	return fileName;
 	}*/
 
 	// A DOM helper function that will take elem as any dom element inside a file item fragment
@@ -151,9 +148,11 @@ kt.app.upload = new function() {
 			self.data['globalMetaData'] = metadata;
 
 			// cycle through every file and apply the metadata!
-			jQuery.each(self.data.files, function(key, value) {
-				value.options.metadata = metadata['metadata'];
-				value.options.required_metadata_done = requiredDone;
+			jQuery.each(self.data.files, function(key, file) {
+				//first update the doc type of every file!
+				file.options.docTypeId = metadata['docTypeID'];
+				file.options.metadata = metadata['metadata'];
+				file.options.required_metadata_done = requiredDone;
 			});
 
 		} else {
@@ -220,7 +219,7 @@ kt.app.upload = new function() {
 			if (currentNode.hasClass('loadedchildren')) {
 				childItems = jQuery('ul#loadedpath li[folderid='+currentId+']>ul');
 				if (childItems.length == 0) {
-                    // do nothing
+					// do nothing
 				} else {
 					childItems.children().each(function(i) {
 						child = jQuery(this);
@@ -340,31 +339,31 @@ kt.app.upload = new function() {
 							// now add the new item to the grid
 							var item = {
 								id: responseJSON.success.id,
-					    		is_immutable: false,
-					    		is_checkedout: false,
-					    		filename: responseJSON.success.filename,
-					    		filesize: responseJSON.success.filesize,
+								is_immutable: false,
+								is_checkedout: false,
+								filename: responseJSON.success.filename,
+								filesize: responseJSON.success.filesize,
 								document_url: responseJSON.success.document_url,
-					    		title: responseJSON.success.title,
-					    		owned_by: responseJSON.success.owned_by,
-					    		created_by: responseJSON.success.created_by,
-					    		created_date: responseJSON.success.created_date,
-					    		modified_by: responseJSON.success.modified_by,
-					    		modified_date: responseJSON.success.modified_date,
-					    		mimeicon: responseJSON.success.mimeicon,
-					    		allowdoczohoedit: responseJSON.success.allowdoczohoedit,
-					    		isfinalize_document: responseJSON.success.isfinalize_document,
-					    		user_id: responseJSON.success.user_id,
-					    		item_type: responseJSON.success.item_type,
-					    		thumbnail: '',
-					    		thumbnailclass: 'nopreview'
-					    	};
+								title: responseJSON.success.title,
+								owned_by: responseJSON.success.owned_by,
+								created_by: responseJSON.success.created_by,
+								created_date: responseJSON.success.created_date,
+								modified_by: responseJSON.success.modified_by,
+								modified_date: responseJSON.success.modified_date,
+								mimeicon: responseJSON.success.mimeicon,
+								allowdoczohoedit: responseJSON.success.allowdoczohoedit,
+								isfinalize_document: responseJSON.success.isfinalize_document,
+								user_id: responseJSON.success.user_id,
+								item_type: responseJSON.success.item_type,
+								thumbnail: '',
+								thumbnailclass: 'nopreview'
+							};
 
 							// remove the "folder is empty" widget from the Browse View
-					    	jQuery('.page .notification').remove();
+							jQuery('.page .notification').remove();
 
 							// now add the item to the Browse View
-					    	kt.pages.browse.addDocumentItem(item);
+							kt.pages.browse.addDocumentItem(item);
 						}
 					}
 				});
@@ -420,7 +419,7 @@ kt.app.upload = new function() {
 
 	this.disableAddButton = function() {
 		var btn = jQuery('#ul_actions_upload_btn');
-    	btn.attr('disabled', 'true');
+		btn.attr('disabled', 'true');
 	}
 
 	this.unhideProgressWidget = function() {
@@ -435,19 +434,19 @@ kt.app.upload = new function() {
 	this.updateProgress = function(message, isError) {
 		var progress = jQuery('.uploadProgress');
 		// jQuery('.uploadProgress .title').text(message);
-	    if (progress != null) {
-	    	if (isNaN(message)) {
-	    		progress.text(message);
-	    	} else if (message <= 100) {
-	    		progress.text(message+"%");
+		if (progress != null) {
+			if (isNaN(message)) {
+				progress.text(message);
+			} else if (message <= 100) {
+				progress.text(message+"%");
 			}
-	    }
+		}
 
-	    if (isError) {
-	    	progress.addClass('error');
-	    } else {
-	    	progress.removeClass('error');
-	    }
+		if (isError) {
+			progress.addClass('error');
+		} else {
+			progress.removeClass('error');
+		}
 	}
 
 	this.fadeProgress = function(time) {
@@ -483,70 +482,70 @@ kt.app.upload = new function() {
 			docTypeHasRequiredFields = data.data.hasRequiredFields;
 		});
 
-	    var uploadWin = new Ext.Window({
+		var uploadWin = new Ext.Window({
 			id          : 'extuploadwindow',
-	        layout      : 'fit',
-	        width       : 520,
-	        resizable   : false,
-	        closable    : true,
-	        closeAction :'destroy',
-	        y           : 50,
-	        autoScroll  : false,
-	        bodyCssClass: 'ul_win_body',
-	        cls			: 'ul_win',
-	        shadow      : true,
-	        modal       : true,
-	        title       : 'Upload Files',
-	        html        : kt.api.getFragment('upload/upload.dialog')
-	    });
+			layout      : 'fit',
+			width       : 520,
+			resizable   : false,
+			closable    : true,
+			closeAction :'destroy',
+			y           : 50,
+			autoScroll  : false,
+			bodyCssClass: 'ul_win_body',
+			cls			: 'ul_win',
+			shadow      : true,
+			modal       : true,
+			title       : 'Upload Files',
+			html        : kt.api.getFragment('upload/upload.dialog')
+		});
 
-	    uploadWin.addListener('show', function() {
-	    	// disable the Add Documents button on show since won't be any to add yet!
-	    	kt.app.upload.disableAddButton();
-	    	self.elems.item_container = jQuery('.uploadTable .ul_list')[0];
-	    	self.elems.qq = jQuery('#upload_add_file .qq-uploader')[0];
+		uploadWin.addListener('show', function() {
+			// disable the Add Documents button on show since won't be any to add yet!
+			kt.app.upload.disableAddButton();
+			self.elems.item_container = jQuery('.uploadTable .ul_list')[0];
+			self.elems.qq = jQuery('#upload_add_file .qq-uploader')[0];
 
-	    	self.uploader = new qq.FileUploader({
-	    		element: document.getElementById('upload_add_file'),
-	    		// action: 'test.php',
-	    		params: {},
-	    		buttonText: 'Choose File',
-	    		allowedExtensions: [],
-	    		sizeLimit: 0,
-	    		// taken out multiple uploads until able to figure out how to make it work with S3
-	            // issue is that need to force handlerClass = 'UploadHandlerForm' (see below) so that it works with S3
-	            // BUT this breaks multiple uploads!
-	    		multiple: false,
-	    		onSubmit: function(id, fileName) {
-	    			// remove the 'No Files Selected' message
-	    			jQuery('.no_files_selected').css('display', 'none');
-	    			// disable the Upload button as can only upload once upload to S3 completes
-    				kt.app.upload.disableAddButton();
+			self.uploader = new qq.FileUploader({
+				element: document.getElementById('upload_add_file'),
+				// action: 'test.php',
+				params: {},
+				buttonText: 'Choose File',
+				allowedExtensions: [],
+				sizeLimit: 0,
+				// taken out multiple uploads until able to figure out how to make it work with S3
+				// issue is that need to force handlerClass = 'UploadHandlerForm' (see below) so that it works with S3
+				// BUT this breaks multiple uploads!
+				multiple: false,
+				onSubmit: function(id, fileName) {
+					// remove the 'No Files Selected' message
+					jQuery('.no_files_selected').css('display', 'none');
+					// disable the Upload button as can only upload once upload to S3 completes
+					kt.app.upload.disableAddButton();
 
-	    			self.addUpload(fileName, docTypeHasRequiredFields);
-	    		},
-	    		onComplete: function(id,fileName, responseJSON) {
-	    			try{
-	    				self.findItem(fileName).completeUpload();
-	    			} catch(e) {
-                        // do nothing
-	    			}
-	    		},
-	    		// TODO: need to implement this!
-	    		/*onCancel: function(id,fileName) {
-	    			console.log('onCancel '+fileName);
-	    		},*/
-	    		showMessage: function(message) {alert(message);}
-	    	});
+					self.addUpload(fileName, docTypeHasRequiredFields);
+				},
+				onComplete: function(id,fileName, responseJSON) {
+					try{
+						self.findItem(fileName).completeUpload();
+					} catch(e) {
+						// do nothing
+					}
+				},
+				// TODO: need to implement this!
+				/*onCancel: function(id,fileName) {
+				console.log('onCancel '+fileName);
+				},*/
+				showMessage: function(message) {alert(message);}
+			});
 
 			if (jQuery("input[name='fFolderId']").length == 0) {
 				jQuery("#currentPath").val(1);
-            } else {
-                jQuery("#currentPath").val(jQuery("input[name='fFolderId']").val());
-            }
+			} else {
+				jQuery("#currentPath").val(jQuery("input[name='fFolderId']").val());
+			}
 
 			kt.api.getFolderHierarchy(jQuery('#currentPath').val(), function(result) {
-                // console.dir(result);
+				// console.dir(result);
 				if (jQuery('#currentPath').val() == 1) {
 					jQuery('ul#loadedpath').append('<li class="loadedchildren" folderid="' + jQuery('#currentPath').val() + '">' + result.data.currentFolder.name + '</li>');
 				} else {
@@ -601,33 +600,33 @@ kt.app.upload = new function() {
 
 				self.uploader._options.action = result.data.amazoncreds.formAction; // doesnt work
 				self.uploader._handler._options.action = result.data.amazoncreds.formAction; // works
-            }, function() {});
+			}, function() {});
 
-            jQuery("#changepathlink").live("click", function() {
+			jQuery("#changepathlink").live("click", function() {
 				// console.log('changepathlink');
-                jQuery('#folderpathchooser').toggle();
+				jQuery('#folderpathchooser').toggle();
 
-                if (jQuery('#folderpathchooser').css('display') == 'none') {
-                    jQuery('#changepathlink').html('Change');
-                } else {
-                    jQuery('#changepathlink').html('Done');
-                    kt.app.upload.loadFolderPath(jQuery('#currentPath').val());
-                }
-            });
+				if (jQuery('#folderpathchooser').css('display') == 'none') {
+					jQuery('#changepathlink').html('Change');
+				} else {
+					jQuery('#changepathlink').html('Done');
+					kt.app.upload.loadFolderPath(jQuery('#currentPath').val());
+				}
+			});
 
-            jQuery("#folderpathchooser li").live("click", function() {
-                node = jQuery(this);
-                jQuery('#currentPath').val(node.attr('folderid'));
-                jQuery('#uploadpathstring').html(kt.app.upload.getNodePath(node.attr('folderid')));
-                kt.app.upload.loadFolderPath(node.attr('folderid'));
-            });
-	    });
+			jQuery("#folderpathchooser li").live("click", function() {
+				node = jQuery(this);
+				jQuery('#currentPath').val(node.attr('folderid'));
+				jQuery('#uploadpathstring').html(kt.app.upload.getNodePath(node.attr('folderid')));
+				kt.app.upload.loadFolderPath(node.attr('folderid'));
+			});
+		});
 
 		self.uploadWindow = uploadWin;
-	    uploadWin.show();
+		uploadWin.show();
 
-	    // set the folder id of the folder we are in
-	    self.data['baseFolderID'] = jQuery("#currentPath").val();
+		// set the folder id of the folder we are in
+		self.data['baseFolderID'] = jQuery("#currentPath").val();
 	}
 
 	//  Call the initialization function at object instantiation.
@@ -636,8 +635,8 @@ kt.app.upload = new function() {
 }
 
 /**
- *
- */
+*
+*/
 kt.app.upload.uploadStructure = function(options) {
 
 	var self = this;
@@ -678,6 +677,8 @@ kt.app.upload.uploadStructure = function(options) {
 		// make the 'Enter metadata' progress message clickable!
 		if (state == 'ui_meta') {
 			jQuery(e).css('cursor', 'pointer');
+			//unbind the event so that it doesn't get added multiple times!
+			jQuery(e).unbind();
 			jQuery(e).one('click', function() {
 				self.showMetadataWindow();
 			});
@@ -756,20 +757,20 @@ kt.app.upload.uploadStructure = function(options) {
 
 	this.showMetadataWindow = function() {
 		var metaWin = new Ext.Window({
-	        layout      : 'fit',
-	        width       : 400,
-	        resizable   : false,
-	        closable    : false,
-	        closeAction :'destroy',
-	        y           : 50,
-	        autoScroll  : false,
-	        bodyCssClass: 'ul_meta_body',
-	        cls			: 'ul_meta',
-	        shadow      : true,
-	        modal       : true,
-	        title       : 'Document Properties',
-	        html        : kt.api.execFragment('upload/upload.metadata.dialog')
-	    });
+			layout      : 'fit',
+			width       : 400,
+			resizable   : false,
+			closable    : false,
+			closeAction :'destroy',
+			y           : 50,
+			autoScroll  : false,
+			bodyCssClass: 'ul_meta_body',
+			cls			: 'ul_meta',
+			shadow      : true,
+			modal       : true,
+			title       : 'Document Properties',
+			html        : kt.api.execFragment('upload/upload.metadata.dialog')
+		});
 
 		metaWin.addListener('close', function() {
 			// have all required metadata fields been completed?
@@ -924,9 +925,9 @@ kt.app.upload.uploadStructure = function(options) {
 };
 
 /**
- * Functions from http://phpjs.org/
- *
- */
+* Functions from http://phpjs.org/
+*
+*/
 function strpos (haystack, needle, offset) {
 	// http://kevin.vanzonneveld.net
 	var i = (haystack+'').indexOf(needle, (offset || 0));

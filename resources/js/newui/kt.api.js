@@ -11,27 +11,12 @@ kt.api = new function() {
 		var func = 'siteapi.uploadFile';
 
 		if (callback) {
-			//console.log('callback');
 			ktjapi.callMethod(func, params, callback, synchronous, errorCallback, this.persistentDataCacheTimeout, customTimeout);
 			return;
 		} else {
-			//console.log('no callback');
 			var data = ktjapi.retrieve(func, params, this.persistentDataCacheTimeout);
 			return data.data;
 		}
-
-		/*if (callback === true) {
-			console.log('callback === true');
-			var data = ktjapi.retrieve(func, params, this.persistentDataCacheTimeout);
-			return data;
-		} else {
-			console.log('else');
-			ktjapi.callMethod(func, params, callback, synchronous, errorCallback, this.persistentDataCacheTimeout);
-			return;
-		}*/
-
-		//var data = ktjapi.retrieve(func, params, this.persistentDataCacheTimeout);
-		//return data.data;
 	};
 
 	this.docTypeRequiredFields = function(docTypeId) {
@@ -121,7 +106,7 @@ kt.api = new function() {
 
 	this.inviteUsers = function(addresses, group, userType, sharedData, callback, errorCallback) {
 		var params = {};
-		params.addresses = addresses;
+		params.addresses = encodeURIComponent(addresses);
 		params.group = group;
 		params.userType = userType;
 		params.sharedData = sharedData;
@@ -138,7 +123,7 @@ kt.api = new function() {
 
 	this.shareUsers = function(addresses, userType, sharedData, callback, errorCallback) {
 		var params = {};
-		params.addresses = addresses;
+		params.addresses = encodeURIComponent(addresses);
 		params.userType = userType;
 		params.sharedData = sharedData;
 		var synchronous = false;

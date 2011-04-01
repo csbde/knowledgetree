@@ -7,7 +7,7 @@
  * KnowledgeTree Community Edition
  * Document Management Made Simple
  * Copyright (C) 2008, 2009, 2010 KnowledgeTree Inc.
- * 
+ *
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License version 3 as published by the
@@ -207,20 +207,21 @@ class GroupUtil {
     // }}}
 
     // {{{ listGroupsForUser
-    function listGroupsForUser ($oUser, $aOptions = null) {
+    function listGroupsForUser ($oUser, $aOptions = null, $idsOnly = false) {
         global $default;
         $iUserId = KTUtil::getId($oUser);
 
         $ids = KTUtil::arrayGet($aOptions, 'ids', false);
-	$where = KTUtil::arrayGet($aOptions, 'where', false);
+		$where = KTUtil::arrayGet($aOptions, 'where', false);
 
         $sQuery = "SELECT group_id FROM $default->users_groups_table WHERE user_id = ?";
-	if($where) {
-	    $sQuery .= " AND " . $where;
-	}
+		if($where) {
+		    $sQuery .= " AND " . $where;
+		}
 
         $aParams = array($iUserId);
         $aGroupIDs = DBUtil::getResultArrayKey(array($sQuery, $aParams), "group_id");
+        if($idsOnly) return $aGroupIDs;
         $aGroups = array();
         foreach ($aGroupIDs as $iGroupID) {
             if ($ids) {
@@ -253,6 +254,7 @@ class GroupUtil {
 
     /**
      * Lists all the available sub groups
+     * array[parent_id] => array(sub_group_id, sub_group_id);
      */
     function _listSubGroups()
     {
@@ -340,8 +342,8 @@ class GroupUtil {
 
         global $default;
         $sTable = $default->users_groups_table;
-        $sQuery = "SELECT COUNT(group_id) AS cnt FROM $sTable WHERE user_id = ? AND group_id IN (?)";
-        $aParams = array($iUserId, $sGroupIds);
+        $sQuery = "SELECT COUNT(group_id) AS cnt FROM $sTable WHERE user_id = ? AND group_id IN ({$sGroupIds})";
+        $aParams = array($iUserId);
 
         $res = DBUtil::getOneResult(array($sQuery, $aParams));
 

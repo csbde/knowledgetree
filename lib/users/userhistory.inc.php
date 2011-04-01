@@ -37,6 +37,7 @@
  */
 
 require_once(KT_LIB_DIR . "/ktentity.inc");
+require_once(KT_LIB_DIR . '/datetime/datetimeutil.inc.php');
 
 class KTUserHistory extends KTEntity {
     var $_aFieldToSelect = array(
@@ -61,6 +62,9 @@ class KTUserHistory extends KTEntity {
     function getSessionId() { return $this->iSessionId; }
     function setSessionId($mValue) { $this->iSessionId = $mValue; }
 
+    /* Timezone getters */
+    function getLocaleDateTime() { return datetimeutil::getLocaleDate($this->dDateTime); }
+    
     function _table () {
         return KTUtil::getTableName('user_history');
     }

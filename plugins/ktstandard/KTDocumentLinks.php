@@ -73,7 +73,9 @@ class KTDocumentLinks extends KTPlugin {
 
 class KTDocumentLinkViewlet extends KTDocumentViewlet {
     var $sName = 'ktcore.viewlets.document.link';
-
+    public $showIfRead = true;
+    public $showIfWrite = false;
+    
     function display_viewlet() {
         $oKTTemplating =& KTTemplating::getSingleton();
         $oTemplate =& $oKTTemplating->loadTemplate("ktstandard/links/links_viewlet");

@@ -2496,11 +2496,12 @@ class KTAPI_Document extends KTAPI_FolderItem
         	return new KTAPI_Error(KTAPI_ERROR_INTERNAL_ERROR, $transactions  );
         }
 
-		$wsversion = $this->ktapi->getVersion();
 		foreach($transactions as $key=>$transaction)
 		{
 			$transactions[$key]['version'] = (float) $transaction['version'];
+			$transactions[$key]['datetime'] = datetimeutil::getLocaleDate($transactions[$key]['datetime']);
 		}
+
 
         return $transactions;
 	}
@@ -3038,6 +3039,31 @@ class KTAPI_Document extends KTAPI_FolderItem
 				return FALSE;
 			}
 		}
+	}
+	
+	/**
+	 * 
+	 * Determines whether a document has "binary changes", i.e. if it truly has content changes
+	 * (since rename etc also increase the content version). The only way to determine this is by 
+	 * checking whether there has been a check-in in the given version range
+	 * 
+	 * @param float $from_version
+	 * @param float $to_version
+	 */
+	public function hasBinaryChanges($from_version, $to_version)
+	{		
+		$sSQL = 'SELECT DT.document_id FROM '.KTUtil::getTableName('document_transactions').' AS DT '.
+			'WHERE DT.document_id = '.$this->documentid.' AND DT.version > '.$from_version.' AND DT.version <= '.$to_version.
+			' AND DT.transaction_namespace LIKE \'ktcore.transactions.check_in\' ';		
+
+        $results = DBUtil::getResultArray($sSQL);
+        
+        if (is_null($results) || PEAR::isError($results))
+        {
+        	return false;
+        }
+        
+        return (count($results) > 0);
 	}
 }
 

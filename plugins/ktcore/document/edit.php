@@ -4,7 +4,7 @@
  * KnowledgeTree Community Edition
  * Document Management Made Simple
  * Copyright (C) 2008, 2009, 2010 KnowledgeTree Inc.
- * 
+ *
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License version 3 as published by the
@@ -199,6 +199,7 @@ class KTDocumentEditAction extends KTDocumentAction {
         //
         // we do this the "easy" way.
         $doctypeid = $this->oDocument->getDocumentTypeId();
+        $origDocTypeId = $doctypeid;
         if ($_REQUEST['new_type']) {
             $oTestType = DocumentType::get($_REQUEST['new_type']);
             if (!PEAR::isError($oTestType)) {
@@ -222,7 +223,7 @@ class KTDocumentEditAction extends KTDocumentAction {
                     // NOTE this works great...once the text is saved a first time
                     //      but the first time the <script> tags come through encoded, so decode first
                     // HOWEVER html_entity_decode decodes too much (e.g. &nbsp; - which causes a DB error for some reason)!  use this instead
-                    // NOTE I considered a preg_replace_callback but str_replace is probably more efficient in this case as we only have 
+                    // NOTE I considered a preg_replace_callback but str_replace is probably more efficient in this case as we only have
                     //      two symbols to replace
                     $val = str_replace('&lt;', '<', $val);
                     $val = str_replace('&gt;', '>', $val);
@@ -231,10 +232,10 @@ class KTDocumentEditAction extends KTDocumentAction {
                     // these will not be correctly removed by strip_tags
                     $val = preg_replace('/<script[^>]*>([^<]*)<\/script>/', '', $val);
                     // remove any attempts to call an onclick/onmouseover/onwhatever call
-                    $val = preg_replace_callback('/on[^= ]*=[^; \/>]*;?"? *\/? *(>?)/', 
-                                                 create_function('$matches', 'if (isset($matches[1])) return $matches[1]; else return null;'), 
+                    $val = preg_replace_callback('/on[^= ]*=[^; \/>]*;?"? *\/? *(>?)/',
+                                                 create_function('$matches', 'if (isset($matches[1])) return $matches[1]; else return null;'),
                                                  $val);
-                    // now strip remaining tags including script tags with code surrounded by <!-- //-->, 
+                    // now strip remaining tags including script tags with code surrounded by <!-- //-->,
 					// which would not be stripped by the previous regex
                     $val = strip_tags($val, '<p><a><b><strong><ol><ul><li><p><br><i><em><u><span>');
                     // remove empty <p> tags?
@@ -299,6 +300,8 @@ class KTDocumentEditAction extends KTDocumentAction {
             $aInfo = array(
                 "document" => $this->oDocument,
                 "aOptions" => $MDPack,
+                'docTypeId' => $doctypeid,
+                'origDocTypeId' => $origDocTypeId
             );
             $oTrigger->setInfo($aInfo);
             $ret = $oTrigger->postValidate();
@@ -448,8 +451,10 @@ class KTDocumentEditAction extends KTDocumentAction {
             $sTrigger = $aTrigger[0];
             $oTrigger = new $sTrigger;
             $aInfo = array(
-            "document" => $this->oDocument,
-            "aOptions" => $MDPack,
+                "document" => $this->oDocument,
+                "aOptions" => $MDPack,
+                'docTypeId' => $doctypeid,
+                'origDocTypeId' => $iOldDocTypeID
             );
             $oTrigger->setInfo($aInfo);
             $ret = $oTrigger->postValidate();

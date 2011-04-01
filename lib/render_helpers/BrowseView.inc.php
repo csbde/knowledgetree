@@ -154,7 +154,7 @@ class BrowseView {
             $this->setPagingOptions($options['offset'], $options['limit']);
             $folderContentItems = $this->getFolderContent($folderId);
             if (count($folderContentItems['documents']) + count($folderContentItems['folders']) > 0) {
-                $responseData = $this->buildFolderView($folderContentItems);
+                $responseData = $this->buildFolderView($folderId, $folderContentItems);
             }
         }
 
@@ -190,7 +190,7 @@ class BrowseView {
 
         $totalItems = 0;
         $folderContentItems = $this->getFolderContent($folderId, $totalItems);
-        $folderView = $this->buildFolderView($folderContentItems);
+        $folderView = $this->buildFolderView($folderId, $folderContentItems, $editable);
         $response['folderContents'] = join($folderView);
 
         // Adding Fragments for drag & drop client side processing
@@ -224,7 +224,7 @@ class BrowseView {
         return $folderItems;
     }
 
-    private function buildFolderView($folderContentItems)
+    private function buildFolderView($folderId, $folderContentItems, $editable = null)
     {
         $folderItems = $this->getFolderItems($folderContentItems);
         $itemCount = count($folderItems);
@@ -335,7 +335,6 @@ class BrowseView {
 	 */
     public function noFilesOrFoldersMessage($folderId = null, $editable = true)
     {
-        $folderMessage = '<h2>There\'s nothing in this folder yet!</h2>';
         if (SharedUserUtil::isSharedUser()) {
             $folderMessage = '<h2>There\'s no shared content in this folder yet!</h2>';
             $perm = SharedContent::getPermissions($_SESSION['userID'], $folderId, null, 'folder');
@@ -348,6 +347,9 @@ class BrowseView {
         }
 
         if (!$editable) {
+        	if ($folderMessage == '') {
+        		$folderMessage = '<h2>You don\'t have permissions to view the contents of this folder!</h2>';
+        	}
             return "<span class='notification'>
 						$folderMessage
 			</span>";
@@ -431,7 +433,9 @@ class BrowseView {
     {
         $canDelete = Permission::userHasDeleteFolderPermission($folder);
         $canWrite = Permission::userHasFolderWritePermission($folder);
-
+		$canRead = Permission::userHasFolderReadPermission($folder);
+		// Check if user has no permission to folder.
+		if (!$canDelete && !$canWrite && !$canRead) { return ''; }
         $tpl = '<table class="browseView bulkActionMenu" cellspacing="0" cellpadding="0"><tr><td>
 		<input type="checkbox" class="select_all" />
 		<input type="hidden" value="" name="sListCode"><input type="hidden" value="bulkaction" name="action">
@@ -452,7 +456,11 @@ class BrowseView {
             unset($parts['ktcore.actions.bulk.move']);
             unset($parts['ktcore.actions.bulk.archive']);
         }
-
+        if(!$canRead)
+        {
+            unset($parts['ktcore.actions.bulk.copy']);
+            unset($parts['ktlive.actions.bulk.export']);
+        }
         //parts order: Copy, move, archive, delete, download all
         $tpl .= join($parts);
         $tpl .= '</td><td class="status" style="width: 200px; text-align: right;"></td></tr></table>';
