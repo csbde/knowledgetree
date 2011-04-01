@@ -167,6 +167,7 @@ class KTPage {
         $aJS[] = 'resources/js/newui/newUIFunctionality.js';
         $aJS[] = 'resources/js/newui/jquery.helper.js';
         $aJS[] = 'resources/js/newui/buttontabs.jquery.js';
+        $aJS[] = 'thirdpartyjs/jquery/plugins/dotimeout/jquery.ba-dotimeout.min.js';
 
         // Breadcrumbs
         $aJS[] = 'resources/js/jquery.breadcrumbs.js';
