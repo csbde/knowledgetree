@@ -2397,6 +2397,10 @@ class KTDocumentPreviewUrlAction extends KTDocumentAction {
         return _kt('Preview URL');
     }
 
+    function getInfo() {
+        return null;
+    }
+
     function getURL() {
         return '#';
     }
