@@ -429,6 +429,10 @@ ul.floatleft li.notification {
 	border-right: 1px solid #ccc;
 	line-height: 24px;
 }
+.action_buttons .action .disabled {
+	opacity: 0.5;
+	cursor: default;
+}
 .action_buttons #add-version {
 	background: url('../graphics/newui/document_exchange.png') no-repeat 7px 4px;
 }
@@ -538,6 +542,9 @@ div.form_actions {
 
 #content #document_status_area {
 	float: right;
+	display: inline-block;
+}
+#value_filename {
 	display: inline-block;
 }
 
@@ -932,6 +939,14 @@ label span.required
 	box-shadow: inset 0px 1px 1px #666;
 	padding: 2px;
 }
+.modalField input,
+.modalField select,
+.modalField textarea {
+	color: #666;
+	border-color: #ccc;
+} 
+
+
 .modalField input {
 	border: none;
 	padding: 2px;
@@ -945,8 +960,21 @@ label span.required
 	border: none;
 }
 .modalField .timeEntry_control {
-	background: url(../graphics/newui/updown-stepper.png) no-repeat 0px 0.2px !important;
-	margin: -4px -1px -2px 0px!important;
+	background: url(../graphics/newui/updown-stepper.png) no-repeat 0px -1px !important;
+	margin: -5px -1px -2px 0px!important;
 	width: 18px!important;
 	height: 22px !important;
+	border-top-right-radius: 3px;
+	border-bottom-right-radius: 3px;
+}
+
+
+/*Tag editor*/
+
+#content .token-input-list-facebook {
+	border: none;
+	list-style: none;
+	padding: 0px;
+}
+#content .tags div.token-input-dropdown-facebook {
 }

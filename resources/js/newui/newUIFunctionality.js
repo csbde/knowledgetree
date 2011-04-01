@@ -24,8 +24,8 @@ jQuery(document).ready(function() {
 
 (function($){
 	$(document).ready(function(){
-		$('#activity_feed_container').html($('#viewlet_activityfeed').html());
-		$('#viewlet_activityfeed').remove();
+		$('#activityfeed-container').html($('#viewlet-activityfeed').html());
+		$('#viewlet-activityfeed').remove();
 		$('.withviewlets').removeClass('withviewlets');
 		
 		$('#doc_thumb').append($('.thumb-shadow img')).addClass('thumb-shadow').css({'margin-right': '15px', 'margin-bottom': '15px'});
@@ -88,25 +88,25 @@ jQuery(function() {
 (function($){
 	$(document).ready(function()
 	{
-	    $(".defaultText").focus(function(srcc)
+	    $(".default-text").focus(function(srcc)
 	    {
 	        if ($(this).val() == $(this)[0].title)
 	        {
-	            $(this).removeClass("defaultTextActive");
+	            $(this).removeClass("default-text-active");
 	            $(this).val("");
 	        }
 	    });
 	    
-	    $(".defaultText").blur(function()
+	    $(".default-text").blur(function()
 	    {
 	        if ($(this).val() == "")
 	        {
-	            $(this).addClass("defaultTextActive");
+	            $(this).addClass("default-text-active");
 	            $(this).val($(this)[0].title);
 	        }
 	    });
 	    
-	    $(".defaultText").blur();        
+	    $(".default-text").blur();        
 	});
 })(jQuery);
 /**

@@ -86,24 +86,28 @@ class KTCorePlugin extends KTPlugin {
         $this->registerAction('folderaction', 'KTBulkUploadFolderAction', 'ktcore.actions.folder.bulkUpload', 'folder/BulkUpload.php');
         $this->registerAction('folderaction', 'FolderIndexAction', 'ktcore.search2.index.folder.action', KT_DIR . '/plugins/search2/FolderIndexAction.php');
         $this->registerAction('folderinfo', 'KTFolderTransactionsAction', 'ktcore.actions.folder.transactions', 'folder/Transactions.php');
-        
+
+        $this->registerAction('documentaction', 'KTDocumentPageUrlAction', 'ktcore.actions.document.pageurl', 'KTDocumentActions.php');
+        $this->registerAction('documentaction', 'KTDocumentDownloadUrlAction', 'ktcore.actions.document.downloadurl', 'KTDocumentActions.php');
+        $this->registerAction('documentaction', 'KTDocumentPreviewUrlAction', 'ktcore.actions.document.previewurl', 'KTDocumentActions.php');
+
         // Folder Sidebar
         $this->registerAction('mainfoldersidebar', 'KTFolderSidebar', 'ktcore.sidebars.folder', 'KTFolderSidebars.php');
-        
+
         $this->registerAction('documentaction', 'KTDocumentAssistAction', 'ktcore.actions.document.assist', 'KTAssist.php');
         // $this->registerAction('folderaction', 'KTDocumentAssistAction', 'ktcore.actions.folder.assist', 'KTAssist.php');
 
         // Viewlets
         $this->registerAction('documentviewlet', 'KTWorkflowViewlet', 'ktcore.viewlets.document.workflow', 'KTDocumentViewlets.php');
 		$this->registerAction('documentviewlet', 'KTInlineEditViewlet', 'ktcore.viewlets.document.inline.edit', 'KTDocumentViewlets.php');
-		
+
         // Blocks
         $this->registerAction('documentblock', 'KTDocumentStatusBlock', 'ktcore.blocks.document.status', 'KTDocumentBlocks.php');
-        
+
         // Document Sidebar
         $this->registerAction('maindocsidebar', 'KTDocumentSidebar', 'ktcore.sidebars.document', 'KTDocumentSidebars.php');
         $this->registerAction('documentsidebar', 'KTRecentlyViewedSidebar', 'ktcore.sidebar.recentviews', 'KTDocumentSidebars.php');
-		
+
         // Notifications
         $this->registerNotificationHandler('KTAssistNotification', 'ktcore/assist', 'KTAssist.php');
         $this->registerNotificationHandler('KTSubscriptionNotification', 'ktcore/subscriptions', KT_LIB_DIR . '/dashboard/Notification.inc.php');
