@@ -19,14 +19,17 @@
 				<div class="documentTitle" rel={$rootUrl}/presentation/lookAndFeel/knowledgeTree/widgets/updateMetadata.php?func=title&documentID={$document->getId()}>
 				<span data-name="documentTitle" data-type='text' data-value-id="value_title" data-class="required"></span>
 					<span id="value_title">{i18n}{$document->getName()|sanitize}{/i18n}</span>
-					<span title="Click to edit" class="editable_control edit">&nbsp;</span>
+					<span class="save-placeholder">&nbsp;</span>
+					<span title="Click to edit" class="editable-control edit">&nbsp;</span>
+					
 				</div>
 				{* Display Actions Block *}
 				{$documentBlocks->getDocBlock()}
 				<div class="documentFilename" rel={$rootUrl}/presentation/lookAndFeel/knowledgeTree/widgets/updateMetadata.php?func=filename&documentID={$document->getId()}>
 				<span data-name="documentFilename" data-type='text' data-value-id="value_filename" data-class="required"></span>
 					<span id="value_filename"><p>{$document->getFileName()}</p></span>
-					<span title="Click to edit" class="editable_control edit">&nbsp;</span>
+					<span class="save-placeholder">&nbsp;</span>
+					<span title="Click to edit" class="editable-control edit">&nbsp;</span>
 				</div>
                 </td>
             </tr>
@@ -46,7 +49,7 @@
 					<br><br/>
 
 					<div class="tags">
-						<h3>Tag Cloud<span class="editable_control none">&nbsp;</span></h3>
+						<h3>Tag Cloud<span class="editable-control none">&nbsp;</span></h3>
                         <br/>
                         <input type="text" name="tagcloud" id="tagcloud" />
                         <br/>
@@ -62,7 +65,7 @@
 						<td>
 							<span class="descriptiveText" id='documentTypeID' data-name='documentTypeID' data-options='[{foreach from=$document_types key=aKey item=documentType}
 								["{$documentType->getName()}","{$documentType->getId()}"],{/foreach}]' data-type='select'>{$document_data.document_type->getName()}</span>
-							<span title="Click to edit" class="editable_control edit">&nbsp;</span>
+							<span title="Click to edit" class="editable-control edit">&nbsp;</span>
 						</td>
 					</table>
 					</div>

@@ -4,7 +4,7 @@ kt.app.metadata = new function() {
 
     this.saveTags = function(documentId)
     {
-    	jQuery('.editable_control', jQuery('.tags')).removeClass('none').addClass('spin').css('visibility', 'visible');
+    	jQuery('.editable-control', jQuery('.tags')).removeClass('none').addClass('spin').css('visibility', 'visible');
         var tags = encodeURIComponent(jQuery('#tagcloud').val());
         var params = {'tags': tags, 'documentId': documentId};
         var synchronous = false;
@@ -14,7 +14,7 @@ kt.app.metadata = new function() {
 
     this.updateSuccessful = function()
     {
-        jQuery('.editable_control', jQuery('.tags')).removeClass('spin').addClass('none').css('visibility', 'hidden');
+        jQuery('.editable-control', jQuery('.tags')).removeClass('spin').addClass('none').css('visibility', 'hidden');
         return;
     }
 
