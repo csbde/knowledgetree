@@ -9,7 +9,7 @@
 	            </td>
 	            <td style="" valign="middle">
 	                <div class="buttons">
-	                    <input type="button" id="comment-post" name="comment.post" onclick="javascript: kt.ui.activityFeed.postComment({$document->getId()}, jQuery('#commentsbox').val());" value="{i18n}Post{/i18n}" style="background: none; height: 28px; width: 50px;" />
+	                    <input type="button" id="comment-post" name="comment.post" onclick="javascript: kt.ui.activityFeed.postComment({$document->getId()}, jQuery('#commentsbox').val(), {$displayMax});" value="{i18n}Post{/i18n}" style="background: none; height: 28px; width: 50px;" />
 	                </div>
 	            </td>
 	        </tr>
@@ -27,10 +27,9 @@
     </tr>
 </table>
 		
-<div class="activityfeed new-comment"></div>
-
 <div class="activityfeed" style="border: 0px solid #000000">
 
+<div class="activityfeed new-comment"></div>
 
 {assign var='count' value='0'}
 	{foreach item=version from=$versions}
