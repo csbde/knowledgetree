@@ -136,15 +136,13 @@ class KTJSONLookupWidget extends KTBaseWidget {
 
     public function setTemplate($template) { $this->sTemplate = $template; }
 
-    public static function getGroupsAndRolesForSelector()
+    public static function getGroupsAndRoles()
     {
-        $options['Groups'] = self::getGroupsForSelector();
-        $options['Roles'] = self::getRolesForSelector();
-
+        $options = array_merge(self::getGroups(), self::getRoles());
         return $options;
     }
 
-    public static function getGroupsForSelector()
+    public static function getGroups()
     {
         $options = array();
 
@@ -158,14 +156,44 @@ class KTJSONLookupWidget extends KTBaseWidget {
         return $options;
     }
 
+    public static function getRoles()
+    {
+        $options = array();
+
+        $roles = Role::getList('id > 0');
+        foreach ($roles as $role) {
+            $options["role_{$role->getId()}"]['name'] = $role->getName();
+            $options["role_{$role->getId()}"]['active'] = 1;
+        }
+
+        return $options;
+    }
+
+    public static function getAssignedGroupsAndRoles(&$options, $members = array())
+    {
+        $assigned = array_merge(
+                            self::getAssignedGroups($options, $members = array()),
+                            self::getAssignedRoles($options, $members = array())
+                    );
+        return $assigned;
+    }
+
     // FIXME Eliminate the need for the return of $options by reference (see comment about member vars.)
     /**
      * @param array $options The options to check for assignment.
      * @param array $members The included members.
      */
-    public static function getAssignedGroupsForSelector(&$options, $members = array())
+    public static function getAssignedGroups(&$options, $members = array())
     {
-        $assigned['groups_roles'] = self::getAssignedTypeForSelector('group', $options, $members);
+        $assigned['groups_roles'] = self::getAssignedType('group', $options, $members);
+        $assigned = array(implode(',', $assigned['groups_roles']), null);
+
+        return $assigned;
+    }
+
+    public static function getAssignedRoles(&$options, $members = array())
+    {
+        $assigned['groups_roles'] = self::getAssignedType('role', $options, $members);
         $assigned = array(implode(',', $assigned['groups_roles']), null);
 
         return $assigned;
@@ -180,7 +208,7 @@ class KTJSONLookupWidget extends KTBaseWidget {
      * @param array $options The options to check for assignment.
      * @param array $members The included members.
      */
-    private static function getAssignedTypeForSelector($type, &$options, $members = array())
+    private static function getAssignedType($type, &$options, $members = array())
     {
         // Process list of existing groups and roles into a format which can be easily parsed in the template.
         // Additionally set disabled (inactive) for any pre-selected select list option.
@@ -197,40 +225,9 @@ class KTJSONLookupWidget extends KTBaseWidget {
         return $assigned;
     }
 
-    public static function getRolesForSelector()
-    {
-        $options = array();
-
-        $roles = Role::getList('id > 0');
-        foreach ($roles as $role) {
-            $options["role_{$role->getId()}"]['name'] = $role->getName();
-            $options["role_{$role->getId()}"]['active'] = 1;
-        }
-
-        return $options;
-    }
-
-    public static function getAssignedRolesForSelector($options, &$options, $members = array())
-    {
-        // Process list of existing groups and roles into a format which can be easily parsed in the template.
-        // Additionally set disabled (inactive) for any pre-selected select list option.
-        $assigned['groups_roles'] = array();
-        foreach ($members as $key => $member) {
-            $data = explode('_', $key);
-            if ($data[0] != 'user') {
-                $assigned['groups_roles'][] = '{id: "' . $key . '", name: "' . $member->getName() . '"}';
-                $keyword = ucwords($data[0]) . 's';
-                $options[$keyword][$key]['active'] = 0;
-            }
-        }
-
-        return $assigned;
-    }
-
-    public static function getAssignedUsersForSelector($members = array())
+    public static function getAssignedUsers($members = array())
     {
         // Process list of existing users into a format which can be easily parsed in the template.
-        // Additionally set disabled (inactive) for any pre-selected select list option.
         $assigned['users'] = array();
         foreach ($members as $key => $member) {
             $data = explode('_', $key);
@@ -243,7 +240,37 @@ class KTJSONLookupWidget extends KTBaseWidget {
             }
         }
 
+        $assigned = array(null, implode(',', $assigned['users']));
+
         return $assigned;
+    }
+
+    /**
+     * Build the final widget with the supplied values.
+     */
+    public static function getJsonWidget($label, $type, $parts, $assigned, $options)
+    {
+        global $main;
+
+        $baseOptions = array(
+                            'assigned' => $assigned,
+                            'type' => $type,
+                            'parts' => $parts
+        );
+        $options = array_merge($baseOptions, $options);
+
+        $jsonWidget = new KTJSONLookupWidget(_kt($label['header']),
+            _kt($label['text']),
+            'members',
+            '',
+            $main,
+            false,
+            null,
+            null,
+            $options
+        );
+
+        return $jsonWidget;
     }
 
 }

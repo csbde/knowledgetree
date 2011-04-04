@@ -5,67 +5,27 @@
 <p class="descriptiveText">{i18n}Add or remove users for this role. {/i18n}</p>
 
 <form action="{$smarty.server.PHP_SELF}" method="POST" id="userroleform" name="userroleform">
-   <input type="hidden" name="action" value="setRoleUsers" />
-   <input type="hidden" name="allocation_id" value="{$edit_rolealloc->getId()}" />
-   <input type="hidden" name="fFolderId" value="{$context->oFolder->getId()}" />
-   <!-- erk. FIXME clean up and remove OptionTransfer.js. -->
+    <input type="hidden" name="action" value="setRoleUsers" />
+    <input type="hidden" name="allocation_id" value="{$edit_rolealloc->getId()}" />
+    <input type="hidden" name="fFolderId" value="{$context->oFolder->getId()}" />
+    <!-- erk. FIXME clean up and remove OptionTransfer.js. -->
 
-   <input type="hidden" name="userFinal" />
+    <input type="hidden" name="userFinal" />
 
+    <fieldset>
+        <legend>{i18n}Allocate User to Role{/i18n}</legend>
+        <p class="descriptiveText">{i18n}
+To add users to this role, type part of the name you are looking for and select from the search results displayed.
+To remove users from this role, click the X next to the user name.{/i18n}</p>
 
-   <fieldset>
-      <legend>{i18n}Allocate User to Role{/i18n}</legend>
-      <p class="descriptiveText">{i18n}
-To add users to this role, select one or more user names in the Available Users field; then, double click or use the right pointing arrow to populate the Member users field.
-To remove users from this role, select one or more user names in the Member users field; then, double click, or use the left pointing arrow to move these names to Available Users.{/i18n}</p>
+        <div>
+            {$jsonWidget}
+        </div>
 
-<p>{i18n}Use the Filter fields to display names in order of specified criteria.
-Use the Ctrl key to multi-select user names.{/i18n}</p>
-
-<table border="0" width="600">
-   <thead>
-      <tr>
-         <th>{i18n}Available Users{/i18n}</th>
-         <th>&nbsp;</th>
-         <th>{i18n}Member users{/i18n}</th>
-      </tr>
-   </thead>
-   <tbody>
-      <tr>
-         <td valign="top" width="1%">
-           <select name="userSelect" size="10" multiple="multiple">
-               {foreach item=oUser from=$unused_users}
-               <option value="{$oUser->getId()}" ondblclick="optGroup.transferRight()">{$oUser->getName()}</option>
-               {/foreach}
-           </select>
-         </td>
-         <td align="center">
-            <input name="right" style="width: 60px;" value="&raquo;" onclick="optGroup.transferRight()" type="button"><br /><br />
-            <input name="left" style="width: 60px;" value="&laquo;" onclick="optGroup.transferLeft()" type="button">
-         </td>
-         <td valign="top" width="1%">
-            <select name="chosenUsers" size="10" multiple="multiple">
-               {foreach item=oUser from=$role_users}
-               <option value="{$oUser->getId()}" ondblclick="optGroup.transferRight()">{$oUser->getName()}</option>
-               {/foreach}
-            </select>
-         </td>
-      </tr>
-      <tr>
-         <td><label for="ug-filter">{i18n}Filter{/i18n}</label>
-            <input name="filterUG" id="ug-filter" onkeyup="var x = this.value; if(x.length > 2) optGroup.sortSelectMatch(userSelect, x);" type="text">
-         </td>
-         <td>&nbsp;</td>
-         <td><label for="og-filter">{i18n}Filter{/i18n}</label>
-            <input name="filterOG" id="og-filter" onkeyup="var x = this.value; if(x.length > 2) optGroup.sortSelectMatch(chosenUsers, x);" type="text">
-         </td>
-      </tr>
-</tbody></table>
-
-      <div class="form_actions">
-         <input type="{$input.type}" value="{i18n}Save Changes{/i18n}" onclick="{$input.onclick}" />
-         {capture assign=link}{addQS}fFolderId={$context->oFolder->getId()}{/addQS}{/capture}
-         <input type="submit" name="kt_cancel[{$link}]" value="{i18n}Cancel{/i18n}" />
-      </div>
-   </fieldset>
-   </form>
+        <div class="form_actions">
+            <input type="{$input.type}" value="{i18n}Save Changes{/i18n}" onclick="{$input.onclick}" />
+            {capture assign=link}{addQS}fFolderId={$context->oFolder->getId()}{/addQS}{/capture}
+            <input type="submit" name="kt_cancel[{$link}]" value="{i18n}Cancel{/i18n}" />
+        </div>
+    </fieldset>
+</form>

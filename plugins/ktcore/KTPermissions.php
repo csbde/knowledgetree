@@ -585,27 +585,20 @@ class KTRoleAllocationPlugin extends KTFolderAction {
         $this->oPage->setBreadcrumbDetails(_kt('Manage Users for Role'));
         $this->oPage->setTitle(sprintf(_kt('Manage Users for Role')));
 
-        $initJS = 'var optGroup = new OptionTransfer("userSelect","chosenUsers"); ' .
-                            'function startTrans() { var f = getElement("userroleform"); ' .
-                            ' optGroup.saveNewRightOptions("userFinal"); ' .
-                            ' optGroup.init(f); }; ' .
-                            ' addLoadEvent(startTrans); ';
-        $this->oPage->requireJSStandalone($initJS);
-
-        $initialUsers = $roleAllocation->getUsers();
-        $allUsers = User::getList('id > 0 AND disabled = 0');
+        // NOTE Not sure what this code did, but don't think it is required for the new widget.
+        // TODO remove this comment and the commented code if date after 1 May 2011 and no issues found.
+        //$initJS = 'var optGroup = new OptionTransfer("userSelect","chosenUsers"); ' .
+        //                    'function startTrans() { var f = getElement("userroleform"); ' .
+        //                    ' optGroup.saveNewRightOptions("userFinal"); ' .
+        //                    ' optGroup.init(f); }; ' .
+        //                    ' addLoadEvent(startTrans); ';
+        //$this->oPage->requireJSStandalone($initJS);
 
         // FIXME this is massively non-performant for large userbases..
-        $roleUsers = array();
-        $freeUsers = array();
-        foreach ($initialUsers as $oUser) {
-            $roleUsers[$oUser->getId()] = $oUser;
-        }
-
-        foreach ($allUsers as $oUser) {
-            if (!array_key_exists($oUser->getId(), $roleUsers)) {
-                $freeUsers[$oUser->getId()] = $oUser;
-            }
+        $memberUsers = $roleAllocation->getUsers();
+        $members = array();
+        foreach ($memberUsers as $user) {
+            $members["user_{$user->getId()}"] = $user;
         }
 
         // Include the electronic signature on the permissions action
@@ -620,14 +613,19 @@ class KTRoleAllocationPlugin extends KTFolderAction {
             $input['onclick'] = '';
         }
 
+        $assigned = KTJSONLookupWidget::getAssignedUsers($members);
+        $options = array('users' => $groups);
+        $label['header'] = 'Users';
+        $label['text'] = 'Select the users which should be part of this role.';
+        $jsonWidget = KTJSONLookupWidget::getJsonWidget($label, 'users', 'users', $assigned, $options);
+
         $templating =& KTTemplating::getSingleton();
         $template = $templating->loadTemplate('ktcore/folder/roles_manageusers');
         $templateData = array(
                             'context' => $this,
                             'edit_rolealloc' => $roleAllocation,
-                            'unused_users' => $freeUsers,
-                            'role_users' => $roleUsers,
-                            'input' => $input
+                            'input' => $input,
+                            'jsonWidget' => $jsonWidget->render()
         );
 
         return $template->render($templateData);
@@ -679,12 +677,12 @@ class KTRoleAllocationPlugin extends KTFolderAction {
             $input['onclick'] = '';
         }
 
-        $groups = KTJSONLookupWidget::getGroupsForSelector();
-        $assigned = KTJSONLookupWidget::getAssignedGroupsForSelector($groups, $members);
+        $groups = KTJSONLookupWidget::getGroups();
+        $assigned = KTJSONLookupWidget::getAssignedGroups($groups, $members);
         $options = array('groups_roles' => $groups, 'selection_default' => 'Select groups', 'optgroups' => false);
         $label['header'] = 'Groups';
         $label['text'] = 'Select the groups which should be part of this role.';
-        $jsonWidget = $this->getJsonWidget($label, 'groups', 'groups', $assigned, $options);
+        $jsonWidget = KTJSONLookupWidget::getJsonWidget($label, 'groups', 'groups', $assigned, $options);
 
         $templating =& KTTemplating::getSingleton();
         $template = $templating->loadTemplate('ktcore/folder/roles_managegroups');
@@ -699,31 +697,6 @@ class KTRoleAllocationPlugin extends KTFolderAction {
         return $template->render($templateData);
     }
 
-    private function getJsonWidget($label, $type, $parts, $assigned, $options)
-    {
-        global $main;
-
-        $baseOptions = array(
-                            'assigned' => $assigned,
-                            'type' => $type,
-                            'parts' => $parts
-        );
-        $options = array_merge($baseOptions, $options);
-
-        $jsonWidget = new KTJSONLookupWidget(_kt($label['header']),
-            _kt($label['text']),
-            'members',
-            '',
-            $main,
-            false,
-            null,
-            null,
-            $options
-        );
-
-        return $jsonWidget;
-    }
-
     function do_setRoleUsers() {
         $roleAllocationId = KTUtil::arrayGet($_REQUEST, 'allocation_id');
         $roleAllocation = RoleAllocation::get($roleAllocationId);
@@ -731,26 +704,28 @@ class KTRoleAllocationPlugin extends KTFolderAction {
             $this->errorRedirectToMain(_kt('No such role allocation.'), sprintf('fFolderId=%d',$this->oFolder->getId()));
         }
 
-        $users = KTUtil::arrayGet($_REQUEST, 'userFinal', '');
-        $aUserIds = explode(',', $users);
-
-        // check that its not corrupt..
-        $aFinalUserIds = array();
-        foreach ($aUserIds as $iUserId) {
-            $oUser =& User::get($iUserId);
-            if (!(PEAR::isError($oUser) || ($oUser == false))) {
-                $aFinalUserIds[] = $iUserId;
+        $users = trim(KTUtil::arrayGet($_REQUEST, 'users'), ',');
+        if (!empty($users)) {
+            $users = explode(',', $users);
+            $finalUserIds = array();
+            foreach ($users as $userId) {
+                $user =& User::get($userId);
+                if (!(PEAR::isError($user) || ($user == false))) {
+                    $finalUserIds[] = $userId;
+                }
             }
         }
 
-        if (empty($aFinalUserIds)) { $aFinalUserIds = null; }
+        if (empty($finalUserIds)) {
+            $finalUserIds = null;
+        }
 
         // hack straight in.
         $permissionDescriptor = $roleAllocation->getPermissionDescriptor();
         $allowed = $permissionDescriptor->getAllowed();
 
         // now, grab the existing allowed and modify.
-        $allowed['user'] = $aFinalUserIds;
+        $allowed['user'] = $finalUserIds;
         $roleAllocation->setAllowed($allowed);
         $res = $roleAllocation->update();
         if (PEAR::isError($res) || ($res == false)) {
@@ -831,8 +806,8 @@ class KTRoleAllocationPlugin extends KTFolderAction {
         ));
 
         $options = array(
-                            'defaultmessage' => _kt('Problem assigning role groups'),
-                            'redirect_to' => array('main', sprintf('fFolderId=%d', $this->oFolder->getId())),
+                        'defaultmessage' => _kt('Problem assigning role groups'),
+                        'redirect_to' => array('main', sprintf('fFolderId=%d', $this->oFolder->getId())),
         );
 
         $this->oValidator->notErrorFalse($transaction, $options);
