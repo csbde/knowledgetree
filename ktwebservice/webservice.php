@@ -2925,10 +2925,10 @@ class KTWebService {
 			{
 				$tree[] = array(
 					'id' => $item['fieldid'],
-					'name' => $item['fieldname'],
-					'value' => $item['fieldname'],
+					'name' => $item['name'],
+					'value' => $item['name'],
 					'parent_id' => $item['parentid'],
-					'path' => $path.$item['fieldname']
+					'path' => $path.$item['name']
 				);
 			}
 		
