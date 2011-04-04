@@ -123,15 +123,128 @@ class KTTreeWidget extends KTBaseWidget { var $sTemplate = 'kt3/fields/tree'; }
 // TODO KTDateWidget
 // TODO KTDateRangeWidget
 
+// TODO Make functions non-static and probably separate into separate selector and text search
+//      classes.  Make options and selected options member variables.
+
 // Expects $aOptions['action'] => dispatcher action to load from
 //         $aOptions['assigned'] => currently assigned values
 //         $aOptions['bind_add'] (opt) => name of js method to call on add
 //         $aOptions['bind_remove'] (opt) => name of js method to call on remove
 class KTJSONLookupWidget extends KTBaseWidget {
 
-	var $sTemplate = "kt3/fields/jsonlookup";
+    var $sTemplate = 'kt3/fields/jsonlookup';
 
-	public function setTemplate($template) { $this->sTemplate = $template; }
+    public function setTemplate($template) { $this->sTemplate = $template; }
+
+    public static function getGroupsAndRolesForSelector()
+    {
+        $options['Groups'] = self::getGroupsForSelector();
+        $options['Roles'] = self::getRolesForSelector();
+
+        return $options;
+    }
+
+    public static function getGroupsForSelector()
+    {
+        $options = array();
+
+        $groups = GroupUtil::listGroups();
+        // TODO checking of assigned groups and roles vs available, set active = false for assigned.
+        foreach ($groups as $group) {
+            $options["group_{$group->getId()}"]['name'] = $group->getName();
+            $options["group_{$group->getId()}"]['active'] = 1;
+        }
+
+        return $options;
+    }
+
+    // FIXME Eliminate the need for the return of $options by reference (see comment about member vars.)
+    /**
+     * @param array $options The options to check for assignment.
+     * @param array $members The included members.
+     */
+    public static function getAssignedGroupsForSelector(&$options, $members = array())
+    {
+        $assigned['groups_roles'] = self::getAssignedTypeForSelector('group', $options, $members);
+        $assigned = array(implode(',', $assigned['groups_roles']), null);
+
+        return $assigned;
+    }
+
+    /**
+     * Compares available options and current membership.
+     * Returns a listing of the matched options as well as an indicator of whether an option
+     * should be active (selectable) within a list (list can be search results or selector options.)
+     *
+     * @param string $type The option type.
+     * @param array $options The options to check for assignment.
+     * @param array $members The included members.
+     */
+    private static function getAssignedTypeForSelector($type, &$options, $members = array())
+    {
+        // Process list of existing groups and roles into a format which can be easily parsed in the template.
+        // Additionally set disabled (inactive) for any pre-selected select list option.
+        $assigned = array();  // FIXME will not work for users, d'uh.
+        foreach ($members as $key => $member) {
+            // TODO check type before explode?
+            $data = explode('_', $key);
+            if ($data[0] == $type) {
+                $assigned[] = '{id: "' . $key . '", name: "' . $member->getName() . '"}'; // FIXME will not work for users, d'uh.
+                $options[$key]['active'] = 0;
+            }
+        }
+
+        return $assigned;
+    }
+
+    public static function getRolesForSelector()
+    {
+        $options = array();
+
+        $roles = Role::getList('id > 0');
+        foreach ($roles as $role) {
+            $options["role_{$role->getId()}"]['name'] = $role->getName();
+            $options["role_{$role->getId()}"]['active'] = 1;
+        }
+
+        return $options;
+    }
+
+    public static function getAssignedRolesForSelector($options, &$options, $members = array())
+    {
+        // Process list of existing groups and roles into a format which can be easily parsed in the template.
+        // Additionally set disabled (inactive) for any pre-selected select list option.
+        $assigned['groups_roles'] = array();
+        foreach ($members as $key => $member) {
+            $data = explode('_', $key);
+            if ($data[0] != 'user') {
+                $assigned['groups_roles'][] = '{id: "' . $key . '", name: "' . $member->getName() . '"}';
+                $keyword = ucwords($data[0]) . 's';
+                $options[$keyword][$key]['active'] = 0;
+            }
+        }
+
+        return $assigned;
+    }
+
+    public static function getAssignedUsersForSelector($members = array())
+    {
+        // Process list of existing users into a format which can be easily parsed in the template.
+        // Additionally set disabled (inactive) for any pre-selected select list option.
+        $assigned['users'] = array();
+        foreach ($members as $key => $member) {
+            $data = explode('_', $key);
+            if ($data[0] == 'user') {
+                $name = $member->getName();
+                if (empty($name)) {
+                    $name = $member->getUserName();
+                }
+                $assigned['users'][] = '{id: "' . $data[1] . '", name: "' . $name . '"}';
+            }
+        }
+
+        return $assigned;
+    }
 
 }
 

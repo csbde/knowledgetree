@@ -658,20 +658,11 @@ class KTRoleAllocationPlugin extends KTFolderAction {
                             ' addLoadEvent(startTrans); ';
         $this->oPage->requireJSStandalone($initJS);
 
-        $initialUsers = $roleAllocation->getGroups();
-        $allUsers = Group::getList();
-
-        // FIXME this is massively non-performant for large userbases..
-        $roleUsers = array();
-        $freeUsers = array();
-        foreach ($initialUsers as $oGroup) {
-            $roleUsers[$oGroup->getId()] = $oGroup;
-        }
-
-        foreach ($allUsers as $oGroup) {
-            if (!array_key_exists($oGroup->getId(), $roleUsers)) {
-                $freeUsers[$oGroup->getId()] = $oGroup;
-            }
+        // FIXME This is massively non-performant for large userbases.
+        $memberGroups = $roleAllocation->getGroups();
+        $members = array();
+        foreach ($memberGroups as $group) {
+            $members["group_{$group->getId()}"] = $group;
         }
 
         // Include the electronic signature on the permissions action
@@ -686,9 +677,8 @@ class KTRoleAllocationPlugin extends KTFolderAction {
             $input['onclick'] = '';
         }
 
-        $groups = $this->getGroupsForSelector();
-        $assigned = $this->getAssignedGroupsForSelector($groups, $groups);
-        $assigned = array(implode(',', $assigned['groups_roles']), null);
+        $groups = KTJSONLookupWidget::getGroupsForSelector();
+        $assigned = KTJSONLookupWidget::getAssignedGroupsForSelector($groups, $members);
         $options = array('groups_roles' => $groups, 'selection_default' => 'Select groups', 'optgroups' => false);
         $label['header'] = 'Groups';
         $label['text'] = 'Select the groups which should be part of this role.';
@@ -699,109 +689,12 @@ class KTRoleAllocationPlugin extends KTFolderAction {
         $templateData = array(
                             'context' => $this,
                             'edit_rolealloc' => $roleAllocation,
-                            'unused_groups' => $freeUsers,
-                            'role_groups' => $roleUsers,
                             'rolename' => $role->getName(),
                             'input' => $input,
                             'jsonWidget' => $jsonWidget->render()
         );
 
         return $template->render($templateData);
-    }
-
-    /**
-     * array(implode(',', $assigned['groups_roles']), implode(',', $assigned['users']))
-     */
-
-    // Not used here, will go in final util class.
-    private function getGroupsAndRolesForSelector()
-    {
-        $options['Groups'] = $this->getGroupsForSelector();
-        $options['Roles'] = $this->getRolesForSelector();
-
-        return $options;
-    }
-
-    private function getGroupsForSelector()
-    {
-        $options = array();
-
-        $groups = GroupUtil::listGroups();
-        // TODO checking of assigned groups and roles vs available, set active = false for assigned.
-        foreach ($groups as $group) {
-            $options["group_{$group->getId()}"]['name'] = $group->getName();
-            $options["group_{$group->getId()}"]['active'] = 1;
-        }
-
-        return $options;
-    }
-
-    private function getAssignedGroupsForSelector($options, &$options, $members = array())
-    {
-        // Process list of existing groups and roles into a format which can be easily parsed in the template.
-        // Additionally set disabled (inactive) for any pre-selected select list option.
-        $assigned['groups_roles'] = array();
-        foreach ($members as $key => $member) {
-            $data = explode('_', $key);
-            if ($data[0] != 'user') {
-                $assigned['groups_roles'][] = '{id: "' . $key . '", name: "' . $member->getName() . '"}';
-                $keyword = ucwords($data[0]) . 's';
-                $options[$keyword][$key]['active'] = 0;
-            }
-        }
-
-        return $assigned;
-    }
-
-    // Not used here, will go in final util class.
-    private function getRolesForSelector()
-    {
-        $options = array();
-
-        $roles = Role::getList('id > 0');
-        foreach ($roles as $role) {
-            $options["role_{$role->getId()}"]['name'] = $role->getName();
-            $options["role_{$role->getId()}"]['active'] = 1;
-        }
-
-        return $options;
-    }
-
-    // Not used here, will go in final util class.
-    private function getAssignedRolesForSelector($options, &$options, $members = array())
-    {
-        // Process list of existing groups and roles into a format which can be easily parsed in the template.
-        // Additionally set disabled (inactive) for any pre-selected select list option.
-        $assigned['groups_roles'] = array();
-        foreach ($members as $key => $member) {
-            $data = explode('_', $key);
-            if ($data[0] != 'user') {
-                $assigned['groups_roles'][] = '{id: "' . $key . '", name: "' . $member->getName() . '"}';
-                $keyword = ucwords($data[0]) . 's';
-                $options[$keyword][$key]['active'] = 0;
-            }
-        }
-
-        return $assigned;
-    }
-
-    private function getAssignedUsersForSelector($members = array())
-    {
-        // Process list of existing users into a format which can be easily parsed in the template.
-        // Additionally set disabled (inactive) for any pre-selected select list option.
-        $assigned['users'] = array();
-        foreach ($members as $key => $member) {
-            $data = explode('_', $key);
-            if ($data[0] == 'user') {
-                $name = $member->getName();
-                if (empty($name)) {
-                    $name = $member->getUserName();
-                }
-                $assigned['users'][] = '{id: "' . $data[1] . '", name: "' . $name . '"}';
-            }
-        }
-
-        return $assigned;
     }
 
     private function getJsonWidget($label, $type, $parts, $assigned, $options)
