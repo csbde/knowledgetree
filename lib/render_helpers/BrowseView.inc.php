@@ -629,8 +629,7 @@ class BrowseView {
         $item['allowdoczohoedit'] = '';
 
         if ($this->zohoEnabled && $hasWrite) {
-            if (Zoho::resolve_type($oDocument))
-            {
+            if (Zoho::resolve_type($oDocument)) {
                 if ($item['actions.checkout'] != $ns) {
                     $item['allowdoczohoedit'] = '<li class="action_zoho_document"><a href="javascript:;" onclick="zohoEdit(\'' . $item['id'] . '\')">Edit Document Online</a></li>';
                 }
