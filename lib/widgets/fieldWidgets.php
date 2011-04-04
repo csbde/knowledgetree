@@ -142,7 +142,7 @@ class KTJSONLookupWidget extends KTBaseWidget {
         return $options;
     }
 
-    public static function getGroups()
+    private static function getGroups()
     {
         $options = array();
 
@@ -183,7 +183,7 @@ class KTJSONLookupWidget extends KTBaseWidget {
      * @param array $options The options to check for assignment.
      * @param array $members The included members.
      */
-    public static function getAssignedGroups(&$options, $members = array())
+    private static function getAssignedGroups(&$options, $members = array())
     {
         $assigned['groups_roles'] = self::getAssignedType('group', $options, $members);
         $assigned = array(implode(',', $assigned['groups_roles']), null);
@@ -225,7 +225,24 @@ class KTJSONLookupWidget extends KTBaseWidget {
         return $assigned;
     }
 
-    public static function getAssignedUsers($members = array())
+    public static function getJsonGroupSelectorWidget($label, $type, $parts, $members, $options)
+    {
+        $groups = self::getGroups();
+        $assigned = self::getAssignedGroups($groups, $members);
+        $options['groups_roles'] = $groups;
+
+        return self::getJsonWidget($label, $type, $parts, $assigned, $options);
+    }
+
+    public static function getJsonUserSearchWidget($label, $type, $parts, $members)
+    {
+        $assigned = self::getAssignedUsers($members);
+        $options = array('users' => $groups);
+
+        return self::getJsonWidget($label, $type, $parts, $assigned, $options);
+    }
+
+    private static function getAssignedUsers($members = array())
     {
         // Process list of existing users into a format which can be easily parsed in the template.
         $assigned['users'] = array();
@@ -259,15 +276,16 @@ class KTJSONLookupWidget extends KTBaseWidget {
         );
         $options = array_merge($baseOptions, $options);
 
-        $jsonWidget = new KTJSONLookupWidget(_kt($label['header']),
-            _kt($label['text']),
-            'members',
-            '',
-            $main,
-            false,
-            null,
-            null,
-            $options
+        $jsonWidget = new KTJSONLookupWidget(
+                                            _kt($label['header']),
+                                            _kt($label['text']),
+                                            'members',
+                                            '',
+                                            $main,
+                                            false,
+                                            null,
+                                            null,
+                                            $options
         );
 
         return $jsonWidget;

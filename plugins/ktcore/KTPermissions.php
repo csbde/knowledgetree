@@ -613,11 +613,10 @@ class KTRoleAllocationPlugin extends KTFolderAction {
             $input['onclick'] = '';
         }
 
-        $assigned = KTJSONLookupWidget::getAssignedUsers($members);
-        $options = array('users' => $groups);
+        // Set up and instantiate user search widget.
         $label['header'] = 'Users';
         $label['text'] = 'Select the users which should be part of this role.';
-        $jsonWidget = KTJSONLookupWidget::getJsonWidget($label, 'users', 'users', $assigned, $options);
+        $jsonWidget = KTJSONLookupWidget::getJsonUserSearchWidget($label, 'users', 'users', $members);
 
         $templating =& KTTemplating::getSingleton();
         $template = $templating->loadTemplate('ktcore/folder/roles_manageusers');
@@ -677,12 +676,11 @@ class KTRoleAllocationPlugin extends KTFolderAction {
             $input['onclick'] = '';
         }
 
-        $groups = KTJSONLookupWidget::getGroups();
-        $assigned = KTJSONLookupWidget::getAssignedGroups($groups, $members);
-        $options = array('groups_roles' => $groups, 'selection_default' => 'Select groups', 'optgroups' => false);
+        // Set up and instantiate group selector widget.
+        $options = array('selection_default' => 'Select groups', 'optgroups' => false);
         $label['header'] = 'Groups';
         $label['text'] = 'Select the groups which should be part of this role.';
-        $jsonWidget = KTJSONLookupWidget::getJsonWidget($label, 'groups', 'groups', $assigned, $options);
+        $jsonWidget = KTJSONLookupWidget::getJsonGroupSelectorWidget($label, 'groups', 'groups', $members, $options);
 
         $templating =& KTTemplating::getSingleton();
         $template = $templating->loadTemplate('ktcore/folder/roles_managegroups');
