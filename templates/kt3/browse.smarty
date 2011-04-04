@@ -49,16 +49,8 @@
 {/if}
 
 <div class=" itemContainer" style="width: 700px;">
-<!--
-	<div class="newActions browseView bulkActionMenu" style="float:right">
-		<a href="{$rootUrl}action.php?kt_path_info=ktcore.actions.folder.addFolder&fFolderId={$context->oFolder->getId()}" ><span class="new-folder">New Folder</span></a>
-		<a href="{$rootUrl}action.php?kt_path_info=zoho.new.document&fFolderId={$context->oFolder->getId()}";" ><span class="new-onlinedoc">New Document</span></a>
-		<a href="javascript:kt.app.upload.showUploadWindow();"><span class="upload">Upload</span></a>
-	</div>
-	-->
 	{$folderContents}
 	{$bulkActionMenu}
-
 	<div style="width:100%; text-align: center">{$pagination}</div>
 </div>
 {$fragments}
@@ -111,10 +103,12 @@
 {/if}
 </td>
 <td valign="top" id="sidebar" class="standardBorder" height="100%" width="215">
-	<div id="sidebar_item" >
-		{* Display Actions Block *}
-		{$folderSidebars->getFolderSidebars()}
-	</div>
+    <div id="sidebar_item" >
+        {* Display Actions Block *}
+        {if ($folderSidebars)}
+            {$folderSidebars->getFolderSidebars()}
+        {/if}
+    </div>
 </td>
 </tr>
 </table>

@@ -89,8 +89,8 @@ class TagCloudRedirectPage extends KTStandardDispatcher {
         $this->redirectTo('search', $url);
     }
 
-    // TODO this looks horribly like duplicated browse code, which is not being kept
-    //      up to date with the current browse code, most likely.
+    // FIXME this looks horribly like it contains duplicated browse code,
+    //       which is likely not being kept up to date with the current browse code.
     public function do_search()
     {
         // Get the tag to search for and create search query
@@ -104,28 +104,17 @@ class TagCloudRedirectPage extends KTStandardDispatcher {
         $user = User::get($userId);
 
         // set page title
-        $sTitle =  _kt('Search Results - Tag:') . ' ' . $tag;
-        $this->oPage->setBreadcrumbDetails($sTitle);
+        $title =  _kt('Search Results - Tag:') . ' ' . $tag;
+        $this->oPage->setBreadcrumbDetails($title);
 
         // Set tag cloud portlet
         $portlet = new TagCloudPortlet($user, $tag);
         $this->oPage->addPortlet($portlet);
 
-        $templating =& KTTemplating::getSingleton();
-        $template = $templating->loadTemplate('kt3/browse');
-        $templateData = array(
-            'context' => $this,
-            'collection' => $collection,
-            'custom_title' => $sTitle,
-            'isEditable' => true,
-            'boolean_search' => $sSearch,
-            'bulkactions' => KTBulkActionUtil::getAllBulkActions(),
-            'browseutil' => new KTBrowseUtil(),
-            'returnaction' => $returnUrl,
-        );
-
-        $browseViewRender = BrowseViewUtil::getBrowseView();
-        $templateData['bulkActionMenu'] = $browseViewRender->renderBulkActionMenu($aBulkActions);
+        $browseViewRenderer = BrowseViewUtil::getBrowseView();
+        // There are no bulk actions available to this section at the moment.
+        // FIXME Add bulk actions menu.
+        /*$templateData['bulkActionMenu'] = $browseViewRenderer->renderBulkActionMenu(null);*/
         $folderContentItems = $this->getTagContent($tag);
         $folderView = $preFolderView = array();
 
@@ -136,7 +125,7 @@ class TagCloudRedirectPage extends KTStandardDispatcher {
                 $item['checked_out_date'] = '';
             }
 
-            $preFolderView[] = $browseViewRender->renderDocumentItem($item);
+            $preFolderView[] = $browseViewRenderer->renderDocumentItem($item);
         }
 
         $pageCount = 1;
@@ -159,25 +148,42 @@ class TagCloudRedirectPage extends KTStandardDispatcher {
             $folderView[] = '<span class="notification" id="empty_message">There are currently no viewable items in this folder.</span>';
         }
 
-        $folderView[] = "</div>";
+        $folderView[] = '</div>';
+
+        $this->oFolder = null;
+
+        $templating =& KTTemplating::getSingleton();
+        $template = $templating->loadTemplate('kt3/browse');
+        $templateData = array(
+            'context' => $this,
+            'collection' => $collection,
+            'custom_title' => $title,
+            'isEditable' => true,
+            'boolean_search' => false,
+            'bulkactions' => KTBulkActionUtil::getAllBulkActions(),
+            'browseutil' => new KTBrowseUtil(),
+            'returnaction' => $returnUrl,
+        );
 
         $templateData['folderContents'] = join($folderView);
         $templateData['fragments'] = '';
-        $templateData['fragments'] .= $browseViewRender->renderDocumentItem(null, true);
-        $templateData['fragments'] .= $browseViewRender->renderFolderItem(null, true);
-        $templateData['pagination'] = $browseViewRender->paginateByDiv($pageCount, 'page', 'paginate', 'item', "kt.pages.browse.viewPage('[page]');", "kt.pages.browse.prevPage();", "kt.pages.browse.nextPage();");
-        $templateData['javascript'] = $browseViewRender->getJavaScript();
+        $templateData['fragments'] .= $browseViewRenderer->renderDocumentItem(null, true);
+        $templateData['fragments'] .= $browseViewRenderer->renderFolderItem(null, true);
+        $templateData['pagination'] = $browseViewRenderer->paginateByDiv($pageCount, 'page', 'paginate', 'item', "kt.pages.browse.viewPage('[page]');", "kt.pages.browse.prevPage();", "kt.pages.browse.nextPage();");
+        $templateData['javascript'] = $browseViewRenderer->getJavaScript();
 
         return $template->render($templateData);
     }
 
     public function getTagContent($tag)
     {
-        $user = KTEntityUtil::get('User', $_SESSION['userID']);
-        $KT = new KTAPI();
-        $session = $KT->start_system_session($user->getUsername());
+        $userId = $_SESSION['userID'];
+        $user = User::get($userId);
 
-        $results = $KT->get_tag_contents($tag);
+        $kt = new KTAPI();
+        $session = $kt->start_system_session($user->getUsername());
+
+        $results = $kt->get_tag_contents($tag);
 
         $ret = array('folders' => array(), 'documents' => $results['results'], 'shortcuts' => array());
 
