@@ -651,12 +651,14 @@ class KTRoleAllocationPlugin extends KTFolderAction {
         $this->oPage->setBreadcrumbDetails(_kt('Manage Groups for Role'));
         $this->oPage->setTitle(sprintf(_kt('Manage Groups for Role "%s"'), $role->getName()));
 
-        $initJS = 'var optGroup = new OptionTransfer("groupSelect","chosenGroups"); ' .
-                            'function startTrans() { var f = getElement("grouproleform"); ' .
-                            ' optGroup.saveNewRightOptions("groupFinal"); ' .
-                            ' optGroup.init(f); }; ' .
-                            ' addLoadEvent(startTrans); ';
-        $this->oPage->requireJSStandalone($initJS);
+        // NOTE Not sure what this code did, but don't think it is required for the new widget.
+        // TODO remove this comment and the commented code if date after 1 May 2011 and no issues found.
+        //$initJS = 'var optGroup = new OptionTransfer("groupSelect","chosenGroups"); ' .
+        //                    'function startTrans() { var f = getElement("grouproleform"); ' .
+        //                    ' optGroup.saveNewRightOptions("groupFinal"); ' .
+        //                    ' optGroup.init(f); }; ' .
+        //                    ' addLoadEvent(startTrans); ';
+        //$this->oPage->requireJSStandalone($initJS);
 
         // FIXME This is massively non-performant for large userbases.
         $memberGroups = $roleAllocation->getGroups();
