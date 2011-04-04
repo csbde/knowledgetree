@@ -438,7 +438,7 @@ class KTDocumentActionUtil {
         return $oRegistry->getActions($slot);
     }
 
-    function &getDocumentActionsForDocument(&$oDocument, $oUser, $slot = 'documentaction') {
+    static public function &getDocumentActionsForDocument(&$oDocument, $oUser, $slot = 'documentaction') {
         $aObjects = array();
         $actions = KTDocumentActionUtil::getDocumentActionInfo($slot);
         foreach ($actions as $aAction) {
