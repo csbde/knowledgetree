@@ -77,7 +77,18 @@ div.viewletworkflow {
 	height: 25px;
 	position: relative;
 }
-
+#content .action_buttons .action:hover {
+	border: 1px solid #2F6594;
+	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#609bd1', endColorstr='#2f6694') !important; /* for IE */
+	background: -webkit-gradient(linear, left top, left bottom, from(#609bd1), to(#2f6694)) !important; /* for webkit browsers */
+	background: -moz-linear-gradient(top,  #609bd1,  #2f6694) !important; /* for firefox 3.6+ */
+	color: white;
+}
+#content .action_buttons .action a:hover {
+	color: inherit;
+	text-decoration: none;
+	text-shadow: 0px -1px 0px #2F6594;
+}
 .action_buttons.above {
 	display: block;
 	height: 30px;
@@ -88,6 +99,8 @@ div.viewletworkflow {
 	font-size: 11px;
 	height: 25px;
 	display: inline-block;
+	text-shadow: 0px 1px 0px white;
+	font-weight: bold;
 }
 .edit-online {
 	padding-right: 10px;
@@ -133,7 +146,7 @@ div.viewletworkflow {
 .splitmenu li:last-child {
 	border-bottom: 0px;
 }
-button {
+.button {
 	font-family: sans-serif !important;
 }
 .buttons a,
