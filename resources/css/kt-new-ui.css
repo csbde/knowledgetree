@@ -439,6 +439,9 @@ ul.floatleft li.notification {
 .action_buttons #download {
 	background: url('../graphics/newui/icons/download.png') no-repeat 4px 4px !important;
 }
+.action_buttons #download:hover {
+	background: url('../graphics/newui/icons/download_hover.png') no-repeat 4px 4px !important;
+}
 .action_buttons #edit-online {
 	background: url('../graphics/newui/icons/document_edit.png') no-repeat 5px 4px !important;
 }
