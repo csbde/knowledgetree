@@ -440,10 +440,10 @@ ul.floatleft li.notification {
 	background: url('../graphics/newui/icons/download.png') no-repeat 4px 4px !important;
 }
 .action_buttons #edit-online {
-	background: url('../graphics/newui/icons/document_edit.png') no-repeat 7px 4px !important;
+	background: url('../graphics/newui/icons/document_edit.png') no-repeat 5px 4px !important;
 }
 .action_buttons #share {
-	background: url('../graphics/newui/icons/users1.png') no-repeat 7px 4px !important;
+	background: url('../graphics/newui/icons/share.png') no-repeat 4px 4px !important;
 }
 .action_buttons #checkout {
 	background: url('../graphics/newui/icons/lock.png') no-repeat 4px 4px;
@@ -483,6 +483,9 @@ ul.floatleft li.notification {
 }
 .action_buttons #download-pdf {
 	background: url('../graphics/mimetypes/pdf.png') no-repeat 4px 4px;
+}
+.action_buttons #more {
+	background: url('../graphics/newui/icons/more.png') no-repeat 4px 4px;
 }
 div.form_actions {
 	float: left;

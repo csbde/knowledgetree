@@ -231,6 +231,12 @@ class TagQuery extends PartialQuery {
             return $queryObject;
         }
 
+        // TODO Figure out the purpose of this because it creates an edge case issue:
+        //      1. Search for documents by tag, get 1 result.
+        //      2. Add same tag to more documents.
+        //      3. Access tag via tag cloud again as in point 1.
+        //      4. Find that unless your session expired in between, you get the same results as in 1.
+        //         None of the newly linked documents are in the results.
         $query = "{$queryObject[0]} AND DTS.document_id IN ($documentList)";
         $queryObject[0] = $query;
 

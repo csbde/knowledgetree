@@ -194,8 +194,8 @@ jQuery.editableSet.addInputType('htmleditor', {
 		}
 		
 		var htmlEd = new Ext.form.HtmlEditor({
-	        width: 290,
-	        height: 200, 
+	        width: 210,
+	        height: 160, 
 	        id: attrs['data-name'],
 	        //cls: 'ul_meta_fullField ul_meta_field_[id]',
 	        autoscroll: true,
