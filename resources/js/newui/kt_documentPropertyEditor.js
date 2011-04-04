@@ -206,11 +206,15 @@ jQuery(function()
 			titleElement: '.save-placeholder',
 			controlClass: 'editable-control',
 			onCancel: function(){
+				jQuery('.editable-control', jQuery(this)).attr('title', 'Click to edit');
 				jQuery('.editable-control', jQuery(this)).removeClass('undo').addClass('edit');
 				
 				setEditableRegions();
 			},
 			beforeLoad: function() {
+			},
+			afterLoad: function() {
+				jQuery('.editable-control', jQuery(this)).removeClass('spin').addClass('undo').attr('title', 'Click to undo');
 			},
 			onError: function(){
 				setEditableRegions();
@@ -224,6 +228,7 @@ jQuery(function()
 							
 				if(val == null || val == undefined || val == '' || val == 'no value')
 				{
+					jQuery('.editable-control', jQuery(this)).attr('title', 'Click to undo');
 					jQuery('.editable-control', jQuery(this)).removeClass('spin').addClass('undo');
 					//jQuery('input:text[name=documentTitle]', jQuery(this)).css('background-color', 'red');
 					jQuery('input:text[name=documentTitle]', jQuery(this)).addClass('incomplete');
@@ -234,6 +239,7 @@ jQuery(function()
 			},
 			repopulate: function(){},
 			afterSave: function(data, status){
+				jQuery('.editable-control', jQuery(this)).attr('title', 'Click to edit');
 				jQuery('.editable-control', jQuery(this)).removeClass('spin').addClass('edit');
 				jQuery('.editable-control', jQuery(this)).css('visibility', 'hidden');
 				
@@ -272,11 +278,14 @@ jQuery(function()
 			titleElement: '.save-placeholder',
 			controlClass: 'editable-control',
 			onCancel: function(){
-				jQuery('.editable-control', jQuery(this)).removeClass('undo').addClass('edit');
+				jQuery('.editable-control', jQuery(this)).removeClass('undo').addClass('edit').attr('title', 'Click to edit');
 				
 				setEditableRegions();
 			},
 			beforeLoad: function() {
+			},
+			afterLoad: function() {
+				jQuery('.editable-control', jQuery(this)).removeClass('spin').addClass('undo').attr('title', 'Click to undo');
 			},
 			onError: function() {
 				setEditableRegions();
@@ -289,7 +298,7 @@ jQuery(function()
 							
 				if(val == null || val == undefined || val == '' || val == 'no value')
 				{
-					jQuery('.editable-control', jQuery(this)).removeClass('spin').addClass('undo');
+					jQuery('.editable-control', jQuery(this)).removeClass('spin').addClass('undo').attr('title', 'Click to undo');
 					//jQuery('input:text[name=documentFilename]', jQuery(this)).css('background-color', 'red');
 					jQuery('input:text[name=documentFilename]', jQuery(this)).addClass('incomplete');
 					requiredDone = false;
@@ -299,7 +308,7 @@ jQuery(function()
 			},
 			repopulate: function(){},
 			afterSave: function(data, status) {
-				jQuery('.editable-control', jQuery(this)).removeClass('spin').addClass('edit');
+				jQuery('.editable-control', jQuery(this)).removeClass('spin').addClass('edit').attr('title', 'Click to edit');
 				jQuery('.editable-control', jQuery(this)).css('visibility', 'hidden');
 				
 				setEditableRegions();
@@ -337,11 +346,14 @@ jQuery(function()
 		jQuery('.documentType').editableSet({
 			controlClass: 'editable-control',
 			onCancel: function(){
-				jQuery('.editable-control', jQuery(this)).removeClass('undo').addClass('edit');
+				jQuery('.editable-control', jQuery(this)).removeClass('undo').addClass('edit').attr('title', 'Click to edit');
 				
 				setEditableRegions();
 			},
 			beforeLoad: function() {
+			},
+			afterLoad: function() {
+				jQuery('.editable-control', jQuery(this)).removeClass('spin').addClass('undo').attr('title', 'Click to undo');
 			},
 			onError: function(){
 				setEditableRegions();
@@ -351,7 +363,7 @@ jQuery(function()
 			},
 			repopulate: function(){},
 			afterSave: function(data, status){
-				jQuery('.editable-control', jQuery(this)).removeClass('spin').addClass('edit');
+				jQuery('.editable-control', jQuery(this)).removeClass('spin').addClass('edit').attr('title', 'Click to edit');
 				jQuery('.editable-control', jQuery(this)).css('visibility', 'hidden');
 				
 				//reset the document fields to reflect the new document type								
@@ -479,6 +491,9 @@ jQuery(function()
 			beforeLoad: function() {
 				
 				jQuery('.editable-control', jQuery(this)).unbind('click');
+			},
+			afterLoad: function() {
+				jQuery('.editable-control', jQuery(this)).removeClass('spin').addClass('undo').attr('title', 'Click to undo');
 			},
 			onError: function() {
 				setEditableRegions();
@@ -609,7 +624,7 @@ jQuery(function()
 				
 				if (atLeastOneRequiredNotDone)
 				{
-					jQuery('.editable-control', jQuery(this)).removeClass('spin').addClass('undo');
+					jQuery('.editable-control', jQuery(this)).removeClass('spin').addClass('undo').attr('title', 'Click to undo');
 					//jQuery('input:text[name=documentTitle]', jQuery(this)).css('background-color', 'red');
 					//jQuery('input:text[name=documentTitle]', jQuery(this)).addClass('incomplete');
 				}
@@ -617,7 +632,7 @@ jQuery(function()
 				return !atLeastOneRequiredNotDone;
 			},
 			afterSave: function(data, status){
-				jQuery('.editable-control', jQuery(this)).removeClass('spin').addClass('edit');
+				jQuery('.editable-control', jQuery(this)).removeClass('spin').addClass('edit').attr('title', 'Click to edit');
 				jQuery('.editable-control', jQuery(this)).css('visibility', 'hidden');
 
 				//now pouplate the just-saved values

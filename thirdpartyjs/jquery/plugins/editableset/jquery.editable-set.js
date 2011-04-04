@@ -230,11 +230,8 @@
 				
 				if(opts.controlClass)
 				{
-					//add the 'Undo' icon
-					$('.'+opts.controlClass, $(self)).removeClass('edit').addClass('undo');	//.css('background', 'url(/resources/graphics/newui/icons/heart.png) no-repeat right top');
 					$('.'+opts.controlClass, $(self)).one('click', function(e){
 						cancel( self );
-						//$(':input', self).attr( 'disabled', true );	
 					});
 				}
 				else

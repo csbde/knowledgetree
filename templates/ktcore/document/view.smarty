@@ -41,7 +41,7 @@
                         {if $document->getIsCheckedOut()}<img src="{$rootUrl}/resources/graphics/newui/docview_checkedout.png" style="display: inline-block" alt="{i18n}Checked-Out{/i18n}"  title="{i18n}Checked Out{/i18n}" />{/if}
                         <br/>
                         <span class="doc_info" style="display: block; margin-top: 5px;">
-						Version <a href="">{$document->getMajorVersionNumber()}.{$document->getMinorVersionNumber()}</a> | Last Modified by: <a href="">{$doc_data.lastModifier}</a> on <a href="">{$document->getLastModifiedDate()|date_format:"%B %e, %Y at %H:%M"}</a> | Created by: <a href="">{$doc_data.creator}</a> on <a href="">{$document->getCreatedDateTime()|date_format:"%B %e, %Y at %H:%M"}</a> | A </strong> {$fieldsetDisplayHelper->_sizeHelper($document->getSize())} document.
+						ID {$document_id} | Version <a href="">{$document->getMajorVersionNumber()}.{$document->getMinorVersionNumber()}</a> | Last Modified by: <a href="">{$doc_data.lastModifier}</a> on {$document->getLastModifiedDate()|date_format:"%B %e, %Y at %H:%M"} | Created by: <a href="">{$doc_data.creator}</a> on {$document->getCreatedDateTime()|date_format:"%B %e, %Y at %H:%M"} | Owned by: {$doc_data.owner} | A <strong> {$fieldsetDisplayHelper->_sizeHelper($document->getSize())} </strong> {$fieldsetDisplayHelper->_mimeHelper($document->getMimeTypeID())}.
 						{if $document->getIsCheckedOut()}
 							<span class="doc_checkedout"> <strong>Checked-out By:</strong> {$sCheckoutUser}</span>
 						{/if}
