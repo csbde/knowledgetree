@@ -851,13 +851,14 @@ a.main_nav_item {
 .metadatatable select {
     font-size: 12px;
 }
-
+/*
 .metadatarow.required {
 	background-color: #FFFF66
 }
 .metadatarow.required.incomplete {
 	background-color: #ffdddd
 }
+*/
 .metadataError {
 	color: red;
 	font-size: 11px;
@@ -928,19 +929,26 @@ a.main_nav_item {
 	background: #ffdddd;
 	border-color: #FF7272;
 }
-.editable_control {
+.editable-control {
 	visibility: hidden;
 	cursor: pointer;
 	float: right;
 	min-width: 20px;
 }
-.editable_control.edit {
+#title_row .editable-control {
+	float: none;
+	display: inline-block;
+}
+.editable-control.none {
+	background: none;
+}
+.editable-control.edit {
 	background: url(../../resources/graphics/newui/icons/edit.png) no-repeat right top;
 }
-.editable_control.undo {
+.editable-control.undo {
 	background: url(../../resources/graphics/newui/icons/undo.png) no-repeat right top;
 }
-.editable_control.spin {
+.editable-control.spin {
 	background: url(../../resources/graphics/newui/loading.gif) no-repeat right top;
 }
 .detail_fieldset h3
@@ -2476,6 +2484,7 @@ div.extjs_form_actions {
 	display: none!important;
 }
 .x-window {
+	background: #cccccc\0/; /* for IE8, cannot handle alpha */
 	background: rgba(0,0,0,0.3);
 	padding: 10px;
 }

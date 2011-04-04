@@ -2329,4 +2329,90 @@ class KTOwnershipChangeAction extends KTDocumentAction {
     }
 
 }
+
+class KTDocumentPageUrlAction extends KTDocumentAction {
+
+    var $sName = 'ktcore.actions.document.pageurl';
+	var $showIfWrite = true;
+	var $showIfRead = true;
+	var $btnOrder = 1;
+	var $sBtnPosition = 'links';
+	var $sIconClass = 'page-url';
+
+    function getDisplayName() {
+        return _kt('This page URL');
+    }
+
+    function getURL() {
+        return '#';
+    }
+
+    function getOnClick(){
+        $onclick = 'javascript: kt.app.docdetails.showPageUrl()';
+        return $onclick;
+    }
+
+    function do_main() {
+    }
+
+}
+
+class KTDocumentDownloadUrlAction extends KTDocumentAction {
+
+    var $sName = 'ktcore.actions.document.downloadurl';
+	var $showIfWrite = true;
+	var $showIfRead = true;
+	var $btnOrder = 2;
+	var $sBtnPosition = 'links';
+	var $sIconClass = 'download-url';
+
+    function getDisplayName() {
+        return _kt('Download URL');
+    }
+
+    function getURL() {
+        return '#';
+    }
+
+    function getOnClick(){
+        $onclick = 'javascript: kt.app.docdetails.getDownloadUrl()';
+        return $onclick;
+    }
+
+    function do_main() {
+    }
+
+}
+
+class KTDocumentPreviewUrlAction extends KTDocumentAction {
+
+    var $sName = 'ktcore.actions.document.previewurl';
+	var $showIfWrite = true;
+	var $showIfRead = true;
+	var $btnOrder = 3;
+	var $sBtnPosition = 'links';
+	var $sIconClass = 'preview-url';
+
+    function getDisplayName() {
+        return _kt('Preview URL');
+    }
+
+    function getInfo() {
+        return null;
+    }
+
+    function getURL() {
+        return '#';
+    }
+
+    function getOnClick(){
+        $onclick = '';
+        return $onclick;
+    }
+
+    function do_main() {
+    }
+
+}
+
 ?>

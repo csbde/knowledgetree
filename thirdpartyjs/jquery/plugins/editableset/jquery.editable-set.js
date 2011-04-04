@@ -176,10 +176,10 @@
 					method : 'POST'
 				}) ).addClass( 'active' );
 				
-				if( opts.titleElement ) {
+				/*if( opts.titleElement ) {
 					// Move the newly encapsulated titleElement outside of the form
 					$(opts.titleElement, self).insertBefore( $('form', self) );			
-				}
+				}*/
 		
 				// Define the 'appendable' element for the submit and cancel buttons
 				var appendable;
@@ -365,6 +365,7 @@
 		
 		text: {
 			element : function(object, attrs) {
+				//console.dir(object);
 				var val = '';
 				
 				if (attrs['data-value-id'] != null)

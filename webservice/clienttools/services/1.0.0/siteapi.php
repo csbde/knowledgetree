@@ -3,7 +3,7 @@
 require_once(KT_LIB_DIR . '/browse/browseutil.inc.php');
 
 class siteapi extends client_service {
-    
+
     function uploadFile($params)
     {
 		global $default;
@@ -166,7 +166,7 @@ class siteapi extends client_service {
 						{
 							$item['allowdoczohoedit'] = '<li class="action_zoho_document"><a href="javascript:;" onclick="zohoEdit(\'' . $item['id'] . '\')">Edit Document Online</a></li>';
 						}
-						
+
 					}
 
 					$json['success'] = $item;
@@ -282,7 +282,7 @@ class siteapi extends client_service {
 				}
 			}
 		}
-		
+
 		$this->addResponse('fieldsets',$ret);
 	}
 
@@ -307,7 +307,7 @@ class siteapi extends client_service {
 		foreach ($types as $type) {
 			$ret[$type->aFieldArr['id']] = $type->aFieldArr;
 		}
-		
+
 		$this->addResponse('documentTypes',$ret);
 	}
 
@@ -335,7 +335,7 @@ class siteapi extends client_service {
 			$results[] = array('id' . $row['id'] => $row['name']);
 		}
 		//}
-		
+
 		return json_encode($results);
 	}
 
@@ -435,7 +435,7 @@ class siteapi extends client_service {
 				$subfolders[$folder->aFieldArr['id']] = $this->filter_array($folder->aFieldArr, $filter, false);
 			}
 		}
-		
+
 		$this->addResponse('children', $subfolders);
 	}
 
@@ -558,7 +558,7 @@ class siteapi extends client_service {
 
         $this->addResponse('invitedUsers', json_encode($response));
     }
-    
+
     public function getUserType()
     {
     	$oUser = User::get($_SESSION['userID']);
@@ -566,7 +566,7 @@ class siteapi extends client_service {
         $response = $oUser->getDisabled();
         $this->addResponse('usertype', $response);
     }
-    
+
     private function userHasPermissionOnItem($oUser, $sPermissions, $documentOrFolder, $type)
     {
     	// Shared user
@@ -576,48 +576,48 @@ class siteapi extends client_service {
     		return (SharedContent::getPermissions($oUser->getId(), $documentOrFolder->getId(), null, $type) == 1);
     	}
     	// System User
-    	else 
+    	else
     	{
     		return KTPermissionUtil::userHasPermissionOnItem($oUser, $sPermissions, $documentOrFolder);
     	}
     }
-    
+
     public function changeDocumentType($params)
     {
     	$iDocumentID = $params['documentID'];
     	$iDocumentTypeID = $params['documentTypeID'];
-    	
+
     	$GLOBALS['default']->log->debug("changeDocumentType $iDocumentID $iDocumentTypeID");
-    	
+
     	$oDocument = &Document::get($iDocumentID);
         if (is_null($oDocument) || ($oDocument === false)) {
             $GLOBALS['default']->log->error('The Document does not exist.');
             //TODO: replace with json object
             //return false;
         }
-        
+
         $GLOBALS['default']->log->debug('changeDocumentType oDocument '.print_r($oDocument, true));
-        
+
         $newType =& DocumentType::get($iDocumentTypeID);
         if (is_null($newType) || ($newType === false)) {
             $GLOBALS['default']->log->error('The DocumentType does not exist.');
             //TODO: replace with json object
             //return false;
         }
-        
+
         //$GLOBALS['default']->log->debug('changeDocumentType oldFieldsets '.print_r($oldFieldsets, true));
 
         $oldType = DocumentType::get($oDocument->getDocumentTypeID());
         $oDocument->setDocumentTypeID($iDocumentTypeID);
-        
+
         //$GLOBALS['default']->log->debug('changeDocumentType oldFieldsets '.print_r($oldFieldsets, true));
 
         // we need to find fieldsets that _were_ in the old one, and _delete_ those.
         $for_delete = array();
-        
+
         $oldFieldsets = KTFieldset::getForDocumentType($oldType);
         $newFieldsets = KTFieldset::getForDocumentType($newType);
-        
+
         //$GLOBALS['default']->log->debug('changeDocumentType oldFieldsets '.print_r($oldFieldsets, true));
 
         // prune from MDPack.
@@ -642,11 +642,11 @@ class siteapi extends client_service {
             }
         }
         $field_values = $newPack;
-        
+
         $GLOBALS['default']->log->debug('changeDocumentType field_values '.print_r($field_values, true));
 
         $oDocumentTransaction = & new DocumentTransaction($oDocument, 'update metadata.', 'ktcore.transactions.update');
-        
+
         $res = $oDocumentTransaction->create();
         if ( PEAR::isError( $res)) {
             $GLOBALS['default']->log->error('Failed to create transaction.');
@@ -666,8 +666,8 @@ class siteapi extends client_service {
         //$result = KTDocumentUtil::saveMetadata($oDocument, $packed, array('novalidate'=>true));
 
         $GLOBALS['default']->log->debug("changeDocumentType result $res");
-        
-        if(!PEAR::isError($res) || !is_null($res))	
+
+        if(!PEAR::isError($res) || !is_null($res))
         {
             $oKTTriggerRegistry = KTTriggerRegistry::getSingleton();
             $aTriggers = $oKTTriggerRegistry->getTriggers('edit', 'postValidate');
@@ -683,61 +683,61 @@ class siteapi extends client_service {
                 $oTrigger->setInfo($aInfo);
                 $ret = $oTrigger->postValidate();
             }
-        } 
+        }
         else {
             $this->rollbackTransaction();
             $GLOBALS['default']->log->error('An Error occurred in _setTransitionWorkFlowState');
-            
+
             $item['documentID'] = $iDocumentID;
 			$item['documentTypeID'] = $oDocumentType->getId();
 			$item['documentTypeName'] = $oDocumentType->getName();
 			$item['message'] = $res->getMessage();
-			
+
 			$json['error'] = $item;
-			
+
 			//echo(json_encode($json));
 			//exit(0);
         }
-		
+
 		$oDocumentType = DocumentType::get($iDocumentTypeID);
-		
+
 		$GLOBALS['default']->log->debug('changeDocumentType oDocumentType '.print_r($oDocumentType, true));
-  
+
 		$metadata = array();
 		$fieldsetsresult = array();
-		
+
 		// first get generic ids
 	    $generic_fieldsets = KTFieldset::getGenericFieldsets(array('ids' => false));
 	    //$GLOBALS['default']->log->debug('update generic_fieldsets '.print_r($generic_fieldsets, true));
-		
+
 		$fieldsets = $oDocumentType->getFieldsets();
-		
+
 		$total_fieldsets = array_merge($fieldsets, $generic_fieldsets);
-		
+
 		$GLOBALS['default']->log->debug('changeDocumentType total_fieldsets '.print_r($total_fieldsets, true));
-		
-		foreach ($total_fieldsets as $fieldset) 
-		{	
+
+		foreach ($total_fieldsets as $fieldset)
+		{
 			//Tag Cloud displayed elsewhere
 			if ($fieldset->getNamespace() !== 'tagcloud')
-			{		
-				//assemble the fieldset values		
+			{
+				//assemble the fieldset values
 				$fieldsetsresult = array(
 					'fieldsetid' => $fieldset->getId(),
 					'name' => $fieldset->getName(),
 					'description' => $fieldset->getDescription()
 				);
-				
+
 				$fields = $fieldset->getFields();
-				
+
 				$fieldsresult = array();
-				
-				foreach ($fields as $field)   
+
+				foreach ($fields as $field)
 				{
 					$value = '';
-		
+
 					$controltype = strtolower($field->getDataType());
-		
+
 					if ($field->getHasLookup())
 					{
 						$controltype = 'lookup';
@@ -746,14 +746,14 @@ class siteapi extends client_service {
 							$controltype = 'tree';
 						}
 					}
-		
+
 					// Options - Required for Custom Properties
 					$options = array();
-		
+
 					if ($field->getInetLookupType() == 'multiwithcheckboxes' || $field->getInetLookupType() == 'multiwithlist') {
 						$controltype = 'multiselect';
 					}
-		
+
 					switch ($controltype)
 					{
 						case 'lookup':
@@ -765,7 +765,7 @@ class siteapi extends client_service {
 							$selection = $selection[-1]['fields'][0];
 							//we need to get rid of values that we do not need else the JSON object we create will be incorrect!
 							SimpleFieldsetDisplay::recursive_unset($selection, array('treeid', 'parentid', 'fieldid'));
-							
+
 							//now convert to JSON
 							$selection = json_encode($selection);
 						break;
@@ -774,7 +774,7 @@ class siteapi extends client_service {
 								'ishtml' => $field->getIsHTML(),
 								'maxlength' => $field->getMaxLength()
 							);
-		
+
 							$selection= array();
 						break;
 						case 'multiselect':
@@ -784,9 +784,9 @@ class siteapi extends client_service {
 							);
 						break;
 						default:
-							$selection= array();	                
+							$selection= array();
 					}
-		
+
 					//assemble the field values
 					$fieldsresult[] = array(
 						'fieldid' => $field->getId(),
@@ -800,28 +800,50 @@ class siteapi extends client_service {
 						'options' => $options
 					);
 				}
-				
+
 				$fieldsetsresult['fields'] = $fieldsresult;
 				$metadata[] = $fieldsetsresult;
 			}
 		}
-		
+
 		$GLOBALS['default']->log->debug('changeDocumentType metadata '.print_r($metadata, true));
-		
+
 		//assemble the item to return
 		$item['documentID'] = $iDocumentID;
 		$item['documentTypeID'] = $oDocumentType->getId();
 		$item['documentTypeName'] = $oDocumentType->getName();
 		$item['metadata'] = $metadata;
-		
+
 		$json['success'] = $item;
-		
+
 		$this->addResponse('docType', json_encode($item));
-		
+
 		//echo(json_encode($json));
 		//exit(0);
     }
-    
+
+    public function getDownloadUrl($params)
+    {
+        if(isset($params['clean']) && !empty($params['clean'])) {
+            $clean = substr($params['clean'], 2);
+            $documentId = KTUtil::decodeId($clean);
+        } else {
+            $documentId = $params['docId'];
+        }
+
+        // Create uniqueish temporary session id
+        $session = 'ktext_' . $documentId . time() . $counter++;
+
+        // Create download link
+        $downloadManager = new KTDownloadManager();
+        $downloadManager->set_session($session);
+        $link = $downloadManager->allow_download($documentId);
+
+        global $default;
+        $response['url'] = $link;
+        $default->log->error("URL response: " . print_r($params, true));
+        $this->addResponse('downloadUrl', json_encode($response));
+    }
 }
 
 ?>

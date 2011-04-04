@@ -71,9 +71,9 @@ class AjaxCommentsDispatcher extends KTStandardDispatcher {
         // Ensure comment is sanitised to prevent xss attacks
         $comment = htmlspecialchars($comment, ENT_QUOTES, 'UTF-8', FALSE);
 
-        echo '<div class="item newcomment">
+        echo '<div class="activityfeed item new comment" style="display:none; background-color:#f6f6f6">
 	            <div class="icon"><img src="http://www.gravatar.com/avatar/'.md5($this->getEmailForId($_SESSION['userID'])).'?s=48" alt="'.$this->getUserForId($_SESSION['userID']).'" title="'.$this->getUserForId($_SESSION['userID']).'" /></div>
-	            <div class="activityfeed_content">
+	            <div class="activityfeed-content">
 	                <span class="date cutetime">'._kt('Recently').'</span>
 	                <span class="user">'.$this->getUserForId($_SESSION['userID']).'</span>
 
