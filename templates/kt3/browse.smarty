@@ -30,10 +30,15 @@
 {/if}
 <!-- <link rel="stylesheet" type="text/css" href="{php}echo "{$GLOBALS['default']->rootUrl}/resources/css/newui/browseView.css?".rand();{/php}" />
 -->
+
 <table>
+
 <tr>
 	<td width="720" valign="top">
-
+		<div class="breadcrumbBtns">
+			{foreach item=aBtn from=$page->breadcrumbBtns name=btn}<a href="{$aBtn.url}" ><span class="{$aBtn.class}">{$aBtn.label}</span></a>
+     		{/foreach}
+    	</div>
 <form action="{$browseutil->getActionBaseUrl()}" method="post">
 
 {if ($isEditable)}
@@ -45,6 +50,7 @@
 {/if}
 
 {if ($isEditable)}
+
 <div class="dropzone" id="datadrop">
 {/if}
 

@@ -48,7 +48,7 @@ object#website {
 
 #title_row {
 	width: 745px;
-	padding:10px 10px 15px 0px;
+	padding:5px 15px 15px 0px;
 }
 
 div.viewletworkflow {
@@ -448,7 +448,7 @@ span.doc_info {
 	font-size: 12px;
 	font-family: sans-serif;
 	font-weight: normal;
-	line-height: 15px;
+	line-height: 13px;
 
 }
 .activityfeed .item.comment .activityfeed-content{
@@ -518,15 +518,37 @@ span.doc_info {
 	display: none;
 }
 .doc_description {
-	padding-right: 15px;
 	color: #666;
-	width: 335px;
+	width: 340px;
 }
 .doc_view .notice{
 	color: #A10000;
 	padding: 10px 10px 10px 15px;
 }
-
+.status-indicator {
+	font-size: 9px;
+	text-transform: uppercase;
+	font-weight: bold;
+	border-radius: 3px;
+	-moz-border-radius: 3px;
+	-webkit-border-radius: 3px;
+	padding: 1px 3px;
+}
+.status-indicator.checkedout{
+	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#fceca6', endColorstr='#fce376') !important; /* for IE */
+	background: -webkit-gradient(linear, left top, left bottom, from(#fceca6), to(#fce376)) !important; /* for webkit browsers */
+	background: -moz-linear-gradient(top,  #fceca6,  #fce376) !important; /* for firefox 3.6+ */
+	border: 1px solid #ffd825;
+	text-shadow: 0px 1px 0px white;
+}
+.status-indicator.finalized{
+	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#f2374a', endColorstr='#c5081b') !important; /* for IE */
+	background: -webkit-gradient(linear, left top, left bottom, from(#f2374a), to(#c5081b)) !important; /* for webkit browsers */
+	background: -moz-linear-gradient(top,  #f2374a,  #c5081b) !important; /* for firefox 3.6+ */
+	border: 1px solid #a90615;
+	color: white;
+	text-shadow: 0px -1px 0px #666;
+}
 .share_url {
 	font-size: 11px;
 	padding-left: 22px;
