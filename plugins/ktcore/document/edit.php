@@ -330,7 +330,7 @@ class KTDocumentEditAction extends KTDocumentAction {
      * HOWEVER html_entity_decode decodes too much (e.g. &nbsp; - which causes a DB error for some reason)!
      * Use this instead.
      */
-    private function prepareHTMLFieldValue($val)
+    function prepareHTMLFieldValue($val)
     {
         $val = str_replace('&lt;', '<', $val);
         $val = str_replace('&gt;', '>', $val);

@@ -658,11 +658,7 @@ class KTRoleAllocationPlugin extends KTFolderAction {
         //$this->oPage->requireJSStandalone($initJS);
 
         // FIXME This is massively non-performant for large userbases.
-        $memberGroups = $roleAllocation->getGroups();
-        $members = array();
-        foreach ($memberGroups as $group) {
-            $members["group_{$group->getId()}"] = $group;
-        }
+        $members = KTJSONLookupWidget::formatMemberGroups($roleAllocation->getGroups());
 
         // Include the electronic signature on the permissions action
         global $default;

@@ -145,6 +145,7 @@ class BrowseDispatcher extends KTStandardDispatcher {
 	    $aBulkActions = KTBulkActionUtil::getAllBulkActions();
 		$sidebars = KTFolderActionUtil::getFolderActionsForFolder($this->oFolder, $this->oUser, 'mainfoldersidebar');
 		$folderSidebars = isset($sidebars[0]) ? $sidebars[0] : array();
+
 	    if (ACCOUNT_ROUTING_ENABLED && $default->tier == 'trial') {
 	        $this->includeOlark();
 	    }
@@ -152,8 +153,10 @@ class BrowseDispatcher extends KTStandardDispatcher {
 	    $oTemplating =& KTTemplating::getSingleton();
 	    $oTemplate = $oTemplating->loadTemplate('kt3/browse');
 
+		global $main;
 	    $aTemplateData = array(
 	    'context' => $this,
+	    'page' => $main,
 	    'browse_mode' => $this->browse_mode,
 	    'isEditable' => $this->editable,
 	    'bulkactions' => $aBulkActions,
@@ -162,9 +165,8 @@ class BrowseDispatcher extends KTStandardDispatcher {
 	    'folderSidebars' => $folderSidebars,
 	    );
 
-	    // ?don't quite know why this is in here. Someone reports that it is there for search browsing which seem to be disabled
+	    // NOTE Don't quite know why this is in here. Someone reports that it is there for search browsing which seem to be disabled.
 	    if ($this->oFolder) {
-
     		global $main;
     		$folderId = $this->oFolder->getId();
     		$rootUrl = KTUtil::kt_url();

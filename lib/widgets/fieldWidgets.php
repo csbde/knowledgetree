@@ -142,13 +142,16 @@ class KTJSONLookupWidget extends KTBaseWidget {
         return $options;
     }
 
-    private static function getGroups()
+    private static function getGroups($filter = null)
     {
         $options = array();
 
         $groups = GroupUtil::listGroups();
         // TODO checking of assigned groups and roles vs available, set active = false for assigned.
         foreach ($groups as $group) {
+            if ($group->getId() == $filter) {
+                continue;
+            }
             $options["group_{$group->getId()}"]['name'] = $group->getName();
             $options["group_{$group->getId()}"]['active'] = 1;
         }
@@ -225,9 +228,9 @@ class KTJSONLookupWidget extends KTBaseWidget {
         return $assigned;
     }
 
-    public static function getJsonGroupSelectorWidget($label, $type, $parts, $members, $options)
+    public static function getJsonGroupSelectorWidget($label, $type, $parts, $members, $options, $filter = null)
     {
-        $groups = self::getGroups();
+        $groups = self::getGroups($filter);
         $assigned = self::getAssignedGroups($groups, $members);
         $options['groups_roles'] = $groups;
 
@@ -289,6 +292,16 @@ class KTJSONLookupWidget extends KTBaseWidget {
         );
 
         return $jsonWidget;
+    }
+
+    public static function formatMemberGroups($memberGroups)
+    {
+        $members = array();
+        foreach ($memberGroups as $group) {
+            $members["group_{$group->getId()}"] = $group;
+        }
+
+        return $members;
     }
 
 }
