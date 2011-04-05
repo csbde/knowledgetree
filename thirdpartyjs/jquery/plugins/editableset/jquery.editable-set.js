@@ -32,14 +32,23 @@
 	
 		var save = function( self ) {
 			self.editing = false;
+			//console.log('self.invalid '+self.invalid);
+			//console.dir(self.invalid);
+			if (!self.invalid.isEmpty())	//length > 0)	// === true)
+			{
+				//console.log('I AM INVALID');
+				
+				$.isFunction( opts.onInvalid ) && opts.onInvalid.call( self, self.invalid.values() );
+				
+				return false;
+			}
 			
 			// onSave callback
 			if ($.isFunction( opts.onSave )) 
 			{
 				//does onSave allow us to continue?
 				var ret = opts.onSave.call( self );
-			
-					
+								
 				//'false' returned, so exit!
 				if (ret == false)
 				{
@@ -152,6 +161,7 @@
 					return;
 				}
 				
+				self.invalid = new Hashtable();	//Array();
 				self.editing = true;
 				self.revert = $(self).html();
 				
@@ -268,7 +278,7 @@
 					
 					// If the specified type exists...proceed
 					if( $.editableSet.types[type] ) {
-						$.editableSet.types[type].element( span, attrs );
+						$.editableSet.types[type].element( span, attrs, self );
 					}
 					
 				});
@@ -380,6 +390,15 @@
 				//attrs.value = attrs.value.replace(/\s+/g, '');
 				attrs.value = val;
 				var newObject = $.fn.editableSet.attributor( $('<input />'), attrs );
+				
+				//set value to empty when clicking
+				newObject.click(function(){
+					if ($(this).val() == 'no value')
+					{
+						$(this).val('');
+					}
+				});				
+				
 				$(object).replaceWith( newObject );
 			}
 		},
@@ -415,7 +434,7 @@
 		},
 		
 		textarea: {
-			element : function(object, attrs) {	 
+			element : function(object, attrs) {
 				var val = '';	
 				if (attrs['data-value-id'] != null)
 				{
@@ -426,12 +445,21 @@
 				else
 				{
 					val = $.trim(attrs.value);	//$.trim($('span#'+attrs['data-name']).text());
-				}				
+				}			
 				
 				// Clean up the attributes
 				delete attrs['data-type'];
 					 
 				var newObject = $.fn.editableSet.attributor( $('<textarea />'), attrs );
+				
+				//set value to empty when clicking
+				newObject.click(function(){
+					if ($(this).val() == 'no value')
+					{
+						$(this).val('');
+					}
+				});
+				
 				newObject.text( val );
 				
 				if (attrs['data-maxsize'] != null)
