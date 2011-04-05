@@ -153,8 +153,10 @@ class BrowseDispatcher extends KTStandardDispatcher {
 	    $oTemplating =& KTTemplating::getSingleton();
 	    $oTemplate = $oTemplating->loadTemplate('kt3/browse');
 
+		global $main;
 	    $aTemplateData = array(
 	    'context' => $this,
+	    'page' => $main,
 	    'browse_mode' => $this->browse_mode,
 	    'isEditable' => $this->editable,
 	    'bulkactions' => $aBulkActions,

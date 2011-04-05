@@ -808,7 +808,13 @@ a.main_nav_item {
 }
 
 /*  --- table version --- */
-
+#metadata-title {
+	font-weight: bold;
+	padding-bottom: 5px;
+	border-bottom: 1px solid #DDD;
+	margin-bottom: 5px;
+	font-size: 13px;
+}
 .metadatatable {
     width: 100%;
     font-size: 12px;
@@ -824,10 +830,11 @@ a.main_nav_item {
 
 .metadatatable th {
     text-align: left;
-    width: 42% !important;
+    width: 105px !important;
     vertical-align: middle;
-    padding: 2px 5px 2px 0px;
+    padding: 2px 10px 2px 0px;
     font-weight: normal;
+    border-spacing: 0px 0px;
 }
 
 .metadatatable td {
@@ -851,6 +858,7 @@ a.main_nav_item {
 .metadatatable select {
     font-size: 12px;
 }
+
 /*
 .metadatarow.required {
 	background-color: #FFFF66
@@ -917,7 +925,7 @@ a.main_nav_item {
 .detail_fieldset
 {
     display: block;
-    margin-top: 10px;
+    margin-top: 15px;
     overflow: hidden;
 }
 #content .doc_description .required input,
@@ -955,8 +963,8 @@ a.main_nav_item {
 {
     margin: 0em 0 2px 0;
     padding-bottom: 5px;
-    font-size: 13px;
-    border-bottom: 1px dotted #CCC;
+    font-size: 12px;
+    border-bottom: 1px solid #DDD;
     font-weight: normal;
 }
 

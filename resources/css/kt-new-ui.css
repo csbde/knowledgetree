@@ -194,6 +194,9 @@ textarea {
 	opacity: 0.7;
 }
 /* ------------------ prototype breadcrumbs -------------- */
+.breadCrumb	{
+	width: 700px;
+}
 .breadCrumb ul {
 	margin: 0;
 	padding: 0;
@@ -252,18 +255,19 @@ textarea {
 	height: 30px;
 }
 
-#breadcrumbs .breadcrumbBtns {
-    margin: 3px 3px;
+.breadcrumbBtns {
+    margin: 3px 15px 3px 3px;
     height: 30px;
+    float: right;
 }
-#breadcrumbs .breadcrumbBtns a {
+.breadcrumbBtns a {
     height: 16px;
     margin-right: 2px;
     padding: 4px 0 2px 2px;
     border: 1px solid #EEE!important;
 	border-radius: 3px;
 }
-#breadcrumbs .breadcrumbBtns a:hover {
+.breadcrumbBtns a:hover {
 	text-decoration: none !important;
 	border: 1px solid #CCC!important;
 	-moz-border-radius: 3px;
@@ -271,7 +275,7 @@ textarea {
 	border-radius: 3px;
 	background: #FBFBFB !important;
 }
-#breadcrumbs .breadcrumbBtns a:active {
+breadcrumbBtns a:active {
 	-moz-box-shadow: inset 0px 0px 3px #bbb;
 	-webkit-box-shadow: inset 0px 0px 3px #bbb;
 	box-shadow: inset 0px 0px 3px #bbb;
@@ -279,17 +283,17 @@ textarea {
 	filter: progid:DXImageTransform.Microsoft.Shadow(Strength=5, Direction=120, Color='#bbbbbb'); /* For IE 5.5 - 7 */
 }
 
-#breadcrumbs .breadcrumbBtns span {
+.breadcrumbBtns span {
 	padding: 5px 5px 5px 22px;
 	font-size: 11px;
 }
-#breadcrumbs .breadcrumbBtns span.upload {
+.breadcrumbBtns span.upload {
 	background: url('../graphics/newui/browseview_upload.png') no-repeat 2px 4px !important;
 }
-#breadcrumbs .breadcrumbBtns span.new-folder {
+.breadcrumbBtns span.new-folder {
 	background: url('../graphics/newui/folder_add.png') no-repeat 2px 3px !important;
 }
-#breadcrumbs .breadcrumbBtns span.new-onlinedoc {
+.breadcrumbBtns span.new-onlinedoc {
 	background: url('../graphics/newui/document_add.png') no-repeat 2px 3px !important;
 }
 
@@ -324,6 +328,7 @@ textarea {
 
 
 /* ------------------ End --------------------*/
+
 div#topnavbar {
 	margin: 0;
     background: url('../graphics/newui/topnavbkg.png');
@@ -590,7 +595,7 @@ div.form_actions {
 #newSearchQuery {
 	margin-top: -10px;
 	padding: 0px;
-	margin: 0;
+	margin: 3px 5px;
 	/*float: right;*/
 	padding-right: 0px;
 }
