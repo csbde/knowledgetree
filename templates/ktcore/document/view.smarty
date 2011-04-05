@@ -25,6 +25,8 @@
 					
 				</div>
 				<div class="documentFilename" rel={$rootUrl}/presentation/lookAndFeel/knowledgeTree/widgets/updateMetadata.php?func=filename&documentID={$document->getId()}>
+				{if $document->getIsCheckedOut()}<span class="status-indicator checkedout">{i18n}Checked Out{/i18n}</span>{/if}
+                {if $document->getImmutable()}<span class="status-indicator finalized">{i18n}Finalized{/i18n}</span>{/if}
 				<span data-name="documentFilename" data-type='text' data-value-id="value_filename" data-class="required"></span>
 					<span id="value_filename"><p>{$document->getFileName()}</p></span>
 					<span class="save-placeholder">&nbsp;</span>
@@ -36,23 +38,35 @@
                 <!-- <td style="display:none;" width="1" valign="top" style="padding-right: 15px;"><span id="doc_thumb" style="float:left;" /></td> -->
 			<td height="1" valign="top" width="310">
                     <div class="doc_description">
-                        {if $document->getImmutable()}<img src="{$rootUrl}/resources/graphics/newui/docview_immutable.png" style="display: inline-block" alt="{i18n}Finalized{/i18n}"  title="{i18n}Finalized{/i18n}" />{/if}
-                        {if $document->getIsCheckedOut()}<img src="{$rootUrl}/resources/graphics/newui/docview_checkedout.png" style="display: inline-block" alt="{i18n}Checked-Out{/i18n}"  title="{i18n}Checked Out{/i18n}" />{/if}
-                        <br/>
-                        <span class="doc_info" style="display: block; margin-top: 5px;">
-						Version <a href="">{$document->getMajorVersionNumber()}.{$document->getMinorVersionNumber()}</a> | Last Modified by: <a href="">{$doc_data.lastModifier}</a> on <a href="">{$document->getLastModifiedDate()|date_format:"%B %e, %Y at %H:%M"}</a> | Created by: <a href="">{$doc_data.creator}</a> on <a href="">{$document->getCreatedDateTime()|date_format:"%B %e, %Y at %H:%M"}</a> | A </strong> {$fieldsetDisplayHelper->_sizeHelper($document->getSize())} document.
+                        <span class="doc_info" style="display: block;">
+                        <table class="metadatatable">
+                        	<tr>
+								<th style="width: 100px;">Version</th><td><a href="">{$document->getMajorVersionNumber()}.{$document->getMinorVersionNumber()}</a></td>
+							</tr>
+							<tr>
+								<th>Last Modified by:</th><td><a href="">{$doc_data.lastModifier}</a> on <a href="">{$document->getLastModifiedDate()|date_format:"%B %e, %Y at %H:%M"}</a></td>
+							</tr>
+							<tr>
+								<th>Created by:</th><td><a href="">{$doc_data.creator}</a> on <a href="">{$document->getCreatedDateTime()|date_format:"%B %e, %Y at %H:%M"}</a></td>
+							</tr>
 						{if $document->getIsCheckedOut()}
-							<span class="doc_checkedout"> <strong>Checked-out By:</strong> {$sCheckoutUser}</span>
+							<tr>
+								<th>Checked-out by:</th><td>{$sCheckoutUser}</td>
+							</tr>
 						{/if}
-					<br><br>
+							<tr>
+							<th>File type:</th><td>{$fieldsetDisplayHelper->_sizeHelper($document->getSize())} document.</td>
+							</tr>
+						</table>
 					<div class="tags">
-						<h3>Tag Cloud<span class="editable-control none">&nbsp;</span></h3>
+						<h3><span class="editable-control none">&nbsp;</span></h3>
                         <br/>
                         <input type="text" name="tagcloud" id="tagcloud" />
                         <br/>
                         <input type="button" value="Save Tags" onclick="kt.app.metadata.saveTags({$document_id});" />
                     </div>
 					<br/>
+					<h3 id="metadata-title">Document Properties</h3>
 					<div class="documentType" rel="{$rootUrl}/presentation/lookAndFeel/knowledgeTree/widgets/updateMetadata.php?func=doctype&documentID={$document->getId()}">
 					<table class="metadatatable" cellspacing="0" cellpadding="5">
 					<tr class="metadatarow even first">

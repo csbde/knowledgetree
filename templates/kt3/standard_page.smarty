@@ -178,10 +178,6 @@
 				{$feedback}
 				{$uploadProgress}
 
-				<div style="position: absolute; top: 35px; right: 0">
-				    <div id="newSearchQuery"></div>
-				</div>
-
 				<div class="floatClear"></div>
 				<!--<ul class="floatleft">-->
 					<!--<li class="roundleft"></li>--> <!-- block for left round corner -->
@@ -224,7 +220,6 @@
 				<div id="midright">
 
 					<span id="midrightcorner">&nbsp;</span>
-					<!--<div id="newSearchQuery"></div> -->
 				</div>
 			</div>
 
@@ -279,23 +274,8 @@
 
 
     					</td>
-    					{if ($page->breadcrumbBtns !== false)}
-        					<td width="100" valign="top" align=left>
-        					   <div class="breadcrumbBtns">
-        					       <nobr>
-        					           {foreach item=aBtn from=$page->breadcrumbBtns name=btn}
-        					               <a href="{$aBtn.url}" ><span class="{$aBtn.class}">{$aBtn.label}</span></a>
-        					           {/foreach}
-
-        					           <!--
-        					       <a href="{$rootUrl}action.php?kt_path_info=ktcore.actions.folder.addFolder&fFolderId=" ><span class="new-folder">{i18n}New Folder{/i18n}</span></a>
-                            		<a href="{$rootUrl}action.php?kt_path_info=zoho.new.document&fFolderId=";" ><span class="new-onlinedoc">{i18n}New Document{/i18n}</span></a>
-                            		<a href="javascript:kt.app.upload.showUploadWindow();"><span class="upload">{i18n}Upload{/i18n}</span></a>
-                            		-->
-                            		</nobr>
-    					       </div>
-        					</td>
-    					{/if}
+    					<td width="100" valign="top" align=left>
+    					<div id="newSearchQuery"></div>
     					<!--
     					<td width="225"><div id="newSearchQuery"></div></td>
     					-->
@@ -312,7 +292,6 @@
 		</div>
 		<div id="pageBody">
 			<div id="content" {if $page->content_class}class="{$page->content_class}"{/if}>
-
 				{if (!$page->hide_section)}
 					<h1 class="{$page->componentClass}"><span class="fahrner">{$page->componentLabel}</span>
 						{if ($page->getHelpURL() != null)}<a class="ktHelp" href="{$page->getHelpURL()}">Help</a> {/if}
