@@ -43,7 +43,17 @@ class KTFolderSidebar extends KTFolderViewlet {
 	public $_sShowPermission = 'ktcore.permissions.read';
 	public $order = 1;
 	
+	/**
+	 * Get the class name of a sidebar item
+	 *
+	 */
 	public function getCSSName() {}
+	
+	/**
+	 * Get the ordering of a sidebar item
+	 *
+	 * @return int
+	 */
 	public function getOrder() { return $this->order; }
 	
 	/**
