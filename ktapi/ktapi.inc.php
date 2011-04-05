@@ -1315,54 +1315,6 @@ class KTAPI {
 	    return $results[-1]['fields'];
 	}
 
-	private function convertToTree(array $flat)
-	{
-		//$GLOBALS['default']->log->debug('KTAPI convertToTree '.print_r($flat, true));
-
-		$idTree = 'tree_id';
-		$idField = 'id';
-		$parentIdField = 'parent_id';
-
-		$root = 0;
-
-	    $indexed = array();
-	    // first pass - get the array indexed by the primary id
-	   	foreach ($flat as $row) {
-        	$treeID = $row[$idTree];
-        	if (!isset($indexed[$treeID])) {
-        		$indexed[$treeID] = array('tree_id' => $treeID,
-        									'parent_id' => $row[$parentIdField],
-        									'tree_name' => $row['tree_name'],
-        									'type' => 'tree');//$row;
-	        	$indexed[$treeID]['fields'] = array();
-        	}
-
-	        $indexed[$treeID]['fields'][$row[$idField]] = array('field_id' => $row[$idField],
-	        													'parent_id' => $treeID,
-	        													'name' =>  $row['field_name'],
-	        													'type' => 'field');
-
-	        if ($row[$parentIdField] < $root) {
-	        	$root = $row[$parentIdField];
-	        }
-	    }
-
-	    //file_put_contents('convertToTree.txt', "\n\rroot $root ".print_r($indexed, true), FILE_APPEND);
-
-	    //second pass
-	    //$root = 0;
-	    foreach ($indexed as $id => $row) {
-	        $indexed[$row[$parentIdField]]['fields'][$id] =& $indexed[$id];
-	    }
-
-	    $results = array($root => $indexed[$root]);
-
-	    //$GLOBALS['default']->log->debug('KTAPI convertToTree results '.print_r($results, true));
-		//$GLOBALS['default']->log->debug('KTAPI convertToTree results inner '.print_r($results[-1]['fields'][0]['fields'], true));
-
-	    return $results[-1]['fields'][0]['fields'];
-	}
-
 	/**
 	* This returns a metadata tree or an error object.
 	*

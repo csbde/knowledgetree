@@ -51,7 +51,7 @@ class KTUtil {
     const TB = 1099511627776;
     const PB = 1125899906842624;
 
-	static $invalidFilenameCharacters = array('\\', '/', ':', '*', '?', '"', '<', '>', '|', '%', '+', '\'', '`');
+    private static $invalidFilenameCharacters = array('\\', '/', ':', '*', '?', '"', '<', '>', '|', '%', '+', '\'', '`');
 
     /**
      * Used to resolve the server name
@@ -279,8 +279,6 @@ class KTUtil {
             return $filesize . _kt('B');
         }
     }
-
-    private static $invalidFilenameCharacters = array('\\', '/', ':', '*', '?', '"', '<', '>', '|', '%', '+', '\'', '`');
 
     /**
 	 * Checks if a filename is valid
