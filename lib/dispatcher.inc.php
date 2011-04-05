@@ -67,8 +67,8 @@ class KTDispatcher {
     var $aPersistParams = array();
 
     function KTDispatcher() {
-        $this->oValidator =new KTDispatcherValidation($this);
-        $this->oRedirector =new KTDispatchStandardRedirector($this);
+        $this->oValidator = new KTDispatcherValidation($this);
+        $this->oRedirector = new KTDispatchStandardRedirector($this);
     }
 
     function redispatch($event_var, $action_prefix = null, $orig_dispatcher = null, $parent_url = null) {
@@ -89,7 +89,7 @@ class KTDispatcher {
                 'action_prefix',
                 'bJSONMode');
             foreach($core as $k) {
-                if(isset($orig_dispatcher->$k)) {
+                if (isset($orig_dispatcher->$k)) {
                     $this->$k = $orig_dispatcher->$k;
                 }
             }
@@ -116,6 +116,7 @@ class KTDispatcher {
                 exit(0);
             }
         }
+
         $method = sprintf('%s_main', $this->action_prefix);
         if (array_key_exists($this->event_var, $_REQUEST)) {
             $event = strip_tags($_REQUEST[$this->event_var]);
@@ -152,7 +153,7 @@ class KTDispatcher {
             'bJSONMode');
 
         foreach($core as $k) {
-            if(isset($oOrigDispatcher->$k)) {
+            if (isset($oOrigDispatcher->$k)) {
                 $this->$k = $oOrigDispatcher->$k;
             }
         }
@@ -396,7 +397,7 @@ class KTStandardDispatcher extends KTDispatcher {
 
         // check if we're in JSON mode - in which case, throw error
         // but JSON mode only gets set later, so gonna have to check action
-        if(KTUtil::arrayGet($_REQUEST, 'action', '') == 'json') { //$this->bJSONMode) {
+        if (KTUtil::arrayGet($_REQUEST, 'action', '') == 'json') { //$this->bJSONMode) {
             $this->handleOutputJSON(array('error'=>true,
             'type'=>'kt.not_logged_in',
             'alert'=>true,
@@ -448,13 +449,13 @@ class KTStandardDispatcher extends KTDispatcher {
 
         if (!empty($this->aCannotView)) {
         	global $default;
-        	if(in_array($default->plan, $this->aCannotView)) {
+        	if (in_array($default->plan, $this->aCannotView)) {
 				$this->planDenied();
                 exit(0);
         	}
 
         	$this->oUser =& User::get($_SESSION['userID']);
-        	if(in_array($this->oUser->getDisabled(), $this->aCannotView)) {
+        	if (in_array($this->oUser->getDisabled(), $this->aCannotView)) {
 				$this->permissionDenied();
                 exit(0);
         	}
@@ -491,7 +492,7 @@ class KTStandardDispatcher extends KTDispatcher {
     }
 
     function handleOutput($data) {
-        if($this->bJSONMode) {
+        if ($this->bJSONMode) {
             return $this->handleOutputJSON($data);
         } else {
             return $this->handleOutputDefault($data);
@@ -585,7 +586,7 @@ class KTErrorDispatcher extends KTStandardDispatcher {
 
         $bCustomCheck = KTCustomErrorCheck::customErrorInit($this->oError);
 
-        if($bCustomCheck)
+        if ($bCustomCheck)
         {
         	exit(0);
         }

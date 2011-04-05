@@ -120,7 +120,7 @@ class BrowseDispatcher extends KTStandardDispatcher {
 
 	public function do_main()
 	{
-	    /**
+	    /**REMOVE
 	     * Old documentcollection method - this would require implementation of the new browse view code in a document collection.
 	     * NewUiCollection is currently imaginary :)
 	     */
@@ -135,14 +135,16 @@ class BrowseDispatcher extends KTStandardDispatcher {
 	    'show_folders' => true,
 	    'show_documents' => true,
 	    ));
-	    $collection->render();*/
+	    $collection->render();
+	    REMOVE**/
 
 	    global $default;
 	    /**
 		 * New ktapi based method
 		 */
 	    $aBulkActions = KTBulkActionUtil::getAllBulkActions();
-
+		$sidebars = KTFolderActionUtil::getFolderActionsForFolder($this->oFolder, $this->oUser, 'mainfoldersidebar');
+		$folderSidebars = isset($sidebars[0]) ? $sidebars[0] : array();
 	    if (ACCOUNT_ROUTING_ENABLED && $default->tier == 'trial') {
 	        $this->includeOlark();
 	    }
@@ -156,13 +158,28 @@ class BrowseDispatcher extends KTStandardDispatcher {
 	    'isEditable' => $this->editable,
 	    'bulkactions' => $aBulkActions,
 	    'browseutil' => new KTBrowseUtil(),
-	    'returnaction' => 'browse'
+	    'returnaction' => 'browse',
+	    'folderSidebars' => $folderSidebars,
 	    );
 
 	    // ?don't quite know why this is in here. Someone reports that it is there for search browsing which seem to be disabled
 	    if ($this->oFolder) {
+
+    		global $main;
+    		$folderId = $this->oFolder->getId();
+    		$rootUrl = KTUtil::kt_url();
+
+    		// Add buttons to the menu bar
+    		$newFolder = array('url' => "{$rootUrl}/action.php?kt_path_info=ktcore.actions.folder.addFolder&fFolderId={$folderId}", 'class' => 'new-folder', 'label' => _kt('New Folder'));
+    		$newDoc = array('url' => "{$rootUrl}/action.php?kt_path_info=zoho.new.document&fFolderId={$folderId}", 'class' => 'new-onlinedoc', 'label' => _kt('New Document'));
+    		$upload = array('url' => 'javascript:kt.app.upload.showUploadWindow();', 'class' => 'upload', 'label' => _kt('Upload'));
+
+    		$main->addBreadcrumbBtn($newFolder);
+    		$main->addBreadcrumbBtn($newDoc);
+    		$main->addBreadcrumbBtn($upload);
+
 	        $renderHelper = BrowseViewUtil::getBrowseView();
-	        $renderData = $renderHelper->renderBrowseFolder($this->oFolder->getId(), $aBulkActions, $this->oFolder, $this->editable);
+	        $renderData = $renderHelper->renderBrowseFolder($folderId, $aBulkActions, $this->oFolder, $this->editable);
 	        $aTemplateData = array_merge($aTemplateData, $renderData);
 	    }
 

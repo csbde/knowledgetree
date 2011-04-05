@@ -50,7 +50,7 @@ kt.app.sharewithusers=new function(){
 	        sharedData['object_type'] = document.getElementById('object.type').value;
 	        sharedData['message'] = document.getElementById('share.message').value;
 			/*jQuery('#extinvitewindow').block({ 
-												message: '<div id="loading_invite_users">',
+												message: '<div id="blue_loading">',
 												overlayCSS: {
 													backgroundColor: '#00f transparent'
 												},

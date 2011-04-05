@@ -30,6 +30,10 @@
 {/if}
 <!-- <link rel="stylesheet" type="text/css" href="{php}echo "{$GLOBALS['default']->rootUrl}/resources/css/newui/browseView.css?".rand();{/php}" />
 -->
+<table>
+<tr>
+	<td width="720" valign="top">
+
 <form action="{$browseutil->getActionBaseUrl()}" method="post">
 
 {if ($isEditable)}
@@ -43,9 +47,10 @@
 {if ($isEditable)}
 <div class="dropzone" id="datadrop">
 {/if}
-<div class="standardBorder itemContainer" style="min-width: 800px;">
-	{$bulkActionMenu}
+
+<div class=" itemContainer" style="width: 700px;">
 	{$folderContents}
+	{$bulkActionMenu}
 	<div style="width:100%; text-align: center">{$pagination}</div>
 </div>
 {$fragments}
@@ -96,4 +101,15 @@
 </fieldset>
 </form>
 {/if}
+</td>
+<td valign="top" id="sidebar" class="standardBorder" height="100%" width="215">
+    <div id="sidebar_item" >
+        {* Display Actions Block *}
+        {if ($folderSidebars)}
+            {$folderSidebars->getFolderSidebars()}
+        {/if}
+    </div>
+</td>
+</tr>
+</table>
 <!-- FILE_END: kt3/fieldsets/browse.smarty -->

@@ -35,7 +35,7 @@
  */
 
 class sharedViewDocumentDispatcher extends KTStandardDispatcher {
-    
+
     public $sName = 'ktcore.actions.document.displaydetails';
     public $sSection = 'view_details';
     public $sHelpPage = 'ktcore/browse.html';
@@ -276,8 +276,8 @@ class sharedViewDocumentDispatcher extends KTStandardDispatcher {
         //Setting Document Notifications Status
         if ($oDocument->getIsCheckedOut() || $oDocument->getImmutable()) { $aTemplateData['hasNotifications'] = true; }
 
-        $this->oPage->setBreadcrumbDetails(_kt("Document Details"));
-        
+        //$this->oPage->setBreadcrumbDetails(_kt("Document Details"));
+
         return $oTemplate->render($aTemplateData);
     }
 
@@ -356,6 +356,6 @@ class sharedViewDocumentDispatcher extends KTStandardDispatcher {
         if (PEAR::isError($u) || ($u == false)) { return _kt('User no longer exists'); }
         return $u->getName();
     }
-    
+
 }
 ?>

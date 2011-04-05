@@ -164,7 +164,7 @@ class KTPermissionUtil {
     function setPermissionForID($sPermission, $iObjectID, $aAllowed) {
         $oPermissionAssignment = KTPermissionUtil::getOrCreateAssignment($sPermission, $iObjectID);
         $oDescriptor = KTPermissionUtil::getOrCreateDescriptor($aAllowed);
-        if($oDescriptor === false){
+        if ($oDescriptor === false) {
             return false;
         }
         $oPermissionAssignment->setPermissionDescriptorID($oDescriptor->getID());
@@ -219,7 +219,7 @@ class KTPermissionUtil {
 		$aMapPermDesc = array();
 		foreach ($aMapPermAllowed as $iPermissionId => $aAllowed) {
 		  $oLookupPD = KTPermissionUtil::getOrCreateDescriptor($aAllowed);
-		  if($oLookupPD === false){
+		  if ($oLookupPD === false) {
               return false;
           }
 		  $aMapPermDesc[$iPermissionId] = $oLookupPD->getID();
@@ -242,7 +242,7 @@ class KTPermissionUtil {
 	        {
     	        $oDocument = Document::get($iId);
 
-    	        if(PEAR::isError($oDocument)){
+    	        if (PEAR::isError($oDocument)) {
     	            $GLOBALS['default']->log->error("Couldn't update document permissions ({$iId}): {$oDocument->getMessage()}");
     	            unset($oDocument);
     	            continue;
@@ -325,7 +325,7 @@ class KTPermissionUtil {
 		$is_a_document = ($oFolderOrDocument instanceof Document) || ($oFolderOrDocument instanceof KTDocumentCore) ;
 
 		//ensure that the document shortcut is being updated.
-		if($is_a_document && $oFolderOrDocument->isSymbolicLink()){
+		if ($is_a_document && $oFolderOrDocument->isSymbolicLink()) {
 			$oFolderOrDocument->switchToRealCore();
 		}
 
@@ -351,7 +351,7 @@ class KTPermissionUtil {
         } else {
             if ($oFolderOrDocument instanceof Document) {
             	//modify the message to reflect that a shortcut is begin updated
-            	if($oFolderOrDocument->isSymbolicLink()){
+            	if ($oFolderOrDocument->isSymbolicLink()) {
             		$msg = sprintf("Updating shortcut to %s", $oFolderOrDocument->getName());
             	}else{
                 	$msg = sprintf("Updating document %s", $oFolderOrDocument->getName());
@@ -491,7 +491,7 @@ class KTPermissionUtil {
             $aMapPermDesc = array();
             foreach ($aMapPermAllowed as $iPermissionId => $aAllowed) {
                 $oLookupPD = KTPermissionUtil::getOrCreateDescriptor($aAllowed);
-                if($oLookupPD === false){
+                if ($oLookupPD === false) {
                     return false;
                 }
                 $aMapPermDesc[$iPermissionId] = $oLookupPD->getID();
@@ -521,18 +521,17 @@ class KTPermissionUtil {
     {
         //KTUtil::startTiming(__FUNCTION__);
 
-        if($user instanceof User || $user instanceof UserProxy){
+        if ($user instanceof User || $user instanceof UserProxy) {
             $user = $user->iId;
         }
 
-        if(!is_numeric($user)){
+        if (!is_numeric($user)) {
             $GLOBALS['default']->log->error('Incorrect user id format received, should be numeric.');
             return false;
         }
 
         if (isset($_SESSION['adminmode']) && $_SESSION['adminmode'] === true) {
-        	if (Permission::userIsSystemAdministrator($user))
-        	{
+        	if (Permission::userIsSystemAdministrator($user)) {
         		return true;
         	}
 
@@ -541,12 +540,13 @@ class KTPermissionUtil {
         	if ($oFolderOrDocument instanceof Document || $oFolderOrDocument instanceof DocumentProxy) {
         	    $folder = $oFolderOrDocument->getFolderID();
         	}
+
         	if (Permission::isUnitAdministratorForFolder($user, $folder)) {
         	    return true;
         	}
         }
 
-        if($permission instanceof KTPermission){
+        if ($permission instanceof KTPermission) {
             $permission = $permission->getName();
         }
 
@@ -554,15 +554,16 @@ class KTPermissionUtil {
             $GLOBALS['default']->log->error('Incorrect permission format received, should be a string.');
             return false;
         }
+
         if (PEAR::isError($oFolderOrDocument) || $oFolderOrDocument == null) {
             $msg = '';
-            if(PEAR::isError($oFolderOrDocument)){
+            if (PEAR::isError($oFolderOrDocument)) {
                 $msg = '- '.$oFolderOrDocument->getMessage();
             }
+
             $GLOBALS['default']->log->error('Error on the folder or document object '.$msg);
             return false;
         }
-
 
         $lookup_id = $oFolderOrDocument->getPermissionLookupID();
 
@@ -579,7 +580,7 @@ class KTPermissionUtil {
         $oPermission = $permission;
         $oUser = $user;
 
-        if(is_numeric($oUser)) {
+        if (is_numeric($oUser)) {
             $oUser = User::get($oUser);
         }
 
@@ -600,12 +601,12 @@ class KTPermissionUtil {
         $iPermId = $oPermission->getID();
         $iDocId = $oFolderOrDocument->getID();
         $lookup = 'folders';
-        if(($oFolderOrDocument instanceof Document) || $oFolderOrDocument instanceof DocumentProxy){
+        if (($oFolderOrDocument instanceof Document) || $oFolderOrDocument instanceof DocumentProxy) {
             $lookup = 'docs';
         }
         // check if permission has been set
         // $permArr[permId] = array('folders' => array('id' => bool), 'docs' => array('id' => bool));
-        if(isset(KTPermissionUtil::$permArr[$iPermId][$lookup][$iDocId])){
+        if (isset(KTPermissionUtil::$permArr[$iPermId][$lookup][$iDocId])) {
             //return KTPermissionUtil::$permArr[$iPermId][$lookup][$iDocId];
         }
 
@@ -977,11 +978,11 @@ class KTPermissionUtil {
         }
 
         // If the role cache has changed then the permission descriptor mapping has changed - update
-        if(!empty($_roleCache)){
+        if (!empty($_roleCache)) {
             $aMapPermDesc = array();
             foreach ($aMapPermLookup as $iPermissionId => $aAllowed) {
                 $oLookupPD = KTPermissionUtil::getOrCreateDescriptor($aAllowed);
-                if($oLookupPD === false){
+                if ($oLookupPD === false) {
                     return false;
                 }
                 $aMapPermDesc[$iPermissionId] = $oLookupPD->getID();
@@ -1017,7 +1018,7 @@ class KTPermissionUtil {
                 $results = KTSearchUtil::testConditionOnPermissionObject($iConditionId, $objectId);
 
                 // Check if documents are returned in the results
-                if(count($results) > 0){
+                if (count($results) > 0) {
                     $iGroupId = $oDynamicCondition->getGroupId();
                     $aPermissionIds = $oDynamicCondition->getAssignment();
 
@@ -1045,9 +1046,9 @@ class KTPermissionUtil {
 
         $states_mapping = array();
 
-        if($states){
+        if ($states) {
             // Loop through states and get permission assignments
-            foreach ($states as $state_id){
+            foreach ($states as $state_id) {
                 $aWorkflowStatePermissionAssignments = KTWorkflowStatePermissionAssignment::getByState($state_id);
 
                 $aMap = array();
@@ -1080,7 +1081,7 @@ class KTPermissionUtil {
         // Find any roles allocated on folders associated with the permission object
         $role_allocations = RoleAllocation::getAllocationsForPO($objectId);
 
-        if(!empty($role_allocations)){
+        if (!empty($role_allocations)) {
             foreach ($role_allocations as $role_allocation) {
                 $folder_id = $role_allocation['folder_id'];
                 $role_id = $role_allocation['role_id'];
@@ -1104,7 +1105,7 @@ class KTPermissionUtil {
         $options['roles'] = $role_mappings;
 
         // If there are no role allocations then we don't need to loop through the folders
-        if(!empty($role_mappings)){
+        if (!empty($role_mappings)) {
             $aFolders = KTFolderUtil::getFolderListByPO($objectId);
             foreach ($aFolders as $folder) {
                self::updateFolderPermissionLookup($folder, $options);
@@ -1178,7 +1179,7 @@ class KTPermissionUtil {
         $aMapPermDesc = array();
         foreach ($aMapPermAllowed as $iPermissionId => $aAllowed) {
             $oLookupPD = KTPermissionUtil::getOrCreateDescriptor($aAllowed);
-            if($oLookupPD === false){
+            if ($oLookupPD === false) {
                 return false;
             }
             $aMapPermDesc[$iPermissionId] = $oLookupPD->getID();
@@ -1187,7 +1188,7 @@ class KTPermissionUtil {
         $oPermLookup = KTPermissionLookupAssignment::findOrCreateLookupByPermissionDescriptorMap($aMapPermDesc);
         $newLookupId = $oPermLookup->getID();
 
-        if($newLookupId != $folderLookupId){
+        if ($newLookupId != $folderLookupId) {
             DBUtil::autoUpdate('folders', array('permission_lookup_id' => $newLookupId), $folderId);
         }
     }
@@ -1209,13 +1210,13 @@ class KTPermissionUtil {
 
         // If there are is no folder id then the document has been deleted
         // Use the restore folder path
-        if(empty($folderId)) {
+        if (empty($folderId)) {
             $parents = explode(',', $document['restore_folder_path']);
         }
 
         // Check for any dynamic conditions that affect the document
         foreach ($conditions_mapping as $condition) {
-            if(in_array($docId, $condition['docs'])) {
+            if (in_array($docId, $condition['docs'])) {
                 foreach ($condition['map'] as $iPermissionId => $allowed) {
                     // Dynamic conditions are only on groups
                     $aMapPermAllowed[$iPermissionId]['group'] = array_merge($aMapPermAllowed[$iPermissionId]['group'], $allowed['group']);
@@ -1224,7 +1225,7 @@ class KTPermissionUtil {
         }
 
         // Check whether the document has a workflow state with restricted permissions
-        if(is_numeric($document['workflow_state_id'])){
+        if (is_numeric($document['workflow_state_id'])) {
             $map = $states_mapping[$document['workflow_state_id']]['map'];
 
             foreach ($map as $iPermissionId => $allowed) {
@@ -1273,7 +1274,7 @@ class KTPermissionUtil {
         $aMapPermDesc = array();
         foreach ($aMapPermAllowed as $iPermissionId => $aAllowed) {
             $oLookupPD = KTPermissionUtil::getOrCreateDescriptor($aAllowed);
-            if($oLookupPD === false){
+            if ($oLookupPD === false) {
                 return false;
             }
             $aMapPermDesc[$iPermissionId] = $oLookupPD->getID();
@@ -1282,7 +1283,7 @@ class KTPermissionUtil {
         $oPermLookup = KTPermissionLookupAssignment::findOrCreateLookupByPermissionDescriptorMap($aMapPermDesc);
         $newLookupId = $oPermLookup->getID();
 
-        if($newLookupId != $docLookupId){
+        if ($newLookupId != $docLookupId) {
             DBUtil::autoUpdate('documents', array('permission_lookup_id' => $oPermLookup->getID()), $docId);
         }
     }

@@ -43,6 +43,7 @@ define('KTLIVE_TRACE_ENABLE', false);
 
 // stuff in the new installer section database upgrade fails without this
 global $default;
+
 // ensure $default is a proper class
 if (!($default instanceof stdClass)) {
     $default = new stdClass();

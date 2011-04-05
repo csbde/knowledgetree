@@ -39,27 +39,26 @@ $kt_dir = $_REQUEST['kt_dir'];
 require_once($kt_dir.'/config/dmsDefaults.php');
 
 class DocumentPreview {
-    var $_oDocument;
-    var $_IDocId;
-    var $_iMimeId;
-    var $_oFolder;
-    var $_iFolderId;
+
+    public $_oDocument;
+    public $_IDocId;
+    public $_iMimeId;
+    public $_oFolder;
+    public $_iFolderId;
 
     /**
-     * Constructer - creates the document object
-     *
      * @param int $iDocumentId The document Id
      * @return
      */
-    function DocumentPreview($iId, $type = 'document'){
-        if($type == 'folder'){
+    function DocumentPreview($iId, $type = 'document') {
+        if ($type == 'folder') {
             // $type should never be a folder.
             $this->_oDocument = false;
             return;
         }
         $oDocument = Document::get($iId);
 
-        if(PEAR::isError($oDocument)){
+        if (PEAR::isError($oDocument)) {
             $this->_oDocument = false;
             return;
         }
@@ -75,23 +74,25 @@ class DocumentPreview {
      *
      * @return string The document title and mime icon
      */
-    function getTitle(){
-        if($this->_oDocument === false){
+    function getTitle() {
+        if ($this->_oDocument === false) {
             return '<b>'._kt('Error').'</b>';
         }
-        GLOBAL $default;
+
+        global $default;
         $sIcon = '';
 
         $sTitle = htmlentities($this->_oDocument->getName(), ENT_NOQUOTES, 'utf-8');
         $iLen = strlen($sTitle);
 
-        if($iLen > 60){
+        if ($iLen > 60) {
             $sFull = $sTitle;
-            if($iLen >= 99){
+            if ($iLen >= 99) {
                 $sTitle = substr($sTitle, 0, 97).'...';
             }
             $sTitle = '<h4 title="'.$sFull.'">'.$sTitle.'</h4>';
-        }else{
+        }
+        else {
             $sTitle = '<h2>'.$sTitle.'</h2>';
         }
 
@@ -127,24 +128,30 @@ class DocumentPreview {
      * @return string
      */
     function checkForGeneric($ext) {
-        if(in_array($ext, array('py','php'))){
+        if (in_array($ext, array('py','php'))) {
             return 'generic/source';
         }
-        if(in_array($ext, array('odt','sxw', 'ott', 'sxt'))){
+
+        if (in_array($ext, array('odt','sxw', 'ott', 'sxt'))) {
             return 'generic/wordprocessing';
         }
-        if(in_array($ext, array('ods','ots', 'sxc', 'stc'))){
+
+        if (in_array($ext, array('ods','ots', 'sxc', 'stc'))) {
             return 'spreadsheet';
         }
-        if(in_array($ext, array('odp','otp', 'sxi', 'sti'))){
+
+        if (in_array($ext, array('odp','otp', 'sxi', 'sti'))) {
             return 'generic/pres';
         }
-        if(in_array($ext, array('mp3','m4a'))){
+
+        if (in_array($ext, array('mp3','m4a'))) {
             return 'generic/sound';
         }
-        if(in_array($ext, array('m4v'))){
+
+        if (in_array($ext, array('m4v'))) {
             return 'generic/video';
         }
+
         return 'default';
     }
 
@@ -160,21 +167,22 @@ class DocumentPreview {
         // Get mime type icon
         $sIconPath = '/resources/mimetypes/big/'.$sIconPath.'.png';
 
-        if(!file_exists(KT_DIR.$sIconPath)){
+        if (!file_exists(KT_DIR.$sIconPath)) {
             // See if there is an icon for the extension
             $sMimeType = KTMime::getMimeTypeName($this->_iMimeId);
             $aMimeInfo = KTMime::getFriendlyNameAndExtension($sMimeType);
-            if(!PEAR::isError($aMimeInfo) && !empty($aMimeInfo)){
+            if (!PEAR::isError($aMimeInfo) && !empty($aMimeInfo)) {
                 $sExt = $aMimeInfo[0]['filetypes'];
                 $sIconPath = '/resources/mimetypes/big/'.$sExt.'.png';
 
-                if(!file_exists(KT_DIR.$sIconPath)){
+                if (!file_exists(KT_DIR.$sIconPath)) {
                     $generic = $this->checkForGeneric($sExt);
                     // if all else fails, use the default icon
                     $sIconPath = '/resources/mimetypes/big/'.$generic.'.png';
                 }
             }
         }
+
         return $sIconPath;
     }
 
@@ -183,8 +191,8 @@ class DocumentPreview {
      *
      * @return string
      */
-    function renderPreview(){
-        if($this->_oDocument === false){
+    function renderPreview() {
+        if ($this->_oDocument === false) {
             return '<p>'._kt('A problem occured while loading the property preview.').'</p>';
         }
 
@@ -203,7 +211,7 @@ class DocumentPreview {
      *
      * @return unknown
      */
-    function getMetadata(){
+    function getMetadata() {
         /* Get document info */
 
         // Filename
@@ -236,7 +244,7 @@ class DocumentPreview {
         // Last update by
         $iModifiedId = $this->_oDocument->getModifiedUserId();
         $sLastUpdatedByLb = ''; $sLastUpdatedBy = '';
-        if(!empty($iModifiedId)){
+        if (!empty($iModifiedId)) {
             $sLastUpdatedByLb = _kt('Last updated by: ');
             $sModified = $this->_oDocument->getDisplayLastModifiedDate();
             $oModifier = User::get($iModifiedId);
@@ -252,7 +260,7 @@ class DocumentPreview {
         // Workflow
         $iWFId = $this->_oDocument->getWorkflowId();
         $sWF = ''; $sWFLb = '';
-        if(!empty($iWFId)){
+        if (!empty($iWFId)) {
             $sWFLb = _kt('Workflow: ');
             $iWFStateId = $this->_oDocument->getWorkflowStateId();
             $oWF = KTWorkflow::get($iWFId);
@@ -263,7 +271,7 @@ class DocumentPreview {
 
         // Checked out by
         $sCheckedLb = ''; $sCheckedOutBy = '';
-        if($this->_oDocument->getIsCheckedOut()){
+        if ($this->_oDocument->getIsCheckedOut()) {
             $sCheckedLb = _kt('Checked out by: ');
             $iCheckedID = $this->_oDocument->getCheckedOutUserID();
             $oCheckedUser = User::get($iCheckedID);
@@ -284,14 +292,17 @@ class DocumentPreview {
             <tr><td>{$sCreatedByLb}</td><td><b>{$sCreatedBy}</b></td></tr>
             <tr><td>{$sOwnedByLb}</td><td><b>{$sOwnedBy}</b></td></tr>";
 
-        if(!empty($sLastUpdatedBy)){
+        if (!empty($sLastUpdatedBy)) {
             $sInfo .= "<tr><td>{$sLastUpdatedByLb}</td><td><b>{$sLastUpdatedBy}</b></td></tr>";
         }
-            $sInfo .= "<tr><td>{$sDocTypeLb}</td><td><b>{$sDocType}</b></td></tr>";
-        if(!empty($sWF)){
+
+        $sInfo .= "<tr><td>{$sDocTypeLb}</td><td><b>{$sDocType}</b></td></tr>";
+
+        if (!empty($sWF)) {
             $sInfo .= "<tr><td>{$sWFLb}</td><td><b>{$sWF}</b></td></tr>";
         }
-        if(!empty($sCheckedOutBy)){
+
+        if (!empty($sCheckedOutBy)) {
             $sInfo .= "<tr><td>{$sCheckedLb}</td><td><b>{$sCheckedOutBy}</b></td></tr>";
         }
 
@@ -305,18 +316,17 @@ class DocumentPreview {
     {
         $sInfo = '';
         // Check for existence of thumbnail plugin
-        if (KTPluginUtil::pluginIsActive('thumbnails.generator.processor.plugin'))
-        {
+        if (KTPluginUtil::pluginIsActive('thumbnails.generator.processor.plugin')) {
             // hook into thumbnail plugin to get display for thumbnail
             include_once(KT_DIR . '/plugins/thumbnails/thumbnails.php');
             $thumbnailer = new ThumbnailViewlet();
             $thumbnailer->setDocument($this->_oDocument);
             $thumbnailDisplay = $thumbnailer->renderThumbnail($this->_IDocId, null, false);
-            if ($thumbnailDisplay != '')
-            {
-        		$sInfo = "<div>$thumbnailDisplay</div>";
-        	}
+            if ($thumbnailDisplay != '') {
+                $sInfo = "<div>$thumbnailDisplay</div>";
+            }
         }
+
         return $sInfo;
     }
 }
@@ -326,12 +336,11 @@ class DocumentPreview {
  */
 
 $iDocumentId = $_REQUEST['fDocumentId'];
-
 $oPreview = new DocumentPreview($iDocumentId);
 
 $sTitle = $oPreview->getTitle();
 $sContent = $oPreview->renderPreview();
 
-echo $sTitle.'<br />'.$sContent;
+echo $sTitle . '<br />' . $sContent;
 exit;
 ?>

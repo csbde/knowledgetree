@@ -1,0 +1,59 @@
+#document_status_area a {
+	display: inline-block;
+	height: 38px;
+	width: 38px;
+	border: 1px solid white;
+	background: url('../../../../graphics/newui/documents/blocks/doc_status_spritesheet.png') no-repeat;
+	background-position-y: 4px;
+}
+
+#document_status_area a:hover {
+	border: 1px solid #ccc;
+	-moz-border-radius: 2px;
+	-webkit-border-radius: 2px;
+	border-radius: 2px;
+	behavior: url('../../../../css/border-radius.htc');
+	background-position-y: -34px;
+}
+
+#document_status_area .action {
+    height: 37px;
+    width: 37px;
+}
+
+#document_status_area .alert.enabled {
+    background: url("../../../../graphics/newui/documents/blocks/alarmclock.png") no-repeat transparent;
+}
+#document_status_area .alert.disabled {
+	background-position: 3px 3px;
+}
+
+#document_status_area .workflow.enabled {
+    background: url("../../../../graphics/newui/documents/blocks/media_play_green.png") no-repeat transparent;
+}
+#document_status_area .workflow.disabled {
+	background-position: -32px 3px;
+}
+
+#document_status_area .subscribe.enabled {
+    background: url("../../../../graphics/newui/documents/blocks/star_yellow.png") no-repeat transparent;
+}
+#document_status_area .subscribe.disabled {
+	background-position: -72px 3px;
+}
+
+#stateActions {
+	border: 1px solid #CCCCCC;
+	padding: 1em;
+	overflow: auto;
+}
+
+.tooltip {
+	background:transparent url("../../../../graphics/newui/tooltips/white_arrow_small.png");
+	font-size:13px;
+	height:30px;
+	width:160px;
+	padding:45px 25px 15px 25px;
+	color:black;
+	top:25px !important;
+}

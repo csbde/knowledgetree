@@ -17,16 +17,15 @@ jQuery(document).ready(function() {
 
 });
 
-
-
+			
 /** 
  * Documents View Page
  */
 
 (function($){
 	$(document).ready(function(){
-		$('#activity_feed_container').html($('#viewlet_activityfeed').html());
-		$('#viewlet_activityfeed').remove();
+		$('#activityfeed-container').html($('#viewlet-activityfeed').html());
+		$('#viewlet-activityfeed').remove();
 		$('.withviewlets').removeClass('withviewlets');
 		
 		$('#doc_thumb').append($('.thumb-shadow img')).addClass('thumb-shadow').css({'margin-right': '15px', 'margin-bottom': '15px'});
@@ -53,7 +52,63 @@ jQuery(document).ready(function() {
 	});
 })(jQuery);
 
+jQuery(function() {
 
+				jQuery(".split").click(function() {
+
+					if (jQuery(this).parent().next().is(':visible'))
+					{
+						jQuery(".splitmenu").hide();
+						jQuery(".split").removeClass('selected');
+
+					}
+					else
+					{
+						jQuery(".splitmenu").hide();
+						jQuery(".split").removeClass('selected');
+						jQuery(this).addClass('selected').parent().next().show();
+
+					}
+
+				});
+
+				 jQuery('html').click(function() {
+				 	jQuery(".splitmenu").hide();
+				 	jQuery(".split").removeClass('selected');
+				 });
+
+				jQuery('.split').click(function(event){
+				     event.stopPropagation();
+				 });
+			});
+
+/**
+ * Functions to clear default form text
+ */
+(function($){
+	$(document).ready(function()
+	{
+	    $(".default-text").focus(function(srcc)
+	    {
+	        if ($(this).val() == $(this)[0].title)
+	        {
+	            $(this).removeClass("default-text-active");
+	            $(this).val("");
+	        }
+	    });
+	    
+	    $(".default-text").blur(function()
+	    {
+	        if ($(this).val() == "")
+	        {
+	            $(this).addClass("default-text-active");
+	            $(this).val($(this)[0].title);
+	        }
+	    });
+	    
+	    $(".default-text").blur();        
+	});
+})(jQuery);
 /**
  * Functions to float the footer. setFooter() is called from <body> onLoad()
  */

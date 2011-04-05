@@ -632,7 +632,7 @@ class KTAPI {
 			$error = $user;
 			return $error;
 		}
-		
+
     	if(SharedUserUtil::isSharedUser())
     	{
     		if($object instanceof DocumentProxy || $object instanceof Document)
@@ -649,10 +649,10 @@ class KTAPI {
     				return new PEAR_Error(KTAPI_ERROR_INSUFFICIENT_PERMISSIONS);
     			}
     		}
-    		
+
     		return $user;
     	}
-    	
+
 		if (!KTPermissionUtil::userHasPermissionOnItem($user, $permission, $object))
 		{
 			$error = new PEAR_Error(KTAPI_ERROR_INSUFFICIENT_PERMISSIONS);
@@ -1244,64 +1244,81 @@ class KTAPI {
 	*/
 	private function _load_metadata_tree($fieldid, $parentid=0, $convertToTree = false)
 	{
-		/*$results = KTAPI::get_metadata_lookup($fieldid);
-		return $results;*/
-		
-		//$GLOBALS['default']->log->debug("KTAPI _load_metadata_tree $fieldid");
-		
-		$sql = "(SELECT mlt.metadata_lookup_tree_parent AS parent_id, ml.treeorg_parent AS tree_id, mlt.name AS tree_name, ml.id AS id, ml.name AS field_name
+		$sql = "(SELECT mlt.metadata_lookup_tree_parent AS parentid, ml.treeorg_parent AS treeid, mlt.name AS treename, ml.id AS id, ml.name AS fieldname
 				FROM metadata_lookup ml
 				INNER JOIN (metadata_lookup_tree mlt) ON (ml.treeorg_parent = mlt.id)
 				WHERE ml.disabled=0 AND ml.document_field_id=$fieldid)
 				UNION
-				(SELECT -1 AS parent_id, 0 AS tree_id, \"Root\" AS tree_name, ml.id AS id, ml.name AS field_name
+				(SELECT -1 AS parentid, 0 AS treeid, \"Root\" AS treename, ml.id AS id, ml.name AS fieldname
 				FROM metadata_lookup ml
 				LEFT JOIN (metadata_lookup_tree mlt) ON (ml.treeorg_parent = mlt.id)
 				WHERE ml.disabled=0 AND ml.document_field_id=$fieldid AND (ml.treeorg_parent IS NULL OR ml.treeorg_parent = 0))
-				ORDER BY parent_id, id";
+				ORDER BY parentid, id";
 		$rows = DBUtil::getResultArray($sql);
 
-		//$GLOBALS['default']->log->debug('KTAPI _load_metadata_tree rows '.print_r($rows, true));
-		
 		$results = array();
 
-		if ($convertToTree)
-		{
-			if (sizeof($rows) > 0) {
-				$results = KTAPI::convertToTree($rows);
-			}
+		if (sizeof($rows) > 0) {
+			$results = KTAPI::convertToTree($rows);
 		}
-		else
-		{
-			$results = $rows;
-		}
-		
+
 		return $results;
-		
-		
-		/*
-		$sql = "SELECT id, name FROM metadata_lookup_tree WHERE document_field_id=$fieldid AND metadata_lookup_tree_parent=$parentid";
-		$rows = DBUtil::getResultArray($sql);
-		if (is_null($rows) || PEAR::isError($rows))
-		{
-			return new PEAR_Error(KTAPI_ERROR_INTERNAL_ERROR);
-		}
-		$results=array();
-		foreach ($rows as $row)
-		{
-			$result=array(
-				'name' => $row['name'],
-				'children' => load($fieldid, $row['id'])
-			);
-			$results[] = $result;
-		}
-		return $results;*/
 	}
-	
+
+	private function convertToTree(array $flat)
+	{
+		$idTree = 'treeid';
+		$idField = 'id';
+		$parentIdField = 'parentid';
+
+		$root = 0;
+
+	    $indexed = array();
+	    // first pass - get the array indexed by the primary id
+	   	foreach ($flat as $row) {
+        	$treeID = $row[$idTree];
+        	if (!isset($indexed[$treeID])) {
+        		$path = '';
+        		$treepath .= $row['tree_name'].'\\';
+        		$indexed[$treeID] = array('treeid' => $treeID,
+        									'parentid' => $row[$parentIdField],
+        									'treename' => $row['treename'],
+        									'type' => 'tree');//$row;
+	        	$indexed[$treeID]['fields'] = array();
+        	}
+
+        	$path .= $treepath.$row['fieldname'];
+
+	        $indexed[$treeID]['fields'][$row[$idField]] = array('fieldid' => $row[$idField],
+	        													'parentid' => $treeID,
+	        													'name' =>  $row['fieldname'],
+	        													'type' => 'field');
+
+	        if ($row[$parentIdField] < $root) {
+	        	$root = $row[$parentIdField];
+	        }
+
+	        $path = '';
+	    }
+
+	    //second pass
+	    //$root = 0;
+	    foreach ($indexed as $id => $row) {
+	        $indexed[$row[$parentIdField]]['fields'][$id] =& $indexed[$id];
+	    }
+
+	    $results = array($root => $indexed[$root]);
+
+	    //return $results;	//[-1]['fields'][0]['fields'];
+
+	    //strip out the unneccesary outer array
+	    return $results[-1]['fields'];
+	}
+
 	private function convertToTree(array $flat)
 	{
 		//$GLOBALS['default']->log->debug('KTAPI convertToTree '.print_r($flat, true));
-		
+
 		$idTree = 'tree_id';
 		$idField = 'id';
 		$parentIdField = 'parent_id';
@@ -1339,10 +1356,10 @@ class KTAPI {
 	    }
 
 	    $results = array($root => $indexed[$root]);
-	    
+
 	    //$GLOBALS['default']->log->debug('KTAPI convertToTree results '.print_r($results, true));
 		//$GLOBALS['default']->log->debug('KTAPI convertToTree results inner '.print_r($results[-1]['fields'][0]['fields'], true));
-	    
+
 	    return $results[-1]['fields'][0]['fields'];
 	}
 
@@ -1357,9 +1374,9 @@ class KTAPI {
 	public function get_metadata_tree($fieldid, $convertToTree = false)
 	{
 		$results = KTAPI::_load_metadata_tree($fieldid, $convertToTree);
-		
+
 		//$GLOBALS['default']->log->debug('get_metadata_tree results '.print_r($results, true));
-		
+
 		return $results;
 	}
 

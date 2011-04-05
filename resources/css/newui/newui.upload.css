@@ -1,11 +1,11 @@
 .ul_win, .ul_meta { /* background-color: #F1F1F1; */ }
-.ul_win .x-window-mc, .ul_win .x-window-ml, .ul_win .x-window-mr, .ul_win .x-window-bl, .ul_win .x-window-br, .ul_win .x-window-bc, .ul_meta .x-window-mc, .ul_meta .x-window-ml, .ul_meta .x-window-mr, .ul_meta .x-window-bl, .ul_meta .x-window-br, .ul_meta .x-window-bc { background-color: #77BCDB; border: none; }
+.ul_win .x-window-mc, .ul_win .x-window-ml, .ul_win .x-window-mr, .ul_win .x-window-bl, .ul_win .x-window-br, .ul_win .x-window-bc, .ul_meta .x-window-mc, .ul_meta .x-window-ml, .ul_meta .x-window-mr, .ul_meta .x-window-bl, .ul_meta .x-window-br, .ul_meta .x-window-bc { background-color: #FFFFFF; border: none; }
 .ul_win .x-window-ml, .ul_win .x-window-bl, .ul_win .x-window-br, .ul_meta .x-window-ml, .ul_meta .x-window-bl, .ul_meta .x-window-br { padding-left: 3px; }
 .ul_win .x-window-mr, .ul_win .x-window-br, .ul_meta .x-window-mr, .ul_meta .x-window-br { padding-right: 3px; }
 .ul_win .x-window-bc, .ul_meta .x-window-bc { height: 3px; }
-.ul_win .x-window-mc, .ul_meta .x-window-mc { background-color: #F1F1F1; padding: 10px; }
+.ul_win .x-window-mc, .ul_meta .x-window-mc { background-color: #FFFFFF; padding: 10px; }
 
-.ul_win_body, .ul_meta_body { overflow: hidden; background-color: #F1F1F1; border: none; }
+.ul_win_body, .ul_meta_body { overflow: hidden; background-color: #FFFFFF; border: none; }
 
 table.uploadTable { width: 100%; height: 300px; }
 table.uploadTable input, table.uploadTable label { font-family: tahoma,arial,helvetica,sans-serif; }
@@ -88,4 +88,4 @@ div#folderpathchooser div.loading { background: url(../../graphics/newui/preview
 div#folderpathchooser ul#currentPathStuff li { margin-bottom: 3px; padding: 2px; padding-left: 25px; background: url(../../graphics/folder_closed.png) no-repeat 0 50%; border: 1px solid transparent; /* border-bottom: 1px solid #F1F1F1; */ }
 div#folderpathchooser ul#currentPathStuff li.folder_up { background: url(../../graphics/folder_up.png) no-repeat 0 50%; }
 div#folderpathchooser ul#currentPathStuff li:hover { border: 1px solid #BDD9E8; background-color: #FFFDE6; cursor: pointer; }
-div#loading_invite_users { background-image:url("/resources/graphics/newui/blue-loading.gif"); height:32px; width:32px; position:relative; margin-left:60px; }
+div#blue_loading { background-image:url("/resources/graphics/newui/blue-loading.gif"); height:32px; width:32px; position:relative; margin-left:60px; }

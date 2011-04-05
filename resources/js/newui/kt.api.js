@@ -157,6 +157,27 @@ kt.api = new function() {
 
 		return ret.data.usertype;
 	};
+	
+	/* Metadata functions */
+	this.changeDocumentType = function(documentID, documentTypeID, callback, errorCallback) {
+		console.log('changeDocumentType '+documentID+' '+documentTypeID);
+		params = {};
+		params.documentID = documentID;
+		params.documentTypeID = documentTypeID;
+		
+		var func = 'siteapi.changeDocumentType';
+		
+		if (callback) {
+			console.log('callback');
+			ktjapi.callMethod(func, params, callback, synchronous, errorCallback, this.persistentDataCacheTimeout);
+			return;
+		} else {
+			console.log('no callback');
+			var data = ktjapi.retrieve(func, params, this.persistentDataCacheTimeout);
+			console.dir(data);
+			return data.data;
+		}
+	};
 
 	/* Template related functions */
 

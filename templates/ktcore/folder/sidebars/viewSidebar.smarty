@@ -1,0 +1,6 @@
+
+{foreach item=sidebar from=$sidebars}
+	<div id="sidebar_item" class={$sidebar->getCSSName()}>
+		{$sidebar->display_viewlet()}
+	</div>
+{/foreach}

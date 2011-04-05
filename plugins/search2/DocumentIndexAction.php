@@ -9,6 +9,9 @@ class DocumentIndexAction extends KTDocumentAction
     var $sName = 'ktcore.search2.index.action';
     var $_sShowPermission = "ktcore.permissions.write";
 
+    var $sIconClass = 'index';
+    var $sParentBtn = 'more';
+
     function DocumentIndexAction($oDocument = null, $oUser = null, $oPlugin = null)
     {
     	parent::KTDocumentAction($oDocument, $oUser, $oPlugin);

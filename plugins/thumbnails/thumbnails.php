@@ -317,11 +317,11 @@ class ThumbnailViewlet extends KTDocumentViewlet {
 
 		// if the thumbnail doesn't exist try to create it
 		if (!$oStorage->file_exists($thumbnailCheck)) {
-			if(!ACCOUNT_ROUTING_ENABLED){
+			//if(!ACCOUNT_ROUTING_ENABLED){
 	            $thumbnailer = new thumbnailGenerator();
 	            $thumbnailer->setDocument($this->oDocument);
 	            $thumbnailer->processDocument();
-			}
+			//}
 
             // if it still doesn't exist, return an empty string
 			if (!$oStorage->file_exists($thumbnailCheck)) {
@@ -347,17 +347,17 @@ class ThumbnailViewlet extends KTDocumentViewlet {
         }
 
         // Get the url to the thumbnail and render it
-        if (ACCOUNT_ROUTING_ENABLED) {
-            $thumbnailUrl = $oStorage->getSignedUrl("thumbnails/$documentId.jpg");
-        }
-        else {
+        //if (ACCOUNT_ROUTING_ENABLED) {
+        //    $thumbnailUrl = $oStorage->getSignedUrl("thumbnails/$documentId.jpg");
+        //}
+        //else {
             // Ensure url has correct slashes
             $sHostPath = KTUtil::kt_url();
             $plugin_path = KTPluginUtil::getPluginPath('thumbnails.generator.processor.plugin');
             $thumbnailUrl = $plugin_path . 'thumbnail_view.php?documentId='.$documentId;
             $thumbnailUrl = str_replace('\\', '/', $thumbnailUrl);
             $thumbnailUrl = str_replace(KT_DIR, $sHostPath, $thumbnailUrl);
-        }
+        //}
 
 		$templateData = array(
 			'documentId' => $documentId,

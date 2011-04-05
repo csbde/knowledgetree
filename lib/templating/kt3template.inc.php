@@ -81,6 +81,9 @@ class KTPage {
     public $breadcrumbs = false;
     public $breadcrumbDetails = false;
     public $breadcrumbSection = false;
+    public $breadcrumbIcon = false;
+    public $breadcrumbBtns = false;
+    public $showDashboardBtn = false;
     public $menu = null;
     public $userMenu = null;
     public $helpPage = null;
@@ -129,6 +132,7 @@ class KTPage {
         	$this->requireThemeCSSResource('skins/kts_'.$oConfig->get('ui/morphTo').'/kt-morph.css');
         	$this->requireThemeCSSResource('skins/kts_'.$oConfig->get('ui/morphTo').'/kt-ie-morph.css', true);
         }
+
         // IE only
         $this->requireCSSResource('resources/css/kt-ie-icons.css', true);
 
@@ -142,13 +146,10 @@ class KTPage {
 
         $aJS[] = 'thirdpartyjs/extjs/adapter/ext/ext-base.js';
         $aJS[] = 'thirdpartyjs/extjs/ext-all.js';
-        $aJS[] = 'thirdpartyjs/jquery/jquery-1.4.2.min.js';
+        $aJS[] = 'thirdpartyjs/jquery/jquery-1.4.4.min.js';
         $aJS[] = 'thirdpartyjs/jquery/jquery_noconflict.js';
         $aJS[] = 'thirdpartyjs/jquery/plugins/urlparser/jquery.url.js';
         $aJS[] = 'resources/js/search2widget.js';
-//        $aJS[] = 'thirdpartyjs/plupload/js/plupload.min.js';
-//        $aJS[] = 'thirdpartyjs/plupload/js/plupload.html5.min.js';
-//        $aJS[] = 'thirdpartyjs/plupload/js/jquery.plupload.queue.min.js';
         $aJS[] = 'thirdpartyjs/jquery/plugins/ajaxupload/fileuploader.js';
         $aJS[] = 'thirdpartyjs/jquery/plugins/loading/jquery.loading.1.6.4.min.js';
         $aJS[] = 'resources/js/newui/ktjapi.all.js';
@@ -166,6 +167,10 @@ class KTPage {
         $aJS[] = 'resources/js/newui/newUIFunctionality.js';
         $aJS[] = 'resources/js/newui/jquery.helper.js';
         $aJS[] = 'resources/js/newui/buttontabs.jquery.js';
+        $aJS[] = 'thirdpartyjs/jquery/plugins/dotimeout/jquery.ba-dotimeout.min.js';
+
+        // Breadcrumbs
+        $aJS[] = 'resources/js/jquery.breadcrumbs.js';
 
         $this->requireJSResources($aJS);
 
@@ -185,14 +190,12 @@ class KTPage {
     function initMenu() {
     	// FIXME:  we lost the getDefaultAction stuff - do we care?
     	// note that key == action. this is _important_, since we crossmatch the breadcrumbs against this for "active"
-    	$sBaseUrl = KTUtil::kt_url();
-
     	$this->menu = array();
     	if (!SharedUserUtil::isSharedUser())
     	{
     		$this->menu['dashboard'] = array('label' => _kt('Dashboard'), 'url' => $sBaseUrl.'/dashboard.php');
     	}
-		$this->menu['browse'] = array('label' => _kt('Browse All Documents'), 'url' => $sBaseUrl.'/browse.php');
+		$this->menu['browse'] = array('label' => _kt("Documents"), 'url' => $sBaseUrl.'/browse.php');
     	if (ACCOUNT_ROUTING_ENABLED) {
     		$sLiveUrl = KTLiveUtil::ktlive_url();
 			$this->menu['applications'] = array('label' => _kt('Applications'), 'url' => $sLiveUrl.'/applications.php');
@@ -219,7 +222,7 @@ class KTPage {
     /* javascript handling */
     // require that the specified JS file is referenced.
     function requireJSResource($sResourceURL) {
-	$this->js_resources[$sResourceURL] = 1; // use the keys to prevent multiple copies.
+        $this->js_resources[$sResourceURL] = 1; // use the keys to prevent multiple copies.
     }
 
     // require that the specified JS files are referenced.
@@ -332,16 +335,48 @@ class KTPage {
         if ($breadLength != 0) {
             $this->breadcrumbSection = $this->_actionhelper($aBreadcrumbs[0]);
 	    // handle the menu
-	    if (($aBreadcrumbs[0]['action']) && ($this->menu[$aBreadcrumbs[0]['action']])) {
-		$this->menu[$aBreadcrumbs[0]['action']]['active'] = 1;
-	    }
+//	    if (($aBreadcrumbs[0]['action']) && ($this->menu[$aBreadcrumbs[0]['action']])) {
+//		$this->menu[$aBreadcrumbs[0]['action']]['active'] = 1;
+//	    }
         }
         if ($breadLength > 1) {
             $this->breadcrumbs = array_map(array(&$this, '_actionhelper'), array_slice($aBreadcrumbs, 1));
         }
+
+        // New menu system (breadcrumbs)
+        $this->breadcrumbIcon = array();
+    	$sBaseUrl = KTUtil::kt_url();
+
+    	$dashboard = false;
+    	if (!SharedUserUtil::isSharedUser()) {
+    	   $dashboard = array('url' => $sBaseUrl.'/dashboard.php', 'class' => 'dashboard', 'label' => _kt('Dashboard'));
+    	}
+    	$browse = array('url' => $sBaseUrl.'/browse.php', 'class' => 'browse', 'label' => _kt('Documents'));
+
+    	switch($aBreadcrumbs[0]['action']) {
+    	    case 'browse':
+    	    case 'action':
+    	        if ($dashboard !== false) $this->breadcrumbIcon[] = $dashboard;
+    	        break;
+    	    case 'dashboard':
+    	        $this->breadcrumbIcon[] = $browse;
+    	        break;
+    	    case 'administration':
+    	    default:
+    	        if ($dashboard !== false) $this->breadcrumbIcon[] = $dashboard;
+    	        $this->breadcrumbIcon[] = $browse;
+    	}
+
+    	return ;
     }
 
     function setBreadcrumbDetails($sBreadcrumbDetails) { $this->breadcrumbDetails = $sBreadcrumbDetails; }
+
+    function addBreadcrumbBtn($aBreadcrumbBtn)
+    {
+        $this->breadcrumbBtns[] = $aBreadcrumbBtn;
+    }
+
 	function setUser($oUser) { $this->user = $oUser; }
 
     function setContentClass($sClass) { $this->content_class = $sClass; }

@@ -348,6 +348,7 @@ class KTDocumentViewAction extends KTDocumentAction {
     var $sIconClass = 'download';
 	var $showIfWrite = true;
 	var $showIfRead = true;
+	var $btnOrder = 1;
 
     function getDisplayName() {
         return _kt('Download');
@@ -426,9 +427,18 @@ class KTDocumentCheckOutAction extends KTDocumentAction {
     var $sIconClass = 'checkout';
 	var $showIfWrite = true;
 	var $showIfRead = false;
+	var $btnOrder = 2;
 
     function getDisplayName() {
         return _kt('Checkout');
+    }
+
+    function _show() {
+        $check = parent::_show();
+        if($check === false) {
+            return 'disabled';
+        }
+        return $check;
     }
 
     function getInfo() {
@@ -622,6 +632,7 @@ class KTDocumentCheckInAction extends KTDocumentAction {
     var $sIconClass = 'checkin';
 	var $showIfWrite = true;
 	var $showIfRead = false;
+	var $btnOrder = 2;
 
     function getDisplayName() {
         return _kt('Check-in');
@@ -872,10 +883,12 @@ class KTDocumentCancelCheckOutAction extends KTDocumentAction {
     var $_sShowPermission = 'ktcore.permissions.write';
     var $bAllowInAdminMode = true;
     var $bInAdminMode = null;
-    var $sIconClass = 'cancel_checkout';
+    //var $sIconClass = 'cancel_checkout';
 
 	var $showIfWrite = true;
 	var $showIfRead = false;
+    var $sIconClass = 'cancel-checkout';
+    var $sParentBtn = 'ktcore.actions.document.checkin';
 
     function getDisplayName() {
         return _kt('Cancel Checkout');
@@ -1061,6 +1074,9 @@ class KTDocumentDeleteAction extends KTDocumentAction {
     var $_sShowPermission = 'ktcore.permissions.delete';
     var $_bMutator = true;
 
+    var $sIconClass = 'delete';
+    var $sParentBtn = 'more';
+
     function getDisplayName() {
         return _kt('Delete');
     }
@@ -1220,6 +1236,8 @@ class KTDocumentMoveAction extends KTDocumentAction {
     var $sName = 'ktcore.actions.document.move';
     var $_sShowPermission = 'ktcore.permissions.write';
     var $_bMutator = true;
+    var $sIconClass = 'move';
+    var $sParentBtn = 'more';
 
     function getDisplayName() {
         return _kt('Move');
@@ -1470,6 +1488,9 @@ class KTDocumentCopyAction extends KTDocumentAction {
     var $sName = 'ktcore.actions.document.copy';
     var $_sShowPermission = 'ktcore.permissions.read';
 
+    var $sIconClass = 'copy';
+    var $sParentBtn = 'more';
+
     function getDisplayName() {
         return _kt('Copy');
     }
@@ -1712,6 +1733,8 @@ class KTDocumentArchiveAction extends KTDocumentAction {
     var $_bMutator = false;
 	var $showIfWrite = false;
 	var $showIfRead = false;
+    var $sIconClass = 'archive';
+    var $sParentBtn = 'more';
 
     function getDisplayName() {
         return _kt('Archive');
@@ -1866,6 +1889,8 @@ class KTDocumentWorkflowAction extends KTDocumentAction {
     var $sHelpPage = 'ktcore/user/workflow.html';
 	var $showIfWrite = true;
 	var $showIfRead = false;
+    var $sIconClass = 'manage-workflow';
+    var $sParentBtn = 'more';
 
     function predispatch() {
         $this->persistParams(array('fTransitionId'));
@@ -1970,7 +1995,88 @@ class KTDocumentWorkflowAction extends KTDocumentAction {
         return $oTemplate->render($aTemplateData);
     }
 
+    public function do_ajax()
+    {
+		$this->oPage->setBreadcrumbDetails(_kt('workflow'));
+        $oTemplate = $this->oValidator->validateTemplate('ktcore/workflow/blocks/documentWorkflowBlocks');
+        $oDocument = $this->oValidator->validateDocument($_REQUEST['fDocumentId']);
+
+        $oWorkflow = KTWorkflowUtil::getWorkflowForDocument($oDocument);
+        $oWorkflowState = KTWorkflowUtil::getWorkflowStateForDocument($oDocument);
+
+        $oUser =& User::get($_SESSION['userID']);
+
+        // If the document is checked out - set transitions and workflows to empty and set checkedout to true
+        $bIsCheckedOut = $this->oDocument->getIsCheckedOut();
+        if ($bIsCheckedOut) {
+            $aTransitions = array();
+            $aWorkflows = array();
+            $transition_fields = array();
+            $bHasPerm = FALSE;
+        } else {
+            $aTransitions = KTWorkflowUtil::getTransitionsForDocumentUser($oDocument, $oUser);
+            $aWorkflows = KTWorkflow::getList('start_state_id IS NOT NULL AND enabled = 1 ');
+            $bHasPerm = false;
+            if (KTPermissionUtil::userHasPermissionOnItem($oUser, 'ktcore.permissions.workflow', $oDocument)) {
+                $bHasPerm = true;
+            }
+            $fieldErrors = null;
+            $transition_fields = array();
+            if ($aTransitions) {
+                $aVocab = array();
+                foreach ($aTransitions as $oTransition) {
+                	if (is_null($oTransition) || PEAR::isError($oTransition)) {
+                		continue;
+                	}
+
+                    $aVocab[$oTransition->getId()] = $oTransition->showDescription();
+                }
+                $fieldOptions = array('vocab' => $aVocab);
+                $transition_fields[] = new KTLookupWidget(_kt('Transition'), _kt(''), 'fTransitionId', null, $this->oPage, false, null, $fieldErrors, $fieldOptions);
+                $transition_fields[] = new KTTextWidget(
+                    _kt('Comment'), _kt(''),
+                    'fComments', '',
+                    $this->oPage, false, null, null,
+                    array('cols' => 80, 'rows' => 4));
+            }
+        }
+
+        // Add an electronic signature
+    	global $default;
+    	if ($default->enableESignatures) {
+    	    $sUrl = KTPluginUtil::getPluginPath('electronic.signatures.plugin', true);
+    	    $heading = _kt('You are attempting to modify the document workflow');
+    	    $submit['type'] = 'button';
+    	    $submit['onclick'] = "javascript: showSignatureForm('{$sUrl}', '{$heading}', 'ktcore.transactions.modify_workflow', 'document', 'start_workflow_form', 'submit', {$this->oDocument->iId});";
+
+    	    $heading2 = _kt('You are attempting to transition the document workflow');
+    	    $submit2['onclick'] = "javascript: showSignatureForm('{$sUrl}', '{$heading2}', 'ktcore.transactions.transition_workflow', 'document', 'transition_wf_form', 'submit', {$this->oDocument->iId});";
+    	} else {
+    	    $submit['type'] = 'submit';
+    	    $submit['onclick'] = '';
+    	    $submit2['onclick'] = '';
+    	}
+
+        $aTemplateData = array(
+            'oDocument' => $oDocument,
+            'oWorkflow' => $oWorkflow,
+            'oState' => $oWorkflowState,
+            'aTransitions' => $aTransitions,
+            'aWorkflows' => $aWorkflows,
+            'transition_fields' => $transition_fields,
+            'bHasPerm' => $bHasPerm,
+            'bIsCheckedOut' => $bIsCheckedOut,
+            'submit' => $submit,
+            'submit2' => $submit2
+        );
+
+        echo $oTemplate->render($aTemplateData);
+    	exit(0);
+    }
+
     function do_startWorkflow() {
+    	$method = KTUtil::arrayGet($_REQUEST, 'method');
+    	if($method == 'ajax') return $this->do_ajax_startWorkflow();
         $oDocument =& $this->oValidator->validateDocument($_REQUEST['fDocumentId']);
         if (!empty($_REQUEST['fWorkflowId'])) {
             $oWorkflow =& $this->oValidator->validateWorkflow($_REQUEST['fWorkflowId']);
@@ -1984,6 +2090,23 @@ class KTDocumentWorkflowAction extends KTDocumentAction {
         }
 
         $this->successRedirectToMain(_kt('Workflow started'), array('fDocumentId' => $oDocument->getId()));
+        exit(0);
+    }
+
+	function do_ajax_startWorkflow() {
+        $oDocument =& $this->oValidator->validateDocument($_REQUEST['fDocumentId']);
+        if (!empty($_REQUEST['fWorkflowId'])) {
+            $oWorkflow =& $this->oValidator->validateWorkflow($_REQUEST['fWorkflowId']);
+        } else {
+            $oWorkflow = null;
+        }
+
+        $res = KTWorkflowUtil::startWorkflowOnDocument($oWorkflow, $oDocument);
+        if (PEAR::isError($res)) {
+            $this->errorRedirectToMain($res->message, sprintf('fDocumentId=%s',$oDocument->getId()));
+        }
+
+		echo "Workflow Started";
         exit(0);
     }
 
@@ -2122,6 +2245,9 @@ class KTOwnershipChangeAction extends KTDocumentAction {
     var $sName = 'ktcore.actions.document.ownershipchange';
     var $_sShowPermission = 'ktcore.permissions.security';
 
+    var $sIconClass = 'ownership';
+    var $sParentBtn = 'more';
+
     function getDisplayName() {
         return _kt('Change owner');
     }
@@ -2203,4 +2329,90 @@ class KTOwnershipChangeAction extends KTDocumentAction {
     }
 
 }
+
+class KTDocumentPageUrlAction extends KTDocumentAction {
+
+    var $sName = 'ktcore.actions.document.pageurl';
+	var $showIfWrite = true;
+	var $showIfRead = true;
+	var $btnOrder = 1;
+	var $sBtnPosition = 'links';
+	var $sIconClass = 'page-url';
+
+    function getDisplayName() {
+        return _kt('This page URL');
+    }
+
+    function getURL() {
+        return '#';
+    }
+
+    function getOnClick(){
+        $onclick = 'javascript: kt.app.docdetails.showPageUrl()';
+        return $onclick;
+    }
+
+    function do_main() {
+    }
+
+}
+
+class KTDocumentDownloadUrlAction extends KTDocumentAction {
+
+    var $sName = 'ktcore.actions.document.downloadurl';
+	var $showIfWrite = true;
+	var $showIfRead = true;
+	var $btnOrder = 2;
+	var $sBtnPosition = 'links';
+	var $sIconClass = 'download-url';
+
+    function getDisplayName() {
+        return _kt('Download URL');
+    }
+
+    function getURL() {
+        return '#';
+    }
+
+    function getOnClick(){
+        $onclick = 'javascript: kt.app.docdetails.getDownloadUrl()';
+        return $onclick;
+    }
+
+    function do_main() {
+    }
+
+}
+
+class KTDocumentPreviewUrlAction extends KTDocumentAction {
+
+    var $sName = 'ktcore.actions.document.previewurl';
+	var $showIfWrite = true;
+	var $showIfRead = true;
+	var $btnOrder = 3;
+	var $sBtnPosition = 'links';
+	var $sIconClass = 'preview-url';
+
+    function getDisplayName() {
+        return _kt('Preview URL');
+    }
+
+    function getInfo() {
+        return null;
+    }
+
+    function getURL() {
+        return '#';
+    }
+
+    function getOnClick(){
+        $onclick = '';
+        return $onclick;
+    }
+
+    function do_main() {
+    }
+
+}
+
 ?>

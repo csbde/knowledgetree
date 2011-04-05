@@ -396,9 +396,101 @@ class SimpleFieldsetDisplay extends KTFieldsetDisplay {
 
         // we need to extract the fields.
         $fields =& $this->fieldset->getFields();
+		 	
+        //$result = array('fieldset' => $fieldset->getName(),
+        	//'description' => $fieldset->getDescription());
+
+		 $fieldsresult = array();
+   
+		 foreach ($fields as $field)   
+		 {
+		 	//$GLOBALS['default']->log->debug('SimpleFieldsetDisplay field '.print_r($field, true));
+		 	
+                $value = '';
+
+				$fieldvalue = DocumentFieldLink::getByDocumentAndField($document, $field);
+                if (!is_null($fieldvalue) && (!PEAR::isError($fieldvalue)))
+                {
+                	$value = $fieldvalue->getValue();
+                }
+
+                // Old
+                //$controltype = 'string';
+                // Replace with true
+                $controltype = strtolower($field->getDataType());
+                
+                //$GLOBALS['default']->log->debug("SimpleFieldsetDisplay field controltype $controltype");
+
+                if ($field->getHasLookup())
+                {
+                	$controltype = 'lookup';
+                    if ($field->getHasLookupTree())
+                    {
+                    	$controltype = 'tree';
+                    }
+                }
+
+                // Options - Required for Custom Properties
+                $options = array();
+
+                if ($field->getInetLookupType() == 'multiwithcheckboxes' || $field->getInetLookupType() == 'multiwithlist') {
+                    $controltype = 'multiselect';
+                }
+                
+                //$GLOBALS['default']->log->debug("SimpleFieldsetDisplay field controltype2 $controltype");
+
+                switch ($controltype)
+                {
+                	case 'lookup':
+                		$selection = KTAPI::get_metadata_lookup($field->getId());
+                		break;
+                	case 'tree':
+                		$selection = KTAPI::get_metadata_tree($field->getId());
+                		
+                		//remove the outer elements of the array as we don't need them!
+                		$selection = $selection[-1]['fields'][0];
+						
+						//we need to get rid of values that we do not need else the JSON object we create will be incorrect!
+						SimpleFieldsetDisplay::recursive_unset($selection, array('treeid', 'parentid', 'fieldid'));
+						
+						//now convert to JSON
+						$selection = json_encode($selection);						
+                		break;
+                    case 'large text':
+                        $options = array(
+                                'ishtml' => $field->getIsHTML(),
+                                'maxlength' => $field->getMaxLength()
+                            );
+                        $selection= array();
+                        break;
+                    case 'multiselect':
+                        $selection = KTAPI::get_metadata_lookup($field->getId());
+                        $options = array(
+                                'type' => $field->getInetLookupType()
+                            );
+                        break;
+                	default:
+                		$selection= array();
+                }
 
 
-        // we now grab that subset of items which fit in here.
+                $fieldsresult[] = array(
+                	'fieldid' => $field->getId(),
+                	'name' => $field->getName(),
+                	'required' => $field->getIsMandatory(),
+                    'value' => $value == '' ? 'no value' : $value,
+                    'blankvalue' => $value=='' ? '1' : '0',
+                    'description' => $field->getDescription(),
+                    'control_type' => $controltype,
+                    'selection' => $selection,
+                    'options' => $options,
+                );
+
+            }
+            //$GLOBALS['default']->log->debug('SimpleFieldsetDisplay fieldsresult '.print_r($fieldsresult, true));
+            $fieldset_values = $fieldsresult;
+
+        /*// we now grab that subset of items which fit in here.
         // FIXME link value -> lookup where appropriate.
         // FIXME probably need to be more careful about the _type_ of field here.
         $fieldset_values = array();
@@ -413,7 +505,7 @@ class SimpleFieldsetDisplay extends KTFieldsetDisplay {
 
         if($use_sort){
             usort($fieldset_values, 'compareFieldSetField');
-        }
+        }*/
 
 
         $oTemplating =& KTTemplating::getSingleton();
@@ -428,6 +520,25 @@ class SimpleFieldsetDisplay extends KTFieldsetDisplay {
         );
         return $oTemplate->render($aTemplateData);
     }
+    
+    /**
+     * Recursively unsets elements from a nested array
+     *
+     * @param array $array Array to unset from
+     * @param array $unwanted_keys Array of keys to remove
+     */
+    function recursive_unset(&$array, $unwanted_keys) {
+    	foreach($unwanted_keys as $unwanted_key)
+    	{
+	    	unset($array[$unwanted_key]);
+    	}
+    	
+	    foreach ($array as &$value) {
+	        if (is_array($value)) {
+	            SimpleFieldsetDisplay::recursive_unset($value, $unwanted_keys);
+	        }
+	    }
+	}
 
     function renderComparison($aDocumentData, $aComparisonData) {
         // we do a fair bit of fetching, etc. in here.

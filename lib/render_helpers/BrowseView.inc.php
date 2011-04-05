@@ -626,7 +626,7 @@ class BrowseView {
             }
 
             if ($check || in_array($item['has_rendition'], array(2, 3, 6, 7))) {
-                $item['thumbnail'] = '<img src="plugins/thumbnails/thumbnail_view.php?documentId=' . $item['id'] . '" onClick="document.location.replace(\'view.php?fDocumentId=' . $item['id'] . '#preview\');">';
+                $item['thumbnail'] = '<span class="popover"><span class="popoverTip"></span><img src="plugins/thumbnails/thumbnail_view.php?documentId=' . $item['id'] . '" onClick="document.location.replace(\'view.php?fDocumentId=' . $item['id'] . '#preview\');"></span>';
                 $item['thumbnailclass'] = 'preview';
             }
         }
@@ -635,8 +635,7 @@ class BrowseView {
         $item['allowdoczohoedit'] = '';
 
         if ($this->zohoEnabled && $hasWrite) {
-            if (Zoho::resolve_type($oDocument))
-            {
+            if (Zoho::resolve_type($oDocument)) {
                 if ($item['actions.checkout'] != $ns) {
                     $item['allowdoczohoedit'] = '<li class="action_zoho_document"><a href="javascript:;" onclick="zohoEdit(\'' . $item['id'] . '\')">Edit Document Online</a></li>';
                 }
