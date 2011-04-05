@@ -250,9 +250,6 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
         }
         $this->oPage->setContentClass($contentClass);
 
-        $templating =& KTTemplating::getSingleton();
-        $template = $templating->loadTemplate('ktcore/document/view');
-
         if (KTPluginUtil::pluginIsActive('instaview.processor.plugin')) {
             $path = KTPluginUtil::getPluginPath ('instaview.processor.plugin');
             try {
@@ -277,6 +274,8 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
 
         $tagPluginPath = KTPluginUtil::getPluginPath('ktcore.tagcloud.plugin', true);
 
+        $templating =& KTTemplating::getSingleton();
+        $template = $templating->loadTemplate('ktcore/document/view');
         $templateData = array(
             'doc_data' => array(
                 'owner' => $ownerUser[0]['name'],
