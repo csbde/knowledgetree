@@ -2,11 +2,12 @@
 <link rel="stylesheet" href="/thirdpartyjs/jquery/plugins/tokenizer/styles/token-input-facebook.css" type="text/css"/>
 <script type="text/javascript" src="/thirdpartyjs/jquery/plugins/editableset/jquery.editable-set.js"> </script>
 <script type="text/javascript" src="/thirdpartyjs/jquery/plugins/editableset/jquery.editable-set.extend.js"> </script>
-<script type="text/javascript" src="/resources/js/newui/kt_documentPropertyEditor.js"> </script>
+<script type="text/javascript" src="/resources/js/document/kt.app.metadata.js"> </script>
 <script type="text/javascript" src="/thirdpartyjs/jquery/plugins/tokenizer/src/jquery.tokeninput.js"></script>
 <script type="text/javascript" src="/resources/js/newui/kt.app.metadata.js"></script>
-<script type="text/javascript" src="/resources/js/newui/documents/viewlets/kt.ui.activityFeed.js"></script>
+<script type="text/javascript" src="/resources/js/document/kt.app.activityFeed.js"></script>
 <script type="text/javascript" src="/resources/js/newui/documents/kt.app.docdetails.js"></script>
+<script type="text/javascript" src="/thirdpartyjs/hashtable.js"></script>
 
 <!-- FILE: ktcore/document/view.smarty -->
 <table class="main-content">
@@ -198,6 +199,19 @@
 </table>
 
 {literal}
+<script type="text/javascript">
+    jQuery(document).ready(function() {
+    	
+    	window.onbeforeunload = function()
+    	{
+    		return kt.ui.metadata.onbeforeunload();
+    	}
+    	
+    	//only allow to be editable if document not immutable!
+        kt.ui.metadata.setup({/literal}{$document->getImmutable()}{literal} == 0);
+    });
+</script>
+
 <script type="text/javascript">
     jQuery("#tagcloud").tokenInput("{/literal}{$tagFilterScript}{literal}", {
         // Alter the minChars value to determine how much the user must type before a search is initiated

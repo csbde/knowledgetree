@@ -122,7 +122,8 @@ function buildTree(fieldid, data, html)
 
 jQuery.editableSet.addInputType('datepicker', {
 	 /* create input element */
-	element : function(object, attrs) {		
+	element : function(object, attrs, self) {
+		//console.dir(opts);
 		var val = '';	
 		if (attrs['data-value-id'] != null)
 		{
@@ -139,7 +140,6 @@ jQuery.editableSet.addInputType('datepicker', {
 	    	format: 'Y-m-d', //YYYY-MMM-DD
 	        width: 100,
 	        id: attrs['data-name'],
-	        //cls: 'ul_meta_fullField ul_meta_field_[id] date',
 	        enableKeyEvents: true,
 	        value: val,
 	        listeners: {
@@ -157,18 +157,36 @@ jQuery.editableSet.addInputType('datepicker', {
 	        		} catch (err) {
 	        		}
 				},
-				'valid': function(dateField) {
-					if (dateField.getValue() == 0) {
-					} else {
+				/*'valid': function(dateField) {
+					console.log('valid date is '+dateField.getValue());
+					if (!dateField.getValue()) 
+					{
+						console.log('false valid date');
+					} 
+					else 
+					{
 					}
-				},
+				},*/
 				'invalid': function(dateField) {
-				},
+					//console.log('invalid date is '+dateField.getValue());
+					
+					// beforeLoad callback
+					//jQuery.isFunction(opts.onInvalid) && opts.onInvalid.call(self);
+					//self.invalid.push('datePicker');
+					self.invalid.put(attrs['data-name'], attrs['data-name']);
+					//dateField.setValue('');
+					//console.dir(self.invalid.values());
+				}/*,
 				'change': function(dateField, date) {
-					if (dateField.getValue() == 0) {
-					} else {
+					console.log('change date is '+dateField.getValue());
+					if (!dateField.getValue()) 
+					{
+						console.log('false change date');
+					} 
+					else 
+					{
 					}
-				}
+				}*/
 	    	}
    		});
    	
@@ -204,9 +222,33 @@ jQuery.editableSet.addInputType('htmleditor', {
 			enableColors: false,
 			enableAlignments: false,
 			enableSourceEdit: false,
-			value:	val
-			/*listeners: {
-	            'sync': function(editor, text){
+			value:	val,
+			listeners: {
+				/*'click': function(){
+					console.log('I be clicked');
+				}*/
+				/*'beforeSync': function(editor, text){
+					var trimmed = text.replace(/(<br>)|&nbsp;/g, '').trim();
+	            	console.log('beforeSync '+trimmed);
+	            	var maxSize = parseInt(attrs['data-maxsize']);
+	            	if (trimmed.length >= maxSize)
+	            	{
+	            		return false;
+	            	}
+				},*/
+	            /*'sync': function(editor, text){
+	            	console.log('sync '+text);
+	            	
+	            	var trimmed = text.replace(/(<br>)|&nbsp;/g, '').trim();
+	            	console.log('sync '+trimmed);
+	            	var maxSize = parseInt(attrs['data-maxsize']);
+	            	if (trimmed.length >= maxSize)
+	            	{
+	            		console.log('max reached');
+	            		return false;
+	            	}
+	            	
+	            	
 			    	//kt.app.upload.getMetaItem(jQuery('#ul_meta_field_htmlEditor_[id]')).setMetaData('[id]', text);
 	
 					//ensure that not blank text
@@ -222,22 +264,27 @@ jQuery.editableSet.addInputType('htmleditor', {
 							kt.app.upload.getMetaItem(jQuery('#ul_meta_field_htmlEditor_[id]')).registerRequiredFieldDone('ul_meta_field_[id]');
 						}
 	    			}
-				}
-	    	}*/
+				}*/
+	    	}
 	    });
 	   	
 	   	jQuery(object).replaceWith(jQuery('<span id="ph_'+attrs['data-name']+'"/>'));
 	   	
 	   	htmlEd.render('ph_'+attrs['data-name']);
 	   	
-	   	if (attrs['data-maxsize'] != null)
+	   	/*if (attrs['data-maxsize'] != null)
 		{
 			var maxSize = '';
 			try
 			{
+				console.log('htmleditor trying for max size');
 				maxSize = parseInt(attrs['data-maxsize']);
 				
+				console.log('maxSize '+maxSize);
+				
 				newObject.data['maxsize'] = parseInt(maxSize); //max character limit
+				
+				console.dir(newObject);
 				
 				newObject.unbind('keypress.restrict').bind('keypress.restrict', function(e){
 					restrict(newObject, e);
@@ -245,6 +292,6 @@ jQuery.editableSet.addInputType('htmleditor', {
 			}
 			catch(er)
 			{}
-		}
+		}*/
 	}
 });
