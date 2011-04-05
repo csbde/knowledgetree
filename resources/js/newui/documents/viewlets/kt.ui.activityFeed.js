@@ -7,33 +7,7 @@ kt.ui.activityFeed = new function(){
 			jQuery('.'+classToToggle).toggleClass('hidden');	
 		});
 		
-		//how many items are visible
-		var activityFeedItemsShown = jQuery('.activityfeed.item:not(.hidden)');
-		
-		//console.log(activityFeedItemsShown.length);
-		
-		var sliderIsVisible = jQuery('.activityfeed.items.hidden').is(":visible");
-		
-		jQuery('.activityfeed.items.hidden').children().unwrap();
-		
-		if (activityFeedItemsShown.length > maxItemsToShow)
-		{			
-			activityFeedItemsShown.slice(maxItemsToShow).wrapAll('<div class="activityfeed items hidden">');
-			
-			if (!sliderIsVisible)
-			{
-				jQuery('.activityfeed.items.hidden').slideUp();
-				jQuery('.activityfeed-more-text').html('more...');
-			}
-			
-			//kt.ui.activityFeed.toggleMore();
-			//jQuery('.activityfeed-more').show();
-		}
-		else
-		{
-			kt.ui.activityFeed.toggleMore();
-			//jQuery('.activityfeed-more').hide();	
-		}		
+		this.rearrangeVisibleItems(maxItemsToShow);		
 	}
 	
 	this.toggleMore = function()
@@ -55,23 +29,14 @@ kt.ui.activityFeed = new function(){
 		});
 	}
 	
-	this.postComment = function(documentID, comment)
+	this.postComment = function(documentID, comment, maxItemsToShow)
 	{		
 		var savingCommentMessage = '<img src="thirdpartyjs/extjs/resources/images/default/tree/loading.gif"> Saving Comment';
         var commentSavedMessage = 'Comment Saved. <a href="javascript:jQuery("#commentsarea").show();jQuery("#commentssaveajax").hide();">Add New Comment';
         
         var newCommentAdded = false;
         
-        //TODO: user enters ''
-        /*if (comment == '') {
-            alert('{/literal}{i18n}Please enter a comment{/i18n}{literal}');
-            jQuery("#commentsbox").focus();
-        } else {*/
-        if (comment != '') {
-            /*if (newCommentAdded) {
-                jQuery("div.activityfeed div:first").removeClass('newcomment').addClass('comment');
-            }*/
-            
+        if (comment != '' && comment.toLowerCase() != 'got something to say?') {            
             newCommentAdded = true;
             jQuery("#commentsarea").hide();
             jQuery("#commentssaveajax").html(savingCommentMessage).show();
@@ -84,12 +49,57 @@ kt.ui.activityFeed = new function(){
                     jQuery("#commentsarea").show();
                     jQuery("#commentssaveajax").hide();
                     
-                    jQuery("div.activityfeed.new-comment").prepend(data);
-                    jQuery("div.activityfeed.new-comment").slideDown('slow').animate({ backgroundColor: "#f6f6f6" }, 'fast');
+                    jQuery("div.activityfeed.new-comment").after(data);
                     
-                    jQuery("div.activityfeed.new-comment").removeClass('newcomment').addClass('item').addClass('comment');
+                    jQuery("div.activityfeed.item.new.comment").slideDown('slow');
+                    
+                    jQuery("div.activityfeed.item.new.comment").removeClass('new').doTimeout(2000, function(){
+                    	jQuery(this).css('background-color','white');
+                    });
+                    
+                    this.rearrangeVisibleItems(maxItemsToShow);
                 }
             );
         }
+	}
+	
+	this.rearrangeVisibleItems = function(maxItemsToShow)
+	{
+		//how many items are visible?
+		var activityFeedItemsShown = jQuery('.activityfeed.item:not(.hidden)');
+		
+		var sliderIsVisible = jQuery('.activityfeed.items.hidden').is(":visible");
+		var sliderTextIsVisible = jQuery('.activityfeed-more-text').is(":visible");
+		
+		jQuery('.activityfeed.items.hidden').children().unwrap();
+		
+		if (activityFeedItemsShown.length == 0)
+		{
+			jQuery('.activityfeed-more-text').hide();
+		}
+		else if (activityFeedItemsShown.length > maxItemsToShow)
+		{			
+			activityFeedItemsShown.slice(maxItemsToShow).wrapAll('<div class="activityfeed items hidden">');
+			
+			if (!sliderTextIsVisible)
+			{
+				jQuery('.activityfeed-more-text').show();
+			}
+			
+			if (!sliderIsVisible)
+			{
+				jQuery('.activityfeed.items.hidden').slideUp();
+				jQuery('.activityfeed-more-text').html('more...');
+			}
+		}
+		else
+		{
+			if (!sliderTextIsVisible)
+			{
+				jQuery('.activityfeed-more-text').show();
+			}
+			
+			kt.ui.activityFeed.toggleMore();	
+		}
 	}
 }

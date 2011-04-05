@@ -15,7 +15,8 @@
         <table border="0" width="745" class="doc_view">
             <tr>
                 <td colspan="2" id="title_row">
-
+				{* Display Actions Block *}
+				{$documentBlocks->getDocBlock()}
 				<div class="documentTitle" rel={$rootUrl}/presentation/lookAndFeel/knowledgeTree/widgets/updateMetadata.php?func=title&documentID={$document->getId()}>
 				<span data-name="documentTitle" data-type='text' data-value-id="value_title" data-class="required"></span>
 					<span id="value_title">{i18n}{$document->getName()|sanitize}{/i18n}</span>
@@ -23,8 +24,6 @@
 					<span title="Click to edit" class="editable-control edit">&nbsp;</span>
 					
 				</div>
-				{* Display Actions Block *}
-				{$documentBlocks->getDocBlock()}
 				<div class="documentFilename" rel={$rootUrl}/presentation/lookAndFeel/knowledgeTree/widgets/updateMetadata.php?func=filename&documentID={$document->getId()}>
 				<span data-name="documentFilename" data-type='text' data-value-id="value_filename" data-class="required"></span>
 					<span id="value_filename"><p>{$document->getFileName()}</p></span>
@@ -45,9 +44,7 @@
 						{if $document->getIsCheckedOut()}
 							<span class="doc_checkedout"> <strong>Checked-out By:</strong> {$sCheckoutUser}</span>
 						{/if}
-
-					<br><br/>
-
+					<br><br>
 					<div class="tags">
 						<h3>Tag Cloud<span class="editable-control none">&nbsp;</span></h3>
                         <br/>
@@ -56,8 +53,6 @@
                         <input type="button" value="Save Tags" onclick="kt.app.metadata.saveTags({$document_id});" />
                     </div>
 					<br/>
-					<br/>
-
 					<div class="documentType" rel="{$rootUrl}/presentation/lookAndFeel/knowledgeTree/widgets/updateMetadata.php?func=doctype&documentID={$document->getId()}">
 					<table class="metadatatable" cellspacing="0" cellpadding="5">
 					<tr class="metadatarow even first">

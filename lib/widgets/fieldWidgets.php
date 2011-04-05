@@ -123,15 +123,173 @@ class KTTreeWidget extends KTBaseWidget { var $sTemplate = 'kt3/fields/tree'; }
 // TODO KTDateWidget
 // TODO KTDateRangeWidget
 
+// TODO Make functions non-static and probably separate into separate selector and text search
+//      classes.  Make options and selected options member variables.
+
 // Expects $aOptions['action'] => dispatcher action to load from
 //         $aOptions['assigned'] => currently assigned values
 //         $aOptions['bind_add'] (opt) => name of js method to call on add
 //         $aOptions['bind_remove'] (opt) => name of js method to call on remove
 class KTJSONLookupWidget extends KTBaseWidget {
 
-	var $sTemplate = "kt3/fields/jsonlookup";
+    var $sTemplate = 'kt3/fields/jsonlookup';
 
-	public function setTemplate($template) { $this->sTemplate = $template; }
+    public function setTemplate($template) { $this->sTemplate = $template; }
+
+    public static function getGroupsAndRoles()
+    {
+        $options = array_merge(self::getGroups(), self::getRoles());
+        return $options;
+    }
+
+    private static function getGroups()
+    {
+        $options = array();
+
+        $groups = GroupUtil::listGroups();
+        // TODO checking of assigned groups and roles vs available, set active = false for assigned.
+        foreach ($groups as $group) {
+            $options["group_{$group->getId()}"]['name'] = $group->getName();
+            $options["group_{$group->getId()}"]['active'] = 1;
+        }
+
+        return $options;
+    }
+
+    public static function getRoles()
+    {
+        $options = array();
+
+        $roles = Role::getList('id > 0');
+        foreach ($roles as $role) {
+            $options["role_{$role->getId()}"]['name'] = $role->getName();
+            $options["role_{$role->getId()}"]['active'] = 1;
+        }
+
+        return $options;
+    }
+
+    public static function getAssignedGroupsAndRoles(&$options, $members = array())
+    {
+        $assigned = array_merge(
+                            self::getAssignedGroups($options, $members = array()),
+                            self::getAssignedRoles($options, $members = array())
+                    );
+        return $assigned;
+    }
+
+    // FIXME Eliminate the need for the return of $options by reference (see comment about member vars.)
+    /**
+     * @param array $options The options to check for assignment.
+     * @param array $members The included members.
+     */
+    private static function getAssignedGroups(&$options, $members = array())
+    {
+        $assigned['groups_roles'] = self::getAssignedType('group', $options, $members);
+        $assigned = array(implode(',', $assigned['groups_roles']), null);
+
+        return $assigned;
+    }
+
+    public static function getAssignedRoles(&$options, $members = array())
+    {
+        $assigned['groups_roles'] = self::getAssignedType('role', $options, $members);
+        $assigned = array(implode(',', $assigned['groups_roles']), null);
+
+        return $assigned;
+    }
+
+    /**
+     * Compares available options and current membership.
+     * Returns a listing of the matched options as well as an indicator of whether an option
+     * should be active (selectable) within a list (list can be search results or selector options.)
+     *
+     * @param string $type The option type.
+     * @param array $options The options to check for assignment.
+     * @param array $members The included members.
+     */
+    private static function getAssignedType($type, &$options, $members = array())
+    {
+        // Process list of existing groups and roles into a format which can be easily parsed in the template.
+        // Additionally set disabled (inactive) for any pre-selected select list option.
+        $assigned = array();  // FIXME will not work for users, d'uh.
+        foreach ($members as $key => $member) {
+            // TODO check type before explode?
+            $data = explode('_', $key);
+            if ($data[0] == $type) {
+                $assigned[] = '{id: "' . $key . '", name: "' . $member->getName() . '"}'; // FIXME will not work for users, d'uh.
+                $options[$key]['active'] = 0;
+            }
+        }
+
+        return $assigned;
+    }
+
+    public static function getJsonGroupSelectorWidget($label, $type, $parts, $members, $options)
+    {
+        $groups = self::getGroups();
+        $assigned = self::getAssignedGroups($groups, $members);
+        $options['groups_roles'] = $groups;
+
+        return self::getJsonWidget($label, $type, $parts, $assigned, $options);
+    }
+
+    public static function getJsonUserSearchWidget($label, $type, $parts, $members)
+    {
+        $assigned = self::getAssignedUsers($members);
+        $options = array('users' => $groups);
+
+        return self::getJsonWidget($label, $type, $parts, $assigned, $options);
+    }
+
+    private static function getAssignedUsers($members = array())
+    {
+        // Process list of existing users into a format which can be easily parsed in the template.
+        $assigned['users'] = array();
+        foreach ($members as $key => $member) {
+            $data = explode('_', $key);
+            if ($data[0] == 'user') {
+                $name = $member->getName();
+                if (empty($name)) {
+                    $name = $member->getUserName();
+                }
+                $assigned['users'][] = '{id: "' . $data[1] . '", name: "' . $name . '"}';
+            }
+        }
+
+        $assigned = array(null, implode(',', $assigned['users']));
+
+        return $assigned;
+    }
+
+    /**
+     * Build the final widget with the supplied values.
+     */
+    public static function getJsonWidget($label, $type, $parts, $assigned, $options)
+    {
+        global $main;
+
+        $baseOptions = array(
+                            'assigned' => $assigned,
+                            'type' => $type,
+                            'parts' => $parts
+        );
+        $options = array_merge($baseOptions, $options);
+
+        $jsonWidget = new KTJSONLookupWidget(
+                                            _kt($label['header']),
+                                            _kt($label['text']),
+                                            'members',
+                                            '',
+                                            $main,
+                                            false,
+                                            null,
+                                            null,
+                                            $options
+        );
+
+        return $jsonWidget;
+    }
 
 }
 

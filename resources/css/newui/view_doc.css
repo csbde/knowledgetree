@@ -76,18 +76,37 @@ div.viewletworkflow {
 	background: -moz-linear-gradient(top,  #fff,  #ddd) !important; /* for firefox 3.6+ */
 	height: 25px;
 	position: relative;
+	color: inherit;
 }
+#content .action_buttons .action:hover {
+	border: 1px solid #2F6594;
+	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#609bd1', endColorstr='#2f6694') !important; /* for IE */
+	background: -webkit-gradient(linear, left top, left bottom, from(#609bd1), to(#2f6694)) !important; /* for webkit browsers */
+	background: -moz-linear-gradient(top,  #609bd1,  #2f6694) !important; /* for firefox 3.6+ */
+	color: white;
+}
+#content .action_buttons .action a:hover {
+	color: inherit;
 
+}
 .action_buttons.above {
 	display: block;
 	height: 30px;
 	width: 375px;
 }
-.button {
+#content .button {
 	padding: 2px 5px 2px 24px;
 	font-size: 11px;
 	height: 25px;
 	display: inline-block;
+	font-weight: bold;
+	color: #2f6594;
+	text-shadow: 0px 1px 0px white;
+}
+#content .button:hover {
+	text-decoration: none;
+	text-shadow: 0px -1px 0px #2F6594;
+	color: white!important;
 }
 .edit-online {
 	padding-right: 10px;
@@ -102,9 +121,9 @@ div.viewletworkflow {
 	cursor: pointer;
 }
 .split.selected {
-	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#dddddd', endColorstr='#ffffff') !important; /* for IE */
-	background: -webkit-gradient(linear, left top, left bottom, from(#ddd), to(#fff)) !important; /* for webkit browsers */
-	background: -moz-linear-gradient(top,  #ddd,  #fff) !important; /* for firefox 3.6+ */
+	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#2f6694', endColorstr='#609bd1') !important; /* for IE */
+	background: -webkit-gradient(linear, left top, left bottom, from(#2f6694), to(#609bd1)) !important; /* for webkit browsers */
+	background: -moz-linear-gradient(top,  #2f6694,  #609bd1) !important; /* for firefox 3.6+ */
 	border-bottom: 1px solid #FFF;
 }
 #content ul.splitmenu {
@@ -133,7 +152,7 @@ div.viewletworkflow {
 .splitmenu li:last-child {
 	border-bottom: 0px;
 }
-button {
+.button {
 	font-family: sans-serif !important;
 }
 .buttons a,
@@ -317,7 +336,7 @@ button {
 }
 .documentTitle input[type=text] {
 	font-size: 100%;
-	width: 85%;
+	width: 84%;
 }
 
 .buttonTabContentContainer table.kt_collection {
