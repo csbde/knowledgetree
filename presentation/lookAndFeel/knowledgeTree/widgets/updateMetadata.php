@@ -5,7 +5,7 @@ require_once(KT_DIR . '/ktapi/ktapi.inc.php');
 require_once(KT_LIB_DIR . '/widgets/fieldsetDisplay.inc.php');
 require_once(KT_LIB_DIR . '/triggers/triggerregistry.inc.php');
 require_once(KT_LIB_DIR . '/validation/validatorfactory.inc.php');
-//require_once(KT_PLUGIN_DIR . '/ktcore/KTValidators.php');
+require_once(KT_PLUGIN_DIR . '/ktcore/document/edit.php');
 
 	
 	// HTTP headers for no cache etc
@@ -685,6 +685,13 @@ require_once(KT_LIB_DIR . '/validation/validatorfactory.inc.php');
 					
 					if($iCurrentID === $iNewID)
 					{
+						// For html fields we want to do some stripping.
+						if ($oNewField->getIsHTML()) 
+						{
+							$sValue = KTDocumentEditAction::prepareHTMLFieldValue($sValue);
+							//$GLOBALS['default']->log->debug("mergeMetadata html field value $sValue");
+						}
+						
 						//use this value as the 'packed' value
 						$sNewValue = $sValue;
 					}
