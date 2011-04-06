@@ -32,13 +32,11 @@
 	
 		var save = function( self ) {
 			self.editing = false;
-			//console.log('self.invalid '+self.invalid);
-			//console.dir(self.invalid);
-			if (!self.invalid.isEmpty())	//length > 0)	// === true)
-			{
-				//console.log('I AM INVALID');
-				
-				$.isFunction( opts.onInvalid ) && opts.onInvalid.call( self, self.invalid.values() );
+			
+			//have any fields been marked as invalid?
+			if (!self.invalid.isEmpty())
+			{				
+				$.isFunction( opts.onInvalid ) && opts.onInvalid.call( self, self.invalid );
 				
 				return false;
 			}

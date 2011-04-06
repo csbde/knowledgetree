@@ -173,7 +173,7 @@ jQuery.editableSet.addInputType('datepicker', {
 					// beforeLoad callback
 					//jQuery.isFunction(opts.onInvalid) && opts.onInvalid.call(self);
 					//self.invalid.push('datePicker');
-					self.invalid.put(attrs['data-name'], attrs['data-name']);
+					self.invalid.put(attrs['data-name'], 'Invalid date entered');
 					//dateField.setValue('');
 					//console.dir(self.invalid.values());
 				}/*,
