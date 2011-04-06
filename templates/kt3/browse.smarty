@@ -27,10 +27,10 @@
 <!-- <link rel="stylesheet" type="text/css" href="{php}echo "{$GLOBALS['default']->rootUrl}/resources/css/newui/browseView.css?".rand();{/php}" />
 -->
 
-<table>
+<table style="border-spacing: 0px 0px;">
 
 <tr>
-	<td width="720" valign="top">
+	<td width="745" valign="top">
 		<div class="breadcrumbBtns">
 			{foreach item=aBtn from=$page->breadcrumbBtns name=btn}<a href="{$aBtn.url}" ><span class="{$aBtn.class}">{$aBtn.label}</span></a>
      		{/foreach}
@@ -50,7 +50,7 @@
 <div class="dropzone" id="datadrop">
 {/if}
 
-<div class=" itemContainer" style="width: 700px;">
+<div class=" itemContainer" style="width: 730px;">
 	{$folderContents}
 	{$bulkActionMenu}
 	<div style="width:100%; text-align: center">{$pagination}</div>

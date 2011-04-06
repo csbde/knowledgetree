@@ -25,9 +25,9 @@
 					<span title="Click to edit" class="editable-control edit">&nbsp;</span>
 					
 				</div>
-				<div class="documentFilename" rel={$rootUrl}/presentation/lookAndFeel/knowledgeTree/widgets/updateMetadata.php?func=filename&documentID={$document->getId()}>
 				{if $document->getIsCheckedOut()}<span class="status-indicator checkedout">{i18n}Checked Out{/i18n}</span>{/if}
                 {if $document->getImmutable()}<span class="status-indicator finalized">{i18n}Finalized{/i18n}</span>{/if}
+				<div class="documentFilename" rel={$rootUrl}/presentation/lookAndFeel/knowledgeTree/widgets/updateMetadata.php?func=filename&documentID={$document->getId()}>
 				<span data-name="documentFilename" data-type='text' data-value-id="value_filename" data-class="required"></span>
 					<span id="value_filename"><p>{$document->getFileName()}</p></span>
 					<span class="save-placeholder">&nbsp;</span>
@@ -42,13 +42,19 @@
                         <span class="doc_info" style="display: block;">
                         <table class="metadatatable">
                         	<tr>
-								<th style="width: 100px;">Version</th><td><a href="">{$document->getMajorVersionNumber()}.{$document->getMinorVersionNumber()}</a></td>
+								<th>Document ID:</th><td>{$document_id}</td>
+							</tr>
+                        	<tr>
+								<th style="width: 100px;">Version:</th><td><a href="">{$document->getMajorVersionNumber()}.{$document->getMinorVersionNumber()}</a></td>
 							</tr>
 							<tr>
-								<th>Last Modified by:</th><td><a href="">{$doc_data.lastModifier}</a> on <a href="">{$document->getLastModifiedDate()|date_format:"%B %e, %Y at %H:%M"}</a></td>
+								<th>Last Modified by:</th><td><a href="">{$doc_data.lastModifier}</a> on {$document->getLastModifiedDate()|date_format:"%B %e, %Y at %H:%M"}</td>
 							</tr>
 							<tr>
-								<th>Created by:</th><td><a href="">{$doc_data.creator}</a> on <a href="">{$document->getCreatedDateTime()|date_format:"%B %e, %Y at %H:%M"}</a></td>
+								<th>Created by:</th><td><a href="">{$doc_data.creator}</a> on {$document->getCreatedDateTime()|date_format:"%B %e, %Y at %H:%M"}</td>
+							</tr>
+							<tr>
+								<th>Owned by:</th><td><a href="">{$doc_data.owner}</a></td>
 							</tr>
 						{if $document->getIsCheckedOut()}
 							<tr>
@@ -56,7 +62,7 @@
 							</tr>
 						{/if}
 							<tr>
-							<th>File type:</th><td>{$fieldsetDisplayHelper->_sizeHelper($document->getSize())} document.</td>
+							<th>File type:</th><td>{$fieldsetDisplayHelper->_sizeHelper($document->getSize())} {$fieldsetDisplayHelper->_mimeHelper($document->getMimeTypeID())}.</td>
 							</tr>
 						</table>
 					<div class="tags">
