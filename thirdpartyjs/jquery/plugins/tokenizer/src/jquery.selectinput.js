@@ -39,6 +39,13 @@ $.SelectTokenList = function (input, src, settings) {
     //
     // Variables
     //
+    
+    // Input box position "enum"
+    var POSITION = {
+        BEFORE: 0,
+        AFTER: 1,
+        END: 2
+    };
 
     // TODO prevent adding of items already in list
     // Override the src input onchange event to add items to our input list

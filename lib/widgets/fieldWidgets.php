@@ -138,7 +138,7 @@ class KTJSONLookupWidget extends KTBaseWidget {
 
     public static function getGroupsAndRoles()
     {
-        $options = array_merge(self::getGroups(), self::getRoles());
+        $options = array('Groups' => self::getGroups(), 'Roles' => self::getRoles());
         return $options;
     }
 
@@ -174,11 +174,10 @@ class KTJSONLookupWidget extends KTBaseWidget {
 
     public static function getAssignedGroupsAndRoles(&$options, $members = array())
     {
-        $assigned = array_merge(
-                            self::getAssignedGroups($options, $members = array()),
-                            self::getAssignedRoles($options, $members = array())
-                    );
-        return $assigned;
+        $assignedGroups = self::getAssignedGroups($options, $members, true);
+        $assignedRoles = self::getAssignedRoles($options, $members, true);
+
+        return array(trim("{$assignedGroups[0]},{$assignedRoles[0]}", ','), null);
     }
 
     // FIXME Eliminate the need for the return of $options by reference (see comment about member vars.)
@@ -186,20 +185,18 @@ class KTJSONLookupWidget extends KTBaseWidget {
      * @param array $options The options to check for assignment.
      * @param array $members The included members.
      */
-    private static function getAssignedGroups(&$options, $members = array())
+    private static function getAssignedGroups(&$options, $members = array(), $useKeyword = false)
     {
-        $assigned['groups_roles'] = self::getAssignedType('group', $options, $members);
-        $assigned = array(implode(',', $assigned['groups_roles']), null);
+        $assigned['groups_roles'] = self::getAssignedType('group', $options, $members, $useKeyword);
 
-        return $assigned;
+        return array(implode(',', $assigned['groups_roles']), null);
     }
 
-    public static function getAssignedRoles(&$options, $members = array())
+    public static function getAssignedRoles(&$options, $members = array(), $useKeyword = false)
     {
-        $assigned['groups_roles'] = self::getAssignedType('role', $options, $members);
-        $assigned = array(implode(',', $assigned['groups_roles']), null);
+        $assigned['groups_roles'] = self::getAssignedType('role', $options, $members, $useKeyword);
 
-        return $assigned;
+        return array(implode(',', $assigned['groups_roles']), null);
     }
 
     /**
@@ -210,8 +207,10 @@ class KTJSONLookupWidget extends KTBaseWidget {
      * @param string $type The option type.
      * @param array $options The options to check for assignment.
      * @param array $members The included members.
+     *
+     * NOTE Don't like the $useKeyword value, would prefer another method.
      */
-    private static function getAssignedType($type, &$options, $members = array())
+    private static function getAssignedType($type, &$options, $members = array(), $useKeyword = false)
     {
         // Process list of existing groups and roles into a format which can be easily parsed in the template.
         // Additionally set disabled (inactive) for any pre-selected select list option.
@@ -221,7 +220,14 @@ class KTJSONLookupWidget extends KTBaseWidget {
             $data = explode('_', $key);
             if ($data[0] == $type) {
                 $assigned[] = '{id: "' . $key . '", name: "' . $member->getName() . '"}'; // FIXME will not work for users, d'uh.
-                $options[$key]['active'] = 0;
+                if ($useKeyword) {
+                    // TODO Leave as lower case.
+                    $keyword = ucwords($data[0]) . 's';
+                    $options[$keyword][$key]['active'] = 0;
+                }
+                else {
+                    $options[$key]['active'] = 0;
+                }
             }
         }
 
@@ -294,11 +300,35 @@ class KTJSONLookupWidget extends KTBaseWidget {
         return $jsonWidget;
     }
 
+    public static function getJsonCombinedWidget($label, $type, $parts, $members, $options, $filter = null)
+    {
+        $groupsAndRoles = self::getGroupsAndRoles();
+        $assigned = self::getAssignedGroupsAndRoles($groupsAndRoles, $members);
+        $options['groups_roles'] = $groupsAndRoles;
+
+        $assignedUsers = self::getAssignedUsers($members);
+        if (!empty($assignedUsers[1])) {
+            $assigned[1] = $assignedUsers[1];
+        }
+
+        return self::getJsonWidget($label, $type, $parts, $assigned, $options);
+    }
+
     public static function formatMemberGroups($memberGroups)
     {
         $members = array();
         foreach ($memberGroups as $group) {
             $members["group_{$group->getId()}"] = $group;
+        }
+
+        return $members;
+    }
+
+    public static function formatMemberUsers($memberUsers)
+    {
+        $members = array();
+        foreach ($memberUsers as $user) {
+            $members["user_{$user->getId()}"] = $user;
         }
 
         return $members;
