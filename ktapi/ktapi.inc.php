@@ -5430,7 +5430,7 @@ class KTAPI {
 				}
 			}
 			
-			$GLOBALS['default']->log->debug('KTAPI get_folder_total_size result '.print_r($result, true));
+			$GLOBALS['default']->log->debug('KTAPI get_folder_total_size result '.print_r($size, true));
 		}
 		
 		$config = KTConfig::getSingleton();
