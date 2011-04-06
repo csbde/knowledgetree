@@ -234,21 +234,21 @@ class KTJSONLookupWidget extends KTBaseWidget {
         return $assigned;
     }
 
-    public static function getJsonGroupSelectorWidget($label, $type, $parts, $members, $options, $filter = null)
+    public static function getGroupSelectorWidget($label, $type, $parts, $members, $options, $filter = null)
     {
         $groups = self::getGroups($filter);
         $assigned = self::getAssignedGroups($groups, $members);
         $options['groups_roles'] = $groups;
 
-        return self::getJsonWidget($label, $type, $parts, $assigned, $options);
+        return self::getWidget($label, $type, $parts, $assigned, $options);
     }
 
-    public static function getJsonUserSearchWidget($label, $type, $parts, $members)
+    public static function getUserSearchWidget($label, $type, $parts, $members)
     {
         $assigned = self::getAssignedUsers($members);
         $options = array('users' => $groups);
 
-        return self::getJsonWidget($label, $type, $parts, $assigned, $options);
+        return self::getWidget($label, $type, $parts, $assigned, $options);
     }
 
     private static function getAssignedUsers($members = array())
@@ -274,7 +274,7 @@ class KTJSONLookupWidget extends KTBaseWidget {
     /**
      * Build the final widget with the supplied values.
      */
-    public static function getJsonWidget($label, $type, $parts, $assigned, $options)
+    public static function getWidget($label, $type, $parts, $assigned, $options)
     {
         global $main;
 
@@ -300,7 +300,7 @@ class KTJSONLookupWidget extends KTBaseWidget {
         return $jsonWidget;
     }
 
-    public static function getJsonCombinedWidget($label, $type, $parts, $members, $options, $filter = null)
+    public static function getCombinedWidget($label, $type, $parts, $members, $options, $filter = null)
     {
         $groupsAndRoles = self::getGroupsAndRoles();
         $assigned = self::getAssignedGroupsAndRoles($groupsAndRoles, $members);
@@ -311,7 +311,7 @@ class KTJSONLookupWidget extends KTBaseWidget {
             $assigned[1] = $assignedUsers[1];
         }
 
-        return self::getJsonWidget($label, $type, $parts, $assigned, $options);
+        return self::getWidget($label, $type, $parts, $assigned, $options);
     }
 
     public static function formatMemberGroups($memberGroups)
