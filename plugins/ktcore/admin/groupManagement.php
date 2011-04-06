@@ -242,7 +242,7 @@ class KTGroupAdminDispatcher extends KTAdminDispatcher {
         $members = KTJSONLookupWidget::formatMemberUsers($group->getMembers());
         $label['header'] = 'Users';
         $label['text'] = 'Select the users which should be part of this group. Once you have added all the users that you require, click <strong>save changes</strong>.';
-        $jsonWidget = KTJSONLookupWidget::getUserSearchWidget($label, 'users', 'users', $members);
+        $jsonWidget = KTJSONLookupWidget::getUserSearchWidget($label, 'group', 'users', $members);
 
         return $this->renderTemplateWithWidget($group, $jsonWidget, 'ktcore/principals/groups_manageusers');
     }
@@ -388,7 +388,7 @@ class KTGroupAdminDispatcher extends KTAdminDispatcher {
         $label['text'] = 'Select the sub-groups which should be part of this group. Once you have added all the sub-groups that you require, click <strong>save changes</strong>.';
         $jsonWidget = KTJSONLookupWidget::getGroupSelectorWidget(
                                                                 $label,
-                                                                'groups',
+                                                                'group',
                                                                 'groups',
                                                                 $members,
                                                                 $options,
