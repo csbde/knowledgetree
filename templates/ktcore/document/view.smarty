@@ -4,7 +4,6 @@
 <script type="text/javascript" src="/thirdpartyjs/jquery/plugins/editableset/jquery.editable-set.extend.js"> </script>
 <script type="text/javascript" src="/resources/js/document/kt.app.metadata.js"> </script>
 <script type="text/javascript" src="/thirdpartyjs/jquery/plugins/tokenizer/src/jquery.tokeninput.js"></script>
-<script type="text/javascript" src="/resources/js/newui/kt.app.metadata.js"></script>
 <script type="text/javascript" src="/resources/js/document/kt.app.activityFeed.js"></script>
 <script type="text/javascript" src="/resources/js/newui/documents/kt.app.docdetails.js"></script>
 <script type="text/javascript" src="/thirdpartyjs/hashtable.js"></script>
@@ -18,18 +17,18 @@
                 <td colspan="2" id="title_row">
 				{* Display Actions Block *}
 				{$documentBlocks->getDocBlock()}
-				<div class="documentTitle" rel={$rootUrl}/presentation/lookAndFeel/knowledgeTree/widgets/updateMetadata.php?func=title&documentID={$document->getId()}>
-				<span data-name="documentTitle" data-type='text' data-value-id="value_title" data-class="required"></span>
-					<span id="value_title">{i18n}{$document->getName()|sanitize}{/i18n}</span>
+				<div class="document-title" rel={$rootUrl}/presentation/lookAndFeel/knowledgeTree/widgets/updateMetadata.php?func=title&documentID={$document->getId()}>
+				<span data-name="document-title" data-type='text' data-value-id="value-title" data-class="required"></span>
+					<span id="value-title">{i18n}{$document->getName()|sanitize}{/i18n}</span>
 					<span class="save-placeholder">&nbsp;</span>
 					<span title="Click to edit" class="editable-control edit">&nbsp;</span>
 					
 				</div>
 				{if $document->getIsCheckedOut()}<span class="status-indicator checkedout">{i18n}Checked Out{/i18n}</span>{/if}
                 {if $document->getImmutable()}<span class="status-indicator finalized">{i18n}Finalized{/i18n}</span>{/if}
-				<div class="documentFilename" rel={$rootUrl}/presentation/lookAndFeel/knowledgeTree/widgets/updateMetadata.php?func=filename&documentID={$document->getId()}>
-				<span data-name="documentFilename" data-type='text' data-value-id="value_filename" data-class="required"></span>
-					<span id="value_filename"><p>{$document->getFileName()}</p></span>
+				<div class="document-filename" rel={$rootUrl}/presentation/lookAndFeel/knowledgeTree/widgets/updateMetadata.php?func=filename&documentID={$document->getId()}>
+				<span data-name="document-filename" data-type='text' data-value-id="value-filename" data-class="required"></span>
+					<span id="value-filename"><p>{$document->getFileName()}</p></span>
 					<span class="save-placeholder">&nbsp;</span>
 					<span title="Click to edit" class="editable-control edit">&nbsp;</span>
 				</div>
@@ -74,7 +73,7 @@
                     </div>
 					<br/>
 					<h3 id="metadata-title">Document Properties</h3>
-					<div class="documentType" rel="{$rootUrl}/presentation/lookAndFeel/knowledgeTree/widgets/updateMetadata.php?func=doctype&documentID={$document->getId()}">
+					<div class="document-type" rel="{$rootUrl}/presentation/lookAndFeel/knowledgeTree/widgets/updateMetadata.php?func=doctype&documentID={$document->getId()}">
 					<table class="metadatatable" cellspacing="0" cellpadding="5">
 					<tr class="metadatarow even first">
 						<th>Document Type</th>

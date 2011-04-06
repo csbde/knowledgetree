@@ -41,6 +41,9 @@
 				return false;
 			}
 			
+			//reset the invalid hash table
+			self.invalid.clear();
+			
 			// onSave callback
 			if ($.isFunction( opts.onSave )) 
 			{
@@ -123,6 +126,9 @@
 	
 		var cancel = function(self) {
 			self.editing = false;
+			
+			//reset the invalid hash table
+			self.invalid.clear();
 	
 			// Revert to original text
 			$(self).html( self.revert ).removeClass( 'active' );
@@ -370,7 +376,6 @@
 		
 		text: {
 			element : function(object, attrs) {
-				//console.dir(object);
 				var val = '';
 				
 				if (attrs['data-value-id'] != null)

@@ -922,7 +922,7 @@ a.main_nav_item {
     background-color: #fafafa;
 }
 
-.detail_fieldset
+.detail-fieldset
 {
     display: block;
     margin-top: 15px;
@@ -959,7 +959,7 @@ a.main_nav_item {
 .editable-control.spin {
 	background: url(../../resources/graphics/newui/loading.gif) no-repeat right top;
 }
-.detail_fieldset h3
+.detail-fieldset h3
 {
     margin: 0em 0 2px 0;
     padding-bottom: 5px;
