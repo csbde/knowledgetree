@@ -238,21 +238,11 @@ class KTGroupAdminDispatcher extends KTAdminDispatcher {
             return $this->_do_manageUsers_source();
         }
 
-        $initialUsers = $group->getMembers();
-        $assigned['users'] = array();
-        foreach ($initialUsers as $member) {
-            $name = $member->getName();
-            if (empty($name)) { $name = $member->getUserName(); }
-            $assigned['users'][] = "{id: '{$member->getId()}', name: '$name'}";
-        }
-
-        $settings = array(
-                          'assigned' => array('', implode(',', $assigned['users'])),
-                          'type' => 'users',
-                          'parts' => 'users',
-                          'default' => 'Select groups and roles'
-                    );
-        $jsonWidget = $this->getJsonWidget('users', $settings);
+        // Set up and instantiate user search widget.
+        $members = KTJSONLookupWidget::formatMemberUsers($group->getMembers());
+        $label['header'] = 'Users';
+        $label['text'] = 'Select the users which should be part of this group. Once you have added all the users that you require, click <strong>save changes</strong>.';
+        $jsonWidget = KTJSONLookupWidget::getJsonUserSearchWidget($label, 'users', 'users', $members);
 
         return $this->renderTemplateWithWidget($group, $jsonWidget, 'ktcore/principals/groups_manageusers');
     }
@@ -391,30 +381,7 @@ class KTGroupAdminDispatcher extends KTAdminDispatcher {
         $this->oPage->setBreadcrumbDetails(_kt('manage members'));
         $this->oPage->setTitle(sprintf(_kt('Manage members of %s'), $group->getName()));
 
-        /*$groups = array();
-        $subGroups = GroupUtil::listGroups();
-        foreach ($subGroups as $subGroup) {
-            if ($group->getId() == $subGroup->getId()) { continue; }
-            $groups["group_{$subGroup->getId()}"]['name'] = $subGroup->getName();
-            $groups["group_{$subGroup->getId()}"]['active'] = 1;
-        }*/
-
-        /*$memberGroups = $group->getMemberGroups();
-        $assigned['groups_roles'] = array();
-        foreach ($memberGroups as $member) {
-            $assigned['groups_roles'][] = "{id: 'group_{$member->getId()}', name: '{$member->getName()}'}";
-            $groups["group_{$member->getId()}"]['active'] = 0;
-        }
-
-        $settings = array(
-                          'assigned' => array(implode(',', $assigned['groups_roles'])),
-                          'type' => 'groups',
-                          'parts' => 'groups',
-                          'default' => 'Select group'
-                    );*/
-
         // Set up and instantiate group selector widget.
-        // FIXME This is massively non-performant for large userbases.
         $members = KTJSONLookupWidget::formatMemberGroups($group->getMemberGroups());
         $options = array('selection_default' => 'Select groups', 'optgroups' => false);
         $label['header'] = 'Groups';
