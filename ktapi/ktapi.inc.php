@@ -5424,6 +5424,88 @@ class KTAPI {
 
 	    return $response;
 	}
+	
+	public function get_folder_total_size($include_folder_ids, $exclude_folder_ids)
+	{
+		$GLOBALS['default']->log->debug('KTAPI get_folder_total_size '.print_r($include_folder_ids, true).' '.print_r($exclude_folder_ids, true));
+		
+		$size = array('total_files' => 0, 'total_size' => 0);
+		
+		foreach ($include_folder_ids as $folder_id)
+		{
+			$folder = KTAPI_Folder::get($this, $folder_id);
+
+			if (!PEAR::isError($folder))
+			{
+				$parent_size = $folder->get_total_documents();
+				
+				$size['total_files'] += $parent_size['total_files'];
+				$size['total_size'] += $parent_size['total_size'];
+				
+				$GLOBALS['default']->log->debug("KTAPI get_folder_total_size parent result $folder_id ".print_r($parent_size, true));
+				$GLOBALS['default']->log->debug('KTAPI get_folder_total_size parent result carried over '.print_r($size, true));
+			}
+			else
+			{
+				$GLOBALS['default']->log->error("Error in getting folder $folder_id ".$folder->getMessage());
+			}
+			
+			$children_ids = $folder->get_children_ids();
+			
+			$GLOBALS['default']->log->debug('KTAPI get_folder_total_size children_ids '.print_r($children_ids, true));
+			
+			foreach ($children_ids as $child_id)
+			{
+				$GLOBALS['default']->log->debug("KTAPI get_folder_total_size check if $child_id is in excluded list ".print_r($exclude_folder_ids, true));
+				
+				//only use that child if it wasn't excluded!
+				if (!in_array($child_id, $exclude_folder_ids))
+				{
+					$folder = KTAPI_Folder::get($this, $child_id);
+		
+					if (!PEAR::isError($folder))
+					{
+						$child_size = $folder->get_total_documents();
+						
+						$size['total_files'] += $child_size['total_files'];
+						$size['total_size'] += $child_size['total_size'];
+						
+						$GLOBALS['default']->log->debug("KTAPI get_folder_total_size child $child_id ".print_r($child_size, true));
+					}
+					else
+					{
+						$GLOBALS['default']->log->error("Error in getting folder $child_id ".$folder->getMessage());
+					}
+				}
+			}
+			
+			$GLOBALS['default']->log->debug('KTAPI get_folder_total_size result '.print_r($result, true));
+		}
+		
+		$config = KTConfig::getSingleton();
+		
+		//$maxFiles = $config->get('foldersync/maxFilesSync');
+		$maxFileSize = $config->get('foldersync/maxFileSizeSync');
+		
+		//$GLOBALS['default']->log->debug("KTAPI get_folder_total_size max $maxFiles $maxFileSize");
+		
+		//check whether these are larger than allowed
+		if ($size['total_size'] > $maxFileSize)	// || $size['total_files'] > $maxFiles)
+		{
+			$displaySize = $size['total_size']/(1024*1024);
+			$response['status_code'] = 1;
+			$response['message'] = "WARNING: you have selected to synchronize {$size['total_files']} files with a total size of $displaySize MB. Note that synchronizing large quantities of data will have an impact on system resources and bandwidth use.";
+		}
+		else
+		{
+			$response['status_code'] = 0;
+			$response['message'] = '';
+		}
+		
+		$GLOBALS['default']->log->debug('KTAPI get_folder_total_size response '.print_r($response, true));
+
+		return $response;
+	}
 
 	/**
      * Reports whether a folder contains any documents and/or subfolders
