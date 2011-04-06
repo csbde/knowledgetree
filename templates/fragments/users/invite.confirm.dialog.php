@@ -46,7 +46,7 @@ $contact_url = 'http://www.knowledgetree.com/contact-us';
 
     <tr>
         <td class="ul_actions" colspan="2" align="right" style="padding-top: 10px;">
-            <input id="shared_actions_confirm_btn" class="ul_actions_btns" type="button" value="Close" onClick="kt.app.sharewithusers.closeConfirmWindow();" />
+            <input id="shared_actions_confirm_btn" class="ul_actions_btns" type="button" value="Close" onClick="kt.app.inviteusers.closeConfirmWindow();" />
         </td>
     </tr>
 

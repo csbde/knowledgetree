@@ -1,7 +1,7 @@
 @charset "UTF-8";
 
 #middle_nav {
-    background: url('../../graphics/newui/midbarbkg.png') top left repeat-x;
+    background: url('/resources/graphics/newui/midbarbkg.png') top left repeat-x;
     height: 39px;
     line-height: 39px;
 }
@@ -27,7 +27,7 @@ ul.dropdown li {
 	padding: 0;
 	border: none;
 }
-    
+
 ul.dropdown li li {
     text-transform: none;
 }
@@ -46,28 +46,28 @@ ul.dropdown *.dir {
 	color: #697474;
 	padding-right: 20px;
 	padding-left: 10px;
-	/*background-image: url(../../graphics/newui/nav-arrow-down.png);*/
-	background-image: url(../../graphics/newui/midbardivider.png);
+	/*background-image: url(/resources/graphics/newui/nav-arrow-down.png);*/
+	background-image: url(/resources/graphics/newui/midbardivider.png);
 	background-position: right;
 	background-repeat: no-repeat;
 }
 
 ul.dropdown li.hover,
 ul.dropdown li:hover {
-	background: url('../../graphics/newui/menuHoverRight.png') no-repeat top right;
+	background: url('/resources/graphics/newui/menuHoverRight.png') no-repeat top right;
 }
 
 ul.dropdown li li:hover {
-    background: url(../../graphics/newui/grad2.png) 0 100% repeat-x;
+    background: url(/resources/graphics/newui/grad2.png) 0 100% repeat-x;
 }
 
 ul.dropdown li:hover > *.dir, ul.dropdown li:hover *.dir:hover {
 	color: #FFF;
-	background: url('../../graphics/newui/menuHoverLeft.png') no-repeat;
+	background: url('/resources/graphics/newui/menuHoverLeft.png') no-repeat;
 }
 
 ul.dropdown li.roundleft {
-    background: #FFF url('../../graphics/newui/midbarleft.png') no-repeat top left;
+    background: #FFF url('/resources/graphics/newui/midbarleft.png') no-repeat top left;
     width: 13px;
     margin: 0;
 }
@@ -77,7 +77,7 @@ div#midright {
 }
 
 span#midrightcorner {
-	background: #fff url('../../graphics/newui/midbarright.png') no-repeat top right;float: right;
+	background: #fff url('/resources/graphics/newui/midbarright.png') no-repeat top right;float: right;
 	width: 11px;
 	overflow: hidden;
 }
