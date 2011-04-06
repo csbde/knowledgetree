@@ -209,11 +209,11 @@
     	
     	window.onbeforeunload = function()
     	{
-    		return kt.ui.metadata.onbeforeunload();
+    		return kt.app.metadata.onbeforeunload();
     	}
     	
     	//only allow to be editable if document not immutable!
-        kt.ui.metadata.setup({/literal}{$document->getImmutable()}{literal} == 0);
+        kt.app.metadata.setup({/literal}{$document->getImmutable()}{literal} == 0);
     });
 </script>
 
