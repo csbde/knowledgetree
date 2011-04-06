@@ -932,7 +932,7 @@ a.main_nav_item {
 #content .doc_description .required select {
 	background: #FFEDAC;
 }
-#content .doc_description .required.incomplete input, 
+#content .doc_description .required.incomplete input,
 #content .doc_description .required.incomplete select{
 	background: #ffdddd;
 	border-color: #FF7272;
@@ -958,6 +958,11 @@ a.main_nav_item {
 }
 .editable-control.spin {
 	background: url(../../resources/graphics/newui/loading.gif) no-repeat right top;
+}
+.spin {
+	background: url(../../resources/graphics/newui/loading.gif) no-repeat right top;
+	padding: 2px;
+	padding-left: 16px;
 }
 .detail_fieldset h3
 {

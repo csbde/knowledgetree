@@ -13,11 +13,15 @@ kt.app.docdetails = new function() {
 
 	this.showPageUrl = function() {
 	    var url = document.location.href;
+	    var text = 'Copy and send a secure link to this page for KnowledgeTree users.';
 	    url = url.replace('#', '');
-	    self.showUrlWin(url, 'pageurldispwin', 'Page URL');
+	    self.showUrlWin(url, 'pageurldispwin', 'Page link', text);
 	}
 
-	this.getDownloadUrl = function() {
+	this.getDownloadUrl = function(iconClass) {
+	    // set spinner to show busy.
+	    jQuery('.'+iconClass).removeClass('none').addClass('spin').css('visibility', 'visible');
+
 	    // check for old url path
 	    var iDocId = self.getQueryVariable('fDocumentId');
 	    var params = {};
@@ -34,17 +38,26 @@ kt.app.docdetails = new function() {
 	    var data = ktjapi.retrieve(func, params, this.persistentDataCacheTimeout);
 	    var response = data.data.downloadUrl;
         var list = jQuery.parseJSON(response);
+        var text = 'Copy and send a secure 24 hour link to a download of this file for any user.';
 
-        self.showUrlWin(list.url, 'downurldispwin', 'Download URL');
+        // remove spinner
+        jQuery('.'+iconClass).removeClass('spin').addClass('none').css('visibility', 'hidden');
+        self.showUrlWin(list.url, 'downurldispwin', 'Download link', text);
 	}
 
-    this.showUrlWin = function(url, winId, title) {
-	    var html = '<div><input type="text" size="30" value="' + url + '" /></div>';
+    this.showUrlWin = function(url, winId, title, text) {
+	    var html = '<div>';
+
+	    if(text != ''){
+	        html += text + '<br /><br />';
+	    }
+
+	    html += '<input type="text" size="40" id="url_link" value="' + url + '" onclick="this.select();" /></div>';
 
         var pageUrlWin = new Ext.Window({
             id              : winId,
             layout          : 'fit',
-            width           : 300,
+            width           : 350,
             resizable       : false,
             closable        : true,
             closeAction     : 'destroy',
