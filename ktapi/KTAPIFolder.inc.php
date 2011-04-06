@@ -518,6 +518,27 @@ class KTAPI_Folder extends KTAPI_FolderItem {
         }
         return $perms;
     }
+    
+    function get_children_ids()
+    {
+    	$children_ids = array();
+    	$user = $this->ktapi->get_user();
+    	
+    	$folder_children = Folder::getList(array('parent_id = ?', $this->folderid));
+
+    	//if user can't view the folder's details, then it is empty for him!
+    	$folder_permission = &KTPermission::getByName(KTAPI_PERMISSION_VIEW_FOLDER);
+        //we first check if there is at least one subfolder that the user has permissions on
+        foreach ($folder_children as $child) 
+        {
+	        if (KTPermissionUtil::userHasPermissionOnItem($user, $folder_permission, $child)) 
+	        {
+				$children_ids[] = $child->getId();
+			}
+        }
+        
+        return $children_ids;
+    }
 
     /**
 	 * Checks whether a folder is relatively empty, i.e. whether it is empty for a specific user

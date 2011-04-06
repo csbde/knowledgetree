@@ -4264,7 +4264,24 @@ class KTWebService {
 	
 	function verify_folders_total_size($session_id, $include_folder_ids, $exclude_folder_ids)
 	{
-		$response = KTWebService::_status(KTWS_SUCCESS, '');
+		$kt = &$this->get_ktapi($session_id );
+		if (is_array($kt))
+    	{
+    		return new SOAP_Value('return', "{urn:$this->namespace}kt_response", $kt);
+    	}
+    	
+    	$result = &$kt->get_folder_total_size($include_folder_ids, $exclude_folder_ids);
+    	
+    	if ($result['status_code'] === 0)
+		{
+		    $response = KTWebService::_status(KTWS_SUCCESS, $result['message']);
+		}
+		else
+		{
+		    $response = KTWebService::_status(KTWS_ERR_PROBLEM, $result['message']);
+		}
+	    	
+		//$response = KTWebService::_status(KTWS_SUCCESS, '');
 		
 		return new SOAP_Value('return', "{urn:$this->namespace}kt_response", $response);
 	}
