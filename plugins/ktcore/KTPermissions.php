@@ -616,7 +616,7 @@ class KTRoleAllocationPlugin extends KTFolderAction {
         // Set up and instantiate user search widget.
         $label['header'] = 'Users';
         $label['text'] = 'Select the users which should be part of this role.';
-        $jsonWidget = KTJSONLookupWidget::getJsonUserSearchWidget($label, 'users', 'users', $members);
+        $jsonWidget = KTJSONLookupWidget::getUserSearchWidget($label, 'users', 'users', $members);
 
         $templating =& KTTemplating::getSingleton();
         $template = $templating->loadTemplate('ktcore/folder/roles_manageusers');
@@ -676,7 +676,7 @@ class KTRoleAllocationPlugin extends KTFolderAction {
         $options = array('selection_default' => 'Select groups', 'optgroups' => false);
         $label['header'] = 'Groups';
         $label['text'] = 'Select the groups which should be part of this role.';
-        $jsonWidget = KTJSONLookupWidget::getJsonGroupSelectorWidget($label, 'groups', 'groups', $members, $options);
+        $jsonWidget = KTJSONLookupWidget::getGroupSelectorWidget($label, 'groups', 'groups', $members, $options);
 
         $templating =& KTTemplating::getSingleton();
         $template = $templating->loadTemplate('ktcore/folder/roles_managegroups');
