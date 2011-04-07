@@ -2340,7 +2340,7 @@ class KTDocumentPageUrlAction extends KTDocumentAction {
 	var $sIconClass = 'page-url';
 
     function getDisplayName() {
-        return _kt('This page URL');
+        return _kt('Get page link');
     }
 
     function getURL() {
@@ -2348,7 +2348,7 @@ class KTDocumentPageUrlAction extends KTDocumentAction {
     }
 
     function getOnClick(){
-        $onclick = 'javascript: kt.app.docdetails.showPageUrl()';
+        $onclick = 'javascript: kt.app.docdetails.showPageUrl();';
         return $onclick;
     }
 
@@ -2367,7 +2367,7 @@ class KTDocumentDownloadUrlAction extends KTDocumentAction {
 	var $sIconClass = 'download-url';
 
     function getDisplayName() {
-        return _kt('Download URL');
+        return _kt('Get download link');
     }
 
     function getURL() {
@@ -2375,7 +2375,7 @@ class KTDocumentDownloadUrlAction extends KTDocumentAction {
     }
 
     function getOnClick(){
-        $onclick = 'javascript: kt.app.docdetails.getDownloadUrl()';
+        $onclick = "javascript: kt.app.docdetails.getDownloadUrl(\"{$this->sIconClass}\");";
         return $onclick;
     }
 
