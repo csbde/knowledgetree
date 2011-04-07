@@ -64,12 +64,13 @@
 							<th>File type:</th><td>{$fieldsetDisplayHelper->_sizeHelper($document->getSize())} {$fieldsetDisplayHelper->_mimeHelper($document->getMimeTypeID())}.</td>
 							</tr>
 						</table>
-					<div class="tags">
-						<h3><span class="editable-control none">&nbsp;</span></h3>
+					<div class="document-tags">
+					<span title="Click to edit" class="editable-control edit">&nbsp;</span>
                         <br/>
-                        <input type="text" name="tagcloud" id="tagcloud" />
+                        <!--<input type="text" name="tagcloud" id="tagcloud" />-->
+                        <span data-id="tagcloud" data-name="tagcloud" data-type='tokeninput' data-tags='{$tags}' data-tag-script='{$tagFilterScript}' data-value-id="value-token"></span>
                         <br/>
-                        <input type="button" value="Save Tags" onclick="kt.app.metadata.saveTags({$document_id});" />
+                        <!--<input type="button" value="Save Tags" onclick="kt.app.metadata.saveTags({$document_id});" />-->
                     </div>
 					<br/>
 					<h3 id="metadata-title">Document Properties</h3>
@@ -214,26 +215,6 @@
     	
     	//only allow to be editable if document not immutable!
         kt.app.metadata.setup({/literal}{$document->getImmutable()}{literal} == 0);
-    });
-</script>
-
-<script type="text/javascript">
-    jQuery("#tagcloud").tokenInput("{/literal}{$tagFilterScript}{literal}", {
-        // Alter the minChars value to determine how much the user must type before a search is initiated
-        minChars: 2,
-        prePopulate: [{/literal}{$tags}{literal}],
-        classes: {
-            tokenList: "token-input-list-facebook",
-            token: "token-input-token-facebook",
-            tokenDelete: "token-input-delete-token-facebook",
-            selectedToken: "token-input-selected-token-facebook",
-            highlightedToken: "token-input-highlighted-token-facebook",
-            dropdown: "token-input-dropdown-facebook",
-            dropdownItem: "token-input-dropdown-item-facebook",
-            dropdownItem2: "token-input-dropdown-item2-facebook",
-            selectedDropdownItem: "token-input-selected-dropdown-item-facebook",
-            inputToken: "token-input-input-token-facebook"
-        }
     });
 </script>
 {/literal}

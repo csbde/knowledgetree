@@ -298,3 +298,33 @@ jQuery.editableSet.addInputType('htmleditor', {
 		}*/
 	}
 });
+
+jQuery.editableSet.addInputType('tokeninput', {
+	/* create input element */
+	element : function(object, attrs) {
+		var newObject = jQuery.fn.editableSet.attributor( jQuery('<input />'), attrs );
+		
+		jQuery(object).replaceWith( newObject );
+		
+		var tags = attrs['data-tags'];
+		var tagScript = attrs['data-tag-script'];
+		
+		jQuery(newObject).tokenInput(tagScript, {
+	        // Alter the minChars value to determine how much the user must type before a search is initiated
+	        minChars: 2,
+	        prePopulate: tags,
+	        classes: {
+	            tokenList: "token-input-list-facebook",
+	            token: "token-input-token-facebook",
+	            tokenDelete: "token-input-delete-token-facebook",
+	            selectedToken: "token-input-selected-token-facebook",
+	            highlightedToken: "token-input-highlighted-token-facebook",
+	            dropdown: "token-input-dropdown-facebook",
+	            dropdownItem: "token-input-dropdown-item-facebook",
+	            dropdownItem2: "token-input-dropdown-item2-facebook",
+	            selectedDropdownItem: "token-input-selected-dropdown-item-facebook",
+	            inputToken: "token-input-input-token-facebook"
+	        }
+	    });
+	}
+});

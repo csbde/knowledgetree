@@ -18,6 +18,7 @@ kt.app.metadata = new function()
 	{		
 		kt.app.metadata.setDocumentTitleEditable();
 		kt.app.metadata.setDocumentFilenameEditable();
+		kt.app.metadata.setDocumentTagsEditable();
 		kt.app.metadata.setDocumentTypeEditable();
 		kt.app.metadata.setMetadataEditable();
 	}
@@ -183,6 +184,49 @@ kt.app.metadata = new function()
 						jQuery('.form_submit', jQuery(this)).after('<br><span class="metadataError">'+data.error.message+'</span>');
 					}
 				}
+			}
+		});
+	}
+	
+	this.setDocumentTagsEditable = function()
+	{		
+		jQuery('.document-tags').hover(
+		function(){
+			jQuery('.editable-control', jQuery(this)).css('visibility', 'visible');
+		},
+		function(){
+			if(jQuery('.editable-control', jQuery(this)).hasClass('edit'))
+			{
+				jQuery('.editable-control', jQuery(this)).css('visibility', 'hidden');
+			}
+		});
+		jQuery('.document-tags').editableSet({
+			titleElement: '.save-placeholder',
+			controlClass: 'editable-control',
+			onCancel: function(){
+				jQuery('.editable-control', jQuery(this)).attr('title', 'Click to edit');
+				jQuery('.editable-control', jQuery(this)).removeClass('undo').addClass('edit');
+				
+				kt.app.metadata.setEditableRegions();
+			},
+			beforeLoad: function() {
+			},
+			afterLoad: function() {
+				jQuery('.editable-control', jQuery(this)).removeClass('spin').addClass('undo').attr('title', 'Click to undo');
+			},
+			onError: function(){
+				kt.app.metadata.setEditableRegions();
+			},	
+			onSave: function(){
+				jQuery('.editable-control', jQuery(this)).removeClass('undo').addClass('spin');
+			},
+			repopulate: function(){},
+			afterSave: function(data, status){
+				jQuery('.editable-control', jQuery(this)).attr('title', 'Click to edit');
+				jQuery('.editable-control', jQuery(this)).removeClass('spin').addClass('edit');
+				jQuery('.editable-control', jQuery(this)).css('visibility', 'hidden');
+				
+				kt.app.metadata.setEditableRegions();
 			}
 		});
 	}
