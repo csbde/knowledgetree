@@ -46,7 +46,7 @@
 
     <!-- Standalone CSS. -->
     {foreach item=sCSS from=$page->getCSSStandalone()}
-       <style>
+        <style>
 	{$sCSS}
        </style>
     {/foreach}
@@ -57,13 +57,13 @@
     {/foreach}
 
     <!-- Standalone Javascript. -->
-    {foreach item=sJavascript from=$page->getJSStandalone()}
-       <script type="text/javascript">
-       var rootURL = "{$absoluteRootUrl}";
-       var quickQuery = '{$search2_quickQuery}';
-	{$sJavascript}
-       </script>
-    {/foreach}
+    <script type="text/javascript">
+        var rootURL = "{$absoluteRootUrl}";
+        var quickQuery = '{$search2_quickQuery}';
+        {foreach item=sJavascript from=$page->getJSStandalone()}
+	        {$sJavascript}
+        {/foreach}
+    </script>
     <!--[if IE 7]>
         <style type="text/css" media="all">@import url({$rootUrl}/resources/css/kt-ie-7.css);</style>
     <![endif]-->

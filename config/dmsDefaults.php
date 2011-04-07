@@ -752,6 +752,7 @@ if (!extension_loaded('mbstring')) {
 
 require_once(KT_LIB_DIR . '/templating/kt3template.inc.php');
 $GLOBALS['main'] = new KTPage();
+// TODO move line above to dispatcher functions - since init no longer happens here???
 
 /** KTLIVE Account Routing **/
 define('KTLIVE_TRACE_LOG_FILE', $GLOBALS['default']->varDirectory . '/tmp/live_trace.log');

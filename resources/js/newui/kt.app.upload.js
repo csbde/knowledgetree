@@ -1,5 +1,5 @@
 /* Initializing kt.app if it wasn't initialized before */
-if (typeof(kt.app)=='undefined')kt.app={};
+if (typeof(kt.app)=='undefined') { kt.app={}; }
 
 /**
 * The multi-file upload widget. This object contains all the code
@@ -14,9 +14,11 @@ kt.app.upload = new function() {
 
 	// contains a list of fragments that will get preloaded
 	var fragments = this.fragments = ['upload/upload.dialog', 'upload/upload.dialog.item', 'upload/upload.dialog.item.nobulk', 'upload/upload.metadata.fieldset'];
+    var fragmentPackage = this.fragmentPackage = [fragments];
 
 	// contains a list of executable fragments that will get preloaded
 	var execs = this.execs = ['upload/upload.doctypes', 'upload/upload.metadata.dialog'];
+    var execPackage = this.execPackage = [execs];
 
 	// scope protector. inside this object referrals to self happen via 'self' rather than 'this' to make sure we call the functionality within the right scope.
 	var self = this;
@@ -31,12 +33,7 @@ kt.app.upload = new function() {
 
 	// Initializes the upload widget on creation. Currently does preloading of resources.
 	this.init = function() {
-		for (var idx in fragments) {
-			kt.api.preloadFragment(fragments[idx]);
-		}
-		for (var idx in execs) {
-			kt.api.preloadExecutable(execs[idx]);
-		}
+		kt.api.preload(fragmentPackage, execPackage, true);
 	}
 
 	// Container for the EXTJS window

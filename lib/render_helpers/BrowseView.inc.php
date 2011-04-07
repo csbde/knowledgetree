@@ -30,8 +30,11 @@ class BrowseView {
         }
 
         // Include new browse view css
-        $oPage = $GLOBALS['main'];
-        $oPage->requireCSSResource("resources/css/newui/browseView.css?" . rand());
+        $page = $GLOBALS['main'];
+        $page->requireCSSResource('resources/css/newui/browseView.css');
+        // For some reason this was being forced to not cache.  Don't think that's correct behaviour.
+        // TODO add this to the grouped js.
+        // $oPage->requireCSSResource("resources/css/newui/browseView.css?" . rand());
     }
 
     public function getJavaScript()

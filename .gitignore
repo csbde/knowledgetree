@@ -1,6 +1,6 @@
 *~
 bin/luceneserver/lucene.pid
-bin/schedulerTask.sh 
+bin/schedulerTask.sh
 *.tmproj
 .DS_Store
 .buildpath
@@ -16,3 +16,4 @@ config/config.ini
 config/aws_config.ini
 bin/luceneserver/KnowledgeTreeIndexer.properties
 .git
+resources/tmp/*
