@@ -245,18 +245,14 @@ class KTPage {
             unset($jsIncludes["resources/$jsResourceLocation/jquery.blockui.$jsExt"]);
         }
 
-        // TODO check these for section
-        $js[] = 'resources/js/newui/newUIFunctionality.js';
-        $js[] = 'resources/js/newui/jquery.helper.js';
-        $js[] = 'resources/js/newui/buttontabs.jquery.js';
-        $js[] = 'thirdpartyjs/jquery/plugins/dotimeout/jquery.ba-dotimeout.min.js';
-
         // Breadcrumbs
         $js[] = 'resources/js/jquery.breadcrumbs.js';
 
+        // TODO check these for section
         $js[] = "resources/$jsResourceLocation/newui/newUIFunctionality.$jsExt";
         $js[] = "resources/$jsResourceLocation/newui/jquery.helper.$jsExt";
         $js[] = "resources/$jsResourceLocation/newui/buttontabs.jquery.$jsExt";
+        $js[] = 'thirdpartyjs/jquery/plugins/dotimeout/jquery.ba-dotimeout.min.js';
 
         // load area specific files
         foreach ($jsIncludes as $jsFile => $includeLocations) {
