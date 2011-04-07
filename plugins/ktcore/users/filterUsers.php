@@ -23,6 +23,7 @@ if (empty($query)) {
 $type = KTUtil::arrayGet($_REQUEST, 'type');
 switch ($type) {
     case 'group':
+    case 'role':
         $where = "(name like '%$query%' OR username like '%$query%') AND id > 0 AND (disabled = 0 OR disabled = 3)";
         break;
     case 'alert':

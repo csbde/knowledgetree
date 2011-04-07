@@ -22,7 +22,7 @@
 					<span id="value-title">{i18n}{$document->getName()|sanitize}{/i18n}</span>
 					<span class="save-placeholder">&nbsp;</span>
 					<span title="Click to edit" class="editable-control edit">&nbsp;</span>
-					
+
 				</div>
 				{if $document->getIsCheckedOut()}<span class="status-indicator checkedout">{i18n}Checked Out{/i18n}</span>{/if}
                 {if $document->getImmutable()}<span class="status-indicator finalized">{i18n}Finalized{/i18n}</span>{/if}
@@ -121,7 +121,11 @@
                             {* Display the drop down menu's on the split buttons *}
                             <ul class="splitmenu" id="{$btn.icon_class}" style="right: auto; margin-left: -1px; ">
                                 {foreach item=menuitem from=$btn.menu}
-                                    <li><a class="button" id="{$menuitem.icon_class}" href="{$menuitem.url}" onclick='{$btn.onclick}'>{$menuitem.name}</a></li>
+                                    {if $menuitem.status === 'disabled'}
+                                        <li><span class="button disabled" id="{$menuitem.icon_class}">{$menuitem.name}</span></li>
+                                    {else}
+                                        <li><a class="button" id="{$menuitem.icon_class}" href="{$menuitem.url}" onclick='{$menuitem.onclick}'>{$menuitem.name}</a></li>
+                                    {/if}
                                 {/foreach}
                             </ul>
                         {else}
@@ -157,7 +161,11 @@
                                 {* Display the drop down menu's on the split buttons *}
                                 <ul class="splitmenu" id="{$btn.icon_class}">
                                     {foreach item=menuitem from=$btn.menu}
-                                        <li><a class="button" id="{$menuitem.icon_class}" href="{$menuitem.url}" onclick='{$btn.onclick}'>{$menuitem.name}</a></li>
+                                        {if $menuitem.status === 'disabled'}
+                                            <li><span class="button disabled" id="{$menuitem.icon_class}">{$menuitem.name}</span></li>
+                                        {else}
+                                            <li><a class="button" id="{$menuitem.icon_class}" href="{$menuitem.url}" onclick='{$menuitem.onclick}'>{$menuitem.name}</a></li>
+                                        {/if}
                                     {/foreach}
                                 </ul>
                             {else}
@@ -168,8 +176,10 @@
 
                     {* Display download / preview links *}
                     {foreach item=btn from=$actionBtns.links}
-                        <a href="{$btn.url}" onclick='{$btn.onclick}'><span class="share_url" id="{$btn.icon_class}">{$btn.name}</span></a>
+                        <a href="{$btn.url}" onclick='{$btn.onclick}'><span class="share_url" id="{$btn.icon_class}">{$btn.name}</span>&nbsp;<span class="{$btn.icon_class} none" style="visibility:hidden;">&nbsp;</span></a>
                     {/foreach}
+
+
       			</nobr>
             </div>
 
@@ -206,12 +216,12 @@
 {literal}
 <script type="text/javascript">
     jQuery(document).ready(function() {
-    	
+
     	window.onbeforeunload = function()
     	{
     		return kt.app.metadata.onbeforeunload();
     	}
-    	
+
     	//only allow to be editable if document not immutable!
         kt.app.metadata.setup({/literal}{$document->getImmutable()}{literal} == 0);
     });
