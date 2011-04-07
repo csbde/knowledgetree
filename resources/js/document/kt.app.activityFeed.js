@@ -99,7 +99,7 @@ kt.app.activityFeed = new function(){
 				jQuery('.activityfeed-more-text').show();
 			}
 			
-			kt.ui.activityFeed.toggleMore();	
+			kt.app.activityFeed.toggleMore();	
 		}
 	}
 }

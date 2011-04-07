@@ -175,7 +175,7 @@ class KTDocumentAction extends KTStandardDispatcher {
     function getInfo() {
         $check = $this->_show();
         if ($check === false) {
-            return null;
+            $check = 'disabled';
         }
 
         $icon = $this->sIconClass;

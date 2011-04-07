@@ -315,7 +315,7 @@ div.viewletworkflow {
 	font-weight: bold;
 }
 
-#content .doc_view .documentTitle {
+#content .doc_view .document-title {
 /*
 	font-family: "Times New Roman, Times, Courier";
 	letter-spacing: 0.08em;
@@ -327,17 +327,17 @@ div.viewletworkflow {
 	line-height:120%;
 	margin-right: 140px;
 }
-.documentTitle.active,
-.documentFilename.active {
+.document-title.active,
+.document-filename.active {
 	background: #D7E3EA;
 	padding: 5px;
 	border: 1px solid #B0D1E5;
 	display: inline-block;
 }
-.documentFilename {
+.document-filename {
 	display: inline-block;
 }
-.documentTitle input[type=text] {
+.document-title input[type=text] {
 	font-size: 100%;
 	width: 84%;
 }

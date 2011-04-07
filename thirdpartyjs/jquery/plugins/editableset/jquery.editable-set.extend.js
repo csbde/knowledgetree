@@ -114,7 +114,7 @@ function buildTree(fieldid, data, html)
 	}
 	else if (data.type == 'field')
 	{
-		html += '<li class="leafnode"><input type="radio" value="'+data.name+'" name="'+fieldid+'"/>'+data.name;	//span class="descriptiveText" data-name="'+fieldid+'" data-value-id="value_'+fieldid+'" data-options=\'['+value+']\'/></li>';
+		html += '<li class="leafnode"><input type="radio" value="'+data.name+'" name="'+fieldid+'"/>'+data.name;	//span class="descriptiveText" data-name="'+fieldid+'" data-value-id="value-'+fieldid+'" data-options=\'['+value+']\'/></li>';
 	}
 	
 	return html;
@@ -173,7 +173,10 @@ jQuery.editableSet.addInputType('datepicker', {
 					// beforeLoad callback
 					//jQuery.isFunction(opts.onInvalid) && opts.onInvalid.call(self);
 					//self.invalid.push('datePicker');
-					self.invalid.put(attrs['data-name'], 'Invalid date entered');
+					if (!self.invalid.containsKey(attrs['data-name']))
+					{
+						self.invalid.put(attrs['data-name'], 'Invalid date entered');
+					}
 					//dateField.setValue('');
 					//console.dir(self.invalid.values());
 				}/*,

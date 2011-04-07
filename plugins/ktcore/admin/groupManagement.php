@@ -242,7 +242,7 @@ class KTGroupAdminDispatcher extends KTAdminDispatcher {
         $members = KTJSONLookupWidget::formatMemberUsers($group->getMembers());
         $label['header'] = 'Users';
         $label['text'] = 'Select the users which should be part of this group. Once you have added all the users that you require, click <strong>save changes</strong>.';
-        $jsonWidget = KTJSONLookupWidget::getJsonUserSearchWidget($label, 'users', 'users', $members);
+        $jsonWidget = KTJSONLookupWidget::getUserSearchWidget($label, 'group', 'users', $members);
 
         return $this->renderTemplateWithWidget($group, $jsonWidget, 'ktcore/principals/groups_manageusers');
     }
@@ -386,16 +386,14 @@ class KTGroupAdminDispatcher extends KTAdminDispatcher {
         $options = array('selection_default' => 'Select groups', 'optgroups' => false);
         $label['header'] = 'Groups';
         $label['text'] = 'Select the sub-groups which should be part of this group. Once you have added all the sub-groups that you require, click <strong>save changes</strong>.';
-        $jsonWidget = KTJSONLookupWidget::getJsonGroupSelectorWidget(
-                                                                     $label,
-                                                                     'groups',
-                                                                     'groups',
-                                                                     $members,
-                                                                     $options,
-                                                                     $group->getId()
+        $jsonWidget = KTJSONLookupWidget::getGroupSelectorWidget(
+                                                                $label,
+                                                                'group',
+                                                                'groups',
+                                                                $members,
+                                                                $options,
+                                                                $group->getId()
         );
-
-        //$jsonWidget = $this->getJsonWidget('sub-groups', $settings, array('groups_roles' => $groups));
 
         return $this->renderTemplateWithWidget($group, $jsonWidget, 'ktcore/principals/groups_managesubgroups');
     }
