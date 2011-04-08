@@ -274,10 +274,6 @@ class KTPage {
             $this->requireJSStandalone('addLoadEvent(partial(initDeleteProtection, "' . _kt('Are you sure you wish to delete this item?') . '"));');
         }
 
-        /* event handling */
-        global $main;
-        $main->setBodyOnLoad('javascript: kt.eventhandler.run();');
-
         /* menu initialisation*/
         // FIXME:  how do we want to handle the menu?
         $this->initMenu();
