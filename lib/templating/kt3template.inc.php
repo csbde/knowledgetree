@@ -219,9 +219,9 @@ class KTPage {
         }
 
         if ($oConfig->get('ui/morphEnabled') == '1') {
-        	$morphTheme = $oConfig->get('ui/morphTo');
-        	$this->requireThemeCSSResource('skins/kts_' . $oConfig->get('ui/morphTo') . '/kt-morph.css');
-        	$this->requireThemeCSSResource('skins/kts_' . $oConfig->get('ui/morphTo') . '/kt-ie-morph.css', true);
+            $morphTheme = $oConfig->get('ui/morphTo');
+            $this->requireThemeCSSResource('skins/kts_' . $oConfig->get('ui/morphTo') . '/kt-morph.css');
+            $this->requireThemeCSSResource('skins/kts_' . $oConfig->get('ui/morphTo') . '/kt-ie-morph.css', true);
         }
 
         // IE only
