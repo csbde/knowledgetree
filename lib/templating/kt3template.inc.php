@@ -223,7 +223,7 @@ class KTPage {
         /* default js files initialisation */
         $js = Array();
 
-	//$js[] = 'thirdpartyjs/MochiKit/MochiKitPacked.js';
+		$js[] = 'thirdpartyjs/MochiKit/MochiKitPacked.js';
         $js[] = "resources/$jsResourceLocation/kt-utility.$jsExt";
         $js[] = 'presentation/i18nJavascript.php';
 
