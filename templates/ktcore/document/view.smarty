@@ -119,12 +119,12 @@
                             {/if}
 
                             {* Display the drop down menu's on the split buttons *}
-                            <ul class="splitmenu" id="{$btn.icon_class}" style="right: auto; margin-left: -1px; ">
+                            <ul class="splitmenu"  style="right: auto; margin-left: -1px; ">
                                 {foreach item=menuitem from=$btn.menu}
                                     {if $menuitem.status === 'disabled'}
                                         <li><span class="button disabled" id="{$menuitem.icon_class}">{$menuitem.name}</span></li>
                                     {else}
-                                        <li><a class="button" id="{$menuitem.icon_class}" href="{$menuitem.url}" onclick='{$menuitem.onclick}'>{$menuitem.name}</a></li>
+                                        <li><a id="{$menuitem.icon_class}" href="{$menuitem.url}" onclick='{$menuitem.onclick}'>{$menuitem.name}</a></li>
                                     {/if}
                                 {/foreach}
                             </ul>
@@ -159,12 +159,12 @@
                                 <div class="splitbutton"><span class="button" id="{$btn.icon_class}">{$btn.name}</span><span class="split">&#9660;</span></div>
 
                                 {* Display the drop down menu's on the split buttons *}
-                                <ul class="splitmenu" id="{$btn.icon_class}">
+                                <ul class="splitmenu" id="more">
                                     {foreach item=menuitem from=$btn.menu}
                                         {if $menuitem.status === 'disabled'}
                                             <li><span class="button disabled" id="{$menuitem.icon_class}">{$menuitem.name}</span></li>
                                         {else}
-                                            <li><a class="button" id="{$menuitem.icon_class}" href="{$menuitem.url}" onclick='{$menuitem.onclick}'>{$menuitem.name}</a></li>
+                                            <li><a id="{$menuitem.icon_class}" href="{$menuitem.url}" onclick='{$menuitem.onclick}'>{$menuitem.name}</a></li>
                                         {/if}
                                     {/foreach}
                                 </ul>

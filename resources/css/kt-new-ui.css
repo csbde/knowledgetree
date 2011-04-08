@@ -91,6 +91,7 @@ textarea {
 	-webkit-border-radius: 3px;
 	border-radius: 3px;
 	background: #FBFBFB !important;
+	word-wrap: 
 }
 .browseView.bulkActionMenu a:active {
 	-moz-box-shadow: inset 0px 0px 3px #bbb;
@@ -450,23 +451,35 @@ ul.floatleft li.notification {
 .action_buttons #download {
 	background: url('../graphics/newui/icons/download.png') no-repeat 4px 4px !important;
 }
-.action_buttons #download:hover {
+.action_buttons .hover #download {
 	background: url('../graphics/newui/icons/download_hover.png') no-repeat 4px 4px !important;
 }
 .action_buttons #edit-online {
 	background: url('../graphics/newui/icons/document_edit.png') no-repeat 5px 4px !important;
 }
+.action_buttons .hover #edit-online {
+	background: url('../graphics/newui/icons/document_edit_hover.png') no-repeat 5px 4px !important;
+}
 .action_buttons #share {
 	background: url('../graphics/newui/icons/share.png') no-repeat 4px 4px !important;
+}
+.action_buttons .hover #share {
+	background: url('../graphics/newui/icons/share_hover.png') no-repeat 4px 4px !important;
 }
 .action_buttons #checkout {
 	background: url('../graphics/newui/icons/lock.png') no-repeat 4px 4px;
 }
+.action_buttons .hover #checkout {
+	background: url('../graphics/newui/icons/lock_hover.png') no-repeat 4px 4px !important;
+}
 .action_buttons #checkin {
 	background: url('../graphics/newui/icons/lock_open.png') no-repeat 4px 4px;
 }
+.action_buttons .hover #checkin {
+	background: url('../graphics/newui/icons/lock_open_hover.png') no-repeat 4px 4px !important;
+}
 .action_buttons #cancel-checkout {
-	background: url('../graphics/newui/icons/lock_delete.png') no-repeat 4px 4px;
+	background: url('../graphics/newui/icons/lock_delete.png') no-repeat 1px 3px;
 }
 .action_buttons #move {
 	background: url('../graphics/newui/icons/cut.png') no-repeat 4px 4px;
@@ -478,22 +491,22 @@ ul.floatleft li.notification {
 	background: url('../graphics/newui/icons/document_edit.png') no-repeat 4px 4px;
 }
 .action_buttons #delete {
-	background: url('../graphics/newui/icons/document_delete.png') no-repeat 4px 4px;
+	background: url('../graphics/newui/icons/delete.png') no-repeat 4px 4px;
 }
 .action_buttons #archive {
-	/*background: url('../graphics/newui/icons/archive.png') no-repeat 4px 4px;*/
+	background: url('../graphics/newui/icons/archive.png') no-repeat 4px 4px;
 }
 .action_buttons #finalize {
-	background: url('../graphics/newui/doc_immutable.png') no-repeat 4px 4px;
+	background: url('../graphics/newui/icons/finalize.png') no-repeat 4px 4px;
 }
 .action_buttons #manage-workflow {
-	background: url('../graphics/newui/doc_workflow_info.png') no-repeat 4px 4px;
+	background: url('../graphics/newui/icons/workflow.png') no-repeat 4px 4px;
 }
 .action_buttons #ownership {
 	background: url('../graphics/newui/icons/users3_edit.png') no-repeat 4px 4px;
 }
 .action_buttons #email {
-	background: url('../graphics/newui/icons/mail2.png') no-repeat 4px 4px;
+	background: url('../graphics/newui/icons/mail.png') no-repeat 4px 4px;
 }
 .action_buttons #download-pdf {
 	background: url('../graphics/mimetypes/pdf.png') no-repeat 4px 4px;
