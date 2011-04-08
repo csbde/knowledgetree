@@ -167,7 +167,6 @@ class KTPage {
         //      to ones matching the current filter.
         $cssIncludes = array('resources/css/newui/newui.upload.css' => array('browse_collections', 'dashboard', 'document_details', 'administration'));
         $jsIncludes = array(
-                        'thirdpartyjs/MochiKit/MochiKitPacked.js' => array('browse_collections'),
                         'thirdpartyjs/jquery/plugins/ajaxupload/fileuploader.min.js' => array('browse_collections', 'dashboard'),
             	        'thirdpartyjs/jquery/plugins/loading/jquery.loading.1.6.4.min.js' => array('browse_collections', 'dashboard'),
                         "resources/$jsResourceLocation/newui/kt.eventhandler.$jsExt" => array('browse_collections', 'document_details', 'dashboard', 'administration'),
@@ -223,7 +222,7 @@ class KTPage {
         /* default js files initialisation */
         $js = Array();
 
-		$js[] = 'thirdpartyjs/MochiKit/MochiKitPacked.js';
+        $js[] = 'thirdpartyjs/MochiKit/MochiKitPacked.js';
         $js[] = "resources/$jsResourceLocation/kt-utility.$jsExt";
         $js[] = 'presentation/i18nJavascript.php';
 
@@ -270,10 +269,8 @@ class KTPage {
         }
 
         // this is horrid, but necessary.
-        if ($this->componentClass != 'administration') {
-            $this->requireJSStandalone('addLoadEvent(partial(initDeleteProtection, "' . _kt('Are you sure you wish to delete this item?') . '"));');
-        }
-
+        $this->requireJSStandalone('addLoadEvent(partial(initDeleteProtection, "' . _kt('Are you sure you wish to delete this item?') . '"));');
+        
         /* menu initialisation*/
         // FIXME:  how do we want to handle the menu?
         $this->initMenu();
