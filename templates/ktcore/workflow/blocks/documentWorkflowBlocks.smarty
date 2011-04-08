@@ -1,36 +1,51 @@
-<link href="/resources/css/newui/buttons/formActions.css" type="text/css" rel="stylesheet" />
-<script src="/resources/js/newui/buttons/formActions.js" type="text/javascript"></script>
+<link href="/resources/css/kt-workflow-modal.css" type="text/css" rel="stylesheet" />
+<link href="/resources/css/kt-new-modal.css" type="text/css" rel="stylesheet" />
 
-<h2>{i18n}Workflow for{/i18n}: {$oDocument->getName()|sanitize}</h2>
-<br/>
+<script src="/resources/js/newui/buttons/formActions.js" type="text/javascript"></script>
+<script src="/resources/js/newui/documents/blocks/workflowsBlock.js" type="text/javascript"></script>
+
 {if !$oWorkflow}
 
     <p>{i18n}Document is not currently assigned to a workflow.{/i18n}</p>
 
 {else}
 
-    <h3>{i18n}Current workflow settings{/i18n}</h3>
+<div class=workflow_details>
+	<table>
+		<td>
+	<div class=workflow_transition>
+	    {if $aTransitions}
+	        <form action="{$smarty.server.PHP_SELF}" method="POST" name="transition_wf_form">
+	            <input type="hidden" name="action" value="performTransition" />
+	            <input type="hidden" name="fDocumentId" value="{$oDocument->getId()}" />
+	            {foreach from=$transition_fields item=oWidget }
+	                {$oWidget->render()}
+	            {/foreach}
+	            <div class="form_actions">
+		            <input type="{$submit.type}" onclick="javascript: {ldelim}workflowBlock.submitForm('transition'){rdelim}; return false;" name="form_submit" value="{i18n}Perform Transition{/i18n}" />
+		            <a href="#" onclick="vActions.closeDisplay('workflow'); return false;" class="form_cancel" style="background: none repeat scroll 0% 0% transparent;">Cancel</a>
+	            </div>
+	        </form>
+	    {/if}
+	</div>
+		</td>
+		
+		<td>
+	<div class=workflow_info>
+		<label for=comment><b>{i18n}Workflow for{/i18n} :</b> </label>
+		<span> {$oDocument->getName()|sanitize} </span>
+		<br/>
+		<label for=comment><b>{i18n}Workflow{/i18n} :</b> </label>
+		<span>{$oWorkflow->getName()}</span>
+		<br/>
+		<label for=comment><b>{i18n}State{/i18n} :</b> </label>
+		<span>{$oState->getName()}</span>
+		<br/><br/>
+	</div>
+		</td>
+	</table>
+</div>
 
-    <dl class="metadata">
-        <dt>{i18n}Workflow{/i18n}</dt><dd>{$oWorkflow->getName()}</dd>
-        <dt>{i18n}State{/i18n}</dt><dd>{$oState->getName()}</dd>
-    </dl>
-
-    {if $aTransitions}
-        <form action="{$smarty.server.PHP_SELF}" method="POST" name="transition_wf_form">
-            <input type="hidden" name="action" value="performTransition" />
-            <input type="hidden" name="fDocumentId" value="{$oDocument->getId()}" />
-            <fieldset><legend>{i18n}Transition to another workflow state{/i18n}</legend>
-            {foreach from=$transition_fields item=oWidget }
-                {$oWidget->render()}
-            {/foreach}
-            <div class="form_actions">
-	            <input type="{$submit.type}" onclick="javascript: {ldelim}workflow.submitForm(){rdelim}; return false;" name="form_submit" value="{i18n}Perform Transition{/i18n}" />
-	            <input type="button" onclick="javascript: {ldelim}vActions.closeDisplay(){rdelim}; return false;" name="cancel" value="{i18n}Cancel{/i18n}" />
-            </div>
-            </fieldset>
-        </form>
-    {/if}
 {/if}
 <br/>
 
@@ -49,21 +64,22 @@
     {/if}
     {if $aWorkflows}
         {if $bHasPerm}
+        		<label for=comment><b>{i18n}Choose Workflow{/i18n}</b> </label>
             <form action="{$smarty.server.PHP_SELF}" method="POST" name="start_workflow_form">
 				<div class="widgetRow">
 					<div class="widgetItem">
-						<input type="hidden" name="action" value="startWorkflow" />
+						<input type="hidden" name="action" value="ajax_startWorkflow" />
 						<input type="hidden" name="fDocumentId" value="{$oDocument->getId()}" />
-					{entity_select entities=$aWorkflows name=fWorkflowId none=$none}
+						{entity_select entities=$aWorkflows name=fWorkflowId none=$none}
 					</div>
 					<div class="widgetItem">
 						<div class="form_actions">
 							{if !$oWorkflow}
-								<input type="{$submit.type}" onclick="javascript: {ldelim}workflow.submitForm(){rdelim}; return false;" name="form_submit" value="{i18n}Start Workflow{/i18n}" />
+								<input type="{$submit.type}" onclick="javascript: {ldelim}workflowBlock.submitForm('transition'){rdelim}; return false;" name="form_submit" value="{i18n}Start Workflow{/i18n}" />
 							{else}
-								<input type="{$submit.type}" onclick="javascript: {ldelim}workflow.submitForm(){rdelim}; return false;" name="form_submit" value="{i18n}Change Workflow{/i18n}" />
+								<input type="{$submit.type}" onclick="javascript: {ldelim}workflowBlock.submitForm('transition'){rdelim}; return false;" name="form_submit" value="{i18n}Change Workflow{/i18n}" />
 							{/if}
-							<input type="button" onclick="javascript: {ldelim}vActions.closeDisplay(){rdelim}; return false;" name="cancel" value="{i18n}Cancel{/i18n}" />
+							<a href="#" onclick="vActions.closeDisplay('workflow'); return false;" class="form_cancel" style="background: none repeat scroll 0% 0% transparent;">Cancel</a>
 						</div>
 					</div>
 				</div>
@@ -87,4 +103,3 @@
 	</div>
     {/if}
 {/if}
-

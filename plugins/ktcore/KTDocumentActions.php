@@ -2037,7 +2037,7 @@ class KTDocumentWorkflowAction extends KTDocumentAction {
                     _kt('Comment'), _kt(''),
                     'fComments', '',
                     $this->oPage, false, null, null,
-                    array('cols' => 80, 'rows' => 4));
+                    array('cols' => 55, 'rows' => 4));
             }
         }
 

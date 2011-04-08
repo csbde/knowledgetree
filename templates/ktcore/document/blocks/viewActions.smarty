@@ -6,7 +6,7 @@
 	<input id=alertState type=hidden value={$alertState} />
 	<input id=dsubscribeState type=hidden value={$subscribeState} />
 	
-	<a id=workflow_action class="workflow action {$workflowState}" href="javascript:{ldelim}workflow.displayAction();{rdelim}" value={$workflowState} title="Transition workflow state"></a>
+	<a id=workflow_action class="workflow action {$workflowState}" href="javascript:{ldelim}workflows.displayAction();{rdelim}" value={$workflowState} title="Transition workflow state"></a>
 	
 	<a id=alert_action class="alert action {$alertState}" href="javascript:{ldelim}alerts.displayAction();{rdelim}" value={$alertState} title="Add an alert"></a>
 	<a id=subscribe_action class="subscribe action {$subscribeState}" href="javascript:{ldelim}subscription.subscribeToDocument();{rdelim}" value={$subscribeState} title="Subscribe to this document"></a>

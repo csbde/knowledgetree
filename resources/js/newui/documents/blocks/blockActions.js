@@ -43,63 +43,24 @@ blockActions.prototype.getUrl = function(address, title) {
 	});
 };
 
-vActions = new blockActions();
-
-// ============================================================
-// Workflow Actions
-// ============================================================
-
-function workflowActions() {
-	this.baseUrl = 'action.php?action=ajax&';
-}
-
-/*
-* Display workflow window
+/* 
+* Refresh block
 */
-workflowActions.prototype.displayAction = function() {
-	var width;
-	var height;
-	var title;
-	var documentId = jQuery('#documentId').attr('value');
-	var workflowState = jQuery('#workflowState').attr('value');
-
-	if (workflowState == 'disabled') {
-		width = '400px';
-		height = '200px';
-		title = 'Add a new workflow';
-	}
-
-	// create html for form
-	vActions.createForm('workflow', title);
-    // create the window
-    this.win = new Ext.Window({
-        applyTo     : 'workflows',
-        layout      : 'fit',
-        width       : width,
-        height      : height,
-        closeAction :'destroy',
-        y           : 75,
-        shadow: false,
-        modal: true
-    });
-
-    this.win.show();
-
-    var address = this.baseUrl + 'kt_path_info=ktcore.actions.document.workflow&fDocumentId=' + documentId;
-
+blockActions.prototype.refeshAction = function(documentId) {
+	var address = 'action.php?kt_path_info=ktcore.blocks.document.status&fDocumentId=' + documentId + '&action=ajaxGetDocBlock';
 	jQuery.ajax({
 		type: "POST",
 		url: address,
 		success: function(data) {
-			jQuery('#add_workflow').html(data);
+			jQuery('#document_status_area').html(data);
 		},
 		error: function(response, code) {
-			alert('Error. Could not create add workflow form.' + response + code);
+			alert('Error. Could not reload document actions.'+response + code);
 		}
-	});
+	});	
 };
 
-workflow = new workflowActions();
+vActions = new blockActions();
 
 // ============================================================
 // Subscription Actions
