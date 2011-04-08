@@ -35,8 +35,8 @@ class webAjaxHandler{
 		$this->ret->addDebug('Raw Request',$this->rawRequestObject);
 		//Add additional parameters
 		$add_params=array_merge($_GET,$_POST);
-		unset($add_params['request'],$add_params['datasource']);
-		$this->request['parameters']=array_merge($this->request['parameters'],$add_params);
+		unset($add_params['request'],$add_params['datasource']);		
+		$this->request['parameters']=$this->request['parameters']+$add_params;	//array_merge($this->request['parameters'],$add_params);		
 		$this->parameters=$this->request['parameters'];
 		if(!$this->auth['debug'])$this->ret->includeDebug=false;
 		$this->ret->setRequest($this->req->jsonArray);

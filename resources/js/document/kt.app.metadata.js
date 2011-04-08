@@ -1,7 +1,7 @@
 if(typeof(kt.app)=='undefined')kt.app={};
 kt.app.metadata = new function()
 {	
-	var self = this;
+	//var self = this;
 	
 	this.setup = function(makeEditable)
 	{		
@@ -68,6 +68,7 @@ kt.app.metadata = new function()
 				
 				kt.app.metadata.setEditableRegions();
 			},
+			action: 'metadataService.changeDocumentTitle',
 			beforeLoad: function() {
 			},
 			afterLoad: function() {
@@ -81,14 +82,14 @@ kt.app.metadata = new function()
 				
 				//check whether all the required fields have been completed
 				var requiredDone = true;
-				var val = jQuery('input:text[name=document-title]').val();
+				var val = jQuery('input:text[name=documentTitle]').val();
 							
 				if(val == null || val == undefined || val == '' || val == 'no value')
 				{
 					jQuery('.editable-control', jQuery(this)).attr('title', 'Click to undo');
 					jQuery('.editable-control', jQuery(this)).removeClass('spin').addClass('undo');
 					//jQuery('input:text[name=document-title]', jQuery(this)).css('background-color', 'red');
-					jQuery('input:text[name=document-title]', jQuery(this)).addClass('incomplete');
+					jQuery('input:text[name=documentTitle]', jQuery(this)).addClass('incomplete');
 					requiredDone = false;
 				}
 				
@@ -96,22 +97,29 @@ kt.app.metadata = new function()
 			},
 			repopulate: function(){},
 			afterSave: function(data, status){
+				//console.log('setDocumentTitleEditable afterSave');
+				
+				//console.dir(data);
+				
 				jQuery('.editable-control', jQuery(this)).attr('title', 'Click to edit');
 				jQuery('.editable-control', jQuery(this)).removeClass('spin').addClass('edit');
 				jQuery('.editable-control', jQuery(this)).css('visibility', 'hidden');
 				
 				kt.app.metadata.setEditableRegions();
 				
-				if(data)
+				if(data && data.data)
 				{
-					if (data.success)
+					if (data.data.success)
 					{
-						jQuery('#value-title').text(data.success.documentTitle);
+						var parsedJSON = jQuery.parseJSON(data.data.success);
+						//console.log('success!');
+						//console.dir(parsedJSON);
+						jQuery('#value-title').text(parsedJSON[0].documentTitle);
 					}
 					else if (data.error)
 					{
 						jQuery('.editable-control', jQuery(this)).trigger('click');
-						jQuery('input:text[name=document-title]', jQuery(this)).val(data.error.documentFilename);
+						jQuery('input:text[name=documentTitle]', jQuery(this)).val(data.error.documentFilename);
 						jQuery('.form_submit', jQuery(this)).after('<br><span class="metadataError">'+data.error.message+'</span>');
 					}
 				}
@@ -151,13 +159,13 @@ kt.app.metadata = new function()
 				jQuery('.editable-control', jQuery(this)).removeClass('undo').addClass('spin');
 				
 				var requiredDone = true;
-				var val = jQuery('input:text[name=document-filename]').val();
+				var val = jQuery('input:text[name=documentFilename]').val();
 							
 				if(val == null || val == undefined || val == '' || val == 'no value')
 				{
 					jQuery('.editable-control', jQuery(this)).removeClass('spin').addClass('undo').attr('title', 'Click to undo');
-					//jQuery('input:text[name=document-filename]', jQuery(this)).css('background-color', 'red');
-					jQuery('input:text[name=document-filename]', jQuery(this)).addClass('incomplete');
+					//jQuery('input:text[name=documentFilename]', jQuery(this)).css('background-color', 'red');
+					jQuery('input:text[name=documentFilename]', jQuery(this)).addClass('incomplete');
 					requiredDone = false;
 				}
 				
@@ -504,6 +512,7 @@ kt.app.metadata = new function()
 		});
 		jQuery('.detail-fieldset').editableSet({
 			controlClass: 'editable-control',
+			action: 'metadataService.updateMetadata',
 			onCancel: function(){
 				jQuery('.editable-control', jQuery(this)).removeClass('undo').addClass('edit');
 				jQuery('.editable-control', jQuery(this)).css('visibility', 'hidden');
@@ -672,20 +681,37 @@ kt.app.metadata = new function()
 				jQuery('.editable-control', jQuery(this)).removeClass('spin').addClass('edit').attr('title', 'Click to edit');
 				jQuery('.editable-control', jQuery(this)).css('visibility', 'hidden');
 
-				//now pouplate the just-saved values
-				kt.app.metadata.updateValues(data, status);
-				//document type can be editable again
+				console.log('setMetadataEditable afterSave');
+				console.dir(data);
 				
+				if(data && data.data)
+				{
+					if (data.data.success)
+					{
+						var parsedJSON = jQuery.parseJSON(data.data.success);
+						//now pouplate the just-saved values
+						kt.app.metadata.updateValues(parsedJSON[0]);
+					}
+				}
+				
+				//document type can be editable again
 				kt.app.metadata.setEditableRegions();
 			}
 		});
 	}
 	
 	//populate the saved values in the form	
-	this.updateValues = function(data, status) 
+	this.updateValues = function(fields) 
 	{
-		jQuery.each(data.success.fields, function(index, field)
+		//console.log('updateValues');
+		//console.dir(fields);	
+	
+		jQuery.each(fields['fields'], function(index, field)
 		{
+			//console.log(index);
+			//console.dir(field);
+			//console.log('field.control_type '+field.control_type);
+			//console.log('field[control_type] '+field['control_type']);
 			switch(field.control_type)
 			{
 				case 'string':
@@ -744,20 +770,44 @@ kt.app.metadata = new function()
 		return atLeastOneRequiredNotDone ? 'If you leave this page now, your metadata will be in an inconsistent state.' : undefined;
 	}
 	
+	this.changeDocumentTitle = function(params)
+	{
+		//console.dir(params);
+		//console.log('changeDocumentTitle '+documentID+' '+newTitle);
+		//var tags = encodeURIComponent(jQuery('#tagcloud').val());
+        //var params = {'documentID': documentID, 'title': newTitle, };
+        var synchronous = false;
+        var func = 'metadataService.changeDocumentTitle';
+        ktjapi.callMethod(func, params, kt.app.metadata.updateSuccessful, synchronous, '', 30000);
+	}
+	
+	this.updateMetadata = function(params)
+	{
+		console.log('kt.app.metadata.updateMetadata');
+		console.dir(params);
+		//console.log('changeDocumentTitle '+documentID+' '+newTitle);
+		//var tags = encodeURIComponent(jQuery('#tagcloud').val());
+        //var params = {'documentID': documentID, 'title': newTitle, };
+        var synchronous = false;
+        var func = 'metadataService.updateMetadata';
+        ktjapi.callMethod(func, params, kt.app.metadata.updateSuccessful, synchronous, '', 30000);
+	}
+	
 	//TAG FUNCTIONALITY
 	this.saveTags = function(documentId)
     {
     	jQuery('.editable-control', jQuery('.tags')).removeClass('none').addClass('spin').css('visibility', 'visible');
         var tags = encodeURIComponent(jQuery('#tagcloud').val());
-        var params = {'tags': tags, 'documentId': documentId};
+       	var params = {'tags': tags, 'documentId': documentId};
         var synchronous = false;
         var func = 'metadataService.saveTags';
-        ktjapi.callMethod(func, params, self.updateSuccessful, synchronous, self.updateFailed, 30000);
+        ktjapi.callMethod(func, params, kt.app.metadata.updateSuccessful, synchronous, kt.app.metadata.updateFailed, 30000);
     }
 
     this.updateSuccessful = function()
     {
-        jQuery('.editable-control', jQuery('.tags')).removeClass('spin').addClass('none').css('visibility', 'hidden');
+    	console.log('updateSuccessful');
+        //jQuery('.editable-control', jQuery('.tags')).removeClass('spin').addClass('none').css('visibility', 'hidden');
         return;
     }
 
