@@ -143,8 +143,6 @@ class KTPage {
             $jsResourceLocation = $jsExt = 'js';
         }
 
-        $oConfig = KTConfig::getSingleton();
-
         /*
 
         Component classes not yet covered...
@@ -165,18 +163,28 @@ class KTPage {
         // TODO this maybe happens elsewhere and is laoded into the config object?
         // TODO consider 'all' option, which means will appear on any page.  These could be loaded in addition
         //      to ones matching the current filter.
-        $cssIncludes = array('resources/css/newui/newui.upload.css' => array('browse_collections', 'dashboard', 'document_details', 'administration'));
+
+        // Shortcuts - define the various combinations which are used.
+        // This is primarily to prevent wrapping of lines.
+        // NOTE $combined excludes only login and other special cases.
+        $combined = array('browse_collections', 'dashboard', 'document_details', 'administration');
+        $files = array('browse_collections', 'document_details');
+        $overviews = array('browse_collections', 'dashboard');
+
+        $cssIncludes = array('resources/css/newui/newui.upload.css' => $combined);
         $jsIncludes = array(
-                        'thirdpartyjs/jquery/plugins/ajaxupload/fileuploader.min.js' => array('browse_collections', 'dashboard'),
-            	        'thirdpartyjs/jquery/plugins/loading/jquery.loading.1.6.4.min.js' => array('browse_collections', 'dashboard'),
-                        "resources/$jsResourceLocation/newui/kt.eventhandler.$jsExt" => array('browse_collections', 'document_details', 'dashboard', 'administration'),
-	                    "resources/$jsResourceLocation/newui/kt.app.upload.$jsExt" => array('browse_collections', 'dashboard'),
-	                    "resources/$jsResourceLocation/newui/kt.app.inviteusers.$jsExt" => array('browse_collections', 'document_details', 'dashboard', 'administration'),
-                        "resources/$jsResourceLocation/newui/kt.app.sharewithusers.$jsExt" => array('browse_collections', 'document_details'),
-            	        "resources/$jsResourceLocation/jquery.blockui.$jsExt" => array('browse_collections', 'document_details', 'dashboard', 'administration'),
+                        'thirdpartyjs/jquery/plugins/ajaxupload/fileuploader.min.js' => $overviews,
+            	        'thirdpartyjs/jquery/plugins/loading/jquery.loading.1.6.4.min.js' => $overviews,
+                        "resources/$jsResourceLocation/newui/kt.eventhandler.$jsExt" => $combined,
+                        "resources/$jsResourceLocation/newui/kt.app.upload.$jsExt" => $overviews,
+                        "resources/$jsResourceLocation/newui/kt.app.inviteusers.$jsExt" => $combined,
+                        "resources/$jsResourceLocation/newui/kt.app.sharewithusers.$jsExt" => $files,
+            	        "resources/$jsResourceLocation/jquery.blockui.$jsExt" => $combined,
             	        //'resources/js/toggleselect.js' => array('browse_collections'),
                         "resources/$jsResourceLocation/newui/browse.helper.$jsExt" => array('browse_collections')
                       );
+
+        $oConfig = KTConfig::getSingleton();
 
         // set the system url
         $this->systemURL = $oConfig->get('ui/systemUrl');
@@ -270,7 +278,7 @@ class KTPage {
 
         // this is horrid, but necessary.
         $this->requireJSStandalone('addLoadEvent(partial(initDeleteProtection, "' . _kt('Are you sure you wish to delete this item?') . '"));');
-        
+
         /* menu initialisation*/
         // FIXME:  how do we want to handle the menu?
         $this->initMenu();
