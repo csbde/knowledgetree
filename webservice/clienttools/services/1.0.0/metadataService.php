@@ -359,7 +359,7 @@ class metadataService extends client_service {
 							//remove the outer elements of the array as we don't need them!
 							$selection = $selection[0];
 							//we need to get rid of values that we do not need else the JSON object we create will be incorrect!
-							SimpleFieldsetDisplay::recursive_unset($selection, array('treeid', 'parentid', 'fieldid'));
+							$this->recursive_unset($selection, array('treeid', 'parentid', 'fieldid'));
 							
 							//now convert to JSON
 							$selection = json_encode($selection);
@@ -793,6 +793,25 @@ class metadataService extends client_service {
 
         return $metadataPack;
     }
+    
+    /**
+     * Recursively unsets elements from a nested array
+     *
+     * @param array $array Array to unset from
+     * @param array $unwanted_keys Array of keys to remove
+     */
+    private function recursive_unset(&$array, $unwanted_keys) {
+    	foreach($unwanted_keys as $unwanted_key)
+    	{
+	    	unset($array[$unwanted_key]);
+    	}
+    	
+	    foreach ($array as &$value) {
+	        if (is_array($value)) {
+	            $this->recursive_unset($value, $unwanted_keys);
+	        }
+	    }
+	}
 
 }
 
