@@ -1,6 +1,7 @@
 <?php
 
 require_once(KT_LIB_DIR . '/documentmanagement/documentutil.inc.php');
+require_once(KT_LIB_DIR . '/widgets/fieldsetDisplay.inc.php');
 
 // TODO Too much copy/paste going on.
 //      Get rid of old code or if still used then abstract out common sections.
@@ -359,7 +360,7 @@ class metadataService extends client_service {
 							//remove the outer elements of the array as we don't need them!
 							$selection = $selection[0];
 							//we need to get rid of values that we do not need else the JSON object we create will be incorrect!
-							$this->recursive_unset($selection, array('treeid', 'parentid', 'fieldid'));
+							SimpleFieldsetDisplay::recursive_unset($selection, array('treeid', 'parentid', 'fieldid'));
 							
 							//now convert to JSON
 							$selection = json_encode($selection);
@@ -793,26 +794,6 @@ class metadataService extends client_service {
 
         return $metadataPack;
     }
-    
-    /**
-     * Recursively unsets elements from a nested array
-     *
-     * @param array $array Array to unset from
-     * @param array $unwanted_keys Array of keys to remove
-     */
-    private function recursive_unset(&$array, $unwanted_keys) {
-    	foreach($unwanted_keys as $unwanted_key)
-    	{
-	    	unset($array[$unwanted_key]);
-    	}
-    	
-	    foreach ($array as &$value) {
-	        if (is_array($value)) {
-	            $this->recursive_unset($value, $unwanted_keys);
-	        }
-	    }
-	}
-
 }
 
 ?>
