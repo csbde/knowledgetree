@@ -57,26 +57,13 @@
 				}
 			}
 			
-			//now call the save function
-			//console.log('extra params '+opts.params);
-			//console.dir($.parseJSON(opts.params));
-			/*var obj = jQuery.parseJSON('{"name":"John"}');
-			alert( obj.name === "John" );*/
-			
+			//now call the appropriate function
 			var params = $('form', self).serializeForm($.parseJSON(opts.params));
-			//console.log('params1');
-			console.dir(params);
-			/*params = {'documentID': '15928', 'documentTitle': 'newTitle' };
-			console.log('params2');
-			console.dir(params);*/		
 			
-			var func = opts.action;	//'metadataService.changeDocumentTitle';
+			var func = opts.action;
 			
-			console.log('func '+func);
-			
-    		ktjapi.callMethod(func, params, function(data, textStatus) {    			
-				//console.dir(data);
-				
+			ktjapi.callMethod(func, params, function(data, textStatus) 
+			{ 				
 				// Parse the data if necessary
 				data = $.parseJSON(data) ? $.parseJSON(data) : data;
 	
@@ -103,7 +90,7 @@
 				}			
 	
 				// afterSave Callback			
-				$.isFunction(opts.afterSave) && opts.afterSave.call(self, data, textStatus);
+				$.isFunction(opts.afterSave) && opts.afterSave.call(self, data.data, textStatus);
 			}, 
 			
 			false, 
@@ -119,7 +106,7 @@
 				$.isFunction(opts.onError) && opts.onError.call(self, xhr, status);
 			}, 
 			
-			30000);
+			30000, 30000);
 						
 			/*var form = $('div', self);
 			var action = form.attr( 'action' );
@@ -220,7 +207,7 @@
 			{
 				control = $(self);
 			}
-			//$(self).bind( opts.event, function(e) {
+
 			control.bind(event+'.editableSet', function(e) {
 				e.preventDefault();
 				e.stopPropagation();
@@ -229,13 +216,13 @@
 					return;
 				}
 				
-				self.invalid = new Hashtable();	//Array();
+				//hashtable for storing fields that are invalid
+				self.invalid = new Hashtable();
 				self.editing = true;
 				self.revert = $(self).html();
 				
 				// Assign an action dynamically
 				if( $(self).attr( 'rel' ) ) {
-					//console.dir($(self).attr( 'rel' ));
 					opts.params = $(self).attr( 'rel' );
 				}
 				else

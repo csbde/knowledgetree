@@ -18,7 +18,6 @@
                 <td colspan="2" id="title_row">
 				{* Display Actions Block *}
 				{$documentBlocks->getDocBlock()}
-				<!--<div class="document-title" rel={$rootUrl}/presentation/lookAndFeel/knowledgeTree/widgets/updateMetadata.php?func=title&documentID={$document->getId()}>-->
 				<div class="document-title" rel='{literal}{{/literal}"documentID":"{$document->getId()}"{literal}}{/literal}'>
 				<span data-name="documentTitle" data-type='text' data-value-id="value-title" data-class="required"></span>
 					<span id="value-title">{i18n}{$document->getName()|sanitize}{/i18n}</span>
@@ -28,7 +27,7 @@
 				</div>
 				{if $document->getIsCheckedOut()}<span class="status-indicator checkedout">{i18n}Checked Out{/i18n}</span>{/if}
                 {if $document->getImmutable()}<span class="status-indicator finalized">{i18n}Finalized{/i18n}</span>{/if}
-				<div class="document-filename" rel={$rootUrl}/presentation/lookAndFeel/knowledgeTree/widgets/updateMetadata.php?func=filename&documentID={$document->getId()}>
+				<div class="document-filename" rel='{literal}{{/literal}"documentID":"{$document->getId()}"{literal}}{/literal}'>
 				<span data-name="documentFilename" data-type='text' data-value-id="value-filename" data-class="required"></span>
 					<span id="value-filename"><p>{$document->getFileName()}</p></span>
 					<span class="save-placeholder">&nbsp;</span>
@@ -66,17 +65,15 @@
 							<th>File type:</th><td>{$fieldsetDisplayHelper->_sizeHelper($document->getSize())} {$fieldsetDisplayHelper->_mimeHelper($document->getMimeTypeID())}.</td>
 							</tr>
 						</table>
-					<div class="document-tags">
+					<div class="document-tags" rel='{literal}{{/literal}"documentID":"{$document->getId()}"{literal}}{/literal}'>
 					<span title="Click to edit" class="editable-control edit">&nbsp;</span>
                         <br/>
-                        <!--<input type="text" name="tagcloud" id="tagcloud" />-->
                         <span data-id="tagcloud" data-name="tagcloud" data-type='tokeninput' data-tags='{$tags}' data-tag-script='{$tagFilterScript}' data-value-id="value-token"></span>
                         <br/>
-                        <!--<input type="button" value="Save Tags" onclick="kt.app.metadata.saveTags({$document_id});" />-->
                     </div>
 					<br/>
 					<h3 id="metadata-title">Document Properties</h3>
-					<div class="document-type" rel="{$rootUrl}/presentation/lookAndFeel/knowledgeTree/widgets/updateMetadata.php?func=doctype&documentID={$document->getId()}">
+					<div class="document-type" rel='{literal}{{/literal}"documentID":"{$document->getId()}"{literal}}{/literal}'>
 					<table class="metadatatable" cellspacing="0" cellpadding="5">
 					<tr class="metadatarow even first">
 						<th>Document Type</th>

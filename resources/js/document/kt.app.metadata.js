@@ -62,13 +62,13 @@ kt.app.metadata = new function()
 		jQuery('.document-title').editableSet({
 			titleElement: '.save-placeholder',
 			controlClass: 'editable-control',
+			action: 'metadataService.changeDocumentTitle',
 			onCancel: function(){
 				jQuery('.editable-control', jQuery(this)).attr('title', 'Click to edit');
 				jQuery('.editable-control', jQuery(this)).removeClass('undo').addClass('edit');
 				
 				kt.app.metadata.setEditableRegions();
 			},
-			action: 'metadataService.changeDocumentTitle',
 			beforeLoad: function() {
 			},
 			afterLoad: function() {
@@ -97,30 +97,27 @@ kt.app.metadata = new function()
 			},
 			repopulate: function(){},
 			afterSave: function(data, status){
-				//console.log('setDocumentTitleEditable afterSave');
-				
-				//console.dir(data);
-				
 				jQuery('.editable-control', jQuery(this)).attr('title', 'Click to edit');
 				jQuery('.editable-control', jQuery(this)).removeClass('spin').addClass('edit');
 				jQuery('.editable-control', jQuery(this)).css('visibility', 'hidden');
 				
 				kt.app.metadata.setEditableRegions();
 				
-				if(data && data.data)
+				if(data)
 				{
-					if (data.data.success)
+					var parsedJSON = '';
+					
+					if (data.success)
 					{
-						var parsedJSON = jQuery.parseJSON(data.data.success);
-						//console.log('success!');
-						//console.dir(parsedJSON);
+						parsedJSON = jQuery.parseJSON(data.success);
 						jQuery('#value-title').text(parsedJSON[0].documentTitle);
 					}
 					else if (data.error)
 					{
+						parsedJSON = jQuery.parseJSON(data.success);
 						jQuery('.editable-control', jQuery(this)).trigger('click');
-						jQuery('input:text[name=documentTitle]', jQuery(this)).val(data.error.documentFilename);
-						jQuery('.form_submit', jQuery(this)).after('<br><span class="metadataError">'+data.error.message+'</span>');
+						jQuery('input:text[name=documentTitle]', jQuery(this)).val(parsedJSON[0].documentFilename);
+						jQuery('.form_submit', jQuery(this)).after('<br><span class="metadataError">'+parsedJSON[0].message+'</span>');
 					}
 				}
 			}
@@ -142,6 +139,7 @@ kt.app.metadata = new function()
 		jQuery('.document-filename').editableSet({
 			titleElement: '.save-placeholder',
 			controlClass: 'editable-control',
+			action: 'metadataService.changeDocumentFilename',
 			onCancel: function(){
 				jQuery('.editable-control', jQuery(this)).removeClass('undo').addClass('edit').attr('title', 'Click to edit');
 				
@@ -180,16 +178,18 @@ kt.app.metadata = new function()
 				
 				if(data)
 				{
+					var parsedJSON = '';
 					if (data.success)
 					{
-						jQuery('#value-filename').text(data.success.documentFilename);
+						parsedJSON = jQuery.parseJSON(data.success);
+						jQuery('#value-filename').text(parsedJSON[0].documentFilename);
 					}
 					else if (data.error)
 					{
-						//console.log(data.error.message);
+						parsedJSON = jQuery.parseJSON(data.error);
 						jQuery('.editable-control', jQuery(this)).trigger('click');
 						//jQuery('input[name=document-filename]', jQuery(this)).css('background-color', 'red').val(data.error.documentFilename);
-						jQuery('.form_submit', jQuery(this)).after('<br><span class="metadataError">'+data.error.message+'</span>');
+						jQuery('.form_submit', jQuery(this)).after('<br><span class="metadataError">'+parsedJSON[0].message+'</span>');
 					}
 				}
 			}
@@ -211,6 +211,7 @@ kt.app.metadata = new function()
 		jQuery('.document-tags').editableSet({
 			titleElement: '.save-placeholder',
 			controlClass: 'editable-control',
+			action: 'metadataService.saveTags',
 			onCancel: function(){
 				jQuery('.editable-control', jQuery(this)).attr('title', 'Click to edit');
 				jQuery('.editable-control', jQuery(this)).removeClass('undo').addClass('edit');
@@ -253,6 +254,7 @@ kt.app.metadata = new function()
 		});
 		jQuery('.document-type').editableSet({
 			controlClass: 'editable-control',
+			action: 'metadataService.changeDocumentType',
 			onCancel: function(){
 				jQuery('.editable-control', jQuery(this)).removeClass('undo').addClass('edit').attr('title', 'Click to edit');
 				
@@ -277,8 +279,10 @@ kt.app.metadata = new function()
 				//reset the document fields to reflect the new document type								
 				if(data && data.success)
 				{
+					parsedJSON = jQuery.parseJSON(data.success);
+					
 					//update the Document Type span text
-					jQuery('#documentTypeID').html(data.success.documentTypeName);
+					jQuery('#documentTypeID').html(parsedJSON[0].documentTypeName);
 					
 					//reset the document fields to reflect the new document type
 					jQuery('.editableMetadata').empty();
@@ -290,7 +294,7 @@ kt.app.metadata = new function()
 					//editableDiv.attr('rel', './lib/widgets/persistMetadata.php?documentID='+jQuery('#documentidembedded').html());
 					
 					//create div for each fieldset
-					jQuery.each(data.success.metadata, function(index, fieldset)
+					jQuery.each(parsedJSON[0].metadata, function(index, fieldset)
 					{
 						var fieldsetDiv = jQuery('<div>').addClass('detail-fieldset');
 						var header = jQuery('<h3>').text(fieldset.name).attr('title', fieldset.description);
@@ -300,7 +304,7 @@ kt.app.metadata = new function()
 						fieldsetDiv.append(header);
 						
 						//NB: set its rel attribute because this is used as the "action" url
-						fieldsetDiv.attr('rel', '/presentation/lookAndFeel/knowledgeTree/widgets/updateMetadata.php?func=metadata&documentID='+data.success.documentID);	//+'&fieldsetID='+fieldset.fieldsetid);
+						fieldsetDiv.attr('rel', '{"documentID":"'+parsedJSON[0].documentID+'"}');
 
 						//create the div to contain the fields
 						var table = jQuery('<table>').addClass('metadatatable').attr('cellspacing', '0').attr('cellpadding', '5');
@@ -339,7 +343,7 @@ kt.app.metadata = new function()
 					jQuery('.document-type').after(editableDiv);
 					
 					//need to insert the 'more ... less' slider widget after 2nd fieldset
-					if(data.success.metadata.length > 2)
+					if(parsedJSON[0].metadata.length > 2)
 					{
 						jQuery('.detail-fieldset:eq(1)').after('<br/><div><span class="more">More...</span></div><br/>');
 						jQuery('.detail-fieldset:gt(1)').wrapAll('<div class="slide" style="display:none" />');
@@ -530,7 +534,6 @@ kt.app.metadata = new function()
 						jQuery('#'+elementID, me).val('');
 						jQuery('#metadatafield-'+elementID, me).addClass('incomplete');
 						jQuery('.form_submit', me).after('&nbsp;&nbsp;<span style="color:red; font-size:10px">'+hashInvalids.get(elementID)+'</span>');
-						//console.log(hashInvalids.get(elementID));
 					}
 				});
 			},
@@ -552,8 +555,7 @@ kt.app.metadata = new function()
 				jQuery('.required', jQuery(this)).each(function(index)
 				{
 					//get the fields id: to chop off the "metadatafield-" prefix
-					var id = (jQuery(this).attr('id').substring(jQuery(this).attr('id').indexOf('_')+1));
-					//console.log('I am required '+id);
+					var id = (jQuery(this).attr('id').substring(jQuery(this).attr('id').indexOf('-')+1));
 					
 					//the first <td> contains the element we are interested in
 					var firstTD = jQuery('td:first', jQuery(this));
@@ -680,15 +682,12 @@ kt.app.metadata = new function()
 			afterSave: function(data, status){
 				jQuery('.editable-control', jQuery(this)).removeClass('spin').addClass('edit').attr('title', 'Click to edit');
 				jQuery('.editable-control', jQuery(this)).css('visibility', 'hidden');
-
-				console.log('setMetadataEditable afterSave');
-				console.dir(data);
 				
-				if(data && data.data)
+				if(data)
 				{
-					if (data.data.success)
+					if (data.success)
 					{
-						var parsedJSON = jQuery.parseJSON(data.data.success);
+						var parsedJSON = jQuery.parseJSON(data.success);
 						//now pouplate the just-saved values
 						kt.app.metadata.updateValues(parsedJSON[0]);
 					}
@@ -703,15 +702,8 @@ kt.app.metadata = new function()
 	//populate the saved values in the form	
 	this.updateValues = function(fields) 
 	{
-		//console.log('updateValues');
-		//console.dir(fields);	
-	
 		jQuery.each(fields['fields'], function(index, field)
 		{
-			//console.log(index);
-			//console.dir(field);
-			//console.log('field.control_type '+field.control_type);
-			//console.log('field[control_type] '+field['control_type']);
 			switch(field.control_type)
 			{
 				case 'string':
@@ -769,53 +761,6 @@ kt.app.metadata = new function()
 		
 		return atLeastOneRequiredNotDone ? 'If you leave this page now, your metadata will be in an inconsistent state.' : undefined;
 	}
-	
-	this.changeDocumentTitle = function(params)
-	{
-		//console.dir(params);
-		//console.log('changeDocumentTitle '+documentID+' '+newTitle);
-		//var tags = encodeURIComponent(jQuery('#tagcloud').val());
-        //var params = {'documentID': documentID, 'title': newTitle, };
-        var synchronous = false;
-        var func = 'metadataService.changeDocumentTitle';
-        ktjapi.callMethod(func, params, kt.app.metadata.updateSuccessful, synchronous, '', 30000);
-	}
-	
-	this.updateMetadata = function(params)
-	{
-		console.log('kt.app.metadata.updateMetadata');
-		console.dir(params);
-		//console.log('changeDocumentTitle '+documentID+' '+newTitle);
-		//var tags = encodeURIComponent(jQuery('#tagcloud').val());
-        //var params = {'documentID': documentID, 'title': newTitle, };
-        var synchronous = false;
-        var func = 'metadataService.updateMetadata';
-        ktjapi.callMethod(func, params, kt.app.metadata.updateSuccessful, synchronous, '', 30000);
-	}
-	
-	//TAG FUNCTIONALITY
-	this.saveTags = function(documentId)
-    {
-    	jQuery('.editable-control', jQuery('.tags')).removeClass('none').addClass('spin').css('visibility', 'visible');
-        var tags = encodeURIComponent(jQuery('#tagcloud').val());
-       	var params = {'tags': tags, 'documentId': documentId};
-        var synchronous = false;
-        var func = 'metadataService.saveTags';
-        ktjapi.callMethod(func, params, kt.app.metadata.updateSuccessful, synchronous, kt.app.metadata.updateFailed, 30000);
-    }
-
-    this.updateSuccessful = function()
-    {
-    	console.log('updateSuccessful');
-        //jQuery('.editable-control', jQuery('.tags')).removeClass('spin').addClass('none').css('visibility', 'hidden');
-        return;
-    }
-
-    this.updateFailed = function()
-    {
-        alert('the sweet sound of failure');
-        return;
-    }
 	
 }
  

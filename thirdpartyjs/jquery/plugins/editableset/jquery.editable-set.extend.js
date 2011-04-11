@@ -123,7 +123,6 @@ function buildTree(fieldid, data, html)
 jQuery.editableSet.addInputType('datepicker', {
 	 /* create input element */
 	element : function(object, attrs, self) {
-		//console.dir(opts);
 		var val = '';
 		if (attrs['data-value-id'] != null)
 		{
@@ -157,39 +156,13 @@ jQuery.editableSet.addInputType('datepicker', {
 	        		} catch (err) {
 	        		}
 				},
-				/*'valid': function(dateField) {
-					console.log('valid date is '+dateField.getValue());
-					if (!dateField.getValue())
-					{
-						console.log('false valid date');
-					}
-					else
-					{
-					}
-				},*/
 				'invalid': function(dateField) {
-					//console.log('invalid date is '+dateField.getValue());
-
-					// beforeLoad callback
-					//jQuery.isFunction(opts.onInvalid) && opts.onInvalid.call(self);
-					//self.invalid.push('datePicker');
 					if (!self.invalid.containsKey(attrs['data-name']))
 					{
+						//add it to the hashtable that contains invalid fields
 						self.invalid.put(attrs['data-name'], 'Invalid date entered');
 					}
-					//dateField.setValue('');
-					//console.dir(self.invalid.values());
-				}/*,
-				'change': function(dateField, date) {
-					console.log('change date is '+dateField.getValue());
-					if (!dateField.getValue())
-					{
-						console.log('false change date');
-					}
-					else
-					{
-					}
-				}*/
+				}
 	    	}
    		});
 
