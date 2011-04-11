@@ -171,17 +171,17 @@
 .doc.browseView .actionMenu .actionIcon.actions:hover > ul { display: block; }
 .doc.browseView .actionMenu .actionIcon.actions > ul li.action_copy { background: url("../../../resources/graphics/newui/icons/copy.png") no-repeat left center !important; }
 .doc.browseView .actionMenu .actionIcon.actions > ul li.action_move { background: url("../../../resources/graphics/newui/icons/cut.png") no-repeat left center !important; }
-.doc.browseView .actionMenu .actionIcon.actions > ul li.action_delete { background: url("../../../resources/graphics/newui/icons/document_delete.png") no-repeat left center !important; }
-.doc.browseView .actionMenu .actionIcon.actions > ul li.action_download { background: url("../../../resources/graphics/newui/icons/arrow_down_green.png") no-repeat left center !important; }
-.doc.browseView .actionMenu .actionIcon.actions > ul li.action_share_document { background: url("../../../resources/graphics/newui/icons/hand_offer.png") no-repeat left center !important; }
+.doc.browseView .actionMenu .actionIcon.actions > ul li.action_delete { background: url("../../../resources/graphics/newui/icons/delete.png") no-repeat left center !important; }
+.doc.browseView .actionMenu .actionIcon.actions > ul li.action_download { background: url("../../../resources/graphics/newui/icons/download.png") no-repeat left center !important; }
+.doc.browseView .actionMenu .actionIcon.actions > ul li.action_share_document { background: url("../../../resources/graphics/newui/icons/share.png") no-repeat left center !important; }
 .doc.browseView .actionMenu .actionIcon.actions > ul li.action_instant_view { background: url("../../../resources/graphics/newui/icons/document_view.png") no-repeat left center !important; }
 .doc.browseView .actionMenu .actionIcon.actions > ul li.action_checkout { background: url("../../../resources/graphics/newui/icons/lock.png") no-repeat left center !important; }
 .doc.browseView .actionMenu .actionIcon.actions > ul li.action_cancel_checkout { background: url("../../../resources/graphics/newui/icons/lock_delete.png") no-repeat left center !important; }
 .doc.browseView .actionMenu .actionIcon.actions > ul li.action_checkin { background: url("../../../resources/graphics/newui/icons/lock_open.png") no-repeat left center !important; }
 .doc.browseView .actionMenu .actionIcon.actions > ul li.action_alerts { background: url("../../../resources/graphics/newui/icons/alarmclock.png") no-repeat left center !important; }
 .doc.browseView .actionMenu .actionIcon.actions > ul li.action_email { background: url("../../../resources/graphics/newui/icons/mail.png") no-repeat left center !important; }
-.doc.browseView .actionMenu .actionIcon.actions > ul li.action_change_owner { background: url("../../../resources/graphics/newui/icons/users1.png") no-repeat left center !important; }
-.doc.browseView .actionMenu .actionIcon.actions > ul li.action_finalize_document { background: url("../../../resources/graphics/newui/doc_immutable.png") no-repeat left center !important; }
+.doc.browseView .actionMenu .actionIcon.actions > ul li.action_change_owner { background: url("../../../resources/graphics/newui/icons/users3_edit.png") no-repeat left center !important; }
+.doc.browseView .actionMenu .actionIcon.actions > ul li.action_finalize_document { background: url("../../../resources/graphics/newui/icons/finalize.png") no-repeat left center !important; }
 .doc.browseView .actionMenu .actionIcon.actions > ul li.action_zoho_document { background: url("../../../resources/graphics/newui/icons/document_edit.png") no-repeat left center !important; }
 .doc.browseView .actionMenu .actionIcon.actions > ul li.action_share_folder { background: url("../../../resources/graphics/newui/icons/hand_offer.png") no-repeat left center !important; }
 .doc.browseView .actionMenu .actionIcon.actions > ul li.action_rename_folder { background: url("../../../resources/graphics/newui/icons/folder_edit.png") no-repeat left center !important; }
