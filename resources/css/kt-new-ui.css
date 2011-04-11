@@ -11,7 +11,7 @@ body {
 }
 textarea {
 	/*font-family: Arial;*/
-	font-family: tahoma,arial,helvetica,sans-serif; 
+	font-family: tahoma,arial,helvetica,sans-serif;
 	font-size: 11px;
 }
 /* ------------------ Experimental UI --------------------- */
@@ -957,7 +957,7 @@ label span.required
 .modalField textarea {
 	color: #666;
 	border-color: #ccc;
-} 
+}
 
 
 .modalField input {
@@ -988,6 +988,9 @@ label span.required
 	border: none;
 	list-style: none;
 	padding: 0px;
+        width: 310px;
 }
+
 #content .tags div.token-input-dropdown-facebook {
+        width: 310px;
 }
