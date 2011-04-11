@@ -47,7 +47,7 @@ class IndexerInconsistencyException extends Exception {};
 // TODO: Query Result Items code should be moved into the Search section. It has less to do with indexing...
 
 class QueryResultItem {
-    
+
     protected $id;
     protected $title;
     protected $rank;
@@ -130,11 +130,11 @@ class QueryResultItem {
         }
         throw new Exception("Unknown property '$property' to set on QueryResultItem");
     }
-    
+
 }
 
 class ProxyResultItem extends QueryResultItem {
-    
+
     protected $proxy;
     protected $proxyId;
 
@@ -175,11 +175,11 @@ class ProxyResultItem extends QueryResultItem {
             return $this->proxy->$method($value);
         }
     }
-    
+
 }
 
 class DocumentResultItem extends QueryResultItem {
-    
+
     protected $filesize;
     protected $live;
     protected $version;
@@ -264,10 +264,17 @@ class DocumentResultItem extends QueryResultItem {
             throw new IndexerInconsistencyException(sprintf(_kt('%s') , $msg));
         }
 
+        // FIXME ! This is about as evil as it gets - after getting data through a straight qeury PER result,
+        //         we now need to ALSO get a document object, just to get the correct timezone adjusted dates!
+        $document = Document::get($this->id);
+        $result['created'] = $document->getDisplayCreatedDateTime();
+        $result['modified'] = $document->getDisplayLastModifiedDate();
+        $result['checkedout'] = $document->getDisplayCheckedOutDate();
+
         // document_id, relevance, text, title
 
         $this->documentType = $result['document_type'];
-        $this->filename=$result['filename'];
+        $this->filename = $result['filename'];
         $this->filesize = KTUtil::filesizeToString($result['filesize']);
         $this->folderId = $result['folder_id'];
         $this->title = $result['title'];
@@ -285,7 +292,7 @@ class DocumentResultItem extends QueryResultItem {
 
         $this->version = $result['major_version'] . '.' . $result['minor_version'];
 
-        $this->immutable = ($result['immutable'] + 0)?_kt('Immutable'):'';
+        $this->immutable = ($result['immutable'] + 0) ? _kt('Immutable') : '';
 
         $this->workflow = $result['workflow'];
         $this->workflowState = $result['workflowstate'];
@@ -329,7 +336,7 @@ class DocumentResultItem extends QueryResultItem {
     public function getWorkflow() { return $this->getWorkflow(); }
     public function getWorkflowStateOnly() { return (string)$this->workflowState; }
     public function getWorkflowState() { return $this->getWorkflowStateOnly(); }
-    
+
     public function getWorkflowAndState() {
         if (is_null($this->workflow))
         {
@@ -337,7 +344,7 @@ class DocumentResultItem extends QueryResultItem {
         }
         return "$this->workflow - $this->workflowState";
     }
-    
+
     public function getMimeType() { return (string) $this->mimeType; }
     public function getMimeIconPath() { return (string) $this->mimeIconPath; }
     public function getMimeDisplay() { return (string) $this->mimeDisplay; }
@@ -354,26 +361,32 @@ class DocumentResultItem extends QueryResultItem {
     public function getStoragePath() { return $this->storagePath; }
     public function getDocumentType() { return $this->documentType; }
     public function getPermissions() { return KTAPI_Document::get_permission_string($this->Document); }
-    
+
     public function getCanBeReadByUser() {
-        if (!$this->live)
-        return false;
-        if (Permission::userHasDocumentReadPermission($this->Document))
-        return true;
-        if (Permission::adminIsInAdminMode())
-        return true;
+        if (!$this->live) {
+            return false;
+        }
+
+        if (Permission::userHasDocumentReadPermission($this->Document)) {
+            return true;
+        }
+
+        if (Permission::adminIsInAdminMode()) {
+            return true;
+        }
+
         return false;
     }
-    
+
 }
 
 class FolderResultItem extends QueryResultItem {
-    
+
     protected $folder;
     protected $createdBy;
     protected $parentId;
 
-    public function __construct($folder_id, $rank=null, $title=null, $text=null, $fullpath = null)
+    public function __construct($folder_id, $rank = null, $title = null, $text = null, $fullpath = null)
     {
         parent::__construct($folder_id, $title, $rank, $text, $fullpath);
         $this->loadFolderInfo();
@@ -389,11 +402,13 @@ class FolderResultItem extends QueryResultItem {
     public function loadFolderInfo()
     {
         global $default;
+
         $folder = $this->getFolder();
         if (PEAR::isError($folder))
         {
             throw new Exception('Database exception! There appears to be an error in the system: ' .$result->getMessage());
         }
+
         $this->title = $folder->getName();
         $this->fullpath = '/' . $folder->getFullPath();
         $this->parentId = $folder->getParentId();
@@ -405,14 +420,14 @@ class FolderResultItem extends QueryResultItem {
 }
 
 class DocumentShortcutResultItem extends ProxyResultItem {
-    
+
     public function getDocumentID() { return $this->getId(); }
     public function getMimeIconPath() { return $this->proxy->getMimeIconPath() . '_shortcut'; }
 
 }
 
 class FolderShortcutResultItem extends ProxyResultItem {
-    
+
     var $parentId;
     var $linkedId;
     var $full_path;
@@ -431,7 +446,7 @@ function MatchResultCompare($a, $b)
 }
 
 abstract class Indexer {
-    
+
     /**
 	 * Cache of extractors
 	 *
@@ -2016,7 +2031,7 @@ abstract class Indexer {
         {
             $this->clearExtractors();
         }
-        
+
         $dir = opendir(SearchHelper::correctPath($this->extractorPath));
         while (($file = readdir($dir)) !== false)
         {
@@ -2174,7 +2189,7 @@ abstract class Indexer {
         $directory = $config->get('indexer/luceneDirectory');
         return $directory;
     }
-    
+
 }
 
 ?>
