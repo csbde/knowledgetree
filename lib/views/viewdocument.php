@@ -201,11 +201,11 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
 
         //$GLOBALS['default']->log->debug('viewdocument fieldsets '.print_r($fieldsets, true));
 
-        $checkedOutUser = 'Unknown user';
+        $checkedOutUsername = 'Unknown user';
         if ($document->getIsCheckedOut() == 1) {
-            $cou = User::get($document->getCheckedOutUserId());
-            if (!(PEAR::isError($cou) || ($cou == false))) {
-                $checkedOutUser = $cou->getName();
+            $checkedOutUser = User::get($document->getCheckedOutUserId());
+            if (!(PEAR::isError($checkedOutUser) || ($checkedOutUser == false))) {
+                $checkedOutUsername = $checkedOutUser->getName();
             }
         }
 
@@ -283,7 +283,7 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
                 'lastModifier' => $lastModifierUser[0]['name']
             ),
             'context' => $this,
-            'sCheckoutUser' => $checkedOutUser,
+            'sCheckoutUser' => $checkedOutUsername,
             'isCheckoutUser' => ($this->oUser->getId() == $document->getCheckedOutUserId()),
             //'canCheckin' => $canCheckin,
             //'bCanEdit' => $canEdit,
@@ -302,7 +302,7 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
             'documentBlocks' => $documentBlocks,
             'documentSidebars' => $documentSidebars,
             'tagFilterScript' => "/{$tagPluginPath}filterTags.php?documentId=$documentId",
-            'tags' => implode(',', $tags)
+            'tags' => json_encode($tags)
         );
 
         // Conditionally include live_preview
@@ -320,10 +320,23 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
         return $template->render($templateData);
     }
 
+    /**
+     * Prepares the tag list for adding to the display widget.
+     *
+     * The widget is going to expect the tags in json_encoded format.
+     * This format will be imposed by the template value assignment/rendering.
+     *
+     * If you instead want to get the widget input as a string (to be inserted directly
+     * into a template instead of parsed by javascript) then you will need to format it as:
+     *
+     * '{id: "' . $tag . '", name: "' . $tag . '"},[...]'
+     *
+     * @param unknown_type $document
+     * @param unknown_type $fieldset
+     * @return unknown
+     */
     private function getDocumentTags($document, $fieldset)
     {
-        // FIXME I think this is horribly inefficient and we should probably get the tags directly.
-        //       Do like this for now and once working look at alternative for speed.
         $fields = $fieldset->getFields();
         $fieldId = $fields[0]->getId();
 
@@ -338,7 +351,7 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
 
         $tags = explode(',', $tags);
         foreach ($tags as $key => $tag) {
-            $tags[$key] = '{id: "' . $tag . '", name: "' . $tag . '"}';
+            $tags[$key] = array('id' => $tag, 'name' => $tag);
         }
 
         return $tags;

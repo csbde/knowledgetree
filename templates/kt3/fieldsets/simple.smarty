@@ -1,6 +1,6 @@
  
 <!-- FILE: kt3/fieldsets/simple.smarty -->
-	<div class="detail-fieldset" rel="{$rootUrl}/presentation/lookAndFeel/knowledgeTree/widgets/updateMetadata.php?func=metadata&documentID={$document->getId()}">
+	<div class="detail-fieldset" rel='{literal}{{/literal}"documentID":"{$document->getId()}"{literal}}{/literal}'>
 	    <h3 title='{$description}'>{$fieldset->getName()}<span title="Click to edit" class="editable-control edit">&nbsp;</span></h3>
 		
 	    <table class="metadatatable" cellspacing="0" cellpadding="5">

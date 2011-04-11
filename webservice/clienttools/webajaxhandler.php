@@ -43,7 +43,7 @@ class webAjaxHandler {
         // Add additional parameters
         $add_params = array_merge($_GET, $_POST);
         unset($add_params['request'], $add_params['datasource']);
-        $this->request['parameters'] = array_merge($this->request['parameters'], $add_params);
+        $this->request['parameters'] = $this->request['parameters']+$add_params;	//array_merge($this->request['parameters'], $add_params);
         $this->parameters = $this->request['parameters'];
 
         if (!$this->auth['debug']) { $this->ret->includeDebug = false; }
