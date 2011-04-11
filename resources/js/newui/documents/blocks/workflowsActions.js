@@ -1,15 +1,24 @@
 // ============================================================
+// Shared
+// ============================================================
+
+var win;
+var baseUrl;
+var namespace;
+
+// ============================================================
 // Workflow Actions
 // ============================================================
 
 function workflowActions() {
-	this.baseUrl = 'action.php?kt_path_info=ktcore.actions.document.workflow&';
+	this.namespace = 'ktajax.actions.document.workflow';
+	this.baseUrl = 'action.php?kt_path_info=' + this.namespace + '&';
 }
 
 /*
 * Display workflow window
 */
-workflowActions.prototype.displayAction = function(workflowId) {
+workflowActions.prototype.displayAction = function(transitionId) {
 	var address;
 	var width;
 	var height;
@@ -21,12 +30,19 @@ workflowActions.prototype.displayAction = function(workflowId) {
 		width = '400px';
 		height = '200px';
 		title = 'Add a new workflow';
-		address = this.baseUrl + 'action=ajax&fDocumentId=' + documentId;
+		address = this.baseUrl + '&fDocumentId=' + documentId;
 	} else {
-		width = '600px';
-		height = '400px';
-		title = 'Transition a workflow';
-		address = this.baseUrl + 'action=ajax&fDocumentId=' + documentId;
+		if(transitionId == undefined) {
+			width = '600px';
+			height = '400px';
+			title = 'Transition a workflow';
+			address = this.baseUrl + '&fDocumentId=' + documentId;
+		} else {
+			width = '500px';
+			height = '400px';
+			title = 'Perform Transition';
+			address = this.baseUrl + '&action=quicktransition&fDocumentId=' + documentId + '&fTransitionId=' + transitionId;
+		}
 	}
 
 	// create html for form
@@ -55,6 +71,25 @@ workflowActions.prototype.displayAction = function(workflowId) {
 			alert('Error. Could not create add workflow form.' + response + code);
 		}
 	});
+};
+
+/* 
+* Refresh workflow sidebar
+*/
+workflowActions.prototype.refeshSidebar = function(documentId) {
+	namespace = 'ktcore.sidebar.workflow';
+	baseUrl = 'action.php?kt_path_info=' + namespace + '&';
+	var address = baseUrl + 'fDocumentId=' + documentId + '&action=refreshSidebar';
+	jQuery.ajax({
+		type: "POST",
+		url: address,
+		success: function(data) {
+			jQuery('.workflow_transitions').html(data);
+		},
+		error: function(response, code) {
+			alert('Error. Could not reload alerts.'+response + code);
+		}
+	});	
 };
 
 workflows = new workflowActions();

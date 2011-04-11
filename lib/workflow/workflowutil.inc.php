@@ -576,7 +576,7 @@ class KTWorkflowUtil {
      * allowed to perform the transition and that all the guard
      * functionality on the transition has passed.
      */
-    function performTransitionOnDocument($oTransition, $oDocument, $oUser, $sComments) {
+    static function performTransitionOnDocument($oTransition, $oDocument, $oUser, $sComments) {
         $oWorkflow =& KTWorkflow::getByDocument($oDocument);
         if (empty($oWorkflow)) {
             return PEAR::raiseError(_kt("Document has no workflow"));

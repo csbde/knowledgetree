@@ -4,12 +4,16 @@
 
 var win;
 var baseUrl;
+var namespace;
 
 // ============================================================
 // base Block Actions
 // ============================================================
 
-function blockActions() {}
+function blockActions() {
+	this.namespace = 'ktcore.blocks.document.status';
+    this.baseUrl = 'action.php?kt_path_info=' + this.namespace + "&";
+}
 
 /*
 * Create the html required to initialise the signature panel
@@ -47,7 +51,7 @@ blockActions.prototype.getUrl = function(address, title) {
 * Refresh block
 */
 blockActions.prototype.refeshAction = function(documentId) {
-	var address = 'action.php?kt_path_info=ktcore.blocks.document.status&fDocumentId=' + documentId + '&action=ajaxGetDocBlock';
+	var address = this.baseUrl + 'fDocumentId=' + documentId + '&action=ajaxGetDocBlock';
 	jQuery.ajax({
 		type: "POST",
 		url: address,
@@ -66,7 +70,10 @@ vActions = new blockActions();
 // Subscription Actions
 // ============================================================
 
-function subscriptionActions() {}
+function subscriptionActions() {
+	this.namespace = 'ktstandard.subscription';
+    this.baseUrl = 'action.php?kt_path_info=' + this.namespace;
+}
 
 /*
 * Makes an ajax request to undate subscriptions for a user
@@ -77,9 +84,9 @@ subscriptionActions.prototype.subscribeToDocument = function() {
 	var address = '';
 	this.toggleAction('subscribe', status);
 	if (status == 'disabled') {
-		address += 'kt_path_info=ktstandard.subscription.documentsubscription&fDocumentId=' + documentId;
+		address += this.baseUrl + 'documentsubscription&fDocumentId=' + documentId;
 	} else {
-		address += 'kt_path_info=ktstandard.subscription.documentunsubscription&fDocumentId=' + documentId;
+		address += this.baseUrl + 'documentunsubscription&fDocumentId=' + documentId;
 	}
 
 	address = 'action.php?action=ajax&' + address;

@@ -77,6 +77,7 @@ class KTCorePlugin extends KTPlugin {
         $this->registerAction('documentinfo', 'KTDocumentVersionHistoryAction', 'ktcore.actions.document.versionhistory', 'KTDocumentActions.php');
         $this->registerAction('documentaction', 'KTDocumentArchiveAction', 'ktcore.actions.document.archive', 'KTDocumentActions.php');
         $this->registerAction('documentaction', 'KTDocumentWorkflowAction', 'ktcore.actions.document.workflow', 'KTDocumentActions.php');
+        $this->registerAction('documentaction', 'KTAjaxDocumentWorkflowAction', 'ktajax.actions.document.workflow', 'KTDocumentActions.php');
         $this->registerAction('folderinfo', 'KTFolderViewAction', 'ktcore.actions.folder.view', 'KTFolderActions.php');
         $this->registerAction('folderaction', 'KTFolderAddDocumentAction', 'ktcore.actions.folder.addDocument', 'folder/addDocument.php');
         $this->registerAction('folderaction', 'KTFolderAddFolderAction', 'ktcore.actions.folder.addFolder', 'KTFolderActions.php');
@@ -96,6 +97,7 @@ class KTCorePlugin extends KTPlugin {
 
         // Document Sidebar
         $this->registerAction('maindocsidebar', 'KTDocumentSidebar', 'ktcore.sidebars.document', 'KTDocumentSidebars.php');
+        $this->registerAction('documentsidebar', 'KTWorkflowSidebar', 'ktcore.sidebar.workflow', 'KTDocumentSidebars.php');
         
         $this->registerAction('documentaction', 'KTDocumentAssistAction', 'ktcore.actions.document.assist', 'KTAssist.php');
         // $this->registerAction('folderaction', 'KTDocumentAssistAction', 'ktcore.actions.folder.assist', 'KTAssist.php');
