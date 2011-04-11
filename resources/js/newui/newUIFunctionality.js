@@ -50,7 +50,14 @@ jQuery(document).ready(function() {
 })(jQuery);
 
 jQuery(function() {
-
+				jQuery(".action").hover(
+  					function () {
+    					jQuery(this).children().addClass('hover');
+  					}, 
+  					function () {
+    					jQuery(this).children().removeClass('hover');
+  					}
+				);
 				jQuery(".split").click(function() {
 
 					if (jQuery(this).parent().next().is(':visible'))
@@ -68,6 +75,7 @@ jQuery(function() {
 					}
 
 				});
+				
 
 				 jQuery('html').click(function() {
 				 	jQuery(".splitmenu").hide();

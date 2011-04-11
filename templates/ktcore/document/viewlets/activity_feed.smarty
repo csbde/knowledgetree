@@ -9,23 +9,19 @@
 	            </td>
 	            <td style="" valign="middle">
 	                <div class="buttons">
-	                    <input type="button" id="comment-post" name="comment.post" onclick="javascript: kt.app.activityFeed.postComment({$document->getId()}, jQuery('#commentsbox').val(), {$displayMax});" value="{i18n}Post{/i18n}" style="background: none; height: 28px; width: 50px;" />
+	                    <input type="button" id="comment-post" name="comment.post" onclick="javascript: kt.app.activityFeed.postComment({$document->getId()}, jQuery('#commentsbox').val(), {$displayMax});" value="{i18n}Post{/i18n}" />
 	                </div>
 	            </td>
 	        </tr>
         </table>
     </div>
 
-<table style="margin: 0px;">
-    <tr>
-    	<td valign="middle">
-			<div class="activityfeed buttons">
-				<input type="button" name="toggle-user-feed" onclick="javascript: kt.app.activityFeed.toggleFeed(jQuery(this), ['activityfeed.item.comment'], {$displayMax});" value="{i18n}User{/i18n}" style="background: none; height: 28px; width: 50px;" />
-				<input type="button" name="toggle-system-feed" onclick="javascript: kt.app.activityFeed.toggleFeed(jQuery(this), ['activityfeed.item.transaction', 'activityfeed.item.version'], {$displayMax});"value="{i18n}System{/i18n}" style="background: none; height: 28px; width: 50px;" />
+
+			<div class="activityfeed buttons"> Show: 
+				<input type="button" name="toggle-user-feed" onclick="javascript: kt.app.activityFeed.toggleFeed(jQuery(this), ['activityfeed.item.comment'], {$displayMax});" value="{i18n}Comments{/i18n}" class="toggle-user-feed"/>
+				<input type="button" name="toggle-system-feed" onclick="javascript: kt.app.activityFeed.toggleFeed(jQuery(this), ['activityfeed.item.transaction', 'activityfeed.item.version'], {$displayMax});"value="{i18n}Actions{/i18n}" class="toggle-system-feed"/>
 			</div>
-		</td>
-    </tr>
-</table>
+
 		
 <div class="activityfeed" style="border: 0px solid #000000">
 
