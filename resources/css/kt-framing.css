@@ -827,7 +827,11 @@ a.main_nav_item {
 .metadatatable .first th,
 .metadatatable .first td {
 }
-
+#documentTypeID.descriptiveText {
+	display: inline-block;
+	padding-top: 1px;
+	position: relative;
+}
 .metadatatable th {
     text-align: left;
     width: 105px !important;
@@ -942,6 +946,8 @@ a.main_nav_item {
 	cursor: pointer;
 	float: right;
 	min-width: 20px;
+	height: 16px;
+	vertical-align: top;
 }
 #title_row .editable-control {
 	float: none;
@@ -2382,24 +2388,33 @@ body #content #add_dashlet
 }
 
 .x-toolbar .x-btn-click .x-btn-left, .x-toolbar .x-btn-pressed .x-btn-left, .x-toolbar .x-btn-menu-active .x-btn-left{
-	background: url(../graphics/tb_search_btn.gif) no-repeat 0 -63px;
+	background: none;
 }
 .x-toolbar .x-btn-click .x-btn-right, .x-toolbar .x-btn-pressed .x-btn-right, .x-toolbar .x-btn-menu-active .x-btn-right{
-	background: url(../graphics/tb_search_btn.gif) no-repeat 0 -84px;
+	background: none;
 }
 
 .x-toolbar .x-btn-click .x-btn-center, .x-toolbar .x-btn-pressed .x-btn-center, .x-toolbar .x-btn-menu-active .x-btn-center{
-	background: url(../graphics/tb_search_btn.gif) repeat-x 0 -105px;
+	background: none;
 }
-
+.x-toolbar .x-btn-over .x-btn-menu-arrow-wrap .x-btn-center button {
+	background-position: 0 3px;
+}
 .x-menu {
-	border: 1px solid #718bb7;
+	border: 1px solid #CCC;
 	z-index: 15000;
 	zoom: 1;
 	background: #FDFDFD;
-	padding: 2px;
+	padding: 0px;
+	color: #666;
 }
-
+.x-menu a.x-menu-item {
+	color: #666;
+}
+.x-menu-item-active{
+	background: #F2EBAE;
+	border: 1px solid #F2EBAE;
+}
 
 /* ================= Ajax popup - override ExtJS CSS ================= */
 /* The move to the new UI (from orange/green to blue/grey) broke these styles, hence addition of extjs_ prefix to the form_actions style. */
