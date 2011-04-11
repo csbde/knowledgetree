@@ -103,7 +103,7 @@ class KTUserUtil {
     	$sql = "SELECT " . join(',', $fieldName) . " FROM users WHERE id IN (" . join(',', $userId) . ")";
     	$res = DBUtil::getResultArray($sql);
     	if (PEAR::isError($res) || empty($res)) {
-    		return '';
+    		return array();
     	} else {
     		return $res;
     	}
