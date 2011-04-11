@@ -48,10 +48,10 @@
 								<th style="width: 100px;">Version:</th><td><a href="">{$document->getMajorVersionNumber()}.{$document->getMinorVersionNumber()}</a></td>
 							</tr>
 							<tr>
-								<th>Last Modified by:</th><td><a href="">{$doc_data.lastModifier}</a> on {$document->getLastModifiedDate()|date_format:"%B %e, %Y at %H:%M"}</td>
+								<th>Last Modified by:</th><td><a href="">{$doc_data.lastModifier}</a> on {$document->getDisplayLastModifiedDate()|date_format:"%B %e, %Y at %H:%M"}</td>
 							</tr>
 							<tr>
-								<th>Created by:</th><td><a href="">{$doc_data.creator}</a> on {$document->getCreatedDateTime()|date_format:"%B %e, %Y at %H:%M"}</td>
+								<th>Created by:</th><td><a href="">{$doc_data.creator}</a> on {$document->getDisplayCreatedDateTime()|date_format:"%B %e, %Y at %H:%M"}</td>
 							</tr>
 							<tr>
 								<th>Owned by:</th><td><a href="">{$doc_data.owner}</a></td>

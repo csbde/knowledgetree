@@ -201,7 +201,7 @@ function onShowAll(showall)
 				<font style="color: orange ">
 				{i18n}Created By:{/i18n} {$hit->CreatedBy}
 				{if $hit->IsDocument}
-				{i18n}on{/i18n} {$hit->DateCreated}
+				{i18n}on{/i18n} {$hit->DateCreated|date_format:"%B %e, %Y at %H:%M"}
 				{/if}
 				</font>
 				</nobr>
@@ -219,7 +219,7 @@ function onShowAll(showall)
 					{i18n}on{/i18n} {$hit->DateCheckedOut}</b>
 				{else}
 					{i18n}Modified by:{/i18n} {$hit->ModifiedBy}
-					{i18n}on{/i18n} {$hit->DateModified}
+					{i18n}on{/i18n} {$hit->DateModified|date_format:"%B %e, %Y at %H:%M"}
 				{/if}
 				</font>
 				</nobr>
