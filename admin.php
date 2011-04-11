@@ -130,28 +130,26 @@ class AdminSplashDispatcher extends KTAdminDispatcher {
         $category = KTUtil::arrayGet($_REQUEST, 'fCategory', $this->category);
 
         //Removing bad contentSetup/fieldmanagement links from the Document Metadata and Workflow Configuration page.
-		$oPage =& $GLOBALS['main'];
+        $oPage =& $GLOBALS['main'];
 
-		if ($category == 'contentSetup') {
-			$aJavascript[] = 'thirdpartyjs/jquery/jquery-1.4.2.js';
-			$oPage->requireJSResources($aJavascript);
-			$jscript .= "<script src='resources/js/kt_hideadminlink.js' type='text/javascript'></script>";
-		}
+        if ($category == 'contentSetup') {
+            $jscript .= "<script src='resources/js/kt_hideadminlink.js' type='text/javascript'></script>";
+        }
 
-		$aJavascript[] = 'resources/js/newui/hide_system_links.js';
-		$oPage->requireJSResources($aJavascript);
+        $aJavascript[] = 'resources/js/newui/hide_system_links.js';
+        $oPage->requireJSResources($aJavascript);
 
         $oRegistry =& KTAdminNavigationRegistry::getSingleton();
         $aCategory = $oRegistry->getCategory($category);
-        if(ACCOUNT_ROUTING_ENABLED && $category == 'contentIndexing')
+        if (ACCOUNT_ROUTING_ENABLED && $category == 'contentIndexing')
         {
-			$aItems = null;
-			$message = 'Indexing of full-text content in KnowledgeTree is carried out through shared queue processes using SOLR. <br/>Content Indexing statistics coming soon!';
+            $aItems = null;
+            $message = 'Indexing of full-text content in KnowledgeTree is carried out through shared queue processes using SOLR. <br/>Content Indexing statistics coming soon!';
         }
         else
         {
-        	$aItems = $oRegistry->getItemsForCategory($category);
-        	$message = null;
+            $aItems = $oRegistry->getItemsForCategory($category);
+            $message = null;
         }
 
         if (count($aItems) == 1) {
@@ -166,24 +164,24 @@ class AdminSplashDispatcher extends KTAdminDispatcher {
         $oTemplating =& KTTemplating::getSingleton();
         $oTemplate = $oTemplating->loadTemplate('kt3/admin_items');
         $aTemplateData = array(
-              'context' => $this,
-              'category' => $aCategory,
-              'items' => $aItems,
-              'baseurl' =>  $_SERVER['PHP_SELF'],
-        	  'jscript' => $jscript,
-        	  'message' => $message,
+                'context' => $this,
+                'category' => $aCategory,
+                'items' => $aItems,
+                'baseurl' =>  $_SERVER['PHP_SELF'],
+                'jscript' => $jscript,
+                'message' => $message,
         );
 
         return $oTemplate->render($aTemplateData);
     }
 
     private function includeOlark()
-	{
-	    $user = User::get($_SESSION['userID']);
-	    $js = preg_replace('/.*[\/\\\\]plugins/', 'plugins', KT_LIVE_DIR) . '/resources/js/olark/olark.js';
-	    $this->oPage->requireJsResource($js);
-	    $this->oPage->setBodyOnload("javascript: ktOlark.setUserData('" . $user->getName() . "', '" . $user->getEmail() . "');");
-	}
+    {
+        $user = User::get($_SESSION['userID']);
+        $js = preg_replace('/.*[\/\\\\]plugins/', 'plugins', KT_LIVE_DIR) . '/resources/js/olark/olark.js';
+        $this->oPage->requireJsResource($js);
+        $this->oPage->setBodyOnload("javascript: ktOlark.setUserData('" . $user->getName() . "', '" . $user->getEmail() . "');");
+    }
 
 }
 

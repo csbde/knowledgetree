@@ -167,7 +167,7 @@ function createSearchBar(div, suffix)
 								handler: onSearchEngineFormatClick
 							}),
 							new Ext.menu.CheckItem({
-								text: sSearchTranslations[15], // browse view format 
+								text: sSearchTranslations[15], // browse view format
 								id: 'cbBrowseSearchEngine' +  suffix,
 								checked: !bResultsFormatSearchEngine,
 								group: 'format',
@@ -208,7 +208,7 @@ function createSearchBar(div, suffix)
 	tb.add(
 	new Ext.form.TextField({
 			emptyText: sSearchTranslations[12], /* Enter search criteria... */
-			value: quickQuery,
+			value: (quickQuery != 'undefined') ? quickQuery : null,
 			selectOnFocus:true,
 			id:'txtSearchBar' + suffix,
 			width: (suffix == 1) ? 180 : 110

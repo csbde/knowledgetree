@@ -457,36 +457,16 @@ class KTUserAdminDispatcher extends KTAdminDispatcher {
         * is there _any_ way to fix that?
         */
 
-        $groups = array();
-        $groupList = GroupUtil::listGroups();
-        foreach ($groupList as $group) {
-            $groups["group_{$group->getId()}"]['name'] = $group->getName();
-            $groups["group_{$group->getId()}"]['active'] = 1;
-        }
-
-        $assigned['groups_roles'] = array();
-        $userGroups = GroupUtil::listGroupsForUser($user);
-        foreach ($userGroups as $key => $group) {
-            $assigned['groups_roles'][] = "{id: 'group_{$group->getId()}', name: '{$group->getName()}'}";
-            $groups["group_{$group->getId()}"]['active'] = 0;
-        }
-
-        $jsonWidget = new KTJSONLookupWidget(_kt('Groups'),
-            _kt('Select the groups which this user should belong to from the drop down list. Remove groups by clicking the X.  Once you have added all the groups that you require, press <strong>save changes</strong>.'),
-            'members', '',
-            $this->oPage,
-            false,
-            null,
-            null,
-            array(
-                'action' => 'getGroups',
-                'groups_roles' => $groups,
-                'assigned' => array(implode(',', $assigned['groups_roles'])),
-                'type' => 'groups',
-                'parts' => 'groups',
-                'selection_default' => 'Select group',
-                'optgroups' => false
-            )
+        $members = KTJSONLookupWidget::formatMemberGroups(GroupUtil::listGroupsForUser($user));
+        $options = array('selection_default' => 'Select groups', 'optgroups' => false);
+        $label['header'] = 'Groups';
+        $label['text'] = 'Select the groups which this user should belong to from the drop down list. Remove groups by clicking the X.  Once you have added all the groups that you require, press <strong>save changes</strong>.';
+        $jsonWidget = KTJSONLookupWidget::getGroupSelectorWidget(
+                                                                $label,
+                                                                'group',
+                                                                'groups',
+                                                                $members,
+                                                                $options
         );
 
         $templating =& KTTemplating::getSingleton();

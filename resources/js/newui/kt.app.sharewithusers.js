@@ -2,33 +2,28 @@
 if (typeof(kt.app) == 'undefined') { kt.app = {}; }
 
 /* Initializing kt.api if it wasn't initialized before */
-if(typeof(kt.api)=='undefined')kt.api={};
+if (typeof(kt.api) == 'undefined') { kt.api={}; }
 
 /**
  * Dialog for inviting new licensed/shared users to the system
  */
-kt.app.sharewithusers=new function(){
+kt.app.sharewithusers = new function() {
 
-	//contains a list of fragments that will get preloaded
+    //contains a list of fragments that will get preloaded
     var fragments = this.fragments = ['users/invite.shared.dialog'];
+    var fragmentPackage = this.fragmentPackage = [fragments]
 
     //contains a list of executable fragments that will get preloaded
-    var execs = this.execs = ['users/invite.shared.dialog', 'users/invite.shared.confirm.dialog'];
+    var execs = this.execs = ['users/invite.shared.confirm.dialog'];
+    var execPackage = this.execPackage = [execs];
 
     //scope protector. inside this object referrals to self happen via 'self' rather than 'this' to make sure we call the functionality within the right scope.
     var self = this;
-
-    //a storage container for various DOM elements that need to be accessed repeatedly
     var elems = this.elems = {};
 
     //Initializes the upload widget on creation. Currently does preloading of resources.
     this.init = function() {
-        for (var idx in execs) {
-            kt.api.preloadExecutable(execs[idx]);
-        }
-        for (var idx in fragments) {
-            kt.api.preloadFragment(fragments[idx]);
-        }
+        kt.api.preload(fragmentPackage, execPackage, true);
     }
 
     //Container for the EXTJS window
@@ -49,19 +44,9 @@ kt.app.sharewithusers=new function(){
 	        sharedData['object_id'] = document.getElementById('object.id').value;
 	        sharedData['object_type'] = document.getElementById('object.type').value;
 	        sharedData['message'] = document.getElementById('share.message').value;
-			/*jQuery('#extinvitewindow').block({ 
-												message: '<div id="blue_loading">',
-												overlayCSS: {
-													backgroundColor: '#00f transparent'
-												},
-												css: {
-														border:		'',
-														backgroundColor:'#fff transparent',
-													},
-											});*/
 	        kt.api.shareUsers(emails, userType, sharedData, self.inviteCallback, function() {});
 	    }
-	    
+
 	    self.disableInviteButton();
 	}
 
@@ -89,13 +74,10 @@ kt.app.sharewithusers=new function(){
             title           : 'Content Shared',
             html            : kt.api.execFragment('users/invite.shared.confirm.dialog')
         });
-		// Close current window
+
         self.closeWindow();
         self.inviteConfirmWin = inviteConfirmWin;
-        // Open confirmation
         inviteConfirmWin.show();
-        
-        // display the number of shared users
         document.getElementById('sharedUsers').innerHTML = invited;
     }
 
@@ -108,7 +90,7 @@ kt.app.sharewithusers=new function(){
 		var btn = jQuery('#invite_actions_invite_btn');
     	btn.attr('disabled', 'true');
 	}
-	
+
     // ENTRY POINT: Calling this function will set up the environment, display the dialog,
     //              and hook up the AjaxUploader callbacks to the correct functions.
     // objectId, if set, identifies a share with a non-licensed user for a selected object (folder or document)
@@ -116,7 +98,7 @@ kt.app.sharewithusers=new function(){
         var inviteWin = new Ext.Window({
             id              : 'extinvitewindow',
             layout          : 'fit',
-            width           : 440,
+            width           : 490,
             resizable       : false,
             closable        : true,
             closeAction     : 'destroy',
@@ -133,19 +115,21 @@ kt.app.sharewithusers=new function(){
 
         self.inviteWindow = inviteWin;
         inviteWin.show();
+
         // Check if an object has been shared
-        if ((objectId != null) && (objectType != null))
-        {
+        if ((objectId != null) && (objectType != null)) {
         	document.getElementById('object.id').value = objectId;
         	document.getElementById('object.type').value = objectType;
         }
-        // Call to check permissions on object.
+
+        // Call to check permissions on object. ???
+
         // Check if document is finalized
-        if(finalized == 0)
-        {
+        if (finalized == 0) {
         	jQuery('#readonly').attr('checked', 'true');
         	jQuery('#readonly').attr('disabled', 'disabled');
         }
+
 	    self.disableInviteButton();
     }
 
@@ -159,6 +143,6 @@ kt.app.sharewithusers=new function(){
         inviteConfirmWin.destroy();
     }
 
-    // Call the initialization function at object instantiation.
     this.init();
+
 }

@@ -208,6 +208,7 @@ class KTSubscriptionPortlet extends KTPortlet {
 class KTDocumentSubscriptionAction extends KTDocumentAction {
 
     public $sName = 'ktstandard.subscription.documentsubscription';
+    var $sParentBtn = 'more';
 
     public function getDisplayName()
     {
