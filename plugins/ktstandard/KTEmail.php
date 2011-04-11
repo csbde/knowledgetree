@@ -433,32 +433,10 @@ class KTDocumentEmailAction extends KTDocumentAction {
 
         $fields = array();
 
-        $groups = array();
-        $groupList = GroupUtil::listGroups();
-        foreach ($groupList as $group) {
-            $groups["group_{$group->getId()}"]['name'] = $group->getName();
-            $groups["group_{$group->getId()}"]['active'] = 1;
-        }
-
-        // Picker to select recipients from system groups
-        $fields[] = new KTJSONLookupWidget(_kt('Groups'),
-            _kt('Select other users or groups to include in this alert'),
-            'members',
-            '',
-            $this->oPage,
-            false,
-            null,
-            null,
-            array(
-                'action' => 'getMembers&fDocumentId=' . $this->oDocument->getId(),
-                'groups_roles' => $groups,
-                'assigned' => null,
-                'type' => 'email',
-                'parts' => 'all',
-                'selection_default' => 'Select group',
-                'optgroups' => false
-            )
-        );
+        $options = array('selection_default' => 'Select group', 'optgroups' => false);
+        $label['header'] = 'Groups';
+        $label['text'] = 'Select other groups or users to include in this email';
+        $fields[] =  KTJSONLookupWidget::getGroupsAndUsersWidget($label, 'email', 'all', array(), $options);
 
         // External email addresses can be added here
         if ($allowEmailAddresses) {

@@ -25,7 +25,7 @@
                 {$oWidget->render()}
             {/foreach}
             <div class="form_actions">
-	            <input type="{$submit.type}" onclick="javascript: {ldelim}workflow.submitForm(){rdelim}; return false;" name="form_submit" value="{i18n}Perform Transition{/i18n}" />
+	            <input type="{$submit.type}" name="form_submit" value="{i18n}Perform Transition{/i18n}" />
 	            <input type="button" onclick="javascript: {ldelim}vActions.closeDisplay(){rdelim}; return false;" name="cancel" value="{i18n}Cancel{/i18n}" />
             </div>
             </fieldset>
@@ -59,9 +59,9 @@
 					<div class="widgetItem">
 						<div class="form_actions">
 							{if !$oWorkflow}
-								<input type="{$submit.type}" onclick="javascript: {ldelim}workflow.submitForm(){rdelim}; return false;" name="form_submit" value="{i18n}Start Workflow{/i18n}" />
+								<input type="{$submit.type}" name="form_submit" value="{i18n}Start Workflow{/i18n}" />
 							{else}
-								<input type="{$submit.type}" onclick="javascript: {ldelim}workflow.submitForm(){rdelim}; return false;" name="form_submit" value="{i18n}Change Workflow{/i18n}" />
+								<input type="{$submit.type}" name="form_submit" value="{i18n}Change Workflow{/i18n}" />
 							{/if}
 							<input type="button" onclick="javascript: {ldelim}vActions.closeDisplay(){rdelim}; return false;" name="cancel" value="{i18n}Cancel{/i18n}" />
 						</div>
@@ -87,4 +87,3 @@
 	</div>
     {/if}
 {/if}
-
