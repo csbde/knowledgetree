@@ -120,7 +120,9 @@ class BrowseDispatcher extends KTStandardDispatcher {
 
 	public function do_main()
 	{
-	    /**REMOVE
+	    /**
+	     * REMOVE
+	     *
 	     * Old documentcollection method - this would require implementation of the new browse view code in a document collection.
 	     * NewUiCollection is currently imaginary :)
 	     */
@@ -155,14 +157,14 @@ class BrowseDispatcher extends KTStandardDispatcher {
 
 		global $main;
 	    $aTemplateData = array(
-	    'context' => $this,
-	    'page' => $main,
-	    'browse_mode' => $this->browse_mode,
-	    'isEditable' => $this->editable,
-	    'bulkactions' => $aBulkActions,
-	    'browseutil' => new KTBrowseUtil(),
-	    'returnaction' => 'browse',
-	    'folderSidebars' => $folderSidebars,
+	           'context' => $this,
+	           'page' => $main,
+	           'browse_mode' => $this->browse_mode,
+	           'isEditable' => $this->editable,
+	           'bulkactions' => $aBulkActions,
+	           'browseutil' => new KTBrowseUtil(),
+	           'returnaction' => 'browse',
+	           'folderSidebars' => $folderSidebars,
 	    );
 
 	    // NOTE Don't quite know why this is in here. Someone reports that it is there for search browsing which seem to be disabled.

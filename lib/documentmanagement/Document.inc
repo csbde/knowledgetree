@@ -49,6 +49,7 @@ require_once(KT_LIB_DIR . '/documentmanagement/documentcore.inc.php');
 require_once(KT_LIB_DIR . '/documentmanagement/documentmetadataversion.inc.php');
 
 class Document {
+
     var $iId;
 
     var $_oDocumentCore = null;
@@ -87,7 +88,7 @@ class Document {
     function getCheckedOutUserID() { return $this->_oDocumentCore->getCheckedOutUserId(); }
     function setCheckedOutUserID($iNewValue) { $this->_oDocumentCore->setCheckedOutUserId($iNewValue); }
 
-	function getCheckedOutDate() { return $this->_oDocumentCore->getCheckedOutDate(); }
+    function getCheckedOutDate() { return $this->_oDocumentCore->getCheckedOutDate(); }
     function setCheckedOutDate($dNewValue) { $this->_oDocumentCore->setCheckedOutDate($dNewValue); }
 
     function getPermissionObjectID() { return $this->_oDocumentCore->getPermissionObjectId(); }
@@ -110,17 +111,15 @@ class Document {
 
     function getOemNo() { return $this->_oDocumentCore->getOemNo(); }
 
-	function getLinkedDocumentId(){ return $this->_oDocumentCore->getLinkedDocumentId();}
-    function setLinkedDocumentId($iNewValue){ $this->_oDocumentCore->setLinkedDocumentId($iNewValue);}
+    function getLinkedDocumentId() { return $this->_oDocumentCore->getLinkedDocumentId();}
+    function setLinkedDocumentId($iNewValue) { $this->_oDocumentCore->setLinkedDocumentId($iNewValue);}
 
     // Document Metadata Items
 
     function getDocumentTypeID() { return $this->_oDocumentMetadataVersion->getDocumentTypeId(); }
     function setDocumentTypeID($sNewValue) { $this->_oDocumentMetadataVersion->setDocumentTypeId($sNewValue); }
 
-    function getName() {
-    	return $this->_oDocumentMetadataVersion->getName();
-    }
+    function getName() { return $this->_oDocumentMetadataVersion->getName(); }
     function setName($sNewValue) { $this->_oDocumentMetadataVersion->setName($sNewValue); }
 
     function getDescription() { return $this->_oDocumentMetadataVersion->getDescription(); }
@@ -135,7 +134,7 @@ class Document {
     function getMetadataVersion() { return $this->_oDocumentMetadataVersion->getMetadataVersion(); }
     function setMetadataVersion($iNewValue) { $this->_oDocumentMetadataVersion->setMetadataVersion($iNewValue); }
 
-    function getMetadataVersionId() { return $this->_oDocumentMetadataVersion->getId(); } //_oDocumentCore->getMetadataVersionId(); }
+    function getMetadataVersionId() { return $this->_oDocumentMetadataVersion->getId(); }
     function setMetadataVersionId($iNewValue) { $this->_oDocumentCore->setMetadataVersionId($iNewValue); }
 
     function getContentVersionId() { return $this->_oDocumentMetadataVersion->getContentVersionId(); }
@@ -175,8 +174,8 @@ class Document {
     function getHasRendition() { return $this->_oDocumentContentVersion->getHasRendition(); }
     function setHasRendition($iNewValue) { $this->_oDocumentContentVersion->setHasRendition($iNewValue); }
 
-	// Timezone getters
-	function getDisplayCreatedDateTime() { return $this->_oDocumentCore->getDisplayCreatedDateTime(); }
+    // Timezone getters
+    function getDisplayCreatedDateTime() { return $this->_oDocumentCore->getDisplayCreatedDateTime(); }
     function getDisplayLastModifiedDate() { return $this->_oDocumentCore->getDisplayLastModifiedDate(); }
     function getDisplayCheckedOutDate() { return $this->_oDocumentCore->getDisplayCheckedOutDate(); }
     function getDisplayVersionCreated() { return $this->_oDocumentMetadataVersion->getDisplayVersionCreated(); }
@@ -246,12 +245,11 @@ class Document {
      * Retrieves all symbolic links linking to this document
      *
      */
-    function getSymbolicLinks(){
+    function getSymbolicLinks() {
     	$sQuery = 'SELECT * FROM documents ' .
 				'WHERE documents.linked_document_id =  '.$this->getId();
     	return DButil::getResultArray($sQuery);
     }
-
 
     // }}}
 
@@ -285,7 +283,6 @@ class Document {
         return $this->getStatusID() == ARCHIVED;
     }
     // }}}
-
 
     // {{{ update
     function update($bPathMove = false) {
@@ -453,6 +450,7 @@ class Document {
         if (empty($id)) {
             return false;
         }
+
         return true;
     }
     // }}}
@@ -489,8 +487,6 @@ class Document {
      * Deletes content from document data tables
      */
     function cleanupDocumentData($iDocumentID) {
-        // NEW SEARCH
-
         return;
 
         // FIXME this appears to be deprecated, or at least should be
@@ -554,7 +550,6 @@ class Document {
         */
         $oDocument = new Document();
         $aOptions = array_change_key_case($aOptions);
-
 
         $aCoreKeys = array(
             "CreatorId",
@@ -703,59 +698,56 @@ class Document {
 
         $result = DBUtil::getOneResultKey($query, 'id');
 
-        if(empty($result)){
+        if (empty($result)) {
             return PEAR::raiseError("Requested content version, $version, does not exist.");
         }
 
-        if(PEAR::isError($result)){
+        if (PEAR::isError($result)) {
             return $result;
         }
 
         return $result;
     }
     // }}}
-    
-	function getContentVersionStatus($version)
+
+    function getContentVersionStatus($version)
     {
         $aVersion = explode('.', $version);
         $major = $aVersion[0];
         $minor = $aVersion[1];
 
         $doc_id = $this->iId;
-        
-        $query = "
-        		select dmv.status_id as status_id from document_content_version dcv 
-        		inner join document_metadata_version dmv on dcv.id = dmv.content_version_id 
-        		where dcv.document_id = $doc_id and dcv.major_version = $major and dcv.minor_version = $minor";
+
+        $query = "select dmv.status_id as status_id from document_content_version dcv
+        	inner join document_metadata_version dmv on dcv.id = dmv.content_version_id
+        	where dcv.document_id = $doc_id and dcv.major_version = $major and dcv.minor_version = $minor";
 
         $result = DBUtil::getOneResultKey($query, 'status_id');
-        
+
         $GLOBALS['default']->log->debug('getContentVersionStatus result '.print_r($result, true));
 
-        if(empty($result)){
+        if (empty($result)) {
             return PEAR::raiseError("Requested content version, $version, does not exist.");
         }
 
-        if(PEAR::isError($result)){
+        if (PEAR::isError($result)) {
             return $result;
         }
 
         return $result;
-        
+
     }
 
     // {{{ getMetadataVersionIdFromVersion
     static function getMetadataVersionIdFromVersion($doc_id, $version)
     {
         $query = "select id from document_metadata_version where document_id = $doc_id and metadata_version = $version";
-
         $result = DBUtil::getOneResultKey($query, 'id');
-
-        if(empty($result)){
+        if (empty($result)) {
             return PEAR::raiseError("Requested metadata version, $version, does not exist.");
         }
 
-        if(PEAR::isError($result)){
+        if (PEAR::isError($result)) {
             return $result;
         }
 
@@ -767,21 +759,23 @@ class Document {
     function delete() {
         $this->_oDocumentCore->setMetadataVersionId(null);
         $this->_oDocumentCore->update();
+
         $aMetadataVersions = KTDocumentMetadataVersion::getByDocument($this);
         foreach ($aMetadataVersions as $oVersion) {
             $oVersion->delete();
         }
+
         $aContentVersions = KTDocumentContentVersion::getByDocument($this);
         foreach ($aContentVersions as $oVersion) {
             $oVersion->delete();
         }
         $this->_oDocumentCore->delete();
+
         return true;
     }
     // }}}
 
     function clearAllCaches() {
-
     	$GLOBALS["_OBJECTCACHE"]['Document'] = array();
         KTEntityUtil::clearAllCaches('KTDocumentCore');
         KTEntityUtil::clearAllCaches('KTDocumentContentVersion');
@@ -802,7 +796,7 @@ class Document {
 	$aParams = array($sTransactionNamespace, $this->getId());
 	$sComment = DBUtil::getOneResultKey(array($sQuery, $aParams), 'comment');
 
-	if(PEAR::isError($sComment)) {
+	if (PEAR::isError($sComment)) {
 	    return false;
 	}
 
@@ -811,7 +805,7 @@ class Document {
 
     function getLastDeletionComment() {
 	$sComment = $this->getLastTransactionComment('ktcore.transactions.delete');
-	if(!$sComment) {
+	if (!$sComment) {
 	    return $sComment;
 	}
 
@@ -819,28 +813,23 @@ class Document {
 	return trim($aComment[1]);
     }
 
-	static function getStatusString($statusid)
-	{
-		$statuses = array(
-			1=>_kt('Live'),
-			2=>_kt('Published'),
-			3=>_kt('Deleted'),
-			4=>_kt('Archived'),
-			5=>_kt('Incomplete'),
-			6=>_kt('Version Deleted')
-		);
+    static function getStatusString($statusId)
+    {
+        $statuses = array(
+                1 => _kt('Live'),
+                2 => _kt('Published'),
+                3 => _kt('Deleted'),
+                4 => _kt('Archived'),
+                5 => _kt('Incomplete'),
+                6 => _kt('Version Deleted')
+        );
 
-		if (array_key_exists($statusid, $statuses))
-		{
-			return $statuses[$statusid];
-		}
+        if (array_key_exists($statusId, $statuses)) {
+            return $statuses[$statusId];
+        }
 
-		return _kt('Unknown State');
-	}
-
-
-
-
+        return _kt('Unknown State');
+    }
 
 }
 ?>

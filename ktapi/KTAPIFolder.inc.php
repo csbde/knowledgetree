@@ -182,15 +182,15 @@ class KTAPI_Folder extends KTAPI_FolderItem {
         $wsversion = $this->getWSVersion();
 
         $detail = array(
-        'id'=>(int) $this->folderid,
-        'folder_name'=>$this->get_folder_name(),
-        'parent_id'=>(int) $this->get_parent_folder_id(),
-        'full_path'=>$this->get_full_path(),
-        'linked_folder_id'=>$this->folder->getLinkedFolderId(),
-        'permissions' => KTAPI_Folder::get_permission_string($this->folder),
+                    'id' => (int) $this->folderid,
+                    'folder_name' => $this->get_folder_name(),
+                    'parent_id' => (int) $this->get_parent_folder_id(),
+                    'full_path' => $this->get_full_path(),
+                    'linked_folder_id' => $this->folder->getLinkedFolderId(),
+                    'permissions' => KTAPI_Folder::get_permission_string($this->folder),
         );
 
-        if ($wsversion<3) {
+        if ($wsversion < 3) {
             unset($detail['linked_folder_id']);
         }
 
@@ -685,7 +685,7 @@ class KTAPI_Folder extends KTAPI_FolderItem {
         list($permissionString, $permissionParams, $permissionJoin) = $res;
 
         if (isset($_SESSION['adminmode']) && ($_SESSION['adminmode']+0)) {
-            if(Permission::adminIsInAdminMode() || Permission::isUnitAdministratorForFolder($user, $this->folder)){
+            if (Permission::adminIsInAdminMode() || Permission::isUnitAdministratorForFolder($user, $this->folder)) {
                 $permissionString = true;
                 $permissionParams = array();
                 $permissionJoin = '';
@@ -754,7 +754,7 @@ class KTAPI_Folder extends KTAPI_FolderItem {
         list($permissionString, $permissionParams, $permissionJoin) = $res;
 
         if (isset($_SESSION['adminmode']) && ($_SESSION['adminmode']+0)) {
-            if(Permission::adminIsInAdminMode() || Permission::isUnitAdministratorForFolder($user, $this->folder)){
+            if (Permission::adminIsInAdminMode() || Permission::isUnitAdministratorForFolder($user, $this->folder)) {
                 $permissionString = true;
                 $permissionParams = array();
                 $permissionJoin = '';
@@ -1507,7 +1507,7 @@ class KTAPI_Folder extends KTAPI_FolderItem {
 	        foreach ($results as $result)
 	        {
 	        	$folder = &Folder::get($result['folder_id']);
-	        	if(!PEAR::isError($folder))
+	        	if (!PEAR::isError($folder))
 	        	{
 					$ktapi_folder = &$this->ktapi->get_folder_by_id($folder->getId());
 
@@ -1872,7 +1872,7 @@ class KTAPI_Folder extends KTAPI_FolderItem {
         }
 
         // need to do documents?
-        if(strpos($what, 'D') !== false)
+        if (strpos($what, 'D') !== false)
         {
         	$sSelectQuery = 'D.id, DT.datetime AS change_date ' .
 	        'FROM ' . KTUtil::getTableName('document_transactions') . ' AS DT INNER JOIN ' . KTUtil::getTableName('documents') . ' AS D ON D.id = DT.document_id ';
@@ -2231,17 +2231,17 @@ class KTAPI_Folder extends KTAPI_FolderItem {
 
 						//this type is a bit generic, but the only way to refine it is to parse
 						//the comment!
-						if(strpos(strtolower($result['comment']), 'archived') !== false)
+						if (strpos(strtolower($result['comment']), 'archived') !== false)
 						{
 							//$GLOBALS['default']->log->debug('updatedSince ARCHIVED');
 							$changeType = 'UA';
 						}
-						if(strpos(strtolower($result['comment']), 'restored') !== false)
+						if (strpos(strtolower($result['comment']), 'restored') !== false)
 						{
 							//$GLOBALS['default']->log->debug('updatedSince RESTORED');
 							$changeType = 'UR';
 						}
-						if(strpos(strtolower($result['comment']), 'metadata updated') !== false)
+						if (strpos(strtolower($result['comment']), 'metadata updated') !== false)
 						{
 							//$GLOBALS['default']->log->debug('updatedSince METADATA UPDATED');
 							$changeType = 'UM';
@@ -2317,12 +2317,12 @@ class KTAPI_Folder extends KTAPI_FolderItem {
 			// ($a['change_type'] == 'F' && $b['change_type'] == 'D') ? -1 : (($a['change_type'] == 'D' && $b['change_type'] == 'F') ? 1);
 
 			// we need to compare item_types as well since could get a doc and a folder which have the same id!
-			if($a['item_type'] == 'F' && $b['item_type'] == 'D')
+			if ($a['item_type'] == 'F' && $b['item_type'] == 'D')
 			{
 				return -1;
 			}
 
-			if($a['item_type'] == 'D' && $b['item_type'] == 'F')
+			if ($a['item_type'] == 'D' && $b['item_type'] == 'F')
 			{
 				return 1;
 			}
