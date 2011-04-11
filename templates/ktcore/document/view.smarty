@@ -42,9 +42,6 @@
                         <span class="doc_info" style="display: block;">
                         <table class="metadatatable">
                         	<tr>
-								<th>Document ID:</th><td>{$document_id}</td>
-							</tr>
-                        	<tr>
 								<th style="width: 100px;">Version:</th><td><a href="">{$document->getMajorVersionNumber()}.{$document->getMinorVersionNumber()}</a></td>
 							</tr>
 							<tr>
@@ -62,7 +59,10 @@
 							</tr>
 						{/if}
 							<tr>
-							<th>File type:</th><td>{$fieldsetDisplayHelper->_sizeHelper($document->getSize())} {$fieldsetDisplayHelper->_mimeHelper($document->getMimeTypeID())}.</td>
+							<th>File type:</th><td>{$fieldsetDisplayHelper->_mimeHelper($document->getMimeTypeID())} - {$fieldsetDisplayHelper->_sizeHelper($document->getSize())} </td>
+							<tr>
+								<th>Document ID:</th><td>{$document_id}</td>
+							</tr>
 							</tr>
 						</table>
 					<div class="document-tags" rel='{literal}{{/literal}"documentID":"{$document->getId()}"{literal}}{/literal}'>
