@@ -43,7 +43,8 @@ class webAjaxHandler {
         // Add additional parameters
         $add_params = array_merge($_GET, $_POST);
         unset($add_params['request'], $add_params['datasource']);
-        $this->request['parameters'] = $this->request['parameters']+$add_params;	//array_merge($this->request['parameters'], $add_params);
+        $this->request['parameters'] = $this->request['parameters'] + $add_params;
+        //array_merge($this->request['parameters'], $add_params);
         $this->parameters = $this->request['parameters'];
 
         if (!$this->auth['debug']) { $this->ret->includeDebug = false; }
@@ -62,35 +63,35 @@ class webAjaxHandler {
     }
 
     /**
-	 * Alias for responseobject->log
-	 *
-	 * @param $str
-	 * @return void
-	 */
+     * Alias for responseobject->log
+     *
+     * @param $str
+     * @return void
+     */
     protected function log($str = '')
     {
         $this->ret->log($str);
     }
 
     /**
-	 * Alias for responseobject->error
-	 *
-	 * @param $errMsg
-	 * @return void
-	 */
+     * Alias for responseobject->error
+     *
+     * @param $errMsg
+     * @return void
+     */
     protected function error($errMsg = null)
     {
         $this->ret->addError($errMsg);
     }
 
     /**
-	 * Provide a structured array. The resultant array will contain all the keys (empty values) listed in the $structString.
-	 * Where these values exist in the passed array $arr, they will be used, otherwise they will be empty.
-	 *
-	 * @param $structString
-	 * @param $arr
-	 * @return array
-	 */
+     * Provide a structured array. The resultant array will contain all the keys (empty values) listed in the $structString.
+     * Where these values exist in the passed array $arr, they will be used, otherwise they will be empty.
+     *
+     * @param $structString
+     * @param $arr
+     * @return array
+     */
     private function structArray($structString = null, $arr = null)
     {
         $struct = array_flip(split(',', (string)$structString));
@@ -98,10 +99,10 @@ class webAjaxHandler {
     }
 
     /**
-	 * Dispatch to the specified service
-	 *
-	 * @return void
-	 */
+     * Dispatch to the specified service
+     *
+     * @return void
+     */
     public function dispatch()
     {
         $request = $this->request;
@@ -128,11 +129,11 @@ class webAjaxHandler {
     }
 
     /**
-	 * Load the service or throw an exception
-	 *
-	 * @param $serviceName
-	 * @return unknown_type
-	 */
+     * Load the service or throw an exception
+     *
+     * @param $serviceName
+     * @return unknown_type
+     */
     public function loadService($serviceName = null)
     {
         $version = $this->getLatestServiceVersion();
@@ -149,10 +150,10 @@ class webAjaxHandler {
     }
 
     /**
-	 * Get a list of all the server versions that are available
-	 *
-	 * @return array
-	 */
+     * Get a list of all the server versions that are available
+     *
+     * @return array
+     */
     public function getServerVersions()
     {
         $folder = 'services/';
@@ -168,10 +169,10 @@ class webAjaxHandler {
     }
 
     /**
-	 * Get the latest service version. Ajax from the Website always make use of the latest version available.
-	 *
-	 * @return unknown_type
-	 */
+     * Get the latest service version. Ajax from the Website always make use of the latest version available.
+     *
+     * @return unknown_type
+     */
     public function getLatestServiceVersion()
     {
         $ret = $this->getServerVersions();
@@ -179,10 +180,10 @@ class webAjaxHandler {
     }
 
     /**
-	 * Render the output
-	 *
-	 * @return unknown_type
-	 */
+     * Render the output
+     *
+     * @return unknown_type
+     */
     public function render()
     {
         echo $this->ret->getJson();
