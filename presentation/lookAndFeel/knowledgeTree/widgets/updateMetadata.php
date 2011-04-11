@@ -28,7 +28,7 @@ require_once(KT_PLUGIN_DIR . '/ktcore/document/edit.php');
 	switch($sFunction)
 	{
 		case 'doctype':			
-			$iDocumentTypeID = (int)$_POST['documentTypeID'];
+			$iDocumentTypeID = (int)$_POST['document-type'];
 			changeDocumentType($iDocumentID, $iDocumentTypeID);
 		break;		
 		case 'metadata':
@@ -36,11 +36,11 @@ require_once(KT_PLUGIN_DIR . '/ktcore/document/edit.php');
 			persistMetadata($iDocumentID, $aFields);
 		break;
 		case 'title':
-			$sTitle = $_POST['documentTitle'];
+			$sTitle = $_POST['document-title'];
 			changeDocumentTitle($iDocumentID, $sTitle);
 		break;
 		case 'filename':
-			$sFilename = $_POST['documentFilename'];
+			$sFilename = $_POST['document-filename'];
 			changeDocumentFilename($iDocumentID, $sFilename);
 		break;
 	}

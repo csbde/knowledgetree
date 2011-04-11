@@ -1,6 +1,9 @@
 /**
- * Events can be registered with this class, and the run event called on body load, in order to defer
- * javascript events which might otherwise delay loading of additional js files and other page elements.
+ * Events can be registered with this class, and the run event called using jQuery's ready event,
+ * in order to defer javascript events which might otherwise delay loading of additional js files
+ * and other page elements.
+ *
+ * NOTE that use of this class DOES require jQuery.
  */
 kt.eventhandler = new function() {
 
@@ -55,3 +58,7 @@ kt.eventhandler = new function() {
     }
 
 }
+
+jQuery(document).ready(function() {
+    kt.eventhandler.run();
+});
