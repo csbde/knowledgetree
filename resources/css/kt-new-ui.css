@@ -11,7 +11,7 @@ body {
 }
 textarea {
 	/*font-family: Arial;*/
-	font-family: tahoma,arial,helvetica,sans-serif;
+	font-family: tahoma,arial,helvetica,sans-serif; 
 	font-size: 11px;
 }
 /* ------------------ Experimental UI --------------------- */
@@ -305,9 +305,7 @@ breadcrumbBtns a:active {
 
 
 /*----End Breadcrumbs----*/
-#txtSearchBar1 {
-	width:155px !important;
-}
+
 #commentsarea table{
 	background: #eee;
 	border: 1px solid #ddd !important;
@@ -611,14 +609,47 @@ div.form_actions {
 	text-decoration: underline;
 }
 
-#newSearchQuery {
-	margin-top: -10px;
+#newSearchQuery.x-toolbar {
 	padding: 0px;
-	margin: 3px 5px;
+	margin: 4px 10px;
 	/*float: right;*/
 	padding-right: 0px;
+	background: white;
+	border-radius: 10px;
+	-moz-border-radius: 10px;
+	-webkit-border-radius: 10px;
+	border:1px solid #ddd;
+	box-shadow: inset 0px 1px 1px #666;
+	width: 200px;
+	height: 20px;
 }
-
+#newSearchQuery.x-toolbar table{
+	border-spacing: 0px 0px;
+}
+#newSearchQuery #ext-gen10 {
+	display: block;
+	width: 170px;
+	float: right;
+}
+#newSearchQuery #ext-gen17 {
+	display: block;
+	float: left;
+	width: 30px;
+}
+#newSearchQuery #ext-gen19{
+	background: url(../graphics/newui/icons/search.png) no-repeat;
+	margin: 2px 0px 0px 3px;
+	width: 12px;
+}
+#txtSearchBar1 {
+	width:155px !important;
+	border: 0px;
+	background: transparent;
+	padding-top: 5px;
+}
+#searchButton1 {
+	padding: 0px 2px 0px 0px;
+}
 #bigbuttons {
 	float: left;
 }
@@ -970,7 +1001,7 @@ label span.required
 .modalField textarea {
 	color: #666;
 	border-color: #ccc;
-}
+} 
 
 
 .modalField input {
@@ -1001,9 +1032,6 @@ label span.required
 	border: none;
 	list-style: none;
 	padding: 0px;
-        width: 310px;
 }
-
 #content .tags div.token-input-dropdown-facebook {
-        width: 310px;
 }
