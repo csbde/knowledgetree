@@ -520,25 +520,6 @@ class SimpleFieldsetDisplay extends KTFieldsetDisplay {
         );
         return $oTemplate->render($aTemplateData);
     }
-    
-    /**
-     * Recursively unsets elements from a nested array
-     *
-     * @param array $array Array to unset from
-     * @param array $unwanted_keys Array of keys to remove
-     */
-    function recursive_unset(&$array, $unwanted_keys) {
-    	foreach($unwanted_keys as $unwanted_key)
-    	{
-	    	unset($array[$unwanted_key]);
-    	}
-    	
-	    foreach ($array as &$value) {
-	        if (is_array($value)) {
-	            SimpleFieldsetDisplay::recursive_unset($value, $unwanted_keys);
-	        }
-	    }
-	}
 
     function renderComparison($aDocumentData, $aComparisonData) {
         // we do a fair bit of fetching, etc. in here.
@@ -605,6 +586,25 @@ class SimpleFieldsetDisplay extends KTFieldsetDisplay {
 
         return $oTemplate->render($aTemplateData);
     }
+    
+    /**
+     * Recursively unsets elements from a nested array
+     *
+     * @param array $array Array to unset from
+     * @param array $unwanted_keys Array of keys to remove
+     */
+    private function recursive_unset(&$array, $unwanted_keys) {
+    	foreach($unwanted_keys as $unwanted_key)
+    	{
+	    	unset($array[$unwanted_key]);
+    	}
+    	
+	    foreach ($array as &$value) {
+	        if (is_array($value)) {
+	            $this->recursive_unset($value, $unwanted_keys);
+	        }
+	    }
+	}
 
 }
 

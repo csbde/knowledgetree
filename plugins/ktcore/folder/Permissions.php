@@ -352,58 +352,6 @@ class KTFolderPermissionsAction extends KTFolderAction {
         $perms = $aPermList;
         $docperms = KTPermission::getDocumentRelevantList();
 
-        // FIXME This belongs in a shared function - see KTDocTypeAlerts.php
-        $groupsAndRoles = array();
-        $groups = GroupUtil::listGroups();
-        // TODO checking of assigned groups and roles vs available, set active = false for assigned.
-        foreach ($groups as $group) {
-            $groupsAndRoles['Groups']["group_{$group->getId()}"]['name'] = $group->getName();
-            $groupsAndRoles['Groups']["group_{$group->getId()}"]['active'] = 1;
-        }
-
-        $roles = Role::getList('id > 0');
-        foreach ($roles as $role) {
-            $groupsAndRoles['Roles']["role_{$role->getId()}"]['name'] = $role->getName();
-            $groupsAndRoles['Roles']["role_{$role->getId()}"]['active'] = 1;
-        }
-
-        // Process list of existing users and groups into a format which can be easily parsed in the template.
-        // Additionally set disabled (inactive) for any pre-selected select list option.
-        $assigned['groups_roles'] = array();
-        $assigned['users'] = array();
-        foreach ($members as $key => $member) {
-            $data = explode('_', $key);
-            if ($data[0] != 'user') {
-                $assigned['groups_roles'][] = '{id: "' . $key . '", name: "' . $member->getName() . '"}';
-                $keyword = ucwords($data[0]) . 's';
-                $groupsAndRoles[$keyword][$key]['active'] = 0;
-            }
-            else {
-                $name = $member->getName();
-                if (empty($name)) { $name = $member->getUserName(); }
-                $assigned['users'][] = '{id: "' . $data[1] . '", name: "' . $name . '"}';
-            }
-        }
-
-        global $main;
-        $jsonWidget = new KTJSONLookupWidget(_kt('Groups & Roles'),
-            _kt('Select groups or roles'),
-            'members',
-            '',
-            $main,
-            false,
-            null,
-            null,
-            array(
-                'groups_roles' => $groupsAndRoles,
-                'assigned' => array(implode(',', $assigned['groups_roles']), implode(',', $assigned['users'])),
-                'type' => 'alert',
-                'parts' => 'groups',
-                'selection_default' => 'Select groups and roles',
-                'optgroups' => true
-            )
-        );
-
         $templateData = array(
             'iFolderId' => $iFolderId,
             'roles' => Role::getList(),
@@ -417,8 +365,7 @@ class KTFolderPermissionsAction extends KTFolderAction {
             'permissions' => $perms,
             'document_permissions' => $docperms,
             'can_inherit' => $bCanInherit,
-            'input' => $input,
-            'jsonWidget' => $jsonWidget->render()
+            'input' => $input
         );
 
         return $template->render($templateData);

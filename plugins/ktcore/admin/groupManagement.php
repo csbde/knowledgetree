@@ -258,31 +258,6 @@ class KTGroupAdminDispatcher extends KTAdminDispatcher {
         return $group;
     }
 
-    private function getJsonWidget($typeLabel, $settings, $additional = array())
-    {
-        $widgetSettings = array(
-            'action' => 'getUsers',
-            'assigned' => $settings['assigned'],
-            'type' => $settings['type'],
-            'parts' => $settings['parts'],
-            'selection_default' => $settings['default'],
-            'optgroups' => false
-        );
-        $widgetSettings = array_merge($additional, $widgetSettings);
-
-        $jsonWidget = new KTJSONLookupWidget(_kt('Users'),
-            _kt("Select the $typeLabel which should be part of this group. Once you have added all the $typeLabel that you require, press <strong>save changes</strong>."),
-            'members', '',
-            $this->oPage,
-            false,
-            null,
-            null,
-            $widgetSettings
-        );
-
-        return $jsonWidget;
-    }
-
     private function renderTemplateWithWidget($group, $jsonWidget, $template)
     {
         $templating =& KTTemplating::getSingleton();

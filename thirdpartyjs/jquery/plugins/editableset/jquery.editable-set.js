@@ -35,7 +35,7 @@
 			
 			//have any fields been marked as invalid?
 			if (!self.invalid.isEmpty())
-			{				
+			{
 				$.isFunction( opts.onInvalid ) && opts.onInvalid.call( self, self.invalid );
 				
 				return false;
@@ -56,8 +56,59 @@
 					return false;
 				}
 			}
+			
+			//now call the appropriate function
+			var params = $('form', self).serializeForm($.parseJSON(opts.params));
+			
+			var func = opts.action;
+			
+			ktjapi.callMethod(func, params, function(data, textStatus) 
+			{ 				
+				// Parse the data if necessary
+				data = $.parseJSON(data) ? $.parseJSON(data) : data;
+	
+				// Revert to original text
+				if(opts.globalSave) {
+					$.each($('.editable'), function(i, value) {
+						$(value).html($.fn.editableSet.globals.reversions[i]).removeClass('active');
+						value.editing = false;
+					});
+				} else {
+					$(self).html(self.revert);
+					$(self).removeClass('active');
+				}
+	
+				var spans;
+				if(opts.globalSave) {
+					$.each( $('.editable'), function(i, editable) {
+						spans = $('span[data-name]', editable);	
+						$.isFunction(opts.repopulate) && opts.repopulate.call(self, spans, data, opts);
+					});
+				} else {
+					spans = $('span[data-name]', self);
+					$.isFunction(opts.repopulate) && opts.repopulate.call(self, spans, data, opts);
+				}			
+	
+				// afterSave Callback			
+				$.isFunction(opts.afterSave) && opts.afterSave.call(self, data.data, textStatus);
+			}, 
+			
+			false, 
+			
+			// onError
+			function(xhr, status, error) {
+				self.editing = true;
+		
+				// Reactivate the fields
+				$(':input', self).attr('disabled', false);
+		
+				// onError callback
+				$.isFunction(opts.onError) && opts.onError.call(self, xhr, status);
+			}, 
+			
+			30000, 30000);
 						
-			var form = $('form', self);
+			/*var form = $('div', self);
 			var action = form.attr( 'action' );
 	
 			// This is needed for rails to identify the request as json
@@ -68,7 +119,7 @@
 			// Generate the params
 			var params;
 			if( opts.globalSave ) {
-				params = $( 'form', '.editable' ).serialize();
+				params = $( 'div', '.editable' ).serialize();
 			} else {
 				params = form.serialize();
 			}
@@ -114,7 +165,7 @@
 		
 				// onError callback
 				$.isFunction( opts.onError ) && opts.onError.call( self, xhr, status );
-			});
+			});*/
 						
 			return true;	
 		};
@@ -156,7 +207,7 @@
 			{
 				control = $(self);
 			}
-			//$(self).bind( opts.event, function(e) {
+
 			control.bind(event+'.editableSet', function(e) {
 				e.preventDefault();
 				e.stopPropagation();
@@ -165,13 +216,18 @@
 					return;
 				}
 				
-				self.invalid = new Hashtable();	//Array();
+				//hashtable for storing fields that are invalid
+				self.invalid = new Hashtable();
 				self.editing = true;
 				self.revert = $(self).html();
 				
 				// Assign an action dynamically
 				if( $(self).attr( 'rel' ) ) {
-					opts.action = $(self).attr( 'rel' );		
+					opts.params = $(self).attr( 'rel' );
+				}
+				else
+				{
+					opts.params = '';
 				}
 				
 				if( opts.globalSave ) {
@@ -184,11 +240,14 @@
 				$.isFunction( opts.beforeLoad ) && opts.beforeLoad.call( self );
 						
 				// Create the form wrapper
-				$(self).wrapInner( $('<form />', {
+				/*$(self).wrapInner( $('<form />', {
 					//name: 'metadataForm',
 					action : opts.action,
 					method : 'POST'
-				}) ).addClass( 'active' );
+				}) ).addClass( 'active' );*/
+				
+				// Create the form wrapper
+				$(self).wrapInner( $('<form />')).addClass( 'active' );
 				
 				/*if( opts.titleElement ) {
 					// Move the newly encapsulated titleElement outside of the form
