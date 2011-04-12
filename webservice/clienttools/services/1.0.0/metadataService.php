@@ -744,13 +744,130 @@ class metadataService extends client_service {
 
         return true;
     }
+    
+    public function deleteTag($params)
+    {
+    	$GLOBALS['default']->log->debug('metadataService deleteTag '.print_r($params, true));
+    	
+        $document = Document::get($params['documentID']);
+        $tagToDelete = $params['tag'];
+        
+        $fieldSetId = 2;
+        $tagField = DocumentField::get($fieldSetId);
+        
+        $GLOBALS['default']->log->debug('metadataService deleteTag tagField '.print_r($tagField, true));
+        	 
+        $fieldValue = DocumentFieldLink::getByDocumentAndField($document, $tagField);
+                
+        $GLOBALS['default']->log->debug("metadataService deleteTag fieldValue ".print_r($fieldValue, true));
+        
+        if (!is_null($fieldValue) && (!PEAR::isError($fieldValue))) 
+        {
+            $value = $fieldValue->getValue();
+            $GLOBALS['default']->log->debug("metadataService deleteTag value $value");
+            
+            $currentTags = explode(",", $value);
+            
+            $GLOBALS['default']->log->debug('metadataService deleteTag current tags '.print_r($currentTags, true));
+            
+            $newTags = array();
+            
+            //iterate through the existing tags, and build new array of tags without the deleted one
+            foreach($currentTags as $currentTag)
+            {            	
+            	$GLOBALS['default']->log->debug("metadataService deleteTag current tag $currentTag");
+            	
+            	if($currentTag !== $tagToDelete)
+            	{
+            		$GLOBALS['default']->log->debug('metadataService deleteTag NOT FOUND');
+            		$newTags[] = $currentTag;
+            	}
+            }
+            
+            $GLOBALS['default']->log->debug('metadataService deleteTag new tags '.print_r($newTags, true));
+            
+            $tags = implode(",", $newTags);
+            
+            $GLOBALS['default']->log->debug("metadataService deleteTag new tags: $tags");
+            
+            $tagData = array($tagField, $tags);
+            
+            //now update the new tags to the db
+            $origDocTypeId = $docTypeId = $document->getDocumentTypeId();
+            $metadataPack = $this->mergeMetadata($document, array($tagData));
+
+	        DBUtil::startTransaction();
+	
+	        $user = User::get($_SESSION['userID']);
+	        $document->startNewMetadataVersion($user);
+	
+	        $res = $document->update();
+	        if (PEAR::isError($res)) {
+	            DBUtil::rollback();
+	            $GLOBALS['default']->log->error(sprintf(_kt('Unexpected failure to update document tags: %s'), $res->getMessage()));
+	            $response = array('saveTags' => $res->getMessage());
+	            $this->addResponse('error', json_encode($response));
+	            
+	            return false;
+	        }
+	
+	        $coreRes = KTDocumentUtil::saveMetadata($document, $metadataPack);
+	        if (PEAR::isError($coreRes)) {
+	            DBUtil::rollback();
+	            $GLOBALS['default']->log->error(sprintf(_kt('Unexpected failure to update document tags: %s'), $coreRes->getMessage()));
+	            $response = array('saveTags' => $coreRes->getMessage());
+	            $this->addResponse('error', json_encode($response));
+	            return false;
+	        }
+	
+	        // Post-triggers.
+	        // Do these have relevance to tag saving?
+	        $KTTriggerRegistry = KTTriggerRegistry::getSingleton();
+	        $triggers = $KTTriggerRegistry->getTriggers('edit', 'postValidate');
+	
+	        foreach ($triggers as $trigger) {
+	            $triggerName = $trigger[0];
+	            $trigger = new $triggerName;
+	            $info = array(
+	                'document' => $document,
+	                'aOptions' => $metadataPack,
+	                'docTypeId' => $docTypeId,
+	                'origDocTypeId' => $origDocTypeId
+	            );
+	            $trigger->setInfo($info);
+	            $ret = $trigger->postValidate();
+	        }
+	
+	        DBUtil::commit();
+	
+	        $documentTransaction = new DocumentTransaction(
+	                                                    $document,
+	                                                    _kt('Document metadata updated'),
+	                                                    'ktcore.transactions.update'
+	                                    );
+	        $documentTransaction->create();
+	
+	        $response = array('saveTags' => 'Saved tags for document');
+	        $this->addResponse('saveTags', json_encode($response));
+	
+	        return true;
+            
+        }
+        else 
+        {
+        	$GLOBALS['default']->log->debug('metadataService deleteTag fieldValue error '.$fieldValue->getMessage());
+        	
+        	//TODO
+        	
+        }
+    }
 
     /**
      * Merge existing metadata with submitted metadata.
      */
     private function mergeMetadata($document, $newMetadata = array())
     {    	
-    	//$GLOBALS['default']->log->debug('metadataService mergeMetadata '.print_r($document, true).' '.$newMetadata);
+    	$GLOBALS['default']->log->debug('metadataService mergeMetadata '.print_r($document, true).' '.$newMetadata);
     	
         $currentMetadata = (array)KTMetadataUtil::fieldsetsForDocument($document);
         $metadataPack = array();
