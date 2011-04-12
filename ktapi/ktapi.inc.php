@@ -5493,8 +5493,11 @@ class KTAPI {
 		if ($size['total_size'] > $maxFileSize)	// || $size['total_files'] > $maxFiles)
 		{
 			$displaySize = $size['total_size']/(1024*1024);
+			
+			$displaySize = substr($displaySize, 0, strpos($displaySize, '.')-1);
+			
 			$response['status_code'] = 1;
-			$response['message'] = "WARNING: you have selected to synchronize {$size['total_files']} files with a total size of $displaySize MB. Note that synchronizing large quantities of data will have an impact on system resources and bandwidth use.";
+			$response['message'] = "WARNING: you have selected to synchronize {$size['total_files']} files with a total size of $displaySize MB. Synchronizing large quantities of data will have an impact on system resources and bandwidth use. Proceed with synchronization?";
 		}
 		else
 		{
