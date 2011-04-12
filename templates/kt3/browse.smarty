@@ -50,14 +50,15 @@
 <div class="dropzone" id="datadrop">
 {/if}
 
-<div class=" itemContainer" style="width: 730px;">
+<div class=" itemContainer">
 	{$folderContents}
-	{$bulkActionMenu}
 	<div style="width:100%; text-align: center">{$pagination}</div>
 </div>
 {$fragments}
 {if ($isEditable)}
 </div>
+	{$bulkActionMenu}
+
 {/if}
 
 {if ($isEditable && 1==2)}
