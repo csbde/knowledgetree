@@ -85,6 +85,10 @@ class KTDocumentStatusBlock extends KTDocumentViewlet {
         return $oTemplate->render($aTemplateData);
 	}
 	
+	/**
+	 * Return content only.
+	 *
+	 */
 	public function do_ajaxGetDocBlock() {
 		echo $this->getDocBlock(false);
 		exit(0);
