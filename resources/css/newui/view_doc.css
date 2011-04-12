@@ -34,7 +34,8 @@
 	padding:10px;
 }
 #sidebar_item ul {
-	margin: 5px;
+	/*margin: 5px;*/
+	padding-left: 20px;
 }
 #sidebar_item {
 	border-bottom: 1px solid #ccc;
@@ -67,7 +68,7 @@ div.viewletworkflow {
 	margin: 0px;
 	display: block;
 }
-.action_buttons .action {
+.action_buttons .action{
 	display: inline-block;
 	border: 1px solid #ccc;
 	border-radius: 2px;
@@ -78,14 +79,15 @@ div.viewletworkflow {
 	position: relative;
 	color: inherit;
 }
-#content .action_buttons .action:hover {
+#content .action_buttons .action:hover
+ {
 	border: 1px solid #2F6594;
 	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#609bd1', endColorstr='#2f6694') !important; /* for IE */
 	background: -webkit-gradient(linear, left top, left bottom, from(#609bd1), to(#2f6694)) !important; /* for webkit browsers */
 	background: -moz-linear-gradient(top,  #609bd1,  #2f6694) !important; /* for firefox 3.6+ */
 	color: white;
 }
-#content .action_buttons .action a:hover {
+#content .action_buttons .action .button:hover {
 	color: inherit;
 
 }
@@ -103,7 +105,7 @@ div.viewletworkflow {
 	color: #2f6594;
 	text-shadow: 0px 1px 0px white;
 }
-#content .button:hover {
+#content .hover .button {
 	text-decoration: none;
 	text-shadow: 0px -1px 0px #2F6594;
 	color: white!important;
@@ -120,6 +122,9 @@ div.viewletworkflow {
 	padding: 3px 4px;
 	cursor: pointer;
 }
+.action .hover .split {
+	border-left: 1px solid #2F6594;
+}
 .split.selected {
 	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#2f6694', endColorstr='#609bd1') !important; /* for IE */
 	background: -webkit-gradient(linear, left top, left bottom, from(#2f6694), to(#609bd1)) !important; /* for webkit browsers */
@@ -131,12 +136,11 @@ div.viewletworkflow {
 	position: absolute;
 	background: white;
 	border: 1px solid #CCC;
-	margin-top: -4px;
-	right: 0px;
+	margin: -4px -1px 0px -1px;
 	min-width: 120px;
-	margin-right: -1px;
 	font-size: 11px;
 	padding: 0px;
+	right: auto; 
 }
 #content ul#checkin {
 	width: 150px;
@@ -144,13 +148,21 @@ div.viewletworkflow {
 .splitmenu li {
 	list-style: none;
 	border-bottom: 1px solid #CCC;
-	padding: 2px 5px 2px 5px;
+	padding: 2px 5px 2px 1px;
 }
 .splitmenu li:hover {
 	background: #f2ebae;
 }
 .splitmenu li:last-child {
 	border-bottom: 0px;
+}
+#content .splitmenu li a {
+	padding: 2px 0px 2px 24px;
+	display: inline-block;
+	width: 80%;
+	text-decoration: none;
+	font-weight: bold;
+	text-shadow: 0px 1px 0px white;
 }
 .button {
 	font-family: sans-serif !important;
@@ -379,10 +391,33 @@ div.viewletworkflow {
     margin-right: 70px;
     font-family: Arial,Helvetica,sans-serif;
     font-size: 12px;
-    padding: 2px;
+    padding: 2px 0px;
     line-height: 15px;
 }
-
+#content .activityfeed.buttons {
+	text-align: right;
+}
+#content .activityfeed.buttons input {
+	padding: 2px 5px;
+	-moz-border-radius: 10px!important;
+	-webkit-border-radius: 10px!important;
+	border-radius: 10px!important;
+}
+#content .activityfeed.buttons .toggle-user-feed {
+	border: 1px solid #FFE877!important;
+	background: #F2EBAE!important;
+}
+#content .activityfeed.buttons .toggle-system-feed {
+	border: 1px solid #B0D1E5!important;
+	background: #D7E3EA!important;
+	text-shadow: none;
+}
+#content .activityfeed.buttons .suppress-feed {
+	background: #eee!important;
+	border: 1px solid #ccc!important;
+	opacity: 0.5;
+	color: #666!important;
+}
 .activityfeed .item{
     display: block;
     clear: both;
@@ -406,15 +441,21 @@ div.viewletworkflow {
     float: left;
     display: block;
     clear: none;
+    padding-left: 10px;
 }
 
+.activityfeed .comment .icon {
+	border-left: 4px solid #FFE877;
+}
+.activityfeed .transaction .icon {
+	border-left: 4px solid #B0D1E5;
+}
 .activityfeed .activityfeed-content{
-    margin-left: 60px;
+    margin-left: 75px;
     overflow: hidden;
     word-wrap: break-word;
     width: 525px;
     min-height: 50px;
-
 }
 
 .activityfeed .metaflag{
@@ -459,7 +500,7 @@ span.doc_info {
 }
 
 #commentsarea {
-	margin-bottom: 15px;
+	margin-bottom: 10px;
 }
 
 #commentsarea table {

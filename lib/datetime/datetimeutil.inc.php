@@ -54,22 +54,29 @@ class datetimeutil {
 	 */
 	static public function getLocaleDate($date, $toTimezone = true, $aTime = false) {
 		// Make sure a date has been passed
-		if(is_null($date)) return $date;
+		if (is_null($date)) {
+		    return $date;
+		}
+
 		// Create time conversion object
-		if($aTime) {
+		if ($aTime) {
 			$tzc = new TimezoneConversion('H:i:s');
 		} else {
 			$tzc = new TimezoneConversion();
 		}
+
 		// Set the date to convert
 		$tzc->setProperty('Datetime', $date);
 		// Retrieve system timezone
 		$oConfig = KTConfig::getSingleton();
 		$tzvalue = $oConfig->get('timezone/setTimezone', 'UTC');
+
 		// Check if it is UTC and return
-		if($tzvalue == 'UTC') { return $date; }
+		if ($tzvalue == 'UTC') { return $date; }
+
 		// Set the timezone
 		$tzc->setProperty('Timezone', $tzvalue);
+
 		// Convert timezone
 		return $tzc->convertDateTime($toTimezone);
 	}
@@ -83,7 +90,7 @@ class datetimeutil {
 	static public function convertToUTC($date, $aTime = false) {
 	    return self::getLocaleDate($date, false, $aTime);
 	}
-	
+
 	/**
 	 * Convert time from UTC
 	 *

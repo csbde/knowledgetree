@@ -300,6 +300,26 @@ class KTJSONLookupWidget extends KTBaseWidget {
         return $jsonWidget;
     }
 
+    /**
+     * Get a combo widget containing a group selector and a user search input.
+     */
+    public static function getGroupsAndUsersWidget($label, $type, $parts, $members, $options, $filter = null)
+    {
+        $groupsAndRoles = self::getGroups();
+        $assigned = self::getAssignedGroups($groupsAndRoles, $members);
+        $options['groups_roles'] = $groupsAndRoles;
+
+        $assignedUsers = self::getAssignedUsers($members);
+        if (!empty($assignedUsers[1])) {
+            $assigned[1] = $assignedUsers[1];
+        }
+
+        return self::getWidget($label, $type, $parts, $assigned, $options);
+    }
+
+    /**
+     * Get a combo widget containing a group & role selector and a user search input.
+     */
     public static function getCombinedWidget($label, $type, $parts, $members, $options, $filter = null)
     {
         $groupsAndRoles = self::getGroupsAndRoles();

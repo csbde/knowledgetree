@@ -5,7 +5,7 @@
  * KnowledgeTree Community Edition
  * Document Management Made Simple
  * Copyright (C) 2008, 2009, 2010 KnowledgeTree Inc.
- * 
+ *
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License version 3 as published by the
@@ -48,8 +48,9 @@ function rank_compare($a, $b)
 {
 	if ($a->Rank == $b->Rank)
 	{
-		if ($a->Title == $b->Title)
-			return 0;
+		if ($a->Title == $b->Title) {
+                    return 0;
+                }
 		// we'll show docs in ascending order by name
         // strtolower to avoid case issues in sorting
 		return (strtolower($a->Title) < strtolower($b->Title)) ? -1 : 1;
@@ -258,14 +259,14 @@ class SearchHelper
 			$desc = searchfix($field['description']);
 			$datatype=$field['datatype'];
 			$control=$field['control'];
-				
+
 			if(KTPluginUtil::pluginIsActive('inet.multiselect.lookupvalue.plugin') && isset($field['inetlookup_type']) && $field['inetlookup_type'] != "") {
 				$inetlookup_type=$field['inetlookup_type'];
 				$fieldset_str .= "\n\t\t{id:\"$fid\", name:\"$name\", description:\"$desc\", datatype:\"$datatype\", control:\"$control\", inetlookup_type:\"$inetlookup_type\" , options: [";
 			} else {
-				$fieldset_str .= "\n\t\t{id:\"$fid\", name:\"$name\", description:\"$desc\", datatype:\"$datatype\", control:\"$control\", options: [";		
+				$fieldset_str .= "\n\t\t{id:\"$fid\", name:\"$name\", description:\"$desc\", datatype:\"$datatype\", control:\"$control\", options: [";
 			}
-				
+
         		$options = $field['options'];
         		$oo = 0;
         		if (!is_array($options))
@@ -471,8 +472,8 @@ class SearchHelper
 						dtfl.document_type_id=$documentTypeID
 					ORDER BY
 						df.name";
-			} else {	
-					
+			} else {
+
 						$sql = "SELECT
 									df.id, df.name, df.data_type, df.has_lookup, df.has_lookuptree, df.description
 								FROM
@@ -481,19 +482,19 @@ class SearchHelper
 								WHERE
 									dtfl.document_type_id=$documentTypeID
 								ORDER BY
-									df.name";		
+									df.name";
 					}
-		}			
+		}
 		else
 		{
 			$fieldsetID = sanitizeForSQL($fieldsetID);
 			if(KTPluginUtil::pluginIsActive('inet.multiselect.lookupvalue.plugin'))
-			{	
+			{
 				$sql = "SELECT id, name, data_type, has_lookup,has_inetlookup, inetlookup_type, has_lookuptree, description FROM document_fields WHERE parent_fieldset=$fieldsetID ORDER BY name";
 			} else {
-				$sql = "SELECT id, name, data_type, has_lookup, has_lookuptree, description FROM document_fields WHERE parent_fieldset=$fieldsetID ORDER BY name";		
+				$sql = "SELECT id, name, data_type, has_lookup, has_lookuptree, description FROM document_fields WHERE parent_fieldset=$fieldsetID ORDER BY name";
 			}
-			
+
 		}
 
 		$rs = DBUtil::getResultArray($sql);
@@ -515,7 +516,7 @@ class SearchHelper
 			$haslookup = $item['has_lookup'] + 0 > 0;
 			$hastree = ($item['has_lookuptree'] + 0 > 1);
 			$hasinetlookup = $item['has_inetlookup'] + 0 > 0;
-			
+
 			if ($haslookup || $hastree || $hasinetlookup)
 			{
 				$type = 'lookup';
@@ -523,14 +524,14 @@ class SearchHelper
 				$options = DBUtil::getResultArray($sql);
 
 			}
-			
+
 			$inetlookup_type = '';
 			if($hasinetlookup)
 			{
 				$type = 'inetlookup';
 				$inetlookup_type = $item['inetlookup_type'];
 			}
-			
+
 			/*if ($hastree)
 			{
 				$type = 'lookup';
@@ -756,7 +757,7 @@ function processSearchExpression($query)
 
     				$results[] = $item;
     		}
-    		
+
     		return $results;
     	}
     	catch(Exception $e)
@@ -768,9 +769,9 @@ function processSearchExpression($query)
 function resolveSearchShortcuts($result)
 {
     global $default;
-    
-    $oUser = User::get($_SESSION['userID']);    
-    
+
+    $oUser = User::get($_SESSION['userID']);
+
     // check user type, disabled = 4 means shared user, which has a different permissions structure
     if ($oUser->getDisabled() != 4) {
         $oPermission =& KTPermission::getByName('ktcore.permissions.read');
@@ -779,7 +780,7 @@ function resolveSearchShortcuts($result)
         $aPermissionDescriptors = KTPermissionUtil::getPermissionDescriptorsForUser($oUser);
         $sPermissionDescriptors = empty($aPermissionDescriptors) ? -1 : implode(',', $aPermissionDescriptors);
     }
-    
+
     $documentIds = implode(',', array_keys($result['docs']));
     $linkedDocuments = array();
     if (!empty($documentIds))
@@ -830,14 +831,14 @@ function resolveSearchShortcuts($result)
             $sql .= " INNER JOIN permission_lookup_assignments AS PLA ON PL.id = PLA.permission_lookup_id AND PLA.permission_id = $permId\n";
             $sql .= " WHERE f.linked_folder_id in ($folderIds) AND PLA.permission_descriptor_id IN ($sPermissionDescriptors)";
         }
-        
+
         $rs = DBUtil::getResultArray($sql);
 
         foreach($rs as $row)
         {
             $id = $row['id'];
             $linked_id = $row['linked_folder_id'];
-            
+
             try {
                 $shortFolder = new FolderShortcutResultItem($id, $result['folders'][$linked_id]);
                 $shortFolder->parentId = $row['parent_id'];
@@ -851,7 +852,7 @@ function resolveSearchShortcuts($result)
             }
         }
     }
-    
+
     return $result;
 }
 

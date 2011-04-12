@@ -278,6 +278,7 @@ class BrowseView {
         if (is_null($this->oUser)) {
             $this->oUser =  User::get($user_id);
         }
+
         $disabled = $this->oUser->getDisabled();
 
         $kt = new KTAPI(3);
