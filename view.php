@@ -1,4 +1,5 @@
 <?php
+
 /**
  * $Id$
  *
@@ -68,30 +69,29 @@ require_once(KT_LIB_DIR . '/views/sharedviewdocument.php');
  * Utility class to switch between user specific document views
  *
  */
-class viewUtil {
-    
+class ViewUtil {
+
     static function getView()
     {
-    	$oUser = User::get($_SESSION['userID']);
-    	if (PEAR::isError($oUser)) { $userType = 0; }
-    	else { $userType = $oUser->getDisabled(); }
-    	switch ($userType)
-    	{
-    		case 0 :
-    			return new ViewDocumentDispatcher();
-    			break;
-    		case 4 :
-    			return new sharedViewDocumentDispatcher();
-    			break;
-    		default:
-    			return new ViewDocumentDispatcher();
-    			break;
-    	}
-	}
-	
+        $user = User::get($_SESSION['userID']);
+        $userType = (PEAR::isError($user)) ? 0 : $user->getDisabled();
+
+        switch ($userType) {
+            case 0:
+                return new ViewDocumentDispatcher();
+                break;
+            case 4:
+                return new SharedViewDocumentDispatcher();
+                break;
+            default:
+                return new ViewDocumentDispatcher();
+                break;
+        }
+    }
+
 }
 
-$oDispatcher = viewUtil::getView();
-$oDispatcher->dispatch();
+$dispatcher = ViewUtil::getView();
+$dispatcher->dispatch();
 
 ?>
