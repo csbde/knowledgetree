@@ -57,21 +57,26 @@ class datetimeutil {
 		if (is_null($date)) {
 		    return $date;
 		}
+
 		// Create time conversion object
 		if ($aTime) {
 			$tzc = new TimezoneConversion('H:i:s');
 		} else {
 			$tzc = new TimezoneConversion();
 		}
+
 		// Set the date to convert
 		$tzc->setProperty('Datetime', $date);
 		// Retrieve system timezone
 		$oConfig = KTConfig::getSingleton();
 		$tzvalue = $oConfig->get('timezone/setTimezone', 'UTC');
+
 		// Check if it is UTC and return
 		if ($tzvalue == 'UTC') { return $date; }
+
 		// Set the timezone
 		$tzc->setProperty('Timezone', $tzvalue);
+
 		// Convert timezone
 		return $tzc->convertDateTime($toTimezone);
 	}

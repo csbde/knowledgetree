@@ -71,18 +71,18 @@ class KTFieldsetDisplayRegistry {
             //
             // FIXME this is slightly wasteful from a performance POV, though DB caching should make it OK.
             $oFieldset =& KTFieldset::getByNamespace ($nsname);
-            if (PEAR::isError($oFieldset))
-            {
+            if (PEAR::isError($oFieldset)) {
                 global $default;
                 $default->log->error('Could not resolve Fieldset by namespace: ' . $nsname . '. Error: ' . $oFieldset->getMessage());
                 return 'SimpleFieldsetDisplay';
             }
-            if ($oFieldset instanceof KTEntityNoObjects)
-            {
+
+            if ($oFieldset instanceof KTEntityNoObjects) {
                 global $default;
                 $default->log->error('Could not resolve Fieldset by namespace: ' . $nsname . '. Error: KTEntityNoObjects returned.');
                 return 'SimpleFieldsetDisplay';
             }
+
             if ($oFieldset->getIsConditional() && KTMetadataUtil::validateCompleteness($oFieldset)) {
                 return 'ConditionalFieldsetDisplay';
             } else {
