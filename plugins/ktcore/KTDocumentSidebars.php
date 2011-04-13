@@ -76,6 +76,78 @@ class KTDocumentSidebar extends KTDocumentViewlet {
         return $oTemplate->render($aTemplateData);
 	}
 	
+	public function do_refreshSidebar() {
+		echo $this->display_viewlet();
+		exit(0);
+	}
 }
 
+class KTWorkflowSidebar extends KTDocumentSidebar {
+	public $sName = 'ktcore.sidebar.workflow';
+	public $order = 4;
+	public $_sShowPermission = 'ktcore.permissions.read';
+	
+	public function getCSSName() { return 'workflow_transitions'; }
+	
+	public function display_viewlet() {
+		$oTemplating = KTTemplating::getSingleton();
+		$oTemplate = $oTemplating->loadTemplate('ktcore/document/sidebars/workflow');
+        if (is_null($oTemplate)) { return ''; }
+        $oWorkflowState = KTWorkflowState::get($this->oDocument->getWorkflowStateId());
+        if (PEAR::isError($oWorkflowState)) { return ''; }
+        $aDisplayTransitions = array();
+        $aTransitions = KTWorkflowUtil::getTransitionsForDocumentUser($this->oDocument, $this->oUser);
+        if (empty($aTransitions)) { return ''; }
+        // Check if the document has been checked out
+        $bIsCheckedOut = $this->oDocument->getIsCheckedOut();
+        $iId = $this->oDocument->getId();
+        if ($bIsCheckedOut) { 
+            // If document is checked out, don't link into the workflow.
+            $aDisplayTransitions = array();
+        } else {
+            foreach ($aTransitions as $oTransition) {
+            	if (is_null($oTransition) || PEAR::isError($oTransition)) { continue; }
+                $aDisplayTransitions[] = array(
+                	'id' => $oTransition->getId(),
+                    'url' => KTUtil::ktLink('action.php', 'ktcore.actions.document.workflow', array('fDocumentId' => $iId, 'action' => 'quicktransition', 'fTransitionId' => $oTransition->getId())),
+                    'name' => $oTransition->getName(),
+                );
+            }
+        }
+		//Retreive the comment for the previous transition
+		$aCommentQuery = array(
+            "SELECT comment FROM document_transactions
+            where transaction_namespace='ktcore.transactions.workflow_state_transition'
+            AND document_id = ?
+            ORDER BY id DESC LIMIT 1;"
+		);
+		$aCommentQuery[] = array($iId);
+		$aTransitionComments = DBUtil::getResultArray($aCommentQuery);
+		$oLatestTransitionComment = null;
+		if (!empty($aTransitionComments)) {
+			$aRow = $aTransitionComments[0];
+			$oLatestTransitionComment = $aRow['comment'];
+			$iCommentPosition = strpos($oLatestTransitionComment,':'); //comment found after first colon in string
+			 // if comment found
+			if ($iCommentPosition > 0) {
+				$oLatestTransitionComment = substr($oLatestTransitionComment, $iCommentPosition+2, (strlen($oLatestTransitionComment)-$iCommentPosition));
+			}
+			// else first state in workflow
+			else {
+				$oLatestTransitionComment = null;
+			}
+		}
+
+        $oTemplate->setData(array(
+            'context' => $this,
+            'bIsCheckedOut' => $bIsCheckedOut,
+            'transitions' => $aDisplayTransitions,
+            'state_name' => $oWorkflowState->getName(),
+			'comment' => $oLatestTransitionComment,
+        ));
+
+        return $oTemplate->render();
+	}
+	
+}
 ?>

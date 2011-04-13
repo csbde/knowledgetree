@@ -1,0 +1,111 @@
+<link href="/resources/css/kt-workflow-modal.css" type="text/css" rel="stylesheet" />
+<link href="/resources/css/kt-new-modal.css" type="text/css" rel="stylesheet" />
+
+<script src="/resources/js/newui/documents/blocks/workflowsBlock.js" type="text/javascript"></script>
+<script src="/resources/js/newui/buttons/formActions.js" type="text/javascript"></script>
+
+{if !$oWorkflow}
+    <p>{i18n}Document is not currently assigned to a workflow.{/i18n}</p>
+{else}
+
+<div class=workflow_details>
+	<table>
+		{if !empty($transition_fields)}
+		<td>
+			<div class=workflow_transition>
+				{if $aTransitions}
+			        <form action="{$smarty.server.PHP_SELF}" method=POST name=transition_wf_form>
+			            <input type=hidden name=action value=performTransition />
+			            <input type=hidden name=fDocumentId value="{$oDocument->getId()}" />
+			            <input type=hidden name=fWorkflowId value="{$oWorkflow->getId()}" />
+			            {foreach from=$transition_fields item=oWidget }
+			                {$oWidget->render()}
+			            {/foreach}
+			            <div class=form_actions id=modal>
+				            <input type="{$submit.type}" onclick="javascript: {ldelim}workflowBlock.submitForm('transition'){rdelim}; return false;" name=form_submit value="{i18n}Perform Transition{/i18n}" />
+				            <a href="#" onclick="vActions.closeDisplay('workflow'); return false;" class=form_cancel style="background: none repeat scroll 0% 0% transparent;">Cancel</a>
+			            </div>
+			        </form>
+		    	{/if}
+			</div>
+		</td>
+		{/if}
+		
+		<td>
+			{if empty($transition_fields)}
+				<div class=workflow_info>
+			{else}
+				<div class=workflow_info style="bottom: 50px;">
+			{/if}
+				<label for=comment><b>{i18n}Workflow for{/i18n} :</b> </label>
+				<span> {$oDocument->getName()|sanitize} </span>
+				<br/>
+				<label for=comment><b>{i18n}Workflow{/i18n} :</b> </label>
+				<span>{$oWorkflow->getName()}</span>
+				<br/>
+				<label for=comment><b>{i18n}State{/i18n} :</b> </label>
+				<span>{$oState->getName()}</span>
+				<br/>
+			</div>
+		</td>
+	</table>
+</div>
+
+{/if}
+<br/>
+
+
+{if $bIsCheckedOut}
+<div class=widgetRow>
+    <div class=ktInfoMessage>
+        <span>{i18n}The workflow cannot be changed while the document is checked out.{/i18n}</span>
+    </div>
+</div>
+{else}
+    {if !$oWorkflow}
+      {assign var=none value=""}
+    {else}
+      {assign var=none value=true}
+    {/if}
+    {if $aWorkflows}
+        {if $bHasPerm}
+        		<label for=comment><b>{i18n}Choose Workflow{/i18n}</b> </label>
+            <form action="{$smarty.server.PHP_SELF}" method=POST name=start_workflow_form>
+				<div class=widgetRow>
+					<div class=widgetItem>
+						<input type=hidden name=action value=startWorkflow />
+						<input type=hidden name=fDocumentId value="{$oDocument->getId()}" />
+						{entity_select entities=$aWorkflows name=fWorkflowId none=$none}
+					</div>
+					<br/><br/>
+					<div class=widgetItem>
+						<div class=form_actions id=modal>
+							{if !$oWorkflow}
+								<input type="{$submit.type}" onclick="javascript: {ldelim}workflowBlock.submitForm('transition'){rdelim}; return false;" name=form_submit value="{i18n}Start Workflow{/i18n}" />
+							{else}
+								<input type="{$submit.type}" onclick="javascript: {ldelim}workflowBlock.submitForm('change'){rdelim}; return false;" name=form_submit value="{i18n}Change Workflow{/i18n}" />
+							{/if}
+							<a href="#" onclick="vActions.closeDisplay('workflow'); return false;" class=form_cancel style="background: none repeat scroll 0% 0% transparent;">Cancel</a>
+						</div>
+					</div>
+				</div>
+            </form>
+        {else}
+			<div class=widgetRow>
+				<div class=ktInfoMessage>
+				<span>{i18n}You do not have permission to change the workflow that is assigned to this document.{/i18n}</span>
+				</div>
+			</div>
+        {/if}
+    {else}
+	<div class=widgetRow>
+        <h3>{i18n}No defined workflows{/i18n}</h3>
+		<div class=ktInfoMessage>
+			<span>{i18n}There are no defined workflows which can be started on this
+			document.  An administrator can create workflows to map the lifecycle of
+			a document.  Contact your administrator to discuss
+			workflows.{/i18n}</span>
+		</div>
+	</div>
+    {/if}
+{/if}

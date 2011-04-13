@@ -5,7 +5,7 @@
         <table style="margin: 0px;">
 	        <tr>
 	            <td>
-	                <textarea id="commentsbox" style="width:600px;" class="default-text" title="Got something to say?"></textarea>
+	                <textarea id="commentsbox" style="width:600px;" class="default-text" title="Write a comment..."></textarea>
 	            </td>
 	            <td style="" valign="middle">
 	                <div class="buttons">

@@ -278,9 +278,9 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
         $template = $templating->loadTemplate('ktcore/document/view');
         $templateData = array(
             'doc_data' => array(
-                'owner' => $ownerUser[0]['name'],
-                'creator' => $creatorUser[0]['name'],
-                'lastModifier' => $lastModifierUser[0]['name']
+                'owner' => !empty($ownerUser) ? $ownerUser[0]['name'] : '',
+                'creator' => !empty($creatorUser) ? $creatorUser[0]['name'] : '',
+                'lastModifier' => !empty($lastModifierUser) ? $lastModifierUser[0]['name'] : ''
             ),
             'context' => $this,
             'sCheckoutUser' => $checkedOutUsername,
