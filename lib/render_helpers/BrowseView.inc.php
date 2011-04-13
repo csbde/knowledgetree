@@ -354,40 +354,32 @@ class BrowseView {
         	if ($folderMessage == '') {
         		$folderMessage = '<h2>You don\'t have permissions to view the contents of this folder!</h2>';
         	}
-            return "<span class='notification'>
-						$folderMessage
-			</span>";
+            return "<span class='notification'>".$folderMessage."</span>";
         } else {
-            $hint = '(Here are three easy ways you can change that...)';
-            $upload = '					<td><div class="roundnum">1</div></td>
-					<td class="info">
+        	$folderMessage = '<h2>There\'s nothing in this folder yet!</h2>';
+            $hint = '<div class="title">Here are three easy ways you can change that...</div>';
+            $upload = '					
+					<div class="info upload">
+						<a href="javascript:kt.app.upload.showUploadWindow();" class="icon"></a>
 						<h2>Upload files and folders</h2>
 						Upload one or more files including .zip files and other archives
-
 						<br />
-						<br />
-						<div>
-							<a href="javascript:kt.app.upload.showUploadWindow();"><span class="uploadButton">Upload</span></a>
-						</div>
-
-					</td>';
-            $dragndrop = '					<td><div class="roundnum">2</div></td>
-					<td class="info">
+					</div>';
+            $dragndrop = '					
+					<div class="info drag-and-drop">
+						<span class="icon"></span>
 						<h2>Drag and Drop files here</h2>
-						<img src="/resources/graphics/newui/dragdrop.png" />
-					</td>';
-            $createonline = '					<td><div class="roundnum">3</div></td>
-					<td class="info">
+						Drop files directly from your desktop into the drop zone above. <br> <span style="font-size: 10px;">(HTML5 enabled browser required)</span>
+					</div>';
+            $createonline = '					
+					<div class="info create-online">
+						<a href="action.php?kt_path_info=zoho.new.document&fFolderId=' . $folderId . '" class="icon"></a>
 						<h2>Create content online</h2>
 						Create and share files right within KnowledgeTree
 						<br />
-						<br />
-						<div>
-							<a href="action.php?kt_path_info=zoho.new.document&fFolderId=' . $folderId . '"><span class="createdocButton">Online Doc</span></a>
-						</div>
-					</td>';
+					</div>';
 
-            return '<span class="notification">
+            return '<span class="notification empty-folder">
 			' . $folderMessage . '
 			' . $hint . '
 			<table>
