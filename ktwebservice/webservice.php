@@ -4123,7 +4123,7 @@ class KTWebService {
 	 */
 	function get_folder_changes($session_id, $folder_ids, $timestamp = 0, $depth = 1)
 	{
-		//$GLOBALS['default']->log->debug("get_folder_changes $folder_id $change_id");
+		$GLOBALS['default']->log->debug("WS get_folder_changes $session_id ".print_r($folder_ids, true)." $timestamp");
 		
 		$kt = &$this->get_ktapi($session_id );
 		if (is_array($kt))
@@ -4133,7 +4133,7 @@ class KTWebService {
     	
     	$result = &$kt->get_folder_changes($folder_ids, $timestamp, $depth, 'DF');
     	
-    	$GLOBALS['default']->log->debug('get_folder_changes result '.print_r($result, true));
+    	$GLOBALS['default']->log->debug('WS get_folder_changes result '.print_r($result, true));
     	
 		if ($result['status_code'] !== 0)
 		{
