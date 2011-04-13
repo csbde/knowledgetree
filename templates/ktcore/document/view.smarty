@@ -6,7 +6,6 @@
 <script type="text/javascript" src="/thirdpartyjs/jquery/plugins/tokenizer/src/jquery.tokeninput.js"></script>
 <script type="text/javascript" src="/resources/js/document/kt.app.activityFeed.js"></script>
 <script type="text/javascript" src="/resources/js/newui/documents/kt.app.docdetails.js"></script>
-<script type="text/javascript" src="/resources/js/jquery.knowledgetree.js"></script>
 <script type="text/javascript" src="/thirdpartyjs/hashtable.js"></script>
 
 <!-- FILE: ktcore/document/view.smarty -->
@@ -18,8 +17,8 @@
                 <td colspan="2" id="title_row">
 				{* Display Actions Block *}
 				{$documentBlocks->getDocBlock()}
-				<div class="document-title" rel='{literal}{{/literal}"documentID":"{$document->getId()}"{literal}}{/literal}'>
-				<span data-name="documentTitle" data-type='text' data-value-id="value-title" data-class="required"></span>
+				<div class="document-title" rel={$rootUrl}/presentation/lookAndFeel/knowledgeTree/widgets/updateMetadata.php?func=title&documentID={$document->getId()}>
+				<span data-name="document-title" data-type='text' data-value-id="value-title" data-class="required"></span>
 					<span id="value-title">{i18n}{$document->getName()|sanitize}{/i18n}</span>
 					<span class="save-placeholder">&nbsp;</span>
 					<span title="Click to edit" class="editable-control edit">&nbsp;</span>
@@ -27,8 +26,8 @@
 				</div>
 				{if $document->getIsCheckedOut()}<span class="status-indicator checkedout">{i18n}Checked Out{/i18n}</span>{/if}
                 {if $document->getImmutable()}<span class="status-indicator finalized">{i18n}Finalized{/i18n}</span>{/if}
-				<div class="document-filename" rel='{literal}{{/literal}"documentID":"{$document->getId()}"{literal}}{/literal}'>
-				<span data-name="documentFilename" data-type='text' data-value-id="value-filename" data-class="required"></span>
+				<div class="document-filename" rel={$rootUrl}/presentation/lookAndFeel/knowledgeTree/widgets/updateMetadata.php?func=filename&documentID={$document->getId()}>
+				<span data-name="document-filename" data-type='text' data-value-id="value-filename" data-class="required"></span>
 					<span id="value-filename"><p>{$document->getFileName()}</p></span>
 					<span class="save-placeholder">&nbsp;</span>
 					<span title="Click to edit" class="editable-control edit">&nbsp;</span>
@@ -45,10 +44,10 @@
 								<th style="width: 100px;">Version:</th><td><a href="">{$document->getMajorVersionNumber()}.{$document->getMinorVersionNumber()}</a></td>
 							</tr>
 							<tr>
-								<th>Last Modified by:</th><td><a href="">{$doc_data.lastModifier}</a> on {$document->getDisplayLastModifiedDate()|date_format:"%B %e, %Y at %H:%M"}</td>
+								<th>Last Modified by:</th><td><a href="">{$doc_data.lastModifier}</a> on {$document->getLastModifiedDate()|date_format:"%B %e, %Y at %H:%M"}</td>
 							</tr>
 							<tr>
-								<th>Created by:</th><td><a href="">{$doc_data.creator}</a> on {$document->getDisplayCreatedDateTime()|date_format:"%B %e, %Y at %H:%M"}</td>
+								<th>Created by:</th><td><a href="">{$doc_data.creator}</a> on {$document->getCreatedDateTime()|date_format:"%B %e, %Y at %H:%M"}</td>
 							</tr>
 							<tr>
 								<th>Owned by:</th><td><a href="">{$doc_data.owner}</a></td>
@@ -65,15 +64,16 @@
 							</tr>
 							</tr>
 						</table>
-					<div class="document-tags" rel='{literal}{{/literal}"documentID":"{$document->getId()}"{literal}}{/literal}'>
-					<span title="Click to edit" class="editable-control edit">&nbsp;</span>
+					<div class="tags">
+						<h3><span class="editable-control none">&nbsp;</span></h3>
                         <br/>
-                        <span data-id="tagcloud" data-name="tagcloud" data-type='tokeninput' data-tags='{$tags}' data-tag-script='{$tagFilterScript}' data-value-id="value-token"></span>
+                        <input type="text" name="tagcloud" id="tagcloud" />
                         <br/>
+                        <input type="button" value="Save Tags" onclick="kt.app.metadata.saveTags({$document_id});" />
                     </div>
 					<br/>
 					<h3 id="metadata-title">Document Properties</h3>
-					<div class="document-type" rel='{literal}{{/literal}"documentID":"{$document->getId()}"{literal}}{/literal}'>
+					<div class="document-type" rel="{$rootUrl}/presentation/lookAndFeel/knowledgeTree/widgets/updateMetadata.php?func=doctype&documentID={$document->getId()}">
 					<table class="metadatatable" cellspacing="0" cellpadding="5">
 					<tr class="metadatarow even first">
 						<th>Document Type</th>
@@ -176,7 +176,7 @@
 
                     {* Display download / preview links *}
                     {foreach item=btn from=$actionBtns.links}
-                        <a href="{$btn.url}" onclick='{$btn.onclick}'><span class="share_url" id="{$btn.icon_class}">{$btn.name}</span>&nbsp;<span class="{$btn.icon_class} none" style="visibility:hidden;">&nbsp;</span></a>
+                        <a href="{$btn.url}" class="share-link" onclick='{$btn.onclick}'><span class="share_url" id="{$btn.icon_class}">{$btn.name}</span>&nbsp;<span class="{$btn.icon_class} none" style="visibility:hidden;">&nbsp;</span></a>
                     {/foreach}
 
 
@@ -224,6 +224,26 @@
 
     	//only allow to be editable if document not immutable!
         kt.app.metadata.setup({/literal}{$document->getImmutable()}{literal} == 0);
+    });
+</script>
+
+<script type="text/javascript">
+    jQuery("#tagcloud").tokenInput("{/literal}{$tagFilterScript}{literal}", {
+        // Alter the minChars value to determine how much the user must type before a search is initiated
+        minChars: 2,
+        prePopulate: [{/literal}{$tags}{literal}],
+        classes: {
+            tokenList: "token-input-list-facebook",
+            token: "token-input-token-facebook",
+            tokenDelete: "token-input-delete-token-facebook",
+            selectedToken: "token-input-selected-token-facebook",
+            highlightedToken: "token-input-highlighted-token-facebook",
+            dropdown: "token-input-dropdown-facebook",
+            dropdownItem: "token-input-dropdown-item-facebook",
+            dropdownItem2: "token-input-dropdown-item2-facebook",
+            selectedDropdownItem: "token-input-selected-dropdown-item-facebook",
+            inputToken: "token-input-input-token-facebook"
+        }
     });
 </script>
 {/literal}

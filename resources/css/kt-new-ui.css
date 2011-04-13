@@ -260,9 +260,8 @@ textarea {
 }
 
 .breadcrumbBtns {
-    float: none;
+    float: right;
     height: 30px;
-    left: 450px;
     margin: 3px 12px 3px 3px;
     position: relative;
 }
@@ -439,6 +438,7 @@ ul.floatleft li.notification {
 	border-right: 1px solid #ccc;
 	line-height: 24px;
 }
+.action_buttons.below 
 .action_buttons .action .disabled {
 	opacity: 0.5;
 	cursor: default;
@@ -620,6 +620,8 @@ div.form_actions {
 	-webkit-border-radius: 10px;
 	border:1px solid #ddd;
 	box-shadow: inset 0px 1px 1px #666;
+	-moz-box-shadow: inset 0px 1px 1px #666;
+	-webkit-box-shadow: inset 0px 1px 1px #666;
 	width: 200px;
 	height: 20px;
 }
@@ -645,7 +647,10 @@ div.form_actions {
 	width:155px !important;
 	border: 0px;
 	background: transparent;
-	padding-top: 5px;
+	margin-top: 1px;
+}
+.ext-ie #txtSearchBar1 {
+	margin-top: 1px;
 }
 #searchButton1 {
 	padding: 0px 2px 0px 0px;

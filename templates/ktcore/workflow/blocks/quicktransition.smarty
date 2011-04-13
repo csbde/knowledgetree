@@ -12,7 +12,7 @@
 			<label for="data[reason]">Comment</label>
 			<p class="errorMessage"></p>
 			<textarea name="fComments" rows="3" cols="60"></textarea>
-            <div class="form_actions">
+            <div class="form_actions" id=modal>
 	            <input type="submit" onclick="javascript: {ldelim}workflowBlock.submitForm('quick_transition'){rdelim}; return false;" name="form_submit" value="{i18n}Perform Transition{/i18n}" />
 	            <a href="#" onclick="vActions.closeDisplay('workflow'); return false;" class="form_cancel" style="background: none repeat scroll 0% 0% transparent;">Cancel</a>
             </div>

@@ -36,7 +36,7 @@ kt.app.activityFeed = new function(){
         
         var newCommentAdded = false;
         
-        if (comment != '' && comment.toLowerCase() != 'got something to say?') {            
+        if (comment != '' && comment.toLowerCase() != 'write a comment...') {            
             newCommentAdded = true;
             jQuery("#commentsarea").hide();
             jQuery("#commentssaveajax").html(savingCommentMessage).show();

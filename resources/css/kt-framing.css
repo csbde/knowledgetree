@@ -965,10 +965,17 @@ a.main_nav_item {
 .editable-control.spin {
 	background: url(../../resources/graphics/newui/loading.gif) no-repeat right top;
 }
-.spin {
-	background: url(../../resources/graphics/newui/loading.gif) no-repeat right top;
+.action_buttons.below {
+	width: 375px;
+}
+.action_buttons.below .spin {
+	background: url(../../resources/graphics/newui/loading.gif) no-repeat center center;
 	padding: 2px;
-	padding-left: 16px;
+	width: 16px;
+	display: inline-block;
+}
+.action_buttons.below .share-link {
+	display: inline-block;
 }
 .detail-fieldset h3
 {
