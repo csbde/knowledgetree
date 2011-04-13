@@ -59,6 +59,6 @@ kt.eventhandler = new function() {
 
 }
 
-jQuery(document).ready(function() {
+jQuery(window).load(function() {
     kt.eventhandler.run();
 });
