@@ -506,6 +506,27 @@ class KTAPI_Folder extends KTAPI_FolderItem {
         }
         return $perms;
     }
+    
+    function get_children_ids()
+    {
+    	$children_ids = array();
+    	$user = $this->ktapi->get_user();
+    	
+    	$folder_children = Folder::getList(array('parent_id = ?', $this->folderid));
+
+    	//if user can't view the folder's details, then it is empty for him!
+    	$folder_permission = &KTPermission::getByName(KTAPI_PERMISSION_VIEW_FOLDER);
+        //we first check if there is at least one subfolder that the user has permissions on
+        foreach ($folder_children as $child) 
+        {
+	        if (KTPermissionUtil::userHasPermissionOnItem($user, $folder_permission, $child)) 
+	        {
+				$children_ids[] = $child->getId();
+			}
+        }
+        
+        return $children_ids;
+    }
 
     /**
 	 * Checks whether a folder is relatively empty, i.e. whether it is empty for a specific user
@@ -1428,7 +1449,7 @@ class KTAPI_Folder extends KTAPI_FolderItem {
     	$this->movedSince($timestamp, $folderPermissionsSQL, $changes);
     	$this->updatedSince($timestamp, $folderPermissionsSQL, $changes);
     	$this->pathChangedSince($timestamp, $changes);
-
+    	
     	//have to check more than just myself?
     	if ($depth != 0)
     	{
@@ -1544,7 +1565,7 @@ class KTAPI_Folder extends KTAPI_FolderItem {
     	$contents = array();
 
         $sQuery = 'SELECT FT.folder_id AS id, FT.datetime AS change_date, FT.parent_id AS parent_id FROM ' . KTUtil::getTableName('folder_transactions') . ' AS FT ' .
-        'WHERE FT.transaction_namespace = \'ktcore.transactions.delete\' AND FT.folder_id = ? AND FT.datetime > ? ORDER BY FT.datetime ASC';
+        'WHERE FT.transaction_namespace = \'ktcore.transactions.delete\' AND FT.folder_id = ? AND FT.datetime >= ? ORDER BY FT.datetime ASC';
 
         $aParams = array($folderID, $timestamp);
 
@@ -1619,7 +1640,7 @@ class KTAPI_Folder extends KTAPI_FolderItem {
     	$contents = array();
 
         $sQuery = 'SELECT FT.folder_id AS id, FT.datetime AS change_date, FT.parent_id AS parent_id FROM ' . KTUtil::getTableName('folder_transactions') . ' AS FT ' .
-        'WHERE FT.transaction_namespace = \'ktcore.transactions.permissions_change\' AND FT.folder_id = ? AND FT.datetime > ? ORDER BY FT.datetime DESC LIMIT 1';
+        'WHERE FT.transaction_namespace = \'ktcore.transactions.permissions_change\' AND FT.folder_id = ? AND FT.datetime >= ? ORDER BY FT.datetime DESC LIMIT 1';
 
         $aParams = array($folderID, $timestamp);
 
@@ -1634,7 +1655,7 @@ class KTAPI_Folder extends KTAPI_FolderItem {
 	        		'item_type' => 'F',
 	        		'parent_id' => $result['parent_id'],
 	        		'changes' => array(
-						'change_type' => 'U',
+						'change_type' => 'UP',
 						'change_date' => datetimeutil::getLocaleDate($result['change_date'])
 					)
 	        	);
@@ -1660,8 +1681,8 @@ class KTAPI_Folder extends KTAPI_FolderItem {
 
         $sQuery = 	'SELECT F.id, FT.datetime AS change_date ' .
         			'FROM ' . KTUtil::getTableName('folder_transactions') . ' AS FT INNER JOIN ' . KTUtil::getTableName('folders') . ' AS F ON F.id = FT.folder_id '.
-        			'WHERE (FT.transaction_namespace = \'ktcore.transactions.rename\' OR FT.transaction_namespace = \'ktcore.transactions.rename\') '.
-        			'AND (FT.folder_id = ? OR FT.folder_id IN ( '.$sParamsPlaceholders.' )) AND FT.datetime > ? ';
+        			'WHERE (FT.transaction_namespace = \'ktcore.transactions.rename\' OR FT.transaction_namespace = \'ktcore.transactions.move\') '.
+        			'AND (FT.folder_id = ? OR FT.folder_id IN ( '.$sParamsPlaceholders.' )) AND FT.datetime >= ? ';
 
         $aParams = array_merge(array($this->folderid), $aParentFolderIDs, array($timestamp));
 
@@ -1673,28 +1694,19 @@ class KTAPI_Folder extends KTAPI_FolderItem {
         {
 	    	foreach ($results as $result)
 	    	{
-	        	$folder = &Folder::get($result['id']);
-				$this->assemble_folder_array($folder, $contents);
-
+	        	//$folder = &Folder::get($result['id']);
+				$this->assemble_folder_array($this->folder, $contents);
+	
 				$contents[count($contents) - 1]['changes'] = array(
 					'change_type' => 'UPC',
 					'change_date' => datetimeutil::getLocaleDate($result['change_date'])
 				);
-
+	
 					// $GLOBALS['default']->log->debug('renamedSince assembled contents '.print_r($contents, true));
 	        }
         }
     }
-
-    /*public function pathChanged()
-    {
-    	SELECT F.id, FT.datetime AS change_date FROM folder_transactions AS FT INNER JOIN folders AS F ON F.id = FT.folder_id
-		WHERE FT.transaction_namespace = 'ktcore.transactions.move' AND FT.folder_id IN (1,1216,1268, 1272) -- AND FT.datetime > ?
-		UNION
-		SELECT F.id, FT.datetime AS change_date FROM folder_transactions AS FT INNER JOIN folders AS F ON F.id = FT.folder_id
-		WHERE FT.transaction_namespace = 'ktcore.transactions.rename' AND FT.folder_id IN (1,1216, 1268, 1272) -- AND FT.datetime > ?
-    }*/
-
+    
 	public function renamedSince($timestamp, $folderPermissionsSQL, &$contents = array())
     {
     	//$GLOBALS['default']->log->debug("renamedSince timestamp $timestamp");
@@ -1702,7 +1714,7 @@ class KTAPI_Folder extends KTAPI_FolderItem {
     	$sSelectQuery = 'F.id, FT.datetime AS change_date ' .
         'FROM ' . KTUtil::getTableName('folder_transactions') . ' AS FT INNER JOIN ' . KTUtil::getTableName('folders') . ' AS F ON F.id = FT.folder_id ';
 
-    	$sWhereQuery = 'FT.transaction_namespace = \'ktcore.transactions.rename\' AND FT.folder_id = ? AND FT.datetime > ? ';
+    	$sWhereQuery = 'FT.transaction_namespace = \'ktcore.transactions.rename\' AND FT.folder_id = ? AND FT.datetime >= ? ';
 
         $aParams = array($this->folderid, $timestamp);
 
@@ -1736,7 +1748,7 @@ class KTAPI_Folder extends KTAPI_FolderItem {
     	$sSelectQuery = 'F.id, FT.datetime AS change_date ' .
         'FROM ' . KTUtil::getTableName('folder_transactions') . ' AS FT INNER JOIN ' . KTUtil::getTableName('folders') . ' AS F ON F.id = FT.folder_id ';
 
-    	$sWhereQuery = 'FT.transaction_namespace = \'ktcore.transactions.move\' AND FT.folder_id = ? AND FT.datetime > ? ';
+    	$sWhereQuery = 'FT.transaction_namespace = \'ktcore.transactions.move\' AND FT.folder_id = ? AND FT.datetime >= ? ';
 
         $aParams = array($this->folderid, $timestamp);
 
@@ -1816,7 +1828,7 @@ class KTAPI_Folder extends KTAPI_FolderItem {
         $sSelectQuery = 'F.id, FT.datetime AS change_date ' .
         'FROM ' . KTUtil::getTableName('folder_transactions') . ' AS FT INNER JOIN ' . KTUtil::getTableName('folders') . ' AS F ON F.id = FT.folder_id ';
 
-    	$sWhereQuery = 'FT.transaction_namespace = \'ktcore.transactions.permissions_change\' AND FT.folder_id = ? AND FT.datetime > ? ';
+    	$sWhereQuery = 'FT.transaction_namespace = \'ktcore.transactions.permissions_change\' AND FT.folder_id = ? AND FT.datetime >= ? ';
 
         $aParams = array($this->folderid, $timestamp);
 
@@ -1857,7 +1869,7 @@ class KTAPI_Folder extends KTAPI_FolderItem {
 	        $sSelectQuery = 'F.id, FT.datetime AS change_date ' .
 	        'FROM ' . KTUtil::getTableName('folder_transactions') . ' AS FT INNER JOIN ' . KTUtil::getTableName('folders') . ' AS F ON F.id = FT.folder_id ';
 
-	    	$sWhereQuery = '(FT.transaction_namespace = \'ktcore.transactions.create\' OR FT.transaction_namespace = \'ktcore.transactions.copy\') AND F.parent_id = ? AND FT.datetime > ? ';
+	    	$sWhereQuery = '(FT.transaction_namespace = \'ktcore.transactions.create\' OR FT.transaction_namespace = \'ktcore.transactions.copy\') AND F.parent_id = ? AND FT.datetime >= ? ';
 
 	        $aParams = array($this->folderid, $timestamp);
 
@@ -1889,7 +1901,7 @@ class KTAPI_Folder extends KTAPI_FolderItem {
         	$sSelectQuery = 'D.id, DT.datetime AS change_date ' .
 	        'FROM ' . KTUtil::getTableName('document_transactions') . ' AS DT INNER JOIN ' . KTUtil::getTableName('documents') . ' AS D ON D.id = DT.document_id ';
 
-	    	$sWhereQuery = '(DT.transaction_namespace = \'ktcore.transactions.create\' OR DT.transaction_namespace = \'ktcore.transactions.copy\') AND DT.parent_id = ? AND DT.datetime > ? ';
+	    	$sWhereQuery = '(DT.transaction_namespace = \'ktcore.transactions.create\' OR DT.transaction_namespace = \'ktcore.transactions.copy\') AND DT.parent_id = ? AND DT.datetime >= ? ';
 
 	        $aParams = array($this->folderid, $timestamp);
 
@@ -1930,8 +1942,8 @@ class KTAPI_Folder extends KTAPI_FolderItem {
         {
         	$sQuery = 'SELECT FT.folder_id AS id, FT.datetime AS change_date, FT.parent_id AS parent_id ' .
 	        'FROM ' . KTUtil::getTableName('folder_transactions') . ' AS FT '.
-	    	'WHERE FT.transaction_namespace = \'ktcore.transactions.delete\' AND FT.parent_id = ? AND FT.datetime > ? ';
-
+	    	'WHERE FT.transaction_namespace = \'ktcore.transactions.delete\' AND FT.parent_id = ? AND FT.datetime >= ? ';
+        		        
 	        $aParams = array($this->folderid, $timestamp);
 
         	$results = DBUtil::getResultArray(array($sQuery, $aParams));
@@ -1969,7 +1981,7 @@ class KTAPI_Folder extends KTAPI_FolderItem {
 	        $sSelectQuery = 'D.id, DT.datetime AS change_date, DT.parent_id AS parent_id '.
 	        'FROM ' . KTUtil::getTableName('document_transactions') . ' AS DT INNER JOIN ' . KTUtil::getTableName('documents') . ' AS D ON D.id = DT.document_id ';
 
-	    	$sWhereQuery = 'DT.transaction_namespace = \'ktcore.transactions.delete\' AND DT.parent_id = ? AND DT.datetime > ? ';
+	    	$sWhereQuery = 'DT.transaction_namespace = \'ktcore.transactions.delete\' AND DT.parent_id = ? AND DT.datetime >= ? ';
 
 	        $aParams = array($this->folderid, $timestamp);
 
@@ -2025,7 +2037,7 @@ class KTAPI_Folder extends KTAPI_FolderItem {
         	$sSelectQuery = 'F.id, FT.datetime AS change_date ' .
 	        'FROM ' . KTUtil::getTableName('folder_transactions') . ' AS FT INNER JOIN ' . KTUtil::getTableName('folders') . ' AS F ON F.id = FT.folder_id ';
 
-	    	$sWhereQuery = 'FT.transaction_namespace = \'ktcore.transactions.rename\' AND F.parent_id = ? AND FT.datetime > ? ';
+	    	$sWhereQuery = 'FT.transaction_namespace = \'ktcore.transactions.rename\' AND F.parent_id = ? AND FT.datetime >= ? ';
 
 	        $aParams = array($this->folderid, $timestamp);
 
@@ -2059,7 +2071,7 @@ class KTAPI_Folder extends KTAPI_FolderItem {
 	        $sSelectQuery = 'D.id, DT.datetime AS change_date '.
 	        'FROM ' . KTUtil::getTableName('document_transactions') . ' AS DT INNER JOIN ' . KTUtil::getTableName('documents') . ' AS D ON D.id = DT.document_id ';
 
-	    	$sWhereQuery = 'DT.transaction_namespace = \'ktcore.transactions.rename\' AND DT.parent_id = ? AND DT.datetime > ? ';
+	    	$sWhereQuery = 'DT.transaction_namespace = \'ktcore.transactions.rename\' AND DT.parent_id = ? AND DT.datetime >= ? ';
 
 	        $aParams = array($this->folderid, $timestamp);
 
@@ -2102,7 +2114,7 @@ class KTAPI_Folder extends KTAPI_FolderItem {
         	$sSelectQuery = 'F.id, FT.datetime AS change_date, FT.parent_id AS transaction_parent_id ' .
 	        'FROM ' . KTUtil::getTableName('folder_transactions') . ' AS FT INNER JOIN ' . KTUtil::getTableName('folders') . ' AS F ON F.id = FT.folder_id ';
 
-	    	$sWhereQuery = 'FT.transaction_namespace = \'ktcore.transactions.move\' AND FT.parent_id = ? AND FT.datetime > ? ';
+	    	$sWhereQuery = 'FT.transaction_namespace = \'ktcore.transactions.move\' AND FT.parent_id = ? AND FT.datetime >= ? ';
 
 	        $aParams = array($this->folderid, $timestamp);
 
@@ -2137,7 +2149,7 @@ class KTAPI_Folder extends KTAPI_FolderItem {
 	        $sSelectQuery = 'D.id, DT.datetime AS change_date, DT.parent_id AS transaction_parent_id '.
 	        'FROM ' . KTUtil::getTableName('document_transactions') . ' AS DT INNER JOIN ' . KTUtil::getTableName('documents') . ' AS D ON D.id = DT.document_id ';
 
-	    	$sWhereQuery = 'DT.transaction_namespace = \'ktcore.transactions.move\' AND DT.parent_id = ? AND DT.datetime > ? ';
+	    	$sWhereQuery = 'DT.transaction_namespace = \'ktcore.transactions.move\' AND DT.parent_id = ? AND DT.datetime >= ? ';
 
 	        $aParams = array($this->folderid, $timestamp);
 
@@ -2178,7 +2190,7 @@ class KTAPI_Folder extends KTAPI_FolderItem {
 	       	$sSelectQuery = 'F.id, FT.datetime AS change_date, FT.transaction_namespace AS change_type ' .
 	        'FROM ' . KTUtil::getTableName('folder_transactions') . ' AS FT INNER JOIN ' . KTUtil::getTableName('folders') . ' AS F ON F.id = FT.folder_id ';
 
-	    	$sWhereQuery = 'FT.transaction_namespace = \'ktcore.transactions.permissions_change\' AND FT.parent_id = ? AND FT.datetime > ? ';
+	    	$sWhereQuery = 'FT.transaction_namespace = \'ktcore.transactions.permissions_change\' AND FT.parent_id = ? AND FT.datetime >= ? ';
 
 	        $aParams = array($this->folderid, $timestamp);
 
@@ -2215,7 +2227,7 @@ class KTAPI_Folder extends KTAPI_FolderItem {
 
 	    	$sWhereQuery = 'DT.transaction_namespace IN (\'ktcore.transactions.update\', \'ktcore.transactions.check_in\', \'ktcore.transactions.check_out\', '.
 	    		'\'ktcore.transactions.force_checkin\', \'ktcore.transactions.immutable\', \'ktcore.transactions.permissions_change\') '.
-	    		'AND DT.parent_id = ? AND DT.datetime > ? ';
+	    		'AND DT.parent_id = ? AND DT.datetime >= ? ';
 
 	        $aParams = array($this->folderid, $timestamp);
 
@@ -2271,7 +2283,7 @@ class KTAPI_Folder extends KTAPI_FolderItem {
 					case 'ktcore.transactions.immutable':
 						$changeType = 'UI';
 						break;
-						case 'ktcore.transactions.permissions_change':
+					case 'ktcore.transactions.permissions_change':
 						$changeType = 'UP';
 						break;
 					default:
