@@ -23,7 +23,7 @@
 .itemContainer .paginate > li.highlight:hover { background-color: #8ec9e3; -webkit-box-shadow: 0px 0px 2px #2b85ad; -moz-box-shadow: 0px 0px 2px #2b85ad; box-shadow: 0px 0px 2px #2b85ad; }
 .itemContainer .paginate > li:hover { background-color: #fbfbfb; -webkit-box-shadow: 0px 0px 2px #626262; -moz-box-shadow: 0px 0px 2px #626262; box-shadow: 0px 0px 2px #626262; }
 
-.browseView.bulkActionMenu { height: 23px; width: 100%; background-color: #eeeeee; -webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px; border: 1px solid #e1e1e1; padding: 0px !important; margin-bottom: 8px; }
+.browseView.bulkActionMenu { height: 23px; width: 100%; background-color: #eeeeee; -webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px; border: 1px solid #e1e1e1; padding: 0px !important; margin-bottom: 8px; width: 725px;}
 .browseView.bulkActionMenu > tbody { padding: 0px; margin: 0px; }
 .browseView.bulkActionMenu > tbody > tr > td { line-height: 1em; padding: 0px 5px; font-size: 85%; color: #555555; }
 .browseView.bulkActionMenu > tbody > tr > td input { background: none !important; border: 1px solid transparent !important; font-size: 100% !important; margin: 2px 1px !important; padding: 1px 5px !important; color: #344a6a; -webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px; border: 1px solid #e4e4e4 !important; }
@@ -33,18 +33,37 @@
 .browseView.bulkActionMenu .status { color: #A10000 !important; }
 
 .item td.checkbox { vertical-align: middle; }
-
-.page .notification { display: block; text-align: center; width: auto; -webkit-box-shadow: 0px 0px 2px #666; -moz-box-shadow: 0px 0px 2px #666; box-shadow: 0px 0px 2px #666; border: 1px solid #999999; background-color: #EEEEEE; margin: 20px 0px; padding: 20px; color: #989090 !important; }
-.page .notification h2 { color: #989090 !important; }
+.dropzone {width: 725px;-webkit-border-radius: 5px; -moz-border-radius: 5px; border-radius: 5px; }
+.page .notification { display: block; text-align: center; width: auto; -webkit-box-shadow: inset 0px 0px 5px #CCC; -moz-box-shadow: inset 0px 0px 5px #CCC; box-shadow: inset 0px 0px 5px #ccc; border: 1px solid #ddd; -webkit-border-radius: 5px; -moz-border-radius: 5px; border-radius: 5px;background-color: #f5f5f5; margin: 20px 0px; padding: 20px; color: #989090 !important;}
+.page .notification.dragover{
+	background-color: #FFFF99; 
+	
+}
+#content .page .notification h2 { color: #666 !important; font-size: 24px; text-shadow: 0px 1px 0px white;}
 .page .notification table { width: 100%; text-align: left; margin-top: 20px; }
-.page .notification table div.roundnum { background-color: #80C1DE; color: #FFF; font-size: 20px; -webkit-border-radius: 50px; -moz-border-radius: 50px; border-radius: 50px; width: 30px; height: 30px; text-align: center; vertical-align: bottom; }
 .page .notification table td { vertical-align: top; }
-.page .notification table td.info { width: 33%; padding-right: 15px; }
-.page .notification table td.info div { text-align: center; }
-.page .notification table td.info div a { background: transparent url("../../graphics/newui/midbarbkg.png") !important; height: 39px; line-height: 39px; display: inline-block; text-decoration: none; border: none !important; }
-.page .notification table td.info div a span { padding: 0 10px 0 40px; display: inline-block; }
-.page .notification table td.info div a img.leftimg { background: #eee; float: left; }
-.page .notification table td.info div a img.rightimg { background: #eee; float: right; }
+.page .empty-folder .info { width: 30%; margin: 10px; text-align: center; float: left; text-shadow: 0px 1px 0px white;}
+#content .page .notification .info h2 { color: #666 !important; margin-top: 5px; font-size: 16px; }
+.page .empty-folder .info .icon {
+	display: block;
+	height: 210px;
+	width: 210px;
+}
+.page .empty-folder .info.drag-and-drop .icon {
+	background: url(../../graphics/newui/emptyfolder_dragndrop.png) center center no-repeat;
+}
+.page .empty-folder .info.upload .icon {
+	background: url(../../graphics/newui/emptyfolder_upload.png) center center no-repeat;
+}
+.page .empty-folder .info.upload .icon:hover {
+	background: url(../../graphics/newui/emptyfolder_upload_hover.png) center center no-repeat;
+}
+.page .empty-folder .info.create-online .icon {
+	background: url(../../graphics/newui/emptyfolder_edit_online.png) center center no-repeat;
+}
+.page .empty-folder .info.create-online .icon:hover {
+	background: url(../../graphics/newui/emptyfolder_edit_online_hover.png) center center no-repeat;
+}
 .page .notification table td.info div a span.uploadButton { background: transparent url("../../graphics/newui/midbar_upload.png") 10px 0 no-repeat !important; }
 .page .notification table td.info div a span.createdocButton { background: transparent url("../../graphics/newui/midbar_document_add.png") 10px 0 no-repeat !important; }
 

@@ -21,7 +21,7 @@
 			            {foreach from=$transition_fields item=oWidget }
 			                {$oWidget->render()}
 			            {/foreach}
-			            <div class=form_actions>
+			            <div class=form_actions id=modal>
 				            <input type="{$submit.type}" onclick="javascript: {ldelim}workflowBlock.submitForm('transition'){rdelim}; return false;" name=form_submit value="{i18n}Perform Transition{/i18n}" />
 				            <a href="#" onclick="vActions.closeDisplay('workflow'); return false;" class=form_cancel style="background: none repeat scroll 0% 0% transparent;">Cancel</a>
 			            </div>
@@ -79,7 +79,7 @@
 					</div>
 					<br/><br/>
 					<div class=widgetItem>
-						<div class=form_actions>
+						<div class=form_actions id=modal>
 							{if !$oWorkflow}
 								<input type="{$submit.type}" onclick="javascript: {ldelim}workflowBlock.submitForm('transition'){rdelim}; return false;" name=form_submit value="{i18n}Start Workflow{/i18n}" />
 							{else}
