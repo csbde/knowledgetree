@@ -11,7 +11,7 @@ body {
 }
 textarea {
 	/*font-family: Arial;*/
-	font-family: tahoma,arial,helvetica,sans-serif; 
+	font-family: tahoma,arial,helvetica,sans-serif;
 	font-size: 11px;
 }
 /* ------------------ Experimental UI --------------------- */
@@ -110,7 +110,7 @@ textarea {
 	-webkit-border-radius: 3px;
 	border-radius: 3px;
 	background: #FBFBFB !important;
-	word-wrap: 
+	word-wrap:
 }
 .browseView.bulkActionMenu a:active {
 	-moz-box-shadow: inset 0px 0px 3px #bbb;
@@ -462,7 +462,7 @@ ul.floatleft li.notification {
 	border-right: 1px solid #ccc;
 	line-height: 24px;
 }
-.action_buttons.below 
+.action_buttons.below
 .action_buttons .action .disabled {
 	opacity: 0.5;
 	cursor: default;
@@ -1038,7 +1038,7 @@ label span.required
 .modalField textarea {
 	color: #666;
 	border-color: #ccc;
-} 
+}
 
 
 .modalField input {
@@ -1069,6 +1069,8 @@ label span.required
 	border: none;
 	list-style: none;
 	padding: 0px;
+        width: 310px;
 }
 #content .tags div.token-input-dropdown-facebook {
+        width: 310px;
 }
