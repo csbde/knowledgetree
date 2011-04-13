@@ -814,12 +814,22 @@ div#activationNotice span {
 
 div#uploadProgress {
 	margin-right: 15px;
-	background: url('../graphics/newui/notice.png') no-repeat top right;
-	width: 160px;
+	background: #F2EBAE;
 	height: 50px;
 	float: right;
-	text-align: center;
+	text-align: left;
 	padding: 10px 20px 0 20px;
+	border-radius: 6px;
+	border: 2px solid #AAA;
+	box-shadow: 0px 0px 8px #AAA;
+	position: absolute;
+	right: -17px;
+	z-index: 999999;
+	color: #666;
+	width: 199px;
+	font-weight: bold;
+	top: 7px;
+	text-shadow: 0px 1px 0px white;
 }
 span#uploadProgress .title {
 	font-size: 12px;
