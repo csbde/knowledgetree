@@ -89,6 +89,7 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
             $this->oPage->addError(sprintf(_kt("No document was requested.  Please <a href=\"%s\">browse</a> for one."), KTBrowseUtil::getBrowseBaseUrl()));
             return $this->do_error();
         }
+
         // try get the document.
         $this->document =& Document::get($documentId);
         if (PEAR::isError($this->document)) {
