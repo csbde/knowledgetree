@@ -275,7 +275,7 @@ class DocumentResultItem extends QueryResultItem {
 
         $this->documentType = $result['document_type'];
         $this->filename = $result['filename'];
-        $this->filesize = KTUtil::filesizeToString($result['filesize']);
+        $this->filesize = KTUtil::filesizeToString($result['filesize'], 'KB');
         $this->folderId = $result['folder_id'];
         $this->title = $result['title'];
 

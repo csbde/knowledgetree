@@ -256,23 +256,30 @@ class KTUtil {
         return KTUtil::computePeriod(time() - $start, $suffix, $returnArray);
     }
 
-    public static function filesizeToString($filesize)
+    /**
+     * Convert file size to human readable format.
+     *
+     * @param int $filesize
+     * @param string $type
+     * @return double
+     */
+    public static function filesizeToString($filesize, $type = false)
     {
         $filesize = (double)$filesize;
 
-        if ($filesize >= KTUtil::PB) {
+        if ($filesize >= KTUtil::PB || $type == 'PB') {
             return number_format($filesize / KTUtil::PB, 2, '.', ',') . _kt('PB');
         }
-        elseif ($filesize >= KTUtil::TB) {
+        elseif ($filesize >= KTUtil::TB || $type == 'TB') {
             return number_format($filesize / KTUtil::TB, 2, '.', ',') . _kt('TB');
         }
-        elseif ($filesize >= KTUtil::GB) {
+        elseif ($filesize >= KTUtil::GB || $type == 'GB') {
             return number_format($filesize / KTUtil::GB, 2, '.', ',') . _kt('GB');
         }
-        elseif ($filesize >= KTUtil::MB) {
+        elseif ($filesize >= KTUtil::MB || $type == 'MB') {
             return number_format($filesize / KTUtil::MB, 2, '.', ',') . _kt('MB');
         }
-        elseif ($filesize >= KTUtil::KB) {
+        elseif ($filesize >= KTUtil::KB || $type == 'KB') {
             return number_format($filesize / KTUtil::KB, 2, '.', ',') . _kt('KB');
         }
         else {

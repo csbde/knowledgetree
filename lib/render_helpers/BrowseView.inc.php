@@ -641,7 +641,7 @@ class BrowseView {
         $item['isfinalize_document'] = ($item['actions.finalize_document']) ? 0 : 1;
         // Sanitize document title
         $item['title'] = sanitizeForHTML($item['title']);
-        $item['filesize'] = KTUtil::filesizeToString($item['filesize']);
+        $item['filesize'] = KTUtil::filesizeToString($item['filesize'], 'KB');
 
         // Check if the document is a shortcut
         if (!is_null($item['linked_document_id'])) {

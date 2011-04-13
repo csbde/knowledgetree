@@ -155,20 +155,13 @@ class KTFieldsetDisplay {
         $this->fieldset = $oFieldset;
     }
 
-
     function _dateHelper($dDate) {
         $dColumnDate = strtotime($dDate);
         return date('Y-m-d H:i', $dColumnDate);
     }
 
-
     function _sizeHelper($size) {
-        $finalSize = $size;
-        $label = 'b';
-
-        if ($finalSize > 1000) { $label='Kb'; $finalSize = floor($finalSize/1000); }
-        if ($finalSize > 1000) { $label='Mb'; $finalSize = floor($finalSize/1000); }
-        return $finalSize . $label;
+    	return KTUtil::filesizeToString($size, 'KB');
     }
 
     function _mimeHelper($iMimeTypeId) {
