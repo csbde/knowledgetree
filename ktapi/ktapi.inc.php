@@ -1314,66 +1314,6 @@ class KTAPI {
 	    //strip out the unneccesary outer array
 	    return $results[-1]['fields'];
 	}
-	
-	private function convertToTree(array $flat)
-	{
-		$GLOBALS['default']->log->debug('KTAPI convertToTree '.print_r($flat, true));
-		
-		$idTree = 'treeid';
-		$idField = 'id';
-		$parentIdField = 'parentid';
-
-		$root = 0;
-
-	    $indexed = array();
-	    // first pass - get the array indexed by the primary id
-	   	foreach ($flat as $row) {
-        	$treeID = $row[$idTree];
-        	if (!isset($indexed[$treeID])) {
-        		$path = '';
-        		$treepath .= $row['tree_name'].'\\';
-        		$indexed[$treeID] = array('tree_id' => $treeID,
-        									'parentid' => $row[$parentIdField],
-        									'treename' => $row['treename'],
-        									'type' => 'tree');
-	        	$indexed[$treeID]['fields'] = array();
-        	}
-
-        	$path .= $treepath.$row['fieldname'];
-        	
-        	//$GLOBALS['default']->log->debug("convertToTree path $path");
-        	
-	        $indexed[$treeID]['fields'][$row[$idField]] = array('fieldid' => $row[$idField],
-	        													'parentid' => $treeID,
-	        													'name' =>  $row['fieldname'],
-	        													'type' => 'field');
-
-	        if ($row[$parentIdField] < $root) {
-	        	$root = $row[$parentIdField];
-	        }
-	        
-	        $path = '';
-	        
-	        //$GLOBALS['default']->log->debug('KTAPI convertToTree indexed '.print_r($indexed, true));
-	    }
-
-	    //file_put_contents('convertToTree.txt', "\n\rroot $root ".print_r($indexed, true), FILE_APPEND);
-
-	    //second pass
-	    //$root = 0;
-	    foreach ($indexed as $id => $row) {
-	        $indexed[$row[$parentIdField]]['fields'][$id] =& $indexed[$id];
-	    }
-
-	    $results = array($root => $indexed[$root]);
-	    
-	    //$GLOBALS['default']->log->debug('KTAPI convertToTree results '.print_r($results, true));
-		//$GLOBALS['default']->log->debug('KTAPI convertToTree results inner1 '.print_r($results[-1]['fields'], true));
-		//$GLOBALS['default']->log->debug('KTAPI convertToTree results inner2 '.print_r($results[-1]['fields'][0]['fields'], true));
-			    
-		//strip the outer array as it doesn't contribute anything
-		return $results[-1]['fields'];
-	}
 
 	/**
 	* This returns a metadata tree or an error object.
@@ -1386,7 +1326,7 @@ class KTAPI {
 	public function get_metadata_tree($fieldid)
 	{
 		$results = KTAPI::_load_metadata_tree($fieldid);
-		
+
 		//$GLOBALS['default']->log->debug('get_metadata_tree results '.print_r($results, true));
 		return $results;
 	}
@@ -5424,13 +5364,13 @@ class KTAPI {
 
 	    return $response;
 	}
-	
+
 	public function get_folder_total_size($include_folder_ids, $exclude_folder_ids)
 	{
 		$GLOBALS['default']->log->debug('KTAPI get_folder_total_size '.print_r($include_folder_ids, true).' '.print_r($exclude_folder_ids, true));
-		
+
 		$size = array('total_files' => 0, 'total_size' => 0);
-		
+
 		foreach ($include_folder_ids as $folder_id)
 		{
 			$folder = KTAPI_Folder::get($this, $folder_id);
@@ -5438,10 +5378,10 @@ class KTAPI {
 			if (!PEAR::isError($folder))
 			{
 				$parent_size = $folder->get_total_documents();
-				
+
 				$size['total_files'] += $parent_size['total_files'];
 				$size['total_size'] += $parent_size['total_size'];
-				
+
 				$GLOBALS['default']->log->debug("KTAPI get_folder_total_size parent result $folder_id ".print_r($parent_size, true));
 				$GLOBALS['default']->log->debug('KTAPI get_folder_total_size parent result carried over '.print_r($size, true));
 			}
@@ -5449,27 +5389,27 @@ class KTAPI {
 			{
 				$GLOBALS['default']->log->error("Error in getting folder $folder_id ".$folder->getMessage());
 			}
-			
+
 			$children_ids = $folder->get_children_ids();
-			
+
 			$GLOBALS['default']->log->debug('KTAPI get_folder_total_size children_ids '.print_r($children_ids, true));
-			
+
 			foreach ($children_ids as $child_id)
 			{
 				$GLOBALS['default']->log->debug("KTAPI get_folder_total_size check if $child_id is in excluded list ".print_r($exclude_folder_ids, true));
-				
+
 				//only use that child if it wasn't excluded!
 				if (!in_array($child_id, $exclude_folder_ids))
 				{
 					$folder = KTAPI_Folder::get($this, $child_id);
-		
+
 					if (!PEAR::isError($folder))
 					{
 						$child_size = $folder->get_total_documents();
-						
+
 						$size['total_files'] += $child_size['total_files'];
 						$size['total_size'] += $child_size['total_size'];
-						
+
 						$GLOBALS['default']->log->debug("KTAPI get_folder_total_size child $child_id ".print_r($child_size, true));
 					}
 					else
@@ -5478,24 +5418,24 @@ class KTAPI {
 					}
 				}
 			}
-			
+
 			$GLOBALS['default']->log->debug('KTAPI get_folder_total_size result '.print_r($size, true));
 		}
-		
+
 		$config = KTConfig::getSingleton();
-		
+
 		//$maxFiles = $config->get('foldersync/maxFilesSync');
 		$maxFileSize = $config->get('foldersync/maxFileSizeSync');
-		
+
 		//$GLOBALS['default']->log->debug("KTAPI get_folder_total_size max $maxFiles $maxFileSize");
-		
+
 		//check whether these are larger than allowed
 		if ($size['total_size'] > $maxFileSize)	// || $size['total_files'] > $maxFiles)
 		{
 			$displaySize = $size['total_size']/(1024*1024);
-			
+
 			$displaySize = substr($displaySize, 0, strpos($displaySize, '.')-1);
-			
+
 			$response['status_code'] = 1;
 			$response['message'] = "WARNING: you have selected to synchronize {$size['total_files']} files with a total size of $displaySize MB. Synchronizing large quantities of data will have an impact on system resources and bandwidth use. Proceed with synchronization?";
 		}
@@ -5504,7 +5444,7 @@ class KTAPI {
 			$response['status_code'] = 0;
 			$response['message'] = '';
 		}
-		
+
 		$GLOBALS['default']->log->debug('KTAPI get_folder_total_size response '.print_r($response, true));
 
 		return $response;
@@ -5577,10 +5517,10 @@ class KTAPI {
 			$folder = KTAPI_Folder::get($this, $folder_id);
 
 			//convert to UTC since we are getting the localized time
-			$time = datetimeutil::convertToUTC(date('Y-m-d H:i:s', (int)$timestamp));			
-			
+			$time = datetimeutil::convertToUTC(date('Y-m-d H:i:s', (int)$timestamp));
+
 			$GLOBALS['default']->log->debug("KTAPI get_folder_changes time $time");
-			
+
 			if (PEAR::isError($folder))
 			{
 				//$GLOBALS['default']->log->error('KTAPI get_folder_changes folder error message '.$folder->getMessage());
