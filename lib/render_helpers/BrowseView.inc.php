@@ -414,11 +414,11 @@ class BrowseView {
         $idClass = $pageClass . '_[page]';
         $pages = array();
         $pages[] = '<ul class="' . $paginationClass . '">';
-        $pages[] = '<li class="' . $itemClass . '" onclick="' . $prevScript . '">Previous</li>';
+        $pages[] = '<li class="' . $itemClass . '" onclick="' . $prevScript . '">&#9666</li>';
         for($i = 1; $i <= $pageCount; ++$i) {
             $pages[] = ktVar::parseString('<li class="' . $itemClass . ' ' . $idClass . '" onclick="' . $pageScript . '">' . $i . '</li>', array('page'=> $i, 'folder' => $this->folderId));
         }
-        $pages[] = '<li class="' . $itemClass . '" onclick="' . $nextScript . '">Next</li>';
+        $pages[] = '<li class="' . $itemClass . '" onclick="' . $nextScript . '">&#9656</li>';
         $pages[] = '</ul>';
         $pages = join($pages);
 
@@ -641,7 +641,7 @@ class BrowseView {
         $item['isfinalize_document'] = ($item['actions.finalize_document']) ? 0 : 1;
         // Sanitize document title
         $item['title'] = sanitizeForHTML($item['title']);
-        $item['filesize'] = KTUtil::filesizeToString($item['filesize']);
+        $item['filesize'] = KTUtil::filesizeToString($item['filesize'], 'KB');
 
         // Check if the document is a shortcut
         if (!is_null($item['linked_document_id'])) {

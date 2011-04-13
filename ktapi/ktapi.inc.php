@@ -1326,9 +1326,7 @@ class KTAPI {
 	public function get_metadata_tree($fieldid, $convertToTree = false)
 	{
 		$results = KTAPI::_load_metadata_tree($fieldid, $convertToTree);
-
 		//$GLOBALS['default']->log->debug('get_metadata_tree results '.print_r($results, true));
-
 		return $results;
 	}
 
