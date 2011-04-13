@@ -224,6 +224,9 @@ class KTAPI_Folder extends KTAPI_FolderItem {
         //clean uri
         $detail['clean_uri'] = KTBrowseUtil::getUrlForfolder($folder);
 
+        //clean uri
+        $detail['clean_uri'] = KTBrowseUtil::getUrlForfolder($folder);
+
         return $detail;
     }
 
@@ -1682,6 +1685,15 @@ class KTAPI_Folder extends KTAPI_FolderItem {
 	        }
         }
     }
+
+    /*public function pathChanged()
+    {
+    	SELECT F.id, FT.datetime AS change_date FROM folder_transactions AS FT INNER JOIN folders AS F ON F.id = FT.folder_id
+		WHERE FT.transaction_namespace = 'ktcore.transactions.move' AND FT.folder_id IN (1,1216,1268, 1272) -- AND FT.datetime > ?
+		UNION
+		SELECT F.id, FT.datetime AS change_date FROM folder_transactions AS FT INNER JOIN folders AS F ON F.id = FT.folder_id
+		WHERE FT.transaction_namespace = 'ktcore.transactions.rename' AND FT.folder_id IN (1,1216, 1268, 1272) -- AND FT.datetime > ?
+    }*/
 
 	public function renamedSince($timestamp, $folderPermissionsSQL, &$contents = array())
     {
