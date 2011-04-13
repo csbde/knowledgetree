@@ -628,32 +628,30 @@ div.form_actions {
 #newSearchQuery.x-toolbar table{
 	border-spacing: 0px 0px;
 }
-#newSearchQuery #ext-gen10 {
-	display: block;
-	width: 170px;
-	float: right;
-}
-#newSearchQuery #ext-gen17 {
-	display: block;
-	float: left;
-	width: 30px;
-}
-#newSearchQuery #ext-gen19{
-	background: url(../graphics/newui/icons/search.png) no-repeat;
-	margin: 2px 0px 0px 3px;
-	width: 12px;
-}
+
 #txtSearchBar1 {
 	width:155px !important;
 	border: 0px;
 	background: transparent;
 	margin-top: 1px;
+	display: block;
+	left: 30px;
+	position: relative;
 }
 .ext-ie #txtSearchBar1 {
 	margin-top: 1px;
 }
 #searchButton1 {
 	padding: 0px 2px 0px 0px;
+	display: block;
+	float: left;
+	left: -160px;
+	position: relative;
+}
+#searchButton1 .x-btn-menu-text-wrap .x-btn-center button {
+	background: url(../graphics/newui/icons/search.png) no-repeat;
+	margin: 2px 0px 0px 3px;
+	width: 12px;
 }
 #bigbuttons {
 	float: left;
