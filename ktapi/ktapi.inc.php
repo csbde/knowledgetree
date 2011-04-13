@@ -1267,56 +1267,6 @@ class KTAPI {
 
 	private function convertToTree(array $flat)
 	{
-		$idTree = 'treeid';
-		$idField = 'id';
-		$parentIdField = 'parentid';
-
-		$root = 0;
-
-	    $indexed = array();
-	    // first pass - get the array indexed by the primary id
-	   	foreach ($flat as $row) {
-        	$treeID = $row[$idTree];
-        	if (!isset($indexed[$treeID])) {
-        		$path = '';
-        		$treepath .= $row['tree_name'].'\\';
-        		$indexed[$treeID] = array('treeid' => $treeID,
-        									'parentid' => $row[$parentIdField],
-        									'treename' => $row['treename'],
-        									'type' => 'tree');//$row;
-	        	$indexed[$treeID]['fields'] = array();
-        	}
-
-        	$path .= $treepath.$row['fieldname'];
-
-	        $indexed[$treeID]['fields'][$row[$idField]] = array('fieldid' => $row[$idField],
-	        													'parentid' => $treeID,
-	        													'name' =>  $row['fieldname'],
-	        													'type' => 'field');
-
-	        if ($row[$parentIdField] < $root) {
-	        	$root = $row[$parentIdField];
-	        }
-
-	        $path = '';
-	    }
-
-	    //second pass
-	    //$root = 0;
-	    foreach ($indexed as $id => $row) {
-	        $indexed[$row[$parentIdField]]['fields'][$id] =& $indexed[$id];
-	    }
-
-	    $results = array($root => $indexed[$root]);
-
-	    //return $results;	//[-1]['fields'][0]['fields'];
-
-	    //strip out the unneccesary outer array
-	    return $results[-1]['fields'];
-	}
-	
-	private function convertToTree(array $flat)
-	{
 		//$GLOBALS['default']->log->debug('KTAPI convertToTree '.print_r($flat, true));
 		
 		$idTree = 'tree_id';
