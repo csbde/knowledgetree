@@ -115,7 +115,7 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
             $this->oPage->addError(_kt('This document has been deleted.'));
         }
 
-        $this->oPage->setSecondaryTitle($this->document->getName());
+        //$this->oPage->setSecondaryTitle($this->document->getName());
 
         $options = array(
             'documentaction' => 'viewDocument',
@@ -421,7 +421,7 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
         }
 
         //$this->oDocument =& $this->document;
-        $this->oPage->setSecondaryTitle($this->document->getName());
+        //$this->oPage->setSecondaryTitle($this->document->getName());
         $options = array(
             'documentaction' => 'viewDocument',
             'folderaction' => 'browse',
