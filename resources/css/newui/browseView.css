@@ -23,7 +23,7 @@
 .itemContainer .paginate > li.highlight:hover { background-color: #8ec9e3; -webkit-box-shadow: 0px 0px 2px #2b85ad; -moz-box-shadow: 0px 0px 2px #2b85ad; box-shadow: 0px 0px 2px #2b85ad; }
 .itemContainer .paginate > li:hover { background-color: #fbfbfb; -webkit-box-shadow: 0px 0px 2px #626262; -moz-box-shadow: 0px 0px 2px #626262; box-shadow: 0px 0px 2px #626262; }
 
-.browseView.bulkActionMenu { height: 23px; width: 100%; background-color: #eeeeee; -webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px; border: 1px solid #e1e1e1; padding: 0px !important; margin-bottom: 8px; width: 725px;}
+.browseView.bulkActionMenu { height: 23px; width: 100%; background-color: #eeeeee; -webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px; border: 1px solid #e1e1e1; padding: 0px !important; margin-bottom: 0px; width: 725px;}
 .browseView.bulkActionMenu > tbody { padding: 0px; margin: 0px; }
 .browseView.bulkActionMenu > tbody > tr > td { line-height: 1em; padding: 0px 5px; font-size: 85%; color: #555555; }
 .browseView.bulkActionMenu > tbody > tr > td input { background: none !important; border: 1px solid transparent !important; font-size: 100% !important; margin: 2px 1px !important; padding: 1px 5px !important; color: #344a6a; -webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px; border: 1px solid #e4e4e4 !important; }
@@ -33,8 +33,8 @@
 .browseView.bulkActionMenu .status { color: #A10000 !important; }
 
 .item td.checkbox { vertical-align: middle; }
-.dropzone {width: 725px;-webkit-border-radius: 5px; -moz-border-radius: 5px; border-radius: 5px; }
-.page .notification { display: block; text-align: center; width: auto; -webkit-box-shadow: inset 0px 0px 5px #CCC; -moz-box-shadow: inset 0px 0px 5px #CCC; box-shadow: inset 0px 0px 5px #ccc; border: 1px solid #ddd; -webkit-border-radius: 5px; -moz-border-radius: 5px; border-radius: 5px;background-color: #f5f5f5; margin: 20px 0px; padding: 20px; color: #989090 !important;}
+.dropzone {width: 724px;-webkit-border-radius: 5px; -moz-border-radius: 5px; border-radius: 5px; }
+.page .notification { display: block; text-align: center; width: auto; -webkit-box-shadow: inset 0px 0px 5px #CCC; -moz-box-shadow: inset 0px 0px 5px #CCC; box-shadow: inset 0px 0px 5px #ccc; border: 1px solid #ddd; -webkit-border-radius: 5px; -moz-border-radius: 5px; border-radius: 5px;background-color: #f5f5f5; margin: 35px 0px 15px 0px; padding: 20px; color: #989090 !important;}
 .page .notification.dragover{
 	background-color: #FFFF99; 
 	
@@ -194,18 +194,18 @@
 .doc.browseView .actionMenu .actionIcon.actions > ul li.action_download { background: url("../../../resources/graphics/newui/icons/download.png") no-repeat left center !important; }
 .doc.browseView .actionMenu .actionIcon.actions > ul li.action_share_document { background: url("../../../resources/graphics/newui/icons/share.png") no-repeat left center !important; }
 .doc.browseView .actionMenu .actionIcon.actions > ul li.action_instant_view { background: url("../../../resources/graphics/newui/icons/document_view.png") no-repeat left center !important; }
-.doc.browseView .actionMenu .actionIcon.actions > ul li.action_checkout { background: url("../../../resources/graphics/newui/icons/lock.png") no-repeat left center !important; }
+.doc.browseView .actionMenu .actionIcon.actions > ul li.action_checkout { background: url("../../../resources/graphics/newui/icons/lock.png") no-repeat -2px center !important; }
 .doc.browseView .actionMenu .actionIcon.actions > ul li.action_cancel_checkout { background: url("../../../resources/graphics/newui/icons/lock_delete.png") no-repeat left center !important; }
 .doc.browseView .actionMenu .actionIcon.actions > ul li.action_checkin { background: url("../../../resources/graphics/newui/icons/lock_open.png") no-repeat left center !important; }
-.doc.browseView .actionMenu .actionIcon.actions > ul li.action_alerts { background: url("../../../resources/graphics/newui/icons/alarmclock.png") no-repeat left center !important; }
+.doc.browseView .actionMenu .actionIcon.actions > ul li.action_alerts { background: url("../../../resources/graphics/newui/icons/alert.png") no-repeat left center !important; }
 .doc.browseView .actionMenu .actionIcon.actions > ul li.action_email { background: url("../../../resources/graphics/newui/icons/mail.png") no-repeat left center !important; }
 .doc.browseView .actionMenu .actionIcon.actions > ul li.action_change_owner { background: url("../../../resources/graphics/newui/icons/users3_edit.png") no-repeat left center !important; }
 .doc.browseView .actionMenu .actionIcon.actions > ul li.action_finalize_document { background: url("../../../resources/graphics/newui/icons/finalize.png") no-repeat left center !important; }
 .doc.browseView .actionMenu .actionIcon.actions > ul li.action_zoho_document { background: url("../../../resources/graphics/newui/icons/document_edit.png") no-repeat left center !important; }
-.doc.browseView .actionMenu .actionIcon.actions > ul li.action_share_folder { background: url("../../../resources/graphics/newui/icons/hand_offer.png") no-repeat left center !important; }
+.doc.browseView .actionMenu .actionIcon.actions > ul li.action_share_folder { background: url("../../../resources/graphics/newui/icons/share.png") no-repeat left center !important; }
 .doc.browseView .actionMenu .actionIcon.actions > ul li.action_rename_folder { background: url("../../../resources/graphics/newui/icons/folder_edit.png") no-repeat left center !important; }
 .doc.browseView .actionMenu .actionIcon.actions > ul li.action_folder_permissions { background: url("../../../resources/graphics/newui/icons/users3_edit.png") no-repeat left center !important; }
-.doc.browseView .actionMenu .actionIcon.actions > ul li.action_view_transactions { background: url("../../../resources/graphics/newui/icons/folder_view.png") no-repeat left center !important; }
+.doc.browseView .actionMenu .actionIcon.actions > ul li.action_view_transactions { background: url("../../../resources/graphics/newui/icons/folder_activity.png") no-repeat left center !important; }
 .doc.browseView .actionMenu .actionIcon.comments { background: url("/resources/graphics/newui/comment.png"); background-repeat: no-repeat; background-position: center center; width: 16px; height: 16px; display: inline-block; clear: none; text-align: center; cursor: pointer; height: 16px; overflow: none; line-height: 1em !important; font-size: 80%; font-weight: bold; line-height: 1.8em; color: #A10000; }
 .doc.browseView .actionMenu .actionIcon.comments:hover { background: url("/resources/graphics/newui/comment_h.png"); background-repeat: no-repeat; background-position: center center; }
 .doc.browseView .expanderField { -webkit-border-radius: 5px; -moz-border-radius: 5px; border-radius: 5px; padding: 10px; margin-left: 32px+5px; background-color: white; border: 1px solid #dbdbdb; display: none; }
