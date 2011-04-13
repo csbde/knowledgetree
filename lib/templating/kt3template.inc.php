@@ -92,6 +92,7 @@ class KTPage {
     public $breadcrumbIcon = false;
     public $breadcrumbBtns = false;
     public $showDashboardBtn = false;
+    public $state = '';
     public $menu = null;
     public $userMenu = null;
     public $helpPage = null;
@@ -510,9 +511,11 @@ class KTPage {
     	        break;
     	    case 'dashboard':
     	        $this->breadcrumbIcon[] = $browse;
+    	        $this->state = "ondashboard";
     	        break;
     	    case 'administration':
     	    default:
+    	    	$this->state = "admin";
     	        if ($dashboard !== false) $this->breadcrumbIcon[] = $dashboard;
     	        $this->breadcrumbIcon[] = $browse;
     	}
