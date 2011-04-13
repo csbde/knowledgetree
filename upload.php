@@ -350,7 +350,7 @@
 	$item['modified_by'] = $oModifier->getName();
 	$item['filename'] = $fileName;
 	$item['title'] = $oDocument->getName();
-	$item['filesize'] = KTUtil::filesizeToString($oDocument->getFileSize());
+	$item['filesize'] = KTUtil::filesizeToString($oDocument->getFileSize(), 'KB');
 	$item['mimeicon'] = $mimeIcon;
 	$item['created_date'] = $oDocument->getDisplayCreatedDateTime();
 	$item['modified_date'] = $oDocument->getDisplayLastModifiedDate();
