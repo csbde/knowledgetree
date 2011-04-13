@@ -1428,7 +1428,7 @@ class KTAPI_Folder extends KTAPI_FolderItem {
     	$this->movedSince($timestamp, $folderPermissionsSQL, $changes);
     	$this->updatedSince($timestamp, $folderPermissionsSQL, $changes);
     	$this->pathChangedSince($timestamp, $changes);
-
+    	
     	//have to check more than just myself?
     	if ($depth != 0)
     	{
@@ -1680,21 +1680,12 @@ class KTAPI_Folder extends KTAPI_FolderItem {
 					'change_type' => 'UPC',
 					'change_date' => datetimeutil::getLocaleDate($result['change_date'])
 				);
-
+	
 					// $GLOBALS['default']->log->debug('renamedSince assembled contents '.print_r($contents, true));
 	        }
         }
     }
-
-    /*public function pathChanged()
-    {
-    	SELECT F.id, FT.datetime AS change_date FROM folder_transactions AS FT INNER JOIN folders AS F ON F.id = FT.folder_id
-		WHERE FT.transaction_namespace = 'ktcore.transactions.move' AND FT.folder_id IN (1,1216,1268, 1272) -- AND FT.datetime > ?
-		UNION
-		SELECT F.id, FT.datetime AS change_date FROM folder_transactions AS FT INNER JOIN folders AS F ON F.id = FT.folder_id
-		WHERE FT.transaction_namespace = 'ktcore.transactions.rename' AND FT.folder_id IN (1,1216, 1268, 1272) -- AND FT.datetime > ?
-    }*/
-
+    
 	public function renamedSince($timestamp, $folderPermissionsSQL, &$contents = array())
     {
     	//$GLOBALS['default']->log->debug("renamedSince timestamp $timestamp");
