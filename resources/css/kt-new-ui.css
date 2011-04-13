@@ -199,8 +199,13 @@ textarea {
 }
 /* ------------------ prototype breadcrumbs -------------- */
 .breadCrumb	{
+	width: 700px;
+}
+
+.breadCrumb.ondashboard {
 	width: 640px;
 }
+
 .breadCrumb ul {
 	margin: 0;
 	padding: 0;
