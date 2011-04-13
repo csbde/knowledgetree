@@ -47,8 +47,27 @@ textarea {
 .page {
 	min-width: 700px;
 }
-.thumb-shadow {
-	display: none;
+.no-preview {
+	display: block;
+	text-align: center;
+	min-height: 230px;
+	width: auto;
+	-webkit-box-shadow: inset 0px 0px 5px #CCC;
+	-moz-box-shadow: inset 0px 0px 5px #CCC;
+	box-shadow: inset 0px 0px 5px #CCC;
+	border: 1px solid #DDD;
+	-webkit-border-radius: 3px;
+	-moz-border-radius: 3px;
+	border-radius: 3px;
+	background-color: #f6f6f6;
+	margin: 10px 15px 10px 0px;
+	padding: 20px;
+	color: #aaa !important;
+	text-shadow: 0px 1px 0px white;
+}
+.no-preview-text {
+	margin-top: 100px;
+	display: block;
 }
 .tags a {
 	color: #777!important;

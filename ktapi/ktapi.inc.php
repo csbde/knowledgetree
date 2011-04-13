@@ -1267,11 +1267,9 @@ class KTAPI {
 
 	private function convertToTree(array $flat)
 	{
-		//$GLOBALS['default']->log->debug('KTAPI convertToTree '.print_r($flat, true));
-		
-		$idTree = 'tree_id';
+		$idTree = 'treeid';
 		$idField = 'id';
-		$parentIdField = 'parent_id';
+		$parentIdField = 'parentid';
 
 		$root = 0;
 
@@ -1280,24 +1278,28 @@ class KTAPI {
 	   	foreach ($flat as $row) {
         	$treeID = $row[$idTree];
         	if (!isset($indexed[$treeID])) {
-        		$indexed[$treeID] = array('tree_id' => $treeID,
-        									'parent_id' => $row[$parentIdField],
-        									'tree_name' => $row['tree_name'],
+        		$path = '';
+        		$treepath .= $row['tree_name'].'\\';
+        		$indexed[$treeID] = array('treeid' => $treeID,
+        									'parentid' => $row[$parentIdField],
+        									'treename' => $row['treename'],
         									'type' => 'tree');//$row;
 	        	$indexed[$treeID]['fields'] = array();
         	}
 
-	        $indexed[$treeID]['fields'][$row[$idField]] = array('field_id' => $row[$idField],
-	        													'parent_id' => $treeID,
-	        													'name' =>  $row['field_name'],
+        	$path .= $treepath.$row['fieldname'];
+
+	        $indexed[$treeID]['fields'][$row[$idField]] = array('fieldid' => $row[$idField],
+	        													'parentid' => $treeID,
+	        													'name' =>  $row['fieldname'],
 	        													'type' => 'field');
 
 	        if ($row[$parentIdField] < $root) {
 	        	$root = $row[$parentIdField];
 	        }
-	    }
 
-	    //file_put_contents('convertToTree.txt', "\n\rroot $root ".print_r($indexed, true), FILE_APPEND);
+	        $path = '';
+	    }
 
 	    //second pass
 	    //$root = 0;
@@ -1306,11 +1308,11 @@ class KTAPI {
 	    }
 
 	    $results = array($root => $indexed[$root]);
-	    
-	    //$GLOBALS['default']->log->debug('KTAPI convertToTree results '.print_r($results, true));
-		//$GLOBALS['default']->log->debug('KTAPI convertToTree results inner '.print_r($results[-1]['fields'][0]['fields'], true));
-	    
-	    return $results[-1]['fields'][0]['fields'];
+
+	    //return $results;	//[-1]['fields'][0]['fields'];
+
+	    //strip out the unneccesary outer array
+	    return $results[-1]['fields'];
 	}
 
 	/**

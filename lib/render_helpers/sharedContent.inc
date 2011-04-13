@@ -369,35 +369,75 @@ class SharedContent extends KTEntity {
      *
      * @param int $userId
      * @param int $objectId
-     * @param int $folderId
+     * @param int $parentId
      * @param string $type
      * @return mixed - false if no permissions on object, and the permission value if one exists
      */
-    static public function getPermissions($userId, $objectId = null, $folderId = null, $type = 'document')
+    static public function getPermissions($userId, $objectId = null, $parentId = null, $type = 'document')
     {
-        // Check if shared object exists
-        $sql = "SELECT sc.permissions FROM shared_content as sc WHERE (user_id = '{$userId}' AND object_id = '{$objectId}' AND type = '{$type}')";
+        if ($type == 'document')
+        {
+            return SharedContent::getDocumentPermissions($userId, $objectId, $parentId);
+        }
+        else if ($type == 'folder')
+        {
+            return SharedContent::getFolderPermissions($userId, $objectId, $parentId);
+        }
+    }
 
+    /**
+     * Retrieve the permission on a document.
+     *
+     * @param int $userId
+     * @param int $objectId
+     * @param int $parentId
+     * @return mixed - false if no permissions on document, and the permission value if one exists
+     */
+    static private function getDocumentPermissions($userId, $objectId = null, $parentId = null)
+    {
+        // TODO improve this, perhaps with a combined query?
+        if (empty($parentId)) {
+            $sql = "SELECT sc.permissions FROM shared_content as sc WHERE (user_id = '{$userId}' AND object_id = '{$objectId}' AND type = 'document')";
+            $result = self::getPermissionQueryResult($sql);
+            if ($result !== false) {
+                return $result;
+            }
+
+            $sql = "SELECT sc.permissions FROM shared_content sc WHERE (sc.user_id = '{$userId}' AND sc.object_id = (SELECT d.folder_id FROM documents d WHERE d.id = '{$objectId}') AND sc.type = 'folder')";
+        }
+        else {
+            $sql = "SELECT sc.permissions FROM shared_content sc WHERE (sc.user_id = '{$userId}' AND sc.object_id = '{$parentId}' AND sc.type = 'folder')";
+        }
+
+        return self::getPermissionQueryResult($sql);
+    }
+
+    /**
+     * Retrieve the permission on a folder.
+     *
+     * @param int $userId
+     * @param int $objectId
+     * @param int $parentId
+     * @return mixed - false if no permissions on folder, and the permission value if one exists
+     */
+    static private function getFolderPermissions($userId, $objectId = null, $parentId = null)
+    {
+        $sql = "SELECT sc.permissions FROM shared_content as sc "
+            . "WHERE sc.user_id = '{$userId}' "
+            . "AND sc.object_id = '" . (empty($parentId) ? $objectId : $parentId) . "' "
+            . "AND sc.type = 'folder'";
+
+        return self::getPermissionQueryResult($sql);
+    }
+
+    static private function getPermissionQueryResult($sql)
+    {
         $res = DBUtil::getResultArray($sql);
-        if (PEAR::isError($res)) { return false; }
-
-        if (count($res) > 0)
-        {
-            return $res[0]['permissions'];
-        }
-        else
-        {
-            if ($type == 'document')
-            {
-                return SharedContent::getDocumentPermissions($userId, $objectId, $folderId);
-            }
-            else if ($type == 'folder')
-            {
-                return SharedContent::getFolderPermissions($userId, $objectId, $folderId);
-            }
+        if (PEAR::isError($res) || (count($res) == 0)) {
+            return false;
         }
 
-        return false;
+        return $res[0]['permissions'];
     }
 
     static public function getDocumentIds($userId)
@@ -419,66 +459,6 @@ class SharedContent extends KTEntity {
         }
 
         return $ids;
-    }
-
-    /**
-     * Retreive the permission of a document
-     *
-     * @param int $userId
-     * @param int $objectId
-     * @param int $folderId
-     * @return mixed - false if no permissions on document, and the permission value if one exists
-     */
-    static private function getDocumentPermissions($userId, $objectId = null, $folderId = null)
-    {
-        // Check if documents parent folder has been shared with user
-        if (empty($folderId))
-        {
-            $sql = "SELECT sc.permissions FROM shared_content sc WHERE (sc.user_id = '{$userId}' AND sc.object_id = (SELECT d.folder_id FROM documents d WHERE d.id = '{$objectId}') AND sc.type = 'folder')";
-        }
-        // If folder id was submitted, use, else query for the parent folder
-        else {
-            $sql = "SELECT sc.permissions FROM shared_content sc WHERE (sc.user_id = '{$userId}' AND sc.object_id = '{$folderId}' AND sc.type = 'folder')";
-        }
-
-        $res = DBUtil::getResultArray($sql);
-        if (PEAR::isError($res)) { return false; }
-        if (count($res) > 0)
-        {
-            return $res[0]['permissions'];
-        }
-
-        return false;
-    }
-
-    /**
-     * Retreive the permission of a folder
-     *
-     * @param int $userId
-     * @param int $objectId
-     * @param int $folderId
-     * @return mixed - false if no permissions on folder, and the permission value if one exists
-     */
-    static private function getFolderPermissions($userId, $objectId = null, $folderId = null)
-    {
-        // Check if documents parent folder has been shared with user
-        // If folder id was submitted, use, else query for the parent folder
-        if (empty($folderId))
-        {
-            $sql = "SELECT sc.permissions FROM shared_content as sc WHERE (sc.user_id = '{$userId}' AND sc.object_id = '{$objectId}' AND sc.type = 'folder')";
-        }
-        else {
-            $sql = "SELECT sc.permissions FROM shared_content as sc WHERE (sc.user_id = '{$userId}' AND sc.object_id = '{$folderId}' AND sc.type = 'folder')";
-        }
-
-        $res = DBUtil::getResultArray($sql);
-        if (PEAR::isError($res)) { return false; }
-        if (count($res) > 0)
-        {
-            return $res[0]['permissions'];
-        }
-
-        return false;
     }
 }
 

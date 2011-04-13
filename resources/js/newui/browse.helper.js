@@ -54,7 +54,7 @@ kt.pages.browse = new function() {
     self.loading = false;
     // NOTE if you change the limit here, you should also change it on the server side
     //      (although the code should function fine if you don't, as this value operates as an override...)
-    self.limit = 5;
+    self.limit = 3;
     self.retryIn = 3000; // milliseconds
 
     this.addDocumentItem = function(item) {
