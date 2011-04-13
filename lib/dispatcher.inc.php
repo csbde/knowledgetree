@@ -145,13 +145,15 @@ class KTDispatcher {
     }
 
     public function subDispatch(&$oOrigDispatcher) {
-        $core = array('aBreadcrumbs',
+        $core = array(
+            'aBreadcrumbs',
             'bTransactionStarted',
             'oUser',
             'session',
             'event_var',
             'action_prefix',
-            'bJSONMode');
+            'bJSONMode'
+        );
 
         foreach($core as $k) {
             if (isset($oOrigDispatcher->$k)) {
