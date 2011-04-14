@@ -47,6 +47,7 @@ require_once(KT_LIB_DIR . "/util/sanitize.inc");
 class KTFolderRenameAction extends KTFolderAction {
     var $sName = 'ktcore.actions.folder.rename';
     var $_sShowPermission = "ktcore.permissions.folder_rename";
+    var $cssClass = 'rename-folder';
 
     function getDisplayName() {
         $folderId = $this->oFolder->getId();

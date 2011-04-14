@@ -51,6 +51,7 @@ class KTFolderPermissionsAction extends KTFolderAction {
     var $_sShowPermission = 'ktcore.permissions.security';
     var $_bAdminAlwaysAvailable = true;
     var $bAutomaticTransaction = true;
+    var $cssClass = 'permissions';
 
     function getDisplayName() {
         return _kt('Permissions');

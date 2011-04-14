@@ -5,7 +5,7 @@
  * KnowledgeTree Community Edition
  * Document Management Made Simple
  * Copyright (C) 2008, 2009, 2010 KnowledgeTree Inc.
- * 
+ *
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License version 3 as published by the
@@ -52,7 +52,8 @@ class KTFolderTransactionsAction extends KTFolderAction {
     var $_sShowPermission = "ktcore.permissions.folder_details";
     var $showIfRead = false;
     var $showIfWrite = false;
-    
+    var $cssClass = 'folder-activity';
+
     function getDisplayName() {
         return _kt('Folder Activity');
     }

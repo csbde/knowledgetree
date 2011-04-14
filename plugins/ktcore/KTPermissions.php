@@ -299,6 +299,7 @@ class KTRoleAllocationPlugin extends KTFolderAction {
     var $_sShowPermission = 'ktcore.permissions.security';
     var $bAutomaticTransaction = true;
     var $_bAdminAlwaysAvailable = true;
+    var $cssClass = 'allocate-roles';
 
     function getDisplayName() {
         return _kt('Allocate Roles');
