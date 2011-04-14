@@ -43,7 +43,7 @@ require_once(KT_LIB_DIR . '/util/sanitize.inc');
 require_once(KT_LIB_DIR . '/render_helpers/sharedContent.inc');
 
 class KTFolderAction extends KTStandardDispatcher {
-    
+
     var $sName;
     var $sDescription;
     var $_sShowPermission = 'ktcore.permissions.folder_details';
@@ -53,7 +53,9 @@ class KTFolderAction extends KTStandardDispatcher {
     var $sSection = 'browse';
 	var $showIfRead = false;
 	var $showIfWrite = false;
-	
+	var $cssClass = '';
+	var $parentBtn = 'more';
+
     function KTFolderAction($oFolder = null, $oUser = null, $oPlugin = null)
     {
         parent::KTStandardDispatcher();
@@ -104,11 +106,11 @@ class KTFolderAction extends KTStandardDispatcher {
     {
         $oKTConfig =& KTConfig::getSingleton();
         $sExt = '.php';
-        
+
         if (KTUtil::arrayGet($_SERVER, 'kt_no_extensions')) {
             $sExt = '';
         }
-        
+
         if ($oKTConfig->get('KnowledgeTree/pathInfoSupport')) {
             return sprintf('%s/action%s/%s?fFolderId=%d', $GLOBALS['KTRootUrl'], $sExt, $this->sName, $this->oFolder->getID());
         } else {
@@ -118,8 +120,9 @@ class KTFolderAction extends KTStandardDispatcher {
 
     function getInfo()
     {
+        $status = '';
         if ($this->_show() === false) {
-            return null;
+            $status = 'disabled';
         }
 
         $aInfo = array(
@@ -127,8 +130,11 @@ class KTFolderAction extends KTStandardDispatcher {
             'name' => $this->getDisplayName(),
             'ns' => $this->sName,
             'url' => $this->getURL(),
+            'class' => $this->cssClass,
+            'parent' => $this->parentBtn,
+            'status' => $status
         );
-        
+
         return $this->customiseInfo($aInfo);
     }
 
@@ -200,7 +206,7 @@ class KTFolderAction extends KTStandardDispatcher {
     {
         return _kt('Dispatcher component of action not implemented.');
     }
-    
+
     /**
      * Check permissions on document for shared user
      *
@@ -226,10 +232,10 @@ class KTFolderAction extends KTStandardDispatcher {
 				return true;
 			}
 		}
-		
+
     	return false;
     }
-    
+
     /**
      * Set the shared object permission
      *
@@ -241,11 +247,11 @@ class KTFolderAction extends KTStandardDispatcher {
 		$iParentId = $this->oFolder->getParentID();
 		return SharedContent::getPermissions($iUserId, $iFolderId, $iParentId, 'folder');
     }
-    
+
 }
 
 class JavascriptFolderAction extends KTFolderAction {
-    
+
 	/**
 	 * This is an array of js files to be included for this action
 	 *
@@ -335,7 +341,7 @@ class JavascriptFolderAction extends KTFolderAction {
     	{
     		return '';
     	}
-    	
+
     	return "function " . $this->getScriptActivation() . '{'.$this->getFunctionScript().'}';
     }
 
@@ -353,30 +359,30 @@ class JavascriptFolderAction extends KTFolderAction {
 
     	global $AjaxDocumentActions;
     	$class = get_class($this);
-    	
+
     	return 'js' .  $class. 'Dispatcher()';
     }
 
 }
 
 class KTFolderActionUtil {
-    
+
     function getFolderActions($slot)
     {
         $oRegistry =& KTActionRegistry::getSingleton();
         return $oRegistry->getActions($slot);
     }
-    
+
     function getFolderInfoActions()
     {
         $oRegistry =& KTActionRegistry::getSingleton();
         return $oRegistry->getActions('folderinfo');
     }
-    
+
     function &getFolderActionsForFolder($oFolder, $oUser, $slot = 'folderaction')
     {
         $aObjects = array();
-        
+
         foreach (KTFolderActionUtil::getFolderActions($slot) as $aAction) {
             list($sClassName, $sPath, $sPlugin) = $aAction;
             $oRegistry =& KTPluginRegistry::getSingleton();
@@ -386,14 +392,14 @@ class KTFolderActionUtil {
             }
             $aObjects[] =new $sClassName($oFolder, $oUser, $oPlugin);
         }
-        
+
         return $aObjects;
     }
-    
+
     function &getFolderInfoActionsForFolder($oFolder, $oUser)
     {
         $aObjects = array();
-        
+
         foreach (KTFolderActionUtil::getFolderInfoActions() as $aAction) {
             list($sClassName, $sPath, $sPlugin) = $aAction;
             $oRegistry =& KTPluginRegistry::getSingleton();
@@ -403,11 +409,11 @@ class KTFolderActionUtil {
             }
             $aObjects[] =new $sClassName($oFolder, $oUser, $oPlugin);
         }
-        
+
         return $aObjects;
     }
-    
-    
+
+
 }
 
 ?>
