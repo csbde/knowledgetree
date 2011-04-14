@@ -4,12 +4,12 @@ require_once(KT_LIB_DIR . '/documentmanagement/documentutil.inc.php');
 require_once(KT_LIB_DIR . '/widgets/fieldsetDisplay.inc.php');
 
 // TODO Too much copy/paste going on.
-//      Get rid of old code or if still used then abstract out common sections.
-//      See plugins/ktcore/document/edit.php
-//      and presentation/lookAndFeel/knowledgetree/widgets/updateMetadata.php.
+//	  Get rid of old code or if still used then abstract out common sections.
+//	  See plugins/ktcore/document/edit.php
+//	  and presentation/lookAndFeel/knowledgetree/widgets/updateMetadata.php.
 
 // TODO Check the old tag saving code to ensure it left all tag words even when
-//      no longer attached to a document.  Is so, note it, else new bug (fix.)
+//	  no longer attached to a document.  Is so, note it, else new bug (fix.)
 
 class metadataService extends client_service {
 
@@ -36,17 +36,17 @@ class metadataService extends client_service {
 		//$GLOBALS['default']->log->debug('metadataService changeDocumentTitle document '.print_r($oDocument, true));
 		
 		$oDocument->setName($sTitle);
-	    $oDocument->setLastModifiedDate(getCurrentDateTime());
-	    $oDocument->setModifiedUserId($oUser->getId());
+		$oDocument->setLastModifiedDate(getCurrentDateTime());
+		$oDocument->setModifiedUserId($oUser->getId());
 	
-	    $packed = $this->mergeMetadata($oDocument, array());
+		$packed = $this->mergeMetadata($oDocument, array());
 		
 		//$GLOBALS['default']->log->debug('metadataService changeDocumentTitle packed '.print_r($packed, true));
-	    
-	    // Update the content version / document version
+		
+		// Update the content version / document version
 		$oDocument->startNewMetadataVersion($oUser);
 	
-		$res = $oDocument->update();    
+		$res = $oDocument->update();	
 		if (PEAR::isError($res))
 		{
 			DBUtil::rollback();
@@ -55,11 +55,11 @@ class metadataService extends client_service {
 				
 		$result = KTDocumentUtil::saveMetadata($oDocument, $packed, array('novalidate'=>true));
 		
-		if (is_null($result) || PEAR::isError($result))    
+		if (is_null($result) || PEAR::isError($result))	
 		{
 			DBUtil::rollback();
 		}
-		    
+			
 		DBUtil::commit();
 		
 		//$GLOBALS['default']->log->debug('metadataService updateMetadata committed');
@@ -79,11 +79,11 @@ class metadataService extends client_service {
 			$ret = $oTrigger->postValidate();
 		}
 	
-	    DBUtil::commit();
+		DBUtil::commit();
 	
-	    // create the document transaction record
-	    $oDocumentTransaction = & new DocumentTransaction($oDocument, _kt('Document metadata updated'), 'ktcore.transactions.update');
-	    $oDocumentTransaction->create();
+		// create the document transaction record
+		$oDocumentTransaction = & new DocumentTransaction($oDocument, _kt('Document metadata updated'), 'ktcore.transactions.update');
+		$oDocumentTransaction->create();
 		
 		//assemble the item to return
 		$item['documentID'] = $iDocumentID;
@@ -96,9 +96,9 @@ class metadataService extends client_service {
 		
 		$response[] = $item;
 		
-        $this->addResponse('success', json_encode($response));
+		$this->addResponse('success', json_encode($response));
 
-        return true;
+		return true;
 	}
 	
 	function changeDocumentFilename($params)
@@ -106,7 +106,7 @@ class metadataService extends client_service {
 		$iDocumentID = $params['documentID'];
 		$sFilename = $params['documentFilename'];
 		
-		//$GLOBALS['default']->log->debug("metadataService changeDocumentFilename $iDocumentID $sFilename");
+		$GLOBALS['default']->log->debug("metadataService changeDocumentFilename $iDocumentID $sFilename");
 		
 		$response = array();
 		
@@ -115,21 +115,21 @@ class metadataService extends client_service {
 		//$GLOBALS['default']->log->debug('metadataService changeDocumentFilename oVF '.print_r($oVF, true));
 		
 		$oValidator = $oVF->get('ktcore.validators.illegal_char', array(
-            'test' => 'name',
-            'output' => 'name',
-        ));
-        
-        //$GLOBALS['default']->log->debug('changeDocumentFilename oValidator '.print_r($oValidator, true));
-        
-        $res = $oValidator->validate(array('name'=>$sFilename));
-        
-        //$GLOBALS['default']->log->debug('changeDocumentFilename validation result '.print_r($res, true));
-        
-        if (empty($res['errors']))
-        {
-        	//$GLOBALS['default']->log->debug('metadataService changeDocumentFilename validation I AM EMPTY');
-        	
-        	$oUser = User::get($_SESSION['userID']);
+			'test' => 'name',
+			'output' => 'name',
+		));
+		
+		//$GLOBALS['default']->log->debug('changeDocumentFilename oValidator '.print_r($oValidator, true));
+		
+		$res = $oValidator->validate(array('name'=>$sFilename));
+		
+		$GLOBALS['default']->log->debug('changeDocumentFilename validation result '.print_r($res, true));
+		
+		if (empty($res['errors']))
+		{
+			$GLOBALS['default']->log->debug('metadataService changeDocumentFilename validation I AM EMPTY');
+			
+			$oUser = User::get($_SESSION['userID']);
 		
 			if (PEAR::isError($oUser)) {
 				$GLOBALS['default']->log->error("metadataService changeDocumentFilename User {$_SESSION['userID']}: {$oUser->getMessage()}");
@@ -143,148 +143,171 @@ class metadataService extends client_service {
 			if (PEAR::isError($res)) {
 				$GLOBALS['default']->log->error("metadataService changeDocumentFilename User {$res->getMessage()}");
 				return false;
-	        }
+			}
 	
-	        //assemble the item to return
+			//assemble the item to return
 			$item['documentID'] = $iDocumentID;
 			$item['documentFilename'] = $oDocument->getFileName();
-			
-			//$json['success'] = $item;
-			
-			//echo(json_encode($json));
-			//exit(0);
 			
 			$response[] = $item;
 			
 			//$GLOBALS['default']->log->debug('metadataService changeDocumentFilename success item '.print_r($item, true));
 		
-	        $this->addResponse('success', json_encode($response));
+			$this->addResponse('success', json_encode($response));
 	
-	        return true;
-        }
-        else 
-        {
-        	//$GLOBALS['default']->log->debug('changeDocumentFilename validation I AM NOT EMPTY');
-        	
-        	//assemble the item to return
+			return true;
+		}
+		else 
+		{
+			$GLOBALS['default']->log->debug('changeDocumentFilename validation I AM NOT EMPTY');
+			
+			//assemble the item to return
 			$item['documentID'] = $iDocumentID;
 			$item['documentFilename'] = $sFilename;
 			$item['message'] = $res['errors']['name'];
-			
-			//$json['error'] = $item;
-			
-			//echo(json_encode($json));
-			//exit(0);
 			
 			$response[] = $item;
 			
 			//$GLOBALS['default']->log->debug('metadataService changeDocumentFilename error item '.print_r($item, true));
 		
-	        $this->addResponse('error', json_encode($response));
+			$this->addResponse('error', json_encode($response));
 	
-	        return true;
-        }
+			return true;
+		}
 	}
 	
 	function changeDocumentType($params) 
 	{
+		//$GLOBALS['default']->log->debug('metadataService changeDocumentType params '.print_r($params, true));
+
 		$iDocumentID = $params['documentID'];
 		$iDocumentTypeID = $params['documentTypeID'];
 		
-		//$GLOBALS['default']->log->debug("metadataService changeDocumentType $iDocumentID $iDocumentTypeID");
+		$oDocument = &Document::get($iDocumentID);
+		if (is_null($oDocument) || ($oDocument === false)) {
+			$GLOBALS['default']->log->error('The Document does not exist.');
+			return false;
+		}
 		
-        $oDocument = &Document::get($iDocumentID);
-        if (is_null($oDocument) || ($oDocument === false)) {
-            $GLOBALS['default']->log->error('The Document does not exist.');
-            return false;
-        }
-        
-        $response = array();
-        
-        //$GLOBALS['default']->log->debug('metadataService changeDocumentType oDocument '.print_r($oDocument, true));
-        
-        $newType =& DocumentType::get($iDocumentTypeID);
-        if (is_null($newType) || ($newType === false)) {
-            //$GLOBALS['default']->log->error('The DocumentType does not exist.');
-            return false;
-        }
+		$response = array();
+		
+		$newType =& DocumentType::get($iDocumentTypeID);
+		if (is_null($newType) || ($newType === false)) {
+			$GLOBALS['default']->log->error('The DocumentType does not exist.');
+			return false;
+		}
 
-        $oldType = DocumentType::get($oDocument->getDocumentTypeID());
-        $oDocument->setDocumentTypeID($iDocumentTypeID);
+		$oldType = DocumentType::get($oDocument->getDocumentTypeID());
+		$oDocument->setDocumentTypeID($iDocumentTypeID);
 
-        // we need to find fieldsets that _were_ in the old one, and _delete_ those.
-        $for_delete = array();
-        
-        $oldFieldsets = KTFieldset::getForDocumentType($oldType);
-        $newFieldsets = KTFieldset::getForDocumentType($newType);
+		// we need to find fieldsets that _were_ in the old one, and _delete_ those.
+		$for_delete = array();
+		
+		$oldFieldsets = KTFieldset::getForDocumentType($oldType);
+		$newFieldsets = KTFieldset::getForDocumentType($newType);
 
-        // prune from MDPack.
-        foreach ($oldFieldsets as $oFieldset) {
-            $old_fields = $oFieldset->getFields();
-            foreach ($old_fields as $oField) {
-                $for_delete[$oField->getId()] = 1;
-            }
-        }
+		// prune from MDPack.
+		foreach ($oldFieldsets as $oFieldset) {
+			$old_fields = $oFieldset->getFields();
+			foreach ($old_fields as $oField) {
+				$for_delete[$oField->getId()] = 1;
+			}
+		}
 
-        foreach ($newFieldsets as $oFieldset) {
-            $new_fields = $oFieldset->getFields();
-            foreach ($new_fields as $oField) {
-                unset($for_delete[$oField->getId()]);
-            }
-        }
+		foreach ($newFieldsets as $oFieldset) {
+			$new_fields = $oFieldset->getFields();
+			foreach ($new_fields as $oField) {
+				unset($for_delete[$oField->getId()]);
+			}
+		}
 
-        $newPack = array( );
-        foreach ($field_values as $MDPack) {
-            if (!array_key_exists($MDPack[0]->getId(), $for_delete)) {
-                $newPack[] = $MDPack;
-            }
-        }
-        $field_values = $newPack;
-        
-        //$GLOBALS['default']->log->debug('metadataService changeDocumentType field_values '.print_r($field_values, true));
+		$newPack = array( );
+		foreach ($field_values as $MDPack) {
+			if (!array_key_exists($MDPack[0]->getId(), $for_delete)) {
+				$newPack[] = $MDPack;
+			}
+		}
+		$field_values = $newPack;
+		
+		//need to preserve the existing tags, so get them!
+		$currentTags = array();
+		
+		$fieldId = 2;
+		$tagField = DocumentField::get($fieldId);
+			 
+		$fieldValue = DocumentFieldLink::getByDocumentAndField($oDocument, $tagField);
+		
+		//$GLOBALS['default']->log->debug('metadataService changeDocumentType fieldValue '.print_r($fieldValue, true));
+		
+		if (!is_null($fieldValue) && (!PEAR::isError($fieldValue))) 
+		{
+			$value = $fieldValue->getValue();
+			//$GLOBALS['default']->log->debug("metadataService changeDocumentType tag value $value");
+			
+			$currentTags = explode(",", $value);
+		}
+		else if (PEAR::isError($fieldValue))
+		{
+			$GLOBALS['default']->log->debug('metadataService changeDocumentType fieldValue error '.$fieldValue->getMessage());
+		}
+				
+		//$GLOBALS['default']->log->debug('metadataService changeDocumentType field_values tags '.print_r($currentTags, true));
+		
+		$field_values = array_merge($field_values, $currentTags);		
+		
+		//$GLOBALS['default']->log->debug('metadataService changeDocumentType field_values after getting tags '.print_r($field_values, true));
 
-        $oDocumentTransaction = & new DocumentTransaction($oDocument, 'update metadata.', 'ktcore.transactions.update');
-        
-        $res = $oDocumentTransaction->create();
-        if ( PEAR::isError( $res)) {
-            $GLOBALS['default']->log->error('Failed to create transaction.');
-            return false;
-        }
+		//flatten the array to a string
+		$field_values = implode(",", $field_values);		
+		
+		//$GLOBALS['default']->log->debug("metadataService changeDocumentType field_values flat $field_values");
+		
+		$metadataPack[] = array($tagField, $field_values);
+		
+		//$GLOBALS['default']->log->debug('metadataService changeDocumentType document '.print_r($oDocument, true));
+		$oDocumentTransaction = & new DocumentTransaction($oDocument, 'update metadata.', 'ktcore.transactions.update');
+		if (PEAR::isError($oDocumentTransaction)) {
+			$GLOBALS['default']->log->error('Failed to create transaction '.$oDocumentTransaction->getMessage());
+			return false;
+		}
+	   	
+		$res = $oDocumentTransaction->create();
+		if (PEAR::isError( $res)) {
+			$GLOBALS['default']->log->error('Failed to create transaction.');
+			return false;
+		}
 
-        $res = $oDocument->update( );
-        if ( PEAR::isError( $res)) {
-            $this->rollbackTransaction( );
-            $GLOBALS['default']->log->error('Failed to change basic details about the document...');
-            return false;
-        }
+		$res = $oDocument->update();
+		if (PEAR::isError( $res)) {
+			$this->rollbackTransaction( );
+			$GLOBALS['default']->log->error('Failed to change basic details about the document...');
+			return false;
+		}
 
-        $res = KTDocumentUtil::saveMetadata($oDocument, $field_values, array('novalidate'=>true));
-        //$result = KTDocumentUtil::saveMetadata($oDocument, $packed, array('novalidate'=>true));
+		$res = KTDocumentUtil::saveMetadata($oDocument, $metadataPack, array('novalidate'=>true));
+		
+		if(!PEAR::isError($res) || !is_null($res))	
+		{
+			$oKTTriggerRegistry = KTTriggerRegistry::getSingleton();
+			$aTriggers = $oKTTriggerRegistry->getTriggers('edit', 'postValidate');
 
-        //$GLOBALS['default']->log->debug("metadataService changeDocumentType result $res");
-        
-        if(!PEAR::isError($res) || !is_null($res))	
-        {
-            $oKTTriggerRegistry = KTTriggerRegistry::getSingleton();
-            $aTriggers = $oKTTriggerRegistry->getTriggers('edit', 'postValidate');
-
-            foreach ($aTriggers as $aTrigger)
-            {
-                $sTrigger = $aTrigger[0];
-                $oTrigger = new $sTrigger;
-                $aInfo = array(
-                "document" => $oDocument,
-                "aOptions" => $field_values,
-                );
-                $oTrigger->setInfo($aInfo);
-                $ret = $oTrigger->postValidate();
-            }
-        } 
-        else {
-            $this->rollbackTransaction();
-            $GLOBALS['default']->log->error('An Error occurred in _setTransitionWorkFlowState');
-            
-            $item['documentID'] = $iDocumentID;
+			foreach ($aTriggers as $aTrigger)
+			{
+				$sTrigger = $aTrigger[0];
+				$oTrigger = new $sTrigger;
+				$aInfo = array(
+				"document" => $oDocument,
+				"aOptions" => $field_values,
+				);
+				$oTrigger->setInfo($aInfo);
+				$ret = $oTrigger->postValidate();
+			}
+		} 
+		else {
+			$this->rollbackTransaction();
+			$GLOBALS['default']->log->error('An Error occurred in _setTransitionWorkFlowState');
+			
+			$item['documentID'] = $iDocumentID;
 			$item['documentTypeID'] = $oDocumentType->getId();
 			$item['documentTypeName'] = $oDocumentType->getName();
 			$item['message'] = $res->getMessage();
@@ -293,7 +316,7 @@ class metadataService extends client_service {
 			
 			echo(json_encode($json));
 			exit(0);
-        }
+		}
 		
 		$oDocumentType = DocumentType::get($iDocumentTypeID);
 		
@@ -303,8 +326,8 @@ class metadataService extends client_service {
 		$fieldsetsresult = array();
 		
 		// first get generic ids
-	    $generic_fieldsets = KTFieldset::getGenericFieldsets(array('ids' => false));
-	    //$GLOBALS['default']->log->debug('update generic_fieldsets '.print_r($generic_fieldsets, true));
+		$generic_fieldsets = KTFieldset::getGenericFieldsets(array('ids' => false));
+		//$GLOBALS['default']->log->debug('update generic_fieldsets '.print_r($generic_fieldsets, true));
 		
 		$fieldsets = $oDocumentType->getFieldsets();
 		
@@ -380,7 +403,7 @@ class metadataService extends client_service {
 							);
 						break;
 						default:
-							$selection= array();	                
+							$selection= array();
 					}
 		
 					//assemble the field values
@@ -410,35 +433,30 @@ class metadataService extends client_service {
 		$item['documentTypeName'] = $oDocumentType->getName();
 		$item['metadata'] = $metadata;
 		
-		//$json['success'] = $item;
-		
-		//echo(json_encode($json));
-		//exit(0);
-		
 		$response[] = $item;
 	
-        $this->addResponse('success', json_encode($response));
-    }
+		$this->addResponse('success', json_encode($response));
+	}
 	
 	function updateMetadata($params)
-    {
-    	//$GLOBALS['default']->log->debug('metadataService updateMetadata params '.print_r($params, true));
-    	
-    	$iDocumentID = $params['documentID'];
-    	
-    	//now remove docID from the array
-    	unset($params['documentID']);
-    	
-    	$response = array();
-    	
-    	//$GLOBALS['default']->log->debug('metadataService updateMetadata '.print_r($params, true));
-    	
-    	$oDocument = Document::get($iDocumentID);
+	{
+		//$GLOBALS['default']->log->debug('metadataService updateMetadata params '.print_r($params, true));
+		
+		$iDocumentID = $params['documentID'];
+		
+		//now remove docID from the array
+		unset($params['documentID']);
+		
+		$response = array();
+		
+		//$GLOBALS['default']->log->debug('metadataService updateMetadata '.print_r($params, true));
+		
+		$oDocument = Document::get($iDocumentID);
 		if (PEAR::isError($oDocument)) {
 	   		$GLOBALS['default']->log->error("metadataService updateMetadata Document {$_REQUEST['documentID']}: {$oDocument->getMessage()}");
 	   		return false;
-	    }
-		    
+		}
+			
 		//$GLOBALS['default']->log->debug('metadataService updateMetadata REQUEST '.print_r($_REQUEST, true));
 	
 		//$GLOBALS['default']->log->debug('metadataService updateMetadata POST '.print_r($_POST, true));
@@ -452,12 +470,12 @@ class metadataService extends client_service {
 			
 			$oField = DocumentField::get($key);
 			
-	 		if (is_null($oField) || PEAR::isError($oField) || $oField instanceof KTEntityNoObjects)
-	 		{
-	 			//$GLOBALS['default']->log->debug("Could not resolve field: $oField->getName() ");	//on fieldset $fieldsetname for document id: $this->documentid");
-	 			// exit graciously
-	 			continue;
-	 		}
+			if (is_null($oField) || PEAR::isError($oField) || $oField instanceof KTEntityNoObjects)
+			{
+				//$GLOBALS['default']->log->debug("Could not resolve field: $oField->getName() ");	//on fieldset $fieldsetname for document id: $this->documentid");
+				// exit graciously
+				continue;
+			}
 	
 			if(is_array($field))
 			{
@@ -493,14 +511,14 @@ class metadataService extends client_service {
 			$GLOBALS['default']->log->error("metadataService updateMetadata User {$_SESSION['userID']}: {$oUser->getMessage()}");
 			return false;
 		}
-		    
+			
 		$oDocument->setLastModifiedDate(getCurrentDateTime());
 		$oDocument->setModifiedUserId($oUser->getId());
 		
 		// Update the content version / document version
 		$oDocument->startNewMetadataVersion($oUser);
 	
-		$res = $oDocument->update();    
+		$res = $oDocument->update();	
 		if (PEAR::isError($res))
 		{
 			DBUtil::rollback();
@@ -511,11 +529,11 @@ class metadataService extends client_service {
 		
 		//$GLOBALS['default']->log->debug('metadataService updateMetadata saveMetadata result '.print_r($result, true));
 		
-		if (is_null($result) || PEAR::isError($result))    
+		if (is_null($result) || PEAR::isError($result))	
 		{
 			DBUtil::rollback();
 		}
-		    
+			
 		DBUtil::commit();
 		
 		//$GLOBALS['default']->log->debug('metadataService updateMetadata committed');
@@ -550,8 +568,7 @@ class metadataService extends client_service {
 			$res = KTPermissionUtil::updatePermissionLookup($oDocument);
 			KTPermissionUtil::clearCache();
 		}
-		
-		
+
 		//now get the fields again so that we can send back the updated data
 		$fieldsets = (array) KTMetadataUtil::fieldsetsForDocument($oDocument, $oDocument->getDocumentTypeID());
 		
@@ -583,12 +600,12 @@ class metadataService extends client_service {
 					
 					//$GLOBALS['default']->log->debug("metadataService updateMetadata fieldvalue $fieldvalue");
 					
-	                if (!is_null($fieldvalue) && (!PEAR::isError($fieldvalue)))
-	                {
-	                	//$GLOBALS['default']->log->debug('metadataService updateMetadata fieldvalue not null');
-	                	$value = $fieldvalue->getValue();
-	                	//$GLOBALS['default']->log->debug("metadataService updateMetadata value $value");
-	                }
+					if (!is_null($fieldvalue) && (!PEAR::isError($fieldvalue)))
+					{
+						//$GLOBALS['default']->log->debug('metadataService updateMetadata fieldvalue not null');
+						$value = $fieldvalue->getValue();
+						//$GLOBALS['default']->log->debug("metadataService updateMetadata value $value");
+					}
 		
 					$controltype = strtolower($field->getDataType());
 		
@@ -631,7 +648,7 @@ class metadataService extends client_service {
 							);
 						break;
 						default:
-							$selection= array();	                
+							$selection= array();					
 					}
 		
 					//assemble the field values
@@ -657,143 +674,310 @@ class metadataService extends client_service {
 		
 		//assemble the item to return
 		$item['fields'] = $fieldsresult;
-		
-		//$json['success'] = $item;
-		
-		//echo(json_encode($json));
-		//exit(0);
-		
 		$response[] = $item;
 		
-		//$this->addResponse('addedDocuments', $response);
-        $this->addResponse('success', json_encode($response));
+		$this->addResponse('success', json_encode($response));
 
-        return true;
-    }
+		return true;
+	}
 	
-    /**
-     * Save submitted tags.
-     */
-    public function saveTags($params)
-    {
-    	//$GLOBALS['default']->log->debug('metadataService saveTags '.print_r($params, true));
-    	
-        $document = Document::get($params['documentID']);
-        $origDocTypeId = $docTypeId = $document->getDocumentTypeId();
+	/**
+	 * Save submitted tags.
+	 */
+	public function saveTags($params)
+	{
+		//$GLOBALS['default']->log->debug('metadataService saveTags params '.print_r($params, true));
+		
+		$document = Document::get($params['documentID']);
+		$newTags = explode(",", rtrim($params['tagcloud'], ','));
+		
+		//$GLOBALS['default']->log->debug('metadataService saveTags newTags '.print_r($newTags, true));
+		
+		$response = array();
+		
+		$origDocTypeId = $docTypeId = $document->getDocumentTypeId();
 
-        // This is a cheat...should use something else to ensure the correct value.
-        // Will work fine unless values are changed (which *should* never happen, but...)
-        $fieldSetId = 2;
-        $tagFieldSet = DocumentField::get($fieldSetId);
-        $tagData = array($tagFieldSet, rtrim($params['tagcloud'], ','));
-        $metadataPack = $this->mergeMetadata($document, array($tagData));
+		// This is a cheat...should use something else to ensure the correct value.
+		// Will work fine unless values are changed (which *should* never happen, but...)
+		$fieldId = 2;
+		$tagField = DocumentField::get($fieldId);
+		
+		
+		$fieldValue = DocumentFieldLink::getByDocumentAndField($document, $tagField);
+		
+		//$GLOBALS['default']->log->debug('metadataService saveTags fieldValue '.print_r($fieldValue, true));
+		
+		$existingTags = '';
+		$currentTags = array();
+		
+		if (!is_null($fieldValue) && (!PEAR::isError($fieldValue))) 
+		{
+			$value = $fieldValue->getValue();
+			
+			if (!is_null($value) && (!PEAR::isError($value))) 
+			{
+				//$GLOBALS['default']->log->debug("metadataService saveTags existing tags $value");
+				
+				$currentTags = explode(",", $value);
+				
+				//iterate through the new tags and only add them if they don't already exist as a tag in the field			
+				foreach($newTags as $newTag)
+				{			
+					$GLOBALS['default']->log->debug("metadataService saveTags checking $newTag");
+					
+					if (!in_array($newTag, $currentTags))
+					{
+						$currentTags[] = $newTag;
+					}
+				}
+			}
+			else 
+			{
+				$GLOBALS['default']->log->error('metadataService saveTags existing tags value is null or error '.$value->getMessage());
+				$currentTags = $newTags;
+			}
+		}		
+		else 
+		{
+			$GLOBALS['default']->log->error('metadataService saveTags fieldValue is null or error '.$fieldValue->getMessage());
+			$currentTags = $newTags;
+		}
+		
+		//$GLOBALS['default']->log->debug('metadataService saveTags currentTags '.print_r($currentTags, true));
+		
+		//flatten the array to a string
+		$totalTags = implode(",", $currentTags);
+		
+		//$totalTags = $existingTags.','.$newTags;
+		
+		//$GLOBALS['default']->log->debug("metadataService saveTags updated tags $totalTags");
+		
+		$tagData = array($tagField, $totalTags);
+		
+		$metadataPack = $this->mergeMetadata($document, array($tagData));
+		
+		//$GLOBALS['default']->log->debug('metadataService saveTags merged metadata '.print_r($metadataPack, true));
 
-        DBUtil::startTransaction();
+		DBUtil::startTransaction();
 
-        $user = User::get($_SESSION['userID']);
-        $document->startNewMetadataVersion($user);
+		$user = User::get($_SESSION['userID']);
+		$document->startNewMetadataVersion($user);
 
-        $res = $document->update();
-        if (PEAR::isError($res)) {
-            DBUtil::rollback();
-            $GLOBALS['default']->log->error(sprintf(_kt('Unexpected failure to update document tags: %s'), $res->getMessage()));
-            $response = array('saveTags' => $res->getMessage());
-            $this->addResponse('error', json_encode($response));
-            
-            return false;
-        }
+		$res = $document->update();
+		if (PEAR::isError($res)) {
+			DBUtil::rollback();
+			$GLOBALS['default']->log->error(sprintf(_kt('Unexpected failure to update document tags: %s'), $res->getMessage()));
+			$response = array('saveTags' => $res->getMessage());
+			$this->addResponse('error', json_encode($response));
+			
+			return false;
+		}
+		
+		//$GLOBALS['default']->log->debug('metadataService saveTags metadataPack '.print_r($metadataPack, true));
 
-        $coreRes = KTDocumentUtil::saveMetadata($document, $metadataPack);
-        if (PEAR::isError($coreRes)) {
-            DBUtil::rollback();
-            $GLOBALS['default']->log->error(sprintf(_kt('Unexpected failure to update document tags: %s'), $coreRes->getMessage()));
-            $response = array('saveTags' => $coreRes->getMessage());
-            $this->addResponse('error', json_encode($response));
-            return false;
-        }
+		$coreRes = KTDocumentUtil::saveMetadata($document, $metadataPack, array('novalidate'=>true));
+		if (PEAR::isError($coreRes)) {
+			DBUtil::rollback();
+			$GLOBALS['default']->log->error(sprintf(_kt('Unexpected failure to update document tags: %s'), $coreRes->getMessage()));
+			$response = array('saveTags' => $coreRes->getMessage());
+			$this->addResponse('error', json_encode($response));
+			return false;
+		}
 
-        // Post-triggers.
-        // Do these have relevance to tag saving?
-        $KTTriggerRegistry = KTTriggerRegistry::getSingleton();
-        $triggers = $KTTriggerRegistry->getTriggers('edit', 'postValidate');
+		// Post-triggers.
+		// Do these have relevance to tag saving?
+		$KTTriggerRegistry = KTTriggerRegistry::getSingleton();
+		$triggers = $KTTriggerRegistry->getTriggers('edit', 'postValidate');
 
-        foreach ($triggers as $trigger) {
-            $triggerName = $trigger[0];
-            $trigger = new $triggerName;
-            $info = array(
-                'document' => $document,
-                'aOptions' => $metadataPack,
-                'docTypeId' => $docTypeId,
-                'origDocTypeId' => $origDocTypeId
-            );
-            $trigger->setInfo($info);
-            $ret = $trigger->postValidate();
-        }
+		foreach ($triggers as $trigger) {
+			$triggerName = $trigger[0];
+			$trigger = new $triggerName;
+			$info = array(
+				'document' => $document,
+				'aOptions' => $metadataPack,
+				'docTypeId' => $docTypeId,
+				'origDocTypeId' => $origDocTypeId
+			);
+			$trigger->setInfo($info);
+			$ret = $trigger->postValidate();
+		}
 
-        DBUtil::commit();
+		DBUtil::commit();
 
-        $documentTransaction = new DocumentTransaction(
-                                                    $document,
-                                                    _kt('Document metadata updated'),
-                                                    'ktcore.transactions.update'
-                                    );
-        $documentTransaction->create();
+		$documentTransaction = new DocumentTransaction(
+													$document,
+													_kt('Document metadata updated'),
+													'ktcore.transactions.update'
+									);
+		$documentTransaction->create();
+		
+		$item['tags'] = $newTags;		
+		$response[] = $item;
+		$this->addResponse('success', json_encode($response));
 
-        $response = array('saveTags' => 'Saved tags for document');
-        $this->addResponse('saveTags', json_encode($response));
+		return true;
+	}
+	
+	public function deleteTag($params)
+	{
+		//$GLOBALS['default']->log->debug('metadataService deleteTag '.print_r($params, true));
+		
+		$document = Document::get($params['documentID']);
+		$tagToDelete = $params['tag'];
+		
+		// This is a cheat...should use something else to ensure the correct value.
+		// Will work fine unless values are changed (which *should* never happen, but...)
+		$fieldId = 2;
+		$tagField = DocumentField::get($fieldId);
+		
+		//$GLOBALS['default']->log->debug('metadataService deleteTag tagField '.print_r($tagField, true));
+			 
+		$fieldValue = DocumentFieldLink::getByDocumentAndField($document, $tagField);
+				
+		//$GLOBALS['default']->log->debug("metadataService deleteTag fieldValue ".print_r($fieldValue, true));
+		
+		if (!is_null($fieldValue) && (!PEAR::isError($fieldValue))) 
+		{
+			$value = $fieldValue->getValue();
+			//$GLOBALS['default']->log->debug("metadataService deleteTag value $value");
+			
+			$currentTags = explode(",", $value);
+			
+			//$GLOBALS['default']->log->debug('metadataService deleteTag current tags '.print_r($currentTags, true));
+			
+			$newTags = array();
+			
+			//iterate through the existing tags, and build new array of tags without the deleted one
+			foreach($currentTags as $currentTag)
+			{				
+				//$GLOBALS['default']->log->debug("metadataService deleteTag current tag $currentTag");
+				
+				if($currentTag !== $tagToDelete)
+				{
+					//$GLOBALS['default']->log->debug('metadataService deleteTag NOT FOUND');
+					$newTags[] = $currentTag;
+				}
+			}
+			
+			//$GLOBALS['default']->log->debug('metadataService deleteTag new tags '.print_r($newTags, true));
+			
+			$tags = implode(",", $newTags);
+			
+			//$GLOBALS['default']->log->debug("metadataService deleteTag new tags: $tags");
+			
+			$tagData = array($tagField, $tags);
+			
+			//now update the new tags to the db
+			$origDocTypeId = $docTypeId = $document->getDocumentTypeId();
+			$metadataPack = $this->mergeMetadata($document, array($tagData));
 
-        return true;
-    }
+			DBUtil::startTransaction();
+	
+			$user = User::get($_SESSION['userID']);
+			$document->startNewMetadataVersion($user);
+	
+			$res = $document->update();
+			if (PEAR::isError($res)) {
+				DBUtil::rollback();
+				$GLOBALS['default']->log->error(sprintf(_kt('Unexpected failure to update document tags: %s'), $res->getMessage()));
+				$response = array('saveTags' => $res->getMessage());
+				$this->addResponse('error', json_encode($response));
+				
+				return false;
+			}
+	
+			$coreRes = KTDocumentUtil::saveMetadata($document, $metadataPack);
+			if (PEAR::isError($coreRes)) {
+				DBUtil::rollback();
+				$GLOBALS['default']->log->error(sprintf(_kt('Unexpected failure to update document tags: %s'), $coreRes->getMessage()));
+				$response = array('saveTags' => $coreRes->getMessage());
+				$this->addResponse('error', json_encode($response));
+				return false;
+			}
+	
+			// Post-triggers.
+			// Do these have relevance to tag saving?
+			$KTTriggerRegistry = KTTriggerRegistry::getSingleton();
+			$triggers = $KTTriggerRegistry->getTriggers('edit', 'postValidate');
+	
+			foreach ($triggers as $trigger) {
+				$triggerName = $trigger[0];
+				$trigger = new $triggerName;
+				$info = array(
+					'document' => $document,
+					'aOptions' => $metadataPack,
+					'docTypeId' => $docTypeId,
+					'origDocTypeId' => $origDocTypeId
+				);
+				$trigger->setInfo($info);
+				$ret = $trigger->postValidate();
+			}
+	
+			DBUtil::commit();
+	
+			$documentTransaction = new DocumentTransaction(
+														$document,
+														_kt('Document metadata updated'),
+														'ktcore.transactions.update'
+										);
+			$documentTransaction->create();
+	
+			$response = array('saveTags' => 'Saved tags for document');
+			$this->addResponse('saveTags', json_encode($response));
+	
+			return true;
+			
+		}
+		else 
+		{
+			//$GLOBALS['default']->log->debug('metadataService deleteTag fieldValue error '.$fieldValue->getMessage());
+			
+			//TODO
+			
+		}
+	}
 
-    /**
-     * Merge existing metadata with submitted metadata.
-     */
-    private function mergeMetadata($document, $newMetadata = array())
-    {    	
-    	//$GLOBALS['default']->log->debug('metadataService mergeMetadata '.print_r($document, true).' '.$newMetadata);
-    	
-        $currentMetadata = (array)KTMetadataUtil::fieldsetsForDocument($document);
-        $metadataPack = array();
-        
-        //$GLOBALS['default']->log->debug('metadataService mergeMetadata currentMetadata '.print_r($currentMetadata, true));
+	/**
+	 * Merge existing metadata with submitted metadata.
+	 */
+	private function mergeMetadata($document, $newMetadata = array())
+	{		
+		$currentMetadata = (array)KTMetadataUtil::fieldsetsForDocument($document);
+		$metadataPack = array();
 
-        foreach ($currentMetadata as $currentFieldset) {
-            $currentFields = $currentFieldset->getFields();
-            
-            //$GLOBALS['default']->log->debug('metadataService mergeMetadata currentFields '.print_r($currentFields, true));
-            
-            foreach ($currentFields as $currentField) {
-            	
-            	//$GLOBALS['default']->log->debug('metadataService mergeMetadata currentField '.print_r($currentField, true));
-            	
-                $currentID = $currentField->getId();
-                
-                //$GLOBALS['default']->log->debug("metadataService mergeMetadata currentID $currentID");
-                
-                $newValue = '';
+		foreach ($currentMetadata as $currentFieldset) 
+		{
+			$currentFields = $currentFieldset->getFields();
+			
+			foreach ($currentFields as $currentField) 
+			{				
+				$currentID = $currentField->getId();
+				
+				$newValue = '';
 
-                $fieldValue = DocumentFieldLink::getByDocumentAndField($document, $currentField);
-                
-                //$GLOBALS['default']->log->debug("metadataService mergeMetadata fieldValue $fieldValue");
-                
-                if (!is_null($fieldValue) && (!PEAR::isError($fieldValue))) {
-                    $newValue = $fieldValue->getValue();
-                }
+				$fieldValue = DocumentFieldLink::getByDocumentAndField($document, $currentField);
+				
+				if (!is_null($fieldValue) && (!PEAR::isError($fieldValue))) 
+				{
+					$newValue = $fieldValue->getValue();
+				}
 
-                foreach ($newMetadata as $fieldData) {
-                    list($newField, $value) = $fieldData;
-                    $newId = $newField->getId();
-                    if ($currentID === $newId) {
-                        $newValue = $value;
-                    }
-                }
+				foreach ($newMetadata as $fieldData) 
+				{
+					list($newField, $value) = $fieldData;
+					$newId = $newField->getId();
+					if ($currentID === $newId) 
+					{
+						$newValue = $value;
+					}
+				}
 
-                $metadataPack[] = array($currentField, $newValue);
-            }
-        }
+				$metadataPack[] = array($currentField, $newValue);
+			}
+		}
 
-        return $metadataPack;
-    }
+		return $metadataPack;
+	}
 }
 
 ?>

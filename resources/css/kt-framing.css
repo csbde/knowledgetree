@@ -56,6 +56,7 @@ body
 {
 /*  margin-left: 15px;
     margin-right: 15px;*/
+    margin-bottom: 15px;
 }
 
 
@@ -948,6 +949,9 @@ a.main_nav_item {
 	min-width: 20px;
 	height: 16px;
 	vertical-align: top;
+}
+.editable-control.undo{
+	visibility: visible;
 }
 #title_row .editable-control {
 	float: none;

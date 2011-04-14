@@ -586,7 +586,7 @@ class SimpleFieldsetDisplay extends KTFieldsetDisplay {
      * @param array $array Array to unset from
      * @param array $unwanted_keys Array of keys to remove
      */
-    private function recursive_unset(&$array, $unwanted_keys) {
+    public function recursive_unset(&$array, $unwanted_keys) {
     	foreach($unwanted_keys as $unwanted_key)
     	{
 	    	unset($array[$unwanted_key]);

@@ -220,11 +220,6 @@ textarea {
 .breadCrumb	{
 	width: 700px;
 }
-
-.breadCrumb.ondashboard {
-	width: 640px;
-}
-
 .breadCrumb ul {
 	margin: 0;
 	padding: 0;
@@ -284,7 +279,7 @@ textarea {
 }
 
 .breadcrumbBtns {
-    float: none;
+    float: right;
     height: 30px;
     margin: 3px 18px 3px 3px;
     position: relative;
@@ -771,10 +766,20 @@ thead {
 }
 
 #footer {
-	background: #fff url('../graphics/newui/footerback.png') repeat-x top;
+	background: white;
 	height: 32px;
 	line-height: 32px;
 	color: #697474;
+	border: 1px solid #ccc;
+	border-bottom: 0px;
+	border-top-right-radius: 3px;
+	border-top-left-radius: 3px;
+	-webkit-border-top-left-radius: 3px;
+	-webkit-border-top-right-radius: 3px;
+	-moz-border-radius-topright: 3px;
+	-moz-border-radius-topleft: 3px;
+	margin-top: 10px;
+	padding-top: 2px;
 }
 #footer a {
 	color: #2f6594;
@@ -784,9 +789,8 @@ thead {
 	text-decoration: underline;
 }
 #footerLeft {
-	background: url('../graphics/newui/footerleft.png') no-repeat top left;
 	float:left;
-	padding-left: 15px;
+	padding-left: 6px;
 }
 
 #footerLeft img {
@@ -797,7 +801,6 @@ thead {
 	float:right;
 	line-height: 32px;
 	padding-right: 20px;
-	background: url('../graphics/newui/footerright.png') no-repeat top right;
 }
 
 table.kt_collection {

@@ -1,7 +1,7 @@
  
 <!-- FILE: kt3/fieldsets/simple.smarty -->
 	<div class="detail-fieldset" rel='{literal}{{/literal}"documentID":"{$document->getId()}"{literal}}{/literal}'>
-	    <h3 title='{$description}'>{$fieldset->getName()}<span title="Click to edit" class="editable-control edit">&nbsp;</span></h3>
+	    <h3 title='{$description}'>{$fieldset->getName()}<span title="Click to edit" class="editable-control metadata edit">&nbsp;</span></h3>
 		
 	    <table class="metadatatable" cellspacing="0" cellpadding="5">
 	      {foreach item=aFieldPair from=$fieldset_values name=fields}
