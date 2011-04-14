@@ -34,7 +34,8 @@
 	padding:10px;
 }
 #sidebar_item ul {
-	margin: 5px;
+	/*margin: 5px;*/
+	padding-left: 20px;
 }
 #sidebar_item {
 	border-bottom: 1px solid #ccc;

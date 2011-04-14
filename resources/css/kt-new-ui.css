@@ -47,8 +47,27 @@ textarea {
 .page {
 	min-width: 700px;
 }
-.thumb-shadow {
-	display: none;
+.no-preview {
+	display: block;
+	text-align: center;
+	min-height: 230px;
+	width: auto;
+	-webkit-box-shadow: inset 0px 0px 5px #CCC;
+	-moz-box-shadow: inset 0px 0px 5px #CCC;
+	box-shadow: inset 0px 0px 5px #CCC;
+	border: 1px solid #DDD;
+	-webkit-border-radius: 3px;
+	-moz-border-radius: 3px;
+	border-radius: 3px;
+	background-color: #f6f6f6;
+	margin: 10px 15px 10px 0px;
+	padding: 20px;
+	color: #aaa !important;
+	text-shadow: 0px 1px 0px white;
+}
+.no-preview-text {
+	margin-top: 100px;
+	display: block;
 }
 .tags a {
 	color: #777!important;
@@ -91,7 +110,7 @@ textarea {
 	-webkit-border-radius: 3px;
 	border-radius: 3px;
 	background: #FBFBFB !important;
-	word-wrap: 
+	word-wrap:
 }
 .browseView.bulkActionMenu a:active {
 	-moz-box-shadow: inset 0px 0px 3px #bbb;
@@ -201,6 +220,11 @@ textarea {
 .breadCrumb	{
 	width: 700px;
 }
+
+.breadCrumb.ondashboard {
+	width: 640px;
+}
+
 .breadCrumb ul {
 	margin: 0;
 	padding: 0;
@@ -262,8 +286,7 @@ textarea {
 .breadcrumbBtns {
     float: none;
     height: 30px;
-    left: 450px;
-    margin: 3px 12px 3px 3px;
+    margin: 3px 18px 3px 3px;
     position: relative;
 }
 .breadcrumbBtns a {
@@ -305,9 +328,7 @@ breadcrumbBtns a:active {
 
 
 /*----End Breadcrumbs----*/
-#txtSearchBar1 {
-	width:155px !important;
-}
+
 #commentsarea table{
 	background: #eee;
 	border: 1px solid #ddd !important;
@@ -441,6 +462,7 @@ ul.floatleft li.notification {
 	border-right: 1px solid #ccc;
 	line-height: 24px;
 }
+.action_buttons.below
 .action_buttons .action .disabled {
 	opacity: 0.5;
 	cursor: default;
@@ -611,14 +633,50 @@ div.form_actions {
 	text-decoration: underline;
 }
 
-#newSearchQuery {
-	margin-top: -10px;
+#newSearchQuery.x-toolbar {
 	padding: 0px;
-	margin: 3px 5px;
+	margin: 4px 10px;
 	/*float: right;*/
 	padding-right: 0px;
+	background: white;
+	border-radius: 10px;
+	-moz-border-radius: 10px;
+	-webkit-border-radius: 10px;
+	border:1px solid #ddd;
+	box-shadow: inset 0px 1px 1px #666;
+	-moz-box-shadow: inset 0px 1px 1px #666;
+	-webkit-box-shadow: inset 0px 1px 1px #666;
+	width: 200px;
+	height: 20px;
+}
+#newSearchQuery.x-toolbar table{
+	border-spacing: 0px 0px;
 }
 
+#txtSearchBar1 {
+	width:155px !important;
+	border: 0px;
+	background: transparent;
+	margin-top: 1px;
+	display: block;
+	left: 30px;
+	position: relative;
+}
+.ext-ie #txtSearchBar1 {
+	margin-top: 1px;
+}
+#searchButton1 {
+	padding: 0px 2px 0px 0px;
+	display: block;
+	float: left;
+	left: -160px;
+	position: relative;
+}
+#searchButton1 .x-btn-menu-text-wrap .x-btn-center button {
+	background: url(../graphics/newui/icons/search.png) no-repeat;
+	margin: 2px 0px 0px 3px;
+	width: 12px;
+}
 #bigbuttons {
 	float: left;
 }
@@ -780,12 +838,22 @@ div#activationNotice span {
 
 div#uploadProgress {
 	margin-right: 15px;
-	background: url('../graphics/newui/notice.png') no-repeat top right;
-	width: 160px;
+	background: #F2EBAE;
 	height: 50px;
 	float: right;
-	text-align: center;
+	text-align: left;
 	padding: 10px 20px 0 20px;
+	border-radius: 6px;
+	border: 2px solid #AAA;
+	box-shadow: 0px 0px 8px #AAA;
+	position: absolute;
+	right: -17px;
+	z-index: 999999;
+	color: #666;
+	width: 199px;
+	font-weight: bold;
+	top: 7px;
+	text-shadow: 0px 1px 0px white;
 }
 span#uploadProgress .title {
 	font-size: 12px;
@@ -1003,7 +1071,6 @@ label span.required
 	padding: 0px;
         width: 310px;
 }
-
 #content .tags div.token-input-dropdown-facebook {
         width: 310px;
 }

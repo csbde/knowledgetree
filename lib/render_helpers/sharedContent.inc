@@ -1,4 +1,5 @@
 <?php
+
 /**
  * $Id$
  *
@@ -63,87 +64,89 @@ class SharedContent extends KTEntity {
 
     public $_bUsePearError = true;
 
-	public function __construct($iUserId, $iSystemUserId, $iObjectId, $sType, $iPermissions, $iParentObjectId = null)
+    public function __construct($userId, $systemUserId, $objectId, $type, $permissions, $parentObjectId = null)
     {
-		$this->iUserId = $iUserId;
-		$this->iSystemUserId = $iSystemUserId;
-		$this->iObjectId = $iObjectId;
-		$this->sType = $sType;
-		$this->iPermissions = $iPermissions;
-		$this->iParentObjectId = $iParentObjectId;
+        $this->iUserId = $userId;
+        $this->iSystemUserId = $systemUserId;
+        $this->iObjectId = $objectId;
+        $this->sType = $type;
+        $this->iPermissions = $permissions;
+        $this->iParentObjectId = $parentObjectId;
     }
 
     public function create()
     {
-    	// Check if parent is shared
-    	if ($this->sType == 'folder')
-    	{
-    		// Get folder
-    		$oFolder = Folder::get($this->iObjectId);
-    		$iParentFolderId = $oFolder->getParentID();
-	    	// Update parent id if shared parent exists
-    		if ($this->exists($this->iUserId, $iParentFolderId, 'folder'))
-    		{
-    			$this->iParentObjectId = $iParentFolderId;
-    		}
-    	}
-    	else if ($this->sType == 'document')
-    	{
-    		// Get document
-    		$oDocument = Document::get($this->iObjectId);
-    		$iParentFolderId = $oDocument->getParentID();
-	    	// Do not create a shared entry if document is in a shared folder
-    		if ($this->exists($this->iUserId, $iParentFolderId, 'folder'))
-    		{
-    			return true;
-    		}
-    	}
+        // Check if parent is shared
+        if ($this->sType == 'folder')
+        {
+            // Get folder
+            $folder = Folder::get($this->iObjectId);
+            $parentFolderId = $folder->getParentID();
+            // Update parent id if shared parent exists
+            if ($this->exists($this->iUserId, $parentFolderId, 'folder'))
+            {
+                $this->iParentObjectId = $parentFolderId;
+            }
+        }
+        else if ($this->sType == 'document')
+        {
+            // Get document
+            $document = Document::get($this->iObjectId);
+            $parentFolderId = $document->getParentID();
+            // Do not create a shared entry if document is in a shared folder
+            if ($this->exists($this->iUserId, $parentFolderId, 'folder'))
+            {
+                return true;
+            }
+        }
 
-    	// Create shared content object
-    	$res = parent::create();
-    	if ($res)
-    	{
-    		// If this was a folder object delete all shared documents in that folder,
-    		// As they will inherit permissions from the parent folder
-    		if ($this->sType == 'folder')
-    		{
-    			$aDocumentsInFolder = explode(',', Folder::getDocumentIDs($this->iObjectId));
-    			if (!PEAR::isError($aDocumentsInFolder))
-    			{
-    				foreach ($aDocumentsInFolder as $doc)
-    				{
-    					$this->deleteDocument($doc);
-    				}
-    			}
-    		}
-    		else if ($this->sType == 'document')
-    		{
-    			// Add a comment
-    			$oFromUser = User::get($this->iSystemUserId);
-    			$oWithUser = User::get($this->iUserId);
-    			$username = $oFromUser->getUserName();
-    			$sharedname = $oWithUser->getUserName();
-    			Comments::add_comment($this->iObjectId, "$username has shared this document with $sharedname");
-    		}
-    	}
+        // Create shared content object
+        $res = parent::create();
+        if ($res)
+        {
+            // If this was a folder object delete all shared documents in that folder,
+            // As they will inherit permissions from the parent folder
+            if ($this->sType == 'folder')
+            {
+                $aDocumentsInFolder = explode(',', Folder::getDocumentIDs($this->iObjectId));
+                if (!PEAR::isError($aDocumentsInFolder))
+                {
+                    foreach ($aDocumentsInFolder as $doc)
+                    {
+                        $this->deleteDocument($doc);
+                    }
+                }
+            }
+            else if ($this->sType == 'document')
+            {
+                // Add a comment
+                $oFromUser = User::get($this->iSystemUserId);
+                $oWithUser = User::get($this->iUserId);
+                $username = $oFromUser->getUserName();
+                $sharedname = $oWithUser->getUserName();
+                Comments::add_comment($this->iObjectId, "$username has shared this document with $sharedname");
+            }
+        }
 
-    	return $res;
+        return $res;
     }
 
     public function delete()
     {
-		$sql = "DELETE FROM shared_content WHERE user_id = '{$this->iUserId}' AND object_id = '{$this->iObjectId}' AND type = '{$this->sType}' LIMIT 1";
-    	$res = DBUtil::runQuery($sql);
-    	if (PEAR::isError($res)) { return false; }
-    	return (count($res) > 0);
+        $sql = "DELETE FROM shared_content WHERE user_id = '{$this->iUserId}' AND object_id = '{$this->iObjectId}' AND type = '{$this->sType}' LIMIT 1";
+        $res = DBUtil::runQuery($sql);
+        if (PEAR::isError($res)) { return false; }
+
+        return (count($res) > 0);
     }
 
     public function deleteDocument($id)
     {
-		$sql = "DELETE FROM shared_content WHERE user_id = '{$this->iUserId}' AND object_id = '{$id}' AND type = 'document'";
-    	$res = DBUtil::runQuery($sql);
-    	if (PEAR::isError($res)) { return false; }
-    	return (count($res) > 0);
+        $sql = "DELETE FROM shared_content WHERE user_id = '{$this->iUserId}' AND object_id = '{$id}' AND type = 'document'";
+        $res = DBUtil::runQuery($sql);
+        if (PEAR::isError($res)) { return false; }
+
+        return (count($res) > 0);
     }
 
     /**
@@ -154,7 +157,7 @@ class SharedContent extends KTEntity {
     * @param none
     * @return string
     */
-    public function _table () { return KTUtil::getTableName('shared_content'); }
+    public function _table() { return KTUtil::getTableName('shared_content'); }
 
     // ---------------
     // Getters/setters
@@ -184,107 +187,111 @@ class SharedContent extends KTEntity {
     * @param $aOptions - array
     * @return SharedContent objects - array
     */
-    public function getUsersSharedContents($iUserId = null, $iFolderId, $aOptions = null)
+    public function getUsersSharedContents($userId = null, $folderId, $aOptions = null)
     {
-    	return array('documents' => $this->getSharedDocuments($iUserId, $iFolderId), 'folders' => $this->getSharedFolders($iUserId, $iFolderId));
+        return array('documents' => $this->getSharedDocuments($userId, $folderId), 'folders' => $this->getSharedFolders($userId, $folderId));
     }
 
     /**
      * Retrieve a list of Folders
      *
-     * @param int $iUserId
-     * @param int $iFolderId
+     * @param int $userId
+     * @param int $folderId
      * @return array $folders
      */
-    public function getSharedFolders($iUserId, $iFolderId)
+    public function getSharedFolders($userId, $folderId)
     {
-    	$shared_content = 'sc.object_id as id, sc.permissions AS object_permissions, sc.user_id AS user_id, sc.parent_id AS parent_id';
-    	$folders = 'f.name AS title, cu.name as created_by, f.full_path AS full_path, f.linked_folder_id AS linked_folder_id';
-    	if ($iFolderId == 1)
-    	{
-	    	$sql = "SELECT $shared_content, $folders
-	    			FROM `shared_content` as sc,
-					folders AS f,
-					users AS cu
-					WHERE (sc.type = 'folder' AND sc.user_id = '$iUserId' AND f.id = sc.object_id AND f.creator_id = cu.id AND sc.parent_id is NULL)
-					";
-    	}
-    	else
-    	{
-			$sql = "SELECT $shared_content, $folders
-	    			FROM `shared_content` as sc,
-					folders AS f,
-					users AS cu
-					WHERE sc.type = 'folder' AND sc.object_id = f.id AND f.parent_id = '$iFolderId' AND f.creator_id = cu.id AND sc.parent_id = '$iFolderId'";
-    	}
+        $sharedContent = 'sc.object_id as id, sc.permissions AS object_permissions, sc.user_id AS user_id, sc.parent_id AS parent_id';
+        $folders = 'f.name AS title, cu.name as created_by, f.full_path AS full_path, f.linked_folder_id AS linked_folder_id';
+        if ($folderId == 1)
+        {
+            $sql = "SELECT $sharedContent, $folders
+                    FROM `shared_content` as sc,
+                    folders AS f,
+                    users AS cu
+                    WHERE (sc.type = 'folder' AND sc.user_id = '$userId' AND f.id = sc.object_id AND f.creator_id = cu.id AND sc.parent_id is NULL)
+                    ";
+        }
+        else
+        {
+            $sql = "SELECT $sharedContent, $folders
+                    FROM `shared_content` as sc,
+                    folders AS f,
+                    users AS cu
+                    WHERE sc.type = 'folder' AND sc.object_id = f.id AND f.parent_id = '$folderId' AND f.creator_id = cu.id AND sc.parent_id = '$folderId'";
+        }
 
-    	$res = DBUtil::getResultArray($sql);
-    	if (PEAR::isError($res)) { return false; }
+        $res = DBUtil::getResultArray($sql);
+        if (PEAR::isError($res)) { return false; }
 
-    	return $res;
+        return $res;
     }
 
     /**
      * Retrieve a list of Documents
      *
-     * @param int $iUserId
-     * @param int $iFolderId
+     * @param int $userId
+     * @param int $folderId
      * @return array $documents
      */
-    public function getSharedDocuments($iUserId, $iFolderId)
+    // NOTE This function seems to get duplicated documents, which are filtered later (no duplicates show up in the view.)
+    //      If possible, get the query to not return duplicates.
+    public function getSharedDocuments($userId, $folderId)
     {
-    	// Fields to select
-		$shared_content = 'sc.object_id as id, sc.permissions AS object_permissions, sc.parent_id AS parent_id';
-		$document_metadata_version = 'dmv.name AS title';
-		$document_types_lookup = 'dtl.name AS document_type';
-		$document_content_version = 'dcv.filename AS filename, dcv.storage_path AS storage_path, dcv.has_rendition AS has_rendition, dcv.size AS filesize, dcv.major_version as major_version, dcv.minor_version AS minor_version';
-		$users = 'cu.name as created_by, cu.name AS owned_by, mu.name as modified_by';
-		$documents = 'd.created AS created_date, d.modified AS modified_date, d.immutable AS is_immutable, d.is_checked_out AS is_checked_out, d.checked_out_user_id AS checked_out_by_id, d.checkedout AS checked_out_date, d.linked_document_id as linked_document_id';
-		$mime_types = 'mt.id AS mimetypeid, mt.mimetypes AS mime_type, mt.icon_path AS mime_icon_path';
+        // Fields to select
+        $sharedContent = 'sc.object_id as id, sc.permissions AS object_permissions, sc.parent_id AS parent_id';
+        $documentMetadataVersion = 'dmv.name AS title';
+        $documentTypesLookup = 'dtl.name AS document_type';
+        $documentContentVersion = 'dcv.filename AS filename, dcv.storage_path AS storage_path, dcv.has_rendition AS has_rendition, dcv.size AS filesize, dcv.major_version as major_version, dcv.minor_version AS minor_version';
+        $users = 'cu.name as created_by, cu.name AS owned_by, mu.name as modified_by';
+        $documents = 'd.created AS created_date, d.modified AS modified_date, d.immutable AS is_immutable, d.is_checked_out AS is_checked_out, d.checked_out_user_id AS checked_out_by_id, d.checkedout AS checked_out_date, d.linked_document_id as linked_document_id';
+        $mimeTypes = 'mt.id AS mimetypeid, mt.mimetypes AS mime_type, mt.icon_path AS mime_icon_path';
 
-    	if ($iFolderId == 1)
-    	{
-	    	$sql = "SELECT $shared_content, $document_metadata_version, $document_types_lookup, $document_content_version, $users, $documents, $mime_types
-	    			FROM shared_content AS sc, documents AS d, document_metadata_version AS dmv, document_types_lookup AS dtl, document_content_version AS dcv, users AS cu, users AS mu, mime_types AS mt
-	    			WHERE sc.type = 'document' AND d.id = sc.object_id AND sc.user_id='$iUserId' AND d.metadata_version_id = dmv.id AND dmv.document_type_id = dtl.id AND d.id = dcv.document_id AND d.creator_id = cu.id AND d.modified_user_id = mu.id AND dcv.mime_id = mt.id AND sc.parent_id is NULL";
-    	}
-    	else
-    	{
-    		// Check if folder has been shared, before retrieving document listing
-    		if (!$this->exists($iUserId, $iFolderId, 'folder'))
-    		{
-    			return false;
-    		}
+        if ($folderId == 1)
+        {
+            $sql = "SELECT $sharedContent, $documentMetadataVersion, $documentTypesLookup, $documentContentVersion, $users, $documents, $mimeTypes
+                    FROM shared_content AS sc, documents AS d, document_metadata_version AS dmv, document_types_lookup AS dtl, document_content_version AS dcv, users AS cu, users AS mu, mime_types AS mt
+                    WHERE sc.type = 'document' AND d.id = sc.object_id AND sc.user_id='$userId' AND d.metadata_version_id = dmv.id AND dmv.document_type_id = dtl.id AND d.id = dcv.document_id AND d.creator_id = cu.id AND d.modified_user_id = mu.id AND dcv.mime_id = mt.id AND sc.parent_id is NULL";
+        }
+        else
+        {
+            // Check if folder has been shared, before retrieving document listing
+            if (!$this->exists($userId, $folderId, 'folder'))
+            {
+                return false;
+            }
 
-    		$sql = "SELECT d.id AS id, sc.permissions AS object_permissions, sc.parent_id AS parent_id, $document_metadata_version, $document_types_lookup, $document_content_version, $users, $documents, $mime_types
-    				FROM documents AS d, document_metadata_version AS dmv, document_types_lookup AS dtl, document_content_version AS dcv, users AS cu, users AS mu, mime_types AS mt, shared_content sc
-    				WHERE sc.type = 'folder' AND sc.user_id='$iUserId' AND sc.object_id = '$iFolderId' AND d.folder_id = '$iFolderId' AND d.status_id = '1' AND d.metadata_version_id = dmv.id AND dmv.document_type_id = dtl.id AND d.id = dcv.document_id AND d.creator_id = cu.id AND d.modified_user_id = mu.id AND dcv.mime_id = mt.id";
-    	}
+            $sql = "SELECT d.id AS id, sc.permissions AS object_permissions, sc.parent_id AS parent_id, $documentMetadataVersion, $documentTypesLookup, $documentContentVersion, $users, $documents, $mimeTypes
+                    FROM documents AS d, document_metadata_version AS dmv, document_types_lookup AS dtl, document_content_version AS dcv, users AS cu, users AS mu, mime_types AS mt, shared_content sc
+                    WHERE sc.type = 'folder' AND sc.user_id='$userId' AND sc.object_id = '$folderId' AND d.folder_id = '$folderId' AND d.status_id = '1' AND d.metadata_version_id = dmv.id AND dmv.document_type_id = dtl.id AND d.id = dcv.document_id AND d.creator_id = cu.id AND d.modified_user_id = mu.id AND dcv.mime_id = mt.id";
+        }
 
-    	$res = DBUtil::getResultArray($sql);
-    	if (PEAR::isError($res)) { return false; }
+        $sql .= ' AND d.status_id = ' . LIVE;
 
-    	return $res;
+        $res = DBUtil::getResultArray($sql);
+        if (PEAR::isError($res)) { return false; }
+
+        return $res;
     }
 
     /**
      * Check if shared object exists
      *
-     * @param int $iUserId
-     * @param int $iObjectId
-     * @param string $sType
+     * @param int $userId
+     * @param int $objectId
+     * @param string $type
      * @return boolean
      */
-    public function exists($iUserId = null, $iObjectId = null, $sType = null)
+    public function exists($userId = null, $objectId = null, $type = null)
     {
-    	$iUserId = is_null($iUserId) ? $this->iUserId : $iUserId;
-    	$iObjectId = is_null($iObjectId) ? $this->iObjectId : $iObjectId;
-    	$sType = is_null($sType) ? $this->sType : $sType;
-    	$sql = "SELECT user_id FROM shared_content WHERE user_id = '{$iUserId}' AND object_id = '{$iObjectId}' AND type = '{$sType}' LIMIT 1";
-    	$res = DBUtil::getResultArray($sql);
-    	if (PEAR::isError($res)) { return false; }
+        $userId = is_null($userId) ? $this->iUserId : $userId;
+        $objectId = is_null($objectId) ? $this->iObjectId : $objectId;
+        $type = is_null($type) ? $this->sType : $type;
+        $sql = "SELECT user_id FROM shared_content WHERE user_id = '{$userId}' AND object_id = '{$objectId}' AND type = '{$type}' LIMIT 1";
+        $res = DBUtil::getResultArray($sql);
+        if (PEAR::isError($res)) { return false; }
 
-    	return (count($res) > 0);
+        return (count($res) > 0);
     }
 
     // ------------------------
@@ -293,66 +300,66 @@ class SharedContent extends KTEntity {
     /**
      * Check shared user permissions on a document
      *
-     * @param int $iUserId
-     * @param int $iDocumentId
-     * @param int $iFolderId [optional]
+     * @param int $userId
+     * @param int $documentId
+     * @param int $folderId [optional]
      * @param int $permissions [optional]
      * @return boolean
      */
-    static public function canAccessDocument($iUserId, $iDocumentId, $iFolderId = null, $permissions = null)
+    static public function canAccessDocument($userId, $documentId, $folderId = null, $permissions = null)
     {
-    	// Check if document has been shared with user
-    	$sql = "SELECT user_id FROM shared_content as sc WHERE user_id = '{$iUserId}' AND object_id = '{$iDocumentId}' AND type = 'document'";
-    	if (!is_null($permissions)) {
-    		$sql .= " AND sc.permissions = $permissions";
-    	}
+        // Check if document has been shared with user
+        $sql = "SELECT user_id FROM shared_content as sc WHERE user_id = '{$userId}' AND object_id = '{$documentId}' AND type = 'document'";
+        if (!is_null($permissions)) {
+            $sql .= " AND sc.permissions = $permissions";
+        }
 
-    	$res = DBUtil::getResultArray($sql);
-    	if (PEAR::isError($res)) { return false; }
+        $res = DBUtil::getResultArray($sql);
+        if (PEAR::isError($res)) { return false; }
 
-    	if (count($res) > 0)
-    	{
-    		return true;
-    	}
-    	else
-    	{
-    		// Check if documents parent folder has been shared with user
-    		// If folder id was submitted, use, else query for the parent folder
-    		if (empty($iFolderId))
-    		{
-    		    $sql = "SELECT sc.user_id FROM shared_content sc WHERE (sc.user_id = '{$iUserId}' AND sc.object_id = (SELECT d.folder_id FROM documents d WHERE d.id = '{$iDocumentId}') AND sc.type = 'folder')";
-    		}
-    		else {
-    		    $sql = "SELECT sc.user_id FROM shared_content sc WHERE (sc.user_id = '{$iUserId}' AND sc.object_id = '{$iFolderId}' AND sc.type = 'folder')";
-    		}
+        if (count($res) > 0)
+        {
+            return true;
+        }
+        else
+        {
+            // Check if documents parent folder has been shared with user
+            // If folder id was submitted, use, else query for the parent folder
+            if (empty($folderId))
+            {
+                $sql = "SELECT sc.user_id FROM shared_content sc WHERE (sc.user_id = '{$userId}' AND sc.object_id = (SELECT d.folder_id FROM documents d WHERE d.id = '{$documentId}') AND sc.type = 'folder')";
+            }
+            else {
+                $sql = "SELECT sc.user_id FROM shared_content sc WHERE (sc.user_id = '{$userId}' AND sc.object_id = '{$folderId}' AND sc.type = 'folder')";
+            }
 
-    		if (!is_null($permissions)) {
-    			$sql .= " AND sc.permissions = $permissions";
-    		}
+            if (!is_null($permissions)) {
+                $sql .= " AND sc.permissions = $permissions";
+            }
 
-    		$res = DBUtil::getResultArray($sql);
-    		if (PEAR::isError($res)) { return false; }
-    	}
+            $res = DBUtil::getResultArray($sql);
+            if (PEAR::isError($res)) { return false; }
+        }
 
-    	return (count($res) > 0);
+        return (count($res) > 0);
     }
 
     /**
      * Check shared user permissions on a folder
      *
-     * @param int $iUserId
-     * @param int $iDocumentId
-     * @param int $iFolderId [optional]
+     * @param int $userId
+     * @param int $documentId
+     * @param int $folderId [optional]
      * @param int $permissions [optional]
      * @return boolean
      */
-    static public function canAccessFolder($iUserId, $iFolderId)
+    static public function canAccessFolder($userId, $folderId)
     {
-    	$sql = "SELECT user_id FROM shared_content as sc WHERE (user_id = '{$iUserId}' AND object_id = '{$iFolderId}' AND type = 'folder')";
-    	$res = DBUtil::getResultArray($sql);
-    	if (PEAR::isError($res)) { return false; }
+        $sql = "SELECT user_id FROM shared_content as sc WHERE (user_id = '{$userId}' AND object_id = '{$folderId}' AND type = 'folder')";
+        $res = DBUtil::getResultArray($sql);
+        if (PEAR::isError($res)) { return false; }
 
-    	return (count($res) > 0);
+        return (count($res) > 0);
     }
 
     // TODO : Get only one document metadata version from database
@@ -360,117 +367,99 @@ class SharedContent extends KTEntity {
     /**
      * Retreive the permission of an object
      *
-     * @param int $iUserId
-     * @param int $iObjectId
-     * @param int $iFolderId
-     * @param string $sType
+     * @param int $userId
+     * @param int $objectId
+     * @param int $parentId
+     * @param string $type
      * @return mixed - false if no permissions on object, and the permission value if one exists
      */
-    static public function getPermissions($iUserId, $iObjectId = null, $iFolderId = null, $sType = 'document')
+    static public function getPermissions($userId, $objectId = null, $parentId = null, $type = 'document')
     {
-    	// Check if shared object exists
-    	$sql = "SELECT sc.permissions FROM shared_content as sc WHERE (user_id = '{$iUserId}' AND object_id = '{$iObjectId}' AND type = '{$sType}')";
-
-    	$res = DBUtil::getResultArray($sql);
-    	if (PEAR::isError($res)) { return false; }
-
-    	if (count($res) > 0)
-    	{
-    		return $res[0]['permissions'];
-    	}
-    	else
-    	{
-			if ($sType == 'document')
-			{
-				return SharedContent::getDocumentPermissions($iUserId, $iObjectId, $iFolderId);
-			}
-			else if ($sType == 'folder')
-			{
-				return SharedContent::getFolderPermissions($iUserId, $iObjectId, $iFolderId);
-			}
-    	}
-
-    	return false;
+        if ($type == 'document')
+        {
+            return SharedContent::getDocumentPermissions($userId, $objectId, $parentId);
+        }
+        else if ($type == 'folder')
+        {
+            return SharedContent::getFolderPermissions($userId, $objectId, $parentId);
+        }
     }
 
-    static public function getDocumentIds($iUserId)
-    {
-    	if (!isset($iUserId)) return array();
-    	$ids = array();
-    	$sql = "SELECT user_id, object_id, type from shared_content where user_id = '$iUserId' and type = 'document'";
-    	$results = DBUtil::getResultArray($sql);
-    	if (PEAR::isError($res)) { return $ids; }
-    	if (count($results) > 0) 
-    	{  
-    		foreach ($results as $result)
-    		{
-    			$ids[] = $result['object_id'];
-    		}
-    	}
-    	
-    	return $ids;
-    }
-    
     /**
-     * Retreive the permission of a document
+     * Retrieve the permission on a document.
      *
-     * @param int $iUserId
-     * @param int $iObjectId
-     * @param int $iFolderId
+     * @param int $userId
+     * @param int $objectId
+     * @param int $parentId
      * @return mixed - false if no permissions on document, and the permission value if one exists
      */
-	static private function getDocumentPermissions($iUserId, $iObjectId = null, $iFolderId = null)
-	{
-		// Check if documents parent folder has been shared with user
-		if (empty($iFolderId))
-		{
-		    $sql = "SELECT sc.permissions FROM shared_content sc WHERE (sc.user_id = '{$iUserId}' AND sc.object_id = (SELECT d.folder_id FROM documents d WHERE d.id = '{$iObjectId}') AND sc.type = 'folder')";
-		}
-		// If folder id was submitted, use, else query for the parent folder
-		else {
-		    $sql = "SELECT sc.permissions FROM shared_content sc WHERE (sc.user_id = '{$iUserId}' AND sc.object_id = '{$iFolderId}' AND sc.type = 'folder')";
-		}
+    static private function getDocumentPermissions($userId, $objectId = null, $parentId = null)
+    {
+        // TODO improve this, perhaps with a combined query?
+        if (empty($parentId)) {
+            $sql = "SELECT sc.permissions FROM shared_content as sc WHERE (user_id = '{$userId}' AND object_id = '{$objectId}' AND type = 'document')";
+            $result = self::getPermissionQueryResult($sql);
+            if ($result !== false) {
+                return $result;
+            }
 
-		$res = DBUtil::getResultArray($sql);
-		if (PEAR::isError($res)) { return false; }
-		if (count($res) > 0)
-		{
-			return $res[0]['permissions'];
-		}
+            $sql = "SELECT sc.permissions FROM shared_content sc WHERE (sc.user_id = '{$userId}' AND sc.object_id = (SELECT d.folder_id FROM documents d WHERE d.id = '{$objectId}') AND sc.type = 'folder')";
+        }
+        else {
+            $sql = "SELECT sc.permissions FROM shared_content sc WHERE (sc.user_id = '{$userId}' AND sc.object_id = '{$parentId}' AND sc.type = 'folder')";
+        }
 
-		return false;
-	}
+        return self::getPermissionQueryResult($sql);
+    }
 
-	/**
-	 * Retreive the permission of a folder
-	 *
-	 * @param int $iUserId
-	 * @param int $iObjectId
-	 * @param int $iFolderId
-	 * @return mixed - false if no permissions on folder, and the permission value if one exists
-	 */
-	static private function getFolderPermissions($iUserId, $iObjectId = null, $iFolderId = null)
-	{
-		// Check if documents parent folder has been shared with user
-		// If folder id was submitted, use, else query for the parent folder
-		if (empty($iFolderId))
-		{
-		    $sql = "SELECT sc.permissions FROM shared_content as sc WHERE (sc.user_id = '{$iUserId}' AND sc.object_id = '{$iObjectId}' AND sc.type = 'folder')";
-		}
-		else {
-		    $sql = "SELECT sc.permissions FROM shared_content as sc WHERE (sc.user_id = '{$iUserId}' AND sc.object_id = '{$iFolderId}' AND sc.type = 'folder')";
-		}
+    /**
+     * Retrieve the permission on a folder.
+     *
+     * @param int $userId
+     * @param int $objectId
+     * @param int $parentId
+     * @return mixed - false if no permissions on folder, and the permission value if one exists
+     */
+    static private function getFolderPermissions($userId, $objectId = null, $parentId = null)
+    {
+        $sql = "SELECT sc.permissions FROM shared_content as sc "
+            . "WHERE sc.user_id = '{$userId}' "
+            . "AND sc.object_id = '" . (empty($parentId) ? $objectId : $parentId) . "' "
+            . "AND sc.type = 'folder'";
 
-		$res = DBUtil::getResultArray($sql);
-		if (PEAR::isError($res)) { return false; }
-		if (count($res) > 0)
-		{
-			return $res[0]['permissions'];
-		}
+        return self::getPermissionQueryResult($sql);
+    }
 
-		return false;
-	}
+    static private function getPermissionQueryResult($sql)
+    {
+        $res = DBUtil::getResultArray($sql);
+        if (PEAR::isError($res) || (count($res) == 0)) {
+            return false;
+        }
+
+        return $res[0]['permissions'];
+    }
+
+    static public function getDocumentIds($userId)
+    {
+        if (!isset($userId)) {
+            return array();
+        }
+
+        $ids = array();
+        $sql = "SELECT user_id, object_id, type from shared_content where user_id = '$userId' and type = 'document'";
+        $results = DBUtil::getResultArray($sql);
+        if (PEAR::isError($res)) { return $ids; }
+        if (count($results) > 0)
+        {
+            foreach ($results as $result)
+            {
+                $ids[] = $result['object_id'];
+            }
+        }
+
+        return $ids;
+    }
 }
-
 
 ?>

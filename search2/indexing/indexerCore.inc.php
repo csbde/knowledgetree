@@ -275,7 +275,7 @@ class DocumentResultItem extends QueryResultItem {
 
         $this->documentType = $result['document_type'];
         $this->filename = $result['filename'];
-        $this->filesize = KTUtil::filesizeToString($result['filesize']);
+        $this->filesize = KTUtil::filesizeToString($result['filesize'], 'KB');
         $this->folderId = $result['folder_id'];
         $this->title = $result['title'];
 
@@ -666,15 +666,15 @@ abstract class Indexer {
         $default->log->debug("index: Queuing indexing of $document_id");
 
 		if (ACCOUNT_ROUTING_ENABLED) {
-		//	$oQueueDispatcher = liveIncludes::getSQSQueue();
+			$oQueueDispatcher = liveIncludes::getSQSQueue();
         	// Document added, create indexing complex event
-        	//$oQueueDispatcher->addProcess('indexing', $document, $document->getSize());
+        	$oQueueDispatcher->addProcess('indexing', $document, $document->getSize());
 		}
         // If we're indexing a discussion, re-processing is not needed.
         if ($what === 'D') {
         	if (ACCOUNT_ROUTING_ENABLED) {
 				// Send complex event
-		//		$oQueueDispatcher->sendToQueue();
+				$oQueueDispatcher->sendToQueue();
         	}
             return true;
         }
@@ -692,9 +692,9 @@ abstract class Indexer {
         if (ACCOUNT_ROUTING_ENABLED)
         {
         	// Document added, create processing complex event
-        	//$oQueueDispatcher->addProcess('processing', $document, $document->getSize());
+        	$oQueueDispatcher->addProcess('processing', $document, $document->getSize());
 			// Send complex event
-		//	$oQueueDispatcher->sendToQueue();
+			$oQueueDispatcher->sendToQueue();
         }
     }
 
@@ -723,7 +723,6 @@ abstract class Indexer {
         DBUtil::runQuery($sql);
         if (ACCOUNT_ROUTING_ENABLED)
         {
-/*
 	        $sql = "SELECT document_id FROM index_files;";
 	        $results = DBUtil::getResultArray($sql);
 			foreach ($results as $key=>$res) {
@@ -734,7 +733,6 @@ abstract class Indexer {
 				// Send complex event
 	        	$oQueueDispatcher->sendToQueue();
 			}
-*/
         }
     }
 
@@ -743,14 +741,14 @@ abstract class Indexer {
         $sql = "UPDATE index_files SET processdate=null, status_msg=null WHERE document_id=$documentId";
         DBUtil::runQuery($sql);
         if (ACCOUNT_ROUTING_ENABLED)
-        {/*
+        {
         	// Document added, create indexing complex event
         	$document = Document::get($documentId);
 			$oQueueDispatcher = liveIncludes::getSQSQueue();
         	$oQueueDispatcher->addProcess('indexing', $document, $document->getSize());
         	// Send complex event
         	$oQueueDispatcher->sendToQueue();
-        */}
+        }
     }
 
 
@@ -768,7 +766,6 @@ abstract class Indexer {
 
         if (ACCOUNT_ROUTING_ENABLED)
         {
-/*
 	        $sql = "SELECT document_id FROM index_files;";
 	        $results = DBUtil::getResultArray($sql);
 			foreach ($results as $key=>$res) {
@@ -779,7 +776,7 @@ abstract class Indexer {
 	        	// Send complex event
 	        	$oQueueDispatcher->sendToQueue();
 			}
-  */      }
+        }
     }
 
     public static function processAll()
@@ -793,7 +790,7 @@ abstract class Indexer {
         DBUtil::runQuery($sql);
 
         if (ACCOUNT_ROUTING_ENABLED)
-        {/*
+        {
 	        $sql = "SELECT document_id FROM process_queue;";
 	        $results = DBUtil::getResultArray($sql);
 			foreach ($results as $key=>$res) {
@@ -804,7 +801,7 @@ abstract class Indexer {
 	        	// Send complex event to sqs queue
 	        	$oQueueDispatcher->sendToQueue();
 			}
-       */ }
+        }
     }
 
     public static function indexFolder($folder)
@@ -822,7 +819,7 @@ abstract class Indexer {
         $sql = "INSERT INTO index_files(document_id, user_id, what) SELECT id, $userid, 'A' FROM documents WHERE full_path like '{$full_path}/%' AND status_id=1 and id not in (select document_id from index_files)";
         DBUtil::runQuery($sql);
         if (ACCOUNT_ROUTING_ENABLED)
-        {/*
+        {
         	// Folder documents added
 	        $sql = "SELECT id, $userid, 'A' FROM documents WHERE full_path like '{$full_path}/%' AND status_id=1 and id not in (select document_id from index_files);";
 	        $results = DBUtil::getResultArray($sql);
@@ -834,7 +831,7 @@ abstract class Indexer {
 	        	// Send complex event to sqs queue
 	        	$oQueueDispatcher->sendToQueue();
 			}
-       */ }
+        }
 
 
     }

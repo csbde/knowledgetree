@@ -1,7 +1,10 @@
 {counter start=1 assign="num"}
 {foreach item=sidebar from=$sidebars}
+	{assign var="content" value=$sidebars[$num]->display_viewlet()}
+	{* {if $content != ""} *}
 	<div id="sidebar_item" class={$sidebars[$num]->getCSSName()}>
-		{$sidebars[$num]->display_viewlet()}
+		{$content}
 	</div>
+	{* {/if} *}
 	{counter}
 {/foreach}
