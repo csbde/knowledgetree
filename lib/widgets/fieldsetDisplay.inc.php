@@ -594,7 +594,7 @@ class SimpleFieldsetDisplay extends KTFieldsetDisplay {
     	
 	    foreach ($array as &$value) {
 	        if (is_array($value)) {
-	            $this->recursive_unset($value, $unwanted_keys);
+	            SimpleFieldsetDisplay::recursive_unset($value, $unwanted_keys);
 	        }
 	    }
 	}

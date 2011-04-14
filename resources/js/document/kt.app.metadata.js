@@ -654,7 +654,7 @@ kt.app.metadata = new function()
 			},
 			onInvalid: function(hashInvalids) {
 				var me = jQuery(this);
-				
+
 				//go through the hashtable keys, and get the error message for each
 				jQuery.each(hashInvalids.keys(), function(index, elementID)
 				{
@@ -662,7 +662,8 @@ kt.app.metadata = new function()
 					{
 						jQuery('#'+elementID, me).val('');
 						jQuery('#metadatafield-'+elementID, me).addClass('incomplete');
-						jQuery('.form_submit', me).after('&nbsp;&nbsp;<span style="color:red; font-size:10px">'+hashInvalids.get(elementID)+'</span>');
+						jQuery('.invalid-metadata-message').empty();
+						jQuery('.form_submit', me).after('&nbsp;&nbsp;<span class="invalid-metadata-message" style="color:red; font-size:10px">'+hashInvalids.get(elementID)+'</span>');
 					}
 				});
 			},
