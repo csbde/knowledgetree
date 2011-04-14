@@ -42,7 +42,7 @@
      		{/foreach}
 
      		{assign var=aSplit value=$context->actionBtns.split}
-     		<div class="splitbutton"><span class="button" id="{$aSplit.class}">{$aSplit.name}</span><span class="split">&#9660;</span></div>
+     		<div class="splitbutton"><span class="split"><span class="button" id="{$aSplit.class}">{$aSplit.name}</span>&#9660;</span></div>
      		{* Display the drop down menu's on the split buttons *}
             <ul class="splitmenu" id="more">
                 {foreach item=menuitem from=$aSplit.submenu}
