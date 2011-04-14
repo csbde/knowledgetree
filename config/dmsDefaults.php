@@ -230,12 +230,6 @@ class KTInit {
 	public function accountRoutingLicenceCheck() {
 		/* Check if account is licensed */
 		if (ACCOUNT_ROUTING_ENABLED) {
-//		    $oKTConfig = KTConfig::getSingleton();
-//		    // Set up logging so that we can log the error.
-//		    $logDir = $oKTConfig->get('urls/logDirectory', KT_DIR.'/var/log');
-//		    $userId = isset($_SESSION['userID']) ? $_SESSION['userID'] : 'n/a';
-//		    $this->configureLog($logDir, 'ERROR', $userId, ACCOUNT_NAME);
-//		    $logger = LoggerManager::getLogger('default');
 		    $logger = $GLOBALS['default']->log;
 
 			if (!isset($_SESSION[LIVE_LICENSE_OVERRIDE])) {
@@ -243,25 +237,21 @@ class KTInit {
 					// Check if account exists
 					if (liveAccounts::accountExists()) {
 						// Check if account is enabled
-						if (!liveAccounts::accountEnabled()) {
+						if (liveAccounts::accountEnabled()) {
+						    $logger->error(ACCOUNT_NAME." License Check. Account Not Licenced, Exists AND Enabled AND Not Expired in SimpleDB.");
+							liveRenderError::errorFail(NULL, LIVE_ACCOUNT_LICENCE);
+						} else {
 						    if (liveAccounts::isTrialAccount()) {
-    						    $logger->error(ACCOUNT_NAME." License Check. Trial Account License expired, Exists but Not Enabled. ");
+    						    $logger->warn(ACCOUNT_NAME." License Check. Trial Account License expired, Exists but Not Enabled. ");
     							liveRenderError::errorTrialLicense($_SERVER, LIVE_ACCOUNT_DISABLED);
-
 						    } else {
-						        $logger->error(ACCOUNT_NAME." License Check. Account Not Licenced, Exists but Not Enabled. ");
+						        $logger->warn(ACCOUNT_NAME." License Check. Account Not Licenced, Exists but Not Enabled. ");
     							liveRenderError::errorDisabled($_SERVER, LIVE_ACCOUNT_DISABLED);
 						    }
-						} else {
-						    $logger->error(ACCOUNT_NAME." License Check. Account Not Licenced, Exists AND Enabled AND Not Expired in SimpleDB. ");
-							liveRenderError::errorFail(NULL, LIVE_ACCOUNT_LICENCE);
-
 						}
 					} else {
-
-					    $logger->error(ACCOUNT_NAME." License Check. Account Not Licenced, and does not exist. ");
+					    $logger->warn(ACCOUNT_NAME." License Check. Account Not Licenced, and does not exist. ");
 						liveRenderError::errorNoAccount(NULL, LIVE_ACCOUNT_DISABLED);
-
 					}
 				}
 			}
