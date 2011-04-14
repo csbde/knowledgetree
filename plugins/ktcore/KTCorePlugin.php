@@ -98,7 +98,7 @@ class KTCorePlugin extends KTPlugin {
         // Document Sidebar
         $this->registerAction('maindocsidebar', 'KTDocumentSidebar', 'ktcore.sidebars.document', 'KTDocumentSidebars.php');
         $this->registerAction('documentsidebar', 'KTWorkflowSidebar', 'ktcore.sidebar.workflow', 'KTDocumentSidebars.php');
-        
+
         $this->registerAction('documentaction', 'KTDocumentAssistAction', 'ktcore.actions.document.assist', 'KTAssist.php');
         // $this->registerAction('folderaction', 'KTDocumentAssistAction', 'ktcore.actions.folder.assist', 'KTAssist.php');
 
@@ -331,10 +331,10 @@ class KTCorePlugin extends KTPlugin {
             _kt('Document Types'),
             _kt('Manage the different classes of document which can be added to the system.'),
             'admin/documentTypes.php', null);
-        $this->registerAdminPage('fieldmanagement2', 'KTDocumentFieldDispatcher', 'contentSetup',
-             _kt('Document Fieldsets'),
-            _kt('Manage the different types of information that can be associated with classes of documents.'),
-            'admin/documentFieldsv2.php', null);
+//        $this->registerAdminPage('fieldmanagement2', 'KTDocumentFieldDispatcher', 'contentSetup',
+//             _kt('Document Fieldsets'),
+//            _kt('Manage the different types of information that can be associated with classes of documents.'),
+//            'admin/documentFieldsv2.php', null);
         $this->registerAdminPage('workflows_2', 'KTWorkflowAdminV2', 'contentManagement',
             _kt('Workflows'), _kt('Configure automated Workflows that map to document life-cycles.'),
             'admin/workflowsv2.php', null);
