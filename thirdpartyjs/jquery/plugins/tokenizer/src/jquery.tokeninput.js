@@ -256,8 +256,7 @@ $.TokenList = function (input, settings) {
             for(var i = 0; i < li_data.length; ++i) {
                 var this_token = $("<li><p>"+li_data[i].name+"</p> </li>")
                     .addClass(settings.classes.token)
-                    //.insertBefore(input_token);
-                    .insertBefore('.document-tags');
+                    .insertBefore(input_token);
 
                 $("<span>&times;</span>")
                     .addClass(settings.classes.tokenDelete)
@@ -308,8 +307,7 @@ $.TokenList = function (input, settings) {
     function insert_token (id, value) {
         var this_token = $("<li><p>"+ value +"</p> </li>")
                             .addClass(settings.classes.token)
-                            //.insertBefore(input_token);
-                            .insertBefore($('.document-tags'));
+                            .insertBefore(input_token);
 
         // The 'delete token' button
         $("<span>x</span>")

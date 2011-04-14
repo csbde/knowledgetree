@@ -284,6 +284,7 @@ jQuery.editableSet.addInputType('tokeninput', {
 		jQuery(newObject).tokenInput(tagScript, {
 	        // Alter the minChars value to determine how much the user must type before a search is initiated
 	        minChars: 2,
+	        hintText: "Type in a tag name",
 	        prePopulate: '',
 	        classes: {
 	            tokenList: "token-input-list-facebook",

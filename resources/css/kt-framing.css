@@ -943,6 +943,9 @@ a.main_nav_item {
 	float: right;
 	min-width: 20px;
 }
+.editable-control.undo{
+	visibility: visible;
+}
 #title_row .editable-control {
 	float: none;
 	display: inline-block;

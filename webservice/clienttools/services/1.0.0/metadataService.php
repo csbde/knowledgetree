@@ -106,7 +106,7 @@ class metadataService extends client_service {
 		$iDocumentID = $params['documentID'];
 		$sFilename = $params['documentFilename'];
 		
-		//$GLOBALS['default']->log->debug("metadataService changeDocumentFilename $iDocumentID $sFilename");
+		$GLOBALS['default']->log->debug("metadataService changeDocumentFilename $iDocumentID $sFilename");
 		
 		$response = array();
 		
@@ -123,11 +123,11 @@ class metadataService extends client_service {
         
         $res = $oValidator->validate(array('name'=>$sFilename));
         
-        //$GLOBALS['default']->log->debug('changeDocumentFilename validation result '.print_r($res, true));
+        $GLOBALS['default']->log->debug('changeDocumentFilename validation result '.print_r($res, true));
         
         if (empty($res['errors']))
         {
-        	//$GLOBALS['default']->log->debug('metadataService changeDocumentFilename validation I AM EMPTY');
+        	$GLOBALS['default']->log->debug('metadataService changeDocumentFilename validation I AM EMPTY');
         	
         	$oUser = User::get($_SESSION['userID']);
 		
@@ -164,7 +164,7 @@ class metadataService extends client_service {
         }
         else 
         {
-        	//$GLOBALS['default']->log->debug('changeDocumentFilename validation I AM NOT EMPTY');
+        	$GLOBALS['default']->log->debug('changeDocumentFilename validation I AM NOT EMPTY');
         	
         	//assemble the item to return
 			$item['documentID'] = $iDocumentID;
@@ -241,7 +241,7 @@ class metadataService extends client_service {
         }
         $field_values = $newPack;
         
-        //$GLOBALS['default']->log->debug('metadataService changeDocumentType field_values '.print_r($field_values, true));
+        $GLOBALS['default']->log->debug('metadataService changeDocumentType field_values '.print_r($field_values, true));
 
         $oDocumentTransaction = & new DocumentTransaction($oDocument, 'update metadata.', 'ktcore.transactions.update');
         
@@ -550,8 +550,7 @@ class metadataService extends client_service {
 			$res = KTPermissionUtil::updatePermissionLookup($oDocument);
 			KTPermissionUtil::clearCache();
 		}
-		
-		
+
 		//now get the fields again so that we can send back the updated data
 		$fieldsets = (array) KTMetadataUtil::fieldsetsForDocument($oDocument, $oDocument->getDocumentTypeID());
 		
@@ -657,15 +656,8 @@ class metadataService extends client_service {
 		
 		//assemble the item to return
 		$item['fields'] = $fieldsresult;
-		
-		//$json['success'] = $item;
-		
-		//echo(json_encode($json));
-		//exit(0);
-		
 		$response[] = $item;
 		
-		//$this->addResponse('addedDocuments', $response);
         $this->addResponse('success', json_encode($response));
 
         return true;
@@ -676,17 +668,62 @@ class metadataService extends client_service {
      */
     public function saveTags($params)
     {
-    	//$GLOBALS['default']->log->debug('metadataService saveTags '.print_r($params, true));
+    	//$GLOBALS['default']->log->debug('metadataService saveTags params '.print_r($params, true));
     	
         $document = Document::get($params['documentID']);
+        $newTags = explode(",", rtrim($params['tagcloud'], ','));
+        
+        //$GLOBALS['default']->log->debug('metadataService saveTags newTags '.print_r($newTags, true));
+        
+        $response = array();
+        
         $origDocTypeId = $docTypeId = $document->getDocumentTypeId();
 
         // This is a cheat...should use something else to ensure the correct value.
         // Will work fine unless values are changed (which *should* never happen, but...)
-        $fieldSetId = 2;
-        $tagFieldSet = DocumentField::get($fieldSetId);
-        $tagData = array($tagFieldSet, rtrim($params['tagcloud'], ','));
+        $fieldId = 2;
+        $tagField = DocumentField::get($fieldId);
+        
+        
+        $fieldValue = DocumentFieldLink::getByDocumentAndField($document, $tagField);
+        
+        //$GLOBALS['default']->log->debug('metadataService saveTags fieldValue '.print_r($fieldValue, true));
+        
+        $existingTags = '';
+        
+        if (!is_null($fieldValue) && (!PEAR::isError($fieldValue))) 
+        {
+        	$value = $fieldValue->getValue();
+            //$GLOBALS['default']->log->debug("metadataService saveTags existing tags $value");
+            
+            $currentTags = explode(",", $value);
+            
+            //iterate through the new tags and only add them if they don't already exist as a tag in the field            
+            foreach($newTags as $newTag)
+            {            
+            	//$GLOBALS['default']->log->debug("metadataService saveTags checking $newTag");
+	            
+            	if (!in_array($newTag, $currentTags))
+	            {
+	            	$currentTags[] = $newTag;
+	            }
+            }
+        }
+        
+        //$GLOBALS['default']->log->debug('metadataService saveTags currentTags '.print_r($currentTags, true));
+        
+        //flatten the array to a string
+        $totalTags = implode(",", $currentTags);
+        
+        //$totalTags = $existingTags.','.$newTags;
+        
+        //$GLOBALS['default']->log->debug("metadataService saveTags updated tags $totalTags");
+        
+        $tagData = array($tagField, $totalTags);
+        
         $metadataPack = $this->mergeMetadata($document, array($tagData));
+        
+        //$GLOBALS['default']->log->debug('metadataService saveTags merged metadata '.print_r($metadataPack, true));
 
         DBUtil::startTransaction();
 
@@ -738,57 +775,60 @@ class metadataService extends client_service {
                                                     'ktcore.transactions.update'
                                     );
         $documentTransaction->create();
-
-        $response = array('saveTags' => 'Saved tags for document');
-        $this->addResponse('saveTags', json_encode($response));
+        
+        $item['tags'] = $newTags;		
+		$response[] = $item;
+        $this->addResponse('success', json_encode($response));
 
         return true;
     }
     
     public function deleteTag($params)
     {
-    	$GLOBALS['default']->log->debug('metadataService deleteTag '.print_r($params, true));
+    	//$GLOBALS['default']->log->debug('metadataService deleteTag '.print_r($params, true));
     	
         $document = Document::get($params['documentID']);
         $tagToDelete = $params['tag'];
         
-        $fieldSetId = 2;
-        $tagField = DocumentField::get($fieldSetId);
+        // This is a cheat...should use something else to ensure the correct value.
+        // Will work fine unless values are changed (which *should* never happen, but...)
+        $fieldId = 2;
+        $tagField = DocumentField::get($fieldId);
         
-        $GLOBALS['default']->log->debug('metadataService deleteTag tagField '.print_r($tagField, true));
+        //$GLOBALS['default']->log->debug('metadataService deleteTag tagField '.print_r($tagField, true));
         	 
         $fieldValue = DocumentFieldLink::getByDocumentAndField($document, $tagField);
                 
-        $GLOBALS['default']->log->debug("metadataService deleteTag fieldValue ".print_r($fieldValue, true));
+        //$GLOBALS['default']->log->debug("metadataService deleteTag fieldValue ".print_r($fieldValue, true));
         
         if (!is_null($fieldValue) && (!PEAR::isError($fieldValue))) 
         {
             $value = $fieldValue->getValue();
-            $GLOBALS['default']->log->debug("metadataService deleteTag value $value");
+            //$GLOBALS['default']->log->debug("metadataService deleteTag value $value");
             
             $currentTags = explode(",", $value);
             
-            $GLOBALS['default']->log->debug('metadataService deleteTag current tags '.print_r($currentTags, true));
+            //$GLOBALS['default']->log->debug('metadataService deleteTag current tags '.print_r($currentTags, true));
             
             $newTags = array();
             
             //iterate through the existing tags, and build new array of tags without the deleted one
             foreach($currentTags as $currentTag)
             {            	
-            	$GLOBALS['default']->log->debug("metadataService deleteTag current tag $currentTag");
+            	//$GLOBALS['default']->log->debug("metadataService deleteTag current tag $currentTag");
             	
             	if($currentTag !== $tagToDelete)
             	{
-            		$GLOBALS['default']->log->debug('metadataService deleteTag NOT FOUND');
+            		//$GLOBALS['default']->log->debug('metadataService deleteTag NOT FOUND');
             		$newTags[] = $currentTag;
             	}
             }
             
-            $GLOBALS['default']->log->debug('metadataService deleteTag new tags '.print_r($newTags, true));
+            //$GLOBALS['default']->log->debug('metadataService deleteTag new tags '.print_r($newTags, true));
             
             $tags = implode(",", $newTags);
             
-            $GLOBALS['default']->log->debug("metadataService deleteTag new tags: $tags");
+            //$GLOBALS['default']->log->debug("metadataService deleteTag new tags: $tags");
             
             $tagData = array($tagField, $tags);
             
@@ -855,7 +895,7 @@ class metadataService extends client_service {
         }
         else 
         {
-        	$GLOBALS['default']->log->debug('metadataService deleteTag fieldValue error '.$fieldValue->getMessage());
+        	//$GLOBALS['default']->log->debug('metadataService deleteTag fieldValue error '.$fieldValue->getMessage());
         	
         	//TODO
         	
@@ -867,7 +907,7 @@ class metadataService extends client_service {
      */
     private function mergeMetadata($document, $newMetadata = array())
     {    	
-    	$GLOBALS['default']->log->debug('metadataService mergeMetadata '.print_r($document, true).' '.$newMetadata);
+    	//$GLOBALS['default']->log->debug('metadataService mergeMetadata '.print_r($newMetadata, true));
     	
         $currentMetadata = (array)KTMetadataUtil::fieldsetsForDocument($document);
         $metadataPack = array();
@@ -875,12 +915,15 @@ class metadataService extends client_service {
         //$GLOBALS['default']->log->debug('metadataService mergeMetadata currentMetadata '.print_r($currentMetadata, true));
 
         foreach ($currentMetadata as $currentFieldset) {
+        	
+        	//$GLOBALS['default']->log->debug('metadataService mergeMetadata currentFieldsetID '.$currentFieldset->getId());
+        	
             $currentFields = $currentFieldset->getFields();
             
             //$GLOBALS['default']->log->debug('metadataService mergeMetadata currentFields '.print_r($currentFields, true));
             
-            foreach ($currentFields as $currentField) {
-            	
+            foreach ($currentFields as $currentField) 
+            {            	
             	//$GLOBALS['default']->log->debug('metadataService mergeMetadata currentField '.print_r($currentField, true));
             	
                 $currentID = $currentField->getId();
@@ -891,17 +934,20 @@ class metadataService extends client_service {
 
                 $fieldValue = DocumentFieldLink::getByDocumentAndField($document, $currentField);
                 
-                //$GLOBALS['default']->log->debug("metadataService mergeMetadata fieldValue $fieldValue");
+                //$GLOBALS['default']->log->debug('metadataService mergeMetadata fieldValue '.print_r($fieldValue, true));
                 
-                if (!is_null($fieldValue) && (!PEAR::isError($fieldValue))) {
+                if (!is_null($fieldValue) && (!PEAR::isError($fieldValue))) 
+                {
                     $newValue = $fieldValue->getValue();
                 }
 
-                foreach ($newMetadata as $fieldData) {
+                foreach ($newMetadata as $fieldData) 
+                {
                     list($newField, $value) = $fieldData;
                     $newId = $newField->getId();
-                    if ($currentID === $newId) {
-                        $newValue = $value;
+                    if ($currentID === $newId) 
+                    {
+                    	$newValue = $value;
                     }
                 }
 

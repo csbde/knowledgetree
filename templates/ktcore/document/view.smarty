@@ -22,7 +22,7 @@
 				<span data-name="documentTitle" data-type='text' data-value-id="value-title" data-class="required"></span>
 					<span id="value-title">{i18n}{$document->getName()|sanitize}{/i18n}</span>
 					<span class="save-placeholder">&nbsp;</span>
-					<span title="Click to edit" class="editable-control edit">&nbsp;</span>
+					<span title="Click to edit" class="editable-control title edit">&nbsp;</span>
 
 				</div>
 				{if $document->getIsCheckedOut()}<span class="status-indicator checkedout">{i18n}Checked Out{/i18n}</span>{/if}
@@ -31,7 +31,7 @@
 				<span data-name="documentFilename" data-type='text' data-value-id="value-filename" data-class="required"></span>
 					<span id="value-filename"><p>{$document->getFileName()}</p></span>
 					<span class="save-placeholder">&nbsp;</span>
-					<span title="Click to edit" class="editable-control edit">&nbsp;</span>
+					<span title="Click to edit" class="editable-control filename edit">&nbsp;</span>
 				</div>
                 </td>
             </tr>
@@ -41,9 +41,6 @@
                     <div class="doc_description">
                         <span class="doc_info" style="display: block;">
                         <table class="metadatatable">
-                        	<tr>
-								<th>Document ID:</th><td>{$document_id}</td>
-							</tr>
                         	<tr>
 								<th style="width: 100px;">Version:</th><td><a href="">{$document->getMajorVersionNumber()}.{$document->getMinorVersionNumber()}</a></td>
 							</tr>
@@ -65,16 +62,17 @@
 							<th>File type:</th><td>{$fieldsetDisplayHelper->_sizeHelper($document->getSize())} {$fieldsetDisplayHelper->_mimeHelper($document->getMimeTypeID())}.</td>
 							</tr>
 							<tr>
-							<th>Tags:</th><td><span class="document-tags"></span></td>
+								<th>Document ID:</th><td>{$document_id}</td>
+							</tr>
+							<tr>
+							<th>Tags:</th><td id="document-tags"><span class="document-tags"></span><span title="Click to edit" class="editable-control tags edit">&nbsp;</span></td>
 							</tr>
 						</table>
 					
-					<div class="document-tags-edit" rel='{literal}{{/literal}"documentID":"{$document->getId()}"{literal}}{/literal}'>
-					<span title="Click to edit" class="editable-control edit">&nbsp;</span>
-                        <br/>
-                        <span data-id="tagcloud" data-name="tagcloud" data-type='tokeninput' data-tag-script='{$tagFilterScript}' data-value-id="value-token"></span>
-                        <br/>
-                    </div>
+						<div class="document-tags-edit" rel='{literal}{{/literal}"documentID":"{$document->getId()}"{literal}}{/literal}'>
+						<span data-id="tagcloud" data-name="tagcloud" data-type='tokeninput' data-tag-script='{$tagFilterScript}' data-value-id="value-token"></span>
+						<br/>
+					</div>
 					<br/>
 					<h3 id="metadata-title">Document Properties</h3>
 					<div class="document-type" rel='{literal}{{/literal}"documentID":"{$document->getId()}"{literal}}{/literal}'>
@@ -84,7 +82,7 @@
 						<td>
 							<span class="descriptiveText" id='documentTypeID' data-name='documentTypeID' data-options='[{foreach from=$document_types key=aKey item=documentType}
 								["{$documentType->getName()}","{$documentType->getId()}"],{/foreach}]' data-type='select'>{$document_data.document_type->getName()}</span>
-							<span title="Click to edit" class="editable-control edit">&nbsp;</span>
+							<span title="Click to edit" class="editable-control doctype edit">&nbsp;</span>
 						</td>
 					</table>
 					</div>
