@@ -169,18 +169,8 @@ class BrowseDispatcher extends KTStandardDispatcher {
 
 	    // NOTE Don't quite know why this is in here. Someone reports that it is there for search browsing which seem to be disabled.
 	    if ($this->oFolder) {
-    		global $main;
+	        $this->showBtns();
     		$folderId = $this->oFolder->getId();
-    		$rootUrl = KTUtil::kt_url();
-
-    		// Add buttons to the menu bar
-    		$newFolder = array('url' => "{$rootUrl}/action.php?kt_path_info=ktcore.actions.folder.addFolder&fFolderId={$folderId}", 'class' => 'new-folder', 'label' => _kt('New Folder'));
-    		$newDoc = array('url' => "{$rootUrl}/action.php?kt_path_info=zoho.new.document&fFolderId={$folderId}", 'class' => 'new-onlinedoc', 'label' => _kt('New Document'));
-    		$upload = array('url' => 'javascript:kt.app.upload.showUploadWindow();', 'class' => 'upload', 'label' => _kt('Upload'));
-
-    		$main->addBreadcrumbBtn($newFolder);
-    		$main->addBreadcrumbBtn($newDoc);
-    		$main->addBreadcrumbBtn($upload);
 
 	        $renderHelper = BrowseViewUtil::getBrowseView();
 	        $renderData = $renderHelper->renderBrowseFolder($folderId, $aBulkActions, $this->oFolder, $this->editable);
@@ -188,6 +178,44 @@ class BrowseDispatcher extends KTStandardDispatcher {
 	    }
 
 	    return $oTemplate->render($aTemplateData);
+	}
+
+	public function showBtns()
+	{
+		$list = array();
+		$submenu = array();
+		$actions = KTFolderActionUtil::getFolderActionsForFolder($this->oFolder, $this->oUser);
+
+		foreach ($actions as $oAction) {
+            $info = $oAction->getInfo();
+
+            // Skip if action is disabled
+            if (is_null($info)) {
+                continue;
+            }
+
+            // Skip if no name provided - action may be disabled for permissions reasons
+            if (empty($info['name'])) {
+                continue;
+            }
+
+            if(!empty($info['parent'])) {
+                $submenu[$info['parent']][] = $info;
+            } else {
+            	$list[] = $info;
+            }
+		}
+
+		// Create the More button => if additional split buttons are needed this can be extended.
+		$more = array('name' => _kt('More'), 'url' => '#', 'class' => 'more');
+		$more['submenu'] = $submenu['more'];
+		//$split = array($more);
+
+		$btns = array();
+		$btns['buttons'] = $list;
+		$btns['split'] = $more;
+
+		$this->actionBtns = $btns;
 	}
 
 	/**

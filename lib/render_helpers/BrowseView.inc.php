@@ -721,10 +721,10 @@ class BrowseView {
                         ' . $checkbox . '
                         <td class="doc icon_cell" width="1">
                             <div class="doc icon" style="[mimeicon]">
-                                <span class="immutable_info[is_immutable]">
+                                <span class="immutable_info[is_immutable]">FINALIZED
                                     <span>This document has been <strong>finalized</strong> and can no longer be modified.</span>
                                 </span>
-                                <span class="checked_out[is_checkedout]">
+                                <span class="checked_out[is_checkedout]">CHECKOUT
                                     <span>This document is <strong>checked-out</strong> by <strong>[checked_out_by]</strong> and cannot be edited until it is Checked-in.</span>
                                 </span>
                                 ' . $shortcut . '
