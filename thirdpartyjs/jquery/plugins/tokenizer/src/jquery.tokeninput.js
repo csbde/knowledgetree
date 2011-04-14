@@ -325,6 +325,7 @@ $.TokenList = function (input, settings) {
 
     // Add a token to the token list based on user input
     function add_token (item) {
+    	//console.log('add_token');
         var li_data = $.data(item.get(0), "tokeninput");
 
         // Prevent duplicates

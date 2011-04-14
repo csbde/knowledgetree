@@ -21,7 +21,7 @@
 				<span data-name="document-title" data-type='text' data-value-id="value-title" data-class="required"></span>
 					<span id="value-title">{i18n}{$document->getName()|sanitize}{/i18n}</span>
 					<span class="save-placeholder">&nbsp;</span>
-					<span title="Click to edit" class="editable-control edit">&nbsp;</span>
+					<span title="Click to edit" class="editable-control title edit">&nbsp;</span>
 
 				</div>
 				{if $document->getIsCheckedOut()}<span class="status-indicator checkedout">{i18n}Checked Out{/i18n}</span>{/if}
@@ -30,7 +30,7 @@
 				<span data-name="document-filename" data-type='text' data-value-id="value-filename" data-class="required"></span>
 					<span id="value-filename"><p>{$document->getFileName()}</p></span>
 					<span class="save-placeholder">&nbsp;</span>
-					<span title="Click to edit" class="editable-control edit">&nbsp;</span>
+					<span title="Click to edit" class="editable-control filename edit">&nbsp;</span>
 				</div>
                 </td>
             </tr>
@@ -62,15 +62,18 @@
 							<tr>
 								<th>Document ID:</th><td>{$document_id}</td>
 							</tr>
+							<tr>
+								<th>Document ID:</th><td>{$document_id}</td>
+							</tr>
+							<tr>
+							<th>Tags:</th><td id="document-tags"><span class="document-tags"></span><span title="Click to edit" class="editable-control tags edit">&nbsp;</span></td>
 							</tr>
 						</table>
-					<div class="tags">
-						<h3><span class="editable-control none">&nbsp;</span></h3>
-                        <br/>
-                        <input type="text" name="tagcloud" id="tagcloud" />
-                        <br/>
-                        <input type="button" value="Save Tags" onclick="kt.app.metadata.saveTags({$document_id});" />
-                    </div>
+					
+						<div class="document-tags-edit" rel='{literal}{{/literal}"documentID":"{$document->getId()}"{literal}}{/literal}'>
+						<span data-id="tagcloud" data-name="tagcloud" data-type='tokeninput' data-tag-script='{$tagFilterScript}' data-value-id="value-token"></span>
+						<br/>
+					</div>
 					<br/>
 					<h3 id="metadata-title">Document Properties</h3>
 					<div class="document-type" rel="{$rootUrl}/presentation/lookAndFeel/knowledgeTree/widgets/updateMetadata.php?func=doctype&documentID={$document->getId()}">
@@ -80,7 +83,7 @@
 						<td>
 							<span class="descriptiveText" id='documentTypeID' data-name='documentTypeID' data-options='[{foreach from=$document_types key=aKey item=documentType}
 								["{$documentType->getName()}","{$documentType->getId()}"],{/foreach}]' data-type='select'>{$document_data.document_type->getName()}</span>
-							<span title="Click to edit" class="editable-control edit">&nbsp;</span>
+							<span title="Click to edit" class="editable-control doctype edit">&nbsp;</span>
 						</td>
 					</table>
 					</div>
@@ -223,7 +226,7 @@
     	}
 
     	//only allow to be editable if document not immutable!
-        kt.app.metadata.setup({/literal}{$document->getImmutable()}{literal} == 0);
+        kt.app.metadata.setup({/literal}{$document->getImmutable()}{literal} == 0, {/literal}{$document_id}{literal}, {/literal}{$tags}{literal});
     });
 </script>
 
