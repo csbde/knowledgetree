@@ -165,6 +165,12 @@ textarea {
 .noportlets #breadcrumbs {
 	width: auto;
 }
+
+#sidebar_item .recently-viewed-folders ul {
+	background: url(../../thirdparty/icon-theme/16x16/mimetypes/x-directory-normal.png) no-repeat;
+	margin: 5px;
+	list-style-image: none;
+}
 /*-------------------- Breadcrumbs -----------------*/
 #breadcrumbs {
 	background: #EEE;
