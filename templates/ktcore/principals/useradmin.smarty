@@ -26,9 +26,6 @@
 {/literal}
 
 <!-- we roll both in here. -->
-<form action="{$smarty.server.PHP_SELF}" method="POST">
-
-
 		<table width="100%">
 			<tr>
 
@@ -60,6 +57,7 @@
 				</td>
 
 				<td width="{$colwidth}">
+                                        <form action="{$smarty.server.PHP_SELF}" method="POST">
 					<input type="hidden" name="do_search" value="1" />
 					{capture assign=link}{addQS}show_all=1{/addQS}{/capture}
 
@@ -71,10 +69,12 @@
 						<!-- Search button -->
 						<input type="submit" value="{i18n}Search For Users{/i18n}" />
 					</div>
+                                        </form>
 				</td>
 				{if $can_add}
 				{if $authentication_sources}
 				<td width="{$colwidth}"  valign="top">
+                                        <form action="{$smarty.server.PHP_SELF}" method="POST">
 					<div class="field"><label>{i18n}Import Users{/i18n}</label></div>
 					<div class="widgetItem">
 						<input type="hidden" name="action" value="addUserFromSource" />
@@ -85,14 +85,12 @@
 							</div>
 
 					</div>
+                                        </form>
 				</td>
 				{/if}
 				{/if}
 			</tr>
 		</table>
-
-
-</form>
 
 <br/><br/>
 
