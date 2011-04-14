@@ -229,7 +229,7 @@
 					<tr>
     					<td valign=top align=left >
 
-					       <div id="breadcrumb" class="breadCrumb">
+					       <div id="breadcrumb" class="breadCrumb {$page->state}">
                             <ul>
 
                                 {if ($page->breadcrumbIcon !== false)}

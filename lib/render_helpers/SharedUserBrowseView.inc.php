@@ -179,7 +179,7 @@ class SharedUserBrowseView extends BrowseView {
 
         // Sanitize document title
         $item['title'] = sanitizeForHTML($item['title']);
-        $item['filesize'] = KTUtil::filesizeToString($item['filesize']);
+        $item['filesize'] = KTUtil::filesizeToString($item['filesize'], 'KB');
 
         $template = $this->getDocumentTemplate(2);
 
