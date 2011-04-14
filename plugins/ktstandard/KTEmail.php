@@ -323,8 +323,8 @@ function sendEmailHyperlink($destEmailAddress, $documentId, $documentName, $comm
     global $default;
     // Get the email list as a string for the logs
     $destEmails = implode(',', $destEmailAddress);
-    $sendingUser = User::get($_SESSION['userID']);
-
+	$oSendingUser = User::get($_SESSION['userID']);
+	
     $message = '<font face="arial" size="2">';
     /*
     if ($sDestUserName) {
