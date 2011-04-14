@@ -1902,20 +1902,11 @@ class KTAjaxDocumentWorkflowAction extends KTDocumentAction {
     }
 
     public function getDisplayName() {
-        $oUser = User::get($_SESSION['userID']);
-        if (!KTPermissionUtil::userHasPermissionOnItem($oUser, 'ktcore.permissions.workflow', $this->oDocument)) {
-            return '';
-        }
-
-        return _kt('Workflow');
+		return '';
     }
 
     public function getInfo() {
-        if ($this->oDocument->getIsCheckedOut()) {
-            return null;
-        }
-
-        return parent::getInfo();
+		return false;
     }
 
 	public function do_main()
