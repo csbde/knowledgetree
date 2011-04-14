@@ -200,7 +200,7 @@
 			
 			if(opts.controlClass)
 			{
-				control = $('.'+opts.controlClass, $(self));
+				control = $('.'+opts.controlClass);
 				event = 'click';
 			}
 			else
@@ -303,7 +303,7 @@
 				
 				if(opts.controlClass)
 				{
-					$('.'+opts.controlClass, $(self)).one('click', function(e){
+					$('.'+opts.controlClass).one('click', function(e){
 						cancel( self );
 					});
 				}
