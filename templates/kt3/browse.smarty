@@ -54,6 +54,7 @@
                 {/foreach}
             </ul>
      		</nobr>
+
     	</div>
 <form action="{$browseutil->getActionBaseUrl()}" method="post">
 

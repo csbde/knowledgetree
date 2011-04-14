@@ -1111,6 +1111,8 @@ a.main_nav_item {
 .kt_collection .collectionNavigation {
 }
 
+.kt_collection tbody#datadrop.dropzone tr td.browse_column.select { width: 12px; }
+
 .ktInlineError {
     color: #db9d09;
 }

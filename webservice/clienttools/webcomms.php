@@ -90,8 +90,8 @@ if (count($output) == 1) {
     echo $output[0];
 }
 else {
-    // not 100% happy with this, but...it works
-    echo implode('|', $output);
+    // Chose ~|~ because it should *hopefully* be unique :)
+    echo implode('~|~', $output);
 }
 
 ?>
