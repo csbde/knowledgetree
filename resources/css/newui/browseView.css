@@ -4,13 +4,13 @@
 
 #content { overflow: visible; }
 
-.standardBorder { 
-	border: 1px solid #ccc; 
-	margin: 5px 0px; 
-	background: #eee; 
-	
-	-webkit-border-radius: 2px; 
-	-moz-border-radius: 2px; 
+.standardBorder {
+	border: 1px solid #ccc;
+	margin: 5px 0px;
+	background: #eee;
+
+	-webkit-border-radius: 2px;
+	-moz-border-radius: 2px;
 	border-radius: 2px;
 	}
 
@@ -36,8 +36,8 @@
 .dropzone {width: 724px;-webkit-border-radius: 5px; -moz-border-radius: 5px; border-radius: 5px; }
 .page .notification { display: block; text-align: center; width: auto; -webkit-box-shadow: inset 0px 0px 5px #CCC; -moz-box-shadow: inset 0px 0px 5px #CCC; box-shadow: inset 0px 0px 5px #ccc; border: 1px solid #ddd; -webkit-border-radius: 5px; -moz-border-radius: 5px; border-radius: 5px;background-color: #f5f5f5; margin: 35px 0px 15px 0px; padding: 20px; color: #989090 !important;}
 .page .notification.dragover{
-	background-color: #FFFF99; 
-	
+	background-color: #FFFF99;
+
 }
 #content .page .notification h2 { color: #666 !important; font-size: 24px; text-shadow: 0px 1px 0px white;}
 .page .notification table { width: 100%; text-align: left; margin-top: 20px; }
@@ -114,19 +114,19 @@
 .doc.browseView .doc.item.highlighted:hover { -webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px; background-color: #b7dded !important; }
 .doc.browseView .doc.icon_cell { padding: 2px 14px 0px 0px; margin: 0px; }
 .doc.browseView .doc.icon_cell .doc.icon { background-image: url(/resources/graphics/newui/doc_placeholder_icon.png); width: 32px; height: 32px; position: relative; padding: 0px; margin: 0px; }
-.doc.browseView .doc.icon_cell .doc.icon .doc.preview { 
-	position: absolute; 
-	
-	display: none; 
-	cursor: pointer; 
-	border: 0px; 
-	padding: 2px 2px 2px 15px; 
-	z-index: 20000; 
-	left: 35px; 
-	top: -25px; 
-	overflow: hidden; 
-	cursor: pointer; 
-	
+.doc.browseView .doc.icon_cell .doc.icon .doc.preview {
+	position: absolute;
+
+	display: none;
+	cursor: pointer;
+	border: 0px;
+	padding: 2px 2px 2px 15px;
+	z-index: 20000;
+	left: 35px;
+	top: -25px;
+	overflow: hidden;
+	cursor: pointer;
+
 	}
 .doc.browseView .doc.icon_cell .doc.icon .doc.preview .popoverTip {
 	background: url(../../graphics/newui/popover_tip.png) no-repeat;
@@ -137,28 +137,28 @@
 	position: absolute;
 	left: -1px;
 	margin: 30px 0px;
-}	
+}
 .doc.browseView .doc.icon_cell .doc.icon .doc.preview .popover {
 	border: 1px solid #CCC;
 	display: block;
-	-webkit-box-shadow: 0px 0px 5px #CCC; 
-	-moz-box-shadow: 0px 0px 5px #CCC; 
-	box-shadow: 0px 0px 5px #CCC; 
-	min-width: 100px; 
+	-webkit-box-shadow: 0px 0px 5px #CCC;
+	-moz-box-shadow: 0px 0px 5px #CCC;
+	box-shadow: 0px 0px 5px #CCC;
+	min-width: 100px;
 	min-height: 100px;
-	background: #FFF url(/resources/graphics/newui/preview-loading.gif); 
-	background-position: center center; 
-	background-color: none; 
-	background-repeat: no-repeat; 
+	background: #FFF url(/resources/graphics/newui/preview-loading.gif);
+	background-position: center center;
+	background-color: none;
+	background-repeat: no-repeat;
 	z-index: 20001;
-	-webkit-border-radius: 3px; 
-	-moz-border-radius: 3px; 
-	border-radius: 3px; 
+	-webkit-border-radius: 3px;
+	-moz-border-radius: 3px;
+	border-radius: 3px;
 }
 .doc.browseView .doc.icon_cell .doc.icon .doc.preview img {
-	-webkit-border-radius: 3px; 
-	-moz-border-radius: 3px; 
-	border-radius: 3px; 
+	-webkit-border-radius: 3px;
+	-moz-border-radius: 3px;
+	border-radius: 3px;
 	background: white;
 }
 .doc.browseView .doc.icon_cell .doc.icon:hover .doc.preview { display: block; }
@@ -202,24 +202,24 @@
 .doc.browseView .actionMenu .actionIcon.actions > ul li:hover { background-color: #e1e1e1; background: -webkit-gradient(linear, left bottom, left top, color-stop(0, #e1e1e1), color-stop(1, #eeeeee)); background: -moz-linear-gradient(center bottom, #e1e1e1 0%, #eeeeee 100%); -webkit-box-shadow: 0px 0px 2px #cccccc; -moz-box-shadow: 0px 0px 2px #cccccc; box-shadow: 0px 0px 2px #cccccc; border: 1px solid #cdcdcd; }
 .doc.browseView .actionMenu .actionIcon.actions > ul li a, .doc.browseView .actionMenu .actionIcon.actions > ul li a:link, .doc.browseView .actionMenu .actionIcon.actions > ul li a:active, .doc.browseView .actionMenu .actionIcon.actions > ul li a:visited, .doc.browseView .actionMenu .actionIcon.actions > ul li a:hover { text-decoration: none; display: block; color: inherit !important; border: none !important; }
 .doc.browseView .actionMenu .actionIcon.actions:hover > ul { display: block; }
-.doc.browseView .actionMenu .actionIcon.actions > ul li.action_copy { background: url("../../../resources/graphics/newui/icons/copy.png") no-repeat left center !important; }
-.doc.browseView .actionMenu .actionIcon.actions > ul li.action_move { background: url("../../../resources/graphics/newui/icons/cut.png") no-repeat left center !important; }
-.doc.browseView .actionMenu .actionIcon.actions > ul li.action_delete { background: url("../../../resources/graphics/newui/icons/delete.png") no-repeat left center !important; }
-.doc.browseView .actionMenu .actionIcon.actions > ul li.action_download { background: url("../../../resources/graphics/newui/icons/download.png") no-repeat left center !important; }
+.doc.browseView .actionMenu .actionIcon.actions > ul li.action_copy, .copy { background: url("../../../resources/graphics/newui/icons/copy.png") no-repeat left center !important; }
+.doc.browseView .actionMenu .actionIcon.actions > ul li.action_move, .move { background: url("../../../resources/graphics/newui/icons/cut.png") no-repeat left center !important; }
+.doc.browseView .actionMenu .actionIcon.actions > ul li.action_delete, .delete { background: url("../../../resources/graphics/newui/icons/delete.png") no-repeat left center !important; }
+.doc.browseView .actionMenu .actionIcon.actions > ul li.action_download, .download { background: url("../../../resources/graphics/newui/icons/download.png") no-repeat left center !important; }
 .doc.browseView .actionMenu .actionIcon.actions > ul li.action_share_document { background: url("../../../resources/graphics/newui/icons/share.png") no-repeat left center !important; }
-.doc.browseView .actionMenu .actionIcon.actions > ul li.action_instant_view { background: url("../../../resources/graphics/newui/icons/document_view.png") no-repeat left center !important; }
-.doc.browseView .actionMenu .actionIcon.actions > ul li.action_checkout { background: url("../../../resources/graphics/newui/icons/lock.png") no-repeat -2px center !important; }
-.doc.browseView .actionMenu .actionIcon.actions > ul li.action_cancel_checkout { background: url("../../../resources/graphics/newui/icons/lock_delete.png") no-repeat left center !important; }
-.doc.browseView .actionMenu .actionIcon.actions > ul li.action_checkin { background: url("../../../resources/graphics/newui/icons/lock_open.png") no-repeat left center !important; }
-.doc.browseView .actionMenu .actionIcon.actions > ul li.action_alerts { background: url("../../../resources/graphics/newui/icons/alert.png") no-repeat left center !important; }
-.doc.browseView .actionMenu .actionIcon.actions > ul li.action_email { background: url("../../../resources/graphics/newui/icons/mail.png") no-repeat left center !important; }
-.doc.browseView .actionMenu .actionIcon.actions > ul li.action_change_owner { background: url("../../../resources/graphics/newui/icons/users3_edit.png") no-repeat left center !important; }
-.doc.browseView .actionMenu .actionIcon.actions > ul li.action_finalize_document { background: url("../../../resources/graphics/newui/icons/finalize.png") no-repeat left center !important; }
-.doc.browseView .actionMenu .actionIcon.actions > ul li.action_zoho_document { background: url("../../../resources/graphics/newui/icons/document_edit.png") no-repeat left center !important; }
-.doc.browseView .actionMenu .actionIcon.actions > ul li.action_share_folder { background: url("../../../resources/graphics/newui/icons/share.png") no-repeat left center !important; }
-.doc.browseView .actionMenu .actionIcon.actions > ul li.action_rename_folder { background: url("../../../resources/graphics/newui/icons/folder_edit.png") no-repeat left center !important; }
-.doc.browseView .actionMenu .actionIcon.actions > ul li.action_folder_permissions { background: url("../../../resources/graphics/newui/icons/users3_edit.png") no-repeat left center !important; }
-.doc.browseView .actionMenu .actionIcon.actions > ul li.action_view_transactions { background: url("../../../resources/graphics/newui/icons/folder_activity.png") no-repeat left center !important; }
+.doc.browseView .actionMenu .actionIcon.actions > ul li.action_instant_view, .instant-view { background: url("../../../resources/graphics/newui/icons/document_view.png") no-repeat left center !important; }
+.doc.browseView .actionMenu .actionIcon.actions > ul li.action_checkout, .checkout { background: url("../../../resources/graphics/newui/icons/lock.png") no-repeat -2px center !important; }
+.doc.browseView .actionMenu .actionIcon.actions > ul li.action_cancel_checkout, .cancel-checkout { background: url("../../../resources/graphics/newui/icons/lock_delete.png") no-repeat left center !important; }
+.doc.browseView .actionMenu .actionIcon.actions > ul li.action_checkin, .checkin { background: url("../../../resources/graphics/newui/icons/lock_open.png") no-repeat left center !important; }
+.doc.browseView .actionMenu .actionIcon.actions > ul li.action_alerts, .alerts { background: url("../../../resources/graphics/newui/icons/alert.png") no-repeat left center !important; }
+.doc.browseView .actionMenu .actionIcon.actions > ul li.action_email, .email { background: url("../../../resources/graphics/newui/icons/mail.png") no-repeat left center !important; }
+.doc.browseView .actionMenu .actionIcon.actions > ul li.action_change_owner, .change-owner { background: url("../../../resources/graphics/newui/icons/users3_edit.png") no-repeat left center !important; }
+.doc.browseView .actionMenu .actionIcon.actions > ul li.action_finalize_document, .finalize { background: url("../../../resources/graphics/newui/icons/finalize.png") no-repeat left center !important; }
+.doc.browseView .actionMenu .actionIcon.actions > ul li.action_zoho_document, .zoho-document { background: url("../../../resources/graphics/newui/icons/document_edit.png") no-repeat left center !important; }
+.doc.browseView .actionMenu .actionIcon.actions > ul li.action_share_folder, .share { background: url("../../../resources/graphics/newui/icons/share.png") no-repeat left center !important; }
+.doc.browseView .actionMenu .actionIcon.actions > ul li.action_rename_folder, .rename-folder { background: url("../../../resources/graphics/newui/icons/folder_edit.png") no-repeat left center !important; }
+.doc.browseView .actionMenu .actionIcon.actions > ul li.action_folder_permissions, .permissions { background: url("../../../resources/graphics/newui/icons/users3_edit.png") no-repeat left center !important; }
+.doc.browseView .actionMenu .actionIcon.actions > ul li.action_view_transactions, .folder-activity { background: url("../../../resources/graphics/newui/icons/folder_activity.png") no-repeat left center !important; }
 .doc.browseView .actionMenu .actionIcon.comments { background: url("/resources/graphics/newui/comment.png"); background-repeat: no-repeat; background-position: center center; width: 16px; height: 16px; display: inline-block; clear: none; text-align: center; cursor: pointer; height: 16px; overflow: none; line-height: 1em !important; font-size: 80%; font-weight: bold; line-height: 1.8em; color: #A10000; }
 .doc.browseView .actionMenu .actionIcon.comments:hover { background: url("/resources/graphics/newui/comment_h.png"); background-repeat: no-repeat; background-position: center center; }
 .doc.browseView .expanderField { -webkit-border-radius: 5px; -moz-border-radius: 5px; border-radius: 5px; padding: 10px; margin-left: 32px+5px; background-color: white; border: 1px solid #dbdbdb; display: none; }

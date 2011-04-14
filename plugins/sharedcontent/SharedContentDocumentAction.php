@@ -37,6 +37,7 @@
  */
 
 require_once(KT_LIB_DIR . '/actions/documentaction.inc.php');
+require_once(KT_LIB_DIR . '/actions/folderaction.inc.php');
 
 // {{{ SharedContentDocumentAction
 class SharedContentDocumentAction extends KTDocumentAction {
@@ -84,6 +85,29 @@ class SharedContentDocumentAction extends KTDocumentAction {
 	{
 		return '#';
 	}
+
+}
+// }}}
+// {{{ SharedContentDocumentAction
+class SharedContentFolderAction extends KTFolderAction {
+
+    var $sName = 'ktcore.actions.folder.sharecontent';
+    var $_sShowPermission = 'ktcore.permissions.write';
+	var $sDisplayName = 'Share';
+	var $showIfWrite = false;
+	var $showIfRead = false;
+
+    var $cssClass = 'share';
+
+    function getDisplayName()
+    {
+    	return _kt('Share this Folder');
+    }
+
+    function getURL()
+    {
+        return "javascript:kt.app.sharewithusers.shareContentWindow('{$this->oFolder->getID()}','F','{$_SESSION['userID']}');";
+    }
 
 }
 // }}}

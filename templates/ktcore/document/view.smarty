@@ -64,8 +64,8 @@
 							<tr>
 								<th>Document ID:</th><td>{$document_id}</td>
 							</tr>
-							<tr>
-							<th>Tags:</th><td id="document-tags"><span class="document-tags"></span><span title="Click to edit" class="editable-control tags edit">&nbsp;</span></td>
+							<tr id="document-tags">
+							<th>Tags:</th><td><span class="document-tags"></span><span title="Click to edit" class="editable-control tags edit">&nbsp;</span></td>
 							</tr>
 						</table>
 					

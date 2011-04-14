@@ -108,65 +108,6 @@
 			
 			30000, 30000);
 						
-			/*var form = $('div', self);
-			var action = form.attr( 'action' );
-	
-			// This is needed for rails to identify the request as json
-			if( opts.dataType === 'json' ) {
-				action = action + '.json';
-			}
-	
-			// Generate the params
-			var params;
-			if( opts.globalSave ) {
-				params = $( 'div', '.editable' ).serialize();
-			} else {
-				params = form.serialize();
-			}
-	
-			// PUT the form and update the child elements
-			$.post( action, params, function( data, textStatus ) {
-				// Parse the data if necessary
-				data = $.parseJSON( data ) ? $.parseJSON( data ) : data;
-	
-				// Revert to original text
-				if( opts.globalSave ) {
-					$.each( $('.editable'), function( i, value ) {
-						$(value).html( $.fn.editableSet.globals.reversions[i] ).removeClass( 'active' );
-						value.editing = false;
-					});
-				} else {
-					$(self).html( self.revert );
-					$(self).removeClass( 'active' );
-				}
-	
-				var spans;
-				if( opts.globalSave ) {
-					$.each( $('.editable'), function(i, editable) {
-						spans = $('span[data-name]', editable);	
-						$.isFunction( opts.repopulate ) && opts.repopulate.call( self, spans, data, opts );
-					});
-				} else {
-					spans = $('span[data-name]', self);
-					$.isFunction( opts.repopulate ) && opts.repopulate.call( self, spans, data, opts );
-				}			
-	
-				// afterSave Callback			
-				$.isFunction( opts.afterSave ) && opts.afterSave.call( self, data, textStatus );
-			}, 
-			opts.dataType, 
-	
-			// onError
-			function( xhr, status, error ) {
-				self.editing = true;
-		
-				// Reactivate the fields
-				$(':input', self).attr( 'disabled', false );
-		
-				// onError callback
-				$.isFunction( opts.onError ) && opts.onError.call( self, xhr, status );
-			});*/
-						
 			return true;	
 		};
 		
@@ -197,10 +138,20 @@
 			
 			var control = null;
 			var event = opts.event;
+			var context = null;
 			
-			if(opts.controlClass)
+			if(opts.context)
 			{
-				control = $('.'+opts.controlClass);
+				context = $(opts.context);
+			}
+			else
+			{
+				context = $(self);
+			}
+			
+			if(opts.controller)
+			{
+				control = $(opts.controller, context);
 				event = 'click';
 			}
 			else
@@ -301,9 +252,9 @@
 				appendable.append($('<a href="#" onclick="'+opts.action+'">Save</a>'));
 				appendable.append($('<a href="javascript: document.metadataForm.submit();">Save</a>'));*/
 				
-				if(opts.controlClass)
+				if(opts.controller)
 				{
-					$('.'+opts.controlClass).one('click', function(e){
+					$(opts.controller, context).one('click', function(e){
 						cancel( self );
 					});
 				}
