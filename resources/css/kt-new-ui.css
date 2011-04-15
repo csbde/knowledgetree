@@ -283,12 +283,15 @@ textarea {
 	height: 30px;
 }
 
+.breadcrumbActionBtns {
+	float: right;
+	position: relative;
+}
+
 .breadcrumbBtns {
-    float: none;
     height: 30px;
-    left: 365px;
     margin: 3px 18px 3px 3px;
-    position: relative;
+    
 }
 .breadcrumbBtns a {
     height: 16px;
