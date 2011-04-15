@@ -66,9 +66,11 @@ class KTDocumentPermissionsAction extends KTDocumentAction {
     var $_sEditShowPermission = 'ktcore.permissions.security';
     var $_sShowPermission = 'ktcore.permissions.security';
     var $_bAdminAlwaysAvailable = true;
+    var $sIconClass = 'permissions';
+    var $sParentBtn = 'more';
 
     function getDisplayName() {
-        return _kt('Permissions');
+        return _kt('View Permissions');
     }
 
     function do_main() {
@@ -299,6 +301,7 @@ class KTRoleAllocationPlugin extends KTFolderAction {
     var $_sShowPermission = 'ktcore.permissions.security';
     var $bAutomaticTransaction = true;
     var $_bAdminAlwaysAvailable = true;
+    var $cssClass = 'allocate-roles';
 
     function getDisplayName() {
         return _kt('Allocate Roles');
@@ -875,6 +878,8 @@ class KTDocumentRolesAction extends KTDocumentAction {
 
     var $_sShowPermission = 'ktcore.permissions.write';
     var $bAutomaticTransaction = true;
+    var $sIconClass = 'document-roles';
+    var $sParentBtn = 'more';
 
     function getDisplayName() {
         return _kt('View Roles');
