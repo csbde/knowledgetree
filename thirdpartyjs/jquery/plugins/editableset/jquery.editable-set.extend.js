@@ -48,7 +48,7 @@ jQuery.editableSet.addInputType('multiselect', {
 		})();
 
 		//now select the selected (jQuery NOT working!)
-	 /* for (var idx = 0; idx < newObject[0].options.length; idx++) {
+	 	/* for (var idx = 0; idx < newObject[0].options.length; idx++) {
 		if (newObject[0].options[idx].text == selectedValue) {
 			newObject[0].selectedIndex = idx;
 		}
@@ -80,7 +80,7 @@ jQuery.editableSet.addInputType('tree', {
 
 		var options = JSON.parse(attrs['data-options']);
 
-		var html = buildTree(attrs['data-name'], options, '');
+		var html = buildTree(attrs['data-name'], options[0], '');
 
 		html = '<ul class="kt_treenodes">'+html+'</ul>';
 
@@ -137,6 +137,7 @@ jQuery.editableSet.addInputType('datepicker', {
 
 		var datePicker = new Ext.form.DateField({
 	    	format: 'Y-m-d', //YYYY-MMM-DD
+	    	altFormats: 'Y/m/d|m/d/Y|n/j/Y|n/j/y|m/j/y|n/d/y|m/j/Y|n/d/Y|m-d-y|m-d-Y|m/d|m-d|md|mdy|mdY|d|Y-m-d|n-j|n/j',
 	        width: 100,
 	        id: attrs['data-name'],
 	        enableKeyEvents: true,
@@ -171,6 +172,14 @@ jQuery.editableSet.addInputType('datepicker', {
 					{
 						//add it to the hashtable that contains invalid fields
 						self.invalid.put(attrs['data-name'], 'Invalid date entered');
+					}
+				},
+				'valid' : function(dateField) {
+					//console.log('valid date');
+					if (self.invalid.containsKey(attrs['data-name']))
+					{
+						//clear the current field from the hashtable
+						self.invalid.remove(attrs['data-name']);
 					}
 				}
 	    	}
