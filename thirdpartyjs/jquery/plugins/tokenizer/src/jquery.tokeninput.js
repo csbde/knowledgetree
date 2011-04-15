@@ -25,8 +25,7 @@ $.fn.tokenInput = function (url, options) {
         queryParam: "q",
         onResult: null,
         onAdd: null,
-        onDelete: null,
-        cached: []
+        onDelete: null
     }, options);
 
     settings.classes = $.extend({
@@ -282,14 +281,6 @@ $.TokenList = function (input, settings) {
                 hidden_input.val(hidden_input.val() + id_string);
 
                 token_count++;
-                saved_tokens[saved_tokens.length] = li_data[i].id;
-            }
-        }
-
-        // When the display is external we still want to check for a list of existing values and cache.
-        li_data = settings.cached;
-        if(li_data && li_data.length) {
-            for(var i = 0; i < li_data.length; ++i) {
                 saved_tokens[saved_tokens.length] = li_data[i].id;
             }
         }

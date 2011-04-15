@@ -70,7 +70,7 @@
 						</table>
 
 						<div class="document-tags-edit" rel='{literal}{{/literal}"documentID":"{$document->getId()}"{literal}}{/literal}'>
-						<span data-id="tagcloud" data-name="tagcloud" data-type='tokeninput' data-tag-script='{$tagFilterScript}' data-tags='{$tags}' data-value-id="value-token"></span>
+						<span data-id="tagcloud" data-name="tagcloud" data-type='tokeninput' data-tag-script='{$tagFilterScript}' data-value-id="value-token"></span>
 						<br/>
 					</div>
 					<br/>
