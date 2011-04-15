@@ -2337,24 +2337,24 @@ class KTOwnershipChangeAction extends KTDocumentAction {
     }
 
     function form_owner() {
-        $oForm = new KTForm;
-        $oForm->setOptions(array(
+        $form = new KTForm;
+        $form->setOptions(array(
             'action' => 'reown',
             'cancel_url' => KTBrowseUtil::getUrlForDocument($this->oDocument),
             'fail_action' => 'main',
             'identifier' => 'ktcore.actions.document.owner',
             'context' => $this,
         ));
-        $oForm->setWidgets(array(
+        $form->setWidgets(array(
             array('ktcore.widgets.entityselection', array(
                 'label' => _kt('New Owner'),
                 'label_method' => 'getName',
-                'vocab' => User::getList('id > 0'),
+                'vocab' => User::getList('id > 0 AND disabled = 0'),
                 'value' => $this->oDocument->getOwnerID(),
                 'name' => 'user_id'
             )),
         ));
-        $oForm->setValidators(array(
+        $form->setValidators(array(
             array('ktcore.validators.entity', array(
                 'test' => 'user_id',
                 'class' => 'User',
@@ -2362,7 +2362,7 @@ class KTOwnershipChangeAction extends KTDocumentAction {
             )),
         ));
 
-        return $oForm;
+        return $form;
     }
 
     function do_main() {
