@@ -89,6 +89,7 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
             $this->oPage->addError(sprintf(_kt("No document was requested.  Please <a href=\"%s\">browse</a> for one."), KTBrowseUtil::getBrowseBaseUrl()));
             return $this->do_error();
         }
+
         // try get the document.
         $this->document =& Document::get($documentId);
         if (PEAR::isError($this->document)) {
@@ -115,7 +116,7 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
             $this->oPage->addError(_kt('This document has been deleted.'));
         }
 
-        $this->oPage->setSecondaryTitle($this->document->getName());
+        //$this->oPage->setSecondaryTitle($this->document->getName());
 
         $options = array(
             'documentaction' => 'viewDocument',
@@ -140,6 +141,8 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
 
         //$this->addPortlets('Document Details');
         $actions = KTDocumentActionUtil::getDocumentActionsForDocument($this->document, $this->oUser);
+        $info = KTDocumentActionUtil::getDocumentActionsForDocument($this->document, $this->oUser, 'documentinfo');
+        $actions = array_merge($actions, $info);
         $actionBtns = $this->createButtons($actions);
 
         $documentData['document'] = $this->document;
@@ -421,7 +424,7 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
         }
 
         //$this->oDocument =& $this->document;
-        $this->oPage->setSecondaryTitle($this->document->getName());
+        //$this->oPage->setSecondaryTitle($this->document->getName());
         $options = array(
             'documentaction' => 'viewDocument',
             'folderaction' => 'browse',

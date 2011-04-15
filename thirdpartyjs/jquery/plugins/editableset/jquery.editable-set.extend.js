@@ -142,6 +142,15 @@ jQuery.editableSet.addInputType('datepicker', {
 	        enableKeyEvents: true,
 	        value: val,
 	        listeners: {
+	        	'specialkey': function(field, e){
+                    // e.HOME, e.END, e.PAGE_UP, e.PAGE_DOWN,
+                    // e.TAB, e.ESC, arrow keys: e.LEFT, e.RIGHT, e.UP, e.DOWN
+                    if (e.getKey() == e.ENTER) {
+                        //alert('Enter '+jQuery.browser.msie);
+                        e.preventDefault();
+                        e.stopPropagation();
+                    }
+                },
 	            'select': function(dateField, date){
 	        		try {
 				    	var month = parseInt(date.getMonth()) + 1;
@@ -157,6 +166,7 @@ jQuery.editableSet.addInputType('datepicker', {
 	        		}
 				},
 				'invalid': function(dateField) {
+					//console.log('invalid date');
 					if (!self.invalid.containsKey(attrs['data-name']))
 					{
 						//add it to the hashtable that contains invalid fields
@@ -279,13 +289,13 @@ jQuery.editableSet.addInputType('tokeninput', {
 
 		jQuery(object).replaceWith( newObject );
 
-		var tags = JSON.parse(attrs['data-tags']);
 		var tagScript = attrs['data-tag-script'];
 
 		jQuery(newObject).tokenInput(tagScript, {
 	        // Alter the minChars value to determine how much the user must type before a search is initiated
 	        minChars: 2,
-	        prePopulate: tags,
+	        hintText: "Type in a tag name",
+	        prePopulate: '',
 	        classes: {
 	            tokenList: "token-input-list-facebook",
 	            token: "token-input-token-facebook",

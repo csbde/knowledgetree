@@ -56,6 +56,7 @@ body
 {
 /*  margin-left: 15px;
     margin-right: 15px;*/
+    margin-bottom: 15px;
 }
 
 
@@ -949,6 +950,9 @@ a.main_nav_item {
 	height: 16px;
 	vertical-align: top;
 }
+.editable-control.undo{
+	visibility: visible;
+}
 #title_row .editable-control {
 	float: none;
 	display: inline-block;
@@ -1104,6 +1108,8 @@ a.main_nav_item {
 
 .kt_collection .collectionNavigation {
 }
+
+.kt_collection tbody#datadrop.dropzone tr td.browse_column.select { width: 12px; }
 
 .ktInlineError {
     color: #db9d09;

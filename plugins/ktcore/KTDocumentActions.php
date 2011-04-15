@@ -63,6 +63,8 @@ class KTDocumentDetailsAction extends KTDocumentAction {
     }
 
     function getDisplayName() {
+        // Disabling
+        return '';
         return _kt('Display Details');
     }
 
@@ -71,9 +73,11 @@ class KTDocumentDetailsAction extends KTDocumentAction {
 class KTDocumentTransactionHistoryAction extends KTDocumentAction {
 
     var $sName = 'ktcore.actions.document.transactionhistory';
+    var $sIconClass = 'usage-info';
+    var $sParentBtn = 'more';
 
     function getDisplayName() {
-        return _kt('Transaction History');
+        return _kt('Usage Information');
     }
 
     function do_main() {
@@ -137,6 +141,8 @@ class KTDocumentVersionHistoryAction extends KTDocumentAction {
     var $sName = 'ktcore.actions.document.versionhistory';
 
     function getDisplayName() {
+        // Disabling
+        return '';
         return _kt('Version History');
     }
 
@@ -1890,28 +1896,19 @@ class KTAjaxDocumentWorkflowAction extends KTDocumentAction {
 	public $showIfRead = false;
     public $sIconClass = 'manage-workflow';
     public $sParentBtn = 'more';
-    
+
     public function predispatch() {
         $this->persistParams(array('fTransitionId'));
     }
 
     public function getDisplayName() {
-        $oUser = User::get($_SESSION['userID']);
-        if (!KTPermissionUtil::userHasPermissionOnItem($oUser, 'ktcore.permissions.workflow', $this->oDocument)) {
-            return '';
-        }
-
-        return _kt('Workflow');
+		return '';
     }
 
     public function getInfo() {
-        if ($this->oDocument->getIsCheckedOut()) {
-            return null;
-        }
-
-        return parent::getInfo();
+		return false;
     }
-    
+
 	public function do_main()
     {
         $oTemplate = $this->oValidator->validateTemplate('ktcore/workflow/blocks/documentWorkflowBlock');
@@ -2006,7 +2003,7 @@ class KTAjaxDocumentWorkflowAction extends KTDocumentAction {
 		echo "Workflow Started";
         exit(0);
     }
-    
+
     public function do_performTransition() {
         $oDocument = $this->oValidator->validateDocument($_REQUEST['fDocumentId']);
         $oTransition = $this->oValidator->validateWorkflowTransition($_REQUEST['fTransitionId']);
@@ -2026,7 +2023,7 @@ class KTAjaxDocumentWorkflowAction extends KTDocumentAction {
         } else {
             echo _kt('Transition performed');
         }
-        
+
         exit(0);
     }
 
@@ -2047,7 +2044,7 @@ class KTAjaxDocumentWorkflowAction extends KTDocumentAction {
         echo $oTemplate->render($aTemplateData);
         exit(0);
     }
-    
+
     public function do_performquicktransition() {
         $this->startTransaction();
 
@@ -2061,7 +2058,7 @@ class KTAjaxDocumentWorkflowAction extends KTDocumentAction {
             $this->commitTransaction();
             echo _kt('Transition performed');
         }
-        
+
         exit(0);
     }
 }
@@ -2221,7 +2218,7 @@ class KTDocumentWorkflowAction extends KTDocumentAction {
             array('fDocumentId' => $oDocument->getId()));
         }
     }
-    
+
     function form_quicktransition() {
         $oForm = new KTForm;
         if ($this->oDocument->getIsCheckedOut()) {

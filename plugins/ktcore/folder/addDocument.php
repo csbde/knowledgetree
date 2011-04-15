@@ -5,7 +5,7 @@
  * KnowledgeTree Community Edition
  * Document Management Made Simple
  * Copyright (C) 2008, 2009, 2010 KnowledgeTree Inc.
- * 
+ *
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License version 3 as published by the
@@ -51,9 +51,16 @@ class KTFolderAddDocumentAction extends KTFolderAction {
     var $oDocumentType = null;
 	var $showIfRead = false;
 	var $showIfWrite = true;
-	
+	var $cssClass = 'upload';
+	var $parentBtn = '';
+
     function getDisplayName() {
-        return _kt('Add Document');
+        return _kt('Upload');
+    }
+
+    function getURL()
+    {
+        return 'javascript:kt.app.upload.showUploadWindow();';
     }
 
     function getButton(){
