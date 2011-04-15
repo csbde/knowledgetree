@@ -1,18 +1,18 @@
-if(typeof(kt.app)=='undefined')kt.app={};
+if (typeof(kt.app)=='undefined')kt.app={};
 kt.app.metadata = new function()
-{	
-	//is a field in edit mode	
+{
+	//is a field in edit mode
 	this.editing = false;
 	this.documentID = 0;
-	
+
 	this.setup = function(makeEditable, documentID, tags)
 	{
 		this.documentID = documentID;
-		
+
 		//add the tags to the display
-		if(tags && tags.length)
+		if (tags && tags.length)
 		{
-			for(var i = 0; i < tags.length; ++i) 
+			for (var i = 0; i < tags.length; ++i)
 			{
 				var token = jQuery("<li><p>"+tags[i].name+"</p> </li>")
 					.addClass('token-input-token-facebook')
@@ -31,25 +31,25 @@ kt.app.metadata = new function()
 				jQuery.data(token.get(0), "tokeninput", {"id": tags[i].id, "name": tags[i].name});
 			}
 		}
-		
+
 		if (string2bool(makeEditable))
 		{
 			kt.app.metadata.setEditableRegions();
 		}
-		
+
 		kt.app.metadata.setExpandableFieldsets();
-		
+
 	}
-	
+
 	this.setEditableRegions = function()
-	{		
+	{
 		kt.app.metadata.setDocumentTitleEditable();
 		kt.app.metadata.setDocumentFilenameEditable();
 		kt.app.metadata.setDocumentTagsEditable();
 		kt.app.metadata.setDocumentTypeEditable();
 		kt.app.metadata.setMetadataEditable();
 	}
-	
+
 	this.setExpandableFieldsets = function()
 	{
 		jQuery('.more').click(function() {
@@ -62,26 +62,26 @@ kt.app.metadata = new function()
 			{
 				jQuery('.more').text('less...');
 			}
-			
+
 			slider.slideToggle('slow', function() {
 				// Animation complete
-				
+
 			});
 		});
-		
+
 		//.hover(function() {
 			//jQuery(this).css('cursor', 'pointer');
 		//})
 	}
-	
+
 	this.setDocumentTitleEditable = function()
-	{		
+	{
 		jQuery('.document-title').hover(
 		function(){
 			jQuery('.editable-control.title', jQuery(this)).css('visibility', 'visible');
 		},
 		function(){
-			if(jQuery('.editable-control.title', jQuery(this)).hasClass('edit'))
+			if (jQuery('.editable-control.title', jQuery(this)).hasClass('edit'))
 			{
 				jQuery('.editable-control.title', jQuery(this)).css('visibility', 'hidden');
 			}
@@ -96,7 +96,7 @@ kt.app.metadata = new function()
 					.addClass('edit')
 					.attr('title', 'Click to edit')
 					.css('visibility', 'hidden');
-					
+
 				kt.app.metadata.setEditableRegions();
 			},
 			beforeLoad: function() {
@@ -109,27 +109,27 @@ kt.app.metadata = new function()
 			},
 			onError: function(){
 				kt.app.metadata.setEditableRegions();
-			},	
+			},
 			onSave: function(){
 				jQuery('.editable-control.title', jQuery(this))
 					.removeClass('undo')
 					.addClass('spin');
-				
+
 				//check whether all the required fields have been completed
 				var requiredDone = true;
 				var val = jQuery('input:text[name=documentTitle]').val();
-							
-				if(val == null || val == undefined || val == '' || val == 'no value')
+
+				if (val == null || val == undefined || val == '' || val == 'no value')
 				{
 					jQuery('.editable-control.title', jQuery(this))
 						.removeClass('spin')
 						.addClass('undo')
 						.attr('title', 'Click to undo');
-						
+
 					jQuery('input:text[name=documentTitle]', jQuery(this)).addClass('incomplete');
 					requiredDone = false;
 				}
-				
+
 				return requiredDone;
 			},
 			repopulate: function(){},
@@ -139,13 +139,13 @@ kt.app.metadata = new function()
 					.addClass('edit')
 					.attr('title', 'Click to edit')
 					.css('visibility', 'hidden');
-				
+
 				kt.app.metadata.setEditableRegions();
-				
-				if(data)
+
+				if (data)
 				{
 					var parsedJSON = '';
-					
+
 					if (data.success)
 					{
 						parsedJSON = jQuery.parseJSON(data.success);
@@ -162,7 +162,7 @@ kt.app.metadata = new function()
 			}
 		});
 	}
-	
+
 	this.setDocumentFilenameEditable = function()
 	{
 		jQuery('.document-filename').hover(
@@ -170,7 +170,7 @@ kt.app.metadata = new function()
 			jQuery('.editable-control.filename', jQuery(this)).css('visibility', 'visible');
 		},
 		function(){
-			if(jQuery('.editable-control.filename', jQuery(this)).hasClass('edit'))
+			if (jQuery('.editable-control.filename', jQuery(this)).hasClass('edit'))
 			{
 				jQuery('.editable-control.filename', jQuery(this)).css('visibility', 'hidden');
 			}
@@ -185,7 +185,7 @@ kt.app.metadata = new function()
 					.addClass('edit')
 					.attr('title', 'Click to edit')
 					.css('visibility', 'hidden');
-				
+
 				kt.app.metadata.setEditableRegions();
 			},
 			beforeLoad: function() {
@@ -198,16 +198,16 @@ kt.app.metadata = new function()
 			},
 			onError: function() {
 				kt.app.metadata.setEditableRegions();
-			},	
+			},
 			onSave: function(){
 				jQuery('.editable-control.filename', jQuery(this))
 					.removeClass('undo')
 					.addClass('spin');
-				
+
 				var requiredDone = true;
 				var val = jQuery('input:text[name=documentFilename]').val();
-							
-				if(val == null || val == undefined || val == '' || val == 'no value')
+
+				if (val == null || val == undefined || val == '' || val == 'no value')
 				{
 					jQuery('.editable-control.filename', jQuery(this))
 						.removeClass('spin')
@@ -217,7 +217,7 @@ kt.app.metadata = new function()
 					jQuery('input:text[name=documentFilename]', jQuery(this)).addClass('incomplete');
 					requiredDone = false;
 				}
-				
+
 				return requiredDone;
 			},
 			repopulate: function(){},
@@ -227,10 +227,10 @@ kt.app.metadata = new function()
 					.addClass('edit')
 					.attr('title', 'Click to edit')
 					.css('visibility', 'hidden');
-				
+
 				kt.app.metadata.setEditableRegions();
-				
-				if(data)
+
+				if (data)
 				{
 					var parsedJSON = '';
 					if (data.success)
@@ -248,15 +248,15 @@ kt.app.metadata = new function()
 			}
 		});
 	}
-	
+
 	this.setDocumentTagsEditable = function()
-	{		
+	{
 		jQuery('#document-tags').hover(
 		function(){
 			jQuery('.editable-control.tags', jQuery(this)).css('visibility', 'visible');
 		},
 		function(){
-			if(jQuery('.editable-control.tags', jQuery(this)).hasClass('edit'))
+			if (jQuery('.editable-control.tags', jQuery(this)).hasClass('edit'))
 			{
 				jQuery('.editable-control.tags', jQuery(this)).css('visibility', 'hidden');
 			}
@@ -272,7 +272,7 @@ kt.app.metadata = new function()
 					.addClass('edit')
 					.attr('title', 'Click to edit')
 					.css('visibility', 'hidden');
-				
+
 				kt.app.metadata.setEditableRegions();
 			},
 			beforeLoad: function() {
@@ -285,7 +285,7 @@ kt.app.metadata = new function()
 			},
 			onError: function(){
 				kt.app.metadata.setEditableRegions();
-			},	
+			},
 			onSave: function(){
 				jQuery('.editable-control.tags')
 					.removeClass('undo')
@@ -298,12 +298,12 @@ kt.app.metadata = new function()
 					.addClass('edit')
 					.attr('title', 'Click to edit')
 					.css('visibility', 'hidden');
-								
-				if(data && data.success)
+
+				if (data && data.success)
 				{
 					parsedJSON = jQuery.parseJSON(data.success);
 					var tags = parsedJSON[0].tags;
-					
+
 					//show the newly-added tags
 					jQuery.each(tags, function(index, val)
 					{
@@ -323,12 +323,12 @@ kt.app.metadata = new function()
 						jQuery.data(token.get(0), "tokeninput", {"id": val, "name": val});
 					});
 				}
-				
+
 				kt.app.metadata.setEditableRegions();
 			}
 		});
 	}
-	
+
 	this.setDocumentTypeEditable = function()
 	{
 		jQuery('.document-type').hover(
@@ -336,7 +336,7 @@ kt.app.metadata = new function()
 			jQuery('.editable-control.doctype', jQuery(this)).css('visibility', 'visible');
 		},
 		function(){
-			if(jQuery('.editable-control.doctype', jQuery(this)).hasClass('edit'))
+			if (jQuery('.editable-control.doctype', jQuery(this)).hasClass('edit'))
 			{
 				jQuery('.editable-control.doctype', jQuery(this)).css('visibility', 'hidden');
 			}
@@ -350,7 +350,7 @@ kt.app.metadata = new function()
 					.addClass('edit')
 					.attr('title', 'Click to edit')
 					.css('visibility', 'hidden');
-				
+
 				kt.app.metadata.setEditableRegions();
 			},
 			beforeLoad: function() {
@@ -363,7 +363,7 @@ kt.app.metadata = new function()
 			},
 			onError: function(){
 				kt.app.metadata.setEditableRegions();
-			},	
+			},
 			onSave: function(){
 				jQuery('.editable-control.doctype', jQuery(this))
 					.removeClass('undo')
@@ -376,15 +376,15 @@ kt.app.metadata = new function()
 					.addClass('edit')
 					.attr('title', 'Click to edit')
 					.css('visibility', 'hidden');
-				
-				//reset the document fields to reflect the new document type								
-				if(data && data.success)
+
+				//reset the document fields to reflect the new document type
+				if (data && data.success)
 				{
 					parsedJSON = jQuery.parseJSON(data.success);
-					
+
 					//update the Document Type span text
 					jQuery('#documentTypeID').html(parsedJSON[0].documentTypeName);
-					
+
 					//reset the document fields to reflect the new document type
 					jQuery('.editableMetadata').empty();
 					jQuery('.editableMetadata').remove();
@@ -393,7 +393,7 @@ kt.app.metadata = new function()
 					var editableDiv = jQuery('<div>').addClass('editableMetadata');
 					//NB: set its rel attribute because this is used as the "action" url
 					//editableDiv.attr('rel', './lib/widgets/persistMetadata.php?documentID='+jQuery('#documentidembedded').html());
-					
+
 					//create div for each fieldset
 					jQuery.each(parsedJSON[0].metadata, function(index, fieldset)
 					{
@@ -403,72 +403,72 @@ kt.app.metadata = new function()
 						metadataControlSpan.html('&nbsp;');
 						header.append(metadataControlSpan);
 						fieldsetDiv.append(header);
-						
+
 						//NB: set its rel attribute because this is used as the "action" url
 						fieldsetDiv.attr('rel', '{"documentID":"'+parsedJSON[0].documentID+'"}');
 
 						//create the div to contain the fields
 						var table = jQuery('<table>').addClass('metadatatable').attr('cellspacing', '0').attr('cellpadding', '5');
-					
+
 						var counter = 0;
-						
+
 						//now create each field's widget
 						jQuery.each(fieldset.fields, function(index, field)
-						{						
+						{
 							var tableRow = jQuery('<tr>').addClass('metadatarow');
-							
+
 							//is the field required?
-							if(string2bool(field.required))
+							if (string2bool(field.required))
 							{
 								tableRow.addClass('required');
 							}
-							
+
 							tableRow.attr('id', 'metadatafield-'+field.fieldid);
-		
+
 							var tableHeader = jQuery('<th>').text(field.name);
 							tableHeader.attr('title', field.description);
 							tableRow.append(tableHeader);
-							
+
 							var tableCell = kt.app.metadata.getTableCell(field);
-		
+
 							tableRow.append(tableCell);
-			
+
 							table.append(tableRow);
 						});
-		
+
 						fieldsetDiv.append(table);
-						
+
 						editableDiv.append(fieldsetDiv);
 					});
-					
+
 					jQuery('.document-type').after(editableDiv);
-					
+
 					//need to insert the 'more ... less' slider widget after 2nd fieldset
-					if(parsedJSON[0].metadata.length > 2)
+					if (parsedJSON[0].metadata.length > 2)
 					{
 						jQuery('.detail-fieldset:eq(1)').after('<br/><div><span class="more">More...</span></div><br/>');
 						jQuery('.detail-fieldset:gt(1)').wrapAll('<div class="slide" style="display:none" />');
-						
+
 						kt.app.metadata.setExpandableFieldsets();
 					}
 				}
-				
-				//metadata can be editable again				
+
+				//metadata can be editable again
 				kt.app.metadata.setEditableRegions();
-				
+
 				kt.app.metadata.openRequiredMetadata();
 		 	}
 		});
 	}
-	
+
 	//when doctype changes, and there are now Required fields, open all the required fieldsets for editing
 	this.openRequiredMetadata = function()
 	{
 		var highestRowCounter = 0;
-		
+
 		//iterate through the fields and see if any are required
 		jQuery('.detail-fieldset').each(function(index, value){
-			if(jQuery('.metadatarow.required', jQuery(this)).length > 0)
+			if (jQuery('.metadatarow.required', jQuery(this)).length > 0)
 			{
 				highestRowCounter = index;
 				jQuery('.editable-control.metadata', jQuery(this))
@@ -476,40 +476,40 @@ kt.app.metadata = new function()
 					.attr('title', '')
 					.removeClass('undo')
 					.css('cursor', 'default')
-					.unbind('click');				
+					.unbind('click');
 			}
 		});
-		
+
 		if (highestRowCounter > 2)
 		{
 			jQuery('.more').trigger('click');
 		}
 	}
-	
+
 	//assemble each widget required by jEditableSet, and wrap it in a <td>
 	this.getTableCell = function(field)
 	{
 	 	var span = null;
-		
+
 	 	var classType = '';
-	 	
+
 		switch(field.control_type)
 		{
 			case 'string':
 				classType = 'metadata-textbox';
 				var dataType = 'text';
-				
+
 				span = jQuery('<span>')
 					.addClass('descriptiveText')
 					.attr('data-name', field.fieldid)
 					.attr('data-type', dataType)
 					.attr('data-value-id', 'value-'+field.fieldid);
 			break;
-			case 'lookup':				
+			case 'lookup':
 				classType = 'metadata-singleselect';
 				var dataType = 'select';
 				var dataOptions = '';
-				
+
 				if (field.selection && field.selection.length > 0)
 				{
 					dataOptions = '[["No selection","no value"],';
@@ -520,13 +520,13 @@ kt.app.metadata = new function()
 
 					dataOptions += ']';
 				}
-				
+
 				span = jQuery('<span>')
 					.addClass('descriptiveText')
 					.attr('data-name', field.fieldid)
 					.attr('data-type', dataType)
 					.attr('data-value-id', 'value-'+field.fieldid);
-				
+
 				if (dataOptions.length > 0)
 				{
 					span.attr('data-options', dataOptions);
@@ -535,12 +535,12 @@ kt.app.metadata = new function()
 			case 'large text':
 				classType = 'metadata-textarea';
 				var dataType = 'textarea';
-				if(parseInt(field.options.ishtml))
+				if (parseInt(field.options.ishtml))
 				{
 					type = 'metadata-htmleditor';
 					var dataType = 'htmleditor';
 				}
-				
+
 				span = jQuery('<span>')
 					.addClass('descriptiveText')
 					.attr('data-name', field.fieldid)
@@ -551,18 +551,18 @@ kt.app.metadata = new function()
 				classType = 'metadata-tree';
 				var dataType = 'tree';
 				var dataOptions = '';
-				
+
 				var html = '<span class="descriptiveText" data-name="'+field.fieldid+'" data-type="'+dataType+'" data-options=\''+field.selection+'\' data-value-id="value-'+field.fieldid+'"></span>';
-								
+
 				span = jQuery(html);
 			break;
 			case 'multiselect':
-				if(field.options.type == 'multiwithlist')
+				if (field.options.type == 'multiwithlist')
 				{
 					classType = 'metadata-multilistselect';
 					var dataType = 'multiselect';
 					var dataOptions = '';
-					
+
 					if (field.selection && field.selection.length > 0)
 					{
 						dataOptions = '[["No selection","no value"],';
@@ -573,33 +573,33 @@ kt.app.metadata = new function()
 
 						dataOptions += ']';
 					}
-					
+
 					span = jQuery('<span>')
 						.addClass('descriptiveText')
 						.attr('data-name', field.fieldid+'[]')
 						.attr('data-type', dataType)
 						.attr('data-value-id', 'value-'+field.fieldid);
-					
+
 					if (dataOptions.length > 0)
 					{
 						span.attr('data-options', dataOptions);
 					}
 				}
-				else if(field.options.type == 'multiwithcheckboxes')
+				else if (field.options.type == 'multiwithcheckboxes')
 				{
 					classType = 'metadata-multicheckselect';
 					var datatype = 'checkbox';
-					
+
 					if (field.selection && field.selection.length > 0)
 					{
 						html = '<span>';
-						
+
 						jQuery.each(field.selection, function(index, option){
-							html += '<span class="descriptiveText" data-checked_value="'+option+'" data-value-id="value-'+field.fieldid+'" data-name="'+field.fieldid+'[]" data-type="checkbox"></span>';							
+							html += '<span class="descriptiveText" data-checked_value="'+option+'" data-value-id="value-'+field.fieldid+'" data-name="'+field.fieldid+'[]" data-type="checkbox"></span>';
 						});
-						
+
 						html += '</span>';
-						
+
 						span = jQuery(html);
 					}
 				}
@@ -614,20 +614,20 @@ kt.app.metadata = new function()
 					.attr('data-value-id', 'value-'+field.fieldid);
 			break;
 		}
-		
+
 		var valueSpan = jQuery('<span id="value-'+field.fieldid+'">no value</span>');
-		
+
 		span.append(valueSpan);
-		
+
 		var tableCell = jQuery('<td>');
-		
+
 		tableCell.addClass(classType);
-		
+
 		tableCell.append(span);
-		
+
 		return tableCell;
 	}
-	
+
 	this.setMetadataEditable = function()
 	{
 		jQuery('.detail-fieldset').hover(
@@ -635,7 +635,7 @@ kt.app.metadata = new function()
 			jQuery('.editable-control.metadata', jQuery(this)).css('visibility', 'visible');
 		},
 		function(){
-			if(jQuery('.editable-control.metadata', jQuery(this)).hasClass('edit'))
+			if (jQuery('.editable-control.metadata', jQuery(this)).hasClass('edit'))
 			{
 				jQuery('.editable-control.metadata', jQuery(this)).css('visibility', 'hidden');
 			}
@@ -649,12 +649,12 @@ kt.app.metadata = new function()
 					.removeClass('undo').addClass('edit')
 					.attr('title', 'Click to edit')
 					.css('visibility', 'hidden');
-				
+
 				kt.app.metadata.setEditableRegions();
 			},
 			onInvalid: function(hashInvalids) {
 				var me = jQuery(this);
-				
+
 				//go through the hashtable keys, and get the error message for each
 				jQuery.each(hashInvalids.keys(), function(index, elementID)
 				{
@@ -674,7 +674,7 @@ kt.app.metadata = new function()
 					.removeClass('edit')
 					.addClass('undo')
 					.attr('title', 'Click to undo');
-					
+
 				kt.app.metadata.editing = true;
 			},
 			onError: function() {
@@ -685,18 +685,18 @@ kt.app.metadata = new function()
 				jQuery('.editable-control.metadata', jQuery(this))
 					.removeClass('undo')
 					.addClass('spin');
-				
+
 				var atLeastOneRequiredNotDone = kt.app.metadata.atLeastOneRequiredNotDone(jQuery(this));
-				
+
 				if (atLeastOneRequiredNotDone)
-				{	
+				{
 					jQuery('.editable-control.metadata', jQuery(this))
 						.attr('title', '')
 						.removeClass('spin')
 						.css('cursor', 'default')
 						.unbind('click');
 				}
-				
+
 				return !atLeastOneRequiredNotDone;
 			},
 			afterSave: function(data, status){
@@ -706,8 +706,8 @@ kt.app.metadata = new function()
 					.addClass('edit')
 					.attr('title', 'Click to edit')
 					.css('visibility', 'hidden');
-				
-				if(data)
+
+				if (data)
 				{
 					if (data.success)
 					{
@@ -716,15 +716,15 @@ kt.app.metadata = new function()
 						kt.app.metadata.updateValues(parsedJSON[0]);
 					}
 				}
-				
+
 				//document type can be editable again
 				kt.app.metadata.setEditableRegions();
 			}
 		});
 	}
-	
-	//populate the saved values in the form	
-	this.updateValues = function(fields) 
+
+	//populate the saved values in the form
+	this.updateValues = function(fields)
 	{
 		jQuery.each(fields['fields'], function(index, field)
 		{
@@ -740,7 +740,7 @@ kt.app.metadata = new function()
 					jQuery('#value-'+field.fieldid).text(field.value);
 				break;
 				case 'large text':
-					if(field.options.ishtml)
+					if (field.options.ishtml)
 					{
 						//strip all html tags
 						jQuery('#value-'+field.fieldid).text(field.value.replace(/<\/?[a-z][a-z0-9]*[^<>]*>/ig, ""));
@@ -754,11 +754,11 @@ kt.app.metadata = new function()
 					jQuery('#value-'+field.fieldid).text(field.value);
 				break;
 				case 'multiselect':
-					if(field.options.type == 'multiwithlist')
+					if (field.options.type == 'multiwithlist')
 					{
 						jQuery('#value-'+field.fieldid).text(field.value);
 					}
-					else if(field.options.type == 'multiwithcheckboxes')
+					else if (field.options.type == 'multiwithcheckboxes')
 					{
 						jQuery('#value-'+field.fieldid).text(field.value);
 					}
@@ -766,78 +766,78 @@ kt.app.metadata = new function()
 			}
 		});
 	}
-	
+
 	//check whether all required fields have been completed
 	this.atLeastOneRequiredNotDone = function(element)
 	{
 		var atLeastOneRequiredNotDone = false;
-				
+
 		jQuery('.required', element).each(function(index)
 		{
 			//get the fields id: to chop off the "metadatafield-" prefix
 			var id = (jQuery(this).attr('id').substring(jQuery(this).attr('id').indexOf('-')+1));
-			
+
 			//the first <td> contains the element we are interested in
 			var firstTD = jQuery('td:first', jQuery(this));
-							
-			//the td's class identifies its type				
+
+			//the td's class identifies its type
 			switch(firstTD.attr('class'))
 			{
 				case 'metadata-textbox':
 					var val = jQuery('input:text[name='+id+']').val();
-					
-					if(val == null || val == undefined || val == '' || val == 'no value')
+
+					if (val == null || val == undefined || val == '' || val == 'no value')
 					{
 						jQuery(this).addClass('incomplete');
 						atLeastOneRequiredNotDone = true;
 					}
 				break;
-				
+
 				case 'metadata-date':
 					var val = jQuery('input:text[name='+id+']').val();
-					
-					if(val == null || val == undefined || val == '' || val == 'no value')
+
+					if (val == null || val == undefined || val == '' || val == 'no value')
 					{
 						jQuery(this).addClass('incomplete');
 						atLeastOneRequiredNotDone = true;
 					}
 				break;
-				
+
 				case 'metadata-tree':
 					var val = jQuery('input:radio[name='+id+']:checked').val();
-					
-					if(val == null || val == undefined)
+
+					if (val == null || val == undefined)
 					{
 						jQuery(this).addClass('incomplete');
 						atLeastOneRequiredNotDone = true;
 					}
 				break;
-				
+
 				case 'metadata-multicheckselect':
 					//array to contain all the selected values
 					var vals = new Array();
-					
+
 					jQuery('input:checkbox[name="'+id+'[]"]:checked').each(function()
 					{
 					    vals.push(jQuery(this).val());
 					});
-					
+
 					if (vals.length == 0)
 					{
 						jQuery(this).addClass('incomplete');
 						atLeastOneRequiredNotDone = true;
 					}
 				break;
-				
+
 				case 'metadata-multilistselect':
 					//array to contain all the selected values
 					var vals = new Array();
-					
+
 					jQuery('select[name="'+id+'[]"] option:selected').each(function()
 					{
 					    vals.push(jQuery.trim(jQuery(this).val()));
 					});
-					
+
 					if (vals.length == 0)
 					{
 						jQuery(this).addClass('incomplete');
@@ -853,48 +853,48 @@ kt.app.metadata = new function()
 					//var val = jQuery('#singleselect_'+id).val();
 					var val = jQuery('select[name='+id+']').val();
 
-					if(val == null || val == undefined || val == '' || val == 'no value')
+					if (val == null || val == undefined || val == '' || val == 'no value')
 					{
 						jQuery(this).addClass('incomplete');
 						atLeastOneRequiredNotDone = true;
 					}
 				break;
-				
+
 				case 'metadata-textarea':
 					var val = jQuery('textarea[name='+id+']').val();
-					
-					if(val == null || val == undefined || val == '' || val == 'no value')
+
+					if (val == null || val == undefined || val == '' || val == 'no value')
 					{
 						jQuery(this).addClass('incomplete');
 						atLeastOneRequiredNotDone = true;
 					}
-					
-					
+
+
 				break;
 				case 'metadata-htmleditor':
 					var val = jQuery('#'+id).val();
-					
-					if(val == null || val == undefined || val == 'no value')
+
+					if (val == null || val == undefined || val == 'no value')
 					{
 						jQuery(this).addClass('incomplete');
 						atLeastOneRequiredNotDone = true;
 					}
-					
+
 				break;
 			}
-			
+
 			//don't do this as need to mark each field that wasn't complete
-			//if(atLeastOneRequiredNotDone)
+			//if (atLeastOneRequiredNotDone)
 			//{
 				//return false;
 			//}
 		});
-		
+
 		return atLeastOneRequiredNotDone;
 	}
-	
+
 	// Delete a token from the token list
-	this.deleteToken = function(token) 
+	this.deleteToken = function(token)
 	{
 		// Remove the id from the saved list
 		var token_data = jQuery.data(token.get(0), "tokeninput");
@@ -904,21 +904,21 @@ kt.app.metadata = new function()
 
 		// Delete the token
 		token.remove();
-		ktjapi.callMethod('metadataService.deleteTag', params, function(data, textStatus) 
+		ktjapi.callMethod('metadataService.deleteTag', params, function(data, textStatus)
 		{
 			// Parse the data if necessary
 			data = jQuery.parseJSON(data) ? jQuery.parseJSON(data) : data;
-		}, 
+		},
 		false, function(){}, 30000, 30000);
 	}
-	
-	this.onbeforeunload = function() 
+
+	this.onbeforeunload = function()
 	{
 		if (!kt.app.metadata.editing)
 		{
 			return undefined;
 		}
-		
+
 		var atLeastOneRequiredNotDone = false;
 
 		jQuery('.required').each(function(index, value){
@@ -927,15 +927,14 @@ kt.app.metadata = new function()
 
 			var valueSpan = jQuery('#value-'+id);
 
-			if(valueSpan.text() == null || valueSpan.text() == undefined || valueSpan.text() == '' || valueSpan.text() == 'no value')
+			if (valueSpan.text() == null || valueSpan.text() == undefined || valueSpan.text() == '' || valueSpan.text() == 'no value')
 			{
 				atLeastOneRequiredNotDone = true;
 				jQuery(this).addClass('incomplete');
 			}
 		});
-		
+
 		return atLeastOneRequiredNotDone ? 'If you leave this page now, your metadata will be in an inconsistent state.' : undefined;
 	}
-	
+
 }
- 
