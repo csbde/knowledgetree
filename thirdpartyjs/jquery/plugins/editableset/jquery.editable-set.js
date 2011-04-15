@@ -30,9 +30,8 @@
 		// = Define the Save =
 		// ===================
 	
-		var save = function( self ) {
-			self.editing = false;
-			
+		var save = function( self ) 
+		{
 			//have any fields been marked as invalid?
 			if (!self.invalid.isEmpty())
 			{
@@ -56,6 +55,8 @@
 					return false;
 				}
 			}
+			
+			self.editing = false;
 			
 			//now call the appropriate function
 			var params = $('form', self).serializeForm($.parseJSON(opts.params));
