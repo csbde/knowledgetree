@@ -220,6 +220,10 @@ textarea {
 .breadCrumb	{
 	width: 700px;
 }
+
+.breadCrumb.ondashboard {
+ 	width: 640px;
+}
 .breadCrumb ul {
 	margin: 0;
 	padding: 0;
@@ -271,6 +275,7 @@ textarea {
 	margin-right: 0;
 	padding-right: 0;
 }
+
 .chevronOverlay {
 	display: none;
 	background: url(../graphics/newui/bc_separator_overlay.png) no-repeat 100% 0;
@@ -279,8 +284,9 @@ textarea {
 }
 
 .breadcrumbBtns {
-    float: right;
+    float: none;
     height: 30px;
+    left: 365px;
     margin: 3px 18px 3px 3px;
     position: relative;
 }
