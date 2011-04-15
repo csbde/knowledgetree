@@ -393,7 +393,7 @@ class SharedContent extends KTEntity {
      * @param int $parentId
      * @return mixed - false if no permissions on document, and the permission value if one exists
      */
-    static private function getDocumentPermissions($userId, $objectId = null, $parentId = null)
+    static public function getDocumentPermissions($userId, $objectId = null, $parentId = null)
     {
         // TODO improve this, perhaps with a combined query?
         if (empty($parentId)) {
@@ -420,7 +420,7 @@ class SharedContent extends KTEntity {
      * @param int $parentId
      * @return mixed - false if no permissions on folder, and the permission value if one exists
      */
-    static private function getFolderPermissions($userId, $objectId = null, $parentId = null)
+    static public function getFolderPermissions($userId, $objectId = null, $parentId = null)
     {
         $sql = "SELECT sc.permissions FROM shared_content as sc "
             . "WHERE sc.user_id = '{$userId}' "
