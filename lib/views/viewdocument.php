@@ -141,6 +141,8 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
 
         //$this->addPortlets('Document Details');
         $actions = KTDocumentActionUtil::getDocumentActionsForDocument($this->document, $this->oUser);
+        $info = KTDocumentActionUtil::getDocumentActionsForDocument($this->document, $this->oUser, 'documentinfo');
+        $actions = array_merge($actions, $info);
         $actionBtns = $this->createButtons($actions);
 
         $documentData['document'] = $this->document;
