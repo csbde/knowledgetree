@@ -499,10 +499,8 @@ class KTDocumentEmailAction extends KTDocumentAction {
 
         if (empty($allowAttachment)) { $attachDocument = false; }
 
-        if (empty($allowEmailAddresses)) {
-            $emailAddressList = array();
-        }
-        else if (!empty($externalEmailAddresses)) {
+        $emailAddressList = array();
+        if (!empty($allowEmailAddresses) && !empty($externalEmailAddresses)) {
             $addressList = explode("\n", $externalEmailAddresses);
             foreach ($addressList as $item) {
                 $items = explode(' ', $item);
