@@ -1,5 +1,5 @@
 {$context->oPage->requireCSSResource('resources/css/kt-treewidget.css')}
-<link rel="stylesheet" href="/thirdpartyjs/jquery/plugins/tokenizer/styles/token-input-facebook.css" type="text/css"/>
+<link rel="stylesheet" href="/thirdpartyjs/jquery/plugins/tokenizer/styles/token-input-kt-tags.css" type="text/css"/>
 <script type="text/javascript" src="/thirdpartyjs/jquery/plugins/editableset/jquery.editable-set.js"> </script>
 <script type="text/javascript" src="/thirdpartyjs/jquery/plugins/editableset/jquery.editable-set.extend.js"> </script>
 <script type="text/javascript" src="/resources/js/document/kt.app.metadata.js"> </script>
@@ -68,7 +68,7 @@
 							<th>Tags:</th><td><span class="document-tags"></span><span title="Click to edit" class="editable-control tags edit">&nbsp;</span></td>
 							</tr>
 						</table>
-					
+
 						<div class="document-tags-edit" rel='{literal}{{/literal}"documentID":"{$document->getId()}"{literal}}{/literal}'>
 						<span data-id="tagcloud" data-name="tagcloud" data-type='tokeninput' data-tag-script='{$tagFilterScript}' data-value-id="value-token"></span>
 						<br/>
