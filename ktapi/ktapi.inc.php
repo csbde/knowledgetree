@@ -1309,8 +1309,6 @@ class KTAPI {
 
 	    $results = array($root => $indexed[$root]);
 
-	    //return $results;	//[-1]['fields'][0]['fields'];
-
 	    //strip out the unneccesary outer array
 	    return $results[-1]['fields'];
 	}
