@@ -32,28 +32,30 @@
 <tr>
 	<td width="745" valign="top">
 		<div class="breadcrumbBtns">
-            <nobr>
-			{foreach item=aBtn from=$context->actionBtns.buttons name=btn}
-                {if $aBtn.status === 'disabled'}
-                    <span class="{$aBtn.class} disabled">{$aBtn.name}</span>
-                {else}
-                    <a href="{$aBtn.url}" ><span class="{$aBtn.class}">{$aBtn.name}</span></a>
-                {/if}
-     		{/foreach}
-
-     		{assign var=aSplit value=$context->actionBtns.split}
-     		<div class="splitbutton"><span class="button" id="{$aSplit.class}">{$aSplit.name}</span><span class="split">&#9660;</span></div>
-     		{* Display the drop down menu's on the split buttons *}
-            <ul class="splitmenu" id="more">
-                {foreach item=menuitem from=$aSplit.submenu}
-                    {if $menuitem.status === 'disabled'}
-                        <li><span class="button disabled" id="{$menuitem.icon_class}">{$menuitem.name}</span></li>
-                    {else}
-                        <li><a class="{$menuitem.class}" href="{$menuitem.url}" onclick='{$menuitem.onclick}'>{$menuitem.name}</a></li>
-                    {/if}
-                {/foreach}
-            </ul>
-     		</nobr>
+			<div class="breadcrumbActionBtns">
+	            <nobr>
+				{foreach item=aBtn from=$context->actionBtns.buttons name=btn}
+	                {if $aBtn.status === 'disabled'}
+	                    <span class="{$aBtn.class} disabled">{$aBtn.name}</span>
+	                {else}
+	                    <a href="{$aBtn.url}" ><span class="{$aBtn.class}">{$aBtn.name}</span></a>
+	                {/if}
+	     		{/foreach}
+	
+	     		{assign var=aSplit value=$context->actionBtns.split}
+	     		<div class="splitbutton"><span class="button" id="{$aSplit.class}">{$aSplit.name}</span><span class="split">&#9660;</span></div>
+	     		{* Display the drop down menu's on the split buttons *}
+	            <ul class="splitmenu" id="more">
+	                {foreach item=menuitem from=$aSplit.submenu}
+	                    {if $menuitem.status === 'disabled'}
+	                        <li><span class="button disabled" id="{$menuitem.icon_class}">{$menuitem.name}</span></li>
+	                    {else}
+	                        <li><a class="{$menuitem.class}" href="{$menuitem.url}" onclick='{$menuitem.onclick}'>{$menuitem.name}</a></li>
+	                    {/if}
+	                {/foreach}
+	            </ul>
+	     		</nobr>
+	     	</div>
     	</div>
 <form action="{$browseutil->getActionBaseUrl()}" method="post">
 
