@@ -3562,39 +3562,48 @@ class KTAPI {
     /**
      * Returns a reference to a file to be downloaded.
      *
-	 * @author KnowledgeTree Team
-	 * @access public
-     * @param int $document_id
+     * @author KnowledgeTree Team
+     * @access public
+     * @param int $documentId
      * @return kt_response.
      */
     public function download_document($document_id, $version = null)
     {
-    	$document = &$this->get_document_by_id($document_id);
-		if (PEAR::isError($document))
-    	{
-    		$response['status_code'] = 1;
-    		$response['message'] = $document->getMessage();
-			return $response;
-    	}
+        $document = $this->get_document_by_id($document_id);
+        if (PEAR::isError($document)) {
+            $response['status_code'] = 1;
+            $response['message'] = $document->getMessage();
+            return $response;
+        }
 
-    	$result = $document->download();
-		if (PEAR::isError($result))
-    	{
-    		$response['status_code'] = 1;
-    		$response['message'] = $result->getMessage();
-			return $response;
-    	}
+        $contentVersionId = null;
+        if (!empty($version)) {
+            // Get the content version id for the given document version
+            $contentVersionId = $document->get_content_version_id_from_version($version);
+            if (PEAR::isError($contentVersionId)) {
+                $response['status_code'] = 1;
+                $response['message'] = $contentVersionId->getMessage();
+                return $response;
+            }
+        }
 
-    	$session = &$this->get_session();
-    	$download_manager = new KTDownloadManager();
-    	$download_manager->set_session($session->session);
-    	$download_manager->cleanup();
-    	$url = $download_manager->allow_download($document);
+        $result = $document->download($version);
+        if (PEAR::isError($result)) {
+            $response['status_code'] = 1;
+            $response['message'] = $result->getMessage();
+            return $response;
+        }
 
-    	$response['status_code'] = 0;
-		$response['results'] = urlencode($url);
+        $session = &$this->get_session();
+        $downloadManager = new KTDownloadManager();
+        $downloadManager->set_session($session->session);
+        $downloadManager->cleanup();
+        $url = $downloadManager->allow_download($document, $contentVersionId);
 
-    	return $response;
+        $response['status_code'] = 0;
+        $response['results'] = urlencode($url);
+
+        return $response;
     }
 
     /**
