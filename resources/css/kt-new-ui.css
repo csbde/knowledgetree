@@ -193,7 +193,8 @@ textarea {
 	padding-left: 0px;
 	text-shadow: 0px 1px 0px #fff;
 }
-#breadcrumbs a {
+#breadcrumbs a,
+#breadcrumbs span.primary {
 	padding: 7px 5px 0px 5px;
 	height: 23px;
 	display: inline-block;
@@ -225,10 +226,6 @@ textarea {
 /* ------------------ prototype breadcrumbs -------------- */
 .breadCrumb	{
 	width: 700px;
-}
-
-.breadCrumb.ondashboard {
- 	width: 640px;
 }
 .breadCrumb ul {
 	margin: 0;
@@ -281,7 +278,6 @@ textarea {
 	margin-right: 0;
 	padding-right: 0;
 }
-
 .chevronOverlay {
 	display: none;
 	background: url(../graphics/newui/bc_separator_overlay.png) no-repeat 100% 0;
@@ -289,15 +285,11 @@ textarea {
 	height: 30px;
 }
 
-.breadcrumbActionBtns {
-	float: right;
-	position: relative;
-}
-
 .breadcrumbBtns {
+    float: right;
     height: 30px;
     margin: 3px 18px 3px 3px;
-    
+    position: relative;
 }
 .breadcrumbBtns a {
     height: 16px;
@@ -335,6 +327,9 @@ breadcrumbBtns a:active {
 .breadcrumbBtns span.new-onlinedoc {
 	background: url('../graphics/newui/document_add.png') no-repeat 2px 4px !important;
 }
+.breadcrumbBtns .split #more {
+	background: url('../graphics/newui/icons/more.png') no-repeat 2px 0px !important;
+}
 .breadcrumbBtns .splitmenu li {
 	padding: 2px 5px;
 }
@@ -351,10 +346,10 @@ breadcrumbBtns a:active {
     height: 23px;
     font-weight: normal;
     position: relative;
-	top: 2px;
+	top: 1px;
 }
 .breadcrumbBtns .split {
-    height: 17px;
+    height: 19px;
     display: block;
     border-left: 0px;
     font-weight: normal;
@@ -363,6 +358,7 @@ breadcrumbBtns a:active {
     border-radius: 3px;
     -webkit-border-radius: 3px;
     -moz-border-radius: 3px;
+    padding: 2px 4px;
 }
 #content .breadcrumbBtns .split.selected {
 	background: none!important;
@@ -374,10 +370,12 @@ breadcrumbBtns a:active {
 	display: inline;
 }
 #content .breadcrumbBtns .splitmenu {
-	right: 0px;
 	z-index: 200;
-	margin: 1px 4px 0px -1px;
-
+	margin: 1px 4px 0px 0px;
+	position: absolute;
+	float: right;
+	right: 0px;
+	left: auto;
 }
 
 
@@ -516,7 +514,7 @@ ul.floatleft li.notification {
 	border-right: 1px solid #ccc;
 	line-height: 24px;
 }
-.action_buttons.below
+
 .action_buttons .action .disabled {
 	opacity: 0.5;
 	cursor: default;
