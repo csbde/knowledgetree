@@ -616,7 +616,7 @@ a.main_nav_item {
 {
     font-weight: normal;
     padding: 0 1em;
-    color: black;
+    color: #666;
 }
 
 #content input,
@@ -847,6 +847,7 @@ a.main_nav_item {
     vertical-align: middle;
     padding: 2px 0px;
 	color: #2F6594;
+	float: left;
 }
 
 .metadatatable .versioned td {
@@ -1027,6 +1028,7 @@ a.main_nav_item {
     border-bottom: 1px solid #888;
     text-align: left;
     white-space: normal !important;
+    font-weight: bold;
 }
 
 .kt_collection th.sort_on.sort_asc {
@@ -1389,7 +1391,7 @@ The text will be hidden for screen view.  The generic fahrner-ish approach comes
     width: 49%;
     margin-top: 0;
     margin-left: 0;
-    padding-right: 20px;
+    padding-right: 19px;
     float: left;
     padding-bottom: 2em;
     height: 100%;
