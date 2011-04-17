@@ -847,6 +847,7 @@ a.main_nav_item {
     vertical-align: middle;
     padding: 2px 0px;
 	color: #2F6594;
+	float: left;
 }
 
 .metadatatable .versioned td {
