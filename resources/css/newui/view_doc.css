@@ -105,10 +105,14 @@ div.viewletworkflow {
 	color: #2f6594;
 	text-shadow: 0px 1px 0px white;
 }
-#content .hover .button {
+#content .action .hover a.button,
+#content .action .splitbutton.hover .button {
 	text-decoration: none;
 	text-shadow: 0px -1px 0px #2F6594;
-	color: white!important;
+	color: white;
+}
+#content .action .splitmenu span.button:hover {
+	color: #2f6594!important;
 }
 .edit-online {
 	padding-right: 10px;
@@ -137,10 +141,10 @@ div.viewletworkflow {
 	background: white;
 	border: 1px solid #CCC;
 	margin: -4px -1px 0px -1px;
-	min-width: 120px;
+	min-width: 135px;
 	font-size: 11px;
 	padding: 0px;
-	right: auto; 
+	left: 0px; 
 }
 #content ul#checkin {
 	width: 150px;
@@ -392,7 +396,7 @@ div.viewletworkflow {
 */
 
 .activityfeed{
-    margin-right: 70px;
+    margin-right: 30px;
     font-family: Arial,Helvetica,sans-serif;
     font-size: 12px;
     padding: 2px 0px;
@@ -422,7 +426,8 @@ div.viewletworkflow {
 	opacity: 0.5;
 	color: #666!important;
 }
-.activityfeed .item{
+.activityfeed .item.transaction,
+.activityfeed .item.comment{
     display: block;
     clear: both;
     float: none;
@@ -467,7 +472,7 @@ div.viewletworkflow {
     float: right;
     background: #A10000 url('../../graphics/newui/tagarrow.gif') left center no-repeat;
     color: #FFFFFF;
-    margin-right: -40px;
+    margin-right: -60px;
     margin-top: -20px;
     display: block;
     font-size: 11px;

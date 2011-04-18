@@ -12,9 +12,10 @@
 	    </ul>
 
 		{if !is_null($comment)}
-			<br />
-			<h3>{i18n}Last Comment{/i18n}</h3>
-			<i>"{$comment}"</i>
-			<br />
+			<p style="font-size: 11px; padding: 10px; color: rgb(102, 102, 102);">
+				{i18n}Last Comment{/i18n}
+			</p>
+			<i style="font-size: 11px;">"{$comment}"</i>
+			
 		{/if}
 {/if}

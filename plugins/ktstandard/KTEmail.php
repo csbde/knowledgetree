@@ -37,7 +37,6 @@
  */
 
 require_once(KT_LIB_DIR . '/actions/actionregistry.inc.php');
-
 require_once(KT_LIB_DIR . '/email/Email.inc');
 require_once(KT_LIB_DIR . '/users/User.inc');
 require_once(KT_LIB_DIR . '/groups/Group.inc');
@@ -79,7 +78,7 @@ function sendGroupEmails($groupIds, &$userEmails, &$emailErrors)
                 // the user has an email address and has email notification enabled
                 if (strlen($users[$j]->getEmail()) > 0 && $users[$j]->getEmailNotification()) {
                     //if the to address is valid, send the mail
-                    if (validateEmailAddress($users[$j]->getEmail())) {
+                    if (KTEmailPluginUtil::validateEmailAddress($users[$j]->getEmail())) {
                         // use the email address as the index to ensure the user is only sent 1 email
                         $userEmails[$users[$j]->getEmail()] = $users[$j]->getName();
                     }
@@ -113,7 +112,7 @@ function sendUserEmails($userIds, &$userEmails, &$emailErrors)
             // the user has an email address and has email notification enabled
             if (strlen($destUser->getEmail()) > 0 && $destUser->getEmailNotification()) {
                 //if the to address is valid, send the mail
-                if (validateEmailAddress($destUser->getEmail())) {
+                if (KTEmailPluginUtil::validateEmailAddress($destUser->getEmail())) {
                     // use the email address as the index to ensure the user is only sent 1 email
                     $userEmails[$destUser->getEmail()] = $destUser->getName();
                 }
@@ -138,7 +137,7 @@ function sendManualEmails($emailAddresses, &$userEmails, &$emailErrors)
     // loop through users
     foreach ($emailAddresses as $emailAddress) {
         $default->log->info('sendingEmail to address ' .  $emailAddress);
-        if (validateEmailAddress($emailAddress)) {
+        if (KTEmailPluginUtil::validateEmailAddress($emailAddress)) {
             // use the email address as the index to ensure the user is only sent 1 email
             $userEmails[$emailAddress] = '';
         }
@@ -148,52 +147,38 @@ function sendManualEmails($emailAddresses, &$userEmails, &$emailErrors)
 function sendExternalEmails($emailAddressList, $documentId, $documentName, $comment, &$emailErrors)
 {
     global $default;
+
     $sendingUser = User::get($_SESSION['userID']);
 
     // Create email content
-    /*
-    $message = '<font face="arial" size="2">';
-    $message .= sprintf(_kt("Your colleague, %s, wishes you to view the document entitled '%s'."), $sendingUser->getName(), $documentName);
-    $message .= " \n";
-    $message .= _kt('Click on the hyperlink below to view it.') . '<br><br>';
-    $msgEnd = '<br><br>' . _kt('Comments') . ':<br>' . $comment;
-    $msgEnd .= '</font>';
-
-    $title = sprintf(_kt("Link (ID %s): %s from %s"), $documentId, $documentName, $sendingUser->getName());
-    */
     $title = sprintf(_kt("%s wants to share a document using KnowledgeTree"), $sendingUser->getName());
 
     $message = '<br>
-	               &#160;&#160;&#160;&#160;' . _kt('Hello') . ',
-	               <br />
-	               <br />
-	               &#160;&#160;&#160;&#160;' . sprintf(_kt('A KnowledgeTree user, %s, wants to share a document with you entitled "%s".'), $sendingUser->getName(), $documentName).'
-	               <br />
-	               <br />';
-	if (strlen(trim($comment)) > 1) {
+                   &#160;&#160;&#160;&#160;' . _kt('Hello') . ',
+                   <br />
+                   <br />
+                   &#160;&#160;&#160;&#160;' . sprintf(_kt('A KnowledgeTree user, %s, wants to share a document with you entitled "%s".'), $sendingUser->getName(), $documentName).'
+                   <br />
+                   <br />';
+    if (strlen(trim($comment)) > 1) {
             $message .= '&#160;&#160;&#160;&#160;<b>'._kt('Message').':</b>
-	               <br />
-	               <br />
-	               &#160;&#160;&#160;&#160;' . $comment . '
-	               <br />
-	               <br />';
-	}
-    $message .= '&#160;&#160;&#160;&#160;'._kt('<b>KnowledgeTree is easy to use open source document management software</b><br />&#160;&#160;&#160;&#160;that helps businesses collaborate, securely store all critical documents, address<br />&#160;&#160;&#160;&#160;compliance challenges, and improve business processes.').'
-	               <br />
-	               <br />';
-
-    $emailFromAddress = null;
-    $emailFrom = null;
-    $config =& KTConfig::getSingleton();
-    if (!$config->get('email/sendAsSystem')) {
-        $emailFromAddress = $sendingUser->getEmail();
-        $emailFrom = $sendingUser->getName();
+                   <br />
+                   <br />
+                   &#160;&#160;&#160;&#160;' . $comment . '
+                   <br />
+                   <br />';
     }
+    $message .= '&#160;&#160;&#160;&#160;'._kt('<b>KnowledgeTree is easy to use open source document management software</b><br />&#160;&#160;&#160;&#160;that helps businesses collaborate, securely store all critical documents, address<br />&#160;&#160;&#160;&#160;compliance challenges, and improve business processes.').'
+                   <br />
+                   <br />';
+
+    $senderData = KTEmailPluginUtil::getSenderData($sendingUser);
+    extract($senderData);
 
     $counter = 0;
     foreach ($emailAddressList as $address) {
         $mailer = new Email($emailFromAddress, $emailFrom);
-        if (validateEmailAddress($address)) {
+        if (KTEmailPluginUtil::validateEmailAddress($address)) {
             // Add to list of addresses
             $destEmails .= (empty($destEmails)) ? $address : ', ' . $address;
 
@@ -205,12 +190,10 @@ function sendExternalEmails($emailAddressList, $documentId, $documentName, $comm
             $downloadManager->set_session($session);
             $link = $downloadManager->allow_download($documentId);
 
-            //            $link = "<a href=\"{$link}\">{$link}</a>";
             $links = '&#160;&#160;&#160;&#160;<a href="http://www.knowledgetree.com/products">' . _kt('Learn More') . '</a>';
             $links.= "&#160;|&#160;<a href=\"{$link}\">" . _kt('View Document') . "</a>";
             $links .= '&#160;|&#160;<a href="https://www.knowledgetree.com/free-trial">' . _kt('Sign Up for a Free Trial') . '</a><br /><br />';
 
-            //            $msg = $message . $link . $msgEnd;
             $msg = $message . $links;
             $res = $mailer->send(array($address), $title, $msg);
 
@@ -226,18 +209,7 @@ function sendExternalEmails($emailAddressList, $documentId, $documentName, $comm
 
         $default->log->info("Send email ($title) to external addresses $destEmails");
 
-        // emailed link transaction
-        // need a document to do this.
-        $document =& Document::get($documentId);
-
-        $documentTransaction = new DocumentTransaction($document, sprintf(_kt("Document link emailed to external addresses %s. "), $destEmails) . $comment, 'ktcore.transactions.email_link');
-
-        if ($documentTransaction->create()) {
-            $default->log->debug("emailBL.php created email link document transaction for document ID=$documentId");
-        }
-        else {
-            $default->log->error("emailBL.php couldn't create email link document transaction for document ID=$documentId");
-        }
+        KTEmailPluginUtil::createDocumentTransaction($documentId, "Document link emailed to external addresses %s. ", $comment, 'ktcore.transactions.email_link', $destEmails);
     }
 }
 
@@ -258,149 +230,151 @@ function sendEmailDocument($destEmailAddress, $documentId, $documentName, $comme
 {
     global $default;
 
-    $storageManager = KTStorageManagerUtil::getSingleton();
     // Get the email list as a string for the logs
     $destEmails = implode(',', $destEmailAddress);
     $sendingUser = User::get($_SESSION['userID']);
 
-    $message .= sprintf(_kt("Your colleague, %s, wishes you to view the attached document entitled '%s'."), $sendingUser->getName(), $documentName);
-    $message .= "\n\n";
-	$message .= _kt('Click on the hyperlink below to view it.') . '<br>';
-	// add the link to the document to the mail
-	$message .= '<br>' . generateControllerLink('viewDocument', "fDocumentID=$documentId", $documentName, true);
-	// add additional comment
-	if (strlen(trim($comment)) > 1) {
-		$message .= '<br><br><b>' . _kt('Message') . ':</b><br><br>' . nl2br($comment);
-	}
     $title = sprintf(_kt("Document (ID %s): %s from %s"), $documentId, $documentName, $sendingUser->getName());
 
-    $emailFromAddress = null;
-    $emailFrom = null;
-    $oConfig =& KTConfig::getSingleton();
-    if (!$oConfig->get('email/sendAsSystem')) {
-        $emailFromAddress = $sendingUser->getEmail();
-        $emailFrom = $sendingUser->getName();
+    $message .= sprintf(_kt("Your colleague, %s, wishes you to view the attached document entitled '%s'."), $sendingUser->getName(), $documentName);
+    $message .= "\n\n";
+    $message .= _kt('Click on the hyperlink below to view it.') . '<br>';
+    // add the link to the document to the mail
+    $message .= '<br>' . generateControllerLink('viewDocument', "fDocumentID=$documentId", $documentName, true);
+    // add additional comment
+    if (strlen(trim($comment)) > 1) {
+        $message .= '<br><br><b>' . _kt('Message') . ':</b><br><br>' . nl2br($comment);
     }
 
-    $mailer = new Email($emailFromAddress, $emailFrom);
+    // Request a standard file path so that it can be attached to the email.
+    $storageManager = KTStorageManagerUtil::getSingleton();
     $document = Document::get($documentId);
-
-    // Request a standard file path so that it can be attached to the
-    // email
     $documentPath = $storageManager->createTemporaryFile($document);
-
     $documentFileName = $document->getFileName();
+
+    $senderData = KTEmailPluginUtil::getSenderData($sendingUser);
+    extract($senderData);
+
+    $mailer = new Email($emailFromAddress, $emailFrom);
     $res = $mailer->sendAttachment($destEmailAddress, $title, $message, $documentPath, $documentFileName);
+    $emailErrors = KTEmailPluginUtil::checkEmailErrors($res);
+
+    KTEmailPluginUtil::createDocumentTransaction($documentId, "Document copy emailed to %s. ", $comment, 'ktcore.transactions.email_attachment', $destEmails);
 
     // Tell the storage we don't need the temporary file anymore.
     $storageManager->deleteTemporaryFile($documentPath);
-
-    if (PEAR::isError($res)) {
-        $default->log->error($res->getMessage());
-        $emailErrors[] = $res->getMessage();
-        return $res;
-    }
-    else if ($res === false) {
-        $default->log->error("Error sending email ($title) to $destEmails");
-        $emailErrors[] = "Error sending email ($title) to $destEmails";
-        return PEAR::raiseError(sprintf(_kt("Error sending email (%s) to %s"), $title, $destEmails));
-    }
-    else {
-        $default->log->info("Send email ($title) to $destEmails");
-    }
-
-    // emailed link transaction
-    $documentTransaction = new DocumentTransaction($document, sprintf(_kt("Document copy emailed to %s. "), $destEmails) . $comment, 'ktcore.transactions.email_attachment');
-    if ($documentTransaction->create()) {
-        $default->log->debug("emailBL.php created email link document transaction for document ID=$documentId");
-    }
-    else {
-        $default->log->error("emailBL.php couldn't create email link document transaction for document ID=$documentId");
-    }
 }
 
 function sendEmailHyperlink($destEmailAddress, $documentId, $documentName, $comment, &$emailErrors)
 {
     global $default;
+
     // Get the email list as a string for the logs
     $destEmails = implode(',', $destEmailAddress);
-	$sendingUser = User::get($_SESSION['userID']);
+    $sendingUser = User::get($_SESSION['userID']);
+
+    $title = sprintf(_kt("Link (ID %s): %s from %s"), $documentId, $documentName, $sendingUser->getName());
 
     $message = '<font face="arial" size="2">';
-    /*
-    if ($sDestUserName) {
-    $message .= $sDestUserName . ',<br><br>';
+    $message .= sprintf(
+                        _kt("Your colleague, %s, wishes you to view the document entitled '%s'."),
+                        $sendingUser->getName(),
+                        $documentName
+                );
+    $message .= " \n";
+    $message .= _kt('Click on the hyperlink below to view it.') . '<br>';
+    // add the link to the document to the mail
+    $message .= '<br>' . generateControllerLink('viewDocument', "fDocumentID=$documentId", $documentName, true);
+    // add optional comment
+    if (strlen(trim($comment)) > 1) {
+        $message .= '<br><br><b>' . _kt('Message') . ':</b><br><br>' . nl2br($comment);
     }
-    */
-	$message .= sprintf(_kt("Your colleague, %s, wishes you to view the document entitled '%s'."), $sendingUser->getName(), $documentName);
-	$message .= " \n";
-	$message .= _kt('Click on the hyperlink below to view it.') . '<br>';
-	// add the link to the document to the mail
-	$message .= '<br>' . generateControllerLink('viewDocument', "fDocumentID=$documentId", $documentName, true);
-	// add optional comment
-	if (strlen(trim($comment)) > 1) {
-		$message .= '<br><br><b>' . _kt('Message') . ':</b><br><br>' . nl2br($comment);
-	}
-	$message .= '</font>';
-	$title = sprintf(_kt("Link (ID %s): %s from %s"), $documentId, $documentName, $sendingUser->getName());
+    $message .= '</font>';
 
-	$emailFromAddress = null;
-    $emailFrom = null;
-    $config =& KTConfig::getSingleton();
-
-    if (!$config->get('email/sendAsSystem')) {
-        $emailFromAddress = $sendingUser->getEmail();
-        $emailFrom = $sendingUser->getName();
-    }
+    $senderData = KTEmailPluginUtil::getSenderData($sendingUser);
+    extract($senderData);
 
     $mailer = new Email($emailFromAddress, $emailFrom);
-
     $res = $mailer->send($destEmailAddress, $title, $message);
-    if (PEAR::isError($res)) {
-        $default->log->error($res->getMessage());
-        $emailErrors[] = $res->getMessage();
-        return $res;
-    }
-    else if ($res === false) {
-        $default->log->error("Error sending email ($title) to $destEmails");
-        $emailErrors[] = "Error sending email ($title) to $destEmails";
-        return PEAR::raiseError(sprintf(_kt("Error sending email (%s) to %s"), $title, $destEmails));
-    }
-    else {
-        $default->log->info("Send email ($title) to $destEmails");
-    }
+    $emailErrors = KTEmailPluginUtil::checkEmailErrors($res);
 
-    // emailed link transaction
-    // need a document to do this.
-    $document =& Document::get($documentId);
-
-    $documentTransaction = new DocumentTransaction($document, sprintf(_kt("Document link emailed to %s. "), $destEmails) . $comment, 'ktcore.transactions.email_link');
-
-    if ($documentTransaction->create()) {
-        $default->log->debug("emailBL.php created email link document transaction for document ID=$documentId");
-    }
-    else {
-        $default->log->error("emailBL.php couldn't create email link document transaction for document ID=$documentId");
-    }
+    KTEmailPluginUtil::createDocumentTransaction($documentId, "Document link emailed to %s. ", $comment, 'ktcore.transactions.email_link', $destEmails);
 }
 
-function validateEmailAddress($emailAddress)
-{
-    $emailAddressList = array();
-    if (strpos($emailAddress, ';')) {
-        $emailAddressList = explode(';', $emailAddress);
-    }
-    else {
-        $emailAddressList[] = $emailAddress;
+class KTEmailPluginUtil {
+
+    public static function getSenderData($sendingUser)
+    {
+        $emailFromAddress = null;
+        $emailFrom = null;
+        $config =& KTConfig::getSingleton();
+        if (!$config->get('email/sendAsSystem')) {
+            $emailFromAddress = $sendingUser->getEmail();
+            $emailFrom = $sendingUser->getName();
+        }
+
+        return compact('emailFromAddress', 'emailFrom');
     }
 
-    $toReturn = true;
-    for ($i = 0; $i < count($emailAddressList); ++$i) {
-        $result = ereg("^[^@ ]+@[^@ ]+\.[^@ \.]+$", $emailAddressList[$i]);
-        $toReturn = $toReturn && $result;
+    public static function validateEmailAddress($emailAddress)
+    {
+        $emailAddressList = array();
+        if (strpos($emailAddress, ';')) {
+            $emailAddressList = explode(';', $emailAddress);
+        }
+        else {
+            $emailAddressList[] = $emailAddress;
+        }
+
+        $toReturn = true;
+        for ($i = 0; $i < count($emailAddressList); ++$i) {
+            $result = ereg("^[^@ ]+@[^@ ]+\.[^@ \.]+$", $emailAddressList[$i]);
+            $toReturn = $toReturn && $result;
+        }
+
+        return $toReturn;
     }
 
-    return $toReturn;
+    // FIXME Too many arguments, compact somehow.
+    public static function createDocumentTransaction($documentId, $description, $comment, $namespace, $destEmails)
+    {
+        global $default;
+
+        $document = Document::get($documentId);
+        $description = sprintf(_kt($description), $destEmails) . $comment;
+        $documentTransaction = new DocumentTransaction($document, $description, $namespace);
+        if ($documentTransaction->create()) {
+            $default->log->debug("emailBL.php created email link document transaction for document ID=$documentId");
+        }
+        else {
+            $default->log->error("emailBL.php couldn't create email link document transaction for document ID=$documentId");
+        }
+    }
+
+    // TODO Consider sending $emailErrors to this function, in case there already were errors?
+    public static function checkEmailErrors($res)
+    {
+        global $default;
+
+        $emailErrors = null;
+
+        if (PEAR::isError($res)) {
+            $default->log->error($res->getMessage());
+            $emailErrors[] = $res->getMessage();
+            return $res;
+        }
+        else if ($res === false) {
+            $default->log->error("Error sending email ($title) to $destEmails");
+            $emailErrors[] = "Error sending email ($title) to $destEmails";
+            return PEAR::raiseError(sprintf(_kt("Error sending email (%s) to %s"), $title, $destEmails));
+        }
+        else {
+            $default->log->info("Send email ($title) to $destEmails");
+        }
+
+        return $emailErrors;
+    }
+
 }
 
 
