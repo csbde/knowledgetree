@@ -159,9 +159,10 @@ ktjapi = new function() {
         var success = (function(callback) {
             return function(ds, st, xhr) {
                 var data;
+                var response;
                 xhr = xhr.responseText;
                 try {
-                    var response = xhr.split('|');
+                    response = xhr.split('~|~');
                     for (var idx = 0; idx < response.length; ++idx) {
                         data = ktjapi._lib.String.json.decode(response[idx]);
                         if (data.errors.hadErrors > 0) {
@@ -174,7 +175,6 @@ ktjapi = new function() {
                 } catch(e) {
                     data = {auth:{}, data:{}, status:{random_token:'', session_id:''}, request:{}, raw:xhr, errors:{hadErrors:1, errors:[{message:'JSON From Server Incorrect', type:''}]}};
                     ktjapi.evt.trigger(ktjapi.cfg.get('JSONerrorEventName'), data);
-                    //return;
                 }
             };
         } (callback));
@@ -993,12 +993,12 @@ ktjapi.ajax = new function() {
         }
 
         ktjapi.q.ajax({
-            url:		url,
-            success:	success,
-            error:		errors,
-            type:		'GET',
-            timeout:	timeout,
-            async:		!sync
+            url: url,
+            success: success,
+            error: errors,
+            type: 'GET',
+            timeout: timeout,
+            async: !sync
         });
     };
 

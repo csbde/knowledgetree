@@ -59,6 +59,9 @@ kt.eventhandler = new function() {
 
 }
 
-jQuery(window).load(function() {
+// NOTE Would prefer this to use (window).load, but this is delayed on the document details page
+//      when there is a thumbnail/instant view - these delay the onload event enough that a user
+//      can kick off additional requests for content which is still coming.
+jQuery(document).ready(function() {
     kt.eventhandler.run();
 });

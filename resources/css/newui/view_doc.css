@@ -145,6 +145,10 @@ div.viewletworkflow {
 #content ul#checkin {
 	width: 150px;
 }
+.splitmenu {
+	left: 230px;
+	z-index: 1;
+}
 .splitmenu li {
 	list-style: none;
 	border-bottom: 1px solid #CCC;

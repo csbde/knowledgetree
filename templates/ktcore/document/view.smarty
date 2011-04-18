@@ -1,5 +1,5 @@
 {$context->oPage->requireCSSResource('resources/css/kt-treewidget.css')}
-<link rel="stylesheet" href="/thirdpartyjs/jquery/plugins/tokenizer/styles/token-input-facebook.css" type="text/css"/>
+<link rel="stylesheet" href="/thirdpartyjs/jquery/plugins/tokenizer/styles/token-input-kt-tags.css" type="text/css"/>
 <script type="text/javascript" src="/thirdpartyjs/jquery/plugins/editableset/jquery.editable-set.js"> </script>
 <script type="text/javascript" src="/thirdpartyjs/jquery/plugins/editableset/jquery.editable-set.extend.js"> </script>
 <script type="text/javascript" src="/resources/js/document/kt.app.metadata.js"> </script>
@@ -42,16 +42,16 @@
                         <span class="doc_info" style="display: block;">
                         <table class="metadatatable">
                         	<tr>
-								<th style="width: 100px;">Version:</th><td><a href="">{$document->getMajorVersionNumber()}.{$document->getMinorVersionNumber()}</a></td>
+								<th style="width: 100px;">Version:</th><td><a href="{$rootUrl}/action.php?kt_path_info=ktcore.actions.document.versionhistory&fDocumentId={$document_id}">{$document->getMajorVersionNumber()}.{$document->getMinorVersionNumber()}</a></td>
 							</tr>
 							<tr>
-								<th>Last Modified by:</th><td><a href="">{$doc_data.lastModifier}</a> on {$document->getDisplayLastModifiedDate()|date_format:"%B %e, %Y at %H:%M"}</td>
+								<th>Last Modified by:</th><td>{$doc_data.lastModifier} on {$document->getDisplayLastModifiedDate()|date_format:"%B %e, %Y at %H:%M"}</td>
 							</tr>
 							<tr>
-								<th>Created by:</th><td><a href="">{$doc_data.creator}</a> on {$document->getDisplayCreatedDateTime()|date_format:"%B %e, %Y at %H:%M"}</td>
+								<th>Created by:</th><td>{$doc_data.creator} on {$document->getDisplayCreatedDateTime()|date_format:"%B %e, %Y at %H:%M"}</td>
 							</tr>
 							<tr>
-								<th>Owned by:</th><td><a href="">{$doc_data.owner}</a></td>
+								<th>Owned by:</th><td>{$doc_data.owner}</td>
 							</tr>
 						{if $document->getIsCheckedOut()}
 							<tr>
@@ -68,7 +68,7 @@
 							<th>Tags:</th><td><span class="document-tags"></span><span title="Click to edit" class="editable-control tags edit">&nbsp;</span></td>
 							</tr>
 						</table>
-					
+
 						<div class="document-tags-edit" rel='{literal}{{/literal}"documentID":"{$document->getId()}"{literal}}{/literal}'>
 						<span data-id="tagcloud" data-name="tagcloud" data-type='tokeninput' data-tag-script='{$tagFilterScript}' data-value-id="value-token"></span>
 						<br/>
