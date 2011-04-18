@@ -91,11 +91,20 @@ class KTDocumentSidebar extends KTDocumentViewlet {
 
 class KTWorkflowSidebar extends KTDocumentSidebar {
 	public $sName = 'ktcore.sidebar.workflow';
-	public $order = 4;
 	public $_sShowPermission = 'ktcore.permissions.read';
+	public $order = 4;
+	public $showIfRead = true;
 	
 	public function getCSSName() { return 'workflow_transitions'; }
 	
+    public function getInfo() {
+        if ($this->_show() === false) {
+            return null;
+        }
+        
+        return true;
+    }
+    
 	public function display_viewlet() {
 		$oTemplating = KTTemplating::getSingleton();
 		$oTemplate = $oTemplating->loadTemplate('ktcore/document/sidebars/workflow');
