@@ -160,6 +160,7 @@
 	-moz-border-radius: 3px;
 	border-radius: 3px;
 	background: white;
+	border: 1px solid white;
 }
 .doc.browseView .doc.icon_cell .doc.icon:hover .doc.preview { display: block; }
 .doc.browseView .doc.summary_cell .title { display: inline-block; font-size: 14px; font-weight: bold; padding-bottom: 5px; margin-right: 15px; height: 15px; overflow: hidden; }

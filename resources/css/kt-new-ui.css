@@ -367,7 +367,8 @@ breadcrumbBtns a:active {
     -moz-border-radius: 3px;
     padding: 2px 4px;
 }
-#content .breadcrumbBtns .split.selected {
+#content .breadcrumbBtns .split.selected,
+#content .breadcrumbBtns .split:hover {
 	background: none!important;
 	border: 1px solid #ccc;
 }
