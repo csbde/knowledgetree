@@ -59,12 +59,19 @@ class KTDocumentSidebar extends KTDocumentViewlet {
 		$sidebars = KTDocumentActionUtil::getDocumentActionsForDocument($this->oDocument, $this->oUser, 'documentsidebar');
 		$ordered = array();
         foreach ($sidebars as $sidebar) {
-        	if(isset($ordered[$sidebar->getOrder()])) {
-        		$ordered[$sidebar->getOrder() + 1] = $sidebar;
-        	} else {
-        		$ordered[$sidebar->getOrder()] = $sidebar;
+        	$info = $sidebar->getInfo();
+        	if($info != null) {
+        		$order = $sidebar->getOrder();
+        		// Sidebars cannot overwrite each other.
+	        	if(isset($ordered[$sidebar->getOrder()])) {
+	        		$ordered[$order + 1] = $sidebar;
+	        	} else {
+	        		$ordered[$order] = $sidebar;
+	        	}
         	}
         }
+        // Sort to rewrite keys.
+        sort($ordered);
 		$oTemplating = KTTemplating::getSingleton();
 		$oTemplate = $oTemplating->loadTemplate('ktcore/document/sidebars/viewSidebar');
         $aTemplateData = array(

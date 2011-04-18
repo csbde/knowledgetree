@@ -118,7 +118,7 @@ kt.app.metadata = new function()
 				//check whether all the required fields have been completed
 				var requiredDone = true;
 				var val = jQuery('input:text[name=documentTitle]').val();
-							
+				val = jQuery.trim(val);
 				if(val == null || val == undefined || val == '' || val == 'no value')
 				{
 					jQuery('.editable-control.title', jQuery(this))
@@ -206,7 +206,7 @@ kt.app.metadata = new function()
 				
 				var requiredDone = true;
 				var val = jQuery('input:text[name=documentFilename]').val();
-							
+				val = jQuery.trim(val);
 				if(val == null || val == undefined || val == '' || val == 'no value')
 				{
 					jQuery('.editable-control.filename', jQuery(this))

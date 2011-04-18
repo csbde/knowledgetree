@@ -65,10 +65,13 @@ class KTFolderSidebar extends KTFolderViewlet {
 		$sidebars = KTFolderActionUtil::getFolderActionsForFolder($this->oFolder, $this->oUser, 'foldersidebar');
 		$ordered = array();
         foreach ($sidebars as $sidebar) {
-        	if(isset($ordered[$sidebar->getOrder()])) {
-        		$ordered[$sidebar->getOrder() + 1] = $sidebar;
-        	} else {
-        		$ordered[$sidebar->getOrder()] = $sidebar;
+        	$info = $sidebar->getInfo();
+        	if($info != null) {
+	        	if(isset($ordered[$sidebar->getOrder()])) {
+	        		$ordered[$sidebar->getOrder() + 1] = $sidebar;
+	        	} else {
+	        		$ordered[$sidebar->getOrder()] = $sidebar;
+	        	}
         	}
         }
 		$oTemplating = KTTemplating::getSingleton();

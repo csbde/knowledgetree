@@ -78,7 +78,7 @@ class AdminSplashDispatcher extends KTAdminDispatcher {
             }
         }
 
-        $this->oPage->hideSection();
+        //$this->oPage->hideSection();
         $oTemplating =& KTTemplating::getSingleton();
 
         global $default;
