@@ -938,15 +938,25 @@ a.main_nav_item {
 }
 #content #title_row input.required,
 #content .doc_description .required input,
-#content .doc_description .required select {
+#content .doc_description .required select,
+#content .doc_description .required textarea,
+#content .doc_description .required .kt_treenodes,
+#content .metadatatable .metadatarow.required .x-html-editor-wrap {
 	background: #FFEDAC;
 }
 #content #title_row input.required.incomplete,
 #content .doc_description .required.incomplete input,
-#content .doc_description .required.incomplete select{
+#content .doc_description .required.incomplete select,
+#content .doc_description .required.incomplete textarea,
+#content .doc_description .required .kt_treenodes,
+#content .metadatatable .metadatarow.required.incomplete .x-html-editor-wrap {
 	background: #ffdddd;
 	border-color: #FF7272;
 }
+#content .metadatatable .metadatarow.required .x-html-editor-wrap iframe{
+	background: #ffffff;
+}
+
 .editable-control {
 	visibility: hidden;
 	cursor: pointer;
