@@ -280,7 +280,7 @@
     					<td width="225"><div id="newSearchQuery"></div></td>
     					-->
     					{if ($page->showDashboardBtn !== false)}
-        					<td width="80px">
+        					<td width="auto">
         					   <span id="add-dashlet"></span>
         					</td>
     					{/if}
