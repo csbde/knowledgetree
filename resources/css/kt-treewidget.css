@@ -5,15 +5,22 @@
     padding: 0;
     border: 0;
     text-align: left !important;
+    padding-left: 0px!important;
 }
 
-.leafnode {font-weight: bold; }
+.leafnode {font-weight: bold; padding-bottom: 3px; }
+.leafnode input {
+	top: 4px;
+	position: relative;
+	margin-right: 8px
+}
 
 #content .kt_treenodes ul, 
 #content ul.kt_treenodes  {
     list-style: none;
     list-style-image: none !important;    
     text-align: left;
+    padding-left: 0px!important;
 }
 .kt_treenodes li.treenode > a.pathnode {
    background: transparent url(../graphics/plus.png) center left no-repeat;
