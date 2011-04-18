@@ -115,8 +115,6 @@ class KTNavPortlet extends KTPortlet {
 class KTActionPortlet extends KTPortlet {
     var $actions = array();
     // TODO : Add portlet ordering
-    var $firstActions = array();
-
     var $bActive = true;
     var $btns = '';
 
@@ -135,8 +133,6 @@ class KTActionPortlet extends KTPortlet {
                     $this->btns[$aInfo['name']] = array_merge($aInfo, $aBtn);
                     $text = !empty($aBtn['display_text']) ? $aBtn['display_text'] : $aBtn['name'];
                     $aInfo['name'] = $text;
-                    // Add to First Actions Array, so that it appears on top
-//                    $this->firstActions[$aInfo['name']] = $aInfo;
                     $this->actions[$aInfo['name']] = $aInfo;
                 }else{
                     $this->actions[$aInfo['name']] = $aInfo;
