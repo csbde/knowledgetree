@@ -855,13 +855,7 @@ thead {
 
 table.kt_collection {
 	margin: 5px;
-	width: 99%;
-	border-radius: 5px;
-	-webkit-border-radius: 5px;
-	-moz-border-radius: 5px;
-	box-shadow: 0 0 5px #667;
-	-webkit-box-shadow: 0 0 5px #667;
-	-moz-box-shadow: 0 0 5px #667;
+	width: 98%;
 }
 
 div#activationNotice {

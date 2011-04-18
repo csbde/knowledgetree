@@ -616,7 +616,7 @@ a.main_nav_item {
 {
     font-weight: normal;
     padding: 0 1em;
-    color: black;
+    color: #666;
 }
 
 #content input,
@@ -847,6 +847,7 @@ a.main_nav_item {
     vertical-align: middle;
     padding: 2px 0px;
 	color: #2F6594;
+	float: left;
 }
 
 .metadatatable .versioned td {
@@ -1028,13 +1029,14 @@ a.main_nav_item {
 }
 
 .kt_collection.narrow {
-    width: auto;
+    width: 98%;
 }
 
 .kt_collection thead th {
     border-bottom: 1px solid #888;
     text-align: left;
     white-space: normal !important;
+    font-weight: bold;
 }
 
 .kt_collection th.sort_on.sort_asc {
@@ -1167,9 +1169,14 @@ a.main_nav_item {
 
 .ktBlock {
 	position: relative;
-    padding: 0.1em 1em 1em 1em;
-    margin: 0 0 1em 0.5em;
+    margin-bottom: 10px;
+    border: 1px solid #CCC;
+    border-radius: 5px;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    font-size: 12px;
     z-index:0; /*Added to accomadate pageBody background change*/
+    color: #666;
 }
 
 
@@ -1389,10 +1396,10 @@ The text will be hidden for screen view.  The generic fahrner-ish approach comes
 
 #dashboard-container-left {
     clear: left;
-    width: 47%;
+    width: 49%;
     margin-top: 0;
     margin-left: 0;
-    padding-right: 3em;
+    padding-right: 19px;
     float: left;
     padding-bottom: 2em;
     height: 100%;
@@ -1401,7 +1408,7 @@ The text will be hidden for screen view.  The generic fahrner-ish approach comes
 }
 
 #dashboard-container-right {
-    width: 47%;
+    width: 49%;
     margin-top: 0;
     margin-left: 0;
     float: left;
@@ -1411,111 +1418,19 @@ The text will be hidden for screen view.  The generic fahrner-ish approach comes
 /*     background-color: #ddf; */
 }
 
-.dashboard_block_topleft {
-    position: absolute;
-    width: 35px;
-    height: 36px;
-    top: 0px;
-    left: 0px;
-    background: url(../graphics/dashlet_topleft.png) top left no-repeat;
-    z-index:-1;
-}
-
-.dashboard_block_toprepeat {
-    position: absolute;
-    width: 90%;
-    height: 36px;
-    top: 0px;
-    left: 30px;
-    background: white url(../graphics/dashlet_toprepeat.png) top left repeat-x;
-    z-index:-1;
-}
-
-.dashboard_block_topright {
-    position: absolute;
-    width: 35px;
-    height: 36px;
-    top: 0px;
-    right: 0px;
-    background: url(../graphics/dashlet_topright.png) top right no-repeat;
-    z-index:-1;
-}
-
-.dashboard_block_leftrepeat_top {
-    position: absolute;
-    width: 13px;
-    height: 50%;
-    top: 5px;
-    left: 0px;
-    background: white url(../graphics/dashlet_leftrepeat.png) top left repeat-y;
-    z-index:-1;
-}
-
-.dashboard_block_leftrepeat_bottom {
-    position: absolute;
-    width: 13px;
-    height: 50%;
-    bottom: 10px;
-    left: 0px;
-    background: white url(../graphics/dashlet_leftrepeat.png) top left repeat-y;
-    z-index:-1;
-}
-
-.dashboard_block_bottomleft {
-    position: absolute;
-    width: 40px;
-    height: 40px;
-    bottom: 0px;
-    left: 0px;
-    background: url(../graphics/dashlet_bottomleft.png) bottom left no-repeat;
-    z-index:-1;
-}
-
+.dashboard_block_rightrepeat_bottom,
+.dashboard_block_rightrepeat_top, 
+.dashboard_block_topleft,
+.dashboard_block_topright,
+.dashboard_block_rightrepeat_top, 
+.dashboard_block_leftrepeat_top, 
+.dashboard_block_leftrepeat_bottom, 
+.dashboard_block_bottomleft,
+.dashboard_block_bottomright, 
 .dashboard_block_bottomrepeat {
-    position: absolute;
-    width: 92%;
-    height: 13px;
-    bottom: 0px;
-    left: 30px;
-    background: white url(../graphics/dashlet_bottomrepeat.png) bottom left repeat-x;
-    z-index:-1;
+   	display: none;
 }
 
-.dashboard_block_bottomright {
-    position: absolute;
-    width: 40px;
-    height: 40px;
-    bottom: 0px;
-    right: 0px;
-    background: url(../graphics/dashlet_bottomright.png) bottom right no-repeat;
-    z-index:-1;
-}
-
-.dashboard_block_rightrepeat_top {
-    position: absolute;
-    width: 13px;
-    height: 50%;
-    top: 5px;
-    right: 0px;
-    background: white url(../graphics/dashlet_rightrepeat.png) top right repeat-y;
-    z-index:-1;
-    overflow:hidden;
-}
-
-.dashboard_block_rightrepeat_bottom {
-    position: absolute;
-    width: 13px;
-    height: 50%;
-    bottom: 10px;
-    right: 0px;
-    background: white url(../graphics/dashlet_rightrepeat.png) bottom right repeat-y;
-    z-index:-1;
-    overflow:hidden;
-}
-
-.dashboard_block_rightrepeat_top {
-    min-height: 70px;
-}
 
 .dashboard_block.rolled-up .dashboard_block_rightrepeat_top
 {
@@ -2173,14 +2088,14 @@ hr {
 	top: 0px;
 	right: 10px;
     text-align: right;
-    margin: 0.2em 0em 0 0;
+    margin: 5px 0px 0px 0px;
 }
 
 .dashboard_block_handle
 {
     cursor: pointer;
-    margin: 0.2em -0.5em 0.5em 0;
     font-size:small;
+    padding: 5px 8px
 }
 
 .dashboard_block.rolled-up .dashboard_block_body
@@ -2191,9 +2106,7 @@ hr {
 .ktBlock .dashboard_block_body
 {
     z-index:99;
-    margin: 8px 0 0 0;
-	padding-bottom: 10px;
-    background-color:#FFFFFF;
+	padding: 10px;
     overflow: auto;
 }
 
@@ -2254,13 +2167,23 @@ hr {
 {
     border-bottom-width: 0px;
     padding-bottom: 10px;
+    border-radius: 5px;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
 }
 
 #content .ktBlock h2
 {
-    border-bottom-width: 0px;
-    color: #FFFFFF;
-    font-size: small;
+    border-bottom: 1px solid #CCC;
+	color: #2F6594;
+	font-size: small;
+	background: #EEE;
+	border-bottom: 1px solid #CCC;
+	border-radius: 5px 5px 0px 0px;
+	-moz-border-radius: 5px 5px 0px 0px;
+	-webkit-border-radius: 5px 5px 0px 0px;
+	height: 18px;
+	text-shadow: 0px 1px 0px white;
 }
 
 #content .dashboard_block.closed
@@ -2312,12 +2235,17 @@ body #content #add_dashlet
 
 #add_dashlet
 {
-    border: 1px solid #ccc;
-    background: #fdfdfd;
-    color: #333;
-    font-weight: normal;
-    float: right;
-    margin-right: 3em;
+    border: 1px solid #CCC;
+	background: #FDFDFD;
+	color: #2F6594;
+	font-weight: normal;
+	float: right;
+	margin-right: 3em;
+	border-radius: 5px;
+	-webkit-border-radius: 5px;
+	-moz-border-radius: 5px;
+	padding: 4px 4px 4px 25px;
+	font-size: 11px;
 }
 
 /*contenttype_href class style is used to stop underline error on a hyperlink in IE*/

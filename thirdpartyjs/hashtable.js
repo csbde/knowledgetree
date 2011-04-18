@@ -75,6 +75,10 @@ Lesser General Public License for more details.
     Array values()
 
              Returns a array view of the values contained in this Hashtable.
+             
+    Array keysValues()
+    
+    		 Returns an array of keys and values contained in the Hashtable
 
     Array entrySet()
 
@@ -240,7 +244,24 @@ Hashtable.prototype.values = function(){
 
    return values;
 
-}                                  
+}
+
+Hashtable.prototype.keysValues = function(){
+
+   var values = new Array();
+
+   for (var i in this.hashtable) {
+
+       if (this.hashtable[i] != null)
+       {
+           //values.push(this.hashtable[i]);
+           values[i] = this.hashtable[i];
+       }
+   }
+
+   return values;
+
+}
 
 Hashtable.prototype.entrySet = function(){
 

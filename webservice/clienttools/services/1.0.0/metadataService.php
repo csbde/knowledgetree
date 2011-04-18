@@ -380,8 +380,7 @@ class metadataService extends client_service {
 						break;
 						case 'tree':
 							$selection = KTAPI::get_metadata_tree($field->getId());
-							//remove the outer elements of the array as we don't need them!
-							$selection = $selection[0];
+							
 							//we need to get rid of values that we do not need else the JSON object we create will be incorrect!
 							SimpleFieldsetDisplay::recursive_unset($selection, array('treeid', 'parentid', 'fieldid'));
 							
@@ -466,7 +465,7 @@ class metadataService extends client_service {
 		//cycle through the params and get all the fields
 		foreach($params as $key => $field)
 		{
-			//$GLOBALS['default']->log->debug("metadataService updateMetadata postVar $key $field");
+			//$GLOBALS['default']->log->debug("metadataService updateMetadata param $key $field");
 			
 			$oField = DocumentField::get($key);
 			
@@ -479,11 +478,13 @@ class metadataService extends client_service {
 	
 			if(is_array($field))
 			{
+				//$GLOBALS['default']->log->debug('metadataService updateMetadata I am an array');
+				
 				$value = '';
 				
 				foreach($field as $f)
 				{
-						$value .= $f.',';
+					$value .= $f.',';
 				}
 				
 				//chop off trailing comma
@@ -501,7 +502,7 @@ class metadataService extends client_service {
 		
 		$packed = $this->mergeMetadata($oDocument, $packed);
 		
-		//$GLOBALS['default']->log->debug('metadataService updateMetadata packed after merge'.print_r($packed, true));
+		//$GLOBALS['default']->log->debug('metadataService updateMetadata packed after merge '.print_r($packed, true));
 		
 		DBUtil::startTransaction();
 	
