@@ -5,7 +5,7 @@
  * KnowledgeTree Community Edition
  * Document Management Made Simple
  * Copyright (C) 2008, 2009, 2010 KnowledgeTree Inc.
- * 
+ *
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License version 3 as published by the
@@ -43,23 +43,30 @@ require_once(KT_LIB_DIR . '/users/shareduserutil.inc.php');
  * Trigger for document add (postValidate)
  *
  */
-class KTAddSharedContentObjectTrigger {
+class KTAddSharedContentObjectTrigger
+{
+    public $namespace = 'ktcore.triggers.sharedcontent.add';
     public $aInfo = null;
     public $oUser = null;
-    public $oDocument = null;
+    public $oObject = null;
     public $sType = null;
-    
+
     /**
      * function to set the info for the trigger
      *
      * @param array $aInfo
      */
-    function setInfo($aInfo) 
+    function setInfo($aInfo)
     {
+        if(isset($aInfo['document']) && !empty($aInfo['document'])) {
+            $this->sType = 'document';
+            $this->oObject = $aInfo['document'];
+        } else if(isset($aInfo['folder']) && !empty($aInfo['folder'])) {
+            $this->sType = 'folder';
+            $this->oObject = $aInfo['folder'];
+        }
+
     	$this->aInfo = $aInfo;
-    	$this->oUser = $aInfo['oUser'];
-    	$this->oFolder = $aInfo['oObject'];
-    	$this->sType = $aInfo['sType'];
     }
 
     /**
@@ -68,9 +75,14 @@ class KTAddSharedContentObjectTrigger {
      * @return unknown
      */
     function postValidate() {
-		if(!SharedUserUtil::isSharedUser())
+        // Trigger is only relevant for shared users
+		if (!SharedUserUtil::isSharedUser()) {
 			return false;
-		$oSharedContent = new SharedContent($this->oUser->getID(), $_SESSION['userID'], $this->oFolder->getID(), $this->sType, 1);
+		}
+
+		$iObjectId = $this->oObject->getId();
+
+		$oSharedContent = new SharedContent($_SESSION['userID'], $_SESSION['userID'], $iObjectId, $this->sType, 1);
 		if(!$oSharedContent->exists())
 		{
 			$res = $oSharedContent->create();
@@ -79,33 +91,50 @@ class KTAddSharedContentObjectTrigger {
 				// TODO : Logging
 			}
 		}
-		
+
 		return $res;
     }
 }
 
 
+class KTAddSharedDocTrigger extends KTAddSharedContentObjectTrigger
+{
+    var $namespace = 'ktcore.triggers.sharedcontent.adddoc';
+}
+
 /**
  * Trigger for document add (postValidate)
  *
  */
-class KTDeleteSharedContentObjectTrigger {
+class KTDeleteSharedContentObjectTrigger
+{
+    public $namespace = 'ktcore.triggers.sharedcontent.delete';
     public $aInfo = null;
     public $oUser = null;
     public $oDocument = null;
     public $sType = null;
-    
+
     /**
      * function to set the info for the trigger
      *
      * @param array $aInfo
      */
-    function setInfo($aInfo) 
+    function setInfo($aInfo)
     {
+//    	$this->aInfo = $aInfo;
+//    	$this->oUser = $aInfo['oUser'];
+//    	$this->oFolder = $aInfo['oDocument'];
+//    	$this->sType = $aInfo['sType'];
+
+        if(isset($aInfo['document']) && !empty($aInfo['document'])) {
+            $this->sType = 'document';
+            $this->oObject = $aInfo['document'];
+        } else if(isset($aInfo['folder']) && !empty($aInfo['folder'])) {
+            $this->sType = 'folder';
+            $this->oObject = $aInfo['folder'];
+        }
+
     	$this->aInfo = $aInfo;
-    	$this->oUser = $aInfo['oUser'];
-    	$this->oFolder = $aInfo['oDocument'];
-    	$this->sType = $aInfo['sType'];
     }
 
     /**
@@ -114,10 +143,14 @@ class KTDeleteSharedContentObjectTrigger {
      * @return unknown
      */
     function postValidate() {
-		if(!SharedUserUtil::isSharedUser())
-			return false;
-		$oSharedContent = new SharedContent($this->oUser->getID(), $_SESSION['userID'], $this->oFolder->getID(), $this->sType, 1);
-		if(!$oSharedContent->exists())
+//		if (!SharedUserUtil::isSharedUser()) {
+//			return false;
+//		}
+
+		$iObjectId = $this->oObject->getId();
+
+		$oSharedContent = new SharedContent($_SESSION['userID'], $_SESSION['userID'], $iObjectId, $this->sType, 1);
+		if($oSharedContent->exists())
 		{
 			$res = $oSharedContent->delete();
 			if(!$res)
@@ -125,9 +158,13 @@ class KTDeleteSharedContentObjectTrigger {
 				// TODO : Logging
 			}
 		}
-		
+
 		return $res;
     }
 }
 
+class KTDeleteSharedDocTrigger extends KTDeleteSharedContentObjectTrigger
+{
+    var $namespace = 'ktcore.triggers.sharedcontent.deletedoc';
+}
 ?>

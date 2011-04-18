@@ -240,9 +240,7 @@ class KTFolderAddFolderAction extends KTFolderAction {
             $sTrigger = $aTrigger[0];
             $oTrigger = new $sTrigger;
             $aInfo = array(
-                'oObject' => $oFolder,
-				'oUser' => $this->oUser,
-				'sType' => 'folder',
+                'folder' => $oFolder,
             );
             $oTrigger->setInfo($aInfo);
             $ret = $oTrigger->postValidate();

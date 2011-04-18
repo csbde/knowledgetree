@@ -49,10 +49,12 @@ class KTFolderAddDocumentAction extends KTFolderAction {
     var $sName = 'ktcore.actions.folder.addDocument';
     var $_sShowPermission = "ktcore.permissions.write";
     var $oDocumentType = null;
-	var $showIfRead = false;
-	var $showIfWrite = true;
 	var $cssClass = 'upload';
 	var $parentBtn = '';
+
+	// Settings for shared user permissions
+	var $showIfRead = false;
+	var $showIfWrite = true;
 
     function getDisplayName() {
         return _kt('Upload');
