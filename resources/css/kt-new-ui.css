@@ -926,7 +926,8 @@ div#uploadProgress .progress {
 }
 
 .uploadProgress.error {
-	background: url('../graphics/newui/notice_red.png') no-repeat top right !important;
+	background: #FF9c9d !important;
+	/*background: url('../graphics/newui/notice_red.png') no-repeat top right !important;*/
 }
 
 #content select.perpageselect {
