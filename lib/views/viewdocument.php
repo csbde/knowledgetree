@@ -277,6 +277,15 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
         $documentSidebars = isset($sidebars[0]) ? $sidebars[0] : array();
 
         $tagPluginPath = KTPluginUtil::getPluginPath('ktcore.tagcloud.plugin', true);
+        
+        $makeMetadataEditable = 1;
+        
+        //should the user be allowed to edit the document's metadata?
+        if (($this->document->getIsCheckedOut() == 1) || ($this->document->getImmutable() == 1) || !Permission::userHasDocumentWritePermission($this->document))
+        {
+        	$makeMetadataEditable = 0;
+        }
+        
 
         $templating =& KTTemplating::getSingleton();
         $template = $templating->loadTemplate('ktcore/document/view');
@@ -306,7 +315,8 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
             'documentBlocks' => $documentBlocks,
             'documentSidebars' => $documentSidebars,
             'tagFilterScript' => "/{$tagPluginPath}filterTags.php?documentId=$documentId",
-            'tags' => json_encode($tags)
+            'tags' => json_encode($tags),
+            'makeMetadataEditable' => $makeMetadataEditable
         );
 
         // Conditionally include live_preview
