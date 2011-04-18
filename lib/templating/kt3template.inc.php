@@ -674,12 +674,12 @@ class KTPage {
 
         		if (KTPluginUtil::pluginIsActive('gettingstarted.plugin')) {
         		    $heading = _kt('Getting Started');
-        		    $this->userMenu['gettingstarted']['url'] = KTUtil::kt_url() . str_replace(KT_DIR, '', KTPluginUtil::getPluginPath('gettingstarted.plugin') . 'GettingStarted.php');
+        		    //$this->userMenu['gettingstarted']['url'] = KTUtil::kt_url() . str_replace(KT_DIR, '', KTPluginUtil::getPluginPath('gettingstarted.plugin') . 'GettingStarted.php');
         		    $this->userMenu['gettingstarted']['extra'] = 'name="gettingStartedModal"';
         		    //$this->userMenu['gettingstarted']['onclick'] = "javascript: doMask();";
-        		    $this->userMenu['gettingstarted']['label'] = '<span>Getting Started</span>';
+        		    //$this->userMenu['gettingstarted']['label'] = '<span>Getting Started</span>';
         		}
-
+				$this->userMenu['applications'] = array('label' => _kt('Applications'), 'url' => $sBaseUrl.'/plugins/ktlive/applications.php');
 				$this->userMenu['supportpage'] = array('label' => _kt('Get Help'), 'url' => $sBaseUrl.'/support.php', 'extra'=>'target="_blank"');
         		//	        $this->userMenu['preferences'] = array('label' => _kt('Preferences'), 'url' => $sBaseUrl.'/preferences.php');
         		$this->userMenu['preferences']['label'] = '<span class="normalTransformText">'.$this->user->getName().'</span>';
