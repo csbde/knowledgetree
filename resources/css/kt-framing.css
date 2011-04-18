@@ -840,6 +840,7 @@ a.main_nav_item {
     padding: 2px 10px 2px 0px;
     font-weight: normal;
     border-spacing: 0px 0px;
+    float: left;
 }
 
 .metadatatable td {
@@ -941,10 +942,12 @@ a.main_nav_item {
     margin-top: 15px;
     overflow: hidden;
 }
+#content #title_row input.required,
 #content .doc_description .required input,
 #content .doc_description .required select {
 	background: #FFEDAC;
 }
+#content #title_row input.required.incomplete,
 #content .doc_description .required.incomplete input,
 #content .doc_description .required.incomplete select{
 	background: #ffdddd;

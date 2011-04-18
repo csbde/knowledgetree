@@ -60,7 +60,7 @@ table.metadataTable .ul_metadata .ul_meta_fieldset span.ul_meta_title { -webkit-
 table.metadataTable .ul_metadata .ul_meta_fieldset .ul_meta_row { background: -webkit-gradient(linear, left bottom, left top, color-stop(0, #f2f2f2), color-stop(1, white)); background: -moz-linear-gradient(center bottom, #f2f2f2 0%, white 100%); display: block; vertical-align: top; padding: 4px 0px; border-bottom: 1px solid #DDDDDD; }
 table.metadataTable .ul_metadata .ul_meta_fieldset .ul_meta_row:last-child { border-bottom: 1px solid transparent; }
 table.metadataTable .ul_metadata .ul_meta_fieldset .ul_meta_row .ul_required_tag { margin-bottom: -5px; }
-table.metadataTable .ul_metadata .ul_meta_fieldset .ul_meta_fullField { width: 100%; }
+table.metadataTable .ul_metadata .ul_meta_fieldset .ul_meta_fullField { width: 89%; }
 table.metadataTable .ul_metadata .ul_meta_fieldset .ul_meta_field { width: 285px; display: block; margin-left: 20px; margin-bottom: 8px; /*.ul_meta_field_checkbox_label{
 	background-color:#666699;
 }*/ }

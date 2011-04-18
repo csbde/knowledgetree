@@ -111,7 +111,7 @@ function sendUserEmails($userIds, &$userEmails, &$emailErrors)
             $destUser = User::get($userIds[$i]);
             $default->log->info('sendingEmail to user ' . $destUser->getName() . ' with email ' . $destUser->getEmail());
             // the user has an email address and has email notification enabled
-            if (strlen($destUser->getEmail())>0 && $destUser->getEmailNotification()) {
+            if (strlen($destUser->getEmail()) > 0 && $destUser->getEmailNotification()) {
                 //if the to address is valid, send the mail
                 if (validateEmailAddress($destUser->getEmail())) {
                     // use the email address as the index to ensure the user is only sent 1 email
@@ -170,15 +170,15 @@ function sendExternalEmails($emailAddressList, $documentId, $documentName, $comm
 	               &#160;&#160;&#160;&#160;' . sprintf(_kt('A KnowledgeTree user, %s, wants to share a document with you entitled "%s".'), $sendingUser->getName(), $documentName).'
 	               <br />
 	               <br />';
-	if (strlen(trim($sComment)) > 1) {
-            $sMessage .= '&#160;&#160;&#160;&#160;<b>'._kt('Message').':</b>
+	if (strlen(trim($comment)) > 1) {
+            $message .= '&#160;&#160;&#160;&#160;<b>'._kt('Message').':</b>
 	               <br />
 	               <br />
 	               &#160;&#160;&#160;&#160;' . $comment . '
 	               <br />
 	               <br />';
 	}
-    $sMessage .= '&#160;&#160;&#160;&#160;'._kt('<b>KnowledgeTree is easy to use open source document management software</b><br />&#160;&#160;&#160;&#160;that helps businesses collaborate, securely store all critical documents, address<br />&#160;&#160;&#160;&#160;compliance challenges, and improve business processes.').'
+    $message .= '&#160;&#160;&#160;&#160;'._kt('<b>KnowledgeTree is easy to use open source document management software</b><br />&#160;&#160;&#160;&#160;that helps businesses collaborate, securely store all critical documents, address<br />&#160;&#160;&#160;&#160;compliance challenges, and improve business processes.').'
 	               <br />
 	               <br />';
 
@@ -257,28 +257,29 @@ function sendEmail($destEmailAddress, $documentId, $documentName, $comment, $att
 function sendEmailDocument($destEmailAddress, $documentId, $documentName, $comment, &$emailErrors)
 {
     global $default;
+
     $storageManager = KTStorageManagerUtil::getSingleton();
     // Get the email list as a string for the logs
-    $sDestEmails = implode(',', $aDestEmailAddress);
-    $oSendingUser = User::get($_SESSION['userID']);
+    $destEmails = implode(',', $destEmailAddress);
+    $sendingUser = User::get($_SESSION['userID']);
 
-    $sMessage .= sprintf(_kt("Your colleague, %s, wishes you to view the attached document entitled '%s'."), $oSendingUser->getName(), $sDocumentName);
-    $sMessage .= "\n\n";
-	$sMessage .= _kt('Click on the hyperlink below to view it.') . '<br>';
+    $message .= sprintf(_kt("Your colleague, %s, wishes you to view the attached document entitled '%s'."), $sendingUser->getName(), $documentName);
+    $message .= "\n\n";
+	$message .= _kt('Click on the hyperlink below to view it.') . '<br>';
 	// add the link to the document to the mail
-	$sMessage .= '<br>' . generateControllerLink('viewDocument', "fDocumentID=$iDocumentID", $sDocumentName, true);
+	$message .= '<br>' . generateControllerLink('viewDocument', "fDocumentID=$documentId", $documentName, true);
 	// add additional comment
-	if (strlen(trim($sComment)) > 1) {
-		$sMessage .= '<br><br><b>' . _kt('Message') . ':</b><br><br>' . nl2br($sComment);
+	if (strlen(trim($comment)) > 1) {
+		$message .= '<br><br><b>' . _kt('Message') . ':</b><br><br>' . nl2br($comment);
 	}
-    $sTitle = sprintf(_kt("Document (ID %s): %s from %s"), $iDocumentID, $sDocumentName, $oSendingUser->getName());
+    $title = sprintf(_kt("Document (ID %s): %s from %s"), $documentId, $documentName, $sendingUser->getName());
 
-    $sEmail = null;
-    $sEmailFrom = null;
+    $emailFromAddress = null;
+    $emailFrom = null;
     $oConfig =& KTConfig::getSingleton();
     if (!$oConfig->get('email/sendAsSystem')) {
-        $sEmail = $oSendingUser->getEmail();
-        $sEmailFrom = $oSendingUser->getName();
+        $emailFromAddress = $sendingUser->getEmail();
+        $emailFrom = $sendingUser->getName();
     }
 
     $mailer = new Email($emailFromAddress, $emailFrom);
@@ -323,29 +324,27 @@ function sendEmailHyperlink($destEmailAddress, $documentId, $documentName, $comm
     global $default;
     // Get the email list as a string for the logs
     $destEmails = implode(',', $destEmailAddress);
-	$oSendingUser = User::get($_SESSION['userID']);
-	
+	$sendingUser = User::get($_SESSION['userID']);
+
     $message = '<font face="arial" size="2">';
     /*
     if ($sDestUserName) {
     $message .= $sDestUserName . ',<br><br>';
     }
     */
-	$sMessage .= sprintf(_kt("Your colleague, %s, wishes you to view the document entitled '%s'."), $oSendingUser->getName(), $sDocumentName);
-	$sMessage .= " \n";
-	$sMessage .= _kt('Click on the hyperlink below to view it.') . '<br>';
+	$message .= sprintf(_kt("Your colleague, %s, wishes you to view the document entitled '%s'."), $sendingUser->getName(), $documentName);
+	$message .= " \n";
+	$message .= _kt('Click on the hyperlink below to view it.') . '<br>';
 	// add the link to the document to the mail
-	$sMessage .= '<br>' . generateControllerLink('viewDocument', "fDocumentID=$iDocumentID", $sDocumentName, true);
+	$message .= '<br>' . generateControllerLink('viewDocument', "fDocumentID=$documentId", $documentName, true);
 	// add optional comment
-	if (strlen(trim($sComment)) > 1) {
-		$sMessage .= '<br><br><b>' . _kt('Message') . ':</b><br><br>' . nl2br($sComment);
+	if (strlen(trim($comment)) > 1) {
+		$message .= '<br><br><b>' . _kt('Message') . ':</b><br><br>' . nl2br($comment);
 	}
-	$sMessage .= '</font>';
-	$sTitle = sprintf(_kt("Link (ID %s): %s from %s"), $iDocumentID, $sDocumentName, $oSendingUser->getName());
-	//email the hyperlink
+	$message .= '</font>';
+	$title = sprintf(_kt("Link (ID %s): %s from %s"), $documentId, $documentName, $sendingUser->getName());
 
-    //
-    $emailFromAddress = null;
+	$emailFromAddress = null;
     $emailFrom = null;
     $config =& KTConfig::getSingleton();
 
@@ -500,10 +499,8 @@ class KTDocumentEmailAction extends KTDocumentAction {
 
         if (empty($allowAttachment)) { $attachDocument = false; }
 
-        if (empty($allowEmailAddresses)) {
-            $emailAddressList = array();
-        }
-        else if (!empty($externalEmailAddresses)) {
+        $emailAddressList = array();
+        if (!empty($allowEmailAddresses) && !empty($externalEmailAddresses)) {
             $addressList = explode("\n", $externalEmailAddresses);
             foreach ($addressList as $item) {
                 $items = explode(' ', $item);
