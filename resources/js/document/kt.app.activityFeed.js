@@ -3,8 +3,15 @@ kt.app.activityFeed = new function(){
 	this.toggleFeed = function(self, classesToToggle, maxItemsToShow)
 	{
 		self.toggleClass('suppress-feed');
-		jQuery.each(classesToToggle, function (index, classToToggle){
-			jQuery('.'+classToToggle).toggleClass('hidden');	
+		jQuery.each(classesToToggle, function (index, classToToggle)
+		{
+			var elementToToggle = jQuery('.'+classToToggle);
+			if(elementToToggle.hasClass('new'))
+			{
+				elementToToggle.removeClass('new').addClass('hidden');
+			}
+			
+			elementToToggle.toggleClass('hidden');
 		});
 		
 		this.rearrangeVisibleItems(maxItemsToShow);		
@@ -53,11 +60,17 @@ kt.app.activityFeed = new function(){
                     
                     jQuery("div.activityfeed.item.new.comment").slideDown('slow');
                     
-                    jQuery("div.activityfeed.item.new.comment").removeClass('new').doTimeout(2000, function(){
+                    jQuery("div.activityfeed.item.new.comment")./*removeClass('new').*/doTimeout(4000, function(){
                     	jQuery(this).css('background-color','white');
+                    	
+                    	/*if (jQuery('.toggle-user-feed').hasClass('suppress-feed'))
+                    	{
+                    		jQuery(this).addClass('hidden');
+                    	}*/
+                    	
                     });
                     
-                    this.rearrangeVisibleItems(maxItemsToShow);
+                    kt.app.activityFeed.rearrangeVisibleItems(maxItemsToShow);
                 }
             );
         }
