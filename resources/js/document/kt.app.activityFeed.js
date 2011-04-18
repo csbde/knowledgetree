@@ -1,39 +1,46 @@
-if (typeof(kt.app)=='undefined') { kt.app = {}; }
-kt.app.activityFeed = new function() {
-
-    // We need to do this or explicitly call kt.app.activityFeed within postComment
-    // as the scope changes and "this" no longer refers to kt.app.activityFeed!
-    var self = this;
-
-    this.toggleFeed = function(input, classesToToggle, maxItemsToShow)
-    {
-        input.toggleClass('suppress-feed');
-        jQuery.each(classesToToggle, function (index, classToToggle) {
-            jQuery('.' + classToToggle).toggleClass('hidden');
-        });
-
-        self.rearrangeVisibleItems(maxItemsToShow);
-    }
-
-    this.toggleMore = function()
-    {
-        var slider = jQuery('.activityfeed.items.hidden');
-
-        if (slider.is(":visible")) {
-            jQuery('.activityfeed-more-text').html('more...');
-        }
-        else {
-            jQuery('.activityfeed-more-text').html('less...');
-        }
-
-        slider.slideToggle('slow', function() {
-            // Animation complete
-        });
-    }
-
-    this.postComment = function(documentID, comment, maxItemsToShow)
-    {
-        var savingCommentMessage = '<img src="thirdpartyjs/extjs/resources/images/default/tree/loading.gif"> Saving Comment';
+if(typeof(kt.app)=='undefined')kt.app={};
+kt.app.activityFeed = new function()
+{
+	this.toggleFeed = function(input, classesToToggle, maxItemsToShow)
+	{
+		input.toggleClass('suppress-feed');
+		
+		jQuery.each(classesToToggle, function (index, classToToggle)
+		{
+			var elementToToggle = jQuery('.'+classToToggle);
+			if(elementToToggle.hasClass('new'))
+			{
+				elementToToggle.removeClass('new').addClass('hidden');
+			}
+			
+			elementToToggle.toggleClass('hidden');
+		});
+		
+		kt.app.activityFeed.rearrangeVisibleItems(maxItemsToShow);		
+	}
+	
+	this.toggleMore = function()
+	{
+		var slider = jQuery('.activityfeed.items.hidden');
+	
+		if (slider.is(":visible"))
+		{
+			jQuery('.activityfeed-more-text').html('more...');
+		}
+		else
+		{
+			jQuery('.activityfeed-more-text').html('less...');
+		}
+		
+		slider.slideToggle('slow', function() {
+			// Animation complete
+			
+		});
+	}
+	
+	this.postComment = function(documentID, comment, maxItemsToShow)
+	{		
+		var savingCommentMessage = '<img src="thirdpartyjs/extjs/resources/images/default/tree/loading.gif"> Saving Comment';
         var commentSavedMessage = 'Comment Saved. <a href="javascript:jQuery("#commentsarea").show();jQuery("#commentssaveajax").hide();">Add New Comment';
 
         var newCommentAdded = false;
@@ -54,12 +61,18 @@ kt.app.activityFeed = new function() {
                     jQuery("div.activityfeed.new-comment").after(data);
 
                     jQuery("div.activityfeed.item.new.comment").slideDown('slow');
-
-                    jQuery("div.activityfeed.item.new.comment").removeClass('new').doTimeout(2000, function() {
-                        jQuery(this).css('background-color','white');
+                    
+                    jQuery("div.activityfeed.item.new.comment")./*removeClass('new').*/doTimeout(4000, function(){
+                    	jQuery(this).css('background-color','white');
+                    	
+                    	/*if (jQuery('.toggle-user-feed').hasClass('suppress-feed'))
+                    	{
+                    		jQuery(this).addClass('hidden');
+                    	}*/
+                    	
                     });
-
-                    self.rearrangeVisibleItems(maxItemsToShow);
+                    
+                    kt.app.activityFeed.rearrangeVisibleItems(maxItemsToShow);
                 }
             );
         }
