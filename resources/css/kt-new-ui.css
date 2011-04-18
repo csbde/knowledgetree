@@ -227,6 +227,13 @@ textarea {
 .breadCrumb	{
 	width: 700px;
 }
+#breadcrumb.breadCrumb.ondashboard {
+	width: 640px;
+}
+.breadcrumbActionBtns {
+	float: right;
+	position: relative;
+}
 .breadCrumb ul {
 	margin: 0;
 	padding: 0;
@@ -286,7 +293,7 @@ textarea {
 }
 
 .breadcrumbBtns {
-    float: right;
+    float: none;
     height: 30px;
     margin: 3px 18px 3px 3px;
     position: relative;
@@ -848,13 +855,7 @@ thead {
 
 table.kt_collection {
 	margin: 5px;
-	width: 99%;
-	border-radius: 5px;
-	-webkit-border-radius: 5px;
-	-moz-border-radius: 5px;
-	box-shadow: 0 0 5px #667;
-	-webkit-box-shadow: 0 0 5px #667;
-	-moz-box-shadow: 0 0 5px #667;
+	width: 98%;
 }
 
 div#activationNotice {
@@ -924,7 +925,8 @@ div#uploadProgress .progress {
 }
 
 .uploadProgress.error {
-	background: url('../graphics/newui/notice_red.png') no-repeat top right !important;
+	background: #FF9c9d !important;
+	/*background: url('../graphics/newui/notice_red.png') no-repeat top right !important;*/
 }
 
 #content select.perpageselect {

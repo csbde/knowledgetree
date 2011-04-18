@@ -205,6 +205,21 @@ jQuery.editableSet.addInputType('htmleditor', {
 		{
 			val = jQuery.trim($('span#'+attrs['data-name']).text());
 		}
+		
+		var maxLength = '';
+		if (attrs['data-maxlength'] != null)
+		{
+			try
+			{
+				maxLength = parseInt(attrs['data-maxlength']);
+			}
+			catch(err)
+			{
+				maxLength = '';
+			}
+		}
+		
+		//console.log('maxLength '+maxLength);
 
 		var htmlEd = new Ext.form.HtmlEditor({
 	        width: 210,
@@ -219,14 +234,18 @@ jQuery.editableSet.addInputType('htmleditor', {
 			enableSourceEdit: false,
 			value:	val,
 			listeners: {
-				/*'click': function(){
-					console.log('I be clicked');
-				}*/
+				'activate': function(editor){
+					//set value to blank					
+					if (editor.value == 'no value')
+					{
+						editor.setValue('');
+					}
+				}
 				/*'beforeSync': function(editor, text){
 					var trimmed = text.replace(/(<br>)|&nbsp;/g, '').trim();
 	            	console.log('beforeSync '+trimmed);
-	            	var maxSize = parseInt(attrs['data-maxsize']);
-	            	if (trimmed.length >= maxSize)
+	            	var maxLength = parseInt(attrs['data-maxlength']);
+	            	if (trimmed.length >= maxLength)
 	            	{
 	            		return false;
 	            	}
@@ -236,8 +255,8 @@ jQuery.editableSet.addInputType('htmleditor', {
 
 	            	var trimmed = text.replace(/(<br>)|&nbsp;/g, '').trim();
 	            	console.log('sync '+trimmed);
-	            	var maxSize = parseInt(attrs['data-maxsize']);
-	            	if (trimmed.length >= maxSize)
+	            	var maxLength = parseInt(attrs['data-maxlength']);
+	            	if (trimmed.length >= maxLength)
 	            	{
 	            		console.log('max reached');
 	            		return false;
@@ -262,22 +281,33 @@ jQuery.editableSet.addInputType('htmleditor', {
 				}*/
 	    	}
 	    });
+	    
+	    var newObject = null;
+	    
+	    if(maxLength != '')
+	    {
+	    	newObject = jQuery('<span id="ph_'+attrs['data-name']+'">max: '+maxLength+'</span>');
+	    }
+	    else
+	    {
+	    	newObject = jQuery('<span id="ph_'+attrs['data-name']+'"/>');
+	    }
 
-	   	jQuery(object).replaceWith(jQuery('<span id="ph_'+attrs['data-name']+'"/>'));
+	   	jQuery(object).replaceWith(newObject);
 
 	   	htmlEd.render('ph_'+attrs['data-name']);
 
-	   	/*if (attrs['data-maxsize'] != null)
+	   	/*if (attrs['data-maxlength'] != null)
 		{
-			var maxSize = '';
+			
 			try
 			{
-				console.log('htmleditor trying for max size');
-				maxSize = parseInt(attrs['data-maxsize']);
+				console.log('htmleditor trying for max length');
+				maxLength = parseInt(attrs['data-maxlength']);
 
-				console.log('maxSize '+maxSize);
+				console.log('maxLength '+maxLength);
 
-				newObject.data['maxsize'] = parseInt(maxSize); //max character limit
+				newObject.data['maxlength'] = parseInt(maxLength); //max character limit
 
 				console.dir(newObject);
 

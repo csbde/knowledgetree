@@ -476,22 +476,27 @@
 				
 				newObject.text( val );
 				
-				if (attrs['data-maxsize'] != null)
+				if (attrs['data-maxlength'] != null)
 				{
-					var maxSize = '';
+					var maxLength = '';
 					try
 					{
-						maxSize = parseInt(attrs['data-maxsize']);
+						maxLength = parseInt(attrs['data-maxlength']);
 						
-						newObject.data['maxsize'] = parseInt(maxSize); //max character limit
+						newObject.data['maxlength'] = parseInt(maxLength); //max character limit
 						
 						newObject.unbind('keypress.restrict').bind('keypress.restrict', function(e){
 							restrict(newObject, e);
 						});
+						
+						newObject.before($('<span>max: '+maxLength+'</span>'));
+						
 					}
 					catch(er)
 					{}
 				}
+				
+				//console.log('textarea maxlength '+maxLength);
 				
 				$(object).replaceWith( newObject );
 			}
@@ -716,7 +721,7 @@
 		var uncheckedkeycodes=/(8)|(13)|(16)|(17)|(18)/;
 		var keyunicode=e.charCode || e.keyCode;
 		if (!uncheckedkeycodes.test(keyunicode)){
-			if (field.val().length >= field.data['maxsize']){ //if characters entered exceed allowed
+			if (field.val().length >= field.data['maxlength']){ //if characters entered exceed allowed
 				if (e.preventDefault)
 					e.preventDefault();
 				return false;

@@ -225,7 +225,7 @@
     	}
 
     	//only allow to be editable if document not immutable!
-        kt.app.metadata.setup({/literal}{$document->getImmutable()}{literal} == 0, {/literal}{$document_id}{literal}, {/literal}{$tags}{literal});
+        kt.app.metadata.setup({/literal}{$makeMetadataEditable}, {$document_id}, {$tags}{literal});
     });
 </script>
 {/literal}
