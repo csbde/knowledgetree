@@ -424,7 +424,7 @@ class SharedContent extends KTEntity {
     {
         $sql = "SELECT sc.permissions FROM shared_content as sc "
             . "WHERE sc.user_id = '{$userId}' "
-            . "AND sc.object_id = '" . (empty($parentId) ? $objectId : $parentId) . "' "
+            . "AND sc.object_id = '{$objectId}' "
             . "AND sc.type = 'folder'";
 
         return self::getPermissionQueryResult($sql);
