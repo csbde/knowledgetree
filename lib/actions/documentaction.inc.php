@@ -273,23 +273,11 @@ class KTDocumentAction extends KTStandardDispatcher {
         $status = $this->oDocument->getStatusID();
         if (($status == DELETED) || ($status == ARCHIVED)) { return false; }
 		// Check if actions display for both users
-		if($this->showIfRead && $this->showIfWrite)
-		{
-			return true;
-		}
+		if($this->showIfRead && $this->showIfWrite) { return true; }
 		// Check if action does not have to be displayed
-		else if(!$this->showIfRead && !$this->showIfWrite)
-		{
-			return false;
-		}
+		else if(!$this->showIfRead && !$this->showIfWrite) { return false; }
 		// Check if action needs to be hidden
-		else if(!$this->showIfRead)
-		{
-			if($this->getPermission() == 1)
-			{
-				return true;
-			}
-		}
+		else if(!$this->showIfRead)	{ if($this->getPermission() == 1) { return true; } }
 
 		return false;
     }

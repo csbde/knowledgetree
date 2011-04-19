@@ -48,6 +48,14 @@ class KTWorkflowViewlet extends KTDocumentViewlet {
     public $showIfRead = false;
     public $showIfWrite = true;
 
+    public function getInfo() {
+        if ($this->_show() === false) {
+            return null;
+        }
+        
+        return true;
+    }
+    
     function display_viewlet()
     {
         $oKTTemplating =& KTTemplating::getSingleton();

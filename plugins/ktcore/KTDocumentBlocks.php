@@ -47,6 +47,14 @@ class KTDocumentStatusBlock extends KTDocumentViewlet {
     public $sName = 'ktcore.blocks.document.status';
 	public $_sShowPermission = 'ktcore.permissions.read';
 	
+    public function getInfo() {
+        if ($this->_show() === false) {
+            return null;
+        }
+        
+        return true;
+    }
+    
 	/**
 	 * Create an actions block
 	 *

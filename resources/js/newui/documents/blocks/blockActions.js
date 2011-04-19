@@ -12,7 +12,7 @@ var namespace;
 
 function blockActions() {
 	this.namespace = 'ktcore.blocks.document.status';
-    this.baseUrl = 'action.php?kt_path_info=' + this.namespace + "&";
+    this.baseUrl = 'action.php?kt_path_info=' + this.namespace + '&';
 }
 
 /*
@@ -71,8 +71,7 @@ vActions = new blockActions();
 // ============================================================
 
 function subscriptionActions() {
-	this.namespace = 'ktstandard.subscription';
-    this.baseUrl = 'action.php?kt_path_info=' + this.namespace;
+    this.baseUrl = 'action.php?kt_path_info=';
 }
 
 /*
@@ -81,16 +80,15 @@ function subscriptionActions() {
 subscriptionActions.prototype.subscribeToDocument = function() {
 	var status = jQuery('#subscribe_action').attr('value');
 	var documentId = jQuery('#documentId').attr('value');
-	var address = '';
-	this.toggleAction('subscribe', status);
-	if (status == 'disabled') {
-		address += this.baseUrl + 'documentsubscription&fDocumentId=' + documentId;
-	} else {
-		address += this.baseUrl + 'documentunsubscription&fDocumentId=' + documentId;
-	}
+	var address;
 
-	address = 'action.php?action=ajax&' + address;
-	jQuery.ajax({ url: address,	dataType: "html", type: "POST", cache: false, success: function(data) {	return data; } } );
+	if (status == 'disabled') {
+		address = this.baseUrl + 'ktstandard.subscription.documentsubscription&fDocumentId=' + documentId + '&action=ajax';
+	} else {
+		address = this.baseUrl + 'ktstandard.subscription.documentunsubscription&fDocumentId=' + documentId + '&action=ajax';
+	}
+	
+	jQuery.ajax({ url: address,	dataType: "html", type: "POST", cache: false, success: function(data) {	subscription.toggleAction('subscribe', status); return data; } } );
 };
 
 /*

@@ -379,7 +379,7 @@ class KTFolderActionUtil {
         return $oRegistry->getActions('folderinfo');
     }
 
-    function &getFolderActionsForFolder($oFolder, $oUser, $slot = 'folderaction')
+    static public function getFolderActionsForFolder($oFolder, $oUser, $slot = 'folderaction')
     {
         $aObjects = array();
 

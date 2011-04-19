@@ -90,19 +90,26 @@ body {
 	font-weight: bold;
 	width: auto;
 	text-transform: uppercase;
+	background: #eee;
 	background: -webkit-gradient(linear, left top, left bottom, from(white), to(#CCC)) !important;
+	background: -moz-linear-gradient(top,  #fff,  #ccc) !important; /* for firefox 3.6+ */
 	font-family: Arial;
 	border: 1px solid #BBB;
 	color: #2E608E;
 	padding: 0px 15px;
 	border-radius: 4px;
+	-webkit-border-radius: 4px;
+	-moz-border-radius: 4px;
 	text-shadow: 0px 1px 0px white;
 }
 .form-actions input:hover {
 	box-shadow: 0px 0px 5px #BBB;
+	-moz-box-shadow: 0px 0px 5px #BBB;
+	-webkit-box-shadow: 0px 0px 5px #BBB;
 } 
 .form-actions input:active{
 	background: -webkit-gradient(linear, left top, left bottom, from(#ccc), to(#FFF)) !important;
+	background: -moz-linear-gradient(top,  #ccc,  #fff) !important; /* for firefox 3.6+ */
 } 
 .form-actions {
 	text-align: right;

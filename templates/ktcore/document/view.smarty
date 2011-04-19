@@ -16,8 +16,10 @@
         <table border="0" width="745" class="doc_view">
             <tr>
                 <td colspan="2" id="title_row">
-				{* Display Actions Block *}
-				{$documentBlocks->getDocBlock()}
+                {if $documentBlocks}
+					{* Display Actions Block *}
+					{$documentBlocks->getDocBlock()}
+				{/if}
 				<div class="document-title" rel='{literal}{{/literal}"documentID":"{$document->getId()}"{literal}}{/literal}'>
 				<span data-name="documentTitle" data-type='text' data-value-id="value-title" data-class="required"></span>
 					<span id="value-title">{i18n}{$document->getName()|sanitize}{/i18n}</span>
