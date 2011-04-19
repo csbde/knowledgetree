@@ -6,7 +6,7 @@
  * KnowledgeTree Community Edition
  * Document Management Made Simple
  * Copyright (C) 2008, 2009, 2010 KnowledgeTree Inc.
- * 
+ *
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License version 3 as published by the
@@ -43,8 +43,8 @@ class CreatedByField extends DBFieldExpr
     {
         parent::__construct('creator_id', 'documents',_kt('Created By'));
         $this->setAlias('CreatedBy');
-		$this->joinTo('users', 'id');
-		$this->matchField('name');
+	$this->joinTo('users', 'id');
+	$this->matchField('name');
     }
 
     public function appliesToContext()
@@ -68,7 +68,7 @@ class CreatedByField extends DBFieldExpr
 
     public function getInputRequirements()
     {
-        return array('value'=>array('type'=>FieldInputType::USER_LIST));
+        return array('value' => array('type' => FieldInputType::USER_LIST));
     }
 
     public function is_valid()

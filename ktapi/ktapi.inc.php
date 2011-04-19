@@ -1244,18 +1244,32 @@ class KTAPI {
 	*/
 	private function _load_metadata_tree($fieldid, $parentid=0)
 	{
-		$sql = "(SELECT mlt.metadata_lookup_tree_parent AS parentid, ml.treeorg_parent AS treeid, mlt.name AS treename, ml.id AS id, ml.name AS fieldname
+		//get the fields other than for Root
+		$sql = "SELECT mlt.metadata_lookup_tree_parent AS parentid, ml.treeorg_parent AS treeid, mlt.name AS treename, ml.id AS id, ml.name AS fieldname
 				FROM metadata_lookup ml
 				INNER JOIN (metadata_lookup_tree mlt) ON (ml.treeorg_parent = mlt.id)
-				WHERE ml.disabled=0 AND ml.document_field_id=$fieldid)
-				UNION
-				(SELECT -1 AS parentid, 0 AS treeid, \"Root\" AS treename, ml.id AS id, ml.name AS fieldname
+				WHERE ml.disabled=0 AND ml.document_field_id=$fieldid
+				ORDER BY parentid, id";
+		
+		$rows = DBUtil::getResultArray($sql);
+		
+		//get Root's fields
+		$sqlRoot = "SELECT -1 AS parentid, 0 AS treeid, \"Root\" AS treename, ml.id AS id, ml.name AS fieldname
 				FROM metadata_lookup ml
 				LEFT JOIN (metadata_lookup_tree mlt) ON (ml.treeorg_parent = mlt.id)
-				WHERE ml.disabled=0 AND ml.document_field_id=$fieldid AND (ml.treeorg_parent IS NULL OR ml.treeorg_parent = 0))
+				WHERE ml.disabled=0 AND ml.document_field_id=$fieldid AND (ml.treeorg_parent IS NULL OR ml.treeorg_parent = 0)
 				ORDER BY parentid, id";
-		$rows = DBUtil::getResultArray($sql);
+		
+		$rowsRoot = DBUtil::getResultArray($sqlRoot);
 
+		//if no results for Root, add dummy
+		if (empty($rowsRoot))
+		{
+			$rowsRoot[] = array('parentid' => -1, 'treeid' => 0, 'treename' => 'Root', 'id' => -1, 'fieldname' => '');
+		}
+		
+		$rows = array_merge($rowsRoot, $rows);
+		
 		$results = array();
 
 		if (sizeof($rows) > 0) {
@@ -1308,9 +1322,17 @@ class KTAPI {
 	    }
 
 	    $results = array($root => $indexed[$root]);
+	    
+	    //get the first element's key
+	    reset($results);
+		$first_key = key($results);
+		
+		$res = $results[$first_key]['fields'];
+		
+		//$GLOBALS['default']->log->debug('convertToTree res '.print_r($res, true));
 
 	    //strip out the unneccesary outer array
-	    return $results[-1]['fields'];
+	    return $res;
 	}
 
 	/**

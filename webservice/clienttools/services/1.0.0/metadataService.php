@@ -123,12 +123,10 @@ class metadataService extends client_service {
 		
 		$res = $oValidator->validate(array('name'=>$sFilename));
 		
-		$GLOBALS['default']->log->debug('changeDocumentFilename validation result '.print_r($res, true));
+		//$GLOBALS['default']->log->debug('changeDocumentFilename validation result '.print_r($res, true));
 		
 		if (empty($res['errors']))
 		{
-			$GLOBALS['default']->log->debug('metadataService changeDocumentFilename validation I AM EMPTY');
-			
 			$oUser = User::get($_SESSION['userID']);
 		
 			if (PEAR::isError($oUser)) {
@@ -159,8 +157,6 @@ class metadataService extends client_service {
 		}
 		else 
 		{
-			$GLOBALS['default']->log->debug('changeDocumentFilename validation I AM NOT EMPTY');
-			
 			//assemble the item to return
 			$item['documentID'] = $iDocumentID;
 			$item['documentFilename'] = $sFilename;
@@ -967,6 +963,20 @@ class metadataService extends client_service {
 				{
 					list($newField, $value) = $fieldData;
 					$newId = $newField->getId();
+					
+					//check if is HTML
+					// For html fields we want to do some stripping.
+	                if ($newField->getIsHTML()) {
+	                	$GLOBALS['default']->log->debug('mergeMetadata I am HTML');
+	                    $value = $this->prepareHTMLFieldValue($value);
+	                }
+	
+	                /*if ($field->getDataType() == 'LARGE TEXT' && !is_null($field->getMaxLength())) {
+	                    if (strlen(strip_tags($val)) > $field->getMaxLength()) {
+	                        $form->handleError(sprintf(_kt('Value exceeds max allowed length of %d characters for %s. Current value is %d characters.'), $field->getMaxLength(), $field->getName(), strlen(strip_tags($val))));
+	                    }
+	                }*/
+					
 					if ($currentID === $newId) 
 					{
 						$newValue = $value;
@@ -979,6 +989,36 @@ class metadataService extends client_service {
 
 		return $metadataPack;
 	}
+	
+	/**
+     * This works great...once the text is saved a first time.
+     * The first time the <script> tags come through encoded, so decode first.
+     *
+     * HOWEVER html_entity_decode decodes too much (e.g. &nbsp; - which causes a DB error for some reason)!
+     * Use this instead.
+     */
+    function prepareHTMLFieldValue($val)
+    {
+    	$GLOBALS['default']->log->debug("prepareHTMLFieldValue $val");
+    	
+        $val = str_replace('&lt;', '<', $val);
+        $val = str_replace('&gt;', '>', $val);
+        // In case of script which does not yet contain <!-- //-->
+        // around the actual code (i.e. first submission again):
+        // these will not be correctly removed by strip_tags.
+        $val = preg_replace('/<script[^>]*>([^<]*)<\/script>/', '', $val);
+        // Remove any attempts to call an onclick/onmouseover/onwhatever call.
+        $val = preg_replace_callback('/on[^= ]*=[^; \/>]*;?"? *\/? *(>?)/',
+        create_function('$matches', 'if (isset($matches[1])) return $matches[1]; else return null;'),
+        $val);
+        // Now strip remaining tags including script tags with code surrounded by <!-- //-->,
+        // which would not be stripped by the previous regex.
+        $val = strip_tags($val, '<p><a><b><strong><ol><ul><li><p><br><i><em><u><span>');
+        // Remove empty <p> tags.
+        $val = preg_replace('/<p><\/p>\r?\n?/', '', $val);
+
+        return $val;
+    }
 }
 
 ?>
