@@ -63,22 +63,29 @@ class KTFolderSidebar extends KTFolderViewlet {
 	 */
 	public function getFolderSideBars() {
 		$sidebars = KTFolderActionUtil::getFolderActionsForFolder($this->oFolder, $this->oUser, 'foldersidebar');
-		$ordered = array();
+		$ordered = $keys = array();
+		// Sort to rewrite keys.
         foreach ($sidebars as $sidebar) {
         	$info = $sidebar->getInfo();
         	if($info != null) {
+        		$order = $sidebar->getOrder();
+        		// Sidebars cannot overwrite each other.
 	        	if(isset($ordered[$sidebar->getOrder()])) {
-	        		$ordered[$sidebar->getOrder() + 1] = $sidebar;
+	        		$order++;
+	        		$ordered[$order] = $sidebar;
 	        	} else {
-	        		$ordered[$sidebar->getOrder()] = $sidebar;
+	        		$ordered[$order] = $sidebar;
 	        	}
+	        		$keys[] = $order;
         	}
         }
+        
 		$oTemplating = KTTemplating::getSingleton();
 		$oTemplate = $oTemplating->loadTemplate('ktcore/folder/sidebars/viewSidebar');
         $aTemplateData = array(
               'context' => $this,
               'sidebars' => $ordered,
+              'keys' => $keys,
         );
         
         return $oTemplate->render($aTemplateData);
