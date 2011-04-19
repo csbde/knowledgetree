@@ -596,6 +596,15 @@ ul.floatleft li.notification {
 .action_buttons #more {
 	background: url('../graphics/newui/icons/more.png') no-repeat 4px 4px;
 }
+.action_buttons #usage-info {
+	background: url('../graphics/newui/icons/usage_information.png') no-repeat 4px 4px;
+}
+.action_buttons #permissions {
+	background: url('../graphics/newui/icons/permissions.png') no-repeat 4px 4px;
+}
+.action_buttons #document-roles {
+	background: url('../graphics/newui/icons/roles.png') no-repeat 4px 4px;
+}
 div.form_actions {
 	float: left;
 	background: url('../graphics/newui/gridtoolbarbkg.png') repeat-x;
