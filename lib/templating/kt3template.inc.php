@@ -711,12 +711,10 @@ class KTPage {
 
         $savedSearches = SearchHelper::getSavedSearches($_SESSION['userID']);
 
-        require_once(KT_LIB_DIR . '/browse/feedback.inc.php');
-        $userFeedback = new Feedback();
-
         // TODO: need to refactor - is this the correct way to add this?
         $loadDND = true;
 		if (ACCOUNT_ROUTING_ENABLED) {
+			require_once(KT_PLUGIN_DIR . '/ktlive/dragdrop/DragDrop.php');
 			$fFolderId = KTUtil::arrayGet($_REQUEST, 'fFolderId', 1);
 			// Disable drag and drop for shared user landing browse folder view and for any non-(folder)browse section
 			if (($this->componentClass != 'browse_collections') || (($this->user->getDisabled() == 4) && ($fFolderId == 1))) {
@@ -742,7 +740,6 @@ class KTPage {
 			       	'versionname' => $default->versionName,
 					'smallVersion' => $default->versionTier,
 			       	'savedSearches'=> $savedSearches,
-			       	'feedback' => $userFeedback->getDisplay(),
         			'uploadProgress' => $uploadProgressRendered
 				);
 
