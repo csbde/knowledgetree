@@ -55,9 +55,7 @@ class KTDocumentSidebar extends KTDocumentViewlet {
 	 */
 	public function getDocSideBars() {
 		$sidebars = KTDocumentActionUtil::getDocumentActionsForDocument($this->oDocument, $this->oUser, 'documentsidebar');
-		$ordered = array();
-		$keys = array();
-		// Sort to rewrite keys.
+		$ordered = $keys = array();
         foreach ($sidebars as $sidebar) {
         	$info = $sidebar->getInfo();
         	if($info != null) {
@@ -69,17 +67,17 @@ class KTDocumentSidebar extends KTDocumentViewlet {
 	        	} else {
 	        		$ordered[$order] = $sidebar;
 	        	}
-	        		$keys[] = $order;
+        		$keys[$order] = $order;
         	}
         }
-        
+        // Sort to rewrite keys.
+        sort($keys);
 		$oTemplating = KTTemplating::getSingleton();
 		$oTemplate = $oTemplating->loadTemplate('ktcore/document/sidebars/viewSidebar');
         $aTemplateData = array(
               'context' => $this,
               'sidebars' => $ordered,
               'keys' => $keys,
-              'documentId' => $this->oDocument->getId(),
         );
         
         return $oTemplate->render($aTemplateData);
