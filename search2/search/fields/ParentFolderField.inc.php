@@ -37,12 +37,12 @@
  *
  */
 
-class FolderField extends DBFieldExpr
+class ParentFolderField extends DBFieldExpr
 {
     public function __construct()
     {
-        parent::__construct('full_path', 'documents', _kt('Folder'));
-        $this->setAlias('Folder');
+        parent::__construct('full_path', 'documents', _kt('Parent Folder'));
+        $this->setAlias('ParentFolder');
         // do want values quoted for folder db search
         /*$this->isValueQuoted(false);*/
     }
@@ -91,7 +91,6 @@ class FolderField extends DBFieldExpr
     	return "case when position('/' in $this->path) = 0 then '/' else '$value' end";
     }
     */
-
 }
 
 ?>
