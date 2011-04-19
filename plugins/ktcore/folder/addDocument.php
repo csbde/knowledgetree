@@ -53,8 +53,7 @@ class KTFolderAddDocumentAction extends KTFolderAction {
 	var $parentBtn = '';
 
 	// Settings for shared user permissions
-	var $showIfRead = false;
-	var $showIfWrite = true;
+	var $bShowIfWriteShared = true;
 
     function getDisplayName() {
         return _kt('Upload');

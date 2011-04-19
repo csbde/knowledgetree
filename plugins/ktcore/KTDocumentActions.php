@@ -352,8 +352,8 @@ class KTDocumentViewAction extends KTDocumentAction {
 
     var $sName = 'ktcore.actions.document.view';
     var $sIconClass = 'download';
-	var $showIfWrite = true;
-	var $showIfRead = true;
+	var $bShowIfWriteShared = true;
+	var $bShowIfReadShared = true;
 	var $btnOrder = 1;
 
     function getDisplayName() {
@@ -431,8 +431,7 @@ class KTDocumentCheckOutAction extends KTDocumentAction {
     var $_bMutator = true;
     var $_bMutationAllowedByAdmin = false;
     var $sIconClass = 'checkout';
-	var $showIfWrite = true;
-	var $showIfRead = false;
+	var $bShowIfWriteShared = true;
 	var $btnOrder = 2;
 
     function getDisplayName() {
@@ -636,8 +635,7 @@ class KTDocumentCheckInAction extends KTDocumentAction {
     var $sName = 'ktcore.actions.document.checkin';
     var $_sShowPermission = 'ktcore.permissions.write';
     var $sIconClass = 'checkin';
-	var $showIfWrite = true;
-	var $showIfRead = false;
+	var $bShowIfWriteShared = true;
 	var $btnOrder = 2;
 
     function getDisplayName() {
@@ -891,8 +889,7 @@ class KTDocumentCancelCheckOutAction extends KTDocumentAction {
     var $bInAdminMode = null;
     //var $sIconClass = 'cancel_checkout';
 
-	var $showIfWrite = true;
-	var $showIfRead = false;
+	var $bShowIfWriteShared = true;
     var $sIconClass = 'cancel-checkout';
     var $sParentBtn = 'ktcore.actions.document.checkin';
 
@@ -1737,8 +1734,6 @@ class KTDocumentArchiveAction extends KTDocumentAction {
     var $sName = 'ktcore.actions.document.archive';
     var $_sShowPermission = 'ktcore.permissions.write';
     var $_bMutator = false;
-	var $showIfWrite = false;
-	var $showIfRead = false;
     var $sIconClass = 'archive';
     var $sParentBtn = 'more';
 
@@ -1892,8 +1887,6 @@ class KTAjaxDocumentWorkflowAction extends KTDocumentAction {
     public $sName = 'ktajax.actions.document.workflow';
     public $_sShowPermission = 'ktcore.permissions.read';
     public $sHelpPage = 'ktcore/user/workflow.html';
-	public $showIfWrite = true;
-	public $showIfRead = false;
     public $sIconClass = 'manage-workflow';
     public $sParentBtn = 'more';
 
@@ -2068,8 +2061,8 @@ class KTDocumentWorkflowAction extends KTDocumentAction {
     public $sName = 'ktcore.actions.document.workflow';
     public $_sShowPermission = 'ktcore.permissions.read';
     public $sHelpPage = 'ktcore/user/workflow.html';
-	public $showIfWrite = true;
-	public $showIfRead = false;
+	public $bShowIfReadShared = true;
+	public $bShowIfWriteShared = true;
     public $sIconClass = 'manage-workflow';
     public $sParentBtn = 'more';
 
@@ -2416,12 +2409,12 @@ class KTOwnershipChangeAction extends KTDocumentAction {
 
 class KTDocumentPageUrlAction extends KTDocumentAction {
 
-    var $sName = 'ktcore.actions.document.pageurl';
-	var $showIfWrite = true;
-	var $showIfRead = true;
-	var $btnOrder = 1;
-	var $sBtnPosition = 'links';
-	var $sIconClass = 'page-url';
+    public $sName = 'ktcore.actions.document.pageurl';
+	public $bShowIfWriteShared = true;
+	public $bShowIfReadShared = true;
+	public $btnOrder = 1;
+	public $sBtnPosition = 'links';
+	public $sIconClass = 'page-url';
 
     function getDisplayName() {
         return _kt('Get page link');
@@ -2444,8 +2437,8 @@ class KTDocumentPageUrlAction extends KTDocumentAction {
 class KTDocumentDownloadUrlAction extends KTDocumentAction {
 
     var $sName = 'ktcore.actions.document.downloadurl';
-	var $showIfWrite = true;
-	var $showIfRead = true;
+	var $bShowIfWriteShared = true;
+	var $bShowIfReadShared = true;
 	var $btnOrder = 2;
 	var $sBtnPosition = 'links';
 	var $sIconClass = 'download-url';
@@ -2471,8 +2464,8 @@ class KTDocumentDownloadUrlAction extends KTDocumentAction {
 class KTDocumentPreviewUrlAction extends KTDocumentAction {
 
     var $sName = 'ktcore.actions.document.previewurl';
-	var $showIfWrite = true;
-	var $showIfRead = true;
+	var $bShowIfWriteShared = true;
+	var $bShowIfReadShared = true;
 	var $btnOrder = 3;
 	var $sBtnPosition = 'links';
 	var $sIconClass = 'preview-url';

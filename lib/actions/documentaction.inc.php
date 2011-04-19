@@ -51,18 +51,18 @@ require_once(KT_LIB_DIR . "/users/shareduserutil.inc.php");
  */
 
 class KTDocumentAction extends KTStandardDispatcher {
-    var $sName;
-    var $sDescription;
+    public $sName;
+    public $sDescription;
 
-    var $_sShowPermission = 'ktcore.permissions.read';
-    var $_sDisablePermission;
-    var $bAllowInAdminMode = false;
-    var $sHelpPage = 'ktcore/browse.html';
+    public $_sShowPermission = 'ktcore.permissions.read';
+    public $_sDisablePermission;
+    public $bAllowInAdminMode = false;
+    public $sHelpPage = 'ktcore/browse.html';
 
-    var $sSection = 'view_details';
+    public $sSection = 'view_details';
     /** Shared user mutators to deal with bypassing permissions */
-	var $showIfRead = false;
-	var $showIfWrite = false;
+	public $bShowIfReadShared = false;
+	public $bShowIfWriteShared = false;
 
     /**
  	 * The _bMutator variable determines whether the action described by the class is considered a mutator.
@@ -272,12 +272,12 @@ class KTDocumentAction extends KTStandardDispatcher {
 		// Check if deleted or archived document
         $status = $this->oDocument->getStatusID();
         if (($status == DELETED) || ($status == ARCHIVED)) { return false; }
-		// Check if actions display for both users
-		if($this->showIfRead && $this->showIfWrite) { return true; }
+		// Check if actions displays for both users
+		if($this->bShowIfReadShared && $this->bShowIfWriteShared) { return true; }
 		// Check if action does not have to be displayed
-		else if(!$this->showIfRead && !$this->showIfWrite) { return false; }
+		else if(!$this->bShowIfReadShared && !$this->bShowIfWriteShared) { return false; }
 		// Check if action needs to be hidden
-		else if(!$this->showIfRead)	{ if($this->getPermission() == 1) { return true; } }
+		else if(!$this->bShowIfReadShared) { if($this->getPermission() == 1) { return true; } }
 
 		return false;
     }
@@ -291,7 +291,7 @@ class KTDocumentAction extends KTStandardDispatcher {
 		$iUserId = $this->oUser->getID();
 		$iDocumentId = $this->oDocument->getID();
 		$iFolderId = $this->oDocument->getFolderID();
-		return SharedContent::getPermissions($iUserId, $iDocumentId, $iFolderId, 'document');
+		return SharedContent::getPermissions($iUserId, $iDocumentId, null, 'document');
     }
 
     function userHasDocumentReadPermission($oDocument)

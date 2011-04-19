@@ -61,8 +61,8 @@ class PDFGeneratorAction extends KTDocumentAction {
             'odp', 'otp', 'sxi', 'sti', 'ppt', 'pot', 'sxd', 'odg',
             'otg', 'std', 'asc');
 
-	var $showIfRead = true;
-	var $showIfWrite = true;
+	var $bShowIfReadShared = true;
+	var $bShowIfWriteShared = true;
 
 	var $sIconClass = 'download-pdf';
 	var $sParentBtn = 'ktcore.actions.document.view';

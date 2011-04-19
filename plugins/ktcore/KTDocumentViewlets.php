@@ -45,8 +45,7 @@ class KTWorkflowViewlet extends KTDocumentViewlet {
 
     public $sName = 'ktcore.viewlets.document.workflow';
 	public $_sShowPermission = 'ktcore.permissions.write';
-    public $showIfRead = false;
-    public $showIfWrite = true;
+    public $bShowIfWriteShared = true;
 
     public function getInfo() {
         if ($this->_show() === false) {
@@ -131,8 +130,8 @@ class KTWorkflowViewlet extends KTDocumentViewlet {
 class KTDocumentActivityFeedAction extends KTDocumentViewlet {
 
     public $sName = 'ktcore.viewlet.document.activityfeed';
-    public $showIfRead = true;
-    public $showIfWrite = true;
+    public $bShowIfReadShared = true;
+    public $bShowIfWriteShared = true;
 	private $displayMax = 10;
 
     function display_viewlet()
@@ -293,8 +292,8 @@ class KTInlineEditViewlet extends KTDocumentViewlet {
 
     public $sName = 'ktcore.viewlets.document.inline.edit';
 	public $_sShowPermission = 'ktcore.permissions.write';
-    public $showIfRead = true;
-    public $showIfWrite = true;
+    public $bShowIfReadShared = true;
+    public $bShowIfWriteShared = true;
 
     function display_viewlet()
     {

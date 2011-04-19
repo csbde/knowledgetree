@@ -93,7 +93,7 @@ class KTWorkflowSidebar extends KTDocumentSidebar {
 	public $sName = 'ktcore.sidebar.workflow';
 	public $_sShowPermission = 'ktcore.permissions.read';
 	public $order = 5;
-	public $showIfRead = true;
+	public $bShowIfWriteShared = true;
 	
 	public function getCSSName() { return 'workflow_transitions'; }
 	
