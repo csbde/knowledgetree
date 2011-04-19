@@ -36,6 +36,7 @@
 						<span>
 							{foreach from=$aFieldPair.selection item=option}
 								 <span class="descriptiveText" data-checked_value="{$option}" data-name="{$aFieldPair.fieldid}[]" data-type='checkbox' data-value-id="value-{$aFieldPair.fieldid}"></span>
+								 <br/>
 							{/foreach}
 						</span>
 					{/if}
