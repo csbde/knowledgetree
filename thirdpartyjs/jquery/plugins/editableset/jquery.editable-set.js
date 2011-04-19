@@ -489,7 +489,7 @@
 							restrict(newObject, e);
 						});
 						
-						newObject.before($('<span>max: '+maxLength+'</span>'));
+						
 						
 					}
 					catch(er)
@@ -499,6 +499,8 @@
 				//console.log('textarea maxlength '+maxLength);
 				
 				$(object).replaceWith( newObject );
+				newObject.wrap('<div>');
+				newObject.parent().before($('<span>max: '+maxLength+'</span>'));
 			}
 		},
 		

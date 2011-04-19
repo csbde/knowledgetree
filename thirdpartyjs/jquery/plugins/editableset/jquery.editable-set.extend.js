@@ -114,7 +114,10 @@ function buildTree(fieldid, data, html)
 	}
 	else if (data.type == 'field')
 	{
-		html += '<li class="leafnode"><input type="radio" value="'+data.name+'" name="'+fieldid+'"/>'+data.name;	//span class="descriptiveText" data-name="'+fieldid+'" data-value-id="value-'+fieldid+'" data-options=\'['+value+']\'/></li>';
+		if (data.name != '')
+		{
+			html += '<li class="leafnode"><input type="radio" value="'+data.name+'" name="'+fieldid+'"/>'+data.name;	//span class="descriptiveText" data-name="'+fieldid+'" data-value-id="value-'+fieldid+'" data-options=\'['+value+']\'/></li>';
+		}
 	}
 
 	return html;
@@ -167,7 +170,6 @@ jQuery.editableSet.addInputType('datepicker', {
 	        		}
 				},
 				'invalid': function(dateField) {
-					//console.log('invalid date');
 					if (!self.invalid.containsKey(attrs['data-name']))
 					{
 						//add it to the hashtable that contains invalid fields
@@ -175,7 +177,6 @@ jQuery.editableSet.addInputType('datepicker', {
 					}
 				},
 				'valid' : function(dateField) {
-					//console.log('valid date');
 					if (self.invalid.containsKey(attrs['data-name']))
 					{
 						//clear the current field from the hashtable
@@ -218,8 +219,6 @@ jQuery.editableSet.addInputType('htmleditor', {
 				maxLength = '';
 			}
 		}
-		
-		//console.log('maxLength '+maxLength);
 
 		var htmlEd = new Ext.form.HtmlEditor({
 	        width: 210,
@@ -240,44 +239,43 @@ jQuery.editableSet.addInputType('htmleditor', {
 					{
 						editor.setValue('');
 					}
-				}
-				/*'beforeSync': function(editor, text){
+				}/*,
+				'beforePush': function(editor, text){
+					console.log('beforePush untrimmed '+text);
 					var trimmed = text.replace(/(<br>)|&nbsp;/g, '').trim();
-	            	console.log('beforeSync '+trimmed);
-	            	var maxLength = parseInt(attrs['data-maxlength']);
+	            	console.log('beforePush trimmed '+trimmed);
+	            	//var maxLength = parseInt(attrs['data-maxlength']);
+	            	console.log('beforePush maxLength '+maxLength);
 	            	if (trimmed.length >= maxLength)
 	            	{
+	            		console.log('beforePush max reached');
 	            		return false;
 	            	}
-				},*/
-	            /*'sync': function(editor, text){
-	            	console.log('sync '+text);
+				}
+				'beforeSync': function(editor, text){
+					console.log('beforeSync untrimmed '+text);
+					var trimmed = text.replace(/(<br>)|&nbsp;/g, '').trim();
+	            	console.log('beforeSync trimmed '+trimmed);
+	            	//var maxLength = parseInt(attrs['data-maxlength']);
+	            	console.log('beforeSync maxLength '+maxLength);
+	            	if (trimmed.length >= maxLength)
+	            	{
+	            		console.log('beforeSync max reached');
+	            		return false;
+	            	}
+				},
+	            'sync': function(editor, text){
+	            	console.log('sync untrimmed '+text);
 
 	            	var trimmed = text.replace(/(<br>)|&nbsp;/g, '').trim();
-	            	console.log('sync '+trimmed);
-	            	var maxLength = parseInt(attrs['data-maxlength']);
+	            	console.log('sync trimmed '+trimmed);
+	            	//var maxLength = parseInt(attrs['data-maxlength']);
+	            	console.log('sync maxLength '+maxLength);
 	            	if (trimmed.length >= maxLength)
 	            	{
-	            		console.log('max reached');
+	            		console.log('sync max reached');
 	            		return false;
 	            	}
-
-
-			    	//kt.app.upload.getMetaItem(jQuery('#ul_meta_field_htmlEditor_[id]')).setMetaData('[id]', text);
-
-					//ensure that not blank text
-	    			if([is_mandatory] == '1') {
-						//remove <br> and &nbsp;
-	    				var trimmed = text.replace(/(<br>)|&nbsp;/g, '').trim();
-
-						if(requiredDone && trimmed.length == 0) {
-							requiredDone = false;
-							kt.app.upload.getMetaItem(jQuery('#ul_meta_field_htmlEditor_[id]')).registerRequiredFieldNotDone('ul_meta_field_[id]');
-						} else if(!requiredDone) {
-							requiredDone = true;
-							kt.app.upload.getMetaItem(jQuery('#ul_meta_field_htmlEditor_[id]')).registerRequiredFieldDone('ul_meta_field_[id]');
-						}
-	    			}
 				}*/
 	    	}
 	    });
