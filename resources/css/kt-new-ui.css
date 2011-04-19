@@ -811,6 +811,8 @@ ul.buttonsList li:hover > *.dir, ul.buttonsList li:hover span.dir:hover {
 input[type="checkbox"] {
 	border: none;
 	background: none;
+	position: relative;
+	top:2px;
 }
 
 thead {
