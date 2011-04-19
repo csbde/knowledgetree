@@ -273,6 +273,11 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
 
         $blocks = KTDocumentActionUtil::getDocumentActionsForDocument($this->document, $this->oUser, 'documentblock');
         $documentBlocks = isset($blocks[0]) ? $blocks[0] : array();
+        if (!empty($documentBlocks)) {
+        	if (is_null($documentBlocks->getInfo())) {
+        		$documentBlocks = array();
+        	}
+        }
         $sidebars = KTDocumentActionUtil::getDocumentActionsForDocument($this->document, $this->oUser, 'maindocsidebar');
         $documentSidebars = isset($sidebars[0]) ? $sidebars[0] : array();
 
