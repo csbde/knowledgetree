@@ -654,11 +654,11 @@ class KTDocumentCheckInAction extends KTDocumentAction {
             return null;
         }
 
+        $info = parent::getInfo();
         if ($this->oDocument->getCheckedOutUserID() != $this->oUser->getId()) {
-            return null;
+            $info['status'] = 'disabled';
         }
-
-        return parent::getInfo();
+        return $info;
     }
 
     function check() {
