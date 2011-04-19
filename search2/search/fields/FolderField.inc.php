@@ -68,7 +68,7 @@ class FolderField extends DBFieldExpr
 
     public function getInputRequirements()
     {
-        return array('value'=>array('type'=>FieldInputType::TEXT));
+        return array('value' => array('type' => FieldInputType::TEXT));
     }
 
     public function is_valid()
