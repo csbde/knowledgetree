@@ -40,7 +40,62 @@
 
 require_once(realpath(dirname(__FILE__) . '/LoginResetDispatcher.inc.php'));
 
-$dispatcher = new LoginResetDispatcher();
-$dispatcher->dispatch();
+class LoginResetEmailDispatcher extends LoginResetDispatcher {
+
+    protected function getAdditionalJS($plugin, $useEmail = false)
+    {
+        return $plugin->getURLPath('resources/passwordResetEmailUsers.js');
+    }
+
+    protected function getEmail()
+    {
+        $resetKey = (isset($_REQUEST['pword_reset'])) ? $_REQUEST['pword_reset'] : '';
+        if (!empty($resetKey)) {
+            // Get the user id from the key
+            $key = explode('_', $resetKey);
+            $id = isset($key[1]) ? $key[1] : '';
+            $user = User::get($id);
+            if (!PEAR::isError($user)) {
+                $email = $user->getEmail();
+            }
+        }
+
+        return $email;
+    }
+
+    protected function getFailedLoginMessage()
+    {
+        return 'Login failed.  Please check your email address and password, and try again.';
+    }
+
+    protected function doFailedLoginRedirect($url, $queryParams)
+    {
+        $message = 'Login failed.  Please check your email address and password, and try again.';
+        $this->simpleRedirectToMain(_kt($message), $url, $queryParams);
+        exit(0);
+    }
+
+    public function do_sendResetRequest()
+    {
+        $email = $_REQUEST['email'];
+        $id = $this->validateEmailUser($email);
+        if (!is_numeric($id) || $id < 1) {
+               return _kt('Please check that you have entered a valid email address.');
+        }
+
+        return $this->sendResetEmail($id, $email);
+    }
+
+    public function do_resetPassword()
+    {
+        $email = $_REQUEST['email'];
+        $user = $_REQUEST['username'];
+        $password = $_REQUEST['password'];
+        $confirm = $_REQUEST['confirm'];
+
+        return $this->resetPasswordEmailUser($email, $password);
+    }
+
+}
 
 ?>
