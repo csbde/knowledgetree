@@ -6,7 +6,7 @@
  * KnowledgeTree Community Edition
  * Document Management Made Simple
  * Copyright (C) 2008 KnowledgeTree Inc.
- * 
+ *
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License version 3 as published by the
@@ -46,7 +46,7 @@ class IsArchivedField extends DBFieldExpr
         $this->isValueQuoted(false);
     }
 
-	public function modifyValue($value)
+    public function modifyValue($value)
     {
     	$value = KTUtil::anyToBool($value, false)?4:1;
     	return $value;
@@ -54,7 +54,7 @@ class IsArchivedField extends DBFieldExpr
 
     public function getInputRequirements()
     {
-        return array('value'=>array('type'=>FieldInputType::BOOLEAN));
+        return array('value' => array('type' => FieldInputType::BOOLEAN));
     }
 
     public function is_valid()

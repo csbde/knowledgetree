@@ -47,9 +47,7 @@ class KTDocumentSidebar extends KTDocumentViewlet {
 	public $order = 1;
 	
 	public function getCSSName() {}
-	public function getOrder() {
-		return $this->order;
-	}
+	public function getOrder() { return $this->order; }
 	/**
 	 * Create a sidebar block
 	 *
@@ -57,27 +55,29 @@ class KTDocumentSidebar extends KTDocumentViewlet {
 	 */
 	public function getDocSideBars() {
 		$sidebars = KTDocumentActionUtil::getDocumentActionsForDocument($this->oDocument, $this->oUser, 'documentsidebar');
-		$ordered = array();
+		$ordered = $keys = array();
         foreach ($sidebars as $sidebar) {
         	$info = $sidebar->getInfo();
         	if($info != null) {
         		$order = $sidebar->getOrder();
         		// Sidebars cannot overwrite each other.
 	        	if(isset($ordered[$sidebar->getOrder()])) {
-	        		$ordered[$order + 1] = $sidebar;
+	        		$order++;
+	        		$ordered[$order] = $sidebar;
 	        	} else {
 	        		$ordered[$order] = $sidebar;
 	        	}
+        		$keys[$order] = $order;
         	}
         }
         // Sort to rewrite keys.
-        sort($ordered);
+        sort($keys);
 		$oTemplating = KTTemplating::getSingleton();
 		$oTemplate = $oTemplating->loadTemplate('ktcore/document/sidebars/viewSidebar');
         $aTemplateData = array(
               'context' => $this,
               'sidebars' => $ordered,
-              'documentId' => $this->oDocument->getId(),
+              'keys' => $keys,
         );
         
         return $oTemplate->render($aTemplateData);
@@ -92,7 +92,7 @@ class KTDocumentSidebar extends KTDocumentViewlet {
 class KTWorkflowSidebar extends KTDocumentSidebar {
 	public $sName = 'ktcore.sidebar.workflow';
 	public $_sShowPermission = 'ktcore.permissions.read';
-	public $order = 4;
+	public $order = 5;
 	public $showIfRead = true;
 	
 	public function getCSSName() { return 'workflow_transitions'; }
