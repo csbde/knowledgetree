@@ -28,6 +28,8 @@
 	font-family: sans-serif;
 	vertical-align: top;
 	border: medium none;
+	float: left;
+	line-height: 24px;
 }
 
 #popup_content .form_actions input:hover, #popup_content .form_actions a:hover {
