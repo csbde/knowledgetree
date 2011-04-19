@@ -143,7 +143,7 @@ class Email {
             //send the email
             if (!$this->oMailer->Send()) {
                 $default->log->error("Error sending mail to $mToEmail; mailer error code=" . $this->oMailer->ErrorInfo);
-                return PEAR::raiseError(sprintf(_kt("Error sending mail to %s; mailer error code=%s"),$mToEmail,  $this->oMailer->ErrorInfo));
+                return PEAR::raiseError(sprintf(_kt("Error sending mail to %s; mailer error code=%s"), $mToEmail, $this->oMailer->ErrorInfo));
             }
             else {
                 $default->log->info("Successfully sent mail to $mToEmail");
