@@ -237,7 +237,7 @@ class Email {
     * @todo check for special characters (including encoding the link correctly???)
     * @todo need to test this on multiple mail clients, not just Outlook
     */
-    function sendHyperLink($FromEmail, $FromName, $ToEmail, $Subj, $EmailBody, $hyperlink)
+    function sendHyperLink($fromEmail, $fromName, $toEmail, $subject, $emailBody, $hyperlink)
     {
         global $default;
 
@@ -245,14 +245,14 @@ class Email {
             return PEAR::raiseError(_kt("Email is not configured."));
         }
 
-        $body = $this->makeEmailTemplate(stripslashes($EmailBody).'<br /><br />'.$hyperlink);
+        $body = $this->makeEmailTemplate(stripslashes($emailBody).'<br /><br />'.$hyperlink);
 
         //get info from relevant fields.
-        $this->oMailer->From = $FromEmail;
-        $this->oMailer->FromName = $FromName;
-        $this->oMailer->AddAddress($ToEmail);
-        $this->oMailer->Subject = stripslashes($Subj);
-        //        $this->oMailer->Body = stripslashes($EmailBody) . ' ' . $hyperlink;
+        $this->oMailer->From = $fromEmail;
+        $this->oMailer->FromName = $fromName;
+        $this->oMailer->AddAddress($toEmail);
+        $this->oMailer->Subject = stripslashes($subject);
+        //        $this->oMailer->Body = stripslashes($emailBody) . ' ' . $hyperlink;
         $this->oMailer->Body = $body;
 
         //send the email
@@ -278,7 +278,7 @@ class Email {
     * @todo check for special characters (including encoding the link correctly???)
     * @todo need to test this on multiple mail clients, not just Outlook
     */
-    function sendHelpEmail($FromEmail, $FromName, $ToEmail, $Subj, $EmailBody, $hyperlink)
+    function sendHelpEmail($fromEmail, $fromName, $toEmail, $subject, $emailBody, $hyperlink)
     {
         global $default;
 
@@ -286,14 +286,14 @@ class Email {
             return PEAR::raiseError(_kt("Email is not configured."));
         }
 
-        $body = $this->makeEmailTemplate(stripslashes($EmailBody) . " <br />" . _kt("This bug can be found on this page") . ": " . "<a href = ". $hyperlink .">". $hyperlink ."</a>");
+        $body = $this->makeEmailTemplate(stripslashes($emailBody) . " <br />" . _kt("This bug can be found on this page") . ": " . "<a href = ". $hyperlink .">". $hyperlink ."</a>");
 
         //get info from relevant fields.
-        $this->oMailer->From = $FromEmail;
-        $this->oMailer->FromName = $FromName;
-        $this->oMailer->AddAddress($ToEmail);
-        $this->oMailer->Subject = stripslashes($Subj)  . ' ' . $hyperlink; //only difference from above
-        //        $this->oMailer->Body = stripslashes($EmailBody) . " <br>" . _kt("This bug can be found on this page") . ": " . "<a href = ". $hyperlink .">". $hyperlink ."</a>";
+        $this->oMailer->From = $fromEmail;
+        $this->oMailer->FromName = $fromName;
+        $this->oMailer->AddAddress($toEmail);
+        $this->oMailer->Subject = stripslashes($subject)  . ' ' . $hyperlink; //only difference from above
+        //        $this->oMailer->Body = stripslashes($emailBody) . " <br>" . _kt("This bug can be found on this page") . ": " . "<a href = ". $hyperlink .">". $hyperlink ."</a>";
         $this->oMailer->Body = $body;
 
         //send the email
@@ -305,7 +305,7 @@ class Email {
         return true;
     }
 
-    function sendEmail($FromEmail, $FromName, $ToEmail, $Subj, $EmailBody)
+    function sendEmail($fromEmail, $fromName, $toEmail, $subject, $emailBody)
     {
         global $default;
 
@@ -313,13 +313,13 @@ class Email {
             return PEAR::raiseError(_kt("Email is not configured."));
         }
 
-        $body = $this->makeEmailTemplate(stripslashes($EmailBody));
+        $body = $this->makeEmailTemplate(stripslashes($emailBody));
 
         //get info from relevant fields.
-        $this->oMailer->From = $FromEmail;
-        $this->oMailer->FromName = $FromName;
-        $this->oMailer->AddAddress($ToEmail);
-        $this->oMailer->Subject = stripslashes($Subj);
+        $this->oMailer->From = $fromEmail;
+        $this->oMailer->FromName = $fromName;
+        $this->oMailer->AddAddress($toEmail);
+        $this->oMailer->Subject = stripslashes($subject);
         $this->oMailer->Body = $body;
 
         //send the email
@@ -341,7 +341,7 @@ class Email {
     */
     public function makeEmailTemplate($email)
     {
-        $template = file_get_contents(KT_DIR . '/files/email/kt-email-template.html');
+        $template = file_get_contents(KT_DIR . '/resources/email/kt-email-template.html');
         return str_replace('%content%', $email, $template);
     }
 
