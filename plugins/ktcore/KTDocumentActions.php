@@ -1889,7 +1889,8 @@ class KTAjaxDocumentWorkflowAction extends KTDocumentAction {
     public $sHelpPage = 'ktcore/user/workflow.html';
     public $sIconClass = 'manage-workflow';
     public $sParentBtn = 'more';
-
+	public $bShowIfWriteShared = true;
+	
     public function predispatch() {
         $this->persistParams(array('fTransitionId'));
     }

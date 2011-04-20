@@ -30,18 +30,18 @@ workflowActions.prototype.displayAction = function(transitionId) {
 		width = '400px';
 		height = '200px';
 		title = 'Add a new workflow';
-		address = this.baseUrl + '&fDocumentId=' + documentId;
+		address = this.baseUrl + 'fDocumentId=' + documentId;
 	} else {
 		if(transitionId == undefined) {
 			width = '600px';
 			height = '400px';
 			title = 'Transition a workflow';
-			address = this.baseUrl + '&fDocumentId=' + documentId;
+			address = this.baseUrl + 'fDocumentId=' + documentId;
 		} else {
 			width = '500px';
 			height = '400px';
 			title = 'Perform Transition';
-			address = this.baseUrl + '&action=quicktransition&fDocumentId=' + documentId + '&fTransitionId=' + transitionId;
+			address = this.baseUrl + 'action=quicktransition&fDocumentId=' + documentId + '&fTransitionId=' + transitionId;
 		}
 	}
 

@@ -1,3 +1,4 @@
+<input type=hidden id=documentId value="{$documentId}">
 {if !empty($transitions)}
 <h2> {i18n}Workflow Transitions{/i18n} </h2>
 	    <p style="font-size: 11px; padding: 10px; color: rgb(102, 102, 102);">
