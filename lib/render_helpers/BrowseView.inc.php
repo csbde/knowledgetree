@@ -655,7 +655,7 @@ class BrowseView {
         //$item = $this->checkWorkflowPermissions($item, $oDocument);
 
         $item['separatorA'] = $item['actions.copy'] == '' ? '' : $ns;
-        $item['separatorB'] = $item['actions.download'] == '' || $item['actions.instantview'] == '' ? '' : $ns;
+        $item['separatorB'] = $item['actions.download'] == '' ? '' : $ns;
         $item['separatorC'] = $item['actions.checkout'] == '' || $item['actions.checkin'] == '' || $item['actions.cancel_checkout']== '' ? '' : $ns;
         $item['separatorD'] = $ns;//($item['actions.alert'] == '' || $item ['actions.email'] == '') && $hasWrite ? '' : $ns;
         if ($item['is_immutable'] == '') { $item['separatorB'] = $item['separatorC'] = $item['separatorD'] = $ns; }
@@ -766,7 +766,6 @@ class BrowseView {
                                         <li class="action_share_document [actions.share_document]"><a href="#" onclick="javascript:kt.app.sharewithusers.shareContentWindow(\'[id]\',\'[item_type]\',\'[user_id]\', \'[isfinalize_document]\');">Share This Document</a></li>
                                         '. $share_separator .'
                                         <li class="action_download [actions.download]"><a href="action.php?kt_path_info=ktcore.actions.document.view&fDocumentId=[id]">Download</a></li>
-                                        <li class="action_instant_view [actions.instant_view]"><a href="[document_link]#preview">Instant View</a></li>
                                         [allowdoczohoedit]
 
                                         <li class="separator[separatorA]"></li>
