@@ -114,7 +114,6 @@ class KTWorkflowSidebar extends KTDocumentSidebar {
         $aDisplayTransitions = array();
         $aTransitions = KTWorkflowUtil::getTransitionsForDocumentUser($this->oDocument, $this->oUser);
         if (empty($aTransitions)) { return ''; }
-        $this->oPage->requireJSResource('resources/js/newui/documents/blocks/workflowsActions.js');
         // Check if the document has been checked out
         $bIsCheckedOut = $this->oDocument->getIsCheckedOut();
         $iId = $this->oDocument->getId();
