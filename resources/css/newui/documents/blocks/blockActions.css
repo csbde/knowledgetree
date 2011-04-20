@@ -16,29 +16,29 @@
 }
 
 #document_status_area .action {
-    height: 37px;
-    width: 37px;
+    height: 45px;
+    width: 45px;
 }
 
 #document_status_area .alert.enabled {
-    background: url("../../../../graphics/newui/documents/blocks/alarmclock.png") no-repeat transparent;
+	background-position: 3px -40px;
 }
 #document_status_area .alert.disabled {
-	background-position: 3px 3px;
+	background-position: 3px 1px;
 }
 
 #document_status_area .workflow.enabled {
-    background: url("../../../../graphics/newui/documents/blocks/media_play_green.png") no-repeat transparent;
+    background-position: -39px -40px;
 }
 #document_status_area .workflow.disabled {
-	background-position: -32px 3px;
+	background-position: -39px 0px;
 }
 
 #document_status_area .subscribe.enabled {
-    background: url("../../../../graphics/newui/documents/blocks/star_yellow.png") no-repeat transparent;
+	background-position: -80px -41px;
 }
 #document_status_area .subscribe.disabled {
-	background-position: -72px 3px;
+	background-position: -80px 1px;
 }
 
 #stateActions {

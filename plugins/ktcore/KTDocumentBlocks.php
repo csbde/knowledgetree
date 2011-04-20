@@ -50,6 +50,7 @@ class KTDocumentStatusBlock extends KTDocumentViewlet {
     public function getInfo() {
     	// Has to be included for all document views
 		$this->oPage->requireJSResource('resources/js/newui/documents/blocks/blockActions.js');
+		$this->oPage->requireJSResource('resources/js/newui/documents/blocks/workflowsActions.js');
         if ($this->_show() === false) {
             return null;
         }
