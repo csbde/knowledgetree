@@ -48,6 +48,8 @@ class KTDocumentStatusBlock extends KTDocumentViewlet {
 	public $_sShowPermission = 'ktcore.permissions.read';
 	
     public function getInfo() {
+    	// Has to be included for all document views
+		$this->oPage->requireJSResource('resources/js/newui/documents/blocks/blockActions.js');
         if ($this->_show() === false) {
             return null;
         }
@@ -61,12 +63,8 @@ class KTDocumentStatusBlock extends KTDocumentViewlet {
 	 * @return string
 	 */
 	public function getDocBlock($wrapper = true) {
-		$this->oPage->requireJSResource('resources/js/newui/documents/blocks/blockActions.js');
 		$this->oPage->requireCSSResource('resources/css/newui/documents/blocks/blockActions.css');
-		// TODO : Reference plugin path
-		// TODO : Move requires to relevant sub blocks
-		$this->oPage->requireJSResource('plugins/commercial/alerts/resources/blocks/alertsActions.js');
-		$this->oPage->requireJSResource('resources/js/newui/documents/blocks/workflowsActions.js');
+		$this->oPage->requireJSResource('resources/js/newui/documents/blocks/subscriptionsBlock.js');
 		// Jquery tooltip
 		$this->oPage->requireJSResource('thirdpartyjs/jquery/ui/minified/jquery.tools.min.js');
 		

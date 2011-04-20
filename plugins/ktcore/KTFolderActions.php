@@ -72,8 +72,7 @@ class KTFolderAddFolderAction extends KTFolderAction {
 
     var $_sShowPermission = "ktcore.permissions.addFolder";
 
-	var $showIfWrite = true;
-	var $showIfRead = false;
+	var $bShowIfWriteShared = true;
 
 	var $cssClass = 'new-folder';
 	var $parentBtn = '';

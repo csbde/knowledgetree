@@ -93,7 +93,7 @@ class KTWorkflowSidebar extends KTDocumentSidebar {
 	public $sName = 'ktcore.sidebar.workflow';
 	public $_sShowPermission = 'ktcore.permissions.read';
 	public $order = 5;
-	public $showIfRead = true;
+	public $bShowIfWriteShared = true;
 	
 	public function getCSSName() { return 'workflow_transitions'; }
 	
@@ -114,6 +114,7 @@ class KTWorkflowSidebar extends KTDocumentSidebar {
         $aDisplayTransitions = array();
         $aTransitions = KTWorkflowUtil::getTransitionsForDocumentUser($this->oDocument, $this->oUser);
         if (empty($aTransitions)) { return ''; }
+        $this->oPage->requireJSResource('resources/js/newui/documents/blocks/workflowsActions.js');
         // Check if the document has been checked out
         $bIsCheckedOut = $this->oDocument->getIsCheckedOut();
         $iId = $this->oDocument->getId();
@@ -160,6 +161,7 @@ class KTWorkflowSidebar extends KTDocumentSidebar {
             'transitions' => $aDisplayTransitions,
             'state_name' => $oWorkflowState->getName(),
 			'comment' => $oLatestTransitionComment,
+			'documentId' => $this->oDocument->getId(),
         ));
 
         return $oTemplate->render();

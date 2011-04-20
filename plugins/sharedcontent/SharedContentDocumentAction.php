@@ -45,8 +45,6 @@ class SharedContentDocumentAction extends KTDocumentAction {
     var $sName = 'ktcore.actions.document.sharecontent';
     var $_sShowPermission = 'ktcore.permissions.write';
 	var $sDisplayName = 'Share';
-	var $showIfWrite = false;
-	var $showIfRead = false;
 
     var $sIconClass = 'share';
 	var $btnOrder = 4;
@@ -94,8 +92,6 @@ class SharedContentFolderAction extends KTFolderAction {
     var $sName = 'ktcore.actions.folder.sharecontent';
     var $_sShowPermission = 'ktcore.permissions.write';
 	var $sDisplayName = 'Share';
-	var $showIfWrite = false;
-	var $showIfRead = false;
 
     var $cssClass = 'share';
 

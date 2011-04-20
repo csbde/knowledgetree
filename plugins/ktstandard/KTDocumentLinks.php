@@ -73,8 +73,7 @@ class KTDocumentLinks extends KTPlugin {
 
 class KTDocumentLinkViewlet extends KTDocumentViewlet {
     var $sName = 'ktcore.viewlets.document.link';
-    public $showIfRead = true;
-    public $showIfWrite = false;
+    public $bShowIfWriteShared = true;
 
     function display_viewlet() {
         $oKTTemplating =& KTTemplating::getSingleton();
