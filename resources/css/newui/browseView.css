@@ -97,11 +97,11 @@
 	height: 7px;
 	font-weight: bold;
 }  
-.doc.browseView .doc.item .immutable_info { background: -moz-linear-gradient(top, #F2374A, #C5081B) !important;background: -webkit-gradient(linear, left top, left bottom, from(#F2374A), to(#C5081B)) !important;background: -moz-linear-gradient(top, #F2374A, #C5081B) !important;border: 1px solid #A90615;color: white;text-shadow: 0px -1px 0px #A90615;}
+.doc.browseView .doc.item .immutable_info { background: #F2374A; background: -moz-linear-gradient(top, #F2374A, #C5081B) !important;background: -webkit-gradient(linear, left top, left bottom, from(#F2374A), to(#C5081B)) !important;background: -moz-linear-gradient(top, #F2374A, #C5081B) !important;border: 1px solid #A90615;color: white;text-shadow: 0px -1px 0px #A90615;}
 .doc.browseView .doc.item .immutable_info span:first-child {font-weight: normal; color:#333; text-shadow: 0px 1px 0px white;font-size: 9px; -webkit-border-radius: 5px; -moz-border-radius: 5px; border-radius: 5px; -webkit-box-shadow: 0px 0px 5px black; -moz-box-shadow: 0px 0px 5px black; box-shadow: 0px 0px 5px black; border: 1px solid #CE9B00; background-color: #FFEDB7; padding: 5px; line-height: 11px;position: absolute; width: 200px; top: 16px; left: -14px; display: none; z-index: 20001; }
 .doc.browseView .doc.item .immutable_info span:first-child:hover { left: -5000px; }
 .doc.browseView .doc.item .immutable_info:hover span:first-child { display: block; }
-.doc.browseView .doc.item .checked_out {color: #444; background: -moz-linear-gradient(top, #FCECA6, #FCE376) !important;background: -webkit-gradient(linear, left top, left bottom, from(#FCECA6), to(#FCE376)) !important;background: -moz-linear-gradient(top, #FCECA6, #FCE376) !important;border: 1px solid #FFD825;text-shadow: 0px 1px 0px white; }
+.doc.browseView .doc.item .checked_out {color: #444;  background: #FCECA6; background: -moz-linear-gradient(top, #FCECA6, #FCE376) !important;background: -webkit-gradient(linear, left top, left bottom, from(#FCECA6), to(#FCE376)) !important;background: -moz-linear-gradient(top, #FCECA6, #FCE376) !important;border: 1px solid #FFD825;text-shadow: 0px 1px 0px white; }
 .doc.browseView .doc.item .checked_out span:first-child { font-weight: normal;font-size: 9px; -webkit-border-radius: 5px; -moz-border-radius: 5px; border-radius: 5px; -webkit-box-shadow: 0px 0px 5px black; -moz-box-shadow: 0px 0px 5px black; box-shadow: 0px 0px 5px black; border: 1px solid #CE9B00; background-color: #FFEDB7; padding: 5px; line-height: 11px;position: absolute; width: 200px; top: 16px; left: -14px; display: none; z-index: 20001; }
 .doc.browseView .doc.item .checked_out span:first-child:hover { left: -5000px; }
 .doc.browseView .doc.item .checked_out:hover span:first-child { display: block; }

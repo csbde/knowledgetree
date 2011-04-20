@@ -39,7 +39,7 @@ $aGroupsList = getGroupsList();
 
     <tr>
         <td valign="top">
-            <textarea onfocus="kt.app.inviteusers.enableInviteButton();" name="invite.emails" id="invite.emails" rows="5" cols="75" ></textarea>
+            <textarea onfocus="kt.app.inviteusers.enableInviteButton();" class="modalField"name="invite.emails" id="invite.emails" rows="5" cols="75" ></textarea>
         </td>
     </tr>
 

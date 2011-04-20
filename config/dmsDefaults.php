@@ -231,7 +231,6 @@ class KTInit {
 		/* Check if account is licensed */
 		if (ACCOUNT_ROUTING_ENABLED) {
 		    $logger = $GLOBALS['default']->log;
-
 			if (!isset($_SESSION[LIVE_LICENSE_OVERRIDE])) {
 				if (!liveAccounts::accountLicensed()) {
 					// Check if account exists
