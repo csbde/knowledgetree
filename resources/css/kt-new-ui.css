@@ -709,9 +709,9 @@ div.form_actions {
 	/*float: right;*/
 	padding-right: 0px;
 	background: white;
-	border-radius: 10px;
-	-moz-border-radius: 10px;
-	-webkit-border-radius: 10px;
+	border-radius: 5px;
+	-moz-border-radius: 5px;
+	-webkit-border-radius: 5px;
 	border:1px solid #ddd;
 	box-shadow: inset 0px 1px 1px #666;
 	-moz-box-shadow: inset 0px 1px 1px #666;
