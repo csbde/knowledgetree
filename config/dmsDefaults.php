@@ -616,7 +616,7 @@ class KTInit {
             if (liveAccounts::accountExists()) {
                 // Check if account is enabled
                 if (!liveAccounts::accountEnabled()) {
-                    $logger->error(ACCOUNT_NAME." DB Setup. DB CONNECT FAILURE and ACCOUNT DISABLED(".$dbError->getMessage().")");
+                    $logger->info(ACCOUNT_NAME." DB Setup. DB CONNECT FAILURE and ACCOUNT DISABLED(".$dbError->getMessage().")");
                     liveRenderError::errorDisabled($_SERVER, LIVE_ACCOUNT_DISABLED);
                 } else {
                     $logger->error(ACCOUNT_NAME." DB Setup. DB CONNECT FAILURE and ACCOUNT ENABLED(".$dbError->getMessage().")");
