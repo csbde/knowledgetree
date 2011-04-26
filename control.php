@@ -40,7 +40,7 @@
 require_once('setup/wizard/installUtil.php');
 // Check if system has been installed
 $iu = new InstallUtil();
-if(!$iu->isSystemInstalled()) {
+if (!$iu->isSystemInstalled()) {
 	$iu->redirect('setup/wizard');
 	exit(0);
 }
@@ -148,7 +148,9 @@ if (empty($queryString)) {
 
 if ($action == 'dashboard') {
     $KTConfig = KTConfig::getSingleton();
-    if(!$KTConfig->get('useNewDashboard')) $action = 'olddashboard';
+    if (!$KTConfig->get('useNewDashboard')) {
+        $action = 'olddashboard';
+    }
 }
 
 // retrieve the page from the sitemap (checks whether this user has access to the requested page)
@@ -188,6 +190,7 @@ if (!$page) {
 		}
 
     }
+    
     redirect($page);
 }
 
