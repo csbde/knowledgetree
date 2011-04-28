@@ -14,7 +14,7 @@ class KTInit {
     public function setupLogging()
     {
         global $default;
-        $KTConfig = & KTConfig::getSingleton();
+        $KTConfig = KTConfig::getSingleton();
 
         if (!defined('APP_NAME')) {
             define('APP_NAME', $KTConfig->get('ui/appName', 'KnowledgeTree'));
