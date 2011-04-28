@@ -282,15 +282,15 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
         $documentSidebars = isset($sidebars[0]) ? $sidebars[0] : array();
 
         $tagPluginPath = KTPluginUtil::getPluginPath('ktcore.tagcloud.plugin', true);
-        
+
         $makeMetadataEditable = 1;
-        
+
         //should the user be allowed to edit the document's metadata?
         if (($this->document->getIsCheckedOut() == 1) || ($this->document->getImmutable() == 1) || !Permission::userHasDocumentWritePermission($this->document))
         {
         	$makeMetadataEditable = 0;
         }
-        
+
 
         $templating =& KTTemplating::getSingleton();
         $template = $templating->loadTemplate('ktcore/document/view');
@@ -449,7 +449,7 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
         $this->oPage->setBreadcrumbDetails(_kt('compare versions'));
 
         $comparisonVersion = KTUtil::arrayGet($_REQUEST, 'fComparisonVersion');
-        if ($comparisonVersion=== null) {
+        if ($comparisonVersion === null) {
             $this->oPage->addError(sprintf(_kt("No comparison version was requested.  Please <a href=\"%s\">select a version</a>."), KTUtil::addQueryStringSelf('action=history&fDocumentId=' . $documentId)));
             return $this->do_error();
         }
