@@ -10,9 +10,7 @@ class KTLiveInit extends KTInit {
     {
         // The line below will switch on tracing for debugging & dev purposes.
         define('KTLIVE_TRACE_ENABLE', false);
-        define('KTLIVE_TRACE_LOG_FILE', $GLOBALS['default']->varDirectory . '/tmp/live_trace.log');
-        define('KTLIVE_CALLBACK_LOG_FILE', $GLOBALS['default']->varDirectory . '/tmp/live_callback.log');
-        
+
         $KTConfig = KTConfig::getSingleton();
 
         if (!isset($GLOBALS['default']->log)) {
@@ -60,6 +58,9 @@ class KTLiveInit extends KTInit {
      */
     public function finalize()
     {
+        define('KTLIVE_TRACE_LOG_FILE', $GLOBALS['default']->varDirectory . '/tmp/live_trace.log');
+        define('KTLIVE_CALLBACK_LOG_FILE', $GLOBALS['default']->varDirectory . '/tmp/live_callback.log');
+        
         $this->accountRoutingLicenceCheck();
     }
 
