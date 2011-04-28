@@ -5,32 +5,32 @@
  * KnowledgeTree Community Edition
  * Document Management Made Simple
  * Copyright (C) 2008, 2009, 2010 KnowledgeTree Inc.
- * 
- * 
+ *
+ *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License version 3 as published by the
  * Free Software Foundation.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
  * details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- * 
- * You can contact KnowledgeTree Inc., PO Box 7775 #87847, San Francisco, 
+ *
+ * You can contact KnowledgeTree Inc., PO Box 7775 #87847, San Francisco,
  * California 94120-7775, or email info@knowledgetree.com.
- * 
+ *
  * The interactive user interfaces in modified source and object code versions
  * of this program must display Appropriate Legal Notices, as required under
  * Section 5 of the GNU General Public License version 3.
- * 
+ *
  * In accordance with Section 7(b) of the GNU General Public License version 3,
  * these Appropriate Legal Notices must retain the display of the "Powered by
- * KnowledgeTree" logo and retain the original copyright notice. If the display of the 
+ * KnowledgeTree" logo and retain the original copyright notice. If the display of the
  * logo is not reasonably feasible for technical reasons, the Appropriate Legal Notices
- * must display the words "Powered by KnowledgeTree" and retain the original 
+ * must display the words "Powered by KnowledgeTree" and retain the original
  * copyright notice.
  * Contributor( s): ______________________________________
  *
@@ -42,15 +42,13 @@ class KTDashletRegistry {
     var $nsnames = array();
 
     static function &getSingleton () {
-		if (!KTUtil::arrayGet($GLOBALS['_KT_PLUGIN'], 'oKTDashboardRegistry')) {
-			$GLOBALS['_KT_PLUGIN']['oKTDashboardRegistry'] = new KTDashletRegistry;
-		}
-		return $GLOBALS['_KT_PLUGIN']['oKTDashboardRegistry'];
+        if (!KTUtil::arrayGet($GLOBALS['_KT_PLUGIN'], 'oKTDashboardRegistry')) {
+            $GLOBALS['_KT_PLUGIN']['oKTDashboardRegistry'] = new KTDashletRegistry;
+        }
+        return $GLOBALS['_KT_PLUGIN']['oKTDashboardRegistry'];
     }
 
-
     function registerDashlet($name, $nsname, $filename = "", $sPlugin = "") {
-
         $this->nsnames[$nsname] = array($name, $filename, $nsname, $sPlugin);
     }
 
@@ -103,30 +101,32 @@ class KTDashletRegistry {
 
             return $new;
         }
+
         return '';
     }
 
     // FIXME we might want to do the pruning now, but I'm unsure how to handle the preconditions.
-    function getDashlets($oUser) {
-        $aDashlets = array();
-        $oRegistry =& KTPluginRegistry::getSingleton();
+    function getDashlets($user) {
+        $dashlets = array();
+        $pluginRegistry =& KTPluginRegistry::getSingleton();
+        
         // probably not the _best_ way to do things.
-        foreach ($this->nsnames as $aPortlet) {
-            $name = $aPortlet[0];
-            $filename = $aPortlet[1];
-            $sPluginName = $aPortlet[3];
+        foreach ($this->nsnames as $portlet) {
+            $name = $portlet[0];
+            $filename = $portlet[1];
+            $pluginName = $portlet[3];
 
-            require_once($aPortlet[1]);
-            $oPlugin =& $oRegistry->getPlugin($sPluginName);
+            require_once($filename);
+            $plugin =& $pluginRegistry->getPlugin($pluginName);
 
-            $oDashlet = new $name;
-            $oDashlet->setPlugin($oPlugin);
-            if ($oDashlet->is_active($oUser)) {
-                $aDashlets[] = $oDashlet;
+            $dashlet = new $name;
+            $dashlet->setPlugin($plugin);
+            if ($dashlet->is_active($user)) {
+                $dashlets[] = $dashlet;
             }
         }
 
-        return $aDashlets;
+        return $dashlets;
     }
 }
 
