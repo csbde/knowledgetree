@@ -150,102 +150,128 @@ class KTPluginUtil {
 		return unserialize($cache);
 	}
 
-	/**
+    /**
      * Load the plugins for the current page
      *
-     * @param unknown_type $sType
+     * @param string $type
      */
-    static function loadPlugins ($sType)
+    public static function loadPlugins($type)
     {
         // Check the current page - can be extended.
         // Currently we only distinguish between the dashboard and everything else.
-        if ($sType != 'dashboard') {
-          $sType = 'general';
+        // NOTE We don't even currently use this.
+        if ($type != 'dashboard') {
+            $type = 'general';
         }
 
-        $aPlugins = array();
-        $aPluginHelpers = array();
-        $aDisabled = array();
-
-        // Get the list of enabled plugins
-        $query = "SELECT h.classname, h.pathname, h.plugin FROM plugin_helper h
-            INNER JOIN plugins p ON (p.namespace = h.plugin)
-           WHERE p.disabled = 0 AND h.classtype='plugin' ORDER BY p.orderby";
-        $aPluginHelpers = DBUtil::getResultArray($query);
-
-        if (PEAR::isError($aPluginHelpers)) {
+        $pluginHelpers = DBUtil::getResultArray(self::getLoadPluginHelpersQuery());
+        if (PEAR::isError($pluginHelpers)) {
             global $default;
-            $default->log->error('Error in pluginutil: '.$aPluginHelpers->getMessage());
-            return $aPluginHelpers;
+            $default->log->error('Error in pluginutil: '.$pluginHelpers->getMessage());
+            return $pluginHelpers;
         }
 
         // Check that there are plugins and if not, register them
-        if (empty($aPluginHelpers) || (isset($_POST['_force_plugin_truncate']))) {
+        if (empty($pluginHelpers) || (isset($_POST['_force_plugin_truncate']))) {
             DBUtil::startTransaction();
             KTPluginUtil::registerPlugins();
             DBUtil::commit();
-
-        	$query = "SELECT h.classname, h.pathname, h.plugin FROM plugin_helper h
-        	   INNER JOIN plugins p ON (p.namespace = h.plugin)
-        	   WHERE p.disabled = 0 AND h.classtype='plugin' ORDER BY p.orderby";
-        	$aPluginHelpers = DBUtil::getResultArray($query);
+            $pluginHelpers = DBUtil::getResultArray(self::getLoadPluginHelpersQuery());
+            // NOTE Lack of a PEAR Error check here.
+            //      Don't really want to repeat the code, rather refactor so used here without duplication.
         }
 
-        // Create plugin objects
-        foreach ($aPluginHelpers as $aItem) {
-            $classname = $aItem['classname'];
-            $path = $aItem['pathname'];
+        $templating = KTTemplating::getSingleton();
 
-            if (!empty($path)) {
-                if ((strpos($path, KT_DIR) === false)) {
-                    $path = KT_DIR . '/' . $path;
+        // Create plugin objects and create list of plugins to load.
+        $plugins = array();
+        foreach ($pluginHelpers as $helper) {
+            $disabled = false;
+            if ($helper['classtype'] == 'plugin') {
+                $classname = $helper['classname'];
+                $path = $helper['pathname'];
+
+                if (!empty($path)) {
+                    if ((strpos($path, KT_DIR) === false)) {
+                        $path = KT_DIR . '/' . $path;
+                    }
+
+                    if (file_exists($path)) {
+                        require_once($path);
+                        $plugin = new $classname($path);
+                        if (!$plugin->load()) {
+                            $disabled = true;
+                        }
+                    }
                 }
+            }
+            else if ($helper['classtype'] == 'locations') {
+                $params = explode('|', $helper['object']);
+                call_user_func_array(array($templating, 'addLocation2'), $params);
+            }
 
-                if (file_exists($path))
-                {
-	                require_once($path);
-
-	            	$oPlugin = new $classname($path);
-	            	if ($oPlugin->load()) {
-	            	   $aPlugins[] = $oPlugin;
-	            	} else {
-	            	    $aDisabled[] = "'{$aItem['plugin']}'";
-	            	}
-                }
+            // Add to the list for loading, if not disabled.
+            if (!$disabled) {
+                $plugins[] = $helper;
             }
         }
 
-        $sDisabled = implode(',', $aDisabled);
-
-        // load plugin helpers into global space
-        $query = 'SELECT h.* FROM plugin_helper h
-            INNER JOIN plugins p ON (p.namespace = h.plugin)
-        	WHERE p.disabled = 0 ';//WHERE viewtype='{$sType}'";
-        if (!empty($sDisabled)) {
-        	   $query .= " AND h.plugin NOT IN ($sDisabled) ";
-        }
-        $query .= ' ORDER BY p.orderby';
-
-        $aPluginList = DBUtil::getResultArray($query);
-        KTPluginUtil::load($aPluginList);
-
-        // Load the template locations - ignore disabled plugins
-        // Allow for templates that don't correctly link to the plugin
-        $query = "SELECT * FROM plugin_helper h
-            LEFT JOIN plugins p ON (p.namespace = h.plugin)
-            WHERE h.classtype='locations' AND (disabled = 0 OR disabled IS NULL) AND unavailable = 0";
-
-        $aLocations = DBUtil::getResultArray($query);
-
-        if (!empty($aLocations)) {
-            $oTemplating =& KTTemplating::getSingleton();
-            foreach ($aLocations as $location) {
-                $aParams = explode('|', $location['object']);
-                call_user_func_array(array(&$oTemplating, 'addLocation2'), $aParams);
-            }
-        }
+        KTPluginUtil::load($plugins);
 
         return true;
+    }
+
+    // Tmp function, not sure if this will stay as is.  Bad name, I think, at least.
+    private static function getLoadPluginHelpersQuery()
+    {
+        /* Original
+
+          $query = "SELECT h.classname, h.pathname, h.plugin FROM plugin_helper h
+                    INNER JOIN plugins p ON (p.namespace = h.plugin)
+                    WHERE p.disabled = 0 AND h.classtype='plugin' ORDER BY p.orderby";
+
+        */
+
+        // NOTE Have to select h.* for the moment.  Dashlets fail to register if we only select the four
+        //      columns used inside the code which calls this function:
+        //      h.classname, h.pathname, h.plugin, h.classtype
+        // TODO Identify which fields are actually required and only select those.
+        //$query = "SELECT h.* FROM plugin_helper h
+        //            INNER JOIN plugins p ON (p.namespace = h.plugin)
+        //            WHERE p.disabled = 0 ORDER BY p.orderby";
+        // NOTE Query additionally modified to be a LEFT JOIN.
+        //      Calling code MUST filter based on whether there is a plugin.id column value,
+        //      if it wanted the results of an INNER JOIN.
+        //      Also note the addition of the p.disabled = NULL and p.unavailable = 0.
+        //      Also note that this check is changed to include p.unavailable IS NULL:
+        //          This differs from the original query, which did not check - surely that would
+        //          then filter any that did not match up with something in the plugins table.
+        //
+        //      Clearly all this requires testing to ensure it does the same as before (or fixes problems
+        //      such as templates filtered by the missing IS NULL check.)
+        $query = "SELECT h.*, p.id AS plugin_id FROM plugin_helper h
+                    LEFT JOIN plugins p ON (p.namespace = h.plugin)
+                    WHERE (p.disabled = 0 OR p.disabled IS NULL)
+                    AND (p.unavailable = 0 OR p.unavailable IS NULL)
+                    ORDER BY p.orderby";
+
+        /* Optional filter - not currently operational, not even passed to this function right now.
+                    // WHERE ... viewtype='{$type}'" ...
+        */
+
+        /* The query originally used by the second code loop
+
+        //$query = 'SELECT h.* FROM plugin_helper h
+        //    INNER JOIN plugins p ON (p.namespace = h.plugin)
+        //    WHERE p.disabled = 0 ';//WHERE viewtype='{$type}'";
+        //if (!empty($disabled)) {
+        //    $query .= " AND h.plugin NOT IN (" . implode(',', $disabled) . ") ";
+        //}
+        //$query .= ' ORDER BY p.orderby';
+
+        */
+
+        return $query;
     }
 
     /**
@@ -296,6 +322,9 @@ class KTPluginUtil {
         	$sParams = $plugin['object'];
         	$aParams = explode('|', $sParams);
         	$sClassType = $plugin['classtype'];
+
+                // TODO Remove the need for this switch statement by using appropriate classes
+                //      to encapsulate the behaviour.
 
         	switch ($sClassType) {
         	    case 'portlet':
