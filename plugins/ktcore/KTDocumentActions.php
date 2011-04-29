@@ -272,7 +272,7 @@ class KTDocumentVersionHistoryAction extends KTDocumentAction {
      */
     function do_viewComparison() {
         // this is just a redirector
-        $QS = array(
+        $queryParams = array(
             'action' => 'viewComparison',
             'fDocumentId' => $this->oDocument->getId(),
             'fBaseVersion' => $_REQUEST['fBaseVersion'],
@@ -281,11 +281,11 @@ class KTDocumentVersionHistoryAction extends KTDocumentAction {
 
         $frag = array();
 
-        foreach ($QS as $k => $v) {
+        foreach ($queryParams as $k => $v) {
             $frag[] = sprintf('%s=%s', urlencode($k), urlencode($v));
         }
 
-        redirect(KTUtil::ktLink('view.php',null,implode('&', $frag)));
+        redirect(KTUtil::ktLink('view.php', null, implode('&', $frag)));
         // can't use clean urls, they break the functionality.
         //redirect(KTUtil::buildUrl(KTUtil::ktLink('view.php'), $frag));
     }
@@ -1890,7 +1890,7 @@ class KTAjaxDocumentWorkflowAction extends KTDocumentAction {
     public $sIconClass = 'manage-workflow';
     public $sParentBtn = 'more';
 	public $bShowIfWriteShared = true;
-	
+
     public function predispatch() {
         $this->persistParams(array('fTransitionId'));
     }

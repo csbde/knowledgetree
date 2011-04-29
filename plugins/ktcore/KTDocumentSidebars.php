@@ -70,17 +70,19 @@ class KTDocumentSidebar extends KTDocumentViewlet {
         		$keys[$order] = $order;
         	}
         }
+
         // Sort to rewrite keys.
         sort($keys);
-		$oTemplating = KTTemplating::getSingleton();
-		$oTemplate = $oTemplating->loadTemplate('ktcore/document/sidebars/viewSidebar');
-        $aTemplateData = array(
+
+        $templating = KTTemplating::getSingleton();
+		$template = $templating->loadTemplate('ktcore/document/sidebars/viewSidebar');
+        $templateData = array(
               'context' => $this,
               'sidebars' => $ordered,
               'keys' => $keys,
         );
-        
-        return $oTemplate->render($aTemplateData);
+
+        return $template->render($templateData);
 	}
 	
 	public function do_refreshSidebar() {
