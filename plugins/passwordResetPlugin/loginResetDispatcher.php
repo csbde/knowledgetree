@@ -227,7 +227,7 @@ class loginResetDispatcher extends KTDispatcher {
         if (empty($language)) {
             $language = $default->defaultLanguage;
         }
-        setcookie("kt_language", $language, 2147483647, '/');
+        setcookie("KTLanguage", $language, 2147483647, '/');
 
         $redirect = strip_tags(KTUtil::arrayGet($_REQUEST, 'redirect'));
 
