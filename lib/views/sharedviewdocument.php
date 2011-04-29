@@ -38,8 +38,6 @@ require_once(realpath(dirname(__FILE__) . '/viewdocument.php'));
 
 class SharedViewDocumentDispatcher extends ViewDocumentDispatcher {
 
-    //private $sharedUserActions = null;
-
     public function __construct()
     {
         require_once(KT_LIB_DIR . '/render_helpers/sharedContent.inc');
@@ -51,7 +49,7 @@ class SharedViewDocumentDispatcher extends ViewDocumentDispatcher {
         return SharedContent::canAccessDocument($this->oUser->getId(), $this->document->getId(), $this->document->getFolderID());
     }
 
-    // NOTE No longer used in ase class - so check where the new test is done and make sure
+    // NOTE No longer used in base class - so check where the new test is done and make sure
     //      shared users are accomodated.
     // ALSO NOTE This function seems the same as userHasPermission() for shared users, different for regular users?
     protected function canEdit()
