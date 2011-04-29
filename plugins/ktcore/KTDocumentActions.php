@@ -571,19 +571,21 @@ class KTDocumentCheckOutAction extends KTDocumentAction {
     }
 
     function do_checkout() {
-        $oForm = $this->form_checkout();
-        $res = $oForm->validate();
+        $form = $this->form_checkout();
+        $res = $form->validate();
         if (!empty($res['errors'])) {
-            return $oForm->handleError();
+            return $form->handleError();
         }
 
         $data = $res['results'];
 
-        $oTemplate =& $this->oValidator->validateTemplate('ktcore/action/checkout_final');
-        $sReason = isset($data['reason']) ? $data['reason'] : _kt('Document Checked Out.');
+        $template =& $this->oValidator->validateTemplate('ktcore/action/checkout_final');
+
+        $defaultCheckoutMessage = _kt('Document Checked Out.');
+        $reason = $defaultCheckoutMessage . (isset($data['reason']) ? "\n\n{$data['reason']}" : '');
 
         $this->startTransaction();
-        $res = KTDocumentUtil::checkout($this->oDocument, $sReason, $this->oUser);
+        $res = KTDocumentUtil::checkout($this->oDocument, $reason, $this->oUser);
         if (PEAR::isError($res)) {
             return $this->errorRedirectToMain(sprintf(_kt('Failed to check out the document: %s'), $res->getMessage()));
         }
@@ -596,12 +598,12 @@ class KTDocumentCheckOutAction extends KTDocumentAction {
             exit(0);
         }
 
-        $oTemplate->setData(array(
+        $template->setData(array(
             'context' => &$this,
-            'reason' => $sReason,
+            'reason' => $reason,
         ));
 
-        return $oTemplate->render();
+        return $template->render();
     }
 
     function do_checkout_final() {
@@ -848,7 +850,9 @@ class KTDocumentCheckInAction extends KTDocumentAction {
             return $oForm->handleError(null, $extra_errors);
         }
 
-        $sReason = isset($data['reason']) ? $data['reason'] : _kt('Document Checked In.');
+        $defaultCheckinMessage = _kt('Document Checked In.');
+        $sReason = $defaultCheckinMessage . (isset($data['reason']) ? "\n\n{$data['reason']}" : '');
+
         $sCurrentFilename = $docFileName;
         $sNewFilename = $data['file']['name'];
         $aOptions = array();
@@ -1057,7 +1061,10 @@ class KTDocumentCancelCheckOutAction extends KTDocumentAction {
         }
 
         // checkout cancelled transaction
-        $reason=isset($data['reason']) ? $data['reason'] : _kt('Document Checkout Cancelled.');
+
+        $defaultCancelMessage = _kt('Document Checkout Cancelled.');
+        $reason = $defaultCancelMessage . (isset($data['reason']) ? "\n\n{$data['reason']}" : '');
+
         $oDocumentTransaction = new DocumentTransaction($this->oDocument, $reason, 'ktcore.transactions.force_checkin');
         $res = $oDocumentTransaction->create();
         if (PEAR::isError($res) || ($res === false)) {
