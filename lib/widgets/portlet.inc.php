@@ -47,32 +47,32 @@ require_once(KT_LIB_DIR . "/templating/templating.inc.php");
 
 // FIXME need to establish some kind of api to pass in i18n information.
 class KTPortlet {
-    var $sTitle;
-    var $oPlugin;
-    var $bActive = false;
-
-    function KTPortlet($title='') {
+    public $sTitle;
+    public $oPlugin;
+    public $bActive = false;
+	
+    public function KTPortlet($title='') {
         $this->sTitle = $title;
     }
 
-    function setPlugin(&$oPlugin) {
+    public function setPlugin(&$oPlugin) {
         global $default;
         if (KTLOG_CACHE) $default->log->debug('portlet regging plugin: ' . $oPlugin->sNamespace);
         $this->oPlugin =& $oPlugin;
     }
 
     // this should multiplex i18n_title
-    function getTitle() { return $this->sTitle; }
+    public function getTitle() { return $this->sTitle; }
 
-    function render() {
+    public function render() {
         return '<p class="ktError">Warning:  Abstract Portlet created.</p>';
     }
 
-    function setDispatcher(&$oDispatcher) {
+    public function setDispatcher(&$oDispatcher) {
         $this->oDispatcher =& $oDispatcher;
     }
 
-    function getActive() {
+    public function getActive() {
         return $this->bActive;
     }
 }
@@ -84,16 +84,16 @@ class KTPortlet {
 class KTNavPortlet extends KTPortlet {
 
     // list of dict {url:'',label:''}
-    var $navItems = Array();
+    public $navItems = Array();
 
-    function setOldNavItems($aNavLinks) {
+    public function setOldNavItems($aNavLinks) {
 
         $this->navItems = array_map(array(&$this, "_oldNavZip"), $aNavLinks["descriptions"], $aNavLinks["links"]);
 
     }
 
     // legacy support helper
-    function _oldNavZip($d, $u) {
+    private function _oldNavZip($d, $u) {
         $aZip = array(
             "label" => $d,
             "url" => $u,
@@ -101,7 +101,7 @@ class KTNavPortlet extends KTPortlet {
         return $aZip;
     }
 
-    function render() {
+    public function render() {
         $oTemplating =& KTTemplating::getSingleton();
         $oTemplate = $oTemplating->loadTemplate("kt3/portlets/nav_portlet");
         $aTemplateData = array(
@@ -113,13 +113,13 @@ class KTNavPortlet extends KTPortlet {
 }
 
 class KTActionPortlet extends KTPortlet {
-    var $actions = array();
+    public $actions = array();
     // TODO : Add portlet ordering
-    var $bActive = true;
-    var $btns = '';
+    public $bActive = true;
+    public $btns = '';
 
     // current action is the one we are currently on.
-    function setActions($actions, $currentaction) {
+    public function setActions($actions, $currentaction) {
         foreach ($actions as $action) {
             $aInfo = $action->getInfo();
             if ($aInfo !== null && !empty($aInfo['name'])) {
@@ -151,7 +151,7 @@ class KTActionPortlet extends KTPortlet {
      * @param string $class
      * @return unknown
      */
-    function renderBtn($text, $link, $class) {
+    public function renderBtn($text, $link, $class) {
 
         // Create button html
         /*
@@ -173,7 +173,7 @@ class KTActionPortlet extends KTPortlet {
     /**
      * Render the specified actions as buttons
      */
-    function showButtons() {
+    public function showButtons() {
         if(empty($this->btns)){
             return '';
         }
@@ -189,7 +189,7 @@ class KTActionPortlet extends KTPortlet {
         return $rendered;
     }
 
-    function render() {
+    public function render() {
         if (empty($this->actions)) {
             return null;
         }

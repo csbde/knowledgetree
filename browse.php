@@ -180,10 +180,27 @@ class BrowseDispatcher extends KTStandardDispatcher {
 	    return $oTemplate->render($aTemplateData);
 	}
 
+	/**REMOVE
+	public function getPortletButtons() {
+	    $portlet = new KTActionPortlet(sprintf(_kt('Info')));
+	    $aActions = KTFolderActionUtil::getFolderInfoActionsForFolder($this->oFolder, $this->oUser);
+	    $portlet->setActions($aActions,$this->sName);
+	    $this->oPage->addPortlet($portlet);
+
+	    $portlet = new KTActionPortlet(sprintf(_kt('Actions')));
+	    $aActions = KTFolderActionUtil::getFolderActionsForFolder($oFolder, $this->oUser);
+	    $portlet->setActions($aActions,null);
+	    $this->oPage->addPortlet($portlet);
+	}
+	REMOVE**/
+	
 	public function showBtns()
 	{
 		$list = array();
 		$submenu = array();
+		/**REMOVE
+		$portlets = $this->getPortletButtons();
+		REMOVE**/
 		$actions = KTFolderActionUtil::getFolderActionsForFolder($this->oFolder, $this->oUser);
 
 		foreach ($actions as $oAction) {
@@ -515,6 +532,7 @@ class BrowseDispatcher extends KTStandardDispatcher {
 
 	    $this->resultURL = KTUtil::addQueryString($_SERVER['PHP_SELF'], sprintf('fFolderId=%d', $oFolder->getId()));
 
+	    /**REMOVE
 	    // and the portlets
 	    $portlet = new KTActionPortlet(sprintf(_kt('Info')));
 	    $aActions = KTFolderActionUtil::getFolderInfoActionsForFolder($this->oFolder, $this->oUser);
@@ -525,6 +543,7 @@ class BrowseDispatcher extends KTStandardDispatcher {
 	    $aActions = KTFolderActionUtil::getFolderActionsForFolder($oFolder, $this->oUser);
 	    $portlet->setActions($aActions,null);
 	    $this->oPage->addPortlet($portlet);
+	    REMOVE**/
 	}
 
 	/**
