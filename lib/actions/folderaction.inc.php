@@ -379,21 +379,23 @@ class KTFolderActionUtil {
         return $oRegistry->getActions('folderinfo');
     }
 
-    static public function getFolderActionsForFolder($oFolder, $oUser, $slot = 'folderaction')
+    static public function getFolderActionsForFolder($folder, $user, $slot = 'folderaction')
     {
-        $aObjects = array();
+        $objects = array();
 
-        foreach (KTFolderActionUtil::getFolderActions($slot) as $aAction) {
-            list($sClassName, $sPath, $sPlugin) = $aAction;
-            $oRegistry =& KTPluginRegistry::getSingleton();
-            $oPlugin =& $oRegistry->getPlugin($sPlugin);
-            if (!empty($sPath)) {
-                require_once($sPath);
+        foreach (KTFolderActionUtil::getFolderActions($slot) as $action) {
+            list($class, $path, $plugin) = $action;
+            $pluginRegistry =& KTPluginRegistry::getSingleton();
+            $plugin =& $pluginRegistry->getPlugin($plugin);
+
+            if (!empty($path)) {
+                require_once($path);
             }
-            $aObjects[] =new $sClassName($oFolder, $oUser, $oPlugin);
+
+            $objects[] = new $class($folder, $user, $plugin);
         }
 
-        return $aObjects;
+        return $objects;
     }
 
     function &getFolderInfoActionsForFolder($oFolder, $oUser)
