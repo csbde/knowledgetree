@@ -45,13 +45,13 @@ require_once(KT_LIB_DIR . '/roles/Role.inc');
 
 class KTFolderPermissionsAction extends KTFolderAction {
 
-    var $sName = 'ktcore.actions.folder.permissions';
+    public $sName = 'ktcore.actions.folder.permissions';
 
-    var $_sEditShowPermission = 'ktcore.permissions.security';
-    var $_sShowPermission = 'ktcore.permissions.security';
-    var $_bAdminAlwaysAvailable = true;
-    var $bAutomaticTransaction = true;
-    var $cssClass = 'permissions';
+    public $_sEditShowPermission = 'ktcore.permissions.security';
+    public $_sShowPermission = 'ktcore.permissions.security';
+    public $_bAdminAlwaysAvailable = true;
+    public $bAutomaticTransaction = true;
+    public $cssClass = 'permissions';
 
     function getDisplayName() {
         return _kt('Permissions');
