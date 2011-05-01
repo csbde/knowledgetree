@@ -723,7 +723,7 @@ class kt extends client_service  {
 	}
 	
 	public function switchlang($params){
-		setcookie("kt_language", $params['lang'], 2147483647, '/');
+		setcookie("KTLanguage", $params['lang'], 2147483647, '/');
 	}
 
 

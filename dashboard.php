@@ -78,8 +78,10 @@ class DashboardDispatcher extends KTStandardDispatcher {
         $aActions = KTFolderActionUtil::getFolderActionsForFolder($oFolder, $this->oUser);
         $portlet->setActions($aActions,null);
 
+        /**REMOVE
         $midToolbarButtons = $portlet->showButtons();
-
+		REMOVE**/
+        
         $oDashletRegistry =& KTDashletRegistry::getSingleton();
         $aDashlets = $oDashletRegistry->getDashlets($this->oUser);
 
@@ -168,7 +170,9 @@ class DashboardDispatcher extends KTStandardDispatcher {
               'context' => $this,
               'dashlets_left' => $aDashletsLeft,
               'dashlets_right' => $aDashletsRight,
+              /**REMOVE
               'midToolbarButtons' => $midToolbarButtons,
+              REMOVE**/
               'ktOlarkPopup' => $ktOlarkPopup
         );
 

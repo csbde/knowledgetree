@@ -266,7 +266,7 @@ class KTInit {
 		require_once(KT_LIB_DIR . '/i18n/i18nutil.inc.php');
 		require_once('HTTP.php');
 		global $default;
-		$language = KTUtil::arrayGet($_COOKIE, 'kt_language');
+		$language = KTUtil::arrayGet($_COOKIE, 'KTLanguage');
 		if ($language) {
 			$default->defaultLanguage = $language;
 		}
