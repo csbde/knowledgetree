@@ -187,7 +187,7 @@ class KTPluginUtil {
         $plugins = array();
         foreach ($pluginHelpers as $helper) {
             $disabled = false;
-            if ($helper['classtype'] == 'plugin') {
+            if (!empty($helper['plugin_id']) && $helper['classtype'] == 'plugin') {
                 $classname = $helper['classname'];
                 $path = $helper['pathname'];
 
@@ -210,8 +210,8 @@ class KTPluginUtil {
                 call_user_func_array(array($templating, 'addLocation2'), $params);
             }
 
-            // Add to the list for loading, if not disabled.
-            if (!$disabled) {
+            // Add to the list for loading, if not disabled && valid plugin id.
+            if (!$disabled && !empty($helper['plugin_id'])) {
                 $plugins[] = $helper;
             }
         }
