@@ -144,7 +144,7 @@ class BrowseDispatcher extends KTStandardDispatcher {
 	    /**
 		 * New ktapi based method
 		 */
-	    $aBulkActions = KTBulkActionUtil::getAllBulkActions();
+	    $bulkActions = KTBulkActionUtil::getAllBulkActions();
 		$sidebars = KTFolderActionUtil::getFolderActionsForFolder($this->oFolder, $this->oUser, 'mainfoldersidebar');
 		$folderSidebars = isset($sidebars[0]) ? $sidebars[0] : array();
 
@@ -152,16 +152,16 @@ class BrowseDispatcher extends KTStandardDispatcher {
 	        $this->includeOlark();
 	    }
 
-	    $oTemplating =& KTTemplating::getSingleton();
-	    $oTemplate = $oTemplating->loadTemplate('kt3/browse');
+	    $templating =& KTTemplating::getSingleton();
+	    $template = $templating->loadTemplate('kt3/browse');
 
 		global $main;
-	    $aTemplateData = array(
+	    $templateData = array(
 	           'context' => $this,
 	           'page' => $main,
 	           'browse_mode' => $this->browse_mode,
 	           'isEditable' => $this->editable,
-	           'bulkactions' => $aBulkActions,
+	           'bulkactions' => $bulkActions,
 	           'browseutil' => new KTBrowseUtil(),
 	           'returnaction' => 'browse',
 	           'folderSidebars' => $folderSidebars,
@@ -173,17 +173,34 @@ class BrowseDispatcher extends KTStandardDispatcher {
     		$folderId = $this->oFolder->getId();
 
 	        $renderHelper = BrowseViewUtil::getBrowseView();
-	        $renderData = $renderHelper->renderBrowseFolder($folderId, $aBulkActions, $this->oFolder, $this->editable);
-	        $aTemplateData = array_merge($aTemplateData, $renderData);
+	        $renderData = $renderHelper->renderBrowseFolder($folderId, $bulkActions, $this->oFolder, $this->editable);
+	        $templateData = array_merge($templateData, $renderData);
 	    }
 
-	    return $oTemplate->render($aTemplateData);
+	    return $template->render($templateData);
 	}
 
+	/**REMOVE
+	public function getPortletButtons() {
+	    $portlet = new KTActionPortlet(sprintf(_kt('Info')));
+	    $aActions = KTFolderActionUtil::getFolderInfoActionsForFolder($this->oFolder, $this->oUser);
+	    $portlet->setActions($aActions,$this->sName);
+	    $this->oPage->addPortlet($portlet);
+
+	    $portlet = new KTActionPortlet(sprintf(_kt('Actions')));
+	    $aActions = KTFolderActionUtil::getFolderActionsForFolder($oFolder, $this->oUser);
+	    $portlet->setActions($aActions,null);
+	    $this->oPage->addPortlet($portlet);
+	}
+	REMOVE**/
+	
 	public function showBtns()
 	{
 		$list = array();
 		$submenu = array();
+		/**REMOVE
+		$portlets = $this->getPortletButtons();
+		REMOVE**/
 		$actions = KTFolderActionUtil::getFolderActionsForFolder($this->oFolder, $this->oUser);
 
 		foreach ($actions as $oAction) {
@@ -262,14 +279,14 @@ class BrowseDispatcher extends KTStandardDispatcher {
 
 		$_REQUEST['fBrowseMode'] = 'lookup_value';
 
-		$oTemplating =& KTTemplating::getSingleton();
-		$oTemplate = $oTemplating->loadTemplate('kt3/browse_lookup_selection');
-		$aTemplateData = array(
+		$templating =& KTTemplating::getSingleton();
+		$template = $templating->loadTemplate('kt3/browse_lookup_selection');
+		$templateData = array(
               'context' => $this,
               'fields' => $aFields,
 		);
 
-		return $oTemplate->render($aTemplateData);
+		return $template->render($templateData);
 	}
 
 	public function do_selectLookup()
@@ -285,15 +302,15 @@ class BrowseDispatcher extends KTStandardDispatcher {
 
 		$aValues = MetaData::getByDocumentField($oField);
 
-		$oTemplating =& KTTemplating::getSingleton();
-		$oTemplate = $oTemplating->loadTemplate('kt3/browse_lookup_value');
-		$aTemplateData = array(
+		$templating =& KTTemplating::getSingleton();
+		$template = $templating->loadTemplate('kt3/browse_lookup_value');
+		$templateData = array(
               'context' => $this,
               'oField' => $oField,
               'values' => $aValues,
 		);
 
-		return $oTemplate->render($aTemplateData);
+		return $template->render($templateData);
 	}
 
 	public function do_selectType()
@@ -308,14 +325,14 @@ class BrowseDispatcher extends KTStandardDispatcher {
 			exit(0);
 		}
 
-		$oTemplating =& KTTemplating::getSingleton();
-		$oTemplate = $oTemplating->loadTemplate('kt3/browse_types');
-		$aTemplateData = array(
+		$templating =& KTTemplating::getSingleton();
+		$template = $templating->loadTemplate('kt3/browse_types');
+		$templateData = array(
               'context' => $this,
               'document_types' => $aTypes,
 		);
 
-		return $oTemplate->render($aTemplateData);
+		return $template->render($templateData);
 	}
 
 	public function do_enableAdminMode()
@@ -515,6 +532,7 @@ class BrowseDispatcher extends KTStandardDispatcher {
 
 	    $this->resultURL = KTUtil::addQueryString($_SERVER['PHP_SELF'], sprintf('fFolderId=%d', $oFolder->getId()));
 
+	    /**REMOVE
 	    // and the portlets
 	    $portlet = new KTActionPortlet(sprintf(_kt('Info')));
 	    $aActions = KTFolderActionUtil::getFolderInfoActionsForFolder($this->oFolder, $this->oUser);
@@ -525,6 +543,7 @@ class BrowseDispatcher extends KTStandardDispatcher {
 	    $aActions = KTFolderActionUtil::getFolderActionsForFolder($oFolder, $this->oUser);
 	    $portlet->setActions($aActions,null);
 	    $this->oPage->addPortlet($portlet);
+	    REMOVE**/
 	}
 
 	/**
