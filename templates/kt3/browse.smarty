@@ -47,11 +47,24 @@
 	     		{* Display the drop down menu's on the split buttons *}
 	            <ul class="splitmenu" id="more">
 	                {foreach item=menuitem from=$aSplit.submenu}
+<<<<<<< HEAD
+=======
+	                	{if $menuitem.render}
+                			<li>
+                				<a class="dir" href="#">{$menuitem.name}</a>
+                				{$menuitem.context->render()}
+                			</li>
+	                	{else}
+>>>>>>> db1db3b... Started work on folder subscriptions.
 	                    {if $menuitem.status === 'disabled'}
 	                        <li><a class="{$menuitem.class} disabled" id="{$menuitem.icon_class}">{$menuitem.name}</a></li>
 	                    {else}
 	                        <li><a class="{$menuitem.class}" href="{$menuitem.url}" onclick='{$menuitem.onclick}'>{$menuitem.name}</a></li>
 	                    {/if}
+<<<<<<< HEAD
+=======
+	                    {/if}
+>>>>>>> db1db3b... Started work on folder subscriptions.
 	                {/foreach}
 	            </ul>
 	     		</nobr>

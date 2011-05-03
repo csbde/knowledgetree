@@ -199,6 +199,7 @@ class KTPage {
             'resources/css/newui/dropdown.css',
             /* REWORK INTO SINGLE STYLE SHEET */
             'resources/css/newui/dropdown_styles.css',
+            'resources/css/newui/dropleft_styles.css',
         );
 
         // load area specific files

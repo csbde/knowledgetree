@@ -80,6 +80,8 @@ class KTSubscriptionPlugin extends KTPlugin {
             'ktstandard.subscription.foldersubscription');
         $this->registerAction('foldersubscriptionaction', 'KTFolderUnsubscriptionAction',
             'ktstandard.subscription.folderunsubscription');
+        $this->registerAction('folderaction', 'KTFolderSubscribeAction',
+            'ktstandard.subscribe.foldersubscribeactions');
         $this->registerPage('manage', 'KTSubscriptionManagePage');
     }
 }
@@ -469,9 +471,9 @@ class KTDiscussionSubscriptionTrigger {
 }
 
 class KTFolderSubscriptionAction extends KTFolderAction {
-
     public $sName = 'ktstandard.subscription.foldersubscription';
-
+	public $cssClass = 'subscribe';
+	
     public function getDisplayName()
     {
         return _kt('Subscribe to folder');
@@ -570,9 +572,9 @@ class KTFolderSubscriptionAction extends KTFolderAction {
 }
 
 class KTFolderUnsubscriptionAction extends KTFolderAction {
-
     public $sName = 'ktstandard.subscription.folderunsubscription';
-
+	public $cssClass = 'unsubscribe';
+	
     public function getDisplayName()
     {
         return _kt('Unsubscribe from folder');
@@ -639,6 +641,120 @@ class KTFolderUnsubscriptionAction extends KTFolderAction {
         }
     }
 
+}
+
+class KTFolderSubscribeAction extends KTFolderAction {
+	public $sName = 'ktstandard.subscribe.foldersubscribeactions';
+	public $cssClass = 'subscribe_actions';
+	
+    public function getDisplayName()
+    {
+        return _kt('Subscriptions');
+    }
+    
+	public function customiseInfo($aInfo) {
+		$aInfo['context'] = $this;
+		$aInfo['url'] = '#';
+		$aInfo['render'] = true;
+		$aInfo['onclick'] = "javascript:{ showMenus('subscribe_actions'); }";
+		
+		return $aInfo;
+	}
+    
+    public function render() {
+		// TODO : 	This is a cheat.
+    	// 			Should abstract to point where this class is not even instantiated.
+        if ($this->oUser->isAnonymous() || $this->oUser->getDisabled() == 4)
+        {
+            return null;
+        }
+        if ($this->oDocument) {
+            $oObject = $this->oDocument;
+            $type = 'documentsubscriptionaction';
+        }else if ($this->oFolder) {
+            $oObject = $this->oFolder;
+            $type = 'foldersubscriptionaction';
+        } else {
+            // not in a folder or document
+            return null;
+        }
+        $oObject = $this->oFolder;
+        $type = 'foldersubscriptionaction';
+        global $default;
+		$serverName = $default->serverName;
+		$base_url = ($default->sslEnabled ? 'https' : 'http') .'://'.$serverName;
+        $oUser = $this->oUser;
+        $this->actions = array();
+
+        // Get the actions
+        $oKTActionRegistry =& KTActionRegistry::getSingleton();
+        $actions = $oKTActionRegistry->getActions($type);
+
+        foreach ($actions as $aAction) {
+            list($sClassName, $sPath) = $aAction;
+            $oSubscription = new $sClassName($oObject, $oUser);
+            $actionInfo = $oSubscription->getInfo();
+            if (!empty($actionInfo)) {
+                if (isset($actionInfo['active']) && $actionInfo['active'] == 'no') {
+                    $nonActiveUrl = $base_url.$actionInfo['url'];
+                    $nonActiveName = $actionInfo['name'];
+                } else {
+                    $aInfo = $actionInfo;
+                }
+            }
+        }
+
+        // Create js script
+        $url = $base_url . $aInfo['url'];
+        $script = '<script type="text/javascript">
+            function doSubscribe(action) {
+                var respDiv = document.getElementById("subscriptionResponse");
+                var link = document.getElementById("subscribeLink");
+
+                Ext.Ajax.request({
+                    url: "' . $url . '",
+                    success: function(response) {
+                        respDiv.innerHTML = response.responseText;
+                        respDiv.style.display = "block";
+                        link.style.display = "none";
+                        if (document.getElementById("subLink")) {
+                            document.getElementById("subLink").style.display = "none";
+                        }
+                    },
+                    failure: function() {
+                        respDiv.innerHTML = "' . _kt('There was a problem with the subscription, please refresh the page and try again.') . '";
+                        respDiv.style.display = "block";
+                    },
+                    params: {
+                        action: action
+                    }
+                });
+            }
+        </script>';
+
+        $script .= "<a id='subscribeLink' style='cursor:pointer' onclick='javascript: doSubscribe(\"ajax\")'>{$aInfo['name']}</a>";
+
+        $aInfo['js'] = $script;
+        $this->actions[] = $aInfo;
+
+        if (isset($aInfo['subaction'])) {
+            $subInfo = array();
+            $subInfo['js'] = "<a id='subLink' style='cursor:pointer' onclick='javascript: doSubscribe(\"add_subfolders\")'>{$aInfo['subaction']}</a>";
+            $this->actions[] = $subInfo;
+        }
+		$oPlugin = new KTPlugin();
+        $this->actions[] = array('name' => _kt('Manage subscriptions'), 'url' => $oPlugin->getPagePath('manage'));
+        $btn = '<div id="subscriptionResponse"></div>';
+
+        $oTemplating =& KTTemplating::getSingleton();
+        $oTemplate = $oTemplating->loadTemplate('kt3/portlets/actions');
+        $aTemplateData = array(
+            'context' => $this,
+            'btn' => $btn
+        );
+
+        return $oTemplate->render($aTemplateData);
+    }
 }
 
 class KTSubscriptionManagePage extends KTStandardDispatcher {

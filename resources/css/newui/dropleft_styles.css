@@ -1,0 +1,130 @@
+@charset "UTF-8";
+
+#middle_nav {
+    background: url('/resources/graphics/newui/midbarbkg.png') top left repeat-x;
+    height: 39px;
+    line-height: 39px;
+}
+
+ul.sidedown {
+    font-family:"Arial", sans-serif;
+    font-weight: bold;
+    font-size: 11px;
+    /*text-transform:uppercase;*/
+}
+
+ul.sidedown ul {
+    width: 160px; /* Width of sidedown list */
+	font-size: 11px;
+}
+
+ul.sidedown ul li {
+	font-weight: normal;
+}
+
+ul.sidedown li {
+    line-height: 39px;
+	padding: 0;
+	border: none;
+}
+
+ul.sidedown li li {
+    text-transform: none;
+}
+
+ul.sidedown a,
+ul.sidedown span {
+	display: block;
+}
+
+ul.sidedown a:link, ul.sidedown a,
+ul.sidedown a:visited	{ color: #697474; text-decoration: none; }
+ul.sidedown a:hover		{ color: #697474; }
+ul.sidedown a:active	{ color: #1E529C; }
+
+ul.sidedown *.dir {
+	color: #697474;
+	padding-right: 20px;
+	padding-left: 10px;
+	background-image: url(/resources/graphics/newui/midbardivider.png);
+	background-position: right;
+	background-repeat: no-repeat;
+}
+
+ul.sidedown li.hover,
+ul.sidedown li:hover {
+	background: url('/resources/graphics/newui/menuHoverRight.png') no-repeat top right;
+}
+
+ul.sidedown li li:hover {
+    background: url(/resources/graphics/newui/grad2.png) 0 100% repeat-x;
+}
+
+ul.sidedown li:hover > *.dir, ul.sidedown li:hover *.dir:hover {
+	color: #FFF;
+	background: url('/resources/graphics/newui/menuHoverLeft.png') no-repeat;
+}
+
+ul.sidedown li.roundleft {
+    background: #FFF url('/resources/graphics/newui/midbarleft.png') no-repeat top left;
+    width: 13px;
+    margin: 0;
+}
+
+div#midright {
+	float: right;
+}
+
+span#midrightcorner {
+	background: #fff url('/resources/graphics/newui/midbarright.png') no-repeat top right;float: right;
+	width: 11px;
+	overflow: hidden;
+}
+
+ul.sidedown ul li {
+    background-color: #FFF;
+	margin-left: 5px;
+    margin-right: 5px;
+	line-height: normal;
+	border-bottom: 1px solid #F3F3F3;
+}
+
+ul.sidedown ul li a{
+	padding: 5px;
+}
+
+ul.sidedown ul li.active {
+	padding: 5px;
+	font-weight: bold;
+	display: block;
+}
+
+ul.sidedown ul li.active:hover {
+	background: #FFF; /* REQUIRED!! */
+}
+
+ul.sidedown ul li strong{
+	padding: 5px;
+	font-weight: bold;
+	display: block;
+}
+
+ul.sidedown ul li img{
+	vertical-align: text-bottom;
+}
+
+
+/* Rounds the bottom corners of the last item*/
+ul.sidedown ul li:last-child {
+    border: none;
+}
+
+/* Rounds the bottom corners of the drop down menu*/
+ul.sidedown ul {
+	background-color: #FFF;
+    border: 8px solid #CCCCCC;
+    -moz-border-radius-bottomleft: 10px;
+    -webkit-border-bottom-left-radius: 10px;
+    -moz-border-radius-bottomright: 10px;
+    -webkit-border-bottom-right-radius: 10px;
+}
