@@ -13,7 +13,7 @@
 }
 
 .ktError {
-	background: #ffdd80 url(../graphics/error_toprepeat.png) top left repeat-x;
+	background: #ffdd80 url(../graphics/err_toprepeat.png) top left repeat-x;
 	border: 1px solid #ffdd80;
 }
 
