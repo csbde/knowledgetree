@@ -262,7 +262,7 @@ class KTInit {
         // Override the config setting - KT_DIR is resolved on page load
         $KTConfig->setdefaultns('KnowledgeTree', 'fileSystemRoot', KT_DIR);
 
-        $useCache = $this->checkCacheSystem();
+        $useCache = false;
         $storeCache = true;
 
         // If the cache needs to be cleared for debugging purposes uncomment the following lines..
@@ -274,6 +274,8 @@ class KTInit {
             // We don't want to store this setting so we set store_cache to false
             $storeCache = false;
         }
+
+        $useCache = $KTConfig->setMemCache();
 
         if ($useCache) {
             $useCache = $KTConfig->loadCache();
@@ -308,12 +310,6 @@ class KTInit {
         if ($useCache === false && $storeCache) {
             $KTConfig->createCache();
         }
-    }
-
-    protected function checkCacheSystem()
-    {
-        // Base initializer does not use an external caching system.
-	return false;
     }
 
     /**

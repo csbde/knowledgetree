@@ -132,7 +132,7 @@ require_once(KT_LIB_DIR . '/config/config.inc.php');
 
 //====================================
 
-require_once(KT_LIB_DIR . '/init/KTInitFactory.inc.php');
+require_once(KT_LIB_DIR . '/config/KTInitFactory.inc.php');
 $KTInit = KTInitFactory::getSystemInitializer();
 $KTInit->initConfig();
 $KTInit->setupI18n();
@@ -182,6 +182,7 @@ require_once(KT_LIB_DIR . '/plugins/pluginutil.inc.php');
 if ($checkup !== true) {
 	// Replace function later
 	/* ** Get the page being loaded and load the plugins specific to the page ** */
+        // NOTE This is not being used within the function and should probably be completely removed.
 	$scriptName = $GLOBALS['_SERVER']['SCRIPT_NAME'];
 	$script = basename($scriptName);
 	$pos = strpos($script, '.');

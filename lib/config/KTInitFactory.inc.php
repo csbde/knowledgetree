@@ -1,7 +1,7 @@
 <?php
 
-require_once(KT_LIB_DIR . '/init/KTInit.inc.php');
-require_once(KT_LIB_DIR . '/init/KTLiveInit.inc.php');
+require_once(KT_LIB_DIR . '/config/KTInit.inc.php');
+require_once(KT_LIB_DIR . '/config/KTLiveInit.inc.php');
 
 class KTInitFactory {
 

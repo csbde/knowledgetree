@@ -1,6 +1,6 @@
 <?php
 
-require_once(KT_LIB_DIR . '/init/KTInit.inc.php');
+require_once(KT_LIB_DIR . '/config/KTInit.inc.php');
 
 class KTLiveInit extends KTInit {
 
@@ -10,12 +10,6 @@ class KTLiveInit extends KTInit {
     {
         // The line below will switch on tracing for debugging & dev purposes.
         define('KTLIVE_TRACE_ENABLE', false);
-    }
-
-    protected function checkCacheSystem()
-    {
-        $KTConfig = KTConfig::getSingleton();
-        return $KTConfig->setMemCache();
     }
 
     public function showDBError($dbError)
