@@ -544,7 +544,7 @@
 
 				$(object).replaceWith( newObject );
 				
-				newObject.before(attrs['data-checked_value']);
+				newObject.after(attrs['data-checked_value']);
 								
 				// Now add our hidden input (rails style), so that we can send negative values as well
 				//$( '<input />', { type: 'hidden', value: attrs['data-unchecked_value'], name: attrs['data-name'] } ).insertBefore( newObject );
