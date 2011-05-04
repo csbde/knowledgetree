@@ -37,11 +37,11 @@
  */
 
 // check if system has been installed
-require_once("setup/wizard/installUtil.php");
+require_once('setup/wizard/installUtil.php');
 // Check if system has been installed
 $iu = new InstallUtil();
-if(!$iu->isSystemInstalled()) {
-	$iu->redirect("setup/wizard");
+if (!$iu->isSystemInstalled()) {
+	$iu->redirect('setup/wizard');
 	exit(0);
 }
 
@@ -62,10 +62,9 @@ require_once(KT_LIB_DIR . '/util/ktutil.inc');
 $action = $_REQUEST['action'];
 
 if ($action != 'login') {
-
     // check the session, but don't redirect if the check fails
     $ret = checkSessionAndRedirect(false);
-    $redirectToBrowse = $oKTConfig->get('KnowledgeTree/redirectToBrowse', false);
+    $redirectToBrowse = $KTConfig->get('KnowledgeTree/redirectToBrowse', false);
     if ($ret === true) {
         //get around the problem with search
         if (strcmp($_REQUEST['fForStandardSearch'], 'yes') == 0) {
@@ -74,15 +73,15 @@ if ($action != 'login') {
             // session check succeeds, so default action should be the dashboard or browse if set if no action was specified
             if ($redirectToBrowse){
                 $action = 'browse';
-            }else{
+            } else {
                 $action = 'dashboard';
             }
         }
     } else {
         // session check fails, so default action should be the login form if no action was specified
-        $oKTConfig = KTConfig::getSingleton();
+        $KTConfig = KTConfig::getSingleton();
         $dest = 'login';
-        if ($oKTConfig->get('allowAnonymousLogin', false)) {
+        if ($KTConfig->get('allowAnonymousLogin', false)) {
 
             if ($redirectToBrowse){
                 $dest = 'browse';
@@ -93,7 +92,7 @@ if ($action != 'login') {
 
         if (!isset($action)) {
             $action = $dest;
-        } elseif ($action <> $dest) {
+        } else if ($action <> $dest) {
             // we have a controller link and auth has failed, so redirect to the login page
             // with the controller link as the redirect
             $url = generateControllerUrl('login');
@@ -122,11 +121,11 @@ if (is_array($queryString)) {
 		$queryStringArray[$k] = $v;
     }
     $queryString = join('&', $aStrings);
-} elseif (count(preg_match('#\%#', $queryString) != 0)) {
+} else if (count(preg_match('#\%#', $queryString) != 0)) {
     $queryString = urldecode($queryString);
-	
+
 	$arr = explode('=', $queryString);
-	
+
 	if (count($arr) > 0) {
 		$queryStringArray[$arr[0]] = $arr[1];
 	}
@@ -148,8 +147,10 @@ if (empty($queryString)) {
 }
 
 if ($action == 'dashboard') {
-    $oKTConfig = KTConfig::getSingleton();
-    if(!$oKTConfig->get('useNewDashboard')) $action = 'olddashboard';
+    $KTConfig = KTConfig::getSingleton();
+    if (!$KTConfig->get('useNewDashboard')) {
+        $action = 'olddashboard';
+    }
 }
 
 // retrieve the page from the sitemap (checks whether this user has access to the requested page)
@@ -159,17 +160,17 @@ if (!$page) {
     // this user doesn't have permission to access the page
     // or there is no page mapping for the requested action
     // redirect to no permission page
-    $default->log->error("control.php getPage failed for ($action, " . $_SESSION['userID'] . ")");
-    redirect("$default->uiUrl/noAccess.php");
+    $default->log->error("control.php getPage failed for ($action, {$_SESSION['userID']})");
+    redirect("{$default->uiUrl}/noAccess.php");
 } else {
     $page = $default->rootUrl . $page;
     // set authorised flag and redirect
     // strip querystring from the page returned from the sitemap
     // before setting page authorisation flag (since checkSession checks page level
-    // access by checking $_SESSION["pageAccess"][$_SERVER["PHP_SELF"] ie. without querystring(?)
-	
-	$cleanUrlPages = array("/browse.php", "/view.php");
-	
+    // access by checking $_SESSION['pageAccess'][$_SERVER['PHP_SELF'] ie. without querystring(?)
+
+	$cleanUrlPages = array('/browse.php', '/view.php');
+
 	if (in_array($page, $cleanUrlPages)) {
 		$page = KTUtil::buildUrl($page, $queryStringArray);
 		$default->log->info("control.php: about to redirect to $page");
@@ -187,8 +188,9 @@ if (!$page) {
 			$page .= $queryString;
 			$default->log->info("control.php: about to redirect to $page");
 		}
-		
+
     }
+    
     redirect($page);
 }
 

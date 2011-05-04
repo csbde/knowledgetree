@@ -159,14 +159,10 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
         // we want to grab all the metadata for this doc, since its faster that way.
         $metadata =& DocumentFieldLink::getByDocument($this->document);
 
-        $GLOBALS['default']->log->debug('mdlist ' . print_r($metadata, true));
-
         $fieldValues = array();
         foreach ($metadata as $fieldLink) {
             $fieldValues[$fieldLink->getDocumentFieldID()] = $fieldLink->getValue();
         }
-
-        //var_dump($fieldValues);
 
         $documentData['field_values'] = $fieldValues;
 
@@ -185,24 +181,15 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
         $fieldsetDisplayReg =& KTFieldsetDisplayRegistry::getSingleton();
         $docFieldsets = KTMetadataUtil::fieldsetsForDocument($this->document);
 
-        //$GLOBALS['default']->log->debug('viewdocument aDocFieldsets '.print_r($docFieldsets, true));
-
         foreach ($docFieldsets as $fieldset) {
-            //$GLOBALS['default']->log->debug('viewdocument oFieldset namespace :'.$fieldset->getNamespace().':');
-            //$GLOBALS['default']->log->debug('viewdocument oFieldset namespace !=== tagcloud '.$fieldset->getNamespace() !== 'tagcloud');
             if ($fieldset->getNamespace() == 'tagcloud') {
                 $tags = $this->getDocumentTags($this->document, $fieldset);
             }
             else {
-                //$GLOBALS['default']->log->debug('viewdocument oFieldset '.print_r($fieldset, true));
                 $displayClass = $fieldsetDisplayReg->getHandler($fieldset->getNamespace());
-
-                //$GLOBALS['default']->log->debug('fieldsetdisplayclass '.print_r(new $displayClass($fieldset), true));
                 array_push($fieldsets, new $displayClass($fieldset));
             }
         }
-
-        //$GLOBALS['default']->log->debug('viewdocument fieldsets '.print_r($fieldsets, true));
 
         $checkedOutUsername = 'Unknown user';
         if ($this->document->getIsCheckedOut() == 1) {
@@ -212,24 +199,9 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
             }
         }
 
-        /*
-        // is the checkout action active?
-        $canCheckin = false;
-        foreach ($this->actions as $docAction) {
-            if ($docAction->sName == 'ktcore.actions.document.cancelcheckout') {
-                if ($docAction->getInfo()) {
-                    $canCheckin = true;
-                }
-                break;
-            }
-        }
-
-        $canEdit = $this->canEdit();
-        */
-
         // viewlets
         $viewlets = array();
-        $viewlets2 = array();
+//        $viewlets2 = array();
         $viewletActions = KTDocumentActionUtil::getDocumentActionsForDocument($this->document, $this->oUser, 'documentviewlet');
         foreach ($viewletActions as $action) {
             $info = $action->getInfo();
@@ -237,9 +209,9 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
                 if (($info['ns'] == 'ktcore.viewlet.document.activityfeed') || ($info['ns'] == 'thumbnail.viewlets')) {
                     $viewlets[] = $action->display_viewlet(); // use the action, since we display_viewlet() later.
                 }
-                else {
-                    $viewlets2[] = $action->display_viewlet(); // use the action, since we display_viewlet() later.
-                }
+//                else {
+//                    $viewlets2[] = $action->display_viewlet(); // use the action, since we display_viewlet() later.
+//                }
             }
         }
 
@@ -282,15 +254,8 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
         $documentSidebars = isset($sidebars[0]) ? $sidebars[0] : array();
 
         $tagPluginPath = KTPluginUtil::getPluginPath('ktcore.tagcloud.plugin', true);
-        
-        $makeMetadataEditable = 1;
-        
-        //should the user be allowed to edit the document's metadata?
-        if (($this->document->getIsCheckedOut() == 1) || ($this->document->getImmutable() == 1) || !Permission::userHasDocumentWritePermission($this->document))
-        {
-        	$makeMetadataEditable = 0;
-        }
-        
+
+        $makeMetadataEditable = $this->getMetadataEditable();
 
         $templating =& KTTemplating::getSingleton();
         $template = $templating->loadTemplate('ktcore/document/view');
@@ -408,6 +373,12 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
         return $tags;
     }
 
+    protected function getMetadataEditable()
+    {
+        return (($this->document->getIsCheckedOut() != 1)
+             && ($this->document->getImmutable() != 1)
+             && Permission::userHasDocumentWritePermission($this->document));
+    }
     // FIXME refactor out the document-info creation into a single utility function.
     // this gets in:
     //   fDocumentId (document to compare against)
@@ -449,7 +420,7 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
         $this->oPage->setBreadcrumbDetails(_kt('compare versions'));
 
         $comparisonVersion = KTUtil::arrayGet($_REQUEST, 'fComparisonVersion');
-        if ($comparisonVersion=== null) {
+        if ($comparisonVersion === null) {
             $this->oPage->addError(sprintf(_kt("No comparison version was requested.  Please <a href=\"%s\">select a version</a>."), KTUtil::addQueryStringSelf('action=history&fDocumentId=' . $documentId)));
             return $this->do_error();
         }

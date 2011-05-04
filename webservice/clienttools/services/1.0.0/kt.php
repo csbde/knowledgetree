@@ -812,7 +812,7 @@ class kt extends client_service {
 	public function switchlang($params)
 	{
 		$this->logTrace((__METHOD__.'('.__FILE__.' '.__LINE__.')'),'Enter Function');
-		setcookie("kt_language", $params['lang'], 2147483647, '/');
+		setcookie("KTLanguage", $params['lang'], 2147483647, '/');
 	}
 
 	public function add_document_params($params)

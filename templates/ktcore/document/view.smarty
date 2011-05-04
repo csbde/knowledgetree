@@ -47,10 +47,10 @@
 								<th style="width: 100px;">Version:</th><td><a href="{$rootUrl}/action.php?kt_path_info=ktcore.actions.document.versionhistory&fDocumentId={$document_id}">{$document->getMajorVersionNumber()}.{$document->getMinorVersionNumber()}</a></td>
 							</tr>
 							<tr>
-								<th>Last Modified by:</th><td>{$doc_data.lastModifier} on {$document->getDisplayLastModifiedDate()|date_format:"%B %e, %Y at %H:%M"}</td>
+								<th>Last Modified by:</th><td>{$doc_data.lastModifier} on {$document->getDisplayLastModifiedDate()|date_format:"%b %e, %Y"}</td>
 							</tr>
 							<tr>
-								<th>Created by:</th><td>{$doc_data.creator} on {$document->getDisplayCreatedDateTime()|date_format:"%B %e, %Y at %H:%M"}</td>
+								<th>Created by:</th><td>{$doc_data.creator} on {$document->getDisplayCreatedDateTime()|date_format:"%b %e, %Y"}</td>
 							</tr>
 							<tr>
 								<th>Owned by:</th><td>{$doc_data.owner}</td>
@@ -225,8 +225,10 @@
     {/if}
     </td>
     	<td valign="top" id="sidebar" class="standardBorder" height="100%" width="215">
+		{if $documentSidebars}
 		{* Display Actions Block *}
 		{$documentSidebars->getDocSidebars()}
+                {/if}
 	</td>
 	</tr>
 </table>

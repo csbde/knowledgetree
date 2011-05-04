@@ -55,15 +55,15 @@ class KTConfig {
      *
      * @return string
      */
-    static function getCacheFilename()
+    public static function getCacheFilename()
     {
-        if(ACCOUNT_ROUTING_ENABLED){
+        if (ACCOUNT_ROUTING_ENABLED) {
             return ACCOUNT_NAME . '-configcache';
         }
 
         $pathFile = KT_DIR .  '/config/cache-path';
 
-        if(!file_exists($pathFile)){
+        if (!file_exists($pathFile)) {
             return false;
         }
 
@@ -71,34 +71,30 @@ class KTConfig {
         $cacheFile = trim(file_get_contents($pathFile));
         // if we are on an account name routing system (i.e. a shared system,) use the account name to distinguish config cache files
         $cacheFile .= '/' . (defined('ACCOUNT_NAME') ? ACCOUNT_NAME : '') . 'configcache';
-
         // Ensure path is absolute
         $cacheFile = (!KTUtil::isAbsolutePath($cacheFile)) ? sprintf('%s/%s', KT_DIR, $cacheFile) : $cacheFile;
 
         return $cacheFile;
     }
 
-    function setMemcache()
+    public function setMemcache()
     {
-        if(MemCacheUtil::$enabled)
-        {
+        if (MemCacheUtil::$enabled) {
             return true;
         }
-    	
+
 		$isEnabled = false;
         $ktconfpath = KT_PLUGIN_DIR . '/ktlive/config/kt-path';
-        if (file_exists($ktconfpath))
-        {
+        if (file_exists($ktconfpath)) {
         	$this->confPath = trim(file_get_contents($ktconfpath));
-        	if(!file_exists($this->confPath))
-        	{
+        	if (!file_exists($this->confPath)) {
         		$this->confPath = '/etc/kt/kt.cnf';
         	}
         }
-        else
-        {
+        else {
         	$this->confPath = '/etc/kt/kt.cnf';
         }
+
         $root = $this->parseConfig($this->confPath);
         if ($root == false) {
             return false;
@@ -108,9 +104,9 @@ class KTConfig {
 
         // Populate the flat and flatns array with the settings from the config file
         // These setting will be overwritten with the settings from the database.
-        if(isset($conf['root']) && !empty($conf['root'])){
-            foreach($conf['root'] as $group => $item){
-                foreach ($item as $key => $value){
+        if (isset($conf['root']) && !empty($conf['root'])) {
+            foreach ($conf['root'] as $group => $item) {
+                foreach ($item as $key => $value) {
                     $this->setns($group, $key, $value, false);
                 }
             }
@@ -118,7 +114,7 @@ class KTConfig {
 
         $server_list = $this->get('memcache/servers', false);
 
-        if($server_list == false){
+        if ($server_list == false) {
                 return false;
         }
         //$filename = $this->getCacheFilename();
@@ -126,8 +122,8 @@ class KTConfig {
         $server_arr = explode('|', $server_list);
         $servers = array();
 
-        foreach ($server_arr as $server){
-            if(empty($server)){
+        foreach ($server_arr as $server) {
+            if (empty($server)) {
                 continue;
             }
 
@@ -141,7 +137,7 @@ class KTConfig {
 
         try {
             	$isEnabled=MemCacheUtil::init($servers);
-        }catch (Exception $e){
+        } catch (Exception $e) {
             return false;
         }
 
@@ -149,38 +145,43 @@ class KTConfig {
         return $isEnabled;
     }
 
-    public static function parseConfig($filename){
-        if(!file_exists($filename))
+    public static function parseConfig($filename)
+    {
+        if (!file_exists($filename)) {
             return false;
-        $c = new Config();
-        return $c->parseConfig($filename, "IniCommented");
+        }
+
+        $config = new Config();
+        return $config->parseConfig($filename, "IniCommented");
     }
 
-    public static function logErrors(){
-        if(ACCOUNT_ROUTING_ENABLED){
+    public static function logErrors()
+    {
+        if (ACCOUNT_ROUTING_ENABLED) {
             /* Log Failed Memcache Server Connects */
-            foreach(MemCacheUtil::$errors as $error){
-            	if($error){
-            		if($GLOBALS['default']->log)$GLOBALS['default']->log->error($error);
+            foreach (MemCacheUtil::$errors as $error) {
+            	if ($error) {
+            		if ($GLOBALS['default']->log)$GLOBALS['default']->log->error($error);
             	}
             }
         }
     }
 
     // FIXME nbm:  how do we cache errors here?
-    function loadCache() {
+    public function loadCache()
+    {
         $filename = $this->getCacheFilename();
-        if($filename === false){
+        if ($filename === false) {
             return false;
         }
 
-        if(ACCOUNT_ROUTING_ENABLED){
+        if (ACCOUNT_ROUTING_ENABLED) {
             $config_str = MemCacheUtil::get($filename);
-        }else{
+        } else {
             $config_str = file_get_contents($filename);
         }
 
-        if(empty($config_str)){
+        if (empty($config_str)) {
             return false;
         }
 
@@ -190,14 +191,17 @@ class KTConfig {
         $this->expanded = (isset($config_cache['expanded'])) ? $config_cache['expanded'] : array();
         $this->expanding = (isset($config_cache['expanding'])) ? $config_cache['expanding'] : array();
 
-        if(empty($this->flatns)){
+        if (empty($this->flatns)) {
             return false;
         }
+
         $this->populateDefault();
-        return true;
+
+	return true;
     }
 
-    function createCache() {
+    public function createCache()
+    {
         $filename = $this->getCacheFilename();
 
         $config_cache = array();
@@ -208,10 +212,8 @@ class KTConfig {
 
         $config_cache = serialize($config_cache);
 
-        if(ACCOUNT_ROUTING_ENABLED)
-        {
-            	if($this->setMemcache())
-                {
+        if (ACCOUNT_ROUTING_ENABLED) {
+            	if ($this->setMemcache()) {
                     MemCacheUtil::set($filename, $config_cache);
                     return true;
                 }
@@ -227,56 +229,55 @@ class KTConfig {
      *
      * @param string $filename
      */
-    function clearCache()
+    public function clearCache()
     {
         $filename = $this->getCacheFilename();
 
-        if(ACCOUNT_ROUTING_ENABLED){
+        if (ACCOUNT_ROUTING_ENABLED) {
+            $this->setMemcache();
             MemCacheUtil::clear($filename);
             return true;
         }
 
-        if($filename !== false && file_exists($filename)){
+        if ($filename !== false && file_exists($filename)) {
             @unlink($filename);
         }
     }
 
-	// {{{ readConfig
-    function readConfig () {
+    public function readConfig ()
+    {
         //Load config data from the database
         $sQuery = 'select group_name, item, value, default_value from config_settings';
         $confResult = DBUtil::getResultArray($sQuery);
-		if(PEAR::isError($confResult)){
+		if (PEAR::isError($confResult)) {
             return $confResult;
         }
 
         // Update the config array - overwrite the current settings with the settings in the database.
-        foreach ($confResult as $confItem)
-        {
+        foreach ($confResult as $confItem) {
             $this->setns($confItem['group_name'], $confItem['item'], $confItem['value'], $confItem['default_value']);
         }
+
         $this->populateDefault();
     }
-    // }}}
 
     /**
      * Populate the global default array
      *
      */
-    function populateDefault()
+    public function populateDefault()
     {
         global $default;
 
-        foreach($this->flatns as $sGroupItem => $sValue)
+        foreach ($this->flatns as $sGroupItem => $sValue)
         {
         	$aGroupItemArray = explode('/', $sGroupItem);
         	$default->$aGroupItemArray[1] = $this->expand($this->flatns[$sGroupItem]);
         }
     }
 
-	// {{{ readDBConfig()
-	function readDBConfig()
-	{
+    public function readDBConfig()
+    {
         $filename = $this->getConfigFilename();
         $root = $this->parseConfig($filename);
         if ($root == false) {
@@ -287,14 +288,13 @@ class KTConfig {
 
         // Populate the flat and flatns array with the settings from the config file
         // These setting will be overwritten with the settings from the database.
-        if(isset($conf['root']) && !empty($conf['root'])){
-            foreach($conf['root'] as $group => $item){
-                foreach ($item as $key => $value){
-                	if(ACCOUNT_ROUTING_ENABLED){
-                		if($key=='dbName'){
+        if (isset($conf['root']) && !empty($conf['root'])) {
+            foreach ($conf['root'] as $group => $item) {
+                foreach ($item as $key => $value) {
+                	if (ACCOUNT_ROUTING_ENABLED) {
+                		if ($key=='dbName') {
                 			// TODO : Testing purposes only, remove if statement only.
-                			if(!isset($_SESSION[LIVE_DATABASE_OVERRIDE]))
-                			{
+                			if (!isset($_SESSION[LIVE_DATABASE_OVERRIDE])) {
                 				$value=ACCOUNT_NAME;
                 			}
                 		}
@@ -303,9 +303,10 @@ class KTConfig {
                 }
             }
         }
+
         $this->populateDefault();
-	}
-	// }}}
+    }
+
     /**
      * Function reads config settings for Database conncections
      * Does a quick connect to Database to make sure the values are valid
@@ -313,7 +314,8 @@ class KTConfig {
      * @return string $default_db : dsn
      * @author Prince Mbekwa
      **/
-	function setupDB () {
+    public function setupDB ()
+    {
         global $default;
         require_once('DB.php');
 
@@ -335,7 +337,7 @@ class KTConfig {
 			$sUser = 'db/dbAdminUser';
 			$sPass = 'db/dbAdminPass';
 		}
-		
+
 		$dsn = array(
             'phptype'  => $this->flatns['db/dbType'],
             'username' => $this->flatns[$sUser],
@@ -344,26 +346,29 @@ class KTConfig {
             'database' => $this->flatns['db/dbName'],
             'port' => isset($this->flatns['db/dbPort']) ? $this->flatns['db/dbPort'] : ''
         );
+
         $default->_db = $dsn;
 
         /**
-        * Check to see if replication is set to TRUE
-        * If Replication is set to TRUE then it means
-        * that mysql-slaves are active
-        * So we will read config to get the hostnames
-        **/
+         * Check to see if replication is set to TRUE
+         * If Replication is set to TRUE then it means
+         * that mysql-slaves are active
+         * So we will read config to get the hostnames
+         **/
         $replication = $this->flatns['db/dbReplication'];
 
-        if($replication == 'true'){
+        if ($replication == 'true') {
             $slave_list  = $this->flatns['db/dbSlaves'];
             $slave_hostnames = explode('|', $slave_list);
             $working_connections = array();
             $slave_dns = array();
-            $errors=array();
-            foreach ($slave_hostnames as $available_slaves){
-                if(empty($available_slaves)){
+            $errors = array();
+
+            foreach ($slave_hostnames as $available_slaves) {
+                if (empty($available_slaves)) {
                     continue;
                 }
+
                 $slave_dns[] = array(
                     'phptype' =>  $this->flatns['db/dbType'],
                     'username' => $this->flatns[$sUser],
@@ -373,20 +378,21 @@ class KTConfig {
                     'port' => isset($this->flatns['db/dbPort']) ? $this->flatns['db/dbPort'] : ''
                     );
             }
-            
+
             //Set slave connections defined
             $default->_slave = $slave_dns;
             return true;
         }
-        
+
        return true;
     }
 
-    function setns($seck, $k, $v, $bDefault = false) {
+    public function setns($seck, $k, $v, $bDefault = false)
+    {
         // If the value is default then set it to the default value
         if ($v === 'default') {
             // If there is no default then ignore the value
-            if($bDefault === false){
+            if ($bDefault === false) {
                 return;
             }
             $v = $bDefault;
@@ -395,7 +401,7 @@ class KTConfig {
         // If the value is true / false, set it as a boolean true / false
         if ($v === 'true') {
             $v = true;
-        } elseif ($v === 'false') {
+        } else if ($v === 'false') {
             $v = false;
         }
 
@@ -404,41 +410,52 @@ class KTConfig {
         if (!is_null($seck)) {
             $this->flatns["$seck/$k"] = $v;
         }
-        return;
+
+        return null;
     }
 
-    function setdefaultns($seck, $k, $v) {
+    public function setdefaultns($seck, $k, $v)
+    {
         $this->setns($seck, $k, $v, true);
 
         global $default;
         $default->$k = $this->expand($this->flatns["$seck/$k"]);
     }
 
-    function expand($val) {
+    public function expand($val)
+    {
         if (strpos($val, '$') === false) {
             return $val;
         }
+
         $v = $val;
-        while(($m = preg_match('/\$\{([^}]+)\}/', $v, $matches))) {
+
+	while (($m = preg_match('/\$\{([^}]+)\}/', $v, $matches))) {
             array_push($this->expanding, $matches[1]);
-            $r = $this->get($matches[1]);
+
+	    $r = $this->get($matches[1]);
             if (PEAR::isError($r)) {
                 return $r;
             }
-            $v = str_replace($matches[0], $r, $v);
+
+	    $v = str_replace($matches[0], $r, $v);
             $this->expanded[$matches[1]] = $r;
         }
+
         return $v;
     }
 
-    function get($var, $oDefault = null) {
+    public function get($var, $oDefault = null)
+    {
 	    if (array_key_exists($var, $this->flatns)) {
             return $this->expand($this->flatns[$var]);
         }
-        if (array_key_exists($var, $this->flat)) {
+
+	if (array_key_exists($var, $this->flat)) {
             return $this->expand($this->flat[$var]);
         }
-        return $oDefault;
+
+	return $oDefault;
     }
 
     /**
@@ -448,7 +465,8 @@ class KTConfig {
      * @param integer $can_edit Default null. Determines if the setting is available for editing by the admin user.
      * @return boolean
      */
-    function set($var = null, $value = null, $can_edit = null) {
+    public function set($var = null, $value = null, $can_edit = null)
+    {
         global $default;
 
         if ($var == null) {
@@ -459,7 +477,7 @@ class KTConfig {
         $groupName = $varParts[0];
         $var = $varParts[1];
 
-        if ($var == '' || $groupName == ''){
+        if ($var == '' || $groupName == '') {
             //var and group must be set
             $default->log->error("config->set() requires the first parameter to be in the form 'groupName/configSetting'");
             return false;
@@ -467,31 +485,29 @@ class KTConfig {
 
         $sql = "SELECT id from config_settings WHERE item = '$var' and group_name = '$groupName'";
         $configId = DBUtil::getOneResultKey($sql,'id');
-        if (PEAR::isError($configId))
-        {
+        if (PEAR::isError($configId)) {
             $default->log->error(sprintf(_kt("Couldn't get the config id:%s"), $configId->getMessage()));
             return false;
         }
 
         //If config var doesn't exist we create it
         if ($configId == null) {
-            if(!is_numeric($can_edit)){
+            if (!is_numeric($can_edit)) {
                 $can_edit = 1;
             }
-            $configId = DBUtil::autoInsert('config_settings', array('item' => $var ,'value' => $value, 'group_name' => $groupName, 'can_edit' => $can_edit));
 
+	    $configId = DBUtil::autoInsert('config_settings', array('item' => $var ,'value' => $value, 'group_name' => $groupName, 'can_edit' => $can_edit));
             if (PEAR::isError($configId))
             {
                 $default->log->error(sprintf(_kt("Couldn't insert config value:%s"), $configId->getMessage()));
                 return false;
             }
-
         } else {
-
             $fieldValues = array('value' => $value);
-            if(is_numeric($can_edit)){
+            if (is_numeric($can_edit)) {
                 $fieldValues['can_edit'] = $can_edit;
             }
+
             $res = DBUtil::autoUpdate('config_settings', $fieldValues, $configId);
             if (PEAR::isError($res)) {
                 $default->log->error(sprintf(_kt("Couldn't update config value: %s"), $res->getMessage()));
@@ -509,7 +525,7 @@ class KTConfig {
      *
      * @return string
      */
-    static function getConfigFilename()
+    public static function getConfigFilename()
     {
         $pathFile = KT_DIR . '/config/config-path';
         $configFile = trim(file_get_contents($pathFile));
@@ -520,12 +536,10 @@ class KTConfig {
         $configFile = str_replace('//', '/', $configFile);
         $configFile = str_replace('\\\\', '\\', $configFile);
 
-    	if (file_exists($configFile))
-    	{
+    	if (file_exists($configFile)) {
     		return $configFile;
     	}
-    	else
-    	{
+    	else {
     		return KT_DIR . DIRECTORY_SEPARATOR . $configFile;
     	}
     }
@@ -538,7 +552,8 @@ class KTConfig {
      * @param unknown_type $bDefault
      * @return unknown
      */
-    function loadFile($filename, $bDefault = false) {
+    public function loadFile($filename, $bDefault = false)
+    {
         $root = $this->parseConfig($filename);
         if ($root == false) {
             return false;
@@ -560,13 +575,14 @@ class KTConfig {
         $this->conf = kt_array_merge($this->conf, $conf["root"]);
     }
 
-    static function &getSingleton() {
+    public static function &getSingleton()
+    {
     	static $singleton = null;
 
-    	if (is_null($singleton))
-    	{
+    	if (is_null($singleton)) {
     		$singleton = new KTConfig();
     	}
+
     	return $singleton;
     }
 }

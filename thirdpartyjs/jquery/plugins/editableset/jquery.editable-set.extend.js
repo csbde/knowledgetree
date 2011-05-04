@@ -239,6 +239,9 @@ jQuery.editableSet.addInputType('htmleditor', {
 					{
 						editor.setValue('');
 					}
+				},
+				'render': function(editor) {
+					jQuery(htmlEd).css('font-size', '11px');
 				}/*,
 				'beforePush': function(editor, text){
 					console.log('beforePush untrimmed '+text);
