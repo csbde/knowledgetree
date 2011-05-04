@@ -234,10 +234,21 @@ class Document {
     	if ($this->isSymbolicLink())
         {
             $document = $this->getRealDocument();
-            if (PEAR::isError($document)) { return $document; }
+            if (PEAR::isError($document)) {
+                return $document;
+            }
+
+            $iPermissionObjectId = $this->getPermissionObjectID();
+            $iPermissionLookupId = $this->getPermissionLookupID();
+
             $this->_oDocumentCore = $document->_oDocumentCore;
             //also load metadata
             $this->_oDocumentMetadataVersion = $document->_oDocumentMetadataVersion;
+
+            // retain the permissions of the shortcut for purposes of performing actions on the shortcut
+            // if the user has write permissions to the shortcut but not the linked document.
+            $this->setPermissionObjectID($iPermissionObjectId);
+            $this->setPermissionLookupID($iPermissionLookupId);
         }
     }
 

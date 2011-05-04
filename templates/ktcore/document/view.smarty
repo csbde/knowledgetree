@@ -225,8 +225,10 @@
     {/if}
     </td>
     	<td valign="top" id="sidebar" class="standardBorder" height="100%" width="215">
+		{if $documentSidebars}
 		{* Display Actions Block *}
 		{$documentSidebars->getDocSidebars()}
+                {/if}
 	</td>
 	</tr>
 </table>

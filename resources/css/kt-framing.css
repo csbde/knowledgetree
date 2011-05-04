@@ -1477,7 +1477,7 @@ The text will be hidden for screen view.  The generic fahrner-ish approach comes
     height: 36px;
     top: 0px;
     left: 0px;
-    background: url(../graphics/error_topleft.png) top left no-repeat;
+    background: url(../graphics/err_topleft.png) top left no-repeat;
     z-index:-1;
 }
 
@@ -1487,7 +1487,7 @@ The text will be hidden for screen view.  The generic fahrner-ish approach comes
     height: 22px;
     top: 0px;
     left: 0px;
-    background: url(../graphics/error_topleft_small.png) top left no-repeat;
+    background: url(../graphics/err_topleft_small.png) top left no-repeat;
     z-index:-1;
 }
 
@@ -1497,7 +1497,7 @@ The text will be hidden for screen view.  The generic fahrner-ish approach comes
     height: 55px;
     top: 0px;
     left: 13px;
-    background: #ffdd80 url(../graphics/error_toprepeat.png) top left repeat-x;
+    background: #ffdd80 url(../graphics/err_toprepeat.png) top left repeat-x;
     z-index:-1;
 }
 
@@ -1507,7 +1507,7 @@ The text will be hidden for screen view.  The generic fahrner-ish approach comes
     height: 21px;
     top: 0px;
     left: 13px;
-    background: #ffdd80 url(../graphics/error_toprepeat.png) bottom left repeat-x;
+    background: #ffdd80 url(../graphics/err_toprepeat.png) bottom left repeat-x;
     z-index:-1;
     border-top: 1px solid #FFC21E;
 }
@@ -1518,7 +1518,7 @@ The text will be hidden for screen view.  The generic fahrner-ish approach comes
     height: 36px;
     top: 0px;
     right: 0px;
-    background: url(../graphics/error_topright.png) top right no-repeat;
+    background: url(../graphics/err_topright.png) top right no-repeat;
     z-index:-1;
 }
 
@@ -1528,7 +1528,7 @@ The text will be hidden for screen view.  The generic fahrner-ish approach comes
     height: 22px;
     top: 0px;
     right: 0px;
-    background: url(../graphics/error_topright_small.png) top right no-repeat;
+    background: url(../graphics/err_topright_small.png) top right no-repeat;
     z-index:-1;
 }
 
@@ -1538,7 +1538,7 @@ The text will be hidden for screen view.  The generic fahrner-ish approach comes
     height: 50%;
     top: 5px;
     left: 0px;
-    background: #ffdd80 url(../graphics/error_leftrepeat.png) top left repeat-y;
+    background: #ffdd80 url(../graphics/err_leftrepeat.png) top left repeat-y;
     z-index:-1;
 }
 
@@ -1548,7 +1548,7 @@ The text will be hidden for screen view.  The generic fahrner-ish approach comes
     height: 50%;
     bottom: 10px;
     left: 0px;
-    background: #ffdd80 url(../graphics/error_leftrepeat.png) top left repeat-y;
+    background: #ffdd80 url(../graphics/err_leftrepeat.png) top left repeat-y;
     z-index:-1;
 }
 
@@ -1558,7 +1558,7 @@ The text will be hidden for screen view.  The generic fahrner-ish approach comes
     height: 45px;
     bottom: 0px;
     left: 0px;
-    background: url(../graphics/error_bottomleft.png) bottom left no-repeat;
+    background: url(../graphics/err_bottomleft.png) bottom left no-repeat;
     z-index:-1;
 }
 
@@ -1568,7 +1568,7 @@ The text will be hidden for screen view.  The generic fahrner-ish approach comes
     height: 30px;
     bottom: 0px;
     left: 10x;
-    background: #ffdd80 url(../graphics/error_bottomrepeat.png) bottom left repeat-x;
+    background: #ffdd80 url(../graphics/err_bottomrepeat.png) bottom left repeat-x;
     z-index:-1;
 }
 
@@ -1578,7 +1578,7 @@ The text will be hidden for screen view.  The generic fahrner-ish approach comes
     height: 30px;
     bottom: 0px;
     left: 10x;
-    background: #ffdd80 url(../graphics/error_bottomrepeat.png) bottom left repeat-x;
+    background: #ffdd80 url(../graphics/err_bottomrepeat.png) bottom left repeat-x;
     z-index:-1;
 }
 
@@ -1588,7 +1588,7 @@ The text will be hidden for screen view.  The generic fahrner-ish approach comes
     height: 40px;
     bottom: 0px;
     right: 0px;
-    background: url(../graphics/error_bottomright.png) bottom right no-repeat;
+    background: url(../graphics/err_bottomright.png) bottom right no-repeat;
     z-index:-1;
 }
 
@@ -1598,7 +1598,7 @@ The text will be hidden for screen view.  The generic fahrner-ish approach comes
     height: 50%;
     top: 5px;
     right: 0px;
-    background: #ffdd80 url(../graphics/error_rightrepeat.png) top right repeat-y;
+    background: #ffdd80 url(../graphics/err_rightrepeat.png) top right repeat-y;
     z-index:-1;
     overflow:hidden;
 }
@@ -1609,7 +1609,7 @@ The text will be hidden for screen view.  The generic fahrner-ish approach comes
     height: 50%;
     top: 5px;
     right: 0px;
-    background: #ffdd80 url(../graphics/error_rightrepeat.png) top right repeat-y;
+    background: #ffdd80 url(../graphics/err_rightrepeat.png) top right repeat-y;
     z-index:-1;
     overflow:hidden;
 }
@@ -1620,7 +1620,7 @@ The text will be hidden for screen view.  The generic fahrner-ish approach comes
     height: 50%;
     bottom: 10px;
     right: 0px;
-    background: #ffdd80 url(../graphics/error_rightrepeat.png) bottom right repeat-y;
+    background: #ffdd80 url(../graphics/err_rightrepeat.png) bottom right repeat-y;
     z-index:-1;
     overflow:hidden;
 }
@@ -1664,11 +1664,11 @@ The text will be hidden for screen view.  The generic fahrner-ish approach comes
 }
 
 .dashboard_block.rolled-up .error_dashlet_bottomleft {
-    background: url(../graphics/error_bottomleft_rolledup.png) bottom left no-repeat;
+    background: url(../graphics/err_bottomleft_rolledup.png) bottom left no-repeat;
 }
 
 .dashboard_block.rolled-up .error_dashlet_bottomright {
-	background: url(../graphics/error_bottomright_rolledup.png) bottom right no-repeat;
+	background: url(../graphics/err_bottomright_rolledup.png) bottom right no-repeat;
 }
 
 .info_dashlet_topleft {

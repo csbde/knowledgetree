@@ -21,13 +21,13 @@ div#error-container p {
 }
 
 	div#acc-error {
-		background: transparent url(error_01.gif) no-repeat top left;
+		background: transparent url(err_01.gif) no-repeat top left;
 	}
 	div#acc-suspend {
-		background: transparent url(error_02.gif) no-repeat top left;
+		background: transparent url(err_02.gif) no-repeat top left;
 	}
 	div#acc-maint {
-		background: transparent url(error_03.gif) no-repeat top left;
+		background: transparent url(err_03.gif) no-repeat top left;
 	}
 		
 		

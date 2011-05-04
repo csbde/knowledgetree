@@ -73,7 +73,7 @@ class WorkflowNavigationPortlet extends KTPortlet {
         if (is_null($this->oWorkflow)) { return _kt('No Workflow Selected.'); }
 
         $aAdminPages = array();
-        $aAdminPages[] = array('name' => _kt('Overview'), 'query' => 'action=view&fWorkflowId=' . $this->oWorkflow->getId());
+        //$aAdminPages[] = array('name' => _kt('Overview'), 'query' => 'action=view&fWorkflowId=' . $this->oWorkflow->getId());
         $aAdminPages[] = array('name' => _kt('States and Transitions'), 'query' => 'action=basic&fWorkflowId=' . $this->oWorkflow->getId());
         $aAdminPages[] = array('name' => _kt('Security'), 'query' => 'action=security&fWorkflowId=' . $this->oWorkflow->getId());
         $aAdminPages[] = array('name' => _kt('Workflow Effects'), 'query' => 'action=effects&fWorkflowId=' . $this->oWorkflow->getId());
@@ -442,6 +442,7 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
             'state_name' => $state_name,
             'workflow' => $this->oWorkflow,
             'have_graphviz' => $this->HAVE_GRAPHVIZ,
+            'portlets' => $this->oPage->portlets,
         ));
         return $oTemplate->render();
     }
