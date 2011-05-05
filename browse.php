@@ -122,26 +122,6 @@ class BrowseDispatcher extends KTStandardDispatcher {
 
 	public function do_main()
 	{
-	    /**
-	     * REMOVE
-	     *
-	     * Old documentcollection method - this would require implementation of the new browse view code in a document collection.
-	     * NewUiCollection is currently imaginary :)
-	     */
-	    /*$collection = new NewUiCollection();
-	    $aOptions = $collection->getEnvironOptions(); // extract data from the environment
-	    $aOptions['result_url'] = $this->resultURL;
-	    $aOptions['is_browse'] = true;
-	    $collection->setOptions($aOptions);
-	    $collection->setQueryObject($this->oQuery);
-	    $collection->setColumnOptions('ktcore.columns.selection', array(
-	    'rangename' => 'selection',
-	    'show_folders' => true,
-	    'show_documents' => true,
-	    ));
-	    $collection->render();
-	    REMOVE**/
-
 	    global $default;
 	    /**
 		 * New ktapi based method
@@ -182,82 +162,10 @@ class BrowseDispatcher extends KTStandardDispatcher {
 	    return $template->render($templateData);
 	}
 
-	/**REMOVE
-	public function getPortletButtons() {
-	    $portlet = new KTActionPortlet(sprintf(_kt('Info')));
-	    $aActions = KTFolderActionUtil::getFolderInfoActionsForFolder($this->oFolder, $this->oUser);
-	    $portlet->setActions($aActions,$this->sName);
-	    $this->oPage->addPortlet($portlet);
-
-	    $portlet = new KTActionPortlet(sprintf(_kt('Actions')));
-	    $aActions = KTFolderActionUtil::getFolderActionsForFolder($oFolder, $this->oUser);
-	    $portlet->setActions($aActions,null);
-	    $this->oPage->addPortlet($portlet);
-	}
-	REMOVE**/
-	
 	public function showBtns()
 	{
 		$list = array();
 		$submenu = array();
-		/**REMOVE
-		$portlets = $this->getPortletButtons();
-		REMOVE**/
-		$actions = KTFolderActionUtil::getFolderActionsForFolder($this->oFolder, $this->oUser);
-
-		foreach ($actions as $oAction) {
-            $info = $oAction->getInfo();
-
-            // Skip if action is disabled
-            if (is_null($info)) {
-                continue;
-            }
-
-            // Skip if no name provided - action may be disabled for permissions reasons
-            if (empty($info['name'])) {
-                continue;
-            }
-
-            if(!empty($info['parent'])) {
-                $submenu[$info['parent']][] = $info;
-            } else {
-            	$list[] = $info;
-            }
-		}
-
-		// Create the More button => if additional split buttons are needed this can be extended.
-		$more = array('name' => _kt('More'), 'url' => '#', 'class' => 'more');
-		$more['submenu'] = $submenu['more'];
-		//$split = array($more);
-
-		$btns = array();
-		$btns['buttons'] = $list;
-		$btns['split'] = $more;
-
-		$this->actionBtns = $btns;
-	}
-
-	/**REMOVE
-	public function getPortletButtons() {
-	    $portlet = new KTActionPortlet(sprintf(_kt('Info')));
-	    $aActions = KTFolderActionUtil::getFolderInfoActionsForFolder($this->oFolder, $this->oUser);
-	    $portlet->setActions($aActions,$this->sName);
-	    $this->oPage->addPortlet($portlet);
-
-	    $portlet = new KTActionPortlet(sprintf(_kt('Actions')));
-	    $aActions = KTFolderActionUtil::getFolderActionsForFolder($oFolder, $this->oUser);
-	    $portlet->setActions($aActions,null);
-	    $this->oPage->addPortlet($portlet);
-	}
-	REMOVE**/
-	
-	public function showBtns()
-	{
-		$list = array();
-		$submenu = array();
-		/**REMOVE
-		$portlets = $this->getPortletButtons();
-		REMOVE**/
 		$actions = KTFolderActionUtil::getFolderActionsForFolder($this->oFolder, $this->oUser);
 		foreach ($actions as $oAction) {
             $info = $oAction->getInfo();
@@ -266,7 +174,6 @@ class BrowseDispatcher extends KTStandardDispatcher {
             // Skip if no name provided - action may be disabled for permissions reasons
             if (empty($info['name'])) { continue; }
             if(!empty($info['parent'])) { 
-            	// Get subactions if they exist.
                 $submenu[$info['parent']][] = $info;
             } else {
             	$list[] = $info;
@@ -285,10 +192,6 @@ class BrowseDispatcher extends KTStandardDispatcher {
 		$this->actionBtns = $btns;
 	}
 	
-	private function getSubActions($info) {
-		
-	}
-
 	/**
 	 * Fetches folder content for a paging request.
 	 * Content from this function will not be rendered and must be rendered by the calling code.
@@ -585,19 +488,6 @@ class BrowseDispatcher extends KTStandardDispatcher {
 	    $this->oQuery = new BrowseQuery($oFolder->getId(), $this->oUser, $aOptions);
 
 	    $this->resultURL = KTUtil::addQueryString($_SERVER['PHP_SELF'], sprintf('fFolderId=%d', $oFolder->getId()));
-
-	    /**REMOVE
-	    // and the portlets
-	    $portlet = new KTActionPortlet(sprintf(_kt('Info')));
-	    $aActions = KTFolderActionUtil::getFolderInfoActionsForFolder($this->oFolder, $this->oUser);
-	    $portlet->setActions($aActions,$this->sName);
-	    $this->oPage->addPortlet($portlet);
-
-	    $portlet = new KTActionPortlet(sprintf(_kt('Actions')));
-	    $aActions = KTFolderActionUtil::getFolderActionsForFolder($oFolder, $this->oUser);
-	    $portlet->setActions($aActions,null);
-	    $this->oPage->addPortlet($portlet);
-	    REMOVE**/
 	}
 
 	/**
