@@ -19,7 +19,7 @@ function workflowsBlock() {
 * Submit the form
 */
 workflowsBlock.prototype.submitForm = function(action) {
-	if(this.validateForm() == false) { return false; }
+	if(this.validateForm(action) == false) { return false; }
 	var documentId = jQuery('#documentId').attr('value');
 	var address;
 	// Check workflow action to perform.
@@ -56,9 +56,9 @@ workflowsBlock.prototype.submitForm = function(action) {
 /*
 * Validate the time
 */
-workflowsBlock.prototype.validateForm = function () {
+workflowsBlock.prototype.validateForm = function (action) {
 	var comment = jQuery('textarea[name="fComments"]').val();
-	if(comment == '') { alert("Please specify a comment"); return false; }
+	if(comment == ''  && action != 'change') { alert("Please specify a comment"); return false; }
 	return true;
 }
 

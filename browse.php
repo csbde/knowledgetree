@@ -83,39 +83,37 @@ class BrowseDispatcher extends KTStandardDispatcher {
 
 	function __construct()
 	{
-		$this->aBreadcrumbs = array(
-            array('action' => 'browse', 'name' => _kt('Browse')),
-		);
-
-		return parent::KTStandardDispatcher();
+	    $this->aBreadcrumbs = array(array('action' => 'browse', 'name' => _kt('Browse')));
+	    return parent::KTStandardDispatcher();
 	}
 
 	function check()
 	{
-		$this->browse_mode = KTUtil::arrayGet($_REQUEST, 'fBrowseMode', 'folder');
-		$action = KTUtil::arrayGet($_REQUEST, $this->event_var, 'main');
-		$this->editable = false;
+            $this->browse_mode = KTUtil::arrayGet($_REQUEST, 'fBrowseMode', 'folder');
+            $action = KTUtil::arrayGet($_REQUEST, $this->event_var, 'main');
+            $this->editable = false;
 
-		// catch the alternative actions.
-		if ($action != 'main') {
-			return true;
-		}
+            // catch the alternative actions.
+            if ($action != 'main') {
+                return true;
+            }
 
-		switch ($this->browse_mode) {
-		    case 'folder':
-                $this->browseFolder();
-		        break;
-		    case 'lookup_value':
-		        $this->browseByLookup();
-		    case 'document_type':
-                $this->browseByDocument();
-		        break;
-		    default:
-		        // FIXME what should we do if we can't initiate the browse?  we "pretend" to have no perms.
-		        return false;
-		}
+            switch ($this->browse_mode) {
+                case 'folder':
+                    $this->browseFolder();
+                    break;
+                case 'lookup_value':
+                    $this->browseByLookup();
+                    // Surely there should be a break here!?!  If not, then a comment as to WHY NOT.
+                case 'document_type':
+                    $this->browseByDocument();
+                    break;
+                default:
+                    // FIXME What should we do if we can't initiate the browse?  We "pretend" to have no perms.
+                    return false;
+            }
 
-		return true;
+            return true;
 	}
 
 	public function do_main()
@@ -141,12 +139,12 @@ class BrowseDispatcher extends KTStandardDispatcher {
 	    REMOVE**/
 
 	    global $default;
-	    /**
-		 * New ktapi based method
-		 */
-	    $bulkActions = KTBulkActionUtil::getAllBulkActions();
-		$sidebars = KTFolderActionUtil::getFolderActionsForFolder($this->oFolder, $this->oUser, 'mainfoldersidebar');
-		$folderSidebars = isset($sidebars[0]) ? $sidebars[0] : array();
+
+	    /* New ktapi based method */
+
+            $bulkActions = KTBulkActionUtil::getAllBulkActions();
+            $sidebars = KTFolderActionUtil::getFolderActionsForFolder($this->oFolder, $this->oUser, 'mainfoldersidebar');
+            $folderSidebars = isset($sidebars[0]) ? $sidebars[0] : array();
 
 	    if (ACCOUNT_ROUTING_ENABLED && $default->tier == 'trial') {
 	        $this->includeOlark();
@@ -193,7 +191,7 @@ class BrowseDispatcher extends KTStandardDispatcher {
 	    $this->oPage->addPortlet($portlet);
 	}
 	REMOVE**/
-	
+
 	public function showBtns()
 	{
 		$list = array();
@@ -514,11 +512,12 @@ class BrowseDispatcher extends KTStandardDispatcher {
 	    }
 
 	    // Figure out if we came here by navigating trough a shortcut.
-	    // If we came here from a shortcut, the breadcrumbspath should be relative to the shortcut folder.
-	    $iSymLinkFolderId = KTUtil::arrayGet($_REQUEST, 'fShortcutFolder', null);
-	    if (is_numeric($iSymLinkFolderId)) {
-	        $oBreadcrumbsFolder = Folder::get($iSymLinkFolderId);
-	        $this->aBreadcrumbs = kt_array_merge($this->aBreadcrumbs, KTBrowseUtil::breadcrumbsForFolder($oBreadcrumbsFolder, array('final' => false)));
+	    // If we came here from a shortcut, the breadcrumbs path should be relative to the shortcut folder.
+	    $symLinkFolderId = KTUtil::arrayGet($_REQUEST, 'fShortcutFolder', null);
+	    if (is_numeric($symLinkFolderId)) {
+	        $breadcrumbsFolder = Folder::get($symLinkFolderId);
+	        $breadcrumbs = KTBrowseUtil::breadcrumbsForFolder($breadcrumbsFolder, array('final' => false));
+	        $this->aBreadcrumbs = kt_array_merge($this->aBreadcrumbs, $breadcrumbs);
 	        $this->aBreadcrumbs[] = array('name' => $oFolder->getName());
 	    } else {
 	        $this->aBreadcrumbs = kt_array_merge($this->aBreadcrumbs, KTBrowseUtil::breadcrumbsForFolder($oFolder));
