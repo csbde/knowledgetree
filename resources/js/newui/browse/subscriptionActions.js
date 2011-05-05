@@ -14,7 +14,7 @@ function subscriptionActions() {
 	this.baseUrl = 'plugin.php?kt_path_info=' + this.namespace + '&';
 }
 
-subscriptionActions.prototype.doSubscribe = function(action, address) {
+subscriptionActions.prototype.doSubscribe = function(action, address, state) {
 	address += "&action=" + action
 	jQuery.ajax({
 		url: address,
@@ -26,7 +26,11 @@ subscriptionActions.prototype.doSubscribe = function(action, address) {
 		success: function(response) {
 			kt.app.upload.unhideProgressWidget();
 			jQuery('.left_action.subscribe_actions').html(response);
-        	progressMessage = 'Successfully updated subscription';
+			if (state == 'subscribe') {
+        		progressMessage = 'You have been successfully subscribed';
+			} else {
+				progressMessage = 'You have been successfully unsubscribed';
+			}
         	kt.app.upload.updateProgress(progressMessage, false);
         	kt.app.upload.fadeProgress(5000);
 		},

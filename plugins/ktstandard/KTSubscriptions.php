@@ -704,14 +704,14 @@ class KTFolderSubscribeAction extends KTFolderAction {
 
         // Create js script
         $url = $base_url . $aInfo['url'];
-        $script = "<a id='subscribeLink' style='cursor:pointer' onclick='javascript: { subscriptions.doSubscribe(\"ajax\", \"{$url}\"); }'>{$aInfo['name']}</a>";
+        $script = "<a id='subscribeLink' style='cursor:pointer' onclick='javascript: { subscriptions.doSubscribe(\"ajax\", \"{$url}\", \"{$aInfo['class']}\"); }'>{$aInfo['name']}</a>";
 
         $aInfo['js'] = $script;
         $this->actions[] = $aInfo;
 
         if (isset($aInfo['subaction'])) {
             $subInfo = array();
-            $subInfo['js'] = "<a id='subLink' style='cursor:pointer' onclick='javascript: { subscriptions.doSubscribe(\"add_subfolders\", \"{$url}\"); }'>{$aInfo['subaction']}</a>";
+            $subInfo['js'] = "<a id='subLink' style='cursor:pointer' onclick='javascript: { subscriptions.doSubscribe(\"add_subfolders\", \"{$url}\", \"{$aInfo['class']}\"); }'>{$aInfo['subaction']}</a>";
             $this->actions[] = $subInfo;
         }
         $manageInfo = array();
