@@ -1622,6 +1622,35 @@ class KTUtil {
         return $byteMap;
     }
 
+    /**
+     * Map the priority of different processes on the queues.
+     *
+     * @param string $process
+     * @param string $default Used if the process is not specified. Options: high | medium | low.
+     * @return string - high | medium | low
+     */
+    public static function mapQueuePriority($process, $default = 'medium')
+    {
+        switch ($process) {
+            case 'email':
+            case 'alert':
+            case 'account':
+            case 'index':
+                return 'high';
+
+            case 'process':
+                return 'medium';
+
+            case 'bulkprocess';
+            case 'bulkupload':
+            case 'bulkdownload':
+            case 'backup':
+                return 'low';
+        }
+
+        return $default;
+    }
+
 }
 
 /**
