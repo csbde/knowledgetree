@@ -143,8 +143,9 @@ class KTDocumentAssistAction extends KTDocumentAction {
 
 
         $this->commitTransaction();
-        $params = 'fDocumentId=' . $oDocument->getId();
-        $url = generateControllerLink('viewDocument', $params);
+//        $params = 'fDocumentId=' . $oDocument->getId();
+//        $url = generateControllerLink('viewDocument', $params);
+        $url = KTUtil::kt_clean_document_url($oDocument->getId());
         exit(redirect($url));
     }
 }
@@ -245,9 +246,10 @@ class KTAssistNotification extends KTNotificationHandler {
     }
 
     function notify_view() {
-        $params = 'fDocumentId=' . $this->oNotification->getIntData1();
-        $url = generateControllerLink('viewDocument', $params);
+        //$params = 'fDocumentId=' . $this->oNotification->getIntData1();
+        //$url = generateControllerLink('viewDocument', $params);
         // $this->oNotification->delete(); // clear the alert.
+        $url = KTUtil::kt_clean_document_url($this->oNotification->getIntData1());
         exit(redirect($url));
     }
 

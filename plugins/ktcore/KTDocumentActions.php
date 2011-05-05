@@ -58,7 +58,8 @@ class KTDocumentDetailsAction extends KTDocumentAction {
     var $sName = 'ktcore.actions.document.displaydetails';
 
     function do_main() {
-        redirect(generateControllerLink('viewDocument',sprintf(_kt('fDocumentId=%d'),$this->oDocument->getId())));
+    	redirect(KTUtil::kt_clean_document_url($this->oDocument->getId()));
+        //redirect(generateControllerLink('viewDocument',sprintf(_kt('fDocumentId=%d'),$this->oDocument->getId())));
         exit(0);
     }
 
@@ -415,7 +416,8 @@ class KTDocumentViewAction extends KTDocumentAction {
         if ($res === false) {
             session_start();
             $this->addErrorMessage(_kt('The file you requested is not available.'));
-            redirect(generateControllerLink('viewDocument',sprintf(_kt('fDocumentId=%d'),$this->oDocument->getId())));
+            redirect(KTUtil::kt_clean_document_url($this->oDocument->getId()));
+            //redirect(generateControllerLink('viewDocument',sprintf(_kt('fDocumentId=%d'),$this->oDocument->getId())));
             exit(0);
         }
 
