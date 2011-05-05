@@ -755,7 +755,6 @@ class KTSubscriptionManagePage extends KTStandardDispatcher {
         $aDocumentSubscriptions = SubscriptionManager::retrieveUserSubscriptions($this->oUser->getId(), SubscriptionEvent::subTypes('Document'));
         $bNoSubscriptions  = ((count($aFolderSubscriptions) == 0) && (count($aDocumentSubscriptions) == 0)) ? true : false;
         $oTemplate = $this->oValidator->validateTemplate('ktstandard/subscriptions/management');
-
         $aTemplateData = array(
             'aFolderSubscriptions' => $aFolderSubscriptions,
             'aDocumentSubscriptions' => $aDocumentSubscriptions,

@@ -1,47 +1,5 @@
-table.kt_collection tbody td.comment { white-space:normal !important; }
-table.kt_collection tbody td.notify { white-space:normal !important; }
-
-table.kt_collection tbody tr td.alert_date { width:100px; }
-table.kt_collection tbody tr td.alert_title { width:350px; }
-table.kt_collection tbody tr td.alert_edit { width:20px; }
-table.kt_collection tbody tr td.alert_delete { width:20px; }
-
-table.alert_manage { -moz-border-radius: 5px 5px 5px 5px; -moz-box-shadow: 0 0 5px #666677;	margin: 5px; border: 1px solid #CCCCCC;	white-space:normal !important; width: 99%; }
-table.alert_manage td { overflow: hidden; padding: 0.25em 0.5em; vertical-align: top; }
-table.alert_manage th { overflow: hidden; padding: 0.25em 0.5em; vertical-align: top; }
-table.alert_manage tbody tr td.alert_manage_date { width:120px; }
-table.alert_manage tbody tr td.alert_manage_title { width:250px; }
-table.alert_manage tbody tr td.alert_manage_message { width:250px; }
-table.alert_manage tbody tr td.alert_manage_members { width:250px; }
-table.alert_manage tbody tr td.alert_manage_user {	width:130px; }
-table.alert_manage tbody tr td.alert_manage_edit { width:20px; }
-table.alert_manage tbody tr td.alert_manage_delete { width:20px; }
-table.alert_manage tbody tr.even { width:100px; }
-table.alert_manage tbody tr.odd { width:100px; }
-table.alert_manage tbody tr th.sort_action:hover { background-color: #8ec9e3; -webkit-box-shadow: 0px 0px 2px #2b85ad; -moz-box-shadow: 0px 0px 2px #2b85ad; box-shadow: 0px 0px 2px #2b85ad;}
-
-.sort_action:hover { -webkit-box-shadow: 0px 0px 2px #2b85ad; -moz-box-shadow: 0px 0px 2px #2b85ad; box-shadow: 0px 0px 2px #2b85ad; cursor:pointer;}
-
-.kt_filter {}
-.alertfilter span { font-weight: normal; width: 100px; }
-.alertfilter { width : auto; }
-.alertfilter label { font-weight: normal; width:100px; }
-.alertfilter .dates { position:relative; float:left;}
-.alertfilter .timeclass { float : left; }
-.alertfilter .timepicker { width : 60px; }
-.alertfilter tbody tr td.alert_manage_date { width:110px; }
-
-#alertFromDate { width: 100px; }
-#alertToDate { width: 100px; }
-
-#paginationContainer li.item { -moz-border-radius: 3px 3px 3px 3px; background-color: #E1E1E1; cursor: pointer; display: inline-block; margin: 3px 2px; padding: 0 5px; }
-#paginationContainer li.highlight { background-color: #8ec9e3; }
-#paginationContainer li.highlight:hover { background-color: #8ec9e3; -webkit-box-shadow: 0px 0px 2px #2b85ad; -moz-box-shadow: 0px 0px 2px #2b85ad; box-shadow: 0px 0px 2px #2b85ad; }
-#paginationContainer li:hover { background-color: #fbfbfb; -webkit-box-shadow: 0px 0px 2px #626262; -moz-box-shadow: 0px 0px 2px #626262; box-shadow: 0px 0px 2px #626262; }
-#paginationContainer .paginate { -moz-border-radius: 5px 5px 5px 5px; -moz-box-shadow: 0 0 2px #626262; background-color: #E1E1E1; display: inline-block;  margin: 10px auto 20px; padding: 0 5px !important; }
-
-.shorten { color : #2F6594 }
-
-.timeEntry_control {vertical-align: middle;	margin-top: -1px; cursor: pointer; }
-
-.descriptiveText { color: #666666; }
+table.subscription_manage { -moz-border-radius: 5px 5px 5px 5px; -moz-box-shadow: 0 0 5px #666677;	margin: 5px; border: 1px solid #CCCCCC;	white-space:normal !important; width: 99%; }
+table.subscription_manage td { overflow: hidden; padding: 0.25em 0.5em; vertical-align: top; }
+table.subscription_manage th { overflow: hidden; padding: 0.25em 0.5em; vertical-align: top; }
+table.subscription_manage tbody tr td.checkbox { width:10px; }
+table.subscription_manage tbody tr td.name { width:auto; }
