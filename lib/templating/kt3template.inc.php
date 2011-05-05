@@ -577,39 +577,56 @@ class KTPage {
                 $this->componentLabel = _kt('Dashboard');
                 $this->componentClass = 'dashboard';
         }
-	}
+    }
 
-	public function addError($sError) { array_push($this->errStack, $sError); }
-	public function addInfo($sInfo) { array_push($this->infoStack, $sInfo); }
+    public function addError($sError) { array_push($this->errStack, $sError); }
+    public function addInfo($sInfo) { array_push($this->infoStack, $sInfo); }
 
-	/** no-one cares what a portlet is, but it should be renderable, and have its ->title member set. */
-	public function addPortlet($oPortlet)
-	{
-	    array_push($this->portlets, $oPortlet);
-	}
+    /** no-one cares what a portlet is, but it should be renderable, and have its ->title member set. */
+    public function addPortlet($oPortlet)
+    {
+        array_push($this->portlets, $oPortlet);
+    }
 
-	/* LEGACY */
-	public $deprecationWarning = 'Legacy UI API: ';
+    /* LEGACY */
+    public $deprecationWarning = 'Legacy UI API: ';
 
-	public function setCentralPayload($sCentral) {
-	    $this->contents = $sCentral;
-		$this->addError($this->deprecationWarning . 'called <strong>setCentralPayload</strong>');
-	}
+    public function setCentralPayload($sCentral) {
+        $this->contents = $sCentral;
+        $this->addError($this->deprecationWarning . 'called <strong>setCentralPayload</strong>');
+    }
 
-	public function setOnloadJavascript($appendix) { $this->addError($this->deprecationWarning . 'called <strong>setOnloadJavascript (no-act)</strong>'); }
-	public function setDHtmlScrolling($appendix) { $this->addError($this->deprecationWarning . 'called <strong>setDHTMLScrolling (no-act)</strong>'); }
-	public function setFormAction($appendix) { $this->addError($this->deprecationWarning . 'called <strong>setFormAction (no-act)</strong>'); }
-	public function setSubmitMethod($appendix) { $this->addError($this->deprecationWarning . 'called <strong>setSubmitMethod (no-act)</strong>'); }
-	public function setHasRequiredFields($appendix) { $this->addError($this->deprecationWarning . 'called <strong>setHasRequiredFields (no-act)</strong>'); }
-	public function setAdditionalJavascript($appendix) { $this->addError($this->deprecationWarning . 'called <strong>setAdditionalJavascript (no-act)</strong>'); }
+    public function setOnloadJavascript($appendix) {
+        $this->addError($this->deprecationWarning . 'called <strong>setOnloadJavascript (no-act)</strong>');
+    }
 
-	public function hideSection() { $this->hide_section = true; }
-	public function setSecondaryTitle($sSecondary) { $this->secondary_title = $sSecondary; }
+    public function setDHtmlScrolling($appendix) {
+        $this->addError($this->deprecationWarning . 'called <strong>setDHTMLScrolling (no-act)</strong>');
+    }
+
+    public function setFormAction($appendix) {
+        $this->addError($this->deprecationWarning . 'called <strong>setFormAction (no-act)</strong>');
+    }
+
+    public function setSubmitMethod($appendix) {
+        $this->addError($this->deprecationWarning . 'called <strong>setSubmitMethod (no-act)</strong>');
+    }
+
+    public function setHasRequiredFields($appendix) {
+        $this->addError($this->deprecationWarning . 'called <strong>setHasRequiredFields (no-act)</strong>');
+    }
+
+    public function setAdditionalJavascript($appendix) {
+        $this->addError($this->deprecationWarning . 'called <strong>setAdditionalJavascript (no-act)</strong>');
+    }
+
+    public function hideSection() { $this->hide_section = true; }
+    public function setSecondaryTitle($sSecondary) { $this->secondary_title = $sSecondary; }
 
     /* final render call. */
     public function render()
     {
-		global $default;
+        global $default;
         $oConfig = KTConfig::getSingleton();
 
         if (empty($this->contents)) {
@@ -714,60 +731,84 @@ class KTPage {
 
         $savedSearches = SearchHelper::getSavedSearches($_SESSION['userID']);
 
-        // TODO: need to refactor - is this the correct way to add this?
-        $loadDND = true;
-		if (ACCOUNT_ROUTING_ENABLED) {
-			require_once(KT_PLUGIN_DIR . '/ktlive/dragdrop/DragDrop.php');
-			$fFolderId = KTUtil::arrayGet($_REQUEST, 'fFolderId', 1);
-			// Disable drag and drop for shared user landing browse folder view and for any non-(folder)browse section
-			if (($this->componentClass != 'browse_collections') || (($this->user->getDisabled() == 4) && ($fFolderId == 1))) {
-				$loadDND = false;
-			}
-
-			if (($this->user->getDisabled() == 4) && $loadDND) {
-				require_once(KT_LIB_DIR . '/render_helpers/sharedContent.inc');
-				$loadDND = (SharedContent::getPermissions($this->user->getId(), null, $fFolderId, 'folder') == 0) ? false : true;
-			}
-
-			if ($loadDND) {
-				$uploadProgress = new DragDrop();
-				$uploadProgressRendered = $uploadProgress->render();
-			}
-		}
-
-        $oTemplating =& KTTemplating::getSingleton();
-        $oTemplate = $oTemplating->loadTemplate($this->template);
-        $aTemplateData = array(
-        			'page' => $this,
-			       	'systemversion' => $default->systemVersion,
-			       	'versionname' => $default->versionName,
-					'smallVersion' => $default->versionTier,
-			       	'savedSearches'=> $savedSearches,
-        			'uploadProgress' => $uploadProgressRendered
-				);
+        $templating =& KTTemplating::getSingleton();
+        $template = $templating->loadTemplate($this->template);
+        $templateData = array(
+            'page' => $this,
+            'systemversion' => $default->systemVersion,
+            'versionname' => $default->versionName,
+            'smallVersion' => $default->versionTier,
+            'savedSearches'=> $savedSearches,
+            'uploadProgress' => $this->renderUploadProgress()
+        );
 
         if ($oConfig->get('ui/automaticRefresh', false)) {
-            $aTemplateData['refreshTimeout'] = (int)$oConfig->get('session/sessionTimeout') + 3;
+            $templateData['refreshTimeout'] = (int)$oConfig->get('session/sessionTimeout') + 3;
         }
 
         //TODO: need to refactor - is this the correct way to add this?
         if (KTPluginUtil::pluginIsActive ( 'gettingstarted.plugin' )) {
-        	$aTemplateData['gettingStarted'] = $gettingStartedRendered;
+        	$templateData['gettingStarted'] = $gettingStartedRendered;
         }
 
-		// Trigger for pending downloads
-		$aTemplateData['downloadNotification'] = null;
-		require_once(KT_LIB_DIR . '/triggers/triggerregistry.inc.php');
-		$oKTTriggerRegistry = KTTriggerRegistry::getSingleton();
-		$aTriggers = $oKTTriggerRegistry->getTriggers('ktcore', 'pageLoad');
-		foreach ($aTriggers as $aTrigger) {
-			$sTrigger = $aTrigger[0];
-			$oTrigger = new $sTrigger;
-			$aTemplateData['downloadNotification'] = $oTrigger->invoke();
-		}
+        $templateData['downloadNotification'] = $this->invokePendingDownloadTrigger();
 
         // unlike the rest of KT, we use echo here.
-        echo $oTemplate->render($aTemplateData);
+        echo $template->render($templateData);
+    }
+
+    // TODO: need to refactor - is this the correct way to add this?
+    private function renderUploadProgress()
+    {
+        $uploadProgressRendered = '';
+
+        if (ACCOUNT_ROUTING_ENABLED) {
+            $loadDND = true;
+            $folderId = KTUtil::arrayGet($_REQUEST, 'fFolderId', 1);
+
+            // Disable drag and drop for shared user landing browse folder view and for any non-(folder)browse section
+            if (($this->componentClass != 'browse_collections') || (($this->user->getDisabled() == 4) && ($folderId == 1))) {
+                $loadDND = false;
+            }
+
+            if (($this->user->getDisabled() == 4) && $loadDND) {
+                require_once(KT_LIB_DIR . '/render_helpers/sharedContent.inc');
+                $permissions = SharedContent::getFolderPermissions($this->user->getId(), $folderId, 'folder');
+                $loadDND = ($permissions == 0) ? false : true;
+            }
+
+            if ($loadDND) {
+                require_once(KT_PLUGIN_DIR . '/ktlive/dragdrop/DragDrop.php');
+                $uploadProgress = new DragDrop();
+                $uploadProgressRendered = $uploadProgress->render();
+            }
+        }
+
+        return $uploadProgressRendered;
+    }
+
+    /**
+     * This function is bizarre - it invokes a download trigger, apparently, but then
+     * why loop over ALL page load triggers?  Surely if another page load trigger exists
+     * then this will break.
+     *
+     * NOTE This should probably be completely removed anyway, since it is not valid in the new system.
+     *      Keeping it for now just until we can be sure.
+     */
+    private function invokePendingDownloadTrigger()
+    {
+        require_once(KT_LIB_DIR . '/triggers/triggerregistry.inc.php');
+
+        $downloadNotification = null;
+        $KTTriggerRegistry = KTTriggerRegistry::getSingleton();
+        $triggers = $KTTriggerRegistry->getTriggers('ktcore', 'pageLoad');
+        foreach ($triggers as $trigger) {
+            $triggerClass = $trigger[0];
+            $trigger = new $triggerClass;
+            $downloadNotification = $trigger->invoke();
+        }
+
+        return $downloadNotification;
     }
 
 	/**   helper functions */
