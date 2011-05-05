@@ -64,22 +64,24 @@ require_once(KT_LIB_DIR . '/browse/columnregistry.inc.php');
 require_once(KT_LIB_DIR . '/actions/entitylist.php');
 require_once(KT_LIB_DIR . '/actions/bulkaction.php');
 
-require_once(KT_LIB_DIR .'/util/ktRenderArray.php');
-require_once(KT_LIB_DIR .'/render_helpers/browseView.helper.php');
+require_once(KT_LIB_DIR . '/util/ktRenderArray.php');
+require_once(KT_LIB_DIR . '/render_helpers/browseView.helper.php');
+
+require_once(KT_PLUGIN_DIR . '/ktstandard/KTSubscriptions.php');
 
 $sectionName = 'browse';
 
 class BrowseDispatcher extends KTStandardDispatcher {
 
-	var $sName = 'ktcore.actions.folder.view';
+	public $sName = 'ktcore.actions.folder.view';
 
-	var $oFolder = null;
-	var $sSection = 'browse';
-	var $browse_mode = null;
-	var $query = null;
-	var $resultURL;
-	var $sHelpPage = 'ktcore/browse.html';
-	var $editable;
+	public $oFolder = null;
+	public $sSection = 'browse';
+	public $browse_mode = null;
+	public $query = null;
+	public $resultURL;
+	public $sHelpPage = 'ktcore/browse.html';
+	public $editable;
 
 	function __construct()
 	{
@@ -118,26 +120,6 @@ class BrowseDispatcher extends KTStandardDispatcher {
 
 	public function do_main()
 	{
-	    /**
-	     * REMOVE
-	     *
-	     * Old documentcollection method - this would require implementation of the new browse view code in a document collection.
-	     * NewUiCollection is currently imaginary :)
-	     */
-	    /*$collection = new NewUiCollection();
-	    $aOptions = $collection->getEnvironOptions(); // extract data from the environment
-	    $aOptions['result_url'] = $this->resultURL;
-	    $aOptions['is_browse'] = true;
-	    $collection->setOptions($aOptions);
-	    $collection->setQueryObject($this->oQuery);
-	    $collection->setColumnOptions('ktcore.columns.selection', array(
-	    'rangename' => 'selection',
-	    'show_folders' => true,
-	    'show_documents' => true,
-	    ));
-	    $collection->render();
-	    REMOVE**/
-
 	    global $default;
 
 	    /* New ktapi based method */
@@ -178,49 +160,24 @@ class BrowseDispatcher extends KTStandardDispatcher {
 	    return $template->render($templateData);
 	}
 
-	/**REMOVE
-	public function getPortletButtons() {
-	    $portlet = new KTActionPortlet(sprintf(_kt('Info')));
-	    $aActions = KTFolderActionUtil::getFolderInfoActionsForFolder($this->oFolder, $this->oUser);
-	    $portlet->setActions($aActions,$this->sName);
-	    $this->oPage->addPortlet($portlet);
-
-	    $portlet = new KTActionPortlet(sprintf(_kt('Actions')));
-	    $aActions = KTFolderActionUtil::getFolderActionsForFolder($oFolder, $this->oUser);
-	    $portlet->setActions($aActions,null);
-	    $this->oPage->addPortlet($portlet);
-	}
-	REMOVE**/
-
 	public function showBtns()
 	{
 		$list = array();
 		$submenu = array();
-		/**REMOVE
-		$portlets = $this->getPortletButtons();
-		REMOVE**/
 		$actions = KTFolderActionUtil::getFolderActionsForFolder($this->oFolder, $this->oUser);
-
 		foreach ($actions as $oAction) {
             $info = $oAction->getInfo();
-
             // Skip if action is disabled
-            if (is_null($info)) {
-                continue;
-            }
-
+            if (is_null($info)) { continue; }
             // Skip if no name provided - action may be disabled for permissions reasons
-            if (empty($info['name'])) {
-                continue;
-            }
-
-            if(!empty($info['parent'])) {
+            if (empty($info['name'])) { continue; }
+            if(!empty($info['parent'])) { 
                 $submenu[$info['parent']][] = $info;
             } else {
             	$list[] = $info;
             }
 		}
-
+		
 		// Create the More button => if additional split buttons are needed this can be extended.
 		$more = array('name' => _kt('More'), 'url' => '#', 'class' => 'more');
 		$more['submenu'] = $submenu['more'];
@@ -232,7 +189,7 @@ class BrowseDispatcher extends KTStandardDispatcher {
 
 		$this->actionBtns = $btns;
 	}
-
+	
 	/**
 	 * Fetches folder content for a paging request.
 	 * Content from this function will not be rendered and must be rendered by the calling code.
@@ -530,19 +487,6 @@ class BrowseDispatcher extends KTStandardDispatcher {
 	    $this->oQuery = new BrowseQuery($oFolder->getId(), $this->oUser, $aOptions);
 
 	    $this->resultURL = KTUtil::addQueryString($_SERVER['PHP_SELF'], sprintf('fFolderId=%d', $oFolder->getId()));
-
-	    /**REMOVE
-	    // and the portlets
-	    $portlet = new KTActionPortlet(sprintf(_kt('Info')));
-	    $aActions = KTFolderActionUtil::getFolderInfoActionsForFolder($this->oFolder, $this->oUser);
-	    $portlet->setActions($aActions,$this->sName);
-	    $this->oPage->addPortlet($portlet);
-
-	    $portlet = new KTActionPortlet(sprintf(_kt('Actions')));
-	    $aActions = KTFolderActionUtil::getFolderActionsForFolder($oFolder, $this->oUser);
-	    $portlet->setActions($aActions,null);
-	    $this->oPage->addPortlet($portlet);
-	    REMOVE**/
 	}
 
 	/**
