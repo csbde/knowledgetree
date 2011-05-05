@@ -430,7 +430,6 @@ kt.app.upload = new function() {
 
 	this.updateProgress = function(message, isError) {
 		var progress = jQuery('.uploadProgress');
-		// jQuery('.uploadProgress .title').text(message);
 		if (progress != null) {
 			if (isNaN(message)) {
 				progress.text(message);
