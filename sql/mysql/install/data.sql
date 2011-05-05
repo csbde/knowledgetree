@@ -299,7 +299,9 @@ INSERT INTO `config_settings` VALUES
 (121, 'actionreasons', 'Enable Global Document Reasons', 'If switched on, reasons will be required for all major document actions including Check-in, Check-out, Delete, Finalize, Copy, Move and Archive.', 'globalReasons', 'default', 'false', 'boolean', NULL, 1),
 (122, 'ui', 'Restricted Environment', 'Removes certain administrative features from the interface to prevent users from accessing the functionality', 'restrictedEnv', 'default', 'false', 'boolean', NULL, 0),
 (123, 'user_prefs', 'Use Email Address to Login', 'Defines whether the username or the users email address is used for logging in', 'useEmailLogin', 'true', 'false', 'boolean', NULL, 0),
-(124, 'timezone', '', '', 'setTimezone', 'default', 'UTC', 'class', 'a:2:{s:5:"class";s:13:"datetime_view";s:4:"file";s:34:"plugins/datetime/datetime_view.php";}', 1);
+(124, 'timezone', '', '', 'setTimezone', 'default', 'UTC', 'class', 'a:2:{s:5:"class";s:13:"datetime_view";s:4:"file";s:34:"plugins/datetime/datetime_view.php";}', 1),
+(125, 'foldersync', 'Max number of files to sync', 'Defines the threshhold number of files to sync before warning user ', 'maxFilesSync', 'default', '200', 'numeric_string', NULL, 0),
+(126, 'foldersync', 'Max size of files to sync', 'Defines the threshhold size of total files (in bytes) to sync before warning user', 'maxFileSizeSync', 'default', '524288000', 'numeric_string', NULL, 0);
 /*!40000 ALTER TABLE `config_settings` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1473,8 +1475,8 @@ LOCK TABLES `system_settings` WRITE;
 /*!40000 ALTER TABLE `system_settings` DISABLE KEYS */;
 INSERT INTO `system_settings` VALUES
 (1,'lastIndexUpdate','0'),
-(2,'knowledgeTreeVersion','3.7.1.0'),
-(3,'databaseVersion','3.7.1.0'),
+(2,'knowledgeTreeVersion','3.7.1.1'),
+(3,'databaseVersion','3.7.1.1'),
 (4,'server_name','127.0.0.1');
 /*!40000 ALTER TABLE `system_settings` ENABLE KEYS */;
 UNLOCK TABLES;
@@ -1814,7 +1816,9 @@ INSERT INTO `upgrades` VALUES
 (260,'sql*3.7.1.0*0*3.7.1.0/session_management.sql','Database upgrade to version 3.7.1.0: Session Management','2011-01-18 00:00:00',1,'upgrade*3.7.1.0*99*upgrade3.7.1.0'),
 (261,'sql*3.7.1.0*0*3.7.1.0/timezone_settings.sql','Database upgrade to version 3.7.1.0: Timezone Settings','2011-01-10 00:00:00',1,'upgrade*3.7.1.0*99*upgrade3.7.1.0'),
 (262,'sql*3.7.1.0*0*3.7.1.0/folder_changes.sql','Database upgrade to version 3.7.1.0: Folder Changes','2011-02-02 00:00:00',1,'upgrade*3.7.1.0*99*upgrade3.7.1.0'),
-(263,'upgrade*3.7.1.0*99*upgrade3.7.1.0','Upgrade from version 3.7.0.9 to 3.7.1.0','2011-02-02 00:00:00',1,'upgrade*3.7.1.0*99*upgrade3.7.1.0');
+(263,'upgrade*3.7.1.0*99*upgrade3.7.1.0','Upgrade from version 3.7.0.9 to 3.7.1.0','2011-02-02 00:00:00',1,'upgrade*3.7.1.0*99*upgrade3.7.1.0'),
+(264,'sql*3.7.1.1*0*3.7.1.1/foldersync_maxfiles.sql','Database upgrade to version 3.7.1.1: Foldersync Maxfiles','2011-04-13 00:00:00',1,'upgrade*3.7.1.1*99*upgrade3.7.1.1'),
+(265,'upgrade*3.7.1.1*99*upgrade3.7.1.1','Upgrade from version 3.7.1.0 to 3.7.1.1','2011-04-12 00:00:00',1,'upgrade*3.7.1.1*99*upgrade3.7.1.1');
 /*!40000 ALTER TABLE `upgrades` ENABLE KEYS */;
 UNLOCK TABLES;
 
