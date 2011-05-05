@@ -75,11 +75,12 @@ class KTSubscriptionPlugin extends KTPlugin {
             'ktstandard.triggers.subscription.archive');
         $this->registerTrigger('discussion', 'postValidate', 'KTDiscussionSubscriptionTrigger',
             'ktstandard.triggers.subscription.discussion');
-
         $this->registerAction('foldersubscriptionaction', 'KTFolderSubscriptionAction',
             'ktstandard.subscription.foldersubscription');
         $this->registerAction('foldersubscriptionaction', 'KTFolderUnsubscriptionAction',
             'ktstandard.subscription.folderunsubscription');
+        $this->registerAction('folderaction', 'KTFolderSubscribeAction',
+            'ktstandard.subscribe.foldersubscribeactions');
         $this->registerPage('manage', 'KTSubscriptionManagePage');
     }
 }
@@ -469,9 +470,9 @@ class KTDiscussionSubscriptionTrigger {
 }
 
 class KTFolderSubscriptionAction extends KTFolderAction {
-
     public $sName = 'ktstandard.subscription.foldersubscription';
-
+	public $cssClass = 'subscribe';
+	
     public function getDisplayName()
     {
         return _kt('Subscribe to folder');
@@ -503,8 +504,9 @@ class KTFolderSubscriptionAction extends KTFolderAction {
     {
         $str = null;
         $this->createSubscription($str, $incSubFolders);
-        echo wrapString($str);
-        exit(0);
+		$oKTFolderSubscribeAction = new KTFolderSubscribeAction($this->oFolder, $this->oUser);
+		echo $oKTFolderSubscribeAction->render();
+		exit(0);
     }
 
     public function do_main()
@@ -570,9 +572,9 @@ class KTFolderSubscriptionAction extends KTFolderAction {
 }
 
 class KTFolderUnsubscriptionAction extends KTFolderAction {
-
     public $sName = 'ktstandard.subscription.folderunsubscription';
-
+	public $cssClass = 'unsubscribe';
+	
     public function getDisplayName()
     {
         return _kt('Unsubscribe from folder');
@@ -591,8 +593,9 @@ class KTFolderUnsubscriptionAction extends KTFolderAction {
     {
         $str = null;
         $this->deleteSubscription($str);
-        echo wrapString($str);
-        exit(0);
+		$oKTFolderSubscribeAction = new KTFolderSubscribeAction($this->oFolder, $this->oUser);
+		echo $oKTFolderSubscribeAction->render();
+		exit(0);
     }
 
     public function do_main()
@@ -641,6 +644,90 @@ class KTFolderUnsubscriptionAction extends KTFolderAction {
 
 }
 
+class KTFolderSubscribeAction extends KTFolderAction {
+	public $sName = 'ktstandard.subscribe.foldersubscribeactions';
+	public $cssClass = 'subscribe_actions';
+	
+    public function getDisplayName()
+    {
+        return _kt('Subscriptions');
+    }
+    
+	public function customiseInfo($aInfo) {
+		$aInfo['context'] = $this;
+		$aInfo['url'] = '#';
+		$aInfo['render'] = true;
+		$aInfo['onclick'] = "javascript:{ showMenus('subscribe_actions'); }";
+		
+		return $aInfo;
+	}
+    
+	public function do_refresh() {
+		echo $this->render();
+		exit(0);
+	}
+	
+    public function render() {
+        if ($this->oUser->isAnonymous() || $this->oUser->getDisabled() == 4) { return null; }
+		if ($this->oFolder) {
+            $oObject = $this->oFolder;
+            $type = 'foldersubscriptionaction';
+        } else {
+            // not in a folder
+            return null;
+        }
+        $oObject = $this->oFolder;
+        $type = 'foldersubscriptionaction';
+        global $default;
+		$serverName = $default->serverName;
+		$base_url = ($default->sslEnabled ? 'https' : 'http') .'://'.$serverName;
+        $oUser = $this->oUser;
+        $this->actions = array();
+
+        // Get the actions
+        $oKTActionRegistry =& KTActionRegistry::getSingleton();
+        $actions = $oKTActionRegistry->getActions($type);
+
+        foreach ($actions as $aAction) {
+            list($sClassName, $sPath) = $aAction;
+            $oSubscription = new $sClassName($oObject, $oUser);
+            $actionInfo = $oSubscription->getInfo();
+            if (!empty($actionInfo)) {
+                if (isset($actionInfo['active']) && $actionInfo['active'] == 'no') {
+                    $nonActiveUrl = $base_url.$actionInfo['url'];
+                    $nonActiveName = $actionInfo['name'];
+                } else {
+                    $aInfo = $actionInfo;
+                }
+            }
+        }
+
+        // Create js script
+        $url = $base_url . $aInfo['url'];
+        $script = "<a id='subscribeLink' style='cursor:pointer' onclick='javascript: { subscriptions.doSubscribe(\"ajax\", \"{$url}\", \"{$aInfo['class']}\"); }'>{$aInfo['name']}</a>";
+
+        $aInfo['js'] = $script;
+        $this->actions[] = $aInfo;
+
+        if (isset($aInfo['subaction'])) {
+            $subInfo = array();
+            $subInfo['js'] = "<a id='subLink' style='cursor:pointer' onclick='javascript: { subscriptions.doSubscribe(\"add_subfolders\", \"{$url}\", \"{$aInfo['class']}\"); }'>{$aInfo['subaction']}</a>";
+            $this->actions[] = $subInfo;
+        }
+        $manageInfo = array();
+        $manageInfo['js'] = "<a style='cursor:pointer' onclick='javascript: { subscriptions.displayAction(); }'>". _kt('Manage subscriptions') ."</a>";
+        $this->actions[] = $manageInfo;
+        
+        $oTemplating =& KTTemplating::getSingleton();
+        $oTemplate = $oTemplating->loadTemplate('kt3/portlets/actions_portlet');
+        $aTemplateData = array(
+            'context' => $this,
+        );
+
+        return $oTemplate->render($aTemplateData);
+    }
+}
+
 class KTSubscriptionManagePage extends KTStandardDispatcher {
 
     function do_main()
@@ -662,6 +749,21 @@ class KTSubscriptionManagePage extends KTStandardDispatcher {
         return $oTemplate->render($aTemplateData);
     }
 
+    function do_ajax()
+    {
+        $aFolderSubscriptions = SubscriptionManager::retrieveUserSubscriptions($this->oUser->getId(), SubscriptionEvent::subTypes('Folder'));
+        $aDocumentSubscriptions = SubscriptionManager::retrieveUserSubscriptions($this->oUser->getId(), SubscriptionEvent::subTypes('Document'));
+        $bNoSubscriptions  = ((count($aFolderSubscriptions) == 0) && (count($aDocumentSubscriptions) == 0)) ? true : false;
+        $oTemplate = $this->oValidator->validateTemplate('ktstandard/subscriptions/management');
+        $aTemplateData = array(
+            'aFolderSubscriptions' => $aFolderSubscriptions,
+            'aDocumentSubscriptions' => $aDocumentSubscriptions,
+        );
+		
+        echo $oTemplate->render($aTemplateData);
+        exit(0);
+    }
+    
     function do_removeSubscriptions()
     {
         $foldersubscriptions = KTUtil::arrayGet($_REQUEST, 'foldersubscriptions');
@@ -728,8 +830,7 @@ class KTSubscriptionManagePage extends KTStandardDispatcher {
             $sMessage .= sprintf('%d', $iSuccesses);
         }
 
-        $this->successRedirectToMain($sMessage);
-        exit(0);
+        echo $this->do_ajax();
     }
 
 }
