@@ -506,25 +506,25 @@ class KTAPI_Folder extends KTAPI_FolderItem {
         }
         return $perms;
     }
-    
+
     function get_children_ids()
     {
     	$children_ids = array();
     	$user = $this->ktapi->get_user();
-    	
+
     	$folder_children = Folder::getList(array('parent_id = ?', $this->folderid));
 
     	//if user can't view the folder's details, then it is empty for him!
     	$folder_permission = &KTPermission::getByName(KTAPI_PERMISSION_VIEW_FOLDER);
         //we first check if there is at least one subfolder that the user has permissions on
-        foreach ($folder_children as $child) 
+        foreach ($folder_children as $child)
         {
-	        if (KTPermissionUtil::userHasPermissionOnItem($user, $folder_permission, $child)) 
+	        if (KTPermissionUtil::userHasPermissionOnItem($user, $folder_permission, $child))
 	        {
 				$children_ids[] = $child->getId();
 			}
         }
-        
+
         return $children_ids;
     }
 
@@ -987,7 +987,8 @@ class KTAPI_Folder extends KTAPI_FolderItem {
         'documenttype' => DocumentType::get($documenttypeid),
         'description' => $title,
         'metadata'=>array(),
-        'cleanup_initial_file' => true
+        'cleanup_initial_file' => true,
+        'source' => 'ktapi'
         );
 
         DBUtil::startTransaction();
@@ -1449,7 +1450,7 @@ class KTAPI_Folder extends KTAPI_FolderItem {
     	$this->movedSince($timestamp, $folderPermissionsSQL, $changes);
     	$this->updatedSince($timestamp, $folderPermissionsSQL, $changes);
     	$this->pathChangedSince($timestamp, $changes);
-    	
+
     	//have to check more than just myself?
     	if ($depth != 0)
     	{
@@ -1696,17 +1697,17 @@ class KTAPI_Folder extends KTAPI_FolderItem {
 	    	{
 	        	//$folder = &Folder::get($result['id']);
 				$this->assemble_folder_array($this->folder, $contents);
-	
+
 				$contents[count($contents) - 1]['changes'] = array(
 					'change_type' => 'UPC',
 					'change_date' => datetimeutil::getLocaleDate($result['change_date'])
 				);
-	
+
 					// $GLOBALS['default']->log->debug('renamedSince assembled contents '.print_r($contents, true));
 	        }
         }
     }
-    
+
 	public function renamedSince($timestamp, $folderPermissionsSQL, &$contents = array())
     {
     	//$GLOBALS['default']->log->debug("renamedSince timestamp $timestamp");
@@ -1943,7 +1944,7 @@ class KTAPI_Folder extends KTAPI_FolderItem {
         	$sQuery = 'SELECT FT.folder_id AS id, FT.datetime AS change_date, FT.parent_id AS parent_id ' .
 	        'FROM ' . KTUtil::getTableName('folder_transactions') . ' AS FT '.
 	    	'WHERE FT.transaction_namespace = \'ktcore.transactions.delete\' AND FT.parent_id = ? AND FT.datetime >= ? ';
-        		        
+
 	        $aParams = array($this->folderid, $timestamp);
 
         	$results = DBUtil::getResultArray(array($sQuery, $aParams));

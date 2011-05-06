@@ -632,12 +632,44 @@ abstract class Indexer {
     }
 
     /**
+     * Map the priority of a task according to it's source
+     * We may want to make this function generic and move it out. For now leave it here.
+     *
+     * @param string $source The source process / area e.g. webservices
+     */
+    protected static function mapPriority($source, $default = 'medium')
+    {
+        switch ($source) {
+            // Reindexing and reprocessing can be "backgrounded"
+            case 'reindex':
+            case 'reprocess':
+            // Documents coming from ktapi or the webservices are most likely bulk uploads / hot folders uploads
+            // ExplorerCP and the OffiSync office tools will also come through here and can be differentiated in future
+            // although they can contain multi-file uploads
+            case 'ktapi':
+            case 'webservices':
+                return KTUtil::mapQueuePriority('bulkprocess');
+
+            case 'index':
+                return KTUtil::mapQueuePriority('index');
+
+            case 'process':
+                return KTUtil::mapQueuePriority('process');
+
+            // If the source isn't specified, return the supplied default or set medium priority
+            default:
+                return $default;
+        }
+        return $default;
+    }
+
+    /**
 	 * Schedule the indexing of a document.
 	 *
 	 * @param string $document
 	 * @param string $what
 	 */
-    public static function index($document, $what='A')
+    public static function index($document, $what='A', $options=null)
     {
         global $default;
 
@@ -650,6 +682,13 @@ abstract class Indexer {
         {
             $default->log->error("index: Could not index document: " .$document->getMessage());
             return;
+        }
+
+        $indexPriority = 'high';
+        $processPriority = 'medium';
+        if (is_array($options) && isset($options['source'])) {
+            $indexPriority = self::mapPriority($options['source'], $indexPriority);
+            $processPriority = self::mapPriority($options['source'], $processPriority);
         }
 
         $document_id = $document->getId();
@@ -667,8 +706,10 @@ abstract class Indexer {
 
 		if (ACCOUNT_ROUTING_ENABLED) {
 			$oQueueDispatcher = liveIncludes::getSQSQueue();
+
         	// Document added, create indexing complex event
-        	$oQueueDispatcher->addProcess('indexing', $document, $document->getSize());
+        	$params = array('document' => $document, 'priority' => $indexPriority);
+        	$oQueueDispatcher->addProcess('indexing', $params, $document->getSize());
 		}
         // If we're indexing a discussion, re-processing is not needed.
         if ($what === 'D') {
@@ -692,8 +733,8 @@ abstract class Indexer {
         if (ACCOUNT_ROUTING_ENABLED)
         {
         	// Document added, create processing complex event
-        	$oQueueDispatcher->addProcess('processing', $document, $document->getSize());
-			// Send complex event
+        	$params = array('document' => $document, 'priority' => $processPriority);
+        	$oQueueDispatcher->addProcess('processing', $params, $document->getSize());
 			$oQueueDispatcher->sendToQueue();
         }
     }
@@ -723,13 +764,17 @@ abstract class Indexer {
         DBUtil::runQuery($sql);
         if (ACCOUNT_ROUTING_ENABLED)
         {
+            $priority = self::mapPriority('reindex');
+
 	        $sql = "SELECT document_id FROM index_files;";
 	        $results = DBUtil::getResultArray($sql);
 			foreach ($results as $key=>$res) {
 				$document = Document::get($res['document_id']);
 	        	// Document added, create indexing complex event
 				$oQueueDispatcher = liveIncludes::getSQSQueue();
-	        	$oQueueDispatcher->addProcess('indexing', $document, $document->getSize());
+
+				$params = array('document' => $document, 'priority' => $priority);
+	        	$oQueueDispatcher->addProcess('indexing', $params, $document->getSize());
 				// Send complex event
 	        	$oQueueDispatcher->sendToQueue();
 			}
@@ -742,10 +787,14 @@ abstract class Indexer {
         DBUtil::runQuery($sql);
         if (ACCOUNT_ROUTING_ENABLED)
         {
+            $priority = self::mapPriority('index');
+
         	// Document added, create indexing complex event
         	$document = Document::get($documentId);
 			$oQueueDispatcher = liveIncludes::getSQSQueue();
-        	$oQueueDispatcher->addProcess('indexing', $document, $document->getSize());
+
+			$params = array('document' => $document, 'priority' => $priority);
+        	$oQueueDispatcher->addProcess('indexing', $params, $document->getSize());
         	// Send complex event
         	$oQueueDispatcher->sendToQueue();
         }
@@ -766,13 +815,17 @@ abstract class Indexer {
 
         if (ACCOUNT_ROUTING_ENABLED)
         {
+            $priority = self::mapPriority('reindex');
+
 	        $sql = "SELECT document_id FROM index_files;";
 	        $results = DBUtil::getResultArray($sql);
 			foreach ($results as $key=>$res) {
 				$document = Document::get($res['document_id']);
 	        	// Document added, create indexing complex event
 				$oQueueDispatcher = liveIncludes::getSQSQueue();
-	        	$oQueueDispatcher->addProcess('indexing', $document, $document->getSize());
+
+				$params = array('document' => $document, 'priority' => $priority);
+	        	$oQueueDispatcher->addProcess('indexing', $params, $document->getSize());
 	        	// Send complex event
 	        	$oQueueDispatcher->sendToQueue();
 			}
@@ -791,13 +844,17 @@ abstract class Indexer {
 
         if (ACCOUNT_ROUTING_ENABLED)
         {
+            $priority = self::mapPriority('reprocess');
+
 	        $sql = "SELECT document_id FROM process_queue;";
 	        $results = DBUtil::getResultArray($sql);
 			foreach ($results as $key=>$res) {
 				$document = Document::get($res['document_id']);
 	        	// Document added, create indexing complex event
 				$oQueueDispatcher = liveIncludes::getSQSQueue();
-	        	$oQueueDispatcher->addProcess('processing', $document, $document->getSize());
+
+				$params = array('document' => $document, 'priority' => $priority);
+	        	$oQueueDispatcher->addProcess('processing', $params, $document->getSize());
 	        	// Send complex event to sqs queue
 	        	$oQueueDispatcher->sendToQueue();
 			}
@@ -820,6 +877,8 @@ abstract class Indexer {
         DBUtil::runQuery($sql);
         if (ACCOUNT_ROUTING_ENABLED)
         {
+            $priority = self::mapPriority('reindex');
+
         	// Folder documents added
 	        $sql = "SELECT id, $userid, 'A' FROM documents WHERE full_path like '{$full_path}/%' AND status_id=1 and id not in (select document_id from index_files);";
 	        $results = DBUtil::getResultArray($sql);
@@ -827,7 +886,9 @@ abstract class Indexer {
 				$document = Document::get($res['document_id']);
 	        	// Document added, create indexing complex event
 				$oQueueDispatcher = liveIncludes::getSQSQueue();
-	        	$oQueueDispatcher->addProcess('indexing', $document, $document->getSize());
+
+				$params = array('document' => $document, 'priority' => $priority);
+	        	$oQueueDispatcher->addProcess('indexing', $params, $document->getSize());
 	        	// Send complex event to sqs queue
 	        	$oQueueDispatcher->sendToQueue();
 			}
