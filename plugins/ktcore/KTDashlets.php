@@ -199,7 +199,8 @@ class KTCheckoutDashlet extends KTBaseDashlet {
     }
 
     function getDocumentLink($oDocument) {
-        return generateControllerLink('viewDocument', 'fDocumentId=' . $oDocument->getId());
+    	return KTUtil::kt_clean_document_url($oDocument->getId());
+        //return generateControllerLink('viewDocument', 'fDocumentId=' . $oDocument->getId());
     }
 
     function render() {
