@@ -331,7 +331,8 @@ class PDFGeneratorAction extends KTDocumentAction {
         if($cmdpath == false || !file_exists($cmdpath) || empty($cmdpath)) {
             // Set the error messsage and redirect to view document
             $this->addErrorMessage(_kt('An error occurred generating the PDF - Python binary not found.'));
-            redirect(generateControllerLink('viewDocument',sprintf('fDocumentId=%d',$oDocument->getId())));
+//            redirect(generateControllerLink('viewDocument',sprintf('fDocumentId=%d',$oDocument->getId())));
+			redirect(KTUtil::kt_clean_document_url($oDocument->getId()));
             exit(0);
         }
 
@@ -391,14 +392,16 @@ class PDFGeneratorAction extends KTDocumentAction {
             } else {
                 // Set the error messsage and redirect to view document
                 $this->addErrorMessage(sprintf(_kt('An error occurred generating the PDF - %s') , $res));
-                redirect(generateControllerLink('viewDocument',sprintf('fDocumentId=%d',$oDocument->getId())));
+                redirect(KTUtil::kt_clean_document_url($oDocument->getId()));
+                //redirect(generateControllerLink('viewDocument',sprintf('fDocumentId=%d',$oDocument->getId())));
                 exit(0);
             }
 
         } else {
             // Set the error messsage and redirect to view document
             $this->addErrorMessage(_kt('An error occurred generating the PDF - The path to the document did not exist.'));
-            redirect(generateControllerLink('viewDocument',sprintf('fDocumentId=%d',$oDocument->getId())));
+//            redirect(generateControllerLink('viewDocument',sprintf('fDocumentId=%d',$oDocument->getId())));
+			redirect(KTUtil::kt_clean_document_url($oDocument->getId()));
             exit(0);
         }
 

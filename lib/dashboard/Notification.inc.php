@@ -358,16 +358,16 @@ class KTSubscriptionNotification extends KTNotificationHandler {
 
 		if ($object_type == 'document') {
 		    if ($info['object_id'] !== null) { // fails and generates an error with no doc-id.
-				$params = 'fDocumentId=' . $info['object_id'];
-				$url = generateControllerLink('viewDocument', $params);
-				//$oKTNotification->delete(); // clear the alert.
+		    	$url = KTUtil::kt_clean_document_url($info['object_id']);
+//				$params = 'fDocumentId=' . $info['object_id'];
+//				$url = generateControllerLink('viewDocument', $params);
 				exit(redirect($url));
 			}
 		} else if ($object_type == 'folder') {
 		    if ($info['object_id'] !== null) { // fails and generates an error with no doc-id.
-				$params = 'fFolderId=' . $info['object_id'];
-				$url = generateControllerLink('browse', $params);
-				//$oKTNotification->delete(); // clear the alert.
+		    	$url = KTUtil::kt_clean_folder_url($info['object_id']);
+//				$params = 'fFolderId=' . $info['object_id'];
+//				$url = generateControllerLink('browse', $params);
 				exit(redirect($url));
 			}
 		}
@@ -440,8 +440,9 @@ class KTWorkflowNotification extends KTNotificationHandler {
 			exit(redirect(generateControllerLink('dashboard')));
 		}
 
-		$params = 'fDocumentId=' . $oKTNotification->getIntData1();
-		$url = generateControllerLink('viewDocument', $params);
+//		$params = 'fDocumentId=' . $oKTNotification->getIntData1();
+//		$url = generateControllerLink('viewDocument', $params);
+		$url = KTUtil::kt_clean_document_url($oKTNotification->getIntData1());
 		//$oKTNotification->delete(); // clear the alert.
 		exit(redirect($url));
 	}
