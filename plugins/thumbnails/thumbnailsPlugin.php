@@ -43,27 +43,22 @@ class DeleteThumbnailTrigger {
     var $namespace = 'thumbnail.triggers.delete.document.checkin';
     var $aInfo = null;
 
-    function setInfo($aInfo) {
-        $this->aInfo = $aInfo;
+    function setInfo($info) {
+        $this->aInfo = $info;
     }
 
     /**
      * On checkin of a document, delete the thumbnail so a new one can be generated
      */
     function postValidate() {
-    	$oStorage = KTStorageManagerUtil::getSingleton();
-        $oDoc = $this->aInfo['document'];
-        $docId = $oDoc->getId();
-        $docInfo = array('id' => $docId, 'name' => $oDoc->getName());
+    	$storageManager = KTStorageManagerUtil::getSingleton();
+        $doc = $this->aInfo['document'];
+        $docId = $doc->getId();
+        $docInfo = array('id' => $docId, 'name' => $doc->getName());
 
-        // Delete the pdf document
-        global $default;
-        $varDirectory = $default->varDirectory;
-
-        $file = $varDirectory . DIRECTORY_SEPARATOR . "thumbnails" . DIRECTORY_SEPARATOR .$docId.'.jpg';
-
-        if($oStorage->file_exists($file)){
-            $oStorage->unlink($file);
+        $file = $default->varDirectory . DIRECTORY_SEPARATOR . "thumbnails" . DIRECTORY_SEPARATOR . "$docId.jpg";
+        if ($storageManager->file_exists($file)) {
+            $storageManager->unlink($file);
         }
     }
 }
@@ -85,21 +80,22 @@ class thumbnailsPlugin extends KTPlugin {
      *
      */
     function setup() {
-        $plugin_dir = dirname(__FILE__) . DIRECTORY_SEPARATOR;
-        $dir = $plugin_dir . 'thumbnails.php';
+        $pluginDir = dirname(__FILE__) . DIRECTORY_SEPARATOR;
+        $dir = $pluginDir . 'thumbnails.php';
         $this->registerProcessor('thumbnailGenerator', 'thumbnails.generator.processor', $dir);
-        $this->registerAction('documentviewlet', 'ThumbnailViewlet', 'thumbnail.viewlets', $dir);
+        // NOTE Current version of KT does not use a thumbnail viewlet, so don't register one.
+        //$this->registerAction('documentviewlet', 'ThumbnailViewlet', 'thumbnail.viewlets', $dir);
         $this->registerColumn(_kt('Thumbnail'), 'thumbnails.generator.column', 'ThumbnailColumn', $dir);
         $this->registerTrigger('checkin', 'postValidate', 'DeleteThumbnailTrigger','thumbnail.triggers.delete.document.checkin', __FILE__);
 
         require_once(KT_LIB_DIR . '/templating/templating.inc.php');
-        $oTemplating =& KTTemplating::getSingleton();
-        $oTemplating->addLocation('thumbnails', $plugin_dir.'templates', 'thumbnails.generator.processor.plugin');
+        $templating =& KTTemplating::getSingleton();
+        $templating->addLocation('thumbnails', $pluginDir . 'templates', 'thumbnails.generator.processor.plugin');
 
 	    // check for existing config settings entry and only add if not already present
         $sql = 'SELECT id FROM `config_settings` WHERE group_name = "externalBinary" AND item = "convertPath"';
         $result = DBUtil::getOneResult($sql);
-	    if(PEAR::isError($result) || empty($result)) {
+	    if (PEAR::isError($result) || empty($result)) {
 	    	DBUtil::runQuery('INSERT INTO `config_settings` (group_name, display_name, description, item, value, default_value, type, options, can_edit) '
 	    					. 'VALUES ("externalBinary", "convert", "The path to the ImageMagick \"convert\" binary", "convertPath", "default", "convert", '
 	    					. '"string", NULL, 1);');
@@ -107,6 +103,7 @@ class thumbnailsPlugin extends KTPlugin {
     }
 }
 
-$oPluginRegistry =& KTPluginRegistry::getSingleton();
-$oPluginRegistry->registerPlugin('thumbnailsPlugin', 'thumbnails.generator.processor.plugin', __FILE__);
+$pluginRegistry =& KTPluginRegistry::getSingleton();
+$pluginRegistry->registerPlugin('thumbnailsPlugin', 'thumbnails.generator.processor.plugin', __FILE__);
+
 ?>

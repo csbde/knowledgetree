@@ -1,41 +1,50 @@
 <?php
-class serviceHelper{
-	public function __construct(){
+
+class serviceHelper {
+
+	public function __construct()
+	{
 		throw new Exception('ServiceHelper is only to be used statically');
 	}
-	
-	function bool2str($bool){
+
+	function bool2str($bool)
+	{
 		//TODO: Test this sometime.. a lot shorter - doesn't cater for string though.. but if string then result already correct
 		//return ((bool)$bool)?'true':false;
-		
-		if (is_bool($bool))
-		{
+
+		if (is_bool($bool)) {
 			return $bool ? 'true' : 'false';
 		}
-		if (is_numeric($bool))
-		{
-			return ($bool+0) ? 'true' : 'false';
+
+		if (is_numeric($bool)) {
+			return ($bool + 0) ? 'true' : 'false';
 		}
+
 		// assume str
 		return (strtolower($bool) == 'true') ? 'true' : 'false';
 	}
-	
+
+	// NOTE there is another size representation function in the ktqueue code, function byteConvert($size),
+	//      which is possibly better than all of these (it's certainly shorter - only 2 lines of code.
+	//      It also goes up to YB :), though this first function should be easy to extend to do that as well)
+
 	/**
 	 * Return human readable sizes
 	 *
 	 * @param integer $size	The size you want to convert to human readable
 	 * @return string
 	 */
-	function fsize_desc($size){
-		$i=0; 
-		$iec = array("B", "Kb", "Mb", "Gb", "Tb");
-		while (($size/1024)>1) {
-			$size=$size/1024;
+	function fsize_desc($size)
+	{
+		$i = 0;
+		$iec = array('B', 'Kb', 'Mb', 'Gb', 'Tb');
+		while (($size/1024) > 1) {
+			$size = $size/1024;
 			$i++;
 		}
-		return substr($size,0,strpos($size,'.')+3).$iec[$i];
+
+		return substr($size, 0, strpos($size, '.') + 3) . $iec[$i];
 	}
-	
 
 	/**
 	 * Display byte sizes in human readable representations
@@ -46,7 +55,8 @@ class serviceHelper{
 	 * @param string	$retstring	Format for the return string.
 	 * @return String
 	 */
-	function size_readable($size, $max = null, $system = 'c1', $retstring = '%01.1f %s'){
+	function size_readable($size, $max = null, $system = 'c1', $retstring = '%01.1f %s')
+	{
 	    // Pick units
 	    $systems['si']['prefix'] = array('B', 'K', 'MB', 'GB', 'TB', 'PB');
 	    $systems['si']['size']   = 1000;
@@ -55,26 +65,27 @@ class serviceHelper{
 	    $systems['c1']['prefix'] = array('B', 'KB', 'MB', 'GB', 'TB', 'PB');
 	    $systems['c1']['size']   = 1024;
 	    $sys = isset($systems[$system]) ? $systems[$system] : $systems['si'];
-	
+
 	    // Max unit to display
 	    $depth = count($sys['prefix']) - 1;
 	    if ($max && false !== $d = array_search($max, $sys['prefix'])) {
 	        $depth = $d;
 	    }
-	
+
 	    // Loop
 	    $i = 0;
 	    while ($size >= $sys['size'] && $i < $depth) {
 	        $size /= $sys['size'];
 	        $i++;
 	    }
-	
-	    return sprintf(($sys['prefix'][$i]=='B'?'%01d %s':$retstring), $size, $sys['prefix'][$i]);
+
+	    return sprintf((($sys['prefix'][$i] == 'B') ? '%01d %s' : $retstring), $size, $sys['prefix'][$i]);
 	}
-	
-	function size_kb($size = NULL){
-		$size=$size/1024;
-		$size=sprintf("%0.2f",$size).' KB';
+
+	function size_kb($size = NULL)
+	{
+		$size = $size/1024;
+		$size = sprintf("%0.2f", $size) . ' KB';
 		return $size;
 	}
 }

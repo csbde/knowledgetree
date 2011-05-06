@@ -65,6 +65,7 @@ class KTCorePlugin extends KTPlugin {
         $this->registerAction('documentaction', 'KTDocumentCheckOutAction', 'ktcore.actions.document.checkout', 'KTDocumentActions.php');
         $this->registerAction('documentaction', 'KTDocumentCancelCheckOutAction', 'ktcore.actions.document.cancelcheckout', 'KTDocumentActions.php');
         $this->registerAction('documentaction', 'SharedContentDocumentAction', 'ktcore.actions.document.sharecontent', KT_PLUGIN_DIR . '/sharedcontent/SharedContentDocumentAction.php');
+        $this->registerAction('folderaction', 'SharedContentFolderAction', 'ktcore.actions.folder.sharecontent', KT_PLUGIN_DIR . '/sharedcontent/SharedContentDocumentAction.php');
 
         $this->registerAction('documentaction', 'KTDocumentCheckInAction', 'ktcore.actions.document.checkin', 'KTDocumentActions.php');
         $this->registerAction('documentaction', 'KTDocumentEditAction', 'ktcore.actions.document.edit', 'document/edit.php');
@@ -77,6 +78,7 @@ class KTCorePlugin extends KTPlugin {
         $this->registerAction('documentinfo', 'KTDocumentVersionHistoryAction', 'ktcore.actions.document.versionhistory', 'KTDocumentActions.php');
         $this->registerAction('documentaction', 'KTDocumentArchiveAction', 'ktcore.actions.document.archive', 'KTDocumentActions.php');
         $this->registerAction('documentaction', 'KTDocumentWorkflowAction', 'ktcore.actions.document.workflow', 'KTDocumentActions.php');
+        $this->registerAction('documentaction', 'KTAjaxDocumentWorkflowAction', 'ktajax.actions.document.workflow', 'KTDocumentActions.php');
         $this->registerAction('folderinfo', 'KTFolderViewAction', 'ktcore.actions.folder.view', 'KTFolderActions.php');
         $this->registerAction('folderaction', 'KTFolderAddDocumentAction', 'ktcore.actions.folder.addDocument', 'folder/addDocument.php');
         $this->registerAction('folderaction', 'KTFolderAddFolderAction', 'ktcore.actions.folder.addFolder', 'KTFolderActions.php');
@@ -87,11 +89,26 @@ class KTCorePlugin extends KTPlugin {
         $this->registerAction('folderaction', 'FolderIndexAction', 'ktcore.search2.index.folder.action', KT_DIR . '/plugins/search2/FolderIndexAction.php');
         $this->registerAction('folderinfo', 'KTFolderTransactionsAction', 'ktcore.actions.folder.transactions', 'folder/Transactions.php');
 
+        $this->registerAction('documentaction', 'KTDocumentPageUrlAction', 'ktcore.actions.document.pageurl', 'KTDocumentActions.php');
+        $this->registerAction('documentaction', 'KTDocumentDownloadUrlAction', 'ktcore.actions.document.downloadurl', 'KTDocumentActions.php');
+        $this->registerAction('documentaction', 'KTDocumentPreviewUrlAction', 'ktcore.actions.document.previewurl', 'KTDocumentActions.php');
+
+        // Folder Sidebar
+        $this->registerAction('mainfoldersidebar', 'KTFolderSidebar', 'ktcore.sidebars.folder', 'KTFolderSidebars.php');
+
+        // Document Sidebar
+        $this->registerAction('maindocsidebar', 'KTDocumentSidebar', 'ktcore.sidebars.document', 'KTDocumentSidebars.php');
+        $this->registerAction('documentsidebar', 'KTWorkflowSidebar', 'ktcore.sidebar.workflow', 'KTDocumentSidebars.php');
+
         $this->registerAction('documentaction', 'KTDocumentAssistAction', 'ktcore.actions.document.assist', 'KTAssist.php');
         // $this->registerAction('folderaction', 'KTDocumentAssistAction', 'ktcore.actions.folder.assist', 'KTAssist.php');
 
         // Viewlets
         $this->registerAction('documentviewlet', 'KTWorkflowViewlet', 'ktcore.viewlets.document.workflow', 'KTDocumentViewlets.php');
+		$this->registerAction('documentviewlet', 'KTInlineEditViewlet', 'ktcore.viewlets.document.inline.edit', 'KTDocumentViewlets.php');
+
+        // Blocks
+        $this->registerAction('documentblock', 'KTDocumentStatusBlock', 'ktcore.blocks.document.status', 'KTDocumentBlocks.php');
 
         // Notifications
         $this->registerNotificationHandler('KTAssistNotification', 'ktcore/assist', 'KTAssist.php');
@@ -184,9 +201,11 @@ class KTCorePlugin extends KTPlugin {
 		// Bulk Download Trigger
 		$this->registerTrigger('ktcore', 'pageLoad', 'BulkDownloadTrigger', 'ktcore.triggers.pageload', 'KTDownloadTriggers.inc.php');
 
-		// Shared User Triggers
+		// Shared User Triggers - add / delete documents / folders
 		$this->registerTrigger('contentadd', 'postValidate', 'KTAddSharedContentObjectTrigger', 'ktcore.triggers.sharedcontent.add', KT_DIR . '/plugins/sharedcontent/SharedContentTriggers.php');
+		$this->registerTrigger('add', 'postValidate', 'KTAddSharedDocTrigger', 'ktcore.triggers.sharedcontent.adddoc', KT_DIR . '/plugins/sharedcontent/SharedContentTriggers.php');
 		$this->registerTrigger('contentdelete', 'postValidate', 'KTDeleteSharedContentObjectTrigger', 'ktcore.triggers.sharedcontent.delete', KT_DIR . '/plugins/sharedcontent/SharedContentTriggers.php');
+		$this->registerTrigger('delete', 'postValidate', 'KTDeleteSharedDocTrigger', 'ktcore.triggers.sharedcontent.deletedoc', KT_DIR . '/plugins/sharedcontent/SharedContentTriggers.php');
 
         // widgets
         $this->registerWidget('KTCoreInfoWidget', 'ktcore.widgets.info', 'KTWidgets.php');
@@ -316,10 +335,10 @@ class KTCorePlugin extends KTPlugin {
             _kt('Document Types'),
             _kt('Manage the different classes of document which can be added to the system.'),
             'admin/documentTypes.php', null);
-        $this->registerAdminPage('fieldmanagement2', 'KTDocumentFieldDispatcher', 'contentSetup',
-             _kt('Document Fieldsets'),
-            _kt('Manage the different types of information that can be associated with classes of documents.'),
-            'admin/documentFieldsv2.php', null);
+//        $this->registerAdminPage('fieldmanagement2', 'KTDocumentFieldDispatcher', 'contentSetup',
+//             _kt('Document Fieldsets'),
+//            _kt('Manage the different types of information that can be associated with classes of documents.'),
+//            'admin/documentFieldsv2.php', null);
         $this->registerAdminPage('workflows_2', 'KTWorkflowAdminV2', 'contentManagement',
             _kt('Workflows'), _kt('Configure automated Workflows that map to document life-cycles.'),
             'admin/workflowsv2.php', null);

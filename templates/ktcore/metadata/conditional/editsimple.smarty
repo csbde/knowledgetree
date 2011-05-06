@@ -105,7 +105,7 @@ refresh the page.{/i18n}</p>
 <tr>
 {foreach from=$aFields item=oField}
    <td class="buttonset" id="buttons_{$oField->getId()}">
-         <div class="form_actions">{capture assign=fid}{$oField->getId()}{/capture}
+         <div class="form_actions_unchanged">{capture assign=fid}{$oField->getId()}{/capture}
              {if (!empty($ordering.$fid))}<input type="button" value="{i18n}edit field{/i18n}" class="edit_button" onclick="editSimpleField({$oField->getId()})" />{/if}
              <input type="button" value="{i18n}save this dependency{/i18n}" class="save_button" onclick="saveSimpleField({$oField->getId()})" />
          </div>

@@ -48,14 +48,15 @@ body
 }
 
 #pageHeader {
-   margin-left:15px;
-   margin-right:15px;
+  /* margin-left:15px;
+   margin-right:15px;*/
 }
 
 #pageBody
 {
-    margin-left: 15px;
-    margin-right: 15px;
+/*  margin-left: 15px;
+    margin-right: 15px;*/
+    margin-bottom: 15px;
 }
 
 
@@ -88,7 +89,7 @@ body
 
 #navbarLeft {
     position: absolute;
-    background: url(../../resources/graphics/menu_corner_left.png) top left no-repeat;
+    background: url(/resources/graphics/menu_corner_left.png) top left no-repeat;
     width:8px;
     height:2.36em;
     top:0px;
@@ -97,7 +98,7 @@ body
 
 #navbarRight {
     position: absolute;
-    background: url(../../resources/graphics/menu_corner_right.png) top right no-repeat;
+    background: url(/resources/graphics/menu_corner_right.png) top right no-repeat;
     width:8px;
     height:2.36em;
     top:0px;
@@ -108,7 +109,7 @@ body
 {
     position: relative;
     width: auto;
-    background: url(../../resources/graphics/menubg.png) top left repeat-x;
+    background: url(/resources/graphics/menubg.png) top left repeat-x;
     padding: 0em 1em;
     margin-bottom: 1em;
     height: 2.36em;
@@ -139,7 +140,7 @@ body
 }
 
 #navbar ul li.active {
-    background: #6c8c2f url(../../resources/graphics/menubg-active.png) top left repeat-x;
+    background: #6c8c2f url(/resources/graphics/menubg-active.png) top left repeat-x;
     height: 1.4em;
 }
 
@@ -156,7 +157,7 @@ body
 }
 
 #menu_divider {
-    background: url(../../resources/graphics/menu_divider.png) top left no-repeat;
+    background: url(/resources/graphics/menu_divider.png) top left no-repeat;
     width: 2px;
     height: 31px;
 }
@@ -167,7 +168,7 @@ body
 
 /*
 a.main_nav_item {
-    background: transparent url(../../resources/graphics/home-navbar.gif) center left no-repeat;
+    background: transparent url(/resources/graphics/home-navbar.gif) center left no-repeat;
     padding-left: 1.5em;
 }
 */
@@ -182,7 +183,7 @@ a.main_nav_item {
 
 #breadcrumbs
 {
-	margin: 5px;
+/*	margin: 5px; */
     color: #333;
     text-transform: lowercase;
 }
@@ -199,9 +200,9 @@ a.main_nav_item {
 
 #breadcrumbs a
 {
-    color: #344a6a;
+    color: #2f6594;
     text-decoration: none;
-    border-bottom: 0px solid #344a6a;
+    border-bottom: 0px solid #2f6594;
 
 }
 
@@ -231,7 +232,7 @@ a.main_nav_item {
 #portletbar .portlet {
     position: relative;
     margin: 0 0 1.5em 0;
-    background: url(../../resources/graphics/portlet_corner_topleft_collapsed.png) top left no-repeat;
+    background: url(/resources/graphics/portlet_corner_topleft_collapsed.png) top left no-repeat;
     padding: 0 0 0 0;
     border: 0;
     z-index: 2;
@@ -239,7 +240,7 @@ a.main_nav_item {
 
 #portletbar .portlet .portletTopRepeat {
     position: absolute;
-    background: url(../../resources/graphics/portlet_bg_collapsed.png) top left repeat-x;
+    background: url(/resources/graphics/portlet_bg_collapsed.png) top left repeat-x;
     top: 0;
     left: 30px;
     height: 30px;
@@ -250,7 +251,7 @@ a.main_nav_item {
 
 #portletbar .portlet .portletTopRight {
     position: absolute;
-    background: url(../../resources/graphics/portlet_corner_topright_collapsed.png) top right no-repeat;
+    background: url(/resources/graphics/portlet_corner_topright_collapsed.png) top right no-repeat;
     top: 0;
     right: 0px;
     height: 30px;
@@ -263,14 +264,14 @@ a.main_nav_item {
     position: relative;
     margin: 0 0 1.5em 0;
     padding: 0 0 0 0;
-    background: url(../../resources/graphics/portlet_corner_topleft.png) top left no-repeat;
+    background: url(/resources/graphics/portlet_corner_topleft.png) top left no-repeat;
     border: 0;
     z-index: 2;
 }
 
 #portletbar .portlet.expanded .portletTopRepeat {
     position: absolute;
-    background: url(../../resources/graphics/portlet_bg.png) top left repeat-x;
+    background: url(/resources/graphics/portlet_bg.png) top left repeat-x;
     top: 0px;
     left: 30px;
     height: 28px;
@@ -281,7 +282,7 @@ a.main_nav_item {
 
 #portletbar .portlet.expanded .portletTopRight {
     position: absolute;
-    background: url(../../resources/graphics/portlet_corner_topright.png) top right no-repeat;
+    background: url(/resources/graphics/portlet_corner_topright.png) top right no-repeat;
     top: 0;
     right: 0px;
     height: 28px;
@@ -291,7 +292,7 @@ a.main_nav_item {
 }
 
 #portletbar .portlet .portletbody {
-    background: url(../../resources/graphics/portlet_borderright.png) top right repeat-y;
+    background: url(/resources/graphics/portlet_borderright.png) top right repeat-y;
     padding: 0 0 1em 0;
     margin-right: 1px;
     background-color: white;
@@ -338,7 +339,7 @@ a.main_nav_item {
     left: 0px;
     width: 10px;
     height: 10px;
-    background: url(../../resources/graphics/portlet_corner_bottomleft.png) bottom left no-repeat;
+    background: url(/resources/graphics/portlet_corner_bottomleft.png) bottom left no-repeat;
 }
 
 #portletbar .portlet .portletbodyBottomRight {
@@ -347,7 +348,7 @@ a.main_nav_item {
     right: 0px;
     width: 10px;
     height: 10px;
-    background: url(../../resources/graphics/portlet_corner_bottomright.png) bottom right no-repeat;
+    background: url(/resources/graphics/portlet_corner_bottomright.png) bottom right no-repeat;
 }
 
 #portletbar .portlet .portletbodyBottom {
@@ -356,14 +357,14 @@ a.main_nav_item {
     left: 5px;
     height: 3px;
     width: 95%;
-    background: url(../../resources/graphics/portlet_borderbottom.png) bottom left repeat-x;
+    background: url(/resources/graphics/portlet_borderbottom.png) bottom left repeat-x;
 }*/
 
 /* Right-hand side portlet borders */
 /*
 #portletbar .portlet .portletbodyRightTop {
     position: absolute;
-    background: url(../../resources/graphics/portlet_borderright.png) top right repeat-y;
+    background: url(/resources/graphics/portlet_borderright.png) top right repeat-y;
     top: 0px;
     right: 0px;
     width: 5px;
@@ -372,7 +373,7 @@ a.main_nav_item {
 
 #portletbar .portlet .portletbodyRightBottom {
     position: absolute;
-    background: url(../../resources/graphics/portlet_borderright.png) top right repeat-y;
+    background: url(/resources/graphics/portlet_borderright.png) top right repeat-y;
     bottom: 0px;
     right: 0px;
     width: 5px;
@@ -382,7 +383,7 @@ a.main_nav_item {
 
 #portletbar .portlet .portletbodyRightMiddleTop {
     position: absolute;
-    background: url(../../resources/graphics/portlet_borderright.png) top right repeat-y;
+    background: url(/resources/graphics/portlet_borderright.png) top right repeat-y;
     top: 50%;
     right: 0px;
     width: 5px;
@@ -391,7 +392,7 @@ a.main_nav_item {
 
 #portletbar .portlet .portletbodyRightMiddleBottom {
     position: absolute;
-    background: url(../../resources/graphics/portlet_borderright.png) top right repeat-y;
+    background: url(/resources/graphics/portlet_borderright.png) top right repeat-y;
     bottom: 50%;
     right: 0px;
     width: 5px;
@@ -400,7 +401,7 @@ a.main_nav_item {
 
 #portletbar .portlet .portletbodyRightQuartTop {
     position: absolute;
-    background: url(../../resources/graphics/portlet_borderright.png) top right repeat-y;
+    background: url(/resources/graphics/portlet_borderright.png) top right repeat-y;
     top: 15%;
     right: 0px;
     width: 5px;
@@ -409,7 +410,7 @@ a.main_nav_item {
 
 #portletbar .portlet .portletbodyRightQuartBottom {
     position: absolute;
-    background: url(../../resources/graphics/portlet_borderright.png) top right repeat-y;
+    background: url(/resources/graphics/portlet_borderright.png) top right repeat-y;
     bottom: 25%;
     right: 0px;
     width: 5px;
@@ -417,7 +418,7 @@ a.main_nav_item {
 }*/
 
 #portletbar .portlet a {
-	color: #344a6a;
+	color: #2f6594;
     text-decoration: none;
 }
 
@@ -543,7 +544,7 @@ a.main_nav_item {
     top: 0;
     z-index: 1;
     width: auto;
-    overflow: hidden;
+    /*overflow: hidden;*/
 	margin: 5px;
 	padding-top: 10px;
 }
@@ -570,27 +571,21 @@ a.main_nav_item {
 
 #content a
 {
-    color: #344a6a;
+    color: #2f6594;
     text-decoration: none;
-    border-bottom: 1px solid #344a6a;
 }
 
 #content a:hover
 {
-    color: #9d0a0a;
-    text-decoration: none;
-    border-bottom: 1px solid #9d0a0a;
+    color: #2f6594;
+    text-decoration: underline;
 }
 
-#content .descriptiveText
-{
-    color: #666;
-}
 
 #content .descriptiveText.important {
     padding-left: 25px;
     color: black;
-    background: transparent  url(../../thirdparty/icon-theme/16x16/status/dialog-information.png) center left no-repeat;
+    background: transparent  url(/thirdparty/icon-theme/16x16/status/dialog-information.png) center left no-repeat;
 }
 
 
@@ -621,13 +616,13 @@ a.main_nav_item {
 {
     font-weight: normal;
     padding: 0 1em;
-    color: black;
+    color: #666;
 }
 
 #content input,
 #content select,
 #content textarea {
-    background:#FFFFFF url(../../thirdpartyjs/extjs/resources/images/default/form/text-bg.gif) repeat-x scroll 0 0;
+    background:#FFFFFF url(/thirdpartyjs/extjs/resources/images/default/form/text-bg.gif) repeat-x scroll 0 0;
 	border:1px solid #B5B8C8;
 	padding:2px 3px;
 }
@@ -717,7 +712,7 @@ a.main_nav_item {
     margin-left: 0.5em;
     padding-left: 10px;
     color: white;
-    background: transparent url(../../resources/graphics/required.png) center left no-repeat;
+    background: transparent url(/resources/graphics/required.png) center left no-repeat;
 }
 
 .errorMessage
@@ -801,7 +796,7 @@ a.main_nav_item {
     background-color: #fff2b8;
 /*
     padding-left: 25px;
-    background: transparent  url(../../thirdparty/icon-theme/16x16/status/dialog-information.png) center left no-repeat;
+    background: transparent  url(/thirdparty/icon-theme/16x16/status/dialog-information.png) center left no-repeat;
 */
 }
 
@@ -809,17 +804,21 @@ a.main_nav_item {
     background-color: #e9dda8;
 /*
     padding-left: 25px;
-    background: transparent  url(../../thirdparty/icon-theme/16x16/status/dialog-information.png) center left no-repeat;
+    background: transparent  url(/thirdparty/icon-theme/16x16/status/dialog-information.png) center left no-repeat;
 */
 }
 
 /*  --- table version --- */
-
+#metadata-title {
+	font-weight: bold;
+	padding-bottom: 5px;
+	border-bottom: 1px solid #DDD;
+	margin-bottom: 5px;
+	font-size: 13px;
+}
 .metadatatable {
-    border-width: 0 1px 0 1px;
-    border-style: solid;
-    border-color: #ccc;
     width: 100%;
+    font-size: 12px;
 }
 
 .metadatatable.narrow {
@@ -828,24 +827,28 @@ a.main_nav_item {
 
 .metadatatable .first th,
 .metadatatable .first td {
-    border-top: 1px solid #ccc;
 }
-
+#documentTypeID.descriptiveText {
+	display: inline-block;
+	padding-top: 1px;
+	position: relative;
+}
 .metadatatable th {
     text-align: left;
-    width: 30% !important;
-    border-bottom: 1px dotted #ccc;
-    vertical-align: top;
-    padding: 0.5em;
-    background-color: #eee;
+    width: 105px !important;
+    vertical-align: middle;
+    padding: 2px 10px 2px 0px;
     font-weight: normal;
+    border-spacing: 0px 0px;
+    float: left;
 }
 
 .metadatatable td {
-    border-bottom: 1px dotted #ccc;
-    vertical-align: top;
-    padding: 0.5em;
-    font-weight: bold;
+    vertical-align: middle;
+    padding: 2px 0px;
+	color: #2F6594;
+	float: none;
+	width: 225px;
 }
 
 .metadatatable .versioned td {
@@ -860,12 +863,50 @@ a.main_nav_item {
     background-color: #e9dda8;
 }
 
+.metadatatable select {
+    font-size: 12px;
+}
+
+/*
+.metadatarow.required {
+	background-color: #FFFF66
+}
+.metadatarow.required.incomplete {
+	background-color: #ffdddd
+}
+*/
+.metadataError {
+	color: red;
+	font-size: 11px;
+}
+#content .doc_info input.form_submit {
+	background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(white), to(#DDD)) !important;
+	border: 1px solid #AAA;
+	color: #2F6594;
+	font-size: 11px;
+	padding: 0px 5px 2px;
+	margin: 0px 5px 5px 0px;
+	border-radius: 2px 2px;
+}
+#content .doc_info select,
+#content .doc_info input {
+	color: #666;
+	font-size: 11px;
+}
 .document_details .document_history thead th {
     text-align: left;
     border-bottom: 1px solid #666;
 }
 
 .document_history {
+	margin: 5px;
+	width: 99%;
+	border-radius: 5px;
+	-webkit-border-radius: 5px;
+	-moz-border-radius: 5px;
+	box-shadow: 0 0 5px #667;
+	-webkit-box-shadow: 0 0 5px #667;
+	-moz-box-shadow: 0 0 5px #667;
     width: 100%;
 }
 
@@ -875,7 +916,7 @@ a.main_nav_item {
 
 .document_history td {
     text-align: left;
-    border-bottom: 1px solid #ccc;
+    /*border-bottom: 1px solid #ccc;*/
 }
 
 .document_history tbody .username,
@@ -897,19 +938,98 @@ a.main_nav_item {
     background-color: #fafafa;
 }
 
-.detail_fieldset
+.detail-fieldset
 {
     display: block;
-    margin-top: 1em;
+    margin-top: 15px;
     overflow: hidden;
 }
-
-.detail_fieldset h3
-{
-    margin: 0em 0 0.25em 0;
+#content #title_row input.required,
+#content .doc_description .required input,
+#content .doc_description .required select,
+#content .doc_description .required textarea,
+#content .doc_description .required .kt_treenodes,
+#content .metadatatable .metadatarow.required .x-html-editor-wrap {
+	background: #FFEDAC;
+}
+#content #title_row input.required.incomplete,
+#content .doc_description .required.incomplete input,
+#content .doc_description .required.incomplete select,
+#content .doc_description .required.incomplete textarea,
+#content .doc_description .required .kt_treenodes,
+#content .metadatatable .metadatarow.required.incomplete .x-html-editor-wrap {
+	background: #ffdddd;
+	border-color: #FF7272;
+}
+#content .metadatatable .metadatarow.required .x-html-editor-wrap iframe{
+	background: #ffffff;
 }
 
+.editable-control {
+	visibility: hidden;
+	cursor: pointer;
+	float: right;
+	min-width: 20px;
+	height: 16px;
+	vertical-align: top;
+}
+.editable-control.undo{
+	visibility: visible;
+}
+#title_row .editable-control {
+	float: none;
+	display: inline-block;
+}
+.editable-control.none {
+	background: none;
+}
+.editable-control.edit {
+	background: url(../../resources/graphics/newui/icons/edit.png) no-repeat right top;
+}
+.editable-control.undo {
+	background: url(../../resources/graphics/newui/icons/undo.png) no-repeat right top;
+}
+.editable-control.spin {
+	background: url(../../resources/graphics/newui/loading.gif) no-repeat right top;
+}
+.action_buttons.below {
+	width: 375px;
+}
+.action_buttons.below .spin {
+	background: url(../../resources/graphics/newui/loading.gif) no-repeat center center;
+	padding: 2px;
+	width: 16px;
+	display: inline-block;
+}
+.action_buttons.below .share-link {
+	display: inline-block;
+}
+.detail-fieldset h3
+{
+    margin: 0em 0 2px 0;
+    padding-bottom: 5px;
+    font-size: 12px;
+    border-bottom: 1px solid #DDD;
+    font-weight: normal;
+}
 
+.doc_description .more {
+	display: block;
+	padding: 2px 10px;
+	width: 290px;
+	margin: 0px auto;
+	background: #EEE;
+	border: 1px solid #CCC;
+	border-radius: 2px;
+	text-align: center;
+	text-shadow: 0px 1px 0px white;
+}
+
+.doc_info .active {
+	border: 1px solid #b0d1e5;
+	background: #d7e3ea;
+	padding: 2px 5px;
+}
 /* ----------------------- collection view ----------------------------- */
 
 .kt_collection
@@ -920,27 +1040,28 @@ a.main_nav_item {
 }
 
 .kt_collection.narrow {
-    width: auto;
+    width: 98%;
 }
 
 .kt_collection thead th {
     border-bottom: 1px solid #888;
     text-align: left;
     white-space: normal !important;
+    font-weight: bold;
 }
 
 .kt_collection th.sort_on.sort_asc {
     border-left: 1px solid #ccc;
     border-right: 1px solid #ccc;
 
-    background: transparent url(../../resources/graphics/sort_asc.png) center right no-repeat;
+    background: transparent url(/resources/graphics/sort_asc.png) center right no-repeat;
 }
 
 .kt_collection th.sort_on.sort_desc {
     border-left: 1px solid #ccc;
     border-right: 1px solid #ccc;
 
-    background: transparent url(../../resources/graphics/sort_desc.png) center right no-repeat;
+    background: transparent url(/resources/graphics/sort_desc.png) center right no-repeat;
 }
 
 .kt_collection th,
@@ -1012,6 +1133,8 @@ a.main_nav_item {
 .kt_collection .collectionNavigation {
 }
 
+.kt_collection tbody#datadrop.dropzone tr td.browse_column.select { width: 12px; }
+
 .ktInlineError {
     color: #db9d09;
 }
@@ -1031,7 +1154,7 @@ a.main_nav_item {
 
 .ktError .err_item {
     padding-left: 25px;
-    background: #ffdd80 url(../../thirdparty/icon-theme/16x16/status/dialog-warning.png) top left no-repeat;
+    background: #ffdd80 url(/thirdparty/icon-theme/16x16/status/dialog-warning.png) top left no-repeat;
     padding-bottom: 3px;
 }
 
@@ -1051,15 +1174,20 @@ a.main_nav_item {
 
 .ktInfo .info_item {
     padding-left: 25px;
-    background: #DEDEDE url(../../thirdparty/icon-theme/16x16/status/dialog-information.png) top left no-repeat;
+    background: #DEDEDE url(/thirdparty/icon-theme/16x16/status/dialog-information.png) top left no-repeat;
     padding-bottom: 3px;
 }
 
 .ktBlock {
 	position: relative;
-    padding: 0.1em 1em 1em 1em;
-    margin: 0 0 1em 0.5em;
+    margin-bottom: 10px;
+    border: 1px solid #CCC;
+    border-radius: 5px;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    font-size: 12px;
     z-index:0; /*Added to accomadate pageBody background change*/
+    color: #666;
 }
 
 
@@ -1075,7 +1203,7 @@ a.main_nav_item {
 /** portlet stuff. */
 #portlet-search-text {
     border: 1px solid black;
-    background: white url(../../resources/graphics/search-button.png) center left no-repeat;
+    background: white url(/resources/graphics/search-button.png) center left no-repeat;
     margin: 0.5em;
     padding: 3px;
     padding-left: 17px;
@@ -1084,7 +1212,7 @@ a.main_nav_item {
 
 #dashlet-search-text {
     border: 1px solid black;
-    background: white url(../../resources/graphics/search-button.png) center left no-repeat;
+    background: white url(/resources/graphics/search-button.png) center left no-repeat;
     margin: 0.5em 0.5em 0.5em 0;
     padding: 3px;
     padding-left: 17px;
@@ -1150,7 +1278,7 @@ The text will be hidden for screen view.  The generic fahrner-ish approach comes
 }
 
 .ktHelp {
-    background: transparent url(../../thirdparty/icon-theme/16x16/apps/help-browser.png) top left no-repeat;
+    background: transparent url(/thirdparty/icon-theme/16x16/apps/help-browser.png) top left no-repeat;
     float: right;
     display: block;
     text-decoration: none;
@@ -1165,18 +1293,18 @@ The text will be hidden for screen view.  The generic fahrner-ish approach comes
 }
 
 /* FIXME when available icon-naming-conformant sets have better coverage, make these more accurate. */
-.ktActionLink.ktDelete, .ktAction.ktDelete { background-image: url(../../resources/graphics/delete.png); }
-.ktActionLink.ktEdit, .ktAction.ktEdit { background-image: url(../../thirdparty/icon-theme/16x16/actions/document-properties.png); }
-.ktActionLink.ktAddUser, .ktAction.ktAddUser { background-image: url(../../thirdparty/icon-theme/16x16/actions/contact-new.png); }
-.ktActionLink.ktAddGroup, .ktAction.ktAddGroup { background-image: url(../../thirdparty/icon-theme/16x16/actions/group-new.png); }
-.ktActionLink.ktAdd, .ktAction.ktAdd { background-image: url(../../thirdparty/icon-theme/16x16/actions/add.png); }
-.ktActionLink.ktDownload, .ktAction.ktDownload { background-image: url(../../resources/graphics/download.png); }
-.ktActionLink.ktBack, .ktAction.ktBack { background-image: url(../../thirdparty/icon-theme/16x16/actions/back.png); }
-.ktActionLink.ktAllowed, .ktAction.ktAllowed { background-image: url(../../resources/graphics/allowed.png); }
-.ktActionLink.ktDenied, .ktAction.ktDenied { background-image: url(../../resources/graphics/denied.png); }
-.ktActionLink.ktMoveUp, .ktAction.ktMoveUp { background-image: url(../../thirdparty/icon-theme/16x16/actions/move-up.png); }
-.ktActionLink.ktMoveDown, .ktAction.ktMoveDown { background-image: url(../../thirdparty/icon-theme/16x16/actions/move-down.png); }
-.ktActionLink.ktPreview, .ktAction.ktPreview { background-image: url(../../resources/tango-icons/system-search.png); }
+.ktActionLink.ktDelete, .ktAction.ktDelete { background-image: url(/resources/graphics/delete.png); }
+.ktActionLink.ktEdit, .ktAction.ktEdit { background-image: url(/thirdparty/icon-theme/16x16/actions/document-properties.png); }
+.ktActionLink.ktAddUser, .ktAction.ktAddUser { background-image: url(/thirdparty/icon-theme/16x16/actions/contact-new.png); }
+.ktActionLink.ktAddGroup, .ktAction.ktAddGroup { background-image: url(/thirdparty/icon-theme/16x16/actions/group-new.png); }
+.ktActionLink.ktAdd, .ktAction.ktAdd { background-image: url(/thirdparty/icon-theme/16x16/actions/add.png); }
+.ktActionLink.ktDownload, .ktAction.ktDownload { background-image: url(/resources/graphics/download.png); }
+.ktActionLink.ktBack, .ktAction.ktBack { background-image: url(/thirdparty/icon-theme/16x16/actions/back.png); }
+.ktActionLink.ktAllowed, .ktAction.ktAllowed { background-image: url(/resources/graphics/allowed.png); }
+.ktActionLink.ktDenied, .ktAction.ktDenied { background-image: url(/resources/graphics/denied.png); }
+.ktActionLink.ktMoveUp, .ktAction.ktMoveUp { background-image: url(/thirdparty/icon-theme/16x16/actions/move-up.png); }
+.ktActionLink.ktMoveDown, .ktAction.ktMoveDown { background-image: url(/thirdparty/icon-theme/16x16/actions/move-down.png); }
+.ktActionLink.ktPreview, .ktAction.ktPreview { background-image: url(/resources/tango-icons/system-search.png); }
 
 /* this is sometimes used separately to get the auto-delete help. */
 .ktDelete { }
@@ -1212,14 +1340,14 @@ The text will be hidden for screen view.  The generic fahrner-ish approach comes
 }
 
 .portlet_button a .big_btn_left {
-    background: transparent url(../../resources/graphics/btn_left.gif) top left no-repeat;
+    background: transparent url(/resources/graphics/btn_left.gif) top left no-repeat;
     width: 10px;
     height: 47px;
     float: left;
 }
 
 .portlet_button a .big_btn_middle {
-    background: transparent url(../../resources/graphics/btn_middle.gif) repeat-x;
+    background: transparent url(/resources/graphics/btn_middle.gif) repeat-x;
     height: 47px;
     float: left;
     text-align: center;
@@ -1235,27 +1363,27 @@ The text will be hidden for screen view.  The generic fahrner-ish approach comes
 }
 
 .portlet_button a .arrow_upload{
-    background: transparent url(../../resources/graphics/btn_right_up.gif) top right no-repeat;
+    background: transparent url(/resources/graphics/btn_right_up.gif) top right no-repeat;
 }
 
 .portlet_button a .arrow_download{
-    background: transparent url(../../resources/graphics/btn_right_down.gif) top right no-repeat;
+    background: transparent url(/resources/graphics/btn_right_down.gif) top right no-repeat;
 }
 
 .portlet_button a:hover .big_btn_left {
-    background: transparent url(../../resources/graphics/btn_left_ro.gif) top left no-repeat;
+    background: transparent url(/resources/graphics/btn_left_ro.gif) top left no-repeat;
 }
 
 .portlet_button a:hover .big_btn_middle {
-    background: transparent url(../../resources/graphics/btn_middle_ro.gif) repeat-x;
+    background: transparent url(/resources/graphics/btn_middle_ro.gif) repeat-x;
 }
 
 .portlet_button a:hover .arrow_upload {
-    background: transparent url(../../resources/graphics/btn_right_ro_up.gif) top right no-repeat;
+    background: transparent url(/resources/graphics/btn_right_ro_up.gif) top right no-repeat;
 }
 
 .portlet_button a:hover .arrow_download {
-    background: transparent url(../../resources/graphics/btn_right_ro_down.gif) top right no-repeat;
+    background: transparent url(/resources/graphics/btn_right_ro_down.gif) top right no-repeat;
 }
 
 
@@ -1279,10 +1407,10 @@ The text will be hidden for screen view.  The generic fahrner-ish approach comes
 
 #dashboard-container-left {
     clear: left;
-    width: 47%;
+    width: 49%;
     margin-top: 0;
     margin-left: 0;
-    padding-right: 3em;
+    padding-right: 19px;
     float: left;
     padding-bottom: 2em;
     height: 100%;
@@ -1291,7 +1419,7 @@ The text will be hidden for screen view.  The generic fahrner-ish approach comes
 }
 
 #dashboard-container-right {
-    width: 47%;
+    width: 49%;
     margin-top: 0;
     margin-left: 0;
     float: left;
@@ -1301,111 +1429,19 @@ The text will be hidden for screen view.  The generic fahrner-ish approach comes
 /*     background-color: #ddf; */
 }
 
-.dashboard_block_topleft {
-    position: absolute;
-    width: 35px;
-    height: 36px;
-    top: 0px;
-    left: 0px;
-    background: url(../graphics/dashlet_topleft.png) top left no-repeat;
-    z-index:-1;
-}
-
-.dashboard_block_toprepeat {
-    position: absolute;
-    width: 90%;
-    height: 36px;
-    top: 0px;
-    left: 30px;
-    background: white url(../graphics/dashlet_toprepeat.png) top left repeat-x;
-    z-index:-1;
-}
-
-.dashboard_block_topright {
-    position: absolute;
-    width: 35px;
-    height: 36px;
-    top: 0px;
-    right: 0px;
-    background: url(../graphics/dashlet_topright.png) top right no-repeat;
-    z-index:-1;
-}
-
-.dashboard_block_leftrepeat_top {
-    position: absolute;
-    width: 13px;
-    height: 50%;
-    top: 5px;
-    left: 0px;
-    background: white url(../graphics/dashlet_leftrepeat.png) top left repeat-y;
-    z-index:-1;
-}
-
-.dashboard_block_leftrepeat_bottom {
-    position: absolute;
-    width: 13px;
-    height: 50%;
-    bottom: 10px;
-    left: 0px;
-    background: white url(../graphics/dashlet_leftrepeat.png) top left repeat-y;
-    z-index:-1;
-}
-
-.dashboard_block_bottomleft {
-    position: absolute;
-    width: 40px;
-    height: 40px;
-    bottom: 0px;
-    left: 0px;
-    background: url(../graphics/dashlet_bottomleft.png) bottom left no-repeat;
-    z-index:-1;
-}
-
+.dashboard_block_rightrepeat_bottom,
+.dashboard_block_rightrepeat_top, 
+.dashboard_block_topleft,
+.dashboard_block_topright,
+.dashboard_block_rightrepeat_top, 
+.dashboard_block_leftrepeat_top, 
+.dashboard_block_leftrepeat_bottom, 
+.dashboard_block_bottomleft,
+.dashboard_block_bottomright, 
 .dashboard_block_bottomrepeat {
-    position: absolute;
-    width: 92%;
-    height: 13px;
-    bottom: 0px;
-    left: 30px;
-    background: white url(../graphics/dashlet_bottomrepeat.png) bottom left repeat-x;
-    z-index:-1;
+   	display: none;
 }
 
-.dashboard_block_bottomright {
-    position: absolute;
-    width: 40px;
-    height: 40px;
-    bottom: 0px;
-    right: 0px;
-    background: url(../graphics/dashlet_bottomright.png) bottom right no-repeat;
-    z-index:-1;
-}
-
-.dashboard_block_rightrepeat_top {
-    position: absolute;
-    width: 13px;
-    height: 50%;
-    top: 5px;
-    right: 0px;
-    background: white url(../graphics/dashlet_rightrepeat.png) top right repeat-y;
-    z-index:-1;
-    overflow:hidden;
-}
-
-.dashboard_block_rightrepeat_bottom {
-    position: absolute;
-    width: 13px;
-    height: 50%;
-    bottom: 10px;
-    right: 0px;
-    background: white url(../graphics/dashlet_rightrepeat.png) bottom right repeat-y;
-    z-index:-1;
-    overflow:hidden;
-}
-
-.dashboard_block_rightrepeat_top {
-    min-height: 70px;
-}
 
 .dashboard_block.rolled-up .dashboard_block_rightrepeat_top
 {
@@ -1441,7 +1477,7 @@ The text will be hidden for screen view.  The generic fahrner-ish approach comes
     height: 36px;
     top: 0px;
     left: 0px;
-    background: url(../graphics/error_topleft.png) top left no-repeat;
+    background: url(../graphics/err_topleft.png) top left no-repeat;
     z-index:-1;
 }
 
@@ -1451,7 +1487,7 @@ The text will be hidden for screen view.  The generic fahrner-ish approach comes
     height: 22px;
     top: 0px;
     left: 0px;
-    background: url(../graphics/error_topleft_small.png) top left no-repeat;
+    background: url(../graphics/err_topleft_small.png) top left no-repeat;
     z-index:-1;
 }
 
@@ -1461,7 +1497,7 @@ The text will be hidden for screen view.  The generic fahrner-ish approach comes
     height: 55px;
     top: 0px;
     left: 13px;
-    background: #ffdd80 url(../graphics/error_toprepeat.png) top left repeat-x;
+    background: #ffdd80 url(../graphics/err_toprepeat.png) top left repeat-x;
     z-index:-1;
 }
 
@@ -1471,7 +1507,7 @@ The text will be hidden for screen view.  The generic fahrner-ish approach comes
     height: 21px;
     top: 0px;
     left: 13px;
-    background: #ffdd80 url(../graphics/error_toprepeat.png) bottom left repeat-x;
+    background: #ffdd80 url(../graphics/err_toprepeat.png) bottom left repeat-x;
     z-index:-1;
     border-top: 1px solid #FFC21E;
 }
@@ -1482,7 +1518,7 @@ The text will be hidden for screen view.  The generic fahrner-ish approach comes
     height: 36px;
     top: 0px;
     right: 0px;
-    background: url(../graphics/error_topright.png) top right no-repeat;
+    background: url(../graphics/err_topright.png) top right no-repeat;
     z-index:-1;
 }
 
@@ -1492,7 +1528,7 @@ The text will be hidden for screen view.  The generic fahrner-ish approach comes
     height: 22px;
     top: 0px;
     right: 0px;
-    background: url(../graphics/error_topright_small.png) top right no-repeat;
+    background: url(../graphics/err_topright_small.png) top right no-repeat;
     z-index:-1;
 }
 
@@ -1502,7 +1538,7 @@ The text will be hidden for screen view.  The generic fahrner-ish approach comes
     height: 50%;
     top: 5px;
     left: 0px;
-    background: #ffdd80 url(../graphics/error_leftrepeat.png) top left repeat-y;
+    background: #ffdd80 url(../graphics/err_leftrepeat.png) top left repeat-y;
     z-index:-1;
 }
 
@@ -1512,7 +1548,7 @@ The text will be hidden for screen view.  The generic fahrner-ish approach comes
     height: 50%;
     bottom: 10px;
     left: 0px;
-    background: #ffdd80 url(../graphics/error_leftrepeat.png) top left repeat-y;
+    background: #ffdd80 url(../graphics/err_leftrepeat.png) top left repeat-y;
     z-index:-1;
 }
 
@@ -1522,7 +1558,7 @@ The text will be hidden for screen view.  The generic fahrner-ish approach comes
     height: 45px;
     bottom: 0px;
     left: 0px;
-    background: url(../graphics/error_bottomleft.png) bottom left no-repeat;
+    background: url(../graphics/err_bottomleft.png) bottom left no-repeat;
     z-index:-1;
 }
 
@@ -1532,7 +1568,7 @@ The text will be hidden for screen view.  The generic fahrner-ish approach comes
     height: 30px;
     bottom: 0px;
     left: 10x;
-    background: #ffdd80 url(../graphics/error_bottomrepeat.png) bottom left repeat-x;
+    background: #ffdd80 url(../graphics/err_bottomrepeat.png) bottom left repeat-x;
     z-index:-1;
 }
 
@@ -1542,7 +1578,7 @@ The text will be hidden for screen view.  The generic fahrner-ish approach comes
     height: 30px;
     bottom: 0px;
     left: 10x;
-    background: #ffdd80 url(../graphics/error_bottomrepeat.png) bottom left repeat-x;
+    background: #ffdd80 url(../graphics/err_bottomrepeat.png) bottom left repeat-x;
     z-index:-1;
 }
 
@@ -1552,7 +1588,7 @@ The text will be hidden for screen view.  The generic fahrner-ish approach comes
     height: 40px;
     bottom: 0px;
     right: 0px;
-    background: url(../graphics/error_bottomright.png) bottom right no-repeat;
+    background: url(../graphics/err_bottomright.png) bottom right no-repeat;
     z-index:-1;
 }
 
@@ -1562,7 +1598,7 @@ The text will be hidden for screen view.  The generic fahrner-ish approach comes
     height: 50%;
     top: 5px;
     right: 0px;
-    background: #ffdd80 url(../graphics/error_rightrepeat.png) top right repeat-y;
+    background: #ffdd80 url(../graphics/err_rightrepeat.png) top right repeat-y;
     z-index:-1;
     overflow:hidden;
 }
@@ -1573,7 +1609,7 @@ The text will be hidden for screen view.  The generic fahrner-ish approach comes
     height: 50%;
     top: 5px;
     right: 0px;
-    background: #ffdd80 url(../graphics/error_rightrepeat.png) top right repeat-y;
+    background: #ffdd80 url(../graphics/err_rightrepeat.png) top right repeat-y;
     z-index:-1;
     overflow:hidden;
 }
@@ -1584,7 +1620,7 @@ The text will be hidden for screen view.  The generic fahrner-ish approach comes
     height: 50%;
     bottom: 10px;
     right: 0px;
-    background: #ffdd80 url(../graphics/error_rightrepeat.png) bottom right repeat-y;
+    background: #ffdd80 url(../graphics/err_rightrepeat.png) bottom right repeat-y;
     z-index:-1;
     overflow:hidden;
 }
@@ -1628,11 +1664,11 @@ The text will be hidden for screen view.  The generic fahrner-ish approach comes
 }
 
 .dashboard_block.rolled-up .error_dashlet_bottomleft {
-    background: url(../graphics/error_bottomleft_rolledup.png) bottom left no-repeat;
+    background: url(../graphics/err_bottomleft_rolledup.png) bottom left no-repeat;
 }
 
 .dashboard_block.rolled-up .error_dashlet_bottomright {
-	background: url(../graphics/error_bottomright_rolledup.png) bottom right no-repeat;
+	background: url(../graphics/err_bottomright_rolledup.png) bottom right no-repeat;
 }
 
 .info_dashlet_topleft {
@@ -2063,14 +2099,14 @@ hr {
 	top: 0px;
 	right: 10px;
     text-align: right;
-    margin: 0.2em 0em 0 0;
+    margin: 5px 0px 0px 0px;
 }
 
 .dashboard_block_handle
 {
     cursor: pointer;
-    margin: 0.2em -0.5em 0.5em 0;
     font-size:small;
+    padding: 5px 8px
 }
 
 .dashboard_block.rolled-up .dashboard_block_body
@@ -2081,9 +2117,7 @@ hr {
 .ktBlock .dashboard_block_body
 {
     z-index:99;
-    margin: 8px 0 0 0;
-	padding-bottom: 10px;
-    background-color:#FFFFFF;
+	padding: 10px;
     overflow: auto;
 }
 
@@ -2144,13 +2178,23 @@ hr {
 {
     border-bottom-width: 0px;
     padding-bottom: 10px;
+    border-radius: 5px;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
 }
 
 #content .ktBlock h2
 {
-    border-bottom-width: 0px;
-    color: #FFFFFF;
-    font-size: small;
+    border-bottom: 1px solid #CCC;
+	color: #2F6594;
+	font-size: small;
+	background: #EEE;
+	border-bottom: 1px solid #CCC;
+	border-radius: 5px 5px 0px 0px;
+	-moz-border-radius: 5px 5px 0px 0px;
+	-webkit-border-radius: 5px 5px 0px 0px;
+	height: 18px;
+	text-shadow: 0px 1px 0px white;
 }
 
 #content .dashboard_block.closed
@@ -2202,12 +2246,17 @@ body #content #add_dashlet
 
 #add_dashlet
 {
-    border: 1px solid #ccc;
-    background: #fdfdfd;
-    color: #333;
-    font-weight: normal;
-    float: right;
-    margin-right: 3em;
+    border: 1px solid #CCC;
+	background: #FDFDFD;
+	color: #2F6594;
+	font-weight: normal;
+	float: right;
+	margin-right: 3em;
+	border-radius: 5px;
+	-webkit-border-radius: 5px;
+	-moz-border-radius: 5px;
+	padding: 4px 4px 4px 25px;
+	font-size: 11px;
 }
 
 /*contenttype_href class style is used to stop underline error on a hyperlink in IE*/
@@ -2285,7 +2334,7 @@ body #content #add_dashlet
 .x-toolbar{
     border: none;
     display: block;
-	padding: 0 15px 0 15px;
+	margin: 0px auto;
     background: transparent;
     position: relative;
     zoom: 1;
@@ -2295,46 +2344,40 @@ body #content #add_dashlet
 	padding: 2px;
 }
 
-.x-toolbar .x-btn-left{
-	background: url(../graphics/tb_search_btn.gif) no-repeat 0 0;
-}
-
-.x-toolbar .x-btn-right{
-	background: url(../graphics/tb_search_btn.gif) no-repeat 0 -21px;
-}
-.x-toolbar .x-btn-center{
-	background: url(../graphics/tb_search_btn.gif) repeat-x 0 -42px;
-}
-
-.x-toolbar .x-btn-over .x-btn-left{
-	background: url(../graphics/tb_search_btn.gif) no-repeat 0 0;
-}
-.x-toolbar .x-btn-over .x-btn-right{
-	background: url(../graphics/tb_search_btn.gif) no-repeat 0 -21px;
-}
-.x-toolbar .x-btn-over .x-btn-center{
-	background: url(../graphics/tb_search_btn.gif) repeat-x 0 -42px;
+.x-toolbar .x-btn-over .x-btn-left,
+.x-toolbar .x-btn-over .x-btn-center,
+.x-toolbar .x-btn-over .x-btn-right {
+	background: none;
 }
 
 .x-toolbar .x-btn-click .x-btn-left, .x-toolbar .x-btn-pressed .x-btn-left, .x-toolbar .x-btn-menu-active .x-btn-left{
-	background: url(../graphics/tb_search_btn.gif) no-repeat 0 -63px;
+	background: none;
 }
 .x-toolbar .x-btn-click .x-btn-right, .x-toolbar .x-btn-pressed .x-btn-right, .x-toolbar .x-btn-menu-active .x-btn-right{
-	background: url(../graphics/tb_search_btn.gif) no-repeat 0 -84px;
+	background: none;
 }
 
 .x-toolbar .x-btn-click .x-btn-center, .x-toolbar .x-btn-pressed .x-btn-center, .x-toolbar .x-btn-menu-active .x-btn-center{
-	background: url(../graphics/tb_search_btn.gif) repeat-x 0 -105px;
+	background: none;
 }
-
+.x-toolbar .x-btn-over .x-btn-menu-arrow-wrap .x-btn-center button {
+	background-position: 0 3px;
+}
 .x-menu {
-	border: 1px solid #718bb7;
+	border: 1px solid #CCC;
 	z-index: 15000;
 	zoom: 1;
 	background: #FDFDFD;
-	padding: 2px;
+	padding: 0px;
+	color: #666;
 }
-
+.x-menu a.x-menu-item {
+	color: #666;
+}
+.x-menu-item-active{
+	background: #F2EBAE;
+	border: 1px solid #F2EBAE;
+}
 
 /* ================= Ajax popup - override ExtJS CSS ================= */
 /* The move to the new UI (from orange/green to blue/grey) broke these styles, hence addition of extjs_ prefix to the form_actions style. */
@@ -2372,7 +2415,7 @@ div.extjs_form_actions {
 
 #popup_content .warning {
     padding-left: 20px;
-    background: url(../../thirdparty/icon-theme/16x16/status/dialog-warning.gif) center left no-repeat;
+    background: url(/thirdparty/icon-theme/16x16/status/dialog-warning.gif) center left no-repeat;
 }
 
 #popup_content .input_field {
@@ -2408,60 +2451,73 @@ div.extjs_form_actions {
 }
 
 #popup_content .error {
-    background: #ffdd80  url(../../resources/graphics/denied.gif) 2px center no-repeat;
+    background: #ffdd80  url(/resources/graphics/denied.gif) 2px center no-repeat;
 }
-
+.ext-el-mask {
+	background: whitesmoke;
+}
+.x-shadow {
+	display: none!important;
+}
+.x-window {
+	background: #cccccc\0/; /* for IE8, cannot handle alpha */
+	background: rgba(0,0,0,0.3);
+	padding: 10px;
+}
 .x-window-tl .x-window-header {
-    color: #FFF;
+    color: #2F6594;
+    font-size: 16px;
+    text-shadow: 0px 1px 0px white;
 }
 
 .x-window-tc {
-	background: url(../graphics/portlet_bg.png) repeat-x 0 0;
+	background:#EEE;
 	overflow:hidden;
     zoom:1;
+    padding: 5px;
 }
 
 .x-window-tl {
-	background: url(../graphics/portlet_corner_topleft.png) no-repeat 0 0;
-	padding-left:6px;
+	border-bottom: 1px solid #CCC;
+	padding-left:0px;
     zoom:1;
     z-index:1;
     position:relative;
 }
 
 .x-window-tr {
-	background: url(../graphics/portlet_corner_topright_2.png) no-repeat right 0;
-	padding-right:6px;
+	border:0px;
+	padding-right:0px;
 }
 
 .x-window-bc {
 	background: #FFF;
     zoom:1;
+    border:0px;
 }
 .x-window-bl {
-    border-left:1px solid #AFAFAF;
-    border-bottom:1px solid #AFAFAF;
+	border:0px;
 	background:  #FFF;
 	padding-left:6px;
     zoom:1;
 }
 .x-window-br {
-    border-right:1px solid #AFAFAF;
+    border-right:0px solid #AFAFAF;
 	background:  #FFF;
 	padding-right:6px;
     zoom:1;
 }
 
 .x-window-ml {
-    border-left:1px solid #AFAFAF;
+    border-left:0px solid #AFAFAF;
 	background:  #FFF;
-	padding-left:6px;
+	padding-left:0px;
     zoom:1;
 }
 .x-window-mr {
-    border-right:1px solid #AFAFAF;
+    border-right:0px solid #AFAFAF;
 	background:  #FFF;
-	padding-right:6px;
+	padding-right:0px;
     zoom:1;
 }
 

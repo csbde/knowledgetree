@@ -59,10 +59,10 @@ require_once(KT_LIB_DIR .'/render_helpers/browseView.helper.php');
 class TagCloudRedirectPage extends KTStandardDispatcher {
 
     /**
-	 * Dispatcher main method
-	 *
-	 * @return unknown
-	 */
+     * Dispatcher main method
+     *
+     * @return unknown
+     */
     public function do_main()
     {
         // Clear the session for a new search
@@ -89,6 +89,8 @@ class TagCloudRedirectPage extends KTStandardDispatcher {
         $this->redirectTo('search', $url);
     }
 
+    // FIXME this looks horribly like it contains duplicated browse code,
+    //       which is likely not being kept up to date with the current browse code.
     public function do_search()
     {
         // Get the tag to search for and create search query
@@ -98,145 +100,95 @@ class TagCloudRedirectPage extends KTStandardDispatcher {
             $tag = urldecode($tag);
         }
 
-        $iUserId = $_SESSION['userID'];
-        $oUser = User::get($iUserId);
-
-        // set breadcrumbs
-		/*
-        $this->aBreadcrumbs[] = array('url' => 'dashboard.php', 'name' => _kt('Dashboard'));
-		$this->aBreadcrumbs[] = array('url' => $_SERVER['PHP_SELF'], 'name' => _kt('Tag Cloud Search'));
-
-        $tagList = $_SESSION['tagList'];
-        if (!empty($tagList)) {
-            $aPrevTag = end($tagList);
-            $aTagTree = $aPrevTag['tagTree'];
-
-            $base = KTUtil::addQueryString('TagCloudRedirection&action=recall', null);
-            foreach ($aTagTree as $key => $item) {
-                if ($tag == $item) {
-                    continue;
-                }
-                $url = $base.'&tag='.urlencode($item).'&pos='.$key;
-                $this->aBreadcrumbs[] = array('url' => $url, 'name' => $item);
-            }
-        }
-        if (!empty($tag)) {
-            $this->aBreadcrumbs[] = array('url' => '', 'name' => $tag);
-        }*/
+        $userId = $_SESSION['userID'];
+        $user = User::get($userId);
 
         // set page title
-        $sTitle =  _kt('Search Results - Tag:') . ' ' . $tag;
-        $this->oPage->setBreadcrumbDetails($sTitle);
+        $title =  _kt('Search Results - Tag:') . ' ' . $tag;
+        $this->oPage->setBreadcrumbDetails($title);
 
         // Set tag cloud portlet
-        $portlet = new TagCloudPortlet($oUser, $tag);
+        $portlet = new TagCloudPortlet($user, $tag);
         $this->oPage->addPortlet($portlet);
 
-		/*
-        $collection = new AdvancedCollection;
-        $oColumnRegistry = KTColumnRegistry::getSingleton();
-        $aColumns = $oColumnRegistry->getColumnsForView('ktcore.views.search');
-        $collection->addColumns($aColumns);
+        $browseViewRenderer = BrowseViewUtil::getBrowseView();
+        // There are no bulk actions available to this section at the moment.
+        // FIXME Add bulk actions menu.
+        /*$templateData['bulkActionMenu'] = $browseViewRenderer->renderBulkActionMenu(null);*/
+        $folderContentItems = $this->getTagContent($tag);
+        $folderView = $preFolderView = array();
 
-        // set a view option
-        $aTitleOptions = array('documenturl' => $GLOBALS['KTRootUrl'] . '/view.php',);
-        $collection->setColumnOptions('ktcore.columns.title', $aTitleOptions);
-        $collection->setColumnOptions('ktcore.columns.selection', array(
-            'rangename' => 'selection',
-            'show_folders' => true,
-            'show_documents' => true,
-           ));
+        foreach ($folderContentItems['documents'] as $item)
+        {
+            $item['id'] = $item['document_id'];
+            if ($item['checked_out_date'] == 'n/a') {
+                $item['checked_out_date'] = '';
+            }
 
-        $aOptions = $collection->getEnvironOptions(); // extract data from the environment
+            $preFolderView[] = $browseViewRenderer->renderDocumentItem($item);
+        }
 
-        $returnUrl = KTUtil::addQueryString('TagCloudRedirection&action=search&tag='. urlencode($tag), false);
-        $aOptions['return_url'] = $returnUrl;
-        $aOptions['empty_message'] = _kt('No documents or folders match this query.');
-        $aOptions['is_browse'] = true;
+        $pageCount = 1;
+        $perPage = 15;
+        $itemCount = count($preFolderView);
+        $curItem = 0;
 
-        $collection->setOptions($aOptions);
-        $collection->setQueryObject(new TagQuery($oUser, $tag));
-		*/
+        $folderView[] = '<div class="page page_' . $pageCount . ' ">';
+        foreach ($preFolderView as $item) {
+            ++$curItem;
+            if ($curItem > $perPage) {
+                ++$pageCount;
+                $curItem = 1;
+                $folderView[] = '</div><div class="page page_' . $pageCount . ' ">';
+            }
+            $folderView[] = $item;
+        }
 
-        $oTemplating =& KTTemplating::getSingleton();
-        $oTemplate = $oTemplating->loadTemplate('kt3/browse');
-        $aTemplateData = array(
+        if ($itemCount <= 0) {
+            $folderView[] = '<span class="notification" id="empty_message">There are currently no viewable items in this folder.</span>';
+        }
+
+        $folderView[] = '</div>';
+
+        $this->oFolder = null;
+
+        $templating =& KTTemplating::getSingleton();
+        $template = $templating->loadTemplate('kt3/browse');
+        $templateData = array(
             'context' => $this,
             'collection' => $collection,
-            'custom_title' => $sTitle,
+            'custom_title' => $title,
             'isEditable' => true,
-            'boolean_search' => $sSearch,
+            'boolean_search' => false,
             'bulkactions' => KTBulkActionUtil::getAllBulkActions(),
             'browseutil' => new KTBrowseUtil(),
             'returnaction' => $returnUrl,
-       );
+        );
 
-		//if (!$aTemplateData['oldBrowse']) {
-			$browseViewRender = BrowseViewUtil::getBrowseView();
-			$aTemplateData['bulkActionMenu'] = $browseViewRender->renderBulkActionMenu($aBulkActions);
-			$folderContentItems = $this->getTagContent($tag);
-			$folderView = $pre_folderView = array();
+        $templateData['folderContents'] = join($folderView);
+        $templateData['fragments'] = '';
+        $templateData['fragments'] .= $browseViewRenderer->renderDocumentItem(null, true);
+        $templateData['fragments'] .= $browseViewRenderer->renderFolderItem(null, true);
+        $templateData['pagination'] = $browseViewRenderer->paginateByDiv($pageCount, 'page', 'paginate', 'item', "kt.pages.browse.viewPage('[page]');", "kt.pages.browse.prevPage();", "kt.pages.browse.nextPage();");
+        $templateData['javascript'] = $browseViewRenderer->getJavaScript();
 
-			//foreach ($folderContentItems['folders'] as $item)$pre_folderView[]=$this->renderFolderItem($item);
-			foreach ($folderContentItems['documents'] as $item)
-			{
-				$item['id'] = $item['document_id'];
-
-				if ($item['checked_out_date'] == 'n/a') {
-					$item['checked_out_date'] = '';
-				}
-
-				$pre_folderView[] = $browseViewRender->renderDocumentItem($item);
-			}
-
-			$pageCount = 1;
-			$perPage = 15;
-			$itemCount = count($pre_folderView);
-			$curItem = 0;
-
-			$folderView[] = '<div class="page page_' . $pageCount . ' ">';
-			foreach ($pre_folderView as $item) {
-				++$curItem;
-				if ($curItem > $perPage) {
-					++$pageCount;
-					$curItem = 1;
-					$folderView[] = '</div><div class="page page_' . $pageCount . ' ">';
-				}
-				$folderView[] = $item;
-			}
-
-			if ($itemCount <= 0) {
-				$folderView[] = '<span class="notification" id="empty_message">There are currently no viewable items in this folder.</span>';
-			}
-
-			$folderView[] = "</div>";
-
-			$aTemplateData['folderContents'] = join($folderView);
-			$aTemplateData['fragments'] = '';
-			$aTemplateData['fragments'] .= $browseViewRender->renderDocumentItem(null, true);
-			$aTemplateData['fragments'] .= $browseViewRender->renderFolderItem(null, true);
-			$aTemplateData['pagination'] = $browseViewRender->paginateByDiv($pageCount, 'page', 'paginate', 'item', "kt.pages.browse.viewPage('[page]');", "kt.pages.browse.prevPage();", "kt.pages.browse.nextPage();");
-			$aTemplateData['javascript'] = $browseViewRender->getJavaScript();
-		//}
-
-        return $oTemplate->render($aTemplateData);
+        return $template->render($templateData);
     }
 
-	public function getTagContent($tag)
-	{
-		$oUser = KTEntityUtil::get('User', $_SESSION['userID']);
-		$KT = new KTAPI();
-		$session = $KT->start_system_session($oUser->getUsername());
+    public function getTagContent($tag)
+    {
+        $userId = $_SESSION['userID'];
+        $user = User::get($userId);
 
-		$results = $KT->get_tag_contents($tag);
+        $kt = new KTAPI();
+        $session = $kt->start_system_session($user->getUsername());
 
-		$ret = array('folders' => array(), 'documents' => $results['results'], 'shortcuts' => array());
+        $results = $kt->get_tag_contents($tag);
 
-		return $ret;
-	}
+        $ret = array('folders' => array(), 'documents' => $results['results'], 'shortcuts' => array());
 
-
-
+        return $ret;
+    }
 
 }
 ?>

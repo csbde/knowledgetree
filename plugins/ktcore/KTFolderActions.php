@@ -5,7 +5,7 @@
  * KnowledgeTree Community Edition
  * Document Management Made Simple
  * Copyright (C) 2008, 2009, 2010 KnowledgeTree Inc.
- * 
+ *
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License version 3 as published by the
@@ -53,7 +53,7 @@ require_once(KT_LIB_DIR . '/roles/Role.inc');
 // {{{ KTDocumentDetailsAction
 class KTFolderViewAction extends KTFolderAction {
     var $sName = 'ktcore.actions.folder.view';
-	
+
     function do_main() {
         redirect(KTBrowseUtil::getUrlForFolder($this->oFolder));
         exit(0);
@@ -71,14 +71,16 @@ class KTFolderAddFolderAction extends KTFolderAction {
     var $sName = 'ktcore.actions.folder.addFolder';
 
     var $_sShowPermission = "ktcore.permissions.addFolder";
-    
-	var $showIfWrite = true;
-	var $showIfRead = false;
-	
+
+	var $bShowIfWriteShared = true;
+
+	var $cssClass = 'new-folder';
+	var $parentBtn = '';
+
     function getDisplayName() {
-        return _kt('Add a Folder');
+        return _kt('New Folder');
     }
-	
+
 	function getButton() {
         $btn = array();
         $btn['display_text'] = _kt('Add Folder');
@@ -86,10 +88,9 @@ class KTFolderAddFolderAction extends KTFolderAction {
         return $btn;
     }
 
-
     function form_main() {
         $oForm = new KTForm;
-		
+
         $oForm->setOptions(array(
             'context' => &$this,
             'identifier' => 'ktcore.folder.add',
@@ -100,22 +101,23 @@ class KTFolderAddFolderAction extends KTFolderAction {
             'submit_label' => _kt('Add Folder'),
             'extraargs' => $this->meldPersistQuery("","", true),
         ));
-        
+
         // widgets
-		$folderWidgets[] = array('ktcore.widgets.string', array(
-			                		'label' => _kt('Folder name'),
-					                'required' => true,
-					                'name' => 'name',
-									'has_id' => true,
-									'id' => 'folder_name'
-								),
-							);
+		$folderWidgets[] =
+            array('ktcore.widgets.string', array(
+                'label' => _kt('Folder name'),
+                'required' => true,
+                'name' => 'name',
+				'has_id' => true,
+				'id' => 'folder_name'
+				),
+            );
         $usertype = '';
         if($this->oUser instanceof UserProxy)
         {
             $usertype = $this->oUser->getDisabled();
         }
-        else 
+        else
         {
         	$oUser = User::get($_SESSION['userID']);
         	$usertype = $oUser->getDisabled();
@@ -123,35 +125,12 @@ class KTFolderAddFolderAction extends KTFolderAction {
         // Shared users should not see folder template structures
         if($usertype != 4)
         {
-        	// Check if folder templates plugin is active
-        	if (KTPluginUtil::pluginIsActive('folder.templates.plugin'))
-        	{
-        		// Get folder templates
-        		$aFolderTemplates = $this->folderTemplateOptions(); // Get folder structure creation option
-				if(is_array($aFolderTemplates)) 
-				{
-					global $main;
-	        		// Load folder templates css and js
-	        		$main->requireCSSResource(FTemplates_DIR . "/resources/folder_templates.css");
-	        		if(preg_match("/MSIE 7\.\d/", $_SERVER['HTTP_USER_AGENT'])) 
-	        		{
-	       				$main->requireCSSResource(FTemplates_DIR . "/resources/folder_templates_ie_7.css");
-	       			}
-	       			if(preg_match("/Firefox\/2\.\d/", $_SERVER['HTTP_USER_AGENT'])) 
-	       			{
-	       				$main->requireCSSResource(FTemplates_DIR . "/resources/folder_templates_ff_2.css");
-	       			}
-	       			$main->requireJSResource(FTemplates_DIR . "/resources/folder_templates.js");
-					// Check if any results are returned
-					$folderWidgets[] = $aFolderTemplates;
-					$folderWidgets[] = array('ktcore.widgets.div', array(
-													'id' => 'outer'
-											)
-										); 
-				}
-        	}
+			$aFolderTemplates = $this->folderTemplateOptions(); // Get folder structure creation option
+			if(is_array($aFolderTemplates)) { // Check if any results are returned
+				 $folderWidgets[] = $aFolderTemplates;
+			}
         }
-        
+
         $oForm->setWidgets($folderWidgets);
 
         // Electronic Signature if enabled
@@ -208,20 +187,22 @@ class KTFolderAddFolderAction extends KTFolderAction {
      *
      * @return unknown
      */
-    function folderTemplateOptions() 
-    {
-		require_once(FolderTemplatesPlugin_DIR . DIRECTORY_SEPARATOR. "FolderTemplate.inc.php");
-		
-		return FolderTemplateRenders::getTemplates();
+    function folderTemplateOptions() {
+		if (KTPluginUtil::pluginIsActive('folder.templates.plugin')) { // Check if folder templates plugin is active
+			require_once(FolderTemplatesPlugin_DIR . DIRECTORY_SEPARATOR. "FolderTemplate.inc.php");
+			return FolderTemplateRenders::getTemplates();
+		}
+
+		return false;
     }
-    
+
     function do_main() {
     	// Use client-side validation
     	global $main;
     	$main->requireJSResource("resources/js/validation/validate_folder_name.js"); // Get the JS
         $this->oPage->setBreadcrumbDetails(_kt("add folder"));
         $oTemplate =& $this->oValidator->validateTemplate('ktcore/action/addFolder');
-		
+
         $oForm = $this->form_main();
 
         $oTemplate->setData(array(
@@ -250,7 +231,7 @@ class KTFolderAddFolderAction extends KTFolderAction {
 
         $aErrorOptions['defaultmessage'] = _kt("Could not create folder in the document management system");
         $this->oValidator->notError($res, $aErrorOptions);
-        
+
         // post-triggers.
         $oKTTriggerRegistry = KTTriggerRegistry::getSingleton();
         $aTriggers = $oKTTriggerRegistry->getTriggers('contentadd', 'postValidate');
@@ -258,14 +239,12 @@ class KTFolderAddFolderAction extends KTFolderAction {
             $sTrigger = $aTrigger[0];
             $oTrigger = new $sTrigger;
             $aInfo = array(
-                'oObject' => $oFolder,
-				'oUser' => $this->oUser,
-				'sType' => 'folder',
+                'folder' => $oFolder,
             );
             $oTrigger->setInfo($aInfo);
             $ret = $oTrigger->postValidate();
         }
-        
+
         $this->commitTransaction();
         // On successful creation of a folder
         $templateId = isset($_POST['data']) ? KTUtil::arrayGet($_POST['data'], 'templateId', false) : false;
@@ -273,10 +252,10 @@ class KTFolderAddFolderAction extends KTFolderAction {
         if($templateId != false)
         	$this->applyTemplate($oFolder->getId(), $templateId);
         controllerRedirect('browse', sprintf('fFolderId=%d', $oFolder->getId()));
-        
+
         exit(0);
     }
-    
+
     function applyTemplate($rootId, $templateId) {
     	if (KTPluginUtil::pluginIsActive('folder.templates.plugin')) { // Check if folder templates plugin is active
 			require_once(FolderTemplatesPlugin_DIR . DIRECTORY_SEPARATOR ."FolderTemplate.inc.php");

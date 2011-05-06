@@ -2887,22 +2887,19 @@ class KTWebService {
 					}
 					$metadata[$i]['fields'][$j]['selection'] = $new;
 				}
+				//process tree
 				else
-				{					
+				{
+					//recursively do the tree
 					$selection = $metadata[$i]['fields'][$j]['selection'];
-					$new = array();
-	
-					foreach ($selection as $item)
-					{	    	
-						$new[] = array(
-							'id' => $item['tree_id'],
-							'name' => $item['field_name'],
-							'value' => $item['field_name'],
-							'parent_id' => $item['parent_id'],
-							'tree_name' => $item['tree_name']
-						);
-					}
-					$metadata[$i]['fields'][$j]['selection'] = $new;
+					
+					$tree = array();
+					
+					KTWebService::_populate_tree($selection, $tree);
+					
+					$GLOBALS['default']->log->debug('get_document_type_metadata tree after population '.print_r($tree, true));
+						
+					$metadata[$i]['fields'][$j]['selection'] = $tree;
 				}
 			}
 		}
@@ -2911,8 +2908,41 @@ class KTWebService {
     		'status_code' => KTWS_SUCCESS,
     		'message' => '',
     		'metadata' => $metadata);
+    		
+    	$return = KTWebService::_encode_metadata_response($response);
+    	
+    	//$GLOBALS['default']->log->debug('get_document_type_metadata return '.print_r($return, true));
 
-    	return KTWebService::_encode_metadata_response($response);
+    	return $return;
+	}
+	
+	function _populate_tree($selection, &$tree, $path = '')
+	{
+		
+		foreach ($selection as $item)
+		{			
+			if ($item['type'] == 'field')
+			{
+				$tree[] = array(
+					'id' => $item['fieldid'],
+					'name' => $item['name'],
+					'value' => $item['name'],
+					'parent_id' => $item['parentid'],
+					'path' => $path.$item['name']
+				);
+			}
+		
+			else 
+			{				
+				$path .= $item['treename'].'\\';
+				
+				KTWebService::_populate_tree($item['fields'], &$tree, $path);
+			
+				//reset path
+				$path = 'Root\\';
+			}			
+		}	
+		
 	}
 
     /**
@@ -2974,22 +3004,19 @@ class KTWebService {
 					}
 					$metadata[$i]['fields'][$j]['selection'] = $new;
 				}
+				//process tree
 				else
-				{					
+				{
 					$selection = $metadata[$i]['fields'][$j]['selection'];
-					$new = array();
-	
-					foreach ($selection as $item)
-					{	    	
-						$new[] = array(
-							'id' => $item['tree_id'],
-							'name' => $item['field_name'],
-							'value' => $item['field_name'],
-							'parent_id' => $item['parent_id'],
-							'tree_name' => $item['tree_name']
-						);
-					}
-					$metadata[$i]['fields'][$j]['selection'] = $new;
+					
+					$tree = array();
+					//recursively do the tree
+					
+					KTWebService::_populate_tree($selection, $tree);
+					
+					$GLOBALS['default']->log->debug('get_document_metadata tree after population '.print_r($tree, true));
+						
+					$metadata[$i]['fields'][$j]['selection'] = $tree;
 				}
 			}
 		}
@@ -4123,7 +4150,7 @@ class KTWebService {
 	 */
 	function get_folder_changes($session_id, $folder_ids, $timestamp = 0, $depth = 1)
 	{
-		//$GLOBALS['default']->log->debug("get_folder_changes $folder_id $change_id");
+		$GLOBALS['default']->log->debug("WS get_folder_changes $session_id ".print_r($folder_ids, true)." $timestamp");
 		
 		$kt = &$this->get_ktapi($session_id );
 		if (is_array($kt))
@@ -4133,7 +4160,7 @@ class KTWebService {
     	
     	$result = &$kt->get_folder_changes($folder_ids, $timestamp, $depth, 'DF');
     	
-    	$GLOBALS['default']->log->debug('get_folder_changes result '.print_r($result, true));
+    	$GLOBALS['default']->log->debug('WS get_folder_changes result '.print_r($result, true));
     	
 		if ($result['status_code'] !== 0)
 		{
@@ -4237,7 +4264,24 @@ class KTWebService {
 	
 	function verify_folders_total_size($session_id, $include_folder_ids, $exclude_folder_ids)
 	{
-		$response = KTWebService::_status(KTWS_SUCCESS, '');
+		$kt = &$this->get_ktapi($session_id );
+		if (is_array($kt))
+    	{
+    		return new SOAP_Value('return', "{urn:$this->namespace}kt_response", $kt);
+    	}
+    	
+    	$result = &$kt->get_folder_total_size($include_folder_ids, $exclude_folder_ids);
+    	
+    	if ($result['status_code'] === 0)
+		{
+		    $response = KTWebService::_status(KTWS_SUCCESS, $result['message']);
+		}
+		else
+		{
+		    $response = KTWebService::_status(KTWS_ERR_PROBLEM, $result['message']);
+		}
+	    	
+		//$response = KTWebService::_status(KTWS_SUCCESS, '');
 		
 		return new SOAP_Value('return', "{urn:$this->namespace}kt_response", $response);
 	}
@@ -4633,7 +4677,7 @@ class KTWebService {
          	);
     	if ($this->version >= 3)
          {
-         	$this->__typedef["{urn:$this->namespace}kt_metadata_selection_item"]['tree_name'] = 'string';
+         	$this->__typedef["{urn:$this->namespace}kt_metadata_selection_item"]['path'] = 'string';
          }
 
     	$this->__typedef["{urn:$this->namespace}kt_metadata_selection"] =

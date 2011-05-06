@@ -1,103 +1,68 @@
 <script type="text/javascript" src="resources/js/jquery.autoresize.min.js"></script>
-<div id="viewlet_activityfeed">
-    <h2>{i18n}Post a comment{/i18n}:</h2>
-    
-    <div id="commentssaveajax">
-        
-    </div>
+<div id="viewlet-activityfeed">
+    <div id="commentssaveajax"></div>
     <div id="commentsarea">
-        <table>
-        <tr>
-            <td width="48">
-                <img src="resources/graphics/newui/message.png">
-            </td>
-            <td>
-                <textarea id="commentsbox" style="width:600px;"></textarea>
-                
-            </td>
-            <td style="padding:2px 5px;">
-                <div class="form_actions">
-                    <input type="hidden" id="comment_documentid" name="documentid" value="{$document->getId()}" />
-                    <input type="button" id="comment_post" name="comment.post" value="{i18n}Post{/i18n}" style="background: none;" />
-                </div>
-            </td>
-        </tr></table>
+        <table style="margin: 0px;">
+	        <tr>
+	            <td>
+	                <textarea id="commentsbox" style="width:600px;" class="default-text" title="Write a comment..."></textarea>
+	            </td>
+	            <td style="" valign="middle">
+	                <div class="buttons">
+	                    <input type="button" id="comment-post" name="comment.post" onclick="javascript: kt.app.activityFeed.postComment({$document->getId()}, jQuery('#commentsbox').val(), {$displayMax});" value="{i18n}Post{/i18n}" />
+	                </div>
+	            </td>
+	        </tr>
+        </table>
     </div>
 
-    
-<div class="activityfeed" style="border: 0px solid #000000">
-        
 
-{foreach item=version from=$versions}
-        {if $version.type=='version'}
-	        <span class="metaflag">Ver {$version.version}</span>
-        {else}
-	        <div class="item {$version.type}">
-	            <div class="icon"><img src="http://www.gravatar.com/avatar/{$version.email}?s=48" alt="{$version.name}" title="{$version.name}" /></div>
-	            <div class="activityfeed_content">
-	                <span class="date">{$version.datetime}</span>
+			<div class="activityfeed buttons"> Show: 
+				<input type="button" name="toggle-user-feed" onclick="javascript: kt.app.activityFeed.toggleFeed(jQuery(this), ['activityfeed.item.comment'], {$displayMax});" value="{i18n}Comments{/i18n}" class="toggle-user-feed"/>
+				<input type="button" name="toggle-system-feed" onclick="javascript: kt.app.activityFeed.toggleFeed(jQuery(this), ['activityfeed.item.transaction', 'activityfeed.item.version'], {$displayMax});"value="{i18n}Actions{/i18n}" class="toggle-system-feed"/>
+			</div>
+
+		
+<div class="activityfeed" style="border: 0px solid #000000">
+
+<div class="activityfeed new-comment"></div>
+
+{assign var='count' value='0'}
+	{foreach item=version from=$versions}
+	    {if $count == $displayMax}
+	    	<div class="activityfeed items hidden">
+	    {/if}
+	    {if $version.type=='version'}
+	        <span class="activityfeed item version metaflag">{$version.version}</span>
+	    {else}
+	    	<div class="activityfeed item {$version.type}">
+	            <div class="icon">
+	            	<img src="http://www.gravatar.com/avatar/{$version.email}?s=48" alt="{$version.name}" title="{$version.name}" />
+	            </div>
+	            <div class="activityfeed-content">
 	                <span class="user">{$version.name}</span>
 	                <span class="description">{$version.comment|sanitize|nl2br}</span>
+	                <span class="date">{$version.datetime}</span>
 	            </div>
 	        </div>
-        {/if}
-        
-{/foreach}
-    </div>
+	    {/if}
+	    {assign var="count" value=$count+1}
+	{/foreach}
+
+</div>
+    <br/>
+    {if $commentsCount > $displayMax}
+		<span class=activityfeed-more>
+			<div><span class=activityfeed-more-text onclick="javascript: kt.app.activityFeed.toggleMore();">more...</span></div>
+		</span>
+	{/if}
 </div>
 
 {literal}
 <script type="text/javascript">
     jQuery(document).ready(function() {
-        
-        {/literal}
-        savingCommentMessage = '<img src="thirdpartyjs/extjs/resources/images/default/tree/loading.gif"> {i18n}Saving Comment{/i18n}';
-        commentSavedMessage = '{i18n}Comment Saved. <a href="javascript:showComment()">Add New Comment</a>{/i18n}';
-        {literal}
-        
-        var newCommentAdded = false;
-        
         jQuery("#commentsbox").autoResize({extraSpace:10});
-        
-        jQuery("#comment_post").click(function() {
-            comment = jQuery("#commentsbox").val();
-            docId = jQuery("#comment_documentid").val();
-            
-            if (comment == '') {
-                alert('{/literal}{i18n}Please enter a comment{/i18n}{literal}');
-                jQuery("#commentsbox").focus();
-            } else {
-                
-                if (newCommentAdded) {
-                    jQuery("div.activityfeed div:first").removeClass('newcomment').addClass('comment');
-                }
-                
-                newCommentAdded = true;
-                jQuery("#commentsarea").hide();
-                jQuery("#commentssaveajax").html(savingCommentMessage).show();
-                
-                jQuery.post("plugins/comments/ajaxComments.php", { action: 'postComment', comment: comment, documentId: docId },
-                    function(data){
-                        jQuery("#commentssaveajax").html(commentSavedMessage);
-                        jQuery("#commentsbox").val('').height('30px');
-                        
-                        jQuery("#commentsarea").show();
-                        jQuery("#commentssaveajax").hide();
-                        
-                        jQuery("div.activityfeed").prepend(data);
-                        jQuery("div.activityfeed div:first").slideDown('slow').animate({ backgroundColor: "#f6f6f6" }, 'fast');
-                    }
-                );
-            }
-            
-        });
     });
-    
-    function showComment() {
-        jQuery("#commentsarea").show();
-        jQuery("#commentssaveajax").hide();
-    }
-
 </script>
 
 

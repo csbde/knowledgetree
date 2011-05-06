@@ -51,6 +51,8 @@ class KTUtil {
     const TB = 1099511627776;
     const PB = 1125899906842624;
 
+    private static $invalidFilenameCharacters = array('\\', '/', ':', '*', '?', '"', '<', '>', '|', '%', '+', '\'', '`');
+
     /**
      * Used to resolve the server name
      *
@@ -79,29 +81,35 @@ class KTUtil {
         }
 
         // We don't want to set the servername to localhost, it should be set to the url that will be used normally
-        if (($server == 'localhost') || ($server == '127.0.0.1')) {
+        if ($server == 'localhost' || $server == '127.0.0.1') {
             return false;
         }
 
         // If the servername is empty and not localhost - update it
 
         // Save the server name and port
-        DBUtil::whereUpdate('config_settings',
-        array('value' => $server),
-        array('item' => 'server_name', 'group_name' => 'server'));
+        DBUtil::whereUpdate(
+            'config_settings',
+            array('value' => $server),
+            array('item' => 'server_name', 'group_name' => 'server')
+        );
 
         if ($port > 0) {
-            DBUtil::whereUpdate('config_settings',
-            array('value' => $port),
-            array('item' => 'server_port', 'group_name' => 'server'));
+            DBUtil::whereUpdate(
+                'config_settings',
+                array('value' => $port),
+                array('item' => 'server_port', 'group_name' => 'server')
+            );
         }
 
         // Save the rootUrl
         $rootUrl = $default->rootUrl;
         if (!empty($rootUrl)) {
-            DBUtil::whereUpdate('config_settings',
-            array('value' => $rootUrl),
-            array('item' => 'rootUrl', 'group_name' => 'KnowledgeTree'));
+            DBUtil::whereUpdate(
+                'config_settings',
+                array('value' => $rootUrl),
+                array('item' => 'rootUrl', 'group_name' => 'KnowledgeTree')
+            );
         }
 
         return true;
@@ -120,10 +128,12 @@ class KTUtil {
         if (empty($host) || ($disallow_localhost && $host == 'localhost')) {
             global $default;
             $host = (!empty($default->server_name)) ? $default->server_name : '127.0.0.1';
-            $host .= !empty($default->server_port) ? (':' . $default->server_port) : '';
+            $host .= !empty($default->server_port) ? ':' . $default->server_port : '';
 
             $pos = strpos($host, '://');
-            if ($pos !== false) { $host = substr($host, $pos + 3); }
+            if ($pos !== false) {
+                $host = substr($host, $pos + 3);
+            }
         }
 
         return $host;
@@ -158,6 +168,14 @@ class KTUtil {
         return $base_url;
     }
 
+    public static function kt_clean_document_url($documentId) {
+    	return KTUtil::kt_url() . KTBrowseUtil::getUrlForDocument($documentId);
+    }
+    
+    public static function kt_clean_folder_url($folderId) {
+    	$url = KTUtil::kt_url() . KTBrowseUtil::getUrlForFolder($folderId);
+	}
+	
     public static function kt_internal_url()
     {
         global $default;
@@ -171,6 +189,7 @@ class KTUtil {
         $internal_url .= !empty($default->rootUrl) ? $default->rootUrl : '';
 
         $pos = strpos($internal_url, 'http');
+
         if ($pos === false) {
             $port = $default->internal_server_port;
             $internal_url = (($port == 443 || $port == 8443) ? 'https://' : 'http://') . $internal_url;
@@ -245,31 +264,36 @@ class KTUtil {
         return KTUtil::computePeriod(time() - $start, $suffix, $returnArray);
     }
 
-    public static function filesizeToString($filesize)
+    /**
+     * Convert file size to human readable format.
+     *
+     * @param int $filesize
+     * @param string $type
+     * @return double
+     */
+    public static function filesizeToString($filesize, $type = false)
     {
         $filesize = (double)$filesize;
 
-        if ($filesize >= KTUtil::PB) {
+        if ($filesize >= KTUtil::PB || $type == 'PB') {
             return number_format($filesize / KTUtil::PB, 2, '.', ',') . _kt('PB');
         }
-        elseif ($filesize >= KTUtil::TB) {
+        elseif ($filesize >= KTUtil::TB || $type == 'TB') {
             return number_format($filesize / KTUtil::TB, 2, '.', ',') . _kt('TB');
         }
-        elseif ($filesize >= KTUtil::GB) {
+        elseif ($filesize >= KTUtil::GB || $type == 'GB') {
             return number_format($filesize / KTUtil::GB, 2, '.', ',') . _kt('GB');
         }
-        elseif ($filesize >= KTUtil::MB) {
+        elseif ($filesize >= KTUtil::MB || $type == 'MB') {
             return number_format($filesize / KTUtil::MB, 2, '.', ',') . _kt('MB');
         }
-        elseif ($filesize >= KTUtil::KB) {
+        elseif ($filesize >= KTUtil::KB || $type == 'KB') {
             return number_format($filesize / KTUtil::KB, 2, '.', ',') . _kt('KB');
         }
         else {
             return $filesize . _kt('B');
         }
     }
-
-    private static $invalidFilenameCharacters = array('\\', '/', ':', '*', '?', '"', '<', '>', '|', '%', '+', '\'', '`');
 
     /**
 	 * Checks if a filename is valid
@@ -337,8 +361,8 @@ class KTUtil {
             return KTUtil::intToBool($sString);
         }
 
-        if (is_string($sString)) {
-            if (KTUtil::strToBool($sString) === true) { return true; }
+        if (is_string($sString) && (KTUtil::strToBool($sString) === true)) {
+            return true;
         }
 
         if (is_null($sString)) {
@@ -406,6 +430,7 @@ class KTUtil {
     {
         $aStrings = array();
         $aParams = array();
+
         foreach ($aWhere as $oSomething) {
             if (is_string($oSomething)) {
                 $aStrings[] = $oSomething;
@@ -427,13 +452,16 @@ class KTUtil {
                 return PEAR::raiseError(_kt('Weird WhereClause passed'));
             }
         }
+
         if (count($aStrings) === 0) {
             return null;
         }
+
         return array(join(' AND ', $aStrings), $aParams);
     }
 
-    function safeShellString () {
+    function safeShellString ()
+    {
         $aArgs = func_get_args();
         if (is_array($aArgs[0])) {
             $aArgs = $aArgs[0];
@@ -550,6 +578,7 @@ class KTUtil {
                 KTUtil::pexec(array('/bin/mv', $sSrc, $sDst));
                 return;
             }
+
             if (!$bMove && file_exists('/bin/cp')) {
                 KTUtil::pexec(array('/bin/cp', '-R', $sSrc, $sDst));
                 return;
@@ -955,6 +984,7 @@ class KTUtil {
             $oUrl->protocol = 'https';
             if ($oUrl->port == 80) { $oUrl->port = 443; }
         }
+
         $host = $oKTConfig->get('KnowledgeTree/serverName');
         $host = explode(':', $host);
         $oUrl->host = $host[0];
@@ -1002,7 +1032,6 @@ class KTUtil {
         else {
             $url = $_SERVER['PHP_SELF'];
         }
-
         return KTUtil::addQueryString($url, $qs);
     }
 
@@ -1032,11 +1061,12 @@ class KTUtil {
         return false;
     }
 
-    /* formats input text for discussion body. replaces newlines
-    with <br/> tags to allow for paragraphing. should also strip
-    html elements.
-    */
-    public static function formatPlainText($sText)
+    /**
+     * Formats input text for discussion body.
+     * Replaces newlines with <br/> tags to allow for paragraphing.
+     * Should also strip html elements.
+     */
+    function formatPlainText($sText)
     {
         return str_replace("\n", '<br/>', str_replace("\r\n", '<br/>', trim($sText)));
     }
@@ -1164,12 +1194,7 @@ class KTUtil {
             null // opts
             );
 
-            if (PEAR::isError($res)) {
-                return $res;
-            }
-            else {
-                return true;
-            }
+            return PEAR::isError($res) ? $res : true;
         }
         else {
             // update
@@ -1179,9 +1204,7 @@ class KTUtil {
             );
 
             $res = DBUtil::runQuery($aQuery);
-            if (PEAR::isError($res)) { return $res; }
-
-            return true;
+            return PEAR::isError($res) ? $res : true;
         }
     }
 
@@ -1190,7 +1213,8 @@ class KTUtil {
      *
      * @return string The system identifier
      */
-    public static function getSystemIdentifier() {
+    public static function getSystemIdentifier()
+    {
         $sIdentifier = KTUtil::getSystemSetting('kt_system_identifier');
         if (empty($sIdentifier)) {
             $sIdentifier = md5(uniqid(mt_rand(), true));
@@ -1473,6 +1497,7 @@ class KTUtil {
             ++$j;
             $hash .= strrev(base_convert(dechex($ordStr + $ordKey), 16, 36));
         }
+
         return $hash;
     }
 
@@ -1496,6 +1521,7 @@ class KTUtil {
             ++$j;
             $hash .= chr($ordStr - $ordKey);
         }
+
         return $hash;
     }
 
@@ -1510,7 +1536,7 @@ class KTUtil {
     public static function logTiming($function, $comment = '')
     {
         global $default;
-        $logFile = $default->logDirectory .'/timing-' . date('ymd');
+        $logFile = $default->logDirectory . '/timing-' . date('ymd');
 
         $microtime_simple = explode(' ', microtime());
         $time = (float)$microtime_simple[1] + (float)$microtime_simple[0];
@@ -1607,12 +1633,8 @@ class KTUtil {
 }
 
 /**
- *
- * Merges two arrays using array_merge
- *
- * array_merge in PHP5 got more strict about its parameter handling,
- * forcing arrays.
- *
+ * Merges two arrays using array_merge.
+ * Array_merge in PHP5 got more strict about its parameter handling, forcing arrays.
  */
 if (version_compare(phpversion(), '5.0') === -1) {
     function kt_array_merge() {
@@ -1621,13 +1643,15 @@ if (version_compare(phpversion(), '5.0') === -1) {
     }
 }
 else {
-    eval('function kt_array_merge() {
-        $args = func_get_args();
-        foreach ($args as &$arg)  {
-            $arg = (array)$arg;
+    eval('
+        function kt_array_merge() {
+            $args = func_get_args();
+            foreach ($args as &$arg)  {
+                $arg = (array)$arg;
+            }
+            return call_user_func_array("array_merge", $args);
         }
-        return call_user_func_array("array_merge", $args);
-    }');
+    ');
 }
 
 ?>

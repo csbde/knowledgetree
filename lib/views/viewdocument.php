@@ -35,23 +35,24 @@
  */
 
 class ViewDocumentDispatcher extends KTStandardDispatcher {
-    
+
     public $sName = 'ktcore.actions.document.displaydetails';
     public $sSection = 'view_details';
     public $sHelpPage = 'ktcore/browse.html';
-
     public $actions;
+    protected $document;
 
-    public function ViewDocumentDispatcher() {
-        $this->aBreadcrumbs = array(
-            array('action' => 'browse', 'name' => _kt('Browse')),
-        );
-
+    public function __construct()
+    {
+        $this->aBreadcrumbs = array(array('action' => 'browse', 'name' => _kt('Browse')));
         parent::KTStandardDispatcher();
     }
 
-    public function check() {
-        if (!parent::check()) { return false; }
+    public function check()
+    {
+        if (!parent::check()) {
+            return false;
+        }
 
         $this->persistParams(array('fDocumentId'));
 
@@ -59,109 +60,111 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
     }
 
     // FIXME identify the current location somehow.
-    public function addPortlets($currentaction = null) {
-        $currentaction = $this->sName;
+    public function addPortlets($currentAction = null)
+    {
+        $currentAction = $this->sName;
 
-    	$actions = KTDocumentActionUtil::getDocumentActionsForDocument($this->oDocument, $this->oUser, 'documentinfo');
-        $oPortlet = new KTActionPortlet(sprintf(_kt('Info')));
-        $oPortlet->setActions($actions, $currentaction);
-        $this->oPage->addPortlet($oPortlet);
+        $actions = KTDocumentActionUtil::getDocumentActionsForDocument($this->document, $this->oUser, 'documentinfo');
+        $portlet = new KTActionPortlet(sprintf(_kt('Info')));
+        $portlet->setActions($actions, $currentAction);
+        $this->oPage->addPortlet($portlet);
 
-        $this->actions = KTDocumentActionUtil::getDocumentActionsForDocument($this->oDocument, $this->oUser);
-        $oPortlet = new KTActionPortlet(sprintf(_kt('Actions'), $this->oDocument->getName()));
-        $oPortlet->setActions($this->actions, $currentaction);
-        $this->oPage->addPortlet($oPortlet);
+        $this->actions = KTDocumentActionUtil::getDocumentActionsForDocument($this->document, $this->oUser);
+        $portlet = new KTActionPortlet(sprintf(_kt('Actions'), $this->document->getName()));
+        $portlet->setActions($this->actions, $currentAction);
+        $this->oPage->addPortlet($portlet);
     }
 
-    public function do_main() {
+    public function do_main()
+    {
         // fix legacy, broken items.
         if (KTUtil::arrayGet($_REQUEST, 'fDocumentID', true) !== true) {
             $_REQUEST['fDocumentId'] = sanitizeForSQL(KTUtil::arrayGet($_REQUEST, 'fDocumentID'));
             unset($_REQUEST['fDocumentID']);
         }
 
-        $document_data = array();
-        $document_id = sanitizeForSQL(KTUtil::arrayGet($_REQUEST, 'fDocumentId'));
-        if ($document_id === null) {
+        $documentData = array();
+        $documentId = sanitizeForSQL(KTUtil::arrayGet($_REQUEST, 'fDocumentId'));
+        if ($documentId === null) {
             $this->oPage->addError(sprintf(_kt("No document was requested.  Please <a href=\"%s\">browse</a> for one."), KTBrowseUtil::getBrowseBaseUrl()));
             return $this->do_error();
         }
-        // try get the document.
-        $oDocument =& Document::get($document_id);
-        if (PEAR::isError($oDocument)) {
-            $this->oPage->addError(sprintf(_kt("The document you attempted to retrieve is invalid.   Please <a href=\"%s\">browse</a> for one."), KTBrowseUtil::getBrowseBaseUrl()));
 
+        // try get the document.
+        $this->document =& Document::get($documentId);
+        if (PEAR::isError($this->document)) {
+            $this->oPage->addError(sprintf(_kt("The document you attempted to retrieve is invalid.   Please <a href=\"%s\">browse</a> for one."), KTBrowseUtil::getBrowseBaseUrl()));
             $this->oPage->booleanLink = true;
 
             return $this->do_error();
         }
 
-        $document_id = $oDocument->getId();
-        $document_data['document_id'] = $oDocument->getId();
+        $documentId = $this->document->getId();
+        $documentData['document_id'] = $documentId;
 
-        if (!KTBrowseUtil::inAdminMode($this->oUser, $oDocument->getFolderId())) {
-            if ($oDocument->getStatusID() == ARCHIVED) {
-                $this->oPage->addError(_kt('This document has been archived.'));
-                return $this->do_request($oDocument);
-            } else if ($oDocument->getStatusID() == DELETED) {
-                $this->oPage->addError(_kt('This document has been deleted.'));
-                return $this->do_error();
-            } else if (!Permission::userHasDocumentReadPermission($oDocument)) {
-                $this->oPage->addError(_kt('You are not allowed to view this document'));
-                return $this->permissionDenied();
+        if (!KTBrowseUtil::inAdminMode($this->oUser, $this->document->getFolderId())) {
+            $output = $this->documentIsAccessible();
+            if (!empty($output)) {
+                return $output;
             }
         }
 
-        if ($oDocument->getStatusID() == ARCHIVED) {
+        if ($this->document->getStatusID() == ARCHIVED) {
             $this->oPage->addError(_kt('This document has been archived.'));
-        } else if ($oDocument->getStatusID() == DELETED) {
+        }
+        else if ($this->document->getStatusID() == DELETED) {
             $this->oPage->addError(_kt('This document has been deleted.'));
         }
 
-        $this->oPage->setSecondaryTitle($oDocument->getName());
+        //$this->oPage->setSecondaryTitle($this->document->getName());
 
-        $aOptions = array(
+        $options = array(
             'documentaction' => 'viewDocument',
             'folderaction' => 'browse',
         );
 
-        $this->oDocument =& $oDocument;
+        //$this->oDocument =& $document;
 
         //Figure out if we came here by navigating through a shortcut.
         //If we came here from a shortcut, the breadcrumbspath should be relative
         //to the shortcut folder.
-    	$iSymLinkFolderId = KTUtil::arrayGet($_REQUEST, 'fShortcutFolder', null);
-        if (is_numeric($iSymLinkFolderId)) {
-            $oBreadcrumbsFolder = Folder::get($iSymLinkFolderId);
-            $aOptions['final'] = false;
-            $this->aBreadcrumbs = kt_array_merge($this->aBreadcrumbs, KTBrowseUtil::breadcrumbsForFolder($oBreadcrumbsFolder,$aOptions));
-            $this->aBreadcrumbs[] = array('name'=>$this->oDocument->getName());
-        } else {
-            $this->aBreadcrumbs = kt_array_merge($this->aBreadcrumbs, KTBrowseUtil::breadcrumbsForDocument($oDocument, $aOptions, $iSymLinkFolderId));
+        $symLinkFolderId = KTUtil::arrayGet($_REQUEST, 'fShortcutFolder', null);
+        if (is_numeric($symLinkFolderId)) {
+            $breadcrumbsFolder = Folder::get($symLinkFolderId);
+            $options['final'] = false;
+            $this->aBreadcrumbs = kt_array_merge($this->aBreadcrumbs, KTBrowseUtil::breadcrumbsForFolder($breadcrumbsFolder,$options));
+            $this->aBreadcrumbs[] = array('name' => $this->document->getName());
+        }
+        else {
+            $this->aBreadcrumbs = kt_array_merge($this->aBreadcrumbs, KTBrowseUtil::breadcrumbsForDocument($this->document, $options, $symLinkFolderId));
         }
 
-        $this->addPortlets('Document Details');
+        //$this->addPortlets('Document Details');
+        $actions = KTDocumentActionUtil::getDocumentActionsForDocument($this->document, $this->oUser);
+        $info = KTDocumentActionUtil::getDocumentActionsForDocument($this->document, $this->oUser, 'documentinfo');
+        $actions = array_merge($actions, $info);
+        $actionBtns = $this->createButtons($actions);
 
-        $document_data['document'] = $oDocument;
-        $document_data['document_type'] =& DocumentType::get($oDocument->getDocumentTypeID());
-        $is_valid_doctype = true;
+        $documentData['document'] = $this->document;
+        $documentData['document_type'] =& DocumentType::get($this->document->getDocumentTypeID());
+        $isValidDoctype = true;
 
-        if (PEAR::isError($document_data['document_type'])) {
+        $documentTypes = & DocumentType::getList('disabled=0');
+
+        if (PEAR::isError($documentData['document_type'])) {
             $this->oPage->addError(_kt('The document you requested has an invalid <strong>document type</strong>.  Unfortunately, this means that we cannot effectively display it.'));
-            $is_valid_doctype = false;
+            $isValidDoctype = false;
         }
 
-        // we want to grab all the md for this doc, since its faster that way.
-        $mdlist =& DocumentFieldLink::getByDocument($oDocument);
+        // we want to grab all the metadata for this doc, since its faster that way.
+        $metadata =& DocumentFieldLink::getByDocument($this->document);
 
-        $field_values = array();
-        foreach ($mdlist as $oFieldLink) {
-            $field_values[$oFieldLink->getDocumentFieldID()] = $oFieldLink->getValue();
+        $fieldValues = array();
+        foreach ($metadata as $fieldLink) {
+            $fieldValues[$fieldLink->getDocumentFieldID()] = $fieldLink->getValue();
         }
 
-        //var_dump($field_values);
-
-        $document_data['field_values'] = $field_values;
+        $documentData['field_values'] = $fieldValues;
 
         // Fieldset generation.
         //
@@ -169,201 +172,295 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
         //   that adapt the Fieldsets associated with this lot
         //   to the view (i.e. ZX3).   Unfortunately, we don't have
         //   any of the plumbing to do it, so we handle this here.
+        $genericFieldsets = array();
         $fieldsets = array();
+
         // we always have a generic.
-        array_push($fieldsets, new GenericFieldsetDisplay());
+        array_push($genericFieldsets, new GenericFieldsetDisplay());
 
         $fieldsetDisplayReg =& KTFieldsetDisplayRegistry::getSingleton();
-        $aDocFieldsets = KTMetadataUtil::fieldsetsForDocument($oDocument);
-        foreach ($aDocFieldsets as $oFieldset) {
-            $displayClass = $fieldsetDisplayReg->getHandler($oFieldset->getNamespace());
-            array_push($fieldsets, new $displayClass($oFieldset));
-        }
+        $docFieldsets = KTMetadataUtil::fieldsetsForDocument($this->document);
 
-        $checkout_user = 'Unknown user';
-        if ($oDocument->getIsCheckedOut() == 1) {
-            $oCOU = User::get($oDocument->getCheckedOutUserId());
-            if (!(PEAR::isError($oCOU) || ($oCOU == false))) {
-                $checkout_user = $oCOU->getName();
+        foreach ($docFieldsets as $fieldset) {
+            if ($fieldset->getNamespace() == 'tagcloud') {
+                $tags = $this->getDocumentTags($this->document, $fieldset);
+            }
+            else {
+                $displayClass = $fieldsetDisplayReg->getHandler($fieldset->getNamespace());
+                array_push($fieldsets, new $displayClass($fieldset));
             }
         }
 
-        // is the checkout action active?
-        $bCanCheckin = false;
-        foreach ($this->actions as $oDocAction) {
-            if ($oDocAction->sName == 'ktcore.actions.document.cancelcheckout') {
-                if ($oDocAction->getInfo()) {
-                    $bCanCheckin = true;
-                }
-                break;
+        $checkedOutUsername = 'Unknown user';
+        if ($this->document->getIsCheckedOut() == 1) {
+            $checkedOutUser = User::get($this->document->getCheckedOutUserId());
+            if (!(PEAR::isError($checkedOutUser) || ($checkedOutUser == false))) {
+                $checkedOutUsername = $checkedOutUser->getName();
             }
         }
-        
-		$bCanEdit = true;
-		
+
         // viewlets
-        $aViewlets = array();
-        $aViewlets2 = array();
-        $aViewletActions = KTDocumentActionUtil::getDocumentActionsForDocument($this->oDocument, $this->oUser, 'documentviewlet');
-        foreach ($aViewletActions as $oAction) {
-            $aInfo = $oAction->getInfo();
-            if ($aInfo !== null) {
-                if (($aInfo['ns'] == 'ktcore.viewlet.document.activityfeed') || ($aInfo['ns'] == 'thumbnail.viewlets')) {
-                    $aViewlets[] = $oAction->display_viewlet(); // use the action, since we display_viewlet() later.
-                } else {
-                    $aViewlets2[] = $oAction->display_viewlet(); // use the action, since we display_viewlet() later.
+        $viewlets = array();
+//        $viewlets2 = array();
+        $viewletActions = KTDocumentActionUtil::getDocumentActionsForDocument($this->document, $this->oUser, 'documentviewlet');
+        foreach ($viewletActions as $action) {
+            $info = $action->getInfo();
+            if ($info !== null) {
+                if (($info['ns'] == 'ktcore.viewlet.document.activityfeed') || ($info['ns'] == 'thumbnail.viewlets')) {
+                    $viewlets[] = $action->display_viewlet(); // use the action, since we display_viewlet() later.
                 }
+//                else {
+//                    $viewlets2[] = $action->display_viewlet(); // use the action, since we display_viewlet() later.
+//                }
             }
         }
 
-        $viewlet_data = implode(' ', $aViewlets);
-        $viewlet_data = trim($viewlet_data);
-        $viewlet_data2 = implode(' ', $aViewlets2);
-        $viewlet_data2 = trim($viewlet_data2);
+        $viewletData = implode(' ', $viewlets);
+        $viewletData = trim($viewletData);
+        //        $viewletData2 = implode(' ', $viewlets2);
+        //        $viewletData2 = trim($viewletData2);
 
-        $content_class = 'view';
-        if (!empty($viewlet_data)) {
-            $content_class = 'view withviewlets';
+        $contentClass = 'view';
+        if (!empty($viewletData)) {
+            $contentClass = 'view withviewlets';
         }
-        $this->oPage->setContentClass($content_class);
+        $this->oPage->setContentClass($contentClass);
 
-        $oTemplating =& KTTemplating::getSingleton();
-        $oTemplate = $oTemplating->loadTemplate('ktcore/document/view');
+        if (KTPluginUtil::pluginIsActive('instaview.processor.plugin')) {
+            $path = KTPluginUtil::getPluginPath ('instaview.processor.plugin');
+            try {
+                require_once($path . 'instaViewLinkAction.php');
+                $livePreviewAction = new instaViewLinkAction($this->document, $this->oUser, null);
+                $livePreview = $livePreviewAction->do_main();
+            } catch(Exception $e) {}
+        }
 
-		if (KTPluginUtil::pluginIsActive('instaview.processor.plugin')) {
-			$path = KTPluginUtil::getPluginPath ('instaview.processor.plugin');
-			try {
-				require_once($path . 'instaViewLinkAction.php');
-				$oLivePreview = new instaViewLinkAction($oDocument, $this->oUser, null);
-		        $live_preview = $oLivePreview->do_main();
-			} catch(Exception $e) {}
-		}
+        $ownerUser = KTUserUtil::getUserField($this->document->getOwnerID(), 'name');
+        $creatorUser = KTUserUtil::getUserField($this->document->getCreatorID(), 'name');
+        $lastModifierUser = KTUserUtil::getUserField($this->document->getModifiedUserId(), 'name');
 
-        $ownerUser = KTUserUtil::getUserField($oDocument->getOwnerID(), 'name');
-        $creatorUser = KTUserUtil::getUserField($oDocument->getCreatorID(), 'name');
-        $lastModifierUser = KTUserUtil::getUserField($oDocument->getModifiedUserId(), 'name');
-        
         $FieldsetDisplayHelper = new KTFieldsetDisplay();
 
-        // create the document transaction record
-        $oDocumentTransaction = new DocumentTransaction($oDocument, 'Document details page view', 'ktcore.transactions.view');
-        $oDocumentTransaction->create();
+        $this->recordView();
 
-        $aTemplateData = array(
-        	'doc_data' => array(
-        		'owner' => $ownerUser[0]['name'],
-        		'creator' => $creatorUser[0]['name'],
-        		'lastModifier' => $lastModifierUser[0]['name']
-        	),
-			'context' => $this,
-			'sCheckoutUser' => $checkout_user,
-			'isCheckoutUser' => ($this->oUser->getId() == $oDocument->getCheckedOutUserId()),
-			'canCheckin' => $bCanCheckin,
-			'bCanEdit' => $bCanEdit,
-			'document_id' => $document_id,
-			'document' => $oDocument,
-			'documentName' => $oDocument->getName(),
-			'document_data' => $document_data,
-			'fieldsets' => $fieldsets,
-			'viewlet_data' => $viewlet_data,
-			'viewlet_data2' => $viewlet_data2,
-        	'hasNotifications' => false,
-			'fieldsetDisplayHelper' => $FieldsetDisplayHelper
+        $blocks = KTDocumentActionUtil::getDocumentActionsForDocument($this->document, $this->oUser, 'documentblock');
+        $documentBlocks = isset($blocks[0]) ? $blocks[0] : array();
+        if (!empty($documentBlocks)) {
+        	if (is_null($documentBlocks->getInfo())) {
+        		$documentBlocks = array();
+        	}
+        }
+        $sidebars = KTDocumentActionUtil::getDocumentActionsForDocument($this->document, $this->oUser, 'maindocsidebar');
+        $documentSidebars = isset($sidebars[0]) ? $sidebars[0] : array();
+
+        $tagPluginPath = KTPluginUtil::getPluginPath('ktcore.tagcloud.plugin', true);
+
+        $makeMetadataEditable = $this->getMetadataEditable();
+
+        $templating =& KTTemplating::getSingleton();
+        $template = $templating->loadTemplate('ktcore/document/view');
+        $templateData = array(
+            'doc_data' => array(
+                'owner' => !empty($ownerUser) ? $ownerUser[0]['name'] : '',
+                'creator' => !empty($creatorUser) ? $creatorUser[0]['name'] : '',
+                'lastModifier' => !empty($lastModifierUser) ? $lastModifierUser[0]['name'] : ''
+            ),
+            'context' => $this,
+            'sCheckoutUser' => $checkedOutUsername,
+            'isCheckoutUser' => ($this->oUser->getId() == $this->document->getCheckedOutUserId()),
+            //'canCheckin' => $canCheckin,
+            //'bCanEdit' => $canEdit,
+            'actionBtns' => $actionBtns,
+            'document_id' => $documentId,
+            'document' => $this->document,
+            'documentName' => $this->document->getName(),
+            'document_data' => $documentData,
+            'document_types' => $documentTypes,
+            'generic_fieldsets' => $genericFieldsets,
+            'fieldsets' => $fieldsets,
+            'viewlet_data' => $viewletData,
+            //'viewlet_data2' => $viewletData2,
+            'hasNotifications' => false,
+            'fieldsetDisplayHelper' => $FieldsetDisplayHelper,
+            'documentBlocks' => $documentBlocks,
+            'documentSidebars' => $documentSidebars,
+            'tagFilterScript' => "/{$tagPluginPath}filterTags.php?documentId=$documentId",
+            'tags' => json_encode($tags),
+            'makeMetadataEditable' => $makeMetadataEditable
         );
 
         // Conditionally include live_preview
-        if ($live_preview) { $aTemplateData['live_preview'] = $live_preview; }
+        if ($livePreview) {
+            $templateData['live_preview'] = $livePreview;
+        }
 
         // Setting Document Notifications Status
-        if ($oDocument->getIsCheckedOut() || $oDocument->getImmutable()) { $aTemplateData['hasNotifications'] = true; }
+        if ($this->document->getIsCheckedOut() || $this->document->getImmutable()) {
+            $templateData['hasNotifications'] = true;
+        }
 
-        $this->oPage->setBreadcrumbDetails(_kt("Document Details"));
-        
-        return $oTemplate->render($aTemplateData);
+        //$this->oPage->setBreadcrumbDetails(_kt("Document Details"));
+
+        return $template->render($templateData);
     }
 
+    protected function documentIsAccessible()
+    {
+        $output = '';
+
+        if ($this->document->getStatusID() == ARCHIVED) {
+            $this->oPage->addError(_kt('This document has been archived.'));
+            $output = $this->do_request($this->document);
+        }
+        else if ($this->document->getStatusID() == DELETED) {
+            $this->oPage->addError(_kt('This document has been deleted.'));
+            $output = $this->do_error();
+        }
+        else if (!$this->userHasPermission()) {
+            $this->oPage->addError(_kt('You are not allowed to view this document'));
+            $this->permissionDenied();
+            // NOTE the permissionDenied() function call will exit the script, so there is no return value;
+        }
+
+        return $output;
+    }
+
+    protected function userHasPermission()
+    {
+        return Permission::userHasDocumentReadPermission($this->document);
+    }
+
+    // NOTE No longer used in base class - does this mean no longer relevant?
+    protected function canEdit()
+    {
+        return true;
+    }
+
+    /**
+     * Prepares the tag list for adding to the display widget.
+     *
+     * The widget is going to expect the tags in json_encoded format.
+     * This format will be imposed by the template value assignment/rendering.
+     *
+     * If you instead want to get the widget input as a string (to be inserted directly
+     * into a template instead of parsed by javascript) then you will need to format it as:
+     *
+     * '{id: "' . $tag . '", name: "' . $tag . '"},[...]'
+     *
+     * @param unknown_type $document
+     * @param unknown_type $fieldset
+     * @return unknown
+     */
+    protected function getDocumentTags($document, $fieldset)
+    {
+        $fields = $fieldset->getFields();
+        $fieldId = $fields[0]->getId();
+
+        $fieldValue = DocumentFieldLink::getByDocumentAndField($this->document, $fields[0]);
+        if (!is_null($fieldValue) && (!PEAR::isError($fieldValue))) {
+            $tags = $fieldValue->getValue();
+        }
+
+        if (empty($tags)) {
+            return array();
+        }
+
+        $tags = explode(',', $tags);
+        foreach ($tags as $key => $tag) {
+            $tags[$key] = array('id' => $tag, 'name' => $tag);
+        }
+
+        return $tags;
+    }
+
+    protected function getMetadataEditable()
+    {
+        return (($this->document->getIsCheckedOut() != 1)
+             && ($this->document->getImmutable() != 1)
+             && Permission::userHasDocumentWritePermission($this->document));
+    }
     // FIXME refactor out the document-info creation into a single utility function.
     // this gets in:
     //   fDocumentId (document to compare against)
     //   fComparisonVersion (the metadata_version of the appropriate document)
-    public function do_viewComparison() {
-        $document_data = array();
-        $document_id = KTUtil::arrayGet($_REQUEST, 'fDocumentId');
-        if ($document_id === null) {
+    public function do_viewComparison()
+    {
+        $documentData = array();
+        $documentId = KTUtil::arrayGet($_REQUEST, 'fDocumentId');
+        if ($documentId === null) {
             $this->oPage->addError(sprintf(_kt("No document was requested.  Please <a href=\"%s\">browse</a> for one."), KTBrowseUtil::getBrowseBaseUrl()));
             return $this->do_error();
         }
 
-        $document_data['document_id'] = $document_id;
+        $documentData['document_id'] = $documentId;
 
-        $base_version = KTUtil::arrayGet($_REQUEST, 'fBaseVersion');
+        $baseVersion = KTUtil::arrayGet($_REQUEST, 'fBaseVersion');
 
         // try get the document.
-        $oDocument =& Document::get($document_id, $base_version);
-        if (PEAR::isError($oDocument)) {
+        $this->document =& Document::get($documentId, $baseVersion);
+        if (PEAR::isError($this->document)) {
             $this->oPage->addError(sprintf(_kt("The base document you attempted to retrieve is invalid.   Please <a href=\"%s\">browse</a> for one."), KTBrowseUtil::getBrowseBaseUrl()));
             return $this->do_error();
         }
 
-        if (!Permission::userHasDocumentReadPermission($oDocument)) {
+        if (!Permission::userHasDocumentReadPermission($this->document)) {
             // FIXME inconsistent.
             $this->oPage->addError(_kt('You are not allowed to view this document'));
             return $this->permissionDenied();
         }
 
-        $this->oDocument =& $oDocument;
-        $this->oPage->setSecondaryTitle($oDocument->getName());
-        $aOptions = array(
-                'documentaction' => 'viewDocument',
-                'folderaction' => 'browse',
-            );
+        //$this->oDocument =& $this->document;
+        //$this->oPage->setSecondaryTitle($this->document->getName());
+        $options = array(
+            'documentaction' => 'viewDocument',
+            'folderaction' => 'browse',
+        );
 
-        $this->aBreadcrumbs = kt_array_merge($this->aBreadcrumbs, KTBrowseUtil::breadcrumbsForDocument($oDocument, $aOptions));
+        $this->aBreadcrumbs = kt_array_merge($this->aBreadcrumbs, KTBrowseUtil::breadcrumbsForDocument($this->document, $options));
         $this->oPage->setBreadcrumbDetails(_kt('compare versions'));
 
-        $comparison_version = KTUtil::arrayGet($_REQUEST, 'fComparisonVersion');
-        if ($comparison_version=== null) {
-            $this->oPage->addError(sprintf(_kt("No comparison version was requested.  Please <a href=\"%s\">select a version</a>."), KTUtil::addQueryStringSelf('action=history&fDocumentId=' . $document_id)));
+        $comparisonVersion = KTUtil::arrayGet($_REQUEST, 'fComparisonVersion');
+        if ($comparisonVersion === null) {
+            $this->oPage->addError(sprintf(_kt("No comparison version was requested.  Please <a href=\"%s\">select a version</a>."), KTUtil::addQueryStringSelf('action=history&fDocumentId=' . $documentId)));
             return $this->do_error();
         }
 
-        $oComparison =& Document::get($oDocument->getId(), $comparison_version);
-        if (PEAR::isError($oComparison)) {
+        $comparison =& Document::get($this->document->getId(), $comparisonVersion);
+        if (PEAR::isError($comparison)) {
             $this->errorRedirectToMain(_kt('Invalid document to compare against.'));
         }
 
-        $comparison_data = array();
-        $comparison_data['document_id'] = $oComparison->getId();
-        $document_data['document'] = $oDocument;
-        $comparison_data['document'] = $oComparison;
-        $document_data['document_type'] =& DocumentType::get($oDocument->getDocumentTypeID());
-        $comparison_data['document_type'] =& DocumentType::get($oComparison->getDocumentTypeID());
+        $comparisonData = array();
+        $comparisonData['document_id'] = $comparison->getId();
+        $documentData['document'] = $this->document;
+        $comparisonData['document'] = $comparison;
+        $documentData['document_type'] =& DocumentType::get($this->document->getDocumentTypeID());
+        $comparisonData['document_type'] =& DocumentType::get($comparison->getDocumentTypeID());
 
         // follow twice:  once for normal, once for comparison.
-        $is_valid_doctype = true;
-
-        if (PEAR::isError($document_data['document_type'])) {
+        $isValidDoctype = true;
+        if (PEAR::isError($documentData['document_type'])) {
             $this->oPage->addError(_kt('The document you requested has an invalid <strong>document type</strong>.  Unfortunately, this means that we cannot effectively display it.'));
-            $is_valid_doctype = false;
+            $isValidDoctype = false;
         }
 
         // we want to grab all the md for this doc, since its faster that way.
-        $mdlist =& DocumentFieldLink::getList(array('metadata_version_id = ?', array($base_version)));
+        $metadata =& DocumentFieldLink::getList(array('metadata_version_id = ?', array($baseVersion)));
 
-        $field_values = array();
-        foreach ($mdlist as $oFieldLink) {
-                $field_values[$oFieldLink->getDocumentFieldID()] = $oFieldLink->getValue();
+        $fieldValues = array();
+        foreach ($metadata as $fieldLink) {
+            $fieldValues[$fieldLink->getDocumentFieldID()] = $fieldLink->getValue();
         }
 
-        $document_data['field_values'] = $field_values;
-        $mdlist =& DocumentFieldLink::getList(array('metadata_version_id = ?', array($comparison_version)));
+        $documentData['field_values'] = $fieldValues;
+        $metadata =& DocumentFieldLink::getList(array('metadata_version_id = ?', array($comparisonVersion)));
 
-        $field_values = array();
-        foreach ($mdlist as $oFieldLink) {
-            $field_values[$oFieldLink->getDocumentFieldID()] = $oFieldLink->getValue();
+        $fieldValues = array();
+        foreach ($metadata as $fieldLink) {
+            $fieldValues[$fieldLink->getDocumentFieldID()] = $fieldLink->getValue();
         }
 
-        $comparison_data['field_values'] = $field_values;
+        $comparisonData['field_values'] = $fieldValues;
 
         // Fieldset generation.
         //
@@ -379,114 +476,213 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
         // FIXME can we key this on fieldset namespace?  or can we have duplicates?
         // now we get the other fieldsets, IF there is a valid doctype.
 
-        if ($is_valid_doctype) {
+        if ($isValidDoctype) {
             // these are the _actual_ fieldsets.
             $fieldsetDisplayReg =& KTFieldsetDisplayRegistry::getSingleton();
 
             // and the generics
             $activesets = KTFieldset::getGenericFieldsets();
-            foreach ($activesets as $oFieldset) {
-	            $displayClass = $fieldsetDisplayReg->getHandler($oFieldset->getNamespace());
-	            array_push($fieldsets, new $displayClass($oFieldset));
+            foreach ($activesets as $fieldset) {
+                $displayClass = $fieldsetDisplayReg->getHandler($fieldset->getNamespace());
+                array_push($fieldsets, new $displayClass($fieldset));
             }
 
-            $activesets = KTFieldset::getForDocumentType($oDocument->getDocumentTypeID());
-            foreach ($activesets as $oFieldset) {
-	            $displayClass = $fieldsetDisplayReg->getHandler($oFieldset->getNamespace());
-	            array_push($fieldsets, new $displayClass($oFieldset));
+            $activesets = KTFieldset::getForDocumentType($this->document->getDocumentTypeID());
+            foreach ($activesets as $fieldset) {
+                $displayClass = $fieldsetDisplayReg->getHandler($fieldset->getNamespace());
+                array_push($fieldsets, new $displayClass($fieldset));
             }
         }
 
         // FIXME handle ad-hoc fieldsets.
-        $this->addPortlets();
-        $oTemplate = $this->oValidator->validateTemplate('ktcore/document/compare');
-        $aTemplateData = array(
-                       'context' => $this,
-                       'document_id' => $document_id,
-                       'document' => $oDocument,
-                       'document_data' => $document_data,
-                       'comparison_data' => $comparison_data,
-                       'comparison_document' => $oComparison,
-                       'fieldsets' => $fieldsets,
-                       );
-        //var_dump($aTemplateData['comparison_data']);
-        return $oTemplate->render($aTemplateData);
+        //$this->addPortlets();
+        $template = $this->oValidator->validateTemplate('ktcore/document/compare');
+        $templateData = array(
+            'context' => $this,
+            'document_id' => $documentId,
+            'document' => $this->document,
+            'document_data' => $documentData,
+            'comparison_data' => $comparisonData,
+            'comparison_document' => $comparison,
+            'fieldsets' => $fieldsets,
+        );
+
+        //var_dump($templateData['comparison_data']);
+        return $template->render($templateData);
     }
 
-    public function do_error() {
+    public function do_error()
+    {
         return '&nbsp;'; // don't actually do anything.
     }
 
-    public function do_request($oDocument) {
+    public function do_request($document)
+    {
         // Display form for sending a request through the the sys admin to unarchive the document
         // name, document, request, submit
 
-        $oForm = new KTForm;
-        $oForm->setOptions(array(
+        $form = new KTForm;
+        $form->setOptions(array(
             'submit_label' => _kt('Send request'),
             'identifier' => '',
-            'cancel_url' => KTBrowseUtil::getUrlForFolder($oFolder),
+            'cancel_url' => KTBrowseUtil::getUrlForFolder($folder),
             'fail_action' => 'main',
             'context' => $this,
         ));
 
-        $oForm->addWidget(
-                array('ktcore.widgets.text', array(
+        $form->addWidget(
+            array('ktcore.widgets.text',
+                array(
                     'label' => _kt('Note'),
                     'name' => 'reason',
                     'required' => true,
-                ))
-            );
+                )
+            )
+        );
 
         $data = isset($_REQUEST['data']) ? $_REQUEST['data'] : array();
 
-        $iFolderId = $oDocument->getFolderID();
-        $oFolder = Folder::get($iFolderId);
-        $sFolderUrl = KTBrowseUtil::getUrlForFolder($oFolder);
+        $folderId = $document->getFolderID();
+        $folder = Folder::get($folderId);
+        $folderUrl = KTBrowseUtil::getUrlForFolder($folder);
 
         if (!empty($data)) {
-            $res = $oForm->validate();
+            $res = $form->validate();
             if (!empty($res['errors'])) {
-                return $oForm->handleError('', $aError);
+                return $form->handleError('', $errors);
             }
 
-            $aAdminGroups = Group::getAdministratorGroups();
-            if (!PEAR::isError($aAdminGroups) && !empty($aAdminGroups)) {
-                foreach ($aAdminGroups as $oGroup) {
-                    $aGroupUsers = $oGroup->getMembers();
+            $adminGroups = Group::getAdministratorGroups();
+            if (!PEAR::isError($adminGroups) && !empty($adminGroups)) {
+                foreach ($adminGroups as $group) {
+                    $groupUsers = $group->getMembers();
 
                     // ensure unique users
-                    foreach ($aGroupUsers as $oUser) {
-                        $aUsers[$oUser->getId()] = $oUser;
+                    foreach ($groupUsers as $user) {
+                        $users[$user->getId()] = $user;
                     }
                 }
 
-                $sSubject = _kt('Request for an archived document to be restored');
-                $sDetails = $data['reason'];
+                $subject = _kt('Request for an archived document to be restored');
+                $details = $data['reason'];
 
                 // Send request
-                foreach ($aUsers as $oU) {
-                    if (!PEAR::isError($oU)) {
+                foreach ($users as $user) {
+                    if (!PEAR::isError($user)) {
                         include_once(KT_DIR.'/plugins/ktcore/KTAssist.php');
-                        KTAssistNotification::newNotificationForDocument($oDocument, $oU, $this->oUser, $sSubject, $sDetails);
+                        KTAssistNotification::newNotificationForDocument($document, $user, $this->oUser, $subject, $details);
                     }
                 }
 
                 // Redirect to folder
                 $this->addInfoMessage(_kt('The administrator has been notified of your request.'));
-                redirect($sFolderUrl);
+                redirect($folderUrl);
                 exit();
             }
         }
 
-        return $oForm->renderPage(_kt('Archived document request') . ': '.$oDocument->getName());
+        return $form->renderPage(_kt('Archived document request') . ': ' . $document->getName());
     }
 
-    public function getUserForId($iUserId) {
-        $u = User::get($iUserId);
-        if (PEAR::isError($u) || ($u == false)) { return _kt('User no longer exists'); }
-        return $u->getName();
+    public function getUserForId($userId)
+    {
+        $user = User::get($userId);
+        if (PEAR::isError($user) || ($user == false)) {
+            return _kt('User no longer exists');
+        }
+
+        return $user->getName();
     }
-    
+
+    /**
+     * Record the transaction for viewing the page.
+     * Only record once unless the user has viewed a different document and returned to the current one.
+     */
+    protected function recordView()
+    {
+        $docId = $this->document->getId();
+        if (isset($_SESSION['current_document']) && $_SESSION['current_document'] == $docId) {
+            // If the document view has already been recorded, don't record it again
+            return ;
+        }
+
+        $documentTransaction = new DocumentTransaction($this->document, 'Document details page view',
+                                                        'ktcore.transactions.view');
+        $documentTransaction->create();
+        $_SESSION['current_document'] = $docId;
+    }
+
+    /**
+     * Get the info for displaying the action buttons on the page
+     *
+     * @param array $actions
+     * @return array
+     */
+    protected function createButtons($actions)
+    {
+        $list = array();
+        $menus = array();
+
+        // Create the "more" button
+        $btn = array('btn_position' => 'below', 'url' => '#', 'name' => _kt('More'), 'icon_class' => 'more', 'ns' => 'more');
+        $list[$btn['btn_position']][$btn['ns']] = $btn;
+
+        foreach ($actions as $oAction) {
+            $info = $oAction->getInfo();
+
+            // Skip if action is disabled
+            if (is_null($info)) {
+                continue;
+            }
+
+            // Skip if no name provided - action may be disabled for permissions reasons
+            if (empty($info['name'])) {
+                continue;
+            }
+
+            // Check whether the button has a parent i.e. is in the drop down menu of a split button
+            if (!$info['parent_btn']) {
+                // Determine the position of the button on the page
+                $pos = $info['btn_position'];
+                $list[$pos][$info['ns']] = $info;
+            }
+            else {
+                $menus[$info['parent_btn']]['menu'][$info['ns']] = $info;
+            }
+        }
+
+        if (!empty($menus)) {
+            // Add the menu's to the correct buttons
+            foreach ($list as $key => $item) {
+                foreach ($menus as $subkey => $subitem) {
+                    if (array_key_exists($subkey, $item)) {
+                        // Order alphabetically
+                        $submenu = $subitem['menu'];
+                        uasort($submenu, array($this, 'sortMenus'));
+
+                        $item[$subkey]['menu'] = $submenu;
+                        $list[$key] = $item;
+                    }
+                }
+            }
+        }
+        uasort($list['above'], array($this, 'sortBtns'));
+
+        return $list;
+    }
+
+    protected function sortBtns($a, $b)
+    {
+        if ($a['btn_order'] < $b['btn_order']) return -1;
+        if ($a['btn_order'] > $b['btn_order']) return 1;
+        return 0;
+    }
+
+    protected function sortMenus($a, $b)
+    {
+        if ($a['name'] < $b['name']) return -1;
+        if ($a['name'] > $b['name']) return 1;
+        return 0;
+    }
 }
 ?>

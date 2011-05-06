@@ -1,10 +1,10 @@
 <br/>
 <br/>
-<div style="margin-left:145px;">
+<div style="margin-left:45px;">
 	<img src="resources/graphics/admin_{$category.name}.png" align="left">
 </div>
 	
-<div style="margin-left:200px; margin-top:5px;">
+<div style="margin-left:100px; margin-top:5px;">
 	<h2>{$category.title}</h2>
 	
 	{if ($jscript != '')}

@@ -1,5 +1,4 @@
-/* Initializing kt.app if it wasn't initialized before */
-if (typeof(kt.app)=='undefined')kt.app={};
+if (typeof(kt.app) == 'undefined') { kt.app = {}; }
 
 /**
 * The multi-file upload widget. This object contains all the code
@@ -7,187 +6,195 @@ if (typeof(kt.app)=='undefined')kt.app={};
 */
 kt.app.upload = new function() {
 
-	// Stores the objects that deal with the individual files being uploaded. Elements in here are of type uploadStructure
-	var data = this.data = {};
+    var self = this;
 
-	this.data.files = {};
+    // Stores the objects that deal with the individual files being uploaded.
+    // Elements in here are of type uploadStructure.
+    var data = this.data = {};
 
-	// contains a list of fragments that will get preloaded
-	var fragments = this.fragments = ['upload/upload.dialog', 'upload/upload.dialog.item', 'upload/upload.dialog.item.nobulk', 'upload/upload.metadata.fieldset'];
+    // Contains a list of fragments that will get preloaded.
+    var fragments = this.fragments = [
+                                'upload/upload.dialog',
+                                'upload/upload.dialog.item',
+                                'upload/upload.dialog.item.nobulk',
+                                'upload/upload.metadata.fieldset'
+                    ];
+    var fragmentPackage = this.fragmentPackage = [fragments];
 
-	// contains a list of executable fragments that will get preloaded
-	var execs = this.execs = ['upload/upload.doctypes', 'upload/upload.metadata.dialog'];
+    // Contains a list of executable fragments that will get preloaded.
+    var execs = this.execs = ['upload/upload.doctypes', 'upload/upload.metadata.dialog'];
+    var execPackage = this.execPackage = [execs];
 
-	// scope protector. inside this object referrals to self happen via 'self' rather than 'this' to make sure we call the functionality within the right scope.
-	var self = this;
+    // A storage container for various DOM elements that need to be accessed repeatedly.
+    var domElements = this.domElements = {};
 
-	// a storage container for various DOM elements that need to be accessed repeatedly
-	var elems = this.elems = {};
+    // Container for qq.fileUploader (AjaxUploader2 code.)
+    this.uploader = null;
+    this.uploadfolder = null;
+    this.uploadWindow = null;
 
-	// container for qq.fileUploader (AjaxUploader2 code)
-	this.uploader = null;
+    this.data.files = {};
 
-	this.uploadfolder = null;
+    // Initializes the upload widget on creation. Currently does preloading of resources.
+    this.init = function() {
+        kt.api.preload(fragmentPackage, execPackage, true);
+    }
 
-	// Initializes the upload widget on creation. Currently does preloading of resources.
-	this.init = function() {
-		for (var idx in fragments) {
-			kt.api.preloadFragment(fragments[idx]);
-		}
-		for (var idx in execs) {
-			kt.api.preloadExecutable(execs[idx]);
-		}
-	}
+    // TODO: removeItem also needs to remove it from the actual upload?
 
-	// Container for the EXTJS window
-	this.uploadWindow = null;
+    // Add a file item to the list of files to upload and manage.
+    // Must not be called directly, but as a result of adding a file using AjaxUploader)
+    this.addUpload = function(fileName, docTypeHasRequiredFields)
+    {
+        var metadata = {};
+        var docTypeId = 1;
 
-	// TODO: removeItem also needs to remove it from the actual upload?
+        if (self.data['applyMetaDataToAll'] && (self.data['globalMetaData'] != undefined)) {
+            metadata = self.data['globalMetaData']['metadata'];
+            docTypeId = self.data['globalMetaData']['docTypeID'];
+            docTypeHasRequiredFields = !self.data['globalMetaDataRequiredDone'];
+        }
 
-	// Add a file item to the list of files to upload and manage.
-	// Must not be called directly, but as a result of adding a file using AjaxUploader)
-	this.addUpload = function(fileName, docTypeHasRequiredFields) {
-		var metadata = {};
-		var docTypeId = 1;
+        var dialog = self.getDialog();
 
-		if (self.data['applyMetaDataToAll'] && (self.data['globalMetaData'] != undefined)) {
-			metadata = self.data['globalMetaData']['metadata'];
-			docTypeId = self.data['globalMetaData']['docTypeID'];
-			docTypeHasRequiredFields = !self.data['globalMetaDataRequiredDone'];
-		}
+        jQuery(self.domElements.item_container).append(dialog);
 
-		// Check which dialog to get
-		var usertype = kt.api.getUserType('upload/upload.dialog.item');
-		if (usertype == 4) {
-			var item=jQuery(kt.api.getFragment('upload/upload.dialog.item.nobulk'));
-		}
-		else {
-			var item=jQuery(kt.api.getFragment('upload/upload.dialog.item'));
-		}
+        if (fileName.length > 50) {
+            jQuery('.ul_filename').addClass('ellipsis');
+        }
 
-		jQuery(self.elems.item_container).append(item);
+        var obj = new self.uploadStructure({
+                                        'fileName': (fileName + ''),
+                                        'elem': dialog,
+                                        'metadata': metadata,
+                                        'docTypeId': docTypeId,
+                                        'has_required_metadata': docTypeHasRequiredFields,
+                                        'required_metadata_done': !docTypeHasRequiredFields,
+                                        'parent': self
+        });
+        kt.lib.meta.set(dialog[0], 'item', obj);
+        self.data.files[fileName] = obj;
+        obj.startUpload();
 
-		if (fileName.length > 50) {
-			jQuery('.ul_filename').addClass('ellipsis');
-		}
+        // are we dealing with a possible bulk upload?
+        var index = fileName.lastIndexOf('.');
+        var ext = fileName.substr(index).toLowerCase();
+        var e = kt.lib.meta.get(dialog[0], 'item');
+        if (ext == '.gz' || ext == '.bz2') {
+            var substr = fileName.substring(0, index);
+            var subindex = substr.lastIndexOf('.');
+            var subext = substr.substr(subindex).toLowerCase();
+            if (subext != '.tar') {
+                return obj;
+            }
+        }
 
-		var obj = new self.uploadStructure({'fileName': (fileName + ''), 'elem': item, 'metadata': metadata, 'docTypeId': docTypeId,
-		'has_required_metadata': docTypeHasRequiredFields, 'required_metadata_done': !docTypeHasRequiredFields, 'parent': self});
-		kt.lib.meta.set(item[0], 'item', obj);
-		obj.startUpload();
-		self.data.files[fileName] = obj;
+        // do we need to suggest a bulk upload?
+        if (self.isBulkExtension(ext)) {
+            jQuery('#' + e.options.elem[0].id + ' .ul_bulk_checkbox').css('display', 'block');
+        }
 
-		// are we dealing with a possible bulk upload?
-		var index = fileName.lastIndexOf('.');
-		var ext = fileName.substr(index).toLowerCase();
-		var e = kt.lib.meta.get(item[0], 'item');
-		if (ext == '.gz' || ext == '.bz2') {
-			var substr = fileName.substring(0, index);
-			var subindex = substr.lastIndexOf('.');
-			var subext = substr.substr(subindex).toLowerCase();
-			if (subext != '.tar') {
-				return obj;
-			}
+        return obj;
+    }
 
-		}
+    // Check which dialog to get.
+    this.getDialog = function()
+    {
+        var usertype = kt.api.getUserType('upload/upload.dialog.item');
 
-		// do we need to suggest a bulk upload?
-		if (this.isBulkExtension(ext)) {
-			jQuery('#' + e.options.elem[0].id + ' .ul_bulk_checkbox').css('display', 'block');
-		}
+        if (usertype == 4) {
+            var dialog = jQuery(kt.api.getFragment('upload/upload.dialog.item.nobulk'));
+        }
+        else {
+            var dialog = jQuery(kt.api.getFragment('upload/upload.dialog.item'));
+        }
 
-		return obj;
-	}
+        return dialog;
+    }
 
-	// check if is bulk type extension
-	this.isBulkExtension = function(ext) {
-		var bulkExtensions = new Array('.ar', '.bz', '.bz2', '.deb', '.gz', '.rar', '.tgz', '.tar', '.tbz', '.zip');
+    this.isBulkExtension = function(ext)
+    {
+        var bulkExtensions = new Array('.ar', '.bz', '.bz2', '.deb', '.gz', '.rar', '.tgz', '.tar', '.tbz', '.zip');
 
-		var isBulk = false;
+        for (var i = 0; i < bulkExtensions.length; ++i) {
+            if (bulkExtensions[i] == ext) {
+                return true;
+            }
+        }
 
-		for (var i =0; i < bulkExtensions.length; i++) {
-			if (bulkExtensions[i] == ext) {
-				isBulk = true;
-				break;
-			}
-		}
+        return false;
+    }
 
-		return isBulk;
-	}
+    // A DOM helper function that will take elem as any dom element inside a file item fragment
+    // and return the js object related to that element.
+    this.getItem = function(elem)
+    {
+        var e = jQuery(elem).parents('.ul_item')[0];
+        var meta = kt.lib.meta.get(e, 'item');
+        return meta;
+    }
 
-	/*this.uniqueFileName = function() {
-	var fileName='';
-	var size=16;
-	var alpha = "abcdefghijklmnopqrstuvwxyz1234567890_";
-	var asize=alpha.length;
-	for (var i=0; i<size; i++) {
-	fileName=fileName+''+alpha[Math.floor(Math.random()*asize)];
-	}
+    this.getMetaItem = function(elem)
+    {
+        var e = jQuery(elem).parents('.metadataTable')[0];
+        var meta = kt.lib.meta.get(e, 'item');
+        return meta;
+    }
 
-	return fileName;
-	}*/
+    // metadata is object in format {"docTypeID": docTypeID, "metadata": metadata}
+    this.applyMetadataToAll = function(metadata, requiredDone)
+    {
+        self.data['applyMetaDataToAll'] = true;
+        self.data['globalMetaData'] = metadata;
 
-	// A DOM helper function that will take elem as any dom element inside a file item fragment
-	// and return the js object related to that element.
-	this.getItem = function(elem) {
-		var e = jQuery(elem).parents('.ul_item')[0];
-		var meta = kt.lib.meta.get(e, 'item');
-		return meta;
-	}
+        // cycle through every file and apply the metadata!
+        jQuery.each(self.data.files, function(key, file) {
+            //first update the doc type of every file!
+            file.options.docTypeId = metadata['docTypeID'];
+            file.options.metadata = metadata['metadata'];
+            file.options.required_metadata_done = requiredDone;
+        });
 
-	this.getMetaItem = function(elem) {
-		var e = jQuery(elem).parents('.metadataTable')[0];
-		var meta = kt.lib.meta.get(e, 'item');
-		return meta;
-	}
+        self.data['globalMetaDataRequiredDone'] = requiredDone;
+    }
 
-	// metadata is object in format {"docTypeID":docTypeID, "metadata":metadata}
-	this.applyMetadataToAll = function(applyToAll, metadata, requiredDone) {
-		if (applyToAll) {
-			self.data['applyMetaDataToAll'] = true;
-			self.data['globalMetaData'] = metadata;
+    this.setGlobalMetadataFalse = function()
+    {
+        self.data['applyMetaDataToAll'] = false;
+        self.data['globalMetaData'] = {};
 
-			// cycle through every file and apply the metadata!
-			jQuery.each(self.data.files, function(key, file) {
-				//first update the doc type of every file!
-				file.options.docTypeId = metadata['docTypeID'];
-				file.options.metadata = metadata['metadata'];
-				file.options.required_metadata_done = requiredDone;
-			});
+        self.data['globalMetaDataRequiredDone'] = requiredDone;
+    }
 
-		} else {
-			self.data['applyMetaDataToAll'] = false;
-			self.data['globalMetaData'] = {};
-		}
+    // Find the js object matching a given filename
+    this.findItem = function(fileName)
+    {
+        if (typeof(self.data.files[fileName]) != 'undefined') {
+            return self.data.files[fileName];
+        }
 
-		self.data['globalMetaDataRequiredDone'] = requiredDone;
-	}
+        return null;
+    }
 
-	// Find the js object matching a given filename
-	this.findItem = function(fileName) {
-		if (typeof(self.data.files[fileName]) != 'undefined') {
-			return self.data.files[fileName];
-		}
-		return null;
-	}
+    this.getNodeTxt = function(html)
+    {
+        if (strpos(html, '<') == false) {
+            nodeText = trim(html);
+        } else {
+            nodeText = trim(html.substr(0, strpos(html, '<')));
+        }
 
-	this.getNodeTxt = function(html) {
-		if (strpos(html, '<') == false) {
-			nodeText = trim(html);
-		} else {
-			nodeText = trim(html.substr(0, strpos(html, '<')));
-		}
+        return nodeText;
+    }
 
-		return nodeText;
-	}
+    this.getNodePath = function(folderId)
+    {
+        nodeInTree = jQuery('ul#loadedpath li[folderid='+folderId+']');
 
-	this.getNodePath = function(folderId) {
-		nodeInTree = jQuery('ul#loadedpath li[folderid='+folderId+']');
-
-		if (folderId == 1) {
-			pathToItem = ' / (Root Directory)';
-		} else {
-			pathToItem = kt.app.upload.getNodeTxt(nodeInTree.html());
+        if (folderId == 1) {
+            pathToItem = ' / (Root Directory)';
+        } else {
+            pathToItem = kt.app.upload.getNodeTxt(nodeInTree.html());
 
 			nodeInTree.parentsUntil('#loadedpath').each(function(i) {
 				if (jQuery(this).get(0).tagName == 'LI') {
@@ -198,19 +205,20 @@ kt.app.upload = new function() {
 						pathToItem = kt.app.upload.getNodeTxt(jQuery(this).html())+'/'+pathToItem;
 					}
 				}
-			});
-		}
+            });
+        }
 
-		return pathToItem;
-	}
+        return pathToItem;
+    }
 
-	this.loadFolderPath = function(currentId) {
-		html = '<ul id="currentPathStuff">';
-		currentNode = jQuery('ul#loadedpath li[folderid=' + currentId + ']');
+    this.loadFolderPath = function(currentId)
+    {
+        html = '<ul id="currentPathStuff">';
+        currentNode = jQuery('ul#loadedpath li[folderid=' + currentId + ']');
 
-		if (currentId + '' != '1') {
-			html += '<li class="folder_up" folderid="' + currentNode.parent().parent().attr('folderid') + '">[Folder Up]</li>';
-		}
+        if (currentId + '' != '1') {
+            html += '<li class="folder_up" folderid="' + currentNode.parent().parent().attr('folderid') + '">[Folder Up]</li>';
+        }
 
 		if (currentNode.length == 0) {
 			// NEED TO RELOAD TREE
@@ -255,71 +263,73 @@ kt.app.upload = new function() {
 
 					html += '</ul>';
 					jQuery('#folderpathchooser').html(html);
-				}, function() {});
-			}
-		}
-	}
+                }, function() {});
+            }
+        }
+    }
 
-	// add the uploaded files to the repo
-	this.addDocuments = function() {
-		// are we on dashboard.php?
-		var onDashboardPage = window.location.pathname.indexOf('dashboard') > 0;
+    // add the uploaded files to the repo
+    this.addDocuments = function()
+    {
+        var onDashboardPage = window.location.pathname.indexOf('dashboard') > 0;
+        var progressWidgetShown = false;
 
-		var progressWidgetShown = false;
+        this.hideWindow();
 
-		// hide the window!
-		this.hideWindow();
+        filesToAdd = {};
+        var i = 0;
 
-		// create array of files to add
-		filesToAdd = {};
-		var i = 0;
+        var atLeastOneSingle = false;
+        var atLeastOneBulk = false;
 
-		var atLeastOneSingle = false;
-		var atLeastOneBulk = false;
+        var folderID = jQuery("#currentPath").val();
 
-		// what folder to upload to?
-		var folderID = jQuery("#currentPath").val();
+        // iterate through files to see which are ready to be added
+        jQuery.each(self.data.files, function(key, value) {
+            if (!progressWidgetShown) {
+                progressWidgetShown = true;
+                kt.app.upload.unhideProgressWidget();
+            }
 
-		// iterate through files to see which are ready to be added
-		jQuery.each(self.data.files, function(key, value) {
-			if (!progressWidgetShown) {	// && !value.options.do_bulk_upload) {
-				progressWidgetShown = true;
-				// show the progress widget
-				kt.app.upload.unhideProgressWidget();
-			}
-
-			// create the array of files to be uploaded
-			if (value.options.is_uploaded) {
-				var fileName = value.options['fileName'];
+            // create the array of files to be uploaded
+            if (value.options.is_uploaded) {
+                var fileName = value.options['fileName'];
 				var doBulk = value.options.do_bulk_upload;
 
 				if (doBulk) {
 					atLeastOneBulk = true;
-				} else {
-					atLeastOneSingle = true;
-				}
+                } else {
+                    atLeastOneSingle = true;
+                }
 
-				var docTypeID = value.options['docTypeId'];
+                var docTypeID = value.options['docTypeId'];
 
-				// assemble the metadata
-				var metadata = {};
-				var j = 0;
-				jQuery.each(value.options['metadata'], function(key, value) {
-					metadata[j++] = {'id':key, 'value':value};
-				});
+                var metadata = {};
+                var j = 0;
+                jQuery.each(value.options['metadata'], function(key, value) {
+                    metadata[j++] = {'id':key, 'value':value};
+                });
 
-				// NB: encode the filename!!
-				fileName = encodeURIComponent(fileName);
+                // NB: encode the filename!!
+                fileName = encodeURIComponent(fileName);
 
-				var tempFile = self.data['s3TempPath'] + fileName;
+                var tempFile = self.data['s3TempPath'] + fileName;
 
-				filesToAdd[i++] = {'baseFolderID': self.data['baseFolderID'], 'fileName': fileName, 'folderID': folderID, 'docTypeID': docTypeID, 'metadata': metadata, 's3TempFile': tempFile, 'doBulk': doBulk};
-			}
-		});
+                filesToAdd[i++] = {
+                    'baseFolderID': self.data['baseFolderID'],
+                    'fileName': fileName,
+                    'folderID': folderID,
+                    'docTypeID': docTypeID,
+                    'metadata': metadata,
+                    's3TempFile': tempFile,
+                    'doBulk': doBulk
+                };
+            }
+        });
 
-		kt.api.addDocuments(filesToAdd, function(data) {
-			var hasError = false;
-			// put this in a try...catch because error occurs if user browses away before the upload completes
+        kt.api.addDocuments(filesToAdd, function(data) {
+            var hasError = false;
+            // put this in a try...catch because error occurs if user browses away before the upload completes
 			// BUT upload still does complete, error occurs because tries to add item to non-existent page
 			try {
 				jQuery.each(data.data.addedDocuments, function(key, value) {
@@ -394,89 +404,97 @@ kt.app.upload = new function() {
 				// console.dir(e);
 				kt.app.upload.fadeProgress(10000);
 			}
-		}, function() {}, i * 30000);
-		// 30 seconds for each file!
+        }, function() {}, i * 30000);
+        // 30 seconds for each file!
 
-		this.closeWindow();
-	}
+        this.closeWindow();
+    }
 
-	this.closeWindow = function() {
-		uploadWindow = Ext.getCmp('extuploadwindow');
-		self.data = {};
-		self.data.files = {};
-		uploadWindow.destroy();
-	}
+    this.closeWindow = function()
+    {
+        uploadWindow = Ext.getCmp('extuploadwindow');
+        self.data = {};
+        self.data.files = {};
+        uploadWindow.destroy();
+    }
 
-	this.hideWindow = function() {
-		uploadWindow = Ext.getCmp('extuploadwindow');
-		uploadWindow.hide();
-	}
+    this.hideWindow = function()
+    {
+        uploadWindow = Ext.getCmp('extuploadwindow');
+        uploadWindow.hide();
+    }
 
-	this.enableAddButton = function() {
-		var btn = jQuery('#ul_actions_upload_btn');
-		btn.removeAttr('disabled');
-	}
+    this.enableAddButton = function()
+    {
+        var btn = jQuery('#ul_actions_upload_btn');
+        btn.removeAttr('disabled');
+    }
 
-	this.disableAddButton = function() {
-		var btn = jQuery('#ul_actions_upload_btn');
-		btn.attr('disabled', 'true');
-	}
+    this.disableAddButton = function()
+    {
+        var btn = jQuery('#ul_actions_upload_btn');
+        btn.attr('disabled', 'true');
+    }
 
-	this.unhideProgressWidget = function() {
-		var progress = jQuery('.uploadProgress');
-		progress.removeClass('error');
-		progress.text('Adding files ...');
-		progress.css('display', 'block');
-		progress.css('visibility', 'visible');
-		progress.append('<img src="/resources/graphics/newui/large-loading.gif" style="float: right;"/>');
-	}
+    this.unhideProgressWidget = function()
+    {
+        var progress = jQuery('.uploadProgress');
+        progress.removeClass('error');
+        progress.text('Adding files ...');
+        progress.css('display', 'block');
+        progress.css('visibility', 'visible');
+        progress.append('<img src="/resources/graphics/newui/large-loading.gif" style="float: right;"/>');
+    }
 
-	this.updateProgress = function(message, isError) {
-		var progress = jQuery('.uploadProgress');
-		// jQuery('.uploadProgress .title').text(message);
-		if (progress != null) {
-			if (isNaN(message)) {
-				progress.text(message);
-			} else if (message <= 100) {
+    this.updateProgress = function(message, isError)
+    {
+        var progress = jQuery('.uploadProgress');
+        if (progress != null) {
+            if (isNaN(message)) {
+                progress.text(message);
+            } else if (message <= 100) {
 				progress.text(message+"%");
 			}
 		}
 
 		if (isError) {
-			progress.addClass('error');
-		} else {
-			progress.removeClass('error');
-		}
-	}
+            progress.addClass('error');
+        } else {
+            progress.removeClass('error');
+        }
+    }
 
-	this.fadeProgress = function(time) {
-		jQuery('#uploadProgress').fadeOut(time);
-	}
+    this.fadeProgress = function(time)
+    {
+        jQuery('#uploadProgress').fadeOut(time);
+    }
 
-	// iterates through all the files and checks whether they have been added to S3
-	this.allFilesReadyForUpload = function() {
-		var allReady = true;
-		// check whether we can enable Upload button
-		// iterate through all files and check whether all ready for upload
-		jQuery.each(self.data.files, function(key, value) {
-			if (!value.options.is_uploaded) {
-				allReady = false;
+    // iterates through all the files and checks whether they have been added to S3
+    this.allFilesReadyForUpload = function()
+    {
+        var allReady = true;
+        // check whether we can enable Upload button
+        // iterate through all files and check whether all ready for upload
+        jQuery.each(self.data.files, function(key, value) {
+            if (!value.options.is_uploaded) {
+                allReady = false;
 				// return false;
 			}
 		});
 
-		return allReady;
-	}
+        return allReady;
+    }
 
-	// ENTRY POINT: Calling this function will set up the environment, display the upload dialog,
-	// and hook up the AjaxUploader callbacks to the correct functions.
-	this.showUploadWindow = function() {
-		var docTypeHasRequiredFields = false;
+    // ENTRY POINT: Calling this function will set up the environment, display the upload dialog,
+    // and hook up the AjaxUploader callbacks to the correct functions.
+    this.showUploadWindow = function()
+    {
+        var docTypeHasRequiredFields = false;
 
-		self.data = {};
-		self.data.files = {};
+        self.data = {};
+        self.data.files = {};
 
-		// does the Default Doc Type have required fields?
+        // does the Default Doc Type have required fields?
 		kt.api.docTypeHasRequiredFields("1", function(data) {
 			// if so, we need to disable the Upload button
 			docTypeHasRequiredFields = data.data.hasRequiredFields;
@@ -496,20 +514,20 @@ kt.app.upload = new function() {
 			shadow      : true,
 			modal       : true,
 			title       : 'Upload Files',
-			html        : kt.api.getFragment('upload/upload.dialog')
-		});
+            html        : kt.api.getFragment('upload/upload.dialog')
+        });
 
-		uploadWin.addListener('show', function() {
-			// disable the Add Documents button on show since won't be any to add yet!
-			kt.app.upload.disableAddButton();
-			self.elems.item_container = jQuery('.uploadTable .ul_list')[0];
-			self.elems.qq = jQuery('#upload_add_file .qq-uploader')[0];
+        uploadWin.addListener('show', function() {
+            // disable the Add Documents button on show since won't be any to add yet!
+            kt.app.upload.disableAddButton();
+            self.domElements.item_container = jQuery('.uploadTable .ul_list')[0];
+            self.domElements.qq = jQuery('#upload_add_file .qq-uploader')[0];
 
-			self.uploader = new qq.FileUploader({
-				element: document.getElementById('upload_add_file'),
-				// action: 'test.php',
-				params: {},
-				buttonText: 'Choose File',
+            self.uploader = new qq.FileUploader({
+                element: document.getElementById('upload_add_file'),
+                // action: 'test.php',
+                params: {},
+                buttonText: 'Choose File',
 				allowedExtensions: [],
 				sizeLimit: 0,
 				// taken out multiple uploads until able to figure out how to make it work with S3
@@ -519,18 +537,19 @@ kt.app.upload = new function() {
 				onSubmit: function(id, fileName) {
 					// remove the 'No Files Selected' message
 					jQuery('.no_files_selected').css('display', 'none');
-					// disable the Upload button as can only upload once upload to S3 completes
-					kt.app.upload.disableAddButton();
+                    // disable the Upload button as can only upload once upload to S3 completes
+                    kt.app.upload.disableAddButton();
 
-					self.addUpload(fileName, docTypeHasRequiredFields);
-				},
-				onComplete: function(id,fileName, responseJSON) {
-					try{
-						self.findItem(fileName).completeUpload();
-					} catch(e) {
-						// do nothing
-					}
-				},
+                    self.addUpload(fileName, docTypeHasRequiredFields);
+                },
+                onComplete: function(id, fileName, responseJSON) {
+                                    console.dir(responseJSON)
+                    try {
+                        self.findItem(fileName).completeUpload();
+                    } catch(e) {
+                        // do nothing
+                    }
+                },
 				// TODO: need to implement this!
 				/*onCancel: function(id,fileName) {
 				console.log('onCancel '+fileName);
@@ -774,19 +793,24 @@ kt.app.upload.uploadStructure = function(options) {
 
 		metaWin.addListener('close', function() {
 			// have all required metadata fields been completed?
-			var requiredDone = self.checkRequiredFieldsCompleted();
-			self.options.required_metadata_done = requiredDone;
+            var requiredDone = self.checkRequiredFieldsCompleted();
+            self.options.required_metadata_done = requiredDone;
 
-			// is "Apply To All" checked?
-			var el = jQuery('#ul_meta_actionbar_apply_to_all')[0];
-			var applyMetaToAll = el.checked;
-			kt.app.upload.applyMetadataToAll(applyMetaToAll, {'docTypeID':self.options.docTypeId, 'metadata':self.options.metadata}, self.options.required_metadata_done);
+            // is "Apply To All" checked?
+            var el = jQuery('#ul_meta_actionbar_apply_to_all')[0];
+            var applyMetaToAll = el.checked;
+            if (applyMetaToAll) {
+                var metadata = {'docTypeID': self.options.docTypeId, 'metadata': self.options.metadata};
+                kt.app.upload.applyMetadataToAll(metadata, self.options.required_metadata_done);
+            } else {
+                kt.app.upload.setGlobalMetadataFalse();
+            }
 
-			var allRequiredMetadataDone = true;
-			jQuery.each(self.options.parent.data.files, function(key, value) {
-				if (value.options.has_required_metadata) {
-					if (!value.options.required_metadata_done) {
-						value.setProgress('Edit properties', 'ui_meta');
+            var allRequiredMetadataDone = true;
+            jQuery.each(self.options.parent.data.files, function(key, value) {
+                if (value.options.has_required_metadata) {
+                    if (!value.options.required_metadata_done) {
+                        value.setProgress('Edit properties', 'ui_meta');
 						allRequiredMetadataDone = false;
 						return;
 					} else {

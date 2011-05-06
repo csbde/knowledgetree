@@ -17,7 +17,7 @@ class BrowseView {
     private $initialLoad = 3;
     // NOTE if you change the limit here, be sure to also change it in the client side js;
     //      the value may be overridden by the javascript, but this value is always a fallback.
-    private $limit = 5;
+    private $limit = 3;
     private $folderId;
 
     public function __construct()
@@ -30,8 +30,11 @@ class BrowseView {
         }
 
         // Include new browse view css
-        $oPage = $GLOBALS['main'];
-        $oPage->requireCSSResource("resources/css/newui/browseView.css?" . rand());
+        $page = $GLOBALS['main'];
+        $page->requireCSSResource('resources/css/newui/browseView.css');
+        // For some reason this was being forced to not cache.  Don't think that's correct behaviour.
+        // TODO add this to the grouped js.
+        // $oPage->requireCSSResource("resources/css/newui/browseView.css?" . rand());
     }
 
     public function getJavaScript()
@@ -46,14 +49,14 @@ class BrowseView {
     }
 
     /**
-	 * Sets the start page based on page requested and pages already loaded.
-	 * Aims to get one or more pages on either side of requested page, if not already loaded.
-	 *
-	 * @param int $folderId
-	 * @param int $requested
-	 * @return array
-	 */
-    private function getLazyOptions($folderId, $requested)
+     * Sets the start page based on page requested and pages already loaded.
+     * Aims to get one or more pages on either side of requested page, if not already loaded.
+     *
+     * @param int $folderId
+     * @param int $requested
+     * @return array
+     */
+    protected function getLazyOptions($folderId, $requested)
     {
         if (!$_SESSION) { session_start(); }
         $session = !empty($_SESSION['ktPageSet'][$folderId]) ? $_SESSION['ktPageSet'][$folderId] : array();
@@ -88,10 +91,10 @@ class BrowseView {
     }
 
     /**
-	 * Sets offset and limit for browsing
-	 *
-	 * @param int $pageCount
-	 */
+     * Sets offset and limit for browsing
+     *
+     * @param int $pageCount
+     */
     public function setPagingOptions($pageCount = 1, $limit = null)
     {
         if (empty($limit)) {
@@ -105,11 +108,11 @@ class BrowseView {
     }
 
     /**
-	 * Sets/Updates a session value to contain the list of pages already loaded
-	 *
-	 * @param array $options
-	 * @param int $folderId
-	 */
+     * Sets/Updates a session value to contain the list of pages already loaded
+     *
+     * @param array $options
+     * @param int $folderId
+     */
     private function updateSession($folderId)
     {
         if (!$_SESSION) { session_start(); }
@@ -126,14 +129,14 @@ class BrowseView {
     }
 
     /**
-	 * Loads additional pages on request, returned as a json encoded array.
-	 *
-	 * @param int $folderId
-	 * @param int $pageCount
-	 * @param array $options If these are submitted then the requested range will be force loaded
-	 *                       even if there was a previous load.  This allows pages to recover from
-	 *                       a partially failed request.
-	 */
+     * Loads additional pages on request, returned as a json encoded array.
+     *
+     * @param int $folderId
+     * @param int $pageCount
+     * @param array $options If these are submitted then the requested range will be force loaded
+     *                       even if there was a previous load.  This allows pages to recover from
+     *                       a partially failed request.
+     */
     public function lazyLoad($folderId, $requested = 1, $options = array())
     {
         $response = array();
@@ -164,15 +167,15 @@ class BrowseView {
     }
 
     /**
-	 * Fetch and render the contents of a folder.
-	 * This function is intended for the initial rendering.
-	 *
-	 * @param int $folderId
-	 * @param array $aBulkActions
-	 * @param object $folder
-	 * @param boolean $editable
-	 * @param int $pageCount
-	 */
+     * Fetch and render the contents of a folder.
+     * This function is intended for the initial rendering.
+     *
+     * @param int $folderId
+     * @param array $aBulkActions
+     * @param object $folder
+     * @param boolean $editable
+     * @param int $pageCount
+     */
     public function renderBrowseFolder($folderId, $aBulkActions, $folder, $editable, $pageCount = 1)
     {
         $response = array();
@@ -256,15 +259,15 @@ class BrowseView {
     }
 
     /**
-	 * Get the folder listing
-	 *
-	 * @param string $folderId
-	 * @param int $totalItems
-	 * @param array $options Offset/Limit
-	 * @param string $sortField
-	 * @param string $asc
-	 * @return mixed $ret
-	 */
+     * Get the folder listing
+     *
+     * @param string $folderId
+     * @param int $totalItems
+     * @param array $options Offset/Limit
+     * @param string $sortField
+     * @param string $asc
+     * @return mixed $ret
+     */
     public function getFolderContent($folderId, &$totalItems = 0, $options = array(), $sortField = 'title', $asc = true)
     {
         if (empty($options)) {
@@ -275,6 +278,7 @@ class BrowseView {
         if (is_null($this->oUser)) {
             $this->oUser =  User::get($user_id);
         }
+
         $disabled = $this->oUser->getDisabled();
 
         $kt = new KTAPI(3);
@@ -327,12 +331,12 @@ class BrowseView {
     }
 
     /**
-	 * Displays a message when there is no folder content
-	 *
-	 * @param int $folderId
-	 * @param boolean $editable
-	 * @return string
-	 */
+     * Displays a message when there is no folder content
+     *
+     * @param int $folderId
+     * @param boolean $editable
+     * @return string
+     */
     public function noFilesOrFoldersMessage($folderId = null, $editable = true)
     {
         if (SharedUserUtil::isSharedUser()) {
@@ -347,68 +351,60 @@ class BrowseView {
         }
 
         if (!$editable) {
-        	if ($folderMessage == '') {
-        		$folderMessage = '<h2>You don\'t have permissions to view the contents of this folder!</h2>';
-        	}
-            return "<span class='notification'>
-						$folderMessage
-			</span>";
+            if ($folderMessage == '') {
+                $folderMessage = '<h2>You don\'t have permissions to view the contents of this folder!</h2>';
+            }
+            return "<span class='notification'>".$folderMessage."</span>";
         } else {
-            $hint = '(Here are three easy ways you can change that...)';
-            $upload = '					<td><div class="roundnum">1</div></td>
-					<td class="info">
-						<h2>Upload files and folders</h2>
-						Upload one or more files including .zip files and other archives
+            $folderMessage = '<h2>There\'s nothing in this folder yet!</h2>';
+            $hint = '<div class="title">Here are three easy ways you can change that...</div>';
+            $upload = '
+                    <div class="info upload">
+                        <a href="javascript:kt.app.upload.showUploadWindow();" class="icon"></a>
+                        <h2>Upload files and folders</h2>
+                        Upload one or more files including .zip files and other archives
+                        <br />
+                    </div>';
+            $dragndrop = '
+                    <div class="info drag-and-drop">
+                        <span class="icon"></span>
+                        <h2>Drag and Drop files here</h2>
+                        Drop files directly from your desktop into the drop zone above. <br> <span style="font-size: 10px;">(HTML5 enabled browser required)</span>
+                    </div>';
+            $createonline = '
+                    <div class="info create-online">
+                        <a href="action.php?kt_path_info=zoho.new.document&fFolderId=' . $folderId . '" class="icon"></a>
+                        <h2>Create content online</h2>
+                        Create and share files right within KnowledgeTree
+                        <br />
+                    </div>';
 
-						<br />
-						<br />
-						<div>
-							<a href="javascript:kt.app.upload.showUploadWindow();"><span class="uploadButton">Upload</span></a>
-						</div>
-
-					</td>';
-            $dragndrop = '					<td><div class="roundnum">2</div></td>
-					<td class="info">
-						<h2>Drag and Drop files here</h2>
-						<img src="/resources/graphics/newui/dragdrop.png" />
-					</td>';
-            $createonline = '					<td><div class="roundnum">3</div></td>
-					<td class="info">
-						<h2>Create content online</h2>
-						Create and share files right within KnowledgeTree
-						<br />
-						<br />
-						<div>
-							<a href="action.php?kt_path_info=zoho.new.document&fFolderId=' . $folderId . '"><span class="createdocButton">Online Doc</span></a>
-						</div>
-					</td>';
-
-            return '<span class="notification">
-			' . $folderMessage . '
-			' . $hint . '
-			<table>
-				<tr>
-					' . $upload . '
-					' . $dragndrop . '
-					' . $createonline . '
-				</tr>
-			</table>
-			</span>';
+            return '<span class="notification empty-folder">
+            ' . $folderMessage . '
+            ' . $hint . '
+            <table>
+                <tr>
+                    ' . $upload . '
+                    ' . $dragndrop . '
+                    ' . $createonline . '
+                </tr>
+            </table>
+            </span>';
         }
     }
 
     /**
-	 * Create the pagination element.
-	 *
-	 * @param int $pageCount
-	 * @param string $pageClass
-	 * @param string $paginationClass
-	 * @param string $itemClass
-	 * @param string $pageScript
-	 * @param string $prevScript
-	 * @param string $nextScript
-	 * @return string
-	 */
+     * Create the pagination element.
+     *
+     * @param int $pageCount
+     * @param string $pageClass
+     * @param string $paginationClass
+     * @param string $itemClass
+     * @param string $pageScript
+     * @param string $prevScript
+     * @param string $nextScript
+     * @return string
+     */
     public function paginateByDiv($pageCount, $pageClass, $paginationClass = 'paginate', $itemClass = 'item', $pageScript = 'alert([page])', $prevScript = "alert('previous');", $nextScript = "alert('next');")
     {
         if ($pageCount <= 0) {
@@ -418,11 +414,11 @@ class BrowseView {
         $idClass = $pageClass . '_[page]';
         $pages = array();
         $pages[] = '<ul class="' . $paginationClass . '">';
-        $pages[] = '<li class="' . $itemClass . '" onclick="' . $prevScript . '">Previous</li>';
+        $pages[] = '<li class="' . $itemClass . '" onclick="' . $prevScript . '">&#9666</li>';
         for($i = 1; $i <= $pageCount; ++$i) {
             $pages[] = ktVar::parseString('<li class="' . $itemClass . ' ' . $idClass . '" onclick="' . $pageScript . '">' . $i . '</li>', array('page'=> $i, 'folder' => $this->folderId));
         }
-        $pages[] = '<li class="' . $itemClass . '" onclick="' . $nextScript . '">Next</li>';
+        $pages[] = '<li class="' . $itemClass . '" onclick="' . $nextScript . '">&#9656</li>';
         $pages[] = '</ul>';
         $pages = join($pages);
 
@@ -433,13 +429,13 @@ class BrowseView {
     {
         $canDelete = Permission::userHasDeleteFolderPermission($folder);
         $canWrite = Permission::userHasFolderWritePermission($folder);
-		$canRead = Permission::userHasFolderReadPermission($folder);
-		// Check if user has no permission to folder.
-		if (!$canDelete && !$canWrite && !$canRead) { return ''; }
+        $canRead = Permission::userHasFolderReadPermission($folder);
+        // Check if user has no permission to folder.
+        if (!$canDelete && !$canWrite && !$canRead) { return ''; }
         $tpl = '<table class="browseView bulkActionMenu" cellspacing="0" cellpadding="0"><tr><td>
-		<input type="checkbox" class="select_all" />
-		<input type="hidden" value="" name="sListCode"><input type="hidden" value="bulkaction" name="action">
-		<input type="hidden" value="browse" name="fReturnAction"><input type="hidden" value="1" name="fReturnData">';
+        <input type="checkbox" class="select_all" />
+        <input type="hidden" value="" name="sListCode"><input type="hidden" value="bulkaction" name="action">
+        <input type="hidden" value="browse" name="fReturnAction"><input type="hidden" value="1" name="fReturnData">';
 
         $parts = array();
 
@@ -469,11 +465,11 @@ class BrowseView {
     }
 
     /**
-	 * Checks the systems workflow permissions to see if actions have been overriden
-	 *
-	 * @param array $item
-	 * @return array $item
-	 */
+     * Checks the systems workflow permissions to see if actions have been overriden
+     *
+     * @param array $item
+     * @return array $item
+     */
     private function checkWorkflowPermissions($item = null, $oDocument)
     {
         $ns = ' not_supported';
@@ -506,13 +502,13 @@ class BrowseView {
     }
 
     /**
-	 * Renders html block for a document in the new browse
-	 *
-	 * @param array $item
-	 * @param boolean $empty
-	 * @param boolean $shortcut
-	 * @return string
-	 */
+     * Renders html block for a document in the new browse
+     *
+     * @param array $item
+     * @param boolean $empty
+     * @param boolean $shortcut
+     * @return string
+     */
     public function renderDocumentItem($item = null, $empty = false, $shortcut = false)
     {
         // When $item is null, $oDocument resolves to a PEAR Error, we should add a check for $item and initialise the document data at the top
@@ -626,7 +622,7 @@ class BrowseView {
             }
 
             if ($check || in_array($item['has_rendition'], array(2, 3, 6, 7))) {
-                $item['thumbnail'] = '<img src="plugins/thumbnails/thumbnail_view.php?documentId=' . $item['id'] . '" onClick="document.location.replace(\'view.php?fDocumentId=' . $item['id'] . '#preview\');">';
+                $item['thumbnail'] = '<span class="popover"><span class="popoverTip"></span><img src="plugins/thumbnails/thumbnail_view.php?documentId=' . $item['id'] . '" onClick="document.location.replace(\'view.php?fDocumentId=' . $item['id'] . '#preview\');"></span>';
                 $item['thumbnailclass'] = 'preview';
             }
         }
@@ -635,8 +631,7 @@ class BrowseView {
         $item['allowdoczohoedit'] = '';
 
         if ($this->zohoEnabled && $hasWrite) {
-            if (Zoho::resolve_type($oDocument))
-            {
+            if (Zoho::resolve_type($oDocument)) {
                 if ($item['actions.checkout'] != $ns) {
                     $item['allowdoczohoedit'] = '<li class="action_zoho_document"><a href="javascript:;" onclick="zohoEdit(\'' . $item['id'] . '\')">Edit Document Online</a></li>';
                 }
@@ -646,7 +641,7 @@ class BrowseView {
         $item['isfinalize_document'] = ($item['actions.finalize_document']) ? 0 : 1;
         // Sanitize document title
         $item['title'] = sanitizeForHTML($item['title']);
-        $item['filesize'] = KTUtil::filesizeToString($item['filesize']);
+        $item['filesize'] = KTUtil::filesizeToString($item['filesize'], 'KB');
 
         // Check if the document is a shortcut
         if (!is_null($item['linked_document_id'])) {
@@ -660,7 +655,7 @@ class BrowseView {
         //$item = $this->checkWorkflowPermissions($item, $oDocument);
 
         $item['separatorA'] = $item['actions.copy'] == '' ? '' : $ns;
-        $item['separatorB'] = $item['actions.download'] == '' || $item['actions.instantview'] == '' ? '' : $ns;
+        $item['separatorB'] = $item['actions.download'] == '' ? '' : $ns;
         $item['separatorC'] = $item['actions.checkout'] == '' || $item['actions.checkin'] == '' || $item['actions.cancel_checkout']== '' ? '' : $ns;
         $item['separatorD'] = $ns;//($item['actions.alert'] == '' || $item ['actions.email'] == '') && $hasWrite ? '' : $ns;
         if ($item['is_immutable'] == '') { $item['separatorB'] = $item['separatorC'] = $item['separatorD'] = $ns; }
@@ -670,10 +665,10 @@ class BrowseView {
         }
 
         $tpl = $this->getDocumentTemplate(1, '<td width="1" class="checkbox">
-							<input name="selection_d[]" type="checkbox" value="[id]" />
-						</td>', $share_separator, '<span class="shortcut[is_shortcut]">
-									<span>This is a shortcut to the file.</span>
-								</span>');
+                            <input name="selection_d[]" type="checkbox" value="[id]" />
+                        </td>', $share_separator, '<span class="shortcut[is_shortcut]">
+                                    <span>This is a shortcut to the file.</span>
+                                </span>');
 
         if ($empty) { return '<span class="fragment document" style="display:none;">' . $tpl . '</span>'; }
 
@@ -709,8 +704,8 @@ class BrowseView {
         }
 
         $tpl = $this->getFolderTemplate(true, '<td width="1" class="checkbox">
-						<input name="selection_f[]" type="checkbox" value="[id]" />
-					</td>', '<span class="shortcut[is_shortcut]"><span>This is a shortcut to the folder.</span></span>');
+                        <input name="selection_f[]" type="checkbox" value="[id]" />
+                    </td>', '<span class="shortcut[is_shortcut]"><span>This is a shortcut to the folder.</span></span>');
 
         if ($empty) { return '<span class="fragment folder" style="display:none;">' . $tpl . '</span>'; }
 
@@ -720,124 +715,123 @@ class BrowseView {
     protected function getDocumentTemplate($browseViewId, $checkbox = null, $share_separator = null, $shortcut = null)
     {
         return '
-			<span class="doc browseView ' . $browseViewId . '">
-				<table cellspacing="0" cellpadding="0" width="100%" border="0" class="doc item ddebug">
-					<tr>
-						' . $checkbox . '
-						<td class="doc icon_cell" width="1">
-							<div class="doc icon" style="[mimeicon]">
-							    <span class="immutable_info[is_immutable]">
-									<span>This document has been <strong>finalized</strong> and can no longer be modified.</span>
-								</span>
-								<span class="checked_out[is_checkedout]">
-									<span>This document is <strong>checked-out</strong> by <strong>[checked_out_by]</strong> and cannot be edited until it is Checked-in.</span>
-								</span>
-								' . $shortcut . '
-								<span class="doc [thumbnailclass]">[thumbnail]</span>
-							</div>
+            <span class="doc browseView ' . $browseViewId . '">
+                <table cellspacing="0" cellpadding="0" width="100%" border="0" class="doc item ddebug">
+                    <tr>
+                        ' . $checkbox . '
+                        <td class="doc icon_cell" width="1">
+                            <div class="doc icon" style="[mimeicon]">
+                                <span class="immutable_info[is_immutable]">FINALIZED
+                                    <span>This document has been <strong>finalized</strong> and can no longer be modified.</span>
+                                </span>
+                                <span class="checked_out[is_checkedout]">CHECKOUT
+                                    <span>This document is <strong>checked-out</strong> by <strong>[checked_out_by]</strong> and cannot be edited until it is Checked-in.</span>
+                                </span>
+                                ' . $shortcut . '
+                                <span class="doc [thumbnailclass]">[thumbnail]</span>
+                            </div>
                         </td>
-						<td class="doc summary_cell fdebug">
+                        <td class="doc summary_cell fdebug">
                             <div class="title"><a class="clearLink" href="[document_link]" style="">[title]</a></div>
-							<div class="detail">
-								<span class="item"> Owner: <span class="user">[owned_by]</span></span><span class="item">Created: <span class="date">[created_date]</span> by <span class="user">[created_by]</span></span><span class="item">Updated: <span class="date">[modified_date]</span> by <span class="user">[modified_by]</span></span><span class="item">File size: <span class="user">[filesize]</span></span>
-							</div>
-						</td>
-						<td>
-							' . $this->getDocumentActionMenu($share_separator) . '
-						</td>
-					</tr>
-					<tr>
-						<td class="expanderField" colspan="3">
-							<span class="expanderWidget comments">
-								<H1>Comments</H1>
-								<span>The comment display and add widget will be inserted here.</span>
-							</span>
-							<span class="expanderWidget properties">
-								<H1>Properties</H1>
-								<span>The properties display and edit widget will be inserted here.</span>
-							</span>
-						</td>
-					</tr>
-				</table>
-			</span>';
+                            <div class="detail">
+                                <span class="item"> Owner: <span class="user">[owned_by]</span></span><span class="item">Created: <span class="date">[created_date]</span> by <span class="user">[created_by]</span></span><span class="item">Updated: <span class="date">[modified_date]</span> by <span class="user">[modified_by]</span></span><span class="item">File size: <span class="user">[filesize]</span></span>
+                            </div>
+                        </td>
+                        <td>
+                            ' . $this->getDocumentActionMenu($share_separator) . '
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="expanderField" colspan="3">
+                            <span class="expanderWidget comments">
+                                <H1>Comments</H1>
+                                <span>The comment display and add widget will be inserted here.</span>
+                            </span>
+                            <span class="expanderWidget properties">
+                                <H1>Properties</H1>
+                                <span>The properties display and edit widget will be inserted here.</span>
+                            </span>
+                        </td>
+                    </tr>
+                </table>
+            </span>';
     }
 
     protected function getDocumentActionMenu($share_separator = null)
     {
         return '<ul class="doc actionMenu">
-								<!-- li class="actionIcon comments"></li -->
-								<li class="actionIcon actions">
-									<ul>
-										<li class="action_share_document [actions.share_document]"><a href="#" onclick="javascript:kt.app.sharewithusers.shareContentWindow(\'[id]\',\'[item_type]\',\'[user_id]\', \'[isfinalize_document]\');">Share This Document</a></li>
-										'. $share_separator .'
-										<li class="action_download [actions.download]"><a href="action.php?kt_path_info=ktcore.actions.document.view&fDocumentId=[id]">Download</a></li>
-										<li class="action_instant_view [actions.instant_view]"><a href="[document_link]#preview">Instant View</a></li>
-										[allowdoczohoedit]
+                                <!-- li class="actionIcon comments"></li -->
+                                <li class="actionIcon actions">
+                                    <ul>
+                                        <li class="action_share_document [actions.share_document]"><a href="#" onclick="javascript:kt.app.sharewithusers.shareContentWindow(\'[id]\',\'[item_type]\',\'[user_id]\', \'[isfinalize_document]\');">Share This Document</a></li>
+                                        '. $share_separator .'
+                                        <li class="action_download [actions.download]"><a href="action.php?kt_path_info=ktcore.actions.document.view&fDocumentId=[id]">Download</a></li>
+                                        [allowdoczohoedit]
 
-										<li class="separator[separatorA]"></li>
+                                        <li class="separator[separatorA]"></li>
 
-										<li class="action_copy [actions.copy]"><a href="action.php?kt_path_info=ktcore.actions.document.copy&fDocumentId=[id]">Copy</a></li>
-										<li class="action_move [actions.move]"><a href="action.php?kt_path_info=ktcore.actions.document.move&fDocumentId=[id]">Move</a></li>
-										<li class="action_delete [actions.delete]"><a href="action.php?kt_path_info=ktcore.actions.document.delete&fDocumentId=[id]">Delete</a></li>
+                                        <li class="action_copy [actions.copy]"><a href="action.php?kt_path_info=ktcore.actions.document.copy&fDocumentId=[id]">Copy</a></li>
+                                        <li class="action_move [actions.move]"><a href="action.php?kt_path_info=ktcore.actions.document.move&fDocumentId=[id]">Move</a></li>
+                                        <li class="action_delete [actions.delete]"><a href="action.php?kt_path_info=ktcore.actions.document.delete&fDocumentId=[id]">Delete</a></li>
 
-										<li class="separator[separatorB]"></li>
+                                        <li class="separator[separatorB]"></li>
 
-										<li class="action_checkout [actions.checkout]"><a href="action.php?kt_path_info=ktcore.actions.document.checkout&fDocumentId=[id]">Check-out</a></li>
-										<li class="action_cancel_checkout [actions.cancel_checkout]"><a href="action.php?kt_path_info=ktcore.actions.document.cancelcheckout&fDocumentId=[id]">Cancel Check-out</a></li>
-										<li class="action_checkin [actions.checkin]"><a href="action.php?kt_path_info=ktcore.actions.document.checkin&fDocumentId=[id]">Check-in</a></li>
+                                        <li class="action_checkout [actions.checkout]"><a href="action.php?kt_path_info=ktcore.actions.document.checkout&fDocumentId=[id]">Check-out</a></li>
+                                        <li class="action_cancel_checkout [actions.cancel_checkout]"><a href="action.php?kt_path_info=ktcore.actions.document.cancelcheckout&fDocumentId=[id]">Cancel Check-out</a></li>
+                                        <li class="action_checkin [actions.checkin]"><a href="action.php?kt_path_info=ktcore.actions.document.checkin&fDocumentId=[id]">Check-in</a></li>
 
-										<li class="separator[separatorC]"></li>
+                                        <li class="separator[separatorC]"></li>
 
-										<li class="action_alerts [actions.alerts]"><a href="action.php?kt_path_info=alerts.action.document.alert&fDocumentId=[id]">Alerts</a></li>
-										<li class="action_email [actions.email]"><a href="action.php?kt_path_info=ktcore.actions.document.email&fDocumentId=[id]">Email</a></li>
+                                        <li class="action_alerts [actions.alerts]"><a href="action.php?kt_path_info=alerts.action.document.alert&fDocumentId=[id]">Alerts</a></li>
+                                        <li class="action_email [actions.email]"><a href="action.php?kt_path_info=ktcore.actions.document.email&fDocumentId=[id]">Email</a></li>
 
-										<li class="separator[separatorD]"></li>
+                                        <li class="separator[separatorD]"></li>
 
-										<li class="action_change_owner [actions.change_owner]"><a href="action.php?kt_path_info=ktcore.actions.document.ownershipchange&fDocumentId=[id]">Change Owner</a></li>
-										<li class="action_finalize_document [actions.finalize_document]"><a href="action.php?kt_path_info=ktcore.actions.document.immutable&fDocumentId=[id]">Finalize Document</a></li>
-									</ul>
-								</li>
-							</ul>';
+                                        <li class="action_change_owner [actions.change_owner]"><a href="action.php?kt_path_info=ktcore.actions.document.ownershipchange&fDocumentId=[id]">Change Owner</a></li>
+                                        <li class="action_finalize_document [actions.finalize_document]"><a href="action.php?kt_path_info=ktcore.actions.document.immutable&fDocumentId=[id]">Finalize Document</a></li>
+                                    </ul>
+                                </li>
+                            </ul>';
     }
 
     protected function getFolderTemplate($fetchActionMenu, $checkbox = null, $shortcut = null)
     {
         return '
-			<span class="doc browseView">
-			<table cellspacing="0" cellpadding="0" width="100%" border="0" class="folder item">
-				<tr>
-					' . $checkbox . '
-					<td class="folder icon_cell" width="1">
-						<div class="folder icon">
-							' . $shortcut . '
-						</div>
-					</td>
-					<td class="folder summary_cell">
-						<div class="title"><a class="clearLink" href="[link]">[title]</a></div>
-						<div class="detail"><span class="item">Created by: <span class="creator">[created_by]</span></span></div>
-					</td>
-					' . ($fetchActionMenu ? $this->getFolderActionMenu() : '') . '
-				</tr>
-			</table>
-			</span>';
+            <span class="doc browseView">
+            <table cellspacing="0" cellpadding="0" width="100%" border="0" class="folder item">
+                <tr>
+                    ' . $checkbox . '
+                    <td class="folder icon_cell" width="1">
+                        <div class="folder icon">
+                            ' . $shortcut . '
+                        </div>
+                    </td>
+                    <td class="folder summary_cell">
+                        <div class="title"><a class="clearLink" href="[link]">[title]</a></div>
+                        <div class="detail"><span class="item">Created by: <span class="creator">[created_by]</span></span></div>
+                    </td>
+                    ' . ($fetchActionMenu ? $this->getFolderActionMenu() : '') . '
+                </tr>
+            </table>
+            </span>';
     }
 
     protected function getFolderActionMenu()
     {
         return '<td>
-						<ul class="folder actionMenu">
-							<li class="actionIcon actions">
-									<ul>
+                        <ul class="folder actionMenu">
+                            <li class="actionIcon actions">
+                                    <ul>
                                         <li class="action_share_folder [actions.share_folder]"><a href="#" onclick="javascript:kt.app.sharewithusers.shareContentWindow(\'[id]\',\'[item_type]\',\'[user_id]\');">Share This Folder</a></li>
                                         <li class="action_rename_folder [actions.rename]"><a href="action.php?kt_path_info=ktcore.actions.folder.rename&fFolderId=[id]">Rename Folder</a></li>
                                         <li class="action_folder_permissions [actions.permissions]"><a href="action.php?kt_path_info=ktcore.actions.folder.permissions&fFolderId=[id]">Set Folder Permissions</a></li>
                                         <!-- <li class="[actions.subscribe]"><a href="#" onclick=\'alert("JavaScript to be modified")\'>Subscribe to Folder</a></li> -->
                                         <li class="separator[separatorA]"></li>
                                         <li class="action_view_transactions [actions.view_transactions]"><a href="action.php?kt_path_info=ktcore.actions.folder.transactions&fFolderId=[id]">View Folder Activity</a></li>
-									</ul>
-							</li>
-						</ul>
-					</td>';
+                                    </ul>
+                            </li>
+                        </ul>
+                    </td>';
     }
 
 }

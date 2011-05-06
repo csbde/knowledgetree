@@ -1,0 +1,1 @@
+update mime_types set friendly_name="PDF" where filetypes = 'pdf';

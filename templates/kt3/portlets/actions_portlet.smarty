@@ -1,6 +1,3 @@
-{if $btn}
-    <ul class="buttonsList">{$btn}</ul>
-{/if}
 <ul>
 	{foreach item=action from=$context->firstActions }
         {if $action != null}

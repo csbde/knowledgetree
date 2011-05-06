@@ -5,7 +5,7 @@
  * KnowledgeTree Community Edition
  * Document Management Made Simple
  * Copyright (C) 2008, 2009, 2010 KnowledgeTree Inc.
- * 
+ *
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License version 3 as published by the
@@ -67,22 +67,22 @@ class KTFieldsetDisplayRegistry {
     function getHandler($nsname) {
         if (!array_key_exists($nsname, $this->fieldset_types)) {
             // unfortunately, we need to do a bit more spelunking here.
-            // if its conditional, we use a different item.  ns is unsufficient.
+            // if its conditional, we use a different item;  ns is insufficient.
             //
             // FIXME this is slightly wasteful from a performance POV, though DB caching should make it OK.
             $oFieldset =& KTFieldset::getByNamespace ($nsname);
-            if (PEAR::isError($oFieldset))
-            {
+            if (PEAR::isError($oFieldset)) {
                 global $default;
                 $default->log->error('Could not resolve Fieldset by namespace: ' . $nsname . '. Error: ' . $oFieldset->getMessage());
                 return 'SimpleFieldsetDisplay';
             }
-            if ($oFieldset instanceof KTEntityNoObjects)
-            {
+
+            if ($oFieldset instanceof KTEntityNoObjects) {
                 global $default;
                 $default->log->error('Could not resolve Fieldset by namespace: ' . $nsname . '. Error: KTEntityNoObjects returned.');
                 return 'SimpleFieldsetDisplay';
             }
+
             if ($oFieldset->getIsConditional() && KTMetadataUtil::validateCompleteness($oFieldset)) {
                 return 'ConditionalFieldsetDisplay';
             } else {

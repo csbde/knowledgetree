@@ -99,11 +99,11 @@ class KTUserUtil {
     	$userId = array_unique($userId, SORT_NUMERIC);
     	if (!is_array($fieldName)) { $fieldName = array($fieldName); }
 
-		//TODO: needs some work
+	//TODO: needs some work
     	$sql = "SELECT " . join(',', $fieldName) . " FROM users WHERE id IN (" . join(',', $userId) . ")";
     	$res = DBUtil::getResultArray($sql);
     	if (PEAR::isError($res) || empty($res)) {
-    		return '';
+    		return array();
     	} else {
     		return $res;
     	}
@@ -133,15 +133,15 @@ class KTUserUtil {
         $failedUsers = array();
         $groupName = '';
     	$group = false;
-		$message = '';
-		$objectTypeName = null;
-		$objectName = null;
+	$message = '';
+	$objectTypeName = null;
+	$objectName = null;
     	$inSystemList = self::checkUniqueEmail($addressList);
 
     	// loop through any addresses that currently exist and unset them in the invitee list
     	$addressList = array_flip($addressList);
     	foreach ($inSystemList as $item) {
-   	        unset($addressList[$item['email']]);
+   	    unset($addressList[$item['email']]);
     	    $existingUsers[] = $item;
     	}
     	$addressList = array_flip($addressList);

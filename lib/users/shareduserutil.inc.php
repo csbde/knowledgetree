@@ -37,23 +37,31 @@
  */
 require_once(KT_LIB_DIR . '/users/User.inc');
 
+if (!defined('SHARED_USER')) {
+    define ('SHARED_USER', 4);
+}
+
 class SharedUserUtil {
-    
-	/**
-	 * Check if a user is of type shared
-	 *
-	 * @return boolean - true if a shared user false if other
-	 */
-	static public function isSharedUser()
-	{
-		if(is_null($_SESSION['userID'])) return false;
-    	$oUser = User::get($_SESSION['userID']);
-    	if(PEAR::isError($oUser)) return false;
-    	$userType = $oUser->getDisabled();
-    	
-    	return ($userType == 4);
-	}
-	
-	
+
+    /**
+     * Check if a user is of type shared
+     *
+     * @return boolean - true if a shared user false if other
+     */
+    public static function isSharedUser()
+    {
+        if (is_null($_SESSION['userID'])) {
+            return false;
+        }
+
+        $user = User::get($_SESSION['userID']);
+        if (PEAR::isError($user)) {
+            return false;
+        }
+
+        return ($user->getDisabled() == SHARED_USER);
+    }
+
+
 }
 ?>

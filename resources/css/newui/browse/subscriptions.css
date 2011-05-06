@@ -1,0 +1,5 @@
+table.subscription_manage { -moz-border-radius: 5px 5px 5px 5px; -moz-box-shadow: 0 0 5px #666677;	margin: 5px; border: 1px solid #CCCCCC;	white-space:normal !important; width: 99%; }
+table.subscription_manage td { overflow: hidden; padding: 0.25em 0.5em; vertical-align: top; }
+table.subscription_manage th { overflow: hidden; padding: 0.25em 0.5em; vertical-align: top; }
+table.subscription_manage tbody tr td.checkbox { width:10px; }
+table.subscription_manage tbody tr td.name { width:auto; }
