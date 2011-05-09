@@ -195,6 +195,18 @@ class KTSmartyTemplate extends KTTemplate {
 
         $method = KTUtil::arrayGet($params, 'method', 'getName');
         $none = KTUtil::arrayGet($params, 'none');
+        
+        // Check whether a list of Omit Ids exist,
+        // If not, create it
+        if (!array_key_exists('omitIds', $params)) {
+            $params['omitIds'] = array();
+        }
+        
+        // Check that Omit Ids is an array
+        // If not, convert it into an array();
+        if (!is_array($params['omitIds'])) {
+            $params['omitIds'] = array($params['omitIds']);
+        }
 
         $params['values'] = array();
         $params['output'] = array();
@@ -204,8 +216,11 @@ class KTSmartyTemplate extends KTTemplate {
         }
 
         foreach ($entities as $oEntity) {
-            $params['values'][] = $oEntity->getId();
-            $params['output'][] = call_user_func(array(&$oEntity, $method));
+            
+            if (!in_array($oEntity->getId(), $params['omitIds'])) {
+                $params['values'][] = $oEntity->getId();
+                $params['output'][] = call_user_func(array(&$oEntity, $method));
+            }
         }
 
         unset($params['entities']);

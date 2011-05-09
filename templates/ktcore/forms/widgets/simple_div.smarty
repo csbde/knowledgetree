@@ -1,0 +1,4 @@
+<div
+{if $has_id} id="{$id}" {/if}
+{if $has_class} class="{$class}"{/if}
+></div>
