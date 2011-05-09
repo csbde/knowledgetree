@@ -178,6 +178,7 @@ class KTPage {
             	        'thirdpartyjs/jquery/plugins/loading/jquery.loading.1.6.4.min.js' => $overviews,
                         "resources/$jsResourceLocation/newui/kt.eventhandler.$jsExt" => $combined,
                         "resources/$jsResourceLocation/newui/kt.app.upload.$jsExt" => $overviews,
+                        "resources/$jsResourceLocation/newui/documents/kt.app.checkout.$jsExt" => $files,
                         "resources/$jsResourceLocation/newui/kt.app.inviteusers.$jsExt" => $combined,
                         "resources/$jsResourceLocation/newui/kt.app.sharewithusers.$jsExt" => $files,
             	        "resources/$jsResourceLocation/jquery.blockui.$jsExt" => $combined,

@@ -116,14 +116,10 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
             $this->oPage->addError(_kt('This document has been deleted.'));
         }
 
-        //$this->oPage->setSecondaryTitle($this->document->getName());
-
         $options = array(
             'documentaction' => 'viewDocument',
             'folderaction' => 'browse',
         );
-
-        //$this->oDocument =& $document;
 
         //Figure out if we came here by navigating through a shortcut.
         //If we came here from a shortcut, the breadcrumbspath should be relative
@@ -139,7 +135,6 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
             $this->aBreadcrumbs = kt_array_merge($this->aBreadcrumbs, KTBrowseUtil::breadcrumbsForDocument($this->document, $options, $symLinkFolderId));
         }
 
-        //$this->addPortlets('Document Details');
         $actions = KTDocumentActionUtil::getDocumentActionsForDocument($this->document, $this->oUser);
         $info = KTDocumentActionUtil::getDocumentActionsForDocument($this->document, $this->oUser, 'documentinfo');
         $actions = array_merge($actions, $info);
@@ -201,7 +196,6 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
 
         // viewlets
         $viewlets = array();
-//        $viewlets2 = array();
         $viewletActions = KTDocumentActionUtil::getDocumentActionsForDocument($this->document, $this->oUser, 'documentviewlet');
         foreach ($viewletActions as $action) {
             $info = $action->getInfo();
@@ -209,16 +203,11 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
                 if (($info['ns'] == 'ktcore.viewlet.document.activityfeed') || ($info['ns'] == 'thumbnail.viewlets')) {
                     $viewlets[] = $action->display_viewlet(); // use the action, since we display_viewlet() later.
                 }
-//                else {
-//                    $viewlets2[] = $action->display_viewlet(); // use the action, since we display_viewlet() later.
-//                }
             }
         }
 
         $viewletData = implode(' ', $viewlets);
         $viewletData = trim($viewletData);
-        //        $viewletData2 = implode(' ', $viewlets2);
-        //        $viewletData2 = trim($viewletData2);
 
         $contentClass = 'view';
         if (!empty($viewletData)) {
@@ -255,7 +244,7 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
 
         $tagPluginPath = KTPluginUtil::getPluginPath('ktcore.tagcloud.plugin', true);
 
-        $makeMetadataEditable = $this->getMetadataEditable();
+        $makeMetadataEditable = $this->getMetadataEditable() ? 1 : 0;
 
         $templating =& KTTemplating::getSingleton();
         $template = $templating->loadTemplate('ktcore/document/view');
@@ -268,8 +257,6 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
             'context' => $this,
             'sCheckoutUser' => $checkedOutUsername,
             'isCheckoutUser' => ($this->oUser->getId() == $this->document->getCheckedOutUserId()),
-            //'canCheckin' => $canCheckin,
-            //'bCanEdit' => $canEdit,
             'actionBtns' => $actionBtns,
             'document_id' => $documentId,
             'document' => $this->document,
@@ -279,7 +266,6 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
             'generic_fieldsets' => $genericFieldsets,
             'fieldsets' => $fieldsets,
             'viewlet_data' => $viewletData,
-            //'viewlet_data2' => $viewletData2,
             'hasNotifications' => false,
             'fieldsetDisplayHelper' => $FieldsetDisplayHelper,
             'documentBlocks' => $documentBlocks,
@@ -610,65 +596,6 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
                                                         'ktcore.transactions.view');
         $documentTransaction->create();
         $_SESSION['current_document'] = $docId;
-    }
-
-    /**
-     * Get the info for displaying the action buttons on the page
-     *
-     * @param array $actions
-     * @return array
-     */
-    protected function createButtons($actions)
-    {
-        $list = array();
-        $menus = array();
-
-        // Create the "more" button
-        $btn = array('btn_position' => 'below', 'url' => '#', 'name' => _kt('More'), 'icon_class' => 'more', 'ns' => 'more');
-        $list[$btn['btn_position']][$btn['ns']] = $btn;
-
-        foreach ($actions as $oAction) {
-            $info = $oAction->getInfo();
-
-            // Skip if action is disabled
-            if (is_null($info)) {
-                continue;
-            }
-
-            // Skip if no name provided - action may be disabled for permissions reasons
-            if (empty($info['name'])) {
-                continue;
-            }
-
-            // Check whether the button has a parent i.e. is in the drop down menu of a split button
-            if (!$info['parent_btn']) {
-                // Determine the position of the button on the page
-                $pos = $info['btn_position'];
-                $list[$pos][$info['ns']] = $info;
-            }
-            else {
-                $menus[$info['parent_btn']]['menu'][$info['ns']] = $info;
-            }
-        }
-
-        if (!empty($menus)) {
-            // Add the menu's to the correct buttons
-            foreach ($list as $key => $item) {
-                foreach ($menus as $subkey => $subitem) {
-                    if (array_key_exists($subkey, $item)) {
-                        // Order alphabetically
-                        $submenu = $subitem['menu'];
-                        uasort($submenu, array($this, 'sortMenus'));
-
-                        $item[$subkey]['menu'] = $submenu;
-                        $list[$key] = $item;
-                    }
-                }
-            }
-        }
-        uasort($list['above'], array($this, 'sortBtns'));
-
-        return $list;
     }
 
     protected function sortBtns($a, $b)

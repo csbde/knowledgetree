@@ -109,7 +109,7 @@
 			</td>
 			<td valign="top" width="375" id="column_right">
 				<div class="" style="margin-bottom: 10px;">
-		<div class="action_buttons above">
+		<div class="action_buttons above" id=top_actions>
 
             <nobr>
         		{* Display top row action buttons *}
@@ -123,8 +123,12 @@
                                 </div>
                             {else}
                                 <div class="splitbutton">
-                            		<a class="button" id="{$btn.icon_class}" href="{$btn.url}" onclick='{$btn.onclick}'>{$btn.name}</a>
-                            		<span class="split">&#9660;</span>
+                                	{if $btn.js != ""}
+                                		{$btn.js}
+                            		{else}
+	                            		<a class="button" id="{$btn.icon_class}" href="{$btn.url}" onclick='{$btn.onclick}'>{$btn.name}</a>
+	                            	{/if}
+	                            	<span class="split">&#9660;</span>
                                 </div>
                             {/if}
 
@@ -137,7 +141,11 @@
                                         </li>
                                     {else}
                                         <li>
-                                        	<a id="{$menuitem.icon_class}" href="{$menuitem.url}" onclick='{$menuitem.onclick}'>{$menuitem.name}</a>
+	                                		{if $menuitem.js != ""}
+	                                			{$menuitem.js}
+	                            			{else}
+                                        		<a id="{$menuitem.icon_class}" href="{$menuitem.url}" onclick='{$menuitem.onclick}'>{$menuitem.name}</a>
+                                        	{/if}
                                         </li>
                                     {/if}
                                 {/foreach}
