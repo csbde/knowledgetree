@@ -1,4 +1,17 @@
-#workflows form div.field label { font-weight:bold; }
+#workflows form div.field { margin-top: 10px;}
+#workflows form div.field label { font-weight:bold;}
 #workflows .workflow_info { bottom: 0px; position: relative; }
 #workflows .workflow_details {  }
 #workflows .workflow_transition { float: left; }
+
+#workflows .modalheader {
+    color: #2F6594 !important;
+    font-size: 16px !important;
+    text-shadow: 0 1px 0 white !important;
+}
+
+p.workflowChangeWarning {
+    margin-top: 10px;
+    color: #FF9700 ; /* Orange */
+    font-weight: bold;
+}

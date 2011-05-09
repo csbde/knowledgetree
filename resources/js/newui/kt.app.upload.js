@@ -551,9 +551,9 @@ kt.app.upload = new function() {
                     }
                 },
 				// TODO: need to implement this!
-				/*onCancel: function(id,fileName) {
-				console.log('onCancel '+fileName);
-				},*/
+				//onCancel: function(id,fileName) {
+				//console.log('onCancel '+fileName);
+				//},
 				showMessage: function(message) {alert(message);}
 			});
 
