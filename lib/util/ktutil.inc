@@ -1458,7 +1458,7 @@ class KTUtil {
                 $config = KTConfig::getSingleton();
                 $rootUrl = $config->get('KnowledgeTree/rootUrl');
 
-                if (!isset($params['fFolderId'])) { $params['fFolderId'] = 1; }
+                if (!empty($params['fFolderId'])) { $params['fFolderId'] = 1; }
 
                 $url = $rootUrl . '/00' . base_convert($params['fFolderId'], 10, 36);
 
