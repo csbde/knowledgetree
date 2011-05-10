@@ -17,7 +17,7 @@ class auth extends client_service {
 
         $this->Response->setDebug('parameters',$params);
 
-        setcookie("kt_language", $language, 2147483647, '/');
+        setcookie("KTLanguage", $language, 2147483647, '/');
 
         $kt =& $this->KT;
 

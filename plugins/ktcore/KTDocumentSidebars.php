@@ -70,17 +70,19 @@ class KTDocumentSidebar extends KTDocumentViewlet {
         		$keys[$order] = $order;
         	}
         }
+
         // Sort to rewrite keys.
         sort($keys);
-		$oTemplating = KTTemplating::getSingleton();
-		$oTemplate = $oTemplating->loadTemplate('ktcore/document/sidebars/viewSidebar');
-        $aTemplateData = array(
+
+        $templating = KTTemplating::getSingleton();
+		$template = $templating->loadTemplate('ktcore/document/sidebars/viewSidebar');
+        $templateData = array(
               'context' => $this,
               'sidebars' => $ordered,
               'keys' => $keys,
         );
-        
-        return $oTemplate->render($aTemplateData);
+
+        return $template->render($templateData);
 	}
 	
 	public function do_refreshSidebar() {
@@ -93,7 +95,7 @@ class KTWorkflowSidebar extends KTDocumentSidebar {
 	public $sName = 'ktcore.sidebar.workflow';
 	public $_sShowPermission = 'ktcore.permissions.read';
 	public $order = 5;
-	public $showIfRead = true;
+	public $bShowIfWriteShared = true;
 	
 	public function getCSSName() { return 'workflow_transitions'; }
 	
@@ -160,6 +162,7 @@ class KTWorkflowSidebar extends KTDocumentSidebar {
             'transitions' => $aDisplayTransitions,
             'state_name' => $oWorkflowState->getName(),
 			'comment' => $oLatestTransitionComment,
+			'documentId' => $this->oDocument->getId(),
         ));
 
         return $oTemplate->render();

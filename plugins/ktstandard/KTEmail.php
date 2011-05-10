@@ -240,7 +240,9 @@ function sendEmailDocument($destEmailAddress, $documentId, $documentName, $comme
     $message .= "\n\n";
     $message .= _kt('Click on the hyperlink below to view it.') . '<br>';
     // add the link to the document to the mail
+    
     $message .= '<br>' . generateControllerLink('viewDocument', "fDocumentID=$documentId", $documentName, true);
+    //$message .= '<br>' . generateControllerLink('viewDocument', "fDocumentID=$documentId", $documentName, true);
     // add additional comment
     if (strlen(trim($comment)) > 1) {
         $message .= '<br><br><b>' . _kt('Message') . ':</b><br><br>' . nl2br($comment);
@@ -284,7 +286,7 @@ function sendEmailHyperlink($destEmailAddress, $documentId, $documentName, $comm
     $message .= " \n";
     $message .= _kt('Click on the hyperlink below to view it.') . '<br>';
     // add the link to the document to the mail
-    $message .= '<br>' . generateControllerLink('viewDocument', "fDocumentID=$documentId", $documentName, true);
+    $message .= '<br>' . KTUtil::kt_url() . KTBrowseUtil::getUrlForDocument($documentId);
     // add optional comment
     if (strlen(trim($comment)) > 1) {
         $message .= '<br><br><b>' . _kt('Message') . ':</b><br><br>' . nl2br($comment);

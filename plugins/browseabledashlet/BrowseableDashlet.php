@@ -40,7 +40,7 @@ require_once(KT_LIB_DIR . '/browse/browseutil.inc.php');
 
 class BrowseableFolderDashlet extends KTBaseDashlet {
 	var $oUser;
-    var $sClass = "ktInfo";
+    var $sClass = "ktBlock";
     
     function BrowseableFolderDashlet() {
         $this->sTitle = _kt('Orphaned Folders');

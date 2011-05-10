@@ -785,8 +785,8 @@ class kt extends client_service {
 
 		$returnPolicies = array();
 		$test = $config->get('clientToolPolicies/allowRememberPassword');
-		global $default;
-		$default->log->error('I am here-' . $test);
+		//global $default;
+		//$default->log->error('I am here-' . $test);
 		foreach ($policies as $policy_name) {
 			$policyInfo = array('name' => $policy_name, 'value' => serviceHelper::bool2str($config->get('clientToolPolicies/' . $policy_name)), 'type' => 'boolean');
 
@@ -812,7 +812,7 @@ class kt extends client_service {
 	public function switchlang($params)
 	{
 		$this->logTrace((__METHOD__.'('.__FILE__.' '.__LINE__.')'),'Enter Function');
-		setcookie("kt_language", $params['lang'], 2147483647, '/');
+		setcookie("KTLanguage", $params['lang'], 2147483647, '/');
 	}
 
 	public function add_document_params($params)

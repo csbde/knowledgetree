@@ -58,7 +58,8 @@ class KTDocumentDetailsAction extends KTDocumentAction {
     var $sName = 'ktcore.actions.document.displaydetails';
 
     function do_main() {
-        redirect(generateControllerLink('viewDocument',sprintf(_kt('fDocumentId=%d'),$this->oDocument->getId())));
+    	redirect(KTUtil::kt_clean_document_url($this->oDocument->getId()));
+        //redirect(generateControllerLink('viewDocument',sprintf(_kt('fDocumentId=%d'),$this->oDocument->getId())));
         exit(0);
     }
 
@@ -272,7 +273,7 @@ class KTDocumentVersionHistoryAction extends KTDocumentAction {
      */
     function do_viewComparison() {
         // this is just a redirector
-        $QS = array(
+        $queryParams = array(
             'action' => 'viewComparison',
             'fDocumentId' => $this->oDocument->getId(),
             'fBaseVersion' => $_REQUEST['fBaseVersion'],
@@ -281,11 +282,11 @@ class KTDocumentVersionHistoryAction extends KTDocumentAction {
 
         $frag = array();
 
-        foreach ($QS as $k => $v) {
+        foreach ($queryParams as $k => $v) {
             $frag[] = sprintf('%s=%s', urlencode($k), urlencode($v));
         }
 
-        redirect(KTUtil::ktLink('view.php',null,implode('&', $frag)));
+        redirect(KTUtil::ktLink('view.php', null, implode('&', $frag)));
         // can't use clean urls, they break the functionality.
         //redirect(KTUtil::buildUrl(KTUtil::ktLink('view.php'), $frag));
     }
@@ -352,8 +353,8 @@ class KTDocumentViewAction extends KTDocumentAction {
 
     var $sName = 'ktcore.actions.document.view';
     var $sIconClass = 'download';
-	var $showIfWrite = true;
-	var $showIfRead = true;
+	var $bShowIfWriteShared = true;
+	var $bShowIfReadShared = true;
 	var $btnOrder = 1;
 
     function getDisplayName() {
@@ -415,7 +416,8 @@ class KTDocumentViewAction extends KTDocumentAction {
         if ($res === false) {
             session_start();
             $this->addErrorMessage(_kt('The file you requested is not available.'));
-            redirect(generateControllerLink('viewDocument',sprintf(_kt('fDocumentId=%d'),$this->oDocument->getId())));
+            redirect(KTUtil::kt_clean_document_url($this->oDocument->getId()));
+            //redirect(generateControllerLink('viewDocument',sprintf(_kt('fDocumentId=%d'),$this->oDocument->getId())));
             exit(0);
         }
 
@@ -431,8 +433,7 @@ class KTDocumentCheckOutAction extends KTDocumentAction {
     var $_bMutator = true;
     var $_bMutationAllowedByAdmin = false;
     var $sIconClass = 'checkout';
-	var $showIfWrite = true;
-	var $showIfRead = false;
+	var $bShowIfWriteShared = true;
 	var $btnOrder = 2;
 
     function getDisplayName() {
@@ -572,19 +573,21 @@ class KTDocumentCheckOutAction extends KTDocumentAction {
     }
 
     function do_checkout() {
-        $oForm = $this->form_checkout();
-        $res = $oForm->validate();
+        $form = $this->form_checkout();
+        $res = $form->validate();
         if (!empty($res['errors'])) {
-            return $oForm->handleError();
+            return $form->handleError();
         }
 
         $data = $res['results'];
 
-        $oTemplate =& $this->oValidator->validateTemplate('ktcore/action/checkout_final');
-        $sReason = isset($data['reason']) ? $data['reason'] : _kt('Document Checked Out.');
+        $template =& $this->oValidator->validateTemplate('ktcore/action/checkout_final');
+
+        $defaultCheckoutMessage = _kt('Document Checked Out.');
+        $reason = $defaultCheckoutMessage . (isset($data['reason']) ? "\n\n{$data['reason']}" : '');
 
         $this->startTransaction();
-        $res = KTDocumentUtil::checkout($this->oDocument, $sReason, $this->oUser);
+        $res = KTDocumentUtil::checkout($this->oDocument, $reason, $this->oUser);
         if (PEAR::isError($res)) {
             return $this->errorRedirectToMain(sprintf(_kt('Failed to check out the document: %s'), $res->getMessage()));
         }
@@ -597,12 +600,12 @@ class KTDocumentCheckOutAction extends KTDocumentAction {
             exit(0);
         }
 
-        $oTemplate->setData(array(
+        $template->setData(array(
             'context' => &$this,
-            'reason' => $sReason,
+            'reason' => $reason,
         ));
 
-        return $oTemplate->render();
+        return $template->render();
     }
 
     function do_checkout_final() {
@@ -636,8 +639,7 @@ class KTDocumentCheckInAction extends KTDocumentAction {
     var $sName = 'ktcore.actions.document.checkin';
     var $_sShowPermission = 'ktcore.permissions.write';
     var $sIconClass = 'checkin';
-	var $showIfWrite = true;
-	var $showIfRead = false;
+	var $bShowIfWriteShared = true;
 	var $btnOrder = 2;
 
     function getDisplayName() {
@@ -656,11 +658,11 @@ class KTDocumentCheckInAction extends KTDocumentAction {
             return null;
         }
 
+        $info = parent::getInfo();
         if ($this->oDocument->getCheckedOutUserID() != $this->oUser->getId()) {
-            return null;
+            $info['status'] = 'disabled';
         }
-
-        return parent::getInfo();
+        return $info;
     }
 
     function check() {
@@ -850,7 +852,9 @@ class KTDocumentCheckInAction extends KTDocumentAction {
             return $oForm->handleError(null, $extra_errors);
         }
 
-        $sReason = isset($data['reason']) ? $data['reason'] : _kt('Document Checked In.');
+        $defaultCheckinMessage = _kt('Document Checked In.');
+        $sReason = $defaultCheckinMessage . (isset($data['reason']) ? "\n\n{$data['reason']}" : '');
+
         $sCurrentFilename = $docFileName;
         $sNewFilename = $data['file']['name'];
         $aOptions = array();
@@ -891,8 +895,7 @@ class KTDocumentCancelCheckOutAction extends KTDocumentAction {
     var $bInAdminMode = null;
     //var $sIconClass = 'cancel_checkout';
 
-	var $showIfWrite = true;
-	var $showIfRead = false;
+	var $bShowIfWriteShared = true;
     var $sIconClass = 'cancel-checkout';
     var $sParentBtn = 'ktcore.actions.document.checkin';
 
@@ -1060,7 +1063,10 @@ class KTDocumentCancelCheckOutAction extends KTDocumentAction {
         }
 
         // checkout cancelled transaction
-        $reason=isset($data['reason']) ? $data['reason'] : _kt('Document Checkout Cancelled.');
+
+        $defaultCancelMessage = _kt('Document Checkout Cancelled.');
+        $reason = $defaultCancelMessage . (isset($data['reason']) ? "\n\n{$data['reason']}" : '');
+
         $oDocumentTransaction = new DocumentTransaction($this->oDocument, $reason, 'ktcore.transactions.force_checkin');
         $res = $oDocumentTransaction->create();
         if (PEAR::isError($res) || ($res === false)) {
@@ -1737,8 +1743,6 @@ class KTDocumentArchiveAction extends KTDocumentAction {
     var $sName = 'ktcore.actions.document.archive';
     var $_sShowPermission = 'ktcore.permissions.write';
     var $_bMutator = false;
-	var $showIfWrite = false;
-	var $showIfRead = false;
     var $sIconClass = 'archive';
     var $sParentBtn = 'more';
 
@@ -1892,10 +1896,9 @@ class KTAjaxDocumentWorkflowAction extends KTDocumentAction {
     public $sName = 'ktajax.actions.document.workflow';
     public $_sShowPermission = 'ktcore.permissions.read';
     public $sHelpPage = 'ktcore/user/workflow.html';
-	public $showIfWrite = true;
-	public $showIfRead = false;
     public $sIconClass = 'manage-workflow';
     public $sParentBtn = 'more';
+	public $bShowIfWriteShared = true;
 
     public function predispatch() {
         $this->persistParams(array('fTransitionId'));
@@ -2068,8 +2071,8 @@ class KTDocumentWorkflowAction extends KTDocumentAction {
     public $sName = 'ktcore.actions.document.workflow';
     public $_sShowPermission = 'ktcore.permissions.read';
     public $sHelpPage = 'ktcore/user/workflow.html';
-	public $showIfWrite = true;
-	public $showIfRead = false;
+	public $bShowIfReadShared = true;
+	public $bShowIfWriteShared = true;
     public $sIconClass = 'manage-workflow';
     public $sParentBtn = 'more';
 
@@ -2416,12 +2419,12 @@ class KTOwnershipChangeAction extends KTDocumentAction {
 
 class KTDocumentPageUrlAction extends KTDocumentAction {
 
-    var $sName = 'ktcore.actions.document.pageurl';
-	var $showIfWrite = true;
-	var $showIfRead = true;
-	var $btnOrder = 1;
-	var $sBtnPosition = 'links';
-	var $sIconClass = 'page-url';
+    public $sName = 'ktcore.actions.document.pageurl';
+	public $bShowIfWriteShared = true;
+	public $bShowIfReadShared = true;
+	public $btnOrder = 1;
+	public $sBtnPosition = 'links';
+	public $sIconClass = 'page-url';
 
     function getDisplayName() {
         return _kt('Get page link');
@@ -2444,8 +2447,8 @@ class KTDocumentPageUrlAction extends KTDocumentAction {
 class KTDocumentDownloadUrlAction extends KTDocumentAction {
 
     var $sName = 'ktcore.actions.document.downloadurl';
-	var $showIfWrite = true;
-	var $showIfRead = true;
+	var $bShowIfWriteShared = true;
+	var $bShowIfReadShared = true;
 	var $btnOrder = 2;
 	var $sBtnPosition = 'links';
 	var $sIconClass = 'download-url';
@@ -2471,8 +2474,8 @@ class KTDocumentDownloadUrlAction extends KTDocumentAction {
 class KTDocumentPreviewUrlAction extends KTDocumentAction {
 
     var $sName = 'ktcore.actions.document.previewurl';
-	var $showIfWrite = true;
-	var $showIfRead = true;
+	var $bShowIfWriteShared = true;
+	var $bShowIfReadShared = true;
 	var $btnOrder = 3;
 	var $sBtnPosition = 'links';
 	var $sIconClass = 'preview-url';

@@ -64,104 +64,84 @@ require_once(KT_LIB_DIR . '/browse/columnregistry.inc.php');
 require_once(KT_LIB_DIR . '/actions/entitylist.php');
 require_once(KT_LIB_DIR . '/actions/bulkaction.php');
 
-require_once(KT_LIB_DIR .'/util/ktRenderArray.php');
-require_once(KT_LIB_DIR .'/render_helpers/browseView.helper.php');
+require_once(KT_LIB_DIR . '/util/ktRenderArray.php');
+require_once(KT_LIB_DIR . '/render_helpers/browseView.helper.php');
+
+require_once(KT_PLUGIN_DIR . '/ktstandard/KTSubscriptions.php');
 
 $sectionName = 'browse';
 
 class BrowseDispatcher extends KTStandardDispatcher {
 
-	var $sName = 'ktcore.actions.folder.view';
+	public $sName = 'ktcore.actions.folder.view';
 
-	var $oFolder = null;
-	var $sSection = 'browse';
-	var $browse_mode = null;
-	var $query = null;
-	var $resultURL;
-	var $sHelpPage = 'ktcore/browse.html';
-	var $editable;
+	public $oFolder = null;
+	public $sSection = 'browse';
+	public $browse_mode = null;
+	public $query = null;
+	public $resultURL;
+	public $sHelpPage = 'ktcore/browse.html';
+	public $editable;
 
 	function __construct()
 	{
-		$this->aBreadcrumbs = array(
-            array('action' => 'browse', 'name' => _kt('Browse')),
-		);
-
-		return parent::KTStandardDispatcher();
+	    $this->aBreadcrumbs = array(array('action' => 'browse', 'name' => _kt('Browse')));
+	    return parent::KTStandardDispatcher();
 	}
 
 	function check()
 	{
-		$this->browse_mode = KTUtil::arrayGet($_REQUEST, 'fBrowseMode', 'folder');
-		$action = KTUtil::arrayGet($_REQUEST, $this->event_var, 'main');
-		$this->editable = false;
+            $this->browse_mode = KTUtil::arrayGet($_REQUEST, 'fBrowseMode', 'folder');
+            $action = KTUtil::arrayGet($_REQUEST, $this->event_var, 'main');
+            $this->editable = false;
 
-		// catch the alternative actions.
-		if ($action != 'main') {
-			return true;
-		}
+            // catch the alternative actions.
+            if ($action != 'main') {
+                return true;
+            }
 
-		switch ($this->browse_mode) {
-		    case 'folder':
-                $this->browseFolder();
-		        break;
-		    case 'lookup_value':
-		        $this->browseByLookup();
-		    case 'document_type':
-                $this->browseByDocument();
-		        break;
-		    default:
-		        // FIXME what should we do if we can't initiate the browse?  we "pretend" to have no perms.
-		        return false;
-		}
+            switch ($this->browse_mode) {
+                case 'folder':
+                    $this->browseFolder();
+                    break;
+                case 'lookup_value':
+                    $this->browseByLookup();
+                    // Surely there should be a break here!?!  If not, then a comment as to WHY NOT.
+                case 'document_type':
+                    $this->browseByDocument();
+                    break;
+                default:
+                    // FIXME What should we do if we can't initiate the browse?  We "pretend" to have no perms.
+                    return false;
+            }
 
-		return true;
+            return true;
 	}
 
 	public function do_main()
 	{
-	    /**
-	     * REMOVE
-	     *
-	     * Old documentcollection method - this would require implementation of the new browse view code in a document collection.
-	     * NewUiCollection is currently imaginary :)
-	     */
-	    /*$collection = new NewUiCollection();
-	    $aOptions = $collection->getEnvironOptions(); // extract data from the environment
-	    $aOptions['result_url'] = $this->resultURL;
-	    $aOptions['is_browse'] = true;
-	    $collection->setOptions($aOptions);
-	    $collection->setQueryObject($this->oQuery);
-	    $collection->setColumnOptions('ktcore.columns.selection', array(
-	    'rangename' => 'selection',
-	    'show_folders' => true,
-	    'show_documents' => true,
-	    ));
-	    $collection->render();
-	    REMOVE**/
-
 	    global $default;
-	    /**
-		 * New ktapi based method
-		 */
-	    $aBulkActions = KTBulkActionUtil::getAllBulkActions();
-		$sidebars = KTFolderActionUtil::getFolderActionsForFolder($this->oFolder, $this->oUser, 'mainfoldersidebar');
-		$folderSidebars = isset($sidebars[0]) ? $sidebars[0] : array();
+
+	    /* New ktapi based method */
+
+            $bulkActions = KTBulkActionUtil::getAllBulkActions();
+            $sidebars = KTFolderActionUtil::getFolderActionsForFolder($this->oFolder, $this->oUser, 'mainfoldersidebar');
+            $folderSidebars = isset($sidebars[0]) ? $sidebars[0] : array();
 
 	    if (ACCOUNT_ROUTING_ENABLED && $default->tier == 'trial') {
 	        $this->includeOlark();
 	    }
 
-	    $oTemplating =& KTTemplating::getSingleton();
-	    $oTemplate = $oTemplating->loadTemplate('kt3/browse');
+	    $templating =& KTTemplating::getSingleton();
+	    $template = $templating->loadTemplate('kt3/browse');
 
 		global $main;
-	    $aTemplateData = array(
+	    $templateData = array(
 	           'context' => $this,
 	           'page' => $main,
 	           'browse_mode' => $this->browse_mode,
 	           'isEditable' => $this->editable,
-	           'bulkactions' => $aBulkActions,
+	           'bulkactions' => $bulkActions,
 	           'browseutil' => new KTBrowseUtil(),
 	           'returnaction' => 'browse',
 	           'folderSidebars' => $folderSidebars,
@@ -173,11 +153,11 @@ class BrowseDispatcher extends KTStandardDispatcher {
     		$folderId = $this->oFolder->getId();
 
 	        $renderHelper = BrowseViewUtil::getBrowseView();
-	        $renderData = $renderHelper->renderBrowseFolder($folderId, $aBulkActions, $this->oFolder, $this->editable);
-	        $aTemplateData = array_merge($aTemplateData, $renderData);
+	        $renderData = $renderHelper->renderBrowseFolder($folderId, $bulkActions, $this->oFolder, $this->editable);
+	        $templateData = array_merge($templateData, $renderData);
 	    }
 
-	    return $oTemplate->render($aTemplateData);
+	    return $template->render($templateData);
 	}
 
 	public function showBtns()
@@ -185,27 +165,19 @@ class BrowseDispatcher extends KTStandardDispatcher {
 		$list = array();
 		$submenu = array();
 		$actions = KTFolderActionUtil::getFolderActionsForFolder($this->oFolder, $this->oUser);
-
 		foreach ($actions as $oAction) {
             $info = $oAction->getInfo();
-
             // Skip if action is disabled
-            if (is_null($info)) {
-                continue;
-            }
-
+            if (is_null($info)) { continue; }
             // Skip if no name provided - action may be disabled for permissions reasons
-            if (empty($info['name'])) {
-                continue;
-            }
-
-            if(!empty($info['parent'])) {
+            if (empty($info['name'])) { continue; }
+            if(!empty($info['parent'])) { 
                 $submenu[$info['parent']][] = $info;
             } else {
             	$list[] = $info;
             }
 		}
-
+		
 		// Create the More button => if additional split buttons are needed this can be extended.
 		$more = array('name' => _kt('More'), 'url' => '#', 'class' => 'more');
 		$more['submenu'] = $submenu['more'];
@@ -217,7 +189,7 @@ class BrowseDispatcher extends KTStandardDispatcher {
 
 		$this->actionBtns = $btns;
 	}
-
+	
 	/**
 	 * Fetches folder content for a paging request.
 	 * Content from this function will not be rendered and must be rendered by the calling code.
@@ -262,14 +234,14 @@ class BrowseDispatcher extends KTStandardDispatcher {
 
 		$_REQUEST['fBrowseMode'] = 'lookup_value';
 
-		$oTemplating =& KTTemplating::getSingleton();
-		$oTemplate = $oTemplating->loadTemplate('kt3/browse_lookup_selection');
-		$aTemplateData = array(
+		$templating =& KTTemplating::getSingleton();
+		$template = $templating->loadTemplate('kt3/browse_lookup_selection');
+		$templateData = array(
               'context' => $this,
               'fields' => $aFields,
 		);
 
-		return $oTemplate->render($aTemplateData);
+		return $template->render($templateData);
 	}
 
 	public function do_selectLookup()
@@ -285,15 +257,15 @@ class BrowseDispatcher extends KTStandardDispatcher {
 
 		$aValues = MetaData::getByDocumentField($oField);
 
-		$oTemplating =& KTTemplating::getSingleton();
-		$oTemplate = $oTemplating->loadTemplate('kt3/browse_lookup_value');
-		$aTemplateData = array(
+		$templating =& KTTemplating::getSingleton();
+		$template = $templating->loadTemplate('kt3/browse_lookup_value');
+		$templateData = array(
               'context' => $this,
               'oField' => $oField,
               'values' => $aValues,
 		);
 
-		return $oTemplate->render($aTemplateData);
+		return $template->render($templateData);
 	}
 
 	public function do_selectType()
@@ -308,14 +280,14 @@ class BrowseDispatcher extends KTStandardDispatcher {
 			exit(0);
 		}
 
-		$oTemplating =& KTTemplating::getSingleton();
-		$oTemplate = $oTemplating->loadTemplate('kt3/browse_types');
-		$aTemplateData = array(
+		$templating =& KTTemplating::getSingleton();
+		$template = $templating->loadTemplate('kt3/browse_types');
+		$templateData = array(
               'context' => $this,
               'document_types' => $aTypes,
 		);
 
-		return $oTemplate->render($aTemplateData);
+		return $template->render($templateData);
 	}
 
 	public function do_enableAdminMode()
@@ -497,11 +469,12 @@ class BrowseDispatcher extends KTStandardDispatcher {
 	    }
 
 	    // Figure out if we came here by navigating trough a shortcut.
-	    // If we came here from a shortcut, the breadcrumbspath should be relative to the shortcut folder.
-	    $iSymLinkFolderId = KTUtil::arrayGet($_REQUEST, 'fShortcutFolder', null);
-	    if (is_numeric($iSymLinkFolderId)) {
-	        $oBreadcrumbsFolder = Folder::get($iSymLinkFolderId);
-	        $this->aBreadcrumbs = kt_array_merge($this->aBreadcrumbs, KTBrowseUtil::breadcrumbsForFolder($oBreadcrumbsFolder, array('final' => false)));
+	    // If we came here from a shortcut, the breadcrumbs path should be relative to the shortcut folder.
+	    $symLinkFolderId = KTUtil::arrayGet($_REQUEST, 'fShortcutFolder', null);
+	    if (is_numeric($symLinkFolderId)) {
+	        $breadcrumbsFolder = Folder::get($symLinkFolderId);
+	        $breadcrumbs = KTBrowseUtil::breadcrumbsForFolder($breadcrumbsFolder, array('final' => false));
+	        $this->aBreadcrumbs = kt_array_merge($this->aBreadcrumbs, $breadcrumbs);
 	        $this->aBreadcrumbs[] = array('name' => $oFolder->getName());
 	    } else {
 	        $this->aBreadcrumbs = kt_array_merge($this->aBreadcrumbs, KTBrowseUtil::breadcrumbsForFolder($oFolder));
@@ -514,17 +487,6 @@ class BrowseDispatcher extends KTStandardDispatcher {
 	    $this->oQuery = new BrowseQuery($oFolder->getId(), $this->oUser, $aOptions);
 
 	    $this->resultURL = KTUtil::addQueryString($_SERVER['PHP_SELF'], sprintf('fFolderId=%d', $oFolder->getId()));
-
-	    // and the portlets
-	    $portlet = new KTActionPortlet(sprintf(_kt('Info')));
-	    $aActions = KTFolderActionUtil::getFolderInfoActionsForFolder($this->oFolder, $this->oUser);
-	    $portlet->setActions($aActions,$this->sName);
-	    $this->oPage->addPortlet($portlet);
-
-	    $portlet = new KTActionPortlet(sprintf(_kt('Actions')));
-	    $aActions = KTFolderActionUtil::getFolderActionsForFolder($oFolder, $this->oUser);
-	    $portlet->setActions($aActions,null);
-	    $this->oPage->addPortlet($portlet);
 	}
 
 	/**

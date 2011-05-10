@@ -222,7 +222,7 @@ class openSearch extends KTStandardDispatcher {
         if(isset($_REQUEST['count'])) { $this->setCount($_REQUEST['count']); }
         if(isset($_REQUEST['starti'])) { $this->setStartIndex($_REQUEST['starti']); }
         if(isset($_REQUEST['startp'])) { $this->setStartPage($_REQUEST['startp']); }
-        if(isset($_REQUEST['kt_language'])) { $this->setLanguage($_REQUEST['kt_language']); }
+        if(isset($_REQUEST['KTLanguage'])) { $this->setLanguage($_REQUEST['KTLanguage']); }
         if(isset($_SERVER['REQUEST_URI'])) { $this->setRequestUri($_SERVER['REQUEST_URI']); }
         if(isset($_SERVER['HTTP_HOST'])) { $this->setServer($_SERVER['HTTP_HOST']); }
         $this->setOSQuery();

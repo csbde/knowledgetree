@@ -256,8 +256,8 @@ class ThumbnailViewlet extends KTDocumentViewlet {
 
     var $sName = 'thumbnail.viewlets';
 
-    var $showIfWrite = true;
-    var $showIfRead = true;
+    var $bShowIfReadShared = true;
+    var $bShowIfWriteShared = true;
 
     public function display_viewlet() {
         // Get the document id

@@ -596,6 +596,15 @@ ul.floatleft li.notification {
 .action_buttons #more {
 	background: url('../graphics/newui/icons/more.png') no-repeat 4px 4px;
 }
+.action_buttons #usage-info {
+	background: url('../graphics/newui/icons/usage_information.png') no-repeat 4px 4px;
+}
+.action_buttons #permissions {
+	background: url('../graphics/newui/icons/permissions.png') no-repeat 4px 4px;
+}
+.action_buttons #document-roles {
+	background: url('../graphics/newui/icons/roles.png') no-repeat 4px 4px;
+}
 div.form_actions {
 	float: left;
 	background: url('../graphics/newui/gridtoolbarbkg.png') repeat-x;
@@ -700,9 +709,9 @@ div.form_actions {
 	/*float: right;*/
 	padding-right: 0px;
 	background: white;
-	border-radius: 10px;
-	-moz-border-radius: 10px;
-	-webkit-border-radius: 10px;
+	border-radius: 5px;
+	-moz-border-radius: 5px;
+	-webkit-border-radius: 5px;
 	border:1px solid #ddd;
 	box-shadow: inset 0px 1px 1px #666;
 	-moz-box-shadow: inset 0px 1px 1px #666;
@@ -811,6 +820,8 @@ ul.buttonsList li:hover > *.dir, ul.buttonsList li:hover span.dir:hover {
 input[type="checkbox"] {
 	border: none;
 	background: none;
+	position: relative;
+	top:2px;
 }
 
 thead {

@@ -40,23 +40,23 @@ require_once(KT_LIB_DIR . '/templating/templating.inc.php');
 require_once(KT_LIB_DIR . '/browse/DocumentCollection.inc.php');
 
 class KTCoreInfoWidget extends KTWidget {
-    var $sNamespace = 'ktcore.widgets.info';
-    var $sTemplate = 'ktcore/forms/widgets/info';
+    public $sNamespace = 'ktcore.widgets.info';
+    public $sTemplate = 'ktcore/forms/widgets/info';
 }
 
 class KTCoreStringWidget extends KTWidget {
-    var $sNamespace = 'ktcore.widgets.string';
-    var $sTemplate = 'ktcore/forms/widgets/string';
+    public $sNamespace = 'ktcore.widgets.string';
+    public $sTemplate = 'ktcore/forms/widgets/string';
 }
 
 class KTCoreHiddenWidget extends KTWidget {
-    var $sNamespace = 'ktcore.widgets.hidden';
-    var $sTemplate = 'ktcore/forms/widgets/hidden';
+    public $sNamespace = 'ktcore.widgets.hidden';
+    public $sTemplate = 'ktcore/forms/widgets/hidden';
 }
 
 class KTCoreFileWidget extends KTWidget {
-    var $sNamespace = 'ktcore.widgets.file';
-    var $sTemplate = 'ktcore/forms/widgets/file';
+    public $sNamespace = 'ktcore.widgets.file';
+    public $sTemplate = 'ktcore/forms/widgets/file';
 
     function wrapName($outer) {
         $this->sName = sprintf('_kt_attempt_unique_%s', $this->sName);
@@ -89,13 +89,13 @@ class KTCoreFileWidget extends KTWidget {
 
 
 class KTCoreTextWidget extends KTWidget {
-    var $sNamespace = 'ktcore.widgets.text';
-    var $sTemplate = 'ktcore/forms/widgets/text';
+    public $sNamespace = 'ktcore.widgets.text';
+    public $sTemplate = 'ktcore/forms/widgets/text';
 }
 
 class KTCoreReasonWidget extends KTWidget {
-    var $sNamespace = 'ktcore.widgets.reason';
-    var $sTemplate = 'ktcore/forms/widgets/text';
+    public $sNamespace = 'ktcore.widgets.reason';
+    public $sTemplate = 'ktcore/forms/widgets/text';
 
     function configure($aOptions) {
         $res = parent::configure($aOptions);
@@ -114,8 +114,8 @@ class KTCoreReasonWidget extends KTWidget {
 }
 
 class KTCoreBooleanWidget extends KTWidget {
-    var $sNamespace = 'ktcore.widgets.boolean';
-    var $sTemplate = 'ktcore/forms/widgets/boolean';
+    public $sNamespace = 'ktcore.widgets.boolean';
+    public $sTemplate = 'ktcore/forms/widgets/boolean';
 
     function setDefault($mValue) {
         $this->value = ($mValue == true);
@@ -123,11 +123,11 @@ class KTCoreBooleanWidget extends KTWidget {
 }
 
 class KTCorePasswordWidget extends KTWidget {
-    var $sNamespace = 'ktcore.widgets.password';
-    var $sTemplate = 'ktcore/forms/widgets/password';
+    public $sNamespace = 'ktcore.widgets.password';
+    public $sTemplate = 'ktcore/forms/widgets/password';
 
-    var $bConfirm = false;
-    var $sConfirmDescription;
+    public $bConfirm = false;
+    public $sConfirmDescription;
 
     function configure($aOptions) {
         $res = parent::configure($aOptions);
@@ -174,17 +174,15 @@ class KTCorePasswordWidget extends KTWidget {
 
 
 class KTCoreSelectionWidget extends KTWidget {
-    var $sNamespace = 'ktcore.widgets.selection';
-
-    var $bMulti = false;    // multiselection
-    var $USE_SIMPLE = 10;   // point at which to switch to a dropdown/multiselect
-    var $bUseSimple;    // only use checkboxes, regardless of size
-
-    var $aVocab;
-
-    var $sEmptyMessage;
-
-    var $_valuesearch;
+    public $sNamespace = 'ktcore.widgets.selection';
+    public $bMulti = false;    // multiselection
+    public $USE_SIMPLE = 10;   // point at which to switch to a dropdown/multiselect
+    public $bUseSimple;    // only use checkboxes, regardless of size
+    public $aVocab;
+    public $sEmptyMessage;
+	public $aEvents;
+	
+    private $_valuesearch;
 
     function configure($aOptions) {
         $res = parent::configure($aOptions);
@@ -198,6 +196,7 @@ class KTCoreSelectionWidget extends KTWidget {
         $this->aVocab = (array) KTUtil::arrayGet($aOptions, 'vocab');
         $this->sEmptyMessage = KTUtil::arrayGet($aOptions, 'empty_message',
             _kt('No options available for this field.'));
+		$this->aEvents = KTUtil::arrayGet($aOptions, 'events', false);
     }
 
     function getWidget() {
@@ -250,7 +249,15 @@ class KTCoreSelectionWidget extends KTWidget {
                 $this->_valuesearch[$v] = true;
             }
         }
-
+		
+        $eventList = false;
+        if ($this->aEvents)
+        {
+        	foreach ($this->aEvents as $event => $action)
+        	{
+        		$eventList .= "$event=$action";
+        	}
+        }
         $aTemplateData = array(
             'context' => $this,
             'name' => $this->sName,
@@ -260,6 +267,7 @@ class KTCoreSelectionWidget extends KTWidget {
             'value' => $this->value,
             'options' => $this->aOptions,
             'vocab' => $this->aVocab,
+            'eventList' => $eventList,
         );
         return $oTemplate->render($aTemplateData);
     }
@@ -279,10 +287,10 @@ class KTCoreSelectionWidget extends KTWidget {
 
 // this happens so often, its worth creating a util function for it
 class KTCoreEntitySelectionWidget extends KTCoreSelectionWidget {
-    var $sNamespace = 'ktcore.widgets.entityselection';
+    public $sNamespace = 'ktcore.widgets.entityselection';
 
-    var $sIdMethod;
-    var $sLabelMethod;
+    public $sIdMethod;
+    public $sLabelMethod;
 
     function configure($aOptions) {
         $res = parent::configure($aOptions);
@@ -325,10 +333,10 @@ class KTCoreEntitySelectionWidget extends KTCoreSelectionWidget {
 
 
 class KTDescriptorSelectionWidget extends KTWidget {
-    var $sNamespace = 'ktcore.widgets.descriptorselection';
-    var $sTemplate = 'ktcore/forms/widgets/descriptor';
+    public $sNamespace = 'ktcore.widgets.descriptorselection';
+    public $sTemplate = 'ktcore/forms/widgets/descriptor';
 
-    var $aJavascript = array('resources/js/jsonlookup.js');
+    public $aJavascript = array('resources/js/jsonlookup.js');
 
     function configure($aOptions) {
         $res = parent::configure($aOptions);
@@ -373,9 +381,9 @@ class KTDescriptorSelectionWidget extends KTWidget {
 }
 
 class KTCoreTreeMetadataWidget extends KTWidget {
-    var $sNamespace = 'ktcore.widgets.treemetadata';
-    var $iFieldId;
-    var $aCSS = array('resources/css/kt-treewidget.css');
+    public $sNamespace = 'ktcore.widgets.treemetadata';
+    public $iFieldId;
+    public $aCSS = array('resources/css/kt-treewidget.css');
 
     function configure($aOptions) {
         $res = parent::configure($aOptions);
@@ -408,11 +416,11 @@ class KTCoreTreeMetadataWidget extends KTWidget {
 // this *also* subdivides the form data output namespace.
 // to do this, it encapsulates a *large* amount of the KTWidget API
 class KTCoreFieldsetWidget extends KTWidget {
-    var $sNamespace = 'ktcore.widgets.fieldset';
+    public $sNamespace = 'ktcore.widgets.fieldset';
 
-    var $_widgets;
-    var $sDescription;
-    var $sLabel;
+    private $_widgets;
+    public $sDescription;
+    public $sLabel;
 
     function configure($aOptions) {
         // do NOT use parent.
@@ -557,7 +565,7 @@ class KTCoreFieldsetWidget extends KTWidget {
 }
 
 class KTCoreTransparentFieldsetWidget extends KTCoreFieldsetWidget {
-    var $sNamespace = 'ktcore.widgets.transparentfieldset';
+    public $sNamespace = 'ktcore.widgets.transparentfieldset';
 
     function render() {
         $oTemplating =& KTTemplating::getSingleton();
@@ -573,7 +581,7 @@ class KTCoreTransparentFieldsetWidget extends KTCoreFieldsetWidget {
 
 
 class KTExtraConditionalFieldsetWidget extends KTCoreFieldsetWidget {
-    var $sNamespace = 'ktextra.conditionalmetadata.fieldset';
+    public $sNamespace = 'ktextra.conditionalmetadata.fieldset';
 
     function render() {
         $oTemplating =& KTTemplating::getSingleton();
@@ -590,11 +598,11 @@ class KTExtraConditionalFieldsetWidget extends KTCoreFieldsetWidget {
 
 
 class KTCoreCollectionWidget extends KTWidget {
-    var $sNamespace = 'ktcore.widgets.collection';
-    var $sTemplate = 'ktcore/forms/widgets/collectionframe';
+    public $sNamespace = 'ktcore.widgets.collection';
+    public $sTemplate = 'ktcore/forms/widgets/collectionframe';
 
-    var $oCollection;
-    var $sCode;
+    public $oCollection;
+    public $sCode;
 
     function configure($aOptions) {
         $aOptions['broken_name'] = KTUtil::arrayGet($aOptions, 'broken_name', true, false);
@@ -658,8 +666,8 @@ class KTCoreCollectionWidget extends KTWidget {
 
 
 class KTCoreFolderCollectionWidget extends KTCoreCollectionWidget {
-    var $sNamespace = 'ktcore.widgets.foldercollection';
-    var $sTemplate = 'ktcore/forms/widgets/collectionframe';
+    public $sNamespace = 'ktcore.widgets.foldercollection';
+    public $sTemplate = 'ktcore/forms/widgets/collectionframe';
 
 
     function configure($aOptions) {
@@ -787,13 +795,13 @@ class KTCoreCollectionPage extends KTStandardDispatcher {
 // enforces the various relationships between conditional fields.
 
 class KTCoreConditionalSelectionWidget extends KTCoreSelectionWidget {
-    var $sNamespace = 'ktcore.widgets.conditionalselection';
+    public $sNamespace = 'ktcore.widgets.conditionalselection';
 
-    var $sIdMethod;
-    var $sLabelMethod;
+    public $sIdMethod;
+    public $sLabelMethod;
 
-    var $bIsMaster;
-    var $bMappings;
+    public $bIsMaster;
+    public $bMappings;
 
     function _getFieldIdForMetadataId($iMetadata) {
 	$sTable = 'metadata_lookup';
@@ -935,8 +943,8 @@ class KTCoreConditionalSelectionWidget extends KTCoreSelectionWidget {
 }
 
 class KTCoreTextAreaWidget extends KTWidget {
-    var $sNamespace = 'ktcore.widgets.textarea';
-    var $sTemplate = 'ktcore/forms/widgets/textarea';
+    public $sNamespace = 'ktcore.widgets.textarea';
+    public $sTemplate = 'ktcore/forms/widgets/textarea';
 
     function configure($aOptions) {
         $res = parent::configure($aOptions);
@@ -1011,8 +1019,8 @@ class KTCoreTextAreaWidget extends KTWidget {
 }
 
 class KTCoreDateWidget extends KTWidget {
-    var $sNamespace = 'ktcore.widgets.date';
-    var $sTemplate = 'ktcore/forms/widgets/date';
+    public $sNamespace = 'ktcore.widgets.date';
+    public $sTemplate = 'ktcore/forms/widgets/date';
 
     function getValidators() {
         if (!$this->bAutoValidate) {
@@ -1034,13 +1042,13 @@ class KTCoreDateWidget extends KTWidget {
 }
 
 class KTCoreButtonWidget extends KTWidget {
-    var $sNamespace = 'ktcore.widgets.button';
-    var $sTemplate = 'ktcore/forms/widgets/button';
+    public $sNamespace = 'ktcore.widgets.button';
+    public $sTemplate = 'ktcore/forms/widgets/button';
 }
 
 class KTCoreLayerWidget extends KTWidget {
-    var $sNamespace = 'ktcore.widgets.layer';
-    var $sTemplate = 'ktcore/forms/widgets/layer';
+    public $sNamespace = 'ktcore.widgets.layer';
+    public $sTemplate = 'ktcore/forms/widgets/layer';
     
     function configure($aOptions) {
         $res = parent::configure($aOptions);
@@ -1053,8 +1061,8 @@ class KTCoreLayerWidget extends KTWidget {
 }
 
 class KTCoreImageCropWidget extends KTWidget {
-    var $sNamespace = 'ktcore.widgets.imagecrop';
-    var $sTemplate = 'ktcore/forms/widgets/imagecrop';
+    public $sNamespace = 'ktcore.widgets.imagecrop';
+    public $sTemplate = 'ktcore/forms/widgets/imagecrop';
 
     function configure($aOptions) {
         $res = parent::configure($aOptions);
@@ -1112,8 +1120,8 @@ class KTCoreImageCropWidget extends KTWidget {
 }
 
 class KTCoreImageWidget extends KTWidget {
-    var $sNamespace = 'ktcore.widgets.image';
-    var $sTemplate = 'ktcore/forms/widgets/image';
+    public $sNamespace = 'ktcore.widgets.image';
+    public $sTemplate = 'ktcore/forms/widgets/image';
 
     function configure($aOptions) {
         $res = parent::configure($aOptions);
@@ -1157,11 +1165,11 @@ class KTCoreImageWidget extends KTWidget {
 }
 
 class KTCoreImageSelectWidget extends KTWidget {
-    var $sNamespace = 'ktcore.widgets.imageselect';
-    var $sTemplate = 'ktcore/forms/widgets/imageselect';
+    public $sNamespace = 'ktcore.widgets.imageselect';
+    public $sTemplate = 'ktcore/forms/widgets/imageselect';
 
-    var $width;
-    var $height;
+    public $width;
+    public $height;
 
     function configure($aOptions) {
         $res = parent::configure($aOptions);
@@ -1213,8 +1221,8 @@ class KTCoreImageSelectWidget extends KTWidget {
 }
 
 class KTCoreSWFFileSelectWidget extends KTWidget {
-    var $sNamespace = 'ktcore.widgets.swffileselect';
-    var $sTemplate = 'ktcore/forms/widgets/swffileselect';
+    public $sNamespace = 'ktcore.widgets.swffileselect';
+    public $sTemplate = 'ktcore/forms/widgets/swffileselect';
 
     function configure($aOptions) {
         $res = parent::configure($aOptions);
@@ -1299,9 +1307,9 @@ class KTCoreSWFFileSelectWidget extends KTWidget {
         ob_start();
         ?>
 window.onload = function() {
-	var swfu;
+	public swfu;
 
-		var settings = {
+		public settings = {
 			flash_url : "thirdpartyjs/swfupload/swfupload.swf",
 			upload_url: "action.php?kt_path_info=ktlive.actions.folder.bulkupload&_kt_form_name=SWFUPLOAD&fFolderId=<?php print $folderId ?>&action=liveDocumentUpload",
 			//upload_url: "upload/upload.php",
@@ -1356,8 +1364,8 @@ window.onload = function() {
 }
 
 class KTCoreAjaxUploadWidget extends KTWidget {
-    var $sNamespace = 'ktcore.widgets.ajaxupload';
-    var $sTemplate = 'ktcore/forms/widgets/ajaxupload';
+    public $sNamespace = 'ktcore.widgets.ajaxupload';
+    public $sTemplate = 'ktcore/forms/widgets/ajaxupload';
     
     
 
@@ -1439,8 +1447,8 @@ jQuery(document).ready(function(){
     jQuery('#successful_upload_files_ul').hide();
 	jQuery('form .form_actions').hide();
     jQuery('#uploadbuttondiv').show();
-    var button = jQuery('#button1'), interval;
-	var newran = Math.random();
+    public button = jQuery('#button1'), interval;
+	public newran = Math.random();
 	newran = Math.ceil(newran * 100000);
 	jQuery('#file_random_name').attr('value', newran);
 	//swapElementFromRequest('advanced_settings_metadata','presentation/lookAndFeel/knowledgeTree/documentmanagement/getTypeMetadataFields.php?fDocumentTypeID=' + '1', '1');
@@ -1450,7 +1458,7 @@ jQuery(document).ready(function(){
 			name: 'file',
 			onSubmit : function(file, ext)
 			{
-				var title = xtractFileTitle(file);
+				public title = xtractFileTitle(file);
 				sameNameFile(file);
 				if(jQuery('#file_exists').val() == 1)
 				{
@@ -1481,7 +1489,7 @@ jQuery(document).ready(function(){
 					return;
 				}
 				ranfilename = jQuery('#file_random_name').val();
-				var title = xtractFileTitle(file);
+				public title = xtractFileTitle(file);
 				button.show();
                 jQuery('#uploading_spinner').css({visibility: 'hidden'});
                 jQuery('#cancelButton').hide();
@@ -1489,7 +1497,7 @@ jQuery(document).ready(function(){
                 jQuery('#type_metadata_fields').show();
                 //jQuery('#advanced_settings_metadata_button').show();
                 jQuery('#successful_upload_files_ul').show();
-				var listitem = '<li>';
+				public listitem = '<li>';
 				listitem += '<span id="'+ranfilename+'_title">'+title+'</span>';
 				listitem += '<input id="'+ranfilename+'_htitle" name="file['+ranfilename+'][tmp_and_filename]" type="hidden" value="'+ranfilename+'<?php echo '_'; ?>'+file+'" />';
 				listitem += '<input class="xtitles" id="'+ranfilename+'_xtitle" name="file['+ranfilename+'][title]" type="hidden" value="'+title+'" />';
@@ -1497,7 +1505,7 @@ jQuery(document).ready(function(){
 				listitem += '<span onclick="removeFile(this)" style="cursor:pointer;"> <img src="resources/graphics/delete.png" /> </span>';
 				listitem += '<span onclick="editTitle(\''+ranfilename+'\', \''+title+'\')" style="cursor:pointer;"> <img src="thirdparty/icon-theme/16x16/actions/document-properties.png" /> </span>';
 				listitem += '</li>';
-				var newran = Math.random();
+				public newran = Math.random();
 				newran = Math.ceil(newran * 100000);
 				jQuery('#file_random_name').attr('value', newran);
 				jQuery('#successful_upload_files').show().append(listitem);
@@ -1535,7 +1543,7 @@ jQuery(document).ready(function(){
 		},
 		sameNameFile = function(fileName) {
 			jQuery('#file_exists').attr('value', '0');
-			//var children = jQuery('#successful_upload_files').children().length;
+			//public children = jQuery('#successful_upload_files').children().length;
 			if(jQuery('.xtitles').size() > 0)
 			{
 				//jQuery('#successful_upload_files').children().each(function()
@@ -1546,7 +1554,7 @@ jQuery(document).ready(function(){
 					if(jQuery(this).attr('value') != '')
 					{
 						//if (fileName == jQuery(this).text().trim())
-						var newName = jQuery(this).attr('value');
+						public newName = jQuery(this).attr('value');
 						if (fileName == newName.trim())
 						{
 							alert('A file with the same name exists.');
@@ -1557,7 +1565,7 @@ jQuery(document).ready(function(){
 			}    
 		},
 		xtractFileTitle = function (data) {
- 			var m = data.match(/([^\/\\]+)\.(\w+)$/)
+ 			public m = data.match(/([^\/\\]+)\.(\w+)$/)
  			if(m == null)
  			{
  				return data;
@@ -1568,17 +1576,17 @@ jQuery(document).ready(function(){
  			}
         },
 		renameFile = function(ranfilename) {
-			var oldTitle = jQuery('#' + ranfilename + '_xtitle');
-			var newTitleValue = jQuery('#' + ranfilename + '_etitle').attr('value');
+			public oldTitle = jQuery('#' + ranfilename + '_xtitle');
+			public newTitleValue = jQuery('#' + ranfilename + '_etitle').attr('value');
 			jQuery(oldTitle).attr('value', newTitleValue);
 			jQuery('#' + ranfilename + '_submit').remove();
 			jQuery('#' + ranfilename + '_etitle').remove();
-			var listItem = '<span id="'+ranfilename+'_title">'+newTitleValue+'</span>';
+			public listItem = '<span id="'+ranfilename+'_title">'+newTitleValue+'</span>';
 			jQuery('#' + ranfilename + '_title').append(listItem);
 		},
 		editTitle = function(ranfilename, title) {
-			var titleField = '<input id="'+ranfilename+'_etitle" name="title[]" type="text" value="'+title+'" />';
-			var saveField = '<input id="'+ranfilename+'_submit" type="submit" value="Save" name="'+title+'" onclick="renameFile('+ranfilename+');return false;"/>';
+			public titleField = '<input id="'+ranfilename+'_etitle" name="title[]" type="text" value="'+title+'" />';
+			public saveField = '<input id="'+ranfilename+'_submit" type="submit" value="Save" name="'+title+'" onclick="renameFile('+ranfilename+');return false;"/>';
 			jQuery('#' + ranfilename + '_title').html(titleField + '&nbsp&nbsp' + saveField);
 		}
 });
@@ -1588,5 +1596,36 @@ jQuery(document).ready(function(){
         
         return $script;
     }
+    
+}
+
+class KTCoreDivWidget extends KTWidget {
+    public $sNamespace = 'ktcore.widgets.div';
+	
+    function configure($aOptions) {
+        $res = parent::configure($aOptions);
+        if (PEAR::isError($res)) {
+            return $res;
+        }
+        
+    }
+
+    function getWidget() {
+        $this->sTemplate = 'ktcore/forms/widgets/simple_div';
+        $oTemplating =& KTTemplating::getSingleton();
+        $oTemplate = $oTemplating->loadTemplate($this->sTemplate);
+		$this->sClass = KTUtil::arrayGet($aOptions, 'class', false);
+		
+        $aTemplateData = array(
+            'context' => $this,
+            'has_id' => ($this->sId !== null),
+            'id' => $this->sId,
+        );
+
+        return $oTemplate->render($aTemplateData);
+    }
+
+    
+
     
 }

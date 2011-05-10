@@ -168,6 +168,14 @@ class KTUtil {
         return $base_url;
     }
 
+    public static function kt_clean_document_url($documentId) {
+    	return KTUtil::kt_url() . KTBrowseUtil::getUrlForDocument($documentId);
+    }
+    
+    public static function kt_clean_folder_url($folderId) {
+    	$url = KTUtil::kt_url() . KTBrowseUtil::getUrlForFolder($folderId);
+	}
+	
     public static function kt_internal_url()
     {
         global $default;
@@ -1450,7 +1458,7 @@ class KTUtil {
                 $config = KTConfig::getSingleton();
                 $rootUrl = $config->get('KnowledgeTree/rootUrl');
 
-                if (!isset($params['fFolderId'])) { $params['fFolderId'] = 1; }
+                if (!empty($params['fFolderId'])) { $params['fFolderId'] = 1; }
 
                 $url = $rootUrl . '/00' . base_convert($params['fFolderId'], 10, 36);
 

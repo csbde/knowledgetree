@@ -44,17 +44,17 @@ require_once(KT_LIB_DIR . '/render_helpers/sharedContent.inc');
 
 class KTFolderAction extends KTStandardDispatcher {
 
-    var $sName;
-    var $sDescription;
-    var $_sShowPermission = 'ktcore.permissions.folder_details';
-    var $_sDisablePermission;
-    var $sHelpPage = 'ktcore/browse.html';
-    var $_bAdminAlwaysAvailable = false;
-    var $sSection = 'browse';
-	var $showIfRead = false;
-	var $showIfWrite = false;
-	var $cssClass = '';
-	var $parentBtn = 'more';
+    public $sName;
+    public $sDescription;
+    public $_sShowPermission = 'ktcore.permissions.folder_details';
+    public $_sDisablePermission;
+    public $sHelpPage = 'ktcore/browse.html';
+    public $_bAdminAlwaysAvailable = false;
+    public $sSection = 'browse';
+	public $bShowIfReadShared = false;
+	public $bShowIfWriteShared = false;
+	public $cssClass = '';
+	public $parentBtn = 'more';
 
     function KTFolderAction($oFolder = null, $oUser = null, $oPlugin = null)
     {
@@ -215,17 +215,17 @@ class KTFolderAction extends KTStandardDispatcher {
     function shareduser_show()
     {
 		// Check if actions display for both users
-		if ($this->showIfRead && $this->showIfWrite)
+		if ($this->bShowIfReadShared && $this->bShowIfWriteShared)
 		{
 			return true;
 		}
 		// Check if action does not have to be displayed
-		else if (!$this->showIfRead && !$this->showIfWrite)
+		else if (!$this->bShowIfReadShared && !$this->bShowIfWriteShared)
 		{
 			return false;
 		}
 		// Check if action needs to be hidden for
-		else if (!$this->showIfRead)
+		else if (!$this->bShowIfReadShared)
 		{
 			if($this->getPermission() == 1)
 			{
@@ -379,21 +379,23 @@ class KTFolderActionUtil {
         return $oRegistry->getActions('folderinfo');
     }
 
-    static public function getFolderActionsForFolder($oFolder, $oUser, $slot = 'folderaction')
+    static public function getFolderActionsForFolder($folder, $user, $slot = 'folderaction')
     {
-        $aObjects = array();
+        $objects = array();
 
-        foreach (KTFolderActionUtil::getFolderActions($slot) as $aAction) {
-            list($sClassName, $sPath, $sPlugin) = $aAction;
-            $oRegistry =& KTPluginRegistry::getSingleton();
-            $oPlugin =& $oRegistry->getPlugin($sPlugin);
-            if (!empty($sPath)) {
-                require_once($sPath);
+        foreach (KTFolderActionUtil::getFolderActions($slot) as $action) {
+            list($class, $path, $plugin) = $action;
+            $pluginRegistry =& KTPluginRegistry::getSingleton();
+            $plugin =& $pluginRegistry->getPlugin($plugin);
+
+            if (!empty($path)) {
+                require_once($path);
             }
-            $aObjects[] =new $sClassName($oFolder, $oUser, $oPlugin);
+
+            $objects[] = new $class($folder, $user, $plugin);
         }
 
-        return $aObjects;
+        return $objects;
     }
 
     function &getFolderInfoActionsForFolder($oFolder, $oUser)
