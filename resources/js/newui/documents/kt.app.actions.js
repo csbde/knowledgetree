@@ -16,12 +16,14 @@ kt.app.document_actions = new function() {
 
     var elems = this.elems = {};
 
+    var documentId;
     // Initializes the upload widget on creation. Currently does preloading of resources.
     this.init = function() {
         kt.api.preload(fragmentPackage, execPackage, true);
     }
     
 	this.checkoutActions = function(documentId, type) {
+		this.documentId = documentId;
 		var params = {};
 		params.documentId = documentId;
 		var synchronous = false;
@@ -37,8 +39,7 @@ kt.app.document_actions = new function() {
 				func = 'documentActionServices.checkout_cancel';
 			break;
 		}
-		
-		var callback = self.refresh(documentId);
+		var callback = self.refresh;
 	    ktjapi.callMethod(func, params, callback, synchronous, null, 200, 30000);
 	    
 	    return null;
@@ -48,18 +49,43 @@ kt.app.document_actions = new function() {
 		console.log('error');
 	}
 	
-	this.refresh = function(documentId) {
-		var params = {};
-		params.documentId = documentId;
-		var synchronous = false;
-		var func = 'documentActionServices.refresh_top_actions';
-		response = ktjapi.retrieve(func, params, 200, 30000);
-		console.log(response.data);
-		//jQuery('.top_actions').html(response.data);
-	    
+	this.refresh = function() {
+		self.refresh_top_actions();
+		self.refresh_bottom_actions();
+		self.refresh_status_indicator();
+		
 	    return null;
 	}
 	
-    // Call the initialization function at object instantiation.
+	this.refresh_top_actions = function() {
+		var params = {};
+		params.documentId = self.documentId;
+		var synchronous = false;
+		var func = 'documentActionServices.refresh_top_actions';
+		var response = ktjapi.retrieve(func, params, 200, 30000);
+		jQuery('#top_actions').html(response.data.success);
+	}
+	
+	this.refresh_bottom_actions = function() {
+		var params = {};
+		params.documentId = self.documentId;
+		var synchronous = false;
+		var func = 'documentActionServices.refresh_bottom_actions';
+		var response = ktjapi.retrieve(func, params, 200, 30000);
+		jQuery('#bottom_actions').html(response.data.success);
+	}
+	
+	this.refresh_status_indicator = function() {
+		jQuery('#indicator').toggle();
+	}
+	
+	this.reason = function() {
+		console.log('reason');
+	}
+	
+	this.esig = function() {
+		console.log('esig');
+	}
+	
     this.init();
 }

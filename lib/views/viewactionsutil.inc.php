@@ -34,24 +34,42 @@
  * Contributor(s): ______________________________________
  */
 
-class viewutil
+require_once(KT_LIB_DIR . '/actions/documentaction.inc.php');
+
+class ViewActionsUtil
 {
+	protected $actions;
+	protected $list;
+	
+	public function __construct() {}
+	
+	/**
+	 * Retrieve document actions
+	 *
+	 * @param object $oDocument
+	 * @param object $oUser
+	 */
+	public function initActions($oDocument, $oUser) {
+        $actions = KTDocumentActionUtil::getDocumentActionsForDocument($oDocument, $oUser);
+        $info = KTDocumentActionUtil::getDocumentActionsForDocument($oDocument, $oUser, 'documentinfo');
+        $this->actions = array_merge($actions, $info);
+	}
+	
     /**
      * Get the info for displaying the action buttons on the page
      *
      * @param array $actions
      * @return array
      */
-    public function createButtons($actions, $context)
+    public function createButtons()
     {
-        $list = array();
         $menus = array();
 
         // Create the "more" button
         $btn = array('btn_position' => 'below', 'url' => '#', 'name' => _kt('More'), 'icon_class' => 'more', 'ns' => 'more');
-        $list[$btn['btn_position']][$btn['ns']] = $btn;
+        $this->list[$btn['btn_position']][$btn['ns']] = $btn;
 
-        foreach ($actions as $oAction) {
+        foreach ($this->actions as $oAction) {
             $info = $oAction->getInfo();
 
             // Skip if action is disabled
@@ -68,7 +86,7 @@ class viewutil
             if (!$info['parent_btn']) {
                 // Determine the position of the button on the page
                 $pos = $info['btn_position'];
-                $list[$pos][$info['ns']] = $info;
+                $this->list[$pos][$info['ns']] = $info;
             }
             else {
                 $menus[$info['parent_btn']]['menu'][$info['ns']] = $info;
@@ -77,22 +95,91 @@ class viewutil
 
         if (!empty($menus)) {
             // Add the menu's to the correct buttons
-            foreach ($list as $key => $item) {
+            foreach ($this->list as $key => $item) {
                 foreach ($menus as $subkey => $subitem) {
                     if (array_key_exists($subkey, $item)) {
                         // Order alphabetically
                         $submenu = $subitem['menu'];
                         uasort($submenu, array($this, 'sortMenus'));
-
                         $item[$subkey]['menu'] = $submenu;
-                        $list[$key] = $item;
+                        $this->list[$key] = $item;
                     }
                 }
             }
         }
-        uasort($list['above'], array($this, 'sortBtns'));
-
-        return $list;
+        uasort($this->list['above'], array($this, 'sortBtns'));
     }
+    
+    /**
+     * Retrieve top document actions
+     *
+     * @return array
+     */
+	protected function getTopActions() {
+		return $this->list['above'];
+	}
+	
+    /**
+     * Retrieve bottom document actions
+     *
+     * @return array
+     */
+	protected function getBottomActions() {
+		return $this->list['below'];
+	}
+	
+    /**
+     * Retrieve document link actions
+     *
+     * @return array
+     */
+	protected function getLinkActions() {
+		return $this->list['links'];
+	}
+	
+    protected function sortBtns($a, $b)
+    {
+        if ($a['btn_order'] < $b['btn_order']) return -1;
+        if ($a['btn_order'] > $b['btn_order']) return 1;
+        return 0;
+    }
+
+    protected function sortMenus($a, $b)
+    {
+        if ($a['name'] < $b['name']) return -1;
+        if ($a['name'] > $b['name']) return 1;
+        return 0;
+    }
+    
+	/**
+	 * Render HTML for top actions
+	 *
+	 * @return string
+	 */
+	public function renderTopActions() {
+		$templating = KTTemplating::getSingleton();
+        $template = $templating->loadTemplate('ktcore/document/view_top_actions');
+        $templateData = array(
+        						'actionBtns' => $this->getTopActions(),
+        						);
+        return $template->render($templateData);
+	}
+	
+	/**
+	 * Render HTML for bottom actions
+	 *
+	 * @return string
+	 */
+	public function renderBottomActions() {
+        $templating = KTTemplating::getSingleton();
+        $template = $templating->loadTemplate('ktcore/document/view_bottom_actions');
+        $templateData = array(
+        						'actionBtns' => $this->getBottomActions(),
+        						'actionLinks' => $this->getLinkActions(),
+        						);
+        return $template->render($templateData);
+	}
+	
+	
 }
 ?>

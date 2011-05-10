@@ -36,6 +36,7 @@
  */
 
 require_once(KT_LIB_DIR . '/documentmanagement/documentutil.inc.php');
+require_once(KT_LIB_DIR . '/views/viewactionsutil.inc.php');
 
 class documentActionServices extends client_service {
 	
@@ -160,8 +161,29 @@ class documentActionServices extends client_service {
     }
     
     function refresh_top_actions($params) {
-    	$response['data'] = 'a';
-    	$this->addResponse('success', json_encode($response));
+		$iDocumentID = $params['documentId'];
+		$oUser = User::get($_SESSION['userID']);
+		$oDocument = Document::get($iDocumentID);
+		$oViewUtil = new ViewActionsUtil();
+		$oViewUtil->initActions($oDocument, $oUser);
+        $oViewUtil->createButtons();
+//        echo $oViewUtil->renderTopActions();
+//        exit(0);
+		$response = $oViewUtil->renderTopActions();
+    	$this->addResponse('success', $response);
+    	
+    	return true;
+    }
+    
+    function refresh_bottom_actions($params) {
+		$iDocumentID = $params['documentId'];
+		$oUser = User::get($_SESSION['userID']);
+		$oDocument = Document::get($iDocumentID);
+		$oViewUtil = new ViewActionsUtil();
+		$oViewUtil->initActions($oDocument, $oUser);
+        $oViewUtil->createButtons();
+		$response = $oViewUtil->renderBottomActions();
+    	$this->addResponse('success', $response);
     	
     	return true;
     }

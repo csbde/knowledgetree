@@ -34,6 +34,8 @@
  * Contributor(s): ______________________________________
  */
 
+require_once('viewactionsutil.inc.php');
+
 class ViewDocumentDispatcher extends KTStandardDispatcher {
 
     public $sName = 'ktcore.actions.document.displaydetails';
@@ -135,11 +137,12 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
             $this->aBreadcrumbs = kt_array_merge($this->aBreadcrumbs, KTBrowseUtil::breadcrumbsForDocument($this->document, $options, $symLinkFolderId));
         }
 
-        $actions = KTDocumentActionUtil::getDocumentActionsForDocument($this->document, $this->oUser);
-        $info = KTDocumentActionUtil::getDocumentActionsForDocument($this->document, $this->oUser, 'documentinfo');
-        $actions = array_merge($actions, $info);
-        $actionBtns = $this->createButtons($actions);
-
+		$oViewUtil = new ViewActionsUtil();
+		$oViewUtil->initActions($this->document, $this->oUser);
+        $oViewUtil->createButtons();
+		$documentTopActions = $oViewUtil->renderTopActions();
+        $documentBottomActions = $oViewUtil->renderBottomActions();
+        
         $documentData['document'] = $this->document;
         $documentData['document_type'] =& DocumentType::get($this->document->getDocumentTypeID());
         $isValidDoctype = true;
@@ -246,7 +249,7 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
 
         $makeMetadataEditable = $this->getMetadataEditable() ? 1 : 0;
 
-        $templating =& KTTemplating::getSingleton();
+        $templating = KTTemplating::getSingleton();
         $template = $templating->loadTemplate('ktcore/document/view');
         $templateData = array(
             'doc_data' => array(
@@ -270,6 +273,8 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
             'fieldsetDisplayHelper' => $FieldsetDisplayHelper,
             'documentBlocks' => $documentBlocks,
             'documentSidebars' => $documentSidebars,
+            'documentTopActions' => $documentTopActions,
+            'documentBottomActions' => $documentBottomActions,
             'tagFilterScript' => "/{$tagPluginPath}filterTags.php?documentId=$documentId",
             'tags' => json_encode($tags),
             'makeMetadataEditable' => $makeMetadataEditable
