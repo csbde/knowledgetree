@@ -8,7 +8,7 @@
  * KnowledgeTree Community Edition
  * Document Management Made Simple
  * Copyright (C) 2008, 2009, 2010 KnowledgeTree Inc.
- * 
+ *
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License version 3 as published by the
@@ -45,23 +45,24 @@ require_once(KT_LIB_DIR . '/authentication/interceptor.inc.php');
 require_once(KT_LIB_DIR . '/authentication/interceptorinstances.inc.php');
 
 class PasswordResetInterceptor extends KTInterceptor {
-	var $sNamespace  = 'password.reset.login.interceptor';
 
-	function authenticated() {
-	}
+    var $sNamespace  = 'password.reset.login.interceptor';
 
-	function takeover() {
-	    $oRegistry =& KTPluginRegistry::getSingleton();
-	    $oPlugin =& $oRegistry->getPlugin('password.reset.plugin');
-	    
-	    $KTConfig = KTConfig::getSingleton();
-	    if ($KTConfig->get('user_prefs/useEmailLogin', false)) {
-	    	$dispatcherURL = $oPlugin->getURLPath('loginResetEmailDispatcher.php');
-	    }
-	    else {
-	    	$dispatcherURL = $oPlugin->getURLPath('loginResetDispatcher.php');
-	    }
-	    
+    function authenticated() {}
+
+    function takeover()
+    {
+        $pluginRegistry =& KTPluginRegistry::getSingleton();
+        $plugin =& $pluginRegistry->getPlugin('password.reset.plugin');
+
+        $KTConfig = KTConfig::getSingleton();
+        if ($KTConfig->get('user_prefs/useEmailLogin', false)) {
+            $dispatcherURL = $plugin->getURLPath('loginResetEmailDispatcher.php');
+        }
+        else {
+            $dispatcherURL = $plugin->getURLPath('loginResetDispatcher.php');
+        }
+
         $queryString = $_SERVER['QUERY_STRING'];
         $redirect = KTUtil::arrayGet($_REQUEST, 'redirect');
         $redirect = urlencode($redirect);
@@ -70,38 +71,44 @@ class PasswordResetInterceptor extends KTInterceptor {
         $url .= (!empty($queryString)) ? '?'.$queryString : '';
         redirect($url);
         exit(0);
-	}
+    }
+
 }
 
+
 class PasswordResetPlugin extends KTPlugin {
-	var $sNamespace = 'password.reset.plugin';
-	var $autoRegister = false;
 
-	function PasswordResetPlugin($sFilename = null) {
-		$res = parent::KTPlugin($sFilename);
-		$this->sFriendlyName = _kt('Password Reset Plugin');
-		return $res;
-	}
+    var $sNamespace = 'password.reset.plugin';
+    var $autoRegister = false;
 
-	function setup() {
-	    // Register the interceptor
-		$this->registerInterceptor('PasswordResetInterceptor', 'password.reset.login.interceptor', __FILE__);
+    function PasswordResetPlugin($sFilename = null)
+    {
+        $res = parent::KTPlugin($sFilename);
+        $this->sFriendlyName = _kt('Password Reset Plugin');
+        return $res;
+    }
 
-		// Interceptor has to be added to the DB to be found
-		$aOptions = array(
+    function setup()
+    {
+        // Register the interceptor
+        $this->registerInterceptor('PasswordResetInterceptor', 'password.reset.login.interceptor', __FILE__);
+
+        // Interceptor has to be added to the DB to be found
+        $options = array(
             'sName' => 'Password Reset Interceptor',
             'sInterceptorNamespace' => 'password.reset.login.interceptor',
             'sConfig' => ''
-		);
-		KTInterceptorInstance::createFromArray($aOptions);
+        );
+        KTInterceptorInstance::createFromArray($options);
 
-		// Add templates directory to list
-		$dir = dirname(__FILE__);
-        $oTemplating =& KTTemplating::getSingleton();
-        $oTemplating->addLocation('passwordResetPlugin', $dir . '/templates');
-	}
+        // Add templates directory to list
+        $dir = dirname(__FILE__);
+        $templating =& KTTemplating::getSingleton();
+        $templating->addLocation('passwordResetPlugin', $dir . '/templates');
+    }
+
 }
 
-$oPluginRegistry =& KTPluginRegistry::getSingleton();
-$oPluginRegistry->registerPlugin('PasswordResetPlugin', 'password.reset.plugin', __FILE__);
+$pluginRegistry =& KTPluginRegistry::getSingleton();
+$pluginRegistry->registerPlugin('PasswordResetPlugin', 'password.reset.plugin', __FILE__);
 ?>
