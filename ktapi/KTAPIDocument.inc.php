@@ -242,48 +242,49 @@ class KTAPI_Document extends KTAPI_FolderItem
 	 * @param string $reason The reason for checking the document in
 	 * @param string $tempfilename The location of the temporary file
 	 * @param bool $major_update Determines if the version number should have a major increment (+1) or a minor increment (+0.1)
-	 */
-	function checkin($filename, $reason, $tempfilename, $major_update=false)
-	{
-	    $storage = KTStorageManagerUtil::getSingleton();
-		if (!$storage->isFile($tempfilename))
-		{
-			return new PEAR_Error('File does not exist.');
-		}
+         */
+        function checkin($filename, $reason, $tempfilename, $major_update=false)
+        {
+            $storage = KTStorageManagerUtil::getSingleton();
+            if (!$storage->isFile($tempfilename))
+            {
+                return new PEAR_Error('File does not exist.');
+            }
 
-		$user = $this->can_user_access_object_requiring_permission($this->document, KTAPI_PERMISSION_WRITE);
+            $user = $this->can_user_access_object_requiring_permission($this->document, KTAPI_PERMISSION_WRITE);
 
-		if (PEAR::isError($user))
-		{
-			return $user;
-		}
+            if (PEAR::isError($user))
+            {
+                return $user;
+            }
 
-		if (!$this->document->getIsCheckedOut())
-		{
-			return new PEAR_Error(KTAPI_ERROR_DOCUMENT_NOT_CHECKED_OUT);
-		}
+            if (!$this->document->getIsCheckedOut())
+            {
+                return new PEAR_Error(KTAPI_ERROR_DOCUMENT_NOT_CHECKED_OUT);
+            }
 
-		$filename = KTUtil::replaceInvalidCharacters($filename);
+            $filename = KTUtil::replaceInvalidCharacters($filename);
 
-		$options = array('major_update' => $major_update);
+            $options = array('major_update' => $major_update);
 
-		$currentfilename = $this->document->getFileName();
-		if ($filename != $currentfilename)
-		{
-			$options['newfilename'] = $filename;
-		}
+            $currentfilename = $this->document->getFileName();
+            if ($filename != $currentfilename)
+            {
+                $options['newfilename'] = $filename;
+            }
 
-		DBUtil::startTransaction();
-		$result = KTDocumentUtil::checkin($this->document, $tempfilename, $reason, $user, $options);
+            DBUtil::startTransaction();
 
-		if (PEAR::isError($result))
-		{
-			DBUtil::rollback();
-			return new KTAPI_Error(KTAPI_ERROR_INTERNAL_ERROR,$result);
-		}
-		DBUtil::commit();
+            $result = KTDocumentUtil::checkin($this->document, $tempfilename, $reason, $user, $options);
+            if (PEAR::isError($result))
+            {
+                DBUtil::rollback();
+                return new KTAPI_Error(KTAPI_ERROR_INTERNAL_ERROR,$result);
+            }
 
-		KTUploadManager::temporary_file_imported($tempfilename);
+            DBUtil::commit();
+
+            KTUploadManager::temporary_file_imported($tempfilename);
 	}
 
 	/**
@@ -3040,29 +3041,29 @@ class KTAPI_Document extends KTAPI_FolderItem
 			}
 		}
 	}
-	
+
 	/**
-	 * 
+	 *
 	 * Determines whether a document has "binary changes", i.e. if it truly has content changes
-	 * (since rename etc also increase the content version). The only way to determine this is by 
+	 * (since rename etc also increase the content version). The only way to determine this is by
 	 * checking whether there has been a check-in in the given version range
-	 * 
+	 *
 	 * @param float $from_version
 	 * @param float $to_version
 	 */
 	public function hasBinaryChanges($from_version, $to_version)
-	{		
+	{
 		$sSQL = 'SELECT DT.document_id FROM '.KTUtil::getTableName('document_transactions').' AS DT '.
 			'WHERE DT.document_id = '.$this->documentid.' AND DT.version > '.$from_version.' AND DT.version <= '.$to_version.
-			' AND DT.transaction_namespace LIKE \'ktcore.transactions.check_in\' ';		
+			' AND DT.transaction_namespace LIKE \'ktcore.transactions.check_in\' ';
 
         $results = DBUtil::getResultArray($sSQL);
-        
+
         if (is_null($results) || PEAR::isError($results))
         {
         	return false;
         }
-        
+
         return (count($results) > 0);
 	}
 }

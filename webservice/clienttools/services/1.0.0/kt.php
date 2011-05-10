@@ -785,8 +785,8 @@ class kt extends client_service {
 
 		$returnPolicies = array();
 		$test = $config->get('clientToolPolicies/allowRememberPassword');
-		global $default;
-		$default->log->error('I am here-' . $test);
+		//global $default;
+		//$default->log->error('I am here-' . $test);
 		foreach ($policies as $policy_name) {
 			$policyInfo = array('name' => $policy_name, 'value' => serviceHelper::bool2str($config->get('clientToolPolicies/' . $policy_name)), 'type' => 'boolean');
 
