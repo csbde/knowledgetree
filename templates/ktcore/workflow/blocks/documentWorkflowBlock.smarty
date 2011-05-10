@@ -10,7 +10,29 @@
 
 <div class=workflow_details>
 	<table>
+        <tr>
+            <td>
+                {if empty($transition_fields)}
+                    <div>
+                {else}
+                    <div style="bottom: 50px;">
+                {/if}
+                    <!--<label for=comment><b>{i18n}Workflow for{/i18n} :</b> </label>
+                    <span> {$oDocument->getName()|sanitize} </span> -->
+                    
+                    <label for=comment><b>{i18n}Workflow{/i18n} :</b> </label>
+                    <span>{$oWorkflow->getName()}</span>
+                    &nbsp; - &nbsp;
+                    <label for=comment><b>{i18n}State{/i18n} :</b> </label>
+                    <span>{$oState->getName()}</span>
+                    <br />
+                    <br />
+                </div>
+            </td>
+        </tr>
+        
 		{if !empty($transition_fields)}
+        <tr>
 		<td>
 			<div class=workflow_transition>
 				{if $aTransitions}
@@ -21,6 +43,7 @@
 			            {foreach from=$transition_fields item=oWidget }
 			                {$oWidget->render()}
 			            {/foreach}
+                        <br />
 			            <div class=form_actions id=modal>
 				            <input type="{$submit.type}" onclick="javascript: {ldelim}workflowBlock.submitForm('transition'){rdelim}; return false;" name=form_submit value="{i18n}Perform Transition{/i18n}" />
 				            <a href="#" onclick="vActions.closeDisplay('workflow'); return false;" class=form_cancel style="background: none repeat scroll 0% 0% transparent;">Cancel</a>
@@ -29,25 +52,10 @@
 		    	{/if}
 			</div>
 		</td>
+        </tr>
 		{/if}
 		
-		<td>
-			{if empty($transition_fields)}
-				<div class=workflow_info>
-			{else}
-				<div class=workflow_info style="bottom: 50px;">
-			{/if}
-				<label for=comment><b>{i18n}Workflow for{/i18n} :</b> </label>
-				<span> {$oDocument->getName()|sanitize} </span>
-				<br/>
-				<label for=comment><b>{i18n}Workflow{/i18n} :</b> </label>
-				<span>{$oWorkflow->getName()}</span>
-				<br/>
-				<label for=comment><b>{i18n}State{/i18n} :</b> </label>
-				<span>{$oState->getName()}</span>
-				<br/>
-			</div>
-		</td>
+		
 	</table>
 </div>
 
@@ -71,16 +79,27 @@
     {/if}
     {if $aWorkflows}
         {if $bHasPerm}
+            {if !$oWorkflow}
         		<label for=comment><b>{i18n}Choose Workflow{/i18n}</b> </label>
+            {else}
+        		<label class="modalheader" for=comment><b>{i18n}Change Workflow{/i18n}</b> </label>
+			<p class="workflowChangeWarning">Changing a workflow that has already been initiated will reset all completed workflow steps.</p>
+            {/if}
             <form action="{$smarty.server.PHP_SELF}" method=POST name=start_workflow_form>
 				<div class=widgetRow>
 					<div class=widgetItem>
 						<input type=hidden name=action value=startWorkflow />
 						<input type=hidden name=fDocumentId value="{$oDocument->getId()}" />
-						{entity_select entities=$aWorkflows name=fWorkflowId none=$none selected=$defaultSelectedWorkflow}
+                        
+                        {if !$oWorkflow}
+                            {entity_select entities=$aWorkflows name=fWorkflowId none=$none}
+                        {else}
+                            {entity_select entities=$aWorkflows name=fWorkflowId none=$none omitIds=$defaultSelectedWorkflow}
+                        {/if}
 					</div>
 					<br/><br/>
 					<div class=widgetItem>
+                        <br />
 						<div class=form_actions id=modal>
 							{if !$oWorkflow}
 								<input type="{$submit.type}" onclick="javascript: {ldelim}workflowBlock.submitForm('change'){rdelim}; return false;" name=form_submit value="{i18n}Start Workflow{/i18n}" />

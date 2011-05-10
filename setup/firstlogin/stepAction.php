@@ -87,7 +87,7 @@ class stepAction extends stepActionBase {
 		$vars['fl_version'] = $this->properties['fl_version']; // Set version
 		$vars['fl_type'] = $this->properties['fl_type']; // Set type
 		if (KTPluginUtil::pluginIsActive('folder.templates.plugin')) { // Check if folder templates plugin is active
-			$ft_dir = FolderTemplatesPlugin_RDIR . DIRECTORY_SEPARATOR . "KTFolderTemplates.php";
+			$ft_dir = FTemplates_DIR . DIRECTORY_SEPARATOR . "KTFolderTemplates.php";
 		}
 		$vars['ft_handle'] = $ft_dir; // Set type
 		return $vars;
