@@ -1457,9 +1457,17 @@ class KTUtil {
             case 'browse.php':
                 $config = KTConfig::getSingleton();
                 $rootUrl = $config->get('KnowledgeTree/rootUrl');
-
-                if (!empty($params['fFolderId'])) { $params['fFolderId'] = 1; }
-
+                
+                /**
+                 * Apply different checks depending on whether it is coming
+                 * through as an object or an integer
+                 */
+                if (is_object($params['fFolderId'])) {
+                    if (!empty($params['fFolderId'])) { $params['fFolderId'] = 1; }
+                } else {
+                    if (!isset($params['fFolderId'])) { $params['fFolderId'] = 1; }
+                }
+                
                 $url = $rootUrl . '/00' . base_convert($params['fFolderId'], 10, 36);
 
                 // Remove parameter
