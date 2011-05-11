@@ -140,8 +140,8 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
 		$oViewUtil = new ViewActionsUtil();
 		$oViewUtil->initActions($this->document, $this->oUser);
         $oViewUtil->createButtons();
-		$documentTopActions = $oViewUtil->renderTopActions();
-        $documentBottomActions = $oViewUtil->renderBottomActions();
+		$documentTopActions = $oViewUtil->renderActions('top');
+        $documentBottomActions = $oViewUtil->renderActions('bottom');
         
         $documentData['document'] = $this->document;
         $documentData['document_type'] =& DocumentType::get($this->document->getDocumentTypeID());
@@ -289,8 +289,6 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
         if ($this->document->getIsCheckedOut() || $this->document->getImmutable()) {
             $templateData['hasNotifications'] = true;
         }
-
-        //$this->oPage->setBreadcrumbDetails(_kt("Document Details"));
 
         return $template->render($templateData);
     }

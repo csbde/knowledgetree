@@ -21,14 +21,13 @@ jQuery(function() {
 			jQuery(this).addClass('selected').parent().next().show();
 		}
 	});
-	
 
-	 jQuery('html').click(function() {
-	 	jQuery(".splitmenu").hide();
-	 	jQuery(".split").removeClass('selected');
-	 });
+	jQuery('html').click(function() {
+		jQuery(".splitmenu").hide();
+		jQuery(".split").removeClass('selected');
+	});
 
 	jQuery('.split').click(function(event){
-	     event.stopPropagation();
-	 });
+		event.stopPropagation();
+	});
 });

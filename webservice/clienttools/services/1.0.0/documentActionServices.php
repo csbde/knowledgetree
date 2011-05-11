@@ -37,12 +37,37 @@
 
 require_once(KT_LIB_DIR . '/documentmanagement/documentutil.inc.php');
 require_once(KT_LIB_DIR . '/views/viewactionsutil.inc.php');
+require_once(KT_LIB_DIR . '/triggers/triggerregistry.inc.php');
+require_once(KT_LIB_DIR . '/storage/storagemanager.inc.php');
 
 class documentActionServices extends client_service {
 	
+	function runAction($params) {
+		$classaction = $params['action'];
+		$classname = $params['name'];
+		$classpath = $params['class'];
+		$classpath = str_replace('/./', '/', $classpath);
+		if(file_exists($classpath)) {
+			require_once($classpath);
+			$class = new $classname();
+			$class->$classaction($params);
+		}
+		
+	}
+	
+	function checkout_download($params) {
+		$response = array();
+		if($this->checkout($params)) {
+			$this->addResponse('success', 'Document checked out.');
+		} else {
+			$this->addError('Failed to checkout document.');
+		}
+		
+		return true;
+	}
+	
 	function checkout($params) {
 		$response = array();
-		$response['status'] = true;
 		$iDocumentID = $params['documentId'];
 		$oDocument = Document::get($iDocumentID);
 		$oUser = User::get($_SESSION['userID']);
@@ -53,8 +78,7 @@ class documentActionServices extends client_service {
         $res = KTDocumentUtil::checkout($oDocument, $reason, $oUser);
         if (PEAR::isError($res)) {
         	DBUtil::rollback();
-        	$response['status'] = false;
-        	$this->addResponse('error', json_encode($response));
+        	$this->addError(json_encode($response));
         	
         	return false;
         }
@@ -66,7 +90,6 @@ class documentActionServices extends client_service {
 	
 	function checkout_cancel($params) {
 		$response = array();
-		$response['status'] = true;
 		$iDocumentID = $params['documentId'];
 		$oDocument = Document::get($iDocumentID);
 		$oUser = User::get($_SESSION['userID']);
@@ -77,8 +100,7 @@ class documentActionServices extends client_service {
         $res = $oDocument->update();
         if (PEAR::isError($res) || ($res === false)) {
             DBUtil::rollback();
-        	$response['status'] = false;
-        	$this->addResponse('error', json_encode($response));
+        	$this->addError(json_encode($response));
         	
         	return false;
         }
@@ -89,8 +111,7 @@ class documentActionServices extends client_service {
         $res = $oDocumentTransaction->create();
         if (PEAR::isError($res) || ($res === false)) {
             DBUtil::rollback();
-        	$response['status'] = false;
-        	$this->addResponse('error', json_encode($response));
+        	$this->addError(json_encode($response));
         	
         	return false;
         }
@@ -102,7 +123,6 @@ class documentActionServices extends client_service {
 	
 	function checkin($params) {
 		$response = array();
-		$response['status'] = true;
 		$iDocumentID = $params['documentId'];
 		$oDocument = Document::get($iDocumentID);
 		$oUser = User::get($_SESSION['userID']);
@@ -120,8 +140,8 @@ class documentActionServices extends client_service {
         }
 
         if (!empty($res['errors']) || !empty($extra_errors)) {
-        	$response['status'] = false;
-	        $this->addResponse('error', json_encode($response));
+        	$response['extra_errors'] = $extra_errors;
+	        $this->addError(json_encode($response));
 	        
 	        return true;
         }
@@ -150,8 +170,7 @@ class documentActionServices extends client_service {
         $data['file']['tmp_name'] = $sTempFilename;
         $res = KTDocumentUtil::checkin($oDocument, $data['file']['tmp_name'], $sReason, $oUser, $aOptions);
         if (PEAR::isError($res)) {
-        	$response['status'] = false;
-	        $this->addResponse('error', json_encode('Pear Error on Checkin: '.$res->getMessage()));
+	        $this->addError(json_encode('Pear Error on Checkin: '.$res->getMessage()));
 	        
 	        return false;
         }
@@ -160,32 +179,19 @@ class documentActionServices extends client_service {
         return true;
     }
     
-    function refresh_top_actions($params) {
+    function refresh_actions($params) {
 		$iDocumentID = $params['documentId'];
+		$sLocation = $params['location'];
 		$oUser = User::get($_SESSION['userID']);
 		$oDocument = Document::get($iDocumentID);
 		$oViewUtil = new ViewActionsUtil();
 		$oViewUtil->initActions($oDocument, $oUser);
         $oViewUtil->createButtons();
-//        echo $oViewUtil->renderTopActions();
-//        exit(0);
-		$response = $oViewUtil->renderTopActions();
+		$response = $oViewUtil->renderActions($sLocation);
     	$this->addResponse('success', $response);
     	
     	return true;
     }
     
-    function refresh_bottom_actions($params) {
-		$iDocumentID = $params['documentId'];
-		$oUser = User::get($_SESSION['userID']);
-		$oDocument = Document::get($iDocumentID);
-		$oViewUtil = new ViewActionsUtil();
-		$oViewUtil->initActions($oDocument, $oUser);
-        $oViewUtil->createButtons();
-		$response = $oViewUtil->renderBottomActions();
-    	$this->addResponse('success', $response);
-    	
-    	return true;
-    }
 }
 ?>

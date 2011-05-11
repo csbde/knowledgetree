@@ -554,6 +554,9 @@ ul.floatleft li.notification {
 .action_buttons .hover #checkout {
 	background: url('../graphics/newui/icons/lock_hover.png') no-repeat 4px 4px !important;
 }
+.action_buttons #checkoutdowload {
+	background: url('../graphics/newui/icons/lock.png') no-repeat 4px 4px;
+}
 .action_buttons #checkin {
 	background: url('../graphics/newui/icons/lock_open.png') no-repeat 4px 4px;
 }

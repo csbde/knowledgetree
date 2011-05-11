@@ -22,27 +22,37 @@ kt.app.document_actions = new function() {
         kt.api.preload(fragmentPackage, execPackage, true);
     }
     
-	this.checkoutActions = function(documentId, type) {
+	this.checkout_actions = function(documentId, type) {
 		this.documentId = documentId;
 		var params = {};
 		params.documentId = documentId;
 		var synchronous = false;
 		var func;
+		var callback = self.refresh;
 		switch (type) {
 			case 'checkout':
 				func = 'documentActionServices.checkout';
 			break;
-			case 'checkin':
-				func = 'documentActionServices.checkin';
+			case 'checkout_download':
+				func = 'documentActionServices.checkout_download';
+				var response = ktjapi.retrieve(func, params);
+				if(response.errors.hadErrors == 0) {
+					this.download();
+					self.refresh();
+				}
+				return;
+			break;
+			case 'checkin_form':
+				this.checkin_form();
+				return;
 			break;
 			case 'cancel':
 				func = 'documentActionServices.checkout_cancel';
 			break;
 		}
-		var callback = self.refresh;
-	    ktjapi.callMethod(func, params, callback, synchronous, null, 200, 30000);
-	    
-	    return null;
+		ktjapi.callMethod(func, params, callback, synchronous, null);
+		
+	    return;
 	}
 	
 	this.error  = function() {
@@ -50,29 +60,23 @@ kt.app.document_actions = new function() {
 	}
 	
 	this.refresh = function() {
-		self.refresh_top_actions();
-		self.refresh_bottom_actions();
+		self.refresh_actions('top');
+		self.refresh_actions('bottom');
+		self.refresh_actions('init');
 		self.refresh_status_indicator();
+		kt.app.viewlets.refresh_comments(self.documentId);
 		
 	    return null;
 	}
 	
-	this.refresh_top_actions = function() {
+	this.refresh_actions = function(location) {
 		var params = {};
 		params.documentId = self.documentId;
+		params.location = location;
 		var synchronous = false;
-		var func = 'documentActionServices.refresh_top_actions';
-		var response = ktjapi.retrieve(func, params, 200, 30000);
-		jQuery('#top_actions').html(response.data.success);
-	}
-	
-	this.refresh_bottom_actions = function() {
-		var params = {};
-		params.documentId = self.documentId;
-		var synchronous = false;
-		var func = 'documentActionServices.refresh_bottom_actions';
-		var response = ktjapi.retrieve(func, params, 200, 30000);
-		jQuery('#bottom_actions').html(response.data.success);
+		var func = 'documentActionServices.refresh_actions';
+		var response = ktjapi.retrieve(func, params);
+		jQuery('#'+location+'_actions').html(response.data.success);
 	}
 	
 	this.refresh_status_indicator = function() {
@@ -86,6 +90,76 @@ kt.app.document_actions = new function() {
 	this.esig = function() {
 		console.log('esig');
 	}
+
+	// TODO : Get action path namespace from server
+	this.download = function() {
+		window.location = '/action.php?kt_path_info=ktcore.actions.document.view&fDocumentId=' + self.documentId;
+	}
+	
+	this.checkin_form = function() {
+		var width;
+		var height;
+		var title;
+		var address;
+		width = '600px';
+		height = '400px';
+		title = 'Check-in Document';
+		// TODO : createForm
+		// create html for form
+		vActions.createForm('checkin', title);
+	    // create the window
+	    this.win = new Ext.Window({
+	        applyTo     : 'checkins',
+	        layout      : 'fit',
+	        width       : width,
+	        height      : height,
+	        closeAction :'destroy',
+	        y           : 75,
+	        shadow: false,
+	        modal: true
+	    });
+	    this.win.show();
+        // TODO : Get action path namespace from server
+        var address = '/action.php?kt_path_info=ktcore.actions.document.checkin&fDocumentId=' + self.documentId;
+       	jQuery.ajax({
+				type: "POST",
+				url: address,
+				success: function(data) {
+					jQuery('#add_checkin').html(data);
+				    var options = { 
+				        target:        '#output1',   // target element(s) to be updated with server response 
+				        beforeSubmit:  befores,  // pre-submit callback 
+				        success:       afters  // post-submit callback 
+				    }; 
+					// bind form using 'ajaxForm' 
+					jQuery('#checkin_form').ajaxForm(options);
+				},
+				error: function(response, code) { alert('Error. Could not create form. ' + response + code);}
+		});
+	}
+	
+	// pre-submit callback 
+	this.befores = function() {
+	    alert('befores'); 
+	    return true; 
+	} 
+	 
+	// post-submit callback 
+	this.afters = function() {
+	    alert('afters'); 
+	    return true; 
+	} 
+
+	this.submitForm = function() {
+/*		var params = {};
+		params = jQuery('form[name="checkin_form"]').serialize();
+		var synchronous = false;
+		var func = 'documentActionServices.checkin';
+		var response = ktjapi.retrieve(func, params);
+		console.log(response);*/
+		return null;
+	}
 	
     this.init();
 }
+

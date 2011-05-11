@@ -180,6 +180,8 @@ class KTPage {
                         "resources/$jsResourceLocation/newui/kt.app.upload.$jsExt" => $overviews,
                         "resources/$jsResourceLocation/newui/documents/kt.app.actions.$jsExt" => $files,
                         "resources/$jsResourceLocation/newui/documents/kt.app.buttons.$jsExt" => $files,
+                        "resources/$jsResourceLocation/newui/documents/kt.app.viewlets.$jsExt" => $files,
+                        "resources/$jsResourceLocation/jquery.form.$jsExt" => $files,
                         "resources/$jsResourceLocation/newui/kt.app.inviteusers.$jsExt" => $combined,
                         "resources/$jsResourceLocation/newui/kt.app.sharewithusers.$jsExt" => $files,
             	        "resources/$jsResourceLocation/jquery.blockui.$jsExt" => $combined,

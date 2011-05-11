@@ -137,6 +137,13 @@ class ViewActionsUtil
 		return $this->list['links'];
 	}
 	
+	/**
+	 * Sort buttons
+	 *
+	 * @param array $a
+	 * @param array $b
+	 * @return array
+	 */
     protected function sortBtns($a, $b)
     {
         if ($a['btn_order'] < $b['btn_order']) return -1;
@@ -144,6 +151,13 @@ class ViewActionsUtil
         return 0;
     }
 
+	/**
+	 * Sort menus
+	 *
+	 * @param array $a
+	 * @param array $b
+	 * @return array
+	 */
     protected function sortMenus($a, $b)
     {
         if ($a['name'] < $b['name']) return -1;
@@ -151,35 +165,35 @@ class ViewActionsUtil
         return 0;
     }
     
-	/**
-	 * Render HTML for top actions
+    /**
+	 * Render HTML document view actions
 	 *
 	 * @return string
 	 */
-	public function renderTopActions() {
+	public function renderActions($location) {
 		$templating = KTTemplating::getSingleton();
-        $template = $templating->loadTemplate('ktcore/document/view_top_actions');
-        $templateData = array(
-        						'actionBtns' => $this->getTopActions(),
-        						);
-        return $template->render($templateData);
+		switch ($location) {
+			case 'top':
+				$template = $templating->loadTemplate('ktcore/document/actions/view_top_actions');
+			    $templateData = array(
+			    						'actionBtns' => $this->getTopActions(),
+			    						);
+				break;
+				
+			case 'bottom':
+				$template = $templating->loadTemplate('ktcore/document/actions/view_bottom_actions');
+		        $templateData = array(
+		        						'actionBtns' => $this->getBottomActions(),
+		        						'actionLinks' => $this->getLinkActions(),
+		        						);
+				break;
+				
+			case 'init':
+				$template = $templating->loadTemplate('ktcore/document/actions/init_button_actions');
+				break;
+		}
+		
+		return $template->render($templateData);
 	}
-	
-	/**
-	 * Render HTML for bottom actions
-	 *
-	 * @return string
-	 */
-	public function renderBottomActions() {
-        $templating = KTTemplating::getSingleton();
-        $template = $templating->loadTemplate('ktcore/document/view_bottom_actions');
-        $templateData = array(
-        						'actionBtns' => $this->getBottomActions(),
-        						'actionLinks' => $this->getLinkActions(),
-        						);
-        return $template->render($templateData);
-	}
-	
-	
 }
 ?>
