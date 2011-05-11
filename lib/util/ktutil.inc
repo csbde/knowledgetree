@@ -1457,9 +1457,17 @@ class KTUtil {
             case 'browse.php':
                 $config = KTConfig::getSingleton();
                 $rootUrl = $config->get('KnowledgeTree/rootUrl');
-
-                if (!empty($params['fFolderId'])) { $params['fFolderId'] = 1; }
-
+                
+                /**
+                 * Apply different checks depending on whether it is coming
+                 * through as an object or an integer
+                 */
+                if (is_object($params['fFolderId'])) {
+                    if (!empty($params['fFolderId'])) { $params['fFolderId'] = 1; }
+                } else {
+                    if (!isset($params['fFolderId'])) { $params['fFolderId'] = 1; }
+                }
+                
                 $url = $rootUrl . '/00' . base_convert($params['fFolderId'], 10, 36);
 
                 // Remove parameter
@@ -1628,6 +1636,35 @@ class KTUtil {
         }
 
         return $byteMap;
+    }
+
+    /**
+     * Map the priority of different processes on the queues.
+     *
+     * @param string $process
+     * @param string $default Used if the process is not specified. Options: high | medium | low.
+     * @return string - high | medium | low
+     */
+    public static function mapQueuePriority($process, $default = 'medium')
+    {
+        switch ($process) {
+            case 'email':
+            case 'alert':
+            case 'account':
+            case 'index':
+                return 'high';
+
+            case 'process':
+                return 'medium';
+
+            case 'bulkprocess';
+            case 'bulkupload':
+            case 'bulkdownload':
+            case 'backup':
+                return 'low';
+        }
+
+        return $default;
     }
 
 }

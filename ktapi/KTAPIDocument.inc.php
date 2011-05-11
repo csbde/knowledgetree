@@ -477,16 +477,16 @@ class KTAPI_Document extends KTAPI_FolderItem
 			if (empty($oem_no)) $oem_no = 'n/a';
 
 			$result[] = array(
-					'document_id'=>(int)$row['document_id'],
-					'custom_document_no'=>'n/a',
-					'oem_document_no'=>$oem_no,
-					'title'=> $row['title'],
-					'document_type'=> $row['document_type'],
-					'version'=> (float) ($row['major_version'] . '.' . $row['minor_version']),
-					'filesize'=>(int)$row['size'],
-					'workflow'=>empty($row['workflow'])?'n/a':$row['workflow'],
-					'workflow_state'=>empty($row['workflow_state'])?'n/a':$row['workflow_state'],
-					'link_type'=>empty($row['link_type'])?'unknown':$row['link_type'],
+					'document_id' => (int)$row['document_id'],
+					'custom_document_no' => 'n/a',
+					'oem_document_no' => $oem_no,
+					'title' => $row['title'],
+					'document_type' => $row['document_type'],
+					'version' => (float)($row['major_version'] . '.' . $row['minor_version']),
+					'filesize' =>(int)$row['size'],
+					'workflow' => empty($row['workflow']) ? 'n/a' : $row['workflow'],
+					'workflow_state' => empty($row['workflow_state']) ? 'n/a' : $row['workflow_state'],
+					'link_type' => empty($row['link_type']) ? 'unknown' : $row['link_type'],
 				);
 		}
 
@@ -2507,55 +2507,56 @@ class KTAPI_Document extends KTAPI_FolderItem
         return $transactions;
 	}
 
-	/**
-	 * This returns the version history on the document.
-	 *
-	 * @author KnowledgeTree Team
-	 * @access public
-	 * @return array The version history
-	 */
-	function get_version_history()
-	{
-		$metadata_versions = KTDocumentMetadataVersion::getByDocument($this->document);
-
-		$wsversion = $this->ktapi->getVersion();
-
+    /**
+     * This returns the version history on the document.
+     *
+     * @author KnowledgeTree Team
+     * @access public
+     * @return array The version history
+     */
+    function get_version_history()
+    {
+        $metadata_versions = KTDocumentMetadataVersion::getByDocument($this->document);
+        $wsversion = $this->ktapi->getVersion();
         $versions = array();
+
         foreach ($metadata_versions as $version)
         {
-        	$document = &Document::get($this->documentid, $version->getId());
+            $version = array();
 
-        	$version = array();
+            $document = &Document::get($this->documentid, $version->getId());
+            $userid = $document->getModifiedUserId();
+            $user = User::get($userid);
+            $username = $user_username = 'Unknown';
+            if (!PEAR::isError($user))
+            {
+                $username = is_null($user) ? 'n/a' : $user->getName();
+                $user_username = is_null($user) ? 'n/a' : $user->getUserName();
+            }
 
-        	$userid = $document->getModifiedUserId();
-			$user = User::get($userid);
-			$username = $user_username = 'Unknown';
-			if (!PEAR::isError($user))
-			{
-				$username = is_null($user)?'n/a':$user->getName();
+            $version['user'] = $username;
+            $version['metadata_version'] = $document->getMetadataVersion();
+            $version['content_version'] = $document->getVersion();
+            $version['datetime'] = $document->getDisplayVersionCreated();
 
-				$user_username = is_null($user)?'n/a':$user->getUserName();
-			}
+            if ($wsversion >= 2)
+            {
+                $version['metadata_version'] = (int)$version['metadata_version'];
+                $version['content_version'] = (float)$version['content_version'];
+            }
 
-        	$version['user'] = $username;
-        	$version['metadata_version'] = $document->getMetadataVersion();
-        	$version['content_version'] = $document->getVersion();
-			$version['datetime'] = $document->getDisplayVersionCreated();
-        	if ($wsversion >= 2)
-        	{
-        		$version['metadata_version'] = (int) $version['metadata_version'];
-        		$version['content_version'] = (float) $version['content_version'];
-        	}
-
-        	if ($wsversion >= 3)
-        	{
-        		$version['user_username'] = $user_username;
-        	}
+            if ($wsversion >= 3)
+            {
+                $version['user_username'] = $user_username;
+                $version['major_version'] = (int)$document->getMajorVersionNumber();
+                $version['minor_version'] = (int)$document->getMinorVersionNumber();
+            }
 
             $versions[] = $version;
         }
+
         return $versions;
-	}
+    }
 
 	/**
 	 * Get the content version id using the document (content) version - major/minor version
