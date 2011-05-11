@@ -888,7 +888,7 @@ class KTDocumentUtil {
         $document->clearAllCaches();
 
         // NEW SEARCH
-        Indexer::index($document);
+        Indexer::index($document, 'A', $options);
 
         $uploadChannel->sendMessage(new KTUploadGenericMessage(_kt('Creating transaction')));
         $options = array('user' => $user);
