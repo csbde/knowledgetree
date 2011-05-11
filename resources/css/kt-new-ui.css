@@ -69,6 +69,34 @@ textarea {
 	margin-top: 100px;
 	display: block;
 }
+#document-tags li {
+	list-style: none;
+	padding: 0px 8px 2px 8px;
+	color: #2F6594;
+	margin: 0px 4px 4px 0px;
+	word-break: break-word;
+}
+.document-tags-edit.active .token-input-list-facebook {
+	display: inline-block;
+	border: 1px solid #ccc !important;
+	border-radius: 3px;
+	-moz-border-radius: 3px;
+	-webkit-border-radius: 3px;
+	box-shadow: inset 0px 1px 1px #666;
+	-moz-box-shadow: inset 0px 1px 1px #666;
+	-webkit-box-shadow: inset 0px 1px 1px #666;
+	padding: 2px;
+}
+.document-tags-edit.active input {
+	border: none !important;
+	background: transparent !important;
+}
+.token-input-dropdown-facebook li {
+	list-style: none;
+}
+#content .token-input-dropdown-facebook ul {
+	padding-left: 0px;
+}
 .tags a {
 	color: #777!important;
 	background: #eee;
