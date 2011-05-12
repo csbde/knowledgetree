@@ -162,6 +162,55 @@ kt.api = new function() {
         return ret.data.usertype;
     };
 
+    /* Electronic signatures & comment related functions */
+
+    this.isReasonEnabled = function() {
+        // are esignatures enabled or reasons enabled - return esign / reason / false
+
+		var params = {};
+		var func = 'documentActionServices.isReasonsEnabled';
+		var response = ktjapi.retrieve(func, params);
+
+		return response.data.success;
+    }
+
+	this.showReasonForm = function(type) {
+		var title = 'Reason';
+
+		// create html for form
+		vActions.createForm('reason', title);
+		this.window = new Ext.Window({
+			applyTo     : 'reasons',
+	        layout      : 'fit',
+	        width       : 400,
+	        height       : 250,
+	        closeAction :'destroy',
+	        y           : 50,
+	        shadow      : true,
+	        modal       : true,
+	        html        : kt.api.execFragment('documents/reason')
+	    });
+	    this.window.show();
+
+	    if(type='esign') {
+    	    jQuery('#user').style.display = 'block';
+    	    jQuery('#pass').style.display = 'block';
+	    }
+	    /*
+        // TODO : Get action path namespace from server
+        var address = '/action.php?kt_path_info=ktcore.actions.document.cancelcheckout&action=reason&fDocumentId=' + self.documentId;
+       	jQuery.ajax({
+				type: "POST",
+				url: address,
+				success: function(data) {
+					jQuery('#add_reason').html(data);
+				},
+				error: function(response, code) { alert('Error. Could not create form. ' + response + code);}
+		});
+		*/
+	}
+
+
     /* Template related functions */
 
     this.preload = function(fragments, execs, register) {
