@@ -19,28 +19,30 @@ kt.app.document_actions = new function() {
     var documentId;
     // Initializes the upload widget on creation. Currently does preloading of resources.
     this.init = function() {
-        console.log('init');
     	kt.api.preload(fragmentPackage, execPackage, true);
     }
 
 	this.checkout_actions = function(documentId, type) {
 		self.documentId = documentId;
-		var response = this.isReasonEnabled();
+		self.type = type;
+		var response = kt.api.isReasonEnabled();
 		if(response == false) {
-			kt.api.run_checkout_action(type)
+			self.run_checkout_action()
 		} else {
-			kt.api.reason_form($response);
+			kt.api.showReasonForm(response);
 		}
 		return;
 	}
 
-	this.run_checkout_action = function(type) {
+	this.run_checkout_action = function(reason) {
 		var params = {};
 		params.documentId = self.documentId;
+		if(reason != '')
+			params.reason = reason;
 		var synchronous = false;
 		var func;
 		var callback = self.refresh;
-		switch (type) {
+		switch (self.type) {
 			case 'checkout':
 				func = 'documentActionServices.checkout';
 			break;
@@ -94,19 +96,24 @@ kt.app.document_actions = new function() {
 		jQuery('#indicator').toggle();
 	}
 
-	this.reason = function() {
-		console.log('reason');
-	}
-
-	this.esig = function() {
-		console.log('esig');
-	}
-
 	// TODO : Get action path namespace from server
 	this.download = function() {
 		window.location = '/action.php?kt_path_info=ktcore.actions.document.view&fDocumentId=' + self.documentId;
 	}
 
+	this.submitReason = function() {
+		var reason = jQuery('[name="reason"]').val();
+		if(reason != '') {
+			vActions.closeDisplay('reason');
+			this.run_checkout_action(reason);
+		} else {
+			jQuery('#error').toggle();
+			jQuery('#error .errorMessage').html("Please enter a reason.");
+		}
+		
+		return null;
+	}
+	
 	this.checkin_form = function() {
 		var width;
 		var height;
@@ -160,8 +167,8 @@ kt.app.document_actions = new function() {
 	    alert('afters');
 	    return true;
 	}
-
-	this.submitForm = function() {
+	
+	this.submitCheckInForm = function() {
 /*		var params = {};
 		params = jQuery('form[name="checkin_form"]').serialize();
 		var synchronous = false;
@@ -170,7 +177,7 @@ kt.app.document_actions = new function() {
 		console.log(response);*/
 		return null;
 	}
-
+	
     this.init();
 }
 

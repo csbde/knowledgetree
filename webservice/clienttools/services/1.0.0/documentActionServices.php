@@ -106,7 +106,7 @@ class documentActionServices extends client_service {
         }
         // checkout cancelled transaction
         $defaultCancelMessage = _kt('Document Checkout Cancelled.');
-        $reason = $defaultCancelMessage . (isset($data['reason']) ? "\n\n{$data['reason']}" : '');
+        $reason = $defaultCancelMessage . (isset($params['reason']) ? "\n\n{$params['reason']}" : '');
         $oDocumentTransaction = new DocumentTransaction($oDocument, $reason, 'ktcore.transactions.force_checkin');
         $res = $oDocumentTransaction->create();
         if (PEAR::isError($res) || ($res === false)) {
@@ -122,14 +122,27 @@ class documentActionServices extends client_service {
     }
 	
     public function isReasonsEnabled() {
+    	global $default;
+    	if($default->enableESignatures) { 
+    		$this->addResponse('success', 'esig');
+			return true;
+    	}
     	$oKTConfig = KTConfig::getSingleton();
-    	$globalReasons = $oKTConfig->get('actionreasons/globalReasons');
-    	$this->addResponse('success', $globalReasons);
+    	if($oKTConfig->get('actionreasons/globalReasons')) { 
+    		$this->addResponse('success', 'reason');
+			return true;
+    	}
+    	$this->addResponse('success', false);
+
+		return true;
+    }
+    
+    public function reason() {
     	
     	return true;
     }
     
-    public function reason() {
+    public function eSignature() {
     	
     }
     
@@ -159,7 +172,7 @@ class documentActionServices extends client_service {
         }
 
         $defaultCheckinMessage = _kt('Document Checked In.');
-        $sReason = $defaultCheckinMessage . (isset($data['reason']) ? "\n\n{$data['reason']}" : '');
+        $sReason = $defaultCheckinMessage . (isset($params['reason']) ? "\n\n{$params['reason']}" : '');
 
         $sCurrentFilename = $docFileName;
         $sNewFilename = $data['file']['name'];

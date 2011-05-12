@@ -174,7 +174,7 @@ kt.api = new function() {
 		return response.data.success;
     }
 
-	this.showReasonForm = function(type) {
+	this.showReasonForm = function(response) {
 		var title = 'Reason';
 
 		// create html for form
@@ -192,22 +192,12 @@ kt.api = new function() {
 	    });
 	    this.window.show();
 
-	    if(type='esign') {
+	    if(response = 'esign') {
     	    jQuery('#user').style.display = 'block';
     	    jQuery('#pass').style.display = 'block';
+	    } else {
+    	    jQuery('#reason').style.display = 'block';
 	    }
-	    /*
-        // TODO : Get action path namespace from server
-        var address = '/action.php?kt_path_info=ktcore.actions.document.cancelcheckout&action=reason&fDocumentId=' + self.documentId;
-       	jQuery.ajax({
-				type: "POST",
-				url: address,
-				success: function(data) {
-					jQuery('#add_reason').html(data);
-				},
-				error: function(response, code) { alert('Error. Could not create form. ' + response + code);}
-		});
-		*/
 	}
 
 
