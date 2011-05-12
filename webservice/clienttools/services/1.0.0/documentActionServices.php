@@ -42,7 +42,7 @@ require_once(KT_LIB_DIR . '/storage/storagemanager.inc.php');
 
 class documentActionServices extends client_service {
 	
-	function runAction($params) {
+	public function runAction($params) {
 		$classaction = $params['action'];
 		$classname = $params['name'];
 		$classpath = $params['class'];
@@ -55,7 +55,7 @@ class documentActionServices extends client_service {
 		
 	}
 	
-	function checkout_download($params) {
+	public function checkout_download($params) {
 		$response = array();
 		if($this->checkout($params)) {
 			$this->addResponse('success', 'Document checked out.');
@@ -66,7 +66,7 @@ class documentActionServices extends client_service {
 		return true;
 	}
 	
-	function checkout($params) {
+	public function checkout($params) {
 		$response = array();
 		$iDocumentID = $params['documentId'];
 		$oDocument = Document::get($iDocumentID);
@@ -88,7 +88,7 @@ class documentActionServices extends client_service {
         return true;
 	}
 	
-	function checkout_cancel($params) {
+	public function checkout_cancel($params) {
 		$response = array();
 		$iDocumentID = $params['documentId'];
 		$oDocument = Document::get($iDocumentID);
@@ -121,7 +121,19 @@ class documentActionServices extends client_service {
 		return true;
     }
 	
-	function checkin($params) {
+    public function isReasonsEnabled() {
+    	$oKTConfig = KTConfig::getSingleton();
+    	$globalReasons = $oKTConfig->get('actionreasons/globalReasons');
+    	$this->addResponse('success', $globalReasons);
+    	
+    	return true;
+    }
+    
+    public function reason() {
+    	
+    }
+    
+	public function checkin($params) {
 		$response = array();
 		$iDocumentID = $params['documentId'];
 		$oDocument = Document::get($iDocumentID);

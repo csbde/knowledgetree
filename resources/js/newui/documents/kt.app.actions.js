@@ -19,16 +19,35 @@ kt.app.document_actions = new function() {
     var documentId;
     // Initializes the upload widget on creation. Currently does preloading of resources.
     this.init = function() {
-        kt.api.preload(fragmentPackage, execPackage, true);
+        console.log('init');
+    	kt.api.preload(fragmentPackage, execPackage, true);
     }
-    
-	this.checkout_actions = function(documentId, type) {
-		this.documentId = documentId;
+
+    this.isReasonEnabled = function() {
 		var params = {};
-		params.documentId = documentId;
+		var func = 'documentActionServices.isReasonsEnabled';
+		var response = ktjapi.retrieve(func, params);
+		
+		return response.data.success;
+    }
+
+	this.checkout_actions = function(documentId, type) {
+		self.documentId = documentId;
+		var reason = this.isReasonEnabled();
+		if(reason == true) {
+			this.reason_form();
+		} else {
+			this.run_checkout_action(type)
+		}
+		return;
+	}
+	
+	this.run_checkout_action = function(type) {
+		var params = {};
+		params.documentId = self.documentId;
 		var synchronous = false;
 		var func;
-		var callback = self.refresh;
+		var callback = self.refresh;		
 		switch (type) {
 			case 'checkout':
 				func = 'documentActionServices.checkout';
@@ -94,6 +113,34 @@ kt.app.document_actions = new function() {
 	// TODO : Get action path namespace from server
 	this.download = function() {
 		window.location = '/action.php?kt_path_info=ktcore.actions.document.view&fDocumentId=' + self.documentId;
+	}
+	
+	this.reason_form = function() {
+		var title = 'Reason';
+		// create html for form
+		vActions.createForm('reason', title);
+		this.window = new Ext.Window({
+			applyTo     : 'reasons',
+	        layout      : 'fit',
+	        width       : 400,
+	        height       : 250,
+	        closeAction :'destroy',
+	        y           : 50,
+	        shadow      : true,
+	        modal       : true,
+	        //html        : kt.api.execFragment('documents/reason')
+	    });
+	    this.window.show();
+        // TODO : Get action path namespace from server
+        var address = '/action.php?kt_path_info=ktcore.actions.document.cancelcheckout&action=reason&fDocumentId=' + self.documentId;
+       	jQuery.ajax({
+				type: "POST",
+				url: address,
+				success: function(data) {
+					jQuery('#add_reason').html(data);
+				},
+				error: function(response, code) { alert('Error. Could not create form. ' + response + code);}
+		});
 	}
 	
 	this.checkin_form = function() {

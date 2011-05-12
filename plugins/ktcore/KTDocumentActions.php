@@ -2202,7 +2202,6 @@ class KTDocumentCheckInAction extends JavascriptDocumentAction {
 class KTDocumentCancelCheckOutAction extends JavascriptDocumentAction {
 
     public $sName = 'ktcore.actions.document.cancelcheckout';
-
     public $_sShowPermission = 'ktcore.permissions.write';
     public $bAllowInAdminMode = true;
     public $bInAdminMode = null;
@@ -2210,11 +2209,24 @@ class KTDocumentCancelCheckOutAction extends JavascriptDocumentAction {
     public $sIconClass = 'cancel-checkout';
     public $sParentBtn = 'ktcore.actions.document.checkin';
 
-    function getDisplayName() {
+	public function do_reason() {
+		echo parent::do_reason();
+		exit(0);
+	}
+    
+	public function getReasonDescriptiveText() {
+		return 'If you do not want to have this document be checked-out, click cancel checkout.';
+	}
+	
+    public function getReasonAction() {
+    	return 'checkin';
+    }
+    
+    public function getDisplayName() {
         return _kt('Cancel Checkout');
     }
     
-    function _show() {
+    public function _show() {
         $check = parent::_show();
         if($check === false) {
             return 'disabled';
@@ -2222,7 +2234,7 @@ class KTDocumentCancelCheckOutAction extends JavascriptDocumentAction {
         return $check;
     }
 
-    function getInfo() {
+    public function getInfo() {
         if (!$this->oDocument->getIsCheckedOut()) {
             return null;
         }
@@ -2244,12 +2256,12 @@ class KTDocumentCancelCheckOutAction extends JavascriptDocumentAction {
         return parent::getInfo();
     }
     
-	function getFunctionScript()
+	public function getFunctionScript()
     {
 		return 'kt.app.document_actions.checkout_actions(\'' . $this->oDocument->getId() . '\', \'cancel\')';
     }
 
-    function check() {
+    public function check() {
         $res = parent::check();
 
         if ($res !== true) {
@@ -2282,7 +2294,7 @@ class KTDocumentCancelCheckOutAction extends JavascriptDocumentAction {
         return true;
     }
 
-	function customiseInfo($aInfo)
+	public function customiseInfo($aInfo)
 	{
 		$js = '';
 		foreach($this->js_paths as $path)
