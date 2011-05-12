@@ -15,3 +15,19 @@ p.workflowChangeWarning {
     color: #FF9700 ; /* Orange */
     font-weight: bold;
 }
+
+div.form_actions, div.form_cancel {
+    float: left;
+}
+
+div.form_cancel {
+    
+    line-height: 29px;
+    font-size: 11px;
+    margin-left: 15px;
+    font-weight: bold;
+}
+
+div.form_cancel a {
+    color: #0000EE;
+}
