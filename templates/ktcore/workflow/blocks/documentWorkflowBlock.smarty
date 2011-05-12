@@ -8,7 +8,7 @@
     <p>{i18n}Document is not currently assigned to a workflow.{/i18n}</p>
 {else}
 
-<div class=workflow_details>
+<div class="workflow_details">
 	<table>
         <tr>
             <td>
@@ -33,28 +33,33 @@
         
 		{if !empty($transition_fields)}
         <tr>
-		<td>
-			<div class=workflow_transition>
-				{if $aTransitions}
-			        <form action="{$smarty.server.PHP_SELF}" method=POST name=transition_wf_form>
-			            <input type=hidden name=action value=performTransition />
-			            <input type=hidden name=fDocumentId value="{$oDocument->getId()}" />
-			            <input type=hidden name=fWorkflowId value="{$oWorkflow->getId()}" />
-			            {foreach from=$transition_fields item=oWidget }
-			                {$oWidget->render()}
-			            {/foreach}
-                        <br />
-			            <div class="form_actions" id="modal">
-				            <input type="{$submit.type}" onclick="javascript: {ldelim}workflowBlock.submitForm('transition'){rdelim}; return false;" name=form_submit value="{i18n}Perform Transition{/i18n}" />
-				            
-			            </div>
-						<div class="form_cancel">
-							<a href="#" onclick="vActions.closeDisplay('workflow'); return false;" class=form_cancel style="background: none repeat scroll 0% 0% transparent;">Cancel</a>
-						</div>
-			        </form>
-		    	{/if}
-			</div>
-		</td>
+			<td>
+				<div class=workflow_transition>
+					{if $aTransitions}
+						<form action="{$smarty.server.PHP_SELF}" method=POST name=transition_wf_form>
+							<input type=hidden name=action value=performTransition />
+							<input type=hidden name=fDocumentId value="{$oDocument->getId()}" />
+							<input type=hidden name=fWorkflowId value="{$oWorkflow->getId()}" />
+							{foreach from=$transition_fields item=oWidget }
+								{$oWidget->render()}
+							{/foreach}
+							<br />
+			</td>
+		</tr>
+		<tr>
+			<td class="alignright">
+							<div class="form_cancel">
+								<a href="#" onclick="vActions.closeDisplay('workflow'); return false;" class=form_cancel style="background: none repeat scroll 0% 0% transparent;">Cancel</a>
+							</div>
+							<div class="form_actions" id="modal">
+								<input type="{$submit.type}" onclick="javascript: {ldelim}workflowBlock.submitForm('transition'){rdelim}; return false;" name=form_submit value="{i18n}Perform Transition{/i18n}" />
+								
+							</div>
+							
+						</form>
+					{/if}
+				</div>
+			</td>
         </tr>
 		{/if}
 		
@@ -86,7 +91,6 @@
         		<label for=comment><b>{i18n}Choose Workflow{/i18n}</b> </label>
             {else}
         		<label class="modalheader" for=comment><b>{i18n}Change Workflow{/i18n}</b> </label>
-			<p class="workflowChangeWarning">Changing a workflow that has already been initiated will reset all completed workflow steps.</p>
             {/if}
             <form action="{$smarty.server.PHP_SELF}" method=POST name=start_workflow_form>
 				<div class=widgetRow>
@@ -103,17 +107,25 @@
 					<br/><br/>
 					<div class=widgetItem>
                         <br />
-						<div class="form_actions" id="modal">
-							{if !$oWorkflow}
-								<input type="{$submit.type}" onclick="javascript: {ldelim}workflowBlock.submitForm('change'){rdelim}; return false;" name=form_submit value="{i18n}Start Workflow{/i18n}" />
-							{else}
-								<input type="{$submit.type}" onclick="javascript: {ldelim}workflowBlock.submitForm('change'){rdelim}; return false;" name=form_submit value="{i18n}Change Workflow{/i18n}" />
-							{/if}
-							
-						</div>
-						<div class="form_cancel">
-							<a href="#" onclick="vActions.closeDisplay('workflow'); return false;" class=form_cancel style="background: none repeat scroll 0% 0% transparent;">Cancel</a>
-						</div>
+						<table>
+							<tr>
+								<td class="alignright">
+									<div class="form_cancel">
+										<a href="#" onclick="vActions.closeDisplay('workflow'); return false;" class=form_cancel style="background: none repeat scroll 0% 0% transparent;">Cancel</a>
+									</div>
+									
+									<div class="form_actions" id="modal">
+										{if !$oWorkflow}
+											<input type="{$submit.type}" onclick="javascript: {ldelim}workflowBlock.submitForm('change'){rdelim}; return false;" name=form_submit value="{i18n}Start Workflow{/i18n}" />
+										{else}
+											<input type="{$submit.type}" onclick="if (confirm('Changing a workflow that has already been initiated \nwill reset all completed workflow steps.\n\nAre you sure you want to change this workflow?')) {ldelim}workflowBlock.submitForm('change'){rdelim}; return false;" name=form_submit value="{i18n}Change Workflow{/i18n}" />
+										{/if}
+										
+									</div>
+									
+								</td>
+							</tr>
+						</table>
 					</div>
 				</div>
             </form>
