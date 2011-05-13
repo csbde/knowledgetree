@@ -1494,8 +1494,8 @@ class KTDocumentCopyColumn extends TitleColumn {
 
 }
 
-// {{{ KTDocumentMoveAction
-class KTDocumentCopyAction extends KTDocumentAction {
+// {{{ KTDocumentCopyAction
+class KTDocumentCopyAction extends JavascriptDocumentAction {
 
     var $sName = 'ktcore.actions.document.copy';
     var $_sShowPermission = 'ktcore.permissions.read';
@@ -1533,6 +1533,16 @@ class KTDocumentCopyAction extends KTDocumentAction {
 
         return true;
     }
+
+    function getOnClick()
+    {
+        return "javascript:{kt.app.copy.showCopyWindow();}";
+    }
+
+	function getURL()
+	{
+		return '#';
+	}
 
     function form_copyselection() {
         $oForm = new KTForm;
