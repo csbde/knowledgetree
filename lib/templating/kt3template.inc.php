@@ -302,7 +302,8 @@ class KTPage {
     public function initMenu()
     {
     	// FIXME:  we lost the getDefaultAction stuff - do we care?
-    	// note that key == action. this is _important_, since we crossmatch the breadcrumbs against this for "active"
+    	// note that key == action. this is _important_, since we crossmatch the breadcrumbs against this for "active"<br>
+		$sBaseUrl = KTUtil::kt_url();
     	$this->menu = array();
 
     	if (!SharedUserUtil::isSharedUser()) {

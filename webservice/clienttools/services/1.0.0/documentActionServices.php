@@ -35,6 +35,7 @@
  * Contributor( s): ______________________________________
  */
 
+require_once(KT_LIB_DIR . '/actions/documentaction.inc.php');
 require_once(KT_LIB_DIR . '/documentmanagement/documentutil.inc.php');
 require_once(KT_LIB_DIR . '/views/viewactionsutil.inc.php');
 require_once(KT_LIB_DIR . '/triggers/triggerregistry.inc.php');
@@ -42,7 +43,7 @@ require_once(KT_LIB_DIR . '/storage/storagemanager.inc.php');
 
 class documentActionServices extends client_service {
 	
-	public function runAction($params) {
+	public function run_action($params) {
 		$classaction = $params['action'];
 		$classname = $params['name'];
 		$classpath = $params['class'];
@@ -121,7 +122,7 @@ class documentActionServices extends client_service {
 		return true;
     }
 	
-    public function isReasonsEnabled() {
+    public function is_reasons_enabled() {
     	global $default;
     	if($default->enableESignatures) { 
     		$this->addResponse('success', 'esig');
@@ -135,15 +136,6 @@ class documentActionServices extends client_service {
     	$this->addResponse('success', false);
 
 		return true;
-    }
-    
-    public function reason() {
-    	
-    	return true;
-    }
-    
-    public function eSignature() {
-    	
     }
     
 	public function checkin($params) {

@@ -25,11 +25,35 @@ kt.app.document_actions = new function() {
 	this.checkout_actions = function(documentId, type) {
 		self.documentId = documentId;
 		self.type = type;
-		var response = kt.api.isReasonEnabled();
+		var params = {};
+		var response = kt.api.is_reason_enabled();
+		var submit = 'Submit';
+		var description = '';
+		var field = 'Reason';
 		if(response == false) {
 			self.run_checkout_action()
 		} else {
-			kt.api.showReasonForm(response);
+			switch (self.type) {
+				case 'checkout':
+					description = 'Checking out a document reserves it for your exclusive use. This ensures that you can edit the document without anyone else changing the document and placing it into the document management system.';
+					submit = 'Check Out';
+				break;
+				case 'checkout_download':
+					description = 'Checking out a document reserves it for your exclusive use. This ensures that you can edit the document without anyone else changing the document and placing it into the document management system.';
+					submit = 'Download';
+				break;
+				case 'checkin_form':
+					submit = 'Check-In';
+				break;
+				case 'cancel':
+					description = 'If you do not want to have this document be checked-out, click cancel checkout.';
+					submit = 'Cancel Checkout';
+				break;
+			}
+			params.submit = submit;
+			params.description = description;
+			params.field = field;
+			kt.api.showReasonForm(response, params);
 		}
 		return;
 	}
@@ -41,7 +65,6 @@ kt.app.document_actions = new function() {
 			params.reason = reason;
 		var synchronous = false;
 		var func;
-		var callback = self.refresh;
 		switch (self.type) {
 			case 'checkout':
 				func = 'documentActionServices.checkout';
@@ -53,19 +76,17 @@ kt.app.document_actions = new function() {
 					this.download();
 					self.refresh();
 				}
-				return;
 			break;
 			case 'checkin_form':
 				this.checkin_form();
-				return;
+				return ;
 			break;
 			case 'cancel':
 				func = 'documentActionServices.checkout_cancel';
 			break;
 		}
-		ktjapi.callMethod(func, params, callback, synchronous, null);
-
-	    return;
+		var callback = self.refresh;
+		return ktjapi.callMethod(func, params, callback, synchronous, null);
 	}
 
 	this.error  = function() {
@@ -77,7 +98,7 @@ kt.app.document_actions = new function() {
 		self.refresh_actions('bottom');
 		self.refresh_actions('init');
 		self.refresh_status_indicator();
-		kt.app.viewlets.refresh_comments(self.documentId);
+		kt.app.document_viewlets.refresh_comments(self.documentId);
 
 	    return null;
 	}
@@ -107,7 +128,7 @@ kt.app.document_actions = new function() {
 			vActions.closeDisplay('reason');
 			this.run_checkout_action(reason);
 		} else {
-			jQuery('#error').toggle();
+			jQuery('#error').attr('style', 'display:block;');
 			jQuery('#error .errorMessage').html("Please enter a reason.");
 		}
 		

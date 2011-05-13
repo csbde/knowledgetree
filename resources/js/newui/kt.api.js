@@ -164,39 +164,48 @@ kt.api = new function() {
 
     /* Electronic signatures & comment related functions */
 
-    this.isReasonEnabled = function() {
+    this.is_reason_enabled = function() {
         // are esignatures enabled or reasons enabled - return esign / reason / false
 
 		var params = {};
-		var func = 'documentActionServices.isReasonsEnabled';
+		var func = 'documentActionServices.is_reasons_enabled';
 		var response = ktjapi.retrieve(func, params);
 
 		return response.data.success;
     }
 
-	this.showReasonForm = function(response) {
+	this.showReasonForm = function(response, params) {
 		var title = 'Reason';
-
+		console.log(params);
 		// create html for form
 		vActions.createForm('reason', title);
 		this.window = new Ext.Window({
 			applyTo     : 'reasons',
 	        layout      : 'fit',
 	        width       : 400,
-	        height       : 250,
+	        height       : 280,
 	        closeAction :'destroy',
 	        y           : 50,
 	        shadow      : true,
 	        modal       : true,
 	        html        : kt.api.execFragment('documents/reason')
 	    });
-	    this.window.show();
-
+	    
+	    // modify reason form
+	    if (params.description != undefined)
+			jQuery('[name="reason_label"]').html(params.description);
+	    if (params.submit != undefined)
+			jQuery('[name="reason_submit"]').attr('value', params.submit);
+	    if (params.field != undefined)
+			jQuery('[name="reason_field"]').html(params.field);
+		
+		this.window.show();
+		
 	    if(response = 'esign') {
     	    jQuery('#user').style.display = 'block';
     	    jQuery('#pass').style.display = 'block';
 	    } else {
-    	    jQuery('#reason').style.display = 'block';
+    	    
 	    }
 	}
 

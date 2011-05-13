@@ -1,3 +1,4 @@
+{if !$onlyComments}
 <script type="text/javascript" src="resources/js/jquery.autoresize.min.js"></script>
 <div id="viewlet-activityfeed">
     <div id="commentssaveajax"></div>
@@ -9,7 +10,7 @@
 	            </td>
 	            <td style="" valign="middle">
 	                <div class="buttons">
-	                    <input type="button" id="comment-post" name="comment.post" onclick="javascript: kt.app.activityFeed.postComment({$document->getId()}, jQuery('#commentsbox').val(), {$displayMax});" value="{i18n}Post{/i18n}" />
+	                    <input type="button" id="comment-post" name="comment.post" onclick="javascript: kt.app.activityFeed.postComment({$documentId}, jQuery('#commentsbox').val(), {$displayMax});" value="{i18n}Post{/i18n}" />
 	                </div>
 	            </td>
 	        </tr>
@@ -22,12 +23,11 @@
 				<input type="button" name="toggle-system-feed" onclick="javascript: kt.app.activityFeed.toggleFeed(jQuery(this), ['activityfeed.item.transaction', 'activityfeed.item.version'], {$displayMax});"value="{i18n}Actions{/i18n}" class="toggle-system-feed"/>
 			</div>
 
-		
-<div class="activityfeed" style="border: 0px solid #000000">
+<div class="activityfeed" style="border: 0px solid #000000" id="activityfeed_comments">
+{/if}
 
 <div class="activityfeed new-comment"></div>
-
-{assign var='count' value='0'}
+	{assign var='count' value='0'}
 	{foreach item=version from=$versions}
 	    {if $count == $displayMax}
 	    	<div class="activityfeed items hidden">
@@ -48,15 +48,17 @@
 	    {/if}
 	    {assign var="count" value=$count+1}
 	{/foreach}
-
 </div>
+
     <br/>
     {if $commentsCount > $displayMax}
 		<span class=activityfeed-more>
 			<div><span class=activityfeed-more-text onclick="javascript: kt.app.activityFeed.toggleMore();">more...</span></div>
 		</span>
 	{/if}
+{if !$onlyComments}
 </div>
+{/if}
 
 {literal}
 <script type="text/javascript">

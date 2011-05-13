@@ -23,25 +23,19 @@ kt.app.document_viewlets = new function() {
     }
     
 	this.refresh_comments = function(documentId) {
-		console.log('refresh_comments');
-		this.documentId = documentId;
+		self.documentId = documentId;
 		var params = {};
 		params.documentId = documentId;
 		var synchronous = false;
 		var func = 'documentViewletServices.comments';
-		var callback = self.refresh;
+	    var response = ktjapi.retrieve(func, params);
+	    jQuery('#activityfeed_comments').html(response.data.success);
 	    
 	    return null;
 	}
 	
 	this.error  = function() {
 		console.log('error');
-	}
-	
-	this.refresh = function() {
-		console.log('refresh');
-		
-	    return null;
 	}
 	
     this.init();
