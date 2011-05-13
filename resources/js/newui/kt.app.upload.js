@@ -1,4 +1,5 @@
 if (typeof(kt.app) == 'undefined') { kt.app = {}; }
+if (typeof(kt.api) == 'undefined') { kt.api = {}; }
 
 /**
 * The multi-file upload widget. This object contains all the code
