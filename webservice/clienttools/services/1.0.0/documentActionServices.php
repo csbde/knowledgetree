@@ -125,7 +125,7 @@ class documentActionServices extends client_service {
     public function is_reasons_enabled() {
     	global $default;
     	if($default->enableESignatures) { 
-    		$this->addResponse('success', 'esig');
+    		$this->addResponse('success', 'esign');
 			return true;
     	}
     	$oKTConfig = KTConfig::getSingleton();
@@ -209,6 +209,7 @@ class documentActionServices extends client_service {
     	
     	return true;
     }
+    
     
 }
 ?>

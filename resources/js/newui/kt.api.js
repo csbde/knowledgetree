@@ -164,9 +164,8 @@ kt.api = new function() {
 
     /* Electronic signatures & comment related functions */
 
-    this.is_reason_enabled = function() {
+    this.is_reasons_enabled = function() {
         // are esignatures enabled or reasons enabled - return esign / reason / false
-
 		var params = {};
 		var func = 'documentActionServices.is_reasons_enabled';
 		var response = ktjapi.retrieve(func, params);
@@ -174,16 +173,21 @@ kt.api = new function() {
 		return response.data.success;
     }
 
-	this.showReasonForm = function(response, params) {
+	this.show_reason_form = function(response, params) {
 		var title = 'Reason';
-		console.log(params);
+		var width = 400;
+		var height = 280;
+		if(response == 'esign') {
+			width = 400;
+			height = 340;
+		}
 		// create html for form
 		vActions.createForm('reason', title);
 		this.window = new Ext.Window({
 			applyTo     : 'reasons',
 	        layout      : 'fit',
-	        width       : 400,
-	        height       : 280,
+	        width       : width,
+	        height      : height,
 	        closeAction :'destroy',
 	        y           : 50,
 	        shadow      : true,
@@ -198,18 +202,25 @@ kt.api = new function() {
 			jQuery('[name="reason_submit"]').attr('value', params.submit);
 	    if (params.field != undefined)
 			jQuery('[name="reason_field"]').html(params.field);
-		
+		jQuery('#reasondocid').attr('value', params.documentId);
+		jQuery('#reasonaction').attr('value', params.action);
 		this.window.show();
 		
-	    if(response = 'esign') {
-    	    jQuery('#user').style.display = 'block';
-    	    jQuery('#pass').style.display = 'block';
+	    if(response == 'esign') {
+	    	jQuery('#user').attr('style', "display:block;");
+    	    jQuery('#pass').attr('style', "display:block;");
+    	    jQuery('#type').attr('value', "esign");
 	    } else {
     	    
 	    }
 	}
 
-
+	this.auth_esign = function(params) {
+		var func = 'siteapi.auth_esign';
+		var response = ktjapi.retrieve(func, params);
+		return response;
+	}
+	
     /* Template related functions */
 
     this.preload = function(fragments, execs, register) {

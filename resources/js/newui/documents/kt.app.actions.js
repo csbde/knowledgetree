@@ -26,50 +26,54 @@ kt.app.document_actions = new function() {
 		self.documentId = documentId;
 		self.type = type;
 		var params = {};
-		var response = kt.api.is_reason_enabled();
+		var response = kt.api.is_reasons_enabled();
 		var submit = 'Submit';
 		var description = '';
 		var field = 'Reason';
 		if(response == false) {
-			self.run_checkout_action()
+			var params = {};
+			self.run_checkout_action(params);
 		} else {
-			switch (self.type) {
+			switch (type) {
 				case 'checkout':
 					description = 'Checking out a document reserves it for your exclusive use. This ensures that you can edit the document without anyone else changing the document and placing it into the document management system.';
 					submit = 'Check Out';
+					action = 'ktcore.actions.document.checkoutdownload';
 				break;
-				case 'checkout_download':
+				case 'checkoutdownload':
 					description = 'Checking out a document reserves it for your exclusive use. This ensures that you can edit the document without anyone else changing the document and placing it into the document management system.';
 					submit = 'Download';
+					action = 'ktcore.actions.document.checkout';
 				break;
-				case 'checkin_form':
+				case 'checkin':
 					submit = 'Check-In';
+					action = 'ktcore.actions.document.checkin';
 				break;
-				case 'cancel':
+				case 'cancelcheckout':
 					description = 'If you do not want to have this document be checked-out, click cancel checkout.';
 					submit = 'Cancel Checkout';
+					action = 'ktcore.actions.document.cancelcheckout';
 				break;
 			}
 			params.submit = submit;
 			params.description = description;
 			params.field = field;
-			kt.api.showReasonForm(response, params);
+			params.documentId = documentId;
+			params.action = 'ktcore.actions.document.' + type;
+			kt.api.show_reason_form(response, params);
 		}
 		return;
 	}
 
-	this.run_checkout_action = function(reason) {
-		var params = {};
+	this.run_checkout_action = function(params) {
 		params.documentId = self.documentId;
-		if(reason != '')
-			params.reason = reason;
 		var synchronous = false;
 		var func;
 		switch (self.type) {
 			case 'checkout':
 				func = 'documentActionServices.checkout';
 			break;
-			case 'checkout_download':
+			case 'checkoutdownload':
 				func = 'documentActionServices.checkout_download';
 				var response = ktjapi.retrieve(func, params);
 				if(response.errors.hadErrors == 0) {
@@ -77,7 +81,7 @@ kt.app.document_actions = new function() {
 					self.refresh();
 				}
 			break;
-			case 'checkin_form':
+			case 'checkin':
 				this.checkin_form();
 				return ;
 			break;
@@ -87,10 +91,6 @@ kt.app.document_actions = new function() {
 		}
 		var callback = self.refresh;
 		return ktjapi.callMethod(func, params, callback, synchronous, null);
-	}
-
-	this.error  = function() {
-		console.log('error');
 	}
 
 	this.refresh = function() {
@@ -107,14 +107,17 @@ kt.app.document_actions = new function() {
 		var params = {};
 		params.documentId = self.documentId;
 		params.location = location;
-		var synchronous = false;
 		var func = 'documentActionServices.refresh_actions';
 		var response = ktjapi.retrieve(func, params);
 		jQuery('#'+location+'_actions').html(response.data.success);
 	}
 
 	this.refresh_status_indicator = function() {
-		jQuery('#indicator').toggle();
+		if(jQuery('#indicator').attr('style') == 'display: none;') {
+			jQuery('#indicator').attr('style', 'display: inline;');
+		} else {
+			jQuery('#indicator').attr('style', 'display: none;');
+		}
 	}
 
 	// TODO : Get action path namespace from server
@@ -122,17 +125,47 @@ kt.app.document_actions = new function() {
 		window.location = '/action.php?kt_path_info=ktcore.actions.document.view&fDocumentId=' + self.documentId;
 	}
 
-	this.submitReason = function() {
+	this.submit_reason = function() {
+		var params = {};
 		var reason = jQuery('[name="reason"]').val();
 		if(reason != '') {
+			if(jQuery('#type').attr('value') == 'esign') {
+				var username = jQuery('[name="sign_username"]').val();
+				if(username == '') { 
+					this.display_reason_error("Please enter a username.");
+					return false;
+				}
+				var password = jQuery('[name="sign_password"]').val();
+				if(password == '') { 
+					this.display_reason_error("Please enter a password.");
+					return false;
+				}
+				params.username = username;
+				params.password = password;
+				params.comment = reason;
+				params.documentId = jQuery('#reasondocid').attr('value');
+				// TODO : Better way to pass action
+				params.action = jQuery('#reasonaction').attr('value');
+				response = kt.api.auth_esign(params);
+				if(response.errors.hadErrors > 0) {
+					this.display_reason_error("Authentication failed.  Please check your email address and password, and try again.");
+					return false;
+				}
+			}
+			params.reason = reason;
 			vActions.closeDisplay('reason');
-			this.run_checkout_action(reason);
+			self.run_checkout_action(params);
 		} else {
-			jQuery('#error').attr('style', 'display:block;');
-			jQuery('#error .errorMessage').html("Please enter a reason.");
+			this.display_reason_error("Please enter a reason.");
+			return false;
 		}
 		
-		return null;
+		return true;
+	}
+	
+	this.display_reason_error = function(message) {
+		jQuery('#error').attr('style', 'display:block;');
+		jQuery('#error .errorMessage').html(message);
 	}
 	
 	this.checkin_form = function() {
@@ -188,14 +221,14 @@ kt.app.document_actions = new function() {
 	    alert('afters');
 	    return true;
 	}
-	
+
 	this.submitCheckInForm = function() {
 /*		var params = {};
 		params = jQuery('form[name="checkin_form"]').serialize();
 		var synchronous = false;
 		var func = 'documentActionServices.checkin';
 		var response = ktjapi.retrieve(func, params);
-		console.log(response);*/
+*/
 		return null;
 	}
 	

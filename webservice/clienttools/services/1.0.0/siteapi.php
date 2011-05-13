@@ -36,6 +36,7 @@
  */
 
 require_once(KT_LIB_DIR . '/browse/browseutil.inc.php');
+require_once(KT_PLUGIN_DIR . '/commercial/electronic-signatures/Esignature.inc.php');
 
 class siteapi extends client_service {
 
@@ -638,6 +639,20 @@ class siteapi extends client_service {
         $response['url'] = $link;
         $default->log->error("URL response: " . print_r($params, true));
         $this->addResponse('downloadUrl', json_encode($response));
+    }
+    
+    public function auth_esign($params) {
+        $eSignature = new ESignature('document');
+        $result = $eSignature->sign($params['username'], $params['password'], $params['comment'], $params['action'], $params['documentId']);
+        if($result === false) {
+        	$this->addError($eSignature->getError());
+        	
+        	return false;
+        }
+        
+        $this->addResponse('success', $result);
+        
+        return true;
     }
 }
 

@@ -1859,7 +1859,7 @@ class KTDocumentCheckOutDownloadAction extends KTDocumentCheckOutAction {
     
     function getFunctionScript()
     {
-		return 'kt.app.document_actions.checkout_actions(\'' . $this->oDocument->getId() . '\', \'checkout_download\')';
+		return 'kt.app.document_actions.checkout_actions(\'' . $this->oDocument->getId() . '\', \'checkoutdownload\')';
     }
     
     function customiseInfo($aInfo)
@@ -1992,7 +1992,7 @@ class KTDocumentCheckInAction extends JavascriptDocumentAction {
 
 	function getFunctionScript()
     {
-		return 'kt.app.document_actions.checkout_actions(\'' . $this->oDocument->getId() . '\', \'checkin_form\')';
+		return 'kt.app.document_actions.checkout_actions(\'' . $this->oDocument->getId() . '\', \'checkin\')';
     }
     
     function check() {
@@ -2258,7 +2258,7 @@ class KTDocumentCancelCheckOutAction extends JavascriptDocumentAction {
     
 	public function getFunctionScript()
     {
-		return 'kt.app.document_actions.checkout_actions(\'' . $this->oDocument->getId() . '\', \'cancel\')';
+		return 'kt.app.document_actions.checkout_actions(\'' . $this->oDocument->getId() . '\', \'cancelcheckout\')';
     }
 
     public function check() {
