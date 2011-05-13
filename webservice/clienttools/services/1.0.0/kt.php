@@ -394,31 +394,65 @@ class kt extends client_service {
 
 		foreach ($detail as $fieldset) {
 			foreach ($fieldset ['fields'] as $field) {
-				$prepArray = array('fieldset' => $fieldset ['fieldset'], 'name' => $field ['name'],  'fieldid' => $field ['fieldid'],
-
-				// Change for value. If blank value is set to 1, change value to ''
-				// Overcomes issue of n/a
-				'value' => ($document_id > 0 ? ($field ['blankvalue'] == '1' ? '' : $field ['value']) : ''),
-
-				'description' => $field ['description'], 'control_type' => $field ['control_type'], 'selection' => $field ['selection'], 'required' => $field ['required'], 'blankvalue' => $field ['blankvalue'], 'index' => $index);
+				$prepArray = array(
+                    'fieldset' => $fieldset ['fieldset'],
+                    'name' => $field ['name'],
+                    'fieldid' => $field ['fieldid'],
+                    
+                    // Change for value. If blank value is set to 1, change value to ''
+                    // Overcomes issue of n/a
+                    'value' => ($document_id > 0 ? ($field ['blankvalue'] == '1' ? '' : $field ['value']) : ''),
+                    'selection' => $field ['selection'],
+                    'description' => $field ['description'],
+                    'control_type' => $field ['control_type'],
+                    'required' => $field ['required'],
+                    'blankvalue' => $field ['blankvalue'],
+                    'index' => $index
+                );
 
 				// Small Adjustment for multiselect to real type
 				if ($field ['control_type'] == 'multiselect') {
-					$prepArray ['control_type'] = $field ['options']['type'];
-				}
-
+					$prepArray['control_type'] = $field ['options']['type'];
+                    
+                // Major adjustment needed for the tree field type
+                // The entire selection field needs to be simplifed
+				} else if ($field ['control_type'] == 'tree') {
+                    
+                    // Get the list of Sub Categories
+                    $outerArray = $field['selection'][0];
+                    
+                    // Final Selection Array
+                    $varArray = array();
+                    
+                    
+                    // Loopthrough Sub Categories
+                    foreach ($outerArray['fields'] as $subCategory)
+                    {
+                        if (!empty($subCategory['fields'])) {
+                            foreach($subCategory['fields'] as $itemField)
+                            {
+                                $varArray[] = array($subCategory['treename'], $itemField['name']);
+                            }
+                        }
+                    }
+                    
+                    // Overwrite Selection Value
+                    $prepArray['selection'] = $varArray;
+                }
+                
+                // HTML Options
 				if (isset($field ['options']['ishtml'])) {
 					$prepArray ['ishtml'] = $field ['options']['ishtml'];
 				} else {
 					$prepArray ['ishtml'] = '0';
 				}
-
+                
 				if (isset($field ['options']['maxlength'])) {
 					$prepArray ['maxlength'] = $field ['options']['maxlength'];
 				} else {
 					$prepArray ['maxlength'] = '-1';
 				}
-
+                
 				$items[] = $prepArray;
 				$index++;
 			}
