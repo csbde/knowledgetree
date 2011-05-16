@@ -85,7 +85,7 @@ kt.app.document_actions = new function() {
 				this.checkin_form();
 				return ;
 			break;
-			case 'cancel':
+			case 'cancelcheckout':
 				func = 'documentActionServices.checkout_cancel';
 			break;
 		}
