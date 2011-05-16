@@ -430,9 +430,20 @@ class siteapi extends client_service {
 		$options = array('orderby' => 'name');
 		$folders = Folder::getList(array('parent_id = ?', $folderId), $options);
 		$subfolders = array();
+		
+		$i=0;
 		foreach ($folders as $folder) {
 			if($this->userHasPermissionOnItem(User::get($_SESSION['userID']), 'ktcore.permissions.write', $folder, 'folder')) {
-				$subfolders[$folder->aFieldArr['id']] = $this->filter_array($folder->aFieldArr, $filter, false);
+				
+				
+				/**
+				 * This 700 arbitary limit has been added. A better way of working around this will be implemented later
+				 */
+				if ($i < 700) {
+					$subfolders[$folder->aFieldArr['id']] = $this->filter_array($folder->aFieldArr, $filter, false);
+				}
+				
+				$i++;
 			}
 		}
 
@@ -467,8 +478,9 @@ class siteapi extends client_service {
 		$this->addResponse('currentFolder', $this->filter_array($oFolder->_fieldValues(), $filter, false));
 		$this->addResponse('parents', $parents);
 		$this->addResponse('amazoncreds', $this->getAmazonCredentials());
-
-		$this->getSubFolders($params);
+		
+		// Sub Folders can be removed. It is not added via another call
+		//$this->getSubFolders($params);
 	}
 
 	public function getAmazonCredentials()

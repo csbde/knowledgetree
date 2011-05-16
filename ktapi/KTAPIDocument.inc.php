@@ -2522,7 +2522,7 @@ class KTAPI_Document extends KTAPI_FolderItem
 
         foreach ($metadata_versions as $version)
         {
-            $version = array();
+            $versionInfo = array();
 
             $document = &Document::get($this->documentid, $version->getId());
             $userid = $document->getModifiedUserId();
@@ -2534,25 +2534,25 @@ class KTAPI_Document extends KTAPI_FolderItem
                 $user_username = is_null($user) ? 'n/a' : $user->getUserName();
             }
 
-            $version['user'] = $username;
-            $version['metadata_version'] = $document->getMetadataVersion();
-            $version['content_version'] = $document->getVersion();
-            $version['datetime'] = $document->getDisplayVersionCreated();
+            $versionInfo['user'] = $username;
+            $versionInfo['metadata_version'] = $document->getMetadataVersion();
+            $versionInfo['content_version'] = $document->getVersion();
+            $versionInfo['datetime'] = $document->getDisplayVersionCreated();
 
             if ($wsversion >= 2)
             {
-                $version['metadata_version'] = (int)$version['metadata_version'];
-                $version['content_version'] = (float)$version['content_version'];
+                $versionInfo['metadata_version'] = (int)$versionInfo['metadata_version'];
+                $versionInfo['content_version'] = (float)$versionInfo['content_version'];
             }
 
             if ($wsversion >= 3)
             {
-                $version['user_username'] = $user_username;
-                $version['major_version'] = (int)$document->getMajorVersionNumber();
-                $version['minor_version'] = (int)$document->getMinorVersionNumber();
+                $versionInfo['user_username'] = $user_username;
+                $versionInfo['major_version'] = (int)$document->getMajorVersionNumber();
+                $versionInfo['minor_version'] = (int)$document->getMinorVersionNumber();
             }
 
-            $versions[] = $version;
+            $versions[] = $versionInfo;
         }
 
         return $versions;
