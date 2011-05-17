@@ -27,7 +27,13 @@
 					<span title="Click to edit" class="editable-control title edit">&nbsp;</span>
 
 				</div>
-				{if $document->getIsCheckedOut()}<span class="status-indicator checkedout">{i18n}Checked Out{/i18n}</span>{/if}
+				{if $document->getIsCheckedOut()} 
+					<span id=indicator class="status-indicator checkedout">
+				{else}
+					<span id=indicator class="status-indicator checkedout" style="display:none;">
+				{/if}
+						{i18n}Checked Out{/i18n}
+					</span>
                 {if $document->getImmutable()}<span class="status-indicator finalized">{i18n}Finalized{/i18n}</span>{/if}
 				<div class="document-filename" rel='{literal}{{/literal}"documentID":"{$document->getId()}"{literal}}{/literal}'>
 				<span data-name="documentFilename" data-type='text' data-value-id="value-filename" data-class="required"></span>
@@ -107,99 +113,23 @@
 				</div>
 				<!-- <hr style="border: none; background-color: #E3E3E3; width: 98%; height: 1px; margin-left: 10px; margin-bottom: 15px;" align="left" /> -->
 			</td>
+			<div id=init_actions>
 			<td valign="top" width="375" id="column_right">
 				<div class="" style="margin-bottom: 10px;">
-		<div class="action_buttons above">
-
-            <nobr>
-        		{* Display top row action buttons *}
-                {foreach item=btn from=$actionBtns.above}
-                    <div class="action">
-                        {if $btn.menu}
-                            {if $btn.status === 'disabled'}
-                                <div class="splitbutton">
-                                	<span class="button disabled" id="{$btn.icon_class}">{$btn.name}</span>
-                                	<span class="split">&#9660;</span>
-                                </div>
-                            {else}
-                                <div class="splitbutton">
-                            		<a class="button" id="{$btn.icon_class}" href="{$btn.url}" onclick='{$btn.onclick}'>{$btn.name}</a>
-                            		<span class="split">&#9660;</span>
-                                </div>
-                            {/if}
-
-                            {* Display the drop down menu's on the split buttons *}
-                            <ul class="splitmenu"  style="right: auto; margin-left: -1px; ">
-                                {foreach item=menuitem from=$btn.menu}
-                                    {if $menuitem.status === 'disabled'}
-                                        <li>
-                                        	<span class="button disabled" id="{$menuitem.icon_class}">{$menuitem.name}</span>
-                                        </li>
-                                    {else}
-                                        <li>
-                                        	<a id="{$menuitem.icon_class}" href="{$menuitem.url}" onclick='{$menuitem.onclick}'>{$menuitem.name}</a>
-                                        </li>
-                                    {/if}
-                                {/foreach}
-                            </ul>
-                        {else}
-                            {if $btn.status === 'disabled'}
-                                <div><span class="button disabled" id="{$btn.icon_class}">{$btn.name}</span></div>
-                            {else}
-                            	{if $btn.js != ""}
-                            		{$btn.js}
-                            	{else}
-                                	<div><a class="button" id="{$btn.icon_class}" href="{$btn.url}" onclick='{$btn.onclick}'>{$btn.name}</a></div>
-                                {/if}
-                            {/if}
-                        {/if}
-                    </div>
-                {/foreach}
-            </nobr>
-
-		</div>
-
-
-</div>				{if !empty($live_preview)}
+					<div class="action_buttons above" id=top_actions>
+						{$documentTopActions}
+					</div>
+				</div>				
+				{if !empty($live_preview)}
 					<div style="margin-top:1em;">{$live_preview}</div>
 				{else}
-			<div class="no-preview">
-				<span class="no-preview-text">Preview Not Available</span>
-			</div>
+				<div class="no-preview">
+					<span class="no-preview-text">Preview Not Available</span>
+				</div>
 			{/if}
-			<div class="action_buttons below" style="display: inline-block; margin-top: 5px;">
-
-                <nobr>
-            		{* Display top row action buttons *}
-                    {foreach item=btn from=$actionBtns.below}
-                        <div class="action">
-                            {if $btn.menu}
-                                <div class="splitbutton"><span class="button" id="{$btn.icon_class}">{$btn.name}</span><span class="split">&#9660;</span></div>
-
-                                {* Display the drop down menu's on the split buttons *}
-                                <ul class="splitmenu" id="more">
-                                    {foreach item=menuitem from=$btn.menu}
-                                        {if $menuitem.status === 'disabled'}
-                                            <li><span class="button disabled" id="{$menuitem.icon_class}">{$menuitem.name}</span></li>
-                                        {else}
-                                            <li><a id="{$menuitem.icon_class}" href="{$menuitem.url}" onclick='{$menuitem.onclick}'>{$menuitem.name}</a></li>
-                                        {/if}
-                                    {/foreach}
-                                </ul>
-                            {else}
-                                <div><a class="button" id="{$btn.icon_class}" href="{$btn.url}" onclick='{$btn.onclick}'>{$btn.name}</a></div>
-                            {/if}
-                        </div>
-                    {/foreach}
-
-                    {* Display download / preview links *}
-                    {foreach item=btn from=$actionBtns.links}
-                        <a href="{$btn.url}" class="share-link" onclick='{$btn.onclick}'><span class="share_url" id="{$btn.icon_class}">{$btn.name}</span>&nbsp;<span class="{$btn.icon_class} none" style="visibility:hidden;">&nbsp;</span></a>
-                    {/foreach}
-
-
-      			</nobr>
-            </div>
+			<div id=bottom_actions class="action_buttons below" style="display: inline-block; margin-top: 5px;"> 
+				{$documentBottomActions}
+			</div>
 
 			</td>
 
@@ -225,10 +155,10 @@
     {/if}
     </td>
     	<td valign="top" id="sidebar" class="standardBorder" height="100%" width="215">
-		{if $documentSidebars}
-		{* Display Actions Block *}
-		{$documentSidebars->getDocSidebars()}
-                {/if}
+			{if $documentSidebars}
+			{* Display Actions Block *}
+				{$documentSidebars->getDocSidebars()}
+			{/if}
 	</td>
 	</tr>
 </table>
