@@ -113,10 +113,19 @@ kt.app.document_actions = new function() {
 	}
 
 	this.refresh_status_indicator = function() {
-		if(jQuery('#indicator').attr('style') == 'display: none;') {
-			jQuery('#indicator').attr('style', 'display: inline;');
-		} else {
-			jQuery('#indicator').attr('style', 'display: none;');
+		switch (self.type) {
+			case 'checkout':
+				jQuery('#indicator').show();
+				break;
+			case 'checkoutdownload':
+				jQuery('#indicator').show();
+				break;
+			case 'checkin':
+				jQuery('#indicator').hide();
+				break;
+			case 'cancelcheckout':
+				jQuery('#indicator').hide();
+				break;
 		}
 	}
 
@@ -200,8 +209,8 @@ kt.app.document_actions = new function() {
 					jQuery('#add_checkin').html(data);
 				    var options = {
 				        target:        '#output1',   // target element(s) to be updated with server response
-				        beforeSubmit:  befores,  // pre-submit callback
-				        success:       afters  // post-submit callback
+				        beforeSubmit:  self.befores,  // pre-submit callback
+				        success:       self.afters  // post-submit callback
 				    };
 					// bind form using 'ajaxForm'
 					jQuery('#checkin_form').ajaxForm(options);
