@@ -654,6 +654,24 @@ class siteapi extends client_service {
         
         return true;
     }
+    
+    public function getFolderStructure()
+    {
+        global $default;
+        $default->log->error('DEBUG. HERE!');
+
+        $folder_id = 1;
+        $ktapi = $this->KT;
+        $contents = $ktapi->get_folder_contents($folder_id, 1, 'F');
+        $default->log->error('DEBUG. contents ' . print_r($contents, true));
+
+
+        $nodes = '[{ "data" : "Node X", "children" : [ { "data" : "Child single", "state" : "closed" } ], "state" : "open" }, "Node Z"]';
+        $default->log->error('DEBUG. nodes: ' . $nodes);
+        $nodesArray = json_decode($nodes);
+        $default->log->error('DEBUG. nodes array: ' . print_r($nodesArray, true));
+        $this->addResponse('nodes', json_encode($nodes));
+    }
 }
 
 ?>

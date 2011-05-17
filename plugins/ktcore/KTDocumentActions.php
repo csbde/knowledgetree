@@ -861,6 +861,16 @@ class KTDocumentCopyAction extends KTDocumentAction {
         return parent::getInfo();
     }
 
+    function getOnClick()
+    {
+        return "javascript:{kt.app.copy.showCopyWindow();}";
+    }
+
+	function getURL()
+	{
+		return '#';
+	}
+
     function check() {
         $res = parent::check();
         if ($res !== true) {
