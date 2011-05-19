@@ -2,7 +2,7 @@
 #workflows form div.field label { font-weight:bold;}
 #workflows .workflow_info { bottom: 0px; position: relative; }
 #workflows .workflow_details {  }
-#workflows .workflow_details table, .widgetItem table { width: 570px; }
+#workflows .workflow_details table, .widgetItem table { width: 370px; }
 #workflows .workflow_transition { float: left; }
 
 #workflows .modalheader {
