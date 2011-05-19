@@ -82,7 +82,7 @@ kt.app.document_actions = new function() {
 				}
 			break;
 			case 'checkin':
-				this.checkin_form();
+				this.checkin_form(params);
 				return ;
 			break;
 			case 'cancelcheckout':
@@ -177,7 +177,8 @@ kt.app.document_actions = new function() {
 		jQuery('#error .errorMessage').html(message);
 	}
 	
-	this.checkin_form = function() {
+	this.checkin_form = function(params) {
+		
 		var width;
 		var height;
 		var title;
@@ -190,6 +191,7 @@ kt.app.document_actions = new function() {
 		vActions.createForm('checkin', title);
 	    // create the window
 	    this.win = new Ext.Window({
+			id          : 'checkinmask',
 	        applyTo     : 'checkins',
 	        layout      : 'fit',
 	        width       : width,
@@ -199,7 +201,9 @@ kt.app.document_actions = new function() {
 	        shadow: false,
 	        modal: true
 	    });
+		
 	    this.win.show();
+		
         // TODO : Get action path namespace from server
         var address = '/action.php?kt_path_info=ktcore.actions.document.checkin&fDocumentId=' + self.documentId;
        	jQuery.ajax({
@@ -207,13 +211,18 @@ kt.app.document_actions = new function() {
 				url: address,
 				success: function(data) {
 					jQuery('#add_checkin').html(data);
+					
 				    var options = {
 				        target:        '#output1',   // target element(s) to be updated with server response
 				        beforeSubmit:  self.befores,  // pre-submit callback
-				        success:       self.afters  // post-submit callback
+						success: function () { //Success function is required, even if not used here
+							
+						}
+				        
 				    };
 					// bind form using 'ajaxForm'
-					jQuery('#checkin_form').ajaxForm(options);
+					jQuery('#checkinform').show().ajaxForm(options).append('<input type="hidden" name="reason" id="checkinreason"/>');
+					jQuery('#checkinreason').val(params.reason);
 				},
 				error: function(response, code) { alert('Error. Could not create form. ' + response + code);}
 		});
@@ -221,16 +230,50 @@ kt.app.document_actions = new function() {
 
 	// pre-submit callback
 	this.befores = function() {
-	    alert('befores');
-	    return true;
+		
+		if (jQuery('#checkinfilename').val() == '') {
+			alert('Please select a file');
+			return false;
+		}
+		
+		if (jQuery('#forcefilenameVal')) {
+			
+			if (basename(jQuery('#checkinfilename').val()) != jQuery('#forcefilenameVal').val()) {
+				continueCheckin = confirm('The filename expected is: '+jQuery('#forcefilenameVal').val()+'\n\nAre you sure you want to upload a file with a different filename?');
+			} else {
+				continueCheckin = true;
+			}
+		} else {
+			continueCheckin = true;
+		}
+		
+		// Load Mask
+		if (continueCheckin) {
+			Ext.getCmp('checkinmask').getEl().mask("Checking In File");
+		}
+		
+		
+		return continueCheckin;
+		
+		
+	    
 	}
 
 	// post-submit callback
-	this.afters = function() {
-	    alert('afters');
+	this.afterCheckIn = function() {
+		Ext.getCmp('checkinmask').close();
+		self.refresh();
+	    return true;
+	}
+	
+	this.afterCheckInFailure = function() {
+		Ext.getCmp('checkinmask').getEl().unmask();
+		alert("Checkin Failure");
 	    return true;
 	}
 
+
+/* This function can be removed*/
 	this.submitCheckInForm = function() {
 /*		var params = {};
 		params = jQuery('form[name="checkin_form"]').serialize();
@@ -244,3 +287,38 @@ kt.app.document_actions = new function() {
     this.init();
 }
 
+/**
+ * This is a global function that is called by the iframe
+ * Needs to be global
+ *
+ */
+function postCheckinUpdate(status)
+{
+	if (status == 'error') {
+		kt.app.document_actions.afterCheckInFailure();
+	} else {
+		kt.app.document_actions.afterCheckIn();
+	}
+	
+}
+
+
+
+function basename (path, suffix) {
+    // http://kevin.vanzonneveld.net
+    // +   original by: Kevin van Zonneveld (http://kevin.vanzonneveld.net)
+    // +   improved by: Ash Searle (http://hexmen.com/blog/)
+    // +   improved by: Lincoln Ramsay
+    // +   improved by: djmix
+    // *     example 1: basename('/www/site/home.htm', '.htm');
+    // *     returns 1: 'home'
+    // *     example 2: basename('ecra.php?p=1');
+    // *     returns 2: 'ecra.php?p=1'
+    var b = path.replace(/^.*[\/\\]/g, '');
+
+    if (typeof(suffix) == 'string' && b.substr(b.length - suffix.length) == suffix) {
+        b = b.substr(0, b.length - suffix.length);
+    }
+
+    return b;
+}
