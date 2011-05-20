@@ -187,7 +187,7 @@ kt.app.copy = new function() {
 	    var synchronous = true;
 	    var params = {};
 	    params.id = 1;
-	    var data = ktjapi.retrieve(func, params, 300);
+	    var data = ktjapi.retrieve(func, params, kt.api.persistentDataCacheTimeout);
 	    var response = data.data.nodes;
         var nodes = jQuery.parseJSON(response);
 	    return nodes;

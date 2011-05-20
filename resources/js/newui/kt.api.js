@@ -253,11 +253,16 @@ kt.api.esignatures = new function() {
     }
 
 	this.showESignatures = function(response, params) {
-		var title = 'Reason';
+		if(response == false) {
+			return;
+		}
+		
+		var title = 'Comment';
 		var width = 400;
 		var height = 280;
 		if(response == 'esign') {
 			height = 340;
+			title = 'Electronic Signature';
 		}
 		// create html for form
 		vActions.createForm('reason', title);
