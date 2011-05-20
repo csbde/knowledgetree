@@ -62,6 +62,11 @@ kt.app.copy = new function() {
     //              and hook up the AjaxUploader callbacks to the correct functions.
     // objectId, if set, identifies a share with a non-licensed user for a selected object (folder or document)
     this.showCopyWindow = function(documentId) {
+	    var title = 'Copy';
+	    if(self.action == 'move') {
+	    	title = 'Move';
+	    }
+	    
         var copyWin = new Ext.Window({
             id              : 'extcopywindow',
             layout          : 'fit',
@@ -75,7 +80,7 @@ kt.app.copy = new function() {
             cls             : 'ul_win',
             shadow          : true,
             modal           : true,
-            title           : 'Copy',
+            title           : title,
             html            : kt.api.execFragment('actions/copy.dialog')
         });
 
@@ -187,6 +192,6 @@ kt.app.copy = new function() {
         var nodes = jQuery.parseJSON(response);
 	    return nodes;
 	}
-
+	
     this.init();
 }
