@@ -2073,11 +2073,11 @@ class KTDocumentCheckInAction extends JavascriptDocumentAction {
 		
         $oTemplate = $this->oValidator->validateTemplate('ktcore/action/checkin');
         // TODO : Find a better way
-        $form_action = '/action.php?kt_path_info='.$this->sName.'/postExpected=1&fDocumentId='.$this->oDocument->getId();
+        $form_action = '/action.php?kt_path_info='.$this->sName.'&fDocumentId='.$this->oDocument->getId();
 		if ($default->disableForceFilenameOption) {
 			$fileDescriptiveText = sprintf(_kt('Please specify the file you wish to upload. The file must have the same name as the original: <b>%s</b>'), htmlentities($this->oDocument->getFilename(),ENT_QUOTES,'UTF-8'));
 		} else {
-			$fileDescriptiveText = sprintf(_kt('Please specify the file you wish to upload.  Unless you also indicate that you are changing its filename (see "Force Original Filename" below), this will need to be called <b>%s</b>'), htmlentities($this->oDocument->getFilename(),ENT_QUOTES,'UTF-8'));
+			$fileDescriptiveText = sprintf(_kt('Please specify the file you wish to upload.  Unless you also indicate that you are changing its filename, this will need to be called <b>%s</b>'), htmlentities($this->oDocument->getFilename(),ENT_QUOTES,'UTF-8'));
 		}
         // Add the "Force Original Filename" option if applicable
         if (!$default->disableForceFilenameOption) {
@@ -2085,7 +2085,7 @@ class KTDocumentCheckInAction extends JavascriptDocumentAction {
         }
         $oTemplate->setData(array(
             'context' => &$this,
-            'form' => $this->form_main(),
+            //'form' => $this->form_main(),
             'form_action' => $form_action,
             'documentId' => $this->oDocument->getId(),
             'major_inc' => sprintf('%d.%d', $this->oDocument->getMajorVersionNumber()+1, 0),
@@ -2093,17 +2093,20 @@ class KTDocumentCheckInAction extends JavascriptDocumentAction {
             'disableForceFilenameOption' => $default->disableForceFilenameOption,
             'forceFilenameDescriptiveText' => $forceFilenameDescriptiveText,
             'fileDescriptiveText' => $fileDescriptiveText,
+            'forceFilename' => htmlentities($this->oDocument->getFilename(),ENT_QUOTES,'UTF-8'),
         ));
 
         echo $oTemplate->render();
         exit(0);
 	}
 
+/*
 	function form_main() {
         global $default;
         $oForm = new KTForm;
         $oForm->setOptions(array(
             'action' => 'checkin',
+            //'fDocumentId' => $this->oDocument->getId(),
             'actionparams' => 'postExpected=1&fDocumentId='.$this->oDocument->getId(),
             'fail_action' => 'main',
             'cancel_url' => KTBrowseUtil::getUrlForDocument($this->oDocument),
@@ -2217,7 +2220,75 @@ class KTDocumentCheckInAction extends JavascriptDocumentAction {
         $oForm->setValidators($aValidators);
 
         return $oForm;
-    }
+    }*/
+	
+	
+	/****
+	 *
+	 * TOHIR WORKING OVER HERE!!
+	 *
+	 */
+	function do_checkin()
+	{
+		/*
+		require_once('FirePHPCore/FirePHP.class.php');
+		$firephp = FirePHP::getInstance(true);
+		$firephp->log('Doing checkin');
+		
+		$firephp->log($_POST);
+		$firephp->log($_FILES);
+		$firephp->log($_REQUEST);
+		$firephp->log($this->oDocument->getFilename());
+		*/
+		
+		// --- Checkin Here
+		$docFileName = $this->oDocument->getFilename();
+		$defaultCheckinMessage = _kt('Document Checked In.');
+        $sReason = $defaultCheckinMessage . (isset($_POST['reason']) ? "\n\n{$_POST['reason']}" : '');
+		
+		$sCurrentFilename = $docFileName;
+        $sNewFilename = $_FILES['filename']['name'];
+        $aOptions = array();
+
+        if ($_POST['major_update']) {
+            $aOptions['major_update'] = true;
+        }
+
+        if ($sCurrentFilename != $sNewFilename) {
+            $aOptions['newfilename'] = $sNewFilename;
+        }
+		
+		
+		//$firephp->log($_FILES['filename']['tmp_name']);
+		//$firephp->log('Exists: '.file_exists($_FILES['filename']['tmp_name']));
+		
+		
+        // document checkin for the new storage drivers requires the document to be first uploaded
+        // to the temp directory from the php upload directory or the checkin will fail
+        $oStorage = KTStorageManagerUtil::getSingleton();
+        $oKTConfig =& KTConfig::getSingleton();
+        $sTempFilename = $oStorage->tempnam($oKTConfig->get("urls/tmpDirectory"), 'kt_storecontents');
+        $oStorage->uploadTmpFile($_FILES['filename']['tmp_name'], $sTempFilename);
+		
+        $_FILES['filename']['tmp_name'] = $sTempFilename;
+        
+		$res = KTDocumentUtil::checkin($this->oDocument, $_FILES['filename']['tmp_name'], $sReason, $this->oUser, $aOptions);
+		
+		// Show Results;
+        if (PEAR::isError($res)) {
+        	$GLOBALS['default']->log->error('Pear Error on Checkin: '.$res->getMessage());
+			echo '<script type="text/javascript">parent.postCheckinUpdate("error");</script>';
+        } else {
+			echo '<script type="text/javascript">parent.postCheckinUpdate("success");</script>';
+		}
+		
+		exit();
+	}
+	
+	/*
+	  END TOHIR
+	 
+	*/
 
 }
 

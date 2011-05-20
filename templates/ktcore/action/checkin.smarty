@@ -8,43 +8,48 @@ and allows others to make changes to the document and its metadata.{/i18n}</p>
 intend to change the document, or you do not wish to prevent others from
 changing the document, you should rather use the action menu to <strong>cancel this checkout</strong>.{/i18n}</p>
 
-<form method="post" action="{$form_action}" enctype="multipart/form-data" name=checkin_form>
+<form method="post" action="{$form_action}" enctype="multipart/form-data" name="checkin_form" id="checkinform" style="display:none;">
+    <input type="hidden" name="action" value="checkin" />
+    <input type="hidden" name="fDocumentId" value="{$documentId}" />
+    
+    <br /><br />
+    
 	<div class="field ">
 		<label for="filename">File<span class="required">(Required)</span></label>
 		<p class="descriptiveText">{$fileDescriptiveText}</p>
-		<input name="filename" size="45" type="file">
+		<input id="checkinfilename" name="filename" size="45" type="file">
 	</div>
 	
+    <br /><br />
+    
 	<div class="field ">
-		<label for="data[major_update]">Major Update</label>
-		<p class="descriptiveText">If this is checked, then the document's version number will be increased to {major_inc}.  Otherwise, it will be considered a minor update, and the version number will be {minor_inc}.</p>
-		<input name="data[major_update]" class="noborder" type="checkbox">
+        <table>
+            <tr>
+                <td valign="top">
+                    <input name="data[major_update]" class="noborder" type="checkbox">
+                </td>
+                <td>
+                    <label for="data[major_update]">Major Update</label>
+                    <p class="descriptiveText">If this is checked, then the document's version number will be increased to {major_inc}.  Otherwise, it will be considered a minor update, and the version number will be {minor_inc}.</p>
+                </td>
+            </tr>
+        </table>
 	</div>
+    
+    <br /><br />
 	
 	{if !$disableForceFilenameOption}
-		<div class="field ">
+		<!--<div class="field ">
 			<label for="forcefilename">Force Original Filename</label>
 			<p class="descriptiveText">{$forceFilenameDescriptiveText}</strong></p>
 			<input name="forcefilename" checked="checked" class="noborder" type="checkbox">
-	     </div>
+        </div>-->
+        <input type="hidden" id="forcefilenameVal"  name="forcefilenameVal" value="{$forceFilename}">
      {/if}
 
 	<div class=form_actions id=modal>
-		<input type="submit" onclick="javascript: {ldelim}kt.app.actions.submitForm(){rdelim}; return false;" name=form_submit value="{i18n}Check-in{/i18n}" />
+		<input type="submit" name=form_submit value="{i18n}Check-in{/i18n}" />
 		<a href="#" onclick="vActions.closeDisplay('checkin'); return false;" class=form_cancel>Cancel</a>
 	</div>
 </form>
 
-{*
-<form enctype="multipart/form-data" method="POST" action="files.php" id="uploadForm">
-                <input type="hidden" value="100000" name="MAX_FILE_SIZE">
-                File: <input type="file" name="file">
-                Return Type: <select name="mimetype" id="uploadResponseType">
-                    <option value="html">html</option>
-                    <option value="json">json</option>
-                    <option value="script">script</option>
-                    <option value="xml">xml</option>
-                </select>
-                <input type="submit" value="Submit">
-            </form>
-*}
