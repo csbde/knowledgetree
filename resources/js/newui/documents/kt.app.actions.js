@@ -26,8 +26,7 @@ kt.app.document_actions = new function() {
 		self.documentId = documentId;
 		self.type = type;
 		var params = {};
-		var response = kt.api.is_reasons_enabled();
-		var submit = 'Submit';
+		var response = kt.api.esignatures.checkESignatures();
 		var description = '';
 		var field = 'Reason';
 		if(response == false) {
@@ -36,36 +35,40 @@ kt.app.document_actions = new function() {
 		} else {
 			switch (type) {
 				case 'checkout':
-					description = 'Checking out a document reserves it for your exclusive use. This ensures that you can edit the document without anyone else changing the document and placing it into the document management system.';
-					submit = 'Check Out';
+//					description = 'Checking out a document reserves it for your exclusive use. This ensures that you can edit the document without anyone else changing the document and placing it into the document management system.';
 					action = 'ktcore.actions.document.checkoutdownload';
 				break;
 				case 'checkoutdownload':
-					description = 'Checking out a document reserves it for your exclusive use. This ensures that you can edit the document without anyone else changing the document and placing it into the document management system.';
-					submit = 'Download';
+//					description = 'Checking out a document reserves it for your exclusive use. This ensures that you can edit the document without anyone else changing the document and placing it into the document management system.';
 					action = 'ktcore.actions.document.checkout';
 				break;
 				case 'checkin':
-					submit = 'Check-In';
 					action = 'ktcore.actions.document.checkin';
 				break;
 				case 'cancelcheckout':
-					description = 'If you do not want to have this document be checked-out, click cancel checkout.';
-					submit = 'Cancel Checkout';
+//					description = 'If you do not want to have this document be checked-out, click cancel checkout.';
 					action = 'ktcore.actions.document.cancelcheckout';
 				break;
 			}
-			params.submit = submit;
-			params.description = description;
-			params.field = field;
 			params.documentId = documentId;
 			params.action = 'ktcore.actions.document.' + type;
-			kt.api.show_reason_form(response, params);
+			
+			kt.api.esignatures.showESignatures(response, params);
+			jQuery('#reason-field').bind('finalise', self.finalise_event);
 		}
 		return;
 	}
 
-	this.run_checkout_action = function(params) {
+    this.finalise_event = function(e, result, reason) {
+    	if (result == 'success') {
+    		self.run_checkout_action(reason);
+    	}
+		return;
+    }
+
+	this.run_checkout_action = function(reason) {
+		var params = {};
+		params.reason = reason;
 		params.documentId = self.documentId;
 		var synchronous = false;
 		var func;
@@ -134,49 +137,6 @@ kt.app.document_actions = new function() {
 		window.location = '/action.php?kt_path_info=ktcore.actions.document.view&fDocumentId=' + self.documentId;
 	}
 
-	this.submit_reason = function() {
-		var params = {};
-		var reason = jQuery('[name="reason"]').val();
-		if(reason != '') {
-			if(jQuery('#type').attr('value') == 'esign') {
-				var username = jQuery('[name="sign_username"]').val();
-				if(username == '') { 
-					this.display_reason_error("Please enter a username.");
-					return false;
-				}
-				var password = jQuery('[name="sign_password"]').val();
-				if(password == '') { 
-					this.display_reason_error("Please enter a password.");
-					return false;
-				}
-				params.username = username;
-				params.password = password;
-				params.comment = reason;
-				params.documentId = jQuery('#reasondocid').attr('value');
-				// TODO : Better way to pass action
-				params.action = jQuery('#reasonaction').attr('value');
-				response = kt.api.auth_esign(params);
-				if(response.errors.hadErrors > 0) {
-					this.display_reason_error("Authentication failed.  Please check your email address and password, and try again.");
-					return false;
-				}
-			}
-			params.reason = reason;
-			vActions.closeDisplay('reason');
-			self.run_checkout_action(params);
-		} else {
-			this.display_reason_error("Please enter a reason.");
-			return false;
-		}
-		
-		return true;
-	}
-	
-	this.display_reason_error = function(message) {
-		jQuery('#error').attr('style', 'display:block;');
-		jQuery('#error .errorMessage').html(message);
-	}
-	
 	this.checkin_form = function(params) {
 		
 		var width;
@@ -252,11 +212,7 @@ kt.app.document_actions = new function() {
 			Ext.getCmp('checkinmask').getEl().mask("Checking In File");
 		}
 		
-		
 		return continueCheckin;
-		
-		
-	    
 	}
 
 	// post-submit callback
@@ -272,18 +228,6 @@ kt.app.document_actions = new function() {
 	    return true;
 	}
 
-
-/* This function can be removed*/
-	this.submitCheckInForm = function() {
-/*		var params = {};
-		params = jQuery('form[name="checkin_form"]').serialize();
-		var synchronous = false;
-		var func = 'documentActionServices.checkin';
-		var response = ktjapi.retrieve(func, params);
-*/
-		return null;
-	}
-	
     this.init();
 }
 
@@ -301,8 +245,6 @@ function postCheckinUpdate(status)
 	}
 	
 }
-
-
 
 function basename (path, suffix) {
     // http://kevin.vanzonneveld.net
