@@ -98,25 +98,28 @@ kt.app.copy = new function() {
     	
     	if(self.showReasons == true) {
     		var params = new Array();
-    		params.submit = "Save";
 			params.documentId = self.documentId;
 			params.action = 'ktcore.actions.document.' + self.action;
 			
 			kt.api.esignatures.showESignatures(self.reasonType, params);
 			
-			jQuery('#copy-reason').bind('finalise', function() { alert('bind finalise')} );
+			jQuery('#reason-field').bind('finalise', self.finaliseEvent);
 			return;
     	}
     	
-    	self.finaliseAction();
+    	self.finaliseAction('');
+    }
+    
+    this.finaliseEvent = function(e, result, reason) {
+    	if (result == 'success') {
+    		self.finaliseAction(reason);
+    	}
+		return;
     }
 
-    this.finaliseAction = function() {	
-    	alert('finalise');
-    	return;
-    	
+    this.finaliseAction = function(reason) {	
     	var params = new Array();
-    	params.reason = '';
+    	params.reason = reason;
     	params.targetFolderId = self.targetFolderId;
     	params.documentId = self.documentId;
     	params.action = self.action;

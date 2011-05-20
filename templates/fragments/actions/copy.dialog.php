@@ -15,7 +15,6 @@
 
 <tr>
 	<td class="ul_actions" align="right" valign="top">
-		<input type="hidden" id="copy-reason" name="copy-reason" />
         <a class="ul_actions_cancel_link" href="javascript: kt.app.copy.closeWindow();">Cancel</a>
         <input id="select-btn" class="ul_actions_btns" type="button" value="Save" onClick="kt.app.copy.save();" />
     </td>
