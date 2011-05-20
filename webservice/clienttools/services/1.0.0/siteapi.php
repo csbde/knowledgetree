@@ -641,7 +641,7 @@ class siteapi extends client_service {
         $this->addResponse('downloadUrl', json_encode($response));
     }
     
-    public function auth_esign($params) {
+    public function authenticateESignature($params) {
         $eSignature = new ESignature('document');
         $result = $eSignature->sign($params['username'], $params['password'], $params['comment'], $params['action'], $params['documentId']);
         if($result === false) {
@@ -655,23 +655,88 @@ class siteapi extends client_service {
         return true;
     }
     
-    public function getFolderStructure()
+    public function getFolderStructure($params)
     {
         global $default;
         $default->log->error('DEBUG. HERE!');
 
         $folder_id = 1;
         $ktapi = $this->KT;
-        $contents = $ktapi->get_folder_contents($folder_id, 1, 'F');
-        $default->log->error('DEBUG. contents ' . print_r($contents, true));
-
-
-        $nodes = '[{ "data" : "Node X", "children" : [ { "data" : "Child single", "state" : "closed" } ], "state" : "open" }, "Node Z"]';
-        $default->log->error('DEBUG. nodes: ' . $nodes);
-        $nodesArray = json_decode($nodes);
-        $default->log->error('DEBUG. nodes array: ' . print_r($nodesArray, true));
+        $contents = $ktapi->get_folder_contents($folder_id, '-1', 'F');
+        $nodes = $this->formatTreeStructure($contents['results']);
         $this->addResponse('nodes', json_encode($nodes));
     }
+    
+    private function formatTreeStructure($structure)
+    {
+    	$children = $this->formatChildren($structure['items']);
+    	$attributes = array('id' => 'folder_'.$structure['folder_id']);
+    	
+    	$nodes = array();
+    	$nodes[] = array('data' => $structure['folder_name'], 'state' => 'open', 'children' => $children, 'attr' => $attributes);
+    	return $nodes;
+    }
+    
+    private function formatChildren($node)
+    {
+    	$tree = array();
+    	foreach ($node as $nodeItem) {
+    		$children = $this->formatChildren($nodeItem['items']);
+    		$attributes = array('id' => 'folder_'.$nodeItem['id']);
+    		$metadata = "node_{$nodeItem['id']}";
+    		$tree[] = array('data' => $nodeItem['title'], 'state' => 'closed', 'children' => $children, 
+    			'attr' => $attributes, 'metadata' => $metadata);
+    	}
+    	return $tree;
+    }
+
+	public function doCopy($params)
+	{
+		$action = $params['action'];
+		$reason = (isset($params['reason']) && !empty($params['reason'])) ? $params['reason'] : _kt('Document Copied.');
+        $targetFolderId = str_replace('folder_', '', $params['targetFolderId']);
+        $documentId = $params['documentId'];
+        
+        $ktapi = $this->KT;
+        $document = KTAPI_Document::get($ktapi, $documentId);
+        
+        if(PEAR::isError($document)) {
+        	$error = $document->getMessage();
+        	$result = array('type' => 'fatal', 'error' => $error);
+        	$this->addResponse('result', json_encode($result));
+        	return;
+        }
+        
+        $folder = KTAPI_Folder::get($ktapi, $targetFolderId);
+        
+        if(PEAR::isError($folder)) {
+        	$error = $folder->getMessage();
+        	$result = array('type' => 'fatal', 'error' => $error);
+        	$this->addResponse('result', json_encode($result));
+        	return;
+        }
+        
+        if($action == 'move') {
+        	$document->move($folder, $reason);
+        	$newDocument = $document;
+        } else {
+        	$newDocument = $document->copy($folder, $reason);
+        }
+        
+        if(PEAR::isError($newDocument)) {
+        	$error = $newDocument->getMessage();
+        	$result = array('type' => 'error', 'error' => $error);
+        	$this->addResponse('result', json_encode($result));
+        	return;
+        }
+        
+        $newDocId = $newDocument->documentid;
+        
+        $url = KTUtil::ktLink('view.php', '', 'fDocumentId='.$newDocId);
+        
+        $result = array('type' => 'success', 'newDocId' => $newDocId, 'url' => $url);
+    	$this->addResponse('result', json_encode($result));
+	}
 }
 
 ?>

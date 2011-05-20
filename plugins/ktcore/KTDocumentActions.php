@@ -589,7 +589,7 @@ class KTDocumentDeleteAction extends KTDocumentAction {
 
 }
 
-class KTDocumentMoveAction extends KTDocumentAction {
+class KTDocumentMoveAction extends JavascriptDocumentAction {
 
     public $sName = 'ktcore.actions.document.move';
     public $_sShowPermission = 'ktcore.permissions.write';
@@ -608,6 +608,17 @@ class KTDocumentMoveAction extends KTDocumentAction {
 
         return parent::getInfo();
     }
+
+    function getOnClick()
+    {
+    	$id = $this->oDocument->getId();
+        return "javascript:{kt.app.copy.doMove($id);}";
+    }
+
+	function getURL()
+	{
+		return '#';
+	}
 
     function check() {
         $res = parent::check();
@@ -841,7 +852,7 @@ class KTDocumentCopyColumn extends TitleColumn {
 }
 
 // {{{ KTDocumentMoveAction
-class KTDocumentCopyAction extends KTDocumentAction {
+class KTDocumentCopyAction extends JavascriptDocumentAction {
 
     public $sName = 'ktcore.actions.document.copy';
     public $_sShowPermission = 'ktcore.permissions.read';
@@ -863,7 +874,8 @@ class KTDocumentCopyAction extends KTDocumentAction {
 
     function getOnClick()
     {
-        return "javascript:{kt.app.copy.showCopyWindow();}";
+    	$id = $this->oDocument->getId();
+        return "javascript:{kt.app.copy.doCopy($id);}";
     }
 
 	function getURL()
