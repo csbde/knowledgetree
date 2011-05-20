@@ -192,7 +192,7 @@ class KTPage {
                         "resources/$jsResourceLocation/newui/browse.helper.$jsExt" => array('browse_collections'),
                         'resources/js/newui/browse/subscriptionActions.js' => $overviews,
                         'resources/js/newui/shared/blockActions.js' => $combined,
-                        "resources/$jsResourceLocation/actions/kt.app.copy.$jsExt" => $files,
+                        "resources/$jsResourceLocation/newui/documents/kt.app.copy.$jsExt" => $files,
                         'thirdpartyjs/jquery/plugins/jstree/jquery.hotkeys.js' => $files,
                         'thirdpartyjs/jquery/plugins/jstree/jquery.cookie.js' => $files,
                         'thirdpartyjs/jquery/plugins/jstree/jquery.jstree.js' => $files
