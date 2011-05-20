@@ -161,65 +161,6 @@ kt.api = new function() {
 
         return ret.data.usertype;
     };
-
-    /* Electronic signatures & comment related functions */
-
-    this.is_reasons_enabled = function() {
-        // are esignatures enabled or reasons enabled - return esign / reason / false
-		var params = {};
-		var func = 'documentActionServices.is_reasons_enabled';
-		var response = ktjapi.retrieve(func, params);
-
-		return response.data.success;
-    }
-
-	this.show_reason_form = function(response, params) {
-		var title = 'Reason';
-		var width = 400;
-		var height = 280;
-		if(response == 'esign') {
-			width = 400;
-			height = 340;
-		}
-		// create html for form
-		vActions.createForm('reason', title);
-		this.window = new Ext.Window({
-			applyTo     : 'reasons',
-	        layout      : 'fit',
-	        width       : width,
-	        height      : height,
-	        closeAction :'destroy',
-	        y           : 50,
-	        shadow      : true,
-	        modal       : true,
-	        html        : kt.api.execFragment('documents/reason')
-	    });
-	    
-	    // modify reason form
-	    if (params.description != undefined)
-			jQuery('[name="reason_label"]').html(params.description);
-	    if (params.submit != undefined)
-			jQuery('[name="reason_submit"]').attr('value', params.submit);
-	    if (params.field != undefined)
-			jQuery('[name="reason_field"]').html(params.field);
-		jQuery('#reasondocid').attr('value', params.documentId);
-		jQuery('#reasonaction').attr('value', params.action);
-		this.window.show();
-		
-	    if(response == 'esign') {
-	    	jQuery('#user').attr('style', "display:block;");
-    	    jQuery('#pass').attr('style', "display:block;");
-    	    jQuery('#type').attr('value', "esign");
-	    } else {
-    	    
-	    }
-	}
-
-	this.auth_esign = function(params) {
-		var func = 'siteapi.auth_esign';
-		var response = ktjapi.retrieve(func, params);
-		return response;
-	}
 	
     /* Template related functions */
 
@@ -290,4 +231,126 @@ kt.api = new function() {
         return ret.data.fragment;
     };
 
+}
+    
+/* Electronic signatures & comment related functions */
+kt.api.esignatures = new function() {
+    var self = this;
+
+    this.checkESignatures = function() {
+        // are esignatures enabled or reasons enabled - return esign / reason / false
+		var params = {};
+		var func = 'documentActionServices.is_reasons_enabled';
+		var response = ktjapi.retrieve(func, params);
+
+		return response.data.success;
+    }
+
+	this.showESignatures = function(response, params) {
+		var title = 'Reason';
+		var width = 400;
+		var height = 280;
+		if(response == 'esign') {
+			height = 340;
+		}
+		// create html for form
+		vActions.createForm('reason', title);
+		this.eSignWindow = new Ext.Window({
+			applyTo     : 'reasons',
+	        layout      : 'fit',
+	        width       : width,
+	        height      : height,
+	        closeAction :'destroy',
+	        y           : 50,
+	        shadow      : true,
+	        modal       : true,
+	        html        : kt.api.execFragment('documents/reason')
+	    });
+	    //this.eSignWindow.addListener('destroy', function() { alert('destroy'); });
+//	    this.eSignWindow.addEvents('reasonsDoneEvent');
+	    
+	    // modify reason form
+	    if (params.submit != undefined) {
+			jQuery('[name="reason-submit"]').attr('value', params.submit);
+	    }
+		jQuery('#reasondocid').attr('value', params.documentId);
+		jQuery('#reasonaction').attr('value', params.action);
+		this.eSignWindow.show();
+		
+	    if(response == 'esign') {
+	    	jQuery('#user').attr('style', "display:block;");
+    	    jQuery('#pass').attr('style', "display:block;");
+    	    jQuery('#type').attr('value', "esign");
+    	    jQuery('#esign-info').attr('style', "display:block;");
+    	    jQuery('#reason-info').attr('style', "display:none;");
+	    } else {
+    	    jQuery('#esign-info').attr('style', "display:none;");
+    	    jQuery('#reason-info').attr('style', "display:block;");
+    	    jQuery('#reason-label').attr('style', "display:none;");
+	    }
+	    return this.eSignWindow;
+	}
+	
+	this.saveESignatures = function() {
+		var params = {};
+		var reason = jQuery('[name="reason"]').val();
+		var type = jQuery('#type').attr('value') == 'esign';
+		
+		if(reason == '') {
+			this.displayError("Please enter a comment.");
+			return false;
+		}
+		
+		if(type) {
+			var username = jQuery('[name="sign-username"]').val();
+			var password = jQuery('[name="sign-password"]').val();
+			var documentId = jQuery('#reasondocid').attr('value');
+			var action = jQuery('#reasonaction').attr('value');
+			
+			if(username == '') { 
+				this.displayError("Please enter a username.");
+				return false;
+			}
+			
+			if(password == '') { 
+				this.displayError("Please enter a password.");
+				return false;
+			}
+			
+			params.username = username;
+			params.password = password;
+			params.comment = reason;
+			params.documentId = documentId;
+			params.action = action;
+			
+			response = self.authenticateESignature(params);
+			if(response.errors.hadErrors > 0) {
+				this.displayError("Authentication failed.  Please check your email address and password, and try again.");
+				return false;
+			}
+		}
+		
+		jQuery('#copy-reason').attr('value', reason);
+//		params.reason = reason;
+//		vActions.closeDisplay('reason');
+//		self.run_checkout_action(params);
+
+//		this.fireEvent('reasonsDoneEvent');
+
+		jQuery('#copy-reason').trigger('finalise');
+        this.eSignWindow.destroy();
+		
+		return true;
+	}
+	
+	this.displayError = function(message) {
+		jQuery('#error').attr('style', 'display:block;');
+		jQuery('#error .errorMessage').html(message);
+	}
+
+	this.authenticateESignature = function(params) {
+		var func = 'siteapi.authenticateESignature';
+		var response = ktjapi.retrieve(func, params);
+		return response;
+	}
 }
