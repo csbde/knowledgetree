@@ -299,7 +299,7 @@ textarea {
     position: relative;
 }
 .breadcrumbBtns a {
-    height: 16px;
+    min-height: 16px;
     margin-right: 2px;
     padding: 2px 0 5px 2px;
     border: 1px solid #EEE!important;
@@ -1153,3 +1153,9 @@ label span.required
 }
 #content .tags div.token-input-dropdown-facebook {
 }
+
+a.subscribe_actions {
+	cursor: default;
+}
+
+
