@@ -169,8 +169,13 @@ kt.api = new function() {
 		var params = {};
 		var func = 'documentActionServices.is_reasons_enabled';
 		var response = ktjapi.retrieve(func, params);
-
-		return response.data.success;
+		
+		if (response.data.success) {
+			return response.data.success;
+		} else {
+			return undefined;
+		}
+		
     }
 
 	this.show_reason_form = function(response, params) {

@@ -27,6 +27,9 @@
 					<span title="Click to edit" class="editable-control title edit">&nbsp;</span>
 
 				</div>
+                <div class="uploadProgress" id="uploadProgress"> 
+					<div class="progress" id="progress"></div>
+				</div>
 				{if $document->getIsCheckedOut()} 
 					<span id=indicator class="status-indicator checkedout">
 				{else}
@@ -50,7 +53,7 @@
                         <span class="doc_info" style="display: block;">
                         <table class="metadatatable">
                         	<tr>
-								<th style="width: 100px;">Version:</th><td><a href="{$rootUrl}/action.php?kt_path_info=ktcore.actions.document.versionhistory&fDocumentId={$document_id}">{$document->getMajorVersionNumber()}.{$document->getMinorVersionNumber()}</a></td>
+								<th style="width: 100px;">Version:</th><td><a href="{$rootUrl}/action.php?kt_path_info=ktcore.actions.document.versionhistory&fDocumentId={$document_id}" id="value_versionhistory">{$document->getMajorVersionNumber()}.{$document->getMinorVersionNumber()}</a></td>
 							</tr>
 							<tr>
 								<th>Last Modified by:</th><td>{$doc_data.lastModifier} on {$document->getDisplayLastModifiedDate()|date_format:"%b %e, %Y"}</td>
