@@ -179,11 +179,12 @@ class metadataService extends client_service {
 		$iDocumentID = $params['documentID'];
 		$iDocumentTypeID = $params['documentTypeID'];
 		
-		$oDocument = &Document::get($iDocumentID);
+		$oDocument = Document::get($iDocumentID);
 		if (is_null($oDocument) || ($oDocument === false)) {
 			$GLOBALS['default']->log->error('The Document does not exist.');
 			return false;
 		}
+		$oldDocTypeID = $oDocument->getDocumentTypeID();
 		
 		$response = array();
 		
@@ -292,8 +293,10 @@ class metadataService extends client_service {
 				$sTrigger = $aTrigger[0];
 				$oTrigger = new $sTrigger;
 				$aInfo = array(
-				"document" => $oDocument,
-				"aOptions" => $field_values,
+					"document" => $oDocument,
+					"aOptions" => $field_values,
+                	'docTypeId' => $iDocumentTypeID,
+                	'origDocTypeId' => $oldDocTypeID
 				);
 				$oTrigger->setInfo($aInfo);
 				$ret = $oTrigger->postValidate();
