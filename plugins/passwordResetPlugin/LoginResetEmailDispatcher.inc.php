@@ -65,12 +65,12 @@ class LoginResetEmailDispatcher extends LoginResetDispatcher {
 
     protected function getFailedLoginMessage()
     {
-        return 'Login failed.  Please check your email address and password, and try again.';
+        return _kt('Login failed.  Please check your email address and password, and try again.');
     }
 
     protected function doFailedLoginRedirect($url, $queryParams)
     {
-        $message = 'Login failed.  Please check your email address and password, and try again.';
+        $message = _kt('Login failed.  Please check your email address and password, and try again.');
         $this->simpleRedirectToMain(_kt($message), $url, $queryParams);
         exit(0);
     }
