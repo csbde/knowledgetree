@@ -1660,6 +1660,10 @@ class KTAPI_Document extends KTAPI_FolderItem
         $this->document = Document::get($this->document->iId);
         $folder = Folder::get($this->document->getFolderID());
 
+        // create the document transaction record
+        $documentTransaction = new DocumentTransaction($this->document, _kt('Document metadata updated'), 'ktcore.transactions.update');
+        $documentTransaction->create();
+
         // Check if there are any dynamic conditions / permissions that need to be updated on the document
         // If there are dynamic conditions then update the permissions on the document
         // The dynamic condition test fails unless the document exists in the DB therefore update permissions after committing the transaction.
