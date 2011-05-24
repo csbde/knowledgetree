@@ -1029,7 +1029,8 @@ class KTAPI_Folder extends KTAPI_FolderItem {
 
         if (PEAR::isError($user))
         {
-            return $user;
+//            return $user;
+            return new KTAPI_Error(KTAPI_ERROR_INSUFFICIENT_PERMISSIONS, $user);
         }
         $foldername = KTUtil::replaceInvalidCharacters($foldername);
 

@@ -60,13 +60,16 @@ class Session {
                 require_once($path .  'baobabkeyutil.inc.php');
                 $res = BaobabKeyUtil::isValidUser($oUser);
                 if (PEAR::isError($res)) {
+                	$_SESSION['errormessage']['login'] = $res->getMessage();
                     return $res;
                 }
             }
         }
 
         if ($oUser->getDisabled() == 1) {
-            return PEAR::raiseError(_kt('Your account has been disabled. Please contact a <a href="http://www.knowledgetree.com/contact-us">KnowledgeTree support representative</a> for your region.'));
+        	$error = _kt('Your account has been disabled. Please contact a <a href="http://www.knowledgetree.com/contact-us">KnowledgeTree support representative</a> for your region.');
+        	$_SESSION['errormessage']['login'] = $error;
+            return PEAR::raiseError($error);
         }
 
         if(isset($_SESSION["userID"]) && $_SESSION["userID"] != $iUserId){
