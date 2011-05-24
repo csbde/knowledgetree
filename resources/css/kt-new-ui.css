@@ -14,8 +14,9 @@ textarea {
 	font-family: tahoma,arial,helvetica,sans-serif;
 	font-size: 11px;
 }
-/* ------------------ Experimental UI --------------------- */
-
+.sprite {
+	background-image : url(../graphics/newui/sprite.png);
+}
 #planNotice,
 #middle_nav {
 	display: none;
