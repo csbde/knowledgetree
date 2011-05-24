@@ -234,6 +234,12 @@ kt.api = new function() {
 }
     
 /* Electronic signatures & comment related functions */
+/* To use. 
+Call the function to check if electronic signatures or reasons are enabled: kt.api.esignatures.checkESignatures();
+Open the signature window using: kt.api.esignatures.showESignatures(reasonType, params);
+Create the following event which will be triggered on saving the signature:
+    jQuery('#reason-field').bind('finalise', function(e, result, reason) { // finalise action });
+*/
 kt.api.esignatures = new function() {
     var self = this;
 
@@ -247,11 +253,15 @@ kt.api.esignatures = new function() {
     }
 
 	this.showESignatures = function(response, params) {
-		var title = 'Reason';
+		if(response == false) {
+			return;
+		}
+		var title = 'Comment';
 		var width = 400;
 		var height = 280;
 		if(response == 'esign') {
 			height = 340;
+			title = 'Electronic Signature';
 		}
 		// create html for form
 		vActions.createForm('reason', title);
@@ -266,15 +276,10 @@ kt.api.esignatures = new function() {
 	        modal       : true,
 	        html        : kt.api.execFragment('documents/reason')
 	    });
-	    //this.eSignWindow.addListener('destroy', function() { alert('destroy'); });
-//	    this.eSignWindow.addEvents('reasonsDoneEvent');
 	    
 	    // modify reason form
-	    if (params.submit != undefined) {
-			jQuery('[name="reason-submit"]').attr('value', params.submit);
-	    }
-		jQuery('#reasondocid').attr('value', params.documentId);
-		jQuery('#reasonaction').attr('value', params.action);
+		jQuery('#reason-doc-id').attr('value', params.documentId);
+		jQuery('#reason-action').attr('value', params.action);
 		this.eSignWindow.show();
 		
 	    if(response == 'esign') {
@@ -288,7 +293,6 @@ kt.api.esignatures = new function() {
     	    jQuery('#reason-info').attr('style', "display:block;");
     	    jQuery('#reason-label').attr('style', "display:none;");
 	    }
-	    return this.eSignWindow;
 	}
 	
 	this.saveESignatures = function() {
@@ -304,8 +308,8 @@ kt.api.esignatures = new function() {
 		if(type) {
 			var username = jQuery('[name="sign-username"]').val();
 			var password = jQuery('[name="sign-password"]').val();
-			var documentId = jQuery('#reasondocid').attr('value');
-			var action = jQuery('#reasonaction').attr('value');
+			var documentId = jQuery('#reason-doc-id').attr('value');
+			var action = jQuery('#reason-action').attr('value');
 			
 			if(username == '') { 
 				this.displayError("Please enter a username.");
@@ -330,14 +334,8 @@ kt.api.esignatures = new function() {
 			}
 		}
 		
-		jQuery('#copy-reason').attr('value', reason);
-//		params.reason = reason;
-//		vActions.closeDisplay('reason');
-//		self.run_checkout_action(params);
-
-//		this.fireEvent('reasonsDoneEvent');
-
-		jQuery('#copy-reason').trigger('finalise');
+		// Trigger of event created on the action window
+        jQuery('#reason-field').trigger('finalise', ['success', reason]);
         this.eSignWindow.destroy();
 		
 		return true;
