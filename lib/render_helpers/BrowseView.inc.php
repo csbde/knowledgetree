@@ -724,7 +724,7 @@ class BrowseView {
                                 <span class="immutable_info[is_immutable]">FINALIZED
                                     <span>This document has been <strong>finalized</strong> and can no longer be modified.</span>
                                 </span>
-                                <span class="checked_out[is_checkedout]">CHECKOUT
+                                <span class="checked_out[is_checkedout]">CHECKED OUT
                                     <span>This document is <strong>checked-out</strong> by <strong>[checked_out_by]</strong> and cannot be edited until it is Checked-in.</span>
                                 </span>
                                 ' . $shortcut . '
