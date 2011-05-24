@@ -162,6 +162,7 @@ kt.app.document_actions = new function() {
 			id          : 'checkinmask',
 	        applyTo     : 'checkins',
 	        layout      : 'fit',
+	        title       : title,
 	        width       : width,
 	        height      : height,
 	        closeAction :'destroy',

@@ -266,11 +266,13 @@ kt.api.esignatures = new function() {
 		// create html for form
 		vActions.createForm('reason', title);
 		this.eSignWindow = new Ext.Window({
-			applyTo     : 'reasons',
+			//applyTo     : 'reasons',
+			id          : 'window_reason',
 	        layout      : 'fit',
 	        width       : width,
 	        height      : height,
-	        closeAction :'destroy',
+			title       : title,
+	        closeAction :'close',
 	        y           : 50,
 	        shadow      : true,
 	        modal       : true,
