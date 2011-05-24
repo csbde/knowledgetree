@@ -122,26 +122,19 @@ kt.app.document_actions = new function() {
 			case 'checkoutdownload':
 				jQuery('#indicator').show();
 				
-				
-				kt.app.upload.unhideProgressWidget();
-				kt.app.upload.updateProgress('Document successfully checked-out', false);
-				kt.app.upload.fadeProgress(5000);
+				kt.app.notify.show('Document successfully checked-out', false);
 				
 				break;
 			case 'checkin':
 				jQuery('#indicator').hide();
 				
-				kt.app.upload.unhideProgressWidget();
-				kt.app.upload.updateProgress('Document successfully checked-in', false);
-				kt.app.upload.fadeProgress(5000);
+				kt.app.notify.show('Document successfully checked-in', false);
 				
 				break;
 			case 'cancelcheckout':
 				jQuery('#indicator').hide();
 				
-				kt.app.upload.unhideProgressWidget();
-				kt.app.upload.updateProgress('Document checked-out has been cancelled', false);
-				kt.app.upload.fadeProgress(5000);
+				kt.app.notify.show('Document checked-out has been cancelled', false);
 				
 				break;
 		}
