@@ -238,7 +238,11 @@ kt.api = new function() {
 Call the function to check if electronic signatures or reasons are enabled: kt.api.esignatures.checkESignatures();
 Open the signature window using: kt.api.esignatures.showESignatures(reasonType, params);
 Create the following event which will be triggered on saving the signature:
+<<<<<<< HEAD
 	jQuery('#reason-field').bind('finalise', function(e, result, reason) { // finalise action });
+=======
+    jQuery('#reason-field').bind('finalise', function(e, result, reason) { // finalise action });
+>>>>>>> Enabled_Modal_Checkout_PT_11444293
 */
 kt.api.esignatures = new function() {
     var self = this;
@@ -256,7 +260,10 @@ kt.api.esignatures = new function() {
 		if(response == false) {
 			return;
 		}
+<<<<<<< HEAD
 		
+=======
+>>>>>>> Enabled_Modal_Checkout_PT_11444293
 		var title = 'Comment';
 		var width = 400;
 		var height = 280;
@@ -278,6 +285,10 @@ kt.api.esignatures = new function() {
 	        html        : kt.api.execFragment('documents/reason')
 	    });
 	    
+<<<<<<< HEAD
+=======
+	    // modify reason form
+>>>>>>> Enabled_Modal_Checkout_PT_11444293
 		jQuery('#reason-doc-id').attr('value', params.documentId);
 		jQuery('#reason-action').attr('value', params.action);
 		this.eSignWindow.show();
@@ -335,7 +346,11 @@ kt.api.esignatures = new function() {
 		}
 		
 		// Trigger of event created on the action window
+<<<<<<< HEAD
 		jQuery('#reason-field').trigger('finalise', ['success', reason]);
+=======
+        jQuery('#reason-field').trigger('finalise', ['success', reason]);
+>>>>>>> Enabled_Modal_Checkout_PT_11444293
         this.eSignWindow.destroy();
 		
 		return true;
@@ -351,4 +366,8 @@ kt.api.esignatures = new function() {
 		var response = ktjapi.retrieve(func, params);
 		return response;
 	}
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> Enabled_Modal_Checkout_PT_11444293

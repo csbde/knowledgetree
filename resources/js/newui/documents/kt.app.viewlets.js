@@ -34,6 +34,25 @@ kt.app.document_viewlets = new function() {
 	    return null;
 	}
 	
+	this.update_filename_version = function(documentId) {
+		self.documentId = documentId;
+		var params = {};
+		params.documentId = documentId;
+		var synchronous = false;
+		var func = 'documentViewletServices.versionAndFileName';
+	    var response = ktjapi.retrieve(func, params);
+		
+		if (jQuery('#value-filename')) {
+			jQuery('#value-filename').html(response.data.filename);
+		}
+		
+		if (jQuery('#value_versionhistory')) {
+			jQuery('#value_versionhistory').html(response.data.version);
+		}
+	    
+	    return null;
+	}
+	
 	this.error  = function() {
 		console.log('error');
 	}

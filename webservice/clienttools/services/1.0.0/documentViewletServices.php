@@ -69,6 +69,15 @@ class documentViewletServices extends client_service {
     	
     	return true;
     }
+	
+	public function versionAndFileName($params) {
+    	$action = array();
+		$documentId = $params['documentId'];
+		$document = Document::get($documentId);
+    	$this->addResponse('filename', $document->getFileName());
+    	$this->addResponse('version', $document->getVersion());
+    	return true;
+    }
     
 }
 ?>

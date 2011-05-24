@@ -102,6 +102,7 @@ kt.app.document_actions = new function() {
 		self.refresh_actions('init');
 		self.refresh_status_indicator();
 		kt.app.document_viewlets.refresh_comments(self.documentId);
+		kt.app.document_viewlets.update_filename_version(self.documentId);
 
 	    return null;
 	}
@@ -118,16 +119,30 @@ kt.app.document_actions = new function() {
 	this.refresh_status_indicator = function() {
 		switch (self.type) {
 			case 'checkout':
-				jQuery('#indicator').show();
-				break;
 			case 'checkoutdownload':
 				jQuery('#indicator').show();
+				
+				
+				kt.app.upload.unhideProgressWidget();
+				kt.app.upload.updateProgress('Document successfully checked-out', false);
+				kt.app.upload.fadeProgress(5000);
+				
 				break;
 			case 'checkin':
 				jQuery('#indicator').hide();
+				
+				kt.app.upload.unhideProgressWidget();
+				kt.app.upload.updateProgress('Document successfully checked-in', false);
+				kt.app.upload.fadeProgress(5000);
+				
 				break;
 			case 'cancelcheckout':
 				jQuery('#indicator').hide();
+				
+				kt.app.upload.unhideProgressWidget();
+				kt.app.upload.updateProgress('Document checked-out has been cancelled', false);
+				kt.app.upload.fadeProgress(5000);
+				
 				break;
 		}
 	}
@@ -209,7 +224,7 @@ kt.app.document_actions = new function() {
 		
 		// Load Mask
 		if (continueCheckin) {
-			Ext.getCmp('checkinmask').getEl().mask("Checking In File");
+			Ext.getCmp('checkinmask').getEl().mask("<img src='/resources/graphics/newui/loading.gif' /> Checking In File");
 		}
 		
 		return continueCheckin;
@@ -219,6 +234,7 @@ kt.app.document_actions = new function() {
 	this.afterCheckIn = function() {
 		Ext.getCmp('checkinmask').close();
 		self.refresh();
+		
 	    return true;
 	}
 	

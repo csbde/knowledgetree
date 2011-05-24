@@ -924,13 +924,16 @@ div#uploadProgress {
 	border: 2px solid #AAA;
 	box-shadow: 0px 0px 8px #AAA;
 	position: absolute;
-	right: -17px;
+	right: 0;/* Was -17px;*/
 	z-index: 999999;
 	color: #666;
 	width: 199px;
 	font-weight: bold;
 	top: 7px;
 	text-shadow: 0px 1px 0px white;
+	
+	display: none;
+    visibility: hidden;
 }
 span#uploadProgress .title {
 	font-size: 12px;
