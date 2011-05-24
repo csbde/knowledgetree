@@ -29,18 +29,18 @@ class KTLiveInit extends KTInit {
 
         if (liveAccounts::accountExists()) {
             if (!liveAccounts::accountEnabled()) {
-                $logger->info(ACCOUNT_NAME . " DB Setup. DB CONNECT FAILURE and ACCOUNT DISABLED(" . $dbError->getMessage() . ")");
+                $logger->info(ACCOUNT_NAME . " DB Setup. NO DB CONNECTION and ACCOUNT DISABLED");
                 liveRenderError::errorDisabled($_SERVER, LIVE_ACCOUNT_DISABLED);
             }
             else {
-                $logger->error(ACCOUNT_NAME . " DB Setup. DB CONNECT FAILURE and ACCOUNT ENABLED(" . $dbError->getMessage() . ")");
+                $logger->error(ACCOUNT_NAME . " DB Setup. NO DB CONNECTION and ACCOUNT ENABLED(" . $dbError->getMessage() . ")");
                 liveRenderError::errorFail($_SERVER, LIVE_ACCOUNT_DISABLED);
             }
         }
         else {
             $account_name = ACCOUNT_NAME;
             if (!empty($account_name)) {
-                $logger->error(ACCOUNT_NAME . " DB Setup. DB CONNECT FAILURE and NO ACCOUNT(" . $dbError->getMessage() . ")");
+                $logger->error(ACCOUNT_NAME . " DB Setup. NO DB CONNECTION and NO ACCOUNT(" . $dbError->getMessage() . ")");
             }
             liveRenderError::errorNoAccount($dbError, LIVE_ACCOUNT_DISABLED);
         }
