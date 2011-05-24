@@ -1,3 +1,12 @@
+<?php
+include_once('../../ktapi/ktapi.inc.php');
+
+global $default;
+$username = _kt('Username');
+if($default->useEmailLogin) {
+	$username = _kt('Email Address');
+}
+?>
 <table class="uploadTable" style="height:100px;">
 	<tbody>
 		<tr id="error" style='display:none;'>
@@ -17,7 +26,7 @@
 		</tr>
 		<tr id="user" style='display:none;'>
 			<td> 
-				<label for="username">Email Address</label>  <br />
+				<label for="username"><?php echo $username; ?></label>  <br />
 				<input name="sign-username" size="30"> 
 			</td>
 		</tr>

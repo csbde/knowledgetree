@@ -641,7 +641,7 @@ class siteapi extends client_service {
         $this->addResponse('downloadUrl', json_encode($response));
     }
     
-    public function auth_esign($params) {
+    public function authenticateESignature($params) {
         $eSignature = new ESignature('document');
         $result = $eSignature->sign($params['username'], $params['password'], $params['comment'], $params['action'], $params['documentId']);
         if($result === false) {
