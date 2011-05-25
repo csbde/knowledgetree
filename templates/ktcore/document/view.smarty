@@ -52,7 +52,7 @@
 								<th style="width: 100px;">Version:</th><td><a href="{$rootUrl}/action.php?kt_path_info=ktcore.actions.document.versionhistory&fDocumentId={$document_id}" id="value_versionhistory">{$document->getMajorVersionNumber()}.{$document->getMinorVersionNumber()}</a></td>
 							</tr>
 							<tr>
-								<th>Last Modified by:</th><td>{$doc_data.lastModifier} on {$document->getDisplayLastModifiedDate()|date_format:"%b %e, %Y"}</td>
+								<th>Last Modified by:</th><td id="value-lastmodifiedby">{$doc_data.lastModifier} on {$document->getDisplayLastModifiedDate()|date_format:"%b %e, %Y"}</td>
 							</tr>
 							<tr>
 								<th>Created by:</th><td>{$doc_data.creator} on {$document->getDisplayCreatedDateTime()|date_format:"%b %e, %Y"}</td>
@@ -66,7 +66,7 @@
 							</tr>
 						{/if}
 							<tr>
-							<th>File type:</th><td>{$fieldsetDisplayHelper->_mimeHelper($document->getMimeTypeID())} - {$fieldsetDisplayHelper->_sizeHelper($document->getSize())} </td>
+							<th>File type:</th><td id="value-filetype">{$fieldsetDisplayHelper->_mimeHelper($document->getMimeTypeID())} - {$fieldsetDisplayHelper->_sizeHelper($document->getSize())} </td>
 							</tr>
 							<tr>
 								<th>Document ID:</th><td>{$document_id}</td>

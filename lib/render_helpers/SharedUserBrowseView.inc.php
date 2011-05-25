@@ -212,9 +212,9 @@ class SharedUserBrowseView extends BrowseView {
                                         <li class="action_instant_view [actions.instant_view]"><a href="[document_link]#preview">Instant View</a></li>
                                         [allowdoczohoedit]
 
-                                        <li class="action_checkout [actions.checkout]"><a href="action.php?kt_path_info=ktcore.actions.document.checkout&fDocumentId=[id]">Check-out</a></li>
-                                        <li class="action_cancel_checkout [actions.cancel_checkout]"><a href="action.php?kt_path_info=ktcore.actions.document.cancelcheckout&fDocumentId=[id]">Cancel Check-out</a></li>
-                                        <li class="action_checkin [actions.checkin]"><a href="action.php?kt_path_info=ktcore.actions.document.checkin&fDocumentId=[id]">Check-in</a></li>
+                                        <li class="action_checkout [actions.checkout]"><a href="#" onclick="kt.app.document_actions.checkout_actions(\'[id]\', \'checkout\');">Check-out</a></li>
+                                        <li class="action_cancel_checkout [actions.cancel_checkout]"><a href="#" onclick="kt.app.document_actions.checkout_actions(\'[id]\', \'cancelcheckout\');">Cancel Check-out</a></li>
+                                        <li class="action_checkin [actions.checkin]"><a href="#" onclick="kt.app.document_actions.checkout_actions(\'[id]\', \'checkin\');">Check-in</a></li>
                                     </ul>
                                 </li>
                             </ul>';

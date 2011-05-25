@@ -78,13 +78,18 @@ class documentViewletServices extends client_service {
 		if (get_class($document) == 'Document') {
 			$this->addResponse('filename', $document->getFileName());
 			$this->addResponse('filesize', KTUtil::filesizeToString($document->getFileSize(), 'KB'));
+			
+			require_once(KT_LIB_DIR . '/widgets/fieldsetDisplay.inc.php');
+			$fieldsetDisplayHelper = new KTFieldsetDisplay();
+			$this->addResponse('filetype', $fieldsetDisplayHelper->_mimeHelper($document->getMimeTypeID()).' - '.$fieldsetDisplayHelper->_sizeHelper($document->getSize()));
+			
 			$this->addResponse('version', $document->getVersion());
 			$this->addResponse('lastupdateddate', $document->getLastModifiedDate());
 			
 			$oModifier = User::get($document->getModifiedUserId());
 			
 			$this->addResponse('lastupdatedby', $oModifier->getName());
-			$this->addResponse('lastupdatedstring', $oModifier->getName().' on '.$document->getDisplayLastModifiedDate());
+			$this->addResponse('lastupdatedstring', $oModifier->getName().' on '.date('Y-m-d H:i', strtotime($document->getDisplayLastModifiedDate())));
 		}
     	
     	return true;

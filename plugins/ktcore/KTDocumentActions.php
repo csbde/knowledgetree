@@ -2214,8 +2214,8 @@ class KTDocumentCheckInAction extends JavascriptDocumentAction {
 		$firephp->log('Doing checkin');
 		
 		$firephp->log($_POST);
-		$firephp->log($_FILES);
-		$firephp->log($_REQUEST);
+		//$firephp->log($_FILES);
+		//$firephp->log($_REQUEST);
 		$firephp->log($this->oDocument->getFilename());
 		*/
 		
@@ -2228,7 +2228,7 @@ class KTDocumentCheckInAction extends JavascriptDocumentAction {
         $sNewFilename = $_FILES['filename']['name'];
         $aOptions = array();
 
-        if ($_POST['major_update']) {
+        if ($_POST['data']['major_update'] == 'true') {
             $aOptions['major_update'] = true;
         }
 
