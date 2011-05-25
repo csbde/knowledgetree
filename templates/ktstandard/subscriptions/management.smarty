@@ -9,7 +9,7 @@
 		<span>{i18n}You have no subscriptions{/i18n}</span>
 	</div>
 	<div class=form_actions id=modal>
-		<a href="#" class="form_cancel" onclick="vActions.closeDisplay('subscription'); return false;">Cancel</a>
+		<a href="#" class="form_cancel" onclick="vActions.closeDisplay('subscription'); return false;">Close</a>
 	</div>
 {else}
 	<p class=descriptiveText>{i18n}You are subscribed to the folders and
@@ -59,6 +59,6 @@
 	
 	<div class=form_actions id=modal>
 		<input type=submit name=submit onclick="subscriptions.submitForm(); return false;" value="{i18n}Remove subscription{/i18n}" />
-		<a href="#" class="form_cancel" onclick="vActions.closeDisplay('subscription'); return false;">Cancel</a>
+		<a href="#" class="form_cancel" onclick="vActions.closeDisplay('subscription'); return false;">Close</a>
 	</div>
 {/if}

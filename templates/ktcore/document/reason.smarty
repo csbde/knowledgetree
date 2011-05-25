@@ -1,0 +1,18 @@
+<link href="/resources/css/kt-new-modal.css" type="text/css" rel="stylesheet" />
+<script src="/resources/js/newui/buttons/formActions.js" type="text/javascript"></script>
+
+<h2>{$actionName}: {$filename}</h2>
+<p class="descriptiveText">{$descriptiveText}</p>
+<form method="post" action="/kt_path_info={$formAction}">
+	<input name="action" value="{$action}" type="hidden">
+	<input name="fDocumentId" value="{$documentId}" type="hidden">
+	<div class="field ">
+		<label for="data[reason]">Reason</label>
+		<p class="errorMessage"></p>
+		<textarea name="data[reason]" rows="4" cols="50"></textarea>
+	</div>
+	<div class=form_actions id=modal>
+		<input name="" value="{$actionName}" type="submit"> 
+		<a class="form_cancel" href="#" onclick="vActions.closeDisplay('reason'); return false;">Cancel</a>
+	</div>
+</form>

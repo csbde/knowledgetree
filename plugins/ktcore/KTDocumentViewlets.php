@@ -134,7 +134,11 @@ class KTDocumentActivityFeedAction extends KTDocumentViewlet {
     public $bShowIfWriteShared = true;
 	private $displayMax = 10;
 
-    function display_viewlet()
+	function ajax_get_viewlet() {
+		return $this->display_viewlet(true);
+	}
+	
+    function display_viewlet($onlyComments = false)
     {
         $iDocumentId = $this->oDocument->getId();
         $mainArray = array();
@@ -242,11 +246,11 @@ class KTDocumentActivityFeedAction extends KTDocumentViewlet {
 
         $aTemplateData = array(
               'context' => $this,
-              'document_id' => $iDocumentId,
-              'document' => $this->oDocument,
+              'documentId' => $iDocumentId,
               'versions' => $mainArray,
               'displayMax' => $this->displayMax,
               'commentsCount' => count($mainArray),
+              'onlyComments' => $onlyComments,
         );
 
         return $oTemplate->render($aTemplateData);

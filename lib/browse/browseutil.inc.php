@@ -300,9 +300,9 @@ class KTBrowseUtil {
 
     // {{{ getUrlForFolder
     static public function getUrlForFolder($oFolderOrID) {
-    	if($oFolder instanceof FolderProxy)
+    	if($oFolderOrID instanceof FolderProxy || $oFolderOrID instanceof Folder)
         	$iFolderId = KTUtil::getId($oFolderOrID);
-        else 
+        else
         	$iFolderId = $oFolderOrID;
         $sExt = '.php';
         if (KTUtil::arrayGet($_SERVER, 'kt_no_extensions')) {
