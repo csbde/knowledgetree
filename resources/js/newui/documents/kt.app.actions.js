@@ -122,17 +122,33 @@ kt.app.document_actions = new function() {
 			case 'checkoutdownload':
 				jQuery('#indicator').show();
 				
+				jQuery('span#docItem_'+self.documentId+' li.action_checkout').addClass('not_supported');
+				jQuery('span#docItem_'+self.documentId+' span.checked_out').removeClass('not_supported');
+				jQuery('span#docItem_'+self.documentId+' li.action_cancel_checkout').removeClass('not_supported');
+				jQuery('span#docItem_'+self.documentId+' li.action_checkin').removeClass('not_supported');
+				
+				
 				kt.app.notify.show('Document successfully checked-out', false);
 				
 				break;
 			case 'checkin':
 				jQuery('#indicator').hide();
 				
+				jQuery('span#docItem_'+self.documentId+' li.action_checkout').removeClass('not_supported');
+				jQuery('span#docItem_'+self.documentId+' span.checked_out').addClass('not_supported');
+				jQuery('span#docItem_'+self.documentId+' li.action_cancel_checkout').addClass('not_supported');
+				jQuery('span#docItem_'+self.documentId+' li.action_checkin').addClass('not_supported');
+				
 				kt.app.notify.show('Document successfully checked-in', false);
 				
 				break;
 			case 'cancelcheckout':
 				jQuery('#indicator').hide();
+				
+				jQuery('span#docItem_'+self.documentId+' li.action_checkout').removeClass('not_supported');
+				jQuery('span#docItem_'+self.documentId+' span.checked_out').addClass('not_supported');
+				jQuery('span#docItem_'+self.documentId+' li.action_cancel_checkout').addClass('not_supported');
+				jQuery('span#docItem_'+self.documentId+' li.action_checkin').addClass('not_supported');
 				
 				kt.app.notify.show('Document checked-out has been cancelled', false);
 				
