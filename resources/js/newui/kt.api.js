@@ -258,7 +258,7 @@ kt.api.esignatures = new function() {
 		}
 
 		var title = 'Comment';
-		var width = 400;
+		var width = 420;
 		var height = 280;
 		if(response == 'esign') {
 			height = 340;
@@ -327,9 +327,11 @@ kt.api.esignatures = new function() {
 			params.documentId = documentId;
 			params.action = action;
 			
+			self.showSpinner();
 			response = self.authenticateESignature(params);
 			if(response.errors.hadErrors > 0) {
 				this.displayError("Authentication failed.  Please check your email address and password, and try again.");
+				self.hideSpinner();
 				return false;
 			}
 		}
@@ -350,5 +352,15 @@ kt.api.esignatures = new function() {
 		var func = 'siteapi.authenticateESignature';
 		var response = ktjapi.retrieve(func, params);
 		return response;
+	}
+	
+	this.showSpinner = function() {
+		jQuery('#reason-btn').hide();
+    	jQuery('.reason-spinner').removeClass('none').addClass('spin').css('visibility', 'visible');
+	}
+	
+	this.hideSpinner = function() {
+		jQuery('#reason-btn').show();
+    	jQuery('.reason-spinner').removeClass('spin').addClass('none').css('visibility', 'hidden');
 	}
 }
