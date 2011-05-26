@@ -1,5 +1,3 @@
-<<<<<<< HEAD
-=======
 <?php
 include_once('../../ktapi/ktapi.inc.php');
 
@@ -9,7 +7,6 @@ if($default->useEmailLogin) {
 	$username = _kt('Email Address');
 }
 ?>
->>>>>>> Enabled_Modal_Checkout_PT_11444293
 <table class="uploadTable" style="height:100px;">
 	<tbody>
 		<tr id="error" style='display:none;'>
@@ -19,11 +16,7 @@ if($default->useEmailLogin) {
 			<td>
 				<p id="esign-info" style='display: none'>
 					<b>This action requires authentication</b><br />
-<<<<<<< HEAD
-					Please provide your user credentials as confirmation of this action.
-=======
                     Please provide your user credentials as confirmation of this action.
->>>>>>> Enabled_Modal_Checkout_PT_11444293
 				</p>
 				
 				<p id="reason-info">
@@ -33,11 +26,7 @@ if($default->useEmailLogin) {
 		</tr>
 		<tr id="user" style='display:none;'>
 			<td> 
-<<<<<<< HEAD
-				<label for="username">Email Address</label>  <br />
-=======
 				<label for="username"><?php echo $username; ?></label>  <br />
->>>>>>> Enabled_Modal_Checkout_PT_11444293
 				<input name="sign-username" size="30"> 
 			</td>
 		</tr>
@@ -58,10 +47,7 @@ if($default->useEmailLogin) {
 	    		<input type="hidden" value="reason" id="type">
 				<input type="hidden" value="" id="reason-doc-id">
 				<input type="hidden" value="" id="reason-action">
-<<<<<<< HEAD
-=======
 
->>>>>>> Enabled_Modal_Checkout_PT_11444293
 				<a href="#" onclick="vActions.closeDisplay('reason'); return false;" class="ul_actions_cancel_link">Cancel</a>
 				<input name="reason_submit" type="button" onclick="kt.api.esignatures.saveESignatures();" value="Save" class="ul_actions_btns" id="ul_actions_upload_btn">
 	    	</td>
