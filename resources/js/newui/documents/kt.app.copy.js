@@ -101,6 +101,8 @@ kt.app.copy = new function() {
     		return;
     	}
     	
+    	self.showSpinner();
+
     	if(self.showReasons == true) {
     		var params = new Array();
 			params.documentId = self.documentId;
@@ -109,6 +111,7 @@ kt.app.copy = new function() {
 			kt.api.esignatures.showESignatures(self.reasonType, params);
 			
 			jQuery('#reason-field').bind('finalise', self.finaliseEvent);
+			self.hideSpinner();
 			return;
     	}
     	
@@ -117,6 +120,7 @@ kt.app.copy = new function() {
     
     this.finaliseEvent = function(e, result, reason) {
     	if (result == 'success') {
+    		self.showSpinner();
     		self.finaliseAction(reason);
     	}
 		return;
@@ -191,6 +195,16 @@ kt.app.copy = new function() {
 	    var response = data.data.nodes;
         var nodes = jQuery.parseJSON(response);
 	    return nodes;
+	}
+	
+	this.showSpinner = function() {
+		jQuery('#select-btn').hide();
+		jQuery('.copy-spinner').removeClass('none').addClass('spin').css('visibility', 'visible');
+	}
+	
+	this.hideSpinner = function() {
+		jQuery('#select-btn').show();
+		jQuery('.copy-spinner').removeClass('spin').addClass('none').css('visibility', 'hidden');
 	}
 	
     this.init();
