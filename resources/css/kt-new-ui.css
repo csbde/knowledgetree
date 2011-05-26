@@ -523,6 +523,14 @@ ul.floatleft li.notification {
 	line-height: 24px;
 }
 
+.ul_actions .spin {
+	background: url(../../resources/graphics/newui/loading.gif) no-repeat center center;
+	padding-top: 12px;
+	padding-right: 12px;
+	width: 16px;
+	display: inline-block;
+}
+
 .action_buttons .action .disabled {
 	opacity: 0.5;
 	cursor: default;
