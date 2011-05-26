@@ -1,39 +1,36 @@
 <link href="/resources/css/kt-new-modal.css" type="text/css" rel="stylesheet" />
 <script src="/resources/js/newui/buttons/formActions.js" type="text/javascript"></script>
 
-<p class="descriptiveText">{i18n}Checking in a document updates the document
-and allows others to make changes to the document and its metadata.{/i18n}</p>
-
-<p class="descriptiveText">{i18n}If you do not
-intend to change the document, or you do not wish to prevent others from
-changing the document, you should rather use the action menu to <strong>cancel this checkout</strong>.{/i18n}</p>
-
 <form method="post" action="{$form_action}" enctype="multipart/form-data" name="checkin_form" id="checkinform" style="display:none;">
     <input type="hidden" name="action" value="checkin" />
     <input type="hidden" name="fDocumentId" value="{$documentId}" />
     
-    <br /><br />
-    
 	<div class="field ">
-		<label for="filename">File<span class="required">(Required)</span></label>
-		<p class="descriptiveText">{$fileDescriptiveText}</p>
+		<label for="filename">Select a file to check-in<span class="required">(Required)</span></label>
+        <br /><br />
 		<input id="checkinfilename" name="filename" size="45" type="file">
 	</div>
 	
     <br /><br />
     
 	<div class="field ">
-        <table>
-            <tr>
-                <td valign="top">
-                    <input name="data[major_update]" class="noborder" type="checkbox">
-                </td>
-                <td>
-                    <label for="data[major_update]">Major Update</label>
-                    <p class="descriptiveText">If this is checked, then the document's version number will be increased to {major_inc}.  Otherwise, it will be considered a minor update, and the version number will be {minor_inc}.</p>
-                </td>
-            </tr>
-        </table>
+        Version Change:
+        <br /><br />
+        <table><tr>
+            <td>
+                <span class="field switch">
+                    
+                    
+                    <input type="radio" id="radio1" name="data[major_update]" value="false" checked />
+                    <input type="radio" id="radio2" name="data[major_update]" value="true" />
+                    <label for="radio1" class="cb-enable selected"><span>Minor</span></label>
+                    <label for="radio2" class="cb-disable"><span>Major</span></label>
+                    
+                </span>
+            </td>
+            <td>&nbsp;</td>
+            <td>(Minor - 0.1, 0.2, Major - 1.0, 2.0)</td>
+        </tr></table>
 	</div>
     
     <br /><br />

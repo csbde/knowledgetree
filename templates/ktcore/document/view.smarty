@@ -21,14 +21,10 @@
 					{$documentBlocks->getDocBlock()}
 				{/if}
 				<div class="document-title" rel='{literal}{{/literal}"documentID":"{$document->getId()}"{literal}}{/literal}'>
-				<span data-name="documentTitle" data-type='text' data-value-id="value-title" data-class="required"></span>
+                    <span data-name="documentTitle" data-type='text' data-value-id="value-title" data-class="required"></span>
 					<span id="value-title">{i18n}{$document->getName()|sanitize}{/i18n}</span>
 					<span class="save-placeholder">&nbsp;</span>
 					<span title="Click to edit" class="editable-control title edit">&nbsp;</span>
-
-				</div>
-                <div class="uploadProgress" id="uploadProgress"> 
-					<div class="progress" id="progress"></div>
 				</div>
 				{if $document->getIsCheckedOut()} 
 					<span id=indicator class="status-indicator checkedout">
@@ -56,7 +52,7 @@
 								<th style="width: 100px;">Version:</th><td><a href="{$rootUrl}/action.php?kt_path_info=ktcore.actions.document.versionhistory&fDocumentId={$document_id}" id="value_versionhistory">{$document->getMajorVersionNumber()}.{$document->getMinorVersionNumber()}</a></td>
 							</tr>
 							<tr>
-								<th>Last Modified by:</th><td>{$doc_data.lastModifier} on {$document->getDisplayLastModifiedDate()|date_format:"%b %e, %Y"}</td>
+								<th>Last Modified by:</th><td id="value-lastmodifiedby">{$doc_data.lastModifier} on {$document->getDisplayLastModifiedDate()|date_format:"%b %e, %Y"}</td>
 							</tr>
 							<tr>
 								<th>Created by:</th><td>{$doc_data.creator} on {$document->getDisplayCreatedDateTime()|date_format:"%b %e, %Y"}</td>
@@ -70,7 +66,7 @@
 							</tr>
 						{/if}
 							<tr>
-							<th>File type:</th><td>{$fieldsetDisplayHelper->_mimeHelper($document->getMimeTypeID())} - {$fieldsetDisplayHelper->_sizeHelper($document->getSize())} </td>
+							<th>File type:</th><td id="value-filetype">{$fieldsetDisplayHelper->_mimeHelper($document->getMimeTypeID())} - {$fieldsetDisplayHelper->_sizeHelper($document->getSize())} </td>
 							</tr>
 							<tr>
 								<th>Document ID:</th><td>{$document_id}</td>

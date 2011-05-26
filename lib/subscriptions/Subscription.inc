@@ -193,9 +193,10 @@ class Subscription extends KTEntity {
     function getContentLink() {
         // TODO: add subscription icon
         if ($this->iSubscriptionType == SubscriptionConstants::subscriptionType("DocumentSubscription")) {
-            return generateControllerLink("viewDocument", "fDocumentId=$this->iExternalID", Document::getDocumentDisplayPath($this->iExternalID));
+            return generateLink(KTUtil::buildUrl('view.php', array('fDocumentId'=>$this->iExternalID)), NULL, Document::getDocumentDisplayPath($this->iExternalID));
+            
         } else if ($this->iSubscriptionType == SubscriptionConstants::subscriptionType("FolderSubscription")) {
-            return generateControllerLink("browse", "fBrowseType=folder&fFolderId=$this->iExternalID", Folder::getFolderDisplayPath($this->iExternalID));
+            return generateLink(KTUtil::buildUrl('browse.php', array('fFolderId'=>$this->iExternalID)), NULL, Folder::getFolderDisplayPath($this->iExternalID));
         }
     }
 

@@ -49,6 +49,34 @@ kt.app.document_viewlets = new function() {
 		if (jQuery('#value_versionhistory')) {
 			jQuery('#value_versionhistory').html(response.data.version);
 		}
+		
+		if (jQuery('#value-lastmodifiedby')) {
+			jQuery('#value-lastmodifiedby').html(response.data.lastupdatedstring);
+		}
+		
+		if (jQuery('#value-filetype')) {
+			jQuery('#value-filetype').html(response.data.filetype);
+		}
+		
+		
+		if (jQuery('span#docItem_'+self.documentId+' span.docupdatedinfo span.date')){
+			jQuery('span#docItem_'+self.documentId+' span.docupdatedinfo span.date').html(response.data.lastupdateddate);
+		}
+		
+		if (jQuery('span#docItem_'+self.documentId+' span.docupdatedinfo span.user')){
+			jQuery('span#docItem_'+self.documentId+' span.docupdatedinfo span.user').html(response.data.lastupdatedby);
+		}
+		
+		if (jQuery('span#docItem_'+self.documentId+' span.docupdatedinfo span.filesize')){
+			jQuery('span#docItem_'+self.documentId+' span.filesize').html(response.data.filesize);
+		}
+		
+		
+		// Need a better animation to highlight background color
+		if (jQuery('span#docItem_'+self.documentId+' table.doc.item')){
+			jQuery('span#docItem_'+self.documentId+' table.doc.item').css({'opacity': 0.2}).fadeTo("slow", 1);
+			
+		}
 	    
 	    return null;
 	}

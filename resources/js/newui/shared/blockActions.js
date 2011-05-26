@@ -34,6 +34,11 @@ blockActions.prototype.createForm = function(form, title) {
 */
 blockActions.prototype.closeDisplay = function(form) {
 	jQuery('#' + form + 's-panel').remove();
+	
+	if (Ext.getCmp('window_'+form) != undefined) {
+		Ext.getCmp('window_'+form).close();
+	}
+	
 };
 
 blockActions.prototype.getUrl = function(address, title) {
