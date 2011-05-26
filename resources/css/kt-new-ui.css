@@ -1171,7 +1171,29 @@ label span.required
 	border-top-right-radius: 3px;
 	border-bottom-right-radius: 3px;
 }
-
+/*Settings */
+.sidebar#settings {
+	float: left; 
+	width: 175px; 
+	padding: 10px; 
+	background: #F5F5F5; 
+} 
+.sidebar#settings a {
+	line-height: 25px;
+}
+.settings-item {
+	border: 1px solid #CCC;
+	background: #F5F5F5;
+	border-radius: 2px;
+	-webkit-border-radius: 2px;
+	-moz-border-radius: 2px;
+	margin: 5px 0px 10px 10px;
+}
+.settings-item a{
+	padding: 5px 30px;
+	display: block;	
+	background: url(../graphics/plus.gif) no-repeat 10px 10px;
+}
 
 /*Tag editor*/
 
