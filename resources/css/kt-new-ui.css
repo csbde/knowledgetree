@@ -328,7 +328,7 @@ textarea {
     position: relative;
 }
 .breadcrumbBtns a {
-    height: 16px;
+    min-height: 16px;
     margin-right: 2px;
     padding: 2px 0 5px 2px;
     border: 1px solid #EEE!important;
@@ -582,6 +582,9 @@ ul.floatleft li.notification {
 }
 .action_buttons .hover #checkout {
 	background: url('../graphics/newui/icons/lock_hover.png') no-repeat 4px 4px !important;
+}
+.action_buttons #checkoutdowload {
+	background: url('../graphics/newui/icons/lock.png') no-repeat 4px 4px;
 }
 .action_buttons #checkin {
 	background: url('../graphics/newui/icons/lock_open.png') no-repeat 4px 4px;
@@ -950,13 +953,16 @@ div#uploadProgress {
 	border: 2px solid #AAA;
 	box-shadow: 0px 0px 8px #AAA;
 	position: absolute;
-	right: -17px;
+	right: 0;/* Was -17px;*/
 	z-index: 999999;
 	color: #666;
 	width: 199px;
 	font-weight: bold;
 	top: 7px;
 	text-shadow: 0px 1px 0px white;
+	
+	display: none;
+    visibility: hidden;
 }
 span#uploadProgress .title {
 	font-size: 12px;
@@ -1176,3 +1182,9 @@ label span.required
 }
 #content .tags div.token-input-dropdown-facebook {
 }
+
+a.subscribe_actions {
+	cursor: default;
+}
+
+

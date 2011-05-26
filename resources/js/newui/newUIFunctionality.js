@@ -39,53 +39,8 @@ jQuery(document).ready(function() {
 		$('td.info a').prepend('<img class="rightimg" src="resources/graphics/newui/midbarright.png" />');
 
 		$('a.arrow_upload').attr('href', 'javascript:kt.app.upload.showUploadWindow();');
-//
-//		$.ajax({
-//			url: '/upload.html',
-//			success: function(data) {
-//			  $('body').append(data);
-//			}
-//		});
 	});
 })(jQuery);
-
-jQuery(function() {
-				jQuery(".action").hover(
-  					function () {
-    					jQuery(this).children().addClass('hover');
-  					}, 
-  					function () {
-    					jQuery(this).children().removeClass('hover');
-  					}
-				);
-				jQuery(".split").click(function() {
-
-					if (jQuery(this).parent().next().is(':visible'))
-					{
-						jQuery(".splitmenu").hide();
-						jQuery(".split").removeClass('selected');
-
-					}
-					else
-					{
-						jQuery(".splitmenu").hide();
-						jQuery(".split").removeClass('selected');
-						jQuery(this).addClass('selected').parent().next().show();
-
-					}
-
-				});
-				
-
-				 jQuery('html').click(function() {
-				 	jQuery(".splitmenu").hide();
-				 	jQuery(".split").removeClass('selected');
-				 });
-
-				jQuery('.split').click(function(event){
-				     event.stopPropagation();
-				 });
-			});
 
 /**
  * Functions to clear default form text

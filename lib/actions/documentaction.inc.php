@@ -318,6 +318,20 @@ class KTDocumentAction extends KTStandardDispatcher {
     		return Permission::userHasDocumentReadPermission($oDocument);
     	}
     }
+
+    public function do_reason() {
+        $oTemplate = $this->oValidator->validateTemplate('ktcore/document/reason');
+        $aTemplateData = array(
+              'documentId' => $this->oDocument->getId(),
+              'formAction' => $this->sName,
+              'filename' => $this->oDocument->getFilename(),
+              'action' => $this->getReasonAction(),
+              'actionName' => $this->getDisplayName(),
+              'descriptiveText' => $this->getReasonDescriptiveText(),
+        );
+
+        return $oTemplate->render($aTemplateData);
+    }
 }
 
 class JavascriptDocumentAction extends KTDocumentAction
