@@ -32,16 +32,14 @@
                     
 					{if $aWorkflows && $bHasPerm && oWorkflow}
 						{entity_select entities=$aWorkflows name=fWorkflowId id=fWorkflowId none=true selected=$oWorkflow->getId()}
-						&nbsp; - &nbsp;
 					{else}
 						<span>{$oWorkflow->getName()}</span>
-						&nbsp; - &nbsp;
 					{/if}
 					
+					<br /><br />
 					
-					<label for=comment><b>{i18n}State{/i18n} :</b> </label>
+					<label for=comment><b>{i18n}Current State{/i18n} :</b> </label>
                     <span>{$oState->getName()}</span>
-                    <br />
                     <br />
                 </div>
 				{if $aWorkflows && $bHasPerm && oWorkflow}
@@ -126,12 +124,13 @@
     {if $aWorkflows}
         {if $bHasPerm}
             {if !$oWorkflow}
-        		<label for=comment><b>{i18n}Choose Workflow{/i18n}</b> </label>
+        		
 				<form action="{$smarty.server.PHP_SELF}" method=POST name="start_workflow_form">
 					<div class=widgetRow>
 						<div class=widgetItem>
 							<input type=hidden name=action value=startWorkflow />
 							<input type=hidden name=fDocumentId value="{$oDocument->getId()}" />
+							<label for=comment><b>{i18n}Choose Workflow{/i18n} : </b> </label>
 							{entity_select entities=$aWorkflows name=fWorkflowId id=fWorkflowId none=$none}
 						</div>
 						<br/><br/>
@@ -178,3 +177,10 @@
 	</div>
     {/if}
 {/if}
+
+{literal}
+<style type="text/css">
+	div.workflow_transition p.descriptiveText { display: none !important; }
+	div.workflow_transition p.errorMessage { display: none !important; }
+</style>
+{/literal}
