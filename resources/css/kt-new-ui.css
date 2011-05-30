@@ -133,6 +133,7 @@ textarea {
 	border: 1px solid #ccd5e4;
 	background-color: #eff2f7;
 	color: #2F6594;
+	white-space: nowrap;
 }
 #TagCloudDashlet #tagcloud a:hover {
 	text-decoration: none;
