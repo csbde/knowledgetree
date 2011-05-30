@@ -1250,16 +1250,16 @@ class KTAPI {
 				INNER JOIN (metadata_lookup_tree mlt) ON (ml.treeorg_parent = mlt.id)
 				WHERE ml.disabled=0 AND ml.document_field_id=$fieldid
 				ORDER BY parentid, id";
-		
+
 		$rows = DBUtil::getResultArray($sql);
-		
+
 		//get Root's fields
 		$sqlRoot = "SELECT -1 AS parentid, 0 AS treeid, \"Root\" AS treename, ml.id AS id, ml.name AS fieldname
 				FROM metadata_lookup ml
 				LEFT JOIN (metadata_lookup_tree mlt) ON (ml.treeorg_parent = mlt.id)
 				WHERE ml.disabled=0 AND ml.document_field_id=$fieldid AND (ml.treeorg_parent IS NULL OR ml.treeorg_parent = 0)
 				ORDER BY parentid, id";
-		
+
 		$rowsRoot = DBUtil::getResultArray($sqlRoot);
 
 		//if no results for Root, add dummy
@@ -1267,9 +1267,9 @@ class KTAPI {
 		{
 			$rowsRoot[] = array('parentid' => -1, 'treeid' => 0, 'treename' => 'Root', 'id' => -1, 'fieldname' => '');
 		}
-		
+
 		$rows = array_merge($rowsRoot, $rows);
-		
+
 		$results = array();
 
 		if (sizeof($rows) > 0) {
@@ -1322,13 +1322,13 @@ class KTAPI {
 	    }
 
 	    $results = array($root => $indexed[$root]);
-	    
+
 	    //get the first element's key
 	    reset($results);
 		$first_key = key($results);
-		
+
 		$res = $results[$first_key]['fields'];
-		
+
 		//$GLOBALS['default']->log->debug('convertToTree res '.print_r($res, true));
 
 	    //strip out the unneccesary outer array
@@ -3242,37 +3242,38 @@ class KTAPI {
     {
         $response = $this->_check_electronic_signature($document_id, $sig_username, $sig_password, $reason, $reason,
                                                       'ktcore.transactions.check_in');
-        if ($response['status_code'] == 1) return $response;
+        if ($response['status_code'] == 1) { return $response; }
 
     	// we need to add some security to ensure that people don't frig the checkin process to access restricted files.
 		// possibly should change 'tempfilename' to be a hash or id of some sort if this is troublesome.
     	$upload_manager = new KTUploadManager();
     	if (!$upload_manager->is_valid_temporary_file($tempfilename))
     	{
-    	    $response['status_code'] = 1;
-			$response['message'] = 'Invalid temporary file';
-			return $response;
+            return $this->getErrorResponse('Invalid temporary file');
     	}
 
     	$document = &$this->get_document_by_id($document_id);
-		if (PEAR::isError($document))
-		{
-    	    $response['status_code'] = 1;
-			$response['message'] = $document->getMessage();
-			return $response;
-		}
+        if (PEAR::isError($document))
+        {
+            return $this->getErrorResponse($document->getMessage());
+        }
 
-		// checkin
-		$result = $document->checkin($filename, $reason, $tempfilename, $major_update);
-		if (PEAR::isError($result))
-		{
-    	    $response['status_code'] = 1;
-			$response['message'] = $result->getMessage();
-			return $response;
-		}
+        // checkin
+        $result = $document->checkin($filename, $reason, $tempfilename, $major_update);
+        if (PEAR::isError($result))
+        {
+            return $this->getErrorResponse($result->getMessage());
+        }
 
-    	// get status after checkin
-		return $this->get_document_detail($document_id);
+        // get status after checkin
+        return $this->get_document_detail($document_id);
+    }
+
+    protected function getErrorResponse($message)
+    {
+        $response['status_code'] = 1;
+        $response['message'] = $message;
+        return $response;
     }
 
     public function checkin_small_document_with_metadata($document_id,  $filename, $reason, $base64, $major_update,

@@ -21,15 +21,45 @@ kt.app.document_actions = new function() {
     this.init = function() {
     	kt.api.preload(fragmentPackage, execPackage, true);
     }
+    
+    this.proceed_with_action = function(action, checkedOutStatus)
+    {
+        switch (action) {
+            case 'checkout':
+            case 'checkoutdownload':
+                if (checkedOutStatus == '1') {
+                    alert('Document has already been checked-out by a user. Click OK to update actions.');
+                    return false;
+                } else {
+                    return true;
+                }
+            break;
+            case 'cancelcheckout':
+            case 'checkin':
+                if (checkedOutStatus == '1') {
+                    return true;
+                } else {
+                    alert('Document has already been checked-in. Click OK to update actions.');
+                    return false;
+                }
+            break;
+        }
+    }
 
 	this.checkout_actions = function(documentId, type) {
 		self.documentId = documentId;
 		self.type = type;
 		var params = {};
-		var response = kt.api.esignatures.checkESignatures();
+		var response = kt.api.esignatures.checkESignatures(documentId);
 		var description = '';
 		var field = 'Reason';
-		if(response == false) {
+        
+        if (!self.proceed_with_action(type, response.checked_out)) {
+            self.refresh(false);
+            return;
+        }
+        
+		if(response.esign == false) {
 			var params = {};
 			self.run_checkout_action(params);
 		} else {
@@ -75,13 +105,30 @@ kt.app.document_actions = new function() {
 		switch (self.type) {
 			case 'checkout':
 				func = 'documentActionServices.checkout';
+				
+				if (Ext.get('middle_doc_info_area')) {
+					Ext.get('middle_doc_info_area').mask("<img src='/resources/graphics/newui/loading.gif' alt='absmiddle' /> Checking-Out Document");
+				}
+				
 			break;
 			case 'checkoutdownload':
 				func = 'documentActionServices.checkout_download';
+				if (Ext.getCmp('window_reason')) {
+					Ext.getCmp('window_reason').close();
+				}
+				
+				if (Ext.get('middle_doc_info_area')) {
+					Ext.get('middle_doc_info_area').mask("<img src='/resources/graphics/newui/loading.gif' alt='absmiddle' /> Checking-Out Document");
+				}
 				var response = ktjapi.retrieve(func, params);
+				
 				if(response.errors.hadErrors == 0) {
 					this.download();
 					self.refresh();
+				} else {
+					if (Ext.get('middle_doc_info_area')) {
+						Ext.get('middle_doc_info_area').unmask();
+					}
 				}
 			break;
 			case 'checkin':
@@ -90,17 +137,29 @@ kt.app.document_actions = new function() {
 			break;
 			case 'cancelcheckout':
 				func = 'documentActionServices.checkout_cancel';
+				if (Ext.get('middle_doc_info_area')) {
+					Ext.get('middle_doc_info_area').mask("<img src='/resources/graphics/newui/loading.gif' alt='absmiddle' /> Cancelling Checkout");
+				}
 			break;
 		}
 		var callback = self.refresh;
-		return ktjapi.callMethod(func, params, callback, synchronous, null);
+		return ktjapi.callMethod(func, params, callback, synchronous, null, callback);
 	}
 
-	this.refresh = function() {
+	this.refresh = function(showNotifications) {
+        
+        if (showNotifications == undefined) {
+            showNotifications = true;
+        }
+		
+		if (Ext.get('middle_doc_info_area')) {
+			Ext.get('middle_doc_info_area').unmask();
+		}
+        
 		self.refresh_actions('top');
 		self.refresh_actions('bottom');
 		self.refresh_actions('init');
-		self.refresh_status_indicator();
+		self.refresh_status_indicator(showNotifications);
 		kt.app.document_viewlets.refresh_comments(self.documentId);
 		kt.app.document_viewlets.update_filename_version(self.documentId);
 
@@ -116,32 +175,53 @@ kt.app.document_actions = new function() {
 		jQuery('#'+location+'_actions').html(response.data.success);
 	}
 
-	this.refresh_status_indicator = function() {
+	this.refresh_status_indicator = function(showNotifications) {
 		switch (self.type) {
 			case 'checkout':
 			case 'checkoutdownload':
 				jQuery('#indicator').show();
+				jQuery('#value-ischeckedout').slideDown();
+				
+				jQuery('span#docItem_'+self.documentId+' li.action_checkout').addClass('not_supported');
+				jQuery('span#docItem_'+self.documentId+' span.checked_out').removeClass('not_supported');
+				jQuery('span#docItem_'+self.documentId+' li.action_cancel_checkout').removeClass('not_supported');
+				jQuery('span#docItem_'+self.documentId+' li.action_checkin').removeClass('not_supported');
 				
 				
-				kt.app.upload.unhideProgressWidget();
-				kt.app.upload.updateProgress('Document successfully checked-out', false);
-				kt.app.upload.fadeProgress(5000);
+                if (showNotifications) {
+                    kt.app.notify.show('Document successfully checked-out', false);
+                }
+				
 				
 				break;
 			case 'checkin':
 				jQuery('#indicator').hide();
+				jQuery('#value-ischeckedout').slideUp();
 				
-				kt.app.upload.unhideProgressWidget();
-				kt.app.upload.updateProgress('Document successfully checked-in', false);
-				kt.app.upload.fadeProgress(5000);
+				jQuery('span#docItem_'+self.documentId+' li.action_checkout').removeClass('not_supported');
+				jQuery('span#docItem_'+self.documentId+' span.checked_out').addClass('not_supported');
+				jQuery('span#docItem_'+self.documentId+' li.action_cancel_checkout').addClass('not_supported');
+				jQuery('span#docItem_'+self.documentId+' li.action_checkin').addClass('not_supported');
+				
+                if (showNotifications) {
+                    kt.app.notify.show('Document successfully checked-in', false);
+                }
+				
 				
 				break;
 			case 'cancelcheckout':
 				jQuery('#indicator').hide();
+				jQuery('#value-ischeckedout').slideUp();
 				
-				kt.app.upload.unhideProgressWidget();
-				kt.app.upload.updateProgress('Document checked-out has been cancelled', false);
-				kt.app.upload.fadeProgress(5000);
+				jQuery('span#docItem_'+self.documentId+' li.action_checkout').removeClass('not_supported');
+				jQuery('span#docItem_'+self.documentId+' span.checked_out').addClass('not_supported');
+				jQuery('span#docItem_'+self.documentId+' li.action_cancel_checkout').addClass('not_supported');
+				jQuery('span#docItem_'+self.documentId+' li.action_checkin').addClass('not_supported');
+				
+                if (showNotifications) {
+                    kt.app.notify.show('Document checked-out has been cancelled', false);
+                }
+				
 				
 				break;
 		}
@@ -158,8 +238,8 @@ kt.app.document_actions = new function() {
 		var height;
 		var title;
 		var address;
-		width = '600px';
-		height = '400px';
+		width = '540';
+		height = '500';
 		title = 'Check-in Document';
 		// TODO : createForm
 		// create html for form
@@ -169,6 +249,8 @@ kt.app.document_actions = new function() {
 			id          : 'checkinmask',
 	        applyTo     : 'checkins',
 	        layout      : 'fit',
+			resizable   : false,
+	        title       : title,
 	        width       : width,
 	        height      : height,
 	        closeAction :'destroy',
@@ -224,7 +306,7 @@ kt.app.document_actions = new function() {
 		
 		// Load Mask
 		if (continueCheckin) {
-			Ext.getCmp('checkinmask').getEl().mask("<img src='/resources/graphics/newui/loading.gif' /> Checking In File");
+			Ext.getCmp('checkinmask').getEl().mask("<img src='/resources/graphics/newui/loading.gif' alt='absmiddle' /> Checking-In Document", "x-mask-loading");
 		}
 		
 		return continueCheckin;

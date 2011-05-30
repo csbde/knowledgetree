@@ -33,12 +33,12 @@ workflowActions.prototype.displayAction = function(transitionId) {
 		address = this.baseUrl + 'fDocumentId=' + documentId;
 	} else {
 		if(transitionId == undefined) {
-			width = '600px';
+			width = '400px';
 			height = '400px';
 			title = 'Transition a workflow';
 			address = this.baseUrl + 'fDocumentId=' + documentId;
 		} else {
-			width = '500px';
+			width = '400px';
 			height = '400px';
 			title = 'Perform Transition';
 			address = this.baseUrl + 'action=quicktransition&fDocumentId=' + documentId + '&fTransitionId=' + transitionId;

@@ -122,8 +122,18 @@ class documentActionServices extends client_service {
 		return true;
     }
 	
-    public function is_reasons_enabled() {
+    public function is_reasons_enabled($params) {
     	global $default;
+        
+        if (isset($params['documentId'])) {
+            $oDocument = Document::get($params['documentId']);
+            
+            // Check for document error
+            $this->addResponse('checkedout', $oDocument->getIsCheckedOut() ? '1': '0');
+        } else {
+            $this->addResponse('checkedout', '0');
+        }
+        
     	if($default->enableESignatures) { 
     		$this->addResponse('success', 'esign');
 			return true;

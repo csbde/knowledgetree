@@ -552,9 +552,9 @@ kt.app.upload = new function() {
                     }
                 },
 				// TODO: need to implement this!
-				/*onCancel: function(id,fileName) {
-				console.log('onCancel '+fileName);
-				},*/
+				//onCancel: function(id,fileName) {
+				//console.log('onCancel '+fileName);
+				//},
 				showMessage: function(message) {alert(message);}
 			});
 
@@ -585,11 +585,9 @@ kt.app.upload = new function() {
 				if (parentNode.length == 0) {
 					parentNode = jQuery('ul#loadedpath li[folderid=' + jQuery('#currentPath').val() + ']').append('<ul></ul>');
 				}
-
-				jQuery.each(result.data.children, function(i, item) {
-					jQuery('ul#loadedpath li[folderid=' + jQuery('#currentPath').val() + '] ul').append('<li class="notloaded" folderid="' + item.id + '">' + item.name + '</li>');
-				});
-
+				
+				
+				
 				var path = kt.app.upload.getNodePath(jQuery('#currentPath').val());
 				var limit = 45;
 				if (path.length > limit) {
@@ -604,6 +602,14 @@ kt.app.upload = new function() {
 				// console.log('uniqueFileName '+uniqueFileName);
 
 				// console.log('random '+result.data.amazoncreds.randomfile);
+				
+				kt.api.getSubFolders(jQuery('#currentPath').val(), function(childResult) {
+					if (childResult.data.children) {
+						jQuery.each(childResult.data.children, function(i, item) {
+							jQuery('ul#loadedpath li[folderid=' + jQuery('#currentPath').val() + '] ul').append('<li class="notloaded" folderid="' + item.id + '">' + item.name + '</li>');
+						});
+					}
+				});
 
 				self.uploader.setParams({
 					AWSAccessKeyId          : result.data.amazoncreds.AWSAccessKeyId,
