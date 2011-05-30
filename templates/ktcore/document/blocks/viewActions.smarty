@@ -6,14 +6,14 @@
 	<input id=alertState type=hidden value={$alertState} />
 	<input id=dsubscribeState type=hidden value={$subscribeState} />
 	{if $workflowState == 'enabled'}
-		{assign var="workflowTip" value="Transition workflow state"}
+		{assign var="workflowTip" value="<span>Transition workflow state<span>"}
 	{else}
-		{assign var="workflowTip" value="Add a new workflow"}
+		{assign var="workflowTip" value="<span>Add a new workflow</span>"}
 	{/if}
 	<a id=workflow_action class="workflow action {$workflowState}" href="javascript:{ldelim}workflows.displayAction();{rdelim}" value={$workflowState} title="{$workflowTip}"></a>
 	
-	<a id=alert_action class="alert action {$alertState}" href="javascript:{ldelim}alerts.displayAction();{rdelim}" value={$alertState} title="Add an alert"></a>
-	<a id=subscribe_action class="subscribe action {$subscribeState}" href="javascript:{ldelim}subscription.subscribeToDocument();{rdelim}" value={$subscribeState} title="Subscribe to this document"></a>
+	<a id=alert_action class="alert action {$alertState}" href="javascript:{ldelim}alerts.displayAction();{rdelim}" value={$alertState} title="<span>Add an alert</span>"></a>
+	<a id=subscribe_action class="subscribe action {$subscribeState}" href="javascript:{ldelim}subscription.subscribeToDocument();{rdelim}" value={$subscribeState} title="<span>Subscribe to this document</span>"></a>
 
 {if $wrapper}
 </div>

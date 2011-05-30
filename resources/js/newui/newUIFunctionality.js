@@ -13,6 +13,22 @@ jQuery(document).ready(function() {
     }
 
     jQuery('.buttonsList').appendTo(jQuery('#bigbuttons'));
+	
+	
+	
+	
+	jQuery(".cb-enable").live('click', function() {
+        var parent = jQuery(this).parents('.switch');
+        jQuery('.cb-disable',parent).removeClass('selected');
+        jQuery(this).addClass('selected');
+        jQuery('.checkbox',parent).attr('checked', true);
+    });
+    jQuery(".cb-disable").live('click', function() {
+        var parent = jQuery(this).parents('.switch');
+        jQuery('.cb-enable',parent).removeClass('selected');
+        jQuery(this).addClass('selected');
+        jQuery('.checkbox',parent).attr('checked', false);
+    });
 
 });
 

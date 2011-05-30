@@ -49,7 +49,8 @@ if($default->useEmailLogin) {
 				<input type="hidden" value="" id="reason-action">
 
 				<a href="#" onclick="vActions.closeDisplay('reason'); return false;" class="ul_actions_cancel_link">Cancel</a>
-				<input name="reason_submit" type="button" onclick="kt.api.esignatures.saveESignatures();" value="Save" class="ul_actions_btns" id="ul_actions_upload_btn">
+				<span class="reason-spinner none" style="visibility:hidden;">&nbsp;</span>
+				<input name="reason_submit" type="button" onclick="kt.api.esignatures.saveESignatures();" value="Save" id="reason-btn">
 	    	</td>
 		</tr>
 	</tbody>

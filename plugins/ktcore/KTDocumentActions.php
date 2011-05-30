@@ -1294,7 +1294,7 @@ class KTAjaxDocumentWorkflowAction extends KTDocumentAction {
                     $aVocab[$oTransition->getId()] = $oTransition->showDescription();
                 }
                 $fieldOptions = array('vocab' => $aVocab);
-                $transition_fields[] = new KTLookupWidget(_kt('Transition'), _kt(''), 'fTransitionId', null, $this->oPage, false, null, $fieldErrors, $fieldOptions);
+                $transition_fields[] = new KTLookupWidget(_kt('Transition : '), _kt(''), 'fTransitionId', null, $this->oPage, false, null, $fieldErrors, $fieldOptions);
                 $transition_fields[] = new KTTextWidget(
                     _kt('Comment'), _kt(''),
                     'fComments', '',
@@ -1854,7 +1854,7 @@ class KTDocumentCheckOutDownloadAction extends KTDocumentCheckOutAction {
 	public $sParentBtn = 'ktcore.actions.document.checkout';
 	
     function getDisplayName() {
-        return _kt('Checkout And Download');
+        return _kt('Check-out And Download');
     }
     
     function getFunctionScript()
@@ -1893,7 +1893,7 @@ class KTDocumentCheckOutAction extends JavascriptDocumentAction {
 	public $btnOrder = 2;
 
     function getDisplayName() {
-        return _kt('Checkout');
+        return _kt('Check-out');
     }
 
     function _show() {
@@ -2214,8 +2214,8 @@ class KTDocumentCheckInAction extends JavascriptDocumentAction {
 		$firephp->log('Doing checkin');
 		
 		$firephp->log($_POST);
-		$firephp->log($_FILES);
-		$firephp->log($_REQUEST);
+		//$firephp->log($_FILES);
+		//$firephp->log($_REQUEST);
 		$firephp->log($this->oDocument->getFilename());
 		*/
 		
@@ -2228,7 +2228,7 @@ class KTDocumentCheckInAction extends JavascriptDocumentAction {
         $sNewFilename = $_FILES['filename']['name'];
         $aOptions = array();
 
-        if ($_POST['major_update']) {
+        if ($_POST['data']['major_update'] == 'true') {
             $aOptions['major_update'] = true;
         }
 
@@ -2294,7 +2294,7 @@ class KTDocumentCancelCheckOutAction extends JavascriptDocumentAction {
     }
     
     public function getDisplayName() {
-        return _kt('Cancel Checkout');
+        return _kt('Cancel Check-out');
     }
     
     public function _show() {

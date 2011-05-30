@@ -715,7 +715,7 @@ class BrowseView {
     protected function getDocumentTemplate($browseViewId, $checkbox = null, $share_separator = null, $shortcut = null)
     {
         return '
-            <span class="doc browseView ' . $browseViewId . '">
+            <span id="docItem_[id]" class="doc browseView ' . $browseViewId . '">
                 <table cellspacing="0" cellpadding="0" width="100%" border="0" class="doc item ddebug">
                     <tr>
                         ' . $checkbox . '
@@ -724,7 +724,7 @@ class BrowseView {
                                 <span class="immutable_info[is_immutable]">FINALIZED
                                     <span>This document has been <strong>finalized</strong> and can no longer be modified.</span>
                                 </span>
-                                <span class="checked_out[is_checkedout]">CHECKOUT
+                                <span class="checked_out[is_checkedout]">CHECKED OUT
                                     <span>This document is <strong>checked-out</strong> by <strong>[checked_out_by]</strong> and cannot be edited until it is Checked-in.</span>
                                 </span>
                                 ' . $shortcut . '
@@ -734,7 +734,7 @@ class BrowseView {
                         <td class="doc summary_cell fdebug">
                             <div class="title"><a class="clearLink" href="[document_link]" style="">[title]</a></div>
                             <div class="detail">
-                                <span class="item"> Owner: <span class="user">[owned_by]</span></span><span class="item">Created: <span class="date">[created_date]</span> by <span class="user">[created_by]</span></span><span class="item">Updated: <span class="date">[modified_date]</span> by <span class="user">[modified_by]</span></span><span class="item">File size: <span class="user">[filesize]</span></span>
+                                <span class="item"> Owner: <span class="user">[owned_by]</span></span><span class="item">Created: <span class="date">[created_date]</span> by <span class="user">[created_by]</span></span><span class="item docupdatedinfo">Updated: <span class="date">[modified_date]</span> by <span class="user">[modified_by]</span></span><span class="item">File size: <span class="user filesize">[filesize]</span></span>
                             </div>
                         </td>
                         <td>
@@ -776,9 +776,9 @@ class BrowseView {
 
                                         <li class="separator[separatorB]"></li>
 
-                                        <li class="action_checkout [actions.checkout]"><a href="action.php?kt_path_info=ktcore.actions.document.checkout&fDocumentId=[id]">Check-out</a></li>
-                                        <li class="action_cancel_checkout [actions.cancel_checkout]"><a href="action.php?kt_path_info=ktcore.actions.document.cancelcheckout&fDocumentId=[id]">Cancel Check-out</a></li>
-                                        <li class="action_checkin [actions.checkin]"><a href="action.php?kt_path_info=ktcore.actions.document.checkin&fDocumentId=[id]">Check-in</a></li>
+                                        <li class="action_checkout [actions.checkout]"><a href="#" onclick="kt.app.document_actions.checkout_actions(\'[id]\', \'checkout\');">Check-out</a></li>
+                                        <li class="action_cancel_checkout [actions.cancel_checkout]"><a href="#" onclick="kt.app.document_actions.checkout_actions(\'[id]\', \'cancelcheckout\');">Cancel Check-out</a></li>
+                                        <li class="action_checkin [actions.checkin]"><a href="#" onclick="kt.app.document_actions.checkout_actions(\'[id]\', \'checkin\');">Check-in</a></li>
 
                                         <li class="separator[separatorC]"></li>
 

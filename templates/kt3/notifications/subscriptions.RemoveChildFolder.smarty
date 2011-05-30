@@ -9,9 +9,8 @@
             {else}
                 <span class="descriptiveText">{i18n}Location is no longer available{/i18n}</span>
             {/if}
-
             &nbsp;|&nbsp;
-        <div>
+        </div>
 
             <a href="{ktLink base="notify.php" query="id=`$info.notify_id`&notify_action=clear"}"
                 kt:deleteMessage="{i18n}Are you sure you wish to clear the notification?{/i18n}">

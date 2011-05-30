@@ -752,6 +752,7 @@ a.main_nav_item {
 #content .actionitem {
     margin-top: 1em;
     font-weight: bold;
+	clear: both;
 }
 
 #content .actionmessage
@@ -817,7 +818,7 @@ a.main_nav_item {
 	font-size: 13px;
 }
 .metadatatable {
-    width: 100%;
+    /*width: 100%;*/
     font-size: 12px;
 }
 
