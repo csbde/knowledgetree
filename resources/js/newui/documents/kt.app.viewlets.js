@@ -42,36 +42,36 @@ kt.app.document_viewlets = new function() {
 		var func = 'documentViewletServices.versionAndFileName';
 	    var response = ktjapi.retrieve(func, params);
 		
-		if (jQuery('#value-filename')) {
+		if (jQuery('#value-filename') && response.data.filename) {
 			jQuery('#value-filename').html(response.data.filename);
 		}
 		
-		if (jQuery('#value_versionhistory')) {
+		if (jQuery('#value_versionhistory') && response.data.version) {
 			jQuery('#value_versionhistory').html(response.data.version);
 		}
 		
-		if (jQuery('#value-lastmodifiedby')) {
+		if (jQuery('#value-lastmodifiedby') && response.data.lastupdatedstring) {
 			jQuery('#value-lastmodifiedby').html(response.data.lastupdatedstring);
 		}
 		
-		if (jQuery('#value-filetype')) {
+		if (jQuery('#value-filetype') && response.data.filetype) {
 			jQuery('#value-filetype').html(response.data.filetype);
 		}
 		
-		if (jQuery('#value-checkedoutby')) {
+		if (jQuery('#value-checkedoutby') && response.data.checkoutuser) {
 			jQuery('#value-checkedoutby').html(response.data.checkoutuser);
 		}
 		
 		
-		if (jQuery('span#docItem_'+self.documentId+' span.docupdatedinfo span.date')){
+		if (jQuery('span#docItem_'+self.documentId+' span.docupdatedinfo span.date') && response.data.lastupdateddate){
 			jQuery('span#docItem_'+self.documentId+' span.docupdatedinfo span.date').html(response.data.lastupdateddate);
 		}
 		
-		if (jQuery('span#docItem_'+self.documentId+' span.docupdatedinfo span.user')){
+		if (jQuery('span#docItem_'+self.documentId+' span.docupdatedinfo span.user') && response.data.lastupdatedby){
 			jQuery('span#docItem_'+self.documentId+' span.docupdatedinfo span.user').html(response.data.lastupdatedby);
 		}
 		
-		if (jQuery('span#docItem_'+self.documentId+' span.docupdatedinfo span.filesize')){
+		if (jQuery('span#docItem_'+self.documentId+' span.docupdatedinfo span.filesize') && response.data.filesize){
 			jQuery('span#docItem_'+self.documentId+' span.filesize').html(response.data.filesize);
 		}
 		
