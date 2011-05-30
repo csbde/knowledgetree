@@ -70,7 +70,6 @@ class KTDocumentLinks extends KTPlugin {
 }
 
 
-
 class KTDocumentLinkViewlet extends KTDocumentViewlet {
     var $sName = 'ktcore.viewlets.document.link';
     public $bShowIfWriteShared = true;

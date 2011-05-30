@@ -58,7 +58,6 @@ class KTCorePlugin extends KTPlugin {
         $oConfig = KTConfig::getSingleton();
         $restrictedEnv = $oConfig->get('ui/restrictedEnv');
 
-
         $this->registerAction('documentinfo', 'KTDocumentDetailsAction', 'ktcore.actions.document.displaydetails', 'KTDocumentActions.php');
         $this->registerAction('documentviewlet', 'KTDocumentActivityFeedAction', 'ktcore.viewlet.document.activityfeed', 'KTDocumentViewlets.php');
         $this->registerAction('documentaction', 'KTDocumentViewAction', 'ktcore.actions.document.view', 'KTDocumentActions.php');
@@ -143,7 +142,7 @@ class KTCorePlugin extends KTPlugin {
             $this->registerAdminPage('scheduler', 'manageSchedulerDispatcher', 'sysConfig', _kt('Manage Task Scheduler'), _kt('Manage the task scheduler'), 'scheduler/taskScheduler.php');
         }
 
-        $this->registerAdminPage('authentication', 'KTAuthenticationAdminPage', 'userSetup', _kt('Authentication'), sprintf(_kt('You can use additional lists of users and groups. These will be used as additional sources of authentication data.'), APP_NAME), 'authentication/authenticationadminpage.inc.php');
+        $this->registerAdminPage('authenticationSources', 'KTAuthenticationAdminPage', 'security', _kt('Authentication Sources'), sprintf(_kt('You can use additional lists of users and groups. These will be used as additional sources of authentication data.'), APP_NAME), 'authentication/authenticationadminpage.inc.php');
 
         $this->registerPortlet(array('browse', 'dashboard'),
                 'Search2Portlet', 'ktcore.search2.portlet',
@@ -284,21 +283,23 @@ class KTCorePlugin extends KTPlugin {
         $this->registerAdminCategory('reporting', _kt('Reporting'),
             _kt('View reports.'));
         $this->registerAdminCategory('security', _kt('Security & Authentication'),
-            _kt('View reports.'));
+            _kt('Manage system security.'));
         $this->registerAdminCategory('sysConfig', _kt('System Preferences'),
             _kt('Configure system preferences.'));
         $this->registerAdminCategory('contentManagement', _kt('Content Curation'),
             _kt('Manage content.'));
         $this->registerAdminCategory('documentProperties', _kt('Document Properties'),
             _kt('Manage document properties.'));
+        $this->registerAdminCategory('workflows', _kt('Workflows'),
+            _kt('Manage workflows.'));
 
         // users and groups
 
         $this->registerAdminPage('users', 'KTUserAdminDispatcher', 'userSetup',
-            _kt('Manage Users'), _kt('Add or remove users from the system.'),
+            _kt('Users'), _kt('Add or remove users from the system.'),
             'admin/userManagement.php', null, 10);
         $this->registerAdminPage('groups', 'KTGroupAdminDispatcher', 'userSetup',
-            _kt('Manage Groups'), _kt('Add or remove groups from the system.'),
+            _kt('Groups'), _kt('Add or remove groups from the system.'),
             'admin/groupManagement.php', null, 9);
         $this->registerAdminPage('roles', 'RoleAdminDispatcher', 'advancedPermissions',
             _kt('Roles'), _kt('Create or delete roles'),
@@ -308,19 +309,19 @@ class KTCorePlugin extends KTPlugin {
             'admin/unitManagement.php', null);
 
         // security
-        $this->registerAdminPage('permissions', 'ManagePermissionsDispatcher', 'userSetup',
-            _kt('Permissions'), _kt('Create or delete permissions.'), 'admin/managePermissions.php', null, 7);
-        $this->registerAdminPage('conditions', 'KTConditionDispatcher', 'contentManagement',
+        //$this->registerAdminPage('permissions', 'ManagePermissionsDispatcher', 'advancedPermissions',
+        //    _kt('Permissions'), _kt('Create or delete permissions.'), 'admin/managePermissions.php', null, 7);
+        $this->registerAdminPage('conditions', 'KTConditionDispatcher', 'advancedPermissions',
             _kt('Dynamic Conditions'),
             _kt('Manage criteria which determine whether a user is permitted to perform a system action.'),
             'admin/conditions.php', null);
 
         // documents
-        $this->registerAdminPage('typemanagement', 'KTDocumentTypeDispatcher', 'contentManagement',
+        $this->registerAdminPage('typemanagement', 'KTDocumentTypeDispatcher', 'documentProperties',
             _kt('Document Types'),
             _kt('Manage the different classes of document which can be added to the system.'),
             'admin/documentTypes.php', null);
-        $this->registerAdminPage('workflows_2', 'KTWorkflowAdminV2', 'contentManagement',
+        $this->registerAdminPage('workflows_2', 'KTWorkflowAdminV2', 'workflows',
             _kt('Workflows'), _kt('Configure automated Workflows that map to document life-cycles.'),
             'admin/workflowsv2.php', null);
 
@@ -369,14 +370,12 @@ class KTCorePlugin extends KTPlugin {
                 '../search2/reporting/LuceneStatistics.php', null);
         }
 
-
-
         //config
         $this->registerAdminPage('emailconfigpage', 'EmailConfigPageDispatcher', 'sysConfig',
-            _kt('Email'), _kt('Define the sending email server address, email password, email port, and user name, and view and modify policies for emailing documents and attachments from KnowledgeTree.'),
+            _kt('Email Settings'), _kt('Define the sending email server address, email password, email port, and user name, and view and modify policies for emailing documents and attachments from KnowledgeTree.'),
             'admin/configSettings.php', null);
 
-        $this->registerAdminPage('actionreasons', 'ActionReasonsDispatcher', 'contentManagement',
+        $this->registerAdminPage('actionreasons', 'ActionReasonsDispatcher', 'sysConfig',
             _kt('Document Action Settings'), _kt('Define system behaviour when document actions are performed. (e.g. Enforce reasons for Check-out)'),
             'admin/configSettings.php', null);
 
@@ -432,6 +431,7 @@ class KTCorePlugin extends KTPlugin {
                 _kt('Manage Branding'), _kt('Change customizable branding components of the site e.g. Custom company logo'),
                 'admin/manageBranding.php', null);
         }
+
         $this->registerAdminPage('views', 'ManageViewDispatcher', 'contentManagement',
             _kt('Manage views'), _kt('Allows you to specify the columns that are to be used by a particular view (e.g. Browse documents, Search)'),
             'admin/manageViews.php', null);
