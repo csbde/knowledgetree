@@ -21,15 +21,45 @@ kt.app.document_actions = new function() {
     this.init = function() {
     	kt.api.preload(fragmentPackage, execPackage, true);
     }
+    
+    this.proceed_with_action = function(action, checkedOutStatus)
+    {
+        switch (action) {
+            case 'checkout':
+            case 'checkoutdownload':
+                if (checkedOutStatus == '1') {
+                    alert('Document has already been checkedout');
+                    return false;
+                } else {
+                    return true;
+                }
+            break;
+            case 'cancelcheckout':
+            case 'checkin':
+                if (checkedOutStatus == '1') {
+                    return true;
+                } else {
+                    alert('Document has already been checked-in');
+                    return false;
+                }
+            break;
+        }
+    }
 
 	this.checkout_actions = function(documentId, type) {
 		self.documentId = documentId;
 		self.type = type;
 		var params = {};
-		var response = kt.api.esignatures.checkESignatures();
+		var response = kt.api.esignatures.checkESignatures(documentId);
 		var description = '';
 		var field = 'Reason';
-		if(response == false) {
+        
+        if (!self.proceed_with_action(type, response.checked_out)) {
+            self.refresh(false);
+            return;
+        }
+        
+		if(response.esign == false) {
 			var params = {};
 			self.run_checkout_action(params);
 		} else {
@@ -96,11 +126,16 @@ kt.app.document_actions = new function() {
 		return ktjapi.callMethod(func, params, callback, synchronous, null);
 	}
 
-	this.refresh = function() {
+	this.refresh = function(showNotifications) {
+        
+        if (showNotifications == undefined) {
+            showNotifications = true;
+        }
+        
 		self.refresh_actions('top');
 		self.refresh_actions('bottom');
 		self.refresh_actions('init');
-		self.refresh_status_indicator();
+		self.refresh_status_indicator(showNotifications);
 		kt.app.document_viewlets.refresh_comments(self.documentId);
 		kt.app.document_viewlets.update_filename_version(self.documentId);
 
@@ -116,7 +151,7 @@ kt.app.document_actions = new function() {
 		jQuery('#'+location+'_actions').html(response.data.success);
 	}
 
-	this.refresh_status_indicator = function() {
+	this.refresh_status_indicator = function(showNotifications) {
 		switch (self.type) {
 			case 'checkout':
 			case 'checkoutdownload':
@@ -128,7 +163,10 @@ kt.app.document_actions = new function() {
 				jQuery('span#docItem_'+self.documentId+' li.action_checkin').removeClass('not_supported');
 				
 				
-				kt.app.notify.show('Document successfully checked-out', false);
+                if (showNotifications) {
+                    kt.app.notify.show('Document successfully checked-out', false);
+                }
+				
 				
 				break;
 			case 'checkin':
@@ -139,7 +177,10 @@ kt.app.document_actions = new function() {
 				jQuery('span#docItem_'+self.documentId+' li.action_cancel_checkout').addClass('not_supported');
 				jQuery('span#docItem_'+self.documentId+' li.action_checkin').addClass('not_supported');
 				
-				kt.app.notify.show('Document successfully checked-in', false);
+                if (showNotifications) {
+                    kt.app.notify.show('Document successfully checked-in', false);
+                }
+				
 				
 				break;
 			case 'cancelcheckout':
@@ -150,7 +191,10 @@ kt.app.document_actions = new function() {
 				jQuery('span#docItem_'+self.documentId+' li.action_cancel_checkout').addClass('not_supported');
 				jQuery('span#docItem_'+self.documentId+' li.action_checkin').addClass('not_supported');
 				
-				kt.app.notify.show('Document checked-out has been cancelled', false);
+                if (showNotifications) {
+                    kt.app.notify.show('Document checked-out has been cancelled', false);
+                }
+				
 				
 				break;
 		}
