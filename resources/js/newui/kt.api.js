@@ -243,13 +243,13 @@ Create the following event which will be triggered on saving the signature:
 kt.api.esignatures = new function() {
     var self = this;
 
-    this.checkESignatures = function() {
+    this.checkESignatures = function(documentId) {
         // are esignatures enabled or reasons enabled - return esign / reason / false
-		var params = {};
+		var params = {documentId:documentId};
 		var func = 'documentActionServices.is_reasons_enabled';
 		var response = ktjapi.retrieve(func, params);
 
-		return response.data.success;
+		return {esign: response.data.success, checked_out: response.data.checkedout};
     }
 
 	this.showESignatures = function(response, params) {
@@ -271,8 +271,11 @@ kt.api.esignatures = new function() {
 	        layout      : 'fit',
 	        width       : width,
 	        height      : height,
+			resizable   : false,
 			title       : title,
 	        closeAction :'close',
+			width       : 370,
+			height      : 230,
 	        y           : 50,
 	        shadow      : true,
 	        modal       : true,

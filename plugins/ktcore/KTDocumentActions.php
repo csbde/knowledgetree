@@ -1854,7 +1854,7 @@ class KTDocumentCheckOutDownloadAction extends KTDocumentCheckOutAction {
 	public $sParentBtn = 'ktcore.actions.document.checkout';
 	
     function getDisplayName() {
-        return _kt('Checkout And Download');
+        return _kt('Check-out And Download');
     }
     
     function getFunctionScript()
@@ -1893,7 +1893,7 @@ class KTDocumentCheckOutAction extends JavascriptDocumentAction {
 	public $btnOrder = 2;
 
     function getDisplayName() {
-        return _kt('Checkout');
+        return _kt('Check-out');
     }
 
     function _show() {
@@ -2294,7 +2294,7 @@ class KTDocumentCancelCheckOutAction extends JavascriptDocumentAction {
     }
     
     public function getDisplayName() {
-        return _kt('Cancel Checkout');
+        return _kt('Cancel Check-out');
     }
     
     public function _show() {

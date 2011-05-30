@@ -90,6 +90,11 @@ class documentViewletServices extends client_service {
 			
 			$this->addResponse('lastupdatedby', $oModifier->getName());
 			$this->addResponse('lastupdatedstring', $oModifier->getName().' on '.date('Y-m-d H:i', strtotime($document->getDisplayLastModifiedDate())));
+			
+			$oCheckoutUser = User::get($document->getCheckedOutUserID());
+			
+			$this->addResponse('checkoutuser', $oCheckoutUser->getName());
+			
 		}
     	
     	return true;
