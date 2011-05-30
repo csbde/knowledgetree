@@ -9,9 +9,15 @@ kt.app.notify = new function() {
 
 	this.init = function() {}
 
-    this.show = function(message, isError)
+    this.show = function(message, isError, autoHide)
     {
         var progress = jQuery('.uploadProgress');
+		
+		// If autohide is set to false, the notification remains until another notification
+		// comes to remove it
+		if (autoHide == undefined) {
+			autoHide = true;
+		}
 		
 		// If the notification snippet does not exist, create it and append to body
         if (progress.length == 0) {
@@ -39,7 +45,10 @@ kt.app.notify = new function() {
 		progress.text(message).css('display', 'block').css('visibility', 'visible');
 		
 		// Set fadeout - 5 seconds
-		jQuery('#uploadProgress').fadeOut(5000);
+		if (autoHide) {
+			jQuery('#uploadProgress').fadeOut(5000);
+		}
+		
     }
 
 	//  Call the initialization function at object instantiation.

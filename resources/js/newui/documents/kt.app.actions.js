@@ -60,8 +60,8 @@ kt.app.document_actions = new function() {
         }
         
 		if(response.esign == false) {
-			var params = {};
-			self.run_checkout_action(params);
+			var reason = '';
+			self.run_checkout_action(reason);
 		} else {
 			switch (type) {
 				case 'checkout':
@@ -105,11 +105,11 @@ kt.app.document_actions = new function() {
 		switch (self.type) {
 			case 'checkout':
 				func = 'documentActionServices.checkout';
-				kt.app.notify.show('Checking Out Document', false);
+				kt.app.notify.show('Checking-Out Document', false, false);
 			break;
 			case 'checkoutdownload':
 				func = 'documentActionServices.checkout_download';
-				kt.app.notify.show('Checking Out Document', false);
+				kt.app.notify.show('Checking-Out Document', false, false);
 				var response = ktjapi.retrieve(func, params);
 				
 				if(response.errors.hadErrors == 0) {
@@ -124,7 +124,7 @@ kt.app.document_actions = new function() {
 				return ;
 			break;
 			case 'cancelcheckout':
-				kt.app.notify.show('Cancelling Checking', false);
+				kt.app.notify.show('Cancelling Check-Out', false, false);
 				func = 'documentActionServices.checkout_cancel';
 			break;
 		}
@@ -288,7 +288,7 @@ kt.app.document_actions = new function() {
 		
 		// Load Mask
 		if (continueCheckin) {
-			Ext.getCmp('checkinmask').getEl().mask("<img src='/resources/graphics/newui/loading.gif' alt='absmiddle' /> Checking-In Document", "x-mask-loading");
+			Ext.getCmp('checkinmask').getEl().mask("Checking-In Document", "x-mask-loading");
 		}
 		
 		return continueCheckin;
