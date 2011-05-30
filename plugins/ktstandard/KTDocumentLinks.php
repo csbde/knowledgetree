@@ -62,7 +62,7 @@ class KTDocumentLinks extends KTPlugin {
         $this->registerAction('documentviewlet', 'KTDocumentLinkViewlet', 'ktcore.viewlets.document.link');
         $this->registerColumn(_kt('Link Title'), 'ktdocumentlinks.columns.title', 'KTDocumentLinkTitle',
                               dirname(__FILE__) . '/KTDocumentLinksColumns.php');
-        $this->registerAdminPage("linkmanagement", 'KTDocLinkAdminDispatcher', 'contentSetup',
+        $this->registerAdminPage("linkmanagement", 'KTDocLinkAdminDispatcher', 'contentManagement',
             _kt('Link Type Management'),
             _kt('Manage the different ways documents can be associated with one another.'),
             __FILE__, null);
@@ -89,7 +89,7 @@ class KTDocumentLinkViewlet extends KTDocumentViewlet {
         $links_from = array();
         $links_external = array();
 
-        if(!empty($temp_links_from)){
+        if (!empty($temp_links_from)) {
             foreach ($temp_links_from as $link) {
                 $oDoc = $link->getChildDocument();
                 if (PEAR::isError($oDoc)) {
@@ -110,7 +110,7 @@ class KTDocumentLinkViewlet extends KTDocumentViewlet {
             }
         }
 
-        if(!empty($temp_links_to)){
+        if (!empty($temp_links_to)) {
             foreach ($temp_links_to as $link) {
                 $oDoc = $link->getParentDocument();
                 if (PEAR::isError($oDoc)) {
@@ -131,7 +131,7 @@ class KTDocumentLinkViewlet extends KTDocumentViewlet {
             }
         }
 
-        if(!empty($temp_links_external)){
+        if (!empty($temp_links_external)) {
             foreach ($temp_links_external as $link) {
                 $type = $link->getLinkType();
 
@@ -183,11 +183,11 @@ class KTDocumentLinkAction extends KTDocumentAction {
 
         // Add an electronic signature
     	global $default;
-    	if($default->enableESignatures){
+    	if ($default->enableESignatures) {
     	    $signatures = true;
     	    $submit['sUrl'] = KTPluginUtil::getPluginPath('electronic.signatures.plugin', true);
     	    $submit['heading'] = _kt('You are attempting to delete a document link');
-    	}else{
+    	} else {
     	    $signatures = false;
     	}
 
@@ -268,12 +268,12 @@ class KTDocumentLinkAction extends KTDocumentAction {
 
         // Add an electronic signature
     	global $default;
-    	if($default->enableESignatures){
+    	if ($default->enableESignatures) {
     	    $sUrl = KTPluginUtil::getPluginPath('electronic.signatures.plugin', true);
     	    $heading = _kt('You are attempting to add a document link');
     	    $submit['type'] = 'button';
     	    $submit['onclick'] = "javascript: showSignatureForm('{$sUrl}', '{$heading}', 'ktcore.transactions.add_link', 'document', 'document_add_link_form', 'submit', {$oParentDocument->iId});";
-    	}else{
+    	} else {
     	    $submit['type'] = 'submit';
     	    $submit['onclick'] = '';
     	}
@@ -309,12 +309,12 @@ class KTDocumentLinkAction extends KTDocumentAction {
 
         // Add an electronic signature
     	global $default;
-    	if($default->enableESignatures){
+    	if ($default->enableESignatures) {
     	    $sUrl = KTPluginUtil::getPluginPath('electronic.signatures.plugin', true);
     	    $heading = _kt('You are attempting to add an external document link');
     	    $submit['type'] = 'button';
     	    $submit['onclick'] = "javascript: showSignatureForm('{$sUrl}', '{$heading}', 'ktcore.transactions.add_external_link', 'document', 'document_add_ext_link_form', 'submit', {$oParentDocument->iId});";
-    	}else{
+    	} else {
     	    $submit['type'] = 'submit';
     	    $submit['onclick'] = '';
     	}
@@ -336,10 +336,10 @@ class KTDocumentLinkAction extends KTDocumentAction {
         //Checking to see if the document is being linked to itself and returning an error if it is.
         $iTempParentDocId = $_REQUEST['fDocumentId'];
         $aTempDocuments = $_REQUEST['linkselection'];
-        if(!empty($aTempDocuments)){
+        if (!empty($aTempDocuments)) {
             foreach ($aTempDocuments as $iTempDocId)
             {
-    	        if($iTempParentDocId == $iTempDocId)
+    	        if ($iTempParentDocId == $iTempDocId)
     	        {
     	        	$this->errorRedirectToMain(_kt('A document cannot be linked to itself.'));
     	        }
@@ -352,20 +352,20 @@ class KTDocumentLinkAction extends KTDocumentAction {
         $sTarget = '';
         $aTarget = array();
 
-        if($sType == 'external'){
+        if ($sType == 'external') {
             $iParentId = $_REQUEST['fDocumentId'];
             $aTarget['url'] = $_REQUEST['target_url'];
             $aTarget['name'] = $_REQUEST['target_name'];
             $aDocuments = array($iParentId);
 
             $this->oValidator->validateUrl($aTarget['url']);
-            if(empty($aTarget['name'])){
+            if (empty($aTarget['name'])) {
                 $aTarget['name'] = $aTarget['url'];
             }
-        }else{
+        } else {
             $iParentId = $_REQUEST['fDocumentId'];
             $aDocuments = $_REQUEST['linkselection'];
-            if(empty($aDocuments)){
+            if (empty($aDocuments)) {
                 $this->errorRedirectToMain(_kt('No documents have been selected.'));
                 exit;
             }
@@ -424,7 +424,7 @@ class KTDocumentLinkAction extends KTDocumentAction {
 
         $sTargetUrl = '';
         $sTargetName = '';
-        if(!empty($aTarget)){
+        if (!empty($aTarget)) {
             $sTargetUrl = $aTarget['url'];
             $sTargetName = $aTarget['name'];
         }
@@ -432,8 +432,8 @@ class KTDocumentLinkAction extends KTDocumentAction {
         // create document links
         $this->startTransaction();
 
-        if(!empty($aDocIds)){
-            foreach ($aDocIds as $iDocId){
+        if (!empty($aDocIds)) {
+            foreach ($aDocIds as $iDocId) {
 
                 $oDocumentLink =& DocumentLink::createFromArray(array(
                     'iParentDocumentId' => $iParentId,
@@ -485,7 +485,7 @@ class KTDocumentLinkAction extends KTDocumentAction {
         // do deletion
         $this->startTransaction();
         // Cannot call delete directly if no link exists.
-        if($oDocumentLink) {
+        if ($oDocumentLink) {
             $res = $oDocumentLink->delete();
             if (PEAR::isError($res)) {
                 $this->errorRedirectToMain(_kt('Could not delete document link'), sprintf('fDocumentId=%d', $oParentDocument->getId()));
@@ -621,7 +621,7 @@ class KTDocLinkAdminDispatcher extends KTAdminDispatcher {
             $oLinkType = LinkType::get($link_id);
 
             $aLinks = DocumentLink::getList(sprintf("link_type_id = %d", $link_id));
-            if(!empty($aLinks)){
+            if (!empty($aLinks)) {
                 foreach($aLinks as $oLink) {
                     $oLink->delete();
                 }
