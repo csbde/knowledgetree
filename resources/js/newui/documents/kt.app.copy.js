@@ -133,7 +133,7 @@ kt.app.copy = new function() {
     	params.documentId = self.documentId;
     	params.action = self.action;
     	
-	    var func = 'siteapi.doCopy';
+	    var func = 'documentActionServices.doCopy';
 	    var synchronous = true;
 	    var data = ktjapi.retrieve(func, params, kt.api.persistentDataCacheTimeout);
 	    var response = data.data.result;
@@ -143,6 +143,7 @@ kt.app.copy = new function() {
         if(response.type == 'fatal') {
         	$msg = 'The following error occurred, please refresh the page and try again: ' + response.error;
         	jQuery('#copy-error').html($msg);
+        	self.hideSpinner();
         	return;
         }
 
@@ -150,6 +151,7 @@ kt.app.copy = new function() {
         	$msg = 'The following error occurred: ' + response.error;
         	jQuery('#copy-error').html($msg);
         	self.showReasons = false;
+        	self.hideSpinner();
         	return;
         }
 
@@ -166,12 +168,15 @@ kt.app.copy = new function() {
             .jstree({
                 "core" : {
                     "animation": 0,
+                    "load_open": true,
                     "strings": {"loading": "Fetching data...", "new_node": "New Folder"}
                 },
                 "json_data" : {
                 	"async" : true,
-        			"data" : self.getNodes(),
-        			"progressive_render" : true
+					"data" : function (node, callback) { 
+						var data = self.getNodes(node);
+						callback(data);
+					}
         		},
         		"ui" : {
         			"select_limit" : 1
@@ -181,16 +186,22 @@ kt.app.copy = new function() {
         		},
                 "plugins" : [ "themes", "json_data", "ui" ]
             })
-            .bind("select_node.jstree", function(node, check, event){
-            	self.targetFolderId = jQuery('a.jstree-clicked').parent().attr('id');
+            .bind("select_node.jstree", function(event, data){
+            	self.targetFolderId = data.rslt.obj.attr("id");
             });
 	}
-
-	this.getNodes = function() {
-	    var func = 'siteapi.getFolderStructure';
+	
+	this.getNodes = function(node) {
+		var id;
+		if(node == -1) {
+			id = 'folder_1';
+		} else {
+			id = node.attr("id");
+		}
+	    var func = 'documentActionServices.getFolderStructure';
 	    var synchronous = true;
 	    var params = {};
-	    params.id = 1;
+	    params.id = id;
 	    var data = ktjapi.retrieve(func, params, kt.api.persistentDataCacheTimeout);
 	    var response = data.data.nodes;
         var nodes = jQuery.parseJSON(response);
