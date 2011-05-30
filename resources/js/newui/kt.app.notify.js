@@ -21,6 +21,10 @@ kt.app.notify = new function() {
 			var progress = jQuery('.uploadProgress');
 		}
 		
+		if (progress.is(':visible')) {
+			progress.hide();
+		}
+		
 		// Remove existing error CSS Class
 		progress.removeClass('error');
 		

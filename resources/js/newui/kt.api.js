@@ -275,7 +275,7 @@ kt.api.esignatures = new function() {
 			title       : title,
 	        closeAction :'close',
 			width       : 370,
-			height      : 230,
+			height      : 240,
 	        y           : 50,
 	        shadow      : true,
 	        modal       : true,
@@ -349,7 +349,7 @@ kt.api.esignatures = new function() {
 	}
 	
 	this.displayError = function(message) {
-		jQuery('#error').attr('style', 'display:block;');
+		jQuery('#error').attr('style', 'display:block;color:red;font-weight:bold;');
 		jQuery('#error .errorMessage').html(message);
 	}
 
