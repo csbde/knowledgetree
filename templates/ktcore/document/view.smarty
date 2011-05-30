@@ -42,7 +42,7 @@
 				</div>
                 </td>
             </tr>
-            <tr>
+            <tr id="middle_doc_info_area">
                 <!-- <td style="display:none;" width="1" valign="top" style="padding-right: 15px;"><span id="doc_thumb" style="float:left;" /></td> -->
 			<td height="1" valign="top" width="310">
                     <div class="doc_description">
@@ -61,8 +61,12 @@
 								<th>Owned by:</th><td>{$doc_data.owner}</td>
 							</tr>
 						{if $document->getIsCheckedOut()}
-							<tr>
-								<th>Checked-out by:</th><td>{$sCheckoutUser}</td>
+							<tr id="value-ischeckedout">
+								<th>Checked-out by:</th><td id="value-checkedoutby">{$sCheckoutUser}</td>
+							</tr>
+                        {else}
+                            <tr id="value-ischeckedout" style="display:none">
+								<th>Checked-out by:</th><td id="value-checkedoutby">...</td>
 							</tr>
 						{/if}
 							<tr>
