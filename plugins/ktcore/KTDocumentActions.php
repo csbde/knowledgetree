@@ -1294,7 +1294,7 @@ class KTAjaxDocumentWorkflowAction extends KTDocumentAction {
                     $aVocab[$oTransition->getId()] = $oTransition->showDescription();
                 }
                 $fieldOptions = array('vocab' => $aVocab);
-                $transition_fields[] = new KTLookupWidget(_kt('Transition'), _kt(''), 'fTransitionId', null, $this->oPage, false, null, $fieldErrors, $fieldOptions);
+                $transition_fields[] = new KTLookupWidget(_kt('Transition : '), _kt(''), 'fTransitionId', null, $this->oPage, false, null, $fieldErrors, $fieldOptions);
                 $transition_fields[] = new KTTextWidget(
                     _kt('Comment'), _kt(''),
                     'fComments', '',

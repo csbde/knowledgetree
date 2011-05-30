@@ -47,12 +47,23 @@
 	overflow: auto;
 }
 
-.tooltip {
-	background:transparent url("../../../../graphics/newui/tooltips/white_arrow_small.png");
-	font-size:13px;
-	height:30px;
-	width:160px;
-	padding:45px 25px 15px 25px;
-	color:black;
-	top:25px !important;
+.tooltip{
+	background: white;
+	font-size: 11px;
+	height: auto;
+	width: auto;
+	padding: 5px 10px 5px 10px;
+	color: #666;
+	top: 65px !important;
+	border: 1px solid #ccc;
+	border-radius: 3px;
+	-moz-border-radius: 3px;
+	-webkit-border-radius: 3px;
+	box-shadow: 0px 1px 0px #888;
+	-moz-box-shadow: 0px 0px 1px #888;
+	-webkit-box-shadow: 0px 0px 1px #888;
+}
+.tooltip span {
+	background: url(../../../../graphics/newui/popover_tip_down.png) no-repeat bottom center;
+	padding-bottom: 21px;
 }
