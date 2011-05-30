@@ -234,9 +234,11 @@ class KTConfig {
         $filename = $this->getCacheFilename();
 
         if (ACCOUNT_ROUTING_ENABLED) {
-            $this->setMemcache();
-            MemCacheUtil::clear($filename);
-            return true;
+            if ($this->setMemcache()) {
+            	MemCacheUtil::clear($filename);
+            	return true;
+            }
+            return false;
         }
 
         if ($filename !== false && file_exists($filename)) {

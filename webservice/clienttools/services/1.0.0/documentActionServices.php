@@ -220,6 +220,96 @@ class documentActionServices extends client_service {
     	return true;
     }
     
+	public function doCopy($params)
+	{
+		$action = $params['action'];
+		$reason = (isset($params['reason']) && !empty($params['reason'])) ? $params['reason'] : _kt('Document Copied.');
+        $targetFolderId = str_replace('folder_', '', $params['targetFolderId']);
+        $documentId = $params['documentId'];
+        
+        $ktapi = $this->KT;
+        $document = KTAPI_Document::get($ktapi, $documentId);
+        
+        if(PEAR::isError($document)) {
+        	$error = $document->getMessage();
+        	$result = array('type' => 'fatal', 'error' => $error);
+        	$this->addResponse('result', json_encode($result));
+        	return;
+        }
+        
+        $folder = KTAPI_Folder::get($ktapi, $targetFolderId);
+        
+        if(PEAR::isError($folder)) {
+        	$error = $folder->getMessage();
+        	$result = array('type' => 'fatal', 'error' => $error);
+        	$this->addResponse('result', json_encode($result));
+        	return;
+        }
+        
+        if($action == 'move') {
+        	$result = $document->move($folder, $reason);
+        	$newDocument = $document;
+        } else {
+        	$result = $document->copy($folder, $reason);
+        	$newDocument = $result;
+        }
+        
+        if(PEAR::isError($result)) {
+        	$error = $result->getMessage();
+        	$result = array('type' => 'error', 'error' => $error);
+        	$this->addResponse('result', json_encode($result));
+        	return;
+        }
+        
+        $newDocId = $newDocument->documentid;
+        
+        $url = KTUtil::ktLink('view.php', '', 'fDocumentId='.$newDocId);
+        
+        $result = array('type' => 'success', 'newDocId' => $newDocId, 'url' => $url);
+    	$this->addResponse('result', json_encode($result));
+	}
     
+    public function getFolderStructure($params)
+    {
+        global $default;
+        $default->log->error('DEBUG. HERE!');
+
+        $ktapi = $this->KT;
+        $folder_id = str_replace('folder_', '', $params['id']);
+        $options = array('permission' => KTAPI_PERMISSION_WRITE);
+        $totalItems = 0;
+        $contents = $ktapi->get_folder_contents($folder_id, '1', 'F', $totalItems, $options);
+        $nodes = $this->formatTreeStructure($contents['results']);
+        
+        if($folder_id != 1) {
+        	$nodes = $nodes[0]['children'];
+        }
+        
+        $this->addResponse('nodes', json_encode($nodes));
+    }
+    
+    private function formatTreeStructure($structure)
+    {
+    	$children = $this->formatChildren($structure['items']);
+    	$attributes = array('id' => 'folder_'.$structure['folder_id']);
+    	
+    	$nodes = array();
+    	$nodes[] = array('data' => $structure['folder_name'], 'state' => 'open', 'children' => $children, 'attr' => $attributes);
+    	return $nodes;
+    }
+    
+    private function formatChildren($node)
+    {
+    	$tree = array();
+    	foreach ($node as $nodeItem) {
+    		$children = $this->formatChildren($nodeItem['items']);
+    		$attributes = array('id' => 'folder_'.$nodeItem['id']);
+    		$metadata = "node_{$nodeItem['id']}";
+    		$tree[] = array('data' => $nodeItem['title'], 'state' => 'closed', 'children' => $children, 
+    			'attr' => $attributes, 'metadata' => $metadata);
+    	}
+    	return $tree;
+    }
+
 }
 ?>

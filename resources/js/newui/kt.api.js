@@ -256,6 +256,7 @@ kt.api.esignatures = new function() {
 		if(response == false) {
 			return;
 		}
+
 		var title = 'Comment';
 		var width = 420;
 		var height = 280;
@@ -282,7 +283,6 @@ kt.api.esignatures = new function() {
 	        html        : kt.api.execFragment('documents/reason')
 	    });
 	    
-	    // modify reason form
 		jQuery('#reason-doc-id').attr('value', params.documentId);
 		jQuery('#reason-action').attr('value', params.action);
 		this.eSignWindow.show();
