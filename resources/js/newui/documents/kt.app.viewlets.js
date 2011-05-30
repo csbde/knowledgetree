@@ -58,6 +58,10 @@ kt.app.document_viewlets = new function() {
 			jQuery('#value-filetype').html(response.data.filetype);
 		}
 		
+		if (jQuery('#value-checkedoutby')) {
+			jQuery('#value-checkedoutby').html(response.data.checkoutuser);
+		}
+		
 		
 		if (jQuery('span#docItem_'+self.documentId+' span.docupdatedinfo span.date')){
 			jQuery('span#docItem_'+self.documentId+' span.docupdatedinfo span.date').html(response.data.lastupdateddate);

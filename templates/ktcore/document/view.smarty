@@ -61,8 +61,12 @@
 								<th>Owned by:</th><td>{$doc_data.owner}</td>
 							</tr>
 						{if $document->getIsCheckedOut()}
-							<tr>
-								<th>Checked-out by:</th><td>{$sCheckoutUser}</td>
+							<tr id="value-ischeckedout">
+								<th>Checked-out by:</th><td id="value-checkedoutby">{$sCheckoutUser}</td>
+							</tr>
+                        {else}
+                            <tr id="value-ischeckedout" style="display:none">
+								<th>Checked-out by:</th><td id="value-checkedoutby">...</td>
 							</tr>
 						{/if}
 							<tr>

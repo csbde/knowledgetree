@@ -180,6 +180,7 @@ kt.app.document_actions = new function() {
 			case 'checkout':
 			case 'checkoutdownload':
 				jQuery('#indicator').show();
+				jQuery('#value-ischeckedout').slideDown();
 				
 				jQuery('span#docItem_'+self.documentId+' li.action_checkout').addClass('not_supported');
 				jQuery('span#docItem_'+self.documentId+' span.checked_out').removeClass('not_supported');
@@ -195,6 +196,7 @@ kt.app.document_actions = new function() {
 				break;
 			case 'checkin':
 				jQuery('#indicator').hide();
+				jQuery('#value-ischeckedout').slideUp();
 				
 				jQuery('span#docItem_'+self.documentId+' li.action_checkout').removeClass('not_supported');
 				jQuery('span#docItem_'+self.documentId+' span.checked_out').addClass('not_supported');
@@ -209,6 +211,7 @@ kt.app.document_actions = new function() {
 				break;
 			case 'cancelcheckout':
 				jQuery('#indicator').hide();
+				jQuery('#value-ischeckedout').slideUp();
 				
 				jQuery('span#docItem_'+self.documentId+' li.action_checkout').removeClass('not_supported');
 				jQuery('span#docItem_'+self.documentId+' span.checked_out').addClass('not_supported');
