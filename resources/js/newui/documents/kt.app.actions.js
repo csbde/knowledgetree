@@ -22,9 +22,15 @@ kt.app.document_actions = new function() {
     	kt.api.preload(fragmentPackage, execPackage, true);
     }
     
-    this.proceed_with_action = function(action, checkedOutStatus)
+    this.proceed_with_action = function(action)
     {
-        switch (action) {
+        var params = {documentId:self.documentId};
+		var func = 'documentActionServices.is_document_checkedout';
+		var response = ktjapi.retrieve(func, params);
+		
+		checkedOutStatus= response.data.checkedout;
+		
+		switch (action) {
             case 'checkout':
             case 'checkoutdownload':
                 if (checkedOutStatus == '1') {
@@ -49,17 +55,18 @@ kt.app.document_actions = new function() {
 	this.checkout_actions = function(documentId, type) {
 		self.documentId = documentId;
 		self.type = type;
-		var params = {};
-		var response = kt.api.esignatures.checkESignatures(documentId);
-		var description = '';
-		var field = 'Reason';
-        
-        if (!self.proceed_with_action(type, response.checked_out)) {
+		
+		if (!self.proceed_with_action(type)) {
             self.refresh(false);
             return;
         }
+		
+		var params = {};
+		var signatureEnabled = kt.api.esignatures.checkESignatures();
+		var description = '';
+		var field = 'Reason';
         
-		if(response.esign == false) {
+		if(signatureEnabled == false) {
 			var reason = '';
 			self.run_checkout_action(reason);
 		} else {

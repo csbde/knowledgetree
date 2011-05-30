@@ -122,17 +122,8 @@ class documentActionServices extends client_service {
 		return true;
     }
 	
-    public function is_reasons_enabled($params) {
+    public function is_reasons_enabled() {
     	global $default;
-        
-        if (isset($params['documentId'])) {
-            $oDocument = Document::get($params['documentId']);
-            
-            // Check for document error
-            $this->addResponse('checkedout', $oDocument->getIsCheckedOut() ? '1': '0');
-        } else {
-            $this->addResponse('checkedout', '0');
-        }
         
     	if($default->enableESignatures) { 
     		$this->addResponse('success', 'esign');
@@ -145,6 +136,21 @@ class documentActionServices extends client_service {
     	}
     	$this->addResponse('success', false);
 
+		return true;
+    }
+	
+	public function is_document_checkedout($params) {
+    	global $default;
+        
+        if (isset($params['documentId'])) {
+            $oDocument = Document::get($params['documentId']);
+            
+            // Check for document error
+            $this->addResponse('checkedout', $oDocument->getIsCheckedOut() ? '1': '0');
+        } else {
+            $this->addResponse('checkedout', '0');
+        }
+		
 		return true;
     }
     
