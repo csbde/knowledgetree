@@ -211,8 +211,8 @@ kt.app.document_actions = new function() {
 		var height;
 		var title;
 		var address;
-		width = '600px';
-		height = '400px';
+		width = '540';
+		height = '500';
 		title = 'Check-in Document';
 		// TODO : createForm
 		// create html for form
@@ -222,6 +222,7 @@ kt.app.document_actions = new function() {
 			id          : 'checkinmask',
 	        applyTo     : 'checkins',
 	        layout      : 'fit',
+			resizable   : false,
 	        title       : title,
 	        width       : width,
 	        height      : height,
