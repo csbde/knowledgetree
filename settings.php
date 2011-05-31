@@ -57,73 +57,42 @@ class AdminSplashDispatcher extends KTAdminDispatcher {
         parent::KTAdminDispatcher();
     }
 
-    function do_main()
+    public function do_main()
     {
         if ($this->category !== '') {
             return $this->do_viewCategory();
         };
 
         // are we categorised, or not?
-        $oRegistry =& KTAdminNavigationRegistry::getSingleton();
-        $categories = $oRegistry->getCategories();
-		$KTConfig =& KTConfig::getSingleton();
-        $condensed_admin = $KTConfig->get('condensedAdminUI');
+        $registry = KTAdminNavigationRegistry::getSingleton();
+        $categories = $registry->getCategories();
+        $KTConfig = KTConfig::getSingleton();
+        $condensedAdmin = $KTConfig->get('condensedAdminUI');
 
-        $aAllItems = array();
-        // we need to investigate sub_url solutions.
-        if ($condensed_admin) {
-            foreach ($categories as $aCategory) {
-                $aItems = $oRegistry->getItemsForCategory($aCategory['name']);
-                $aAllItems[$aCategory['name']] = $aItems;
+        // We need to investigate sub_url solutions.
+        $allItems = array();
+        if ($condensedAdmin) {
+            foreach ($categories as $category) {
+                $items = $registry->getItemsForCategory($category['name']);
+                $allItems[$category['name']] = $items;
             }
         }
-
-        //$this->oPage->hideSection();
-        $oTemplating =& KTTemplating::getSingleton();
 
         global $default;
         if (ACCOUNT_ROUTING_ENABLED && $default->tier == 'trial') {
             $this->includeOlark();
         }
-		
-		$oTemplate = $oTemplating->loadTemplate('kt3/settings');
-		
-        //if ($condensed_admin) {
-        //    $oTemplate = $oTemplating->loadTemplate('kt3/admin_fulllist');
-        //} else {
-        //    $oTemplate = $oTemplating->loadTemplate('kt3/admin_categories');
-        //}
 
-        //$lefCats = array('contentManagement', 'contentSetup', 'contentIndexing');
-        $rightCats = array('accountInformation', 'userSetup', 'sysConfig');
-        foreach ($categories as $cat) {
-            if (in_array($cat['name'], $rightCats)) {
-                $rightmenu[$cat['name']] = $categories[$cat['name']];
-            } else {
-                $leftmenu[$cat['name']] = $categories[$cat['name']];
-            }
-        }
-
-        /**REMOVE
-		foreach (array('contentManagement', 'contentSetup', 'contentIndexing') as $leftcat) {
-        	$leftmenu[$leftcat] = isset($categories[$leftcat]) ? $categories[$leftcat] : '';
-        }
-
-		foreach (array('accountInformation', 'userSetup', 'sysConfig') as $rightcat) {
-			$rightmenu[$rightcat] = isset($categories[$rightcat]) ? $categories[$rightcat] : '';
-		}
-		REMOVE**/
-
-        $aTemplateData = array(
+	$templating = KTTemplating::getSingleton();
+        $template = $templating->loadTemplate('kt3/settings');
+        $templateData = array(
               'context' => $this,
               'categories' => $categories,
-              'leftmenu' => $leftmenu,
-              'rightmenu' => $rightmenu,
-              'all_items' => $aAllItems,
+              'all_items' => $allItems,
               'baseurl' => $_SERVER['PHP_SELF'],
         );
 
-        return $oTemplate->render($aTemplateData);
+        return $template->render($templateData);
     }
 
     function do_viewCategory()

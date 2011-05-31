@@ -277,21 +277,21 @@ class KTCorePlugin extends KTPlugin {
 
         // Set up the categories.
         $this->registerAdminCategory('userSetup', _kt('Users & Groups'),
-            _kt('Determine how people will access content.'));
+            _kt('Determine how people will access content.'), 90);
         $this->registerAdminCategory('advancedPermissions', _kt('Advanced Permissions'),
-            _kt('Configure advanced permissions.'));
+            _kt('Configure advanced permissions.'), 10);
         $this->registerAdminCategory('reporting', _kt('Reporting'),
-            _kt('View reports.'));
+            _kt('View reports.'), 40);
         $this->registerAdminCategory('security', _kt('Security & Authentication'),
-            _kt('Manage system security.'));
+            _kt('Manage system security.'), 20);
         $this->registerAdminCategory('sysConfig', _kt('System Preferences'),
-            _kt('Configure system preferences.'));
+            _kt('Configure system preferences.'), 30);
         $this->registerAdminCategory('contentManagement', _kt('Content Curation'),
-            _kt('Manage content.'));
+            _kt('Manage content.'), 80);
         $this->registerAdminCategory('documentProperties', _kt('Document Properties'),
-            _kt('Manage document properties.'));
+            _kt('Manage document properties.'), 70);
         $this->registerAdminCategory('workflows', _kt('Workflows'),
-            _kt('Manage workflows.'));
+            _kt('Manage workflows.'), 50);
 
         // users and groups
 
