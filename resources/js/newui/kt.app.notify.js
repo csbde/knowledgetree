@@ -27,9 +27,8 @@ kt.app.notify = new function() {
 			var progress = jQuery('.uploadProgress');
 		}
 		
-		if (progress.is(':visible')) {
-			progress.hide();
-		}
+		// Hide Old One, Stop removes any animation that may have been added, e.g. fadeOut
+		progress.hide().stop(true, true);
 		
 		// Remove existing error CSS Class
 		progress.removeClass('error');
