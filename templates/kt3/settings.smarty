@@ -5,7 +5,7 @@
    </div>
    <div>
    		<p>
-   			{foreach item=aItem from=$all_items.$cat_id name=itemlist} 
+   			{foreach item=aItem from=$all_items.$cat_id name=itemlist}
    				<a href="{ktLink base="admin.php" subpath="`$aItem.fullname`"}" class="{$aCategory.name}">{$aItem.title}</a>
    				{if !($smarty.foreach.itemlist.last)} | {/if}
    			{/foreach}
@@ -14,13 +14,9 @@
    {/foreach}
 </div>
 <div class="settings-list" style="width: 762px; float: left;">
-	<div class="settings-item">
-		<a href="#">Users</a>
-	</div>
-	<div class="settings-item">
-		<a href="#">Groups</a>
-	</div>
-	<div class="settings-item">
-		<a href="#">Control Units</a>
-	</div>
+	{foreach item=categoryItem from=$items name=itemlist}
+		<div class="settings-item">
+			<a href="#">{$categoryItem.title}</a>
+		</div>
+	{/foreach}
 </div>

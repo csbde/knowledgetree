@@ -59,16 +59,12 @@ class AdminSplashDispatcher extends KTAdminDispatcher {
 
     public function do_main()
     {
-        if ($this->category !== '') {
-            return $this->do_viewCategory();
-        };
-
-        // are we categorised, or not?
         $registry = KTAdminNavigationRegistry::getSingleton();
         $categories = $registry->getCategories();
         $KTConfig = KTConfig::getSingleton();
         $condensedAdmin = $KTConfig->get('condensedAdminUI');
 
+	// TODO Figure whether this is still relevant and remove if not.
         // We need to investigate sub_url solutions.
         $allItems = array();
         if ($condensedAdmin) {
@@ -89,61 +85,54 @@ class AdminSplashDispatcher extends KTAdminDispatcher {
               'context' => $this,
               'categories' => $categories,
               'all_items' => $allItems,
+	      'items' => $this->getCategoryItems(),
               'baseurl' => $_SERVER['PHP_SELF'],
         );
 
         return $template->render($templateData);
     }
 
-    function do_viewCategory()
+    // TODO Default category display on first entry.
+    private function getCategoryItems()
     {
-        // are we categorised, or not?
-        $category = KTUtil::arrayGet($_REQUEST, 'fCategory', $this->category);
+        $page = $GLOBALS['main'];
 
-        //Removing bad contentSetup/fieldmanagement links from the Document Metadata and Workflow Configuration page.
-        $oPage =& $GLOBALS['main'];
+        $category = KTUtil::arrayGet($_REQUEST, 'fCategory', $this->category);
 
         if ($category == 'contentSetup') {
             $jscript .= "<script src='resources/js/kt_hideadminlink.js' type='text/javascript'></script>";
         }
 
-        $aJavascript[] = 'resources/js/newui/hide_system_links.js';
-        $oPage->requireJSResources($aJavascript);
+        $javascript[] = 'resources/js/newui/hide_system_links.js';
+        $page->requireJSResources($javascript);
 
-        $oRegistry =& KTAdminNavigationRegistry::getSingleton();
-        $aCategory = $oRegistry->getCategory($category);
-        if (ACCOUNT_ROUTING_ENABLED && $category == 'contentIndexing')
-        {
-            $aItems = null;
+        $registry = KTAdminNavigationRegistry::getSingleton();
+        if (ACCOUNT_ROUTING_ENABLED && $category == 'contentIndexing') {
+            $items = null;
             $message = 'Indexing of full-text content in KnowledgeTree is carried out through shared queue processes using SOLR. <br/>Content Indexing statistics coming soon!';
         }
-        else
-        {
-            $aItems = $oRegistry->getItemsForCategory($category);
+        else {
+            $items = $registry->getItemsForCategory($category);
             $message = null;
         }
 
-        if (count($aItems) == 1) {
+        if (count($items) == 1) {
             // skip the list of admin pages and go direct to the first / only page
-            $url = KTUtil::ktLink('admin.php', $aItems[0]['fullname']);
+            $url = KTUtil::ktLink('admin.php', $items[0]['fullname']);
             redirect($url);
         }
 
-        $this->aBreadcrumbs[] = array('name' => $aCategory['title'], 'url' => KTUtil::ktLink('settings.php',$category));
+        $this->aBreadcrumbs[] = array('name' => $category['title'], 'url' => KTUtil::ktLink('settings.php', $category));
 
-        $this->oPage->title = _kt('Settings') . ': ' . $aCategory['title'];
-        $oTemplating =& KTTemplating::getSingleton();
-        $oTemplate = $oTemplating->loadTemplate('kt3/admin_items');
-        $aTemplateData = array(
-                'context' => $this,
-                'category' => $aCategory,
-                'items' => $aItems,
-                'baseurl' =>  $_SERVER['PHP_SELF'],
-                'jscript' => $jscript,
-                'message' => $message,
-        );
+        $this->oPage->title = _kt('Settings') . ': ' . $category['title'];
 
-        return $oTemplate->render($aTemplateData);
+	return $items;
+    }
+
+    // This function is now just an alias for do_main...
+    function do_viewCategory()
+    {
+	return $this->do_main();
     }
 
     private function includeOlark()
