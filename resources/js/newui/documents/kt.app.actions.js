@@ -22,9 +22,15 @@ kt.app.document_actions = new function() {
     	kt.api.preload(fragmentPackage, execPackage, true);
     }
     
-    this.proceed_with_action = function(action, checkedOutStatus)
+    this.proceed_with_action = function(action)
     {
-        switch (action) {
+        var params = {documentId:self.documentId};
+		var func = 'documentActionServices.is_document_checkedout';
+		var response = ktjapi.retrieve(func, params);
+		
+		checkedOutStatus= response.data.checkedout;
+		
+		switch (action) {
             case 'checkout':
             case 'checkoutdownload':
                 if (checkedOutStatus == '1') {
@@ -49,19 +55,20 @@ kt.app.document_actions = new function() {
 	this.checkout_actions = function(documentId, type) {
 		self.documentId = documentId;
 		self.type = type;
-		var params = {};
-		var response = kt.api.esignatures.checkESignatures(documentId);
-		var description = '';
-		var field = 'Reason';
-        
-        if (!self.proceed_with_action(type, response.checked_out)) {
+		
+		if (!self.proceed_with_action(type)) {
             self.refresh(false);
             return;
         }
+		
+		var params = {};
+		var signatureEnabled = kt.api.esignatures.checkESignatures();
+		var description = '';
+		var field = 'Reason';
         
-		if(response.esign == false) {
-			var params = {};
-			self.run_checkout_action(params);
+		if(signatureEnabled == false) {
+			var reason = '';
+			self.run_checkout_action(reason);
 		} else {
 			switch (type) {
 				case 'checkout':
@@ -105,30 +112,18 @@ kt.app.document_actions = new function() {
 		switch (self.type) {
 			case 'checkout':
 				func = 'documentActionServices.checkout';
-				
-				if (Ext.get('middle_doc_info_area')) {
-					Ext.get('middle_doc_info_area').mask("<img src='/resources/graphics/newui/loading.gif' alt='absmiddle' /> Checking-Out Document");
-				}
-				
+				kt.app.notify.show('Checking-Out Document', false, false);
 			break;
 			case 'checkoutdownload':
 				func = 'documentActionServices.checkout_download';
-				if (Ext.getCmp('window_reason')) {
-					Ext.getCmp('window_reason').close();
-				}
-				
-				if (Ext.get('middle_doc_info_area')) {
-					Ext.get('middle_doc_info_area').mask("<img src='/resources/graphics/newui/loading.gif' alt='absmiddle' /> Checking-Out Document");
-				}
+				kt.app.notify.show('Checking-Out Document', false, false);
 				var response = ktjapi.retrieve(func, params);
 				
 				if(response.errors.hadErrors == 0) {
 					this.download();
 					self.refresh();
 				} else {
-					if (Ext.get('middle_doc_info_area')) {
-						Ext.get('middle_doc_info_area').unmask();
-					}
+					
 				}
 			break;
 			case 'checkin':
@@ -136,14 +131,12 @@ kt.app.document_actions = new function() {
 				return ;
 			break;
 			case 'cancelcheckout':
+				kt.app.notify.show('Cancelling Check-Out', false, false);
 				func = 'documentActionServices.checkout_cancel';
-				if (Ext.get('middle_doc_info_area')) {
-					Ext.get('middle_doc_info_area').mask("<img src='/resources/graphics/newui/loading.gif' alt='absmiddle' /> Cancelling Checkout");
-				}
 			break;
 		}
 		var callback = self.refresh;
-		return ktjapi.callMethod(func, params, callback, synchronous, null, callback);
+		return ktjapi.callMethod(func, params, callback, synchronous, callback);
 	}
 
 	this.refresh = function(showNotifications) {
@@ -151,10 +144,6 @@ kt.app.document_actions = new function() {
         if (showNotifications == undefined) {
             showNotifications = true;
         }
-		
-		if (Ext.get('middle_doc_info_area')) {
-			Ext.get('middle_doc_info_area').unmask();
-		}
         
 		self.refresh_actions('top');
 		self.refresh_actions('bottom');
@@ -306,7 +295,7 @@ kt.app.document_actions = new function() {
 		
 		// Load Mask
 		if (continueCheckin) {
-			Ext.getCmp('checkinmask').getEl().mask("<img src='/resources/graphics/newui/loading.gif' alt='absmiddle' /> Checking-In Document", "x-mask-loading");
+			Ext.getCmp('checkinmask').getEl().mask("Checking-In Document", "x-mask-loading");
 		}
 		
 		return continueCheckin;
