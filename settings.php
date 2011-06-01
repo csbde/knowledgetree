@@ -120,9 +120,7 @@ class AdminSplashDispatcher extends KTAdminDispatcher {
         }
 
         if (count($items) == 1) {
-            // skip the list of admin pages and go direct to the first / only page
-            $url = KTUtil::ktLink('admin.php', $items[0]['fullname']);
-            redirect($url);
+	    $items[0]['autoDisplay'] = true;
         }
 
 	return $items;

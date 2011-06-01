@@ -18,7 +18,7 @@
 		<div class="settings-item">
 			<a href="#" onclick="jQuery('#{$categoryItem.name}').toggle();">{$categoryItem.title}</a>
 		</div>
-		<div id="{$categoryItem.name}" class="settings-content" style="display:none;">
+		<div id="{$categoryItem.name}" class="settings-content" style="display:{if $categoryItem.autoDisplay}block{else}none{/if};">
 			{$context->loadSection($categoryItem.fullname)}
 			<div style="clear:both">&nbsp;</div>
 		</div>
