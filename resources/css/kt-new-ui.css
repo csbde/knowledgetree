@@ -95,7 +95,7 @@ textarea {
 	border: none !important;
 	background: transparent !important;
 }
-#content li.token-input-token-facebook { 
+#content li.token-input-token-facebook {
 	border-radius: 10px;
 	-moz-border-radius: 10px;
 	-webkit-border-radius: 10px;
@@ -113,7 +113,7 @@ textarea {
 	margin-top: 2px;
 	margin-left: 1px;
 	padding: 1px;
-} 
+}
 #content li.token-input-token-facebook span:hover {
 	background: #2F6594;
 	border-radius: 20px;
@@ -421,7 +421,7 @@ breadcrumbBtns a:active {
 }
 #content .breadcrumbBtns .splitmenu li a:hover {
 	background-color: transparent!important;
-} 
+}
 #content .breadcrumbBtns .splitbutton {
     display: inline-block;
     padding: 0px;
@@ -1014,7 +1014,7 @@ div#uploadProgress {
 	font-weight: bold;
 	top: 7px;
 	text-shadow: 0px 1px 0px white;
-	
+
 	display: none;
     visibility: hidden;
 }
@@ -1227,11 +1227,11 @@ label span.required
 }
 /*Settings */
 .sidebar#settings {
-	float: left; 
-	width: 175px; 
-	padding: 10px; 
-	background: #F5F5F5; 
-} 
+	float: left;
+	width: 175px;
+	padding: 10px;
+	background: #F5F5F5;
+}
 .sidebar#settings a {
 	line-height: 25px;
 }
@@ -1245,8 +1245,19 @@ label span.required
 }
 .settings-item a{
 	padding: 5px 30px;
-	display: block;	
+	display: block;
 	background: url(../graphics/plus.gif) no-repeat 10px 10px;
+}
+.settings-content {
+	border: 1px solid #CCC;
+	border-radius: 2px;
+	-webkit-border-radius: 2px;
+	-moz-border-radius: 2px;
+	margin: 5px 0px 10px 10px;
+	padding-left: 10px;
+	padding-right: 10px;
+	padding-top: 10px;
+	padding-bottom: 10px;
 }
 
 /*Tag editor*/

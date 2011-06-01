@@ -45,8 +45,8 @@ require_once(KT_LIB_DIR . '/plugins/KTAdminNavigation.php');
 
 class AdminSplashDispatcher extends KTAdminDispatcher {
 
-    var $category = '';
-    var $sSection = 'settings';
+    private $category = '';
+    public $sSection = 'settings';
 
     function AdminSplashDispatcher()
     {
@@ -99,9 +99,9 @@ class AdminSplashDispatcher extends KTAdminDispatcher {
 
         $category = KTUtil::arrayGet($_REQUEST, 'fCategory', $this->category);
 
-        if ($category == 'contentSetup') {
-            $jscript .= "<script src='resources/js/kt_hideadminlink.js' type='text/javascript'></script>";
-        }
+        //if ($category == 'contentSetup') {
+        //    $jscript .= "<script src='resources/js/kt_hideadminlink.js' type='text/javascript'></script>";
+        //}
 
         $javascript[] = 'resources/js/newui/hide_system_links.js';
         $page->requireJSResources($javascript);
@@ -143,31 +143,46 @@ class AdminSplashDispatcher extends KTAdminDispatcher {
         $this->oPage->setBodyOnload("javascript: ktOlark.setUserData('" . $user->getName() . "', '" . $user->getEmail() . "');");
     }
 
+    public function loadSection($subUrl)
+    {
+	$registry = KTAdminNavigationRegistry::getSingleton();
+	if ($registry->isRegistered($subUrl)) {
+	   $dispatcher = $registry->getDispatcher($subUrl);
+
+	   $parts = explode('/', $subUrl);
+
+	   $registry = KTAdminNavigationRegistry::getSingleton();
+	   $category = $registry->getCategory($parts[0]);
+
+	   return $dispatcher->dispatch();
+	}
+    }
+
 }
 
-$sub_url = KTUtil::arrayGet($_SERVER, 'PATH_INFO');
-$sub_url = trim($sub_url);
-$sub_url= trim($sub_url, '/');
+$subUrl = KTUtil::arrayGet($_SERVER, 'PATH_INFO');
+$subUrl = trim($subUrl);
+$subUrl= trim($subUrl, '/');
 
-if (empty($sub_url)) {
-    $oDispatcher = new AdminSplashDispatcher();
+if (empty($subUrl)) {
+    $dispatcher = new AdminSplashDispatcher();
 } else {
-    $oRegistry =& KTAdminNavigationRegistry::getSingleton();
-    if ($oRegistry->isRegistered($sub_url)) {
-       $oDispatcher = $oRegistry->getDispatcher($sub_url);
+    $registry = KTAdminNavigationRegistry::getSingleton();
+    if ($registry->isRegistered($subUrl)) {
+       $dispatcher = $registry->getDispatcher($subUrl);
 
-       $aParts = explode('/',$sub_url);
+       $parts = explode('/', $subUrl);
 
-       $oRegistry =& KTAdminNavigationRegistry::getSingleton();
-       $aCategory = $oRegistry->getCategory($aParts[0]);
+       $registry = KTAdminNavigationRegistry::getSingleton();
+       $category = $registry->getCategory($parts[0]);
 
-       $oDispatcher->aBreadcrumbs = array();
-       $oDispatcher->aBreadcrumbs[] = array('action' => 'settings', 'name' => _kt('Settings'));
-       $oDispatcher->aBreadcrumbs[] = array('name' => $aCategory['title'], 'url' => KTUtil::ktLink('admin.php',$aParts[0]));
+       $dispatcher->aBreadcrumbs = array();
+       $dispatcher->aBreadcrumbs[] = array('action' => 'settings', 'name' => _kt('Settings'));
+       $dispatcher->aBreadcrumbs[] = array('name' => $category['title'], 'url' => KTUtil::ktLink('admin.php', $parts[0]));
     } else {
        // FIXME (minor) redirect to no-suburl?
-       $oDispatcher = new AdminSplashDispatcher();
-       $oDispatcher->category = $sub_url;
+       $dispatcher = new AdminSplashDispatcher();
+       $dispatcher->category = $subUrl;
     }
 }
 
@@ -175,11 +190,11 @@ if (empty($sub_url)) {
 global $main;
 global $default;
 if ($default->enableAdminSignatures && ($_SESSION['electronic_signature_time'] < time())) {
-    $sBaseUrl = KTUtil::kt_url();
-    $sUrl = KTPluginUtil::getPluginPath('electronic.signatures.plugin', true);
+    $baseUrl = KTUtil::kt_url();
+    $url = KTPluginUtil::getPluginPath('electronic.signatures.plugin', true);
     $heading = _kt('You are attempting to access Settings');
-    $main->setBodyOnload("javascript: showSignatureForm('{$sUrl}', '{$heading}', 'dms.administration.administration_section_access', 'admin', '{$sBaseUrl}/browse.php', 'close');");
+    $main->setBodyOnload("javascript: showSignatureForm('{$url}', '{$heading}', 'dms.administration.administration_section_access', 'admin', '{$baseUrl}/browse.php', 'close');");
 }
 
-$oDispatcher->dispatch(); // we _may_ be redirected at this point (see KTAdminNavigation)
+$dispatcher->dispatch(); // we _may_ be redirected at this point (see KTAdminNavigation)
 ?>

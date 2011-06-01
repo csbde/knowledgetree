@@ -16,7 +16,11 @@
 <div class="settings-list" style="width: 762px; float: left;">
 	{foreach item=categoryItem from=$items name=itemlist}
 		<div class="settings-item">
-			<a href="#">{$categoryItem.title}</a>
+			<a href="#" onclick="jQuery('#{$categoryItem.name}').toggle();">{$categoryItem.title}</a>
+		</div>
+		<div id="{$categoryItem.name}" class="settings-content" style="display:none;">
+			{$context->loadSection($categoryItem.fullname)}
+			<div style="clear:both">&nbsp;</div>
 		</div>
 	{/foreach}
 </div>
