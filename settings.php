@@ -112,6 +112,9 @@ class AdminSplashDispatcher extends KTAdminDispatcher {
             $message = 'Indexing of full-text content in KnowledgeTree is carried out through shared queue processes using SOLR. <br/>Content Indexing statistics coming soon!';
         }
         else {
+	    $categoryDetail = $registry->getCategory($category);
+	    $this->aBreadcrumbs[] = array('name' => $categoryDetail['title'], 'url' => KTUtil::ktLink('settings.php', $category));
+	    $this->oPage->title = _kt('Settings') . ': ' . $categoryDetail['title'];
             $items = $registry->getItemsForCategory($category);
             $message = null;
         }
@@ -121,10 +124,6 @@ class AdminSplashDispatcher extends KTAdminDispatcher {
             $url = KTUtil::ktLink('admin.php', $items[0]['fullname']);
             redirect($url);
         }
-
-        $this->aBreadcrumbs[] = array('name' => $category['title'], 'url' => KTUtil::ktLink('settings.php', $category));
-
-        $this->oPage->title = _kt('Settings') . ': ' . $category['title'];
 
 	return $items;
     }

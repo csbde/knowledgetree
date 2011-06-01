@@ -82,9 +82,9 @@ class KTAdminNavigationRegistry {
         }
     }
 
-    public function isRegistered($sName)
+    public function isRegistered($name)
     {
-	return KTUtil::arrayGet($this->aResources, $sName);
+	return KTUtil::arrayGet($this->aResources, $name);
     }
 
     public function registerCategory($name, $title, $description, $order)
@@ -109,17 +109,20 @@ class KTAdminNavigationRegistry {
             return true;
         }
 
-        usort($this->aCategories, 'order_compare');
+        uasort($this->aCategories, 'order_compare');
 
 	$this->sorted['categories'] = true;
     }
 
-    public function getCategory($sCategory) { return $this->aCategories[$sCategory]; }
-
-    public function getItemsForCategory($sCategory)
+    public function getCategory($category)
     {
-        $this->sortItems($sCategory);
-        return $this->aCategorisation[$sCategory];
+	return $this->aCategories[$category];
+    }
+
+    public function getItemsForCategory($category)
+    {
+        $this->sortItems($category);
+        return $this->aCategorisation[$category];
     }
 
     private function sortItems($sCategory)
