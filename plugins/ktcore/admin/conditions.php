@@ -43,10 +43,12 @@ require_once(KT_LIB_DIR . "/search/savedsearch.inc.php");
 require_once(KT_LIB_DIR .'/permissions/permissiondynamiccondition.inc.php');
 
 class KTConditionDispatcher extends KTAdminDispatcher {
+
     var $bAutomaticTransaction = true;
     var $sHelpPage = 'ktcore/admin/dynamic conditions.html';
+
     function check() {
-        $this->aBreadcrumbs[] = array('url' => $_SERVER['PHP_SELF'], 'name' => _kt('Conditions Management'));
+        //$this->aBreadcrumbs[] = array('url' => $_SERVER['PHP_SELF'], 'name' => _kt('Conditions Management'));
         return true;
     }
 
@@ -55,6 +57,7 @@ class KTConditionDispatcher extends KTAdminDispatcher {
         $oTemplate->setData(array(
             'conditions' => KTSavedSearch::getConditions(),
         ));
+
         return $oTemplate->render();
     }
 
@@ -69,6 +72,7 @@ class KTConditionDispatcher extends KTAdminDispatcher {
         $oTemplate->setData(array(
             'condition_id' => $oSearch->getId(),
         ));
+
         return $oTemplate->render();
     }
 
@@ -89,9 +93,9 @@ class KTConditionDispatcher extends KTAdminDispatcher {
         ));
 
         // Update permission objects if they exist
-        if(!PEAR::isError($aPermissionObjects) && !empty($aPermissionObjects)){
+        if (!PEAR::isError($aPermissionObjects) && !empty($aPermissionObjects)) {
             // update permission objects
-            foreach($aPermissionObjects as $iPermObjectId){
+            foreach($aPermissionObjects as $iPermObjectId) {
                 $oPO = KTPermissionObject::get($iPermObjectId['permission_object_id']);
                 $res = KTPermissionUtil::updatePermissionLookupForPO($oPO);
                 if ($res === false) {
@@ -122,12 +126,11 @@ class KTConditionDispatcher extends KTAdminDispatcher {
             "searchButton" => _kt("Save"),
             "context" => &$this,
         );
+
         return $oTemplate->render($aTemplateData);
     }
 
-    function do_view() {
-
-    }
+    function do_view() {}
 
     function do_edit() {
         $id = KTUtil::arrayGet($_REQUEST, 'fSavedSearchId');
@@ -150,11 +153,11 @@ class KTConditionDispatcher extends KTAdminDispatcher {
         foreach ($aSearch['subgroup'] as $isg => $as) {
             $aSubgroup =& $aSearch['subgroup'][$isg];
 
-            if(count($aSubgroup['values'])) {
+            if (count($aSubgroup['values'])) {
                 foreach ($aSubgroup['values'] as $iv => $t) {
                     $datavars =& $aSubgroup['values'][$iv];
                     $oCriterion = $oCriteriaRegistry->getCriterion($datavars['type']);
-                    if($oCriterion == null || $oCriterion == "" || PEAR::isError($oCriterion)) {
+                    if ($oCriterion == null || $oCriterion == "" || PEAR::isError($oCriterion)) {
                         $this->errorRedirectToMain('Criterion error');
                     }
                     $datavars['typename'] = $oCriterion->sDisplay;
@@ -162,7 +165,6 @@ class KTConditionDispatcher extends KTAdminDispatcher {
                 }
             }
         }
-
 
         $aTemplateData = array(
             "title" => _kt("Edit an existing condition"),
@@ -174,9 +176,9 @@ class KTConditionDispatcher extends KTAdminDispatcher {
             'old_name' => $oSearch->getName(),
             'sNameTitle' => _kt('Edit Dynamic Condition'),
         );
+
         return $oTemplate->render($aTemplateData);
     }
-
 
     // XXX: Rename to do_save
     function do_updateSearch() {
@@ -187,7 +189,6 @@ class KTConditionDispatcher extends KTAdminDispatcher {
         if (PEAR::isError($oSearch) || ($oSearch == false)) {
             $this->errorRedirectToMain('No such dynamic condition');
         }
-
 
         $datavars = KTUtil::arrayGet($_REQUEST, 'boolean_search');
         if (!is_array($datavars)) {
@@ -216,9 +217,9 @@ class KTConditionDispatcher extends KTAdminDispatcher {
         $aParams = array($id);
         $aPermissionObjects = KTPermissionDynamicCondition::getPermissionObjectIdList($sWhere, $aParams);
 
-        if(!PEAR::isError($aPermissionObjects) && !empty($aPermissionObjects)){
+        if (!PEAR::isError($aPermissionObjects) && !empty($aPermissionObjects)) {
             // update permission objects
-            foreach($aPermissionObjects as $iPermObjectId){
+            foreach($aPermissionObjects as $iPermObjectId) {
                 $oPO = KTPermissionObject::get($iPermObjectId['permission_object_id']);
                 $res = KTPermissionUtil::updatePermissionLookupForPO($oPO);
                 if ($res === false) {
@@ -264,7 +265,13 @@ class KTConditionDispatcher extends KTAdminDispatcher {
             'redirect_to' => 'main',
             'message' => _kt('Search not saved'),
         ));
+
         $this->successRedirectToMain(_kt('Dynamic condition saved'));
+    }
+
+    public function handleOutput($output)
+    {
+        print $output;
     }
 }
 
