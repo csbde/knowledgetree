@@ -50,9 +50,9 @@ require_once(KT_LIB_DIR . '/templating/kt3template.inc.php');
 class DeletedDocumentsDispatcher extends KTAdminDispatcher {
 var $sHelpPage = 'ktcore/admin/deleted documents.html';
     function do_main () {
-        $this->aBreadcrumbs[] = array('url' => $_SERVER['PHP_SELF'], 'name' => _kt('Deleted Documents'));
-
-        $this->oPage->setBreadcrumbDetails(_kt('view'));
+        //$this->aBreadcrumbs[] = array('url' => $_SERVER['PHP_SELF'], 'name' => _kt('Deleted Documents'));
+        //
+        //$this->oPage->setBreadcrumbDetails(_kt('view'));
 
         $aDocuments =& Document::getList('status_id=' . DELETED);
 
@@ -88,7 +88,13 @@ var $sHelpPage = 'ktcore/admin/deleted documents.html';
             'pagecount' => $pages,
             'itemcount' => $items,
         ));
-        return $oTemplate;
+
+        return $oTemplate->render();
+    }
+
+    public function handleOutput($output)
+    {
+        print $output;
     }
 
     function do_branchConfirm() {

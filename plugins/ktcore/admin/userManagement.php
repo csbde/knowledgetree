@@ -125,11 +125,7 @@ class KTUserAdminDispatcher extends KTAdminDispatcher {
     {
         print $output;
     }
-
-    /**
-     * Resend an invite to a user
-     *
-     */
+    
     function do_resendInvite()
     {
         $userId = $_REQUEST['user_id'];
