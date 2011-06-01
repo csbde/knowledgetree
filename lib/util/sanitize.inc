@@ -7,32 +7,32 @@
  * KnowledgeTree Community Edition
  * Document Management Made Simple
  * Copyright (C) 2008, 2009, 2010 KnowledgeTree Inc.
- * 
- * 
+ *
+ *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License version 3 as published by the
  * Free Software Foundation.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
  * details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- * 
- * You can contact KnowledgeTree Inc., PO Box 7775 #87847, San Francisco, 
+ *
+ * You can contact KnowledgeTree Inc., PO Box 7775 #87847, San Francisco,
  * California 94120-7775, or email info@knowledgetree.com.
- * 
+ *
  * The interactive user interfaces in modified source and object code versions
  * of this program must display Appropriate Legal Notices, as required under
  * Section 5 of the GNU General Public License version 3.
- * 
+ *
  * In accordance with Section 7(b) of the GNU General Public License version 3,
  * these Appropriate Legal Notices must retain the display of the "Powered by
- * KnowledgeTree" logo and retain the original copyright notice. If the display of the 
+ * KnowledgeTree" logo and retain the original copyright notice. If the display of the
  * logo is not reasonably feasible for technical reasons, the Appropriate Legal Notices
- * must display the words "Powered by KnowledgeTree" and retain the original 
+ * must display the words "Powered by KnowledgeTree" and retain the original
  * copyright notice.
  * Contributor( s): ______________________________________
  */
@@ -53,8 +53,10 @@ function sanitize($string) {
 	// This might be a little too aggressive
 	//$pattern = "([^[:alpha:]|^_\.\ \:-])";
 	// Allow numeric characters
-	$pattern = "([^[:alnum:]|^_\.\ \:-])";
-	return ereg_replace($pattern, '', $string);
+	//$pattern = "([^[:alnum:]|^_\.\ \:-])";
+	//return ereg_replace($pattern, '', $string);
+	$pattern = "/([^[a-z0-9]|^_\.\ \:-])/";
+	return preg_replace($pattern, '', $string);
 }
 
 function sanitizeForSQL($string, $min='', $max='') {
@@ -85,13 +87,13 @@ function sanitizeForHTML($string, $min='', $max='')
 
     $len = strlen($string);
     if((($min != '') && ($len < $min)) || (($max != '') && ($len > $max))) return false;
-	
-	
+
+
 
     if(function_exists("htmlspecialchars")) {
 		// This is done to prevent encoding already encode characters
 		// &amp; becoming &amp;amp;
-		
+
     	return htmlspecialchars(htmlspecialchars_decode($string));
     } else {
     	$pattern[0] = '/\&/';
@@ -136,22 +138,22 @@ function sanitizeForSYSTEM($string, $min='', $max='')
 
 // Adapted from strip_javascript function on http://www.php.net/manual/en/function.strip-tags.php
 function sanitizeForJavascript($filter){
-  
-  
+
+
     // realign javascript href to onclick
     $filter = preg_replace("/href=(['\"]).*?javascript:(.*)?\\1/i", "onclick=' $2 '", $filter);
 /*
     //remove javascript from tags
     while( preg_match("/<(.*)?javascript.*?\(.*?((?>[^()]+)|(?R)).*?\)?\)(.*)?>/i", $filter))
         $filter = preg_replace("/<(.*)?javascript.*?\(.*?((?>[^()]+)|(?R)).*?\)?\)(.*)?>/i", "<$1$3$4$5>", $filter);
-            
+
     // dump expressions from contibuted content
     if(0) $filter = preg_replace("/:expression\(.*?((?>[^(.*?)]+)|(?R)).*?\)\)/i", "", $filter);
 
     while( preg_match("/<(.*)?:expr.*?\(.*?((?>[^()]+)|(?R)).*?\)?\)(.*)?>/i", $filter))
         $filter = preg_replace("/<(.*)?:expr.*?\(.*?((?>[^()]+)|(?R)).*?\)?\)(.*)?>/i", "<$1$3$4$5>", $filter);
-       
-    // remove all on* events   
+
+    // remove all on* events
     while( preg_match("/<(.*)?\s?on.+?=?\s?.+?(['\"]).*?\\2\s?(.*)?>/i", $filter) )
        $filter = preg_replace("/<(.*)?\s?on.+?=?\s?.+?(['\"]).*?\\2\s?(.*)?>/i", "<$1$3>", $filter);
 */
@@ -167,16 +169,16 @@ class KTSanitizer
 	{
 	    $string = trim($string);
 		if(get_magic_quotes_gpc()) $string = stripslashes($string);
-	
+
 	    $len = strlen($string);
 	    if((($min != '') && ($len < $min)) || (($max != '') && ($len > $max))) return false;
-		
-		
-	
+
+
+
 	    if(function_exists("htmlspecialchars")) {
 			// This is done to prevent encoding already encode characters
 			// &amp; becoming &amp;amp;
-			
+
 	    	return htmlspecialchars(htmlspecialchars_decode($string));
 	    } else {
 	    	$pattern[0] = '/\&/';
