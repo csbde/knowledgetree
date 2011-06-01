@@ -11,6 +11,10 @@
     text-shadow: 0 1px 0 white !important;
 }
 
+#workflows textarea {
+    width: 99% !important;
+}
+
 p.workflowChangeWarning {
     margin-top: 10px;
     color: #FF9700 ; /* Orange */
