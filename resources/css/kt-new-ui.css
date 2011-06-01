@@ -148,14 +148,16 @@ textarea {
 	content: " × "
 }
 #TagCloudDashlet #tagcloud a, a.link, a.visited, a.hover, a.active {
-	padding: 2px 10px;
-	border-radius: 10px;
-	-moz-border-radius: 10px;
-	-webkit-border-radius: 10px;
+	padding: 0px 5px;
+	border-radius: 20px;
+	-moz-border-radius: 20px;
+	-webkit-border-radius: 20px;
 	border: 1px solid #ccd5e4;
 	background-color: #eff2f7;
 	color: #2F6594;
 	white-space: nowrap;
+	margin-top: 3px;
+	
 }
 #TagCloudDashlet #tagcloud a:hover {
 	text-decoration: none;
