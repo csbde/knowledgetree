@@ -27,17 +27,20 @@ body {
 .promotions-block {
 	display: block;
 	height: 400px;
+	width: 350px;
 	position: relative;
 	float: right;
 	margin: 0px 15px 0px 20px;
 	border-left: 1px solid #DDD;
 	padding-left: 30px;
+	background:  url(../graphics/newui/large-loading.gif) no-repeat center center;
 }
 .promotions-block iframe {
-	border: 1px solid #CCC;
-	border-radius: 2px;
-	-webkit-border-radius: 2px;
-	-moz-border-radius: 2px;
+	width: 350px;
+	border-radius: 3px;
+	-webkit-border-radius: 3px;
+	-moz-border-radius: 3px;
+	box-shadow: 0px 1px 1px #666;
 }
 .login-box {
 	text-align: left;

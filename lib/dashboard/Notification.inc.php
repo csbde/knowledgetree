@@ -359,15 +359,11 @@ class KTSubscriptionNotification extends KTNotificationHandler {
 		if ($object_type == 'document') {
 		    if ($info['object_id'] !== null) { // fails and generates an error with no doc-id.
 		    	$url = KTUtil::kt_clean_document_url($info['object_id']);
-//				$params = 'fDocumentId=' . $info['object_id'];
-//				$url = generateControllerLink('viewDocument', $params);
 				exit(redirect($url));
 			}
 		} else if ($object_type == 'folder') {
 		    if ($info['object_id'] !== null) { // fails and generates an error with no doc-id.
 		    	$url = KTUtil::kt_clean_folder_url($info['object_id']);
-//				$params = 'fFolderId=' . $info['object_id'];
-//				$url = generateControllerLink('browse', $params);
 				exit(redirect($url));
 			}
 		}

@@ -418,23 +418,14 @@ class kt extends client_service {
                 // The entire selection field needs to be simplifed
 				} else if ($field ['control_type'] == 'tree') {
                     
-                    // Get the list of Sub Categories
-                    $outerArray = $field['selection'][0];
+                    $this->logTrace((__METHOD__.'('.__FILE__.' '.__LINE__.')'), 'TOHIR TREE ***********');
                     
                     // Final Selection Array
                     $varArray = array();
                     
+                    $this->prepTreeStructure($field['selection'][0], $varArray);
                     
-                    // Loopthrough Sub Categories
-                    foreach ($outerArray['fields'] as $subCategory)
-                    {
-                        if (!empty($subCategory['fields'])) {
-                            foreach($subCategory['fields'] as $itemField)
-                            {
-                                $varArray[] = array($subCategory['treename'], $itemField['name']);
-                            }
-                        }
-                    }
+                    $this->logTrace((__METHOD__.'('.__FILE__.' '.__LINE__.')'), json_encode($varArray));
                     
                     // Overwrite Selection Value
                     $prepArray['selection'] = $varArray;
@@ -468,6 +459,46 @@ class kt extends client_service {
 
 		return true;
 	}
+    
+    private function prepTreeStructure($item, &$parentArray)
+    {
+        $this->logTrace((__METHOD__.'('.__FILE__.' '.__LINE__.')'),'Enter Function');
+        $this->logTrace('prepTreeStructure', json_encode($item));
+        $this->logTrace('$item->type', $item['type']);
+        
+        if ($item['type'] == 'tree') {
+            
+            
+            
+            if (!empty($item['treename'])) {
+                $itemArray = array('text'=>$item['treename'], 'cls'=>'folder');
+                
+                if (count($item['fields']) > 0) {
+                    foreach ($item['fields'] as $subField) {
+                        $this->prepTreeStructure($subField, $itemArray);
+                    }
+                }
+                
+                
+                if ($item['treeid'] == 0) {
+                    $parentArray = $itemArray;
+                    $this->logTrace('$parentArray', json_encode($parentArray));
+                } else {
+                    $parentArray['children'][] = $itemArray;
+                }
+                
+            }
+            
+            
+            
+        } else if ($item['type'] == 'field') {
+            
+            if (!empty($item['name'])) {
+                $itemArray = array('text'=>$item['name'], 'leaf'=>TRUE, 'checked'=>FALSE);
+                $parentArray['children'][] = $itemArray;
+            }
+        }
+    }
 
 	public function get_documenttypes($params)
 	{

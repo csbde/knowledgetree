@@ -752,6 +752,7 @@ a.main_nav_item {
 #content .actionitem {
     margin-top: 1em;
     font-weight: bold;
+	clear: both;
 }
 
 #content .actionmessage
@@ -817,7 +818,7 @@ a.main_nav_item {
 	font-size: 13px;
 }
 .metadatatable {
-    width: 100%;
+    /*width: 100%;*/
     font-size: 12px;
 }
 
@@ -2212,6 +2213,7 @@ hr {
     height: 100%;
 /*    background-color: white;
     opacity: 0.5; */
+    background: rgba(255,255,255,0.3);
     text-align: center;
     z-index: 1000;
 }
@@ -2219,23 +2221,59 @@ hr {
 .addDialog
 {
     display: block;
-    border: 1px solid #ccc;
+    border: 8px solid #888;
     background-color: white;
-    padding: 2em;
+    padding: 0px;
     margin: 10% 30%;
     opacity: 1;
     overflow: hidden;
     text-align: left;
+    position: relative;
 }
-
-
+.addDialog h2 {
+	padding: 8px 5px;
+	background: #EEE;
+	color: #2F6594;
+	font-size: 15px;
+	text-shadow: 0px 1px 0px white;
+	border-bottom: 1px solid #CCC;
+}
+.addDialog ul {
+	display: inline-block;
+	padding: 10px 5px;
+	height: auto;
+	width: 98%;
+	word-wrap: break-word
+	
+}
 .addDialog .dashletLink
 {
-    color: #666;
+    color: #2F6594;
     text-decoration: none;
-    display: block;
+    display: inline-block;
+    float: left;
+    margin: 2px 5px 2px 2px;
+    padding: 2px 10px;
+    border-radius: 10px;
+    -moz-border-radius: 10px;
+    -webkit-border-radius: 10px;
+    border: 1px solid #ccd5e4;
+    background-color: #eff2f7;
+   	text-shadow: 0px 1px 0px white;
+}
+.addDialog .dashletLink:hover {
+	background: #d5e0f2;
 }
 
+.addDialog .closeLink {
+	position: absolute;
+	top: 10px;
+	right: 10px;
+	display: inline-block;
+	background: url(../graphics/bullet_toggle_close.png) no-repeat;
+	text-indent: -3000px;
+	width: 15px;
+}
 body #content #add_dashlet
 {
     display: none;

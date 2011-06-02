@@ -153,8 +153,10 @@ class jsonWrapper {
         }
 
         // check for a request package vs single request
-        if (is_array($content['request']['parameters']['name'])) {
-            $this->packaged = true;
+        if(isset($content['request']['parameters']['name'])) {
+        	if (is_array($content['request']['parameters']['name'])) {
+            	$this->packaged = true;
+        	}
         }
 
         $this->jsonArray = $content;

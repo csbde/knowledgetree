@@ -54,6 +54,8 @@ workflowActions.prototype.displayAction = function(transitionId) {
         width       : width,
         height      : height,
         closeAction :'destroy',
+		resizable   : false,
+		draggable   : false,
         y           : 75,
         shadow: false,
         modal: true

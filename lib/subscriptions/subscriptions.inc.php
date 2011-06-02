@@ -136,8 +136,11 @@ class SubscriptionEvent {
             $actionTypeEmail = $this->actionTypeEmail($eventType);
             // Better subject header with just the modified folder location
             $eSubject = "Subscription Notification: Bulk {$actionTypeEmail['message']}";
-            // now the email content.
-            $eContent .= "You are receiving this notification because you are subscribed to the \"$locationName\"<br/>";
+            
+			// now the email content.
+			
+			$eContent = '&#160;&#160;&#160;&#160;<b>'._kt('Subscription notification').': Bulk '.$actionTypeEmail['message'].'</b><br /><br />';
+            //$eContent .= "You are receiving this notification because you are subscribed to the \"$locationName\"<br/>";
             $eContent .= "Your colleague, {$oUser->getName()}, has performed a Bulk {$actionTypeEmail['type']} in the \"$locationName\" folder.<br/>";
             // REMOVE: debugger
             global $default;
@@ -587,7 +590,7 @@ class SubscriptionContent {
             $addFolderText .= _kt(' to "').$info['location_name']._kt('"');
             $removeChildFolderText .= _kt(' from the folder "').$info['location_name']._kt('"');
             $addDocumentText .= _kt(' to "').$info['location_name']._kt('"');
-            $removeChildDocumentText .= _kt(' from the folder "').$info['location_name']._kt('" to which you are subscribed');
+            $removeChildDocumentText .= _kt(' from the folder "').$info['location_name'].'"';//._kt('" to which you are subscribed');
             $modifyDocumentText .= _kt(' in the folder "').$info['location_name']._kt('"');
             $checkInDocumentText .= _kt(', in the folder "').$info['location_name']._kt('"');
             $checkOutDocumentText .= _kt(', from the folder "').$info['location_name']._kt('"');
@@ -600,7 +603,7 @@ class SubscriptionContent {
         if($bulk_action && $info['event_type']!="RemoveSubscribedFolder") {
             //$browse = "$rootUrl/browse.php?fFolderId=$bulk_action";
 			$browse = KTUtil::buildUrl('browse.php', array('fFolderId'=>$bulk_action));
-            $subFolder = '<a href="'.$browse.'">'._kt('View Subscription Folder ').'</a>';
+            $subFolder = '<a href="'.$rootUrl.$browse.'">'._kt('View Subscription Folder').'</a>';
         }
         // set up links
         switch($info['event_type']){
@@ -806,9 +809,7 @@ class SubscriptionContent {
 			'notify_id' => $oKTNotification->getId(),
 		);
 
-//		$info['title'] = KTUtil::arrayGet($this->_eventTypeNames, $info['event_type'], 'Subscription alert:') .': ' . $info['object_name'];
         $info['title'] = $appName.': '._kt('Subscription notification for').' "'.$info['object_name'].'" - '.$this->_eventTypeNames[$info['event_type']];
-
 
 		if ($info['actor_id'] !== null) {
 			$oTempUser = User::get($info['actor_id']);

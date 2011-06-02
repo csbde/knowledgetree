@@ -1,0 +1,26 @@
+<div class="sidebar standardBorder" id="settings">
+   {foreach item=aCategory from=$categories}
+   <div>
+   		{capture assign="cat_id"}{$aCategory.name}{/capture}<a href="{$smarty.server.PHP_SELF|addQueryString:"action=viewCategory&fCategory=$cat_id"}" class="{$aCategory.name}">{$aCategory.title}</a>
+   </div>
+   <div>
+   		<p>
+   			{foreach item=aItem from=$all_items.$cat_id name=itemlist} 
+   				<a href="{ktLink base="admin.php" subpath="`$aItem.fullname`"}" class="{$aCategory.name}">{$aItem.title}</a>
+   				{if !($smarty.foreach.itemlist.last)} | {/if}
+   			{/foreach}
+   		</p>
+   </div>
+   {/foreach}
+</div>
+<div class="settings-list" style="width: 762px; float: left;">
+	<div class="settings-item">
+		<a href="#">Users</a>
+	</div>
+	<div class="settings-item">
+		<a href="#">Groups</a>
+	</div>
+	<div class="settings-item">
+		<a href="#">Control Units</a>
+	</div>
+</div>

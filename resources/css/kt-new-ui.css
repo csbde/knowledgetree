@@ -14,8 +14,9 @@ textarea {
 	font-family: tahoma,arial,helvetica,sans-serif;
 	font-size: 11px;
 }
-/* ------------------ Experimental UI --------------------- */
-
+.sprite {
+	background-image : url(../graphics/newui/sprite.png);
+}
 #planNotice,
 #middle_nav {
 	display: none;
@@ -75,6 +76,9 @@ textarea {
 	color: #2F6594;
 	margin: 0px 4px 4px 0px;
 	word-break: break-word;
+	border-radius: 10px;
+	-moz-border-radius: 10px;
+	-webkit-border-radius: 10px;
 }
 .document-tags-edit.active .token-input-list-facebook {
 	display: inline-block;
@@ -90,6 +94,14 @@ textarea {
 .document-tags-edit.active input {
 	border: none !important;
 	background: transparent !important;
+}
+#content li.token-input-token-facebook { 
+	border-radius: 10px;
+	-moz-border-radius: 10px;
+	-webkit-border-radius: 10px;
+	color: #2F6594;
+	font-size: 11px;
+	padding: 0px 8px 2px 8px;
 }
 .token-input-dropdown-facebook li {
 	list-style: none;
@@ -115,6 +127,18 @@ textarea {
 .tags a:before {
 	content: " × "
 }
+#TagCloudDashlet #tagcloud a, a.link, a.visited, a.hover, a.active {
+	padding: 2px 10px;
+	border-radius: 10px;
+	border: 1px solid #ccd5e4;
+	background-color: #eff2f7;
+	color: #2F6594;
+}
+#TagCloudDashlet #tagcloud a:hover {
+	text-decoration: none;
+	background: #d5e0f2;
+}
+
 .newActions.browseView.bulkActionMenu {
 	width: 265px;
 	background: none;
@@ -327,7 +351,7 @@ textarea {
     position: relative;
 }
 .breadcrumbBtns a {
-    height: 16px;
+    min-height: 16px;
     margin-right: 2px;
     padding: 2px 0 5px 2px;
     border: 1px solid #EEE!important;
@@ -551,6 +575,14 @@ ul.floatleft li.notification {
 	line-height: 24px;
 }
 
+.ul_actions .spin {
+	background: url(../../resources/graphics/newui/loading.gif) no-repeat center center;
+	padding-top: 12px;
+	padding-right: 12px;
+	width: 16px;
+	display: inline-block;
+}
+
 .action_buttons .action .disabled {
 	opacity: 0.5;
 	cursor: default;
@@ -581,6 +613,9 @@ ul.floatleft li.notification {
 }
 .action_buttons .hover #checkout {
 	background: url('../graphics/newui/icons/lock_hover.png') no-repeat 4px 4px !important;
+}
+.action_buttons #checkoutdowload {
+	background: url('../graphics/newui/icons/lock.png') no-repeat 4px 4px;
 }
 .action_buttons #checkin {
 	background: url('../graphics/newui/icons/lock_open.png') no-repeat 4px 4px;
@@ -631,7 +666,7 @@ ul.floatleft li.notification {
 	background: url('../graphics/newui/icons/permissions.png') no-repeat 4px 4px;
 }
 .action_buttons #document-roles {
-	background: url('../graphics/newui/icons/roles.png') no-repeat 4px 4px;
+	background: url(../graphics/newui/sprite.png) no-repeat -408px top;
 }
 div.form_actions {
 	float: left;
@@ -949,13 +984,16 @@ div#uploadProgress {
 	border: 2px solid #AAA;
 	box-shadow: 0px 0px 8px #AAA;
 	position: absolute;
-	right: -17px;
+	right: 0;/* Was -17px;*/
 	z-index: 999999;
 	color: #666;
 	width: 199px;
 	font-weight: bold;
 	top: 7px;
 	text-shadow: 0px 1px 0px white;
+	
+	display: none;
+    visibility: hidden;
 }
 span#uploadProgress .title {
 	font-size: 12px;
@@ -1164,7 +1202,29 @@ label span.required
 	border-top-right-radius: 3px;
 	border-bottom-right-radius: 3px;
 }
-
+/*Settings */
+.sidebar#settings {
+	float: left; 
+	width: 175px; 
+	padding: 10px; 
+	background: #F5F5F5; 
+} 
+.sidebar#settings a {
+	line-height: 25px;
+}
+.settings-item {
+	border: 1px solid #CCC;
+	background: #F5F5F5;
+	border-radius: 2px;
+	-webkit-border-radius: 2px;
+	-moz-border-radius: 2px;
+	margin: 5px 0px 10px 10px;
+}
+.settings-item a{
+	padding: 5px 30px;
+	display: block;	
+	background: url(../graphics/plus.gif) no-repeat 10px 10px;
+}
 
 /*Tag editor*/
 
@@ -1175,3 +1235,24 @@ label span.required
 }
 #content .tags div.token-input-dropdown-facebook {
 }
+
+a.subscribe_actions {
+	cursor: default;
+}
+
+
+/*
+IPhone Style Switches
+http://devgrow.com/iphone-style-switches/
+*/
+
+.cb-enable, .cb-disable, .cb-enable span, .cb-disable span { background: url(switch.gif) repeat-x; display: block; float: left; }
+.cb-enable span, .cb-disable span { line-height: 30px; display: block; background-repeat: no-repeat; font-weight: bold; }
+.cb-enable span { background-position: left -90px; padding: 0 10px; }
+.cb-disable span { background-position: right -180px;padding: 0 10px; }
+.cb-disable.selected { background-position: 0 -30px; }
+.cb-disable.selected span { background-position: right -210px; color: #fff; }
+.cb-enable.selected { background-position: 0 -60px; }
+.cb-enable.selected span { background-position: left -150px; color: #fff; }
+.switch label { cursor: pointer; }
+.switch input { display: none; }

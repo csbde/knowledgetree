@@ -1,11 +1,52 @@
-<h2>{i18n}Check-in{/i18n}: {$context->oDocument->getName()|sanitize}</h2>
+<link href="/resources/css/kt-new-modal.css" type="text/css" rel="stylesheet" />
+<script src="/resources/js/newui/buttons/formActions.js" type="text/javascript"></script>
 
+<form method="post" action="{$form_action}" enctype="multipart/form-data" name="checkin_form" id="checkinform" style="display:none;">
+    <input type="hidden" name="action" value="checkin" />
+    <input type="hidden" name="fDocumentId" value="{$documentId}" />
+    
+	<div class="field ">
+		<label for="filename">Select a file to check-in<span class="required">(Required)</span></label>
+        <br /><br />
+		<input id="checkinfilename" name="filename" size="45" type="file">
+	</div>
+	
+    <br /><br />
+    
+	<div class="field ">
+        Version Change:
+        <br /><br />
+        <table><tr>
+            <td>
+                <span class="field switch">
+                    
+                    
+                    <input type="radio" id="radio1" name="data[major_update]" value="false" checked />
+                    <input type="radio" id="radio2" name="data[major_update]" value="true" />
+                    <label for="radio1" class="cb-enable selected"><span>Minor</span></label>
+                    <label for="radio2" class="cb-disable"><span>Major</span></label>
+                    
+                </span>
+            </td>
+            <td>&nbsp;</td>
+            <td>(Minor - 0.1, 0.2, Major - 1.0, 2.0)</td>
+        </tr></table>
+	</div>
+    
+    <br /><br />
+	
+	{if !$disableForceFilenameOption}
+		<!--<div class="field ">
+			<label for="forcefilename">Force Original Filename</label>
+			<p class="descriptiveText">{$forceFilenameDescriptiveText}</strong></p>
+			<input name="forcefilename" checked="checked" class="noborder" type="checkbox">
+        </div>-->
+        <input type="hidden" id="forcefilenameVal"  name="forcefilenameVal" value="{$forceFilename}">
+     {/if}
 
-<p class="descriptiveText">{i18n}Checking in a document updates the document
-and allows others to make changes to the document and its metadata.{/i18n}</p>
+	<div class=form_actions id=modal>
+		<input type="submit" name=form_submit value="{i18n}Check-in{/i18n}" />
+		<a href="#" onclick="vActions.closeDisplay('checkin'); return false;" class=form_cancel>Cancel</a>
+	</div>
+</form>
 
-<p class="descriptiveText">{i18n}If you do not
-intend to change the document, or you do not wish to prevent others from
-changing the document, you should rather use the action menu to <strong>cancel this checkout</strong>.{/i18n}</p>
-
-{$form->render()}
