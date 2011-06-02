@@ -61,6 +61,10 @@ class AdminSplashDispatcher extends KTAdminDispatcher {
     {
         $registry = KTAdminNavigationRegistry::getSingleton();
         $categories = $registry->getCategories();
+	reset($categories);
+	$defaultCategory = current($categories);
+	$this->category = $defaultCategory['name'];
+
         $KTConfig = KTConfig::getSingleton();
         $condensedAdmin = $KTConfig->get('condensedAdminUI');
 
