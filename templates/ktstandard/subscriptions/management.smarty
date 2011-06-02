@@ -33,6 +33,13 @@
 				<td class="name"> 
 					{$aFolderSubscription->getContentLink()}
 				</td>
+				<td>
+					{if $aFolderSubscription->bWithSubFolders > 0}
+						<span style="color:red;">(Folder And Subfolders)</span>
+					{else}
+						
+					{/if}
+				</td>
 			</tr>
 			{/foreach}
 		</table>

@@ -6,10 +6,10 @@
         <div style="float:left; position: relative;">
             {if !$is_broken}
                 <a href="{ktLink base="notify.php" query="id=`$info.notify_id`"}">{i18n}View Folder{/i18n}</a>
-            {else}
-                <span class="descriptiveText">{i18n}Location is no longer available{/i18n}</span>
+<!--            {else}
+                <span class="descriptiveText">{i18n}Location is no longer available{/i18n}</span>-->
             {/if}
-            &nbsp;|&nbsp;
+<!--            &nbsp;|&nbsp;-->
         </div>
 
             <a href="{ktLink base="notify.php" query="id=`$info.notify_id`&notify_action=clear"}"
