@@ -20,7 +20,9 @@ kt.app.copy = new function() {
     
     var targetFolderId;
     var documentId;
+    var itemList;
     var action;
+    var actionType;
     var showReasons;
     var reasonType;
 
@@ -32,6 +34,7 @@ kt.app.copy = new function() {
     	self.checkReasons();
     	self.documentId = documentId;
     	self.action = 'copy';
+    	self.actionType = 'document';
     	self.showCopyWindow();
     	return;
     }
@@ -40,13 +43,23 @@ kt.app.copy = new function() {
     	self.checkReasons();
     	self.documentId = documentId;
     	self.action = 'move';
+    	self.actionType = 'document';
+    	self.showCopyWindow();
+    	return;
+    }
+    
+    this.doBulkCopy = function() {
+    	self.checkReasons();
+    	self.action = 'copy';
+    	self.actionType = 'bulk';
+    	self.itemList = kt.pages.browse.getSelectedItems();
     	self.showCopyWindow();
     	return;
     }
     
     this.checkReasons = function() {
     	var response = kt.api.esignatures.checkESignatures();
-    	self.reasonType = response;
+    	self.reasonType = response.esign;
     	
     	if(response == false) {
     		self.showReasons = false;
@@ -55,13 +68,8 @@ kt.app.copy = new function() {
     	}
     }
 
-    // Container for the EXTJS window
     this.copyWindow = null;
-
-    // ENTRY POINT: Calling this function will set up the environment, display the dialog,
-    //              and hook up the AjaxUploader callbacks to the correct functions.
-    // objectId, if set, identifies a share with a non-licensed user for a selected object (folder or document)
-    this.showCopyWindow = function(documentId) {
+    this.showCopyWindow = function() {
 	    var title = 'Copy';
 	    if(self.action == 'move') {
 	    	title = 'Move';
@@ -84,6 +92,8 @@ kt.app.copy = new function() {
             html            : kt.api.execFragment('actions/copy.dialog')
         });
 
+        // Using the JSTree jQuery plugin
+        // The tree needs to be run on display of the window in order for the javascript to be executed.
         copyWin.addListener('show', function() { self.tree(); });
 
         self.copyWindow = copyWin;
@@ -106,7 +116,7 @@ kt.app.copy = new function() {
     	if(self.showReasons == true) {
     		var params = new Array();
 			params.documentId = self.documentId;
-			params.action = 'ktcore.actions.document.' + self.action;
+			params.action = 'ktcore.actions.' + self.actionType + '.' + self.action;
 			
 			kt.api.esignatures.showESignatures(self.reasonType, params);
 			
@@ -130,10 +140,17 @@ kt.app.copy = new function() {
     	var params = new Array();
     	params.reason = reason;
     	params.targetFolderId = self.targetFolderId;
-    	params.documentId = self.documentId;
     	params.action = self.action;
     	
-	    var func = 'documentActionServices.doCopy';
+    	if (self.actionType == 'bulk') {
+    		params.itemList = self.itemList;
+		    var func = 'documentActionServices.doBulkCopy';
+    	}
+    	else {
+	    	params.documentId = self.documentId;
+		    var func = 'documentActionServices.doCopy';
+    	}
+	    
 	    var synchronous = true;
 	    var data = ktjapi.retrieve(func, params, kt.api.persistentDataCacheTimeout);
 	    var response = data.data.result;
@@ -209,13 +226,13 @@ kt.app.copy = new function() {
 	}
 	
 	this.showSpinner = function() {
-		jQuery('#select-btn').hide();
-		jQuery('.copy-spinner').removeClass('none').addClass('spin').css('visibility', 'visible');
+		jQuery('#select-btn').addClass('none');
+		jQuery('.copy-spinner').removeClass('none').addClass('spin');
 	}
 	
 	this.hideSpinner = function() {
-		jQuery('#select-btn').show();
-		jQuery('.copy-spinner').removeClass('spin').addClass('none').css('visibility', 'hidden');
+		jQuery('#select-btn').removeClass('none');
+		jQuery('.copy-spinner').removeClass('spin').addClass('none');
 	}
 	
     this.init();

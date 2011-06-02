@@ -122,8 +122,17 @@ class documentActionServices extends client_service {
 		return true;
     }
 	
-    public function is_reasons_enabled() {
+    public function is_reasons_enabled($params) {
     	global $default;
+        
+        if (isset($params['documentId'])) {
+            $oDocument = Document::get($params['documentId']);
+            
+            // Check for document error
+            $this->addResponse('checkedout', $oDocument->getIsCheckedOut() ? '1': '0');
+        } else {
+            $this->addResponse('checkedout', '0');
+        }
         
     	if($default->enableESignatures) { 
     		$this->addResponse('success', 'esign');
@@ -136,21 +145,6 @@ class documentActionServices extends client_service {
     	}
     	$this->addResponse('success', false);
 
-		return true;
-    }
-	
-	public function is_document_checkedout($params) {
-    	global $default;
-        
-        if (isset($params['documentId'])) {
-            $oDocument = Document::get($params['documentId']);
-            
-            // Check for document error
-            $this->addResponse('checkedout', $oDocument->getIsCheckedOut() ? '1': '0');
-        } else {
-            $this->addResponse('checkedout', '0');
-        }
-		
 		return true;
     }
     
@@ -275,11 +269,43 @@ class documentActionServices extends client_service {
     	$this->addResponse('result', json_encode($result));
 	}
     
+	public function doBulkCopy($params)
+	{
+		$action = $params['action'];
+		$reason = (isset($params['reason']) && !empty($params['reason'])) ? $params['reason'] : 'Bulk Copy Performed';
+        $targetFolderId = str_replace('folder_', '', $params['targetFolderId']);
+        $itemList = $params['itemList'];
+
+        $organisedItemList = array('documents' => array(), 'folders' => array());
+        foreach ($itemList as $item) {
+        	$parts = array();
+        	$parts = str_split($item, 12);
+        	
+        	$type = ($parts[0] == 'selection_d_') ? 'documents' : 'folders';
+        	
+    		$organisedItemList[$type][] = $parts[1];
+        }
+        
+        $ktapi = $this->KT;
+        
+        $result = $ktapi->performBulkAction($action, $organisedItemList, $reason, $targetFolderId);
+                                      
+        if ($result['status_code'] == 1) {
+        	$error = $result['message'];
+	        $result = array('type' => 'fatal', 'error' => $error);
+	    	$this->addResponse('result', json_encode($result));
+        }
+        else {
+        	$result = array('type' => 'success');
+        	$this->addResponse('result', json_encode($result));
+        }
+        
+		global $default;
+		$default->log->info('BULK ' . print_r($params, true) . print_r($organisedItemList, true) . print_r($result, true));
+	}
+	
     public function getFolderStructure($params)
     {
-        global $default;
-        $default->log->error('DEBUG. HERE!');
-
         $ktapi = $this->KT;
         $folder_id = str_replace('folder_', '', $params['id']);
         $options = array('permission' => KTAPI_PERMISSION_WRITE);

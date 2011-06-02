@@ -226,6 +226,18 @@ kt.pages.browse = new function() {
         return false;
     }
 
+    this.getSelectedItems = function() {
+    	var list = new Array;
+    	var name;
+    	jQuery('.page.page_' + self.curPage + ' .item .checkbox > input:checkbox:enabled').each(function() {
+            if (this.checked) { 
+            	name = this.name.replace('[]', '');
+            	list.push(name+'_'+this.value); 
+            }
+        });
+        return list;
+    }
+    
     this.setBulkActionMenuStatus = function() {
         var selectedItems = jQuery('.itemContainer .item .checkbox>input:checkbox:checked:enabled').length;
         if (selectedItems > 0) {

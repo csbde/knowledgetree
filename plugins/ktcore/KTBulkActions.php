@@ -547,6 +547,16 @@ class KTBulkCopyAction extends KTBulkAction {
         return _kt('Copy');
     }
 
+    function getOnClick()
+    {
+        return "javascript:{kt.app.copy.doBulkCopy();}";
+    }
+    
+    function getBtnType()
+    {
+    	return 'button';
+    }
+    
     function form_collectinfo() {
         $cancelUrl = $this->getReturnUrl();
 
