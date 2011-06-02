@@ -221,6 +221,11 @@ class ManageBrandDispatcher extends KTAdminDispatcher
 	            return '';
         }
     }
+    
+    public function handleOutput($output)
+    {
+        print $output;
+    }
 }
 
 ?>
