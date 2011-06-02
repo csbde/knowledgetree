@@ -47,6 +47,7 @@ require_once(KT_LIB_DIR . "/validation/dispatchervalidation.inc.php");
 require_once(KT_LIB_DIR . "/metadata/fieldsetregistry.inc.php");
 require_once(KT_LIB_DIR . "/validation/validatorfactory.inc.php");
 
+
 class ManageBrandDispatcher extends KTAdminDispatcher 
 {
 
@@ -64,18 +65,18 @@ class ManageBrandDispatcher extends KTAdminDispatcher
     {
         $form = $this->getLogoUploadForm();
         
-        $templating =& KTTemplating::getSingleton();
+        $templating = KTTemplating::getSingleton();
         $template = $templating->loadTemplate('ktcore/branding/list');
-        $template->setData(array(
-            'form' => $form,
-        ));
+        $templateData = array(
+            'form' => $form
+        );
         
-        return $template;
+        return $template->render($templateData);
     }
 
     function getLogoUploadForm() 
     {
-        $this->oPage->setBreadcrumbDetails(_kt("Upload Custom Logo"));
+        //$this->oPage->setBreadcrumbDetails(_kt("Upload Custom Logo"));
 
         $form = new KTForm;
         $form->setOptions(array(
