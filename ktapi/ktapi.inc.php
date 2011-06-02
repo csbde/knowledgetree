@@ -5420,6 +5420,10 @@ class KTAPI {
 			else
 			{
 				$GLOBALS['default']->log->error("Error in getting folder $folder_id ".$folder->getMessage());
+				
+				$response['status_code'] = 1;
+				$response['message'] = "ERROR: could not retrieve folder {$folder_id}: {$folder->getMessage()}";
+				return $response;
 			}
 
 			$children_ids = $folder->get_children_ids();
