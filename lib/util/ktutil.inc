@@ -173,7 +173,7 @@ class KTUtil {
     }
     
     public static function kt_clean_folder_url($folderId) {
-    	$url = KTUtil::kt_url() . KTBrowseUtil::getUrlForFolder($folderId);
+    	return KTUtil::kt_url() . KTBrowseUtil::getUrlForFolder($folderId);
 	}
 	
     public static function kt_internal_url()
