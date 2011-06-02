@@ -809,9 +809,7 @@ class SubscriptionContent {
 			'notify_id' => $oKTNotification->getId(),
 		);
 
-//		$info['title'] = KTUtil::arrayGet($this->_eventTypeNames, $info['event_type'], 'Subscription alert:') .': ' . $info['object_name'];
         $info['title'] = $appName.': '._kt('Subscription notification for').' "'.$info['object_name'].'" - '.$this->_eventTypeNames[$info['event_type']];
-
 
 		if ($info['actor_id'] !== null) {
 			$oTempUser = User::get($info['actor_id']);

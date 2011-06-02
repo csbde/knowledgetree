@@ -34,6 +34,7 @@ kt.app.document_actions = new function() {
             case 'checkout':
             case 'checkoutdownload':
                 if (checkedOutStatus == '1') {
+					kt.app.notify.show('Updating Actions', false);
                     alert('Document has already been checked-out by a user. Click OK to update actions.');
                     return false;
                 } else {
@@ -45,6 +46,7 @@ kt.app.document_actions = new function() {
                 if (checkedOutStatus == '1') {
                     return true;
                 } else {
+					kt.app.notify.show('Updating Actions', false);
                     alert('Document has already been checked-in. Click OK to update actions.');
                     return false;
                 }
@@ -56,6 +58,22 @@ kt.app.document_actions = new function() {
 		self.documentId = documentId;
 		self.type = type;
 		
+		// First Time Notification
+		switch (type) {
+            case 'checkout':
+				kt.app.notify.show('Preparing to Check-out Document', false);
+				break;
+            case 'checkoutdownload':
+                kt.app.notify.show('Preparing to Check-out and Download Document', false);
+				break;
+            case 'cancelcheckout':
+				kt.app.notify.show('Preparing to Cancel Check-out', false);
+				break;
+            case 'checkin':
+                kt.app.notify.show('Preparing to Check-in Document', false);
+				break;
+        }
+
 		if (!self.proceed_with_action(type)) {
             self.refresh(false);
             return;
@@ -90,7 +108,7 @@ kt.app.document_actions = new function() {
 			params.documentId = documentId;
 			params.action = 'ktcore.actions.document.' + type;
 			
-			kt.api.esignatures.showESignatures(response, params);
+			kt.api.esignatures.showESignatures(signatureEnabled, params);
 			jQuery('#reason-field').bind('finalise', self.finalise_event);
 		}
 		return;
