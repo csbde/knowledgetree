@@ -448,14 +448,14 @@ class KTCorePlugin extends KTPlugin {
             $this->registerAdminPage('cleanup', 'ManageCleanupDispatcher', 'contentManagement',
                 _kt('Verify Document Storage'), _kt('Performs a check to see if the documents in your repositories all are stored on the back-end storage (usually on disk).'),
                 'admin/manageCleanup.php', null);
-
-            $this->registerAdminPage('branding', 'ManageBrandDispatcher', 'sysConfig',
-                _kt('Manage Branding'), _kt('Change customizable branding components of the site e.g. Custom company logo'),
-                'admin/manageBranding.php', null);
         }
         $this->registerAdminPage('views', 'ManageViewDispatcher', 'contentSetup',
             _kt('Manage views'), _kt('Allows you to specify the columns that are to be used by a particular view (e.g. Browse documents, Search)'),
             'admin/manageViews.php', null);
+
+        $this->registerAdminPage('branding', 'ManageBrandDispatcher', 'sysConfig',
+            _kt('Manage Branding'), _kt('Change customizable branding components of the site e.g. Custom company logo'),
+            'admin/manageBranding.php', null);
     }
 }
 
