@@ -64,8 +64,8 @@ class KTGroupAdminDispatcher extends KTAdminDispatcher {
 
     function do_main()
     {
-        $this->oPage->setBreadcrumbDetails(_kt('select a group'));
-        $this->oPage->setTitle(_kt('Group Management'));
+        //$this->oPage->setBreadcrumbDetails(_kt('select a group'));
+        //$this->oPage->setTitle(_kt('Group Management'));
 
         $KTConfig =& KTConfig::getSingleton();
         $alwaysAll = 1; //$KTConfig->get('alwaysShowAll');
@@ -691,6 +691,11 @@ class KTGroupAdminDispatcher extends KTAdminDispatcher {
         }
 
         return implode(', ', $groupNames);
+    }
+
+    public function handleOutput($output)
+    {
+        print $output;
     }
 
 }

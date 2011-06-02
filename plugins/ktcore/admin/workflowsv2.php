@@ -124,10 +124,10 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
             }
         }
 
-        $this->aBreadcrumbs[] = array(
-            'url' => $_SERVER['PHP_SELF'],
-            'name' => _kt('Workflows'),
-        );
+        //$this->aBreadcrumbs[] = array(
+        //    'url' => $_SERVER['PHP_SELF'],
+        //    'name' => _kt('Workflows'),
+        //);
 
         if (!is_null($this->oWorkflow)) {
             $this->oPage->addPortlet(new WorkflowNavigationPortlet(_kt("Workflow Administration"), $this->oWorkflow));
@@ -156,7 +156,13 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
             'context' => $this,
             'workflows' => $aWorkflows,
         ));
+
         return $oTemplate->render();
+    }
+
+    public function handleOutput($output)
+    {
+        print $output;
     }
 
     function do_branchConfirm() {

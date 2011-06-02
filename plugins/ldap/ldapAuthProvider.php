@@ -111,7 +111,7 @@ class LdapAuthProvider extends KTAuthenticationProvider {
      */
     public function do_editSourceProvider()
     {
-        $this->oPage->setBreadcrumbDetails(_kt("Configure LDAP"));
+        //$this->oPage->setBreadcrumbDetails(_kt("Configure LDAP"));
 
         $sourceId = $_REQUEST['source_id'];
         $source = KTAuthenticationSource::get($sourceId);

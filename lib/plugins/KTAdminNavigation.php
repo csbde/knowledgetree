@@ -39,35 +39,40 @@
 // FIXME should we refactor this into a separate file?  Do we gain anything?
 
 class KTAdminNavigationRegistry {
-    var $aResources = array();
-    var $aCategorisation = array();
-    var $aCategories = array();
-    private $sorted = false;
 
+    private $aResources = array();
+    private $aCategorisation = array();
+    private $aCategories = array();
+    private $sorted = array('categories' => false, 'items' => false);
 
-	static function &getSingleton () {
-		if (!KTUtil::arrayGet($GLOBALS['_KT_PLUGIN'], 'oKTAdminNavigationRegistry')) {
-			$GLOBALS['_KT_PLUGIN']['oKTAdminNavigationRegistry'] = new KTAdminNavigationRegistry;
-		}
-		return $GLOBALS['_KT_PLUGIN']['oKTAdminNavigationRegistry'];
-	}
+    public static function &getSingleton ()
+    {
+        if (!KTUtil::arrayGet($GLOBALS['_KT_PLUGIN'], 'oKTAdminNavigationRegistry')) {
+            $GLOBALS['_KT_PLUGIN']['oKTAdminNavigationRegistry'] = new KTAdminNavigationRegistry;
+        }
+
+        return $GLOBALS['_KT_PLUGIN']['oKTAdminNavigationRegistry'];
+    }
 
     // name is the suburl below admin
     // namespace, class, category, title, description
     // if category is specified, it looks for an item with THAT NAME for its details.
-    function registerLocation($sName, $sClass, $sCategory, $sTitle, $sDescription, $sDispatcherFilePath = null, $sURL = null, $sNamespace = null, $iOrder = 0) {
+    public function registerLocation($sName, $sClass, $sCategory, $sTitle, $sDescription, $sDispatcherFilePath = null, $sURL = null, $sNamespace = null, $iOrder = 0)
+    {
         $sFullname = $sCategory . '/' . $sName;
         $aInfo = array(
-            "name" => $sName,
-            "class" => $sClass,
-            "title" => $sTitle,
-            "description"=> $sDescription,
-            "filepath" => $sDispatcherFilePath,
-            "url" => $sURL,
-            "fullname" => $sFullname,
-            "order" => $iOrder
+            'name' => $sName,
+            'class' => $sClass,
+            'title' => $sTitle,
+            'description'=> $sDescription,
+            'filepath' => $sDispatcherFilePath,
+            'url' => $sURL,
+            'fullname' => $sFullname,
+            'order' => $iOrder
         );
+
         $this->aResources[$sFullname] = $aInfo;
+
         // is this a toplevel item?
         if ($sCategory != null) {
             if (!array_key_exists($sCategory, $this->aCategories)) {
@@ -77,67 +82,103 @@ class KTAdminNavigationRegistry {
         }
     }
 
-    function isRegistered($sName) {
-        if (KTUtil::arrayGet($this->aResources, $sName)) {
-            return true;
-        }
-        return false;
-    }
-
-    function registerCategory($sName, $sTitle, $sDescription) {
-        $this->aCategories[$sName] = array("title" => $sTitle, "description" => $sDescription, "name" => $sName);
-    }
-    function getCategories() { return $this->aCategories; }
-    function getCategory($sCategory) { return $this->aCategories[$sCategory]; }
-    function getItemsForCategory($sCategory) {
-        $this->sortItems($sCategory);
-        return $this->aCategorisation[$sCategory];
-    }
-
-    function sortItems($sCategory)
+    public function isRegistered($name)
     {
-        if($this->sorted[$sCategory]){
+	return KTUtil::arrayGet($this->aResources, $name);
+    }
+
+    public function registerCategory($name, $title, $description, $order)
+    {
+        $this->aCategories[$name] = array(
+					'title' => $title,
+					'description' => $description,
+					'name' => $name,
+					'order' => $order
+				    );
+    }
+
+    public function getCategories()
+    {
+	$this->sortCategories();
+	return $this->aCategories;
+    }
+
+    private function sortCategories()
+    {
+	if ($this->sorted['categories']) {
             return true;
         }
 
-        $array = $this->aCategorisation[$sCategory];
-        usort($array, 'order_compare');
-        $this->aCategorisation[$sCategory] = $array;
-        $this->sorted[$sCategory] = true;
+        uasort($this->aCategories, 'order_compare');
+
+	$this->sorted['categories'] = true;
     }
 
-    function getDispatcher($sName) {
-        // FIXME this probably needs to use require_once mojo.
-        $aInfo = $this->aResources[$sName];
-        if ($aInfo["filepath"] !== null) { require_once($aInfo["filepath"]); }
-        if (!empty($aInfo['url'])) {
-           return new RedirectingDispatcher($aInfo["url"]);
-        }
-        return new $aInfo["class"];
+    public function getCategory($category)
+    {
+	return $this->aCategories[$category];
     }
+
+    public function getItemsForCategory($category)
+    {
+        $this->sortItems($category);
+        return $this->aCategorisation[$category];
+    }
+
+    private function sortItems($sCategory)
+    {
+        if ($this->sorted['items'][$sCategory]) {
+            return true;
+        }
+
+        usort($this->aCategorisation[$sCategory], 'order_compare');
+
+        $this->sorted['items'][$sCategory] = true;
+    }
+
+    public function getDispatcher($sName)
+    {
+        $aInfo = $this->aResources[$sName];
+        if ($aInfo['filepath'] !== null) {
+	    require_once($aInfo['filepath']);
+	}
+
+        if (!empty($aInfo['url'])) {
+           return new RedirectingDispatcher($aInfo['url']);
+        }
+
+        return new $aInfo['class'];
+    }
+
 }
 
 function order_compare($a, $b)
 {
-    if($a['order'] > $b['order']) {
+    if ($a['order'] > $b['order']) {
         return -1;
     }
-    if($a['order'] < $b['order']) {
+
+    if ($a['order'] < $b['order']) {
         return 1;
     }
+
     return 0;
 }
 
 class RedirectingDispatcher {
+
     var $url = '';
 
-    function RedirectingDispatcher($sURL) {
+    function RedirectingDispatcher($sURL)
+    {
         $this->url = $sURL;
     }
 
-    function dispatch() {
+    function dispatch()
+    {
         redirect($this->url);
     }
+
 }
 
 ?>

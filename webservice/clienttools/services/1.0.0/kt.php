@@ -423,7 +423,7 @@ class kt extends client_service {
                     // Final Selection Array
                     $varArray = array();
                     
-                    $this->prepTreeStructure($field['selection'][0], $varArray);
+                    $this->prepTreeStructure($field['selection'][0], $varArray, $prepArray['value']);
                     
                     $this->logTrace((__METHOD__.'('.__FILE__.' '.__LINE__.')'), json_encode($varArray));
                     
@@ -460,25 +460,20 @@ class kt extends client_service {
 		return true;
 	}
     
-    private function prepTreeStructure($item, &$parentArray)
+    private function prepTreeStructure($item, &$parentArray, $value)
     {
         $this->logTrace((__METHOD__.'('.__FILE__.' '.__LINE__.')'),'Enter Function');
-        $this->logTrace('prepTreeStructure', json_encode($item));
-        $this->logTrace('$item->type', $item['type']);
         
         if ($item['type'] == 'tree') {
             
-            
-            
             if (!empty($item['treename'])) {
-                $itemArray = array('text'=>$item['treename'], 'cls'=>'folder');
+                $itemArray = array('text'=>$item['treename'], 'expanded'=>TRUE);
                 
                 if (count($item['fields']) > 0) {
                     foreach ($item['fields'] as $subField) {
-                        $this->prepTreeStructure($subField, $itemArray);
+                        $this->prepTreeStructure($subField, $itemArray, $value);
                     }
                 }
-                
                 
                 if ($item['treeid'] == 0) {
                     $parentArray = $itemArray;
@@ -494,7 +489,10 @@ class kt extends client_service {
         } else if ($item['type'] == 'field') {
             
             if (!empty($item['name'])) {
-                $itemArray = array('text'=>$item['name'], 'leaf'=>TRUE, 'checked'=>FALSE);
+                
+                $checked = ($item['name'] == $value) ? TRUE : FALSE;
+                
+                $itemArray = array('text'=>$item['name'], 'leaf'=>TRUE,  'cls'=>'x-tree-node-leaf', 'checked'=>$checked);
                 $parentArray['children'][] = $itemArray;
             }
         }

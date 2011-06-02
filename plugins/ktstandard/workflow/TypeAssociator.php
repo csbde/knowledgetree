@@ -5,7 +5,7 @@
  * KnowledgeTree Community Edition
  * Document Management Made Simple
  * Copyright (C) 2008, 2009, 2010 KnowledgeTree Inc.
- * 
+ *
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License version 3 as published by the
@@ -67,9 +67,9 @@ class KTDocTypeWorkflowAssociationPlugin extends KTPlugin {
 
         if ($res == 'ktstandard.triggers.workflowassociation.documenttype.handler') {
             $this->registerAdminPage('workflow_type_allocation', 'WorkflowTypeAllocationDispatcher',
-                'contentManagement', _kt('Workflow Allocation by Document Types'),
+                'workflows', _kt('Workflow Allocation by Document Types'),
                 _kt('This installation assigns workflows by Document Type. Configure this process here.'), __FILE__);
-        }else{
+        } else {
             $this->deRegisterPluginHelper('contentManagement/workflow_type_allocation', 'admin_page');
         }
         return true;

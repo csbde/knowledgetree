@@ -60,8 +60,8 @@ class KTUnitAdminDispatcher extends KTAdminDispatcher {
     }
 
     function do_main() {
-		$this->oPage->setBreadcrumbDetails(_kt('select a unit'));
-		$this->oPage->setTitle(_kt("Unit Management"));
+		//$this->oPage->setBreadcrumbDetails(_kt('select a unit'));
+		//$this->oPage->setTitle(_kt("Unit Management"));
 
 		$unit_list =& Unit::getList();
 
@@ -260,6 +260,11 @@ class KTUnitAdminDispatcher extends KTAdminDispatcher {
             }
         }
         $this->successRedirectToMain(_kt("Unit removed"));
+    }
+
+    public function handleOutput($output)
+    {
+        print $output;
     }
 }
 

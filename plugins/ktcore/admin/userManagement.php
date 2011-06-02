@@ -59,11 +59,11 @@ class KTUserAdminDispatcher extends KTAdminDispatcher {
 
     function do_main()
     {
-        $this->aBreadcrumbs[] = array('url' => $_SERVER['PHP_SELF'], 'name' => _kt('User Management'));
-        $this->oPage->setBreadcrumbDetails(_kt('select a user'));
-        $this->oPage->setTitle(_kt('User Management'));
+        //$this->aBreadcrumbs[] = array('url' => $_SERVER['PHP_SELF'], 'name' => _kt('User Management'));
+        //$this->oPage->setBreadcrumbDetails(_kt('select a user'));
+        //$this->oPage->setTitle(_kt('User Management'));
 
-        $KTConfig =& KTConfig::getSingleton();
+        $KTConfig = KTConfig::getSingleton();
         $alwaysAll = $KTConfig->get('alwaysShowAll');
         $alwaysAll = true;
 
@@ -84,15 +84,15 @@ class KTUserAdminDispatcher extends KTAdminDispatcher {
         // FIXME handle group search stuff.
         $searchResults = null;
         if (!empty($name)) {
-            $searchResults =& User::getList('WHERE username LIKE \'%' . DBUtil::escapeSimple($name) . '%\' AND id > 0');
+            $searchResults = User::getList('WHERE username LIKE \'%' . DBUtil::escapeSimple($name) . '%\' AND id > 0');
         }
         else if ($showAll !== false) {
-            $searchResults =& User::getList('id > 0');
+            $searchResults = User::getList('id > 0');
             $noSearch = false;
             $name = '*';
         }
 
-        $authenticationSources =& KTAuthenticationSource::getList();
+        $authenticationSources = KTAuthenticationSource::getList();
 
         $canAdd = true;
         if (KTPluginUtil::pluginIsActive('ktdms.wintools')) {
@@ -104,7 +104,7 @@ class KTUserAdminDispatcher extends KTAdminDispatcher {
             }
         }
 
-        $templating =& KTTemplating::getSingleton();
+        $templating = KTTemplating::getSingleton();
         $template = $templating->loadTemplate('ktcore/principals/useradmin');
         $templateData = array(
             'context' => $this,
@@ -121,10 +121,11 @@ class KTUserAdminDispatcher extends KTAdminDispatcher {
         return $template->render($templateData);
     }
 
-    /**
-     * Resend an invite to a user
-     *
-     */
+    public function handleOutput($output)
+    {
+        print $output;
+    }
+    
     function do_resendInvite()
     {
         $userId = $_REQUEST['user_id'];
@@ -173,7 +174,7 @@ class KTUserAdminDispatcher extends KTAdminDispatcher {
 
         // sometimes even admin is restricted in what they can do.
 
-        $KTConfig =& KTConfig::getSingleton();
+        $KTConfig = KTConfig::getSingleton();
         $minLength = ((int) $KTConfig->get('user_prefs/passwordLength', 6));
         $restrictAdmin = ((bool) $KTConfig->get('user_prefs/restrictAdminPasswords', false));
         $passwordAddRequirement = '';
@@ -189,7 +190,7 @@ class KTUserAdminDispatcher extends KTAdminDispatcher {
             $addFields = $this->getOldAddUserFields($username, $emailAddress, $passwordAddRequirement, $maxSessions, $options);
         }
 
-        $templating =& KTTemplating::getSingleton();
+        $templating = KTTemplating::getSingleton();
         $template = $templating->loadTemplate('ktcore/principals/adduser');
         $templateData = array(
             'context' => $this,
@@ -231,10 +232,10 @@ class KTUserAdminDispatcher extends KTAdminDispatcher {
 
     function do_addUserFromSource()
     {
-        $authenticationSource =& KTAuthenticationSource::get($_REQUEST['source_id']);
+        $authenticationSource = KTAuthenticationSource::get($_REQUEST['source_id']);
         $providerName = $authenticationSource->getAuthenticationProvider();
-        $authenticationRegistry =& KTAuthenticationProviderRegistry::getSingleton();
-        $authenticationProvider =& $authenticationRegistry->getAuthenticationProvider($providerName);
+        $authenticationRegistry = KTAuthenticationProviderRegistry::getSingleton();
+        $authenticationProvider = $authenticationRegistry->getAuthenticationProvider($providerName);
 
         $this->aBreadcrumbs[] = array('url' => $_SERVER['PHP_SELF'], 'name' => _kt('User Management'));
         $this->aBreadcrumbs[] = array('url' => KTUtil::addQueryStringSelf('action=addUser'), 'name' => _kt('add a new user'));
@@ -253,7 +254,7 @@ class KTUserAdminDispatcher extends KTAdminDispatcher {
         $this->oPage->setTitle(_kt('Modify User Details'));
 
         $userId = KTUtil::arrayGet($_REQUEST, 'user_id');
-        $user =& User::get($userId);
+        $user = User::get($userId);
 
         $oldSearch = KTUtil::arrayGet($_REQUEST, 'old_search');
 
@@ -277,7 +278,7 @@ class KTUserAdminDispatcher extends KTAdminDispatcher {
 
         $this->aBreadcrumbs[] = array('name' => $user->getName());
 
-        $KTConfig =& KTConfig::getSingleton();
+        $KTConfig = KTConfig::getSingleton();
         $useEmail = $KTConfig->get('user_prefs/useEmailLogin', false);
         if ($useEmail) {
             $editFields = $this->getNewEditUserFields($username, $name, $emailNotification, $mobileNum, $emailAddress, $maxSessions);
@@ -288,15 +289,15 @@ class KTUserAdminDispatcher extends KTAdminDispatcher {
 
         $authenticationSource = KTAuthenticationSource::getForUser($user);
         if (is_null($authenticationSource)) {
-            $authenticationProvider =& new KTBuiltinAuthenticationProvider;
+            $authenticationProvider = new KTBuiltinAuthenticationProvider;
         }
         else {
             $providerName = $authenticationSource->getAuthenticationProvider();
-            $authenticationRegistry =& KTAuthenticationProviderRegistry::getSingleton();
+            $authenticationRegistry = KTAuthenticationProviderRegistry::getSingleton();
             $authenticationProvider = $authenticationRegistry->getAuthenticationProvider($providerName);
         }
 
-        $templating =& KTTemplating::getSingleton();
+        $templating = KTTemplating::getSingleton();
         $template = $templating->loadTemplate('ktcore/principals/edituser');
         $templateData = array(
             'context' => $this,
@@ -343,7 +344,7 @@ class KTUserAdminDispatcher extends KTAdminDispatcher {
         $oldSearch = KTUtil::arrayGet($_REQUEST, 'old_search');
 
         $userId = KTUtil::arrayGet($_REQUEST, 'user_id');
-        $user =& User::get($userId);
+        $user = User::get($userId);
 
         if (PEAR::isError($user) || $user == false) {
             $this->errorRedirectToMain(_kt('Please select a user first.'));
@@ -356,7 +357,7 @@ class KTUserAdminDispatcher extends KTAdminDispatcher {
         $editFields[] =  new KTPasswordWidget(_kt('Password'), _kt('Specify an initial password for the user.'), 'new_password', null, $this->oPage, true);
         $editFields[] =  new KTPasswordWidget(_kt('Confirm Password'), _kt('Confirm the password specified above.'), 'confirm_password', null, $this->oPage, true);
 
-        $templating =& KTTemplating::getSingleton();
+        $templating = KTTemplating::getSingleton();
         $template = $templating->loadTemplate('ktcore/principals/updatepassword');
         $templateData = array(
             'context' => $this,
@@ -377,7 +378,7 @@ class KTUserAdminDispatcher extends KTAdminDispatcher {
         $password = KTUtil::arrayGet($_REQUEST, 'new_password');
         $confirmPassword = KTUtil::arrayGet($_REQUEST, 'confirm_password');
 
-        $KTConfig =& KTConfig::getSingleton();
+        $KTConfig = KTConfig::getSingleton();
         $minLength = ((int) $KTConfig->get('user_prefs/passwordLength', 6));
 
         $restrictAdmin = ((bool) $KTConfig->get('user_prefs/restrictAdminPasswords', false));
@@ -395,7 +396,7 @@ class KTUserAdminDispatcher extends KTAdminDispatcher {
         // validated and ready..
         $this->startTransaction();
 
-        $user =& User::get($userId);
+        $user = User::get($userId);
         if (PEAR::isError($user) || $user == false) {
             $this->errorRedirectToMain(_kt('Please select a user to modify first.'));
         }
@@ -417,17 +418,17 @@ class KTUserAdminDispatcher extends KTAdminDispatcher {
     function do_editUserSource()
     {
         $userId = KTUtil::arrayGet($_REQUEST, 'user_id');
-        $user =& $this->oValidator->validateUser($userId);
+        $user = $this->oValidator->validateUser($userId);
         $this->aBreadcrumbs[] = array('url' => $_SERVER['PHP_SELF'], 'name' => _kt('User Management'));
         $this->aBreadcrumbs[] = array('name' => $user->getName());
 
         $authenticationSource = KTAuthenticationSource::getForUser($user);
         if (is_null($authenticationSource)) {
-            $authenticationProvider =& new KTBuiltinAuthenticationProvider;
+            $authenticationProvider = new KTBuiltinAuthenticationProvider;
         }
         else {
             $providerName = $authenticationSource->getAuthenticationProvider();
-            $authenticationRegistry =& KTAuthenticationProviderRegistry::getSingleton();
+            $authenticationRegistry = KTAuthenticationProviderRegistry::getSingleton();
             $authenticationProvider = $authenticationRegistry->getAuthenticationProvider($providerName);
         }
 
@@ -469,7 +470,7 @@ class KTUserAdminDispatcher extends KTAdminDispatcher {
                                                                 $options
         );
 
-        $templating =& KTTemplating::getSingleton();
+        $templating = KTTemplating::getSingleton();
         $template = $templating->loadTemplate('ktcore/principals/usergroups');
         $templateData = array(
             'context' => $this,
@@ -510,12 +511,12 @@ class KTUserAdminDispatcher extends KTAdminDispatcher {
 
         $this->startTransaction();
 
-        $user =& User::get($userId);
+        $user = User::get($userId);
         if (PEAR::isError($user) || $user == false) {
             $this->errorRedirectToMain(_kt('Please select a user to modify first.'), sprintf('old_search=%s&do_search=1', $oldSearch));
         }
 
-        $duplicateUser =& User::getByUserName($emailAddress);
+        $duplicateUser = User::getByUserName($emailAddress);
         if (!PEAR::isError($duplicateUser)) {
             if ($duplicateUser->getId() != $user->getId()) {
                 $this->errorRedirectTo('addUser', _kt('A user with that email address already exists'));
@@ -540,7 +541,7 @@ class KTUserAdminDispatcher extends KTAdminDispatcher {
 
     function do_saveUser()
     {
-        $KTConfig =& KTConfig::getSingleton();
+        $KTConfig = KTConfig::getSingleton();
 
         $useEmail = $KTConfig->get('user_prefs/useEmailLogin', false);
         if ($useEmail) { return $this->saveEmailUser(); }
@@ -578,12 +579,12 @@ class KTUserAdminDispatcher extends KTAdminDispatcher {
         // validated and ready..
         $this->startTransaction();
 
-        $user =& User::get($userId);
+        $user = User::get($userId);
         if (PEAR::isError($user) || $user == false) {
             $this->errorRedirectToMain(_kt('Please select a user to modify first.'), sprintf('old_search=%s&do_search=1', $oldSearch));
         }
 
-        $duplicateUser =& User::getByUserName($username);
+        $duplicateUser = User::getByUserName($username);
         if (!PEAR::isError($duplicateUser)) {
             if ($duplicateUser->getId() != $user->getId()) {
                 $this->errorRedirectTo('addUser', _kt('A user with that username already exists'));
@@ -710,7 +711,7 @@ class KTUserAdminDispatcher extends KTAdminDispatcher {
         $password = KTUtil::arrayGet($_REQUEST, 'new_password');
         $confirmPassword = KTUtil::arrayGet($_REQUEST, 'confirm_password');
 
-        $KTConfig =& KTConfig::getSingleton();
+        $KTConfig = KTConfig::getSingleton();
         $minLength = ((int) $KTConfig->get('user_prefs/passwordLength', 6));
         $restrictAdmin = ((bool) $KTConfig->get('user_prefs/restrictAdminPasswords', false));
 

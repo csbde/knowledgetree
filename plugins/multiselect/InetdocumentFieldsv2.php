@@ -6,7 +6,7 @@
  * KnowledgeTree Community Edition
  * Document Management Made Simple
  * Copyright (C) 2008, 2009, 2010 KnowledgeTree Inc.
- * 
+ *
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License version 3 as published by the
@@ -56,7 +56,7 @@ class InetDocumentFieldDispatcher extends KTAdminDispatcher {
 	 * iNET Process
 	 */
     function predispatch() {
-        $this->aBreadcrumbs[] = array('url' => $_SERVER['PHP_SELF'], 'name' => _kt('Document Field Management'));
+        //$this->aBreadcrumbs[] = array('url' => $_SERVER['PHP_SELF'], 'name' => _kt('Document Field Management'));
         $this->persistParams(array('fFieldsetId'));
 
         $this->oFieldset = KTFieldset::get(KTUtil::arrayGet($_REQUEST, 'fFieldsetId'));
@@ -83,7 +83,13 @@ class InetDocumentFieldDispatcher extends KTAdminDispatcher {
 		    'context' => $this,
             'fieldsets' => KTFieldset::getList("disabled != true AND namespace != 'tagcloud'"),
         ));
-        return $oTemplate;
+
+        return $oTemplate->render();
+    }
+
+    public function handleOutput($output)
+    {
+        print $output;
     }
 
 	/**
@@ -105,7 +111,6 @@ class InetDocumentFieldDispatcher extends KTAdminDispatcher {
             'context' => $this,
         ));
 
-
         // construct the widget set.
         // we use a slight variation here, because "type" is only present in certain circumstances.
         $widgets = array(
@@ -122,6 +127,7 @@ class InetDocumentFieldDispatcher extends KTAdminDispatcher {
                 'description' => _kt("In order to ensure that the data that users enter is useful, it is essential that you provide a good example."),
             )),
         );
+
         if ($this->bHaveConditional) {
 
             // FIXME get this from some external source.
@@ -180,7 +186,7 @@ class InetDocumentFieldDispatcher extends KTAdminDispatcher {
 	/**
 	 * Creates a new page
 	 * @return form
-	 * 
+	 *
 	 * iNET Process
 	 */
     function do_newfieldset() {
@@ -191,8 +197,8 @@ class InetDocumentFieldDispatcher extends KTAdminDispatcher {
     }
 	/**
 	 * Creates a fieldsets
-	 * @return 
-	 * 
+	 * @return
+	 *
 	 * iNET Process
 	 */
     function do_create() {
@@ -256,7 +262,7 @@ class InetDocumentFieldDispatcher extends KTAdminDispatcher {
 	 * Gets tyoes for fieldsets
 	 * @return string
 	 * @param $oFieldset Object
-	 * 
+	 *
 	 * iNET Process
 	 */
 	function getTypesForFieldset($oFieldset) {
@@ -309,7 +315,7 @@ class InetDocumentFieldDispatcher extends KTAdminDispatcher {
 	/**
 	 * Edits fields
 	 * @return template
-	 * 
+	 *
 	 * iNET Process
 	 */
     function do_edit() {
@@ -321,7 +327,7 @@ class InetDocumentFieldDispatcher extends KTAdminDispatcher {
 
         // FIXME this is essentially a stub for the fieldset-delegation code.
         if ($this->oFieldset->getIsConditional()) {
-            
+
 			require_once(KT_DIR.'/plugins/ktcore/admin/fieldsets/conditional.inc.php');
             $oSubDispatcher = new ConditionalFieldsetManagementDispatcher;
         } else {
@@ -333,13 +339,13 @@ class InetDocumentFieldDispatcher extends KTAdminDispatcher {
 			}
 			else
 			{
-				
+
 				require_once(KT_DIR.'/plugins/ktcore/admin/fieldsets/basic.inc.php');
             $oSubDispatcher = new BasicFieldsetManagementDispatcher;
         }
 			// multiselect change end
-			
-			
+
+
         }
 
         $subevent_var = 'fieldset_action';
@@ -364,8 +370,8 @@ class InetDocumentFieldDispatcher extends KTAdminDispatcher {
     }
 	/**
 	 * deletes field
-	 * @return 
-	 * 
+	 * @return
+	 *
 	 * iNET Process
 	 */
     function do_delete() {
@@ -390,7 +396,7 @@ class InetDocumentFieldDispatcher extends KTAdminDispatcher {
 	/**
 	 * Form for edit
 	 * @return form
-	 * 
+	 *
 	 * iNET Process
 	 */
     function form_edit() {
@@ -457,7 +463,7 @@ class InetDocumentFieldDispatcher extends KTAdminDispatcher {
 	/**
 	 * Edits a fieldsets
 	 * @return form
-	 * 
+	 *
 	 * iNET Process
 	 */
     function do_editfieldset() {
@@ -467,8 +473,8 @@ class InetDocumentFieldDispatcher extends KTAdminDispatcher {
     }
 	/**
 	 * saves a fieldset
-	 * @return 
-	 * 
+	 * @return
+	 *
 	 * iNET Process
 	 */
     function do_savefieldset() {
