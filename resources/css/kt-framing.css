@@ -2285,7 +2285,9 @@ body #content #add_dashlet
     border-width: 0px;
 
 }
-
+input#add_dashlet {
+	background: #fdfdfd url(../graphics/newui/icons/icon_add.png) no-repeat 8px 5px;
+}
 #add_dashlet
 {
     border: 1px solid #CCC;
