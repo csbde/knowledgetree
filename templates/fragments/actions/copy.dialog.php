@@ -15,7 +15,7 @@
 <tr>
 	<td class="ul_actions" align="right" valign="top">
         <a class="ul_actions_cancel_link" href="javascript: kt.app.copy.closeWindow();">Cancel</a>
-        <span class="copy-spinner none" style="visibility:hidden;">&nbsp;</span>
+        <span id="copy-spinner" class="copy-spinner none">&nbsp;</span>
         <input id="select-btn" class="ul_actions_btns" type="button" value="Save" onClick="kt.app.copy.save();" />
     </td>
 </tr>
