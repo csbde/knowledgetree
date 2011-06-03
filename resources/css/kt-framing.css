@@ -2253,7 +2253,7 @@ hr {
     display: inline-block;
     float: left;
     margin: 2px 5px 2px 2px;
-    padding: 2px 10px;
+    padding: 1px 10px 2px;
     border-radius: 10px;
     -moz-border-radius: 10px;
     -webkit-border-radius: 10px;
@@ -2264,6 +2264,10 @@ hr {
 .addDialog .dashletLink:hover {
 	background: #d5e0f2;
 }
+.addDialog .dashletLink:before {
+	content: "+ ";
+	font-weight: bold;
+} 
 
 .addDialog .closeLink {
 	position: absolute;
@@ -2281,7 +2285,9 @@ body #content #add_dashlet
     border-width: 0px;
 
 }
-
+input#add_dashlet {
+	background: #fdfdfd url(../graphics/newui/icons/icon_add.png) no-repeat 8px 5px;
+}
 #add_dashlet
 {
     border: 1px solid #CCC;
