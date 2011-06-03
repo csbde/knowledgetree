@@ -448,6 +448,11 @@ breadcrumbBtns a:active {
 ul#more.splitmenu li.dir div.left_action ul a {
 	padding-left: 5px;
 }
+.splitmenu .dir {
+	background-image: url(/thirdpartyjs/extjs/resources/images/default/menu/menu-parent.gif)!important;
+	background-repeat: no-repeat!important;
+	background-position: right!important;
+}
 /*----End Breadcrumbs----*/
 
 #commentsarea table{
@@ -681,12 +686,14 @@ ul.floatleft li.notification {
 	background: url(../graphics/newui/icons/roles.png) no-repeat 4px 4px ;
 }
 div.form_actions {
-	float: left;
+	display: inline-block;
+	float: right;
 	background: url('../graphics/newui/gridtoolbarbkg.png') repeat-x;
 	padding: 1px 0px 0px 0px;
 	margin: 0;
     line-height: 29px;
     height: 29px;
+    position: relative;
 }
 
 #content .form_actions *
