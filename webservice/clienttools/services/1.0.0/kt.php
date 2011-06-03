@@ -477,7 +477,6 @@ class kt extends client_service {
                 
                 if ($item['treeid'] == 0) {
                     $parentArray = $itemArray;
-                    $this->logTrace('$parentArray', json_encode($parentArray));
                 } else {
                     $parentArray['children'][] = $itemArray;
                 }
