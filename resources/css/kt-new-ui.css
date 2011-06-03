@@ -687,7 +687,7 @@ ul.floatleft li.notification {
 }
 div.form_actions {
 	display: inline-block;
-	float: right;
+	float: left;
 	background: url('../graphics/newui/gridtoolbarbkg.png') repeat-x;
 	padding: 1px 0px 0px 0px;
 	margin: 0;
