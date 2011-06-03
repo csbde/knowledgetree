@@ -24,7 +24,7 @@
 	<h4>Folders</h4>
 		<table class="subscription_manage">
 			<th> <input  id=allfolders type=checkbox onclick="javascript:{ldelim}subscriptions.selectAllFolders();{rdelim}"> </th>
-			<th> Name </th>
+			<th> <span class=descriptiveText> (Select All) <span> </th>
 			{foreach from=$aFolderSubscriptions item=aFolderSubscription}
 			<tr>
 				<td class="checkbox">
@@ -32,6 +32,13 @@
 				</td>
 				<td class="name"> 
 					{$aFolderSubscription->getContentLink()}
+				</td>
+				<td>
+					{if $aFolderSubscription->bWithSubFolders > 0}
+						<span style="color:red;">(Folder And Subfolders)</span>
+					{else}
+						
+					{/if}
 				</td>
 			</tr>
 			{/foreach}
@@ -42,7 +49,7 @@
 	<h4>Documents</h4>
 		<table class="subscription_manage">
 			<th> <input id=alldocuments type=checkbox onclick="javascript:{ldelim}subscriptions.selectAllDocuments();{rdelim}"> </th>
-			<th> Name </th>		
+			<th> <span class=descriptiveText> (Select All) <span> </th>
 			{foreach from=$aDocumentSubscriptions item=aDocumentSubscription}
 			<tr>
 				<td class="checkbox">

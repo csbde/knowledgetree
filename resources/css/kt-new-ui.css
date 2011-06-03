@@ -148,14 +148,18 @@ textarea {
 	content: " × "
 }
 #TagCloudDashlet #tagcloud a, a.link, a.visited, a.hover, a.active {
-	padding: 2px 10px;
-	border-radius: 10px;
-	-moz-border-radius: 10px;
-	-webkit-border-radius: 10px;
+	padding: 2px 6px;
+	border-radius: 20px;
+	-moz-border-radius: 20px;
+	-webkit-border-radius: 20px;
 	border: 1px solid #ccd5e4;
 	background-color: #eff2f7;
 	color: #2F6594;
 	white-space: nowrap;
+	display: inline-block;
+	margin-bottom: 2px;
+	margin-left: -2px;
+	line-height: normal;
 }
 #TagCloudDashlet #tagcloud a:hover {
 	text-decoration: none;
@@ -461,7 +465,9 @@ breadcrumbBtns a:active {
 	left: auto;
 }
 
-
+ul#more.splitmenu li.dir div.left_action ul a {
+	padding-left: 5px;
+}
 /*----End Breadcrumbs----*/
 
 #commentsarea table{
@@ -652,6 +658,9 @@ ul.floatleft li.notification {
 .action_buttons #move {
 	background: url('../graphics/newui/icons/cut.png') no-repeat 4px 4px;
 }
+.action_buttons #index {
+	background: url('../graphics/newui/icons/icon_schedule_indexing.png') no-repeat 3px 4px;
+}
 .action_buttons #copy {
 	background: url('../graphics/newui/icons/copy.png') no-repeat 4px 4px;
 }
@@ -689,7 +698,7 @@ ul.floatleft li.notification {
 	background: url('../graphics/newui/icons/permissions.png') no-repeat 4px 4px;
 }
 .action_buttons #document-roles {
-	background: url(../graphics/newui/sprite.png) no-repeat -408px top;
+	background: url(../graphics/newui/icons/roles.png) no-repeat 4px 4px ;
 }
 div.form_actions {
 	float: left;
@@ -1159,9 +1168,6 @@ div#upgradePlan {
 	font-size:16px;
 	font-variant: normal;
 	text-transform: capitalize;
-	/*border-bottom:1px dotted #E1E0E2;
-	/*width:235px;
-	font-weight:bold;*/
 }
 
 span.astat {
@@ -1274,6 +1280,10 @@ a.subscribe_actions {
 	cursor: default;
 }
 
+
+textarea#reason-field {
+	width:330px !important;
+}
 
 /*
 IPhone Style Switches
