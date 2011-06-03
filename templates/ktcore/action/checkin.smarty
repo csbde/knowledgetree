@@ -4,18 +4,15 @@
 <form method="post" action="{$form_action}" enctype="multipart/form-data" name="checkin_form" id="checkinform" style="display:none;">
     <input type="hidden" name="action" value="checkin" />
     <input type="hidden" name="fDocumentId" value="{$documentId}" />
-    
-	<div class="field ">
+	<div class="field" style="margin-top: 5px;">
 		<label for="filename">Select a file to check-in<span class="required">(Required)</span></label>
-        <br /><br />
-		<input id="checkinfilename" name="filename" size="45" type="file">
-	</div>
-	
-    <br /><br />
-    
+        <br />
+		<input class="modalField" id="checkinfilename" name="filename" size="35" type="file">
+	</div> 
+	<br>
 	<div class="field ">
-        Version Change:
-        <br /><br />
+		<label>Version</label>
+        <br />
         <table><tr>
             <td>
                 <span class="field switch">
@@ -28,8 +25,6 @@
                     
                 </span>
             </td>
-            <td>&nbsp;</td>
-            <td>(Minor - 0.1, 0.2, Major - 1.0, 2.0)</td>
         </tr></table>
 	</div>
     
@@ -42,11 +37,20 @@
 			<input name="forcefilename" checked="checked" class="noborder" type="checkbox">
         </div>-->
         <input type="hidden" id="forcefilenameVal"  name="forcefilenameVal" value="{$forceFilename}">
-     {/if}
+     {/if}	
 
-	<div class=form_actions id=modal>
-		<input type="submit" name=form_submit value="{i18n}Check-in{/i18n}" />
-		<a href="#" onclick="vActions.closeDisplay('checkin'); return false;" class=form_cancel>Cancel</a>
+	<div class="modal-actions">
+		<div class="cancel">
+				<a href="#" onclick="vActions.closeDisplay('checkin'); return false;" class="form_cancel">Cancel</a>
+		</div>
+		
+		<div class="form_actions" id="modal">
+		<input type="submit" name="form_submit" value="{i18n}Check-in{/i18n}" />
+		</div>
+	</td>
 	</div>
+	
+	
+
 </form>
 

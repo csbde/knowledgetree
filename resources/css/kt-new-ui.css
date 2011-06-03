@@ -468,6 +468,11 @@ breadcrumbBtns a:active {
 ul#more.splitmenu li.dir div.left_action ul a {
 	padding-left: 5px;
 }
+.splitmenu .dir {
+	background-image: url(/thirdpartyjs/extjs/resources/images/default/menu/menu-parent.gif)!important;
+	background-repeat: no-repeat!important;
+	background-position: right!important;
+}
 /*----End Breadcrumbs----*/
 
 #commentsarea table{
@@ -701,12 +706,14 @@ ul.floatleft li.notification {
 	background: url(../graphics/newui/icons/roles.png) no-repeat 4px 4px ;
 }
 div.form_actions {
-	float: left;
+	display: inline-block;
+	float: right;
 	background: url('../graphics/newui/gridtoolbarbkg.png') repeat-x;
 	padding: 1px 0px 0px 0px;
 	margin: 0;
     line-height: 29px;
     height: 29px;
+    position: relative;
 }
 
 #content .form_actions *
@@ -1168,6 +1175,9 @@ div#upgradePlan {
 	font-size:16px;
 	font-variant: normal;
 	text-transform: capitalize;
+	/*border-bottom:1px dotted #E1E0E2;
+	/*width:235px;
+	font-weight:bold;*/
 }
 
 span.astat {
@@ -1231,6 +1241,22 @@ label span.required
 	border-top-right-radius: 3px;
 	border-bottom-right-radius: 3px;
 }
+
+.modal-actions {
+	float: right;
+}
+.modal-actions .cancel{
+	float: left;
+	display: table;
+	height: 25px;
+}
+.modal-actions .cancel a{ 
+	display: table-cell;
+	vertical-align: middle;
+	font-weight: bold;
+	color: #2F6594!important;
+	padding-right: 10px;
+}
 /*Settings */
 .sidebar#settings {
 	float: left;
@@ -1279,23 +1305,49 @@ a.subscribe_actions {
 	cursor: default;
 }
 
-
-textarea#reason-field {
-	width:330px !important;
+/*checking dialog */
+#checkins-panel #checkins {
+	width: 400px !important;
 }
-
+#checkins #checkinfilename {
+	padding: 5px;
+	margin-top: 5px;
+	width: 350px;
+}
 /*
 IPhone Style Switches
 http://devgrow.com/iphone-style-switches/
 */
+.field.switch {
+	display: inline-block;
+	border-radius: 3px;
+	border: 1px solid #CCC;
+	margin-top: 5px;
+}
 
-.cb-enable, .cb-disable, .cb-enable span, .cb-disable span { background: url(switch.gif) repeat-x; display: block; float: left; }
-.cb-enable span, .cb-disable span { line-height: 30px; display: block; background-repeat: no-repeat; font-weight: bold; }
-.cb-enable span { background-position: left -90px; padding: 0 10px; }
-.cb-disable span { background-position: right -180px;padding: 0 10px; }
+.cb-enable, .cb-disable, .cb-enable span, .cb-disable span { display: block; float: left; }
+.cb-enable span, .cb-disable span { box-shadow: inset 0px 1px 0px #666; line-height: 25px; display: block; background: whitesmoke; font-weight: bold; color: #666;}
+.cb-enable span { padding: 0 10px; }
+.cb-disable span { padding: 0 10px; }
 .cb-disable.selected { background-position: 0 -30px; }
-.cb-disable.selected span { background-position: right -210px; color: #fff; }
+.cb-disable.selected span {
+	color: #fff;
+	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#609bd1', endColorstr='#2f6694') !important;
+	background: -webkit-gradient(linear, left top, left bottom, from(#609bd1), to(#2f6694)) !important;
+	background: -moz-linear-gradient(top, #609bd1, #2f6694) !important;
+	box-shadow: inset 0px 1px 0px #666;
+	border-radius: 0px 2px 2px 0px;
+	text-shadow: 0px 1px 0px #333;
+}
 .cb-enable.selected { background-position: 0 -60px; }
-.cb-enable.selected span { background-position: left -150px; color: #fff; }
+.cb-enable.selected span { 
+	color: #fff;
+	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#609bd1', endColorstr='#2f6694') !important;
+	background: -webkit-gradient(linear, left top, left bottom, from(#609bd1), to(#2f6694)) !important;
+	background: -moz-linear-gradient(top, #609bd1, #2f6694) !important;
+	box-shadow: inset 0px 1px 0px #666;
+	border-radius: 2px 0px 0px 2px;
+	text-shadow: 0px 1px 0px #333;
+}
 .switch label { cursor: pointer; }
 .switch input { display: none; }

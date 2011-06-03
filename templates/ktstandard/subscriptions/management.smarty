@@ -24,7 +24,7 @@
 	<h4>Folders</h4>
 		<table class="subscription_manage">
 			<th> <input  id=allfolders type=checkbox onclick="javascript:{ldelim}subscriptions.selectAllFolders();{rdelim}"> </th>
-			<th> <span class=descriptiveText> (Select All) <span> </th>
+			<th colspan="2"> <span class=descriptiveText> (Select All) <span> </th>
 			{foreach from=$aFolderSubscriptions item=aFolderSubscription}
 			<tr>
 				<td class="checkbox">
@@ -49,11 +49,11 @@
 	<h4>Documents</h4>
 		<table class="subscription_manage">
 			<th> <input id=alldocuments type=checkbox onclick="javascript:{ldelim}subscriptions.selectAllDocuments();{rdelim}"> </th>
-			<th> <span class=descriptiveText> (Select All) <span> </th>
+			<th colspan="2"> <span class=descriptiveText> (Select All) <span> </th>
 			{foreach from=$aDocumentSubscriptions item=aDocumentSubscription}
 			<tr>
 				<td class="checkbox">
-					<input class=document_sub type=checkbox value="{$aDocumentSubscription->getId()}" name="documentsubscriptions[]">
+					<input class="document_sub" type="checkbox" value="{$aDocumentSubscription->getId()}" name="documentsubscriptions[]">
 				</td>
 				<td class="name">
 					{$aDocumentSubscription->getContentLink()}
@@ -64,8 +64,8 @@
 	{/if}
 	</form>
 	
-	<div class=form_actions id=modal>
-		<input type=submit name=submit onclick="subscriptions.submitForm(); return false;" value="{i18n}Remove subscription{/i18n}" />
+	<div class="form_actions" id="modal">
+		<input type="submit" name="submit" onclick="subscriptions.submitForm(); return false;" value="{i18n}Remove subscription{/i18n}" />
 		<a href="#" class="form_cancel" onclick="vActions.closeDisplay('subscription'); return false;">Close</a>
 	</div>
 {/if}
