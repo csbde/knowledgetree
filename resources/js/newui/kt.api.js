@@ -309,6 +309,10 @@ kt.api.esignatures = new function() {
 	this.saveESignatures = function() {
 		var params = {};
 		var reason = jQuery('[name="reason"]').val();
+		
+		// Encode Ampersands
+		reason = reason.replace(/\&/g,'%26');
+		
 		var type = jQuery('#type').attr('value') == 'esign';
 		
 		if(reason == '') {

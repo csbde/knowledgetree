@@ -1167,6 +1167,10 @@ a.subscribe_actions {
 }
 
 
+textarea#reason-field {
+	width:330px !important;
+}
+
 /*
 IPhone Style Switches
 http://devgrow.com/iphone-style-switches/
