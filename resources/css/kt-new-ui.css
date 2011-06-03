@@ -1155,9 +1155,6 @@ div#upgradePlan {
 	font-size:16px;
 	font-variant: normal;
 	text-transform: capitalize;
-	/*border-bottom:1px dotted #E1E0E2;
-	/*width:235px;
-	font-weight:bold;*/
 }
 
 span.astat {
@@ -1275,6 +1272,7 @@ a.subscribe_actions {
 	cursor: default;
 }
 
+<<<<<<< HEAD:resources/css/kt-new-ui.css
 /*checking dialog */
 #checkins-panel #checkins {
 	width: 400px !important;
@@ -1284,6 +1282,13 @@ a.subscribe_actions {
 	margin-top: 5px;
 	width: 350px;
 }
+=======
+
+textarea#reason-field {
+	width:330px !important;
+}
+
+>>>>>>> staging:resources/css/kt-new-ui.css
 /*
 IPhone Style Switches
 http://devgrow.com/iphone-style-switches/
