@@ -200,6 +200,11 @@ class Subscription extends KTEntity {
         }
     }
 
+    public function hasSubfolders() {
+    	// Check if there are subfolders.
+    	return ($this->bWithSubFolders == 1);
+    }
+    
     /**
      * Returns the url to the subscription content
      */
@@ -285,6 +290,7 @@ class Subscription extends KTEntity {
                                             $iSubscriptionType,
                                             $res["is_alerted"]);
         $oSubscription->iId = $iSubscriptionID;
+        $oSubscription->bWithSubFolders = $res['with_subfolders'];
 
         return $oSubscription;
     }
