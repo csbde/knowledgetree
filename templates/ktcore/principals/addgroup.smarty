@@ -3,7 +3,7 @@
 <p class="descriptiveText">{i18n}Users may be classed together as Groups and these groups may be used to set security privileges throughout the document management system.{/i18n}</p>
 
 {if $authentication_sources}
-   <form action="{$smarty.server.PHP_SELF}" method="POST">
+   <form action="{$smarty.server.PHP_SELF}?{$section_query_string}" method="POST">
    <input type="hidden" name="action" value="addGroupFromSource" />
    <fieldset><legend>{i18n}Add a group from an authentication source{/i18n}</legend>
 
@@ -25,21 +25,4 @@ will be maintained as it is in the authentication source.{/i18n}</p>
 <p class="descriptiveText">{i18n arg_appname="$appname"}Alternatively, you can manually create a user
 within #appname# below.{/i18n}</p>
 {/if}
-{*
-<form action="{$smarty.server.PHP_SELF}" method="POST">
-   <input type="hidden" name="action" value="createGroup" />
-   
-   <fieldset>
-      <legend>{i18n}Specify group details{/i18n}</legend>
-      <p class="descriptiveText">{i18n}Please enter the Group's details below and then click <strong>create group</strong>. Fields marked with a red square are required.{/i18n}</p>
-      {foreach item=oWidget from=$add_fields}
-        {$oWidget->render()}
-      {/foreach}
-      <div class="form_actions">
-         <input type="submit" value="{i18n}create group{/i18n}" />
-         <input type="submit" name="kt_cancel[]" value="{i18n}Cancel{/i18n}" />
-      </div>
-   </fieldset>
-   </form>
-*}
 {$form->render()}
