@@ -150,7 +150,6 @@ class LoginResetDispatcher extends KTDispatcher {
         }
 
         $url = KTUtil::addQueryStringSelf('action=');
-        $redirect = ($default->sslEnabled ? 'https' : 'http') . '://' . KTUtil::getServerName() . '/browse.php';
         $templating =& KTTemplating::getSingleton();
         $template = $templating->loadTemplate('login_reset');
         $templateData = array(

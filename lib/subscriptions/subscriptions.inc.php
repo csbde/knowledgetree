@@ -54,7 +54,7 @@ require_once(KT_LIB_DIR . "/templating/templating.inc.php");
 require_once(KT_LIB_DIR . "/util/ktutil.inc");
 
 class SubscriptionEvent {
-    var $eventTypes = array(
+    public $eventTypes = array(
         "AddFolder",
         "RemoveSubscribedFolder",
         "RemoveChildFolder",
@@ -73,7 +73,7 @@ class SubscriptionEvent {
         "DownloadDocument",
     );
 
-    var $subscriptionTypes = array(
+    public $subscriptionTypes = array(
         "Document" => 1,
         "Folder" => 2,
     );
@@ -87,10 +87,10 @@ class SubscriptionEvent {
 		return KTUtil::arrayGet($subscriptionTypes, $sType, null);
 	}
 
-    var $alertedUsers = array();       // per-instance (e.g. per-event) list of users who were contacted.
-    var $_parameters = array();        // internal storage for
-    var $child = -1;                   // the child object-id (e.g. which initiated the event: document OR folder)
-    var $parent = -1;                  // the folder-id of the parent
+    public $alertedUsers = array();       // per-instance (e.g. per-event) list of users who were contacted.
+    private $_parameters = array();        // internal storage for
+    public $child = -1;                   // the child object-id (e.g. which initiated the event: document OR folder)
+    public $parent = -1;                  // the folder-id of the parent
 
     // FIXME stubs.
     /* Each of these functions handles appropriate propogation (e.g. both
@@ -530,8 +530,27 @@ class SubscriptionEvent {
 
 /* very simple class to handle and hold the various and sundry event types content for emails. */
 class SubscriptionContent {
+	private $_eventObjectMap = array(
+		"AddFolder" => 'folder',
+        "RemoveSubscribedFolder" => '', // nothing. your subscription is now gone.
+        "RemoveChildFolder" => '', // nothing. your subscription is now gone.
+        "AddDocument" => 'document',
+        "RemoveSubscribedDocument" => '', // nothing. your subscription is now gone.
+        "RemoveChildDocument" => '', // nothing. your subscription is now gone.
+        "ModifyDocument" => 'document',
+        "CheckInDocument" => 'document',
+        "CheckOutDocument" => 'document',
+        "MovedDocument" => 'folder',
+        "MovedDocument2" => 'document',
+        "CopiedDocument" => 'folder',
+        "CopiedDocument2" => 'document',
+        "ArchivedDocument" => 'document', // can go through and request un-archival (?)
+        "DownloadDocument" => 'document',
+        "RestoredArchivedDocument" => 'document',
+        "DiscussDocument" => 'document');
+    
     // have to be instantiated, or the i18n can't work.
-	function SubscriptionContent() {
+	function __construct() {
 	    $this->_eventTypeNames = array(
             "AddFolder" => _kt('Folder added'),
             "RemoveSubscribedFolder" => _kt('Folder removed'), // nothing. your subscription is now gone.
@@ -761,10 +780,9 @@ class SubscriptionContent {
             $oTemplate = $oTemplating->loadTemplate("kt3/notifications/subscriptions.generic");
 	    }
 	    // FIXME we need to specify the i18n by user.
-
 	    $isBroken = false;
 	    if (PEAR::isError($info['object']) || ($info['object'] === false) || is_null($info['object'])) {
-		$isBroken = true;
+			$isBroken = true;
 	    }
 
 	    $aTemplateData = array("context" => $oKTNotification,
@@ -775,24 +793,7 @@ class SubscriptionContent {
 	}
 	// no separate subject function, its rolled into get...Content()
 
-	var $_eventObjectMap = array(
-		"AddFolder" => 'folder',
-        "RemoveSubscribedFolder" => '', // nothing. your subscription is now gone.
-        "RemoveChildFolder" => 'folder',
-        "AddDocument" => 'document',
-        "RemoveSubscribedDocument" => '', // nothing. your subscription is now gone.
-        "RemoveChildDocument" => 'folder',
-        "ModifyDocument" => 'document',
-        "CheckInDocument" => 'document',
-        "CheckOutDocument" => 'document',
-        "MovedDocument" => 'folder',
-        "MovedDocument2" => 'document',
-        "CopiedDocument" => 'folder',
-        "CopiedDocument2" => 'document',
-        "ArchivedDocument" => 'document', // can go through and request un-archival (?)
-        "DownloadDocument" => 'document',
-        "RestoredArchivedDocument" => 'document',
-        "DiscussDocument" => 'document');
+
 
 
 
@@ -809,9 +810,7 @@ class SubscriptionContent {
 			'notify_id' => $oKTNotification->getId(),
 		);
 
-//		$info['title'] = KTUtil::arrayGet($this->_eventTypeNames, $info['event_type'], 'Subscription alert:') .': ' . $info['object_name'];
         $info['title'] = $appName.': '._kt('Subscription notification for').' "'.$info['object_name'].'" - '.$this->_eventTypeNames[$info['event_type']];
-
 
 		if ($info['actor_id'] !== null) {
 			$oTempUser = User::get($info['actor_id']);

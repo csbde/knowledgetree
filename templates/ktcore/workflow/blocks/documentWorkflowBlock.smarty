@@ -73,24 +73,30 @@
 				<div class=workflow_transition>
 					{if $aTransitions}
 						<form action="{$smarty.server.PHP_SELF}" method=POST name=transition_wf_form>
-							<input type=hidden name=action value=performTransition />
-							<input type=hidden name=fDocumentId value="{$oDocument->getId()}" />
-							<input type=hidden name=fWorkflowId value="{$oWorkflow->getId()}" />
-							{foreach from=$transition_fields item=oWidget }
-								{$oWidget->render()}
-							{/foreach}
-							<br />
-			</td>
-		</tr>
-		<tr>
-			<td class="alignright">
-							<div class="form_cancel">
-								<a href="#" onclick="vActions.closeDisplay('workflow'); return false;" class=form_cancel style="background: none repeat scroll 0% 0% transparent;">Cancel</a>
-							</div>
-							<div class="form_actions" id="modal">
-								<input type="{$submit.type}" onclick="javascript: {ldelim}workflowBlock.submitForm('transition'){rdelim}; return false;" name=form_submit value="{i18n}Perform Transition{/i18n}" />
-								
-							</div>
+							<table>
+								<tr>
+									<td>
+										<input type=hidden name=action value=performTransition />
+										<input type=hidden name=fDocumentId value="{$oDocument->getId()}" />
+										<input type=hidden name=fWorkflowId value="{$oWorkflow->getId()}" />
+										{foreach from=$transition_fields item=oWidget }
+											{$oWidget->render()}
+										{/foreach}
+										<br />
+									</td>
+								</tr>
+								<tr>
+									<td class="alignright">
+										<div class="form_cancel">
+											<a href="#" onclick="vActions.closeDisplay('workflow'); return false;" class=form_cancel style="background: none repeat scroll 0% 0% transparent;">Cancel</a>
+										</div>
+										<div class="form_actions" id="modal">
+											<input type="{$submit.type}" onclick="javascript: {ldelim}workflowBlock.submitForm('transition'){rdelim}; return false;" name=form_submit value="{i18n}Perform Transition{/i18n}" />
+											
+										</div>
+									</td>
+								</tr>
+							</table>
 							
 						</form>
 					{/if}

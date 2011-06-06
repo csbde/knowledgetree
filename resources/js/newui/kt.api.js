@@ -261,7 +261,7 @@ kt.api.esignatures = new function() {
 		var width = 420;
 		var height = 280;
 		if(response == 'esign') {
-			height = 340;
+			height = 320;
 			title = 'Electronic Signature';
 		}
 		// create html for form
@@ -276,33 +276,44 @@ kt.api.esignatures = new function() {
 			title       : title,
 	        closeAction :'close',
 			width       : 370,
-			height      : 240,
+			height      : height,
 	        y           : 50,
 	        shadow      : true,
 	        modal       : true,
 	        html        : kt.api.execFragment('documents/reason')
 	    });
 	    
-		jQuery('#reason-doc-id').attr('value', params.documentId);
-		jQuery('#reason-action').attr('value', params.action);
-		this.eSignWindow.show();
+		// Updates to the Form once it shows
+		this.eSignWindow.addListener('show', function() {
+            
+			// modify reason form
+			jQuery('#reason-doc-id').attr('value', params.documentId);
+			jQuery('#reason-action').attr('value', params.action);
+			
+			if(response == 'esign') {
+				jQuery('#user').attr('style', "display:block;");
+				jQuery('#pass').attr('style', "display:block;");
+				jQuery('#type').attr('value', "esign");
+				jQuery('#esign-info').attr('style', "display:block;");
+				jQuery('#reason-info').attr('style', "display:none;");
+			} else {
+				jQuery('#esign-info').attr('style', "display:none;");
+				jQuery('#reason-info').attr('style', "display:block;");
+				jQuery('#reason-label').attr('style', "display:none;");
+			}
+		});
 		
-	    if(response == 'esign') {
-	    	jQuery('#user').attr('style', "display:block;");
-    	    jQuery('#pass').attr('style', "display:block;");
-    	    jQuery('#type').attr('value', "esign");
-    	    jQuery('#esign-info').attr('style', "display:block;");
-    	    jQuery('#reason-info').attr('style', "display:none;");
-	    } else {
-    	    jQuery('#esign-info').attr('style', "display:none;");
-    	    jQuery('#reason-info').attr('style', "display:block;");
-    	    jQuery('#reason-label').attr('style', "display:none;");
-	    }
+		// Show Window
+		this.eSignWindow.show();
 	}
 	
 	this.saveESignatures = function() {
 		var params = {};
 		var reason = jQuery('[name="reason"]').val();
+		
+		// Encode Ampersands
+		reason = reason.replace(/\&/g,'%26');
+		
 		var type = jQuery('#type').attr('value') == 'esign';
 		
 		if(reason == '') {

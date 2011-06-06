@@ -41,8 +41,16 @@ workflowsBlock.prototype.submitForm = function(action) {
 						jQuery('#add_workflow').html('Saving...');
 					},
 					success: function(data) {
+						response = jQuery.parseJSON(data);
+						console.log(response);
+						if (response.permission != 1) {
+							var url = response.url;
+    						window.location.replace(url);
+    						return true;
+						}
+						
 						// Display saved message
-						jQuery('#add_workflow').html(data);
+						jQuery('#add_workflow').html(response.message);
 						// Remove modal window
 						jQuery('#workflows-panel').remove().delay(2000);
 						// Refresh alert sidebar
