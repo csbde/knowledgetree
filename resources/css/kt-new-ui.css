@@ -1246,3 +1246,8 @@ http://devgrow.com/iphone-style-switches/
 }
 .switch label { cursor: pointer; }
 .switch input { display: none; }
+
+
+#reason-field {
+	width: 97% !important;
+}

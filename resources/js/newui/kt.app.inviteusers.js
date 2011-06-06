@@ -39,22 +39,11 @@ kt.app.inviteusers = new function() {
 
     // send the invites and add the users to the system
     this.inviteUsers  =  function() {
-        emails = document.getElementById('invite.emails').value;
+        emails = jQuery.trim(document.getElementById('invite.emails').value);
         if (emails.length < 3) {
-	        //document.getElementById('invite.errormsg').style.display = 'block';
 	        alert('Please enter a valid email address.');
 	    } else {
             group = document.getElementById('invite.grouplist').value;
-			/*jQuery('#extinvitewindow').block({
-												message: '<div id="blue_loading">',
-												overlayCSS: {
-													backgroundColor: '#00f transparent'
-												},
-												css: {
-														border:		'',
-														backgroundColor:'#fff transparent',
-													},
-											});*/
 	        kt.api.inviteUsers(emails, group, 'invited', null, self.inviteCallback, function() {});
 	    }
 
