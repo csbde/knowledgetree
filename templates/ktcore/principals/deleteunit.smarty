@@ -3,7 +3,7 @@
 <p class="descriptiveText">{i18n arg_name=$unit->getName()}Delete
 unit <strong>#name#</strong> from the system{/i18n}</p>
 
-<form action="{$smarty.server.PHP_SELF}" method="POST">
+<form action="{$smarty.server.PHP_SELF}?{$section_query_string}" method="POST">
    <input type="hidden" name="action" value="removeUnit" />
    <input type="hidden" name="unit_id" value="{$unit->getId()}" />
    <fieldset>
@@ -13,7 +13,7 @@ unit <strong>#name#</strong> from the system{/i18n}</p>
       {/foreach}
       <div class="form_actions">
          <input type="submit" value="{i18n}Delete unit{/i18n}" />
-         <input type="submit" name="kt_cancel[]" value="{i18n}Cancel{/i18n}" />
+         <input type="submit" name="kt_cancel[{addQS}{$section_query_string}{/addQS}]" value="{i18n}Cancel{/i18n}" />
       </div>
    </fieldset>
    </form>
