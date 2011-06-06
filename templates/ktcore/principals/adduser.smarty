@@ -1,6 +1,6 @@
 <h2>{i18n}Add a user{/i18n}</h2>
 
-   <form action="{$smarty.server.PHP_SELF}" method="POST">
+   <form action="{$smarty.server.PHP_SELF}?{$section_query_string}" method="POST">
    <input type="hidden" name="action" value="createUser" />
       {foreach item=oWidget from=$add_fields}
         {$oWidget->render()}

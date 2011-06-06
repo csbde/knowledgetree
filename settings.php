@@ -102,6 +102,8 @@ class AdminSplashDispatcher extends KTAdminDispatcher {
         $page = $GLOBALS['main'];
 
         $category = KTUtil::arrayGet($_REQUEST, 'fCategory', $this->category);
+        $subSection = KTUtil::arrayGet($_REQUEST, 'subSection', null);
+        $expanded = KTUtil::arrayGet($_REQUEST, 'expanded', false);
 
         //if ($category == 'contentSetup') {
         //    $jscript .= "<script src='resources/js/kt_hideadminlink.js' type='text/javascript'></script>";
@@ -126,6 +128,13 @@ class AdminSplashDispatcher extends KTAdminDispatcher {
         if (count($items) == 1) {
 	    $items[0]['autoDisplay'] = true;
         }
+	else {
+	    foreach ($items as $key => $item) {
+		if ($subSection == $item['name'] && $expanded) {
+		    $items[$key]['autoDisplay'] = true;
+		}
+	    }
+	}
 
 	return $items;
     }

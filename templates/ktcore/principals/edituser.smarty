@@ -11,7 +11,7 @@
 <br/>
 
 <div class="widgetRow">
-	<form action="{$smarty.server.PHP_SELF}" method="POST">
+	<form action="{$smarty.server.PHP_SELF}?{$section_query_string}" method="POST">
 		<input type="hidden" name="action" value="saveUser" />
 		<input type="hidden" name="user_id" value="{$edit_user->getId()}" />
 		<input type="hidden" name="old_search" value="{$old_search}" />

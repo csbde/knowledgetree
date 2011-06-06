@@ -6,11 +6,11 @@
 
 <p class="descriptiveText">{i18n}Users may be classed together as Groups and these groups may be used to set security privileges throughout the document management system.{/i18n}</p>
 
-<form action="{$smarty.server.PHP_SELF}" method="POST" id="usergroupform">
+<form action="{$smarty.server.PHP_SELF}?{$section_query_string}" method="POST" id="usergroupform">
    <input type="hidden" name="action" value="updateGroups" />
    <input type="hidden" name="user_id" value="{$edit_user->getId()}" />
-   <input type="hidden" name="old_search" value="{$old_search}" />    
-   
+   <input type="hidden" name="old_search" value="{$old_search}" />
+
    <fieldset>
       <legend>{i18n arg_name=$edit_user->getName()}Change #name#'s Groups{/i18n}</legend>
 

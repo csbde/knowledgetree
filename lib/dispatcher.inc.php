@@ -179,34 +179,33 @@ class KTDispatcher {
         $this->bTransactionStarted = false;
     }
 
-    public function errorRedirectTo($event, $error_message, $sQuery = '', $oException = null) {
+    public function errorRedirectTo($event, $errorMessage, $query = '', $exception = null)
+    {
         if ($this->bTransactionStarted) {
             $this->rollbackTransaction();
         }
 
-        $_SESSION['KTErrorMessage'][] = $error_message;
-        /* if ($oException) {
-            $_SESSION['Exception'][$error_message] = $oException;
-        }*/
-        $this->redirectTo($event, $sQuery);
+        $_SESSION['KTErrorMessage'][] = $errorMessage;
+
+        $this->redirectTo($event, $query);
     }
 
-    public function successRedirectTo($event, $info_message, $sQuery = '') {
+    public function successRedirectTo($event, $info_message, $query = '') {
         if ($this->bTransactionStarted) {
             $this->commitTransaction();
         }
         if (!empty($info_message)) {
             $_SESSION['KTInfoMessage'][] = $info_message;
         }
-        $this->redirectTo($event, $sQuery);
+        $this->redirectTo($event, $query);
     }
 
-    public function errorRedirectToParent($error_message) {
+    public function errorRedirectToParent($errorMessage) {
         if ($this->bTransactionStarted) {
             $this->rollbackTransaction();
         }
 
-        $_SESSION['KTErrorMessage'][] = $error_message;
+        $_SESSION['KTErrorMessage'][] = $errorMessage;
         redirect($this->sParentUrl);
         exit(0);
     }
@@ -222,27 +221,31 @@ class KTDispatcher {
         exit(0);
     }
 
-    public function redirectTo($event, $sQuery = '') {
+    public function redirectTo($event, $query = '') {
         // meld persistant options
-        $sQuery = $this->meldPersistQuery($sQuery, $event);
-        $sRedirect = KTUtil::addQueryString($_SERVER['PHP_SELF'], $sQuery);
+        $query = $this->meldPersistQuery($query, $event);
+        $sRedirect = KTUtil::addQueryString($_SERVER['PHP_SELF'], $query);
         $this->oRedirector->redirect($sRedirect);
         exit(0);
     }
 
-    public function errorRedirectToMain($error_message, $sQuery = '') {
-        return $this->errorRedirectTo('main', $error_message, $sQuery);
+    public function errorRedirectToMain($errorMessage, $query = '')
+    {
+        return $this->errorRedirectTo('main', $errorMessage, $query);
     }
 
-    public function successRedirectToMain($error_message, $sQuery = '') {
-        return $this->successRedirectTo('main', $error_message, $sQuery);
+    public function successRedirectToMain($errorMessage, $query = '')
+    {
+        return $this->successRedirectTo('main', $errorMessage, $query);
     }
 
-    public function redirectToMain($sQuery = '') {
-        return $this->redirectTo('main', $sQuery);
+    public function redirectToMain($query = '')
+    {
+        return $this->redirectTo('main', $query);
     }
 
-    public function errorRedirectToBrowse($sErrorMessage, $sQuery = '', $event = 'main') {
+    public function errorRedirectToBrowse($sErrorMessage, $query = '', $event = 'main')
+    {
         if ($this->bTransactionStarted) {
             $this->rollbackTransaction();
         }
@@ -250,10 +253,10 @@ class KTDispatcher {
         $_SESSION['KTErrorMessage'][] = $sErrorMessage;
 
         // meld persistant options
-        $sQuery = $this->meldPersistQuery($sQuery, $event);
+        $query = $this->meldPersistQuery($query, $event);
 
         $server = str_replace('action.php', KTUtil::buildUrl('browse.php'), $_SERVER['PHP_SELF']);
-        $sRedirect = KTUtil::addQueryString($server, $sQuery);
+        $sRedirect = KTUtil::addQueryString($server, $query);
         $this->oRedirector->redirect($sRedirect);
         exit(0);
     }
@@ -267,13 +270,13 @@ class KTDispatcher {
         $this->aPersistParams = kt_array_merge($this->aPersistParams, $aParamKeys);
     }
 
-    public function meldPersistQuery($sQuery = '', $event = '', $asArray = false) {
-        if (is_array($sQuery)) {
-            $aQuery = $sQuery;
+    public function meldPersistQuery($query = '', $event = '', $asArray = false) {
+        if (is_array($query)) {
+            $aQuery = $query;
         } else {
-            if (!empty($sQuery)) {
+            if (!empty($query)) {
                 // need an intermediate step here.
-                $aQuery = Net_URL::_parseRawQuerystring($sQuery);
+                $aQuery = Net_URL::_parseRawQuerystring($query);
             } else {
                 $aQuery = array();
             }
@@ -308,8 +311,8 @@ class KTDispatcher {
         foreach ($aQuery as $k => $v) {
             $aQueryStrings[] = urlencode($k) . "=" . urlencode($v);
         }
-        $sQuery = join('&', $aQueryStrings);
-        return $sQuery;
+        $query = join('&', $aQueryStrings);
+        return $query;
     }
 
 }
@@ -323,7 +326,7 @@ class KTStandardDispatcher extends KTDispatcher {
     public $oPage = false;
     public $sHelpPage = null;
     public $bJSONMode = false;
-	public $aCannotView = array();
+    public $aCannotView = array();
 
     public function KTStandardDispatcher() {
         if (empty($GLOBALS['main'])) {
@@ -573,11 +576,35 @@ class KTAdminDispatcher extends KTStandardDispatcher {
     public $bAdminRequired = true;
     public $sSection = 'administration';
 
-    public function KTAdminDispatcher() {
+    public function KTAdminDispatcher()
+    {
         $this->aBreadcrumbs = array(
             array('action' => 'administration', 'name' => _kt('Settings')),
         );
+
         return parent::KTStandardDispatcher();
+    }
+
+    public function errorRedirectTo($event, $errorMessage, $query = '', $exception = null)
+    {
+        $query = empty($query) ? $this->buildSubQuery() : "$query&{$this->buildSubQuery()}";
+        parent::errorRedirectTo($event, $errorMessage, $query, $exception);
+    }
+
+    public function successRedirectTo($event, $infoMessage, $query = '')
+    {
+        $query = empty($query) ? $this->buildSubQuery() : "$query&{$this->buildSubQuery()}";
+        parent::successRedirectTo($event, $infoMessage, $query);
+    }
+
+    private function buildSubQuery()
+    {
+        // Admin specific query string.
+        $category = KTUtil::arrayGet($_REQUEST, 'fCategory', $this->category);
+        $subSection = KTUtil::arrayGet($_REQUEST, 'subSection', null);
+        $expanded = KTUtil::arrayGet($_REQUEST, 'expanded', false);
+
+        return "fCategory=$category&subSection=$subSection&expanded=$expanded";
     }
 
 }
@@ -586,27 +613,28 @@ class KTErrorDispatcher extends KTStandardDispatcher {
 
     public $bLogonRequired = true;
 
-    public function KTErrorDispatcher($oError) {
+    public function KTErrorDispatcher($error)
+    {
         parent::KTStandardDispatcher();
-        $this->oError =& $oError;
+        $this->oError = $error;
     }
 
-    public function dispatch() {
+    public function dispatch()
+    {
         require_once(KT_LIB_DIR . '/validation/customerror.php');
 
-        $bCustomCheck = KTCustomErrorCheck::customErrorInit($this->oError);
-
-        if ($bCustomCheck) {
-        	exit(0);
+        $customCheck = KTCustomErrorCheck::customErrorInit($this->oError);
+        if ($customCheck) {
+            exit(0);
         }
 
-        // if either customer error messages is off or the custom error page doesn't exist the function will run
-        // the default error handling here
-        $oRegistry =& KTErrorViewerRegistry::getSingleton();
-        $oViewer =& $oRegistry->getViewer($this->oError);
-        $this->oPage->setTitle($oViewer->view());
+        // If either customer error messages is off or the custom error page
+        // doesn't exist the function will run the default error handling here.
+        $registry =& KTErrorViewerRegistry::getSingleton();
+        $viewer =& $registry->getViewer($this->oError);
+        $this->oPage->setTitle($viewer->view());
         $this->oPage->hideSection();
-        $this->handleOutput($oViewer->page());
+        $this->handleOutput($viewer->page());
     }
 
 }

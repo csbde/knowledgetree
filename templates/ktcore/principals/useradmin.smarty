@@ -46,7 +46,7 @@
 					<div style="float: left;">&nbsp; or &nbsp;</div>
 					<div class="widgetItem">
 						<div class="form_actions">
-							<a href="{addQS}action=addUser{/addQS}" style="background: none repeat scroll 0% 0% transparent;">{i18n}Add a new user{/i18n}</a>
+							<a href="{addQS}action=addUser&{$section_query_string}{/addQS}" style="background: none repeat scroll 0% 0% transparent;">{i18n}Add a new user{/i18n}</a>
 						</div>
 					</div>
 					{else}
@@ -57,7 +57,7 @@
 				</td>
 
 				<td width="{$colwidth}">
-                                        <form action="{$smarty.server.PHP_SELF}" method="POST">
+                                        <form action="{$smarty.server.PHP_SELF}?{$section_query_string}" method="POST">
 					<input type="hidden" name="do_search" value="1" />
 					{capture assign=link}{addQS}show_all=1{/addQS}{/capture}
 
@@ -74,7 +74,7 @@
 				{if $can_add}
 				{if $authentication_sources}
 				<td width="{$colwidth}"  valign="top">
-                                        <form action="{$smarty.server.PHP_SELF}" method="POST">
+                                        <form action="{$smarty.server.PHP_SELF}?{$section_query_string}" method="POST">
 					<div class="field"><label>{i18n}Import Users{/i18n}</label></div>
 					<div class="widgetItem">
 						<input type="hidden" name="action" value="addUserFromSource" />
@@ -97,7 +97,7 @@
 {if ($no_search === true)}
 {else}
 {if (!empty($search_results))}
-<form name="editUserForm" action="{$smarty.server.PHP_SELF}" method="post">
+<form name="editUserForm" action="{$smarty.server.PHP_SELF}?{$section_query_string}" method="post">
 	<div class="widgetRow">
 		<table class="kt_collection narrow" cellspacing="0" cellpadding="5">
 			<thead>
@@ -125,14 +125,14 @@
 						<td>
 					{$oUser->getName()}</td>
 						<td>{$oUser->getUsername()}</td>
-						<td><a href="{addQS}action=editUser&user_id={$oUser->getId()}&old_search={$old_search}{/addQS}" class="ktAction ktEdit">{i18n}Edit{/i18n}</a></td>
+						<td><a href="{addQS}action=editUser&user_id={$oUser->getId()}&old_search={$old_search}&{$section_query_string}{/addQS}" class="ktAction ktEdit">{i18n}Edit{/i18n}</a></td>
 						<td class="centered">
 						{if ($oUser->getDisabled() == 1)}
 							<span class="ktAction ktDenied" title="{i18n}Disabled{/i18n}">{i18n}Disabled{/i18n}</span>
 						{else}
                             {if $oUser->getDisabled() == 3}
                                 {assign var='invited' value='true'}
-    						    <a href="{addQS}action=resendInvite&user_id={$oUser->getId()}{/addQS}" title="{i18n}Resend Invitation{/i18n}">{i18n}Invitation sent{/i18n}</a>
+    						    <a href="{addQS}action=resendInvite&user_id={$oUser->getId()}&{$section_query_string}{/addQS}" title="{i18n}Resend Invitation{/i18n}">{i18n}Invitation sent{/i18n}</a>
     						{else}
 							<span class="ktAction ktAllowed" title="{i18n}Enabled{/i18n}">{i18n}Enabled{/i18n}</span>
 							{/if}
@@ -141,7 +141,7 @@
 
 						<td>
 							{if $oUser->getDisabled() != 4}
-								<a href="{addQS}action=editGroups&user_id={$oUser->getId()}&old_search={$old_search}{/addQS}">{i18n}Manage Groups{/i18n}</a>
+								<a href="{addQS}action=editGroups&user_id={$oUser->getId()}&old_search={$old_search}&{$section_query_string}{/addQS}">{i18n}Manage Groups{/i18n}</a>
 							{else}
 								N/A
 							{/if}
