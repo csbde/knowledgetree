@@ -1,3 +1,6 @@
+{if ($jscript != '')}
+{$jscript}
+{/if}
 <div class="sidebar standardBorder" id="settings">
    {foreach item=aCategory from=$categories}
    <div>

@@ -155,6 +155,7 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
         $oTemplate->setData(array(
             'context' => $this,
             'workflows' => $aWorkflows,
+            'section_query_string' => 'fCategory=workflows'
         ));
 
         return $oTemplate->render();
@@ -392,6 +393,15 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
 
     function do_newWorkflow() {
         // subdispatch this to the NewWorkflowWizard.
+        $oTemplate =& $this->oValidator->validateTemplate('ktcore/workflow/admin/new_wizard_step1');
+
+        $oForm =& $this->form_step1();
+
+        $oTemplate->setData(array(
+            'context' => $this,
+            'form' => $oForm,
+        ));
+        return $oTemplate->render();
         require_once(dirname(__FILE__) . '/workflow/newworkflow.inc.php');
 
         $oSubDispatcher =& new KTNewWorkflowWizard;
@@ -449,7 +459,9 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
             'workflow' => $this->oWorkflow,
             'have_graphviz' => $this->HAVE_GRAPHVIZ,
             'portlets' => $this->oPage->portlets,
+            'section_query_string' => 'fCategory=workflows'
         ));
+        
         return $oTemplate->render();
     }
 
