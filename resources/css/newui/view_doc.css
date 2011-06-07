@@ -40,6 +40,7 @@
 }
 #sidebar_item {
 	border-bottom: 1px solid #ccc;
+	width: 215px;
 }
 #sidebar_item:last-child {
 	border-bottom: none;
@@ -95,7 +96,7 @@ div.viewletworkflow {
 .action_buttons.above {
 	display: block;
 	height: 30px;
-	width: 375px;
+	width: 400px!important;
 }
 #content .button {
 	padding: 2px 5px 2px 24px;
@@ -174,7 +175,7 @@ div.viewletworkflow {
 	text-shadow: 0px 1px 0px white;
 }
 .button {
-	font-family: sans-serif !important;
+	font-family: "Arial", sans-serif !important;
 }
 .buttons a,
 .buttons input  {
@@ -347,6 +348,8 @@ div.viewletworkflow {
 /*	margin: 15px 0px 5px 0px; */
 	line-height:120%;
 	margin-right: 160px;
+	max-width: 560px;
+	word-wrap: break-word;
 }
 .document-title.active,
 .document-filename.active {
@@ -500,7 +503,7 @@ div.viewletworkflow {
 }
 span.doc_info {
 	font-size: 12px;
-	font-family: sans-serif;
+	font-family: "Arial",sans-serif;
 	font-weight: normal;
 	line-height: 13px;
 
@@ -564,6 +567,7 @@ span.doc_info {
     text-align: center;
     text-shadow: 0 1px 0 white;
     width: 690px !important;
+   
 }
 .activityfeed img {
 	width: 48px;
@@ -573,7 +577,7 @@ span.doc_info {
 }
 .doc_description {
 	color: #666;
-	width: 340px;
+	width: 330px!important;
 }
 .doc_view .notice{
 	color: #A10000;
