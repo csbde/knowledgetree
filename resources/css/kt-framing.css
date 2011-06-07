@@ -2269,6 +2269,10 @@ hr {
 .addDialog .dashletLink:hover {
 	background: #d5e0f2;
 }
+.addDialog .dashletLink:before {
+	content: "+ ";
+	font-weight: bold;
+} 
 
 .addDialog .closeLink {
 	position: absolute;
@@ -2291,7 +2295,9 @@ body #content #add_dashlet
     border-width: 0px;
 
 }
-
+input#add_dashlet {
+	background: #fdfdfd url(../graphics/newui/icons/icon_add.png) no-repeat 8px 5px;
+}
 #add_dashlet
 {
     border: 1px solid #CCC;

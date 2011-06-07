@@ -1337,43 +1337,24 @@ class KTAjaxDocumentWorkflowAction extends KTDocumentAction {
     }
 
 	public function do_startWorkflow() {
-        $oDocument =& $this->oValidator->validateDocument($_REQUEST['fDocumentId']);
         if (!empty($_REQUEST['fWorkflowId'])) {
             $oWorkflow =& $this->oValidator->validateWorkflow($_REQUEST['fWorkflowId']);
         } else {
             $oWorkflow = null;
         }
 
-        $res = KTWorkflowUtil::startWorkflowOnDocument($oWorkflow, $oDocument);
+        $res = KTWorkflowUtil::startWorkflowOnDocument($oWorkflow, $this->oDocument);
         if (PEAR::isError($res)) {
             $this->errorRedirectToMain($res->message, sprintf('fDocumentId=%s',$oDocument->getId()));
         }
 
-		echo "Workflow Started";
-        exit(0);
+        $message = _kt('Workflow Started');
+        $this->transitionWorkflow($message, false);
     }
 
     public function do_performTransition() {
-        $oDocument = $this->oValidator->validateDocument($_REQUEST['fDocumentId']);
-        $oTransition = $this->oValidator->validateWorkflowTransition($_REQUEST['fTransitionId']);
-
-        $aErrorOptions = array(
-            'message' => _kt('You must provide a reason for the transition'),
-        );
-
-        $sComments = $this->oValidator->validateString($_REQUEST['fComments'], $aErrorOptions);
-
-        $oUser = User::get($_SESSION['userID']);
-        $res = KTWorkflowUtil::performTransitionOnDocument($oTransition, $oDocument, $oUser, $sComments);
-
-        if (!$this->userHasDocumentReadPermission($oDocument)) {
-            $this->commitTransaction();
-            echo _kt('Transition performed') . '. ' . _kt('You no longer have permission to view this document');
-        } else {
-            echo _kt('Transition performed');
-        }
-
-        exit(0);
+        $message = _kt('Transition performed');
+        $this->transitionWorkflow($message);
     }
 
     public function do_quicktransition() {
@@ -1395,19 +1376,28 @@ class KTAjaxDocumentWorkflowAction extends KTDocumentAction {
     }
 
     public function do_performquicktransition() {
-        $this->startTransaction();
-
-        $oTransition = KTWorkflowTransition::get($_REQUEST['fTransitionId']);
-        $res = KTWorkflowUtil::performTransitionOnDocument($oTransition, $this->oDocument, $this->oUser, sanitizeForHTML($_REQUEST['fComments']));
-
+        $message = _kt('Transition performed');
+        $this->transitionWorkflow($message);
+    }
+    
+    public function transitionWorkflow($message, $transition = true)
+    {
+    	if ($transition) {
+    		$this->startTransaction();
+	    	$oTransition = $this->oValidator->validateWorkflowTransition($_REQUEST['fTransitionId']);
+	        $res = KTWorkflowUtil::performTransitionOnDocument($oTransition, $this->oDocument, $this->oUser, sanitizeForHTML($_REQUEST['fComments']));
+	        $this->commitTransaction();
+    	}
+        
         if (!$this->userHasDocumentReadPermission($this->oDocument)) {
-            $this->commitTransaction();
-            echo _kt('Transition performed') . '. ' . _kt('You no longer have permission to view this document');
+        	$redirectUrl = KTUtil::ktLink('browse.php', '', 'fFolderId=' . $this->oDocument->getFolderID());
+        	$message .= '. ' . _kt('You no longer have permission to view this document');
+        	$response = array('success' => 1, 'permission' => 0, 'message' => $message, 'url' => $redirectUrl);
         } else {
-            $this->commitTransaction();
-            echo _kt('Transition performed');
+        	$response = array('success' => 1, 'permission' => 1, 'message' => $message);
         }
 
+        echo json_encode($response);
         exit(0);
     }
 }
