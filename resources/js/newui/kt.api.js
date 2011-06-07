@@ -231,6 +231,10 @@ kt.api = new function() {
         return ret.data.fragment;
     };
 
+    this.newline2comma = function (dataStr) {
+		dataStr = jQuery.trim(dataStr);
+    	return dataStr.replace(/(\r\n|[\r\n])/g, ",");
+	}
 }
     
 /* Electronic signatures & comment related functions */
