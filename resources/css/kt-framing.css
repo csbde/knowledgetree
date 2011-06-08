@@ -740,7 +740,7 @@ a.main_nav_item {
 
 #content h2
 {
-    font-family: "Lucida Grande", Tahoma, sans-serif; /* "Bitstream Vera Sans" */
+    font-family: "Arial", sans-serif; /* "Bitstream Vera Sans" */
     padding-bottom: 5px;
     border-width: 0 0 0 0;
     border-style: solid;
@@ -821,6 +821,9 @@ a.main_nav_item {
     /*width: 100%;*/
     font-size: 12px;
 }
+.doc_description .metadatatable {
+	table-layout: fixed;
+}
 
 .metadatatable.narrow {
     width: auto !important;
@@ -850,6 +853,7 @@ a.main_nav_item {
 	color: #2F6594;
 	float: none;
 	width: 225px;
+	word-wrap: break-word;
 }
 
 .metadatatable .versioned td {
