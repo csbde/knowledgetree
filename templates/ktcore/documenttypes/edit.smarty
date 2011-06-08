@@ -1,6 +1,6 @@
 <h2>{i18n}Document Type{/i18n}: { $oDocumentType->getName() }</h2>
 
-<form method="POST" action="{$smarty.server.PHP_SELF}">
+<form method="POST" action="{$smarty.server.PHP_SELF}?{$section_query_string}">
 <input type="hidden" name="action" value="editobject">
 <input type="hidden" name="fDocumentTypeId" value="{$oDocumentType->getId()}">
 <input type="textbox" name="name" value="{$sDocTypeName}">
@@ -12,7 +12,7 @@
 <p class="descriptiveText"></p>
 
 { if $aCurrentFieldsets }
-<form method="POST" action="{$smarty.server.PHP_SELF}">
+<form method="POST" action="{$smarty.server.PHP_SELF}?{$section_query_string}">
 <fieldset>
 <legend>{i18n}Linked Fieldsets{/i18n}</legend>
   <input type="hidden" name="action" value="removefieldsets">
@@ -30,7 +30,7 @@
         <td><label><input type="checkbox" name="fieldsetid[]" value="{$oFieldset->getId() }" />{$oFieldset->getName() }</label></td>
       </tr>
     {/foreach}
-    
+
   </tbody>
   </table>
   <div class="form_actions">
@@ -43,21 +43,21 @@
 { /if }
 
 { if $bAvailableFieldsets }
-<form method="POST" action="{$smarty.server.PHP_SELF}">
+<form method="POST" action="{$smarty.server.PHP_SELF}?{$section_query_string}">
 <fieldset>
 <legend>{i18n}Associate Fieldsets{/i18n}</legend>
 
   <input type="hidden" name="action" value="addfieldsets">
   <input type="hidden" name="fDocumentTypeId" value="{$oDocumentType->getId()}">
-  
+
   {$availableWidget->render()}
-  
+
   <div class="form_actions">
     <input type="submit" name="submit" value="{i18n}Associate Fieldsets{/i18n}" />
   </div>
 </fieldset>
 </form>
 {elseif !$bAnyFieldsets}
-<div class="ktInfoMessage"><span>{i18n}No fieldsets are available to be added.  To add a fieldset, please go to 
+<div class="ktInfoMessage"><span>{i18n}No fieldsets are available to be added.  To add a fieldset, please go to
 Administration{/i18n} &raquo; {i18n} Content Setup {/i18n} &raquo {i18n}Document Fieldsets{/i18n} </span></div>
 { /if }

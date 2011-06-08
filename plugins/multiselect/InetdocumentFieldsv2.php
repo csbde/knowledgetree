@@ -106,9 +106,10 @@ class InetDocumentFieldDispatcher extends KTAdminDispatcher {
             'identifier' => 'ktcore.fieldsets.create',
             'label' => _kt('Create New Fieldset'),
             'submit_label' => _kt('Create Fieldset'),
-            'cancel_action' => 'main',
-            'fail_action' => 'newfieldset',
+            'cancel_url' => "{$_SERVER['SCRIPT_NAME']}?{$this->sectionQueryString}",
+            'fail_url' => 'newfieldset',
             'action' => 'create',
+            'targeturl' => "{$_SERVER['SCRIPT_NAME']}?{$this->sectionQueryString}",
             'context' => $this,
         ));
 
@@ -337,15 +338,15 @@ class InetDocumentFieldDispatcher extends KTAdminDispatcher {
         // FIXME this is essentially a stub for the fieldset-delegation code.
         if ($this->oFieldset->getIsConditional()) {
 	    require_once(KT_DIR.'/plugins/ktcore/admin/fieldsets/conditional.inc.php');
-            $oSubDispatcher = new ConditionalFieldsetManagementDispatcher;
+            $oSubDispatcher = new ConditionalFieldsetManagementDispatcher();
         } else {
 	    // multiselect change start
 	    if (KTPluginUtil::pluginIsActive('inet.multiselect.lookupvalue.plugin')) {
 		require_once(KT_DIR.'/plugins/multiselect/inetbasic.inc.php');
-		$oSubDispatcher = new InetBasicFieldsetManagementDispatcher;
+		$oSubDispatcher = new InetBasicFieldsetManagementDispatcher();
 	    } else {
 		require_once(KT_DIR.'/plugins/ktcore/admin/fieldsets/basic.inc.php');
-		$oSubDispatcher = new BasicFieldsetManagementDispatcher;
+		$oSubDispatcher = new BasicFieldsetManagementDispatcher();
 	    }
         }
 

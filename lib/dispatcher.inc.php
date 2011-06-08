@@ -239,8 +239,8 @@ class KTDispatcher {
     {
         // meld persistant options
         $query = $this->meldPersistQuery($query, $event);
-        $sRedirect = KTUtil::addQueryString($_SERVER['PHP_SELF'], $query);
-        $this->oRedirector->redirect($sRedirect);
+        $redirect = KTUtil::addQueryString($_SERVER['PHP_SELF'], $query);
+        $this->oRedirector->redirect($redirect);
         exit(0);
     }
 
@@ -271,8 +271,8 @@ class KTDispatcher {
         $query = $this->meldPersistQuery($query, $event);
 
         $server = str_replace('action.php', KTUtil::buildUrl('browse.php'), $_SERVER['PHP_SELF']);
-        $sRedirect = KTUtil::addQueryString($server, $query);
-        $this->oRedirector->redirect($sRedirect);
+        $redirect = KTUtil::addQueryString($server, $query);
+        $this->oRedirector->redirect($redirect);
         exit(0);
     }
 
@@ -646,7 +646,11 @@ class KTAdminDispatcher extends KTStandardDispatcher {
 
     private function buildSectionSubQuery($query)
     {
-        return empty($query) ? $this->sectionQueryString : "$query&{$this->sectionQueryString}";
+        if (empty($query) or $query == $this->sectionQueryString) {
+            return $this->sectionQueryString;
+        }
+
+        return "$query&{$this->sectionQueryString}";
     }
 
 }

@@ -464,9 +464,9 @@ class KTGroupAdminDispatcher extends KTAdminDispatcher {
             'submit_label' => _kt('Create group'),
             'action' => 'createGroup',
             'fail_action' => 'addGroup',
-            'cancel_url' => "{$_SERVER['SCRIPT_NAME']}?fCategory=userSetup&subSection=groups&expanded=1",
+            'cancel_url' => "{$_SERVER['SCRIPT_NAME']}?{$this->sectionQueryString}",
             'context' => $this,
-            'targeturl' => "{$_SERVER['SCRIPT_NAME']}?fCategory=userSetup&subSection=groups&expanded=1"
+            'targeturl' => "{$_SERVER['SCRIPT_NAME']}?{$this->sectionQueryString}"
         ));
 
         $form->setWidgets(array(
