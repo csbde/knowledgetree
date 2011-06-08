@@ -1145,7 +1145,7 @@ label span.required
 	display: table;
 	height: 25px;
 }
-.modal-actions .cancel a{ 
+.modal-actions .cancel a{
 	display: table-cell;
 	vertical-align: middle;
 	font-weight: bold;
@@ -1235,7 +1235,7 @@ http://devgrow.com/iphone-style-switches/
 	text-shadow: 0px 1px 0px #333;
 }
 .cb-enable.selected { background-position: 0 -60px; }
-.cb-enable.selected span { 
+.cb-enable.selected span {
 	color: #fff;
 	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#609bd1', endColorstr='#2f6694') !important;
 	background: -webkit-gradient(linear, left top, left bottom, from(#609bd1), to(#2f6694)) !important;
