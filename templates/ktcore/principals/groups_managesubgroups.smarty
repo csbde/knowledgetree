@@ -2,11 +2,11 @@
 
 <p class="descriptiveText">{i18n}Groups may contain other groups, allowing for a convenient way to build tree's of users and efficiently assign security privileges.{/i18n}</p>
 
-<form action="{$smarty.server.PHP_SELF}" method="POST" id="usergroupform">
+<form action="{$smarty.server.PHP_SELF}?{$section_query_string}" method="POST" id="usergroupform">
    <input type="hidden" name="action" value="updateGroupMembers" />
    <input type="hidden" name="group_id" value="{$edit_group->getId()}" />
-   <input type="hidden" name="old_search" value="{$old_search}" />      
-   
+   <input type="hidden" name="old_search" value="{$old_search}" />
+
    <fieldset>
       <legend>{i18n arg_name=$edit_group->getName()}Change Sub-Groups in #name#{/i18n}</legend>
 
@@ -14,7 +14,7 @@
 
       <div class="form_actions">
          <input type="submit" value="{i18n}Save Changes{/i18n}" />
-         <input type="submit" name="kt_cancel[{addQS}old_search={$old_search}&do_search=1{/addQS}]" value="{i18n}Cancel{/i18n}" />
+         <input type="submit" name="kt_cancel[{addQS}old_search={$old_search}&do_search=1&{$section_query_string}{/addQS}]" value="{i18n}Cancel{/i18n}" />
       </div>
    </fieldset>
 </form>

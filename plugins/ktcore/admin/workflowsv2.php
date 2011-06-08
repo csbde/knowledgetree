@@ -560,7 +560,7 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
     // ----------------- Basic - States & Transition ---------------------
     function breadcrumbs_basic() {
         $this->aBreadcrumbs[] = array(
-            'url' => KTUtil::addQueryStringSelf($this->meldPersistQuery("", "basic")),
+            'url' => KTUtil::addQueryStringSelf($this->meldPersistQuery("", 'basic')),
             'name' => _kt("States and Transitions"),
         );
     }
@@ -1147,7 +1147,7 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
         $this->startTransaction();
 
         if (is_null($this->oTransition)) {
-            return $this->errorRedirectTo("basic", _kt("No transition selected"));
+            return $this->errorRedirectTo('basic', _kt("No transition selected"));
         }
 
         // grab all the triggers
@@ -1155,13 +1155,13 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
         foreach ($aTriggers as $oTrigger) {
             $res = $oTrigger->delete();
             if (PEAR::isError($res)) {
-                $this->errorRedirectTo("basic", sprintf(_kt("Failed to clear trigger: %s"), $res->getMessage()));
+                $this->errorRedirectTo('basic', sprintf(_kt("Failed to clear trigger: %s"), $res->getMessage()));
             }
         }
 
         $res = $this->oTransition->delete();
         if (PEAR::isError($res)) {
-            $this->errorRedirectTo("basic", sprintf(_kt("Failed to clear transition: %s"), $res->getMessage()));
+            $this->errorRedirectTo('basic', sprintf(_kt("Failed to clear transition: %s"), $res->getMessage()));
         }
 
         $this->successRedirectTo('basic', _kt("Transition deleted."));
@@ -1222,7 +1222,7 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
         $this->startTransaction();
 
         if (is_null($this->oState)) {
-            return $this->errorRedirectTo("basic", _kt("No state selected"));
+            return $this->errorRedirectTo('basic', _kt("No state selected"));
         }
 
         $replacement = $data['replacement'];
@@ -1233,13 +1233,13 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
             $this->oWorkflow->setStartStateId($replacement->getId());
             $res = $this->oWorkflow->update();
             if (PEAR::isError($res)) {
-                $this->errorRedirectTo("basic", sprintf(_kt("Failed to update workflow: %s"), $res->getMessage()));
+                $this->errorRedirectTo('basic', sprintf(_kt("Failed to update workflow: %s"), $res->getMessage()));
             }
         }
 
         $res = $this->oState->delete();
         if (PEAR::isError($res)) {
-            $this->errorRedirectTo("basic", sprintf(_kt("Failed to delete state: %s"), $res->getMessage()));
+            $this->errorRedirectTo('basic', sprintf(_kt("Failed to delete state: %s"), $res->getMessage()));
         }
 
         $this->successRedirectTo('basic', _kt("State deleted."));
@@ -1247,7 +1247,7 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
 
     function breadcrumbs_security() {
         $this->aBreadcrumbs[] = array(
-            'url' => KTUtil::addQueryStringSelf($this->meldPersistQuery("fTransitionId=&fStateId=","security", true)),
+            'url' => KTUtil::addQueryStringSelf($this->meldPersistQuery('fTransitionId=&fStateId=', 'security', true)),
             'name' => _kt("Security"),
         );
     }

@@ -4,7 +4,7 @@
  *
  * KnowledgeTree Community Edition
  * Document Management Made Simple
- * Copyright (C) 2008, 2009, 2010 KnowledgeTree Inc.
+ * Copyright(C) 2008, 2009, 2010 KnowledgeTree Inc.
  *
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -88,7 +88,7 @@ class KTDispatcher {
                 'session',
                 'action_prefix',
                 'bJSONMode');
-            foreach($core as $k) {
+            foreach ($core as $k) {
                 if (isset($orig_dispatcher->$k)) {
                     $this->$k = $orig_dispatcher->$k;
                 }
@@ -99,7 +99,7 @@ class KTDispatcher {
         return $this->dispatch();
     }
 
-    public function dispatch () {
+    public function dispatch() {
         if (array_key_exists($this->cancel_var, $_REQUEST)) {
             $var = $_REQUEST[$this->cancel_var];
             if (is_array($var)) {
@@ -155,7 +155,7 @@ class KTDispatcher {
             'bJSONMode'
         );
 
-        foreach($core as $k) {
+        foreach ($core as $k) {
             if (isset($oOrigDispatcher->$k)) {
                 $this->$k = $oOrigDispatcher->$k;
             }
@@ -265,54 +265,51 @@ class KTDispatcher {
         print $sOutput;
     }
 
-    /* persist the following parameters between requests (via redirect), unless a value is passed in. */
+    /* persist the following parameters between requests(via redirect), unless a value is passed in. */
     public function persistParams($aParamKeys) {
         $this->aPersistParams = kt_array_merge($this->aPersistParams, $aParamKeys);
     }
 
-    public function meldPersistQuery($query = '', $event = '', $asArray = false) {
-        if (is_array($query)) {
-            $aQuery = $query;
-        } else {
+    public function meldPersistQuery($query = '', $event = '', $asArray = false)
+    {
+        if (!is_array($query)) {
             if (!empty($query)) {
-                // need an intermediate step here.
-                $aQuery = Net_URL::_parseRawQuerystring($query);
+                // Need an intermediate step here.
+                $query = Net_URL::_parseRawQuerystring($query);
             } else {
-                $aQuery = array();
+                $query = array();
             }
         }
 
-        // now try to grab each persisted entry
-        // don't overwrite the existing values, if added.
+        // Now try to grab each persisted entry.
+        // Don't overwrite the existing values, if added.
         if (is_array($this->aPersistParams)) {
             foreach ($this->aPersistParams as $k) {
-                if (!array_key_exists($k, $aQuery)) {
+                if (!array_key_exists($k, $query)) {
                     $v = KTUtil::arrayGet($_REQUEST, $k);
                     if (!empty($v)) {
-                        $aQuery[$k] = $v;
+                        $query[$k] = $v;
                     }
                 }
-                // handle the case where action is passed in already.
+                // Handle the case where action is passed in already.
             }
         }
 
-        // if it isn't already set
-        if ((!array_key_exists($this->event_var, $aQuery)) && (!empty($event))) {
-            $aQuery[$this->event_var] = urlencode($event);
+        if ((!array_key_exists($this->event_var, $query)) &&(!empty($event))) {
+            $query[$this->event_var] = urlencode($event);
         }
-        //var_dump($aQuery);
 
         if ($asArray) {
-            return $aQuery;
+            return $query;
         }
 
-        // encode and blend.
-        $aQueryStrings = array();
-        foreach ($aQuery as $k => $v) {
-            $aQueryStrings[] = urlencode($k) . "=" . urlencode($v);
+        // Encode and blend.
+        $queryStrings = array();
+        foreach ($query as $k => $v) {
+            $queryStrings[] = urlencode($k) . "=" . urlencode($v);
         }
-        $query = join('&', $aQueryStrings);
-        return $query;
+
+        return join('&', $queryStrings);
     }
 
 }
@@ -340,7 +337,7 @@ class KTStandardDispatcher extends KTDispatcher {
         parent::KTDispatcher();
     }
 
-    public function permissionDenied () {
+    public function permissionDenied() {
         // handle anonymous specially.
         if ($this->oUser->getId() == -2) {
             redirect(KTUtil::ktLink('login.php','',sprintf("redirect=%s&errorMessage=%s", urlencode($_SERVER['REQUEST_URI']), urlencode(_kt("You must be logged in to perform this action"))))); exit(0);
@@ -358,7 +355,7 @@ class KTStandardDispatcher extends KTDispatcher {
         exit(0);
     }
 
-    public function planDenied () {
+    public function planDenied() {
         // handle anonymous specially.
         if ($this->oUser->getId() == -2) {
             redirect(KTUtil::ktLink('login.php','',sprintf("redirect=%s&errorMessage=%s", urlencode($_SERVER['REQUEST_URI']), urlencode(_kt("You must be logged in to perform this action"))))); exit(0);
@@ -388,7 +385,7 @@ class KTStandardDispatcher extends KTDispatcher {
 	    // we short-circuit the login mechanisms, setup the session, and go.
 
 	    $oUser =& User::get(-2);
-	    if (PEAR::isError($oUser) || ($oUser->getName() != 'Anonymous')) {
+	    if (PEAR::isError($oUser) ||($oUser->getName() != 'Anonymous')) {
 		  ; // do nothing - the database integrity would break if we log the user in now.
 	    } else {
 		  $session = new Session();
@@ -428,7 +425,7 @@ class KTStandardDispatcher extends KTDispatcher {
             global $default;
             $default->log->debug("checkSession:: redirect url=$redirect");
             // this session verification failure represents either the first visit to
-            // the site OR a session timeout etc. (in which case we still want to bounce
+            // the site OR a session timeout etc.(in which case we still want to bounce
             // the user to the login page, and then back to whatever page they're on now)
             $url = $url . urlencode("&redirect=" . urlencode($redirect));
         }
@@ -439,7 +436,7 @@ class KTStandardDispatcher extends KTDispatcher {
         exit(0);
     }
 
-    public function dispatch () {
+    public function dispatch() {
         if (empty($this->session)) {
             $this->session = new Session();
             $this->sessionStatus = $this->session->verify();
