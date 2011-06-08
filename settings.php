@@ -45,7 +45,7 @@ require_once(KT_LIB_DIR . '/plugins/KTAdminNavigation.php');
 
 class AdminSplashDispatcher extends KTAdminDispatcher {
 
-    private $category = '';
+    private $defaultCategory = '';
     public $sSection = 'settings';
 
     function AdminSplashDispatcher()
@@ -63,7 +63,7 @@ class AdminSplashDispatcher extends KTAdminDispatcher {
         $categories = $registry->getCategories();
 	reset($categories);
 	$defaultCategory = current($categories);
-	$this->category = $defaultCategory['name'];
+	$this->defaultCategory = $defaultCategory['name'];
 
         $KTConfig = KTConfig::getSingleton();
         $condensedAdmin = $KTConfig->get('condensedAdminUI');
@@ -101,8 +101,8 @@ class AdminSplashDispatcher extends KTAdminDispatcher {
     {
         $page = $GLOBALS['main'];
 
-        $category = KTUtil::arrayGet($_REQUEST, 'fCategory', $this->category);
-        $subSection = KTUtil::arrayGet($_REQUEST, 'subSection', null);
+        $category = KTUtil::arrayGet($_REQUEST, 'fCategory', $this->defaultCategory);
+        $subSection = KTUtil::arrayGet($_REQUEST, 'subsection', null);
         $expanded = KTUtil::arrayGet($_REQUEST, 'expanded', false);
 
         //if ($category == 'contentSetup') {
@@ -158,11 +158,7 @@ class AdminSplashDispatcher extends KTAdminDispatcher {
 	$registry = KTAdminNavigationRegistry::getSingleton();
 	if ($registry->isRegistered($subUrl)) {
 	   $dispatcher = $registry->getDispatcher($subUrl);
-
-	   $parts = explode('/', $subUrl);
-
-	   $registry = KTAdminNavigationRegistry::getSingleton();
-	   $category = $registry->getCategory($parts[0]);
+	   $dispatcher->setCategoryDetail($subUrl);
 
 	   return $dispatcher->dispatch();
 	}
@@ -192,7 +188,7 @@ if (empty($subUrl)) {
     } else {
        // FIXME (minor) redirect to no-suburl?
        $dispatcher = new AdminSplashDispatcher();
-       $dispatcher->category = $subUrl;
+       $dispatcher->defaultCategory = $subUrl;
     }
 }
 

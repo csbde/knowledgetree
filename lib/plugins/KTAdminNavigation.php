@@ -136,18 +136,18 @@ class KTAdminNavigationRegistry {
         $this->sorted['items'][$sCategory] = true;
     }
 
-    public function getDispatcher($sName)
+    public function getDispatcher($name)
     {
-        $aInfo = $this->aResources[$sName];
-        if ($aInfo['filepath'] !== null) {
-	    require_once($aInfo['filepath']);
+        $info = $this->aResources[$name];
+        if ($info['filepath'] !== null) {
+	    require_once($info['filepath']);
 	}
 
-        if (!empty($aInfo['url'])) {
-           return new RedirectingDispatcher($aInfo['url']);
+        if (!empty($info['url'])) {
+           return new RedirectingDispatcher($info['url']);
         }
 
-        return new $aInfo['class'];
+        return new $info['class'];
     }
 
 }
