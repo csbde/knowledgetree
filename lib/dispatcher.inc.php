@@ -74,7 +74,7 @@ class KTDispatcher {
 
     public function redispatch($eventVar, $actionPrefix = null, $origDispatcher = null, $parentUrl = null)
     {
-        $previous_event = KTUtil::arrayGet($_REQUEST, $this->eventVar);
+        $previousEvent = KTUtil::arrayGet($_REQUEST, $this->eventVar);
         $this->sParentUrl = $parentUrl;
 
         if ($actionPrefix) {
@@ -627,6 +627,13 @@ class KTAdminDispatcher extends KTStandardDispatcher {
         $this->subsection = $parts[1];
 
         $this->sectionQueryString = "fCategory={$this->category}&subsection={$this->subsection}&expanded=1";
+    }
+
+    public function setActiveStatus($active)
+    {
+        if (!$active) {
+            $this->eventVar = null;
+        }
     }
 
     public function redirectTo($event, $query = '')
