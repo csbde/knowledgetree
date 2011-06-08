@@ -74,7 +74,7 @@ class KTDocumentTypeDispatcher extends KTAdminDispatcher {
              'context' => $this,
             'document_types' => $aDocumentTypes,
             'associated_types' => $aAssocDocs,
-            'add_fields' => $addFields,
+            'add_fields' => $addFields
         ));
 
         return $oTemplate->render();
@@ -168,12 +168,12 @@ class KTDocumentTypeDispatcher extends KTAdminDispatcher {
         $aAvailableFieldsetIds = array_diff($aAvailableFieldsetIds, $aCurrentFieldsetIds);
 
         $vocab = array();
-        foreach ($aAvailableFieldsetIds as $iFieldsetId) {
+	foreach ($aAvailableFieldsetIds as $iFieldsetId) {
             $oFieldset = KTFieldset::get($iFieldsetId);
-
             // Note, items gets sanitize on Render
             $vocab[$oFieldset->getId()] = htmlspecialchars_decode($oFieldset->getName());
         }
+
         $aOptions = array();
         $aOptions['vocab'] = $vocab;
         $aOptions['multi'] = true;
@@ -181,9 +181,7 @@ class KTDocumentTypeDispatcher extends KTAdminDispatcher {
         $availableTypesWidget =& new KTLookupWidget(_kt('Available Fieldsets'), _kt('Select the fieldsets which you wish to associate with this document type'), 'fieldsetid[]', null, $this->oPage, true,
             null, null, $aOptions);
 
-        $this->aBreadcrumbs[] = array(
-            'name' => $oDocumentType->getName(),
-        );
+        $this->aBreadcrumbs[] = array('name' => $oDocumentType->getName());
         $this->oPage->setBreadcrumbDetails(_kt('edit'));
 
         $oTemplate->setData(array(
@@ -195,6 +193,7 @@ class KTDocumentTypeDispatcher extends KTAdminDispatcher {
             'bAvailableFieldsets' => count($vocab) > 0,
             'availableWidget' => $availableTypesWidget,
         ));
+
         return $oTemplate;
     }
 

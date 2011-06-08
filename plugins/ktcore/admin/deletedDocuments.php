@@ -87,6 +87,7 @@ var $sHelpPage = 'ktcore/admin/deleted documents.html';
             'pagelist' => $aPages,
             'pagecount' => $pages,
             'itemcount' => $items,
+	    'section_query_string' => $this->sectionQueryString
         ));
 
         return $oTemplate->render();

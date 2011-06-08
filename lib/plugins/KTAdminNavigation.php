@@ -139,7 +139,7 @@ class KTAdminNavigationRegistry {
     public function getDispatcher($name)
     {
         $info = $this->aResources[$name];
-        if ($info['filepath'] !== null) {
+        if (!empty($info['filepath'])) {
 	    require_once($info['filepath']);
 	}
 

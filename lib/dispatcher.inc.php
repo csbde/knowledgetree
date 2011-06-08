@@ -629,17 +629,22 @@ class KTAdminDispatcher extends KTStandardDispatcher {
         $this->sectionQueryString = "fCategory={$this->category}&subsection={$this->subsection}&expanded=1";
     }
 
+    public function redirectTo($event, $query = '')
+    {
+        parent::redirectTo($event, $this->buildSectionSubQuery($query));
+    }
+
     public function errorRedirectTo($event, $errorMessage, $query = '', $exception = null)
     {
-        parent::errorRedirectTo($event, $errorMessage, $this->buildSubQuery($query), $exception);
+        parent::errorRedirectTo($event, $errorMessage, $this->buildSectionSubQuery($query), $exception);
     }
 
     public function successRedirectTo($event, $infoMessage, $query = '')
     {
-        parent::successRedirectTo($event, $infoMessage, $this->buildSubQuery($query));
+        parent::successRedirectTo($event, $infoMessage, $this->buildSectionSubQuery($query));
     }
 
-    private function buildSubQuery($query)
+    private function buildSectionSubQuery($query)
     {
         return empty($query) ? $this->sectionQueryString : "$query&{$this->sectionQueryString}";
     }

@@ -520,7 +520,7 @@ class KTDocumentDeleteAction extends KTDocumentAction {
         }
 
         if ($default->enableESignatures) {
-            $validators[] = array('electonic.signatures.validators.authenticate', array(
+            $validators[] = array('electronic.signatures.validators.authenticate', array(
                 'object_id' => $this->oDocument->iId,
                 'type' => 'document',
                 'action' => 'ktcore.transactions.delete',
@@ -704,7 +704,7 @@ class KTDocumentMoveAction extends KTDocumentAction {
         ));
 
         if ($default->enableESignatures) {
-            $validators[] = array('electonic.signatures.validators.authenticate', array(
+            $validators[] = array('electronic.signatures.validators.authenticate', array(
                 'object_id' => $this->oDocument->iId,
                 'type' => 'document',
                 'action' => 'ktcore.transactions.move',
@@ -953,7 +953,7 @@ class KTDocumentCopyAction extends KTDocumentAction {
             ));
 
         if ($default->enableESignatures) {
-            $validators[] = array('electonic.signatures.validators.authenticate', array(
+            $validators[] = array('electronic.signatures.validators.authenticate', array(
                 'object_id' => $this->oDocument->iId,
                 'type' => 'document',
                 'action' => 'ktcore.transactions.copy',
@@ -1169,7 +1169,7 @@ class KTDocumentArchiveAction extends KTDocumentAction {
         }
 
         if ($default->enableESignatures) {
-            $validators[] = array('electonic.signatures.validators.authenticate', array(
+            $validators[] = array('electronic.signatures.validators.authenticate', array(
                 'object_id' => $this->oDocument->iId,
                 'type' => 'document',
                 'action' => 'ktcore.transactions.archive',
@@ -1379,7 +1379,7 @@ class KTAjaxDocumentWorkflowAction extends KTDocumentAction {
         $message = _kt('Transition performed');
         $this->transitionWorkflow($message);
     }
-    
+
     public function transitionWorkflow($message, $transition = true)
     {
     	if ($transition) {
@@ -1388,7 +1388,7 @@ class KTAjaxDocumentWorkflowAction extends KTDocumentAction {
 	        $res = KTWorkflowUtil::performTransitionOnDocument($oTransition, $this->oDocument, $this->oUser, sanitizeForHTML($_REQUEST['fComments']));
 	        $this->commitTransaction();
     	}
-        
+
         if (!$this->userHasDocumentReadPermission($this->oDocument)) {
         	$redirectUrl = KTUtil::ktLink('browse.php', '', 'fFolderId=' . $this->oDocument->getFolderID());
         	$message .= '. ' . _kt('You no longer have permission to view this document');
@@ -1610,7 +1610,7 @@ class KTDocumentWorkflowAction extends KTDocumentAction {
             ));
 
             if ($default->enableESignatures) {
-                $oForm->addValidator(array('electonic.signatures.validators.authenticate', array(
+                $oForm->addValidator(array('electronic.signatures.validators.authenticate', array(
                     'object_id' => $this->oDocument->iId,
                     'type' => 'document',
                     'action' => 'ktcore.transactions.transition_workflow',
@@ -1842,16 +1842,16 @@ class KTDocumentCheckOutDownloadAction extends KTDocumentCheckOutAction {
 	public $sName = 'ktcore.actions.document.checkoutdownload';
 	public $sIconClass = 'checkout-download';
 	public $sParentBtn = 'ktcore.actions.document.checkout';
-	
+
     function getDisplayName() {
         return _kt('Check-out And Download');
     }
-    
+
     function getFunctionScript()
     {
 		return 'kt.app.document_actions.checkout_actions(\'' . $this->oDocument->getId() . '\', \'checkoutdownload\')';
     }
-    
+
     function customiseInfo($aInfo)
 	{
 		$js = '';
@@ -1967,7 +1967,7 @@ class KTDocumentCheckInAction extends JavascriptDocumentAction {
         }
         return $check;
     }
-    
+
     function getInfo() {
         if (!$this->oDocument->getIsCheckedOut()) {
             return null;
@@ -1984,7 +1984,7 @@ class KTDocumentCheckInAction extends JavascriptDocumentAction {
     {
 		return 'kt.app.document_actions.checkout_actions(\'' . $this->oDocument->getId() . '\', \'checkin\')';
     }
-    
+
     function check() {
         $res = parent::check();
         if ($res !== true) {
@@ -2038,7 +2038,7 @@ class KTDocumentCheckInAction extends JavascriptDocumentAction {
 	function do_main() {
 		global $default;
 		$forceFilenameDescriptiveText= '';
-		
+
         $oTemplate = $this->oValidator->validateTemplate('ktcore/action/checkin');
         // TODO : Find a better way
         $form_action = '/action.php?kt_path_info='.$this->sName.'&fDocumentId='.$this->oDocument->getId();
@@ -2159,7 +2159,7 @@ class KTDocumentCheckInAction extends JavascriptDocumentAction {
         }
 
         if ($default->enableESignatures) {
-            $aValidators[] = array('electonic.signatures.validators.authenticate', array(
+            $aValidators[] = array('electronic.signatures.validators.authenticate', array(
                 'object_id' => $this->oDocument->iId,
                 'type' => 'document',
                 'action' => 'ktcore.transactions.check_in',
@@ -2189,8 +2189,8 @@ class KTDocumentCheckInAction extends JavascriptDocumentAction {
 
         return $oForm;
     }*/
-	
-	
+
+
 	/****
 	 *
 	 * TOHIR WORKING OVER HERE!!
@@ -2202,18 +2202,18 @@ class KTDocumentCheckInAction extends JavascriptDocumentAction {
 		require_once('FirePHPCore/FirePHP.class.php');
 		$firephp = FirePHP::getInstance(true);
 		$firephp->log('Doing checkin');
-		
+
 		$firephp->log($_POST);
 		//$firephp->log($_FILES);
 		//$firephp->log($_REQUEST);
 		$firephp->log($this->oDocument->getFilename());
 		*/
-		
+
 		// --- Checkin Here
 		$docFileName = $this->oDocument->getFilename();
 		$defaultCheckinMessage = _kt('Document Checked In.');
         $sReason = $defaultCheckinMessage . (isset($_POST['reason']) ? "\n\n{$_POST['reason']}" : '');
-		
+
 		$sCurrentFilename = $docFileName;
         $sNewFilename = $_FILES['filename']['name'];
         $aOptions = array();
@@ -2225,23 +2225,23 @@ class KTDocumentCheckInAction extends JavascriptDocumentAction {
         if ($sCurrentFilename != $sNewFilename) {
             $aOptions['newfilename'] = $sNewFilename;
         }
-		
-		
+
+
 		//$firephp->log($_FILES['filename']['tmp_name']);
 		//$firephp->log('Exists: '.file_exists($_FILES['filename']['tmp_name']));
-		
-		
+
+
         // document checkin for the new storage drivers requires the document to be first uploaded
         // to the temp directory from the php upload directory or the checkin will fail
         $oStorage = KTStorageManagerUtil::getSingleton();
         $oKTConfig =& KTConfig::getSingleton();
         $sTempFilename = $oStorage->tempnam($oKTConfig->get("urls/tmpDirectory"), 'kt_storecontents');
         $oStorage->uploadTmpFile($_FILES['filename']['tmp_name'], $sTempFilename);
-		
+
         $_FILES['filename']['tmp_name'] = $sTempFilename;
-        
+
 		$res = KTDocumentUtil::checkin($this->oDocument, $_FILES['filename']['tmp_name'], $sReason, $this->oUser, $aOptions);
-		
+
 		// Show Results;
         if (PEAR::isError($res)) {
         	$GLOBALS['default']->log->error('Pear Error on Checkin: '.$res->getMessage());
@@ -2249,13 +2249,13 @@ class KTDocumentCheckInAction extends JavascriptDocumentAction {
         } else {
 			echo '<script type="text/javascript">parent.postCheckinUpdate("success");</script>';
 		}
-		
+
 		exit();
 	}
-	
+
 	/*
 	  END TOHIR
-	 
+
 	*/
 
 }
@@ -2274,19 +2274,19 @@ class KTDocumentCancelCheckOutAction extends JavascriptDocumentAction {
 		echo parent::do_reason();
 		exit(0);
 	}
-    
+
 	public function getReasonDescriptiveText() {
 		return 'If you do not want to have this document be checked-out, click cancel checkout.';
 	}
-	
+
     public function getReasonAction() {
     	return 'checkin';
     }
-    
+
     public function getDisplayName() {
         return _kt('Cancel Check-out');
     }
-    
+
     public function _show() {
         $check = parent::_show();
         if($check === false) {
@@ -2316,7 +2316,7 @@ class KTDocumentCancelCheckOutAction extends JavascriptDocumentAction {
 
         return parent::getInfo();
     }
-    
+
 	public function getFunctionScript()
     {
 		return 'kt.app.document_actions.checkout_actions(\'' . $this->oDocument->getId() . '\', \'cancelcheckout\')';

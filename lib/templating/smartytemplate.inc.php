@@ -83,17 +83,17 @@ class KTSmartyTemplate extends KTTemplate {
         $absroot .= $KTConfig->get('KnowledgeTree/rootUrl');
 
         if (isset($_SESSION['search2_quick'])) {
-        	$search2_quick = $_SESSION['search2_quick'];
-        	$search2_general = $_SESSION['search2_general'];
-        	$search2_quickQuery = trim($_SESSION['search2_quickQuery']);
+	    $search2_quick = $_SESSION['search2_quick'];
+	    $search2_general = $_SESSION['search2_general'];
+	    $search2_quickQuery = trim($_SESSION['search2_quickQuery']);
         }
         else {
-			$search2_quick = 0;
-			$search2_general = 1;
-			$search2_quickQuery = '';
-			$_SESSION['search2_quick'] = $search2_quick;
-			$_SESSION['search2_general'] = $search2_general;
-			$_SESSION['search2_quickQuery'] = '';
+	    $search2_quick = 0;
+	    $search2_general = 1;
+	    $search2_quickQuery = '';
+	    $_SESSION['search2_quick'] = $search2_quick;
+	    $_SESSION['search2_general'] = $search2_general;
+	    $_SESSION['search2_quickQuery'] = '';
         }
 
         $smarty->assign('search2_anonymous', !array_key_exists('userID', $_SESSION) || ($_SESSION['userID'] == -2));
