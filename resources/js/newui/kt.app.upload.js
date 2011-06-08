@@ -159,7 +159,7 @@ kt.app.upload = new function() {
         self.data['globalMetaDataRequiredDone'] = requiredDone;
     }
 
-    this.setGlobalMetadataFalse = function()
+    this.setGlobalMetadataFalse = function(requiredDone)
     {
         self.data['applyMetaDataToAll'] = false;
         self.data['globalMetaData'] = {};
@@ -544,7 +544,6 @@ kt.app.upload = new function() {
                     self.addUpload(fileName, docTypeHasRequiredFields);
                 },
                 onComplete: function(id, fileName, responseJSON) {
-                                    console.dir(responseJSON)
                     try {
                         self.findItem(fileName).completeUpload();
                     } catch(e) {
@@ -810,7 +809,7 @@ kt.app.upload.uploadStructure = function(options) {
                 var metadata = {'docTypeID': self.options.docTypeId, 'metadata': self.options.metadata};
                 kt.app.upload.applyMetadataToAll(metadata, self.options.required_metadata_done);
             } else {
-                kt.app.upload.setGlobalMetadataFalse();
+                kt.app.upload.setGlobalMetadataFalse(requiredDone);
             }
 
             var allRequiredMetadataDone = true;

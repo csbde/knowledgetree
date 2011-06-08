@@ -74,7 +74,7 @@ workflowActions.prototype.displayAction = function(transitionId) {
 		}
 	});
 };
-
+			
 /* 
 * Refresh workflow sidebar
 */
@@ -89,7 +89,7 @@ workflowActions.prototype.refeshSidebar = function(documentId) {
 			jQuery('.workflow_transitions').html(data);
 		},
 		error: function(response, code) {
-			alert('Error. Could not reload alerts.'+response + code);
+			alert('Error. Could not reload workflow.'+response + code);
 		}
 	});	
 };
