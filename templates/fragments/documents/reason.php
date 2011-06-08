@@ -47,10 +47,11 @@ if($default->useEmailLogin) {
 	    		<input type="hidden" value="reason" id="type">
 				<input type="hidden" value="" id="reason-doc-id">
 				<input type="hidden" value="" id="reason-action">
-
-				<a href="#" onclick="vActions.closeDisplay('reason'); return false;" class="ul_actions_cancel_link">Cancel</a>
-				<span class="reason-spinner none" style="visibility:hidden;">&nbsp;</span>
 				<input name="reason_submit" type="button" onclick="kt.api.esignatures.saveESignatures();" value="Save" id="reason-btn">
+				<span class="reason-spinner none" style="visibility:hidden;">&nbsp;</span>
+				<a href="#" onclick="vActions.closeDisplay('reason'); return false;" class="ul_actions_cancel_link">Cancel</a>
+				
+				
 	    	</td>
 		</tr>
 	</tbody>
