@@ -11,7 +11,7 @@ kt.app.copy = new function() {
     var fragmentPackage = this.fragmentPackage = []
 
     // contains a list of executable fragments that will get preloaded
-    var execs = this.execs = ['actions/copy.dialog'];
+    var execs = this.execs = ['documents/actions/copy.dialog'];
     var execPackage = this.execPackage = [execs];
 
     // scope protector. inside this object referrals to self happen via 'self' rather than 'this'
@@ -57,6 +57,15 @@ kt.app.copy = new function() {
     	return;
     }
     
+    this.doBulkMove = function() {
+    	self.checkReasons();
+    	self.action = 'move';
+    	self.actionType = 'bulk';
+    	self.itemList = kt.pages.browse.getSelectedItems();
+    	self.showCopyWindow();
+    	return;
+    }
+    
     this.checkReasons = function() {
     	var response = kt.api.esignatures.checkESignatures();
     	self.reasonType = response.esign;
@@ -89,7 +98,7 @@ kt.app.copy = new function() {
             shadow          : true,
             modal           : true,
             title           : title,
-            html            : kt.api.execFragment('actions/copy.dialog')
+            html            : kt.api.execFragment('documents/actions/copy.dialog')
         });
 
         // Using the JSTree jQuery plugin
@@ -157,29 +166,42 @@ kt.app.copy = new function() {
 	    
         var response = jQuery.parseJSON(response);
         
-        if(response.type == 'fatal') {
-        	$msg = 'The following error occurred, please refresh the page and try again: ' + response.error;
-        	jQuery('#copy-error').html($msg);
-        	self.hideSpinner();
-        	return;
+        switch (response.type) {
+        	case 'fatal':
+	        	$msg = 'The following error occurred, please refresh the page and try again: ' + response.error;
+	        	jQuery('#copy-error').html($msg);
+	        	self.hideSpinner();
+	        	return;
+        		break;
+        		
+    		case 'error':
+	    		$msg = 'The following error occurred: ' + response.error;
+	        	jQuery('#copy-error').html($msg);
+	        	self.showReasons = false;
+	        	self.hideSpinner();
+	        	return;
+    			break;
+    			
+			case 'partial':
+				$msg = response.failed;
+				jQuery('#copy-modal').html($msg);
+				self.showReasons = false;
+				self.hideSpinner();
+				return;
+				break;
+				
+			default:
+				$msg = 'Success. You will be redirected to the new document';
+    			jQuery("#copy-error").html($msg);
         }
-
-        if(response.type == 'error') {
-        	$msg = 'The following error occurred: ' + response.error;
-        	jQuery('#copy-error').html($msg);
-        	self.showReasons = false;
-        	self.hideSpinner();
-        	return;
-        }
-
-    	$msg = 'Success. You will be redirected to the new document';
-    	jQuery("#copy-error").html($msg);
-
-    	// redirect to the new document
-    	var url = response.url;
-    	window.location.replace(url);
+    	
+    	self.redirect(response.url);
     }
 
+    this.redirect = function(url) {
+    	window.location.replace(url);
+    }
+    
     this.tree = function() {
         jQuery("#select-tree")
             .jstree({
@@ -219,6 +241,7 @@ kt.app.copy = new function() {
 	    var synchronous = true;
 	    var params = {};
 	    params.id = id;
+	    params.ignoreIds = self.itemList;
 	    var data = ktjapi.retrieve(func, params, kt.api.persistentDataCacheTimeout);
 	    var response = data.data.nodes;
         var nodes = jQuery.parseJSON(response);

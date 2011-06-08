@@ -185,8 +185,8 @@ class KTAPI_BulkActions
     function move($items, &$target_folder, $reason)
     {
         if(empty($items)) return;
-        assert(!is_null($target_folder));
-		assert($target_folder instanceof KTAPI_FOLDER);
+//        assert(!is_null($target_folder));
+//		assert($target_folder instanceof KTAPI_FOLDER);
 
 		if(!is_array($items)){
 		    $items = array($items);
@@ -205,7 +205,7 @@ class KTAPI_BulkActions
 
         $failed = array();
         foreach ($items as $item){
-            assert($item instanceof KTAPI_Document || $item instanceof KTAPI_Folder);
+//            assert($item instanceof KTAPI_Document || $item instanceof KTAPI_Folder);
 
             $docOrFolder = ($item instanceof KTAPI_Document) ? 'docs' : 'folders';
 

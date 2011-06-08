@@ -1,4 +1,4 @@
-<table class="uploadTable" style="height:200px;" border="0">
+<table id='copy-modal' class="uploadTable" style="height:200px;" border="0">
 
 <tr>
 	<td>
