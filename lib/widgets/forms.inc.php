@@ -162,8 +162,27 @@ class KTForm {
         $this->_submit_onclick = KTUtil::arrayGet($aOptions, 'onclick', '');
 
         $this->_extraargs['postReceived'] = 1;
+        
+        // Configure form for new settings page.
+        $this->setNewSettingsOptions();
     }
 
+    function setNewSettingsOptions() {
+    	// Check if we on settings page.
+    	$this->_actionurl .= '?';
+    	if(KTUtil::arrayGet($_REQUEST, 'fCategory') != '') {
+    		foreach ($_GET as $k=>$v) {
+    			$this->_actionurl .= "&$k=$v";
+    		}
+	    	$cancel_action = KTUtil::arrayGet($aOptions, 'cancel_action');
+	    	if (!empty($cancel_action)) {
+	    		foreach ($_GET as $k=>$v) {
+	    			$this->_cancelurl .= "&$k=$v";
+	    		}
+	    	}    		
+    	}
+    }
+    
     function getWidget(&$aInfo) {
         if (is_null($this->_oWF)) {
             $this->_oWF =& KTWidgetFactory::getSingleton();

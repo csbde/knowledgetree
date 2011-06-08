@@ -8,12 +8,12 @@
 <br/><br/>
 <div class="widgetRow">
 <dl>
-    <dt><strong><a href="{addQS context=$context}action=manageguards{/addQS}">{i18n}Transition Requirements{/i18n}</a></strong></dt>
+    <dt><strong><a href="{addQS context=$context}action=manageguards&{$section_query_string}{/addQS}">{i18n}Transition Requirements{/i18n}</a></strong></dt>
     <dd class="descriptiveText">{i18n}You can control when and by whom transitions can
     be performed by setting up various guards.  These can include permissions, roles,
     groups or a variety of other restriction conditions.{/i18n}</dd> 
     
-    <dt><strong><a href="{addQS context=$context}action=managetransitionactions{/addQS}">{i18n}Transition Effects{/i18n}</a></strong></dt>
+    <dt><strong><a href="{addQS context=$context}action=managetransitionactions&{$section_query_string}{/addQS}">{i18n}Transition Effects{/i18n}</a></strong></dt>
     <dd class="descriptiveText">{i18n}One of the powerful aspects of transitions is
     that you can specify a set of "effects" which occur when the transition is followed.
     This list can be extended by plugins, and includes things like automatically

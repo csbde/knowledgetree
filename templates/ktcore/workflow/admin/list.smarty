@@ -9,7 +9,7 @@
 <h3>{i18n}Existing workflows{/i18n}</h3>
 <p class="descriptiveText">{i18n}Select a workflow to modify. To enable a disabled workflow, edit it and set a proper starting state.{/i18n}</p>
 
-<form action="{$smarty.server.PHP_SELF}" method="POST">
+<form action="{$smarty.server.PHP_SELF}?{$section_query_string}" method="POST">
 
 <input type="hidden" name="action" value="branchConfirm" />
 <table class="kt_collection narrow" cellspacing="0">

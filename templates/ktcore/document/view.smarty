@@ -117,7 +117,7 @@
 				<!-- <hr style="border: none; background-color: #E3E3E3; width: 98%; height: 1px; margin-left: 10px; margin-bottom: 15px;" align="left" /> -->
 			</td>
 			<div id=init_actions>
-			<td valign="top" width="375" id="column_right">
+			<td valign="top" width="400" id="column_right">
 				<div class="" style="margin-bottom: 10px;">
 					<div class="action_buttons above" id=top_actions>
 						{$documentTopActions}
