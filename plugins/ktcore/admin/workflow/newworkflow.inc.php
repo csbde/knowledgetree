@@ -133,7 +133,7 @@ class KTNewWorkflowWizard extends KTAdminDispatcher {
         $oTemplate->setData(array(
             'context' => $this,
             'form' => $oForm,
-            'section_query_string' => $this->sectionQueryString,
+            'section_query_string' => '&fCategory=workflows',
         ));
         return $oTemplate->render();
     }
@@ -253,7 +253,7 @@ class KTNewWorkflowWizard extends KTAdminDispatcher {
             'args' => $args,
             'transitions' => $wiz_data['transitions'],
             'states' => $wiz_data['states'],
-            'section_query_string' => $this->sectionQueryString,
+            'section_query_string' => '&fCategory=workflows',
         ));
         return $oTemplate->render();
     }
