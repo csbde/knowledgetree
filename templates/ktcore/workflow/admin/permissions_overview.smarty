@@ -26,7 +26,7 @@ specify how it controls permissions.</strong>{/i18n}</p>
         {foreach from=$states item=oState}
         {assign value=$oState->getId() var=state_id}
         <tr>
-            <td><a href="{addQS context=$context}action=managepermissions&fStateId={$state_id}{/addQS}">{$oState->getName()}</a></td>
+            <td><a href="{addQS context=$context}action=managepermissions&fStateId={$state_id}&{$section_query_string}{/addQS}">{$oState->getName()}</a></td>
             <td class="centered">{if ($controllers.$state_id)} <span class="ktAction ktAllowed">yes</span> {else} <span class="ktAction ktDenied">no</span> {/if}</td>
           {foreach from=$perms item=oPerm}
           {assign value=$oPerm->getId() var=perm_id}

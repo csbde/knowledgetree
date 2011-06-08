@@ -1,5 +1,5 @@
 <ul class="actionlist">
 {foreach from=$aAdminPages item=aAdminPage}
-   <li><a href="{addQS}{$aAdminPage.query}{/addQS}">{$aAdminPage.name}</a></li>
+   <li><a href="{addQS}{$aAdminPage.query}&{$section_query_string}{/addQS}">{$aAdminPage.name}</a></li>
 {/foreach}
 </ul>

@@ -61,7 +61,7 @@ class KTNewWorkflowWizard extends KTAdminDispatcher {
         $this->persistParams(array('fWizardKey'));
     }
 
-    function &form_step1() {
+    private function &form_step1() {
         $oForm = new KTForm;
 
         $oForm->setOptions(array(
@@ -133,6 +133,7 @@ class KTNewWorkflowWizard extends KTAdminDispatcher {
         $oTemplate->setData(array(
             'context' => $this,
             'form' => $oForm,
+            'section_query_string' => '&fCategory=workflows',
         ));
         return $oTemplate->render();
     }
@@ -252,6 +253,7 @@ class KTNewWorkflowWizard extends KTAdminDispatcher {
             'args' => $args,
             'transitions' => $wiz_data['transitions'],
             'states' => $wiz_data['states'],
+            'section_query_string' => '&fCategory=workflows',
         ));
         return $oTemplate->render();
     }
@@ -399,10 +401,15 @@ class KTNewWorkflowWizard extends KTAdminDispatcher {
         // FIXME nbm:  how do you recommend we do this?
 
         $base = $_SERVER['PHP_SELF'];
-        $qs = sprintf("action=view&fWorkflowId=%d",$oWorkflow->getId());
+        $qs = sprintf("action=view&fWorkflowId=%d&fCategory=workflows",$oWorkflow->getId());
         $url = KTUtil::addQueryString($base, $qs);
-        $this->addInfoMessage(_kt("Your new workflow has been created.  You may want to configure security and notifications from the menu on the left."));
+        $this->addInfoMessage(_kt("Your new workflow has been created."));
         redirect($url);
+    }
+    
+    public function handleOutput($output)
+    {
+        print $output;
     }
 }
 

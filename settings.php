@@ -57,7 +57,7 @@ class AdminSplashDispatcher extends KTAdminDispatcher {
         parent::KTAdminDispatcher();
     }
 
-    public function do_main()
+    public function do_main($viewCategory = false)
     {
         $registry = KTAdminNavigationRegistry::getSingleton();
         $categories = $registry->getCategories();
@@ -68,7 +68,7 @@ class AdminSplashDispatcher extends KTAdminDispatcher {
         $KTConfig = KTConfig::getSingleton();
         $condensedAdmin = $KTConfig->get('condensedAdminUI');
 
-	// TODO Figure whether this is still relevant and remove if not.
+		// TODO Figure whether this is still relevant and remove if not.
         // We need to investigate sub_url solutions.
         $allItems = array();
         if ($condensedAdmin) {
@@ -83,14 +83,14 @@ class AdminSplashDispatcher extends KTAdminDispatcher {
             $this->includeOlark();
         }
 
-	$templating = KTTemplating::getSingleton();
+		$templating = KTTemplating::getSingleton();
         $template = $templating->loadTemplate('kt3/settings');
         $templateData = array(
-              'context' => $this,
-              'categories' => $categories,
-              'all_items' => $allItems,
-	      'items' => $this->getCategoryItems(),
-              'baseurl' => $_SERVER['PHP_SELF'],
+				'context' => $this,
+				'categories' => $categories,
+				'all_items' => $allItems,
+				'items' => $this->getCategoryItems(),
+				'baseurl' => $_SERVER['PHP_SELF'],
         );
 
         return $template->render($templateData);
@@ -104,10 +104,6 @@ class AdminSplashDispatcher extends KTAdminDispatcher {
         $category = KTUtil::arrayGet($_REQUEST, 'fCategory', $this->defaultCategory);
         $subSection = KTUtil::arrayGet($_REQUEST, 'subsection', null);
         $expanded = KTUtil::arrayGet($_REQUEST, 'expanded', false);
-
-        //if ($category == 'contentSetup') {
-        //    $jscript .= "<script src='resources/js/kt_hideadminlink.js' type='text/javascript'></script>";
-        //}
 
         $javascript[] = 'resources/js/newui/hide_system_links.js';
         $page->requireJSResources($javascript);
@@ -130,9 +126,9 @@ class AdminSplashDispatcher extends KTAdminDispatcher {
         }
 	else {
 	    foreach ($items as $key => $item) {
-		if ($subSection == $item['name'] && $expanded) {
-		    $items[$key]['autoDisplay'] = true;
-		}
+			if ($subSection == $item['name'] && $expanded) {
+			    $items[$key]['autoDisplay'] = true;
+			}
 	    }
 	}
 
@@ -142,7 +138,7 @@ class AdminSplashDispatcher extends KTAdminDispatcher {
     // This function is now just an alias for do_main...
     function do_viewCategory()
     {
-	return $this->do_main();
+    	return $this->do_main();
     }
 
     private function includeOlark()

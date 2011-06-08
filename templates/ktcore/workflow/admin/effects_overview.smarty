@@ -7,6 +7,6 @@ Or you can specify that when a document reaches the "Pending Review" state, user
 with the role "Reviewer" on that document are informed.{/i18n}</p>
 
 <ul class="descriptiveText">
-    <li><a href="{addQS context=$context}action=transitionactions{/addQS}">{i18n}Transition Effects{/i18n}</a></li>
-    <li><a href="{addQS context=$context}action=managenotifications{/addQS}">{i18n}Notifications{/i18n}</a></li>    
+    <li><a href="{addQS context=$context}action=transitionactions&{$section_query_string}{/addQS}">{i18n}Transition Effects{/i18n}</a></li>
+    <li><a href="{addQS context=$context}action=managenotifications&{$section_query_string}{/addQS}">{i18n}Notifications{/i18n}</a></li>    
 </ul>

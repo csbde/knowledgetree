@@ -14,7 +14,7 @@
     </dl>
 
     {if $aTransitions}
-        <form action="{$smarty.server.PHP_SELF}" method="POST" name="transition_wf_form">
+        <form action="{$smarty.server.PHP_SELF}?{$section_query_string}" method="POST" name="transition_wf_form">
             <input type="hidden" name="action" value="performTransition" />
             <input type="hidden" name="fDocumentId" value="{$oDocument->getId()}" />
             <fieldset><legend>{i18n}Transition to another workflow state{/i18n}</legend>
@@ -45,7 +45,7 @@
     {/if}
     {if $aWorkflows}
         {if $bHasPerm}
-            <form action="{$smarty.server.PHP_SELF}" method="POST" name="start_workflow_form">
+            <form action="{$smarty.server.PHP_SELF}?{$section_query_string}" method="POST" name="start_workflow_form">
 				<div class="widgetRow">
 					<div class="widgetItem">
 						<input type="hidden" name="action" value="startWorkflow" />
