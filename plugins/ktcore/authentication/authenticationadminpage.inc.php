@@ -77,6 +77,7 @@ class KTAuthenticationAdminPage extends KTAdminDispatcher {
             'fields' => $fields,
             'providers' => $aProviders,
             'sources' => $aSources,
+            'section_query_string' => $this->sectionQueryString
         ));
 
         return $oTemplate->render();
@@ -105,6 +106,7 @@ class KTAuthenticationAdminPage extends KTAdminDispatcher {
             'fields' => $fields,
             'providers' => $aProviders,
             'sources' => $aSources,
+            'section_query_string' => $this->sectionQueryString
         ));
 
         return $oTemplate->render();
@@ -125,6 +127,7 @@ class KTAuthenticationAdminPage extends KTAdminDispatcher {
             'context' => &$this,
             'source' => $oSource,
             'provider' => $oProvider,
+            'section_query_string' => $this->sectionQueryString
         ));
 
         return $oTemplate->render();
@@ -157,7 +160,9 @@ class KTAuthenticationAdminPage extends KTAdminDispatcher {
 
         $oTemplate->setData(array(
             'context' => &$this,
+            'source_id' => $_REQUEST['source_id'],
             'fields' => $fields,
+            'section_query_string' => $this->sectionQueryString
         ));
 
         return $oTemplate->render();
@@ -255,9 +260,11 @@ class KTAuthenticationAdminPage extends KTAdminDispatcher {
         //    'name' => $oSource->getName(),
         //    'query' => sprintf('action=viewsource&source_id=%d', $oSource->getId()),
         //);
+        
+        $oProvider->setAdminQueryString($this->sectionQueryString);
 
         $oProvider->subDispatch($this);
-        exit(0);
+        //exit(0);
     }
 
     function do_performEditSourceProvider()
@@ -266,6 +273,8 @@ class KTAuthenticationAdminPage extends KTAdminDispatcher {
         $sProvider = $oSource->getAuthenticationProvider();
         $oRegistry = KTAuthenticationProviderRegistry::getSingleton();
         $oProvider = $oRegistry->getAuthenticationProvider($sProvider);
+        
+        $oProvider->setAdminQueryString($this->sectionQueryString);
 
         //$this->aBreadcrumbs[] = array('name' => $oSource->getName(), 'url' => KTUtil::addQueryStringSelf("source_id=" . $oSource->getId()));
 

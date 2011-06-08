@@ -123,6 +123,7 @@ class LdapAuthProvider extends KTAuthenticationProvider {
             'context' => &$this,
             'fields' => $fields,
             'source_id' => $sourceId,
+            'section_query_string' => $this->getAdminQueryString()
         );
 
         return $template->render($templateData);
@@ -196,7 +197,7 @@ class LdapAuthProvider extends KTAuthenticationProvider {
         }
 
         $errorOptions = array(
-            'redirect_to' => array('editSourceProvider', sprintf('source_id=%d', $source->getId())),
+            'redirect_to' => array('editSourceProvider', sprintf($this->getAdminQueryString().'source_id=%d', $source->getId())),
         );
 
         $errorOptions['message'] = _kt("A server name or ip address is required");
@@ -217,7 +218,7 @@ class LdapAuthProvider extends KTAuthenticationProvider {
         $errorOptions['message'] = _kt("At least one object class is required for searching");
         $name = $this->oValidator->validateString($config['objectclasses'], $errorOptions);
 
-        $this->successRedirectTo('viewsource', _kt("Configuration updated"), 'source_id=' . $source->getId());
+        $this->successRedirectTo('viewsource', _kt("Configuration updated"), $this->getAdminQueryString().'source_id=' . $source->getId());
     }
 
     /**
