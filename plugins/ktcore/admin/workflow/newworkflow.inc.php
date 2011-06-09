@@ -66,7 +66,7 @@ class KTNewWorkflowWizard extends KTAdminDispatcher {
 
         $oForm->setOptions(array(
             'action' => 'process_step1',
-            'cancel_url' => KTUtil::addQueryStringSelf(''), // NBM:  is there a cleaner way to reference the parent?
+            'cancel_url' => KTUtil::addQueryStringSelf('') . '?fCategory=workflows', // NBM:  is there a cleaner way to reference the parent?
             'fail_action' => 'main',
             'label' => _kt('Workflow Details'),
             'submit_label' => _kt('Next'),
