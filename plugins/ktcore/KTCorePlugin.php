@@ -391,8 +391,7 @@ class KTCorePlugin extends KTPlugin {
             _kt('General Settings'), _kt('View and modify settings for KnowledgeTree.'),
             'admin/configSettings.php', null);
 
-        if ($restrictedEnv !== true)
-        {
+        if ($restrictedEnv !== true) {
             $this->registerAdminPage('searchandindexingconfigpage', 'SearchAndIndexingConfigPageDispatcher', 'sysConfig',
             _kt('Search and Indexing'), _kt('View and modify the number of documents indexed / migrated in a cron session, core indexing class, paths to the extractor hook, text extractors, indexing engine, Lucene indexes, and the Java Lucene URL. View and modify search date format, paths to search, indexing fields and libraries, results display format, and results per page.'),
             'admin/configSettings.php', null);
@@ -427,10 +426,6 @@ class KTCorePlugin extends KTPlugin {
                 _kt('Verify Document Storage'), _kt('Performs a check to see if the documents in your repositories all are stored on the back-end storage (usually on disk).'),
                 'admin/manageCleanup.php', null);
         }
-
-        $this->registerAdminPage('views', 'ManageViewDispatcher', 'contentManagement',
-            _kt('Manage views'), _kt('Allows you to specify the columns that are to be used by a particular view (e.g. Browse documents, Search)'),
-            'admin/manageViews.php', null);
 
         $this->registerAdminPage('branding', 'ManageBrandDispatcher', 'sysConfig',
             _kt('Manage Branding'), _kt('Change customizable branding components of the site e.g. Custom company logo'),
