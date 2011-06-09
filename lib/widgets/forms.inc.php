@@ -176,15 +176,14 @@ class KTForm {
     	$cat = KTUtil::arrayGet($_REQUEST, 'fCategory');
     	if($cat != '') {
     		preg_match('/\?/', $this->_actionurl, $matches);
-    		if(isset($matches[0]))
+    		if(!isset($matches[0]))
     		{
-	    		if($matches[0] != '?') {
-		    		$this->_actionurl .= '?';
-		    		foreach ($_GET as $k=>$v) {
-		    			$this->_actionurl .= "&$k=$v";
-		    		}
+	    		$this->_actionurl .= '?';
+	    		foreach ($_GET as $k=>$v) {
+	    			$this->_actionurl .= "&$k=$v";
 	    		}
     		}
+
 	        $cancel_action = KTUtil::arrayGet($aOptions, 'cancel_action');
 
 	        if (!empty($cancel_action)) {
