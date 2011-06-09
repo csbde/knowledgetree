@@ -226,7 +226,7 @@ kt.app.copy = new function() {
         			"select_limit" : 1
         		},
         		"themes" : {
-        			"theme" : "apple",
+        			"theme" : "knowledgetree",
         			"dots"	: false
         		},
                 "plugins" : [ "themes", "json_data", "ui" ]
