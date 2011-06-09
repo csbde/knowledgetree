@@ -119,6 +119,16 @@ class KTBulkAction extends KTStandardDispatcher {
         }
     }
 
+    function getOnClick()
+    {
+    	return '';
+    }
+    
+    function getBtnType()
+    {
+    	return 'submit';
+    }
+    
     function getInfo() {
         if ($this->_show() === false) {
             return null;

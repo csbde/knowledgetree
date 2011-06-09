@@ -618,6 +618,12 @@ ul.floatleft li.notification {
 	padding-right: 12px;
 	width: 16px;
 	display: inline-block;
+	visibility: visible;
+}
+
+.ul_actions .none {
+	display: none;
+	visibility: hidden;
 }
 
 .action_buttons .action .disabled {

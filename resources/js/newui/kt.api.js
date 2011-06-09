@@ -256,6 +256,7 @@ kt.api.esignatures = new function() {
 		if(response == false) {
 			return;
 		}
+
 		var title = 'Comment';
 		var width = 420;
 		var height = 243;

@@ -701,7 +701,13 @@ class KTAPI_Folder extends KTAPI_FolderItem {
     {
         $folderContents = array();
 
-        $res = KTSearchUtil::permissionToSQL($user, KTAPI_PERMISSION_VIEW_FOLDER, 'F');
+        $permission = KTAPI_PERMISSION_VIEW_FOLDER;
+        // Check for the permissions type in the options array
+        if (isset($queryOptions['permission']) && !empty($queryOptions['permission'])) {
+        	$permission = $queryOptions['permission'];
+        }
+        
+        $res = KTSearchUtil::permissionToSQL($user, $permission, 'F');
         if (PEAR::isError($res)) {
             return $res;
         }
@@ -1142,7 +1148,8 @@ class KTAPI_Folder extends KTAPI_FolderItem {
         if (PEAR::isError($result))
         {
             DBUtil::rollback();
-            return new KTAPI_Error(KTAPI_ERROR_INTERNAL_ERROR, $result);
+            return $result;
+//            return new KTAPI_Error(KTAPI_ERROR_INTERNAL_ERROR, $result);
         }
 
         // regenerate internal folder object

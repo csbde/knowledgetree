@@ -440,7 +440,8 @@ class BrowseView {
         $parts = array();
 
         foreach ($items as $item) {
-            $parts[$item->getName()] = '<input type="submit" name="submit[' . $item->getName() . ']" value="' . $item->getDisplayName() . '" />';
+            $parts[$item->getName()] = '<input type="'.$item->getBtnType().'" name="submit[' . $item->getName() . ']" value="' . $item->getDisplayName() . '"
+            	onclick="'.$item->getOnClick().'" />';
         }
 
         // Unset the bulk actions dependent on the users permissions

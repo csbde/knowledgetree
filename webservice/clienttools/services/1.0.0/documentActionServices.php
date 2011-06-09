@@ -122,8 +122,17 @@ class documentActionServices extends client_service {
 		return true;
     }
 	
-    public function is_reasons_enabled() {
+    public function is_reasons_enabled($params) {
     	global $default;
+        
+        if (isset($params['documentId'])) {
+            $oDocument = Document::get($params['documentId']);
+            
+            // Check for document error
+            $this->addResponse('checkedout', $oDocument->getIsCheckedOut() ? '1': '0');
+        } else {
+            $this->addResponse('checkedout', '0');
+        }
         
     	if($default->enableESignatures) { 
     		$this->addResponse('success', 'esign');
@@ -136,21 +145,6 @@ class documentActionServices extends client_service {
     	}
     	$this->addResponse('success', false);
 
-		return true;
-    }
-	
-	public function is_document_checkedout($params) {
-    	global $default;
-        
-        if (isset($params['documentId'])) {
-            $oDocument = Document::get($params['documentId']);
-            
-            // Check for document error
-            $this->addResponse('checkedout', $oDocument->getIsCheckedOut() ? '1': '0');
-        } else {
-            $this->addResponse('checkedout', '0');
-        }
-		
 		return true;
     }
     
@@ -226,6 +220,171 @@ class documentActionServices extends client_service {
     	return true;
     }
     
+	public function doCopy($params)
+	{
+		$action = $params['action'];
+		$reason = (isset($params['reason']) && !empty($params['reason'])) ? $params['reason'] : _kt('Document Copied.');
+        $targetFolderId = str_replace('folder_', '', $params['targetFolderId']);
+        $documentId = $params['documentId'];
+        
+        $ktapi = $this->KT;
+        $document = KTAPI_Document::get($ktapi, $documentId);
+        
+        if(PEAR::isError($document)) {
+        	$error = $document->getMessage();
+        	$result = array('type' => 'fatal', 'error' => $error);
+        	$this->addResponse('result', json_encode($result));
+        	return;
+        }
+        
+        $folder = KTAPI_Folder::get($ktapi, $targetFolderId);
+        
+        if(PEAR::isError($folder)) {
+        	$error = $folder->getMessage();
+        	$result = array('type' => 'fatal', 'error' => $error);
+        	$this->addResponse('result', json_encode($result));
+        	return;
+        }
+        
+        if($action == 'move') {
+        	$result = $document->move($folder, $reason);
+        	$newDocument = $document;
+        } else {
+        	$result = $document->copy($folder, $reason);
+        	$newDocument = $result;
+        }
+        
+        if(PEAR::isError($result)) {
+        	$error = $result->getMessage();
+        	$result = array('type' => 'error', 'error' => $error);
+        	$this->addResponse('result', json_encode($result));
+        	return;
+        }
+        
+        $newDocId = $newDocument->documentid;
+        
+        $url = KTUtil::ktLink('view.php', '', 'fDocumentId='.$newDocId);
+        
+        $result = array('type' => 'success', 'newDocId' => $newDocId, 'url' => $url);
+    	$this->addResponse('result', json_encode($result));
+	}
     
+	public function doBulkCopy($params)
+	{
+		$action = $params['action'];
+		$reason = (isset($params['reason']) && !empty($params['reason'])) ? $params['reason'] : 'Bulk Copy Performed';
+        $targetFolderId = str_replace('folder_', '', $params['targetFolderId']);
+        $itemList = $params['itemList'];
+        $organisedItemList = $this->formatItemList($itemList);
+        $ktapi = $this->KT;
+        
+        $actionResult = $ktapi->performBulkAction($action, $organisedItemList, $reason, $targetFolderId);
+        $url = KTUtil::ktLink('browse.php', '', 'fFolderId='.$targetFolderId);
+                                      
+        if ($actionResult['status_code'] == 1) {
+        	$error = $actionResult['message'];
+	        $result = array('type' => 'fatal', 'error' => $error, 'url' => $url);
+	    	$this->addResponse('result', json_encode($result));
+        }
+        else if (!empty($actionResult['results'])) {
+        	$action = ($params['action'] == 'copy') ? _kt('copied') : _kt('moved');
+        	$error = _kt("The following items cannot be {$action}:");
+        	$failed = $this->formatActionResults($actionResult['results'], $url);
+        	
+        	$result = array('type' => 'partial', 'error' => $error, 'failed' => $failed, 'url' => $url);
+        	$this->addResponse('result', json_encode($result));
+        }
+        else {
+	        $result = array('type' => 'success', 'url' => $url);
+	    	$this->addResponse('result', json_encode($result));
+        }
+	}
+	
+	public function formatItemList($itemList = array())
+	{
+		$itemList = is_array($itemList) ? $itemList : array();
+		$organisedItemList = array('documents' => array(), 'folders' => array());
+		
+        foreach ($itemList as $item) {
+        	$parts = array();
+        	$parts = str_split($item, 12);
+        	
+        	$type = ($parts[0] == 'selection_d_') ? 'documents' : 'folders';
+        	
+    		$organisedItemList[$type][] = $parts[1];
+        }
+        return $organisedItemList;
+	}
+	
+	public function formatActionResults($results, $url = '')
+	{
+		$html = '';
+		
+		if (isset($results['folders'])) {
+			foreach ($results['folders'] as $item) {
+				$html .= "<tr><td><span class='contenttype folder'><a href='{$item['object']['clean_uri']}'>
+				{$item['object']['folder_name']}</a></span><br />{$item['reason']}</td></tr>";
+			}
+		}
+		
+		if (isset($results['docs'])) {
+			foreach ($results['docs'] as $item) {
+				$html .= "<tr><td><span class='contenttype {$item['object']['mime_icon_path']}'><a href='{$item['object']['clean_uri']}'>
+				{$item['object']['title']}</a></span><br />{$item['reason']}</td></tr>";
+			}
+		}
+		
+		$html .= '<tr><td class="ul_actions" align="right" valign="bottom">
+			<span id="copy-spinner" class="copy-spinner none">&nbsp;</span>
+        	<input id="select-btn" class="ul_actions_btns" type="button" value="Continue" onClick="kt.app.copy.showSpinner(); kt.app.copy.redirect(\''.$url.'\');" />
+    		</td></tr>';
+		
+		return $html;
+	}
+	
+    public function getFolderStructure($params)
+    {
+        $ktapi = $this->KT;
+        $folderId = str_replace('folder_', '', $params['id']);
+        $ignoreIds = $this->formatItemList($params['ignoreIds']);
+        $ignoreIds = $ignoreIds['folders'];
+        $options = array('permission' => KTAPI_PERMISSION_WRITE);
+        $totalItems = 0;
+        $contents = $ktapi->get_folder_contents($folderId, '1', 'F', $totalItems, $options);
+        $nodes = $this->formatTreeStructure($contents['results'], $ignoreIds);
+        
+        if($folder_id != 1) {
+        	$nodes = $nodes[0]['children'];
+        }
+        
+        $this->addResponse('nodes', json_encode($nodes));
+    }
+    
+    private function formatTreeStructure($structure, $ignoreIds = null)
+    {
+    	$children = $this->formatChildren($structure['items'], $ignoreIds);
+    	$attributes = array('id' => 'folder_'.$structure['folder_id']);
+    	
+    	$nodes = array();
+    	$nodes[] = array('data' => $structure['folder_name'], 'state' => 'open', 'children' => $children, 'attr' => $attributes);
+    	return $nodes;
+    }
+    
+    private function formatChildren($node, $ignoreIds = null)
+    {
+    	$tree = array();
+    	foreach ($node as $nodeItem) {
+    		if (in_array($nodeItem['id'], $ignoreIds)) {
+    			continue;
+    		}
+    		$children = $this->formatChildren($nodeItem['items'], $ignoreIds);
+    		$attributes = array('id' => 'folder_'.$nodeItem['id']);
+    		$metadata = "node_{$nodeItem['id']}";
+    		$tree[] = array('data' => $nodeItem['title'], 'state' => 'closed', 'children' => $children, 
+    			'attr' => $attributes, 'metadata' => $metadata);
+    	}
+    	return $tree;
+    }
+
 }
 ?>

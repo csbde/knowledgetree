@@ -991,12 +991,22 @@ class KTDocumentUtil {
 
     public static function fileExists($folder, $filename)
     {
-        return Document::fileExists($filename, $folder->getID());
+    	if(is_numeric($folder)) {
+    		$folderId = $folder;
+    	} else {
+    		$folderId = $folder->getID();
+    	}
+        return Document::fileExists($filename, $folderId);
     }
 
     public static function nameExists($folder, $name)
     {
-        return Document::nameExists($name, $folder->getID());
+    	if(is_numeric($folder)) {
+    		$folderId = $folder;
+    	} else {
+    		$folderId = $folder->getID();
+    	}
+        return Document::nameExists($name, $folderId);
     }
 
     /**

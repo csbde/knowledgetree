@@ -172,7 +172,10 @@ class KTPage {
         $files = array('browse_collections', 'document_details');
         $overviews = array('browse_collections', 'dashboard');
 
-        $cssIncludes = array('resources/css/newui/newui.upload.css' => $combined);
+        $cssIncludes = array(
+                        'resources/css/newui/newui.upload.css' => $combined,
+                        'thirdpartyjs/jquery/plugins/jstree/themes/default/style.css' => $files
+                       );
         $jsIncludes = array(
                         'thirdpartyjs/jquery/plugins/ajaxupload/fileuploader.min.js' => $overviews,
             	        'thirdpartyjs/jquery/plugins/loading/jquery.loading.1.6.4.min.js' => $overviews,
@@ -190,6 +193,10 @@ class KTPage {
                         "resources/$jsResourceLocation/newui/browse.helper.$jsExt" => array('browse_collections'),
                         'resources/js/newui/browse/subscriptionActions.js' => $overviews,
                         'resources/js/newui/shared/blockActions.js' => $combined,
+                        "resources/$jsResourceLocation/newui/documents/kt.app.copy.$jsExt" => $files,
+                        'thirdpartyjs/jquery/plugins/jstree/jquery.hotkeys.js' => $files,
+                        'thirdpartyjs/jquery/plugins/jstree/jquery.cookie.js' => $files,
+                        'thirdpartyjs/jquery/plugins/jstree/jquery.jstree.js' => $files
                       );
 
         $oConfig = KTConfig::getSingleton();

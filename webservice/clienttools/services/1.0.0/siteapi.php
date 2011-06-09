@@ -666,6 +666,7 @@ class siteapi extends client_service {
         
         return true;
     }
+    
 }
 
 ?>
