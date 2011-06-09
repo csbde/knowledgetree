@@ -62,14 +62,14 @@ class AdminSplashDispatcher extends KTAdminDispatcher {
     {
         $registry = KTAdminNavigationRegistry::getSingleton();
         $categories = $registry->getCategories();
-	reset($categories);
-	$defaultCategory = current($categories);
-	$this->defaultCategory = $defaultCategory['name'];
+        reset($categories);
+        $defaultCategory = current($categories);
+        $this->defaultCategory = $defaultCategory['name'];
 
         $KTConfig = KTConfig::getSingleton();
         $condensedAdmin = $KTConfig->get('condensedAdminUI');
 
-	// TODO Figure whether this is still relevant and remove if not.
+        // TODO Figure whether this is still relevant and remove if not.
         // We need to investigate sub_url solutions.
         $allItems = array();
         if ($condensedAdmin) {
@@ -84,7 +84,7 @@ class AdminSplashDispatcher extends KTAdminDispatcher {
             $this->includeOlark();
         }
 
-	$templating = KTTemplating::getSingleton();
+        $templating = KTTemplating::getSingleton();
         $template = $templating->loadTemplate('kt3/settings');
         $templateData = array(
                             'context' => $this,
@@ -115,26 +115,26 @@ class AdminSplashDispatcher extends KTAdminDispatcher {
             $message = 'Indexing of full-text content in KnowledgeTree is carried out through shared queue processes using SOLR. <br/>Content Indexing statistics coming soon!';
         }
         else {
-	    $categoryDetail = $registry->getCategory($category);
-	    $this->aBreadcrumbs[] = array('name' => $categoryDetail['title'], 'url' => KTUtil::ktLink('settings.php', $category));
-	    $this->oPage->title = _kt('Settings') . ': ' . $categoryDetail['title'];
+            $categoryDetail = $registry->getCategory($category);
+            $this->aBreadcrumbs[] = array('name' => $categoryDetail['title'], 'url' => KTUtil::ktLink('settings.php', '', 'fCategory='.$category));
+            $this->oPage->title = _kt('Settings') . ': ' . $categoryDetail['title'];
             $items = $registry->getItemsForCategory($category);
             $message = null;
         }
 
         if (count($items) == 1) {
-	    $items[0]['autoDisplay'] = true;
+            $items[0]['autoDisplay'] = true;
         }
-	else {
-	    foreach ($items as $key => $item) {
+        else {
+            foreach ($items as $key => $item) {
                 $items[$key]['autoDisplay'] = false;
                 if ($subsection == $item['name'] && $expanded) {
                     $items[$key]['autoDisplay'] = true;
                 }
-	    }
-	}
-
-	return $items;
+            }
+        }
+    
+        return $items;
     }
 
     // This function is now just an alias for do_main...
@@ -154,14 +154,14 @@ class AdminSplashDispatcher extends KTAdminDispatcher {
     public function loadSection($section)
     {
         $subUrl = $section['fullname'];
-	$registry = KTAdminNavigationRegistry::getSingleton();
-	if ($registry->isRegistered($subUrl)) {
-	   $dispatcher = $registry->getDispatcher($subUrl);
-	   $dispatcher->setCategoryDetail($subUrl);
-           $dispatcher->setActiveStatus($section['autoDisplay']);
-
-	   return $dispatcher->dispatch();
-	}
+        $registry = KTAdminNavigationRegistry::getSingleton();
+        if ($registry->isRegistered($subUrl)) {
+            $dispatcher = $registry->getDispatcher($subUrl);
+            $dispatcher->setCategoryDetail($subUrl);
+            $dispatcher->setActiveStatus($section['autoDisplay']);
+            
+            return $dispatcher->dispatch();
+        }
     }
 
 }
