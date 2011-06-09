@@ -59,7 +59,7 @@
 				<td width="{$colwidth}">
                                         <form action="{$smarty.server.PHP_SELF}?{$section_query_string}" method="POST">
 					<input type="hidden" name="do_search" value="1" />
-					{capture assign=link}{addQS}show_all=1{/addQS}{/capture}
+					{capture assign=link}{addQS}show_all=1&{$section_query_string}{/addQS}{/capture}
 
 					{foreach item=oWidget from=$search_fields}
 					  {$oWidget->render()}

@@ -49,7 +49,6 @@ jQuery(document).ready(function() {
 			containerId:'doc_view_container',
 			containerClass:''
 		});
-		kt.lib.setFooter();
 
 		$('td.info a').prepend('<img class="leftimg" src="resources/graphics/newui/midbarleft.png" />');
 		$('td.info a').prepend('<img class="rightimg" src="resources/graphics/newui/midbarright.png" />');
@@ -85,34 +84,3 @@ jQuery(document).ready(function() {
 	    $(".default-text").blur();
 	});
 })(jQuery);
-/**
- * Functions to float the footer. setFooter() is called from <body> onLoad()
- */
-
-kt.lib.getWindowHeight = function() {
-	var windowHeight = 0;
-	if (typeof(window.innerHeight) == 'number') {
-		windowHeight = window.innerHeight;
-	}
-	else {
-		if (document.documentElement && document.documentElement.clientHeight) {
-			windowHeight = document.documentElement.clientHeight;
-		}
-		else {
-			if (document.body && document.body.clientHeight) {
-				windowHeight = document.body.clientHeight;
-			}
-		}
-	}
-	return windowHeight;
-}
-
-/* We set the top margin of the footer to keep the footer at the bottom of the window */
-kt.lib.setFooter = function() {
-	var diff = (kt.lib.getWindowHeight() - (jQuery('#wrapper').height() + jQuery('#footer').height()));
-	if (diff > 0) {
-		jQuery('#footer').css('margin-top', diff);
-	} else {
-		jQuery('#footer').css('margin-top', '0');
-	}
-}

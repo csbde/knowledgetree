@@ -7,8 +7,11 @@ body {
 #wrapper, #footer {
 	width: 960px;
 	margin: 0 auto;
-
 }
+#wrapper  {
+	padding-bottom: 25px;
+}
+
 textarea {
 	/*font-family: Arial;*/
 	font-family: tahoma,arial,helvetica,sans-serif;
@@ -945,6 +948,11 @@ thead {
 	-moz-border-radius-topleft: 3px;
 	margin-top: 10px;
 	padding-top: 2px;
+	position: fixed;
+	bottom: 0px;
+	left: 50%;
+	margin-left: -480px;
+	
 }
 #footer a {
 	color: #2f6594;
