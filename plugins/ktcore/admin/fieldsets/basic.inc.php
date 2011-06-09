@@ -71,6 +71,7 @@ class BasicFieldsetManagementDispatcher extends KTAdminDispatcher {
         $oTemplate->setData(array(
             'context' => $this,
             'fields' => $oFieldset->getFields(),
+            'section_query_string' => $this->sectionQueryString
         ));
         return $oTemplate->render();
     }
