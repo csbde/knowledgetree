@@ -40,7 +40,7 @@
 }
 #sidebar_item {
 	border-bottom: 1px solid #ccc;
-	width: 215px;
+	width: 213px;
 }
 #sidebar_item:last-child {
 	border-bottom: none;
