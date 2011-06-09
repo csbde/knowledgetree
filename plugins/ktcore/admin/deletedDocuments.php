@@ -48,118 +48,121 @@ require_once(KT_LIB_DIR . '/widgets/fieldWidgets.php');
 require_once(KT_LIB_DIR . '/templating/kt3template.inc.php');
 
 class DeletedDocumentsDispatcher extends KTAdminDispatcher {
-var $sHelpPage = 'ktcore/admin/deleted documents.html';
-    function do_main () {
+
+    var $sHelpPage = 'ktcore/admin/deleted documents.html';
+
+    public function do_main()
+    {
         //$this->aBreadcrumbs[] = array('url' => $_SERVER['PHP_SELF'], 'name' => _kt('Deleted Documents'));
         //
         //$this->oPage->setBreadcrumbDetails(_kt('view'));
 
-        $aDocuments =& Document::getList('status_id=' . DELETED);
+        $documents = Document::getList('status_id=' . DELETED);
 
-        if(!empty($aDocuments)){
-        	$items = count($aDocuments);
+        if (!empty($documents)) {
+            $items = count($documents);
+            if (fmod($items, 10) > 0) {
+                $pages = floor($items/10)+1;
+            } else {
+                $pages = ($items/10);
+            }
 
-			if(fmod($items, 10) > 0){
-				$pages = floor($items/10)+1;
-			}else{
-				$pages = ($items/10);
-			}
-			for($i=1; $i<=$pages; $i++){
-				$aPages[] = $i;
-			}
-			if($items < 10){
-				$limit = $items-1;
-			}else{
-				$limit = 9;
-			}
+            for ($i = 1; $i <= $pages; $i++) {
+                $aPages[] = $i;
+            }
 
-			for($i = 0; $i <= $limit; $i++){
-				$aDocumentsList[] = $aDocuments[$i];
-			}
+            if ($items < 10) {
+                $limit = $items-1;
+            } else {
+                $limit = 9;
+            }
+
+            for ($i = 0; $i <= $limit; $i++) {
+                $documentsList[] = $documents[$i];
+            }
         }
 
-        $oTemplating =& KTTemplating::getSingleton();
-        $oTemplate = $oTemplating->loadTemplate('ktcore/document/admin/deletedlist');
-        $oTemplate->setData(array(
+        $templating =& KTTemplating::getSingleton();
+        $template = $templating->loadTemplate('ktcore/document/admin/deletedlist');
+        $template->setData(array(
             'context' => $this,
-            'fullList' => $aDocuments,
-            'documents' => $aDocumentsList,
+            'fullList' => $documents,
+            'documents' => $documentsList,
             'pagelist' => $aPages,
             'pagecount' => $pages,
             'itemcount' => $items,
-	    'section_query_string' => $this->sectionQueryString
+        'section_query_string' => $this->sectionQueryString
         ));
 
-        return $oTemplate->render();
+        return $template->render();
     }
 
-    public function handleOutput($output)
+    public function do_branchConfirm()
     {
-        print $output;
-    }
-
-    function do_branchConfirm() {
         $submit = KTUtil::arrayGet($_REQUEST, 'submit' , array());
         if (array_key_exists('expunge',$submit)) {
             return $this->do_confirm_expunge();
         }
+
         if (array_key_exists('restore', $submit)) {
             return $this->do_confirm_restore();
         }
+
         if (array_key_exists('expungeall', $submit)) {
             return $this->do_confirm_expunge(true);
         }
+
         $this->errorRedirectToMain(_kt('No action specified.'));
     }
 
-    function do_confirm_expunge($all = false) {
-        $this->aBreadcrumbs[] = array('url' =>  $_SERVER['PHP_SELF'], 'name' => _kt('Deleted Documents'));
-
-        $selected_docs = KTUtil::arrayGet($_REQUEST, 'selected_docs', array());
-        $full_docs = KTUtil::arrayGet($_REQUEST, 'docIds', array());
-
-        if($all == true){
-        	$selected_docs = $full_docs;
+    public function do_confirm_expunge($all = false)
+    {
+        $selectedDocs = KTUtil::arrayGet($_REQUEST, 'selected_docs', array());
+        $fullDocs = KTUtil::arrayGet($_REQUEST, 'docIds', array());
+        if ($all == true) {
+            $selectedDocs = $fullDocs;
         }
 
-        $this->oPage->setTitle(sprintf(_kt('Confirm Expunge of %d documents'), count($selected_docs)));
+        $this->aBreadcrumbs[] = array('url' =>  $_SERVER['PHP_SELF'], 'name' => _kt('Deleted Documents'));
+        $this->oPage->setTitle(sprintf(_kt('Confirm Expunge of %d documents'), count($selectedDocs)));
+        $this->oPage->setBreadcrumbDetails(sprintf(_kt('confirm expunge of %d documents'), count($selectedDocs)));
 
-        $this->oPage->setBreadcrumbDetails(sprintf(_kt('confirm expunge of %d documents'), count($selected_docs)));
-
-        $aDocuments = array();
-        foreach ($selected_docs as $doc_id) {
-            $oDoc =& Document::get($doc_id);
+        $documents = array();
+        foreach ($selectedDocs as $doc_id) {
+            $oDoc = Document::get($doc_id);
             if (PEAR::isError($oDoc) || ($oDoc === false)) {
                 $this->errorRedirectToMain(_kt('Invalid document id specified. Aborting expunge'));
             } else if ($oDoc->getStatusId() != DELETED) {
                 $this->errorRedirectToMain(sprintf(_kt('%s is not a deleted document. Aborting expunge'), $oDoc->getName()));
             }
-            $aDocuments[] = $oDoc;
+            $documents[] = $oDoc;
         }
 
-
-        $oTemplating =& KTTemplating::getSingleton();
-        $oTemplate = $oTemplating->loadTemplate('ktcore/document/admin/expungeconfirmlist');
-        $oTemplate->setData(array(
+        $templating = KTTemplating::getSingleton();
+        $template = $templating->loadTemplate('ktcore/document/admin/expungeconfirmlist');
+        $template->setData(array(
             'context' => $this,
-            'documents' => $aDocuments,
+            'documents' => $documents,
+            'section_query_string' => $this->sectionQueryString
         ));
-        return $oTemplate;
+
+        return $template->render();
     }
 
-    function do_finish_expunge() {
-    	$oStorage = KTStorageManagerUtil::getSingleton();
-        $selected_docs = KTUtil::arrayGet($_REQUEST, 'selected_docs', array());
+    public function do_finish_expunge()
+    {
+        $oStorage = KTStorageManagerUtil::getSingleton();
+        $selectedDocs = KTUtil::arrayGet($_REQUEST, 'selected_docs', array());
 
-        $aDocuments = array();
-        foreach ($selected_docs as $doc_id) {
+        $documents = array();
+        foreach ($selectedDocs as $doc_id) {
             $oDoc =& Document::get($doc_id);
             if (PEAR::isError($oDoc) || ($oDoc === false)) {
                 $this->errorRedirectToMain(_kt('Invalid document id specified. Aborting expunge'));
             } else if ($oDoc->getStatusId() != DELETED) {
                 $this->errorRedirectToMain(sprintf(_kt('%s is not a deleted document. Aborting expunge'), $oDoc->getName()));
             }
-            $aDocuments[] = $oDoc;
+            $documents[] = $oDoc;
         }
 
         $this->startTransaction();
@@ -169,7 +172,7 @@ var $sHelpPage = 'ktcore/admin/deleted documents.html';
 
         $oKTTriggerRegistry = KTTriggerRegistry::getSingleton();
 
-        foreach ($aDocuments as $oDoc) {
+        foreach ($documents as $oDoc) {
             // first evaluate the folder for inconsistencies.
             $oFolder = Folder::get($oDoc->getFolderID());
             $sFilename = $oDoc->getFileName();
@@ -177,7 +180,9 @@ var $sHelpPage = 'ktcore/admin/deleted documents.html';
 
             if (PEAR::isError($oFolder)) { $oDoc->setFolderId(1); $oDoc->update(); }
 
-            if (!$oStorage->expunge($oDoc)) { $aErrorDocuments[] = $oDoc->getDisplayPath(); }
+            if (!$oStorage->expunge($oDoc)) {
+                $aErrorDocuments[] = $oDoc->getDisplayPath();
+            }
             else {
                 // Store the documents full path in the transaction history - replace the title with the filename
                 $path_arr = explode('/', $full_path);
@@ -190,7 +195,7 @@ var $sHelpPage = 'ktcore/admin/deleted documents.html';
 
                 // delete this from the db now
                 if (!$oDoc->delete()) {
-                	$aErrorDocuments[] = $oDoc->getId();
+                    $aErrorDocuments[] = $oDoc->getId();
                 } else {
                     // removed succesfully
                     $aSuccessDocuments[] = $oDoc->getDisplayPath();
@@ -199,22 +204,22 @@ var $sHelpPage = 'ktcore/admin/deleted documents.html';
                     // remove any document data
                     $oDoc->cleanupDocumentData($oDoc->getId()); // silly - why the redundancy?
 
-        			$aTriggers = $oKTTriggerRegistry->getTriggers('expunge', 'finalised');
-			        foreach ($aTriggers as $aTrigger) {
-			            $sTrigger = $aTrigger[0];
-			            $oTrigger = new $sTrigger;
-			            $aInfo = array(
-			                'document' => $oDoc,
-			            );
-			            $oTrigger->setInfo($aInfo);
-			            $ret = $oTrigger->finalised();
-			        }
+                    $aTriggers = $oKTTriggerRegistry->getTriggers('expunge', 'finalised');
+                    foreach ($aTriggers as $aTrigger) {
+                        $sTrigger = $aTrigger[0];
+                        $oTrigger = new $sTrigger;
+                        $aInfo = array(
+                            'document' => $oDoc,
+                        );
+                        $oTrigger->setInfo($aInfo);
+                        $ret = $oTrigger->finalised();
+                    }
                 }
             }
         }
         $this->commitTransaction();
 
-		$aTriggers = $oKTTriggerRegistry->getTriggers('expunge', 'postValidate');
+        $aTriggers = $oKTTriggerRegistry->getTriggers('expunge', 'postValidate');
         foreach ($aTriggers as $aTrigger) {
             $sTrigger = $aTrigger[0];
             $oTrigger = new $sTrigger;
@@ -230,56 +235,58 @@ var $sHelpPage = 'ktcore/admin/deleted documents.html';
         $this->successRedirectToMain($msg);
     }
 
-    function do_confirm_restore() {
+    public function do_confirm_restore()
+    {
+        $selectedDocs = KTUtil::arrayGet($_REQUEST, 'selected_docs', array());
+
+        $this->oPage->setTitle(sprintf(_kt('Confirm Restore of %d documents'), count($selectedDocs)));
         $this->aBreadcrumbs[] = array('url' =>  $_SERVER['PHP_SELF'], 'name' => _kt('Deleted Documents'));
+        $this->oPage->setBreadcrumbDetails(sprintf(_kt('Confirm Restore of %d documents'), count($selectedDocs)));
 
-        $selected_docs = KTUtil::arrayGet($_REQUEST, 'selected_docs', array());
-
-        $this->oPage->setTitle(sprintf(_kt('Confirm Restore of %d documents'), count($selected_docs)));
-
-        $this->oPage->setBreadcrumbDetails(sprintf(_kt('Confirm Restore of %d documents'), count($selected_docs)));
-
-        $aDocuments = array();
-        foreach ($selected_docs as $doc_id) {
-            $oDoc =& Document::get($doc_id);
+        $documents = array();
+        foreach ($selectedDocs as $doc_id) {
+            $oDoc = Document::get($doc_id);
             if (PEAR::isError($oDoc) || ($oDoc === false)) {
                 $this->errorRedirectToMain(_kt('Invalid document id specified. Aborting expunge'));
             } else if ($oDoc->getStatusId() != DELETED) {
                 $this->errorRedirectToMain(sprintf(_kt('%s is not a deleted document. Aborting expunge'), $oDoc->getName()));
             }
-            $aDocuments[] = $oDoc;
+            $documents[] = $oDoc;
         }
 
-
-        $oTemplating =& KTTemplating::getSingleton();
-        $oTemplate = $oTemplating->loadTemplate('ktcore/document/admin/restoreconfirmlist');
-        $oTemplate->setData(array(
+        $templating = KTTemplating::getSingleton();
+        $template = $templating->loadTemplate('ktcore/document/admin/restoreconfirmlist');
+        $template->setData(array(
             'context' => $this,
-            'documents' => $aDocuments,
+            'documents' => $documents,
+            'section_query_string' => $this->sectionQueryString
         ));
-        return $oTemplate;
+
+        return $template->render();
     }
 
-    function do_finish_restore() {
-    	$oStorage = KTStorageManagerUtil::getSingleton();
-        $selected_docs = KTUtil::arrayGet($_REQUEST, 'selected_docs', array());
+    public function do_finish_restore()
+    {
+        $oStorage = KTStorageManagerUtil::getSingleton();
+        $selectedDocs = KTUtil::arrayGet($_REQUEST, 'selected_docs', array());
 
-        $aDocuments = array();
-        foreach ($selected_docs as $doc_id) {
+        $documents = array();
+        foreach ($selectedDocs as $doc_id) {
             $oDoc =& Document::get($doc_id);
             if (PEAR::isError($oDoc) || ($oDoc === false)) {
                 $this->errorRedirectToMain(_kt('Invalid document id specified. Aborting restore'));
             } else if ($oDoc->getStatusId() != DELETED) {
                 $this->errorRedirectToMain(sprintf(_kt('%s is not a deleted document. Aborting restore'), $oDoc->getName()));
             }
-            $aDocuments[] = $oDoc;
+            $documents[] = $oDoc;
         }
 
         $this->startTransaction();
+
         $aErrorDocuments = array();
         $aSuccessDocuments = array();
 
-        foreach ($aDocuments as $oDoc) {
+        foreach ($documents as $oDoc) {
             $oFolder = Folder::get($oDoc->getRestoreFolderId());
             // move to root if parent no longer exists.
             if (PEAR::isError($oFolder)) {
@@ -318,13 +325,19 @@ var $sHelpPage = 'ktcore/admin/deleted documents.html';
                 $aErrorDocuments[] = $oDoc->getName();
             }
         }
+
         $this->commitTransaction();
+
         $msg = sprintf(_kt('%d documents restored.'), count($aSuccessDocuments));
-        if (count($aErrorDocuments) != 0) { $msg .= _kt('Failed to restore') . ': ' . join(', ', $aErrorDocuments); }
+        if (count($aErrorDocuments) != 0) {
+            $msg .= _kt('Failed to restore') . ': ' . join(', ', $aErrorDocuments);
+        }
+
         $this->successRedirectToMain($msg);
     }
 
-    function getRestoreLocationFor($oDocument) {
+    public function getRestoreLocationfor($oDocument)
+    {
         $iFolderId = $oDocument->getRestoreFolderId();
         $oFolder = Folder::get($iFolderId);
 
@@ -339,6 +352,12 @@ var $sHelpPage = 'ktcore/admin/deleted documents.html';
             return implode(' &raquo; ', $aParts);
         }
     }
+
+    public function handleOutput($output)
+    {
+        print $output;
+    }
+
 }
 
 ?>
