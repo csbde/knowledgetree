@@ -72,6 +72,7 @@ class KTConditionDispatcher extends KTAdminDispatcher {
 
         $oTemplate->setData(array(
             'condition_id' => $oSearch->getId(),
+            'section_query_string' => $this->sectionQueryString,
         ));
 
         return $oTemplate->render();
