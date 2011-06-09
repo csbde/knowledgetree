@@ -70,6 +70,9 @@ require_once(KTAPI_DIR .'/KTAPIUser.inc.php');
 require_once(KT_LIB_DIR . '/users/shareduserutil.inc.php');
 require_once(KT_LIB_DIR . '/render_helpers/sharedContent.inc');
 
+require_once(KT_LIB_DIR . '/users/shareduserutil.inc.php');
+require_once(KT_LIB_DIR . '/render_helpers/sharedContent.inc');
+
 /**
 * This class defines functions that MUST exist in the inheriting class
 *
@@ -629,7 +632,7 @@ class KTAPI {
 			$error = $user;
 			return $error;
 		}
-		
+
     	if(SharedUserUtil::isSharedUser())
     	{
     		if($object instanceof DocumentProxy || $object instanceof Document)
@@ -646,10 +649,10 @@ class KTAPI {
     				return new PEAR_Error(KTAPI_ERROR_INSUFFICIENT_PERMISSIONS);
     			}
     		}
-    		
+
     		return $user;
     	}
-    	
+
 		if (!KTPermissionUtil::userHasPermissionOnItem($user, $permission, $object))
 		{
 			$error = new PEAR_Error(KTAPI_ERROR_INSUFFICIENT_PERMISSIONS);
@@ -1241,25 +1244,95 @@ class KTAPI {
 	*/
 	private function _load_metadata_tree($fieldid, $parentid=0)
 	{
-		$results = KTAPI::get_metadata_lookup($fieldid);
-		return $results;
-		/*
-		$sql = "SELECT id, name FROM metadata_lookup_tree WHERE document_field_id=$fieldid AND metadata_lookup_tree_parent=$parentid";
+		//get the fields other than for Root
+		$sql = "SELECT mlt.metadata_lookup_tree_parent AS parentid, ml.treeorg_parent AS treeid, mlt.name AS treename, ml.id AS id, ml.name AS fieldname
+				FROM metadata_lookup ml
+				INNER JOIN (metadata_lookup_tree mlt) ON (ml.treeorg_parent = mlt.id)
+				WHERE ml.disabled=0 AND ml.document_field_id=$fieldid
+				ORDER BY parentid, id";
+		
 		$rows = DBUtil::getResultArray($sql);
-		if (is_null($rows) || PEAR::isError($rows))
+		
+		//get Root's fields
+		$sqlRoot = "SELECT -1 AS parentid, 0 AS treeid, \"Root\" AS treename, ml.id AS id, ml.name AS fieldname
+				FROM metadata_lookup ml
+				LEFT JOIN (metadata_lookup_tree mlt) ON (ml.treeorg_parent = mlt.id)
+				WHERE ml.disabled=0 AND ml.document_field_id=$fieldid AND (ml.treeorg_parent IS NULL OR ml.treeorg_parent = 0)
+				ORDER BY parentid, id";
+		
+		$rowsRoot = DBUtil::getResultArray($sqlRoot);
+
+		//if no results for Root, add dummy
+		if (empty($rowsRoot))
 		{
-			return new PEAR_Error(KTAPI_ERROR_INTERNAL_ERROR);
+			$rowsRoot[] = array('parentid' => -1, 'treeid' => 0, 'treename' => 'Root', 'id' => -1, 'fieldname' => '');
 		}
-		$results=array();
-		foreach ($rows as $row)
-		{
-			$result=array(
-				'name' => $row['name'],
-				'children' => load($fieldid, $row['id'])
-			);
-			$results[] = $result;
+		
+		$rows = array_merge($rowsRoot, $rows);
+		
+		$results = array();
+
+		if (sizeof($rows) > 0) {
+			$results = KTAPI::convertToTree($rows);
 		}
-		return $results;*/
+
+		return $results;
+	}
+
+	private function convertToTree(array $flat)
+	{
+		$idTree = 'treeid';
+		$idField = 'id';
+		$parentIdField = 'parentid';
+
+		$root = 0;
+
+	    $indexed = array();
+	    // first pass - get the array indexed by the primary id
+	   	foreach ($flat as $row) {
+        	$treeID = $row[$idTree];
+        	if (!isset($indexed[$treeID])) {
+        		$path = '';
+        		$treepath .= $row['tree_name'].'\\';
+        		$indexed[$treeID] = array('treeid' => $treeID,
+        									'parentid' => $row[$parentIdField],
+        									'treename' => $row['treename'],
+        									'type' => 'tree');//$row;
+	        	$indexed[$treeID]['fields'] = array();
+        	}
+
+        	$path .= $treepath.$row['fieldname'];
+
+	        $indexed[$treeID]['fields'][$row[$idField]] = array('fieldid' => $row[$idField],
+	        													'parentid' => $treeID,
+	        													'name' =>  $row['fieldname'],
+	        													'type' => 'field');
+
+	        if ($row[$parentIdField] < $root) {
+	        	$root = $row[$parentIdField];
+	        }
+
+	        $path = '';
+	    }
+
+	    //second pass
+	    //$root = 0;
+	    foreach ($indexed as $id => $row) {
+	        $indexed[$row[$parentIdField]]['fields'][$id] =& $indexed[$id];
+	    }
+
+	    $results = array($root => $indexed[$root]);
+	    
+	    //get the first element's key
+	    reset($results);
+		$first_key = key($results);
+		
+		$res = $results[$first_key]['fields'];
+		
+		//$GLOBALS['default']->log->debug('convertToTree res '.print_r($res, true));
+
+	    //strip out the unneccesary outer array
+	    return $res;
 	}
 
 	/**
@@ -1273,6 +1346,8 @@ class KTAPI {
 	public function get_metadata_tree($fieldid)
 	{
 		$results = KTAPI::_load_metadata_tree($fieldid);
+
+		//$GLOBALS['default']->log->debug('get_metadata_tree results '.print_r($results, true));
 		return $results;
 	}
 
@@ -3509,39 +3584,48 @@ class KTAPI {
     /**
      * Returns a reference to a file to be downloaded.
      *
-	 * @author KnowledgeTree Team
-	 * @access public
-     * @param int $document_id
+     * @author KnowledgeTree Team
+     * @access public
+     * @param int $documentId
      * @return kt_response.
      */
     public function download_document($document_id, $version = null)
     {
-    	$document = &$this->get_document_by_id($document_id);
-		if (PEAR::isError($document))
-    	{
-    		$response['status_code'] = 1;
-    		$response['message'] = $document->getMessage();
-			return $response;
-    	}
+        $document = $this->get_document_by_id($document_id);
+        if (PEAR::isError($document)) {
+            $response['status_code'] = 1;
+            $response['message'] = $document->getMessage();
+            return $response;
+        }
 
-    	$result = $document->download();
-		if (PEAR::isError($result))
-    	{
-    		$response['status_code'] = 1;
-    		$response['message'] = $result->getMessage();
-			return $response;
-    	}
+        $contentVersionId = null;
+        if (!empty($version)) {
+            // Get the content version id for the given document version
+            $contentVersionId = $document->get_content_version_id_from_version($version);
+            if (PEAR::isError($contentVersionId)) {
+                $response['status_code'] = 1;
+                $response['message'] = $contentVersionId->getMessage();
+                return $response;
+            }
+        }
 
-    	$session = &$this->get_session();
-    	$download_manager = new KTDownloadManager();
-    	$download_manager->set_session($session->session);
-    	$download_manager->cleanup();
-    	$url = $download_manager->allow_download($document);
+        $result = $document->download($version);
+        if (PEAR::isError($result)) {
+            $response['status_code'] = 1;
+            $response['message'] = $result->getMessage();
+            return $response;
+        }
 
-    	$response['status_code'] = 0;
-		$response['results'] = urlencode($url);
+        $session = &$this->get_session();
+        $downloadManager = new KTDownloadManager();
+        $downloadManager->set_session($session->session);
+        $downloadManager->cleanup();
+        $url = $downloadManager->allow_download($document, $contentVersionId);
 
-    	return $response;
+        $response['status_code'] = 0;
+        $response['results'] = urlencode($url);
+
+        return $response;
     }
 
     /**
@@ -5310,6 +5394,91 @@ class KTAPI {
 	    return $response;
 	}
 
+	public function get_folder_total_size($include_folder_ids, $exclude_folder_ids)
+	{
+		$GLOBALS['default']->log->debug('KTAPI get_folder_total_size '.print_r($include_folder_ids, true).' '.print_r($exclude_folder_ids, true));
+
+		$size = array('total_files' => 0, 'total_size' => 0);
+
+		foreach ($include_folder_ids as $folder_id)
+		{
+			$folder = KTAPI_Folder::get($this, $folder_id);
+
+			if (!PEAR::isError($folder))
+			{
+				$parent_size = $folder->get_total_documents();
+
+				$size['total_files'] += $parent_size['total_files'];
+				$size['total_size'] += $parent_size['total_size'];
+
+				$GLOBALS['default']->log->debug("KTAPI get_folder_total_size parent result $folder_id ".print_r($parent_size, true));
+				$GLOBALS['default']->log->debug('KTAPI get_folder_total_size parent result carried over '.print_r($size, true));
+			}
+			else
+			{
+				$GLOBALS['default']->log->error("Error in getting folder $folder_id ".$folder->getMessage());
+			}
+
+			$children_ids = $folder->get_children_ids();
+
+			$GLOBALS['default']->log->debug('KTAPI get_folder_total_size children_ids '.print_r($children_ids, true));
+
+			foreach ($children_ids as $child_id)
+			{
+				$GLOBALS['default']->log->debug("KTAPI get_folder_total_size check if $child_id is in excluded list ".print_r($exclude_folder_ids, true));
+
+				//only use that child if it wasn't excluded!
+				if (!in_array($child_id, $exclude_folder_ids))
+				{
+					$folder = KTAPI_Folder::get($this, $child_id);
+
+					if (!PEAR::isError($folder))
+					{
+						$child_size = $folder->get_total_documents();
+
+						$size['total_files'] += $child_size['total_files'];
+						$size['total_size'] += $child_size['total_size'];
+
+						$GLOBALS['default']->log->debug("KTAPI get_folder_total_size child $child_id ".print_r($child_size, true));
+					}
+					else
+					{
+						$GLOBALS['default']->log->error("Error in getting folder $child_id ".$folder->getMessage());
+					}
+				}
+			}
+
+			$GLOBALS['default']->log->debug('KTAPI get_folder_total_size result '.print_r($size, true));
+		}
+
+		$config = KTConfig::getSingleton();
+
+		//$maxFiles = $config->get('foldersync/maxFilesSync');
+		$maxFileSize = $config->get('foldersync/maxFileSizeSync');
+
+		//$GLOBALS['default']->log->debug("KTAPI get_folder_total_size max $maxFiles $maxFileSize");
+
+		//check whether these are larger than allowed
+		if ($size['total_size'] > $maxFileSize)	// || $size['total_files'] > $maxFiles)
+		{
+			$displaySize = $size['total_size']/(1024*1024);
+
+			$displaySize = substr($displaySize, 0, strpos($displaySize, '.')-1);
+
+			$response['status_code'] = 1;
+			$response['message'] = "WARNING: you have selected to synchronize {$size['total_files']} files with a total size of $displaySize MB. Synchronizing large quantities of data will have an impact on system resources and bandwidth use. Proceed with synchronization?";
+		}
+		else
+		{
+			$response['status_code'] = 0;
+			$response['message'] = '';
+		}
+
+		$GLOBALS['default']->log->debug('KTAPI get_folder_total_size response '.print_r($response, true));
+
+		return $response;
+	}
+
 	/**
      * Reports whether a folder contains any documents and/or subfolders
      *
@@ -5358,7 +5527,7 @@ class KTAPI {
      */
 	public function get_folder_changes($folder_ids, $timestamp, $depth = 1, $what = 'DF')
 	{
-		//$GLOBALS['default']->log->debug("KTAPI get_folder_changes ".print_r($folder_ids, true)." $timestamp $depth '$what'");
+		$GLOBALS['default']->log->debug("KTAPI get_folder_changes ".print_r($folder_ids, true)." $timestamp $depth '$what'");
 
 		$results = array();
 		$changes = array();
@@ -5370,7 +5539,7 @@ class KTAPI {
     	$new_timestamp = datetimeutil::getLocaleDate($datetime);
     	$new_timestamp = (string)strtotime($new_timestamp);
 
-    	//$GLOBALS['default']->log->debug("KTAPI get_folder_changes new timestamp $new_timestamp");
+    	$GLOBALS['default']->log->debug("KTAPI get_folder_changes new timestamp $new_timestamp");
 
 		foreach($folder_ids as $folder_id)
 		{
@@ -5378,6 +5547,9 @@ class KTAPI {
 
 			//convert to UTC since we are getting the localized time
 			$time = datetimeutil::convertToUTC(date('Y-m-d H:i:s', (int)$timestamp));
+
+			$GLOBALS['default']->log->debug("KTAPI get_folder_changes time $time");
+
 			if (PEAR::isError($folder))
 			{
 				//$GLOBALS['default']->log->error('KTAPI get_folder_changes folder error message '.$folder->getMessage());

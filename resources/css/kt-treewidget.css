@@ -7,7 +7,12 @@
     text-align: left !important;
 }
 
-.leafnode {font-weight: bold; }
+.leafnode {font-weight: bold; padding-bottom: 3px; }
+.leafnode input {
+	top: 4px;
+	position: relative;
+	margin-right: 8px
+}
 
 #content .kt_treenodes ul, 
 #content ul.kt_treenodes  {

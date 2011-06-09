@@ -12,50 +12,12 @@
 
    <input type="hidden" name="groupFinal" />
 
-
    <fieldset>
       <legend>{i18n}Allocate Groups{/i18n}</legend>
-      <p class="descriptiveText">{i18n}Select the groups which should be part of this role.{/i18n}</p>
-
-<table border="0" width="600">
-   <thead>
-      <tr>
-         <th>{i18n}Available Groups{/i18n}</th>
-         <th>&nbsp;</th>
-         <th>{i18n}Member groups{/i18n}</th>
-      </tr>
-   </thead>
-   <tbody>
-      <tr>
-         <td valign="top" width="1%">
-           <select name="groupSelect" size="10" multiple="multiple">
-               {foreach item=oGroup from=$unused_groups}
-               <option value="{$oGroup->getId()}" ondblclick="optGroup.transferRight()">{$oGroup->getName()}</option>
-               {/foreach}
-           </select>
-         </td>
-         <td align="center">
-            <input name="right" style="width: 60px;" value="&raquo;" onclick="optGroup.transferRight()" type="button"><br /><br />
-            <input name="left" style="width: 60px;" value="&laquo;" onclick="optGroup.transferLeft()" type="button">
-         </td>
-         <td valign="top" width="1%">
-            <select name="chosenGroups" size="10" multiple="multiple">
-               {foreach item=oGroup from=$role_groups}
-               <option value="{$oGroup->getId()}" ondblclick="optGroup.transferRight()">{$oGroup->getName()}</option>
-               {/foreach}
-            </select>
-         </td>
-      </tr>
-      <tr>
-         <td><label for="ug-filter">{i18n}Filter{/i18n}</label>
-            <input name="filterUG" id="ug-filter" onkeyup="optGroup.sortSelectMatch(groupSelect, this.value)" onchange="optGroup.sortSelectMatch(groupSelect, this.value)" type="text">
-         </td>
-         <td>&nbsp;</td>
-         <td><label for="og-filter">{i18n}Filter{/i18n}</label>
-            <input name="filterOG" id="og-filter" onkeyup="optGroup.sortSelectMatch(chosenGroups, this.value)" onchange="optGroup.sortSelectMatch(chosenGroups, this.value)" type="text">
-         </td>
-      </tr>
-</tbody></table>
+      
+      <div>
+        {$jsonWidget}
+      </div>
 
       <div class="form_actions">
          <input type="{$input.type}" value="{i18n}Save Changes{/i18n}" onclick="{$input.onclick}" />

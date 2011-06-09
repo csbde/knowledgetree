@@ -2438,7 +2438,7 @@ class KTAPI_Document extends KTAPI_FolderItem
 				break;
 		}
 
-		if (isset($version))
+		if (isset($version) && $version !== '')
 		{
 			$content_version_status_id = $this->document->getContentVersionStatus($version);
 
@@ -3051,14 +3051,12 @@ class KTAPI_Document extends KTAPI_FolderItem
 	 * @param float $to_version
 	 */
 	public function hasBinaryChanges($from_version, $to_version)
-	{
+	{		
 		$sSQL = 'SELECT DT.document_id FROM '.KTUtil::getTableName('document_transactions').' AS DT '.
-			'WHERE DT.document_id = ? AND DT.version >= ? AND DT.version <= ? AND DT.transaction_namespace LIKE \'ktcore.transactions.check_in\' ';
-		//ORDER BY DT.datetime DESC'
-		
-		$aParams = array($this->documentid, $from_version, $to_version);
+			'WHERE DT.document_id = '.$this->documentid.' AND DT.version > '.$from_version.' AND DT.version <= '.$to_version.
+			' AND DT.transaction_namespace LIKE \'ktcore.transactions.check_in\' ';		
 
-        $results = DBUtil::getResultArray(array($sSQL, $aParams));
+        $results = DBUtil::getResultArray($sSQL);
         
         if (is_null($results) || PEAR::isError($results))
         {

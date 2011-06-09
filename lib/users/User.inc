@@ -39,12 +39,13 @@
 
 require_once(KT_LIB_DIR . '/database/dbutil.inc');
 require_once(KT_LIB_DIR . '/ktentity.inc');
-require_once(KT_LIB_DIR . "/util/sanitize.inc");
+require_once(KT_LIB_DIR . '/util/sanitize.inc');
 require_once(KT_LIB_DIR . '/datetime/datetimeutil.inc.php');
 
 define('ADMIN_USER_ID', 1);
 
 class User extends KTEntity {
+
     /** user's login name */
     var $sUserName;
     /** user's name (first and last) */
@@ -56,9 +57,9 @@ class User extends KTEntity {
     /** user's current file storage quota in bytes */
     var $iQuotaCurrent = 0;
     /** user's email address */
-    var $sEmail = "";
+    var $sEmail = '';
     /** user's mobile phone number */
-    var $sMobile = "";
+    var $sMobile = '';
     /** notify user by mail status */
     var $bEmailNotification = false;
     /** notify user via sms (mobile phone) status */
@@ -117,17 +118,18 @@ class User extends KTEntity {
 
     var $_bUsePearError = true;
 
-    function _table() {
-        return KTUtil::getTableName("users");
+    function _table()
+    {
+        return KTUtil::getTableName('users');
     }
 
     // STATIC
-    function _ktentityOptions() {
+    function _ktentityOptions()
+    {
         return array(
             'orderby' => 'name',
         );
     }
-
 
     function getUserName() { return sanitizeForSQLtoHTML($this->sUserName); }
     function setUserName($sNewValue) { $this->sUserName = sanitizeForSQL($sNewValue); }
@@ -180,27 +182,28 @@ class User extends KTEntity {
 
     /* Timezone getters */
     function getLocaleLastLogin() { return datetimeutil::getLocaleDate($this->dLastLogin); }
-    
-    /* return the key for storing dashboard in system settings */
-    function _getDashboardStateKey() {
-        return 'dashboard-state-' . $this->getId();
-    }
 
-    function getDashboardState() {
-        if(empty($this->sDashboardState)){
+    /* return the key for storing dashboard in system settings */
+    function _getDashboardStateKey() { return 'dashboard-state-' . $this->getId(); }
+
+    function getDashboardState()
+    {
+        if (empty($this->sDashboardState)) {
             $this->sDashboardState = KTUtil::getSystemSetting($this->_getDashboardStateKey());
         }
+
         return $this->sDashboardState;
     }
 
-    function setDashboardState($mValue) {
+    function setDashboardState($mValue)
+    {
         $this->sDashboardState = $mValue;
         KTUtil::setSystemSetting($this->_getDashboardStateKey(), $mValue);
     }
 
     function refreshDashboadState()
     {
-    	require_once(KT_DIR . "/thirdparty/pear/JSON.php");
+    	require_once(KT_DIR . '/thirdparty/pear/JSON.php');
     	$dashletRegistry = & KTDashletRegistry::getSingleton();
 
     	$update = false;
@@ -210,45 +213,46 @@ class User extends KTEntity {
     	$state = $this->getDashboardState();
     	$dashlets = $oJSON->decode($state);
 
-    	if (!isset($dashlets->left)) $dashlets->left = array();
-    	if (!isset($dashlets->right)) $dashlets->right = array();
-    	$mergedlist = kt_array_merge($dashlets->left,$dashlets->right);
+    	if (!isset($dashlets->left)) { $dashlets->left = array(); }
+    	if (!isset($dashlets->right)) { $dashlets->right = array(); }
+    	$mergedlist = kt_array_merge($dashlets->left, $dashlets->right);
 
-    	foreach($mergedlist as $dashlet)
-    	{
-    		array_push($knownlist,"'".$dashlet->id."'");
+    	foreach ($mergedlist as $dashlet) {
+    		array_push($knownlist, "'{$dashlet->id}'");
     	}
 
     	$sKnownlist = implode(',', $knownlist);
     	$aDashlets = $dashletRegistry->getNewDashlets($this, $sKnownlist);
 
-    	if(!empty($aDashlets)){
-        	$column=1;
-        	foreach($aDashlets as $class)
-        	{
-        		$column = ($column + 1) %2;
+    	if (!empty($aDashlets)) {
+        	$column = 1;
+        	foreach ($aDashlets as $class) {
+        		$column = ($column + 1) % 2;
         	    $obj = new stdClass();
-        		$obj->id=$class;
-        		$obj->state=0;
+        		$obj->id = $class;
+        		$obj->state = 0;
 
-        		if ($column == 0)
-        			array_push($dashlets->left,$obj);
-    			else
-        			array_push($dashlets->right,$obj);
-        		$update=true;
+        		if ($column == 0) {
+        			array_push($dashlets->left, $obj);
+        		}
+    			else {
+        			array_push($dashlets->right, $obj);
+    			}
+
+        		$update = true;
         	}
     	}
 
     	// Check if the KT Info dashlet is being displayed
     	// If it's not in the top left corner, move it there.
-    	if((!(strpos($sKnownlist, 'KTInfoDashlet') === false) && $knownlist[0] != "'KTInfoDashlet'") || empty($knownlist)){
+    	if ((!(strpos($sKnownlist, 'KTInfoDashlet') === false) && $knownlist[0] != "'KTInfoDashlet'") || empty($knownlist)) {
     	    $left = $dashlets->left;
     	    $right = $dashlets->right;
 
     	    $found = false;
     	    $update = true;
-    	    foreach($left as $key => $item){
-    	        if($item->id == 'KTInfoDashlet'){
+    	    foreach ($left as $key => $item) {
+    	        if ($item->id == 'KTInfoDashlet') {
     	            // found the dashlet
     	            $found = 'true';
     	            array_splice($dashlets->left, $key, 1);
@@ -256,9 +260,10 @@ class User extends KTEntity {
     	            continue;
     	        }
     	    }
-    	    if(!$found){
-    	        foreach($right as $key => $item){
-        	        if($item->id == 'KTInfoDashlet'){
+
+    	    if (!$found) {
+    	        foreach ($right as $key => $item) {
+        	        if ($item->id == 'KTInfoDashlet') {
         	            // found the dashlet
         	            $found = 'true';
     	                array_splice($dashlets->right, $key, 1);
@@ -269,31 +274,24 @@ class User extends KTEntity {
     	    }
     	}
 
-    	if ($update)
-    	{
+    	if ($update) {
     		$state = $oJSON->encode($dashlets);
 	    	$this->setDashboardState($state);
     	}
     }
 
-
-    function &get($iId) {
-        return KTEntityUtil::get('User', $iId);
-    }
+    function &get($iId) { return KTEntityUtil::get('User', $iId); }
 
 	/**
 	* update the datastore, without overwriting the password.
 	*
 	* only works for a subset of the db values.
 	*/
-	function doLimitedUpdate() {
+	function doLimitedUpdate()
+	{
 		$sQuery = 'UPDATE ' . $this->_table() . ' SET ';
 		$aParams = array();
-
-		$blacklist = array(
-			"sPassword" => 1,
-		);
-
+		$blacklist = array('sPassword' => 1);
 		$aParts = array(); // quick workaround to make the join less hurtful.
 
 		foreach ($this->_aFieldToSelect as $attr => $column) {
@@ -303,14 +301,14 @@ class User extends KTEntity {
 				$aParams[] = $val;
 			}
 		}
-		$sQuery .= join(', ', $aParts);
 
+		$sQuery .= join(', ', $aParts);
 		$sQuery .= ' WHERE id = ? ';
 		$aParams[] = $this->getId();
 
 		$res = DBUtil::runQuery(array($sQuery, $aParams));
 
-        $group = sprintf("%s/%s", get_class($this), 'id');
+        $group = sprintf('%s/%s', get_class($this), 'id');
         $oCache =& KTCache::getSingleton();
         $oCache->remove($group, $this->iId);
         $this->clearCachedGroups();
@@ -318,54 +316,59 @@ class User extends KTEntity {
 		return $res;
 	}
 
-
     /**
     * Static function
     * Get a list of users
     *
     * @param  String  Where clause (not required)
     *
-    * @return Array array of User objects, false otherwise and set $_SESSION["errorMessage"]
+    * @return Array array of User objects, false otherwise and set $_SESSION['errorMessage']
     */
-    function getList($sWhereClause = null, $aOptions = null) {
-        if(!is_array($aOptions)) $aOptions = array($aOptions);
+    function getList($sWhereClause = null, $aOptions = null)
+    {
+        if (!is_array($aOptions)) $aOptions = array($aOptions);
         $aOptions['orderby'] = KTUtil::arrayGet($aOptions, 'orderby', 'name');
 
         // don't include deleted users: disabled = 2
-        if(!empty($sWhereClause)){
-            if(strpos(strtolower($sWhereClause), 'where ') === false){
+        if (!empty($sWhereClause)) {
+            if (strpos(strtolower($sWhereClause), 'where ') === false) {
                 $sWhereClause = '('.$sWhereClause.')';
             }
             $sWhereClause .= ' AND disabled != 2';
-        }else{
+        }
+        else {
             $sWhereClause = 'disabled != 2';
         }
 
         return KTEntityUtil::getList2('User', $sWhereClause, $aOptions);
     }
 
-    function getEmailUsers($sWhereClause = null) {
+    function getEmailUsers($sWhereClause = null)
+    {
         $aUsers = array();
         foreach (User::getList($sWhereClause) as $oUser) {
             if ($oUser->getEmail()) {
                 $aUsers[] = $oUser;
             }
         }
+
         return $aUsers;
     }
 
     /**
      * Return the useID for the user
      *
-     * @return int the unitID, false otherwise and $_SESSION["errorMessage"] set
+     * @return int the unitID, false otherwise and $_SESSION['errorMessage'] set
      */
-    function getUnitId() {
-        $ugl = KTUtil::getTableName("users_groups");
-        $g = KTUtil::getTableName("groups");
+    function getUnitId()
+    {
+        $ugl = KTUtil::getTableName('users_groups');
+        $g = KTUtil::getTableName('groups');
         $aQuery = array(
             "SELECT DISTINCT g.unit_id AS unit_id FROM $ugl AS ugl INNER JOIN $g AS g ON ugl.group_id = g.id WHERE ugl.user_id = ?",
             array($this->iId),
         );
+
         return DBUtil::getOneResultKey($aQuery, 'unit_id');
     }
 
@@ -376,18 +379,18 @@ class User extends KTEntity {
      *
      * @param   string  The username for which we want its ID
      */
-    function getUserID($sUsername) {
+    function getUserID($sUsername)
+    {
         global $default;
-
-        $id = lookupID($default->users_table, "username",  $sUsername);
-
+        $id = lookupID($default->users_table, 'username',  $sUsername);
         $this->iId = $id;
     }
 
     /** Static function
     * Gets the user's default top level folder for the current user
     */
-    function getHomeFolderID() {
+    function getHomeFolderID()
+    {
     	$iUnitId = $this->getUnitId();
 
         if (empty($iUnitId)) {
@@ -399,7 +402,9 @@ class User extends KTEntity {
     }
 
 	function &createFromArray($aOptions) { return KTEntityUtil::createFromArray('User', $aOptions); }
-	function &getByUserName($sUserName, $aOptions = null) {
+
+	function &getByUserName($sUserName, $aOptions = null)
+	{
         return KTEntityUtil::getBy('User', 'username', $sUserName, $aOptions);
     }
 
@@ -409,34 +414,38 @@ class User extends KTEntity {
      * @param string $sUsername
      * @return boolean
      */
-    function checkDeletedUser($sUsername) {
+    function checkDeletedUser($sUsername)
+    {
         $deletedUsername = "kt_deleted_{$sUsername}_";
         $query = "SELECT * FROM users WHERE username LIKE '{$deletedUsername}%'";
         $result = DBUtil::getOneResult($query);
 
-        if(PEAR::isError($result) || empty($result)){
+        if (PEAR::isError($result) || empty($result)) {
             return false;
         }
 
         // Check that the deleted username is correct
-        if($deletedUsername.$result['id'] != $result['username']){
+        if ($deletedUsername.$result['id'] != $result['username']) {
             return false;
         }
 
         return true;
     }
 
-    function getByAuthenticationSource($oSource, $aOptions = null) {
+    function getByAuthenticationSource($oSource, $aOptions = null)
+    {
         $iSourceId = KTUtil::getId($oSource);
         $aOptions = KTUtil::meldOptions($aOptions, array(
             'multi' => true,
         ));
+
         return KTEntityUtil::getByDict('User', array(
             'authentication_source_id' => $iSourceId,
         ), $aOptions);
     }
 
-    function &getByAuthenticationSourceAndDetails($oSource, $sDetails, $aOptions = null) {
+    function &getByAuthenticationSourceAndDetails($oSource, $sDetails, $aOptions = null)
+    {
         $iSourceId = KTUtil::getId($oSource);
 
         return KTEntityUtil::getByDict('User', array(
@@ -445,7 +454,8 @@ class User extends KTEntity {
         ), $aOptions);
     }
 
-    function getByLastLoginBefore($dDateTime) {
+    function getByLastLoginBefore($dDateTime)
+    {
         return KTEntityUtil::getByDict('User', array(
             'last_login' => array('type' => 'before', 'value' => $dDateTime),
         ), array('multi' => true));
@@ -458,8 +468,9 @@ class User extends KTEntity {
      *
      * @return Users Object array
      */
-    function getByHaveNotLoggedIn($startDate, $endDate) {
-        if($startDate > $endDate) return false;
+    function getByHaveNotLoggedIn($startDate, $endDate)
+    {
+        if ($startDate > $endDate) return false;
         $sWhereClause = " last_login not between '$startDate' AND '$endDate'";
 
         return KTEntityUtil::getList2('User', $sWhereClause);
@@ -467,61 +478,68 @@ class User extends KTEntity {
 
     /**
      * Get new users
-     *
      */
-    function getByLastLoginNever() {
+    function getByLastLoginNever()
+    {
         $aOptions['orderby'] = 'name';
         $sWhereClause = 'last_login is null';
         return KTEntityUtil::getList2('User', $sWhereClause, $aOptions);
     }
 
-    function getByLastLoginAfter($dDateTime) {
+    function getByLastLoginAfter($dDateTime)
+    {
         return KTEntityUtil::getByDict('User', array(
             'last_login' => array('type' => 'after', 'value' => $dDateTime),
         ), array('multi' => true));
     }
 
-    function getNumberEnabledUsers() {
+    function getNumberEnabledUsers()
+    {
         $sQuery = sprintf('SELECT COUNT(id) AS number FROM %s WHERE disabled = ? AND id > 1', KTUtil::getTableName('users'));
         $aParams = array(false);
         return DBUtil::getOneResultKey(array($sQuery, $aParams), 'number');
     }
 
-    function getNumberInvitedUsers() {
+    function getNumberInvitedUsers()
+    {
         $sQuery = sprintf('SELECT COUNT(id) AS number FROM %s WHERE disabled = ? AND id > 1', KTUtil::getTableName('users'));
         $aParams = array(3);
         return DBUtil::getOneResultKey(array($sQuery, $aParams), 'number');
     }
 
     function isAnonymous() { return $this->iId == -2; }
+    function isLicensed() { return ($this->bDisabled != 4); }
 
-    function isLicensed() {
-        return ($this->bDisabled != 4);
-    }
-
-    function disable() {
+    function disable()
+    {
         $this->setDisabled(1);
         $this->update();
+
         if (KTPluginUtil::pluginIsActive('ktdms.wintools')) {
             $path = KTPluginUtil::getPluginPath('ktdms.wintools');
             require_once($path . 'baobabkeyutil.inc.php');
             BaobabKeyUtil::deallocateUser($this);
         }
+
         return;
     }
 
-    function enable() {
+    function enable()
+    {
         $this->setDisabled(0);
         $this->update();
+
         if (KTPluginUtil::pluginIsActive('ktdms.wintools')) {
             $path = KTPluginUtil::getPluginPath('ktdms.wintools');
             require_once($path . 'baobabkeyutil.inc.php');
             BaobabKeyUtil::allocateUser($this);
         }
+
         return;
     }
 
-    function create() {
+    function create()
+    {
         if (KTPluginUtil::pluginIsActive('ktdms.wintools')) {
             $path = KTPluginUtil::getPluginPath('ktdms.wintools');
             require_once($path . 'baobabkeyutil.inc.php');
@@ -530,6 +548,7 @@ class User extends KTEntity {
                 return $res;
             }
         }
+
         return parent::create();
     }
 
@@ -566,13 +585,13 @@ class User extends KTEntity {
             require_once($path . 'baobabkeyutil.inc.php');
             BaobabKeyUtil::deallocateUser($this);
         }
-        return;
 
+        return;
     }
 
-    function hasPermission($oUser, $oPermission, $oFolderOrDocument) {
+    function hasPermission($oUser, $oPermission, $oFolderOrDocument)
+    {
     	return KTPermissionUtil::userHasPermissionOnItem($oUser, $oPermission, $oFolderOrDocument);
-
 	}
 
 }

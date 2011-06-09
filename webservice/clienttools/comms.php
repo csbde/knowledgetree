@@ -1,11 +1,12 @@
 <?php
+
 include_once('../../ktapi/ktapi.inc.php');
 error_reporting(E_ERROR);
 
-define('COMMS_DEBUG',true);
-define('COMMS_TIMEOUT',60*3); //3 minutes
-
-set_time_limit(COMMS_TIMEOUT);	//Be careful altering this inside the services area - it should never be set to 0 as that could cause runaway processes
+define('COMMS_DEBUG', true);
+// Be careful altering this inside the services area - it should never be set to 0 as that could cause runaway processes
+define('COMMS_TIMEOUT', 60 * 3);
+set_time_limit(COMMS_TIMEOUT);
 
 /**
  * Intercept Errors and Exceptions and provide a json response in return.
@@ -18,16 +19,16 @@ set_time_limit(COMMS_TIMEOUT);	//Be careful altering this inside the services ar
  *
  * return json Error Response
  */
-function error_handler($errno,$errstr=null,$errfile=null,$errline=null){
+function error_handler($errno, $errstr = null, $errfile = null, $errline = null) {
 	$e=new ErrorException($errstr,0,$errno,$errfile,$errline);
 	print_r($e);
-	if($GLOBALS['RET']){
+	if ($GLOBALS['RET']) {
 		$GLOBALS['RET']->addError($e->getmessage());
-		$GLOBALS['RET']->setDebug('Exception::',$e);
+		$GLOBALS['RET']->setDebug('Exception::', $e);
 		echo $GLOBALS['RET']->getJson();
 		exit;
 	};
-//	if($GLOBALS['RET']){
+//	if ($GLOBALS['RET']) {
 //		$GLOBALS['RET']->addError($errfile?$errstr:$e->getmessage());
 //		$GLOBALS['RET']->setDebug($errfile?'ERR':'EXC',$errfile?(array('error_number'=>$e,'error_string'=>$errstr,'error_file'=>$errfile,'error_line'=>$errline)):$e);
 //		echo $GLOBALS['RET']->getJson();
@@ -35,10 +36,11 @@ function error_handler($errno,$errstr=null,$errfile=null,$errline=null){
 //	};
 }
 
-function exception_handler($e){
-	if($GLOBALS['RET']){
+function exception_handler($e)
+{
+	if ($GLOBALS['RET']) {
 		$GLOBALS['RET']->addError($e->getmessage());
-		$GLOBALS['RET']->setDebug('Exception::',$e);
+		$GLOBALS['RET']->setDebug('Exception::', $e);
 		echo $GLOBALS['RET']->getJson();
 		exit;
 	};
@@ -47,15 +49,12 @@ function exception_handler($e){
 /**
  * Set the error & exception handlers
  */
-$old_error_handler=set_error_handler('error_handler',E_ERROR);
-$old_exception_handler=set_exception_handler('exception_handler');
-
-
+$old_error_handler = set_error_handler('error_handler', E_ERROR);
+$old_exception_handler = set_exception_handler('exception_handler');
 
 /**
  * Load additional generic libaries
  */
-
 
 //Interpret the Json Object that was passed
 include_once('jsonWrapper.php');
@@ -63,7 +62,6 @@ include_once('ajaxhandler.php');
 include_once('serviceHelper.php');
 include_once('client_service.php');
 include_once('clienttools_syslog.php');
-
 
 Clienttools_Syslog::logTrace('--','--','======================================================================== TRANSACTION START');
 
@@ -73,9 +71,9 @@ $KT = new KTAPI(3);
 //$KT->get(3);
 
 $RET=new jsonResponseObject();
-if($_GET['datasource'])$RET->isDataSource=true;
+if ($_GET['datasource']) { $RET->isDataSource = true; }
 
-$noAuthRequests=array(
+$noAuthRequests = array(
 	'auth.ping',
 	//'auth.japiLogin',
 	'kt.get_all_client_policies',
@@ -92,10 +90,7 @@ if (KTPluginUtil::pluginIsActive('ktdms.wintools')) {
 
 
 
-$handler=new ajaxHandler($RET,$KT,$noAuthRequests);
-
-
-
+$handler = new ajaxHandler($RET,$KT,$noAuthRequests);
 
 //Determine the requested comms version & Load related libraries
 
@@ -105,4 +100,5 @@ $handler=new ajaxHandler($RET,$KT,$noAuthRequests);
  */
 //set_exception_handler($old_exception_handler);
 //set_error_handler($old_error_handler,E_ALL);
+
 ?>

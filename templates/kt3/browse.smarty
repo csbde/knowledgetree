@@ -1,8 +1,4 @@
 <!-- FILE: kt3/browse.smarty -->
-{$context->oPage->requireJSResource('thirdpartyjs/MochiKit/MochiKitPacked.js')}
-{$context->oPage->requireJSResource('resources/js/toggleselect.js')}
-<!-- moved into include file instead of being coded direct -->
-{$context->oPage->requireJSResource('resources/js/newui/browse.helper.js')}
 {$javascript}
 {if ($custom_title != null)}
 <h2>{$custom_title|sanitize}</h2>
@@ -30,6 +26,38 @@
 {/if}
 <!-- <link rel="stylesheet" type="text/css" href="{php}echo "{$GLOBALS['default']->rootUrl}/resources/css/newui/browseView.css?".rand();{/php}" />
 -->
+
+<table style="border-spacing: 0px 0px;">
+
+<tr>
+	<td width="745" valign="top">
+		<div class="breadcrumbBtns">
+			<div class="breadcrumbActionBtns">
+	            <nobr>
+				{foreach item=aBtn from=$context->actionBtns.buttons name=btn}
+	                {if $aBtn.status === 'disabled'}
+	                    <a><span class="{$aBtn.class} disabled">{$aBtn.name}</span></a>
+	                {else}
+	                    <a href="{$aBtn.url}" ><span class="{$aBtn.class}">{$aBtn.name}</span></a>
+	                {/if}
+	     		{/foreach}
+
+	     		{assign var=aSplit value=$context->actionBtns.split}
+     		<div class="splitbutton"><span class="split"><span class="button" id="{$aSplit.class}">{$aSplit.name}</span>&#9660;</span></div>
+	     		{* Display the drop down menu's on the split buttons *}
+	            <ul class="splitmenu" id="more">
+	                {foreach item=menuitem from=$aSplit.submenu}
+	                    {if $menuitem.status === 'disabled'}
+	                        <li><a class="{$menuitem.class} disabled" id="{$menuitem.icon_class}">{$menuitem.name}</a></li>
+	                    {else}
+	                        <li><a class="{$menuitem.class}" href="{$menuitem.url}" onclick='{$menuitem.onclick}'>{$menuitem.name}</a></li>
+	                    {/if}
+	                {/foreach}
+	            </ul>
+	     		</nobr>
+	     	</div>
+
+    	</div>
 <form action="{$browseutil->getActionBaseUrl()}" method="post">
 
 {if ($isEditable)}
@@ -41,16 +69,19 @@
 {/if}
 
 {if ($isEditable)}
+
 <div class="dropzone" id="datadrop">
 {/if}
-<div class="standardBorder itemContainer" style="min-width: 800px;">
-	{$bulkActionMenu}
+
+<div class=" itemContainer">
 	{$folderContents}
 	<div style="width:100%; text-align: center">{$pagination}</div>
 </div>
 {$fragments}
 {if ($isEditable)}
 </div>
+	{$bulkActionMenu}
+
 {/if}
 
 {if ($isEditable && 1==2)}
@@ -96,4 +127,15 @@
 </fieldset>
 </form>
 {/if}
+</td>
+<td valign="top" id="sidebar" class="standardBorder" height="100%" width="215">
+    <div id="sidebar_item" >
+        {* Display Actions Block *}
+        {if ($folderSidebars)}
+            {$folderSidebars->getFolderSidebars()}
+        {/if}
+    </div>
+</td>
+</tr>
+</table>
 <!-- FILE_END: kt3/fieldsets/browse.smarty -->

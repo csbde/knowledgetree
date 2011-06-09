@@ -3,7 +3,7 @@
 require_once(KT_LIB_DIR . '/browse/browseutil.inc.php');
 
 class siteapi extends client_service {
-    
+
     function uploadFile($params)
     {
 		global $default;
@@ -151,7 +151,7 @@ class siteapi extends client_service {
 					$item['created_by'] = $oCreator->getName();
 					$item['modified_by'] = $oModifier->getName();
 					$item['filename'] = $fileName;
-					$item['filesize'] = KTUtil::filesizeToString($oDocument->getFileSize());
+					$item['filesize'] = KTUtil::filesizeToString($oDocument->getFileSize(), 'KB');
 					$item['title'] = $oDocument->getName();
 					$item['mimeicon'] = $mimeIcon;
 					$item['created_date'] = $oDocument->getDisplayCreatedDateTime();
@@ -166,7 +166,7 @@ class siteapi extends client_service {
 						{
 							$item['allowdoczohoedit'] = '<li class="action_zoho_document"><a href="javascript:;" onclick="zohoEdit(\'' . $item['id'] . '\')">Edit Document Online</a></li>';
 						}
-						
+
 					}
 
 					$json['success'] = $item;
@@ -282,7 +282,7 @@ class siteapi extends client_service {
 				}
 			}
 		}
-		
+
 		$this->addResponse('fieldsets',$ret);
 	}
 
@@ -307,7 +307,7 @@ class siteapi extends client_service {
 		foreach ($types as $type) {
 			$ret[$type->aFieldArr['id']] = $type->aFieldArr;
 		}
-		
+
 		$this->addResponse('documentTypes',$ret);
 	}
 
@@ -335,7 +335,7 @@ class siteapi extends client_service {
 			$results[] = array('id' . $row['id'] => $row['name']);
 		}
 		//}
-		
+
 		return json_encode($results);
 	}
 
@@ -435,7 +435,7 @@ class siteapi extends client_service {
 				$subfolders[$folder->aFieldArr['id']] = $this->filter_array($folder->aFieldArr, $filter, false);
 			}
 		}
-		
+
 		$this->addResponse('children', $subfolders);
 	}
 
@@ -558,7 +558,7 @@ class siteapi extends client_service {
 
         $this->addResponse('invitedUsers', json_encode($response));
     }
-    
+
     public function getUserType()
     {
     	$oUser = User::get($_SESSION['userID']);
@@ -566,7 +566,7 @@ class siteapi extends client_service {
         $response = $oUser->getDisabled();
         $this->addResponse('usertype', $response);
     }
-    
+
     private function userHasPermissionOnItem($oUser, $sPermissions, $documentOrFolder, $type)
     {
     	// Shared user
@@ -576,12 +576,34 @@ class siteapi extends client_service {
     		return (SharedContent::getPermissions($oUser->getId(), $documentOrFolder->getId(), null, $type) == 1);
     	}
     	// System User
-    	else 
+    	else
     	{
     		return KTPermissionUtil::userHasPermissionOnItem($oUser, $sPermissions, $documentOrFolder);
     	}
     }
-    
+
+    public function getDownloadUrl($params)
+    {
+        if(isset($params['clean']) && !empty($params['clean'])) {
+            $clean = substr($params['clean'], 2);
+            $documentId = KTUtil::decodeId($clean);
+        } else {
+            $documentId = $params['docId'];
+        }
+
+        // Create uniqueish temporary session id
+        $session = 'ktext_' . $documentId . time() . $counter++;
+
+        // Create download link
+        $downloadManager = new KTDownloadManager();
+        $downloadManager->set_session($session);
+        $link = $downloadManager->allow_download($documentId);
+
+        global $default;
+        $response['url'] = $link;
+        $default->log->error("URL response: " . print_r($params, true));
+        $this->addResponse('downloadUrl', json_encode($response));
+    }
 }
 
 ?>

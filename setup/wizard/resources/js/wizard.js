@@ -7,7 +7,7 @@ function wizard() {
 // Toggle Advance Database options
 wizard.prototype.toggleClass = function(ele, option) { //adv_options|php_details|php_ext_details|php_con_details
 	var style = $('.'+ele).attr('style');
-	style = w.trim(style);
+	style = jQuery.trim(style);
 	style = style.toLowerCase();
 	var patt1=/none/gi; // preg match
 	var patt2=/block/gi;
@@ -147,7 +147,7 @@ wizard.prototype.ddCheck = function(str, check) {
 }
 
 wizard.prototype.nameCheck = function(str) {
-	str = w.trim(str);
+	str = jQuery.trim(str);
 	var nameRegxp = /^([a-z A-Z]+)$/;
 	if(str.match(nameRegxp)) {
 		return true;
@@ -158,7 +158,7 @@ wizard.prototype.nameCheck = function(str) {
 
 // Validate Registration Page Courtesy of SmartWebby.com (http://www.smartwebby.com/dhtml/)
 wizard.prototype.emailCheck = function(str) {
-	str = w.trim(str);
+	str = jQuery.trim(str);
 	var at="@";
 	var dot=".";
 	var lat=str.indexOf(at);
@@ -188,20 +188,6 @@ wizard.prototype.emailCheck = function(str) {
 	return true;
 }
 
-wizard.prototype.trim = function (str, chars) {
-	return w.ltrim(w.rtrim(str, chars), chars);
-}
-
-wizard.prototype.ltrim = function (str, chars) {
-	chars = chars || "\\s";
-	return str.replace(new RegExp("^[" + chars + "]+", "g"), "");
-}
-
-wizard.prototype.rtrim = function (str, chars) {
-	chars = chars || "\\s";
-	return str.replace(new RegExp("[" + chars + "]+$", "g"), "");
-}
-
 wizard.prototype.adjustMenu = function (form_id, previous) {
 	form_name = form_id.split('_');
 	if(form_name.length == 2) {
@@ -219,9 +205,7 @@ wizard.prototype.adjustMenu = function (form_id, previous) {
 	}
 }
 
-wizard.prototype.dummy = function () {
-
-}
+wizard.prototype.dummy = function () {}
 
 // pre-submit callback
 wizard.prototype.showRequest = function (formData, jqForm, options) {

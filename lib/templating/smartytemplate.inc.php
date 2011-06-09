@@ -1,4 +1,5 @@
 <?php
+
 /**
  * $Id$
  *
@@ -7,7 +8,7 @@
  * KnowledgeTree Community Edition
  * Document Management Made Simple
  * Copyright (C) 2008, 2009, 2010 KnowledgeTree Inc.
- * 
+ *
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License version 3 as published by the
@@ -37,11 +38,12 @@
  * Contributor( s): ______________________________________
  */
 
-require_once(KT_LIB_DIR . "/templating/template.inc.php");
-require_once(KT_DIR . "/thirdparty/Smarty/Smarty.class.php");
-require_once(KT_LIB_DIR . "/i18n/i18nregistry.inc.php");
+require_once(KT_LIB_DIR . '/templating/template.inc.php');
+require_once(KT_DIR . '/thirdparty/Smarty/Smarty.class.php');
+require_once(KT_LIB_DIR . '/i18n/i18nregistry.inc.php');
 
 class KTSmartyTemplate extends KTTemplate {
+
     function KTSmartyTemplate ($sPath) {
         $this->KTTemplate($sPath);
     }
@@ -52,12 +54,6 @@ class KTSmartyTemplate extends KTTemplate {
         $sVarDirectory = $oConfig->get('urls/varDirectory');
         $smarty->compile_dir = $oConfig->get('urls/tmpDirectory');
 
-//        foreach (array($sVarDirectory . '/tmp', '/tmp') as $sPath) {
-//            if (is_writeable($sPath)) {
-//                $smarty->compile_dir = $sPath;
-//                break;
-//            }
-//        }
         if (is_array($aDict)) {
             $iLen = count($aDict);
             $aKeys = array_keys($aDict);
@@ -66,6 +62,7 @@ class KTSmartyTemplate extends KTTemplate {
                 $smarty->assign_by_ref($sKey, $aDict[$sKey]);
             }
         }
+
         if (is_array($this->aDict)) {
             $iLen = count($this->aDict);
             $aKeys = array_keys($this->aDict);
@@ -74,30 +71,25 @@ class KTSmartyTemplate extends KTTemplate {
                 $smarty->assign_by_ref($sKey, $this->aDict[$sKey]);
             }
         }
+
         $KTConfig =& KTConfig::getSingleton();
 
         // needed for a very, very few places.
-        $isSSL = $KTConfig->get("KnowledgeTree/sslEnabled");
-        $hostname = $KTConfig->get("KnowledgeTree/serverName");
+        $isSSL = $KTConfig->get('KnowledgeTree/sslEnabled');
+        $hostname = $KTConfig->get('KnowledgeTree/serverName');
         $absroot = 'http';
         $absroot .= ($isSSL) ? 's://' : '://';
         $absroot .= $hostname;
-        $absroot .= $KTConfig->get("KnowledgeTree/rootUrl");
+        $absroot .= $KTConfig->get('KnowledgeTree/rootUrl');
 
-        if (isset($_SESSION['search2_quick']))
-        {
+        if (isset($_SESSION['search2_quick'])) {
         	$search2_quick = $_SESSION['search2_quick'];
         	$search2_general = $_SESSION['search2_general'];
         	$search2_quickQuery = trim($_SESSION['search2_quickQuery']);
-        	if ($search2_quickQuery == '')
-        	{
-        		$search2_quickQuery = '';
-        	}
         }
-        else
-        {
-			$search2_quick=0;
-			$search2_general=1;
+        else {
+			$search2_quick = 0;
+			$search2_general = 1;
 			$search2_quickQuery = '';
 			$_SESSION['search2_quick'] = $search2_quick;
 			$_SESSION['search2_general'] = $search2_general;
@@ -109,10 +101,10 @@ class KTSmartyTemplate extends KTTemplate {
         $smarty->assign('search2_quick', $search2_quick);
         $smarty->assign('search2_general', $search2_general);
         $smarty->assign('search2_quickQuery', $search2_quickQuery);
-        $smarty->assign("config", $KTConfig);
-        $smarty->assign("appname", $KTConfig->get("ui/appName", "KnowledgeTree"));
-        $smarty->assign("rootUrl", $KTConfig->get("KnowledgeTree/rootUrl"));
-        $smarty->assign("absoluteRootUrl", $absroot);
+        $smarty->assign('config', $KTConfig);
+        $smarty->assign('appname', $KTConfig->get('ui/appName', 'KnowledgeTree'));
+        $smarty->assign('rootUrl', $KTConfig->get('KnowledgeTree/rootUrl'));
+        $smarty->assign('absoluteRootUrl', $absroot);
         $smarty->caching = false;
         $smarty->register_function('entity_select', array('KTSmartyTemplate', 'entity_select'));
         $smarty->register_function('boolean_checkbox', array('KTSmartyTemplate', 'boolean_checkbox'));
@@ -128,6 +120,7 @@ class KTSmartyTemplate extends KTTemplate {
         $smarty->register_function('getUrlForFolder', array('KTSmartyTemplate', 'getUrlForFolder'));
         $smarty->register_function('getCrumbStringForDocument', array('KTSmartyTemplate', 'getCrumbStringForDocument'));
         $smarty->register_function('url', array('KTSmartyTemplate', 'buildUrl'));
+
         return $smarty->fetch($this->sPath);
     }
 
@@ -135,9 +128,11 @@ class KTSmartyTemplate extends KTTemplate {
         if (!is_array($arr)) {
             $arr = array();
         }
-        if (substr($var[0], 0, 4) == "arg_") {
+
+        if (substr($var[0], 0, 4) == 'arg_') {
             $arr['#' . substr($var[0], 4) . '#'] = $var[1];
         }
+
         return $arr;
     }
 
@@ -145,19 +140,23 @@ class KTSmartyTemplate extends KTTemplate {
         if (empty($content)) {
             return;
         }
+
         if (!empty($params)) {
             $flattened = array_map(null, array_keys($params), array_values($params));
-            $replacements = array_reduce($flattened, array('KTSmartyTemplate', '_i18n_get_args'), "");
+            $replacements = array_reduce($flattened, array('KTSmartyTemplate', '_i18n_get_args'), '');
         } else {
             $replacements = array();
         }
+
         $sDomain = KTUtil::arrayGet($params, 'i18n_domain');
         if (empty($sDomain)) {
             $sDomain = $smarty->get_template_vars('i18n_domain');
         }
+
         if (empty($sDomain)) {
             $sDomain = 'knowledgeTree';
         }
+
         $oRegistry =& KTi18nRegistry::getSingleton();
         $oi18n =& $oRegistry->geti18n($sDomain);
         $content = trim($content);
@@ -165,8 +164,8 @@ class KTSmartyTemplate extends KTTemplate {
             '@ *[\n\r]+@' => ' ',
         );
         $content = preg_replace(array_keys($replace), array_values($replace), $content);
-
         $content = $oi18n->gettext($content);
+
         return str_replace(array_keys($replacements), array_values($replacements), $content);
     }
 
@@ -175,9 +174,11 @@ class KTSmartyTemplate extends KTTemplate {
         if (!is_null($context)) {
             $content = $context->meldPersistQuery($content);
         }
+
         if (empty($content)) {
             return;
         }
+
         return KTUtil::addQueryStringSelf($content);
     }
 
@@ -201,10 +202,12 @@ class KTSmartyTemplate extends KTTemplate {
             $params['values'][] = '';
             $params['output'][] = _kt('None');
         }
+
         foreach ($entities as $oEntity) {
             $params['values'][] = $oEntity->getId();
             $params['output'][] = call_user_func(array(&$oEntity, $method));
         }
+
         unset($params['entities']);
 
         return smarty_function_html_options($params, $smarty);
@@ -216,13 +219,14 @@ class KTSmartyTemplate extends KTTemplate {
             $smarty->trigger_error("assign: missing 'name' parameter");
             return;
         }
+
         $bool = KTUtil::arrayGet($params, 'bool');
         if (is_null($bool)) {
             $smarty->trigger_error("assign: missing 'bool' parameter");
             return;
         }
-        $value = KTUtil::arrayGet($params, 'value', 1);
 
+        $value = KTUtil::arrayGet($params, 'value', 1);
         $label = KTUtil::arrayGet($params, 'label');
 
         if ($bool) {
@@ -235,6 +239,7 @@ class KTSmartyTemplate extends KTTemplate {
         if ($label) {
             $ret = sprintf('<label>%s%s</label>', $ret, $label);
         }
+
         return $ret;
     }
 
@@ -254,7 +259,7 @@ class KTSmartyTemplate extends KTTemplate {
         $params['output'] = array();
         foreach ($entities as $oEntity) {
             $params['values'][] = call_user_func(array(&$oEntity, $idmethod));
-            if ($method != "none") {
+            if ($method != 'none') {
                 $params['output'][] = ' ' . call_user_func(array(&$oEntity, $method));
             } else {
                 $params['output'][] = null;
@@ -298,7 +303,6 @@ class KTSmartyTemplate extends KTTemplate {
         return KTUtil::addQueryString($url, $qs);
     }
 
-
     /*
      * ktLink generates a fully prepared link for KT.
      *
@@ -315,18 +319,17 @@ class KTSmartyTemplate extends KTTemplate {
     function ktLink($params, &$smarty) {
         return KTUtil::ktLink($params['base'], $params['subpath'], $params['query']);
     }
-	
-	
-	function buildUrl($params, &$smarty) {
-		if (isset($params['file'])) {
-			$file = $params['file'];
-			unset($params['file']);
-		} else {
-			$file = '';
-		}
+
+    function buildUrl($params, &$smarty) {
+        if (isset($params['file'])) {
+            $file = $params['file'];
+            unset($params['file']);
+        } else {
+            $file = '';
+        }
+
         return KTUtil::buildUrl($file, $params);
     }
-
 
     function addQueryStringSelf($qs) {
         return KTUtil::addQueryStringSelf($qs);
@@ -337,21 +340,18 @@ class KTSmartyTemplate extends KTTemplate {
     }
 
     function getCrumbStringForDocument($params, &$smarty) {
-	$aBreadcrumbs = KTBrowseUtil::breadcrumbsForDocument($params['document'], array('final'=>true));
-	if(PEAR::isError($aBreadcrumbs)) {
-	    return _kt('No breadcrumbs available');
-	}
+        $aBreadcrumbs = KTBrowseUtil::breadcrumbsForDocument($params['document'], array('final'=>true));
+        if (PEAR::isError($aBreadcrumbs)) {
+            return _kt('No breadcrumbs available');
+        }
 
-	$aCrumbs = array();
-	foreach($aBreadcrumbs as $aBreadcrumb) {
-	    $aCrumbs[] = $aBreadcrumb['name'];
-	}
+        $aCrumbs = array();
+        foreach($aBreadcrumbs as $aBreadcrumb) {
+            $aCrumbs[] = $aBreadcrumb['name'];
+        }
 
-	return implode('/', $aCrumbs);
+        return implode('/', $aCrumbs);
     }
-
-
-
 
 }
 

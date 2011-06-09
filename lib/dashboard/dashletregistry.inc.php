@@ -107,26 +107,27 @@ class KTDashletRegistry {
     }
 
     // FIXME we might want to do the pruning now, but I'm unsure how to handle the preconditions.
-    function getDashlets($oUser) {
-        $aDashlets = array();
-        $oRegistry =& KTPluginRegistry::getSingleton();
+    function getDashlets($user) {
+        $dashlets = array();
+        $pluginRegistry =& KTPluginRegistry::getSingleton();
+        
         // probably not the _best_ way to do things.
-        foreach ($this->nsnames as $aPortlet) {
-            $name = $aPortlet[0];
-            $filename = $aPortlet[1];
-            $sPluginName = $aPortlet[3];
+        foreach ($this->nsnames as $portlet) {
+            $name = $portlet[0];
+            $filename = $portlet[1];
+            $pluginName = $portlet[3];
 
-            require_once($aPortlet[1]);
-            $oPlugin =& $oRegistry->getPlugin($sPluginName);
+            require_once($filename);
+            $plugin =& $pluginRegistry->getPlugin($pluginName);
 
-            $oDashlet = new $name;
-            $oDashlet->setPlugin($oPlugin);
-            if ($oDashlet->is_active($oUser)) {
-                $aDashlets[] = $oDashlet;
+            $dashlet = new $name;
+            $dashlet->setPlugin($plugin);
+            if ($dashlet->is_active($user)) {
+                $dashlets[] = $dashlet;
             }
         }
 
-        return $aDashlets;
+        return $dashlets;
     }
 }
 

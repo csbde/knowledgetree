@@ -50,6 +50,7 @@ SOFFICE_PID=""
 SOFFICE_PORT="8100"
 SOFFICEBIN=/usr/share/ktdms-office/ktdms-office/openoffice/program/soffice
 #SOFFICEBIN=/usr/bin/soffice
+#SOFFICEBIN=/opt/openoffice.org3/program/soffice
 SOFFICE="$SOFFICEBIN -nofirststartwizard -nologo -headless -accept=socket,host=127.0.0.1,port=$SOFFICE_PORT;urp;StarOffice.ServiceManager"
 SOFFICE_STATUS=""
 
@@ -433,7 +434,7 @@ else
 	$ZEND_DIR/bin/zendctl.sh restart
 fi
 
-#if [ "ls /usr/share/knowledgetree/var/bin/dmsinit.lock" != "" ] ; then 
+#if [ "ls /usr/share/knowledgetree/var/bin/dmsinit.lock" != "" ] ; then
 #	echo "No lock"
 #e#lse
 #	echo "lock"

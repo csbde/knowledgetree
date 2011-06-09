@@ -4,37 +4,37 @@ if (typeof(kt.app) == 'undefined') { kt.app = {}; }
 /* Initializing kt.api if it wasn't initialized before */
 if (typeof(kt.api) == 'undefined') { kt.api = {}; }
 
-/* Initializing kt.api if it wasn't initialized before */
-if(typeof(kt.api)=='undefined')kt.api={};
+// TODO find out why fragments load on page start and also when executing an action.
+//      do ALL fragments behave like this (all exec ones, all get ones, all both?)
+//      Should we just let them load on demand instead?????
 
 /**
  * Dialog for inviting new licensed users to the system
  */
 kt.app.inviteusers = new function() {
 
-	//contains a list of fragments that will get preloaded
-    var fragments = this.fragments = ['users/invite.shared.dialog'];
+    // What is the actual difference between a get and an exec for fragments?
 
-    //contains a list of executable fragments that will get preloaded
+	// contains a list of fragments that will get preloaded
+    var fragments = this.fragments = [];
+    var fragmentPackage = this.fragmentPackage = []
+
+    // contains a list of executable fragments that will get preloaded
     var execs = this.execs = ['users/invite.dialog', 'users/invite.confirm.dialog'];
+    var execPackage = this.execPackage = [execs];
 
-    //scope protector. inside this object referrals to self happen via 'self' rather than 'this' to make sure we call the functionality within the right scope.
+    // scope protector. inside this object referrals to self happen via 'self' rather than 'this'
+    // to make sure we call the functionality within the right scope.
     var self = this;
 
-    //a storage container for various DOM elements that need to be accessed repeatedly
     var elems = this.elems = {};
 
-    //Initializes the upload widget on creation. Currently does preloading of resources.
+    // Initializes the upload widget on creation. Currently does preloading of resources.
     this.init = function() {
-        for (var idx in execs) {
-            kt.api.preloadExecutable(execs[idx]);
-        }
-        for (var idx in fragments) {
-            kt.api.preloadFragment(fragments[idx]);
-        }
+        kt.api.preload(fragmentPackage, execPackage, true);
     }
 
-    //Container for the EXTJS window
+    // Container for the EXTJS window
     this.inviteWindow = null;
 
     // send the invites and add the users to the system
@@ -46,7 +46,7 @@ kt.app.inviteusers = new function() {
 	    } else {
             group = document.getElementById('invite.grouplist').value;
 			/*jQuery('#extinvitewindow').block({
-												message: '<div id="loading_invite_users">',
+												message: '<div id="blue_loading">',
 												overlayCSS: {
 													backgroundColor: '#00f transparent'
 												},

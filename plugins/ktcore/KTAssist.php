@@ -6,7 +6,7 @@
  * KnowledgeTree Community Edition
  * Document Management Made Simple
  * Copyright (C) 2008, 2009, 2010 KnowledgeTree Inc.
- * 
+ *
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License version 3 as published by the
@@ -46,6 +46,7 @@ require_once(KT_LIB_DIR . '/documentmanagement/documentutil.inc.php');
 // {{{ KTDocumentAssistAction
 class KTDocumentAssistAction extends KTDocumentAction {
     var $sName = 'ktcore.actions.document.assist';
+    var $sParentBtn = 'more';
 
     function getDisplayName() {
         return _kt('Request Assistance');
@@ -277,7 +278,7 @@ class KTAssistNotification extends KTNotificationHandler {
         }
 
         $oStorage = KTStorageManagerUtil::getSingleton();
-        
+
         $this->startTransaction();
         $iRestoreFolder = $oDoc->getRestoreFolderId();
         $oFolder = Folder::get($iRestoreFolder);
