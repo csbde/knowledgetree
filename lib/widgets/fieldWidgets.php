@@ -134,7 +134,10 @@ class KTJSONLookupWidget extends KTBaseWidget {
 
     var $sTemplate = 'kt3/fields/jsonlookup';
 
-    public function setTemplate($template) { $this->sTemplate = $template; }
+    public function setTemplate($template)
+    {
+        $this->sTemplate = $template;
+    }
 
     public static function getGroupsAndRoles()
     {
