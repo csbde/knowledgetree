@@ -87,7 +87,7 @@ kt.app.copy = new function() {
         var copyWin = new Ext.Window({
             id              : 'extcopywindow',
             layout          : 'fit',
-            width           : 500,
+            width           : 550,
             resizable       : false,
             closable        : true,
             closeAction     : 'destroy',
@@ -163,39 +163,44 @@ kt.app.copy = new function() {
 	    var synchronous = true;
 	    var data = ktjapi.retrieve(func, params, kt.api.persistentDataCacheTimeout);
 	    var response = data.data.result;
-	    
         var response = jQuery.parseJSON(response);
+        
+        // remove the classes in case the dialog isn't closed before re-attempting the action
+        jQuery('#copy-error').removeClass('warning').removeClass('error');
         
         switch (response.type) {
         	case 'fatal':
 	        	$msg = 'The following error occurred, please refresh the page and try again: ' + response.error;
 	        	jQuery('#copy-error').html($msg);
-	        	self.hideSpinner();
-	        	return;
+	        	jQuery('#copy-error').addClass('alert').addClass('error');
         		break;
         		
     		case 'error':
 	    		$msg = 'The following error occurred: ' + response.error;
 	        	jQuery('#copy-error').html($msg);
-	        	self.showReasons = false;
-	        	self.hideSpinner();
-	        	return;
+	        	jQuery('#copy-error').addClass('alert').addClass('error');
     			break;
     			
 			case 'partial':
 				$msg = response.failed;
 				jQuery('#copy-modal').html($msg);
-				self.showReasons = false;
-				self.hideSpinner();
-				return;
+				jQuery('#copy-modal').css('height', 0);
+				jQuery('#copy-modal').attr('cellspacing', '10px');
+				
+				$error = response.error;
+				jQuery('#copy-error').html($error);
+	        	jQuery('#copy-error').addClass('alert').addClass('warning');
 				break;
 				
 			default:
 				$msg = 'Success. You will be redirected to the new document';
     			jQuery("#copy-error").html($msg);
+	        	jQuery('#copy-error').addClass('alert').addClass('success');
+	        	self.redirect(response.url);
         }
     	
-    	self.redirect(response.url);
+    	self.showReasons = false;
+    	self.hideSpinner();
     }
 
     this.redirect = function(url) {
@@ -221,7 +226,8 @@ kt.app.copy = new function() {
         			"select_limit" : 1
         		},
         		"themes" : {
-        			"theme" : "apple"
+        			"theme" : "apple",
+        			"dots"	: false
         		},
                 "plugins" : [ "themes", "json_data", "ui" ]
             })

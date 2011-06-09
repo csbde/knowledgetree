@@ -288,9 +288,10 @@ class documentActionServices extends client_service {
         }
         else if (!empty($actionResult['results'])) {
         	$action = ($params['action'] == 'copy') ? _kt('copied') : _kt('moved');
-        	$failed = $this->formatActionResults($actionResult['results'], $action, $url);
+        	$error = _kt("The following items cannot be {$action}:");
+        	$failed = $this->formatActionResults($actionResult['results'], $url);
         	
-        	$result = array('type' => 'partial', 'failed' => $failed, 'url' => $url);
+        	$result = array('type' => 'partial', 'error' => $error, 'failed' => $failed, 'url' => $url);
         	$this->addResponse('result', json_encode($result));
         }
         else {
@@ -315,28 +316,27 @@ class documentActionServices extends client_service {
         return $organisedItemList;
 	}
 	
-	public function formatActionResults($results, $action = 'copied', $url = '')
+	public function formatActionResults($results, $url = '')
 	{
-		$html = '<tr><td colspan="2">' . _kt("The following items cannot be {$action}") .'</td></tr>';
+		$html = '';
 		
 		if (isset($results['folders'])) {
-			$html .= '<tr><td colspan="2"><b>' . _kt('Folders') . '</b></td></tr>';
-			$html .= '<tr><td><b>' . _kt('Name') . '</b></td><td><b>' . _kt('Reason for Failure') . '</b></td></tr>';
 			foreach ($results['folders'] as $item) {
-				$html .= '<tr><td>' . $item['object']['folder_name'] . '</td><td>' . $item['reason'] . '</td></tr>';
+				$html .= "<tr><td><span class='contenttype folder'><a href='{$item['object']['clean_uri']}'>
+				{$item['object']['folder_name']}</a></span><br />{$item['reason']}</td></tr>";
 			}
 		}
 		
 		if (isset($results['docs'])) {
-			$html .= '<tr></tr><tr><td colspan="2"><b>' . _kt('Documents') . '</b></td></tr>';
-			$html .= '<tr><td><b>' . _kt('Name') . '</b></td><td><b>' . _kt('Reason for Failure') . '</b></td></tr>';
 			foreach ($results['docs'] as $item) {
-				$html .= '<tr><td>' . $item['object']['title'] . '</td><td>' . $item['reason'] . '</td></tr>';
+				$html .= "<tr><td><span class='contenttype {$item['object']['mime_icon_path']}'><a href='{$item['object']['clean_uri']}'>
+				{$item['object']['title']}</a></span><br />{$item['reason']}</td></tr>";
 			}
 		}
 		
-		$html .= '<tr><td colspan="2" class="ul_actions" align="right" valign="top">
-        	<input id="select-btn" class="ul_actions_btns" type="button" value="Continue" onClick="kt.app.copy.redirect(\''.$url.'\');" />
+		$html .= '<tr><td class="ul_actions" align="right" valign="bottom">
+			<span id="copy-spinner" class="copy-spinner none">&nbsp;</span>
+        	<input id="select-btn" class="ul_actions_btns" type="button" value="Continue" onClick="kt.app.copy.showSpinner(); kt.app.copy.redirect(\''.$url.'\');" />
     		</td></tr>';
 		
 		return $html;
