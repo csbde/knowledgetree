@@ -52,24 +52,28 @@ require_once(KT_LIB_DIR . "/browse/browseutil.inc.php");
 
 require_once(KT_LIB_DIR . "/documentmanagement/PhysicalDocumentManager.inc");
 
-// FIXME chain in a notification alert for un-archival requests.
+// FIXME Chain in a notification alert for un-archival requests.
 class KTArchiveTitle extends TitleColumn {
 
-    function renderDocumentLink($aDataRow) {
+    public function renderDocumentLink($aDataRow)
+    {
         $outStr .= $aDataRow["document"]->getName();
         return $outStr;
     }
 
-    function buildFolderLink($aDataRow) {
+    public function buildFolderLink($aDataRow)
+    {
         return KTUtil::addQueryString($_SERVER['PHP_SELF'], sprintf('fFolderId=%d', $aDataRow["folder"]->getId()));
     }
+
 }
 
 class ArchivedDocumentsDispatcher extends KTAdminDispatcher {
 
     var $sHelpPage = 'ktcore/admin/archived documents.html';
 
-    function do_main() {
+    public function do_main()
+    {
         //$this->aBreadcrumbs[] = array('url' => $_SERVER['PHP_SELF'], 'name' => _kt('Archived Documents'));
         //
         //$this->oPage->setBreadcrumbDetails(_kt('browse'));
@@ -85,7 +89,7 @@ class ArchivedDocumentsDispatcher extends KTAdminDispatcher {
 
         $collection = new AdvancedCollection();
 
-        $oCR =& KTColumnRegistry::getSingleton();
+        $oCR = KTColumnRegistry::getSingleton();
         $col = $oCR->getColumn('ktcore.columns.selection');
         $aColOptions = array();
         //$aColOptions['qs_params'] = kt_array_merge($aBaseParams, array('fFolderId'=>$oFolder->getId()));
@@ -118,27 +122,17 @@ class ArchivedDocumentsDispatcher extends KTAdminDispatcher {
               'context' => $this,
               'folder' => $oFolder,
               'breadcrumbs' => $aBreadcrumbs,
-              'collection' => $collection
+              'collection' => $collection,
+              'section_query_string' => $this->sectionQueryString
         );
 
-        $oTemplate =& $this->oValidator->validateTemplate('ktcore/document/admin/archivebrowse');
+        $oTemplate = $this->oValidator->validateTemplate('ktcore/document/admin/archivebrowse');
 
         return $oTemplate->render($aTemplateData);
     }
 
-    public function handleOutput($output)
+    public function do_confirm_restore()
     {
-        print $output;
-    }
-
-    /*
-     * Provide for "archived" browsing.
-     */
-    function do_browse() {
-
-    }
-
-    function do_confirm_restore() {
         $this->aBreadcrumbs[] = array('url' => $_SERVER['PHP_SELF'], 'name' => _kt('Archived Documents'));
 
         $selected_docs = KTUtil::arrayGet($_REQUEST, '_d', array());
@@ -149,7 +143,7 @@ class ArchivedDocumentsDispatcher extends KTAdminDispatcher {
 
         $aDocuments = array();
         foreach ($selected_docs as $doc_id) {
-            $oDoc =& Document::get($doc_id);
+            $oDoc = Document::get($doc_id);
             if (PEAR::isError($oDoc) || ($oDoc === false)) {
                 $this->errorRedirectToMain(_kt('Invalid document id specified. Aborting restore.'));
             } else if ($oDoc->getStatusId() != ARCHIVED) {
@@ -159,23 +153,24 @@ class ArchivedDocumentsDispatcher extends KTAdminDispatcher {
         }
 
 
-        $oTemplating =& KTTemplating::getSingleton();
+        $oTemplating = KTTemplating::getSingleton();
         $oTemplate = $oTemplating->loadTemplate('ktcore/document/admin/dearchiveconfirmlist');
         $oTemplate->setData(array(
             'context' => $this,
             'documents' => $aDocuments,
+            'section_query_string' => $this->sectionQueryString
         ));
-        return $oTemplate;
+
+        return $oTemplate->render();
     }
 
-    function do_finish_restore() {
-
-
+    public function do_finish_restore()
+    {
         $selected_docs = KTUtil::arrayGet($_REQUEST, 'selected_docs', array());
 
         $aDocuments = array();
         foreach ($selected_docs as $doc_id) {
-            $oDoc =& Document::get($doc_id);
+            $oDoc = Document::get($doc_id);
             if (PEAR::isError($oDoc) || ($oDoc === false)) {
                 $this->errorRedirectToMain(_kt('Invalid document id specified. Aborting restore.'));
             } else if ($oDoc->getStatusId() != ARCHIVED) {
@@ -195,13 +190,19 @@ class ArchivedDocumentsDispatcher extends KTAdminDispatcher {
             if (PEAR::isError($res) || ($res == false)) {
                 $this->errorRedirectToMain(sprintf(_kt('%s could not be made "live".'), $oDoc->getName));
             }
-            $oDocumentTransaction = & new DocumentTransaction($oDoc, _kt('Document restored.'), 'ktcore.transactions.update');
+
+            $oDocumentTransaction = new DocumentTransaction($oDoc, _kt('Document restored.'), 'ktcore.transactions.update');
             $oDocumentTransaction->create();
         }
 
         $this->commitTransaction();
         $msg = sprintf(_kt('%d documents made active.'), count($aDocuments));
         $this->successRedirectToMain($msg);
+    }
+
+    public function handleOutput($output)
+    {
+        print $output;
     }
 
 }

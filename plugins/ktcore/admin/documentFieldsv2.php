@@ -45,9 +45,9 @@ require_once(KT_LIB_DIR . "/util/sanitize.inc");
 
 class KTDocumentFieldDispatcher extends KTAdminDispatcher {
 
-    var $bAutomaticTransaction = true;
-	var $bHaveConditional = null;
-    var $sHelpPage = 'ktcore/admin/document fieldsets.html';
+    public $bAutomaticTransaction = true;
+    public $bHaveConditional = null;
+    public $sHelpPage = 'ktcore/admin/document fieldsets.html';
 
     public function predispatch()
     {
@@ -59,26 +59,24 @@ class KTDocumentFieldDispatcher extends KTAdminDispatcher {
             $this->oFieldset = null;
             unset($_REQUEST['fFieldset']); // prevent further attacks.
         } else {
-            $this->aBreadcrumbs[] = array('url' => KTUtil::addQueryStringSelf($this->meldPersistQuery("","edit")), 'name' => $this->oFieldset->getName());
+            $this->aBreadcrumbs[] = array(
+					'url' => KTUtil::addQueryStringSelf($this->meldPersistQuery("","edit")),
+					'name' => $this->oFieldset->getName()
+				    );
         }
         $this->bHaveConditional = KTPluginUtil::pluginIsActive('ktextra.conditionalmetadata.plugin');
     }
 
     function do_main()
     {
-        $oTemplate =& $this->oValidator->validateTemplate('ktcore/metadata/admin/list');
-
+        $oTemplate = $this->oValidator->validateTemplate('ktcore/metadata/admin/list');
         $oTemplate->setData(array(
-		    'context' => $this,
+	    'context' => $this,
             'fieldsets' => KTFieldset::getList("disabled != true AND namespace != 'tagcloud'"),
+	    'section_query_string' => $this->sectionQueryString
         ));
 
         return $oTemplate->render();
-    }
-
-    public function handleOutput($output)
-    {
-        print $output;
     }
 
     function form_create()
@@ -312,11 +310,12 @@ class KTDocumentFieldDispatcher extends KTAdminDispatcher {
             $additional = $oSubDispatcher->describe_fieldset($this->oFieldset);
         }
 
-        $oTemplate =& $this->oValidator->validateTemplate('ktcore/metadata/admin/edit');
+        $oTemplate = $this->oValidator->validateTemplate('ktcore/metadata/admin/edit');
         $oTemplate->setData(array(
             'context' => $this,
             'fieldset_name' => $this->oFieldset->getName(),
             'additional' => $additional,
+	    'section_query_string' => $this->sectionQueryString
         ));
 
         return $oTemplate->render();
@@ -410,6 +409,7 @@ class KTDocumentFieldDispatcher extends KTAdminDispatcher {
     {
         $oForm = $this->form_edit();
         $this->oPage->setBreadcrumbDetails(_kt('edit fieldset'));
+
         return $oForm->renderPage(_kt("Edit Fieldset"));
     }
 
@@ -461,6 +461,11 @@ class KTDocumentFieldDispatcher extends KTAdminDispatcher {
         }
 
         return $this->successRedirectTo('edit', _kt("Fieldset details updated."));
+    }
+
+    public function handleOutput($output)
+    {
+        print $output;
     }
 
 }

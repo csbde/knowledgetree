@@ -64,7 +64,7 @@ class KTFolderAddDocumentAction extends KTFolderAction {
         return 'javascript:kt.app.upload.showUploadWindow();';
     }
 
-    function getButton(){
+    function getButton() {
         $btn = array();
         $btn['display_text'] = _kt('Upload');
         $btn['arrow_class'] = 'arrow_upload';
@@ -106,7 +106,7 @@ class KTFolderAddDocumentAction extends KTFolderAction {
 
         $aTypes = array();
         foreach (DocumentType::getListForUserAndFolder($this->oUser, $this->oFolder) as $oDocumentType) {
-            if(!$oDocumentType->getDisabled()) {
+            if (!$oDocumentType->getDisabled()) {
                 $aTypes[] = $oDocumentType;
             }
         }
@@ -114,16 +114,16 @@ class KTFolderAddDocumentAction extends KTFolderAction {
         // Onchange gets the name of the file and inserts it as the document title.
         $sFileOnchange = "javascript:
             var doc = document.getElementById('document_name');
-            if(doc.value == ''){
+            if (doc.value == '') {
                 var arrPath=this.value.split('/');
-                if(arrPath.length == 1){
+                if (arrPath.length == 1) {
                     var arrPath=this.value.split('\\\');
                 }
                 var name=arrPath[arrPath.length-1];
                 var name=name.split('.');
                 var len = name.length;
-                if(len > 1){
-                    if(name[len-1].length <= 4){
+                if (len > 1) {
+                    if (name[len-1].length <= 4) {
                         name.pop();
                     }
                 }
@@ -161,7 +161,7 @@ class KTFolderAddDocumentAction extends KTFolderAction {
 
         // Electronic Signature if enabled
         global $default;
-        if($default->enableESignatures){
+        if ($default->enableESignatures) {
             $oForm->addWidget(array('ktcore.widgets.info', array(
                     'label' => _kt('This action requires authentication'),
                     'description' => _kt('Please provide your user credentials as confirmation of this action.'),
@@ -204,8 +204,8 @@ class KTFolderAddDocumentAction extends KTFolderAction {
             )),
         ));
 
-        if($default->enableESignatures){
-            $oForm->addValidator(array('electonic.signatures.validators.authenticate', array(
+        if ($default->enableESignatures) {
+            $oForm->addValidator(array('electronic.signatures.validators.authenticate', array(
                 'object_id' => $this->oFolder->getId(),
                 'type' => 'folder',
                 'action' => 'ktcore.transactions.add_document',
@@ -237,7 +237,7 @@ class KTFolderAddDocumentAction extends KTFolderAction {
         $oForm = $this->form_initialdata();
         $res = $oForm->validate();
         if (!empty($res['errors'])) {
-            if(!isset($res['errors']['file'])){
+            if (!isset($res['errors']['file'])) {
                 $aError['file'] = array(_kt('Please reselect the file to upload.'));
             }
             return $oForm->handleError('', $aError);

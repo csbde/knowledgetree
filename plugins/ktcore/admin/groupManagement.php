@@ -101,7 +101,7 @@ class KTGroupAdminDispatcher extends KTAdminDispatcher {
             'search_results' => $searchResults,
             'no_search' => $noSearch,
             'old_search' => $name,
-            'section_query_string' => 'fCategory=userSetup&subSection=groups&expanded=1'
+            'section_query_string' => $this->sectionQueryString
         );
 
         return $template->render($templateData);
@@ -144,7 +144,7 @@ class KTGroupAdminDispatcher extends KTAdminDispatcher {
             'edit_fields' => $editFields,
             'edit_group' => $group,
             'old_search' => $oldSearch,
-            'section_query_string' => 'fCategory=userSetup&subSection=groups&expanded=1'
+            'section_query_string' => $this->sectionQueryString
         );
 
         return $template->render($templateData);
@@ -208,7 +208,7 @@ class KTGroupAdminDispatcher extends KTAdminDispatcher {
             'group_users' => $groupUsers,
             'group' => $group,
             'old_search' => $oldSearch,
-            'section_query_string' => 'fCategory=userSetup&subSection=groups&expanded=1'
+            'section_query_string' => $this->sectionQueryString
         );
 
         return $template->render($templateData);
@@ -270,7 +270,7 @@ class KTGroupAdminDispatcher extends KTAdminDispatcher {
             'edit_group' => $group,
             'widget' => $jsonWidget,
             'old_search' => KTUtil::arrayGet($_REQUEST, 'old_search'),
-            'section_query_string' => 'fCategory=userSetup&subSection=groups&expanded=1'
+            'section_query_string' => $this->sectionQueryString
         );
 
         return $template->render($templateData);
@@ -464,9 +464,9 @@ class KTGroupAdminDispatcher extends KTAdminDispatcher {
             'submit_label' => _kt('Create group'),
             'action' => 'createGroup',
             'fail_action' => 'addGroup',
-            'cancel_url' => "{$_SERVER['SCRIPT_NAME']}?fCategory=userSetup&subSection=groups&expanded=1",
+            'cancel_url' => "{$_SERVER['SCRIPT_NAME']}?{$this->sectionQueryString}",
             'context' => $this,
-            'targeturl' => "{$_SERVER['SCRIPT_NAME']}?fCategory=userSetup&subSection=groups&expanded=1"
+            'targeturl' => "{$_SERVER['SCRIPT_NAME']}?{$this->sectionQueryString}"
         ));
 
         $form->setWidgets(array(
@@ -564,7 +564,7 @@ class KTGroupAdminDispatcher extends KTAdminDispatcher {
             'add_fields' => $add_fields,
             'authentication_sources' => $authenticationSources,
             'form' => $this->form_addGroup(),
-            'section_query_string' => 'fCategory=userSetup&subSection=groups&expanded=1'
+            'section_query_string' => $this->sectionQueryString
         );
 
         return $template->render($templateData);

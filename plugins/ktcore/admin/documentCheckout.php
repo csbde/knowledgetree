@@ -44,12 +44,15 @@ require_once(KT_LIB_DIR . '/templating/kt3template.inc.php');
 require_once(KT_LIB_DIR . '/documentmanagement/DocumentTransaction.inc');
 
 class KTCheckoutAdminDispatcher extends KTAdminDispatcher {
-    var $sHelpPage = 'ktcore/admin/document checkout.html';
-    function check() {
+
+    public $sHelpPage = 'ktcore/admin/document checkout.html';
+
+    public function check()
+    {
         return true;
     }
 
-    function do_main() {
+    public function do_main() {
         //$this->aBreadcrumbs[] = array('name' => _kt('Document Checkout'));
         //$this->oPage->setBreadcrumbDetails(_kt('list checked out documents'));
 
@@ -60,6 +63,7 @@ class KTCheckoutAdminDispatcher extends KTAdminDispatcher {
         $oTemplate->setData(array(
             'context' => $this,
             'documents' => $aDocuments,
+            'section_query_string' => $this->sectionQueryString
         ));
 
         return $oTemplate->render();
@@ -70,8 +74,8 @@ class KTCheckoutAdminDispatcher extends KTAdminDispatcher {
         print $output;
     }
 
-
-    function do_confirm() {
+    public function do_confirm()
+    {
         $this->aBreadcrumbs[] = array('name' => _kt('Document Checkout'));
         $this->oPage->setBreadcrumbDetails(_kt('confirm forced check-in'));
 
@@ -98,12 +102,14 @@ class KTCheckoutAdminDispatcher extends KTAdminDispatcher {
             'context' => $this,
             'document' => $oDocument,
             'checkout_user' => $oUser,
+            'section_query_string' => $this->sectionQueryString
         ));
-        return $oTemplate;
 
+        return $oTemplate->render();
     }
 
-    function do_checkin() {
+    public function do_checkin()
+    {
         global $default;
 
         $document_id = KTUtil::arrayGet($_REQUEST, 'fDocumentId');
@@ -117,7 +123,7 @@ class KTCheckoutAdminDispatcher extends KTAdminDispatcher {
         }
 
         $this->startTransaction();
-        // actually do the checkin.
+
         $oDocument->setIsCheckedOut(0);
         $oDocument->setCheckedOutUserID(-1);
         if (!$oDocument->update()) {
@@ -126,21 +132,18 @@ class KTCheckoutAdminDispatcher extends KTAdminDispatcher {
         }
 
         // checkout cancelled transaction
-        $oDocumentTransaction = & new DocumentTransaction($oDocument, _kt('Document checked out cancelled'), 'ktcore.transactions.force_checkin');
+        $oDocumentTransaction = new DocumentTransaction($oDocument, _kt('Document checked out cancelled'), 'ktcore.transactions.force_checkin');
         $res = $oDocumentTransaction->create();
         if (PEAR::isError($res) || ($res == false)) {
             $this->rollbackTransaction();
             return $this->errorRedirectToMain(_kt("Failed to force the document's check-in."));
         }
+
         $this->commitTransaction(); // FIXME do we want to do this if we can't created the document-transaction?
+
         return $this->successRedirectToMain(sprintf(_kt('Successfully forced "%s" to be checked in.'), $oDocument->getName()));
     }
 
-
 }
-
-// use the new admin framework.
-//$d = new KTCheckoutAdminDispatcher();
-//$d->dispatch();
 
 ?>

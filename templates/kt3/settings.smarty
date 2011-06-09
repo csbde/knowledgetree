@@ -22,7 +22,7 @@
 			<a href="#" onclick="jQuery('#{$categoryItem.name}').toggle();">{$categoryItem.title}</a>
 		</div>
 		<div id="{$categoryItem.name}" class="settings-content" style="display:{if $categoryItem.autoDisplay}block{else}none{/if};">
-			{$context->loadSection($categoryItem.fullname)}
+			{$context->loadSection($categoryItem)}
 			<div style="clear:both">&nbsp;</div>
 		</div>
 	{/foreach}

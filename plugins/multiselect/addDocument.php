@@ -5,7 +5,7 @@
  * KnowledgeTree Community Edition
  * Document Management Made Simple
  * Copyright (C) 2008, 2009, 2010 KnowledgeTree Inc.
- * 
+ *
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License version 3 as published by the
@@ -55,9 +55,9 @@ class MultiDocumentAddAction extends KTFolderAction {
     var $oDocumentType = null;
 
 	/**
-	 * returns a display name 'Add Document' 
-	 * @return 
-	 * 
+	 * returns a display name 'Add Document'
+	 * @return
+	 *
 	 * iNET Process
 	 */
     function getDisplayName() {
@@ -66,21 +66,21 @@ class MultiDocumentAddAction extends KTFolderAction {
 
 	/**
 	 * get the button
-	 * @return 
-	 * 
+	 * @return
+	 *
 	 * iNET Process
 	 */
-    function getButton(){
+    function getButton() {
         $btn = array();
         $btn['display_text'] = _kt('Upload');
         $btn['arrow_class'] = 'arrow_upload';
         return $btn;
     }
-    
+
 	/**
 	 * check if document can be added or not
-	 * @return 
-	 * 
+	 * @return
+	 *
 	 * iNET Process
 	 */
     function check() {
@@ -102,8 +102,8 @@ class MultiDocumentAddAction extends KTFolderAction {
     }
 	/**
 	 * Initializes for data
-	 * @return 
-	 * 
+	 * @return
+	 *
 	 * iNET Process
 	 */
     function form_initialdata() {
@@ -123,7 +123,7 @@ class MultiDocumentAddAction extends KTFolderAction {
 
         $aTypes = array();
         foreach (DocumentType::getListForUserAndFolder($this->oUser, $this->oFolder) as $oDocumentType) {
-            if(!$oDocumentType->getDisabled()) {
+            if (!$oDocumentType->getDisabled()) {
                 $aTypes[] = $oDocumentType;
             }
         }
@@ -131,16 +131,16 @@ class MultiDocumentAddAction extends KTFolderAction {
         // Onchange gets the name of the file and inserts it as the document title.
         $sFileOnchange = "javascript:
             var doc = document.getElementById('document_name');
-            if(doc.value == ''){
+            if (doc.value == '') {
                 var arrPath=this.value.split('/');
-                if(arrPath.length == 1){
+                if (arrPath.length == 1) {
                     var arrPath=this.value.split('\\\');
                 }
                 var name=arrPath[arrPath.length-1];
                 var name=name.split('.');
                 var len = name.length;
-                if(len > 1){
-                    if(name[len-1].length <= 4){
+                if (len > 1) {
+                    if (name[len-1].length <= 4) {
                         name.pop();
                     }
                 }
@@ -178,7 +178,7 @@ class MultiDocumentAddAction extends KTFolderAction {
 
         // Electronic Signature if enabled
         global $default;
-        if($default->enableESignatures){
+        if ($default->enableESignatures) {
             $oForm->addWidget(array('ktcore.widgets.info', array(
                     'label' => _kt('This action requires authentication'),
                     'description' => _kt('Please provide your user credentials as confirmation of this action.'),
@@ -221,8 +221,8 @@ class MultiDocumentAddAction extends KTFolderAction {
             )),
         ));
 
-        if($default->enableESignatures){
-            $oForm->addValidator(array('electonic.signatures.validators.authenticate', array(
+        if ($default->enableESignatures) {
+            $oForm->addValidator(array('electronic.signatures.validators.authenticate', array(
                 'object_id' => $this->oFolder->getId(),
                 'type' => 'folder',
                 'action' => 'ktcore.transactions.add_document',
@@ -237,7 +237,7 @@ class MultiDocumentAddAction extends KTFolderAction {
 	 * Get the fieldsets for a particular document type
 	 * @return array
 	 * @param $iTypeId Object
-	 * 
+	 *
 	 * iNET Process
 	 */
     function getFieldsetsForType($iTypeId) {
@@ -261,8 +261,8 @@ class MultiDocumentAddAction extends KTFolderAction {
     }
 	/**
 	 * Checks for validations and errors
-	 * @return 
-	 * 
+	 * @return
+	 *
 	 * iNET Process
 	 */
     function do_processInitialData() {
@@ -270,7 +270,7 @@ class MultiDocumentAddAction extends KTFolderAction {
         $oForm = $this->form_initialdata();
         $res = $oForm->validate();
         if (!empty($res['errors'])) {
-            if(!isset($res['errors']['file'])){
+            if (!isset($res['errors']['file'])) {
                 $aError['file'] = array(_kt('Please reselect the file to upload.'));
             }
             return $oForm->handleError('', $aError);
@@ -316,7 +316,7 @@ class MultiDocumentAddAction extends KTFolderAction {
 	 * get the metadata
 	 * @return form
 	 * @param $sess_key Object
-	 * 
+	 *
 	 * iNET Process
 	 */
     function form_metadata($sess_key) {
@@ -353,7 +353,7 @@ class MultiDocumentAddAction extends KTFolderAction {
 	/**
 	 * render metadata for a document
 	 * @return form
-	 * 
+	 *
 	 * iNET Process
 	 */
     function do_metadata() {
@@ -365,7 +365,7 @@ class MultiDocumentAddAction extends KTFolderAction {
 	/**
 	 * finally adds a document
 	 * @return.
-	 * 
+	 *
 	 * iNET Process
 	 */
     function do_finalise() {
@@ -402,7 +402,7 @@ class MultiDocumentAddAction extends KTFolderAction {
                 // ALT.METADATA.LAYER.DIE.DIE.DIE
                 if (!is_null($val)) {
                 	// multiselect change start
-                	if(is_array($val) && $oField->getHasInetLookup())
+                	if (is_array($val) && $oField->getHasInetLookup())
 					{
 						$val = join(", ",$val);
 					}

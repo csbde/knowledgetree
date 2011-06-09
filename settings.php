@@ -45,8 +45,9 @@ require_once(KT_LIB_DIR . '/plugins/KTAdminNavigation.php');
 
 class AdminSplashDispatcher extends KTAdminDispatcher {
 
-    public $category = '';
+    private $defaultCategory = '';
     public $sSection = 'settings';
+    public $eventVar = null;
 
     function AdminSplashDispatcher()
     {
@@ -61,14 +62,14 @@ class AdminSplashDispatcher extends KTAdminDispatcher {
     {
         $registry = KTAdminNavigationRegistry::getSingleton();
         $categories = $registry->getCategories();
-		reset($categories);
-		$defaultCategory = current($categories);
-		$this->category = $defaultCategory['name'];
+	reset($categories);
+	$defaultCategory = current($categories);
+	$this->defaultCategory = $defaultCategory['name'];
 
         $KTConfig = KTConfig::getSingleton();
         $condensedAdmin = $KTConfig->get('condensedAdminUI');
 
-		// TODO Figure whether this is still relevant and remove if not.
+	// TODO Figure whether this is still relevant and remove if not.
         // We need to investigate sub_url solutions.
         $allItems = array();
         if ($condensedAdmin) {
@@ -83,14 +84,14 @@ class AdminSplashDispatcher extends KTAdminDispatcher {
             $this->includeOlark();
         }
 
-		$templating = KTTemplating::getSingleton();
+	$templating = KTTemplating::getSingleton();
         $template = $templating->loadTemplate('kt3/settings');
         $templateData = array(
-				'context' => $this,
-				'categories' => $categories,
-				'all_items' => $allItems,
-				'items' => $this->getCategoryItems(),
-				'baseurl' => $_SERVER['PHP_SELF'],
+                            'context' => $this,
+                            'categories' => $categories,
+                            'all_items' => $allItems,
+                            'items' => $this->getCategoryItems(),
+                            'baseurl' => $_SERVER['PHP_SELF'],
         );
 
         return $template->render($templateData);
@@ -101,8 +102,8 @@ class AdminSplashDispatcher extends KTAdminDispatcher {
     {
         $page = $GLOBALS['main'];
 
-        $category = KTUtil::arrayGet($_REQUEST, 'fCategory', $this->category);
-        $subSection = KTUtil::arrayGet($_REQUEST, 'subSection', null);
+        $category = KTUtil::arrayGet($_REQUEST, 'fCategory', $this->defaultCategory);
+        $subSection = KTUtil::arrayGet($_REQUEST, 'subsection', null);
         $expanded = KTUtil::arrayGet($_REQUEST, 'expanded', false);
 
         $javascript[] = 'resources/js/newui/hide_system_links.js';
@@ -126,9 +127,10 @@ class AdminSplashDispatcher extends KTAdminDispatcher {
         }
 	else {
 	    foreach ($items as $key => $item) {
-			if ($subSection == $item['name'] && $expanded) {
-			    $items[$key]['autoDisplay'] = true;
-			}
+                $items[$key]['autoDisplay'] = false;
+                if ($subSection == $item['name'] && $expanded) {
+                    $items[$key]['autoDisplay'] = true;
+                }
 	    }
 	}
 
@@ -149,16 +151,14 @@ class AdminSplashDispatcher extends KTAdminDispatcher {
         $this->oPage->setBodyOnload("javascript: ktOlark.setUserData('" . $user->getName() . "', '" . $user->getEmail() . "');");
     }
 
-    public function loadSection($subUrl)
+    public function loadSection($section)
     {
+        $subUrl = $section['fullname'];
 	$registry = KTAdminNavigationRegistry::getSingleton();
 	if ($registry->isRegistered($subUrl)) {
 	   $dispatcher = $registry->getDispatcher($subUrl);
-
-	   $parts = explode('/', $subUrl);
-
-	   $registry = KTAdminNavigationRegistry::getSingleton();
-	   $category = $registry->getCategory($parts[0]);
+	   $dispatcher->setCategoryDetail($subUrl);
+           $dispatcher->setActiveStatus($section['autoDisplay']);
 
 	   return $dispatcher->dispatch();
 	}
@@ -188,7 +188,7 @@ if (empty($subUrl)) {
     } else {
        // FIXME (minor) redirect to no-suburl?
        $dispatcher = new AdminSplashDispatcher();
-       $dispatcher->category = $subUrl;
+       $dispatcher->defaultCategory = $subUrl;
     }
 }
 
