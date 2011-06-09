@@ -199,9 +199,9 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
             'context' => $this,
             'workFlowName' => $oSelWorkflow->getName(),
             'workFlowId' => $oSelWorkflow->getId(),
-
+ 'section_query_string' => '&fCategory=workflows',
         ));
-        return $oTemplate;
+        return $oTemplate->render();
     }
 
     /*
