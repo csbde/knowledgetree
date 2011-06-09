@@ -71,10 +71,11 @@ class KTDocumentTypeDispatcher extends KTAdminDispatcher {
         $oTemplating =& KTTemplating::getSingleton();
         $oTemplate = $oTemplating->loadTemplate('ktcore/documenttypes/list');
         $oTemplate->setData(array(
-             'context' => $this,
+            'context' => $this,
             'document_types' => $aDocumentTypes,
             'associated_types' => $aAssocDocs,
-            'add_fields' => $addFields
+            'add_fields' => $addFields,
+			'section_query_string' => $this->sectionQueryString
         ));
 
         return $oTemplate->render();
@@ -168,7 +169,7 @@ class KTDocumentTypeDispatcher extends KTAdminDispatcher {
         $aAvailableFieldsetIds = array_diff($aAvailableFieldsetIds, $aCurrentFieldsetIds);
 
         $vocab = array();
-	foreach ($aAvailableFieldsetIds as $iFieldsetId) {
+		foreach ($aAvailableFieldsetIds as $iFieldsetId) {
             $oFieldset = KTFieldset::get($iFieldsetId);
             // Note, items gets sanitize on Render
             $vocab[$oFieldset->getId()] = htmlspecialchars_decode($oFieldset->getName());
@@ -192,9 +193,10 @@ class KTDocumentTypeDispatcher extends KTAdminDispatcher {
             'bAnyFieldsets' => count($aAvailableFieldsets) > 0,
             'bAvailableFieldsets' => count($vocab) > 0,
             'availableWidget' => $availableTypesWidget,
+			'section_query_string' => $this->sectionQueryString
         ));
 
-        return $oTemplate;
+        return $oTemplate->render();
     }
 
     function do_editobject() {
