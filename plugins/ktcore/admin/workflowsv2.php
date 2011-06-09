@@ -130,13 +130,10 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
             }
         }
 
-        //$this->aBreadcrumbs[] = array(
-        //    'url' => $_SERVER['PHP_SELF'],
-        //    'name' => _kt('Workflows'),
-        //);
-
         if (!is_null($this->oWorkflow)) {
-            $this->oPage->addPortlet(new WorkflowNavigationPortlet(_kt("Workflow Administration"), $this->oWorkflow));
+        	$portlet = new WorkflowNavigationPortlet(_kt("Workflow Administration"), $this->oWorkflow);
+        	$portlet->setSectionQueryString($this->sectionQueryString);
+            $this->oPage->addPortlet($portlet);
 
             $this->aBreadcrumbs[] = array(
                 'url' => KTUtil::addQueryStringSelf(sprintf('action=view&fWorkflowId=%d', $iWorkflowId)),
@@ -145,12 +142,6 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
         }
 
         $this->HAVE_GRAPHVIZ = false;
-/*        $dotCommand = KTUtil::findCommand("ui/dot", 'dot');
-        if (!empty($dotCommand)) {
-            $this->HAVE_GRAPHVIZ = true;
-            $this->dotCommand = $dotCommand;
-        }
-*/
     }
 
     public function do_main()
@@ -203,7 +194,7 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
             'context' => $this,
             'workFlowName' => $oSelWorkflow->getName(),
             'workFlowId' => $oSelWorkflow->getId(),
- 'section_query_string' => '&fCategory=workflows',
+			'section_query_string' => $this->sectionQueryString,
         ));
         return $oTemplate->render();
     }
@@ -531,6 +522,7 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
             'context' => $this,
             'workflow_name' => $this->oWorkflow->getName(),
             'edit_form' => $oForm,
+            'section_query_string' => $this->sectionQueryString,
         ));
         return $oTemplate->render();
     }
@@ -672,6 +664,7 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
             'states' => KTWorkflowState::getByWorkflow($this->oWorkflow),
             'transitions' => $transitions,
             'availability' => $availability,
+            'section_query_string' => $this->sectionQueryString,
         ));
 
         return $oTemplate->render();
@@ -773,7 +766,8 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
         $oTemplate = $this->oValidator->validateTemplate('ktcore/workflow/admin/add_states');
         $oTemplate->setData(array(
             'context' => $this,
-            'form' => $oForm
+            'form' => $oForm,
+            'section_query_string' => $this->sectionQueryString,
         ));
         return $oTemplate->render();
     }
@@ -880,7 +874,8 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
         $oTemplate = $this->oValidator->validateTemplate('ktcore/workflow/admin/add_transitions');
         $oTemplate->setData(array(
             'context' => $this,
-            'form' => $oForm
+            'form' => $oForm,
+            'section_query_string' => $this->sectionQueryString,
         ));
         return $oTemplate->render();
     }
