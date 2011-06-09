@@ -68,6 +68,7 @@ class KTPluginDispatcher extends KTAdminDispatcher {
             'context' => $this,
             'plugins' => $aPlugins,
             'enabled_plugins' => $aEnabledPluginIds,
+            'section_query_string' => $this->sectionQueryString
         ));
 
         return $oTemplate->render();
