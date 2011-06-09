@@ -7,6 +7,8 @@
 <input type="submit" name="submit" value="{i18n}Change{/i18n}" />
 </form>
 
+<br />
+
 <h2>{i18n}Type-specific field sets{/i18n}</h2>
 
 <p class="descriptiveText"></p>
