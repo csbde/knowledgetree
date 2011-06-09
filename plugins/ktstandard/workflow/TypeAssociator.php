@@ -156,6 +156,7 @@ class WorkflowTypeAllocationDispatcher extends KTAdminDispatcher {
             'types_mapping' => $aTypeMapping,
             'types' => $aTypes,
             'workflows' => $aWorkflows,
+            'section_query_string' => $this->sectionQueryString,
         ));
         return $oTemplate->render();
     }
@@ -189,6 +190,11 @@ class WorkflowTypeAllocationDispatcher extends KTAdminDispatcher {
         }
 
         $this->successRedirectToMain(_kt('Type mapping updated.'));
+    }
+    
+    public function handleOutput($output)
+    {
+        print $output;
     }
 }
 
