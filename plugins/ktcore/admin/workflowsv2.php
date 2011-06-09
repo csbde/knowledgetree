@@ -60,16 +60,19 @@ require_once(KT_LIB_DIR . '/widgets/forms.inc.php');
 require_once(KT_LIB_DIR . "/util/sanitize.inc");
 
 class WorkflowNavigationPortlet extends KTPortlet {
+
     var $oWorkflow;
     var $sHelpPage = 'ktcore/admin/workflow.html';
     var $bActive = true;
 
-    function WorkflowNavigationPortlet($sTitle, $oWorkflow = null) {
+    public function WorkflowNavigationPortlet($sTitle, $oWorkflow = null)
+    {
         $this->oWorkflow = $oWorkflow;
         parent::KTPortlet($sTitle);
     }
 
-    function render() {
+    public function render()
+    {
         if (is_null($this->oWorkflow)) { return _kt('No Workflow Selected.'); }
 
         $aAdminPages = array();
@@ -88,15 +91,18 @@ class WorkflowNavigationPortlet extends KTPortlet {
 
         return $oTemplate->render($aTemplateData);
     }
+
 }
 
 class KTWorkflowAdminV2 extends KTAdminDispatcher {
+
     var $oWorkflow;
     var $oState;
     var $oTransition;
     var $HAVE_GRAPHVIZ;
 
-    function predispatch() {
+    public function predispatch()
+    {
         $this->persistParams(array('fWorkflowId', 'fStateId', 'fTransitionId'));
 
         $iWorkflowId = KTUtil::arrayGet($_REQUEST, 'fWorkflowId');
@@ -147,7 +153,8 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
 */
     }
 
-    function do_main() {
+    public function do_main()
+    {
         $oTemplate = $this->oValidator->validateTemplate('ktcore/workflow/admin/list');
 
         $aWorkflows = KTWorkflow::getList();
@@ -161,32 +168,29 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
         return $oTemplate->render();
     }
 
-    public function handleOutput($output)
+    public function do_branchConfirm()
     {
-        print $output;
-    }
-
-    function do_branchConfirm() {
         $submit = KTUtil::arrayGet($_REQUEST, 'submit' , array());
         if (array_key_exists('copy',$submit)) {
             $selection = KTUtil::arrayGet($_REQUEST, 'workflowSelect' , array());
-            if(empty($selection)){
-            	$this->errorRedirectToMain(_kt('No workflow selected.'));
+            if (empty($selection)) {
+                $this->errorRedirectToMain(_kt('No workflow selected.'));
             }
             return $this->do_copy();
         }
         if (array_key_exists('confirmCopy',$submit)) {
             $workflowId = KTUtil::arrayGet($_REQUEST, 'workflowId' , array());
-            if(empty($workflowId)){
-            	$this->errorRedirectToMain(_kt('An unexpected error has occured.'));
+            if (empty($workflowId)) {
+                $this->errorRedirectToMain(_kt('An unexpected error has occured.'));
             }
             return $this->do_confirmCopy();
         }
         $this->errorRedirectToMain(_kt('No action specified.'));
     }
 
-    function do_copy() {
-    	$this->aBreadcrumbs[] = array('url' =>  $_SERVER['PHP_SELF'], 'name' => _kt('Copy Workflow'));
+    public function do_copy()
+    {
+        $this->aBreadcrumbs[] = array('url' =>  $_SERVER['PHP_SELF'], 'name' => _kt('Copy Workflow'));
         $selection = KTUtil::arrayGet($_REQUEST, 'workflowSelect' , array());
         $this->oPage->setTitle('Copy Workflow');
 
@@ -212,7 +216,8 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
      *
      * @return true on success or PEAR error
      */
-    function copyStateNotifications ($oldState, $newState) {
+    public function copyStateNotifications ($oldState, $newState)
+    {
         // we need the old one
         $aAllowed = KTWorkflowUtil::getInformedForState($oldState);
         // FIXME check that these are all users.
@@ -224,25 +229,26 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
         return true;
     }
 
-    function do_confirmCopy(){
-    	$oSelWorkflow = KTWorkflow::get(KTUtil::arrayGet($_REQUEST, 'workflowId' , array()));
-    	$sWorkflowName = KTUtil::arrayGet($_REQUEST, 'workflowName' , array());
+    public function do_confirmCopy()
+    {
+        $oSelWorkflow = KTWorkflow::get(KTUtil::arrayGet($_REQUEST, 'workflowId' , array()));
+        $sWorkflowName = KTUtil::arrayGet($_REQUEST, 'workflowName' , array());
 
-    	// Check that the workflow does not exist already
-    	$sWorkflowName = str_replace(array('   ', '  '), array(' ', ' '), $sWorkflowName);
+        // Check that the workflow does not exist already
+        $sWorkflowName = str_replace(array('   ', '  '), array(' ', ' '), $sWorkflowName);
         $oWorkflow = KTWorkflow::getByName($sWorkflowName);
         if (!PEAR::isError($oWorkflow)) {
             return $this->errorRedirectToMain(_kt("A workflow with that name already exists.  Please choose a different name for this workflow."));
         }
 
-    	// create the initial workflow
+        // create the initial workflow
         $oNewWorkflow = KTWorkflow::createFromArray(array(
             'name' => $sWorkflowName,
             'humanname' => $sWorkflowName,
             'enabled' => true,
         ));
 
-    	// get selected workflow states from database
+        // get selected workflow states from database
         $oSelWorkflowStates = KTWorkflowState::getByWorkflow($oSelWorkflow);
 
         // array to store map of old and new states
@@ -263,51 +269,51 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
 
             // Get all state permission assignments for old workflow transitions
             // and copy for copied workflow state permission assignments
-	        $aPermissionAssignments = KTWorkflowStatePermissionAssignment::getByState($oOldState);
-	        if(count($aPermissionAssignments) > 0){
-		        foreach ($aPermissionAssignments as $oPermAssign) {
-		            for($i=0;$i<count($aStatesMap[oldId]);$i++){
-			        	if($aStatesMap[oldId][$i] == $oPermAssign->getStateId()){
-			        		$iStateId = $aStatesMap[newId][$i];
+            $aPermissionAssignments = KTWorkflowStatePermissionAssignment::getByState($oOldState);
+            if (count($aPermissionAssignments) > 0) {
+                foreach ($aPermissionAssignments as $oPermAssign) {
+                    for ($i = 0; $i < count($aStatesMap[oldId]); $i++) {
+                        if ($aStatesMap[oldId][$i] == $oPermAssign->getStateId()) {
+                            $iStateId = $aStatesMap[newId][$i];
 
-			        		$res = KTWorkflowStatePermissionAssignment::createFromArray(array(
-					            'iStateId' => $iStateId,
-			                    'iPermissionId' => $oPermAssign->getPermissionId(),
-			                    'iDescriptorId' => $oPermAssign->getDescriptorId(),
-			                ));
+                            $res = KTWorkflowStatePermissionAssignment::createFromArray(array(
+                                'iStateId' => $iStateId,
+                                'iPermissionId' => $oPermAssign->getPermissionId(),
+                                'iDescriptorId' => $oPermAssign->getDescriptorId(),
+                            ));
 
-				        	if (PEAR::isError($res)) {
-				            	return $this->errorRedirectToMain(sprintf(_kt("Unable to copy state permission assignment: %s"), $res->getMessage()));
-				        	}
-			        	}
-			        }
-	        	}
-	        }
+                            if (PEAR::isError($res)) {
+                                return $this->errorRedirectToMain(sprintf(_kt("Unable to copy state permission assignment: %s"), $res->getMessage()));
+                            }
+                        }
+                    }
+                }
+            }
 
-	        // Copy all disabled actions for states
-	        $aDisabled = KTWorkflowUtil::getDisabledActionsForState($oOldState);
-	        $res = KTWorkflowUtil::setDisabledActionsForState($oNewState, $aDisabled);
+            // Copy all disabled actions for states
+            $aDisabled = KTWorkflowUtil::getDisabledActionsForState($oOldState);
+            $res = KTWorkflowUtil::setDisabledActionsForState($oNewState, $aDisabled);
 
-	        // Copy all enabled actions for states
-	        $aDisabled = KTWorkflowUtil::getEnabledActionsForState($oOldState);
-	        $res = KTWorkflowUtil::setEnabledActionsForState($oNewState, $aDisabled);
+            // Copy all enabled actions for states
+            $aDisabled = KTWorkflowUtil::getEnabledActionsForState($oOldState);
+            $res = KTWorkflowUtil::setEnabledActionsForState($oNewState, $aDisabled);
 
-	        if (PEAR::isError($res)) {
-            	return $this->errorRedirectToMain(sprintf(_kt("Unable to copy disabled state actions: %s"), $res->getMessage()));
-        	}
+            if (PEAR::isError($res)) {
+                return $this->errorRedirectToMain(sprintf(_kt("Unable to copy disabled state actions: %s"), $res->getMessage()));
+            }
 
             $this->copyStateNotifications ($oOldState, $oNewState);
         }
 
         // update workflow and set initial state
-        for($i=0;$i<count($aStatesMap[oldId]);$i++){
-        	if($oSelWorkflow->getStartStateId() == $aStatesMap[oldId][$i]){
-        		$oNewWorkflow->setStartStateId($aStatesMap[newId][$i]);
-        		$res = $oNewWorkflow->update();
-		        if (PEAR::isError($res)) {
-		            $this->errorRedirectToMain(sprintf(_kt("Failed to update workflow: %s"), $res->getMessage()));
-		        }
-        	}
+        for ($i = 0; $i < count($aStatesMap[oldId]); $i++) {
+            if ($oSelWorkflow->getStartStateId() == $aStatesMap[oldId][$i]) {
+                $oNewWorkflow->setStartStateId($aStatesMap[newId][$i]);
+                $res = $oNewWorkflow->update();
+                if (PEAR::isError($res)) {
+                    $this->errorRedirectToMain(sprintf(_kt("Failed to update workflow: %s"), $res->getMessage()));
+                }
+            }
         }
 
         // set controlled workflow actions
@@ -325,11 +331,12 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
 
         // copy transitions for workflow
         foreach ($oSelWorkflowTransitions as $oOldTransition) {
-            for($i=0;$i<count($aStatesMap[oldId]);$i++){
-	        	if($oOldTransition->getTargetStateId() == $aStatesMap[oldId][$i]){
-	        		$iDestState = $aStatesMap[newId][$i];
-	        	}
-	        }
+            for ($i = 0; $i < count($aStatesMap[oldId]); $i++) {
+                if ($oOldTransition->getTargetStateId() == $aStatesMap[oldId][$i]) {
+                    $iDestState = $aStatesMap[newId][$i];
+                }
+            }
+
             $oNewTransition = KTWorkflowTransition::createFromArray(array(
                 'workflowid' => $oNewWorkflow->getId(),
                 'Name' => $oOldTransition->getName(),
@@ -351,58 +358,61 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
             // map source transitions onto states
             $aOldTransitionSources = KTWorkflowAdminUtil::getSourceStates($oOldTransition);
             $aSourceStates = array();
-            for($j=0;$j<count($aOldTransitionSources);$j++){
-	            for($i=0;$i<count($aStatesMap[oldId]);$i++){
-		        	if($aStatesMap[oldId][$i] == $aOldTransitionSources[$j]->getId()){
-		        		$aSourceStates[] = $aStatesMap[newId][$i];
-		        		continue;
-		        	}
-		        }
+            for ($j = 0; $j < count($aOldTransitionSources); $j++) {
+                for ($i = 0; $i < count($aStatesMap[oldId]); $i++) {
+                    if ($aStatesMap[oldId][$i] == $aOldTransitionSources[$j]->getId()) {
+                        $aSourceStates[] = $aStatesMap[newId][$i];
+                        continue;
+                    }
+                }
             }
+
             $res = KTWorkflowAdminUtil::saveTransitionSources($oNewTransition, $aSourceStates);
-	        if (PEAR::isError($res)) {
-	            $this->errorRedirectToMain(sprintf(_kt("Failed to set transition origins: %s"), $res->getMessage()));
-	        }
+            if (PEAR::isError($res)) {
+                $this->errorRedirectToMain(sprintf(_kt("Failed to set transition origins: %s"), $res->getMessage()));
+            }
 
-	        // Get all triggers for old workflow transitions and
+            // Get all triggers for old workflow transitions and
             // copy for copied workflow transitions
-	        $aTriggers = KTWorkflowTriggerInstance::getByTransition($oOldTransition);
-	        if(count($aTriggers) > 0){
-		        foreach ($aTriggers as $oTrigger) {
-		            for($i=0;$i<count($aTransitionsMap[oldId]);$i++){
-			        	if($aTransitionsMap[oldId][$i] == $oTrigger->getTransitionId()){
-			        		$iTransitionId = $aTransitionsMap[newId][$i];
+            $aTriggers = KTWorkflowTriggerInstance::getByTransition($oOldTransition);
+            if (count($aTriggers) > 0) {
+                    foreach ($aTriggers as $oTrigger) {
+                        for ($i = 0; $i < count($aTransitionsMap[oldId]); $i++) {
+                            if ($aTransitionsMap[oldId][$i] == $oTrigger->getTransitionId()) {
+                                $iTransitionId = $aTransitionsMap[newId][$i];
 
-			        		$res = KTWorkflowTriggerInstance::createFromArray(array(
-				            'transitionid' => $iTransitionId,
-				            'namespace' =>  $oTrigger->getNamespace(),
-				            'config' => $oTrigger->getConfigArrayText(),
-				        	));
+                                $res = KTWorkflowTriggerInstance::createFromArray(array(
+                                            'transitionid' => $iTransitionId,
+                                            'namespace' =>  $oTrigger->getNamespace(),
+                                            'config' => $oTrigger->getConfigArrayText()
+                                ));
 
-				        	if (PEAR::isError($res)) {
-				            	return $this->errorRedirectToMain(sprintf(_kt("Unable to add trigger: %s"), $res->getMessage()));
-				        	}
-			        	}
-			        }
-	        	}
-	        }
+                                if (PEAR::isError($res)) {
+                                    return $this->errorRedirectToMain(sprintf(_kt("Unable to add trigger: %s"), $res->getMessage()));
+                                }
+                            }
+                        }
+                    }
+            }
         }
 
         return $this->successRedirectToMain(sprintf(_kt("%s successfully copied as %s"), $oSelWorkflow->getName(), $oNewWorkflow->getName()));
     }
 
-    function do_newWorkflow() {
+    public function do_newWorkflow()
+    {
         // subdispatch this to the NewWorkflowWizard.
         require_once(dirname(__FILE__) . '/workflow/newworkflow.inc.php');
 
-        $oSubDispatcher =& new KTNewWorkflowWizard;
+        $oSubDispatcher = new KTNewWorkflowWizard();
         $oSubDispatcher->redispatch('wizard', null, $this);
     }
 
     // -------------------- Overview -----------------
     // basic view page.
 
-    function do_view() {
+    public function do_view()
+    {
         $oTemplate = $this->oValidator->validateTemplate('ktcore/workflow/admin/view');
 
         $this->oPage->setBreadcrumbDetails(_kt("Overview"));
@@ -455,9 +465,9 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
         return $oTemplate->render();
     }
 
-    function form_coreedit() {
-        $oForm = new KTForm;
-
+    public function form_coreedit()
+    {
+        $oForm = new KTForm();
         $oForm->setOptions(array(
             'context' => $this,
             'action' => 'setcore',
@@ -510,7 +520,7 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
         return $oForm;
     }
 
-    function do_editcore() {
+    public function do_editcore() {
 
         $oTemplate = $this->oValidator->validateTemplate('ktcore/workflow/admin/edit_core');
         $this->oPage->setBreadcrumbDetails(_kt("Edit Details"));
@@ -525,7 +535,7 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
         return $oTemplate->render();
     }
 
-    function do_setcore() {
+    public function do_setcore() {
         $oForm = $this->form_coreedit();
         $res = $oForm->validate();
         $data = $res['results'];
@@ -548,14 +558,14 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
     }
 
     // ----------------- Basic - States & Transition ---------------------
-    function breadcrumbs_basic() {
+    public function breadcrumbs_basic() {
         $this->aBreadcrumbs[] = array(
             'url' => KTUtil::addQueryStringSelf($this->meldPersistQuery("", 'basic')),
             'name' => _kt("States and Transitions"),
         );
     }
 
-    function do_basic() {
+    public function do_basic() {
         $oTemplate = $this->oValidator->validateTemplate('ktcore/workflow/admin/basic_overview');
         $this->breadcrumbs_basic();
         $this->oPage->setBreadcrumbDetails(_kt("Overview"));
@@ -586,10 +596,12 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
             'transitions' => $aTransitions,
             'section_query_string' => $this->sectionQueryString,
         ));
+
         return $oTemplate->render();
     }
 
-    function form_transitionconnections() {
+    public function form_transitionconnections()
+    {
         $oForm = new KTForm;
         $oForm->setOptions(array(
             'description' => _kt('The process a document follows is controlled by the way that the transitions between states are setup.  A document starts the workflow in the initial state, and then follows transitions between states.  Which users can perform these transitions can be configured in the "Security" section.'),
@@ -603,7 +615,7 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
         return $oForm;
     }
 
-    function do_transitionconnections() {
+    public function do_transitionconnections() {
         // we don't use a traditional form here, since the grid is too complex
         // and its essentially one-shot.
         //
@@ -635,11 +647,9 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
             $availability[$oTransition->getId()] = $aSources;
         }
 
-
         if ($bRestrict) {
             $transitions = $final_transitions;
         }
-
 
         if ($this->HAVE_GRAPHVIZ) {
             $graph_data = $this->get_graph($this->oWorkflow);
@@ -667,7 +677,7 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
         return $oTemplate->render();
     }
 
-    function do_setconnections() {
+    public function do_setconnections() {
         // we *must* ensure that transitions are not set to originate from their
         // destination.
         //
@@ -707,15 +717,15 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
                 }
             }
 
-			$aFromTransitionID = array_keys($_REQUEST['fFrom']);
-			//run through all transitions to change
-			foreach ($aFromTransitionID as $iCurrentId)
-			{
-            	if($oTransition->getId() == $iCurrentId)
-            	{
-            		$res = KTWorkflowAdminUtil::saveTransitionSources($oTransition, $source_state_ids);
-            	}
-			}
+            $aFromTransitionID = array_keys($_REQUEST['fFrom']);
+            //run through all transitions to change
+            foreach ($aFromTransitionID as $iCurrentId)
+            {
+                if ($oTransition->getId() == $iCurrentId)
+                {
+                    $res = KTWorkflowAdminUtil::saveTransitionSources($oTransition, $source_state_ids);
+                }
+            }
             if (PEAR::isError($res)) {
                 $this->errorRedirectTo('basic', sprintf(_kt("Failed to set transition origins: %s"), $res->getMessage()));
             }
@@ -724,7 +734,8 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
         $this->successRedirectTo('basic', _kt("Workflow process updated."));
     }
 
-    function form_addstates() {
+    public function form_addstates()
+    {
         $oForm = new KTForm;
         $oForm->setOptions(array(
             'context' => $this,
@@ -755,7 +766,7 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
         return $oForm;
     }
 
-    function do_addstates() {
+    public function do_addstates() {
         $oForm = $this->form_addstates();
         $this->breadcrumbs_basic();
         $this->oPage->setBreadcrumbDetails(_kt("Add States"));
@@ -767,7 +778,7 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
         return $oTemplate->render();
     }
 
-    function do_createstates() {
+    public function do_createstates() {
         $oForm = $this->form_addstates();
         $res = $oForm->validate();
         $data = $res['results'];
@@ -830,8 +841,8 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
         $this->successRedirectTo('basic', _kt("New States Created."));
     }
 
-
-    function form_addtransitions() {
+    public function form_addtransitions()
+    {
         $oForm = new KTForm;
         $oForm->setOptions(array(
             'context' => $this,
@@ -861,7 +872,8 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
         return $oForm;
     }
 
-    function do_addtransitions() {
+    public function do_addtransitions()
+    {
         $oForm = $this->form_addtransitions();
         $this->breadcrumbs_basic();
         $this->oPage->setBreadcrumbDetails(_kt("Add Transitions"));
@@ -873,7 +885,8 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
         return $oTemplate->render();
     }
 
-    function do_createtransitions() {
+    public function do_createtransitions()
+    {
         $oForm = $this->form_addtransitions();
         $res = $oForm->validate();
         $data = $res['results'];
@@ -949,9 +962,9 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
         $this->successRedirectTo('transitionconnections', _kt("New Transitions Created."), $transition_ids_query);
     }
 
-    function form_editstate($oState) {
+    public function form_editstate($oState)
+    {
         $oForm = new KTForm;
-
         $oForm->setOptions(array(
             'context' => $this,
             'submit_label' => _kt('Update State'),
@@ -980,7 +993,8 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
         return $oForm;
     }
 
-    function do_editstate() {
+    public function do_editstate()
+    {
         $this->aBreadcrumbs[] = array(
             'name' => $this->oState->getHumanName(),
         );
@@ -1005,7 +1019,8 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
         return $oTemplate->render();
     }
 
-    function do_savestate() {
+    public function do_savestate()
+    {
         $oForm = $this->form_editstate($this->oState);
         $res = $oForm->validate();
         $data = $res['results'];
@@ -1042,9 +1057,9 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
         $this->successRedirectTo('basic', _kt("State updated."));
     }
 
-    function form_edittransition($oTransition) {
+    public function form_edittransition($oTransition)
+    {
         $oForm = new KTForm;
-
         $oForm->setOptions(array(
             'context' => $this,
             'submit_label' => _kt('Update Transition'),
@@ -1073,7 +1088,8 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
         return $oForm;
     }
 
-    function do_edittransition() {
+    public function do_edittransition()
+    {
         $this->aBreadcrumbs[] = array(
             'name' => $this->oTransition->getHumanName(),
         );
@@ -1098,7 +1114,7 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
         return $oTemplate->render();
     }
 
-    function do_savetransition() {
+    public function do_savetransition() {
         $oForm = $this->form_edittransition($this->oTransition);
         $res = $oForm->validate();
         $data = $res['results'];
@@ -1135,8 +1151,7 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
         $this->successRedirectTo('basic', _kt("Transition updated."));
     }
 
-
-    function do_deletetransition() {
+    public function do_deletetransition() {
         $this->startTransaction();
 
         if (is_null($this->oTransition)) {
@@ -1160,7 +1175,7 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
         $this->successRedirectTo('basic', _kt("Transition deleted."));
     }
 
-    function form_deletestate() {
+    public function form_deletestate() {
         $oForm = new KTForm;
         $oForm->setOptions(array(
             'identifier' => 'ktcore.workflow.deletestate',
@@ -1194,14 +1209,14 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
         return $oForm;
     }
 
-    function do_replacestate() {
+    public function do_replacestate() {
         $this->breadcrumbs_basic();
         $this->oPage->setBreadcrumbDetails(_kt("Delete State"));
         $oForm = $this->form_deletestate();
         return $oForm->renderPage(_kt("Delete State"));
     }
 
-    function do_deletestate() {
+    public function do_deletestate() {
         $oForm = $this->form_deletestate();
         $res = $oForm->validate();
 
@@ -1238,7 +1253,7 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
         $this->successRedirectTo('basic', _kt("State deleted."));
     }
 
-    function breadcrumbs_security() {
+    public function breadcrumbs_security() {
         $this->aBreadcrumbs[] = array(
             'url' => KTUtil::addQueryStringSelf($this->meldPersistQuery('fTransitionId=&fStateId=', 'security', true)),
             'name' => _kt("Security"),
@@ -1246,7 +1261,7 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
     }
 
     // ----------------- Security ---------------------
-    function do_security() {
+    public function do_security() {
         $oTemplate = $this->oValidator->validateTemplate('ktcore/workflow/admin/security_overview');
         $this->breadcrumbs_security();
 
@@ -1261,7 +1276,7 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
 
 
     // == PERMISSIONS
-    function do_permissionsoverview() {
+    public function do_permissionsoverview() {
         $oTemplate = $this->oValidator->validateTemplate('ktcore/workflow/admin/permissions_overview');
         $this->breadcrumbs_security();
         $this->oPage->setBreadcrumbDetails(_kt("Permissions Overview"));
@@ -1298,7 +1313,7 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
         return $oTemplate->render();
     }
 
-    function form_managepermissions() {
+    public function form_managepermissions() {
         $oForm = new KTForm;
         $oForm->setOptions(array(
             'submit_label' => _kt("Set controlled permissions"),
@@ -1312,7 +1327,7 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
     }
 
     // == PERMISSIONS
-    function do_managepermissions() {
+    public function do_managepermissions() {
         $oTemplate = $this->oValidator->validateTemplate('ktcore/workflow/admin/managepermissions');
 
         $oForm = $this->form_managepermissions();
@@ -1346,7 +1361,7 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
         return $oTemplate->render();
     }
 
-    function do_setcontrolledpermissions() {
+    public function do_setcontrolledpermissions() {
         $active = (array) KTUtil::arrayGet($_REQUEST, 'fControlled');
 
         $aUsefulPerms = KTPermission::getDocumentRelevantList();
@@ -1384,7 +1399,7 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
     }
 
     // == PERMISSIONS
-    function do_allocatepermissions() {
+    public function do_allocatepermissions() {
         $oTemplate = $this->oValidator->validateTemplate('ktcore/workflow/admin/allocate_permissions');
 
         $oForm = $this->form_managepermissions();
@@ -1433,7 +1448,7 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
 
     // JSON helper. from permissions.
 
-    function &_getPermissionsMap() {
+    public function &_getPermissionsMap() {
         $aStatePermAssigns = KTWorkflowStatePermissionAssignment::getByState($this->oState);
         $aPermissionsMap = array('role'=>array(), 'group'=>array());
 
@@ -1441,24 +1456,24 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
             $oDescriptor = KTPermissionDescriptor::get($oPermAssign->getDescriptorId());
             $iPermissionId = $oPermAssign->getPermissionId();
 
-	    // groups
+        // groups
             $aGroupIds = $oDescriptor->getGroups();
             foreach ($aGroupIds as $iId) {
                 $aPermissionsMap['group'][$iId][$iPermissionId] = true;
             }
 
-	    // roles
+        // roles
             $aRoleIds = $oDescriptor->getRoles();
             foreach ($aRoleIds as $iId) {
                 $aPermissionsMap['role'][$iId][$iPermissionId] = true;
             }
         }
-    	return $aPermissionsMap;
+        return $aPermissionsMap;
     }
 
-    function json_getEntities($optFilter = null) {
+    public function json_getEntities($optFilter = null) {
         $sFilter = KTUtil::arrayGet($_REQUEST, 'filter', false);
-        if($sFilter == false && $optFilter != null) {
+        if ($sFilter == false && $optFilter != null) {
             $sFilter = $optFilter;
         }
 
@@ -1469,20 +1484,20 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
         // get permissions map
         $aPermissionsMap =& $this->_getPermissionsMap();
 
-        if($bSelected || $sFilter && trim($sFilter)) {
-            if(!$bSelected) {
+        if ($bSelected || $sFilter && trim($sFilter)) {
+            if (!$bSelected) {
                 $aEntityList = array();
             }
 
             $aGroups = Group::getList(sprintf('name like "%%%s%%"', $sFilter));
             foreach($aGroups as $oGroup) {
                 $aPerm = @array_keys($aPermissionsMap['group'][$oGroup->getId()]);
-                if(!is_array($aPerm)) {
+                if (!is_array($aPerm)) {
                     $aPerm = array();
                 }
 
-                if($bSelected) {
-                    if(count($aPerm))
+                if ($bSelected) {
+                    if (count($aPerm))
                         $aEntityList['g'.$oGroup->getId()] = array('type' => 'group',
                                    'display' => 'Group: ' . $oGroup->getName(),
                                    'name' => $oGroup->getName(),
@@ -1501,12 +1516,12 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
             $aRoles = Role::getList(sprintf('name like "%%%s%%"', $sFilter));
             foreach($aRoles as $oRole) {
                 $aPerm = @array_keys($aPermissionsMap['role'][$oRole->getId()]);
-                if(!is_array($aPerm)) {
+                if (!is_array($aPerm)) {
                     $aPerm = array();
                 }
 
-            if($bSelected) {
-                if(count($aPerm))
+            if ($bSelected) {
+                if (count($aPerm))
                     $aEntityList['r'.$oRole->getId()] = array('type' => 'role',
                                       'display' => 'Role: ' . $oRole->getName(),
                                       'name' => $oRole->getName(),
@@ -1525,8 +1540,7 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
         return $aEntityList;
     }
 
-
-    function do_setpermissionallocations() {
+    public function do_setpermissionallocations() {
         $aPermissionAllowed = (array) KTUtil::arrayGet($_REQUEST, 'foo'); // thanks BD.
 
         $this->startTransaction();
@@ -1556,7 +1570,7 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
 
     // ACTIONS
 
-    function do_actionsoverview() {
+    public function do_actionsoverview() {
         $oTemplate = $this->oValidator->validateTemplate('ktcore/workflow/admin/actions_overview');
         $this->oPage->setBreadcrumbDetails(_kt("Actions"));
         $this->breadcrumbs_security();
@@ -1590,7 +1604,7 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
         return $oTemplate->render();
     }
 
-    function do_editactions() {
+    public function do_editactions() {
         $oTemplate = $this->oValidator->validateTemplate('ktcore/workflow/admin/actions_edit');
         $this->oPage->setBreadcrumbDetails(_kt("Edit Actions"));
         $actions = KTUtil::keyArray(KTDocumentActionUtil::getAllDocumentActions(), 'getName');
@@ -1624,7 +1638,7 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
         return $oTemplate->render();
     }
 
-    function do_saveactions() {
+    public function do_saveactions() {
         $disabled_actions = (array) $_REQUEST['fActions'];
 
 
@@ -1650,7 +1664,7 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
         $this->successRedirectTo('actionsoverview', _kt('Disabled actions updated.'));
     }
 
-    function do_transitionsecurityoverview() {
+    public function do_transitionsecurityoverview() {
         $oTemplate = $this->oValidator->validateTemplate('ktcore/workflow/admin/transition_guards_overview');
         $this->oPage->setBreadcrumbDetails(_kt("Overview"));
         $this->oPage->setTitle(_kt("Transition Restrictions Overview"));
@@ -1671,7 +1685,7 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
     }
 
     // helper
-    function describeTransitionGuards($oTransition) {
+    public function describeTransitionGuards($oTransition) {
         $restrictions = KTWorkflowUtil::getGuardTriggersForTransition($oTransition);
 
         if (empty($restrictions)) {
@@ -1686,7 +1700,7 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
         return implode('. ', $restriction_text);
     }
 
-    function form_addtransitionguard() {
+    public function form_addtransitionguard() {
         $oForm = new KTForm;
         $oForm->setOptions(array(
             'identifier' => 'ktcore.admin.workflow.addguard',
@@ -1735,7 +1749,7 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
         return $oForm;
     }
 
-    function do_manageguards() {
+    public function do_manageguards() {
         $oTemplate = $this->oValidator->validateTemplate('ktcore/workflow/admin/restrictions_edit');
         $this->oPage->setBreadcrumbDetails(_kt("Manage Restrictions"));
         $this->breadcrumbs_security();
@@ -1758,7 +1772,7 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
         return $oTemplate->render();
     }
 
-    function do_addguard() {
+    public function do_addguard() {
         $oForm = $this->form_addtransitionguard();
         $res = $oForm->validate();
         $data = $res['results'];
@@ -1797,8 +1811,7 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
         exit(0);
     }
 
-
-    function do_editguardtrigger() {
+    public function do_editguardtrigger() {
         $this->oPage->setBreadcrumbDetails(_kt("Edit Restriction"));
         $this->breadcrumbs_security();
         $this->aBreadcrumbs[] = array(
@@ -1831,7 +1844,7 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
 
     // }}}
 
-    function do_saveguardtrigger() {
+    public function do_saveguardtrigger() {
         $oTriggerInstance =& KTWorkflowTriggerInstance::get($_REQUEST['fTriggerInstanceId']);
         if (PEAR::isError($oTriggerInstance)) {
             $this->errorRedirectTo('manageguards', _kt('Unable to load trigger.'));
@@ -1859,7 +1872,7 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
         exit(0);
     }
 
-    function do_deleteguardtrigger() {
+    public function do_deleteguardtrigger() {
         $oTriggerInstance =& KTWorkflowTriggerInstance::get($_REQUEST['fTriggerInstanceId']);
         if (PEAR::isError($oTriggerInstance)) {
             return $this->errorRedirectTo('manageguards', _kt('Unable to load trigger.'));
@@ -1886,16 +1899,15 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
         exit(0);
     }
 
-
     // ----------------- Effects ---------------------
-    function breadcrumb_effects() {
+    public function breadcrumb_effects() {
         $this->aBreadcrumbs[] = array(
             'name' => _kt("Workflow Effects"),
             'url' => KTUtil::addQueryStringSelf($this->meldPersistQuery("","effects",true)),
         );
     }
 
-    function do_effects() {
+    public function do_effects() {
         $oTemplate = $this->oValidator->validateTemplate('ktcore/workflow/admin/effects_overview');
         $this->breadcrumb_effects();
 
@@ -1908,8 +1920,7 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
         return $oTemplate->render();
     }
 
-
-    function form_addtransitionaction() {
+    public function form_addtransitionaction() {
         $oForm = new KTForm;
         $oForm->setOptions(array(
             'identifier' => 'ktcore.admin.workflow.addaction',
@@ -1958,7 +1969,7 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
         return $oForm;
     }
 
-    function do_transitionactions() {
+    public function do_transitionactions() {
         $oTemplate = $this->oValidator->validateTemplate('ktcore/workflow/admin/transition_effects_overview');
         $this->breadcrumb_effects();
         $this->aBreadcrumbs[] = array(
@@ -1978,9 +1989,8 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
         return $oTemplate->render();
     }
 
-
     // helper
-    function describeTransitionActions($oTransition) {
+    public function describeTransitionActions($oTransition) {
         $actions = KTWorkflowUtil::getActionTriggersForTransition($oTransition);
 
         if (empty($actions)) {
@@ -1995,8 +2005,7 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
         return implode('. ', $action_text);
     }
 
-
-    function do_managetransitionactions() {
+    public function do_managetransitionactions() {
         $oTemplate = $this->oValidator->validateTemplate('ktcore/workflow/admin/transition_actions_edit');
         $this->breadcrumb_effects();
         $this->aBreadcrumbs[] = array(
@@ -2020,7 +2029,7 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
         return $oTemplate->render();
     }
 
-    function do_addactiontrigger() {
+    public function do_addactiontrigger() {
         $oForm = $this->form_addtransitionaction();
         $res = $oForm->validate();
         $data = $res['results'];
@@ -2059,8 +2068,7 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
         exit(0);
     }
 
-
-    function do_editactiontrigger() {
+    public function do_editactiontrigger() {
         $this->breadcrumb_effects();
         $this->aBreadcrumbs[] = array(
             'name' => _kt("Transition Effects"),
@@ -2093,7 +2101,7 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
 
     // }}}
 
-    function do_saveactiontrigger() {
+    public function do_saveactiontrigger() {
         $oTriggerInstance =& KTWorkflowTriggerInstance::get($_REQUEST['fTriggerInstanceId']);
         if (PEAR::isError($oTriggerInstance)) {
             $this->errorRedirectTo('managetransitionactions', _kt('Unable to load trigger.'));
@@ -2121,7 +2129,7 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
         exit(0);
     }
 
-    function do_deleteactiontrigger() {
+    public function do_deleteactiontrigger() {
         $oTriggerInstance =& KTWorkflowTriggerInstance::get($_REQUEST['fTriggerInstanceId']);
         if (PEAR::isError($oTriggerInstance)) {
             return $this->errorRedirectTo('managetransitionactions', _kt('Unable to load trigger.'));
@@ -2148,7 +2156,7 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
         exit(0);
     }
 
-    function do_managenotifications() {
+    public function do_managenotifications() {
         $this->breadcrumb_effects();
         $this->aBreadcrumbs[] = array(
             'name' => _kt("Notifications"),
@@ -2164,7 +2172,7 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
         return $oTemplate->render();
     }
 
-    function describeStateNotifications($oState) {
+    public function describeStateNotifications($oState) {
         $aAllowed = KTWorkflowUtil::getInformedForState($oState);
 
         $aUsers = array();
@@ -2221,7 +2229,7 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
         return $sNotify;
     }
 
-    function descriptorToJSON($aAllowed) {
+    public function descriptorToJSON($aAllowed) {
         $values = array();
 
         foreach (KTUtil::arrayGet($aAllowed,'user',array()) as $oU) {
@@ -2271,7 +2279,7 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
         return $values;
     }
 
-    function form_editnotifications($oState) {
+    public function form_editnotifications($oState) {
         $oForm = new KTForm;
         $oForm->setOptions(array(
             'context' => $this,
@@ -2300,7 +2308,7 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
         return  $oForm;
     }
 
-    function do_editnotifications() {
+    public function do_editnotifications() {
         $this->breadcrumb_effects();
         $this->aBreadcrumbs[] = array(
             'name' => _kt("Notifications"),
@@ -2315,9 +2323,8 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
         return $oForm->renderPage();
     }
 
-    function do_savenotifications() {
-
-
+    public function do_savenotifications()
+    {
         $oForm = $this->form_editnotifications($this->oState);
         $res = $oForm->validate();
 
@@ -2379,20 +2386,20 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
         $this->successRedirectTo("managenotifications", _kt("Notifications updated."));
     }
 
-    function json_notificationusers() {
+    public function json_notificationusers() {
         $sFilter = KTUtil::arrayGet($_REQUEST, 'filter', false);
         if ($sFilter == false) {
-        	$values = array('off' => _kt('-- Please filter --')); // default
+            $values = array('off' => _kt('-- Please filter --')); // default
         }
         $sFilter = trim($sFilter);
-    	$values = array('off' => _kt('-- Please filter --')); // default
+        $values = array('off' => _kt('-- Please filter --')); // default
 
-    	if (!empty($sFilter)) {
-    	    $allowed = array();
-    	    $q = sprintf('name like "%%%s%%" AND disabled = 0', DBUtil::escapeSimple($sFilter)); // notify enabled users
-    	    $aUsers = User::getList($q);
-    	    $q = sprintf('name like "%%%s%%"', DBUtil::escapeSimple($sFilter));
-        	$aGroups = Group::getList($q);
+        if (!empty($sFilter)) {
+            $allowed = array();
+            $q = sprintf('name like "%%%s%%" AND disabled = 0', DBUtil::escapeSimple($sFilter)); // notify enabled users
+            $aUsers = User::getList($q);
+            $q = sprintf('name like "%%%s%%"', DBUtil::escapeSimple($sFilter));
+            $aGroups = Group::getList($q);
             $aRoles = Role::getList($q);
             $empty = true;
 
@@ -2419,13 +2426,13 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
             }
 
             if ($empty) {
-            	$values = array('off'=>'-- No results --'); // default
+                $values = array('off'=>'-- No results --'); // default
             } else {
                 $values = $this->descriptorToJSON($allowed);
             }
-    	}
+        }
 
-    	return $values;
+        return $values;
     }
 
     /* ---------------- GraphViz / DOT support --------------- */
@@ -2435,7 +2442,7 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
     var $state_names;
     var $transition_names;
 
-    function get_graph($oWorkflow) {
+    public function get_graph($oWorkflow) {
 
         $fontsize = 11.0;
         $fontname = "Times-Roman";
@@ -2624,14 +2631,15 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
         return $data;
     }
 
-    function do_graphimage() {
+    public function do_graphimage() {
         header('Content-Type: image/jpeg');
         $graph = $this->get_graph($this->oWorkflow);
         $graph['graph']->image('jpeg');
         exit(0);
     }
 
-    function do_graphrepresentation() {
+    public function do_graphrepresentation()
+    {
         $oTemplate = $this->oValidator->validateTemplate('ktcore/workflow/admin/graphrep');
 
         // this is not ideal
@@ -2647,6 +2655,7 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
             print '<pre>';
             print print_r($data, true); exit(0);
         }
+
         $pat = '|^([\w]+).    # rect, circle, etc.
             ([^ ]+).       # href
             ([\d]+),        # x0
@@ -2686,19 +2695,25 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
 
             }
         }
+
         if (false) {
             print '<pre>'; var_dump($coords); exit(0);
         }
+
         $oTemplate->setData(array(
             'context' => $this,
             'coords' => $coords,
             'section_query_string' => $this->sectionQueryString,
         ));
+
         print $oTemplate->render();
         exit(0);
     }
 
-
+    public function handleOutput($output)
+    {
+        print $output;
+    }
 }
 
 ?>

@@ -77,7 +77,7 @@ class KTForm {
     function setOptions($aOptions)
     {
         // we grab the "context" dispatcher(ish) object here
-        $context =& KTUtil::arrayGet($aOptions, 'context');
+        $context = KTUtil::arrayGet($aOptions, 'context');
         $this->_context =& $context;
 
         // form identifier (namespace)
@@ -152,8 +152,8 @@ class KTForm {
         if (!is_null($this->_context)) {
             $default_args = $this->_context->meldPersistQuery("","",true);
         }
-        $this->_extraargs = KTUtil::arrayGet($aOptions,
-            'extraargs', $default_args);
+
+        $this->_extraargs = KTUtil::arrayGet($aOptions, 'extraargs', $default_args);
 
         // method
         $this->_method = KTUtil::arrayGet($aOptions, 'method', 'post');
@@ -162,7 +162,7 @@ class KTForm {
         $this->_submit_onclick = KTUtil::arrayGet($aOptions, 'onclick', '');
 
         $this->_extraargs['postReceived'] = 1;
-        
+
         // Configure form for new settings page.
         $this->setNewSettingsOptions($aOptions);
     }
@@ -180,13 +180,13 @@ class KTForm {
     			$this->_actionurl .= "&$k=$v";
     		}
 	        $cancel_action = KTUtil::arrayGet($aOptions, 'cancel_action');
-	
+
 	        if (!empty($cancel_action)) {
 	    		$this->_cancelurl .= "&fCategory=$cat";
 	        }
     	}
     }
-    
+
     function getWidget(&$aInfo) {
         if (is_null($this->_oWF)) {
             $this->_oWF =& KTWidgetFactory::getSingleton();

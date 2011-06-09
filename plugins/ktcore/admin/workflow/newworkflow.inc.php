@@ -57,21 +57,26 @@ require_once(KT_LIB_DIR . '/widgets/portlet.inc.php');
 require_once(KT_LIB_DIR . '/widgets/forms.inc.php');
 
 class KTNewWorkflowWizard extends KTAdminDispatcher {
-    function predispatch() {
+
+    public function predispatch()
+    {
         $this->persistParams(array('fWizardKey'));
     }
 
-    private function &form_step1() {
+    private function &form_step1()
+    {
         $oForm = new KTForm;
 
         $oForm->setOptions(array(
             'action' => 'process_step1',
-            'cancel_url' => KTUtil::addQueryStringSelf('') . '?fCategory=workflows', // NBM:  is there a cleaner way to reference the parent?
+            // NBM:  is there a cleaner way to reference the parent?
+            'cancel_url' => KTUtil::addQueryStringSelf('') . "?{$this->sectionQueryString}",
             'fail_action' => 'main',
             'label' => _kt('Workflow Details'),
             'submit_label' => _kt('Next'),
             'description' => _kt('This first step requires that you provide basic details about the workflow: its name, etc.'),
             'context' => $this,
+            'targeturl' => "{$_SERVER['SCRIPT_NAME']}?{$this->sectionQueryString}"
         ));
         $oForm->setWidgets(array(
             array('ktcore.widgets.string',array(
@@ -125,26 +130,24 @@ class KTNewWorkflowWizard extends KTAdminDispatcher {
         return $oForm;
     }
 
-    function do_main() {
-        $oTemplate =& $this->oValidator->validateTemplate('ktcore/workflow/admin/new_wizard_step1');
-
-        $oForm =& $this->form_step1();
-
+    public function do_main()
+    {
+        $oTemplate = $this->oValidator->validateTemplate('ktcore/workflow/admin/new_wizard_step1');
         $oTemplate->setData(array(
             'context' => $this,
-            'form' => $oForm,
+            'form' => $this->form_step1(),
             'section_query_string' => $this->sectionQueryString,
         ));
+
         return $oTemplate->render();
     }
 
-    function do_process_step1() {
-
-    	 $fWizardKey = KTUtil::arrayGet($_REQUEST, 'fWizardKey');
-    	if (!empty($fWizardKey))
-    	{
-    		 $this->errorRedirectToMain(_kt("Could not create workflow.") );
-    		 exit;
+    public function do_process_step1()
+    {
+    	$fWizardKey = KTUtil::arrayGet($_REQUEST, 'fWizardKey');
+    	if (!empty($fWizardKey)) {
+            $this->errorRedirectToMain(_kt("Could not create workflow.") );
+            exit;
     	}
 
         $oForm =& $this->form_step1();
@@ -159,7 +162,7 @@ class KTNewWorkflowWizard extends KTAdminDispatcher {
             $extra_errors['workflow_name'][] = _kt("A workflow with that name already exists.  Please choose a different name for this workflow.");
         }
 
-        $initial_states = (array) explode("\n", $data['states']);   // must be there, we validated it.
+        $initial_states = (array) explode("\n", $data['states']);
         $failed = array();
         $states = array();
         $is_first = true;
@@ -174,18 +177,23 @@ class KTNewWorkflowWizard extends KTAdminDispatcher {
                 $failed[] = $state_name;
                 continue;
             }
+
             if ($is_first) {
                 $is_first = false;
                 $initial_state = $state_name;
             }
+
             $states[$state_name] = $state_name;
         }
+
         if (empty($states)) {
             $extra_errors['states'][] = _kt('You must provide at least one state name.');
         }
+
         if (!empty($failed)) {
             $extra_errors['states'] = sprintf(_kt("You cannot have duplicate state names: %s"), implode(', ', $failed));
         }
+
         $data['states'] = $states;
         $data['initial_state'] = $initial_state;
 
@@ -209,6 +217,7 @@ class KTNewWorkflowWizard extends KTAdminDispatcher {
         if (!empty($failed)) {
             $extra_errors['transitions'] = sprintf(_kt("You cannot have duplicate transition names: %s"), implode(', ', $failed));
         }
+
         $data['transitions'] = $transitions;
 
         // handle errors.
@@ -226,13 +235,13 @@ class KTNewWorkflowWizard extends KTAdminDispatcher {
             return $this->finalise();   // finish and go.
         }
 
-        $this->successRedirectTo("step2",_kt("Initial data stored."));
+        $this->successRedirectTo("step2", _kt("Initial data stored."));
     }
 
-    function do_step2() {
-    	 $fWizardKey = KTUtil::arrayGet($_REQUEST, 'fWizardKey');
-    	if (!empty($fWizardKey))
-    	{
+    public function do_step2()
+    {
+    	$fWizardKey = KTUtil::arrayGet($_REQUEST, 'fWizardKey');
+    	if (!empty($fWizardKey)) {
     		 $this->errorRedirectToMain(_kt("Could not create workflow.") );
     		 exit;
     	}
@@ -255,16 +264,18 @@ class KTNewWorkflowWizard extends KTAdminDispatcher {
             'states' => $wiz_data['states'],
             'section_query_string' => $this->sectionQueryString,
         ));
+
         return $oTemplate->render();
     }
 
-    function do_process_step2() {
+    public function do_process_step2()
+    {
         $fWizardKey = KTUtil::arrayGet($_REQUEST, 'fWizardKey');
-        if (!empty($fWizardKey))
-    	{
-    		 $this->errorRedirectToMain(_kt("Could not create workflow.") );
-    		 exit;
+        if (!empty($fWizardKey)) {
+            $this->errorRedirectToMain(_kt("Could not create workflow.") );
+            exit;
     	}
+
         $wiz_data = $_SESSION['_wiz_data'][$fWizardKey];
         if (empty($wiz_data)) {
             $this->errorRedirectToMain(_kt("Unable to locate stored data.  Please try again."));
@@ -308,12 +319,12 @@ class KTNewWorkflowWizard extends KTAdminDispatcher {
         return $this->finalise();
     }
 
-    function finalise() {
+    private function finalise()
+    {
         $fWizardKey = KTUtil::arrayGet($_REQUEST, 'fWizardKey');
-        if (!empty($fWizardKey))
-    	{
-    		 $this->errorRedirectToMain(_kt("Could not create workflow.") );
-    		 exit;
+        if (!empty($fWizardKey)) {
+            $this->errorRedirectToMain(_kt("Could not create workflow.") );
+            exit;
     	}
         $wiz_data = $_SESSION['_wiz_data'][$fWizardKey];
 
@@ -327,6 +338,7 @@ class KTNewWorkflowWizard extends KTAdminDispatcher {
         $workflow_name = $wiz_data['workflow_name'];
 
         $this->startTransaction();
+
         // create the initial workflow
         $oWorkflow = KTWorkflow::createFromArray(array(
             'name' => $workflow_name,
@@ -336,7 +348,9 @@ class KTNewWorkflowWizard extends KTAdminDispatcher {
         if (PEAR::isError($oWorkflow)) {
             $this->errorRedirectToMain(sprintf(_kt("Failed to create workflow: %s"), $oWorkflow->getMessage()));
         }
+
         $iWorkflowId = $oWorkflow->getId();
+
         // create the states.
         $aStates = array();
         foreach ($states as $state_name) {
@@ -401,7 +415,7 @@ class KTNewWorkflowWizard extends KTAdminDispatcher {
         // FIXME nbm:  how do you recommend we do this?
 
         $base = $_SERVER['PHP_SELF'];
-        $qs = sprintf("action=view&fWorkflowId=%d&fCategory=workflows",$oWorkflow->getId());
+        $qs = sprintf("action=view&fWorkflowId=%d&" . $this->sectionQueryString, $oWorkflow->getId());
         $url = KTUtil::addQueryString($base, $qs);
         $this->addInfoMessage(_kt("Your new workflow has been created."));
         redirect($url);

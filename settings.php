@@ -47,7 +47,7 @@ class AdminSplashDispatcher extends KTAdminDispatcher {
 
     private $defaultCategory = '';
     public $sSection = 'settings';
-    public $eventVar = null;
+    public $event_var = null;
 
     function AdminSplashDispatcher()
     {

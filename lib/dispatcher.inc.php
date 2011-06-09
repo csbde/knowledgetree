@@ -57,9 +57,9 @@ class KTDispatchStandardRedirector {
 
 class KTDispatcher {
 
-    var $eventVar = 'action';
-    var $actionPrefix = 'do';
-    var $cancelVar = 'kt_cancel';
+    var $event_var = 'action';
+    var $action_prefix = 'do';
+    var $cancel_var = 'kt_cancel';
     var $bAutomaticTransaction = false;
     var $bTransactionStarted = false;
     var $oValidator = null;
@@ -74,37 +74,43 @@ class KTDispatcher {
 
     public function redispatch($eventVar, $actionPrefix = null, $origDispatcher = null, $parentUrl = null)
     {
-        $previousEvent = KTUtil::arrayGet($_REQUEST, $this->eventVar);
+        // FIXME $previousEvent appears unused!  Remove after confirmation.
+        $previousEvent = KTUtil::arrayGet($_REQUEST, $this->event_var);
         $this->sParentUrl = $parentUrl;
 
         if ($actionPrefix) {
-            $this->actionPrefix = $actionPrefix;
+            $this->action_prefix = $actionPrefix;
         }
 
         if (!is_null($origDispatcher)) {
             $this->persistParams($origDispatcher->aPersistParams);
-            $this->persistParams(array($origDispatcher->eventVar));
-            $core = array('aBreadcrumbs',
+            $this->persistParams(array($origDispatcher->event_var));
+            $core = array(
+                'aBreadcrumbs',
                 'bTransactionStarted',
                 'oUser',
                 'session',
-                'actionPrefix',
-                'bJSONMode');
+                'action_prefix',
+                'bJSONMode',
+                // TODO Find a way to get this in the admin dispatcher only.
+                'sectionQueryString'
+            );
             foreach ($core as $k) {
                 if (isset($origDispatcher->$k)) {
                     $this->$k = $origDispatcher->$k;
                 }
             }
         }
-        $this->eventVar = $eventVar;
+
+        $this->event_var = $eventVar;
 
         return $this->dispatch();
     }
 
     public function dispatch()
     {
-        if (array_key_exists($this->cancelVar, $_REQUEST)) {
-            $var = $_REQUEST[$this->cancelVar];
+        if (array_key_exists($this->cancel_var, $_REQUEST)) {
+            $var = $_REQUEST[$this->cancel_var];
             if (is_array($var)) {
                 $keys = array_keys($var);
                 if (empty($keys[0])) {
@@ -120,11 +126,11 @@ class KTDispatcher {
             }
         }
 
-        $method = sprintf('%s_main', $this->actionPrefix);
+        $method = sprintf('%s_main', $this->action_prefix);
 
-        if (array_key_exists($this->eventVar, $_REQUEST)) {
-            $event = strip_tags($_REQUEST[$this->eventVar]);
-            $proposed_method = sprintf('%s_%s', $this->actionPrefix, $event);
+        if (array_key_exists($this->event_var, $_REQUEST)) {
+            $event = strip_tags($_REQUEST[$this->event_var]);
+            $proposed_method = sprintf('%s_%s', $this->action_prefix, $event);
 
             if (method_exists($this, $proposed_method)) {
                 $method = $proposed_method;
@@ -155,7 +161,7 @@ class KTDispatcher {
             'oUser',
             'session',
             'eventVar',
-            'actionPrefix',
+            'action_prefix',
             'bJSONMode'
         );
 
@@ -297,7 +303,7 @@ class KTDispatcher {
                 $query = array();
             }
         }
-        
+
         foreach (array_keys($query) as $key)
         {
             if (is_array($query[$key])) {
@@ -319,8 +325,8 @@ class KTDispatcher {
             }
         }
 
-        if ((!array_key_exists($this->eventVar, $query)) &&(!empty($event))) {
-            $query[$this->eventVar] = urlencode($event);
+        if ((!array_key_exists($this->event_var, $query)) &&(!empty($event))) {
+            $query[$this->event_var] = urlencode($event);
         }
 
         if ($asArray) {
@@ -639,7 +645,7 @@ class KTAdminDispatcher extends KTStandardDispatcher {
     public function setActiveStatus($active)
     {
         if (!$active) {
-            $this->eventVar = null;
+            $this->event_var = null;
         }
     }
 

@@ -61,18 +61,18 @@ class KTAuthenticationProvider extends KTStandardDispatcher {
         $this->adminQueryStr = $str;
         
         global $default;
-        $default->log->info('Set: '.$this->adminQueryStr);
+        $default->log->info("Set: $this->adminQueryStr}");
     }
     
     public function getAdminQueryString()
     {
         global $default;
-        $default->log->info('Get: '.$this->adminQueryStr);
+        $default->log->info("Get: {$this->adminQueryStr}");
         
         if ($this->adminQueryStr == '') {
             return '';
         } else {
-            return $this->adminQueryStr.'&';
+            return "{$this->adminQueryStr}&";
         }
         
     }
