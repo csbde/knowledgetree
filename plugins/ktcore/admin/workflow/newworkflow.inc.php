@@ -5,7 +5,7 @@
  * KnowledgeTree Community Edition
  * Document Management Made Simple
  * Copyright (C) 2008, 2009, 2010 KnowledgeTree Inc.
- * 
+ *
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License version 3 as published by the
@@ -133,7 +133,7 @@ class KTNewWorkflowWizard extends KTAdminDispatcher {
         $oTemplate->setData(array(
             'context' => $this,
             'form' => $oForm,
-            'section_query_string' => '&fCategory=workflows',
+            'section_query_string' => $this->sectionQueryString,
         ));
         return $oTemplate->render();
     }
@@ -253,7 +253,7 @@ class KTNewWorkflowWizard extends KTAdminDispatcher {
             'args' => $args,
             'transitions' => $wiz_data['transitions'],
             'states' => $wiz_data['states'],
-            'section_query_string' => '&fCategory=workflows',
+            'section_query_string' => $this->sectionQueryString,
         ));
         return $oTemplate->render();
     }
@@ -406,7 +406,7 @@ class KTNewWorkflowWizard extends KTAdminDispatcher {
         $this->addInfoMessage(_kt("Your new workflow has been created."));
         redirect($url);
     }
-    
+
     public function handleOutput($output)
     {
         print $output;
