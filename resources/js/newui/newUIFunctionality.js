@@ -49,7 +49,6 @@ jQuery(document).ready(function() {
 			containerId:'doc_view_container',
 			containerClass:''
 		});
-		kt.lib.setFooter();
 
 		$('td.info a').prepend('<img class="leftimg" src="resources/graphics/newui/midbarleft.png" />');
 		$('td.info a').prepend('<img class="rightimg" src="resources/graphics/newui/midbarright.png" />');
