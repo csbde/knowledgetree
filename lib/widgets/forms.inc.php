@@ -173,11 +173,17 @@ class KTForm {
      */
     function setNewSettingsOptions($aOptions) {
     	// Check if we on settings page.
-    	$this->_actionurl .= '?';
     	$cat = KTUtil::arrayGet($_REQUEST, 'fCategory');
     	if($cat != '') {
-    		foreach ($_GET as $k=>$v) {
-    			$this->_actionurl .= "&$k=$v";
+    		preg_match('/\?/', $this->_actionurl, $matches);
+    		if(isset($matches[0]))
+    		{
+	    		if($matches[0] != '?') {
+		    		$this->_actionurl .= '?';
+		    		foreach ($_GET as $k=>$v) {
+		    			$this->_actionurl .= "&$k=$v";
+		    		}
+	    		}
     		}
 	        $cancel_action = KTUtil::arrayGet($aOptions, 'cancel_action');
 
