@@ -164,20 +164,26 @@ class KTForm {
         $this->_extraargs['postReceived'] = 1;
         
         // Configure form for new settings page.
-        $this->setNewSettingsOptions();
+        $this->setNewSettingsOptions($aOptions);
     }
 
     /**
      * TODO : Please remove!!!
      *
      */
-    function setNewSettingsOptions() {
+    function setNewSettingsOptions($aOptions) {
     	// Check if we on settings page.
     	$this->_actionurl .= '?';
-    	if(KTUtil::arrayGet($_REQUEST, 'fCategory') != '') {
+    	$cat = KTUtil::arrayGet($_REQUEST, 'fCategory');
+    	if($cat != '') {
     		foreach ($_GET as $k=>$v) {
     			$this->_actionurl .= "&$k=$v";
     		}
+	        $cancel_action = KTUtil::arrayGet($aOptions, 'cancel_action');
+	
+	        if (!empty($cancel_action)) {
+	    		$this->_cancelurl .= "&fCategory=$cat";
+	        }
     	}
     }
     

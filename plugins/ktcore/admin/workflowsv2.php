@@ -462,8 +462,7 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
             'context' => $this,
             'action' => 'setcore',
             'fail_action' => 'editcore',
-            //'cancel_action' => 'view',
-            'cancel_url' => "{$_SERVER['SCRIPT_NAME']}?fCategory=workflows&expanded=1",
+            'cancel_action' => 'view',
             'submit_label' => _kt('Update Workflow Details'),
         ));
 
@@ -595,8 +594,7 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
         $oForm->setOptions(array(
             'description' => _kt('The process a document follows is controlled by the way that the transitions between states are setup.  A document starts the workflow in the initial state, and then follows transitions between states.  Which users can perform these transitions can be configured in the "Security" section.'),
             'submit_label' => _kt('Update Process'),
-//            'cancel_action' => 'basic',
-            'cancel_url' => "{$_SERVER['SCRIPT_NAME']}?action=view&fWorkflowId={$this->oWorkflow->getId()}&fCategory=workflows&expanded=1",
+            'cancel_action' => 'basic',
             'action' => 'setconnections',
             'fail_action' => 'transitionconnections', // consistency - this is not really used.
             'context' => $this,
@@ -732,8 +730,7 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
             'context' => $this,
             'submit_label' => _kt("Add States"),
             'action' => 'createstates',
-//            'cancel_action' => 'basic',
-			'cancel_url' => "{$_SERVER['SCRIPT_NAME']}?action=view&fWorkflowId={$this->oWorkflow->getId()}&fCategory=workflows&expanded=1",
+            'cancel_action' => 'basic',
             'fail_action' => 'addstates',
         ));
 
@@ -840,8 +837,7 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
             'context' => $this,
             'submit_label' => _kt("Add Transitions"),
             'action' => 'createtransitions',
-//            'cancel_action' => 'basic',
-'cancel_url' => "{$_SERVER['SCRIPT_NAME']}?action=view&fWorkflowId={$this->oWorkflow->getId()}&fCategory=workflows&expanded=1",
+            'cancel_action' => 'basic',
             'fail_action' => 'addtransitions',
         ));
 
@@ -961,8 +957,7 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
             'submit_label' => _kt('Update State'),
             'action' => 'savestate',
             'fail_action' => 'editstate',
-//            'cancel_action' => 'basic',
-'cancel_url' => "{$_SERVER['SCRIPT_NAME']}?action=view&fWorkflowId={$this->oWorkflow->getId()}&fCategory=workflows&expanded=1",
+            'cancel_action' => 'basic',
         ));
 
         $oForm->setWidgets(array(
@@ -1055,8 +1050,7 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
             'submit_label' => _kt('Update Transition'),
             'action' => 'savetransition',
             'fail_action' => 'edittransition',
-//            'cancel_action' => 'basic',
-'cancel_url' => "{$_SERVER['SCRIPT_NAME']}?action=view&fWorkflowId={$this->oWorkflow->getId()}&fCategory=workflows&expanded=1",
+            'cancel_action' => 'basic',
         ));
 
         $oForm->setWidgets(array(
@@ -1171,8 +1165,7 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
         $oForm->setOptions(array(
             'identifier' => 'ktcore.workflow.deletestate',
             'action' => 'deletestate',
-//            'cancel_action' => 'basic',
-'cancel_url' => "{$_SERVER['SCRIPT_NAME']}?action=view&fWorkflowId={$this->oWorkflow->getId()}&fCategory=workflows&expanded=1",
+            'cancel_action' => 'basic',
             'fail_action' => 'replacestate',
             'submit_label' => _kt("Delete State"),
             'context' => $this,
@@ -1311,8 +1304,7 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
             'submit_label' => _kt("Set controlled permissions"),
             'action' => 'setcontrolledpermissions',
             'fail_action' => 'managepermissions',
-//            'cancel_action' => 'permissionsoverview',
-            'cancel_url' => "{$_SERVER['SCRIPT_NAME']}?action=permissionsoverview&fWorkflowId={$this->oWorkflow->getId()}&fCategory=workflows&expanded=1",
+            'cancel_action' => 'permissionsoverview',
             'context' => $this,
         ));
 
@@ -1699,7 +1691,7 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
         $oForm->setOptions(array(
             'identifier' => 'ktcore.admin.workflow.addguard',
             'action' => 'addguard',
-            'cancel_action' => 'manageguards',
+            'cancel_action' => 'edittransition',
             'fail_action' => 'manageguards',
             'submit_label' => _kt("Add Restriction"),
             'context' => $this,
@@ -1922,7 +1914,7 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
         $oForm->setOptions(array(
             'identifier' => 'ktcore.admin.workflow.addaction',
             'action' => 'addactiontrigger',
-            'cancel_action' => 'managetransitionactions',
+            'cancel_action' => 'edittransition',
             'fail_action' => 'managetransitionactions',
             'submit_label' => _kt("Add Action"),
             'context' => $this,
