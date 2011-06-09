@@ -297,6 +297,13 @@ class KTDispatcher {
                 $query = array();
             }
         }
+        
+        foreach (array_keys($query) as $key)
+        {
+            if (is_array($query[$key])) {
+                $query[$key] = $query[$key][0];
+            }
+        }
 
         // Now try to grab each persisted entry.
         // Don't overwrite the existing values, if added.
