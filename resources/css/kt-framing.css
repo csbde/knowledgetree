@@ -2596,3 +2596,9 @@ div.extjs_form_actions {
     background: transparent;
     overflow: auto;
 }
+
+/* Settings Admin Dynamic Conditions */
+.advanced-search-form { width:100%; }
+.advanced-search-form .name { width:100px; }
+.advanced-search-form .widget_values { width:100px; }
+.advanced-search-form .the_button { width:100px; }

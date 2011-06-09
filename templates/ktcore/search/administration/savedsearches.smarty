@@ -5,7 +5,7 @@
 or all documents which are considered "common" within your organisation (leave policy,
 newsletters, etc.) based on a category or fieldset value.{/i18n}</p>
 
-<form action="{$smarty.server.PHP_SELF}" method="POST">
+<form action="{$smarty.server.PHP_SELF}?{$section_query_string}" method="POST">
 <fieldset>
 <legend>{i18n}Create a new saved search{/i18n}</legend>
 <div>
@@ -34,8 +34,8 @@ newsletters, etc.) based on a category or fieldset value.{/i18n}</p>
         <td>{$oSearch->getName()|sanitize}</td>
 	{capture assign=iUserId}{$oSearch->getUserId()}{/capture}
 	<td>{if ($iUserId === '')}Global{else}{$context->_getUserName($iUserId)}{/if}</td>
-        <td><a href="{addQS}action=edit&fSavedSearchId={$oSearch->getId()}{/addQS}" class="ktAction ktEdit">{i18n}Edit{/i18n}</a></td>
-        <td><a href="{addQS}action=delete&fSavedSearchId={$oSearch->getId()}{/addQS}" class="ktAction ktDelete">{i18n}Delete{/i18n}</a></td>
+        <td><a href="{addQS}action=edit&fSavedSearchId={$oSearch->getId()}&{$section_query_string}{/addQS}" class="ktAction ktEdit">{i18n}Edit{/i18n}</a></td>
+        <td><a href="{addQS}action=delete&fSavedSearchId={$oSearch->getId()}&{$section_query_string}{/addQS}" class="ktAction ktDelete">{i18n}Delete{/i18n}</a></td>
         <td><a href="{"booleanSearch"|generateControllerUrl}&qs[action]=performSearch&qs[fSavedSearchId]={$oSearch->getId()}">{i18n}Run Search{/i18n}</a></td>
     </tr>
 {/foreach}
