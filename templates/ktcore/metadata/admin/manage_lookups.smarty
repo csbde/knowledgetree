@@ -52,7 +52,7 @@ that are possible for a given lookup{/i18n}:</p>
 <input type="submit" name="submit[toggleenabled]" value="{i18n}Toggle enabled state{/i18n}" />
 <input type="submit" name="submit[togglestickiness]" value="{i18n}Toggle stickiness{/i18n}" />
 <input type="submit" name="submit[remove]" value="{i18n}Delete{/i18n}" />
-<a class="form_cancel" href="{addQS context=$context}fieldset_action=managefield{/addQS}">{i18n}Cancel{/i18n}</a>
+<a class="form_cancel" href="{addQS context=$context}fieldset_action=managefield&{$section_query_string}">{i18n}Cancel{/i18n}</a>
 </div>
 
 </fieldset>

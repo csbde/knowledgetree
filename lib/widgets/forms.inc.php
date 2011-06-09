@@ -185,9 +185,10 @@ class KTForm {
     		}
 
 	        $cancel_action = KTUtil::arrayGet($aOptions, 'cancel_action');
-
+			$subsection = KTUtil::arrayGet($_REQUEST, 'subsection');
+			$expanded = KTUtil::arrayGet($_REQUEST, 'expanded');
 	        if (!empty($cancel_action)) {
-	    		$this->_cancelurl .= "&fCategory=$cat";
+	    		$this->_cancelurl .= "&fCategory=$cat&subsection=$subsection&expanded=$expanded";
 	        }
     	}
     }

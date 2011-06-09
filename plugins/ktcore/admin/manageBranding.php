@@ -68,7 +68,8 @@ class ManageBrandDispatcher extends KTAdminDispatcher
         $templating = KTTemplating::getSingleton();
         $template = $templating->loadTemplate('ktcore/branding/list');
         $templateData = array(
-            'form' => $form
+            'form' => $form,
+            'section_query_string' => $this->sectionQueryString,
         );
         
         return $template->render($templateData);
