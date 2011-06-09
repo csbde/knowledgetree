@@ -408,17 +408,18 @@ class KTCorePlugin extends KTPlugin {
             _kt('Internationalization'), _kt('View and modify the default language.'),
             'admin/configSettings.php', null);
 
-        $this->registerAdminPage('securityconfigpage', 'SecurityConfigPageDispatcher', 'sysConfig',
-            _kt('Security'), _kt('View and modify the security settings.'),
+        // FIXME Get this into the electronic signatures plugin - at the moment that crashes with
+        //       an error about not finding the SecurityConfigPageDispatcher class.
+        $this->registerAdminPage('electronicSignatures', 'SecurityConfigPageDispatcher', 'security',
+            _kt('Electronic Signatures'), _kt('View and modify the electronic signature settings.'),
             'admin/configSettings.php', null);
 
         // misc
-        $this->registerAdminPage('plugins', 'KTPluginDispatcher', 'sysConfig',
-            _kt('Manage plugins'), _kt('Register new plugins, disable plugins, and so forth'),
-            'admin/plugins.php', null);
 
-        if ($restrictedEnv !== true)
-        {
+        if ($restrictedEnv !== true) {
+            $this->registerAdminPage('plugins', 'KTPluginDispatcher', 'sysConfig',
+                _kt('Manage plugins'), _kt('Register new plugins, disable plugins, and so forth'),
+                'admin/plugins.php', null);
             $this->registerAdminPage('techsupport', 'KTSupportDispatcher', 'contentIndexing',
                 _kt('Support and System information'), _kt('Information about this system and how to get support.'),
                 'admin/techsupport.php', null);
