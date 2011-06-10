@@ -55,6 +55,7 @@
     <br><hr>
     <div class="form_actions">
         <input type="submit" name="AlterConfig" value="{i18n}Save Config Settings{/i18n}" />
+        <input type="hidden" name="action" value="save" />
     </div>
 {else}
 
