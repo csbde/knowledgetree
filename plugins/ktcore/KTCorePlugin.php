@@ -391,7 +391,7 @@ class KTCorePlugin extends KTPlugin {
         //    _kt('General Settings'), _kt('View and modify settings for KnowledgeTree.'),
         //    'admin/configSettings.php', null);
 
-        $this->registerAdminPage('session', 'SessionConfigPageDispatcher', 'sysConfig',
+        $this->registerAdminPage('session', 'SessionConfigPageDispatcher', 'security',
             _kt('Session Management'), _kt('View and modify session settings for KnowledgeTree.'),
             'admin/configSettings.php', null);
 
