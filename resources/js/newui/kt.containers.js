@@ -2,18 +2,8 @@
 
 kt = new function() {
 
-//	var $priv={
-//		call:function(functionName, params) {
-//			//does functionName exist?
-//
-//		}
-//	};
-
 	this.init = function() {
-//		$priv.call('kt.pages.all.onload');
-//		$priv.call('kt.pages.browseView.onload');
-		jQuery(document).click(function() {setTimeout('kt.lib.setFooter();', 500);});
-		setTimeout('kt.lib.setFooter();', 500);
+
 	}
 
 };
