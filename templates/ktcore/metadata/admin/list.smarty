@@ -2,7 +2,7 @@
 
 <p class="descriptiveText">{i18n}Collections of fields are associated into fieldsets.  These represent a set of related information which can be associated with a document and thus comprise part of the document's metadata.{/i18n}</p>
 
-<p><a class="ktAction ktAdd ktActionDescribed" href="{addQS context=$context}action=newfieldset&{$section_query_string}">{i18n}Create new Fieldset{/i18n}</a>
+<p><a class="ktAction ktAdd ktActionDescribed" href="{addQS context=$context}action=newfieldset&{$section_query_string}{/addQS}">{i18n}Create new Fieldset{/i18n}</a>
 <a href="{addQS context=$context}action=newfieldset&{$section_query_string}{/addQS}">{i18n}Create New Fieldset{/i18n}</a>
 </p>
 
