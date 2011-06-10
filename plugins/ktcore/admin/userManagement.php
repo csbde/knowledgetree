@@ -59,10 +59,6 @@ class KTUserAdminDispatcher extends KTAdminDispatcher {
 
     public function do_main()
     {
-        //$this->aBreadcrumbs[] = array('url' => $_SERVER['PHP_SELF'], 'name' => _kt('User Management'));
-        //$this->oPage->setBreadcrumbDetails(_kt('select a user'));
-        //$this->oPage->setTitle(_kt('User Management'));
-
         $KTConfig = KTConfig::getSingleton();
         $alwaysAll = $KTConfig->get('alwaysShowAll');
         $alwaysAll = true;
@@ -148,9 +144,9 @@ class KTUserAdminDispatcher extends KTAdminDispatcher {
 
     public function do_addUser()
     {
-        //$this->aBreadcrumbs[] = array('url' => $_SERVER['PHP_SELF'], 'name' => _kt('User Management'));
-        //$this->oPage->setBreadcrumbDetails(_kt('add a new user'));
-        //$this->oPage->setTitle(_kt('Add New User'));
+        $this->aBreadcrumbs[] = array('url' => $_SERVER['PHP_SELF'], 'name' => _kt('User Management'));
+        $this->oPage->setBreadcrumbDetails(_kt('add a new user'));
+        $this->oPage->setTitle(_kt('Add New User'));
 
         // Get persisted params
         $name = KTUtil::arrayGet($_REQUEST, 'name');
@@ -253,9 +249,9 @@ class KTUserAdminDispatcher extends KTAdminDispatcher {
 
     function do_editUser()
     {
-        //$this->aBreadcrumbs[] = array('url' => $_SERVER['PHP_SELF'], 'name' => _kt('User Management'));
-        //$this->oPage->setBreadcrumbDetails(_kt('modify user details'));
-        //$this->oPage->setTitle(_kt('Modify User Details'));
+        $this->aBreadcrumbs[] = array('url' => $_SERVER['PHP_SELF'], 'name' => _kt('User Management'));
+        $this->oPage->setBreadcrumbDetails(_kt('modify user details'));
+        $this->oPage->setTitle(_kt('Modify User Details'));
 
         $userId = KTUtil::arrayGet($_REQUEST, 'user_id');
         $user = User::get($userId);
@@ -342,9 +338,9 @@ class KTUserAdminDispatcher extends KTAdminDispatcher {
 
     function do_setPassword()
     {
-        //$this->aBreadcrumbs[] = array('url' => $_SERVER['PHP_SELF'], 'name' => _kt('User Management'));
-        //$this->oPage->setBreadcrumbDetails(_kt('change user password'));
-        //$this->oPage->setTitle(_kt('Change User Password'));
+        $this->aBreadcrumbs[] = array('url' => $_SERVER['PHP_SELF'], 'name' => _kt('User Management'));
+        $this->oPage->setBreadcrumbDetails(_kt('change user password'));
+        $this->oPage->setTitle(_kt('Change User Password'));
 
         $oldSearch = KTUtil::arrayGet($_REQUEST, 'old_search');
 
@@ -356,7 +352,7 @@ class KTUserAdminDispatcher extends KTAdminDispatcher {
             exit(0);
         }
 
-        //$this->aBreadcrumbs[] = array('name' => $user->getName());
+        $this->aBreadcrumbs[] = array('name' => $user->getName());
 
         $editFields = array();
         $editFields[] =  new KTPasswordWidget(_kt('Password'), _kt('Specify an initial password for the user.'), 'new_password', null, $this->oPage, true);
@@ -425,8 +421,8 @@ class KTUserAdminDispatcher extends KTAdminDispatcher {
     {
         $userId = KTUtil::arrayGet($_REQUEST, 'user_id');
         $user = $this->oValidator->validateUser($userId);
-        //$this->aBreadcrumbs[] = array('url' => $_SERVER['PHP_SELF'], 'name' => _kt('User Management'));
-        //$this->aBreadcrumbs[] = array('name' => $user->getName());
+        $this->aBreadcrumbs[] = array('url' => $_SERVER['PHP_SELF'], 'name' => _kt('User Management'));
+        $this->aBreadcrumbs[] = array('name' => $user->getName());
 
         $authenticationSource = KTAuthenticationSource::getForUser($user);
         if (is_null($authenticationSource)) {
@@ -452,9 +448,9 @@ class KTUserAdminDispatcher extends KTAdminDispatcher {
 
         $oldSearch = KTUtil::arrayGet($_REQUEST, 'old_search');
 
-        //$this->aBreadcrumbs[] = array('url' => $_SERVER['PHP_SELF'], 'name' => _kt('User Management'));
-        //$this->oPage->setBreadcrumbDetails($user->getName() .': ' . _kt('edit groups'));
-        //$this->oPage->setTitle(sprintf(_kt("Edit %s's groups"), $user->getName()));
+        $this->aBreadcrumbs[] = array('url' => $_SERVER['PHP_SELF'], 'name' => _kt('User Management'));
+        $this->oPage->setBreadcrumbDetails($user->getName() .': ' . _kt('edit groups'));
+        $this->oPage->setTitle(sprintf(_kt("Edit %s's groups"), $user->getName()));
 
         // generate a list of groups this user is authorised to assign.
 

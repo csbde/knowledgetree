@@ -57,15 +57,11 @@ class KTUnitAdminDispatcher extends KTAdminDispatcher {
 
     function check()
     {
-        $this->aBreadcrumbs[] = array('url' => $_SERVER['PHP_SELF'], 'name' => _kt('Unit Management'));
         return parent::check();
     }
 
     function do_main()
     {
-        //$this->oPage->setBreadcrumbDetails(_kt('select a unit'));
-        //$this->oPage->setTitle(_kt("Unit Management"));
-
         $unit_list = Unit::getList();
 
         $templating = KTTemplating::getSingleton();
@@ -199,6 +195,9 @@ class KTUnitAdminDispatcher extends KTAdminDispatcher {
 
     function do_editUnit()
     {
+	$this->oPage->setBreadcrumbDetails(_kt('Edit unit'));
+        $this->oPage->setTitle(_kt("Edit unit"));
+
         $oUnit = $this->oValidator->validateUnit($_REQUEST['unit_id']);
 
         $fields = array();

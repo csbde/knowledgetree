@@ -58,7 +58,6 @@ class KTGroupAdminDispatcher extends KTAdminDispatcher {
 
     function predispatch()
     {
-        $this->aBreadcrumbs[] = array('url' => $_SERVER['PHP_SELF'], 'name' => _kt('Group Management'));
         $this->persistParams(array('old_search'));
     }
 
@@ -357,8 +356,8 @@ class KTGroupAdminDispatcher extends KTAdminDispatcher {
     {
         $group = $this->getGroupFromRequest();
         $this->aBreadcrumbs[] = array('name' => $group->getName());
-        $this->oPage->setBreadcrumbDetails(_kt('manage members'));
-        $this->oPage->setTitle(sprintf(_kt('Manage members of %s'), $group->getName()));
+        $this->oPage->setBreadcrumbDetails(_kt('manage sub-groups'));
+        $this->oPage->setTitle(sprintf(_kt('Manage sub-groups of %s'), $group->getName()));
 
         // Set up and instantiate group selector widget.
         $members = KTJSONLookupWidget::formatMemberGroups($group->getMemberGroups());
