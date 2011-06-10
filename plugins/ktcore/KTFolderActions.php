@@ -212,7 +212,7 @@ class KTFolderAddFolderAction extends KTFolderAction {
     {
 		require_once(FolderTemplatesPlugin_DIR . DIRECTORY_SEPARATOR. "FolderTemplate.inc.php");
 		
-		return FolderTemplateRenders::getTemplates();
+		return FolderTemplateRenders::getTemplates('folder_add');
     }
     
     function do_main() {
