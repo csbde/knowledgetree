@@ -5,7 +5,7 @@
  * KnowledgeTree Community Edition
  * Document Management Made Simple
  * Copyright (C) 2008, 2009, 2010 KnowledgeTree Inc.
- * 
+ *
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License version 3 as published by the
@@ -69,16 +69,16 @@ class MultiSelectPlugin extends KTPlugin {
 		$this->applySQL(realpath($dir . '/sql/script.sql'));
 
 		//For adding documents
-		$this->registerAction('folderaction', 'MultiDocumentAddAction', 'inet.multiselect.actions.document.addDocument', 'addDocument.php');
+		//$this->registerAction('folderaction', 'MultiDocumentAddAction', 'inet.multiselect.actions.document.addDocument', 'addDocument.php');
 
 		//For bulk upload
-		$this->registerAction('folderaction', 'InetBulkUploadFolderAction', 'inet.actions.folder.bulkUpload', 'BulkUpload.php');
+		//$this->registerAction('folderaction', 'InetBulkUploadFolderAction', 'inet.actions.folder.bulkUpload', 'BulkUpload.php');
 		/**
 		 * Change Starts | iNET Process
 		 * Code is Added 2009-03-04 :SL
 		 * Reason : To Register "import from folder location" action for multiselect
 		 */
-		$this->registerAction('folderaction', 'InetBulkImportFolderMultiSelectAction', 'inet.actions.folder.bulkImport.multiselect', 'BulkImport.php');
+		//$this->registerAction('folderaction', 'InetBulkImportFolderMultiSelectAction', 'inet.actions.folder.bulkImport.multiselect', 'BulkImport.php');
 		/**
 		 * Change Ends | iNET Process
 		 */
@@ -100,7 +100,7 @@ class MultiSelectPlugin extends KTPlugin {
 			// if we find the table, we assume it has been applied
 			return;
 		}
-		
+
 		DBUtil::setupAdminDatabase();
 		$db = $default->_admindb;
 
@@ -127,7 +127,7 @@ class MultiSelectPlugin extends KTPlugin {
 		//		should be de-registerred and removed at the server side. The function below breaks things
 		//		so don't use.
 		//		e.g. $this->deRegisterPluginHelper('contentSetup/fieldmanagement2', 'KTDocumentFieldDispatcher');
-		
+
 		$js .= "<script src='resources/js/kt_hideadminlink.js' type='text/javascript'></script>";
 		$this->registerAdminPage('ratpfieldset', 'InetDocumentFieldDispatcher', 'contentSetup',
              $js._kt('Document Fieldsets'),

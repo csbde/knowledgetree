@@ -1,3 +1,59 @@
+.doc_view {
+	border-spacing: 0px 0px;
+}
+.doc_view #column_right {
+	padding-right: 10px;
+}
+.doc_view,
+#activityfeed-container {
+	color: #666;
+}
+.main-content {
+	border-spacing: 0px 0px;
+}
+#activityfeed-container div.activityfeed div.items.hidden {
+	display:none;
+	width: 650px;
+}
+
+#sidebar {
+	width: 215px;
+	position: relative;
+	margin-top: 5px;
+
+}
+
+#sidebar h2 {
+	border-bottom: 1px solid #ccc;
+	font-size: 13px;
+	color: #666;
+	text-shadow: 0px 1px white;
+	padding: 3px 10px;
+	background: #ddd;
+}
+#sidebar_item p {
+	padding:10px;
+}
+#sidebar_item ul {
+	/*margin: 5px;*/
+	padding-left: 20px;
+}
+#sidebar_item {
+	border-bottom: 1px solid #ccc;
+	width: 215px;
+}
+#sidebar_item:last-child {
+	border-bottom: none;
+}
+object#website {
+	border: 1px solid #ccc;
+}
+
+#title_row {
+	width: 745px;
+	padding:5px 15px 15px 0px;
+}
+
 div.viewletworkflow {
 	-moz-border-radius: 5px;
 	-moz-box-shadow: -1px -1px 5px #666677;
@@ -14,7 +70,159 @@ div.viewletworkflow {
 	margin: 0px;
 	display: block;
 }
+.action_buttons .action{
+	display: inline-block;
+	border: 1px solid #ccc;
+	border-radius: 2px;
+	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffff', endColorstr='#dddddd') !important; /* for IE */
+	background: -webkit-gradient(linear, left top, left bottom, from(#fff), to(#ddd)) !important; /* for webkit browsers */
+	background: -moz-linear-gradient(top,  #fff,  #ddd) !important; /* for firefox 3.6+ */
+	height: 25px;
+	position: relative;
+	color: inherit;
+}
+#content .action_buttons .action:hover
+ {
+	border: 1px solid #2F6594;
+	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#609bd1', endColorstr='#2f6694') !important; /* for IE */
+	background: -webkit-gradient(linear, left top, left bottom, from(#609bd1), to(#2f6694)) !important; /* for webkit browsers */
+	background: -moz-linear-gradient(top,  #609bd1,  #2f6694) !important; /* for firefox 3.6+ */
+	color: white;
+}
+#content .action_buttons .action .button:hover {
+	color: inherit;
 
+}
+.action_buttons.above {
+	display: block;
+	height: 30px;
+	width: 400px!important;
+}
+#content .button {
+	padding: 2px 5px 2px 24px;
+	font-size: 11px;
+	height: 25px;
+	display: inline-block;
+	font-weight: bold;
+	color: #2f6594;
+	text-shadow: 0px 1px 0px white;
+}
+#content .action .hover a.button,
+#content .action .splitbutton.hover .button {
+	text-decoration: none;
+	text-shadow: 0px -1px 0px #2F6594;
+	color: white;
+}
+#content .action .splitmenu span.button:hover {
+	color: #2f6594!important;
+}
+.edit-online {
+	padding-right: 10px;
+}
+.split {
+	border-left: 1px solid #CCC;
+	display: inline-block;
+	font-size: 9px;
+	height: 20px;
+	margin: 0px;
+	padding: 3px 4px;
+	cursor: pointer;
+}
+.action .hover .split {
+	border-left: 1px solid #2F6594;
+}
+.split.selected {
+	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#2f6694', endColorstr='#609bd1') !important; /* for IE */
+	background: -webkit-gradient(linear, left top, left bottom, from(#2f6694), to(#609bd1)) !important; /* for webkit browsers */
+	background: -moz-linear-gradient(top,  #2f6694,  #609bd1) !important; /* for firefox 3.6+ */
+	border-bottom: 1px solid #FFF;
+}
+#content ul.splitmenu {
+	display:none;
+	position: absolute;
+	background: white;
+	border: 1px solid #CCC;
+	margin: -4px -1px 0px -1px;
+	min-width: 135px;
+	font-size: 11px;
+	padding: 0px;
+	left: 0px; 
+}
+#content ul#checkin {
+	width: 150px;
+}
+.splitmenu {
+	left: 230px;
+	z-index: 1;
+}
+.splitmenu li {
+	list-style: none;
+	border-bottom: 1px solid #CCC;
+	padding: 2px 5px 2px 1px;
+}
+.splitmenu li:hover {
+	background: #f2ebae;
+}
+.splitmenu li:last-child {
+	border-bottom: 0px;
+}
+#content .splitmenu li a {
+	padding: 2px 0px 2px 24px;
+	display: inline-block;
+	width: 80%;
+	text-decoration: none;
+	font-weight: bold;
+	text-shadow: 0px 1px 0px white;
+}
+.button {
+	font-family: "Arial", sans-serif !important;
+}
+.buttons a,
+.buttons input  {
+	-moz-border-radius: 2px;
+	-webkit-border-radius: 2px;
+	border-radius: 2px;
+	border: 1px solid #ccc !important;
+	text-shadow: 0px 1px white;
+	display: inline-block;
+	color: #666 !important;
+	font-size: 10px;
+	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffff', endColorstr='#dddddd') !important; /* for IE */
+	background: -webkit-gradient(linear, left top, left bottom, from(#fff), to(#ddd)) !important; /* for webkit browsers */
+	background: -moz-linear-gradient(top,  #fff,  #ddd) !important; /* for firefox 3.6+ */
+	position: relative;
+	padding: 1px 0px;
+}
+#content .buttons span.edit_online,
+#content .buttons span.Share {
+	padding: 0px 5px 0px 26px;
+	color: #666;
+	text-decoration: none;
+}
+#content .buttons a.edit_online{
+	top: -6px;
+}
+.buttons button {
+	padding: 5px 5px 5px 25px;
+
+}
+
+.buttons a:hover,
+.buttons span:hover,
+.buttons input:hover {
+	-moz-box-shadow: 0px 0px 5px #bbb;
+	-webkit-box-shadow: 0px 0px 5px #bbb;
+	box-shadow: 0px 0px 5px #bbb;
+	/* For IE 8 */
+	-ms-filter: "progid:DXImageTransform.Microsoft.Shadow(Strength=5, Direction=120, Color='#bbbbbb')";
+	/* For IE 5.5 - 7 */
+	filter: progid:DXImageTransform.Microsoft.Shadow(Strength=5, Direction=120, Color='#bbbbbb');
+}
+.buttons a span {
+	padding: 0px 5px 0px 0px;
+	display: inherit;
+	height: 21px;
+}
 .buttonTabs{
 	height: 30px;
 	padding: 0px;
@@ -97,7 +305,7 @@ div.viewletworkflow {
 }
 
 .doc_view .doc_header_item .doc_field_title {
-	margin: 0px 10px 0px 10px;
+	margin: 0px 10px 0px 0px;
 	text-align: right;
 	font-weight: bold;
 	font-size: 12px;
@@ -121,7 +329,7 @@ div.viewletworkflow {
 	font-family: "Verdana", "Arial", sans-serif;
 	letter-spacing: 0.0em;
 	font-size: 13px;
-	margin-left: 10px;
+	/*margin-left: 10px;*/
 	color:#999999;
 }
 
@@ -129,18 +337,33 @@ div.viewletworkflow {
 	font-weight: bold;
 }
 
-#content .doc_view .doc_file_title {
+#content .doc_view .document-title {
 /*
 	font-family: "Times New Roman, Times, Courier";
 	letter-spacing: 0.08em;
 */
 	font-size: 28px;
 	font-weight: 500;
-	clear: both;
 	display: block;
-	margin: 15px 0px 5px 0px;
+/*	margin: 15px 0px 5px 0px; */
 	line-height:120%;
-	width:70%;
+	margin-right: 160px;
+	max-width: 560px;
+	word-wrap: break-word;
+}
+.document-title.active,
+.document-filename.active {
+	background: #D7E3EA;
+	padding: 5px;
+	border: 1px solid #B0D1E5;
+	display: inline-block;
+}
+.document-filename {
+	display: inline-block;
+}
+.document-title input[type=text] {
+	font-size: 100%;
+	width: 84%;
 }
 
 .buttonTabContentContainer table.kt_collection {
@@ -168,23 +391,54 @@ div.viewletworkflow {
 	font-weight: normal;
 }
 
+.actions a {
+	font-size: 11px;
+}
 
 /*
     ACTIVITY FEED
 */
 
 .activityfeed{
-    margin-right: 70px;
+    margin-right: 30px;
     font-family: Arial,Helvetica,sans-serif;
     font-size: 12px;
-    padding: 5px;
+    padding: 2px 0px;
+    line-height: 15px;
 }
-
-.activityfeed .item{
+#content .activityfeed.buttons {
+	text-align: right;
+}
+#content .activityfeed.buttons input {
+	padding: 2px 5px;
+	-moz-border-radius: 10px!important;
+	-webkit-border-radius: 10px!important;
+	border-radius: 10px!important;
+}
+#content .activityfeed.buttons .toggle-user-feed {
+	border: 1px solid #FFE877!important;
+	background: #F2EBAE!important;
+}
+#content .activityfeed.buttons .toggle-system-feed {
+	border: 1px solid #B0D1E5!important;
+	background: #D7E3EA!important;
+	text-shadow: none;
+}
+#content .activityfeed.buttons .suppress-feed {
+	background: #eee!important;
+	border: 1px solid #ccc!important;
+	opacity: 0.5;
+	color: #666!important;
+}
+.activityfeed .item.transaction,
+.activityfeed .item.comment{
     display: block;
     clear: both;
     float: none;
-    margin-bottom: 30px;
+    border-bottom: 1px solid #DDD;
+    margin-bottom: 10px;
+    padding-bottom: 10px;
+    width: 600px;
 }
 
 .activityfeed .item:last-child{
@@ -192,24 +446,29 @@ div.viewletworkflow {
 }
 
 .activityfeed .icon{
-    width: 48px;
-    height: 48px;
-    margin-right: 15px;
-    margin-bottom: 30px;
-    /*border: 1px solid #A10000;*/
+/*  width: 48px;  */
+/*  height: 48px; */
+/*  margin-right: 15px; */
+/*  margin-bottom: 30px; */
+/*	border: 1px solid #A10000;*/
     float: left;
     display: block;
     clear: none;
+    padding-left: 10px;
 }
 
-.activityfeed .activityfeed_content{
-    -webkit-border-radius: 6px;
-    -moz-border-radius: 6px;
-    border: 1px solid #CCCCCC;
-    margin-left: 60px;
-    padding: 2px 2px 2px 10px;
-    overflow: auto;
-    background-color: #eeeeee;
+.activityfeed .comment .icon {
+	border-left: 4px solid #FFE877;
+}
+.activityfeed .transaction .icon {
+	border-left: 4px solid #B0D1E5;
+}
+.activityfeed .activityfeed-content{
+    margin-left: 75px;
+    overflow: hidden;
+    word-wrap: break-word;
+    width: 525px;
+    min-height: 50px;
 }
 
 .activityfeed .metaflag{
@@ -218,31 +477,39 @@ div.viewletworkflow {
     background: #A10000 url('../../graphics/newui/tagarrow.gif') left center no-repeat;
     color: #FFFFFF;
     margin-right: -60px;
-    margin-top: -25px;
+    margin-top: -20px;
     display: block;
     font-size: 11px;
     padding: 2px 2px 2px 15px;
-    width: 50px;
+    width: 25px;
 
 }
 
-.activityfeed .activityfeed_content .date{
+.activityfeed .activityfeed-content .date{
+	display: block;
     font-weight: bold;
-    color: #69A137;
+    font-size: smaller;
+    color: #999;
 
 }
-.activityfeed .activityfeed_content .user{
+.activityfeed .activityfeed-content .user{
     font-weight: bold;
 }
-.activityfeed .activityfeed_content .description{
-    display: block;
-    padding: 2px 10px;
+.activityfeed .activityfeed-content .description{
+	width: inherit;
+    padding: 2px 5px;
     color: #AAAAAAA;
 	white-space: normal;
 }
+span.doc_info {
+	font-size: 12px;
+	font-family: "Arial",sans-serif;
+	font-weight: normal;
+	line-height: 13px;
 
-.activityfeed .item.comment .activityfeed_content{
-    background-color: #dfe6fd;
+}
+.activityfeed .item.comment .activityfeed-content{
+ /*   background-color: #dfe6fd;*/
 }
 
 #commentsarea {
@@ -254,37 +521,107 @@ div.viewletworkflow {
 }
 #commentsarea td {
 	margin: 0;
-	padding: 15px 15px 15px 0;
+	padding: 7px 5px;
 	vertical-align: top;
 }
 
 #commentsarea td div.form_actions{
-	margin-top: 15px;
+	margin-top: 13px;
 }
 
-#commentsbox {
-	width: 100%;
-	height: 25px;
-	font-size: 15px;
+#content #commentsbox {
+	width: 610px !important;
+	height: 15px;
+	font-size: 14px;
+	padding:5px;
+	margin-top: 1px;
 }
-
+#content input#comment-post {
+	font-size: 13px;
+	width: 70px!important;
+	font-weight: bold;
+}
 #commentssaveajax {
 	display: none;
 	padding: 10px;
 	margin-bottom: 20px;
 }
 
-.activityfeed .item.newcomment .activityfeed_content{
+.activityfeed .item.newcomment .activityfeed-content{
     background-color: #FFEDAC;
+    padding: 0px 10px 10px 5px;
+}
+#activityfeed-container {
+	width: 680px;
+}
+#activityfeed-container .activityfeed.item.hidden {
+	display:none;
 }
 
+#activityfeed-container span.activityfeed-more span.activityfeed-more-text {
+    background: none repeat scroll 0 0 #EEEEEE;
+    border: 1px solid #CCCCCC;
+    display: block;
+    margin: 0 auto;
+    padding: 2px 10px;
+    text-align: center;
+    text-shadow: 0 1px 0 white;
+    width: 690px !important;
+   
+}
+.activityfeed img {
+	width: 48px;
+}
 .newcomment {
 	display: none;
 }
-
+.doc_description {
+	color: #666;
+	width: 330px!important;
+}
 .doc_view .notice{
 	color: #A10000;
 	padding: 10px 10px 10px 15px;
+}
+.status-indicator {
+	font-size: 9px;
+	text-transform: uppercase;
+	font-weight: bold;
+	border-radius: 3px;
+	-moz-border-radius: 3px;
+	-webkit-border-radius: 3px;
+	padding: 1px 3px;
+	margin-right: 10px;
+}
+.status-indicator.checkedout{
+	background-color: #fceca6;
+	background: -webkit-gradient(linear, left top, left bottom, from(#fceca6), to(#fce376)) !important; /* for webkit browsers */
+	background: -moz-linear-gradient(top,  #fceca6,  #fce376) !important; /* for firefox 3.6+ */
+	border: 1px solid #ffd825;
+	text-shadow: 0px 1px 0px white;
+}
+.status-indicator.finalized{
+	background-color: #f2374a;
+	background: -webkit-gradient(linear, left top, left bottom, from(#f2374a), to(#c5081b)) !important; /* for webkit browsers */
+	background: -moz-linear-gradient(top,  #f2374a,  #c5081b) !important; /* for firefox 3.6+ */
+	border: 1px solid #a90615;
+	color: white;
+	text-shadow: 0px -1px 0px #666;
+}
+.share_url {
+	font-size: 11px;
+	padding-left: 22px;
+	background: url('../../graphics/newui/icons/link.png') no-repeat!important;
+}
+/* Form default text dissapear on focus */
+.default-text {
+	width: 300px;
+}
+
+.default-text-active {
+	color: #a1a1a1;
+	font-family: sans-serif;
+
 }
 
 /* GENERATED FROM SCSS - to modify please check scripts/scss/notifications.scss */

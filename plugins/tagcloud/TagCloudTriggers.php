@@ -1,53 +1,57 @@
 <?php
 /*
- * $Id: $
- *
- * KnowledgeTree Community Edition
- * Document Management Made Simple
- * Copyright (C) 2008, 2009, 2010 KnowledgeTree Inc.
- * 
- *
- * This program is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License version 3 as published by the
- * Free Software Foundation.
- *
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
- * details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *
- * You can contact KnowledgeTree Inc., PO Box 7775 #87847, San Francisco,
- * California 94120-7775, or email info@knowledgetree.com.
- *
- * The interactive user interfaces in modified source and object code versions
- * of this program must display Appropriate Legal Notices, as required under
- * Section 5 of the GNU General Public License version 3.
- *
- * In accordance with Section 7(b) of the GNU General Public License version 3,
- * these Appropriate Legal Notices must retain the display of the "Powered by
- * KnowledgeTree" logo and retain the original copyright notice. If the display of the
- * logo is not reasonably feasible for technical reasons, the Appropriate Legal Notices
- * must display the words "Powered by KnowledgeTree" and retain the original
- * copyright notice.
- * Contributor( s): ______________________________________
- *
- */
+* $Id: $
+*
+* KnowledgeTree Community Edition
+* Document Management Made Simple
+* Copyright (C) 2008, 2009, 2010 KnowledgeTree Inc.
+*
+*
+* This program is free software; you can redistribute it and/or modify it under
+* the terms of the GNU General Public License version 3 as published by the
+* Free Software Foundation.
+*
+* This program is distributed in the hope that it will be useful, but WITHOUT
+* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+* FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+* details.
+*
+* You should have received a copy of the GNU General Public License
+* along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*
+* You can contact KnowledgeTree Inc., PO Box 7775 #87847, San Francisco,
+* California 94120-7775, or email info@knowledgetree.com.
+*
+* The interactive user interfaces in modified source and object code versions
+* of this program must display Appropriate Legal Notices, as required under
+* Section 5 of the GNU General Public License version 3.
+*
+* In accordance with Section 7(b) of the GNU General Public License version 3,
+* these Appropriate Legal Notices must retain the display of the "Powered by
+* KnowledgeTree" logo and retain the original copyright notice. If the display of the
+* logo is not reasonably feasible for technical reasons, the Appropriate Legal Notices
+* must display the words "Powered by KnowledgeTree" and retain the original
+* copyright notice.
+* Contributor( s): ______________________________________
+*
+*/
+
+// FIXME Looks like some duplication or very similar functionality between classes.
+
 /**
  * Trigger for document add (postValidate)
- *
  */
 class KTAddDocumentTrigger {
+
     var $aInfo = null;
     /**
      * function to set the info for the trigger
      *
-     * @param array $aInfo
+     * @param array $info
      */
-    function setInfo(&$aInfo) {
-        $this->aInfo =& $aInfo;
+    function setInfo(&$info)
+    {
+        $this->aInfo =& $info;
     }
 
     /**
@@ -55,81 +59,76 @@ class KTAddDocumentTrigger {
      *
      * @return unknown
      */
-    function postValidate() {
+    function postValidate()
+    {
         global $default;
-        $oDocument =& $this->aInfo['document'];
-        $aMeta = & $this->aInfo['aOptions'];
 
-        $iDocId = $oDocument->getID();
+        $document =& $this->aInfo['document'];
+        $metadata = & $this->aInfo['aOptions'];
+        $docId = $document->getID();
 
         // get tag id from document_fields table where name = Tag
-		$sQuery = 'SELECT df.id AS id FROM document_fields AS df ' .
-				'WHERE df.name = \'Tag\'';
+        $query = 'SELECT df.id AS id FROM document_fields AS df WHERE df.name = \'Tag\'';
 
-        $sTags = DBUtil::getOneResultKey(array($sQuery), 'id');
-        if (PEAR::isError($sTags)) {
+        $tags = DBUtil::getOneResultKey(array($query), 'id');
+        if (PEAR::isError($tags)) {
             // XXX: log error
             return false;
         }
+
         $tagString = '';
         // add tags
-        if ($sTags) {
-        	if (count($aMeta['metadata']) > 0)
-        	{
-        		foreach($aMeta['metadata'] as $aMetaData)
-        		{
+        if ($tags) {
+            if (count($metadata['metadata']) > 0) {
+                foreach($metadata['metadata'] as $metadataData) {
+                    $proxy = $metadataData[0];
+                    if ($proxy->iId == $tags) {
+                        $tagString = $metadataData[1];
+                    }
+                }
+            }
 
-				$oProxy = $aMetaData[0];
-				if($oProxy->iId == $sTags)
-				{
-					$tagString = $aMetaData[1];
-				}
-        		}
-			}
-			if($tagString != ''){
-	        	$words_table = KTUtil::getTableName('tag_words');
-	        	$tagString = str_replace('  ', ' ', $tagString);
-		    	$tags = explode(',',$tagString);
+            if ($tagString != '') {
+                $wordsTable = KTUtil::getTableName('tag_words');
+                $tagString = str_replace('  ', ' ', $tagString);
+                $tags = explode(',', $tagString);
 
-		    	$aTagIds = array();
+                $tagIds = array();
+                foreach($tags as $tag) {
+                    $tag = trim($tag);
+                    if (mb_detect_encoding($tag) == 'ASCII') {
+                        $tag = strtolower($tag);
+                    }
 
-		    	foreach($tags as $sTag)
-		    	{
-		    		$sTag = trim($sTag);
-		    	    if(mb_detect_encoding($sTag) == 'ASCII'){
-		    	        $sTag = strtolower($sTag);
-		    	    }
+                    $res = DBUtil::getOneResult(array("SELECT id FROM $wordsTable WHERE tag = ?", array($tag)));
+                    if (PEAR::isError($res)) {
+                        return $res;
+                    }
 
-		    		$res = DBUtil::getOneResult(array("SELECT id FROM $words_table WHERE tag = ?", array($sTag)));
+                    if (is_null($res)) {
+                        $id = & DBUtil::autoInsert($wordsTable, array('tag' => $tag));
+                        $tagIds[$tag] = $id;
+                    }
+                    else {
+                        $tagIds[$tag] = $res['id'];
+                    }
+                }
 
-		    		if (PEAR::isError($res)) {
-		            	return $res;
-		        	}
+                $docTags = KTUtil::getTableName('document_tags');
 
-		        	if (is_null($res))
-		        	{
-		        		$id = & DBUtil::autoInsert($words_table, array('tag'=>$sTag));
-		        		$aTagIds[$sTag] = $id;
-		        	}
-		        	else
-		        	{
-		        		$aTagIds[$sTag] = $res['id'];
-		        	}
-		    	}
-
-		    	$doc_tags = KTUtil::getTableName('document_tags');
-
-		    	foreach($aTagIds as $sTag=>$tagid)
-		    	{
-		    		DBUtil::autoInsert($doc_tags, array(
-
-		    			'document_id'=>$iDocId,
-		    			'tag_id'=>$tagid),
-		    			array('noid'=>true));
-		    	}
-        	}
+                foreach($tagIds as $tag => $tagid) {
+                    DBUtil::autoInsert(
+                        $docTags,
+                        array(
+                            'document_id' => $docId,
+                            'tag_id' => $tagid),
+                        array('noid' => true)
+                    );
+                }
+            }
         }
     }
+
 }
 
 
@@ -138,14 +137,15 @@ class KTAddDocumentTrigger {
  *
  */
 class KTEditDocumentTrigger {
+
     var $aInfo = null;
-     /**
+    /**
      * function to set the info for the trigger
      *
-     * @param array $aInfo
+     * @param array $info
      */
-    function setInfo(&$aInfo) {
-        $this->aInfo =& $aInfo;
+    function setInfo(&$info) {
+        $this->aInfo =& $info;
     }
 
     /**
@@ -155,100 +155,94 @@ class KTEditDocumentTrigger {
      */
     function postValidate() {
         global $default;
-        $oDocument =& $this->aInfo['document'];
-        $aMeta = & $this->aInfo['aOptions'];
-      	// get document id
-        $iDocId = $oDocument->getID();
+
+        $document =& $this->aInfo['document'];
+        $metadata = & $this->aInfo['aOptions'];
+        $docId = $document->getID();
+        $params = array($docId);
 
         // get all tags that are linked to the document
-		$sQuery = 'SELECT tw.id FROM tag_words AS tw, document_tags AS dt, documents AS d ' .
-				'WHERE dt.tag_id = tw.id ' .
-				'AND dt.document_id = d.id ' .
-				'AND d.id = ?';
-		$aParams = array($iDocId);
-        $aTagId = DBUtil::getResultArray(array($sQuery, $aParams));
-        if (PEAR::isError($aTagId)) {
+        $query = 'SELECT tw.id FROM tag_words AS tw, document_tags AS dt, documents AS d ' .
+                'WHERE dt.tag_id = tw.id ' .
+                'AND dt.document_id = d.id ' .
+                'AND d.id = ?';
+        $tagId = DBUtil::getResultArray(array($query, $params));
+        if (PEAR::isError($tagId)) {
             // XXX: log error
             return false;
         }
+
         // if there are any related tags proceed
-        if ($aTagId) {
-        	// delete all entries from document_tags table for the document
-			$sQuery = 'DELETE FROM document_tags ' .
-					'WHERE document_id = ?';
-			$aParams = array($iDocId);
-			$removed = DBUtil::runQuery(array($sQuery, $aParams));
-			if (PEAR::isError($removed)) {
-        		// XXX: log error
-        		return false;
-    		}
+        if ($tagId) {
+            // delete all entries from document_tags table for the document
+            $query = 'DELETE FROM document_tags WHERE document_id = ?';
+            $removed = DBUtil::runQuery(array($query, $params));
+            if (PEAR::isError($removed)) {
+                // XXX: log error
+                return false;
+            }
         }
         // proceed to add the tags as per normal
-		$sQuery = 'SELECT df.id AS id FROM document_fields AS df ' .
-		'WHERE df.name = \'Tag\'';
-
-        $sTags = DBUtil::getOneResultKey(array($sQuery), 'id');
-        if (PEAR::isError($sTags)) {
+        $query = 'SELECT df.id AS id FROM document_fields AS df WHERE df.name = \'Tag\'';
+        $tags = DBUtil::getOneResultKey(array($query), 'id');
+        if (PEAR::isError($tags)) {
             // XXX: log error
             return false;
         }
+
         $tagString = '';
-        if ($sTags) {
-        	// it is actually correct using $aMeta. It is different to the add trigger above...
-        	if (count($aMeta) > 0)
-        	{
-        		foreach($aMeta as $aMetaData)
-        		{
-        			$oProxy = $aMetaData[0];
-        			if($oProxy->iId == $sTags)
-        			{
-        				$tagString = $aMetaData[1];
-        				break;
-					}
-        		}
-			}
-			if($tagString != ''){
-	        	$words_table = KTUtil::getTableName('tag_words');
-	        	$tagString = str_replace('  ', ' ', $tagString);
-		    	$tags = explode(',',$tagString);
+        if ($tags) {
+            // it is actually correct using $metadata. It is different to the add trigger above...
+            if (count($metadata) > 0) {
+                foreach($metadata as $metadataData) {
+                    $proxy = $metadataData[0];
+                    if ($proxy->iId == $tags) {
+                        $tagString = $metadataData[1];
+                        break;
+                    }
+                }
+            }
 
-		    	$aTagIds = array();
+            if ($tagString != '') {
+                $wordsTable = KTUtil::getTableName('tag_words');
+                $tagString = str_replace('  ', ' ', $tagString);
+                $tags = explode(',',$tagString);
 
-		    	foreach($tags as $sTag)
-		    	{
-		    	    $sTag = trim($sTag);
-		    	    if(mb_detect_encoding($sTag) == 'ASCII'){
-		    	        $sTag = strtolower($sTag);
-		    	    }
+                $tagIds = array();
+                foreach($tags as $tag) {
+                    $tag = trim($tag);
+                    if (mb_detect_encoding($tag) == 'ASCII') {
+                        $tag = strtolower($tag);
+                    }
 
-		    		$res = DBUtil::getOneResult(array("SELECT id FROM $words_table WHERE tag = ?", array($sTag)));
+                    $res = DBUtil::getOneResult(array("SELECT id FROM $wordsTable WHERE tag = ?", array($tag)));
+                    if (PEAR::isError($res)) {
+                        return $res;
+                    }
 
-		    		if (PEAR::isError($res)) {
-		            	return $res;
-		        	}
+                    if (is_null($res)) {
+                        $id = & DBUtil::autoInsert($wordsTable, array('tag' => $tag));
+                        $tagIds[$tag] = $id;
+                    }
+                    else {
+                        $tagIds[$tag] = $res['id'];
+                    }
+                }
 
-		        	if (is_null($res))
-		        	{
-		        		$id = & DBUtil::autoInsert($words_table, array('tag'=>$sTag));
-		        		$aTagIds[$sTag] = $id;
-		        	}
-		        	else
-		        	{
-		        		$aTagIds[$sTag] = $res['id'];
-		        	}
-		    	}
-
-		    	$doc_tags = KTUtil::getTableName('document_tags');
-
-		    	foreach($aTagIds as $sTag=>$tagid)
-		    	{
-		    		DBUtil::autoInsert($doc_tags, array(
-		    			'document_id'=>$iDocId,
-		    			'tag_id'=>$tagid),
-		    			array('noid'=>true));
-		    	}
-        	}
+                $docTags = KTUtil::getTableName('document_tags');
+                foreach($tagIds as $tag => $tagid)
+                {
+                    DBUtil::autoInsert(
+                        $docTags,
+                        array(
+                            'document_id' => $docId,
+                            'tag_id' => $tagid),
+                        array('noid' => true)
+                    );
+                }
+            }
         }
     }
+
 }
 ?>

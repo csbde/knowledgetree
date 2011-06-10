@@ -1,0 +1,38 @@
+#workflows form div.field { margin-top: 10px;}
+#workflows form div.field label { font-weight:bold;}
+#workflows .workflow_info { bottom: 0px; position: relative; }
+#workflows .workflow_details {  }
+#workflows .workflow_details table, .widgetItem table { width: 370px; }
+#workflows .workflow_transition { float: left; }
+
+#workflows .modalheader {
+    color: #2F6594 !important;
+    font-size: 16px !important;
+    text-shadow: 0 1px 0 white !important;
+}
+
+#workflows textarea {
+    width: 99% !important;
+}
+
+p.workflowChangeWarning {
+    margin-top: 10px;
+    color: #FF9700 ; /* Orange */
+    font-weight: bold;
+}
+
+td.alignright div.form_actions, td.alignright div.form_cancel {
+    float: right !important;
+}
+
+div.form_cancel {
+    
+    line-height: 29px;
+    font-size: 11px;
+    margin-left: 15px;
+    font-weight: bold;
+}
+
+div.form_cancel a {
+    color: #0000EE;
+}

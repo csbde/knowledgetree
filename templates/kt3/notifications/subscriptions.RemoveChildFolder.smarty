@@ -6,12 +6,11 @@
         <div style="float:left; position: relative;">
             {if !$is_broken}
                 <a href="{ktLink base="notify.php" query="id=`$info.notify_id`"}">{i18n}View Folder{/i18n}</a>
-            {else}
-                <span class="descriptiveText">{i18n}Location is no longer available{/i18n}</span>
+<!--            {else}
+                <span class="descriptiveText">{i18n}Location is no longer available{/i18n}</span>-->
             {/if}
-
-            &nbsp;|&nbsp;
-        <div>
+<!--            &nbsp;|&nbsp;-->
+        </div>
 
             <a href="{ktLink base="notify.php" query="id=`$info.notify_id`&notify_action=clear"}"
                 kt:deleteMessage="{i18n}Are you sure you wish to clear the notification?{/i18n}">

@@ -3,6 +3,9 @@
 {$master_form->render()}
 
 {if $aFieldOrders}
+<br clear="both" />
+<br />
+
 <h3>{i18n}Existing ordering{/i18n}</h2>
 
 <ul>

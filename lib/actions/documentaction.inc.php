@@ -51,18 +51,18 @@ require_once(KT_LIB_DIR . "/users/shareduserutil.inc.php");
  */
 
 class KTDocumentAction extends KTStandardDispatcher {
-    var $sName;
-    var $sDescription;
+    public $sName;
+    public $sDescription;
 
-    var $_sShowPermission = 'ktcore.permissions.read';
-    var $_sDisablePermission;
-    var $bAllowInAdminMode = false;
-    var $sHelpPage = 'ktcore/browse.html';
+    public $_sShowPermission = 'ktcore.permissions.read';
+    public $_sDisablePermission;
+    public $bAllowInAdminMode = false;
+    public $sHelpPage = 'ktcore/browse.html';
 
-    var $sSection = 'view_details';
+    public $sSection = 'view_details';
     /** Shared user mutators to deal with bypassing permissions */
-	var $showIfRead = false;
-	var $showIfWrite = false;
+	public $bShowIfReadShared = false;
+	public $bShowIfWriteShared = false;
 
     /**
  	 * The _bMutator variable determines whether the action described by the class is considered a mutator.
@@ -71,7 +71,7 @@ class KTDocumentAction extends KTStandardDispatcher {
      *
      * To be set in child class.
      *
-     * Set this to false if you want an action to be available for immutable documents, 
+     * Set this to false if you want an action to be available for immutable documents,
      * true if you want the action prevented for immutable documents.
  	 *
  	 * @access public
@@ -80,7 +80,10 @@ class KTDocumentAction extends KTStandardDispatcher {
     var $_bMutator = false;
     var $_bMutationAllowedByAdmin = true;
 
-    var $sIconClass;
+    var $sIconClass = '';
+    var $sParentBtn = false;
+    var $sBtnPosition = 'above';
+    var $btnOrder = 5;
 
     function KTDocumentAction($oDocument = null, $oUser = null, $oPlugin = null) {
         $this->oDocument =& $oDocument;
@@ -91,32 +94,33 @@ class KTDocumentAction extends KTStandardDispatcher {
             array('action' => 'browse', 'name' => _kt('Browse')),
         );
         $this->persistParams('fDocumentId');
-		
+
         parent::KTStandardDispatcher();
     }
 
     function setDocument(&$oDocument) {
         $this->oDocument =& $oDocument;
     }
-    
+
     function setUser(&$oUser) {
         $this->oUser =& $oUser;
     }
 
     function _show() {
     	// If this is a shared user the object permissions are different.
-    	if(SharedUserUtil::isSharedUser())
-    	{
+    	if (SharedUserUtil::isSharedUser()) {
     		return $this->shareduser_show();
     	}
+
         if (is_null($this->_sShowPermission)) {
             return true;
         }
-        $oFolder = Folder::get($this->oDocument->getFolderId());
+
+        $folder = Folder::get($this->oDocument->getFolderId());
 
         if ($this->_bMutator && $this->oDocument->getImmutable()) {
             if ($this->_bMutationAllowedByAdmin === true) {
-                if (!KTBrowseUtil::inAdminMode($this->oUser, $oFolder)) {
+                if (!KTBrowseUtil::inAdminMode($this->oUser, $folder)) {
                     return false;
                 }
             } else {
@@ -124,16 +128,12 @@ class KTDocumentAction extends KTStandardDispatcher {
             }
         }
 
-        if ($this->_bAdminAlwaysAvailable) {
-            if (Permission::userIsSystemAdministrator($this->oUser->getId())) {
-                return true;
-            }
-            if (Permission::isUnitAdministratorForFolder($this->oUser, $this->oDocument->getFolderId())) {
-                return true;
-            }
+        if ($this->_bAdminAlwaysAvailable && $this->hasAdminAccess()) {
+            return true;
         }
-        $oPermission =& KTPermission::getByName($this->_sShowPermission);
-        if (PEAR::isError($oPermission)) {
+
+        $permission =& KTPermission::getByName($this->_sShowPermission);
+        if (PEAR::isError($permission)) {
             return true;
         }
         if (!KTWorkflowUtil::actionEnabledForDocument($this->oDocument, $this->sName)) {
@@ -142,13 +142,22 @@ class KTDocumentAction extends KTStandardDispatcher {
         // be nasty in archive/delete status.
         $status = $this->oDocument->getStatusID();
         if (($status == DELETED) || ($status == ARCHIVED)) { return false; }
+
         if ($this->bAllowInAdminMode) {
             // check if this user is in admin mode
-            if (KTBrowseUtil::inAdminMode($this->oUser, $oFolder)) {
+            if (KTBrowseUtil::inAdminMode($this->oUser, $folder)) {
                 return true;
             }
         }
-        return KTPermissionUtil::userHasPermissionOnItem($this->oUser, $oPermission, $this->oDocument);
+
+        return KTPermissionUtil::userHasPermissionOnItem($this->oUser, $permission, $this->oDocument);
+    }
+
+    // TODO May not be the best name?
+    private function hasAdminAccess()
+    {
+        return Permission::userIsSystemAdministrator($this->oUser->getId())
+            || Permission::isUnitAdministratorForFolder($this->oUser, $this->oDocument->getFolderId());
     }
 
     function getURL() {
@@ -164,19 +173,38 @@ class KTDocumentAction extends KTStandardDispatcher {
         }
     }
 
+    function getOnClick()
+    {
+        return '';
+    }
+
     function getInfo() {
-        if ($this->_show() === false) {
-            return null;
+        $check = $this->_show();
+        if ($check === false) {
+            $check = 'disabled';
         }
 
-        $url = $this->getURL();
+        $icon = $this->sIconClass;
+        if ($check === 'disabled') {
+            $url = '#';
+            $onClick = '';
+            //$icon = $this->sIconClass . ' disabled';
+        } else {
+            $url = $this->getURL();
+            $onClick = $this->getOnClick();
+        }
 
         $aInfo = array(
             'description' => $this->sDescription,
             'name' => $this->getDisplayName(),
             'ns' => $this->sName,
             'url' => $url,
-            'icon_class' => $this->sIconClass,
+            'onclick' => $onClick,
+            'icon_class' => $icon,
+            'parent_btn' => $this->sParentBtn,
+            'btn_position' => $this->sBtnPosition,
+            'btn_order' =>$this->btnOrder,
+            'status' => $check
         );
 
         $aInfo = $this->customiseInfo($aInfo);
@@ -214,8 +242,9 @@ class KTDocumentAction extends KTStandardDispatcher {
               'documentaction' => 'viewDocument',
               'folderaction' => 'browse',
         );
-        $this->aBreadcrumbs = kt_array_merge($this->aBreadcrumbs,
-            KTBrowseUtil::breadcrumbsForDocument($this->oDocument, $aOptions));
+
+        $crumbs = KTBrowseUtil::breadcrumbsForDocument($this->oDocument, $aOptions);
+        $this->aBreadcrumbs = kt_array_merge($this->aBreadcrumbs, $crumbs);
 
     	$actions = KTDocumentActionUtil::getDocumentActionsForDocument($this->oDocument, $this->oUser, 'documentinfo');
         $oPortlet = new KTActionPortlet(sprintf(_kt('Info')));
@@ -235,7 +264,7 @@ class KTDocumentAction extends KTStandardDispatcher {
     function do_main() {
         return _kt('Dispatcher component of action not implemented.');
     }
-    
+
     /**
      * Check permissions on document for shared user
      *
@@ -249,28 +278,22 @@ class KTDocumentAction extends KTStandardDispatcher {
 		// Check if deleted or archived document
         $status = $this->oDocument->getStatusID();
         if (($status == DELETED) || ($status == ARCHIVED)) { return false; }
-		// Check if actions display for both users
-		if($this->showIfRead && $this->showIfWrite)
-		{
-			return true;
+        // Check if actions displays for both users
+		if ($this->bShowIfReadShared && $this->bShowIfWriteShared) {
+		    return true;
 		}
 		// Check if action does not have to be displayed
-		else if(!$this->showIfRead && !$this->showIfWrite)
-		{
-			return false;
+		else if (!$this->bShowIfReadShared && !$this->bShowIfWriteShared) {
+		    return false;
 		}
-		// Check if action needs to be hidden for
-		else if(!$this->showIfRead)
-		{
-			if($this->getPermission() == 1)
-			{
-				return true;
-			}
+		// Check if action needs to be hidden
+		else if (!$this->bShowIfReadShared && $this->getPermission() == 1) {
+		    return true;
 		}
-		
+
 		return false;
     }
-    
+
     /**
      * Set the shared object permission
      *
@@ -280,9 +303,9 @@ class KTDocumentAction extends KTStandardDispatcher {
 		$iUserId = $this->oUser->getID();
 		$iDocumentId = $this->oDocument->getID();
 		$iFolderId = $this->oDocument->getFolderID();
-		return SharedContent::getPermissions($iUserId, $iDocumentId, $iFolderId, 'document');
+		return SharedContent::getPermissions($iUserId, $iDocumentId, null, 'document');
     }
-    
+
     function userHasDocumentReadPermission($oDocument)
     {
     	if(SharedUserUtil::isSharedUser())
@@ -290,10 +313,24 @@ class KTDocumentAction extends KTStandardDispatcher {
     		$res = $this->getPermission();
     		if($res == 1) return true; elseif ($res == 0) return false; else return false;
     	}
-    	else 
+    	else
     	{
     		return Permission::userHasDocumentReadPermission($oDocument);
     	}
+    }
+
+    public function do_reason() {
+        $oTemplate = $this->oValidator->validateTemplate('ktcore/document/reason');
+        $aTemplateData = array(
+              'documentId' => $this->oDocument->getId(),
+              'formAction' => $this->sName,
+              'filename' => $this->oDocument->getFilename(),
+              'action' => $this->getReasonAction(),
+              'actionName' => $this->getDisplayName(),
+              'descriptiveText' => $this->getReasonDescriptiveText(),
+        );
+
+        return $oTemplate->render($aTemplateData);
     }
 }
 
@@ -415,9 +452,10 @@ class KTDocumentActionUtil {
         return $oRegistry->getActions($slot);
     }
 
-    function &getDocumentActionsForDocument(&$oDocument, $oUser, $slot = 'documentaction') {
+    static public function &getDocumentActionsForDocument(&$oDocument, $oUser, $slot = 'documentaction') {
         $aObjects = array();
-        foreach (KTDocumentActionUtil::getDocumentActionInfo($slot) as $aAction) {
+        $actions = KTDocumentActionUtil::getDocumentActionInfo($slot);
+        foreach ($actions as $aAction) {
             list($sClassName, $sPath, $sPlugin) = $aAction;
             $oRegistry =& KTPluginRegistry::getSingleton();
             $oPlugin =& $oRegistry->getPlugin($sPlugin);

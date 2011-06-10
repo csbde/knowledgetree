@@ -126,16 +126,13 @@ class KTDocumentCore extends KTEntity {
     	'iLinkedDocumentId' => 'linked_document_id'
     );
 
-    function KTDocumentCore() {
-    }
-
     // {{{ getters/setters
     function getCreatorId() { return $this->iCreatorId; }
     function setCreatorId($iNewValue) { $this->iCreatorId = $iNewValue; }
     function getOwnerId() { return $this->iOwnerId; }
     function setOwnerId($iNewValue) { $this->iOwnerId = $iNewValue; }
     function getCreatedDateTime() { return $this->dCreated; }
-    
+
     function getModifiedUserId() { return $this->iModifiedUserId; }
     function setModifiedUserId($iNewValue) { $this->iModifiedUserId = $iNewValue; }
     function getLastModifiedDate() { return $this->dModified; }
@@ -151,12 +148,18 @@ class KTDocumentCore extends KTEntity {
     function getStatusId() { return $this->iStatusId; }
     function setStatusId($iNewValue) { $this->iStatusId = $iNewValue; }
     function getIsCheckedOut() { return $this->bIsCheckedOut; }
-    function setIsCheckedOut($bNewValue) { $this->bIsCheckedOut = KTUtil::anyToBool($bNewValue);
-    	$date = $bNewValue?date('Y-m-d H:i:s'):null;
-   		$this->setCheckedOutDate($date);
-     }
+
+    function setIsCheckedOut($bNewValue) {
+        $this->bIsCheckedOut = KTUtil::anyToBool($bNewValue);
+    	$date = $bNewValue ? date('Y-m-d H:i:s') : null;
+   	$this->setCheckedOutDate($date);
+    }
+
     function getCheckedOutUserId() { return $this->iCheckedOutUserId; }
-    function setCheckedOutUserId($iNewValue) { if ($iNewValue < 0) $iNewValue = null; $this->iCheckedOutUserId = $iNewValue; }
+
+    function setCheckedOutUserId($iNewValue) {
+        $this->iCheckedOutUserId = ($iNewValue < 0) ? null : $iNewValue;
+    }
 
     function getPermissionObjectId() { return $this->iPermissionObjectId; }
     function setPermissionObjectId($iNewValue) { $this->iPermissionObjectId = $iNewValue; }
@@ -183,11 +186,27 @@ class KTDocumentCore extends KTEntity {
     function getLinkedDocumentId(){ return $this->iLinkedDocumentId;}
     function setLinkedDocumentId($iNewValue){ $this->iLinkedDocumentId = $iNewValue;}
 
-    // Timezone getters
-    function getDisplayCreatedDateTime() { return datetimeutil::getLocaleDate($this->dCreated); }
-    function getDisplayLastModifiedDate() { return empty($this->dModified) ? $this->dModified : datetimeutil::getLocaleDate($this->dModified); }
-    function getDisplayCheckedOutDate() { return empty($this->dCheckedOut) ? $this->dCheckedOut : datetimeutil::getLocaleDate($this->dCheckedOut); }
-    
+    /* Timezone getters */
+
+    // NOTE For whatever reason, under at least some circumstances, the class members
+    //      for these dates appear empty when accessed via these functions.
+    //      Solution was to call the base date functions to retrieve the values.
+    //      Think it has something to do with using callOnObject as an underlying layer?
+
+    function getDisplayCreatedDateTime() {
+        return datetimeutil::getLocaleDate($this->getCreatedDateTime());
+    }
+
+    function getDisplayLastModifiedDate() {
+        $lastModified = $this->getLastModifiedDate();
+        return empty($lastModified) ? $lastModified : datetimeutil::getLocaleDate($lastModified);
+    }
+
+    function getDisplayCheckedOutDate() {
+        $checkedOut = $this->getCheckedOutDate();
+        return empty($checkedOut) ? $checkedOut : datetimeutil::getLocaleDate($checkedOut);
+    }
+
     /**
      * Returns the ID of the real document.
      *

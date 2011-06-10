@@ -242,48 +242,49 @@ class KTAPI_Document extends KTAPI_FolderItem
 	 * @param string $reason The reason for checking the document in
 	 * @param string $tempfilename The location of the temporary file
 	 * @param bool $major_update Determines if the version number should have a major increment (+1) or a minor increment (+0.1)
-	 */
-	function checkin($filename, $reason, $tempfilename, $major_update=false)
-	{
-	    $storage = KTStorageManagerUtil::getSingleton();
-		if (!$storage->isFile($tempfilename))
-		{
-			return new PEAR_Error('File does not exist.');
-		}
+         */
+        function checkin($filename, $reason, $tempfilename, $major_update=false)
+        {
+            $storage = KTStorageManagerUtil::getSingleton();
+            if (!$storage->isFile($tempfilename))
+            {
+                return new PEAR_Error('File does not exist.');
+            }
 
-		$user = $this->can_user_access_object_requiring_permission($this->document, KTAPI_PERMISSION_WRITE);
+            $user = $this->can_user_access_object_requiring_permission($this->document, KTAPI_PERMISSION_WRITE);
 
-		if (PEAR::isError($user))
-		{
-			return $user;
-		}
+            if (PEAR::isError($user))
+            {
+                return $user;
+            }
 
-		if (!$this->document->getIsCheckedOut())
-		{
-			return new PEAR_Error(KTAPI_ERROR_DOCUMENT_NOT_CHECKED_OUT);
-		}
+            if (!$this->document->getIsCheckedOut())
+            {
+                return new PEAR_Error(KTAPI_ERROR_DOCUMENT_NOT_CHECKED_OUT);
+            }
 
-		$filename = KTUtil::replaceInvalidCharacters($filename);
+            $filename = KTUtil::replaceInvalidCharacters($filename);
 
-		$options = array('major_update' => $major_update);
+            $options = array('major_update' => $major_update);
 
-		$currentfilename = $this->document->getFileName();
-		if ($filename != $currentfilename)
-		{
-			$options['newfilename'] = $filename;
-		}
+            $currentfilename = $this->document->getFileName();
+            if ($filename != $currentfilename)
+            {
+                $options['newfilename'] = $filename;
+            }
 
-		DBUtil::startTransaction();
-		$result = KTDocumentUtil::checkin($this->document, $tempfilename, $reason, $user, $options);
+            DBUtil::startTransaction();
 
-		if (PEAR::isError($result))
-		{
-			DBUtil::rollback();
-			return new KTAPI_Error(KTAPI_ERROR_INTERNAL_ERROR,$result);
-		}
-		DBUtil::commit();
+            $result = KTDocumentUtil::checkin($this->document, $tempfilename, $reason, $user, $options);
+            if (PEAR::isError($result))
+            {
+                DBUtil::rollback();
+                return new KTAPI_Error(KTAPI_ERROR_INTERNAL_ERROR,$result);
+            }
 
-		KTUploadManager::temporary_file_imported($tempfilename);
+            DBUtil::commit();
+
+            KTUploadManager::temporary_file_imported($tempfilename);
 	}
 
 	/**
@@ -476,16 +477,16 @@ class KTAPI_Document extends KTAPI_FolderItem
 			if (empty($oem_no)) $oem_no = 'n/a';
 
 			$result[] = array(
-					'document_id'=>(int)$row['document_id'],
-					'custom_document_no'=>'n/a',
-					'oem_document_no'=>$oem_no,
-					'title'=> $row['title'],
-					'document_type'=> $row['document_type'],
-					'version'=> (float) ($row['major_version'] . '.' . $row['minor_version']),
-					'filesize'=>(int)$row['size'],
-					'workflow'=>empty($row['workflow'])?'n/a':$row['workflow'],
-					'workflow_state'=>empty($row['workflow_state'])?'n/a':$row['workflow_state'],
-					'link_type'=>empty($row['link_type'])?'unknown':$row['link_type'],
+					'document_id' => (int)$row['document_id'],
+					'custom_document_no' => 'n/a',
+					'oem_document_no' => $oem_no,
+					'title' => $row['title'],
+					'document_type' => $row['document_type'],
+					'version' => (float)($row['major_version'] . '.' . $row['minor_version']),
+					'filesize' =>(int)$row['size'],
+					'workflow' => empty($row['workflow']) ? 'n/a' : $row['workflow'],
+					'workflow_state' => empty($row['workflow_state']) ? 'n/a' : $row['workflow_state'],
+					'link_type' => empty($row['link_type']) ? 'unknown' : $row['link_type'],
 				);
 		}
 
@@ -1659,6 +1660,10 @@ class KTAPI_Document extends KTAPI_FolderItem
         $this->document = Document::get($this->document->iId);
         $folder = Folder::get($this->document->getFolderID());
 
+        // create the document transaction record
+        $documentTransaction = new DocumentTransaction($this->document, _kt('Document metadata updated'), 'ktcore.transactions.update');
+        $documentTransaction->create();
+
         // Check if there are any dynamic conditions / permissions that need to be updated on the document
         // If there are dynamic conditions then update the permissions on the document
         // The dynamic condition test fails unless the document exists in the DB therefore update permissions after committing the transaction.
@@ -2438,7 +2443,7 @@ class KTAPI_Document extends KTAPI_FolderItem
 				break;
 		}
 
-		if (isset($version))
+		if (isset($version) && $version !== '')
 		{
 			$content_version_status_id = $this->document->getContentVersionStatus($version);
 
@@ -2496,64 +2501,66 @@ class KTAPI_Document extends KTAPI_FolderItem
         	return new KTAPI_Error(KTAPI_ERROR_INTERNAL_ERROR, $transactions  );
         }
 
-		$wsversion = $this->ktapi->getVersion();
 		foreach($transactions as $key=>$transaction)
 		{
 			$transactions[$key]['version'] = (float) $transaction['version'];
+			$transactions[$key]['datetime'] = datetimeutil::getLocaleDate($transactions[$key]['datetime']);
 		}
+
 
         return $transactions;
 	}
 
-	/**
-	 * This returns the version history on the document.
-	 *
-	 * @author KnowledgeTree Team
-	 * @access public
-	 * @return array The version history
-	 */
-	function get_version_history()
-	{
-		$metadata_versions = KTDocumentMetadataVersion::getByDocument($this->document);
-
-		$wsversion = $this->ktapi->getVersion();
-
+    /**
+     * This returns the version history on the document.
+     *
+     * @author KnowledgeTree Team
+     * @access public
+     * @return array The version history
+     */
+    function get_version_history()
+    {
+        $metadata_versions = KTDocumentMetadataVersion::getByDocument($this->document);
+        $wsversion = $this->ktapi->getVersion();
         $versions = array();
+
         foreach ($metadata_versions as $version)
         {
-        	$document = &Document::get($this->documentid, $version->getId());
+            $versionInfo = array();
 
-        	$version = array();
+            $document = &Document::get($this->documentid, $version->getId());
+            $userid = $document->getModifiedUserId();
+            $user = User::get($userid);
+            $username = $user_username = 'Unknown';
+            if (!PEAR::isError($user))
+            {
+                $username = is_null($user) ? 'n/a' : $user->getName();
+                $user_username = is_null($user) ? 'n/a' : $user->getUserName();
+            }
 
-        	$userid = $document->getModifiedUserId();
-			$user = User::get($userid);
-			$username = $user_username = 'Unknown';
-			if (!PEAR::isError($user))
-			{
-				$username = is_null($user)?'n/a':$user->getName();
+            $versionInfo['user'] = $username;
+            $versionInfo['metadata_version'] = $document->getMetadataVersion();
+            $versionInfo['content_version'] = $document->getVersion();
+            $versionInfo['datetime'] = $document->getDisplayVersionCreated();
 
-				$user_username = is_null($user)?'n/a':$user->getUserName();
-			}
+            if ($wsversion >= 2)
+            {
+                $versionInfo['metadata_version'] = (int)$versionInfo['metadata_version'];
+                $versionInfo['content_version'] = (float)$versionInfo['content_version'];
+            }
 
-        	$version['user'] = $username;
-        	$version['metadata_version'] = $document->getMetadataVersion();
-        	$version['content_version'] = $document->getVersion();
-			$version['datetime'] = $document->getDisplayVersionCreated();
-        	if ($wsversion >= 2)
-        	{
-        		$version['metadata_version'] = (int) $version['metadata_version'];
-        		$version['content_version'] = (float) $version['content_version'];
-        	}
+            if ($wsversion >= 3)
+            {
+                $versionInfo['user_username'] = $user_username;
+                $versionInfo['major_version'] = (int)$document->getMajorVersionNumber();
+                $versionInfo['minor_version'] = (int)$document->getMinorVersionNumber();
+            }
 
-        	if ($wsversion >= 3)
-        	{
-        		$version['user_username'] = $user_username;
-        	}
-
-            $versions[] = $version;
+            $versions[] = $versionInfo;
         }
+
         return $versions;
-	}
+    }
 
 	/**
 	 * Get the content version id using the document (content) version - major/minor version
@@ -3038,6 +3045,31 @@ class KTAPI_Document extends KTAPI_FolderItem
 				return FALSE;
 			}
 		}
+	}
+
+	/**
+	 *
+	 * Determines whether a document has "binary changes", i.e. if it truly has content changes
+	 * (since rename etc also increase the content version). The only way to determine this is by
+	 * checking whether there has been a check-in in the given version range
+	 *
+	 * @param float $from_version
+	 * @param float $to_version
+	 */
+	public function hasBinaryChanges($from_version, $to_version)
+	{
+		$sSQL = 'SELECT DT.document_id FROM '.KTUtil::getTableName('document_transactions').' AS DT '.
+			'WHERE DT.document_id = '.$this->documentid.' AND DT.version > '.$from_version.' AND DT.version <= '.$to_version.
+			' AND DT.transaction_namespace LIKE \'ktcore.transactions.check_in\' ';
+
+        $results = DBUtil::getResultArray($sSQL);
+
+        if (is_null($results) || PEAR::isError($results))
+        {
+        	return false;
+        }
+
+        return (count($results) > 0);
 	}
 }
 

@@ -1,0 +1,69 @@
+#document_status_area a {
+	display: inline-block;
+	height: 38px;
+	width: 38px;
+	border: 1px solid white;
+	background: url('../../../../graphics/newui/documents/blocks/doc_status_spritesheet.png') no-repeat;
+	background-position-y: 4px;
+}
+
+#document_status_area a:hover {
+	border: 1px solid #ccc;
+	-moz-border-radius: 2px;
+	-webkit-border-radius: 2px;
+	border-radius: 2px;
+	background-position-y: -34px;
+}
+
+#document_status_area .action {
+    height: 45px;
+    width: 45px;
+}
+
+#document_status_area .alert.enabled {
+	background-position: 3px -40px;
+}
+#document_status_area .alert.disabled {
+	background-position: 3px 1px;
+}
+
+#document_status_area .workflow.enabled {
+    background-position: -39px -40px;
+}
+#document_status_area .workflow.disabled {
+	background-position: -39px 0px;
+}
+
+#document_status_area .subscribe.enabled {
+	background-position: -80px -41px;
+}
+#document_status_area .subscribe.disabled {
+	background-position: -80px 1px;
+}
+
+#stateActions {
+	border: 1px solid #CCCCCC;
+	padding: 1em;
+	overflow: auto;
+}
+
+.tooltip{
+	background: white;
+	font-size: 11px;
+	height: auto;
+	width: auto;
+	padding: 5px 10px 5px 10px;
+	color: #666;
+	top: 65px !important;
+	border: 1px solid #ccc;
+	border-radius: 3px;
+	-moz-border-radius: 3px;
+	-webkit-border-radius: 3px;
+	box-shadow: 0px 1px 0px #888;
+	-moz-box-shadow: 0px 0px 1px #888;
+	-webkit-box-shadow: 0px 0px 1px #888;
+}
+.tooltip span {
+	background: url(../../../../graphics/newui/popover_tip_down.png) no-repeat bottom center;
+	padding-bottom: 21px;
+}

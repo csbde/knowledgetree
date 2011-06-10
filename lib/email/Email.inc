@@ -51,13 +51,14 @@ class Email {
      * @param string the sender's email address (optional)
      * @param string the sender's name (optional)
      */
-    function Email($sFromEmail = "", $sFromName = "") {
+    function Email($sFromEmail = "", $sFromName = "")
+    {
         global $default;
         // create a new phpmailer object.
         require_once(KT_DIR .  '/thirdparty/phpmailer/class.phpmailer.php');
         $this->oMailer = new phpmailer();
-	$this->oMailer->Encoding = 'base64';
-	$this->oMailer->CharSet = 'utf-8';
+        $this->oMailer->Encoding = 'base64';
+        $this->oMailer->CharSet = 'utf-8';
         $this->oMailer->isSMTP();
         $this->oMailer->Host = $default->emailServer;
         $this->oMailer->From = (strlen($sFromEmail) == 0) ? $default->emailFrom : $sFromEmail;
@@ -67,28 +68,29 @@ class Email {
         $this->oMailer->SetLanguage('en', KT_DIR .  '/thirdparty/phpmailer/language/');
         $this->bEmailDisabled = false;
 
-	$oConfig =& KTConfig::getSingleton();
-	$sEmailServer = $oConfig->get('email/emailServer');
-	if ($sEmailServer == 'none') {
+        $oConfig =& KTConfig::getSingleton();
+        $sEmailServer = $oConfig->get('email/emailServer');
+        if ($sEmailServer == 'none') {
             $this->bEmailDisabled = true;
         }
+
         if (empty($sEmailServer)) {
             $this->bEmailDisabled = true;
         }
 
-	$sEmailPort = $oConfig->get('email/emailPort');
-	if(!empty($sEmailPort)) {
-	    $this->oMailer->Port = (int) $sEmailPort;
-	}
+        $sEmailPort = $oConfig->get('email/emailPort');
+        if (!empty($sEmailPort)) {
+            $this->oMailer->Port = (int) $sEmailPort;
+        }
 
-	$bEmailAuth = $oConfig->get('email/emailAuthentication');
-	if($bEmailAuth) {
-	    $sEmailUser = $oConfig->get('email/emailUsername');
-	    $sEmailPass = $oConfig->get('email/emailPassword');
-	    $this->oMailer->SMTPAuth = true;
-	    $this->oMailer->Username = $sEmailUser;
-	    $this->oMailer->Password = $sEmailPass;
-	}
+        $bEmailAuth = $oConfig->get('email/emailAuthentication');
+        if ($bEmailAuth) {
+            $sEmailUser = $oConfig->get('email/emailUsername');
+            $sEmailPass = $oConfig->get('email/emailPassword');
+            $this->oMailer->SMTPAuth = true;
+            $this->oMailer->Username = $sEmailUser;
+            $this->oMailer->Password = $sEmailPass;
+        }
     }
 
     /**
@@ -101,49 +103,57 @@ class Email {
      * @param string the sender's name (optional)
      * @return boolean true on email successfully sent, false otherwise and set $_SESSION["errorMessage"]
      */
-    function send($mToEmail, $sSubject, $sBody) {
-        if ($this->bEmailDisabled) {
-        	return PEAR::raiseError(_kt("Email is not configured."));
-        }
+    function send($mToEmail, $sSubject, $sBody)
+    {
         global $default;
 
-        if ( (is_string($mToEmail) && (strlen($mToEmail) > 0)) ||
-        	 (is_array($mToEmail) && (count($mToEmail) > 0)) ) {
+        if ($this->bEmailDisabled) {
+            return PEAR::raiseError(_kt("Email is not configured."));
+        }
 
-	        $aEmailAddresses = array();
-	        // just one email address, add it
-	        if (is_string($mToEmail) && (strpos($mToEmail, ";") === false)) {
-	            $this->oMailer->AddAddress($mToEmail);
-	        } else {
-	        	// if we're passed an array, then use it
-	        	if (is_array($mToEmail)) {
-	        		$aEmailAddresses = $mToEmail;
-	        	// if there are multiple addresses (; separated), explode it
-	        	} elseif (strpos($mToEmail, ";") > 0) {
-		            $aEmailAddresses = explode(";", $mToEmail);
-	        	}
-	            for ($i=0; $i<count($aEmailAddresses); $i++) {
-	                $this->oMailer->AddAddress($aEmailAddresses[$i]);
-	                $default->log->debug("Email.inc adding " . $aEmailAddresses[$i]);
-	            }
-	        }
+        if ((is_string($mToEmail) && (strlen($mToEmail) > 0)) ||
+            (is_array($mToEmail) && (count($mToEmail) > 0))) {
 
-	        $body = $this->makeEmailTemplate(stripslashes($sBody));
-	        $this->oMailer->Subject = stripslashes($sSubject);
-//	        $this->oMailer->Body = stripslashes($sBody);
-	        $this->oMailer->Body = $body;
+            $aEmailAddresses = array();
+            // just one email address, add it
+            if (is_string($mToEmail) && (strpos($mToEmail, ";") === false)) {
+                $this->oMailer->AddAddress($mToEmail);
+            }
+            else {
+                // if we're passed an array, then use it
+                if (is_array($mToEmail)) {
+                    $aEmailAddresses = $mToEmail;
+                    // if there are multiple addresses (; separated), explode it
+                }
+                elseif (strpos($mToEmail, ";") > 0) {
+                    $aEmailAddresses = explode(";", $mToEmail);
+                }
 
-	        //send the email
-	        if(!$this->oMailer->Send()) {
-	            $default->log->error("Error sending mail to $mToEmail; mailer error code=" . $this->oMailer->ErrorInfo);
-	            return PEAR::raiseError(sprintf(_kt("Error sending mail to %s; mailer error code=%s"),$mToEmail,  $this->oMailer->ErrorInfo));
-	        } else {
-	        	$default->log->info("Successfully sent mail to $mToEmail");
-	        }
-	        return true;
-        } else {
-        	// no valid email addresses supplied
-        	return PEAR::raiseError(_kt("No valid email addresses supplied"));
+                for ($i = 0; $i < count($aEmailAddresses); $i++) {
+                    $this->oMailer->AddAddress($aEmailAddresses[$i]);
+                    $default->log->debug("Email.inc adding " . $aEmailAddresses[$i]);
+                }
+            }
+
+            $body = $this->makeEmailTemplate(stripslashes($sBody));
+            $this->oMailer->Subject = stripslashes($sSubject);
+            //	        $this->oMailer->Body = stripslashes($sBody);
+            $this->oMailer->Body = $body;
+
+            //send the email
+            if (!$this->oMailer->Send()) {
+                $default->log->error("Error sending mail to $mToEmail; mailer error code=" . $this->oMailer->ErrorInfo);
+                return PEAR::raiseError(sprintf(_kt("Error sending mail to %s; mailer error code=%s"), $mToEmail, $this->oMailer->ErrorInfo));
+            }
+            else {
+                $default->log->info("Successfully sent mail to $mToEmail");
+            }
+
+            return true;
+        }
+        else {
+            // no valid email addresses supplied
+            return PEAR::raiseError(_kt("No valid email addresses supplied"));
         }
     }
 
@@ -157,50 +167,58 @@ class Email {
      * @param string the name to the document to attach
      * @return boolean true on email successfully sent, false otherwise and set $_SESSION["errorMessage"]
      */
-    function sendAttachment($mToEmail, $sSubject, $sBody, $sDocumentPath, $sDocumentName) {
-        if ($this->bEmailDisabled) {
-        	return PEAR::raiseError(_kt("Email is not configured."));
-        }
+    function sendAttachment($mToEmail, $sSubject, $sBody, $sDocumentPath, $sDocumentName)
+    {
         global $default;
 
-        if ( (is_string($mToEmail) && (strlen($mToEmail) > 0)) ||
-        	 (is_array($mToEmail) && (count($mToEmail) > 0)) ) {
+        if ($this->bEmailDisabled) {
+            return PEAR::raiseError(_kt("Email is not configured."));
+        }
 
-	        // just one email address, add it
-	        if (is_string($mToEmail) && (strpos($mToEmail, ";") === false)) {
-	            $this->oMailer->AddAddress($mToEmail);
-	        } else {
+        if ((is_string($mToEmail) && (strlen($mToEmail) > 0)) ||
+            (is_array($mToEmail) && (count($mToEmail) > 0))) {
+
+            // just one email address, add it
+            if (is_string($mToEmail) && (strpos($mToEmail, ";") === false)) {
+                $this->oMailer->AddAddress($mToEmail);
+            }
+            else {
                 $aEmailAddresses = array();
-	        	// if we're passed an array, then use it
-	        	if (is_array($mToEmail)) {
-	        		$aEmailAddresses = $mToEmail;
-	        	// if there are multiple addresses (; separated), explode it
-	        	} elseif (strpos($mToEmail, ";") > 0) {
-		            $aEmailAddresses = explode(";", $mToEmail);
-	        	}
-	            for ($i=0; $i<count($aEmailAddresses); $i++) {
-	                $this->oMailer->AddAddress($aEmailAddresses[$i]);
-	                $default->log->debug("Email.inc adding " . $aEmailAddresses[$i]);
-	            }
-	        }
+                // if we're passed an array, then use it
+                if (is_array($mToEmail)) {
+                    $aEmailAddresses = $mToEmail;
+                    // if there are multiple addresses (; separated), explode it
+                }
+                elseif (strpos($mToEmail, ";") > 0) {
+                    $aEmailAddresses = explode(";", $mToEmail);
+                }
 
-	        $body = $this->makeEmailTemplate(stripslashes($sBody));
-	        $this->oMailer->Subject = stripslashes($sSubject);
-//	        $this->oMailer->Body = stripslashes($sBody);
-	        $this->oMailer->Body = $body;
-	        $this->oMailer->AddAttachment($sDocumentPath, $sDocumentName);
+                for ($i = 0; $i < count($aEmailAddresses); $i++) {
+                    $this->oMailer->AddAddress($aEmailAddresses[$i]);
+                    $default->log->debug("Email.inc adding " . $aEmailAddresses[$i]);
+                }
+            }
 
-	        //send the email
-	        if(!$this->oMailer->Send()) {
-	            $default->log->error("Error sending mail to $mToEmail; mailer error code=" . $this->oMailer->ErrorInfo);
-	            return PEAR::raiseError(sprintf(_kt("Error sending mail to %s; mailer error code=%s"), $mToEmail,  $this->oMailer->ErrorInfo));
-	        } else {
-	        	$default->log->info("Successfully sent mail to $mToEmail");
-	        }
-	        return true;
-        } else {
-        	// no valid email addresses supplied
-        	return PEAR::raiseError(_kt("No valid email addresses supplied"));
+            $body = $this->makeEmailTemplate(stripslashes($sBody));
+            $this->oMailer->Subject = stripslashes($sSubject);
+            //	        $this->oMailer->Body = stripslashes($sBody);
+            $this->oMailer->Body = $body;
+            $this->oMailer->AddAttachment($sDocumentPath, $sDocumentName);
+
+            //send the email
+            if (!$this->oMailer->Send()) {
+                $default->log->error("Error sending mail to $mToEmail; mailer error code=" . $this->oMailer->ErrorInfo);
+                return PEAR::raiseError(sprintf(_kt("Error sending mail to %s; mailer error code=%s"), $mToEmail,  $this->oMailer->ErrorInfo));
+            }
+            else {
+                $default->log->info("Successfully sent mail to $mToEmail");
+            }
+
+            return true;
+        }
+        else {
+            // no valid email addresses supplied
+            return PEAR::raiseError(_kt("No valid email addresses supplied"));
         }
     }
 
@@ -219,27 +237,30 @@ class Email {
     * @todo check for special characters (including encoding the link correctly???)
     * @todo need to test this on multiple mail clients, not just Outlook
     */
-    function sendHyperLink($FromEmail, $FromName, $ToEmail, $Subj, $EmailBody, $hyperlink) {
-        if ($this->bEmailDisabled) {
-        	return PEAR::raiseError(_kt("Email is not configured."));
-        }
+    function sendHyperLink($fromEmail, $fromName, $toEmail, $subject, $emailBody, $hyperlink)
+    {
         global $default;
 
-        $body = $this->makeEmailTemplate(stripslashes($EmailBody).'<br /><br />'.$hyperlink);
+        if ($this->bEmailDisabled) {
+            return PEAR::raiseError(_kt("Email is not configured."));
+        }
+
+        $body = $this->makeEmailTemplate(stripslashes($emailBody).'<br /><br />'.$hyperlink);
 
         //get info from relevant fields.
-        $this->oMailer->From = $FromEmail;
-        $this->oMailer->FromName = $FromName;
-        $this->oMailer->AddAddress($ToEmail);
-        $this->oMailer->Subject = stripslashes($Subj);
-//        $this->oMailer->Body = stripslashes($EmailBody) . ' ' . $hyperlink;
+        $this->oMailer->From = $fromEmail;
+        $this->oMailer->FromName = $fromName;
+        $this->oMailer->AddAddress($toEmail);
+        $this->oMailer->Subject = stripslashes($subject);
+        //        $this->oMailer->Body = stripslashes($emailBody) . ' ' . $hyperlink;
         $this->oMailer->Body = $body;
 
         //send the email
-        if(!$this->oMailer->Send()) {
+        if (!$this->oMailer->Send()) {
             $_SESSION["errorMessage"] = $lang_err_email . " " . $this->oMailer->ErrorInfo;
             return false;
         }
+
         return true;
     }
     /**
@@ -257,98 +278,72 @@ class Email {
     * @todo check for special characters (including encoding the link correctly???)
     * @todo need to test this on multiple mail clients, not just Outlook
     */
-    function sendHelpEmail($FromEmail, $FromName, $ToEmail, $Subj, $EmailBody, $hyperlink) {
-        if ($this->bEmailDisabled) {
-        	return PEAR::raiseError(_kt("Email is not configured."));
-        }
+    function sendHelpEmail($fromEmail, $fromName, $toEmail, $subject, $emailBody, $hyperlink)
+    {
         global $default;
 
-        $body = $this->makeEmailTemplate(stripslashes($EmailBody) . " <br />" . _kt("This bug can be found on this page") . ": " . "<a href = ". $hyperlink .">". $hyperlink ."</a>");
+        if ($this->bEmailDisabled) {
+            return PEAR::raiseError(_kt("Email is not configured."));
+        }
+
+        $body = $this->makeEmailTemplate(stripslashes($emailBody) . " <br />" . _kt("This bug can be found on this page") . ": " . "<a href = ". $hyperlink .">". $hyperlink ."</a>");
 
         //get info from relevant fields.
-        $this->oMailer->From = $FromEmail;
-        $this->oMailer->FromName = $FromName;
-        $this->oMailer->AddAddress($ToEmail);
-        $this->oMailer->Subject = stripslashes($Subj)  . ' ' . $hyperlink; //only difference from above
-//        $this->oMailer->Body = stripslashes($EmailBody) . " <br>" . _kt("This bug can be found on this page") . ": " . "<a href = ". $hyperlink .">". $hyperlink ."</a>";
+        $this->oMailer->From = $fromEmail;
+        $this->oMailer->FromName = $fromName;
+        $this->oMailer->AddAddress($toEmail);
+        $this->oMailer->Subject = stripslashes($subject)  . ' ' . $hyperlink; //only difference from above
+        //        $this->oMailer->Body = stripslashes($emailBody) . " <br>" . _kt("This bug can be found on this page") . ": " . "<a href = ". $hyperlink .">". $hyperlink ."</a>";
         $this->oMailer->Body = $body;
 
         //send the email
-        if(!$this->oMailer->Send()) {
+        if (!$this->oMailer->Send()) {
             $_SESSION["errorMessage"] = $lang_err_email . " " . $this->oMailer->ErrorInfo;
             return false;
         }
+
         return true;
     }
 
-    function sendEmail($FromEmail, $FromName, $ToEmail, $Subj, $EmailBody) {
-        if ($this->bEmailDisabled) {
-        	return PEAR::raiseError(_kt("Email is not configured."));
-        }
+    function sendEmail($fromEmail, $fromName, $toEmail, $subject, $emailBody)
+    {
         global $default;
 
-        $body = $this->makeEmailTemplate(stripslashes($EmailBody));
+        if ($this->bEmailDisabled) {
+            return PEAR::raiseError(_kt("Email is not configured."));
+        }
+
+        $body = $this->makeEmailTemplate(stripslashes($emailBody));
 
         //get info from relevant fields.
-        $this->oMailer->From = $FromEmail;
-        $this->oMailer->FromName = $FromName;
-        $this->oMailer->AddAddress($ToEmail);
-        $this->oMailer->Subject = stripslashes($Subj);
+        $this->oMailer->From = $fromEmail;
+        $this->oMailer->FromName = $fromName;
+        $this->oMailer->AddAddress($toEmail);
+        $this->oMailer->Subject = stripslashes($subject);
         $this->oMailer->Body = $body;
 
         //send the email
-        if(!$this->oMailer->Send()) {
+        if (!$this->oMailer->Send()) {
             $_SESSION["errorMessage"] = $lang_err_email . " " . $this->oMailer->ErrorInfo;
             return false;
         }
+
         return true;
     }
 
     /*
     * This method builds the email template
     *
- 	* @author KnowledgeTree Team
-	* @access public
-	* @param string $email The email to be sent
-	* @return string $str The html string that will be sent via email
-	*/
+    * @author KnowledgeTree Team
+    * @access public
+    * @param string $email The email to be sent
+    * @return string $str The html string that will be sent via email
+    */
     public function makeEmailTemplate($email)
     {
-        $rootUrl = KTUtil::kt_url();
-
-        $oKTConfig =& KTConfig::getSingleton();
-	    $appName = $oKTConfig->get('appName');
-
-	    /* Disabled branding for now */
-//	    $mainLogo = $oKTConfig->get('mainLogo');
-//	    $companyLogoTitle = $oKTConfig->get('companyLogoTitle');
-//	    $mainLogoTitle = $oKTConfig->get('mainLogoTitle');
-
-//	    if($mainLogo != ''){
-//            $logo = '<img src="'.$mainLogo.'" class="primary" alt="'.$companyLogoTitle.'" title="'.$mainLogoTitle.'"/>';
-//	    }else{
-//            $logo = '<img src="'.$rootUrl.'/resources/graphics/ktlogo-topbar-right-transparent.png" class="primary" title="'.$appName.'" height="44" width="252"/>';
-//	    }
-
-	    $logo = '<img src="'.$rootUrl.'/resources/graphics/email_header.jpg" class="primary" title="'.$appName.'" height="100" width="680"/>';
-
-        $str = '<html>
-                    <body>
-                        <table border="0" cellpadding="0" cellspacing="0" width="680px" height="100" style="background-color:white">
-                            <tr>
-                                <td>
-                                    '.$logo.'
-                                </td>
-                            </tr>
-                            <tr>
-                                <td style="padding: 10px; background-color: #E9F2F7">
-                                    '.$email.'
-                                </td>
-                            </tr>
-                        </table>
-                    </body>
-                </html>';
-        return $str;
+        $template = file_get_contents(KT_DIR . '/resources/email/kt-email-template.html');
+        return str_replace('%content%', $email, $template);
     }
+
 }
 ?>

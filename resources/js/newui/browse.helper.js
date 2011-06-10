@@ -45,6 +45,7 @@ kt.lib.parseTemplate = function(str, obj) {
 };
 
 // kt.pages.browse class
+
 kt.pages.browse = new function() {
 
     var self = this;
@@ -53,29 +54,28 @@ kt.pages.browse = new function() {
     self.loading = false;
     // NOTE if you change the limit here, you should also change it on the server side
     //      (although the code should function fine if you don't, as this value operates as an override...)
-    self.limit = 5;
+    self.limit = 3;
+    self.retryIn = 3000; // milliseconds
 
     this.addDocumentItem = function(item) {
         item.is_shortcut = item.is_shortcut ? '' : ' not_supported';
         item.is_immutable = item.is_immutable ? '' : ' not_supported';
         item.is_checkedout = item.is_checkedout ? '' : ' not_supported';
-        //item.document_link = 'view.php?fDocumentId=' + item.id;
         item.document_link = item.document_url;
 
         var newItem = jQuery(jQuery('.fragment.document')[0]).html();
         newItem = kt.lib.parseTemplate(newItem, item);
         var elem = jQuery(newItem);
-        var mime = jQuery('.doc.icon',elem).attr('style', item.mimeicon);
+        var mime = jQuery('.doc.icon', elem).attr('style', item.mimeicon);
         jQuery('.page.page_' + self.curPage).append(elem);
     };
 
     this.viewPage = function(pageNum, folderId, fetch) {
-        if (self.loading) { return; }
+        if (self.loading) { return self.retry(pageNum, folderId, fetch); }
 
         // TODO consider rather just returning if pageNum < 1?
         if (pageNum < 1) { pageNum = 1; }
         var pageItem = jQuery('.paginate>li.page_' + pageNum);
-
         if (pageItem.length <= 0) { return; }
 
         // if the selected page was already loaded, display immediately
@@ -90,7 +90,7 @@ kt.pages.browse = new function() {
         if (fetch && self.checkRange(pageNum)) {
             self.loading = true;
             if (!loaded) {
-                jQuery.loading.css.background = 'yellow';
+                jQuery.loading.css.background = '#FFFEA1';
                 jQuery.loading(true, { text: 'Loading...', effect: 'update' });
             }
 
@@ -108,6 +108,13 @@ kt.pages.browse = new function() {
             });
         }
     };
+
+    this.retry = function(pageNum, folderId, fetch) {
+        jQuery.loading(false);
+        jQuery.loading(true, { text: 'Busy, please wait...trying again in ' + (self.retryIn / 1000) + ' seconds', max: self.retryIn });
+        setTimeout(function() { self.viewPage(pageNum, folderId, fetch); }, self.retryIn);
+        return;
+    }
 
     this.checkRange = function(requested) {
         requested = Number(requested);
@@ -186,6 +193,9 @@ kt.pages.browse = new function() {
         pageItem.addClass('highlight');
         self.curPage = new Number(pageNum);
         jQuery('html, body').animate({ scrollTop: 0 }, 0);
+
+        var selectedItems = jQuery('.page.page_' + self.curPage + ' .item .checkbox>input:checkbox:checked:enabled').length;
+        jQuery('.select_all').attr('checked', (selectedItems > 0));
     }
 
     this.nextPage = function(folderId) {
@@ -199,7 +209,7 @@ kt.pages.browse = new function() {
     };
 
     this.selectAllItems = function() {
-        jQuery('.itemContainer .item .checkbox > input:checkbox:enabled').each(function() {
+        jQuery('.page.page_' + self.curPage + ' .item .checkbox > input:checkbox:enabled').each(function() {
             if (!this.checked) { jQuery(this).click(); }
             jQuery(this).parents('.item').addClass('highlighted');
         });
@@ -208,41 +218,38 @@ kt.pages.browse = new function() {
     }
 
     this.deSelectAllItems = function() {
-        jQuery('.itemContainer .item .checkbox>input:checkbox:enabled').each(function() {
-            if (this.checked)jQuery(this).click();
+        jQuery('.page.page_' + self.curPage + ' .item .checkbox > input:checkbox:enabled').each(function() {
+            if (this.checked) { jQuery(this).click(); }
             jQuery(this).parents('.item').removeClass('highlighted');
         });
         self.setBulkActionMenuStatus();
         return false;
     }
 
-};
-
-// Setup
-kt.lib.shortcut.add("ctrl+right", kt.pages.browse.nextPage);
-kt.lib.shortcut.add("ctrl+left", kt.pages.browse.prevPage);
-kt.lib.shortcut.add("ctrl+a", kt.pages.browse.selectAllItems);
-kt.lib.shortcut.add("ctrl+shift+a", kt.pages.browse.deSelectAllItems);
-
-// Main
-jQuery(document).ready(function() {
-    kt.pages.browse.viewPage(1, null, false);
-    kt.pages.browse.setBulkActionMenuStatus = function() {
-        var selectedItems = jQuery(".itemContainer .item .checkbox>input:checkbox:checked:enabled").length;
+    this.setBulkActionMenuStatus = function() {
+        var selectedItems = jQuery('.itemContainer .item .checkbox>input:checkbox:checked:enabled').length;
         if (selectedItems > 0) {
         	jQuery('.browseView.bulkActionMenu td:first-child').removeClass('disabled');
         	jQuery('.browseView.bulkActionMenu td:first-child input[type="submit"]').attr('disabled', '');
-            //				jQuery('.browseView.bulkActionMenu').slideDown(350,function() {kt.lib.setFooter();});
-            //				jQuery('.browseView.bulkActionMenu').slideDown(350);
         	jQuery('.browseView.bulkActionMenu .status').html(selectedItems + '&nbsp;Item(s)&nbsp;Selected');
         } else {
         	jQuery('.browseView.bulkActionMenu td:first-child').addClass('disabled');
         	jQuery('.browseView.bulkActionMenu td:first-child input[type="submit"]').attr('disabled', 'disabled');
-            //				jQuery('.browseView.bulkActionMenu').hide(200);
-            //				jQuery('.browseView.bulkActionMenu').hide(200,function() {kt.lib.setFooter();});
         	jQuery('.browseView.bulkActionMenu .status').html('');
         }
     }
+
+};
+
+// Setup
+kt.lib.shortcut.add('ctrl+right', kt.pages.browse.nextPage);
+kt.lib.shortcut.add('ctrl+left', kt.pages.browse.prevPage);
+kt.lib.shortcut.add('ctrl+a', kt.pages.browse.selectAllItems);
+kt.lib.shortcut.add('ctrl+shift+a', kt.pages.browse.deSelectAllItems);
+
+// Main
+jQuery(document).ready(function() {
+    kt.pages.browse.viewPage(1, null, false);
 
     jQuery('.actionIcon.comments').click(function() {
         var docItem=jQuery(this).parents('.item')[0];
@@ -251,44 +258,66 @@ jQuery(document).ready(function() {
         thisField.toggle();
     });
 
-    jQuery("table.doc.item input:checkbox").click(function() {
+    jQuery('table.doc.item input:checkbox').click(function() {
         kt.pages.browse.setBulkActionMenuStatus();
 
         if (jQuery(this).is(':checked')) {
-        	jQuery(this).parent().parent().parent().parent().addClass("highlighted");
+        	jQuery(this).parent().parent().parent().parent().addClass('highlighted');
         } else {
-        	jQuery(this).parent().parent().parent().parent().removeClass("highlighted");
+        	jQuery(this).parent().parent().parent().parent().removeClass('highlighted');
         }
     });
 
-    jQuery("table.doc.item input:checkbox:checked").parent().parent().parent().parent().addClass("highlighted");
+    jQuery('table.doc.item input:checkbox:checked').parent().parent().parent().parent().addClass('highlighted');
 
-    jQuery("table.folder.item input:checkbox").click(function() {
+    jQuery('table.folder.item input:checkbox').click(function() {
         kt.pages.browse.setBulkActionMenuStatus();
 
         if (jQuery(this).is(':checked')) {
-        	jQuery(this).parent().parent().parent().parent().addClass("highlighted");
+        	jQuery(this).parent().parent().parent().parent().addClass('highlighted');
         } else {
-        	jQuery(this).parent().parent().parent().parent().removeClass("highlighted");
+        	jQuery(this).parent().parent().parent().parent().removeClass('highlighted');
         }
     });
 
-    jQuery("table.folder.item input:checkbox:checked").parent().parent().parent().parent().addClass("highlighted");
+    jQuery('table.folder.item input:checkbox:checked').parent().parent().parent().parent().addClass('highlighted');
 
     if (jQuery.browser.msie) {
     (function() {
         function hide() {
-        	jQuery(".doc.browseView:first-child .item .actionMenu .actions>ul").css({display: '', visibility: ''});
+        	jQuery('.doc.browseView:first-child .item .actionMenu .actions>ul').css({display: '', visibility: ''});
         }
 
-        jQuery(".doc.browseView:first-child .item .actionMenu .actions>ul").css({display: 'block', visibility: 'hidden'});
+        jQuery('.doc.browseView:first-child .item .actionMenu .actions>ul').css({display: 'block', visibility: 'hidden'});
         setTimeout(hide,200);
     })();
     }
 
+
+
+	/**
+	 * Functionality to place the menu in an always visible state
+	 */	
+	jQuery('.doc.browseView .item .actionMenu .actions').live("hover", function() {
+		
+		// Reset Position Everytime relative to the parent item
+		jQuery(this).children("ul:first").css({'top': 15+'px', 'position':'absolute', 'margin-top':0});
+		
+		
+		// If (parent position+child height) > (window height + scroll offset), Reposition child
+		if (jQuery(this).offset().top+jQuery(this).children("ul:first").height()+5 > jQuery(window).height()+jQuery("html").scrollTop()) {
+			diff = (jQuery(this).offset().top+jQuery(this).children("ul:first").height()) - (jQuery(window).height() + jQuery("html").scrollTop());
+			
+			// Move item up by difference + 20px
+			jQuery(this).children("ul:first").css('margin-top', '-'+(diff+18)+'px');
+		}
+	});
+	
+	
+
     kt.pages.browse.setBulkActionMenuStatus();
 
-    jQuery(".browseView.bulkActionMenu .select_all").change(function() {
+    jQuery('.browseView.bulkActionMenu .select_all').change(function() {
         if (this.checked) {
             kt.pages.browse.selectAllItems();
         } else {

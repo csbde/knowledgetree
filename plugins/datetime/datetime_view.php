@@ -40,6 +40,12 @@ require_once(KT_LIB_DIR . '/datetime/timezones.inc');
 
 class datetime_view extends KTAdminDispatcher
 {
+	/**
+	 * Load datetime js and css
+	 * As this is a view class,
+	 * assume we will need them both.
+	 *
+	 */
 	public function __construct()
 	{
         global $main;
@@ -47,6 +53,20 @@ class datetime_view extends KTAdminDispatcher
         $main->requireCSSResource('plugins/datetime/resources/css/datetime.css');
 	}
 	
+	public function getInputs($id, $type, $value, $defaultValue, $options) {
+    	$value = ($value == 'default') ? $defaultValue : $value;
+    	$input .= datetime_view::renderRegionLabel();
+    	$input .= '<select onchange="javascript:{kt.datetime.change_region();}" id="country_select" name="country_select">&nbsp;&nbsp;';
+    	$input .= datetime_view::renderRegions($value);
+    	$input .= '</select>';
+    	$input .= '<br/><br/>';
+    	$input .= datetime_view::renderTimezoneLabel();
+    	$input .= "<select class='countryList' id='{$id}' name='configArray[{$id}]'>&nbsp;&nbsp;";
+    	$input .= datetime_view::renderTimezones($value);
+    	$input .= '</select>';
+    	
+    	return $input;
+	}
 	/**
 	 * Renders a list of standard timezone options to be used in a dropdown
 	 *
@@ -61,7 +81,6 @@ class datetime_view extends KTAdminDispatcher
 		foreach ($tzc->getPhpRegions() as $region)
 		{
 			$selected = ($region == $currentRegion) ? 'selected' : '';
-			//$ddoptions .= '<option onclick="javascript:{change_region(\'' . $region. '\');}" value="' . $region . '" ' . $selected . '> ' . $region . '</option>';
 			$ddoptions .= '<option value="' . $region . '" ' . $selected . '> ' . $region . '</option>';
 		}
 		
@@ -91,11 +110,21 @@ class datetime_view extends KTAdminDispatcher
 		return $ddoptions;
 	}
 	
+	/**
+	 * Return a "Region" label
+	 *
+	 * @return string
+	 */
 	static public function renderRegionLabel()
 	{
 		return "<label for='region'>Select Region</label>&nbsp;&nbsp;&nbsp;&nbsp;";
 	}
 	
+	/**
+	 * Return a "Location" label
+	 *
+	 * @return string
+	 */
 	static public function renderTimezoneLabel()
 	{
 		return "<label for='timezone'>Select Location</label>&nbsp;&nbsp;";

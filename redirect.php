@@ -37,7 +37,7 @@
  *
  */
 class Redirector {
-    
+
 	/**
 	 * Constructor
 	 */
@@ -50,12 +50,12 @@ class Redirector {
     function run()
     {
 		// First check for some special cases
-		switch($this->uri) {
+		switch ($this->uri) {
             case 'dashboard': $this->finalizeRun('dashboard.php'); break;
             case 'admin': $this->finalizeRun('admin.php'); break;
             case 'preferences': $this->finalizeRun('preferences.php'); break;
         }
-        
+
         // external authentication, e.g. OneLogin
         if ((!empty($_SERVER['HTTP_REFERER']) && preg_match('/onelogin\.com/', $_SERVER['HTTP_REFERER'])) || !empty($_POST['SAMLResponse'])) {
             // unset referrer to prevent repeats (does not appear to work)
@@ -96,7 +96,7 @@ class Redirector {
 		}
 
 		if (!$this->foundDestination) {
-			header("HTTP/1.0 404 Not Found");
+			header('HTTP/1.0 404 Not Found');
 			$this->finalizeRun('dashboard.php');
 		}
     }
@@ -154,7 +154,7 @@ class Redirector {
 	private function finalizeRun($file)
 	{
 		$this->foundDestination = true;
-		
+
 		// Adjust Current Server Variables to reflect new path
 		$_SERVER['SCRIPT_NAME'] = '/' . $file;
 		$_SERVER['REQUEST_URI'] = '/' . $file;
@@ -176,11 +176,11 @@ class Redirector {
 	    if (!empty($query)) {
 	        $file = $file . '?' . $query;
 	    }
-	    
+
 	    header('Location: ' . $file);
 	    exit;
 	}
-	
+
 }
 
 $redirector = new Redirector($_SERVER['REQUEST_URI']);

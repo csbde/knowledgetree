@@ -1,30 +1,52 @@
  
 <!-- FILE: kt3/fieldsets/simple.smarty -->
-	<div class="detail_fieldset">
-	    <h3>{$fieldset->getName()}</h3>
-	        <p class="descriptiveText">
-	        {$description}
-	    </p>
-	
+	<div class="detail-fieldset" rel='{literal}{{/literal}"documentID":"{$document->getId()}"{literal}}{/literal}'>
+	    <h3 title='{$description}'>{$fieldset->getName()}<span title="Click to edit" class="editable-control metadata edit">&nbsp;</span></h3>
+		
 	    <table class="metadatatable" cellspacing="0" cellpadding="5">
 	      {foreach item=aFieldPair from=$fieldset_values name=fields}
-	    <tr class="{cycle values=even,odd} {if $smarty.foreach.fields.first}first{/if}">
-	        <th>{$aFieldPair.field->getName()}</th>
-	        <td>
-	        {if ($aFieldPair.value !== null)}
-				{if ($aFieldPair.field->getIsHTML())}
-					{$aFieldPair.value}
-				{else}
-					{$aFieldPair.value|sanitize}
-				{/if}
-	        {else}
-				<span class="descriptiveText">{i18n}no value{/i18n}</span>
-			{/if}
+	    <tr class="metadatarow {if ($aFieldPair.required==='1')}required{/if}" id="metadatafield-{$aFieldPair.fieldid}">
+	        <th title="{$aFieldPair.description}">{$aFieldPair.name}</th>
+		        {if ($aFieldPair.control_type==='string')}
+		        	<td class="metadata-textbox">
+		        	<span class="descriptiveText" data-name="{$aFieldPair.fieldid}" data-type='text' data-value-id="value-{$aFieldPair.fieldid}" {if ($aFieldPair.required)}data-required="true"{/if}></span>
+		        {elseif ($aFieldPair.control_type==='lookup')}
+		        	<td class="metadata-singleselect">
+		        	<span class="descriptiveText" id="singleselect_{$aFieldPair.fieldid}" data-name="{$aFieldPair.fieldid}" data-type='select' data-options='[["No selection","no value"],{foreach from=$aFieldPair.selection item=option}["{$option}","{$option}"],{/foreach}]' data-value-id="value-{$aFieldPair.fieldid}"></span>
+		        {elseif ($aFieldPair.control_type==='large text')}
+		        	{if ($aFieldPair.options.ishtml)}
+		        		<td class="metadata-htmleditor">
+						<span class="descriptiveText" id="richtexteditor_{$aFieldPair.fieldid}" data-name="{$aFieldPair.fieldid}" data-type='htmleditor' data-value-id="value-{$aFieldPair.fieldid}" {if ($aFieldPair.options.maxlength)}data-maxlength="{$aFieldPair.options.maxlength}"{/if}></span>
+					{else}
+						<td class="metadata-textarea">
+						<span class="descriptiveText" id="textarea_{$aFieldPair.fieldid}" data-name="{$aFieldPair.fieldid}" data-type='textarea' data-value-id="value-{$aFieldPair.fieldid}" {if ($aFieldPair.options.maxlength)}data-maxlength="{$aFieldPair.options.maxlength}"{/if}></span>
+					{/if}
+				{elseif ($aFieldPair.control_type==='date')}
+					<td class="metadata-date">
+					<span class="descriptiveText" data-name="{$aFieldPair.fieldid}" data-type='datepicker' data-value-id="value-{$aFieldPair.fieldid}"></span>
+				{elseif ($aFieldPair.control_type==='tree')}
+					<td class="metadata-tree">
+					<span class="descriptiveText" data-name="{$aFieldPair.fieldid}" data-type='tree' data-options='{$aFieldPair.selection}' data-value-id="value-{$aFieldPair.fieldid}" {if ($aFieldPair.required)}data-required="true"{/if} /></span>
+				{elseif ($aFieldPair.control_type==='multiselect')}
+					{if ($aFieldPair.options.type==='multiwithlist')}
+						<td class="metadata-multilistselect">
+						<span class="descriptiveText" data-value-id="value-{$aFieldPair.fieldid}" data-name="{$aFieldPair.fieldid}[]" data-type='multiselect' data-options='[["No selection","no value"],{foreach from=$aFieldPair.selection item=option}["{$option}","{$option}"],{/foreach}]' {if ($aFieldPair.required)}data-required="true"{/if}></span>
+					{elseif ($aFieldPair.options.type==='multiwithcheckboxes')}
+						<td class="metadata-multicheckselect">
+						<span>
+							{foreach from=$aFieldPair.selection item=option}
+								 <span class="descriptiveText" data-checked_value="{$option}" data-name="{$aFieldPair.fieldid}[]" data-type='checkbox' data-value-id="value-{$aFieldPair.fieldid}"></span>
+								 <br/>
+							{/foreach}
+						</span>
+					{/if}
+		        {/if}
+	        <span id="value-{$aFieldPair.fieldid}">{$aFieldPair.value}</span>
 	        </td>
 	    </tr>
 	      {/foreach}
 	    </table>
-	
+
 	    <div class="floatClear"><!-- --> </div>
 	</div>
  

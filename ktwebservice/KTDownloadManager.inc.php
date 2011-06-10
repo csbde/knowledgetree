@@ -100,8 +100,9 @@ class KTDownloadManager
 			$filesize = $document->getFileSize ();
 		} else if (is_numeric ( $document )) {
 			$doc_id = $document;
-		} else
+		} else {
 			die ( 'gracefully' );
+		}
 
 		$hash = sha1 ( "$doc_id $content_version_id $this->session $this->random" );
 

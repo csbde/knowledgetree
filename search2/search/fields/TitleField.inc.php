@@ -6,7 +6,7 @@
  * KnowledgeTree Community Edition
  * Document Management Made Simple
  * Copyright (C) 2008, 2009, 2010 KnowledgeTree Inc.
- * 
+ *
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License version 3 as published by the
@@ -41,7 +41,7 @@ class TitleField extends DBFieldExpr
 {
     // declare as part of GeneralText search
     public $general_op = ExprOp::CONTAINS;
-    
+
     public function __construct()
     {
         parent::__construct('name', 'document_metadata_version', _kt('Title'));
@@ -69,7 +69,7 @@ class TitleField extends DBFieldExpr
 
     public function getInputRequirements()
     {
-        return array('value'=>array('type'=>FieldInputType::TEXT));
+        return array('value' => array('type' => FieldInputType::TEXT));
     }
 
     public function is_valid()

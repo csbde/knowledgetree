@@ -2,6 +2,32 @@
  * general utility functions for KT
  */
 
+function string2bool(str) 
+{
+	try
+	{
+		if (str != '' && str != null && str != 'undefined') 
+		{
+			str = new String(str).toLowerCase(); 
+		}
+		switch(str) 
+		{
+			case '1':
+			case 'true':
+			case 'yes':
+				return true;
+			case '0':
+			case 'false':
+			case 'no':
+				return false;
+			default:
+				return Boolean(str);
+		}
+	}
+	catch(e)
+	{}
+};
+
 var clientHas = { 
     'Event' : window.Event ? true : false,
     'addEventListener' : window.addEventListener ? true : false

@@ -1,0 +1,22 @@
+<input type=hidden id=documentId value="{$documentId}">
+{if !empty($transitions)}
+<h2> {i18n}Workflow Transitions{/i18n} </h2>
+	    <p style="font-size: 11px; padding: 10px; color: rgb(102, 102, 102);">
+	    	{i18n arg_name=$state_name}The document is currently in state "#name#"{/i18n}
+
+	    	{if $bIsCheckedOut} {i18n}No transitions are available while the document is checked out.{/i18n} {/if}
+	    </p>
+	    <ul style="font-size: 11px;">
+	    {foreach from=$transitions item=info}
+	        <li><a href="javascript:{ldelim}workflows.displayAction({$info.id});{rdelim}">{$info.name}</a></li>
+	    {/foreach}
+	    </ul>
+
+		{if !is_null($comment)}
+			<p style="font-size: 11px; padding: 10px; color: rgb(102, 102, 102);">
+				{i18n}Last Comment{/i18n}
+			</p>
+			<i style="font-size: 11px;">"{$comment}"</i>
+			
+		{/if}
+{/if}

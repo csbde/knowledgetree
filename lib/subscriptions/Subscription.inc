@@ -193,12 +193,18 @@ class Subscription extends KTEntity {
     function getContentLink() {
         // TODO: add subscription icon
         if ($this->iSubscriptionType == SubscriptionConstants::subscriptionType("DocumentSubscription")) {
-            return generateControllerLink("viewDocument", "fDocumentId=$this->iExternalID", Document::getDocumentDisplayPath($this->iExternalID));
+            return generateLink(KTUtil::buildUrl('view.php', array('fDocumentId'=>$this->iExternalID)), NULL, Document::getDocumentDisplayPath($this->iExternalID));
+            
         } else if ($this->iSubscriptionType == SubscriptionConstants::subscriptionType("FolderSubscription")) {
-            return generateControllerLink("browse", "fBrowseType=folder&fFolderId=$this->iExternalID", Folder::getFolderDisplayPath($this->iExternalID));
+            return generateLink(KTUtil::buildUrl('browse.php', array('fFolderId'=>$this->iExternalID)), NULL, Folder::getFolderDisplayPath($this->iExternalID));
         }
     }
 
+    public function hasSubfolders() {
+    	// Check if there are subfolders.
+    	return ($this->bWithSubFolders == 1);
+    }
+    
     /**
      * Returns the url to the subscription content
      */
@@ -284,6 +290,7 @@ class Subscription extends KTEntity {
                                             $iSubscriptionType,
                                             $res["is_alerted"]);
         $oSubscription->iId = $iSubscriptionID;
+        $oSubscription->bWithSubFolders = $res['with_subfolders'];
 
         return $oSubscription;
     }

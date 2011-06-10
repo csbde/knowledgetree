@@ -67,6 +67,12 @@ require_once(KTAPI_DIR .'/KTAPITrigger.inc.php');
 require_once(KTAPI_DIR .'/KTAPIConditionalMetadata.inc.php');
 require_once(KTAPI_DIR .'/KTAPIUser.inc.php');
 
+require_once(KT_LIB_DIR . '/users/shareduserutil.inc.php');
+require_once(KT_LIB_DIR . '/render_helpers/sharedContent.inc');
+
+require_once(KT_LIB_DIR . '/users/shareduserutil.inc.php');
+require_once(KT_LIB_DIR . '/render_helpers/sharedContent.inc');
+
 /**
 * This class defines functions that MUST exist in the inheriting class
 *
@@ -313,8 +319,8 @@ class KTAPI {
 		if (is_null($this->session))
 		{
 			return array(
-				"status_code" => 1,
-				"message" => "Your session is not active"
+				'status_code' => 1,
+				'message' => 'Your session is not active'
 			);
 		}
 		/* We need to create a new instance of KTAPI to get another user */
@@ -328,8 +334,8 @@ class KTAPI {
 		$user_ktapi->session_logout();
 
 		return array(
-			"status_code" => 0,
-			"results" => $permissions->permissions
+			'status_code' => 0,
+			'results' => $permissions->permissions
 		);
 	}
 
@@ -346,8 +352,8 @@ class KTAPI {
 		if (is_null($this->session))
 		{
 			return array(
-				"status_code" => 1,
-				"message" => "Your session is not active"
+				'status_code' => 1,
+				'message' => 'Your session is not active'
 				);
 		}
 		/* We need to create a new instance of KTAPI to get another user */
@@ -358,8 +364,8 @@ class KTAPI {
 
 		if (get_class($document) == 'PEAR_Error') {
 			return array(
-				"status_code" => 0,
-				"results" => null
+				'status_code' => 0,
+				'results' => null
 			);
 		}
 
@@ -368,8 +374,8 @@ class KTAPI {
 		$user_ktapi->session_logout();
 
 		return array(
-			"status_code" => 0,
-			"results" => $permissions->permissions
+			'status_code' => 0,
+			'results' => $permissions->permissions
 		);
 	}
 
@@ -392,8 +398,8 @@ class KTAPI {
 		if (is_null($this->session))
 		{
 			return array(
-				"status_code" => 1,
-				"message" => "Your session is not active"
+				'status_code' => 1,
+				'message' => 'Your session is not active'
 			);
 		}
 
@@ -403,8 +409,8 @@ class KTAPI {
 		$detail = $permissions->permissions;
 		if (!in_array("Manage security", $detail)) {
 			return array(
-				"status_code" => 1,
-				"message" => "User does not have permission to manage security"
+				'status_code' => 1,
+				'message' => 'User does not have permission to manage security'
 			);
 		}
 
@@ -417,8 +423,8 @@ class KTAPI {
 		{
 			$user_ktapi->session_logout();
 			return array(
-				"status_code" => 1,
-				"message" => $folder->getMessage()
+				'status_code' => 1,
+				'message' => $folder->getMessage()
 			);
 		}
 
@@ -426,8 +432,8 @@ class KTAPI {
 		if (PEAR::isError($permission)) {
 			$user_ktapi->session_logout();
 			return array(
-				"status_code" => 1,
-				"message" => $permission->getMessage()
+				'status_code' => 1,
+				'message' => $permission->getMessage()
 			);
 		}
 
@@ -435,8 +441,8 @@ class KTAPI {
 		if (PEAR::isError($user)) {
 			$user_ktapi->session_logout();
 			return array(
-				"status_code" => 1,
-				"message" => $user->getMessage()
+				'status_code' => 1,
+				'message' => $user->getMessage()
 			);
 		}
 
@@ -446,7 +452,7 @@ class KTAPI {
 		$permissions->save();
 
 		return array(
-			"status_code" => 0
+			'status_code' => 0
 		);
 	}
 
@@ -468,8 +474,8 @@ class KTAPI {
 		if (is_null($this->session))
 		{
 			return array(
-				"status_code" => 1,
-				"message" => "Your session is not active"
+				'status_code' => 1,
+				'message' => 'Your session is not active'
 			);
 		}
 
@@ -479,8 +485,8 @@ class KTAPI {
 		$detail = $permissions->permissions;
 		if (!in_array("Manage security", $detail)) {
 			return array(
-				"status_code" => 1,
-				"message" => "User does not have permission to manage security"
+				'status_code' => 1,
+				'message' => 'User does not have permission to manage security'
 			);
 		}
 
@@ -488,24 +494,24 @@ class KTAPI {
 		if (PEAR::isError($folder))
 		{
 			return array(
-				"status_code" => 1,
-				"message" => $folder->getMessage()
+				'status_code' => 1,
+				'message' => $folder->getMessage()
 			);
 		}
 
 		$permission = KTAPI_Permission::getByNamespace($namespace);
 		if (PEAR::isError($permission)) {
 			return array(
-				"status_code" => 1,
-				"message" => $permission->getMessage()
+				'status_code' => 1,
+				'message' => $permission->getMessage()
 			);
 		}
 
 		$role = KTAPI_Role::getByName($role);
 		if (PEAR::isError($role)) {
 			return array(
-				"status_code" => 1,
-				"message" => $role->getMessage()
+				'status_code' => 1,
+				'message' => $role->getMessage()
 			);
 		}
 
@@ -515,7 +521,7 @@ class KTAPI {
 		$permissions->save();
 
 		return array(
-			"status_code" => 0
+			'status_code' => 0
 		);
 	}
 
@@ -537,8 +543,8 @@ class KTAPI {
 		if (is_null($this->session))
 		{
 			return array(
-				"status_code" => 1,
-				"message" => "Your session is not active"
+				'status_code' => 1,
+				'message' => 'Your session is not active'
 			);
 		}
 
@@ -548,8 +554,8 @@ class KTAPI {
 		$detail = $permissions->permissions;
 		if (!in_array("Manage security", $detail)) {
 			return array(
-				"status_code" => 1,
-				"message" => "User does not have permission to manage security"
+				'status_code' => 1,
+				'message' => 'User does not have permission to manage security'
 			);
 		}
 
@@ -557,24 +563,24 @@ class KTAPI {
 		if (PEAR::isError($folder))
 		{
 			return array(
-				"status_code" => 1,
-				"message" => $folder->getMessage()
+				'status_code' => 1,
+				'message' => $folder->getMessage()
 			);
 		}
 
 		$permission = KTAPI_Permission::getByNamespace($namespace);
 		if (PEAR::isError($permission)) {
 			return array(
-				"status_code" => 1,
-				"message" => $permission->getMessage()
+				'status_code' => 1,
+				'message' => $permission->getMessage()
 			);
 		}
 
 		$group = KTAPI_Group::getByName($group);
 		if (PEAR::isError($group)) {
 			return array(
-				"status_code" => 1,
-				"message" => $group->getMessage()
+				'status_code' => 1,
+				'message' => $group->getMessage()
 			);
 		}
 
@@ -584,7 +590,7 @@ class KTAPI {
 		$permissions->save();
 
 		return array(
-			"status_code" => 0
+			'status_code' => 0
 		);
 	}
 
@@ -626,6 +632,26 @@ class KTAPI {
 			$error = $user;
 			return $error;
 		}
+
+    	if(SharedUserUtil::isSharedUser())
+    	{
+    		if($object instanceof DocumentProxy || $object instanceof Document)
+    		{
+    			if(!SharedContent::canAccessDocument($user->getID(), $object->getID()))
+    			{
+    				return new PEAR_Error(KTAPI_ERROR_INSUFFICIENT_PERMISSIONS);
+    			}
+    		}
+    		elseif ($object instanceof FolderProxy || $object instanceof Folder)
+    		{
+    			if(!SharedContent::canAccessFolder($user->getID(), $object->getID()))
+    			{
+    				return new PEAR_Error(KTAPI_ERROR_INSUFFICIENT_PERMISSIONS);
+    			}
+    		}
+
+    		return $user;
+    	}
 
 		if (!KTPermissionUtil::userHasPermissionOnItem($user, $permission, $object))
 		{
@@ -1013,7 +1039,7 @@ class KTAPI {
 			$response['status_code'] = 1;
 			if (is_null($rows))
 			{
-				$response['message'] = "No types";
+				$response['message'] = 'No types';
 			} else {
 				$response['message'] = $rows->getMessage();
 			}
@@ -1218,25 +1244,155 @@ class KTAPI {
 	*/
 	private function _load_metadata_tree($fieldid, $parentid=0)
 	{
-		$results = KTAPI::get_metadata_lookup($fieldid);
-		return $results;
-		/*
-		$sql = "SELECT id, name FROM metadata_lookup_tree WHERE document_field_id=$fieldid AND metadata_lookup_tree_parent=$parentid";
+		//get the fields other than for Root
+		$sql = "SELECT mlt.metadata_lookup_tree_parent AS parentid, mlt.id AS treeid, mlt.name AS treename, ml.id AS id, ml.name AS fieldname
+				FROM metadata_lookup_tree mlt
+				LEFT JOIN (metadata_lookup ml) ON (ml.treeorg_parent = mlt.id)
+				WHERE  mlt.document_field_id=$fieldid AND (ml.disabled=0 OR ml.disabled IS NULL)
+				ORDER BY parentid, id";
+
 		$rows = DBUtil::getResultArray($sql);
-		if (is_null($rows) || PEAR::isError($rows))
+
+		//get Root's fields
+		$sqlRoot = "SELECT -1 AS parentid, 0 AS treeid, \"Root\" AS treename, ml.id AS id, ml.name AS fieldname
+				FROM metadata_lookup ml
+				LEFT JOIN (metadata_lookup_tree mlt) ON (ml.treeorg_parent = mlt.id)
+				WHERE ml.disabled=0 AND ml.document_field_id=$fieldid AND (ml.treeorg_parent IS NULL OR ml.treeorg_parent = 0)
+				ORDER BY parentid, id";
+
+		$rowsRoot = DBUtil::getResultArray($sqlRoot);
+
+		//if no results for Root, add dummy
+		if (empty($rowsRoot))
 		{
-			return new PEAR_Error(KTAPI_ERROR_INTERNAL_ERROR);
+			$rowsRoot[] = array('parentid' => -1, 'treeid' => 0, 'treename' => 'Root', 'id' => -1, 'fieldname' => '');
 		}
-		$results=array();
-		foreach ($rows as $row)
-		{
-			$result=array(
-				'name' => $row['name'],
-				'children' => load($fieldid, $row['id'])
+
+		$rows = array_merge($rowsRoot, $rows);
+
+		$results = array();
+
+		if (sizeof($rows) > 0) {
+			$results = KTAPI::convertToTree($rows);
+		}
+
+		return $results;
+	}
+
+	private function convertToTree(array $flat)
+	{
+		$idTree = 'treeid';
+		$idField = 'id';
+		$parentIdField = 'parentid';
+
+		$root = 0;
+
+	    $indexed = array();
+	    // first pass - get the array indexed by the primary id
+	   	foreach ($flat as $row) {
+        	$treeID = $row[$idTree];
+			
+			// Check if Tree Field Exists
+        	if (!isset($indexed[$treeID])) {
+        		$path = '';
+        		$treepath .= $row['tree_name'].'\\';
+        		$indexed[$treeID] = array('treeid' => $treeID,
+        									'parentid' => $row[$parentIdField],
+        									'treename' => $row['treename'],
+        									'type' => 'tree'
+										);//$row;
+	        	$indexed[$treeID]['fields'] = array();
+			}
+			
+			if (!empty($row['fieldname'])) {
+				
+				$path .= $treepath.$row['fieldname'];
+				
+				$indexed[$treeID]['fields'][$row[$idField]] = array('fieldid' => $row[$idField],
+	        													'parentid' => $treeID,
+	        													'name' =>  $row['fieldname'],
+	        													'type' => 'field');
+			}
+
+	        if ($row[$parentIdField] < $root) {
+	        	$root = $row[$parentIdField];
+	        }
+
+	        $path = '';
+	    }
+
+	    //second pass
+	    //$root = 0;
+	    foreach ($indexed as $id => $row) {
+	        $indexed[$row[$parentIdField]]['fields'][$id] =& $indexed[$id];
+	    }
+
+	    $results = array($root => $indexed[$root]);
+
+	    //get the first element's key
+	    reset($results);
+		$first_key = key($results);
+
+		$res = $results[$first_key]['fields'];
+
+		//$GLOBALS['default']->log->debug('convertToTree res '.print_r($res, true));
+		
+		// New Array for Results
+		$newArray = array();
+		
+		// Start Process of cleaning up empty nodes
+		KTAPI::cleanUpTreeNodes($res[0], $newArray);
+		
+	    // Root needs to be in an array
+	    return array($newArray);
+	}
+	
+	private function cleanUpTreeNodes($item, &$parent)
+	{
+		// Check it is a tree of field
+		if ($item['type'] == 'tree') {
+			
+			// Recreate, without Fields
+			$newItemArray = array(
+				'treeid'		=> $item['treeid'],
+				'parentid'		=> $item['parentid'],
+				'treename'		=> $item['treename'],
+				'type'			=> $item['type'],
+				'childrenCount' => 0
 			);
-			$results[] = $result;
+			
+			// Loop through children
+			if (count($item['fields']) > 0) {
+				foreach ($item['fields'] as $subField) {
+					KTAPI::cleanUpTreeNodes($subField, $newItemArray);
+				}
+			}
+			
+			// If Root, Set as Tree
+			if ($item['treeid'] == 0) {
+				$parent = $newItemArray;
+			} else {
+				
+				// Else add to parent and update count
+				$parent['childrenCount'] += $newItemArray['childrenCount'];
+				
+				// Only Add if Item has children or subitems have children
+				if ($newItemArray['childrenCount'] > 0) {
+					$parent['fields'][] = $newItemArray;
+				}
+				
+			}
+			
+		} else if ($item['type'] == 'field') {
+			
+			if (!empty($item['name'])) {
+				
+				// Re-add to field and update Counter
+                $parent['fields'][] = $item;
+				$parent['childrenCount']++;
+                
+            }
 		}
-		return $results;*/
 	}
 
 	/**
@@ -1250,6 +1406,9 @@ class KTAPI {
 	public function get_metadata_tree($fieldid)
 	{
 		$results = KTAPI::_load_metadata_tree($fieldid);
+		
+		//global $default;
+		//$default->log->info('get_metadata_tree results '.print_r($results, true));
 		return $results;
 	}
 
@@ -3144,37 +3303,38 @@ class KTAPI {
     {
         $response = $this->_check_electronic_signature($document_id, $sig_username, $sig_password, $reason, $reason,
                                                       'ktcore.transactions.check_in');
-        if ($response['status_code'] == 1) return $response;
+        if ($response['status_code'] == 1) { return $response; }
 
     	// we need to add some security to ensure that people don't frig the checkin process to access restricted files.
 		// possibly should change 'tempfilename' to be a hash or id of some sort if this is troublesome.
     	$upload_manager = new KTUploadManager();
     	if (!$upload_manager->is_valid_temporary_file($tempfilename))
     	{
-    	    $response['status_code'] = 1;
-			$response['message'] = 'Invalid temporary file';
-			return $response;
+            return $this->getErrorResponse('Invalid temporary file');
     	}
 
     	$document = &$this->get_document_by_id($document_id);
-		if (PEAR::isError($document))
-		{
-    	    $response['status_code'] = 1;
-			$response['message'] = $document->getMessage();
-			return $response;
-		}
+        if (PEAR::isError($document))
+        {
+            return $this->getErrorResponse($document->getMessage());
+        }
 
-		// checkin
-		$result = $document->checkin($filename, $reason, $tempfilename, $major_update);
-		if (PEAR::isError($result))
-		{
-    	    $response['status_code'] = 1;
-			$response['message'] = $result->getMessage();
-			return $response;
-		}
+        // checkin
+        $result = $document->checkin($filename, $reason, $tempfilename, $major_update);
+        if (PEAR::isError($result))
+        {
+            return $this->getErrorResponse($result->getMessage());
+        }
 
-    	// get status after checkin
-		return $this->get_document_detail($document_id);
+        // get status after checkin
+        return $this->get_document_detail($document_id);
+    }
+
+    protected function getErrorResponse($message)
+    {
+        $response['status_code'] = 1;
+        $response['message'] = $message;
+        return $response;
     }
 
     public function checkin_small_document_with_metadata($document_id,  $filename, $reason, $base64, $major_update,
@@ -3486,39 +3646,48 @@ class KTAPI {
     /**
      * Returns a reference to a file to be downloaded.
      *
-	 * @author KnowledgeTree Team
-	 * @access public
-     * @param int $document_id
+     * @author KnowledgeTree Team
+     * @access public
+     * @param int $documentId
      * @return kt_response.
      */
     public function download_document($document_id, $version = null)
     {
-    	$document = &$this->get_document_by_id($document_id);
-		if (PEAR::isError($document))
-    	{
-    		$response['status_code'] = 1;
-    		$response['message'] = $document->getMessage();
-			return $response;
-    	}
+        $document = $this->get_document_by_id($document_id);
+        if (PEAR::isError($document)) {
+            $response['status_code'] = 1;
+            $response['message'] = $document->getMessage();
+            return $response;
+        }
 
-    	$result = $document->download();
-		if (PEAR::isError($result))
-    	{
-    		$response['status_code'] = 1;
-    		$response['message'] = $result->getMessage();
-			return $response;
-    	}
+        $contentVersionId = null;
+        if (!empty($version)) {
+            // Get the content version id for the given document version
+            $contentVersionId = $document->get_content_version_id_from_version($version);
+            if (PEAR::isError($contentVersionId)) {
+                $response['status_code'] = 1;
+                $response['message'] = $contentVersionId->getMessage();
+                return $response;
+            }
+        }
 
-    	$session = &$this->get_session();
-    	$download_manager = new KTDownloadManager();
-    	$download_manager->set_session($session->session);
-    	$download_manager->cleanup();
-    	$url = $download_manager->allow_download($document);
+        $result = $document->download($version);
+        if (PEAR::isError($result)) {
+            $response['status_code'] = 1;
+            $response['message'] = $result->getMessage();
+            return $response;
+        }
 
-    	$response['status_code'] = 0;
-		$response['results'] = urlencode($url);
+        $session = &$this->get_session();
+        $downloadManager = new KTDownloadManager();
+        $downloadManager->set_session($session->session);
+        $downloadManager->cleanup();
+        $url = $downloadManager->allow_download($document, $contentVersionId);
 
-    	return $response;
+        $response['status_code'] = 0;
+        $response['results'] = urlencode($url);
+
+        return $response;
     }
 
     /**
@@ -5135,6 +5304,7 @@ class KTAPI {
 		            // in which comments appear.
 		            unset($comments[$key]['action']);
 		            unset($comments[$key]['version']);
+		            unset($comments[$key]['email']);
 		        }
 
 		        $response['status_code'] = 0;
@@ -5255,7 +5425,7 @@ class KTAPI {
 
 		return $response;
 	}
-	
+
 	/**
      * Reports the total number of documents and their total size
      *
@@ -5264,28 +5434,117 @@ class KTAPI {
 	public function get_folder_total_documents($folder_id)
 	{
 		//$GLOBALS['default']->log->debug("KTAPI get_folder_total_files $folder_id");
-		
+
 		$folder = KTAPI_Folder::get($this, $folder_id);
-		
+
 		if (PEAR::isError($folder))
 		{
 			//$GLOBALS['default']->log->error('KTAPI get_folder_total_files folder error '.$folder->getMessage());
-			
+
 			return array(
-				"status_code" => 1,
-				"message" => $folder->getMessage()
+				'status_code' => 1,
+				'message' => $folder->getMessage()
 			);
 		}
-		
+
 		$result = $folder->get_total_documents();
-		
+
 		$response['status_code'] = 0;
-		
+
 		$response = array_merge($response, $result);
-	    
+
 	    return $response;
 	}
-	
+
+	public function get_folder_total_size($include_folder_ids, $exclude_folder_ids)
+	{
+		$GLOBALS['default']->log->debug('KTAPI get_folder_total_size '.print_r($include_folder_ids, true).' '.print_r($exclude_folder_ids, true));
+
+		$size = array('total_files' => 0, 'total_size' => 0);
+
+		foreach ($include_folder_ids as $folder_id)
+		{
+			$folder = KTAPI_Folder::get($this, $folder_id);
+
+			if (!PEAR::isError($folder))
+			{
+				$parent_size = $folder->get_total_documents();
+
+				$size['total_files'] += $parent_size['total_files'];
+				$size['total_size'] += $parent_size['total_size'];
+
+				$GLOBALS['default']->log->debug("KTAPI get_folder_total_size parent result $folder_id ".print_r($parent_size, true));
+				$GLOBALS['default']->log->debug('KTAPI get_folder_total_size parent result carried over '.print_r($size, true));
+			}
+			else
+			{
+				$GLOBALS['default']->log->error("Error in getting folder $folder_id ".$folder->getMessage());
+				
+				$response['status_code'] = 1;
+				$response['message'] = "ERROR: could not retrieve folder {$folder_id}: {$folder->getMessage()}";
+				return $response;
+			}
+
+			$children_ids = $folder->get_children_ids();
+
+			$GLOBALS['default']->log->debug('KTAPI get_folder_total_size children_ids '.print_r($children_ids, true));
+
+			foreach ($children_ids as $child_id)
+			{
+				$GLOBALS['default']->log->debug("KTAPI get_folder_total_size check if $child_id is in excluded list ".print_r($exclude_folder_ids, true));
+
+				//only use that child if it wasn't excluded!
+				if (!in_array($child_id, $exclude_folder_ids))
+				{
+					$folder = KTAPI_Folder::get($this, $child_id);
+
+					if (!PEAR::isError($folder))
+					{
+						$child_size = $folder->get_total_documents();
+
+						$size['total_files'] += $child_size['total_files'];
+						$size['total_size'] += $child_size['total_size'];
+
+						$GLOBALS['default']->log->debug("KTAPI get_folder_total_size child $child_id ".print_r($child_size, true));
+					}
+					else
+					{
+						$GLOBALS['default']->log->error("Error in getting folder $child_id ".$folder->getMessage());
+					}
+				}
+			}
+
+			$GLOBALS['default']->log->debug('KTAPI get_folder_total_size result '.print_r($size, true));
+		}
+
+		$config = KTConfig::getSingleton();
+
+		//$maxFiles = $config->get('foldersync/maxFilesSync');
+		$maxFileSize = $config->get('foldersync/maxFileSizeSync');
+
+		//$GLOBALS['default']->log->debug("KTAPI get_folder_total_size max $maxFiles $maxFileSize");
+
+		//check whether these are larger than allowed
+		if ($size['total_size'] > $maxFileSize)	// || $size['total_files'] > $maxFiles)
+		{
+			$displaySize = $size['total_size']/(1024*1024);
+
+			$displaySize = substr($displaySize, 0, strpos($displaySize, '.')-1);
+
+			$response['status_code'] = 1;
+			$response['message'] = "WARNING: you have selected to synchronize {$size['total_files']} files with a total size of $displaySize MB. Synchronizing large quantities of data will have an impact on system resources and bandwidth use. Proceed with synchronization?";
+		}
+		else
+		{
+			$response['status_code'] = 0;
+			$response['message'] = '';
+		}
+
+		$GLOBALS['default']->log->debug('KTAPI get_folder_total_size response '.print_r($response, true));
+
+		return $response;
+	}
+
 	/**
      * Reports whether a folder contains any documents and/or subfolders
      *
@@ -5294,121 +5553,180 @@ class KTAPI {
 	public function is_folder_empty($folder_id)
 	{
 		//$GLOBALS['default']->log->debug("KTAPI is_folder_empty $folder_id");
-		
+
 		$folder = KTAPI_Folder::get($this, $folder_id);
-		
+
 		//if we get an error on the folder, we assume that it is empty!
 		if (PEAR::isError($folder))
 		{
 			//$GLOBALS['default']->log->error('KTAPI is_folder_empty folder error '.$folder->getMessage());
-			
+
 			return array(
-				"status_code" => 0,
-				"message" => 'true'
+				'status_code' => 0,
+				'message' => 'true'
 			);
 		}
-		
+
 		$result = $folder->is_empty();
-		
+
 		//$GLOBALS['default']->log->debug("KTAPI is_folder_empty result $result");
-		
+
 		$response['status_code'] = 0;
-		
+
 		$response['message'] = 'false';
-		
+
 		if($result) {
 			$response['message'] = 'true';
 		}
-	    
+
 	    return $response;
 	}
-		
-	
+
+
 	/**
      * Determines whether and how a folder has changed
      *
      * @param int $folder_id
      * @param string changeid
      * @param int $depth
+     * @param string $what
      */
 	public function get_folder_changes($folder_ids, $timestamp, $depth = 1, $what = 'DF')
 	{
-		//$GLOBALS['default']->log->debug("KTAPI get_folder_changes ".print_r($folder_ids, true)." $timestamp $depth '$what'");
-		
+		$GLOBALS['default']->log->debug("KTAPI get_folder_changes ".print_r($folder_ids, true)." $timestamp $depth '$what'");
+
 		$results = array();
 		$changes = array();
-		
+
 		$hasChanges = FALSE;
-		
+
+		//generate the new timestamp; do it BEFORE checking for changes!
+		$datetime = gmdate("c");
+    	$new_timestamp = datetimeutil::getLocaleDate($datetime);
+    	$new_timestamp = (string)strtotime($new_timestamp);
+
+    	$GLOBALS['default']->log->debug("KTAPI get_folder_changes new timestamp $new_timestamp");
+
 		foreach($folder_ids as $folder_id)
 		{
 			$folder = KTAPI_Folder::get($this, $folder_id);
-			//TODO: need to do this? Or can we expect it to be in UTC?
-			//OR should we accept a time and then convert to epoch?
-			$time = datetimeutil::convertToUTC(date("c", (int)$timestamp));
+
+			//convert to UTC since we are getting the localized time
+			$time = datetimeutil::convertToUTC(date('Y-m-d H:i:s', (int)$timestamp));
+
+			$GLOBALS['default']->log->debug("KTAPI get_folder_changes time $time");
+
 			if (PEAR::isError($folder))
 			{
-				//$GLOBALS['default']->log->error('KTAPI get_folder_changes folder error '.$folder->getMessage());
-				
-				//since a PEAR error is raised when a get is done on a folder that has been deleted,
-				//need to check for that case
-				$changes = KTAPI_Folder::deletedSince($folder_id, $time);
-				
+				//$GLOBALS['default']->log->error('KTAPI get_folder_changes folder error message '.$folder->getMessage());
+				//$GLOBALS['default']->log->error('KTAPI get_folder_changes folder error '.print_r($folder, true));
+				//TODO: interpret this as a folder delete!!
+
+				$changes1 = array();
+				$changes2 = array();
+
+				//since a PEAR error is raised when a get is done on a folder that has been deleted
+				//or where user does not have permissions, need to check for those cases
+				$changes1 = KTAPI_Folder::deletedSince($folder_id, $time);
+
+
+				if (count($changes1) == 0)
+				{
+					$changes2 = KTAPI_Folder::permissionsRemovedSince($folder_id, $time);
+				}
+
+				$changes = array_merge($changes1, $changes2);
+
 				if (count($changes) > 0)
 				{
 					$hasChanges = TRUE;
-							
+
 					$results[$folder_id] = array(
-						"status_code" => 0,
-						"message" => "Folder has changes",
-						"changes" => $changes
+						'status_code' => 0,
+						'message' => 'Folder has changes',
+						'changes' => $changes
 					);
 				}
 				else
 				{
 					$results[] = array(
-						"status_code" => 1,
-						"message" => $folder->getMessage()
+						'status_code' => 0,
+						'message' => $folder->getMessage(),
+						'changes' => array(),
 					);
 				}
 			}
 			else
-			{				
+			{
 				//get the changes!
 				$changes = $folder->getChanges($time, $depth, $what);
-				
+
 				//no changes for this folder
 				if (count($changes) == 0)
-				{				
+				{
 					$results[$folder_id] = array(
-						"status_code" => 1, 
-						"message" => KTAPI_ERROR_FOLDER_NO_CHANGES,
-						"changes" => array(),
+						'status_code' => 0,
+						'message' => KTAPI_ERROR_FOLDER_NO_CHANGES,
+						'changes' => array(),
 					);
 				}
 				else
-				{				
+				{
 					$hasChanges = TRUE;
-							
+
 					$results[$folder_id] = array(
-						"status_code" => 0,
-						"message" => "Folder has changes",
-						"changes" => $changes
+						'status_code' => 0,
+						'message' => 'Folder has changes',
+						'changes' => $changes
 					);
 				}
 			}
 		}
-		
-		$new_timestamp = time();
-		
+
 		//$GLOBALS['default']->log->debug("KTAPI get_folder_changes converted new timestamp $new_timestamp");
-		
+
 		return array(
-			"status_code" => $hasChanges ? 0 : 1,
-			"message" => $hasChanges ? "There are changes." : "No changes.",
-			"change_id" => $new_timestamp,
-			"result" => $results
+			'status_code' => $hasChanges ? 0 : 1,
+			'message' => $hasChanges ? 'There are changes.' : 'No changes.',
+			'timestamp' => $new_timestamp,
+			'result' => $results
 		);
+	}
+
+	/**
+	 * Does a document have any "binary changes", i.e. has its content truly changed
+	 *
+	 * @param int $document_id
+	 * @param float $from_version
+	 * @param float $to_version
+	 */
+	public function document_has_binary_changes($document_id, $from_version, $to_version)
+	{
+		//$GLOBALS['default']->log->debug("KTAPI document_has_binary_changes $document_id $from_version $to_version");
+
+		$document = $this->get_document_by_id($document_id);
+
+		if (PEAR::isError($document))
+		{
+			return array(
+				'status_code' => 1,
+				'message' => $document->getMessage()
+			);
+		}
+
+		$result = $document->hasBinaryChanges($from_version, $to_version);
+
+		$response['status_code'] = 0;
+
+		$response['message'] = 'false';
+
+		if($result) {
+			$response['message'] = 'true';
+		}
+
+		//$GLOBALS['default']->log->debug('KTAPI document_has_binary_changes response '.print_r($response, true));
+
+	    return $response;
 	}
 
 }

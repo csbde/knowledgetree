@@ -1,22 +1,22 @@
 <table border="0" cellspacing="5" cellpadding="5px" class="uploadTable">
     <tr>
         <td valign="top">
-            Enter or copy and paste the email address(es) of the user(s) you want to share this content with. 
+            Enter or copy and paste the email address(es) of the user(s) you want to share this content with.
             Users outside your organization will only be able to see the content you have shared with them.
         </td>
     </tr>
-    
+
     <tr><td>&nbsp;</td></tr>
-    
+
     <tr>
-        <td colspan="2" valign="top">
+        <td valign="top">
             Share with (separate email addresses with a space or comma):
         </td>
     </tr>
 
     <tr>
         <td>
-        	<textarea name="share.emails" id="share.emails" rows="3" cols="48" ></textarea>
+        	<textarea name="share.emails" id="share.emails" rows="3" cols="65" class="modalField"></textarea>
         </td>
     </tr>
 
@@ -27,18 +27,17 @@
 	</tr>
 	<tr>
         <td>
-            <textarea name="share.message" id="share.message" rows="3" cols="48" ></textarea>
+            <textarea name="share.message" id="share.message" rows="3" cols="65" class="modalField"></textarea>
         </td>
-        
+
     </tr>
 
     <tr>
         <td>
-        	<label for="read.only">Read-only</label>
-        	<input type="checkbox" name="readonly" id="readonly" class="readonly">
+        	<input type="checkbox" name="readonly" id="readonly" class="readonly">&nbsp;<label for="read.only">Read-only</label>
         </td>
     </tr>
-    
+
     <tr>
         <td align="right" class="ul_actions">
         	<a class="ul_actions_cancel_link" href="javascript: kt.app.sharewithusers.closeWindow();">Cancel</a>

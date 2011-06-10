@@ -1,139 +1,183 @@
+{$context->oPage->requireCSSResource('resources/css/kt-treewidget.css')}
+<link rel="stylesheet" href="/thirdpartyjs/jquery/plugins/tokenizer/styles/token-input-kt-tags.css" type="text/css"/>
+<script type="text/javascript" src="/thirdpartyjs/jquery/plugins/editableset/jquery.editable-set.js"> </script>
+<script type="text/javascript" src="/thirdpartyjs/jquery/plugins/editableset/jquery.editable-set.extend.js"> </script>
+<script type="text/javascript" src="/resources/js/document/kt.app.metadata.js"> </script>
+<script type="text/javascript" src="/thirdpartyjs/jquery/plugins/tokenizer/src/jquery.tokeninput.js"></script>
+<script type="text/javascript" src="/resources/js/document/kt.app.activityFeed.js"></script>
+<script type="text/javascript" src="/resources/js/newui/documents/kt.app.docdetails.js"></script>
+<script type="text/javascript" src="/resources/js/jquery.knowledgetree.js"></script>
+<script type="text/javascript" src="/thirdpartyjs/hashtable.js"></script>
 
 <!-- FILE: ktcore/document/view.smarty -->
-	<table border="0" width="100%" class="doc_view">
-		<tr>
-			<td width="1" valign="top" style="padding-right: 15px;"><span id="doc_thumb" style="float:left;" /></td>
-			<td height="1" valign="top">
-				<h2 class="doc_file_title">
-					{if $document->getImmutable()}<img src="{php}echo "{$GLOBALS['default']->rootUrl}/resources/graphics/newui/docview_immutable.png";{/php}" style="display: inline-block" alt="{i18n}Finalized{/i18n}"  title="{i18n}Finalized{/i18n}" />{/if}
-					{if $document->getIsCheckedOut()}<img src="{php}echo "{$GLOBALS['default']->rootUrl}/resources/graphics/newui/docview_checkedout.png";{/php}" style="display: inline-block" alt="{i18n}Checked-Out{/i18n}"  title="{i18n}Checked Out{/i18n}" />{/if}
-					{i18n}{$document->getName()|sanitize}{/i18n}
-					<span class="doc_version" style="display: block; margin-top: 5px;">
-						<strong>Ver</strong> {$document->getMajorVersionNumber()}.{$document->getMinorVersionNumber()}  - <strong>File Size</strong> {$fieldsetDisplayHelper->_sizeHelper($document->getSize())}
+<table class="main-content">
+    <tr>
+        <td width="745">
+        <table border="0" width="745" class="doc_view">
+            <tr>
+                <td colspan="2" id="title_row">
+                {if $documentBlocks}
+					{* Display Actions Block *}
+					{$documentBlocks->getDocBlock()}
+				{/if}
+				<div class="document-title" rel='{literal}{{/literal}"documentID":"{$document->getId()}"{literal}}{/literal}'>
+                    <span data-name="documentTitle" data-type='text' data-value-id="value-title" data-class="required"></span>
+					<span id="value-title">{i18n}{$document->getName()|sanitize}{/i18n}</span>
+					<span class="save-placeholder">&nbsp;</span>
+					<span title="Click to edit" class="editable-control title edit">&nbsp;</span>
+				</div>
+				{if $document->getIsCheckedOut()} 
+					<span id=indicator class="status-indicator checkedout">
+				{else}
+					<span id=indicator class="status-indicator checkedout" style="display:none;">
+				{/if}
+						{i18n}Checked Out{/i18n}
+					</span>
+                {if $document->getImmutable()}<span class="status-indicator finalized">{i18n}Finalized{/i18n}</span>{/if}
+				<div class="document-filename" rel='{literal}{{/literal}"documentID":"{$document->getId()}"{literal}}{/literal}'>
+				<span data-name="documentFilename" data-type='text' data-value-id="value-filename" data-class="required"></span>
+					<span id="value-filename"><p>{$document->getFileName()}</p></span>
+					<span class="save-placeholder">&nbsp;</span>
+					<span title="Click to edit" class="editable-control filename edit">&nbsp;</span>
+				</div>
+                </td>
+            </tr>
+            <tr id="middle_doc_info_area">
+                <!-- <td style="display:none;" width="1" valign="top" style="padding-right: 15px;"><span id="doc_thumb" style="float:left;" /></td> -->
+			<td height="1" valign="top" width="310">
+                    <div class="doc_description">
+                        <span class="doc_info" style="display: block;">
+                        <table class="metadatatable">
+                        	<tr>
+								<th style="width: 100px;">Version:</th><td><a href="{$rootUrl}/action.php?kt_path_info=ktcore.actions.document.versionhistory&fDocumentId={$document_id}" id="value_versionhistory">{$document->getMajorVersionNumber()}.{$document->getMinorVersionNumber()}</a></td>
+							</tr>
+							<tr>
+								<th>Last Modified by:</th><td id="value-lastmodifiedby">{$doc_data.lastModifier} on {$document->getDisplayLastModifiedDate()|date_format:"%b %e, %Y"}</td>
+							</tr>
+							<tr>
+								<th>Created by:</th><td>{$doc_data.creator} on {$document->getDisplayCreatedDateTime()|date_format:"%b %e, %Y"}</td>
+							</tr>
+							<tr>
+								<th>Owned by:</th><td>{$doc_data.owner}</td>
+							</tr>
 						{if $document->getIsCheckedOut()}
-							<span class="doc_checkedout"> <strong>Checked-out By:</strong> {$sCheckoutUser}</span>
+							<tr id="value-ischeckedout">
+								<th>Checked-out by:</th><td id="value-checkedoutby">{$sCheckoutUser}</td>
+							</tr>
+                        {else}
+                            <tr id="value-ischeckedout" style="display:none">
+								<th>Checked-out by:</th><td id="value-checkedoutby">...</td>
+							</tr>
 						{/if}
-					</span>
-				</h2>
-				<hr style="border: none; background-color: #E3E3E3; width: 98%; height: 1px; margin-left: 10px; margin-bottom: 15px;" align="left" />
-				<div>
-					<span class="doc_header_item">
-						<span class="doc_field_title">Created by:</span> <span class="doc_user_link">{$doc_data.creator}</span> on <span class="doc_field_value">{$document->getDisplayCreatedDateTime()|date_format:"%B %e, %Y <b>at</b> %H:%M"}</span>
-					</span>
-					<span class="doc_header_item">
-						<span class="doc_field_title">Last Modified by:</span> <span class="doc_user_link">{$doc_data.lastModifier}</span> on <span class="doc_field_value">{$document->getDisplayLastModifiedDate()|date_format:"%B %e, %Y <b>at</b> %H:%M"}</span>
+							<tr>
+							<th>File type:</th><td id="value-filetype">{$fieldsetDisplayHelper->_mimeHelper($document->getMimeTypeID())} - {$fieldsetDisplayHelper->_sizeHelper($document->getSize())} </td>
+							</tr>
+							<tr>
+								<th>Document ID:</th><td>{$document_id}</td>
+							</tr>
+							<tr id="document-tags">
+							<th>Tags:</th><td><span class="document-tags"></span><span title="Click to edit" class="editable-control tags edit">&nbsp;</span></td>
+							</tr>
+						</table>
+
+						<div class="document-tags-edit" rel='{literal}{{/literal}"documentID":"{$document->getId()}"{literal}}{/literal}'>
+						<span data-id="tagcloud" data-name="tagcloud" data-type='tokeninput' data-tag-script='{$tagFilterScript}' data-value-id="value-token"></span>
+						<br/>
+					</div>
+					<br/>
+					<h3 id="metadata-title">Document Properties</h3>
+					<div class="document-type" rel='{literal}{{/literal}"documentID":"{$document->getId()}"{literal}}{/literal}'>
+					<table class="metadatatable" cellspacing="0" cellpadding="5">
+					<tr class="metadatarow even first">
+						<th>Document Type</th>
+						<td>
+							<span class="descriptiveText" id='documentTypeID' data-name='documentTypeID' data-options='[{foreach from=$document_types key=aKey item=documentType}
+								["{$documentType->getName()}","{$documentType->getId()}"],{/foreach}]' data-type='select'>{$document_data.document_type->getName()}</span>
+							<span title="Click to edit" class="editable-control doctype edit">&nbsp;</span>
+						</td>
+					</table>
+					</div>
+
+					<div class="editableMetadata">
+					{foreach item=oFieldset from=$fieldsets name=fieldsets}
+						{if $smarty.foreach.fieldsets.index == 2}
+							<br/>
+							<div><span class="more">More...</span></div>
+							<br/>
+							<div class="slide" style="display:none">
+						{/if}
+							{$oFieldset->render($document_data)}
+						{if $smarty.foreach.fieldsets.last &&  $smarty.foreach.fieldsets.total >= 3}
+							</div>
+						{/if}
+					{/foreach}
+					</div>
 					</span>
 				</div>
+				<!-- <hr style="border: none; background-color: #E3E3E3; width: 98%; height: 1px; margin-left: 10px; margin-bottom: 15px;" align="left" /> -->
+			</td>
+			<div id=init_actions>
+			<td valign="top" width="400" id="column_right">
+				<div class="" style="margin-bottom: 10px;">
+					<div class="action_buttons above" id=top_actions>
+						{$documentTopActions}
+					</div>
+				</div>				
+				{if !empty($live_preview)}
+					<div style="margin-top:1em;">{$live_preview}</div>
+				{else}
+				<div class="no-preview">
+					<span class="no-preview-text">Preview Not Available</span>
+				</div>
+			{/if}
+			<div id=bottom_actions class="action_buttons below" style="display: inline-block; margin-top: 5px;"> 
+				{$documentBottomActions}
+			</div>
+
 			</td>
 
 		</tr>
-		<tr>
-			<td colspan="2" valign="top">
-				<ul class="view_doc_tabs">
-					<li class="page_activity" title="Activity">
-						<table class="kt_collection" style="clear: both;"><tr><td>
-							<div id="activity_feed_container" style="margin-top:1em;"></div>
-							<div id="new_comment_form"></div>
-						</table>
-					</li>
-
-					{if !empty($live_preview)}
-						<li class="page_preview"  title="View">
-							<table class="kt_collection" style="clear: both;"><tr><td>
-								<div style="margin-top:1em;">{$live_preview}</div>
-							</table>
-						</li>
-					{/if}
-
-					<li class="page_properties" title="Properties">
-						<table class="kt_collection" style="clear: both;"><tr><td>
-							{if ($hasNotifications & bCanEdit)}
-								<div class="notification">
-
-									{if ($document->getIsCheckedOut() & $canCheckin)}
-										<span class="item">
-											Other users will not be able to edit this document until you
-												<a href="/action.php?kt_path_info=ktcore.actions.document.checkin&fDocumentId={$document_id}">check it back in</a>
-												 or
-												<a href="/action.php?kt_path_info=ktcore.actions.document.cancelcheckout&fDocumentId={$document_id}">cancel the checkout</a>.
-										</span>
-									{/if}
-
-									{if ($document->getIsCheckedOut() & !$canCheckin)}
-										<span class="item">
-											This document is currently checked out by {$sCheckoutUser}. You will not be able to edit the document until it is checked back in.
-										</span>
-									{/if}
-
-									{if ($document->getImmutable() == true)}
-										<span class="item">
-											This document has been finalized and cannot be edited further.
-										</span>
-									{/if}
-
-
-								{if 1==2}
-									{if ($document->getIsCheckedOut() == 1)}
-										{capture assign=checkout_user}<strong>{$sCheckoutUser}</strong>{/capture}
-										{if ($isCheckoutUser)}
-											<div class="ktInfoMessage">
-												<span>{i18n}This document is currently checked out by <strong>you</strong>. If this is incorrect, or you no longer need to make changes to it, please cancel the checkout.{/i18n}</span>
-											</div>
-										{else}
-											{if ($canCheckin)}
-												<div class="ktInfoMessage">
-												<span>{i18n arg_checkoutuser=$checkout_user}This document is currently checked out by #checkoutuser#, but you
-												have sufficient priviledges to cancel their checkout.{/i18n}</span>
-												</div>
-											{else}
-												<div class="ktInfoMessage">
-													<span>{i18n arg_checkoutuser=$checkout_user arg_appname="$appname"}This document is currently checked out by #checkoutuser#.  You cannot make
-												changes until that user checks it in.  If you have urgent modifications to make, please
-												contact your #appname# Administrator.{/i18n}</span>
-												</div>
-											{/if}
-										{/if}
-									{/if}
-
-									{if ($document->getImmutable() == true)}
-										<div class="ktInfoMessage">
-											<span>{i18n}This document is immutable.  No further content changes can be
-										made to this document, and only administrators (in administration mode)
-										can make changes to the metadata or can move or delete it.{/i18n}
-										{if 1}
-											  {i18n}If you require assistance from an administrator to perform one of
-											these tasks, use the Request Assistance action.{/i18n}
-										{/if}
-										</span>
-										</div>
-									{/if}
-								{/if}
-								</div>
-							{/if}
-						{foreach item=oFieldset from=$fieldsets}
-							{$oFieldset->render($document_data)}
-						{/foreach}
-						</td></tr></table>
-					</li>
-
-				</ul>
+			<td colspan="2">
+				<div>
+					<span class="doc_header_item">
+						<span class="doc_field_title"></span>
+					</span>
+							<div id="activityfeed-container" style="margin-top:1em;"></div>
+							<div id="new-comment-form"></div>
+				</div>
 			</td>
-			{if !empty($viewlet_data2)}
-                <td valign="top" width="225px">
-            		<!--  Document "Views" -->
-            		<div id="document-views">
-            			{$viewlet_data2}
-            		</div>
-                </td>
-            {/if}
+		<tr>
+
 		</tr>
 	</table>
 
 	{if !empty($viewlet_data)}
-		<!--  Document "Views" -->
-		<div style="display: none;">
-			{$viewlet_data}
+		<div>
+			 {$viewlet_data}
 		</div>
     {/if}
+    </td>
+    	<td valign="top" id="sidebar" class="standardBorder" height="100%" width="215">
+			{if $documentSidebars}
+			{* Display Actions Block *}
+				{$documentSidebars->getDocSidebars()}
+			{/if}
+	</td>
+	</tr>
+</table>
 
+{literal}
+<script type="text/javascript">
+    jQuery(document).ready(function() {
+
+    	window.onbeforeunload = function()
+    	{
+    		return kt.app.metadata.onbeforeunload();
+    	}
+
+    	//only allow to be editable if document not immutable!
+        kt.app.metadata.setup({/literal}{$makeMetadataEditable}, {$document_id}, {$tags}{literal});
+    });
+</script>
+{/literal}
 <!-- FILE_END: ktcore/document/view.smarty -->

@@ -51,7 +51,7 @@ require_once(KT_DIR . '/plugins/pdfConverter/pdfConverter.php');
 class PDFGeneratorAction extends KTDocumentAction {
     var $sName = 'ktstandard.pdf.generate';
     var $_sShowPermission = "ktcore.permissions.read";
-    var $sDisplayName = 'Generate PDF';
+    var $sDisplayName = 'Download PDF';
     // Note: 'asc' below seems to be a catchall for plain text docs.
     //       'htm' and 'html' should work but are not so have been removed for now.
     var $aAcceptedMimeTypes = array('doc', 'ods', 'odt', 'ott', 'txt', 'rtf', 'sxw', 'stw',
@@ -61,9 +61,12 @@ class PDFGeneratorAction extends KTDocumentAction {
             'odp', 'otp', 'sxi', 'sti', 'ppt', 'pot', 'sxd', 'odg',
             'otg', 'std', 'asc');
 
-	var $showIfRead = true;
-	var $showIfWrite = true;
-	
+	var $bShowIfReadShared = true;
+	var $bShowIfWriteShared = true;
+
+	var $sIconClass = 'download-pdf';
+	var $sParentBtn = 'ktcore.actions.document.view';
+
     function getDisplayName()
     {
         global $default;
@@ -87,21 +90,8 @@ class PDFGeneratorAction extends KTDocumentAction {
             }
 
             // Check if the pdf exists
-        	$oStorage = KTStorageManagerUtil::getSingleton();
-            $iDocId = $this->oDocument->iId;
-            $dir = $default->pdfDirectory;
-            $file = $dir . '/' . $iDocId . '.pdf';
-
-            if($oStorage->file_exists($file)){
-
-                $sHostPath = KTUtil::kt_url();
-                $icon = "<img src='{$sHostPath}/resources/mimetypes/pdf.gif' alt='PDF' border=0 />";
-                $link = KTUtil::ktLink('action.php', 'ktstandard.pdf.generate', array( 'fDocumentId' => $this->oDocument->getId(), 'action' => 'pdfdownload'));
-
-                // Create download link
-                $sDisplayLink = "<a href=\"{$link}\">{$sDisplayName}&nbsp;{$icon}</a>";
-
-                return $sDisplayLink;
+            if($this->pdfExists($this->oDocument)) {
+                return $sDisplayName;
             }
 
         }else{
@@ -110,31 +100,44 @@ class PDFGeneratorAction extends KTDocumentAction {
         }
 
         return '';
+    }
 
-        /*
-		//$cmdpath = KTUtil::findCommand('externalBinary/python');
-        // Check if openoffice and python are available
+    function getUrl()
+    {
+        $sHostPath = KTUtil::kt_url();
+        $link = KTUtil::ktLink('action.php', 'ktstandard.pdf.generate', array( 'fDocumentId' => $this->oDocument->getId(), 'action' => 'pdfdownload'));
+        return $link;
+    }
 
-        if($cmdpath != false && file_exists($cmdpath) && !empty($cmdpath)) {
-            $sDocType = $this->getMimeExtension();
-            // make sure that the selected document is of an acceptable extension
-            foreach($this->aAcceptedMimeTypes as $acceptType){
-                if($acceptType == $sDocType){
-    	            // build server path
-    	            $sHostPath = KTUtil::kt_url();
-                    // create image
-                    $icon = "<img src='{$sHostPath}/resources/mimetypes/pdf.gif' alt='PDF' border=0 />";
-                    $link = KTUtil::ktLink('action.php', 'ktstandard.pdf.generate', array( 'fDocumentId' => $this->oDocument->getId(), 'action' => 'pdfdownload'));
-                    return _kt('Generate PDF') . "&nbsp;<a href=\"{$link}\">{$icon}</a>";
-                }
+    function pdfExists($oDocument)
+    {
+        global $default;
+
+        // Check if the document has a pdf rendition -> has_rendition = 1, 3, 5, 7
+        // 0 = nothing, 1 = pdf, 2 = thumbnail, 4 = flash
+        // 1+2 = 3: pdf & thumbnail; 1+4 = 5: pdf & flash; 2+4 = 6: thumbnail & flash; 1+2+4 = 7: all
+
+        // If the flag hasn't been set, check against storage and update the flag - for documents where the flag hasn't been set
+        $check = false;
+        $hasRendition = $oDocument->getHasRendition();
+        if (is_null($hasRendition)) {
+            $iDocId = $this->oDocument->iId;
+            $dir = $default->pdfDirectory;
+            $file = $dir . '/' . $iDocId . '.pdf';
+
+            $oStorage = KTStorageManagerUtil::getSingleton();
+            if ($oStorage->file_exists($file)) {
+                $oDocument->setHasRendition(1);
+                $check = true;
             }
-            // If the document is empty then we are probably in the workflow admin - action restrictions section, so we can display the name.
-            if(empty($this->oDocument)){
-                return _kt('Generate PDF');
-            }
+
+            $oDocument->update();
         }
-        return '';
-        */
+
+        if ($check || in_array($hasRendition, array(1,3,5,7))) {
+            return true;
+        }
+        return false;
     }
 
     function form_main() {
@@ -328,7 +331,8 @@ class PDFGeneratorAction extends KTDocumentAction {
         if($cmdpath == false || !file_exists($cmdpath) || empty($cmdpath)) {
             // Set the error messsage and redirect to view document
             $this->addErrorMessage(_kt('An error occurred generating the PDF - Python binary not found.'));
-            redirect(generateControllerLink('viewDocument',sprintf('fDocumentId=%d',$oDocument->getId())));
+//            redirect(generateControllerLink('viewDocument',sprintf('fDocumentId=%d',$oDocument->getId())));
+			redirect(KTUtil::kt_clean_document_url($oDocument->getId()));
             exit(0);
         }
 
@@ -388,14 +392,16 @@ class PDFGeneratorAction extends KTDocumentAction {
             } else {
                 // Set the error messsage and redirect to view document
                 $this->addErrorMessage(sprintf(_kt('An error occurred generating the PDF - %s') , $res));
-                redirect(generateControllerLink('viewDocument',sprintf('fDocumentId=%d',$oDocument->getId())));
+                redirect(KTUtil::kt_clean_document_url($oDocument->getId()));
+                //redirect(generateControllerLink('viewDocument',sprintf('fDocumentId=%d',$oDocument->getId())));
                 exit(0);
             }
 
         } else {
             // Set the error messsage and redirect to view document
             $this->addErrorMessage(_kt('An error occurred generating the PDF - The path to the document did not exist.'));
-            redirect(generateControllerLink('viewDocument',sprintf('fDocumentId=%d',$oDocument->getId())));
+//            redirect(generateControllerLink('viewDocument',sprintf('fDocumentId=%d',$oDocument->getId())));
+			redirect(KTUtil::kt_clean_document_url($oDocument->getId()));
             exit(0);
         }
 

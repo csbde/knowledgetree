@@ -47,7 +47,7 @@ class IndexerInconsistencyException extends Exception {};
 // TODO: Query Result Items code should be moved into the Search section. It has less to do with indexing...
 
 class QueryResultItem {
-    
+
     protected $id;
     protected $title;
     protected $rank;
@@ -130,11 +130,11 @@ class QueryResultItem {
         }
         throw new Exception("Unknown property '$property' to set on QueryResultItem");
     }
-    
+
 }
 
 class ProxyResultItem extends QueryResultItem {
-    
+
     protected $proxy;
     protected $proxyId;
 
@@ -175,11 +175,11 @@ class ProxyResultItem extends QueryResultItem {
             return $this->proxy->$method($value);
         }
     }
-    
+
 }
 
 class DocumentResultItem extends QueryResultItem {
-    
+
     protected $filesize;
     protected $live;
     protected $version;
@@ -264,11 +264,18 @@ class DocumentResultItem extends QueryResultItem {
             throw new IndexerInconsistencyException(sprintf(_kt('%s') , $msg));
         }
 
+        // FIXME ! This is about as evil as it gets - after getting data through a straight qeury PER result,
+        //         we now need to ALSO get a document object, just to get the correct timezone adjusted dates!
+        $document = Document::get($this->id);
+        $result['created'] = $document->getDisplayCreatedDateTime();
+        $result['modified'] = $document->getDisplayLastModifiedDate();
+        $result['checkedout'] = $document->getDisplayCheckedOutDate();
+
         // document_id, relevance, text, title
 
         $this->documentType = $result['document_type'];
-        $this->filename=$result['filename'];
-        $this->filesize = KTUtil::filesizeToString($result['filesize']);
+        $this->filename = $result['filename'];
+        $this->filesize = KTUtil::filesizeToString($result['filesize'], 'KB');
         $this->folderId = $result['folder_id'];
         $this->title = $result['title'];
 
@@ -285,7 +292,7 @@ class DocumentResultItem extends QueryResultItem {
 
         $this->version = $result['major_version'] . '.' . $result['minor_version'];
 
-        $this->immutable = ($result['immutable'] + 0)?_kt('Immutable'):'';
+        $this->immutable = ($result['immutable'] + 0) ? _kt('Immutable') : '';
 
         $this->workflow = $result['workflow'];
         $this->workflowState = $result['workflowstate'];
@@ -329,7 +336,7 @@ class DocumentResultItem extends QueryResultItem {
     public function getWorkflow() { return $this->getWorkflow(); }
     public function getWorkflowStateOnly() { return (string)$this->workflowState; }
     public function getWorkflowState() { return $this->getWorkflowStateOnly(); }
-    
+
     public function getWorkflowAndState() {
         if (is_null($this->workflow))
         {
@@ -337,7 +344,7 @@ class DocumentResultItem extends QueryResultItem {
         }
         return "$this->workflow - $this->workflowState";
     }
-    
+
     public function getMimeType() { return (string) $this->mimeType; }
     public function getMimeIconPath() { return (string) $this->mimeIconPath; }
     public function getMimeDisplay() { return (string) $this->mimeDisplay; }
@@ -354,26 +361,32 @@ class DocumentResultItem extends QueryResultItem {
     public function getStoragePath() { return $this->storagePath; }
     public function getDocumentType() { return $this->documentType; }
     public function getPermissions() { return KTAPI_Document::get_permission_string($this->Document); }
-    
+
     public function getCanBeReadByUser() {
-        if (!$this->live)
-        return false;
-        if (Permission::userHasDocumentReadPermission($this->Document))
-        return true;
-        if (Permission::adminIsInAdminMode())
-        return true;
+        if (!$this->live) {
+            return false;
+        }
+
+        if (Permission::userHasDocumentReadPermission($this->Document)) {
+            return true;
+        }
+
+        if (Permission::adminIsInAdminMode()) {
+            return true;
+        }
+
         return false;
     }
-    
+
 }
 
 class FolderResultItem extends QueryResultItem {
-    
+
     protected $folder;
     protected $createdBy;
     protected $parentId;
 
-    public function __construct($folder_id, $rank=null, $title=null, $text=null, $fullpath = null)
+    public function __construct($folder_id, $rank = null, $title = null, $text = null, $fullpath = null)
     {
         parent::__construct($folder_id, $title, $rank, $text, $fullpath);
         $this->loadFolderInfo();
@@ -389,11 +402,13 @@ class FolderResultItem extends QueryResultItem {
     public function loadFolderInfo()
     {
         global $default;
+
         $folder = $this->getFolder();
         if (PEAR::isError($folder))
         {
             throw new Exception('Database exception! There appears to be an error in the system: ' .$result->getMessage());
         }
+
         $this->title = $folder->getName();
         $this->fullpath = '/' . $folder->getFullPath();
         $this->parentId = $folder->getParentId();
@@ -405,14 +420,14 @@ class FolderResultItem extends QueryResultItem {
 }
 
 class DocumentShortcutResultItem extends ProxyResultItem {
-    
+
     public function getDocumentID() { return $this->getId(); }
     public function getMimeIconPath() { return $this->proxy->getMimeIconPath() . '_shortcut'; }
 
 }
 
 class FolderShortcutResultItem extends ProxyResultItem {
-    
+
     var $parentId;
     var $linkedId;
     var $full_path;
@@ -431,7 +446,7 @@ function MatchResultCompare($a, $b)
 }
 
 abstract class Indexer {
-    
+
     /**
 	 * Cache of extractors
 	 *
@@ -617,12 +632,44 @@ abstract class Indexer {
     }
 
     /**
+     * Map the priority of a task according to it's source
+     * We may want to make this function generic and move it out. For now leave it here.
+     *
+     * @param string $source The source process / area e.g. webservices
+     */
+    protected static function mapPriority($source, $default = 'medium')
+    {
+        switch ($source) {
+            // Reindexing and reprocessing can be "backgrounded"
+            case 'reindex':
+            case 'reprocess':
+            // Documents coming from ktapi or the webservices are most likely bulk uploads / hot folders uploads
+            // ExplorerCP and the OffiSync office tools will also come through here and can be differentiated in future
+            // although they can contain multi-file uploads
+            case 'ktapi':
+            case 'webservices':
+                return KTUtil::mapQueuePriority('bulkprocess');
+
+            case 'index':
+                return KTUtil::mapQueuePriority('index');
+
+            case 'process':
+                return KTUtil::mapQueuePriority('process');
+
+            // If the source isn't specified, return the supplied default or set medium priority
+            default:
+                return $default;
+        }
+        return $default;
+    }
+
+    /**
 	 * Schedule the indexing of a document.
 	 *
 	 * @param string $document
 	 * @param string $what
 	 */
-    public static function index($document, $what='A')
+    public static function index($document, $what='A', $options=null)
     {
         global $default;
 
@@ -635,6 +682,13 @@ abstract class Indexer {
         {
             $default->log->error("index: Could not index document: " .$document->getMessage());
             return;
+        }
+
+        $indexPriority = 'high';
+        $processPriority = 'medium';
+        if (is_array($options) && isset($options['source'])) {
+            $indexPriority = self::mapPriority($options['source'], $indexPriority);
+            $processPriority = self::mapPriority($options['source'], $processPriority);
         }
 
         $document_id = $document->getId();
@@ -652,8 +706,10 @@ abstract class Indexer {
 
 		if (ACCOUNT_ROUTING_ENABLED) {
 			$oQueueDispatcher = liveIncludes::getSQSQueue();
+
         	// Document added, create indexing complex event
-        	$oQueueDispatcher->addProcess('indexing', $document, $document->getSize());
+        	$params = array('document' => $document, 'priority' => $indexPriority);
+        	$oQueueDispatcher->addProcess('indexing', $params, $document->getSize());
 		}
         // If we're indexing a discussion, re-processing is not needed.
         if ($what === 'D') {
@@ -677,8 +733,8 @@ abstract class Indexer {
         if (ACCOUNT_ROUTING_ENABLED)
         {
         	// Document added, create processing complex event
-        	$oQueueDispatcher->addProcess('processing', $document, $document->getSize());
-			// Send complex event
+        	$params = array('document' => $document, 'priority' => $processPriority);
+        	$oQueueDispatcher->addProcess('processing', $params, $document->getSize());
 			$oQueueDispatcher->sendToQueue();
         }
     }
@@ -708,13 +764,17 @@ abstract class Indexer {
         DBUtil::runQuery($sql);
         if (ACCOUNT_ROUTING_ENABLED)
         {
+            $priority = self::mapPriority('reindex');
+
 	        $sql = "SELECT document_id FROM index_files;";
 	        $results = DBUtil::getResultArray($sql);
 			foreach ($results as $key=>$res) {
 				$document = Document::get($res['document_id']);
 	        	// Document added, create indexing complex event
 				$oQueueDispatcher = liveIncludes::getSQSQueue();
-	        	$oQueueDispatcher->addProcess('indexing', $document, $document->getSize());
+
+				$params = array('document' => $document, 'priority' => $priority);
+	        	$oQueueDispatcher->addProcess('indexing', $params, $document->getSize());
 				// Send complex event
 	        	$oQueueDispatcher->sendToQueue();
 			}
@@ -727,10 +787,14 @@ abstract class Indexer {
         DBUtil::runQuery($sql);
         if (ACCOUNT_ROUTING_ENABLED)
         {
+            $priority = self::mapPriority('index');
+
         	// Document added, create indexing complex event
         	$document = Document::get($documentId);
 			$oQueueDispatcher = liveIncludes::getSQSQueue();
-        	$oQueueDispatcher->addProcess('indexing', $document, $document->getSize());
+
+			$params = array('document' => $document, 'priority' => $priority);
+        	$oQueueDispatcher->addProcess('indexing', $params, $document->getSize());
         	// Send complex event
         	$oQueueDispatcher->sendToQueue();
         }
@@ -751,13 +815,17 @@ abstract class Indexer {
 
         if (ACCOUNT_ROUTING_ENABLED)
         {
+            $priority = self::mapPriority('reindex');
+
 	        $sql = "SELECT document_id FROM index_files;";
 	        $results = DBUtil::getResultArray($sql);
 			foreach ($results as $key=>$res) {
 				$document = Document::get($res['document_id']);
 	        	// Document added, create indexing complex event
 				$oQueueDispatcher = liveIncludes::getSQSQueue();
-	        	$oQueueDispatcher->addProcess('indexing', $document, $document->getSize());
+
+				$params = array('document' => $document, 'priority' => $priority);
+	        	$oQueueDispatcher->addProcess('indexing', $params, $document->getSize());
 	        	// Send complex event
 	        	$oQueueDispatcher->sendToQueue();
 			}
@@ -776,13 +844,17 @@ abstract class Indexer {
 
         if (ACCOUNT_ROUTING_ENABLED)
         {
+            $priority = self::mapPriority('reprocess');
+
 	        $sql = "SELECT document_id FROM process_queue;";
 	        $results = DBUtil::getResultArray($sql);
 			foreach ($results as $key=>$res) {
 				$document = Document::get($res['document_id']);
 	        	// Document added, create indexing complex event
 				$oQueueDispatcher = liveIncludes::getSQSQueue();
-	        	$oQueueDispatcher->addProcess('processing', $document, $document->getSize());
+
+				$params = array('document' => $document, 'priority' => $priority);
+	        	$oQueueDispatcher->addProcess('processing', $params, $document->getSize());
 	        	// Send complex event to sqs queue
 	        	$oQueueDispatcher->sendToQueue();
 			}
@@ -805,6 +877,8 @@ abstract class Indexer {
         DBUtil::runQuery($sql);
         if (ACCOUNT_ROUTING_ENABLED)
         {
+            $priority = self::mapPriority('reindex');
+
         	// Folder documents added
 	        $sql = "SELECT id, $userid, 'A' FROM documents WHERE full_path like '{$full_path}/%' AND status_id=1 and id not in (select document_id from index_files);";
 	        $results = DBUtil::getResultArray($sql);
@@ -812,7 +886,9 @@ abstract class Indexer {
 				$document = Document::get($res['document_id']);
 	        	// Document added, create indexing complex event
 				$oQueueDispatcher = liveIncludes::getSQSQueue();
-	        	$oQueueDispatcher->addProcess('indexing', $document, $document->getSize());
+
+				$params = array('document' => $document, 'priority' => $priority);
+	        	$oQueueDispatcher->addProcess('indexing', $params, $document->getSize());
 	        	// Send complex event to sqs queue
 	        	$oQueueDispatcher->sendToQueue();
 			}
@@ -2013,7 +2089,7 @@ abstract class Indexer {
         {
             $this->clearExtractors();
         }
-        
+
         $dir = opendir(SearchHelper::correctPath($this->extractorPath));
         while (($file = readdir($dir)) !== false)
         {
@@ -2171,7 +2247,7 @@ abstract class Indexer {
         $directory = $config->get('indexer/luceneDirectory');
         return $directory;
     }
-    
+
 }
 
 ?>

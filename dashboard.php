@@ -71,7 +71,6 @@ class DashboardDispatcher extends KTStandardDispatcher {
         // retrieve action items for the user.
         // FIXME what is the userid?
 
-
         // This creates a pseudo portlet to get the upload and add a folder button
         // for the root directory to display them on the dashboard
         $oFolder =& Folder::get(1);
@@ -79,13 +78,16 @@ class DashboardDispatcher extends KTStandardDispatcher {
         $aActions = KTFolderActionUtil::getFolderActionsForFolder($oFolder, $this->oUser);
         $portlet->setActions($aActions,null);
 
+        /**REMOVE
         $midToolbarButtons = $portlet->showButtons();
-
+		REMOVE**/
+        
         $oDashletRegistry =& KTDashletRegistry::getSingleton();
         $aDashlets = $oDashletRegistry->getDashlets($this->oUser);
 
         $this->sSection = 'dashboard';
-        $this->oPage->setBreadcrumbDetails(_kt('Home'));
+        $this->oPage->showDashboardBtn = true;
+        //$this->oPage->setBreadcrumbDetails(_kt('Home'));
         $this->oPage->title = _kt('Dashboard');
         //$this->oPage->hideSection();
 
@@ -99,9 +101,14 @@ class DashboardDispatcher extends KTStandardDispatcher {
         foreach ($aDashlets as $oDashlet) {
             if ((strpos(strtolower($oDashlet->sTitle), 'welcome to knowledgetree') !== false) && !empty($aDashletsLeft)) {
                 array_unshift($aDashletsLeft, $oDashlet);
-            } else {
-                if ($i == 0) { $aDashletsLeft[] = $oDashlet; }
-                else {$aDashletsRight[] = $oDashlet; }
+            }
+            else {
+                if ($i == 0) {
+                    $aDashletsLeft[] = $oDashlet;
+                }
+                else {
+                    $aDashletsRight[] = $oDashlet;
+                }
             }
 
             $i += 1;
@@ -130,20 +137,23 @@ class DashboardDispatcher extends KTStandardDispatcher {
 
         // dashboard
         $sDashboardState = $this->oUser->getDashboardState();
-        $sDSJS = 'var savedState = ';
+        $dashboardJavascript = 'var savedState = ';
         if ($sDashboardState == null) {
-            $sDSJS .= 'false';
+            $dashboardJavascript .= 'false';
             $sDashboardState = false;
-        } else {
-            $sDSJS .= $sDashboardState;
         }
-        $sDSJS .= ';';
-        $this->oPage->requireJSStandalone($sDSJS);
+        else {
+            $dashboardJavascript .= $sDashboardState;
+        }
+
+        $dashboardJavascript .= ';';
+        $this->oPage->requireJSStandalone($dashboardJavascript);
         $this->oPage->requireJSResource('resources/js/dashboard.js');
 
         $ktOlarkPopup = null;
         // temporarily disabled
-        if (ACCOUNT_ROUTING_ENABLED && liveAccounts::isTrialAccount() && isset($_SESSION['isFirstLogin'])) {
+        global $default;
+        if (ACCOUNT_ROUTING_ENABLED && $default->tier == 'trial' && isset($_SESSION['isFirstLogin'])) {
             $js = preg_replace('/.*[\/\\\\]plugins/', 'plugins', KT_LIVE_DIR) . '/resources/js/olark/olark.js';
             $this->oPage->requireJsResource($js);
             // add popup to page
@@ -160,7 +170,9 @@ class DashboardDispatcher extends KTStandardDispatcher {
               'context' => $this,
               'dashlets_left' => $aDashletsLeft,
               'dashlets_right' => $aDashletsRight,
+              /**REMOVE
               'midToolbarButtons' => $midToolbarButtons,
+              REMOVE**/
               'ktOlarkPopup' => $ktOlarkPopup
         );
 
@@ -210,7 +222,6 @@ class DashboardDispatcher extends KTStandardDispatcher {
         $this->commitTransaction();
         $this->successRedirectToMain('Dashlet disabled.');
     }
-
 
     function json_saveDashboardState() {
         $sState = KTUtil::arrayGet($_REQUEST, 'state', array('error' => true));

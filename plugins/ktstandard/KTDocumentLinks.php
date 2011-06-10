@@ -5,7 +5,7 @@
  * KnowledgeTree Community Edition
  * Document Management Made Simple
  * Copyright (C) 2008, 2009, 2010 KnowledgeTree Inc.
- * 
+ *
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License version 3 as published by the
@@ -73,6 +73,7 @@ class KTDocumentLinks extends KTPlugin {
 
 class KTDocumentLinkViewlet extends KTDocumentViewlet {
     var $sName = 'ktcore.viewlets.document.link';
+    public $bShowIfWriteShared = true;
 
     function display_viewlet() {
         $oKTTemplating =& KTTemplating::getSingleton();
@@ -162,6 +163,7 @@ class KTDocumentLinkViewlet extends KTDocumentViewlet {
 
 class KTDocumentLinkAction extends KTDocumentAction {
     var $sName = 'ktcore.actions.document.link';
+    var $sParentBtn = 'more';
 
     function getDisplayName() {
         return _kt('Links');

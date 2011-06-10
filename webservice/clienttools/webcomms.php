@@ -3,10 +3,11 @@
 include_once('../../ktapi/ktapi.inc.php');
 error_reporting(E_ERROR);
 
+// FIXME Should we not turn this off for production?
 define('COMMS_DEBUG', true);
-define('COMMS_TIMEOUT', 60 * 3); //3 minutes
-
-set_time_limit(COMMS_TIMEOUT);	//Be careful altering this inside the services area - it should never be set to 0 as that could cause runaway processes
+// Be careful altering this inside the services area - it should never be set to 0 as that could cause runaway processes
+define('COMMS_TIMEOUT', 60 * 3);
+set_time_limit(COMMS_TIMEOUT);
 
 /**
  * Intercept Errors and Exceptions and provide a json response in return.
@@ -22,7 +23,6 @@ set_time_limit(COMMS_TIMEOUT);	//Be careful altering this inside the services ar
 function error_handler($errno, $errstr = null, $errfile = null, $errline = null)
 {
 	$e = new ErrorException($errstr, 0, $errno, $errfile, $errline);
-	/*print_r($e);*/
 	if ($GLOBALS['RET']) {
 		$GLOBALS['RET']->addError($e->getmessage());
 		$GLOBALS['RET']->setDebug('Exception::', $e);
@@ -41,34 +41,27 @@ function exception_handler($e)
 	}
 }
 
-/**
- * Set the error & exception handlers
- */
 $old_error_handler = set_error_handler('error_handler', E_ERROR);
 $old_exception_handler = set_exception_handler('exception_handler');
 
 /**
  * Load additional generic libaries
  */
-
-//Interpret the Json Object that was passed
 include_once('jsonWrapper.php');
 include_once('webajaxhandler.php');
 include_once('serviceHelper.php');
 include_once('client_service.php');
 include_once('clienttools_syslog.php');
+include_once('requesthandler.php');
 
-// Creating the object that will be returned;
 $ret = new jsonResponseObject();
 if (isset($_GET['datasource'])) {
     $ret->isDataSource = true;
 }
 
-//Instantiate base classes
 $kt = new KTAPI(3);
 //$kt->get(3);// Set it to Use Web Version 3
 
-//Pick up the session
 $session = KTAPI_UserSession::getCurrentBrowserSession($kt);
 if (PEAR::isError($session)) {
 	$ret->addError('Not Logged In');
@@ -78,7 +71,27 @@ if (PEAR::isError($session)) {
 
 $kt->start_system_session($session->user->getUserName());
 
-//Instantiate the ajax handler
-$handler = new webAjaxHandler($ret, $kt);
+// get the request (or package of requests)
+$requestHandler = new requestHandler();
+$requests = $requestHandler->getRequests();
+
+foreach ($requests as $request) {
+    $handler = new webAjaxHandler($request, $requestHandler->getRawRequest(), $ret, $kt);
+    if (!$handler->hasErrors()) {
+        $handler->dispatch();
+    }
+
+    ob_start();
+    $handler->render();
+    $output[] = ob_get_clean();
+}
+
+if (count($output) == 1) {
+    echo $output[0];
+}
+else {
+    // Chose ~|~ because it should *hopefully* be unique :)
+    echo implode('~|~', $output);
+}
 
 ?>
