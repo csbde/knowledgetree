@@ -77,25 +77,23 @@ class LdapAuthProvider extends KTAuthenticationProvider {
         $event = strip_tags($_REQUEST[$this->event_var]);
         $proposedMethod = sprintf('%s_%s', $this->action_prefix, $event);
 
-        // attempt to map to an event in one of the associated classes if there is
-        // no method available in the current class.
         if (method_exists($this, $proposedMethod)) {
-            return $this->$proposedMethod;
+            return $this->$proposedMethod();
         }
 
-        // attempt to determine whether the function is to be found in the user or group dispatcher
+        // Attempt to determine whether the function is to be found in the user or group dispatcher.
         $ldapDispatcher = null;
         $checkMethod = preg_replace('/^add|create|delete|edit|update/i', '', $event);
         if (preg_match('/^user/i', $checkMethod)) {
-            require_once('ldapUserDispatcher.php');
-            $ldapDispatcher = new ldapUserDispatcher($this->sAuthClass);
+            require_once('LdapUserDispatcher.inc.php');
+            $ldapDispatcher = new LdapUserDispatcher($this->sAuthClass);
         }
         else if (preg_match('/^group/i', $checkMethod)) {
-            require_once('ldapGroupDispatcher.php');
-            $ldapDispatcher = new ldapGroupDispatcher();
+            require_once('LdapGroupDispatcher.inc.php');
+            $ldapDispatcher = new LdapGroupDispatcher();
         }
 
-        // if we have manager to find a dispatcher for the requested method
+        // If we have manager to find a dispatcher for the requested method.
         if (is_object($ldapDispatcher)) {
             return $ldapDispatcher->$proposedMethod();
         }
@@ -111,7 +109,7 @@ class LdapAuthProvider extends KTAuthenticationProvider {
      */
     public function do_editSourceProvider()
     {
-        //$this->oPage->setBreadcrumbDetails(_kt("Configure LDAP"));
+        $this->oPage->setBreadcrumbDetails(_kt("Configure LDAP"));
 
         $sourceId = $_REQUEST['source_id'];
         $source = KTAuthenticationSource::get($sourceId);
@@ -282,8 +280,8 @@ class LdapAuthProvider extends KTAuthenticationProvider {
 
 }
 
-require_once('ldapUtil.php');
-require_once('ldapGroupManager.php');
+require_once('LdapUtil.inc.php');
+require_once('LdapGroupManager.inc.php');
 
 class LdapAuthenticator extends Authenticator {
 

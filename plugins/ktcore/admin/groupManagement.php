@@ -126,7 +126,9 @@ class KTGroupAdminDispatcher extends KTAdminDispatcher {
 
         // grab all units.
         $unitId = $group->getUnitId();
-        if ($unitId == null) { $unitId = 0; }
+        if ($unitId == null) {
+            $unitId = 0;
+        }
 
         $units = Unit::getList();
         $vocab = array();
@@ -670,7 +672,6 @@ class KTGroupAdminDispatcher extends KTAdminDispatcher {
         $authenticationProvider->oPage->setTitle(_kt('Modify Group Details'));
 
         $authenticationProvider->dispatch();
-        exit(0);
     }
 
     function getGroupStringForGroup($group)

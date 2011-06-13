@@ -118,11 +118,6 @@ class KTUserAdminDispatcher extends KTAdminDispatcher {
         return $template->render($templateData);
     }
 
-    public function handleOutput($output)
-    {
-        print $output;
-    }
-
     public function do_resendInvite()
     {
         $userId = $_REQUEST['user_id'];
@@ -237,14 +232,13 @@ class KTUserAdminDispatcher extends KTAdminDispatcher {
         $authenticationRegistry = KTAuthenticationProviderRegistry::getSingleton();
         $authenticationProvider = $authenticationRegistry->getAuthenticationProvider($providerName);
 
-        //$this->aBreadcrumbs[] = array('url' => $_SERVER['PHP_SELF'], 'name' => _kt('User Management'));
-        //$this->aBreadcrumbs[] = array('url' => KTUtil::addQueryStringSelf('action=addUser'), 'name' => _kt('add a new user'));
-        //$authenticationProvider->aBreadcrumbs = $this->aBreadcrumbs;
-        //$authenticationProvider->oPage->setBreadcrumbDetails($authenticationSource->getName());
-        //$authenticationProvider->oPage->setTitle(_kt('Add New User'));
+        $this->aBreadcrumbs[] = array('url' => $_SERVER['PHP_SELF'], 'name' => _kt('User Management'));
+        $this->aBreadcrumbs[] = array('url' => KTUtil::addQueryStringSelf('action=addUser'), 'name' => _kt('add a new user'));
+        $authenticationProvider->aBreadcrumbs = $this->aBreadcrumbs;
+        $authenticationProvider->oPage->setBreadcrumbDetails($authenticationSource->getName());
+        $authenticationProvider->oPage->setTitle(_kt('Add New User'));
 
         $authenticationProvider->dispatch();
-        exit(0);
     }
 
     function do_editUser()
@@ -989,6 +983,11 @@ class KTUserAdminDispatcher extends KTAdminDispatcher {
 
         $this->commitTransaction();
         $this->successRedirectToMain(_kt('Users updated'), 'show_all=1');
+    }
+
+    public function handleOutput($output)
+    {
+        print $output;
     }
 
 }
