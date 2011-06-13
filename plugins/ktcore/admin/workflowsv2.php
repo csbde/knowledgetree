@@ -132,7 +132,6 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
 
         if (!is_null($this->oWorkflow)) {
         	$portlet = new WorkflowNavigationPortlet(_kt("Workflow Administration"), $this->oWorkflow);
-        	$portlet->setSectionQueryString($this->sectionQueryString);
             $this->oPage->addPortlet($portlet);
 
             $this->aBreadcrumbs[] = array(

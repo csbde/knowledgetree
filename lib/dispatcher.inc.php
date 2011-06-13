@@ -639,15 +639,14 @@ class KTAdminDispatcher extends KTStandardDispatcher {
         $this->category = $parts[0];
         $this->subsection = $parts[1];
 
-        $this->sectionQueryString = "fCategory={$this->category}&subsection={$this->subsection}&expanded=1";
-    }
+        // TODO : Remove this line
+        $this->sectionQueryString = "fCategory={$this->category}&expanded=1";
 
-    public function setSectionQueryString($sectionQueryString) {
-    	$this->sectionQueryString = $sectionQueryString;
-    }
-    
-    public function getSectionQueryString() {
-    	return $this->sectionQueryString;
+		$_REQUEST['subsection'] = $this->subsection;
+		$_REQUEST['expanded'] = 1;
+		if (!empty($this->subsection)) {
+			$_SERVER['PHP_SELF'] .= "&subsection={$this->subsection}&expanded=1";
+		}
     }
     
     public function setActiveStatus($active)

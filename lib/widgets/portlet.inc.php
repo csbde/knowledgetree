@@ -77,9 +77,6 @@ class KTPortlet {
         return $this->bActive;
     }
     
-    public function setSectionQueryString($sectionQueryString) {
-    	$this->sectionQueryString = $sectionQueryString;
-    }
 }
 
 

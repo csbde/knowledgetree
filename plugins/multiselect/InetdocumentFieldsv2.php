@@ -351,13 +351,11 @@ class InetDocumentFieldDispatcher extends KTAdminDispatcher {
 				$oSubDispatcher = new BasicFieldsetManagementDispatcher();
 		    }
         }
-		$oSubDispatcher->setSectionQueryString($this->getSectionQueryString());
         $subEventVar = 'fieldset_action';
         $subEvent = KTUtil::arrayGet($_REQUEST, $subEventVar);
         if (!empty($subEvent)) {
             // do nothing, since this will handle everything
             $thisUrl = KTUtil::addQueryStringSelf($this->meldPersistQuery('', 'edit'));
-            $thisUrl .= '&' . $this->getSectionQueryString();
             $oSubDispatcher->redispatch($subEventVar, null, $this, $thisUrl);
 			return;
         } else {

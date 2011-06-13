@@ -86,7 +86,6 @@ class InetBasicFieldsetManagementDispatcher extends KTAdminDispatcher {
         $oTemplate->setData(array(
             'context' => $this,
             'fields' => $fields,
-            'section_query_string' => $this->sectionQueryString,
         ));
         return $oTemplate->render();
     }
@@ -447,7 +446,6 @@ class InetBasicFieldsetManagementDispatcher extends KTAdminDispatcher {
             'field_id' => $this->oField->getId(),
             'form' => $this->form_editfield($this->oField),
             'field' => $this->oField,
-            'section_query_string' => $this->sectionQueryString,
         ));
         return $oTemplate->render();
     }
@@ -691,8 +689,8 @@ class InetBasicFieldsetManagementDispatcher extends KTAdminDispatcher {
             'field_name' => $this->oField->getName(),
             'lookups' => $lookups,
             'args' => $args,
-            'section_query_string' => $this->sectionQueryString,
         ));
+
         return $oTemplate->render();
     }
 

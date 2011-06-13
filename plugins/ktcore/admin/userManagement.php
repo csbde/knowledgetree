@@ -112,7 +112,6 @@ class KTUserAdminDispatcher extends KTAdminDispatcher {
             'can_add' => $canAdd,
             'invited' => false,
             'authentication' => ACCOUNT_ROUTING,
-            'section_query_string' => $this->sectionQueryString
         );
 
         return $template->render($templateData);
