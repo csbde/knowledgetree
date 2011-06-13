@@ -89,7 +89,7 @@ class ManageBrandDispatcher extends KTAdminDispatcher
                 'action' => 'saveLogo',
                 'fail_url' => 'main',
                 'encoding' => 'multipart/form-data',
-                'cancel_url' => "{$_SERVER['SCRIPT_NAME']}?{$this->sectionQueryString}",
+                'cancel_url' => "javascript:void(jQuery('#branding').toggle());",
                 'targeturl' => "{$_SERVER['SCRIPT_NAME']}?{$this->sectionQueryString}&action=saveLogo",
                 'context' => $this
             ));
