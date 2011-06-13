@@ -13,13 +13,13 @@ notification to you.{/i18n}
 
 {foreach from=$breadcrumbs item=breadcrumb name=bc}
     {if !$smarty.foreach.bc.last}
-        <a href="{$breadcrumb.url}">{$breadcrumb.name|sanitize}</a> &raquo;
+        <a href="{$breadcrumb.url}&{$section_query_string}">{$breadcrumb.name|sanitize}</a> &raquo;
     {else}
         {$breadcrumb.name|sanitize}
     {/if}
 {/foreach}
 
-<form method="POST" action="{$smarty.server.PHP_SELF}">
+<form method="POST" action="{$smarty.server.PHP_SELF}?{$section_query_string}">
 <input type="hidden" name="action" value="confirm_restore" />
 <input type="hidden" name="fFolderId" value="{$folder->getId()}" />
 
