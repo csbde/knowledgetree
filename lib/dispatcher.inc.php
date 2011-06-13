@@ -642,6 +642,14 @@ class KTAdminDispatcher extends KTStandardDispatcher {
         $this->sectionQueryString = "fCategory={$this->category}&subsection={$this->subsection}&expanded=1";
     }
 
+    public function setSectionQueryString($sectionQueryString) {
+    	$this->sectionQueryString = $sectionQueryString;
+    }
+    
+    public function getSectionQueryString() {
+    	return $this->sectionQueryString;
+    }
+    
     public function setActiveStatus($active)
     {
         if (!$active) {

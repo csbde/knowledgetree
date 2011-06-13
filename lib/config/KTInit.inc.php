@@ -155,6 +155,11 @@ class KTInit {
             $_SERVER['PATH_INFO'] = $ktPathInfo;
         }
 
+        $categoryPath = KTUtil::arrayGet($_REQUEST, 'fCategory');
+        if (!empty($categoryPath)) {
+        	$_SERVER['PHP_SELF'] .= '?fCategory=' . $categoryPath;
+        }
+        
         $_SERVER['HTTP_HOST'] = $KTConfig->get('KnowledgeTree/serverName');
     }
 

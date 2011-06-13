@@ -69,8 +69,7 @@ class KTNewWorkflowWizard extends KTAdminDispatcher {
 
         $oForm->setOptions(array(
             'action' => 'process_step1',
-            // NBM:  is there a cleaner way to reference the parent?
-            'cancel_url' => KTUtil::addQueryStringSelf('') . "?{$this->sectionQueryString}",
+            'cancel_url' => KTUtil::addQueryStringSelf(''), // NBM:  is there a cleaner way to reference the parent?
             'fail_action' => 'main',
             'label' => _kt('Workflow Details'),
             'submit_label' => _kt('Next'),
@@ -136,7 +135,6 @@ class KTNewWorkflowWizard extends KTAdminDispatcher {
         $oTemplate->setData(array(
             'context' => $this,
             'form' => $this->form_step1(),
-            'section_query_string' => $this->sectionQueryString,
         ));
 
         return $oTemplate->render();
@@ -262,7 +260,6 @@ class KTNewWorkflowWizard extends KTAdminDispatcher {
             'args' => $args,
             'transitions' => $wiz_data['transitions'],
             'states' => $wiz_data['states'],
-            'section_query_string' => $this->sectionQueryString,
         ));
 
         return $oTemplate->render();
