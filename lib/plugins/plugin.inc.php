@@ -152,22 +152,31 @@ class KTPlugin {
         $this->registerPluginHelper($sNamespace, $sClass, $sFilename, $params, 'general', 'authentication_provider');
     }
 
-    function registerAdminPage($sName, $sClass, $sCategory, $sTitle, $sDescription, $sFilename, $sURL = null, $order = 0) {
-        $sFullname = $sCategory . '/' . $sName;
-        $sFilename = $this->_fixFilename($sFilename);
-        $this->_aAdminPages[$sFullname] = array($sName, $sClass, $sCategory, $sTitle, $sDescription, $sFilename, null, $this->sNamespace);
+    public function registerAdminCategory($path, $name, $description, $order = 0)
+    {
+        $this->_aAdminCategories[$path] = array($path, $name, $description);
 
-        // Register helper in DB
-        $params = $sName.'|'.$sClass.'|'.$sCategory.'|'.$sTitle.'|'.$sDescription.'|'.$sFilename.'|'.null.'|'.$this->sNamespace .'|'. $order;
-        $this->registerPluginHelper($sFullname, $sClass, $sFilename, $params, 'general', 'admin_page');
+        $params = "$path|$name|$description|$order";
+        $this->registerPluginHelper($path, $name, $path, $params, 'general', 'admin_category');
     }
 
-    function registerAdminCategory($sPath, $sName, $sDescription) {
-        $this->_aAdminCategories[$sPath] = array($sPath, $sName, $sDescription);
+    public function registerAdminPage($name, $class, $category, $title, $description, $filename, $url = null, $order = 0)
+    {
+        $fullname = $category . '/' . $name;
+        $filename = $this->_fixFilename($filename);
+        $this->_aAdminPages[$fullname] = array(
+                                                $name,
+                                                $class,
+                                                $category,
+                                                $title,
+                                                $description,
+                                                $filename,
+                                                $url,
+                                                $this->sNamespace
+        );
 
-        // Register helper in DB
-        $params = $sPath.'|'.$sName.'|'.$sDescription;
-        $this->registerPluginHelper($sPath, $sName, $sPath, $params, 'general', 'admin_category');
+        $params = "$name|$class|$category|$title|$description|$filename|$url|{$this->sNamespace}|$order";
+        $this->registerPluginHelper($fullname, $class, $filename, $params, 'general', 'admin_page');
     }
 
     /**

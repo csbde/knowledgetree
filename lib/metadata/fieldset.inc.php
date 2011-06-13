@@ -182,7 +182,8 @@ class KTFieldset extends KTEntity {
                             );
     }
 
-    function &getForDocumentType($documentType, $options = null) {
+    function &getForDocumentType($documentType, $options = null)
+    {
         if (is_object($documentType)) {
             $documentTypeId = $documentType->getId();
         }

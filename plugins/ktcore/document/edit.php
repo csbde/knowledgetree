@@ -154,7 +154,7 @@ class KTDocumentEditAction extends KTDocumentAction {
                     'required' => true
                 ));
 
-            $validators[] = array('electonic.signatures.validators.authenticate', array(
+            $validators[] = array('electronic.signatures.validators.authenticate', array(
                 'object_id' => $this->oDocument->iId,
                 'type' => 'document',
                 'action' => 'ktcore.transactions.edit_metadata',

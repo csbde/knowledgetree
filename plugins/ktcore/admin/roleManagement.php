@@ -53,8 +53,8 @@ class RoleAdminDispatcher extends KTAdminDispatcher {
     }
 
     function do_main() {
-        $this->aBreadcrumbs[] = array('url' => $_SERVER['PHP_SELF'], 'name' => _kt('Role Management'));
-        $this->oPage->setTitle(_kt('Role Management'));
+        //$this->aBreadcrumbs[] = array('url' => $_SERVER['PHP_SELF'], 'name' => _kt('Role Management'));
+        //$this->oPage->setTitle(_kt('Role Management'));
 
         $edit_fields = array();
         $role_id = KTUtil::arrayGet($_REQUEST, 'role_id', null);
@@ -84,8 +84,10 @@ class RoleAdminDispatcher extends KTAdminDispatcher {
             'edit_role' => $oRole,
             'edit_fields' => $edit_fields,
             'roles' => $aRoles,
+            'section_query_string' => $this->sectionQueryString,
         ));
-        return $oTemplate;
+
+        return $oTemplate->render();
     }
 
     function do_createRole() {
@@ -148,5 +150,9 @@ class RoleAdminDispatcher extends KTAdminDispatcher {
         $this->successRedirectToMain(sprintf(_kt('Role "%s" deleted. '), $name));
     }
 
-}
+    public function handleOutput($output)
+    {
+        print $output;
+    }
 
+}

@@ -400,6 +400,11 @@ class KTStorageManager {
         return PEAR::raiseError(_kt("Not implemented"));
     }
 
+    public function getStoragePath($path)
+    {
+    	return '';
+    }
+    
     /**
      * Gets the latest verison of a document's contents from storage and
      * writes it to the standard content with HTTP headers as an
@@ -563,6 +568,11 @@ class KTStorageManager {
     public function getDocStoragePath($oDocument, $type = 'document') {
     	return ;
     	return PEAR::raiseError(_kt("Not implemented"));
+    }
+    
+    public function setAllAccess($filename)
+    {
+    	return '';
     }
 }
 

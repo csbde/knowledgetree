@@ -5,32 +5,32 @@
  * KnowledgeTree Community Edition
  * Document Management Made Simple
  * Copyright (C) 2008, 2009, 2010 KnowledgeTree Inc.
- * 
- * 
+ *
+ *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License version 3 as published by the
  * Free Software Foundation.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
  * details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- * 
- * You can contact KnowledgeTree Inc., PO Box 7775 #87847, San Francisco, 
+ *
+ * You can contact KnowledgeTree Inc., PO Box 7775 #87847, San Francisco,
  * California 94120-7775, or email info@knowledgetree.com.
- * 
+ *
  * The interactive user interfaces in modified source and object code versions
  * of this program must display Appropriate Legal Notices, as required under
  * Section 5 of the GNU General Public License version 3.
- * 
+ *
  * In accordance with Section 7(b) of the GNU General Public License version 3,
  * these Appropriate Legal Notices must retain the display of the "Powered by
- * KnowledgeTree" logo and retain the original copyright notice. If the display of the 
+ * KnowledgeTree" logo and retain the original copyright notice. If the display of the
  * logo is not reasonably feasible for technical reasons, the Appropriate Legal Notices
- * must display the words "Powered by KnowledgeTree" and retain the original 
+ * must display the words "Powered by KnowledgeTree" and retain the original
  * copyright notice.
  * Contributor( s): ______________________________________
  */
@@ -43,32 +43,41 @@ require_once(KT_LIB_DIR . '/browse/columnregistry.inc.php');
 
 class ManageViewDispatcher extends KTAdminDispatcher {
 
-    function check() {
-
-        $this->aBreadcrumbs[] = array('url' => $_SERVER['PHP_SELF'], 'name' => _kt('Manage Views'));
+    public function check()
+    {
+        //$this->aBreadcrumbs[] = array('url' => $_SERVER['PHP_SELF'], 'name' => _kt('Manage Views'));
         return parent::check();
     }
 
-    function do_main() {
-        $oTemplating =& KTTemplating::getSingleton();
+    public function do_main()
+    {
+        $oTemplating = KTTemplating::getSingleton();
         $oTemplate = $oTemplating->loadTemplate('ktcore/misc/columns/select_view');
 
-        $oColumnRegistry =& KTColumnRegistry::getSingleton();
+        $oColumnRegistry = KTColumnRegistry::getSingleton();
 
         $aViews = $oColumnRegistry->getViews();
 
         $aTemplateData = array(
               'context' => $this,
               'views' => $aViews,
+              'section_query_string' => $this->sectionQueryString
         );
+
         return $oTemplate->render($aTemplateData);
     }
 
-    function do_editView() {
-        $oTemplating =& KTTemplating::getSingleton();
+    public function handleOutput($output)
+    {
+        print $output;
+    }
+
+    public function do_editView()
+    {
+        $oTemplating = KTTemplating::getSingleton();
         $oTemplate = $oTemplating->loadTemplate('ktcore/misc/columns/edit_view');
 
-        $oColumnRegistry =& KTColumnRegistry::getSingleton();
+        $oColumnRegistry = KTColumnRegistry::getSingleton();
         $aColumns = $oColumnRegistry->getColumnsForView($_REQUEST['viewNS']);
         //var_dump($aColumns); exit(0);
         $aAllColumns = $oColumnRegistry->getColumns();
@@ -78,11 +87,13 @@ class ManageViewDispatcher extends KTAdminDispatcher {
         $this->oPage->setBreadcrumbDetails($view_name);
 
         $aOptions = array();
+
         $vocab = array();
         foreach ($aAllColumns as $aInfo) {
             $vocab[$aInfo['namespace']] = $aInfo['name'];
         }
         $aOptions['vocab'] = $vocab;
+        
         $add_field = new KTLookupWidget(_kt("Columns"), _kt("Select a column to add to the view.  Please note that while you can add multiple copies of a column, they will all behave as a single column"), 'column_ns', null, $this->oPage, true, null, $aErrors = null, $aOptions);
 
         $aTemplateData = array(
@@ -91,11 +102,14 @@ class ManageViewDispatcher extends KTAdminDispatcher {
               'all_columns' => $aAllColumns,
               'view' => $_REQUEST['viewNS'],
               'add_field' => $add_field,
+              'section_query_string' => $this->sectionQueryString
         );
+
         return $oTemplate->render($aTemplateData);
     }
 
-    function do_deleteEntry() {
+    public function do_deleteEntry()
+    {
         $entry_id = KTUtil::arrayGet($_REQUEST, 'entry_id');
         $view = KTUtil::arrayGet($_REQUEST, 'viewNS');
 
@@ -123,7 +137,8 @@ class ManageViewDispatcher extends KTAdminDispatcher {
         $this->successRedirectTo("editView", _kt("Deleted Entry"), sprintf("viewNS=%s", $view));
     }
 
-    function do_addEntry() {
+    public function do_addEntry()
+    {
         $column_ns = KTUtil::arrayGet($_REQUEST, 'column_ns');
         $view = KTUtil::arrayGet($_REQUEST, 'viewNS');
 
@@ -141,42 +156,34 @@ class ManageViewDispatcher extends KTAdminDispatcher {
         $this->successRedirectTo("editView", _kt("Added Entry"), sprintf("viewNS=%s", $view));
     }
 
-    function do_orderUp(){
+    public function do_orderUp()
+    {
+        $this->order('up');
+    }
+
+    public function do_orderDown()
+    {
+        $this->order('down');
+    }
+
+    private function order($direction)
+    {
         $entryId = $_REQUEST['entry_id'];
         $view = $_REQUEST['viewNS'];
 
-        $oEntry = KTColumnEntry::get($entryId);
-        if (PEAR::isError($oEntry)) {
+        $entry = KTColumnEntry::get($entryId);
+        if (PEAR::isError($entry)) {
             $this->errorRedirectTo('editView', _kt('Unable to locate the column entry'), "viewNS={$view}");
             exit();
         }
 
-        $res = $oEntry->movePosition($view, $entryId, 'up');
+        $res = $entry->movePosition($view, $entryId, $direction);
         if (PEAR::isError($res)) {
             $this->errorRedirectTo('editView', $res->getMessage(), "viewNS={$view}");
             exit();
         }
 
         $this->redirectTo('editView', "viewNS={$view}");
-    }
-
-    function do_orderDown(){
-        $entryId = $_REQUEST['entry_id'];
-        $view = $_REQUEST['viewNS'];
-
-        $oEntry = KTColumnEntry::get($entryId);
-        if (PEAR::isError($oEntry)) {
-            $this->errorRedirectTo('editView', _kt('Unable to locate the column entry'), "viewNS={$view}");
-            exit();
-        }
-
-        $res = $oEntry->movePosition($view, $entryId, 'down');
-        if (PEAR::isError($res)) {
-            $this->errorRedirectTo('editView', $res->getMessage(), "viewNS={$view}");
-            exit();
-        }
-
-        $this->redirectTo("editView", "viewNS={$view}");
     }
 
 }

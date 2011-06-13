@@ -78,7 +78,6 @@ class AdminSplashDispatcher extends KTAdminDispatcher {
             }
         }
 
-        //$this->oPage->hideSection();
         $oTemplating =& KTTemplating::getSingleton();
 
         global $default;
@@ -92,7 +91,6 @@ class AdminSplashDispatcher extends KTAdminDispatcher {
             $oTemplate = $oTemplating->loadTemplate('kt3/admin_categories');
         }
 
-        //$lefCats = array('contentManagement', 'contentSetup', 'contentIndexing');
         $rightCats = array('accountInformation', 'userSetup', 'sysConfig');
         foreach ($categories as $cat) {
             if (in_array($cat['name'], $rightCats)) {
@@ -101,16 +99,6 @@ class AdminSplashDispatcher extends KTAdminDispatcher {
                 $leftmenu[$cat['name']] = $categories[$cat['name']];
             }
         }
-
-        /**REMOVE
-		foreach (array('contentManagement', 'contentSetup', 'contentIndexing') as $leftcat) {
-        	$leftmenu[$leftcat] = isset($categories[$leftcat]) ? $categories[$leftcat] : '';
-        }
-
-		foreach (array('accountInformation', 'userSetup', 'sysConfig') as $rightcat) {
-			$rightmenu[$rightcat] = isset($categories[$rightcat]) ? $categories[$rightcat] : '';
-		}
-		REMOVE**/
 
         $aTemplateData = array(
               'context' => $this,

@@ -11,7 +11,7 @@ can <strong>restore</strong> them as necessary.{/i18n}</p>
 
 {if (!empty($documents))}
 
-<form action="{$smarty.server.PHP_SELF}" method="POST">
+<form action="{$smarty.server.PHP_SELF}?{$section_query_string}" method="POST">
 
 <input type="hidden" name="action" value="branchConfirm" />
 {foreach item=oFDoc from=$fullList}

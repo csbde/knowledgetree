@@ -45,8 +45,9 @@ require_once(KT_LIB_DIR . '/plugins/KTAdminNavigation.php');
 
 class AdminSplashDispatcher extends KTAdminDispatcher {
 
-    var $category = '';
-    var $sSection = 'settings';
+    private $defaultCategory = '';
+    public $sSection = 'settings';
+    public $event_var = null;
 
     function AdminSplashDispatcher()
     {
@@ -57,124 +58,89 @@ class AdminSplashDispatcher extends KTAdminDispatcher {
         parent::KTAdminDispatcher();
     }
 
-    function do_main()
+    public function do_main($viewCategory = false)
     {
-        if ($this->category !== '') {
-            return $this->do_viewCategory();
-        };
+        $registry = KTAdminNavigationRegistry::getSingleton();
+        $categories = $registry->getCategories();
+        reset($categories);
+        $defaultCategory = current($categories);
+        $this->defaultCategory = $defaultCategory['name'];
 
-        // are we categorised, or not?
-        $oRegistry =& KTAdminNavigationRegistry::getSingleton();
-        $categories = $oRegistry->getCategories();
-		$KTConfig =& KTConfig::getSingleton();
-        $condensed_admin = $KTConfig->get('condensedAdminUI');
+        $KTConfig = KTConfig::getSingleton();
+        $condensedAdmin = $KTConfig->get('condensedAdminUI');
 
-        $aAllItems = array();
-        // we need to investigate sub_url solutions.
-        if ($condensed_admin) {
-            foreach ($categories as $aCategory) {
-                $aItems = $oRegistry->getItemsForCategory($aCategory['name']);
-                $aAllItems[$aCategory['name']] = $aItems;
+        // TODO Figure whether this is still relevant and remove if not.
+        // We need to investigate sub_url solutions.
+        $allItems = array();
+        if ($condensedAdmin) {
+            foreach ($categories as $category) {
+                $items = $registry->getItemsForCategory($category['name']);
+                $allItems[$category['name']] = $items;
             }
         }
-
-        //$this->oPage->hideSection();
-        $oTemplating =& KTTemplating::getSingleton();
 
         global $default;
         if (ACCOUNT_ROUTING_ENABLED && $default->tier == 'trial') {
             $this->includeOlark();
         }
-		
-		$oTemplate = $oTemplating->loadTemplate('kt3/settings');
-		
-        //if ($condensed_admin) {
-        //    $oTemplate = $oTemplating->loadTemplate('kt3/admin_fulllist');
-        //} else {
-        //    $oTemplate = $oTemplating->loadTemplate('kt3/admin_categories');
-        //}
 
-        //$lefCats = array('contentManagement', 'contentSetup', 'contentIndexing');
-        $rightCats = array('accountInformation', 'userSetup', 'sysConfig');
-        foreach ($categories as $cat) {
-            if (in_array($cat['name'], $rightCats)) {
-                $rightmenu[$cat['name']] = $categories[$cat['name']];
-            } else {
-                $leftmenu[$cat['name']] = $categories[$cat['name']];
-            }
-        }
-
-        /**REMOVE
-		foreach (array('contentManagement', 'contentSetup', 'contentIndexing') as $leftcat) {
-        	$leftmenu[$leftcat] = isset($categories[$leftcat]) ? $categories[$leftcat] : '';
-        }
-
-		foreach (array('accountInformation', 'userSetup', 'sysConfig') as $rightcat) {
-			$rightmenu[$rightcat] = isset($categories[$rightcat]) ? $categories[$rightcat] : '';
-		}
-		REMOVE**/
-
-        $aTemplateData = array(
-              'context' => $this,
-              'categories' => $categories,
-              'leftmenu' => $leftmenu,
-              'rightmenu' => $rightmenu,
-              'all_items' => $aAllItems,
-              'baseurl' => $_SERVER['PHP_SELF'],
+        $templating = KTTemplating::getSingleton();
+        $template = $templating->loadTemplate('kt3/settings');
+        $templateData = array(
+                            'context' => $this,
+                            'categories' => $categories,
+                            'all_items' => $allItems,
+                            'items' => $this->getCategoryItems(),
+                            'baseurl' => $_SERVER['PHP_SELF'],
         );
 
-        return $oTemplate->render($aTemplateData);
+        return $template->render($templateData);
     }
 
-    function do_viewCategory()
+    // TODO Default category display on first entry.
+    private function getCategoryItems()
     {
-        // are we categorised, or not?
-        $category = KTUtil::arrayGet($_REQUEST, 'fCategory', $this->category);
+        $page = $GLOBALS['main'];
 
-        //Removing bad contentSetup/fieldmanagement links from the Document Metadata and Workflow Configuration page.
-        $oPage =& $GLOBALS['main'];
+        $category = KTUtil::arrayGet($_REQUEST, 'fCategory', $this->defaultCategory);
+        $subsection = KTUtil::arrayGet($_REQUEST, 'subsection', null);
+        $expanded = KTUtil::arrayGet($_REQUEST, 'expanded', false);
 
-        if ($category == 'contentSetup') {
-            $jscript .= "<script src='resources/js/kt_hideadminlink.js' type='text/javascript'></script>";
-        }
+        $javascript[] = 'resources/js/newui/hide_system_links.js';
+        $page->requireJSResources($javascript);
 
-        $aJavascript[] = 'resources/js/newui/hide_system_links.js';
-        $oPage->requireJSResources($aJavascript);
-
-        $oRegistry =& KTAdminNavigationRegistry::getSingleton();
-        $aCategory = $oRegistry->getCategory($category);
-        if (ACCOUNT_ROUTING_ENABLED && $category == 'contentIndexing')
-        {
-            $aItems = null;
+        $registry = KTAdminNavigationRegistry::getSingleton();
+        if (ACCOUNT_ROUTING_ENABLED && $category == 'contentIndexing') {
+            $items = null;
             $message = 'Indexing of full-text content in KnowledgeTree is carried out through shared queue processes using SOLR. <br/>Content Indexing statistics coming soon!';
         }
-        else
-        {
-            $aItems = $oRegistry->getItemsForCategory($category);
+        else {
+            $categoryDetail = $registry->getCategory($category);
+            $this->aBreadcrumbs[] = array('name' => $categoryDetail['title'], 'url' => KTUtil::ktLink('settings.php', '', 'fCategory='.$category));
+            $this->oPage->title = _kt('Settings') . ': ' . $categoryDetail['title'];
+            $items = $registry->getItemsForCategory($category);
             $message = null;
         }
 
-        if (count($aItems) == 1) {
-            // skip the list of admin pages and go direct to the first / only page
-            $url = KTUtil::ktLink('admin.php', $aItems[0]['fullname']);
-            redirect($url);
+        if (count($items) == 1) {
+            $items[0]['autoDisplay'] = true;
         }
+        else {
+            foreach ($items as $key => $item) {
+                $items[$key]['autoDisplay'] = false;
+                if ($subsection == $item['name'] && $expanded) {
+                    $items[$key]['autoDisplay'] = true;
+                }
+            }
+        }
+    
+        return $items;
+    }
 
-        $this->aBreadcrumbs[] = array('name' => $aCategory['title'], 'url' => KTUtil::ktLink('settings.php',$category));
-
-        $this->oPage->title = _kt('Settings') . ': ' . $aCategory['title'];
-        $oTemplating =& KTTemplating::getSingleton();
-        $oTemplate = $oTemplating->loadTemplate('kt3/admin_items');
-        $aTemplateData = array(
-                'context' => $this,
-                'category' => $aCategory,
-                'items' => $aItems,
-                'baseurl' =>  $_SERVER['PHP_SELF'],
-                'jscript' => $jscript,
-                'message' => $message,
-        );
-
-        return $oTemplate->render($aTemplateData);
+    // This function is now just an alias for do_main...
+    function do_viewCategory()
+    {
+    	return $this->do_main();
     }
 
     private function includeOlark()
@@ -185,31 +151,44 @@ class AdminSplashDispatcher extends KTAdminDispatcher {
         $this->oPage->setBodyOnload("javascript: ktOlark.setUserData('" . $user->getName() . "', '" . $user->getEmail() . "');");
     }
 
+    public function loadSection($section)
+    {
+        $subUrl = $section['fullname'];
+        $registry = KTAdminNavigationRegistry::getSingleton();
+        if ($registry->isRegistered($subUrl)) {
+            $dispatcher = $registry->getDispatcher($subUrl);
+            $dispatcher->setCategoryDetail($subUrl);
+            $dispatcher->setActiveStatus($section['autoDisplay']);
+            
+            return $dispatcher->dispatch();
+        }
+    }
+
 }
 
-$sub_url = KTUtil::arrayGet($_SERVER, 'PATH_INFO');
-$sub_url = trim($sub_url);
-$sub_url= trim($sub_url, '/');
+$subUrl = KTUtil::arrayGet($_SERVER, 'PATH_INFO');
+$subUrl = trim($subUrl);
+$subUrl= trim($subUrl, '/');
 
-if (empty($sub_url)) {
-    $oDispatcher = new AdminSplashDispatcher();
+if (empty($subUrl)) {
+    $dispatcher = new AdminSplashDispatcher();
 } else {
-    $oRegistry =& KTAdminNavigationRegistry::getSingleton();
-    if ($oRegistry->isRegistered($sub_url)) {
-       $oDispatcher = $oRegistry->getDispatcher($sub_url);
+    $registry = KTAdminNavigationRegistry::getSingleton();
+    if ($registry->isRegistered($subUrl)) {
+       $dispatcher = $registry->getDispatcher($subUrl);
 
-       $aParts = explode('/',$sub_url);
+       $parts = explode('/', $subUrl);
 
-       $oRegistry =& KTAdminNavigationRegistry::getSingleton();
-       $aCategory = $oRegistry->getCategory($aParts[0]);
+       $registry = KTAdminNavigationRegistry::getSingleton();
+       $category = $registry->getCategory($parts[0]);
 
-       $oDispatcher->aBreadcrumbs = array();
-       $oDispatcher->aBreadcrumbs[] = array('action' => 'settings', 'name' => _kt('Settings'));
-       $oDispatcher->aBreadcrumbs[] = array('name' => $aCategory['title'], 'url' => KTUtil::ktLink('admin.php',$aParts[0]));
+       $dispatcher->aBreadcrumbs = array();
+       $dispatcher->aBreadcrumbs[] = array('action' => 'settings', 'name' => _kt('Settings'));
+       $dispatcher->aBreadcrumbs[] = array('name' => $category['title'], 'url' => KTUtil::ktLink('admin.php', $parts[0]));
     } else {
        // FIXME (minor) redirect to no-suburl?
-       $oDispatcher = new AdminSplashDispatcher();
-       $oDispatcher->category = $sub_url;
+       $dispatcher = new AdminSplashDispatcher();
+       $dispatcher->defaultCategory = $subUrl;
     }
 }
 
@@ -217,11 +196,11 @@ if (empty($sub_url)) {
 global $main;
 global $default;
 if ($default->enableAdminSignatures && ($_SESSION['electronic_signature_time'] < time())) {
-    $sBaseUrl = KTUtil::kt_url();
-    $sUrl = KTPluginUtil::getPluginPath('electronic.signatures.plugin', true);
+    $baseUrl = KTUtil::kt_url();
+    $url = KTPluginUtil::getPluginPath('electronic.signatures.plugin', true);
     $heading = _kt('You are attempting to access Settings');
-    $main->setBodyOnload("javascript: showSignatureForm('{$sUrl}', '{$heading}', 'dms.administration.administration_section_access', 'admin', '{$sBaseUrl}/browse.php', 'close');");
+    $main->setBodyOnload("javascript: showSignatureForm('{$url}', '{$heading}', 'dms.administration.administration_section_access', 'admin', '{$baseUrl}/browse.php', 'close');");
 }
 
-$oDispatcher->dispatch(); // we _may_ be redirected at this point (see KTAdminNavigation)
+$dispatcher->dispatch(); // we _may_ be redirected at this point (see KTAdminNavigation)
 ?>

@@ -154,7 +154,7 @@ INSERT INTO `config_groups` VALUES
 (13, 'KTWebDAVSettings', 'WebDAV', 'Configuration options for third-party WebDAV clients', 'Client Tools Settings'),
 (14, 'openoffice', 'OpenOffice.org Service', 'Configuration options for the OpenOffice.org service. Note that several KnowledgeTree features use this service.', 'Search and Indexing Settings'),
 (15, 'search', 'Search', 'Configures settings for KnowledgeTree''s Search function.', 'Search and Indexing Settings'),
-(16, 'session', 'Session Management', 'Session management configuration.', 'General Settings'),
+(16, 'session', 'Session Management', 'Session management configuration.', 'Session Management Settings'),
 (17, 'storage', 'Storage', 'Configure the KnowledgeTree storage manager.', 'System Settings'),
 (18, 'tweaks', 'Tweaks', 'Small configuration tweaks', 'General Settings'),
 (19, 'ui', 'User Interface', 'General user interface configuration', 'User Interface Settings'),
@@ -165,7 +165,7 @@ INSERT INTO `config_groups` VALUES
 (24, 'server', 'Server Settings', 'Configuration settings for the server', 'System Settings'),
 (25, 'explorerCPSettings', 'Explorer CP Settings', 'Configuration options for KnowledgeTree Explorer CP', 'Client Tools Settings'),
 (26, 'actionreasons', 'Document Action Settings', 'Configure how the system deals with reasons for document actions.', 'Document Action Settings'),
-(27, 'timezone', 'Timezone', 'Timezone configuration settings', 'General Settings');
+(27, 'timezone', 'Timezone', 'Timezone configuration settings', 'Timezone Settings');
 /*!40000 ALTER TABLE `config_groups` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -301,7 +301,9 @@ INSERT INTO `config_settings` VALUES
 (123, 'user_prefs', 'Use Email Address to Login', 'Defines whether the username or the users email address is used for logging in', 'useEmailLogin', 'true', 'false', 'boolean', NULL, 0),
 (124, 'timezone', '', '', 'setTimezone', 'default', 'UTC', 'class', 'a:2:{s:5:"class";s:13:"datetime_view";s:4:"file";s:34:"plugins/datetime/datetime_view.php";}', 1),
 (125, 'foldersync', 'Max number of files to sync', 'Defines the threshhold number of files to sync before warning user ', 'maxFilesSync', 'default', '200', 'numeric_string', NULL, 0),
-(126, 'foldersync', 'Max size of files to sync', 'Defines the threshhold size of total files (in bytes) to sync before warning user', 'maxFileSizeSync', 'default', '524288000', 'numeric_string', NULL, 0);
+(126, 'foldersync', 'Max size of files to sync', 'Defines the threshhold size of total files (in bytes) to sync before warning user', 'maxFileSizeSync', 'default', '524288000', 'numeric_string', NULL, 0),
+(127, 'ui', 'Custom Logo', 'The path / url to a custom logo for display on the left side of the header.', 'mainLogo', 'default', '', 'string', NULL, 0),
+(128, 'ui', 'Custom Logo Title', 'The title displayed when hovering over the custom logo', 'mainLogoTitle', 'default', '', 'string', NULL, 0);
 /*!40000 ALTER TABLE `config_settings` ENABLE KEYS */;
 UNLOCK TABLES;
 

@@ -5,32 +5,32 @@
  * KnowledgeTree Community Edition
  * Document Management Made Simple
  * Copyright (C) 2008, 2009, 2010 KnowledgeTree Inc.
- * 
- * 
+ *
+ *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License version 3 as published by the
  * Free Software Foundation.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
  * details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- * 
- * You can contact KnowledgeTree Inc., PO Box 7775 #87847, San Francisco, 
+ *
+ * You can contact KnowledgeTree Inc., PO Box 7775 #87847, San Francisco,
  * California 94120-7775, or email info@knowledgetree.com.
- * 
+ *
  * The interactive user interfaces in modified source and object code versions
  * of this program must display Appropriate Legal Notices, as required under
  * Section 5 of the GNU General Public License version 3.
- * 
+ *
  * In accordance with Section 7(b) of the GNU General Public License version 3,
  * these Appropriate Legal Notices must retain the display of the "Powered by
- * KnowledgeTree" logo and retain the original copyright notice. If the display of the 
+ * KnowledgeTree" logo and retain the original copyright notice. If the display of the
  * logo is not reasonably feasible for technical reasons, the Appropriate Legal Notices
- * must display the words "Powered by KnowledgeTree" and retain the original 
+ * must display the words "Powered by KnowledgeTree" and retain the original
  * copyright notice.
  * Contributor( s): ______________________________________
  *
@@ -52,25 +52,31 @@ require_once(KT_LIB_DIR . "/browse/browseutil.inc.php");
 
 require_once(KT_LIB_DIR . "/documentmanagement/PhysicalDocumentManager.inc");
 
-// FIXME chain in a notification alert for un-archival requests.
+// FIXME Chain in a notification alert for un-archival requests.
 class KTArchiveTitle extends TitleColumn {
 
-    function renderDocumentLink($aDataRow) {
+    public function renderDocumentLink($aDataRow)
+    {
         $outStr .= $aDataRow["document"]->getName();
         return $outStr;
     }
 
-    function buildFolderLink($aDataRow) {
+    public function buildFolderLink($aDataRow)
+    {
         return KTUtil::addQueryString($_SERVER['PHP_SELF'], sprintf('fFolderId=%d', $aDataRow["folder"]->getId()));
     }
+
 }
 
 class ArchivedDocumentsDispatcher extends KTAdminDispatcher {
-    var $sHelpPage = 'ktcore/admin/archived documents.html';
-    function do_main () {
-        $this->aBreadcrumbs[] = array('url' => $_SERVER['PHP_SELF'], 'name' => _kt('Archived Documents'));
 
-        $this->oPage->setBreadcrumbDetails(_kt('browse'));
+    var $sHelpPage = 'ktcore/admin/archived documents.html';
+
+    public function do_main()
+    {
+        //$this->aBreadcrumbs[] = array('url' => $_SERVER['PHP_SELF'], 'name' => _kt('Archived Documents'));
+        //
+        //$this->oPage->setBreadcrumbDetails(_kt('browse'));
 
         $oFolder = Folder::get(KTUtil::arrayGet($_REQUEST, 'fFolderId', 1));
         if (PEAR::isError($oFolder)) {
@@ -83,7 +89,7 @@ class ArchivedDocumentsDispatcher extends KTAdminDispatcher {
 
         $collection = new AdvancedCollection();
 
-        $oCR =& KTColumnRegistry::getSingleton();
+        $oCR = KTColumnRegistry::getSingleton();
         $col = $oCR->getColumn('ktcore.columns.selection');
         $aColOptions = array();
         //$aColOptions['qs_params'] = kt_array_merge($aBaseParams, array('fFolderId'=>$oFolder->getId()));
@@ -116,21 +122,17 @@ class ArchivedDocumentsDispatcher extends KTAdminDispatcher {
               'context' => $this,
               'folder' => $oFolder,
               'breadcrumbs' => $aBreadcrumbs,
-              'collection' => $collection
+              'collection' => $collection,
+              'section_query_string' => $this->sectionQueryString
         );
 
-        $oTemplate =& $this->oValidator->validateTemplate('ktcore/document/admin/archivebrowse');
+        $oTemplate = $this->oValidator->validateTemplate('ktcore/document/admin/archivebrowse');
+
         return $oTemplate->render($aTemplateData);
     }
 
-    /*
-     * Provide for "archived" browsing.
-     */
-    function do_browse() {
-
-    }
-
-    function do_confirm_restore() {
+    public function do_confirm_restore()
+    {
         $this->aBreadcrumbs[] = array('url' => $_SERVER['PHP_SELF'], 'name' => _kt('Archived Documents'));
 
         $selected_docs = KTUtil::arrayGet($_REQUEST, '_d', array());
@@ -141,7 +143,7 @@ class ArchivedDocumentsDispatcher extends KTAdminDispatcher {
 
         $aDocuments = array();
         foreach ($selected_docs as $doc_id) {
-            $oDoc =& Document::get($doc_id);
+            $oDoc = Document::get($doc_id);
             if (PEAR::isError($oDoc) || ($oDoc === false)) {
                 $this->errorRedirectToMain(_kt('Invalid document id specified. Aborting restore.'));
             } else if ($oDoc->getStatusId() != ARCHIVED) {
@@ -151,23 +153,24 @@ class ArchivedDocumentsDispatcher extends KTAdminDispatcher {
         }
 
 
-        $oTemplating =& KTTemplating::getSingleton();
+        $oTemplating = KTTemplating::getSingleton();
         $oTemplate = $oTemplating->loadTemplate('ktcore/document/admin/dearchiveconfirmlist');
         $oTemplate->setData(array(
             'context' => $this,
             'documents' => $aDocuments,
+            'section_query_string' => $this->sectionQueryString
         ));
-        return $oTemplate;
+
+        return $oTemplate->render();
     }
 
-    function do_finish_restore() {
-
-
+    public function do_finish_restore()
+    {
         $selected_docs = KTUtil::arrayGet($_REQUEST, 'selected_docs', array());
 
         $aDocuments = array();
         foreach ($selected_docs as $doc_id) {
-            $oDoc =& Document::get($doc_id);
+            $oDoc = Document::get($doc_id);
             if (PEAR::isError($oDoc) || ($oDoc === false)) {
                 $this->errorRedirectToMain(_kt('Invalid document id specified. Aborting restore.'));
             } else if ($oDoc->getStatusId() != ARCHIVED) {
@@ -187,13 +190,19 @@ class ArchivedDocumentsDispatcher extends KTAdminDispatcher {
             if (PEAR::isError($res) || ($res == false)) {
                 $this->errorRedirectToMain(sprintf(_kt('%s could not be made "live".'), $oDoc->getName));
             }
-            $oDocumentTransaction = & new DocumentTransaction($oDoc, _kt('Document restored.'), 'ktcore.transactions.update');
+
+            $oDocumentTransaction = new DocumentTransaction($oDoc, _kt('Document restored.'), 'ktcore.transactions.update');
             $oDocumentTransaction->create();
         }
 
         $this->commitTransaction();
         $msg = sprintf(_kt('%d documents made active.'), count($aDocuments));
         $this->successRedirectToMain($msg);
+    }
+
+    public function handleOutput($output)
+    {
+        print $output;
     }
 
 }

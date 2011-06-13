@@ -4,7 +4,7 @@
 you specified earlier must be configured to move from a set of states to a "destination"
 states.  Use the table below to configure this behaviour.{/i18n}</p>
 
-<form method="POST" action="{$smarty.server.PHP_SELF}">
+<form method="POST" action="{$smarty.server.PHP_SELF}?{$section_query_string}">
     {foreach from=$args key=k item=v}
         <input type="hidden" name="{$k}" value="{$v}" />
     {/foreach}
@@ -38,8 +38,9 @@ states.  Use the table below to configure this behaviour.{/i18n}</p>
     </table>
     </div>
 
+    <br/>
     <div class="form_actions">
         <input type="submit" value="{i18n}Create Workflow{/i18n}" />
-        <a href="{$smarty.server.PHP_SELF}">{i18n}Cancel{/i18n}</a>
+        <a href="{$smarty.server.PHP_SELF}?{$section_query_string}">{i18n}Cancel{/i18n}</a>
     </div>
 </form>

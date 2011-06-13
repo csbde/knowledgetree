@@ -171,11 +171,11 @@ class KTUtil {
     public static function kt_clean_document_url($documentId) {
     	return KTUtil::kt_url() . KTBrowseUtil::getUrlForDocument($documentId);
     }
-    
+
     public static function kt_clean_folder_url($folderId) {
     	return KTUtil::kt_url() . KTBrowseUtil::getUrlForFolder($folderId);
 	}
-	
+
     public static function kt_internal_url()
     {
         global $default;
@@ -977,30 +977,26 @@ class KTUtil {
     public static function addQueryString($url, $qs)
     {
         require_once(KT_DIR . '/thirdparty/pear/Net/URL.php');
-        $oUrl = new Net_URL($url);
+        $url = new Net_URL($url);
 
-        $oKTConfig =& KTConfig::getSingleton();
-        if ($oKTConfig->get('KnowledgeTree/sslEnabled')) {
-            $oUrl->protocol = 'https';
-            if ($oUrl->port == 80) { $oUrl->port = 443; }
+        $KTConfig = KTConfig::getSingleton();
+        if ($KTConfig->get('KnowledgeTree/sslEnabled')) {
+            $url->protocol = 'https';
+            if ($url->port == 80) {
+                $url->port = 443;
+            }
         }
 
-        $host = $oKTConfig->get('KnowledgeTree/serverName');
+        $host = $KTConfig->get('KnowledgeTree/serverName');
         $host = explode(':', $host);
-        $oUrl->host = $host[0];
+        $url->host = $host[0];
 
-        if (!is_array($qs)) {
-            $aQs = $oUrl->_parseRawQuerystring($qs);
-        }
-        else {
-            $aQs =& $qs;
+        $queryString = (is_array($qs)) ? $queryString = $qs : $url->_parseRawQuerystring($qs);
+        foreach ($queryString as $k => $v) {
+            $url->addQueryString($k, $v, true);
         }
 
-        foreach ($aQs as $k => $v) {
-            $oUrl->addQueryString($k, $v, true);
-        }
-
-        return $oUrl->getUrl();
+        return $url->getUrl();
     }
 
     public static function ktLink($base, $subpath = '', $qs = '')
@@ -1457,7 +1453,7 @@ class KTUtil {
             case 'browse.php':
                 $config = KTConfig::getSingleton();
                 $rootUrl = $config->get('KnowledgeTree/rootUrl');
-                
+
                 /**
                  * Apply different checks depending on whether it is coming
                  * through as an object or an integer
@@ -1467,7 +1463,7 @@ class KTUtil {
                 } else {
                     if (!isset($params['fFolderId'])) { $params['fFolderId'] = 1; }
                 }
-                
+
                 $url = $rootUrl . '/00' . base_convert($params['fFolderId'], 10, 36);
 
                 // Remove parameter

@@ -90,28 +90,29 @@ legend { border: 1px dotted #999;}
 			
 			    {foreach item=oSearchCriteria from=$aSubgroup.values}
 				<tr>
-					<td>
+					<td class="name">
 						{$oSearchCriteria.typename} <input type="hidden" name="" value="{$oSearchCriteria.type}"/>
 					</td>
-					<td>
+					<td class="widget_values">
 					    {$oSearchCriteria.widgetval}
 					</td>
-					<td>
+					<td class="the_button">
 					    <input type="button" value="{i18n}Remove{/i18n}" onclick="removeCriteria(this)"/>
 					</td>
 				</tr>
 				{/foreach}
 			
                 <tr>
-                    <td><select name="querytype">
+                    <td class="name">
+                    	<select name="querytype">
                          {foreach item=oCriteria from=$aCriteria} {if ($oCriteria->bVisible == true)}
                              <option value="{$oCriteria->getNamespace()}">{$oCriteria->headerDisplay()}</option>
 							 {/if}
                         {/foreach}
                         </select>
                         </td>
-                    <td><p class="helpText">{i18n}first select a type of query{/i18n}</p></td>
-                    <td><input type="button" value="{i18n}Add{/i18n}" onclick="addNewCriteria(this);" /></td>                    
+                    <td class="widget_values"><p class="helpText">{i18n}first select a type of query{/i18n}</p></td>
+                    <td class="the_button"><input type="button" value="{i18n}Add{/i18n}" onclick="addNewCriteria(this);" /></td>
                 </tr>
             </tbody>
         </table>

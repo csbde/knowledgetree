@@ -7,8 +7,11 @@ body {
 #wrapper, #footer {
 	width: 960px;
 	margin: 0 auto;
-
 }
+#wrapper  {
+	padding-bottom: 25px;
+}
+
 textarea {
 	/*font-family: Arial;*/
 	font-family: tahoma,arial,helvetica,sans-serif;
@@ -95,13 +98,33 @@ textarea {
 	border: none !important;
 	background: transparent !important;
 }
-#content li.token-input-token-facebook { 
+#content li.token-input-token-facebook {
 	border-radius: 10px;
 	-moz-border-radius: 10px;
 	-webkit-border-radius: 10px;
 	color: #2F6594;
 	font-size: 11px;
-	padding: 0px 8px 2px 8px;
+	padding: 0px 5px 2px 8px;
+	font-family: sans-serif;
+}
+#content li.token-input-token-facebook span{
+	width: 10px;
+	display: inline-block;
+	text-align: center;
+	height: 10px;
+	line-height: 10px;
+	margin-top: 2px;
+	margin-left: 1px;
+	padding: 1px;
+}
+#content li.token-input-token-facebook span:hover {
+	background: #2F6594;
+	border-radius: 20px;
+	-moz-border-radius: 20px;
+	-webkit-border-radius: 20px;
+	width: 10px;
+	color: white;
+	display: inline-block;
 }
 .token-input-dropdown-facebook li {
 	list-style: none;
@@ -405,7 +428,7 @@ breadcrumbBtns a:active {
 }
 #content .breadcrumbBtns .splitmenu li a:hover {
 	background-color: transparent!important;
-} 
+}
 #content .breadcrumbBtns .splitbutton {
     display: inline-block;
     padding: 0px;
@@ -925,6 +948,11 @@ thead {
 	-moz-border-radius-topleft: 3px;
 	margin-top: 10px;
 	padding-top: 2px;
+	position: fixed;
+	bottom: 0px;
+	left: 50%;
+	margin-left: -480px;
+	
 }
 #footer a {
 	color: #2f6594;
@@ -1010,7 +1038,7 @@ div#uploadProgress {
 	font-weight: bold;
 	top: 7px;
 	text-shadow: 0px 1px 0px white;
-	
+
 	display: none;
     visibility: hidden;
 }
@@ -1068,113 +1096,8 @@ div.widgetItem {
 	float: left;
 }
 
-/* Admin Page Landing */
 
-div.menuitems {
-	-moz-border-radius: 15px 15px 15px 15px;
-	-webkit-border-radius: 15px 15px 15px 15px;
-	border-radius: 15px 15px 15px 15px;
-	-moz-box-shadow: 0 0 5px #C6C6B7;
-	-webkit-box-shadow: 0 0 5px #C6C6B7;
-	box-shadow: 0 0 5px #C6C6B7;
-	border: 1px solid #C1C1C1;
-	padding: 30px;
-	width: 370px;
-	position: relative;
-	text-align: left;
-}
-
-div.adminheadings {
-	position:relative;
-	top: 20px;
-	/*left: -75px;*/
-	/*width:220px;*/
-	height:30px;
-    font-family:"Arial", sans-serif;
-    font-weight:bold;
-    font-style:normal;
-    font-size:24px;
-    color: Gray;
-    z-index:1;
-    background-color:white;
-    text-align:center;
-}
-
-div.stats {
-	-moz-border-radius: 15px 15px 15px 15px;
-	-webkit-border-radius: 15px 15px 15px 15px;
-	border-radius: 15px 15px 15px 15px;
-	-moz-box-shadow: 0 0 5px #C6C6B7;
-	-webkit-box-shadow: 0 0 5px #C6C6B7;
-	box-shadow: 0 0 5px #C6C6B7;
-	border: 1px solid #C1C1C1;
-	padding: 15px;
-	width: 370px;
-	position: relative;
-	height: 300px;
-}
-
-.settingHeads {
-    left: -75px;
-    width: 220px;
-}
-
-.upgradeHead {
-    width: 120px;
-    left: 80px;
-}
-
-.usageHead {
-    width: 95px;
-    left: 30px;
-}
-
-div#usageStats {
-	width: 300px;
-	padding-top: 30px;
-}
-
-div#upgradePlan {
-    margin-left: 50px;
-    padding-top: 30px;
-	width:400px;
-	/*overflow:scroll;*/
-}
-
-#usageStats table {
-    color: #999;
-}
-
-#usageStats td {
-    padding-bottom: 6px;
-    vertical-align: top;
-}
-
-.usage {
-	color: #5899B9;
-	font-size:16px;
-	font-variant: normal;
-	text-transform: capitalize;
-	/*border-bottom:1px dotted #E1E0E2;
-	/*width:235px;
-	font-weight:bold;*/
-}
-
-span.astat {
-	font-weight:bold;
-}
-
-span.sharingtree {
-	background:url("../graphics/newui/home.png") no-repeat;
-	color:transparent !important;
-	margin:0;
-	overflow:hidden;
-	padding:0;
-	width:25px;
-}
 /*Alerts Modal*/
-
-
 
 label span.required
 {
@@ -1230,7 +1153,7 @@ label span.required
 	display: table;
 	height: 25px;
 }
-.modal-actions .cancel a{ 
+.modal-actions .cancel a{
 	display: table-cell;
 	vertical-align: middle;
 	font-weight: bold;
@@ -1239,11 +1162,11 @@ label span.required
 }
 /*Settings */
 .sidebar#settings {
-	float: left; 
-	width: 175px; 
-	padding: 10px; 
-	background: #F5F5F5; 
-} 
+	float: left;
+	width: 175px;
+	padding: 10px;
+	background: #F5F5F5;
+}
 .sidebar#settings a {
 	line-height: 25px;
 }
@@ -1257,8 +1180,18 @@ label span.required
 }
 .settings-item a{
 	padding: 5px 30px;
-	display: block;	
+	display: block;
 	background: url(../graphics/plus.gif) no-repeat 10px 10px;
+}
+.settings-content {
+	border: 1px solid #CCC;
+	border-radius: 2px;
+	-webkit-border-radius: 2px;
+	-moz-border-radius: 2px;
+	margin: 5px 0px 10px 10px;
+	padding-left: 10px;
+	padding-right: 10px;
+	padding-top: 10px;
 }
 
 /*Tag editor*/
@@ -1310,7 +1243,7 @@ http://devgrow.com/iphone-style-switches/
 	text-shadow: 0px 1px 0px #333;
 }
 .cb-enable.selected { background-position: 0 -60px; }
-.cb-enable.selected span { 
+.cb-enable.selected span {
 	color: #fff;
 	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#609bd1', endColorstr='#2f6694') !important;
 	background: -webkit-gradient(linear, left top, left bottom, from(#609bd1), to(#2f6694)) !important;

@@ -51,46 +51,51 @@ require_once(KT_LIB_DIR . "/foldermanagement/folderutil.inc.php");
 require_once(KT_LIB_DIR . "/permissions/permissionutil.inc.php");
 
 class KTUnitAdminDispatcher extends KTAdminDispatcher {
+
     var $sHelpPage = 'ktcore/admin/control units.html';
     var $bAutomaticTransaction = true;
 
-    function check() {
-        $this->aBreadcrumbs[] = array('url' => $_SERVER['PHP_SELF'], 'name' => _kt('Unit Management'));
+    function check()
+    {
         return parent::check();
     }
 
-    function do_main() {
-		$this->oPage->setBreadcrumbDetails(_kt('select a unit'));
-		$this->oPage->setTitle(_kt("Unit Management"));
+    function do_main()
+    {
+        $unit_list = Unit::getList();
 
-		$unit_list =& Unit::getList();
+        $templating = KTTemplating::getSingleton();
+        $template = $templating->loadTemplate("ktcore/principals/unitadmin");
+        $templateData = array(
+            'context' => $this,
+            'unit_list' => $unit_list,
+            'section_query_string' => $this->sectionQueryString
+        );
 
-		$oTemplating =& KTTemplating::getSingleton();
-		$oTemplate = $oTemplating->loadTemplate("ktcore/principals/unitadmin");
-		$aTemplateData = array(
-			"context" => $this,
-			"unit_list" => $unit_list,
-		);
- 		return $oTemplate->render($aTemplateData);
+         return $template->render($templateData);
     }
 
-    function do_addUnit() {
+    function do_addUnit()
+    {
         $this->oPage->setBreadcrumbDetails(_kt('Add a new unit'));
         $this->oPage->setTitle(_kt("Add a new unit"));
 
         $add_fields = array();
         $add_fields[] =  new KTStringWidget(_kt('Unit Name'), _kt('A short name for the unit.  e.g. <strong>Accounting</strong>.'), 'unit_name', null, $this->oPage, true);
 
-        $oTemplating =& KTTemplating::getSingleton();
-        $oTemplate = $oTemplating->loadTemplate("ktcore/principals/addunit");
-        $aTemplateData = array(
-            "context" => $this,
-            "add_fields" => $add_fields,
+        $templating = KTTemplating::getSingleton();
+        $template = $templating->loadTemplate("ktcore/principals/addunit");
+        $templateData = array(
+            'context' => $this,
+            'add_fields' => $add_fields,
+	    'section_query_string' => $this->sectionQueryString
         );
-        return $oTemplate->render($aTemplateData);
+
+        return $template->render($templateData);
     }
 
-    function do_addUnit2() {
+    function do_addUnit2()
+    {
         $this->oPage->setBreadcrumbDetails(_kt('Add a new unit'));
         $this->oPage->setTitle(_kt("Add a new unit"));
 
@@ -98,15 +103,14 @@ class KTUnitAdminDispatcher extends KTAdminDispatcher {
             'redirect_to' => array('addUnit'),
             'message' => _kt('No name given'),
         );
+
         $sName = $this->oValidator->validateString($_REQUEST['unit_name'], $aOptions);
-		$aOptions['message'] = _kt('A unit with that name already exists.');
-		$sName = $this->oValidator->validateDuplicateName('Unit', $sName, $aOptions);
+        $aOptions['message'] = _kt('A unit with that name already exists.');
+        $sName = $this->oValidator->validateDuplicateName('Unit', $sName, $aOptions);
 
         $iFolderId = KTUtil::arrayGet($_REQUEST, 'fFolderId', 1);
         $_REQUEST['fFolderId'] = $iFolderId;
         $oFolder = $this->oValidator->validateFolder($_REQUEST['fFolderId']);
-
-
 
         // Setup the collection for move display.
         $collection = new AdvancedCollection();
@@ -123,7 +127,7 @@ class KTUnitAdminDispatcher extends KTAdminDispatcher {
         $aOptions = $collection->getEnvironOptions();
         $collection->setOptions($aOptions);
 
-        $oWF =& KTWidgetFactory::getSingleton();
+        $oWF = KTWidgetFactory::getSingleton();
         $oWidget = $oWF->get('ktcore.widgets.collection',
                              array('label' => _kt('Target Folder'),
                                    'description' => _kt('<p>The unit folder will be created here.</p>'),
@@ -132,26 +136,27 @@ class KTUnitAdminDispatcher extends KTAdminDispatcher {
                                    'folder_id' => $oFolder->getId(),
                                    'collection' => $collection));
 
-
-
         $add_fields = array();
         $add_fields[] =  new KTStaticTextWidget(_kt('Unit Name'), _kt('A short name for the unit.  e.g. <strong>Accounting</strong>.'), 'unit_name', $sName, $this->oPage, true);
 
         $add_fields[] = $oWidget;
 
-        $oTemplating =& KTTemplating::getSingleton();
-        $oTemplate = $oTemplating->loadTemplate("ktcore/principals/addunit2");
-        $aTemplateData = array(
-            "context" => $this,
-            "add_fields" => $add_fields,
-            "unit_name" => $sName,
-            "folder" => $oFolder,
-            "name" => $sName,
+        $templating = KTTemplating::getSingleton();
+        $template = $templating->loadTemplate("ktcore/principals/addunit2");
+        $templateData = array(
+            'context' => $this,
+            'add_fields' => $add_fields,
+            'unit_name' => $sName,
+            'folder' => $oFolder,
+            'name' => $sName,
+	    'section_query_string' => $this->sectionQueryString
         );
-        return $oTemplate->render($aTemplateData);
+
+        return $template->render($templateData);
     }
 
-    function do_createUnit() {
+    function do_createUnit()
+    {
         $aOptions = array(
             'redirect_to' => array('main'),
             'message' => _kt('Invalid folder chosen'),
@@ -162,6 +167,7 @@ class KTUnitAdminDispatcher extends KTAdminDispatcher {
             'redirect_to' => array('addUnit', sprintf('browse=%d', $oParentFolder->getId())),
             'message' => _kt('No name given'),
         );
+
         $sName = $this->oValidator->validateString($_REQUEST['unit_name'], $aOptions);
         $aOptions['message'] = _kt('A unit with that name already exists.');
         $sName = $this->oValidator->validateDuplicateName('Unit', $sName, $aOptions);
@@ -171,6 +177,7 @@ class KTUnitAdminDispatcher extends KTAdminDispatcher {
             'redirect_to' => array('addUnit2', sprintf('fFolderId=%d&unit_name=%s', $oParentFolder->getId(), $sName)),
             'defaultmessage' => 'Error creating folder',
         );
+
         $this->oValidator->notError($oFolder, $aOptions);
 
         if (KTPermissionUtil::copyPermissionObject($oFolder) === false) {
@@ -182,39 +189,50 @@ class KTUnitAdminDispatcher extends KTAdminDispatcher {
             'name' => $sName,
             'folderid' => $oFolder->getId(),
         ));
+
         return $this->successRedirectToMain(_kt('Unit created'));
     }
 
-    function do_editUnit() {
-        $oUnit =& $this->oValidator->validateUnit($_REQUEST['unit_id']);
+    function do_editUnit()
+    {
+	$this->oPage->setBreadcrumbDetails(_kt('Edit unit'));
+        $this->oPage->setTitle(_kt("Edit unit"));
+
+        $oUnit = $this->oValidator->validateUnit($_REQUEST['unit_id']);
 
         $fields = array();
         $fields[] =  new KTStringWidget(_kt('Unit Name'), _kt('A short name for the unit.  e.g. <strong>Accounting</strong>.'), 'unit_name', $oUnit->getName(), $this->oPage, true);
 
-        $oTemplate =& $this->oValidator->validateTemplate('ktcore/principals/editunit');
-        $aTemplateData = array(
-            "context" => $this,
-            "edit_unit" => $oUnit,
-            "edit_fields" => $fields,
+        $template = $this->oValidator->validateTemplate('ktcore/principals/editunit');
+        $templateData = array(
+            'context' => $this,
+            'edit_unit' => $oUnit,
+            'edit_fields' => $fields,
+	    'section_query_string' => $this->sectionQueryString
         );
-        return $oTemplate->render($aTemplateData);
+
+        return $template->render($templateData);
     }
 
-    function do_saveUnit() {
+    function do_saveUnit()
+    {
         $oUnit =& $this->oValidator->validateUnit($_REQUEST['unit_id']);
         $aOptions = array(
             'redirect_to' => array('editUnit', sprintf('unit_id=%d', $oUnit->getId())),
             'message' => _kt('No name given'),
         );
-        $sName = $this->oValidator->validateString($_REQUEST['unit_name'], $aOptions);
-		$aOptions['message'] = _kt('A unit with that name already exists.');
-		$aOptions['rename'] = $oUnit->getId();
-		$sName = $this->oValidator->validateDuplicateName('Unit', $sName, $aOptions);
+
+	$sName = $this->oValidator->validateString($_REQUEST['unit_name'], $aOptions);
+        $aOptions['message'] = _kt('A unit with that name already exists.');
+        $aOptions['rename'] = $oUnit->getId();
+
+	$sName = $this->oValidator->validateDuplicateName('Unit', $sName, $aOptions);
         $oUnit->setName($sName);
         $res = $oUnit->update();
         if (($res == false) || (PEAR::isError($res))) {
             return $this->errorRedirectToMain(_kt('Failed to set unit details.'));
         }
+
         $iFolderId = $oUnit->getFolderId();
         $oFolder = Folder::get($iFolderId);
         if (!PEAR::isError($oFolder) && ($oFolder !== false)) {
@@ -224,32 +242,39 @@ class KTUnitAdminDispatcher extends KTAdminDispatcher {
         $this->successRedirectToMain(_kt("Unit details updated"));
     }
 
-    function do_deleteUnit() {
+    function do_deleteUnit()
+    {
         $oUnit =& $this->oValidator->validateUnit($_REQUEST['unit_id']);
 
         $fields = array();
         $fields[] = new KTCheckboxWidget(_kt('Delete folder'), _kt('Each unit has an associated folder.  While the unit is being deleted, there may be some documents within the associated folder.  By unselecting this option, they will not be removed.'), 'delete_folder', true, $this->oPage, true);
 
-        $oTemplate =& $this->oValidator->validateTemplate('ktcore/principals/deleteunit');
-        $aTemplateData = array(
-            "context" => $this,
-            "unit" => $oUnit,
-            "fields" => $fields,
+        $template =& $this->oValidator->validateTemplate('ktcore/principals/deleteunit');
+        $templateData = array(
+            'context' => $this,
+            'unit' => $oUnit,
+            'fields' => $fields,
+	    'section_query_string' => $this->sectionQueryString
         );
-        return $oTemplate->render($aTemplateData);
+
+        return $template->render($templateData);
     }
 
-    function do_removeUnit() {
+    function do_removeUnit()
+    {
         $oUnit =& $this->oValidator->validateUnit($_REQUEST['unit_id']);
         $bDeleteFolder = KTUtil::arrayGet($_REQUEST, 'delete_folder', false);
         $res = $oUnit->delete();
-        $aOptions = array(
+
+	$aOptions = array(
             'redirect_to' => array('main'),
             'message' => _kt("Could not delete this unit because it has groups assigned to it"),
             'no_exception' => true,
         );
+
         $this->oValidator->notError($res, $aOptions);
-        if ($bDeleteFolder) {
+
+	if ($bDeleteFolder) {
             $iFolderId = $oUnit->getFolderId();
             $oFolder = Folder::get($iFolderId);
             if (!PEAR::isError($oFolder) && ($oFolder !== false)) {
@@ -259,19 +284,31 @@ class KTUnitAdminDispatcher extends KTAdminDispatcher {
                 KTFolderUtil::delete($oFolder, $this->oUser, "Unit deleted", $aOptions);
             }
         }
+
         $this->successRedirectToMain(_kt("Unit removed"));
     }
+
+    public function handleOutput($output)
+    {
+        print $output;
+    }
+
 }
 
 class KTUnitTitleColumn extends TitleColumn {
-    function KTUnitTitleColumn($sName) {
-        $this->sName = $sName;
-        parent::TitleColumn("Unit", "title");
+
+    function KTUnitTitleColumn($name)
+    {
+        $this->sName = $name;
+        parent::TitleColumn('Unit', 'title');
     }
-    function buildFolderLink($aDataRow) {
+
+    function buildFolderLink($aDataRow)
+    {
         return KTUtil::addQueryString($_SERVER['PHP_SELF'],
             sprintf('action=addUnit2&unit_name=%s&fFolderId=%d', $this->sName, $aDataRow['folder']->getId()));
     }
+
 }
 
 
