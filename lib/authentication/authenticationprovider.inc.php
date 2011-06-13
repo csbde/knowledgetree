@@ -45,6 +45,8 @@ class KTAuthenticationProvider extends KTStandardDispatcher {
     var $bHasSource = false;
     var $bUserSource = true;
     var $bGroupSource = false;
+    
+    var $adminQueryStr = '';
 
     function KTAuthenticationProvider() {
         return parent::KTStandardDispatcher();
@@ -53,10 +55,36 @@ class KTAuthenticationProvider extends KTStandardDispatcher {
     function configure($aInfo) {
         $this->aInfo = $aInfo;
     }
+    
+    public function setAdminQueryString($str)
+    {
+        $this->adminQueryStr = $str;
+        
+        global $default;
+        $default->log->info("Set: $this->adminQueryStr}");
+    }
+    
+    public function getAdminQueryString()
+    {
+        global $default;
+        $default->log->info("Get: {$this->adminQueryStr}");
+        
+        if ($this->adminQueryStr == '') {
+            return '';
+        } else {
+            return "{$this->adminQueryStr}&";
+        }
+        
+    }
 
     function &getAuthenticator($oSource) {
         // Not implemented
         return null;
+    }
+    
+    public function handleOutput($output)
+    {
+        print $output;
     }
 
     function &getSource() {

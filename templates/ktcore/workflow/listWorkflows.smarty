@@ -5,7 +5,7 @@ workflow states, which describe where in the lifecycle the document is,
 and workflow transitions, which describe the next steps within the
 lifecycle of the document.{/i18n}</p>
 
-<form action="{$smarty.server.PHP_SELF}" method="POST">
+<form action="{$smarty.server.PHP_SELF}?{$section_query_string}" method="POST">
 <fieldset>
 <legend>{i18n}Create a new workflow{/i18n}</legend>
 
@@ -46,9 +46,9 @@ lifecycle of the document.{/i18n}</p>
     <tr>
       <td>{$oWorkflow->getName()}</td>
       <td>{if $startId===NULL}{* need spaces, or smarty generates broken code *} {i18n}Disabled{/i18n} {else} {i18n}Enabled{/i18n} {/if}</td>
-      <td><a class="ktAction ktEdit" href="{addQS}action=editWorkflow&fWorkflowId={$oWorkflow->getId()}{/addQS}">{i18n}Edit{/i18n}</a></td>
+      <td><a class="ktAction ktEdit" href="{addQS}action=editWorkflow&fWorkflowId={$oWorkflow->getId()}&{$section_query_string}{/addQS}">{i18n}Edit{/i18n}</a></td>
       <td>
-        {if $startId!==NULL}<a href="{addQS}action=disableWorkflow&fWorkflowId={$oWorkflow->getId()}{/addQS}">{i18n}Disable{/i18n}</a>
+        {if $startId!==NULL}<a href="{addQS}action=disableWorkflow&fWorkflowId={$oWorkflow->getId()}&{$section_query_string}{/addQS}">{i18n}Disable{/i18n}</a>
         {else}&nbsp;{/if}
       </td>
     </tr>  

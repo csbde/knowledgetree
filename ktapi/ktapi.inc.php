@@ -619,12 +619,12 @@ class KTAPI {
         }
         */
 
- 		$permissions = &KTAPI::get_permission($permission);
-		if (is_null($permissions) || PEAR::isError($permissions))
-		{
-			$error = $permissions;
-			return $error;
-		}
+// 		$permissions = &KTAPI::get_permission($permission);
+//		if (is_null($permissions) || PEAR::isError($permissions))
+//		{
+//			$error = $permissions;
+//			return $error;
+//		}
 
  		$user = &KTAPI::get_user();
 		if (is_null($user) || PEAR::isError($user))
@@ -1555,21 +1555,23 @@ class KTAPI {
         $ktapi_bulkactions = new KTAPI_BulkActions($this);
 
         // Get target folder object if required
-        if (in_array($action, array('move', 'copy'))) {
-            if (!is_int($target_folder_id) || empty($target_folder_id)) {
-                $response['message'] = _kt('No target folder has been specified.');
-                return $response;
-            }
-            $target = $this->get_folder_by_id($target_folder_id);
-
-            // call the action
-            $result = $ktapi_bulkactions->$action($objects, $target, $reason);
-        } else if ($action == 'immute') {
-            // call the action
-            $result = $ktapi_bulkactions->$action($objects);
-        } else {
-            // call the action
-            $result = $ktapi_bulkactions->$action($objects, $reason);
+        switch($action) {
+        	case 'move':
+        	case 'copy':
+        		if (!is_numeric($target_folder_id) || empty($target_folder_id)) {
+	                $response['message'] = _kt('No target folder has been specified.');
+	                return $response;
+	            }
+	            $target = $this->get_folder_by_id($target_folder_id);
+	            $result = $ktapi_bulkactions->$action($objects, $target, $reason);
+        		break;
+        		
+        	case 'immute':
+        		$result = $ktapi_bulkactions->$action($objects);
+        		break;
+        		
+    		default:
+    			$result = $ktapi_bulkactions->$action($objects, $reason);
         }
 
         if (PEAR::isError($result)) {

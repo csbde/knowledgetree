@@ -84,7 +84,7 @@
     {/literal}
     </script>
 </head>
-<body {if (!$page->show_portlets)}class="noportlets"{/if} {if $page->onload}onload="{$page->getBodyOnload()}"{/if} onresize="kt.lib.setFooter()">
+<body {if (!$page->show_portlets)}class="noportlets"{/if} {if $page->onload}onload="{$page->getBodyOnload()}"{/if} >
 
 	<div id="wrapper">
 

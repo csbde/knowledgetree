@@ -5,7 +5,7 @@ confirm that you want to restore these documents.{/i18n}</span></div>
 
 {if (!empty($documents))}
 
-<form action="{$smarty.server.PHP_SELF}" method="POST">
+<form action="{$smarty.server.PHP_SELF}?{$section_query_string}" method="POST">
 
 <input type="hidden" name="action" value="finish_restore" />
 

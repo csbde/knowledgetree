@@ -13,7 +13,7 @@
         <tr>
             <td>
 				{if $aWorkflows && $bHasPerm && oWorkflow}
-					<form action="{$smarty.server.PHP_SELF}" method="POST" name="start_workflow_form">
+					<form action="{$smarty.server.PHP_SELF}?{$section_query_string}" method="POST" name="start_workflow_form">
 						<input type="hidden" name="action" value="startWorkflow" />
 						<input type="hidden" name="fDocumentId" value="{$oDocument->getId()}" />
 				{/if}
@@ -72,7 +72,7 @@
 			<td>
 				<div class=workflow_transition>
 					{if $aTransitions}
-						<form action="{$smarty.server.PHP_SELF}" method=POST name=transition_wf_form>
+						<form action="{$smarty.server.PHP_SELF}?{$section_query_string}" method=POST name=transition_wf_form>
 							<table>
 								<tr>
 									<td>
@@ -131,7 +131,7 @@
         {if $bHasPerm}
             {if !$oWorkflow}
         		
-				<form action="{$smarty.server.PHP_SELF}" method=POST name="start_workflow_form">
+				<form action="{$smarty.server.PHP_SELF}?{$section_query_string}" method=POST name="start_workflow_form">
 					<div class=widgetRow>
 						<div class=widgetItem>
 							<input type=hidden name=action value=startWorkflow />

@@ -301,7 +301,9 @@ INSERT INTO `config_settings` VALUES
 (123, 'user_prefs', 'Use Email Address to Login', 'Defines whether the username or the users email address is used for logging in', 'useEmailLogin', 'true', 'false', 'boolean', NULL, 0),
 (124, 'timezone', '', '', 'setTimezone', 'default', 'UTC', 'class', 'a:2:{s:5:"class";s:13:"datetime_view";s:4:"file";s:34:"plugins/datetime/datetime_view.php";}', 1),
 (125, 'foldersync', 'Max number of files to sync', 'Defines the threshhold number of files to sync before warning user ', 'maxFilesSync', 'default', '200', 'numeric_string', NULL, 0),
-(126, 'foldersync', 'Max size of files to sync', 'Defines the threshhold size of total files (in bytes) to sync before warning user', 'maxFileSizeSync', 'default', '524288000', 'numeric_string', NULL, 0);
+(126, 'foldersync', 'Max size of files to sync', 'Defines the threshhold size of total files (in bytes) to sync before warning user', 'maxFileSizeSync', 'default', '524288000', 'numeric_string', NULL, 0),
+(127, 'ui', 'Custom Logo', 'The path / url to a custom logo for display on the left side of the header.', 'mainLogo', 'default', '', 'string', NULL, 0),
+(128, 'ui', 'Custom Logo Title', 'The title displayed when hovering over the custom logo', 'mainLogoTitle', 'default', '', 'string', NULL, 0);
 /*!40000 ALTER TABLE `config_settings` ENABLE KEYS */;
 UNLOCK TABLES;
 

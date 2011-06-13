@@ -5,32 +5,32 @@
  * KnowledgeTree Community Edition
  * Document Management Made Simple
  * Copyright (C) 2008, 2009, 2010 KnowledgeTree Inc.
- * 
- * 
+ *
+ *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License version 3 as published by the
  * Free Software Foundation.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
  * details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- * 
- * You can contact KnowledgeTree Inc., PO Box 7775 #87847, San Francisco, 
+ *
+ * You can contact KnowledgeTree Inc., PO Box 7775 #87847, San Francisco,
  * California 94120-7775, or email info@knowledgetree.com.
- * 
+ *
  * The interactive user interfaces in modified source and object code versions
  * of this program must display Appropriate Legal Notices, as required under
  * Section 5 of the GNU General Public License version 3.
- * 
+ *
  * In accordance with Section 7(b) of the GNU General Public License version 3,
  * these Appropriate Legal Notices must retain the display of the "Powered by
- * KnowledgeTree" logo and retain the original copyright notice. If the display of the 
+ * KnowledgeTree" logo and retain the original copyright notice. If the display of the
  * logo is not reasonably feasible for technical reasons, the Appropriate Legal Notices
- * must display the words "Powered by KnowledgeTree" and retain the original 
+ * must display the words "Powered by KnowledgeTree" and retain the original
  * copyright notice.
  * Contributor( s): ______________________________________
  *
@@ -52,32 +52,38 @@ class KTDocumentTypeDispatcher extends KTAdminDispatcher {
 
     public $sHelpPage = 'ktcore/admin/document types.html';
 	public $aCannotView = array('starter', 'professional');
-	
+
    // Breadcrumbs base - added to in methods
-    function do_main () {
-
-        $this->aBreadcrumbs[] = array('url' => $_SERVER['PHP_SELF'], 'name' => _kt('Document Type Management'));
-
-        $this->oPage->setBreadcrumbDetails(_kt('view types'));
+    function do_main ()
+    {
+        //$this->aBreadcrumbs[] = array('url' => $_SERVER['PHP_SELF'], 'name' => _kt('Document Type Management'));
+        //$this->oPage->setBreadcrumbDetails(_kt('view types'));
 
         $addFields = array();
         $addFields[] = new KTStringWidget(_kt('Name'), _kt('A short, human-readable name for the document type.'), 'name', null, $this->oPage, true);
 
         // Get document types
         $aDocumentTypes = DocumentType::getList();
-        
+
         // Get document type ids associated with documents - allow delete on those not associated
         $aAssocDocs = DocumentType::getAssociatedTypes();
 
         $oTemplating =& KTTemplating::getSingleton();
         $oTemplate = $oTemplating->loadTemplate('ktcore/documenttypes/list');
         $oTemplate->setData(array(
-             'context' => $this,
+            'context' => $this,
             'document_types' => $aDocumentTypes,
             'associated_types' => $aAssocDocs,
             'add_fields' => $addFields,
+			'section_query_string' => $this->sectionQueryString
         ));
-        return $oTemplate;
+
+        return $oTemplate->render();
+    }
+
+    public function handleOutput($output)
+    {
+        print $output;
     }
 
     function do_new() {
@@ -163,12 +169,12 @@ class KTDocumentTypeDispatcher extends KTAdminDispatcher {
         $aAvailableFieldsetIds = array_diff($aAvailableFieldsetIds, $aCurrentFieldsetIds);
 
         $vocab = array();
-        foreach ($aAvailableFieldsetIds as $iFieldsetId) {
+		foreach ($aAvailableFieldsetIds as $iFieldsetId) {
             $oFieldset = KTFieldset::get($iFieldsetId);
-            
             // Note, items gets sanitize on Render
             $vocab[$oFieldset->getId()] = htmlspecialchars_decode($oFieldset->getName());
         }
+
         $aOptions = array();
         $aOptions['vocab'] = $vocab;
         $aOptions['multi'] = true;
@@ -176,9 +182,7 @@ class KTDocumentTypeDispatcher extends KTAdminDispatcher {
         $availableTypesWidget =& new KTLookupWidget(_kt('Available Fieldsets'), _kt('Select the fieldsets which you wish to associate with this document type'), 'fieldsetid[]', null, $this->oPage, true,
             null, null, $aOptions);
 
-        $this->aBreadcrumbs[] = array(
-            'name' => $oDocumentType->getName(),
-        );
+        $this->aBreadcrumbs[] = array('name' => $oDocumentType->getName());
         $this->oPage->setBreadcrumbDetails(_kt('edit'));
 
         $oTemplate->setData(array(
@@ -189,8 +193,10 @@ class KTDocumentTypeDispatcher extends KTAdminDispatcher {
             'bAnyFieldsets' => count($aAvailableFieldsets) > 0,
             'bAvailableFieldsets' => count($vocab) > 0,
             'availableWidget' => $availableTypesWidget,
+			'section_query_string' => $this->sectionQueryString
         ));
-        return $oTemplate;
+
+        return $oTemplate->render();
     }
 
     function do_editobject() {

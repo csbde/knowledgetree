@@ -3,7 +3,7 @@
 <h2>{i18n}Workflow Overview{/i18n}: {$oWorkflow->getName()|sanitize}</h2>
 
 
-<form action="{$smarty.server.PHP_SELF}" method="POST">
+<form action="{$smarty.server.PHP_SELF}?{$section_query_string}" method="POST">
 <fieldset>
 <legend>{i18n}Edit workflow properties{/i18n}</legend>
 <input type="hidden" name="action" value="saveWorkflow" />
@@ -28,8 +28,8 @@ or use the "Workflow" menu on the left to create new ones.{/i18n}</p>
 {else}
 <ul id="workflow-states-list">
 {foreach item=oState from=$workflow_info.states}
-    <li><span class="workflow_element">{i18n}State{/i18n}:</span> <a href="{addQS}action=editState&fStateId={$oState->getId()}&fWorkflowId={$oWorkflow->getId()}{/addQS}" class="workflow_label">{$oState->getName()}</a>
-        {if ($workflow_info.can_delete)} | <span class="ktActionLink ktDelete"><a href="{addQS}action=deleteState&fStateId={$oState->getId()}&fWorkflowId={$oWorkflow->getId()}{/addQS}" >{i18n}Delete{/i18n}</a></span>{/if}
+    <li><span class="workflow_element">{i18n}State{/i18n}:</span> <a href="{addQS}action=editState&fStateId={$oState->getId()}&fWorkflowId={$oWorkflow->getId()}&{$section_query_string}{/addQS}" class="workflow_label">{$oState->getName()}</a>
+        {if ($workflow_info.can_delete)} | <span class="ktActionLink ktDelete"><a href="{addQS}action=deleteState&fStateId={$oState->getId()}&fWorkflowId={$oWorkflow->getId()}&{$section_query_string}{/addQS}" >{i18n}Delete{/i18n}</a></span>{/if}
     <ul>
         <li>{i18n}Notified groups & roles{/i18n}:
         {$context->getNotificationStringForState($oState)}

@@ -6,7 +6,7 @@ management system.  Users may experience a lack of access to documents
 that they usually have access to if you continue with this action.{/i18n}</p>
 
 
-<form action="{$smarty.server.PHP_SELF}" method="POST">
+<form action="{$smarty.server.PHP_SELF}?{$section_query_string}" method="POST">
 <fieldset>
 <legend>{i18n}Delete a condition{/i18n}</legend>
 <div>

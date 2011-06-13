@@ -50,7 +50,7 @@ class KTSmartyTemplate extends KTTemplate {
 
     function render($aDict = null) {
         $smarty = new Smarty;
-        $oConfig =& KTConfig::getSingleton();
+        $oConfig = KTConfig::getSingleton();
         $sVarDirectory = $oConfig->get('urls/varDirectory');
         $smarty->compile_dir = $oConfig->get('urls/tmpDirectory');
 
@@ -72,7 +72,7 @@ class KTSmartyTemplate extends KTTemplate {
             }
         }
 
-        $KTConfig =& KTConfig::getSingleton();
+        $KTConfig = KTConfig::getSingleton();
 
         // needed for a very, very few places.
         $isSSL = $KTConfig->get('KnowledgeTree/sslEnabled');
@@ -83,17 +83,17 @@ class KTSmartyTemplate extends KTTemplate {
         $absroot .= $KTConfig->get('KnowledgeTree/rootUrl');
 
         if (isset($_SESSION['search2_quick'])) {
-        	$search2_quick = $_SESSION['search2_quick'];
-        	$search2_general = $_SESSION['search2_general'];
-        	$search2_quickQuery = trim($_SESSION['search2_quickQuery']);
+	    $search2_quick = $_SESSION['search2_quick'];
+	    $search2_general = $_SESSION['search2_general'];
+	    $search2_quickQuery = trim($_SESSION['search2_quickQuery']);
         }
         else {
-			$search2_quick = 0;
-			$search2_general = 1;
-			$search2_quickQuery = '';
-			$_SESSION['search2_quick'] = $search2_quick;
-			$_SESSION['search2_general'] = $search2_general;
-			$_SESSION['search2_quickQuery'] = '';
+	    $search2_quick = 0;
+	    $search2_general = 1;
+	    $search2_quickQuery = '';
+	    $_SESSION['search2_quick'] = $search2_quick;
+	    $_SESSION['search2_general'] = $search2_general;
+	    $_SESSION['search2_quickQuery'] = '';
         }
 
         $smarty->assign('search2_anonymous', !array_key_exists('userID', $_SESSION) || ($_SESSION['userID'] == -2));
@@ -195,13 +195,13 @@ class KTSmartyTemplate extends KTTemplate {
 
         $method = KTUtil::arrayGet($params, 'method', 'getName');
         $none = KTUtil::arrayGet($params, 'none');
-        
+
         // Check whether a list of Omit Ids exist,
         // If not, create it
         if (!array_key_exists('omitIds', $params)) {
             $params['omitIds'] = array();
         }
-        
+
         // Check that Omit Ids is an array
         // If not, convert it into an array();
         if (!is_array($params['omitIds'])) {
@@ -216,7 +216,7 @@ class KTSmartyTemplate extends KTTemplate {
         }
 
         foreach ($entities as $oEntity) {
-            
+
             if (!in_array($oEntity->getId(), $params['omitIds'])) {
                 $params['values'][] = $oEntity->getId();
                 $params['output'][] = call_user_func(array(&$oEntity, $method));

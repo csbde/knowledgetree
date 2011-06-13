@@ -337,13 +337,14 @@ class GroupUtil {
 
     function _listGroupIDsForUserExpand($oUser)
     {
+        if (PEAR::isError($oUser)) {
+            return array();
+        }
+        
         $iUserId = KTUtil::getId($oUser);
         global $default;
         $oCache = KTCache::getSingleton();
         $group = 'groupidsforuser';
-        if (PEAR::isError($oUser)) {
-            var_dump($oUser);
-        }
 
         list($bCached, $mCached) = $oCache->get($group, $oUser->getId());
         if ($bCached) {

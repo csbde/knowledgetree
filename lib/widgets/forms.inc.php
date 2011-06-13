@@ -5,32 +5,32 @@
  * KnowledgeTree Community Edition
  * Document Management Made Simple
  * Copyright (C) 2008, 2009, 2010 KnowledgeTree Inc.
- * 
- * 
+ *
+ *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License version 3 as published by the
  * Free Software Foundation.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
  * details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- * 
- * You can contact KnowledgeTree Inc., PO Box 7775 #87847, San Francisco, 
+ *
+ * You can contact KnowledgeTree Inc., PO Box 7775 #87847, San Francisco,
  * California 94120-7775, or email info@knowledgetree.com.
- * 
+ *
  * The interactive user interfaces in modified source and object code versions
  * of this program must display Appropriate Legal Notices, as required under
  * Section 5 of the GNU General Public License version 3.
- * 
+ *
  * In accordance with Section 7(b) of the GNU General Public License version 3,
  * these Appropriate Legal Notices must retain the display of the "Powered by
- * KnowledgeTree" logo and retain the original copyright notice. If the display of the 
+ * KnowledgeTree" logo and retain the original copyright notice. If the display of the
  * logo is not reasonably feasible for technical reasons, the Appropriate Legal Notices
- * must display the words "Powered by KnowledgeTree" and retain the original 
+ * must display the words "Powered by KnowledgeTree" and retain the original
  * copyright notice.
  * Contributor( s): ______________________________________
  */
@@ -43,6 +43,7 @@ require_once(KT_LIB_DIR . "/widgets/widgetfactory.inc.php");
 require_once(KT_LIB_DIR . "/validation/validatorfactory.inc.php");
 
 class KTForm {
+
     // serialisation info
     var $_kt_form_name;
     var $sIdentifier; // a simple identifier.
@@ -55,8 +56,8 @@ class KTForm {
     var $_widgets;          // what widgets get stored
     var $_validators;       // validators
     var $_submitlabel;      // what is the "submit" button called
-    var $_onsubmit;         // what client side validation script should be run    
-    var $_submit_onclick;         // what client side validation script should be run    
+    var $_onsubmit;         // what client side validation script should be run
+    var $_submit_onclick;         // what client side validation script should be run
     var $_action;           // where does the success message go
     var $_event;           // where does the success message go
     var $_extraargs;        // various extra arguments
@@ -72,20 +73,18 @@ class KTForm {
     var $_oVF;
     var $_oWF;
 
-
-
-    // we don't use a constructor here, rather use aOptions
-    function setOptions($aOptions) {
+    // We don't use a constructor here, rather use an options array.
+    function setOptions($aOptions)
+    {
         // we grab the "context" dispatcher(ish) object here
-        $context =& KTUtil::arrayGet($aOptions, 'context');
+        $context = KTUtil::arrayGet($aOptions, 'context');
         $this->_context =& $context;
 
         // form identifier (namespace)
-        $this->sIdentifier = KTUtil::arrayGet($aOptions, 'identifier','kt.default');
+        $this->sIdentifier = KTUtil::arrayGet($aOptions, 'identifier', 'kt.default');
         // form name
         $this->_kt_form_name = KTUtil::arrayGet($aOptions, '_kt_form_name',
-            $this->generateFormName($this->sIdentifier), false);
-
+        $this->generateFormName($this->sIdentifier), false);
 
         // form labelling
         $this->sLabel = KTUtil::arrayGet($aOptions, 'label');
@@ -93,16 +92,16 @@ class KTForm {
 
         // actions
         $this->_action = KTUtil::arrayGet($aOptions, 'action');
-        $qs = KTUtil::arrayGet($aOptions, 'actionparams','');
+        $qs = KTUtil::arrayGet($aOptions, 'actionparams', '');
         $this->_enctype = KTUtil::arrayGet($aOptions, 'encoding');
         if (empty($this->_enctype)) {
             if (KTUtil::arrayGet($aOptions, 'file_upload', false)) {
-                $this->_enctype="multipart/form-data";
+                $this->_enctype = 'multipart/form-data';
             }
         }
 
         $targeturl = KTUtil::arrayGet($aOptions, 'targeturl', false);
-        if($targeturl === false) {
+        if ($targeturl === false) {
             $this->_actionurl = KTUtil::addQueryStringSelf($qs);
         } else {
             $this->_actionurl = KTUtil::addQueryString($targeturl, $qs);
@@ -110,15 +109,14 @@ class KTForm {
 
         $this->_failaction = KTUtil::arrayGet($aOptions, 'fail_action');
         $this->_failurl = KTUtil::arrayGet($aOptions, 'fail_url');
-        $this->_submitlabel = KTUtil::arrayGet($aOptions, 'submit_label',
-            _kt('Submit'));
+        $this->_submitlabel = KTUtil::arrayGet($aOptions, 'submit_label', _kt('Submit'));
 
         $this->_event = KTUtil::arrayGet($aOptions, 'event');
         if (empty($this->_event)) {
             if (!is_null($context)) {
                 $this->_event = $context->event_var;
             } else {
-                $this->_event = "action";
+                $this->_event = 'action';
             }
         }
 
@@ -136,17 +134,12 @@ class KTForm {
             // there are two cases here - if we have a context, we can
             // use the meldPersistQuery to create the url.
             if (!is_null($context)) {
-                $sQuery = $context->meldPersistQuery("",
-                    $cancel_action);
-                $this->_cancelurl =
-                    KTUtil::addQueryString($_SERVER['PHP_SELF'], $sQuery);
+                $sQuery = $context->meldPersistQuery('', $cancel_action);
+                $this->_cancelurl = KTUtil::addQueryString($_SERVER['PHP_SELF'], $sQuery);
             } else {
                 // give it a try using addQSSelf
-                $this->_cancelurl = KTUtil::addQueryStringSelf(
-                    sprintf('%s=%s', $this->_event, $cancel_action));
+                $this->_cancelurl = KTUtil::addQueryStringSelf(sprintf('%s=%s', $this->_event, $cancel_action));
             }
-
-
         } else if (!empty($cancel_url)) {
             $this->bCancel = true;
             $this->_cancelurl = $cancel_url;
@@ -159,16 +152,45 @@ class KTForm {
         if (!is_null($this->_context)) {
             $default_args = $this->_context->meldPersistQuery("","",true);
         }
-        $this->_extraargs = KTUtil::arrayGet($aOptions,
-            'extraargs', $default_args);
+
+        $this->_extraargs = KTUtil::arrayGet($aOptions, 'extraargs', $default_args);
 
         // method
         $this->_method = KTUtil::arrayGet($aOptions, 'method', 'post');
 
         $this->_onsubmit = KTUtil::arrayGet($aOptions, 'onsubmit', '');
         $this->_submit_onclick = KTUtil::arrayGet($aOptions, 'onclick', '');
-        
+
         $this->_extraargs['postReceived'] = 1;
+
+        // Configure form for new settings page.
+        $this->setNewSettingsOptions($aOptions);
+    }
+
+    /**
+     * TODO : Please remove!!!
+     *
+     */
+    function setNewSettingsOptions($aOptions) {
+    	// Check if we on settings page.
+    	$cat = KTUtil::arrayGet($_REQUEST, 'fCategory');
+    	if($cat != '') {
+    		preg_match('/\?/', $this->_actionurl, $matches);
+    		if(!isset($matches[0]))
+    		{
+	    		$this->_actionurl .= '?';
+	    		foreach ($_GET as $k=>$v) {
+	    			$this->_actionurl .= "&$k=$v";
+	    		}
+    		}
+
+	        $cancel_action = KTUtil::arrayGet($aOptions, 'cancel_action');
+			$subsection = KTUtil::arrayGet($_REQUEST, 'subsection');
+			$expanded = KTUtil::arrayGet($_REQUEST, 'expanded');
+	        if (!empty($cancel_action)) {
+	    		$this->_cancelurl .= "&fCategory=$cat&subsection=$subsection&expanded=$expanded";
+	        }
+    	}
     }
 
     function getWidget(&$aInfo) {
@@ -384,13 +406,13 @@ class KTForm {
         return $oTemplate->render();
     }
 
-    function renderContaining() {
-
+    function renderContaining()
+    {
         $args = func_get_args();
-        $sInner = implode(' ', $args);
+        $inner = implode(' ', $args);
 
-        $oKTTemplating =& KTTemplating::getSingleton();
-        $oTemplate = $oKTTemplating->loadTemplate('ktcore/forms/outerform');
+        $KTTemplating = KTTemplating::getSingleton();
+        $template = $KTTemplating->loadTemplate('ktcore/forms/outerform');
 
         // remove inner "action" var from extraargs
         // if its there at all.
@@ -398,12 +420,12 @@ class KTForm {
         $this->_extraargs['_kt_form_name'] = $this->_kt_form_name;
 
         // now do the render.
-        $oTemplate->setData(array(
-           'context' => &$this,
-           'inner' => $sInner,
+        $template->setData(array(
+           'context' => $this,
+           'inner' => $inner,
         ));
 
-        return $oTemplate->render();
+        return $template->render();
     }
 
     function generateFormName($sIdentifier = null) {
@@ -565,6 +587,7 @@ class KTForm {
             exit(0);
         }
     }
+
 }
 
 ?>

@@ -3,7 +3,7 @@
 <p class="descriptiveText">{i18n arg_name=$edit_unit->getName()}Change
 the system's information about unit <strong>#name#</strong>{/i18n}</p>
 
-<form action="{$smarty.server.PHP_SELF}" method="POST">
+<form action="{$smarty.server.PHP_SELF}?{$section_query_string}" method="POST">
    <input type="hidden" name="action" value="saveUnit" />
    <input type="hidden" name="unit_id" value="{$edit_unit->getId()}" />
    <fieldset>
@@ -14,7 +14,7 @@ the system's information about unit <strong>#name#</strong>{/i18n}</p>
       {/foreach}
       <div class="form_actions">
          <input type="submit" value="{i18n}Save Changes to Unit{/i18n}" />
-         <input type="submit" name="kt_cancel[]" value="{i18n}Cancel{/i18n}" />
+         <input type="submit" name="kt_cancel[{addQS}{$section_query_string}{/addQS}]" value="{i18n}Cancel{/i18n}" />
       </div>
    </fieldset>
    </form>

@@ -6,7 +6,7 @@
  * KnowledgeTree Community Edition
  * Document Management Made Simple
  * Copyright (C) 2008, 2009, 2010 KnowledgeTree Inc.
- * 
+ *
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License version 3 as published by the
@@ -44,12 +44,14 @@ require_once(KT_LIB_DIR . '/plugins/pluginutil.inc.php');
 require_once(KT_LIB_DIR . "/util/sanitize.inc");
 
 class KTDocumentFieldDispatcher extends KTAdminDispatcher {
-    var $bAutomaticTransaction = true;
-	var $bHaveConditional = null;
-    var $sHelpPage = 'ktcore/admin/document fieldsets.html';
 
-    function predispatch() {
-        $this->aBreadcrumbs[] = array('url' => $_SERVER['PHP_SELF'], 'name' => _kt('Document Field Management'));
+    public $bAutomaticTransaction = true;
+    public $bHaveConditional = null;
+    public $sHelpPage = 'ktcore/admin/document fieldsets.html';
+
+    public function predispatch()
+    {
+        //$this->aBreadcrumbs[] = array('url' => $_SERVER['PHP_SELF'], 'name' => _kt('Document Field Management'));
         $this->persistParams(array('fFieldsetId'));
 
         $this->oFieldset = KTFieldset::get(KTUtil::arrayGet($_REQUEST, 'fFieldsetId'));
@@ -57,23 +59,28 @@ class KTDocumentFieldDispatcher extends KTAdminDispatcher {
             $this->oFieldset = null;
             unset($_REQUEST['fFieldset']); // prevent further attacks.
         } else {
-            $this->aBreadcrumbs[] = array('url' => KTUtil::addQueryStringSelf($this->meldPersistQuery("","edit")), 'name' => $this->oFieldset->getName());
+            $this->aBreadcrumbs[] = array(
+					'url' => KTUtil::addQueryStringSelf($this->meldPersistQuery("","edit")),
+					'name' => $this->oFieldset->getName()
+				    );
         }
         $this->bHaveConditional = KTPluginUtil::pluginIsActive('ktextra.conditionalmetadata.plugin');
     }
 
-
-    function do_main () {
-        $oTemplate =& $this->oValidator->validateTemplate('ktcore/metadata/admin/list');
-
+    function do_main()
+    {
+        $oTemplate = $this->oValidator->validateTemplate('ktcore/metadata/admin/list');
         $oTemplate->setData(array(
-		    'context' => $this,
+	    'context' => $this,
             'fieldsets' => KTFieldset::getList("disabled != true AND namespace != 'tagcloud'"),
+	    'section_query_string' => $this->sectionQueryString
         ));
-        return $oTemplate;
+
+        return $oTemplate->render();
     }
 
-    function form_create() {
+    function form_create()
+    {
         $oForm = new KTForm;
         $oForm->setOptions(array(
             'identifier' => 'ktcore.fieldsets.create',
@@ -102,8 +109,8 @@ class KTDocumentFieldDispatcher extends KTAdminDispatcher {
                 'description' => _kt("In order to ensure that the data that users enter is useful, it is essential that you provide a good example."),
             )),
         );
-        if ($this->bHaveConditional) {
 
+        if ($this->bHaveConditional) {
             // FIXME get this from some external source.
             $type_vocab = array(
                 'normal' => _kt("Normal"),
@@ -158,14 +165,16 @@ class KTDocumentFieldDispatcher extends KTAdminDispatcher {
         return $oForm;
     }
 
-    function do_newfieldset() {
+    function do_newfieldset()
+    {
         $this->oPage->setBreadcrumbDetails(_kt("Create New Fieldset"));
         $oForm = $this->form_create();
 
         return $oForm->render();
     }
 
-    function do_create() {
+    function do_create()
+    {
         $oForm = $this->form_create();
         $res = $oForm->validate();
 
@@ -223,7 +232,8 @@ class KTDocumentFieldDispatcher extends KTAdminDispatcher {
         $this->successRedirectTo('edit',_kt("Fieldset created."), sprintf('fFieldsetId=%d', $oFieldset->getId()));
     }
 
-	function getTypesForFieldset($oFieldset) {
+	function getTypesForFieldset($oFieldset)
+	{
 	    global $default;
 	    if ($oFieldset->getIsGeneric()) {
 		    return _kt('All types use this generic fieldset.');
@@ -242,7 +252,7 @@ class KTDocumentFieldDispatcher extends KTAdminDispatcher {
 		foreach ($types as $oType) {
 		    if (!PEAR::isError($oType)) {
     		    $aNames[] = $oType->getName();
-    		}else{
+    		} else {
     		    $default->log->debug('Fieldsets admin: Document type gives error: '.$oType->getMessage());
     		}
 		}
@@ -250,28 +260,29 @@ class KTDocumentFieldDispatcher extends KTAdminDispatcher {
 		$list = implode(', ', $aNames);
 		$length = mb_strlen($list);
 
-		if($length < 50){
+		if ($length < 50) {
 		    return $list;
 		}
+
 		$default->log->debug('Fieldsets admin: wrapping the list of doc types from length '.$length);
 
 		// Wrap the list to 50 characters per line
 		$wrapList = '';
 		$cut = 0;
-		while ($length > 50 && $cut !== false){
+		while ($length > 50 && $cut !== false) {
 		    $cut = strpos($list, ' ', 50);
 		    $wrapList .= mb_strcut($list, 0, $cut);
 		    $wrapList .= '<br />';
 		    $list = mb_strcut($list, $cut);
 		    $length = mb_strlen($list);
 		}
-		$wrapList .= $list;
 
-		return $wrapList;
+		return $wrapList . $list;
 	}
 
 
-    function do_edit() {
+    function do_edit()
+    {
         // here we engage in some major evil.
         // we check for the subevent var
         // and subdispatch if appropriate.
@@ -299,23 +310,26 @@ class KTDocumentFieldDispatcher extends KTAdminDispatcher {
             $additional = $oSubDispatcher->describe_fieldset($this->oFieldset);
         }
 
-        $oTemplate =& $this->oValidator->validateTemplate('ktcore/metadata/admin/edit');
+        $oTemplate = $this->oValidator->validateTemplate('ktcore/metadata/admin/edit');
         $oTemplate->setData(array(
             'context' => $this,
             'fieldset_name' => $this->oFieldset->getName(),
             'additional' => $additional,
+	    'section_query_string' => $this->sectionQueryString
         ));
+
         return $oTemplate->render();
     }
 
-    function do_delete() {
+    function do_delete()
+    {
         $this->startTransaction();
 
         // check if fieldset is associated with a document type - remove association
         $types = $this->oFieldset->getAssociatedTypes();
         $sFieldSetId = $this->oFieldset->getId();
-        if(!PEAR::isError($types) AND !empty($types)){
-            foreach($types as $oType){
+        if (!PEAR::isError($types) AND !empty($types)) {
+            foreach($types as $oType) {
                 $res = KTMetadataUtil::removeSetsFromDocumentType($oType, $sFieldSetId);
             }
         }
@@ -328,7 +342,8 @@ class KTDocumentFieldDispatcher extends KTAdminDispatcher {
         $this->successRedirectToMain(_kt('Fieldset deleted'));
     }
 
-    function form_edit() {
+    function form_edit()
+    {
         $oForm = new KTForm;
         $oForm->setOptions(array(
             'identifier' => 'ktcore.fieldsets.edit',
@@ -390,13 +405,16 @@ class KTDocumentFieldDispatcher extends KTAdminDispatcher {
         return $oForm;
     }
 
-    function do_editfieldset() {
+    function do_editfieldset()
+    {
         $oForm = $this->form_edit();
         $this->oPage->setBreadcrumbDetails(_kt('edit fieldset'));
+
         return $oForm->renderPage(_kt("Edit Fieldset"));
     }
 
-    function do_savefieldset() {
+    function do_savefieldset()
+    {
         $oForm = $this->form_edit();
         $res = $oForm->validate();
 
@@ -444,6 +462,12 @@ class KTDocumentFieldDispatcher extends KTAdminDispatcher {
 
         return $this->successRedirectTo('edit', _kt("Fieldset details updated."));
     }
+
+    public function handleOutput($output)
+    {
+        print $output;
+    }
+
 }
 
 ?>
