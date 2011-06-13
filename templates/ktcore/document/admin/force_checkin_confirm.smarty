@@ -24,11 +24,11 @@
 </dl>
 </div>
 
-<form action="{$smarty.server.PHP_SELF}" method="POST">
+<form action="{$smarty.server.PHP_SELF}?{$section_query_string}" method="POST">
   <input type="hidden" name="action" value="checkin">
   <input type="hidden" name="fDocumentId" value="{$document->getId()}">
   <div class="form_actions">
       <input type="submit" value="{i18n}Force Check-in{/i18n}" />
-      <input type="submit" name="kt_cancel[]" value="{i18n}Cancel{/i18n}" />
+      <input type="submit" name="kt_cancel[{$smarty.server.PHP_SELF}?{$section_query_string}]" value="{i18n}Cancel{/i18n}" />
   </div>
 </form>
