@@ -168,7 +168,7 @@
 			{/if}
 			<div id="logobar">
 				{if $config->get("ui/mainLogo") != ''}
-					<a href="{$config->get("ui/mainLogoUrl")}"><img src="{$config->get("ui/mainLogo")}" class="primary" alt="{$config->get("ui/mainLogoTitle")}" title="{$config->get("ui/mainLogoTitle")}"/></a>
+					<!--<a href="{$config->get("ui/mainLogoUrl")}">--><img src="{$config->get("ui/mainLogo")}" class="primary" alt="{$config->get("ui/mainLogoTitle")}" title="{$config->get("ui/mainLogoTitle")}"/><!--</a>-->
 				{else}
 					<!--<a href="{$page->systemURL}">--><img src="{$rootUrl}/resources/graphics/ktlogo-topbar-right.png" class="primary" title="{$page->systemName}"/><!--</a>-->
 				{/if}
