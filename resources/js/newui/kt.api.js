@@ -259,9 +259,9 @@ kt.api.esignatures = new function() {
 
 		var title = 'Comment';
 		var width = 420;
-		var height = 280;
+		var height = 243;
 		if(response == 'esign') {
-			height = 320;
+			height = 327;
 			title = 'Electronic Signature';
 		}
 		// create html for form
@@ -280,6 +280,7 @@ kt.api.esignatures = new function() {
 	        y           : 50,
 	        shadow      : true,
 	        modal       : true,
+			autoHeight  : true,
 	        html        : kt.api.execFragment('documents/reason')
 	    });
 	    

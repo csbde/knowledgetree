@@ -544,7 +544,6 @@ kt.app.upload = new function() {
                     self.addUpload(fileName, docTypeHasRequiredFields);
                 },
                 onComplete: function(id, fileName, responseJSON) {
-                                    console.dir(responseJSON)
                     try {
                         self.findItem(fileName).completeUpload();
                     } catch(e) {
