@@ -267,6 +267,8 @@ textarea {
 	-moz-border-radius: 2px;
 	-webkit-border-radius: 2px;
 	border-radius: 2px;
+	
+	clear: both;
 
 }
 #breadcrumbs span {

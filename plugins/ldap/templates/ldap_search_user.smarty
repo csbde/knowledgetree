@@ -1,6 +1,6 @@
 {$context->oPage->requireJSResource('resources/js/toggleselect.js')}
 
-<form method="POST" action="{$smarty.server.PHP_SELF}">
+<form method="POST" action="{$smarty.server.PHP_SELF}?{$section_query_string}">
 <p class="descriptiveText">{i18n}Since there may be many users in the
 system, please provide a few letters from the person's user name to
 begin.{/i18n}</p>
@@ -23,7 +23,7 @@ begin.{/i18n}</p>
          <span>{i18n}No search specified, or no results for your search.  Please choose some criteria from the list above to find users.{/i18n}</span>
       </div>
 {else}
-<form method="POST" action="{$smarty.server.PHP_SELF}">
+<form method="POST" action="{$smarty.server.PHP_SELF}?{$section_query_string}">
 <input type="hidden" name="action" value="addUserFromSource" />
 <input type="hidden" name="source_id" value="{$source->getId()}" />
 <input type="hidden" name="massimport" value="{$massimport}" />

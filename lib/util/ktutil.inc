@@ -1028,7 +1028,26 @@ class KTUtil {
         else {
             $url = $_SERVER['PHP_SELF'];
         }
+        $qs = KTUtil::setNewSettingsOptions($qs);
+        
         return KTUtil::addQueryString($url, $qs);
+    }
+
+    /**
+     * TODO : Please remove!!! We need to find a way of passing subsection, expanded in form action.
+     *
+     */
+    function setNewSettingsOptions($qs) {
+    	// Check if we on settings page.
+    	$cat = KTUtil::arrayGet($_REQUEST, 'fCategory');
+    	if($cat != '') {
+			$subsection = KTUtil::arrayGet($_REQUEST, 'subsection');
+			$subsection = ($subsection == '' ? $subsection : $subsection);
+			$expanded = KTUtil::arrayGet($_REQUEST, 'expanded');
+	        $qs .= "&subsection=$subsection&expanded=$expanded";
+    	}
+    	
+    	return $qs;
     }
 
     public static function isAbsolutePath($sPath)

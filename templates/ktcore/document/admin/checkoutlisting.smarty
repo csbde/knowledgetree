@@ -18,7 +18,7 @@ override the checked-out status.{/i18n}</p>
         </tr>
     </thead>
     <tbody>
-      
+
       {foreach item=oDocument from=$documents}
         <tr class="{cycle values=even,odd}">
             <td>{$oDocument->getName()}</td>

@@ -84,7 +84,6 @@ class BaseConfigDispatcher extends KTAdminDispatcher
             'groupList' => $groupList,
             'groupSettings' => $groups,
             'section' => $this->name,
-            'section_query_string' => $this->sectionQueryString
         ));
 
         return $template->render();

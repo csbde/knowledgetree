@@ -73,7 +73,6 @@ class KTDocumentFieldDispatcher extends KTAdminDispatcher {
         $oTemplate->setData(array(
 	    'context' => $this,
             'fieldsets' => KTFieldset::getList("disabled != true AND namespace != 'tagcloud'"),
-	    'section_query_string' => $this->sectionQueryString
         ));
 
         return $oTemplate->render();
@@ -315,7 +314,6 @@ class KTDocumentFieldDispatcher extends KTAdminDispatcher {
             'context' => $this,
             'fieldset_name' => $this->oFieldset->getName(),
             'additional' => $additional,
-	    'section_query_string' => $this->sectionQueryString
         ));
 
         return $oTemplate->render();
@@ -425,7 +423,7 @@ class KTDocumentFieldDispatcher extends KTAdminDispatcher {
         // check that the fieldset name either hasn't changed, or doesn't exist.
         if ($data['name'] != $this->oFieldset->getName()) {
             $oOldFieldset = KTFieldset::getByName($data['name']);
-            // If the fieldset exists throw an error. Mysql doesn't distinguish between Ž and e so check the names are different in php.
+            // If the fieldset exists throw an error. Mysql doesn't distinguish between ï¿½ and e so check the names are different in php.
             if (!PEAR::isError($oOldFieldset) && $oOldFieldset->getName() == $data['name']) {
                 $extra_errors['name'][] = _kt("A fieldset with that name already exists.");
             }

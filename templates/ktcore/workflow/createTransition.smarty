@@ -8,7 +8,7 @@ of roles, permissions and groups.{/i18n}</p>
 <p class="descriptiveText">{i18n}Use the form below to create a new Transition, and
 assign or edit existing transitions using the table below.{/i18n}</p>
 
-<form action="{$smarty.server.PHP_SELF}?{$section_query_string}" method="POST">
+<form action="{$smarty.server.PHP_SELF}" method="POST">
 <fieldset>
 <legend>{i18n}Create a new transition{/i18n}</legend>
 

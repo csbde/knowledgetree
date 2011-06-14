@@ -56,7 +56,6 @@ class KTConditionDispatcher extends KTAdminDispatcher {
         $oTemplate =& $this->oValidator->validateTemplate('ktcore/search/administration/conditions');
         $oTemplate->setData(array(
             'conditions' => KTSavedSearch::getConditions(),
-            'section_query_string' => $this->sectionQueryString,
         ));
 
         return $oTemplate->render();
@@ -72,7 +71,6 @@ class KTConditionDispatcher extends KTAdminDispatcher {
 
         $oTemplate->setData(array(
             'condition_id' => $oSearch->getId(),
-            'section_query_string' => $this->sectionQueryString,
         ));
 
         return $oTemplate->render();

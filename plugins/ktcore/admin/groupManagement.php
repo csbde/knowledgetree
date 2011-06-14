@@ -100,7 +100,6 @@ class KTGroupAdminDispatcher extends KTAdminDispatcher {
             'search_results' => $searchResults,
             'no_search' => $noSearch,
             'old_search' => $name,
-            'section_query_string' => $this->sectionQueryString
         );
 
         return $template->render($templateData);
@@ -126,7 +125,9 @@ class KTGroupAdminDispatcher extends KTAdminDispatcher {
 
         // grab all units.
         $unitId = $group->getUnitId();
-        if ($unitId == null) { $unitId = 0; }
+        if ($unitId == null) {
+            $unitId = 0;
+        }
 
         $units = Unit::getList();
         $vocab = array();
@@ -143,7 +144,6 @@ class KTGroupAdminDispatcher extends KTAdminDispatcher {
             'edit_fields' => $editFields,
             'edit_group' => $group,
             'old_search' => $oldSearch,
-            'section_query_string' => $this->sectionQueryString
         );
 
         return $template->render($templateData);
@@ -207,7 +207,6 @@ class KTGroupAdminDispatcher extends KTAdminDispatcher {
             'group_users' => $groupUsers,
             'group' => $group,
             'old_search' => $oldSearch,
-            'section_query_string' => $this->sectionQueryString
         );
 
         return $template->render($templateData);
@@ -269,7 +268,6 @@ class KTGroupAdminDispatcher extends KTAdminDispatcher {
             'edit_group' => $group,
             'widget' => $jsonWidget,
             'old_search' => KTUtil::arrayGet($_REQUEST, 'old_search'),
-            'section_query_string' => $this->sectionQueryString
         );
 
         return $template->render($templateData);
@@ -463,8 +461,7 @@ class KTGroupAdminDispatcher extends KTAdminDispatcher {
             'submit_label' => _kt('Create group'),
             'action' => 'createGroup',
             'fail_action' => 'addGroup',
-            'cancel_url' => "{$_SERVER['SCRIPT_NAME']}?{$this->sectionQueryString}",
-            'targeturl' => "{$_SERVER['SCRIPT_NAME']}?{$this->sectionQueryString}",
+            'cancel_action' => 'main',
             'context' => $this
         ));
 
@@ -563,7 +560,6 @@ class KTGroupAdminDispatcher extends KTAdminDispatcher {
             'add_fields' => $add_fields,
             'authentication_sources' => $authenticationSources,
             'form' => $this->form_addGroup(),
-            'section_query_string' => $this->sectionQueryString
         );
 
         return $template->render($templateData);
@@ -670,7 +666,6 @@ class KTGroupAdminDispatcher extends KTAdminDispatcher {
         $authenticationProvider->oPage->setTitle(_kt('Modify Group Details'));
 
         $authenticationProvider->dispatch();
-        exit(0);
     }
 
     function getGroupStringForGroup($group)

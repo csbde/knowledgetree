@@ -1,6 +1,6 @@
 <h2>{i18n}Transition{/i18n}: {$oTransition->getName()|sanitize}</h2>
 
-<form action="{$smarty.server.PHP_SELF}?{$section_query_string}" method="POST">
+<form action="{$smarty.server.PHP_SELF}" method="POST">
 <fieldset>
 <legend>{i18n}Edit transition properties{/i18n}</legend>
 
@@ -33,7 +33,7 @@ requirement.{/i18n}</p>
     perform <strong>both</strong> of these functions, especially if performing the action requires that
     certain conditions are in place before the action will occur.{/i18n}</p>
 
-    <form method="POST" action="{$smarty.server.PHP_SELF}?{$section_query_string}">
+    <form method="POST" action="{$smarty.server.PHP_SELF}">
 
     <input type="hidden" name="action" value="addTrigger" />
     <input type="hidden" name="fWorkflowId" value="{$oWorkflow->getId()}" />
@@ -70,8 +70,8 @@ requirement.{/i18n}</p>
          <tr>
              <td>{$oTrigger->getName()}</td>
              <td>{$oTrigger->getConfigDescription()}</td>
-             <td>{if $oTrigger->bIsConfigurable}<a class="ktAction ktEdit" href="{addQS}action=editTrigger&fWorkflowId={$oWorkflow->getId()}&fTransitionId={$oTransition->getId()}&fTriggerInstanceId={$oTrigger->getConfigId()}&{$section_query_string}{/addQS}">edit</a>{else}&mdash;{/if}</td>
-             <td><a class="ktAction ktDelete" href="{addQS}action=deleteTrigger&fWorkflowId={$oWorkflow->getId()}&fTransitionId={$oTransition->getId()}&fTriggerInstanceId={$oTrigger->getConfigId()}&{$section_query_string}{/addQS}">delete</a></td>
+             <td>{if $oTrigger->bIsConfigurable}<a class="ktAction ktEdit" href="{addQS}action=editTrigger&fWorkflowId={$oWorkflow->getId()}&fTransitionId={$oTransition->getId()}&fTriggerInstanceId={$oTrigger->getConfigId()}{/addQS}">edit</a>{else}&mdash;{/if}</td>
+             <td><a class="ktAction ktDelete" href="{addQS}action=deleteTrigger&fWorkflowId={$oWorkflow->getId()}&fTransitionId={$oTransition->getId()}&fTriggerInstanceId={$oTrigger->getConfigId()}{/addQS}">delete</a></td>
          </tr>
         {/foreach}
     </tbody>
@@ -99,8 +99,8 @@ requirement.{/i18n}</p>
          <tr>
              <td>{$oTrigger->getName()}</td>
              <td>{$oTrigger->getConfigDescription()}</td>
-             <td>{if $oTrigger->bIsConfigurable}<a class="ktAction ktEdit" href="{addQS}action=editTrigger&fWorkflowId={$oWorkflow->getId()}&fTransitionId={$oTransition->getId()}&fTriggerInstanceId={$oTrigger->getConfigId()}&{$section_query_string}{/addQS}">edit</a>{else}&mdash;{/if}</td>
-             <td><a class="ktAction ktDelete" href="{addQS}action=deleteTrigger&fWorkflowId={$oWorkflow->getId()}&fTransitionId={$oTransition->getId()}&fTriggerInstanceId={$oTrigger->getConfigId()}&{$section_query_string}{/addQS}">delete</a></td>
+             <td>{if $oTrigger->bIsConfigurable}<a class="ktAction ktEdit" href="{addQS}action=editTrigger&fWorkflowId={$oWorkflow->getId()}&fTransitionId={$oTransition->getId()}&fTriggerInstanceId={$oTrigger->getConfigId()}{/addQS}">edit</a>{else}&mdash;{/if}</td>
+             <td><a class="ktAction ktDelete" href="{addQS}action=deleteTrigger&fWorkflowId={$oWorkflow->getId()}&fTransitionId={$oTransition->getId()}&fTriggerInstanceId={$oTrigger->getConfigId()}{/addQS}">delete</a></td>
          </tr>
         {/foreach}
     </tbody>
