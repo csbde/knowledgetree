@@ -59,13 +59,11 @@ class AuthenticationDispatcher extends KTDispatcher {
         $oneloginErrorMessage = 'Login+failed.++Please+check+your+onelogin+username+and+try+again';
 
         try {
-            global $default;
             require_once(KTPluginUtil::getPluginPath('auth.onelogin.plugin') . 'SAMLConsumer.inc.php');
 
-            $user = null;
             $consumer = new SAMLConsumer();
-            if ($consumer->authenticate($_POST['SAMLResponse'], $user)) {
-                $this->startOneloginSession($user, $oneloginErrorMessage);
+            if ($consumer->authenticate($_POST['SAMLResponse'])) {
+                $this->startOneloginSession($consumer->getAuthenticatedUser(), $oneloginErrorMessage);
             }
             else {
                 $this->relocate("login.php?errorMessage=$oneloginErrorMessage");
@@ -78,6 +76,8 @@ class AuthenticationDispatcher extends KTDispatcher {
 
     private function startOneloginSession($user, $oneloginErrorMessage)
     {
+        global $default;
+
         $user = $this->getOneloginUser($user, $oneloginErrorMessage);
         $this->createOneloginSession($user, $oneloginErrorMessage);
 
@@ -95,6 +95,8 @@ class AuthenticationDispatcher extends KTDispatcher {
 
     private function getOneloginUser($user, $oneloginErrorMessage)
     {
+        global $default;
+
         // Determine user from supplied username.
         $res = DBUtil::getOneResult("SELECT id FROM users WHERE username = '$user'");
         if (PEAR::isError($res) || empty($res['id'])) {
@@ -109,10 +111,14 @@ class AuthenticationDispatcher extends KTDispatcher {
             $default->log->error("User $user does not exist (OneLogin SAML authentication): " . $user->getMessage());
             $this->relocate("login.php?errorMessage=$oneloginErrorMessage");
         }
+
+        return $user;
     }
 
     private function createOneloginSession($user, $oneloginErrorMessage)
     {
+        global $default;
+        
         $session = new Session();
         $sessionID = $session->create($user);
         if (PEAR::isError($sessionID)) {
