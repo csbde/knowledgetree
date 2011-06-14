@@ -9,7 +9,7 @@ that "Edit Metadata" is an action you wish to control within this workflow; seco
 you need to specify that the action is <strong>not</strong> to be made available
 when documents are in the "published" state.{/i18n}</p>
 
-<form action="{$smarty.server.PHP_SELF}?{$section_query_string}" method="POST">
+<form action="{$smarty.server.PHP_SELF}" method="POST">
 <fieldset><legend>{i18n}Specify Controlled Actions{/i18n}</legend>
 <p class="descriptiveText">{i18n}Select the actions you want this workflow
 to control from the list below.  Actions you do not specify will be available no 
@@ -43,7 +43,7 @@ in that state.  Unchecked items are not available to any users.{/i18n}</p>
 <div class="ktInfoMessage"><span>{i18n}No actions are controlled by this workflow.  All actions
 will be available at all states.{/i18n}</span></div>
 {else}
-<form action="{$smarty.server.PHP_SELF}?{$section_query_string}" method="POST">
+<form action="{$smarty.server.PHP_SELF}" method="POST">
 <input type="hidden" name="action" value="updateActionAvailability" />
 <input type="hidden" name="fWorkflowId" value="{$oWorkflow->getId()}" />
 <table class="kt_collection" style="width: auto;">

@@ -22,8 +22,8 @@
         {/if}
         <tr>
             <th>&nbsp;</th>
-            <td><a class="ktAction ktActionDescribed ktEdit" href="{addQS context=$context}action=editfieldset&{$section_query_string}{/addQS}">{i18n}Edit these details{/i18n}</a>
-            <a href="{addQS context=$context}action=editfieldset&{$section_query_string}{/addQS}">{i18n}Edit these details{/i18n}</a></td>
+            <td><a class="ktAction ktActionDescribed ktEdit" href="{addQS context=$context}action=editfieldset{/addQS}">{i18n}Edit these details{/i18n}</a>
+            <a href="{addQS context=$context}action=editfieldset{/addQS}">{i18n}Edit these details{/i18n}</a></td>
         </tr>
     </tbody>
 </table>

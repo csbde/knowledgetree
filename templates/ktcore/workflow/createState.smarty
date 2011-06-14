@@ -5,7 +5,7 @@ are placed in certain <strong>states</strong>.  For example, an invoice
 which has been mailed might be in the "Pending" <strong>state</strong> after
 the "sent" <strong>transition</strong> has been performed by a user.{/i18n}</p>
 
-<form action="{$smarty.server.PHP_SELF}?{$section_query_string}" method="POST">
+<form action="{$smarty.server.PHP_SELF}" method="POST">
 <fieldset>
 <legend>{i18n}Create a new state{/i18n}</legend>
 

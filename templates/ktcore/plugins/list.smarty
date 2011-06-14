@@ -2,7 +2,7 @@
 <p class="descriptiveText">{i18n}Check the plugins that require activation and then click "Update". To disable a plugin, uncheck the plugin and click "Update".{/i18n}</p>
 
 {if $plugins}
-<form action="{$smarty.server.PHP_SELF}?{$section_query_string}" method="POST">
+<form action="{$smarty.server.PHP_SELF}" method="POST">
 <input type="hidden" name="action" value="update" />
 {entity_checkboxes entities=$plugins selected=$enabled_plugins
 method=getUserFriendlyName assign=boxes name="pluginids"}
@@ -19,7 +19,7 @@ method=getUserFriendlyName assign=boxes name="pluginids"}
 <p class="descriptiveText">{i18n arg_appname="$appname"}If you have moved the location of #appname# on your server filesystem, or installed or removed plugins, the plugins
 must be re-read from the filesystem{/i18n}</p>
 
-<form action="{$smarty.server.PHP_SELF}?{$section_query_string}" method="POST">
+<form action="{$smarty.server.PHP_SELF}" method="POST">
 <input type="hidden" name="action" value="reread" />
 <input type="hidden" name="_force_plugin_truncate" value="1" />
 <input type="submit" name="submit" value="{i18n}Reread plugins{/i18n}" />

@@ -112,15 +112,9 @@ class KTUserAdminDispatcher extends KTAdminDispatcher {
             'can_add' => $canAdd,
             'invited' => false,
             'authentication' => ACCOUNT_ROUTING,
-            'section_query_string' => $this->sectionQueryString
         );
 
         return $template->render($templateData);
-    }
-
-    public function handleOutput($output)
-    {
-        print $output;
     }
 
     public function do_resendInvite()
@@ -194,7 +188,6 @@ class KTUserAdminDispatcher extends KTAdminDispatcher {
         $templateData = array(
             'context' => $this,
             'add_fields' => $addFields,
-            'section_query_string' => $this->sectionQueryString
         );
 
         return $template->render($templateData);
@@ -237,14 +230,13 @@ class KTUserAdminDispatcher extends KTAdminDispatcher {
         $authenticationRegistry = KTAuthenticationProviderRegistry::getSingleton();
         $authenticationProvider = $authenticationRegistry->getAuthenticationProvider($providerName);
 
-        //$this->aBreadcrumbs[] = array('url' => $_SERVER['PHP_SELF'], 'name' => _kt('User Management'));
-        //$this->aBreadcrumbs[] = array('url' => KTUtil::addQueryStringSelf('action=addUser'), 'name' => _kt('add a new user'));
-        //$authenticationProvider->aBreadcrumbs = $this->aBreadcrumbs;
-        //$authenticationProvider->oPage->setBreadcrumbDetails($authenticationSource->getName());
-        //$authenticationProvider->oPage->setTitle(_kt('Add New User'));
+        $this->aBreadcrumbs[] = array('url' => $_SERVER['PHP_SELF'], 'name' => _kt('User Management'));
+        $this->aBreadcrumbs[] = array('url' => KTUtil::addQueryStringSelf('action=addUser'), 'name' => _kt('add a new user'));
+        $authenticationProvider->aBreadcrumbs = $this->aBreadcrumbs;
+        $authenticationProvider->oPage->setBreadcrumbDetails($authenticationSource->getName());
+        $authenticationProvider->oPage->setTitle(_kt('Add New User'));
 
         $authenticationProvider->dispatch();
-        exit(0);
     }
 
     function do_editUser()
@@ -306,7 +298,6 @@ class KTUserAdminDispatcher extends KTAdminDispatcher {
             'provider' => $authenticationProvider,
             'source' => $authenticationSource,
             'old_search' => $oldSearch,
-            'section_query_string' => $this->sectionQueryString
         );
 
         return $template->render($templateData);
@@ -365,7 +356,6 @@ class KTUserAdminDispatcher extends KTAdminDispatcher {
             'edit_fields' => $editFields,
             'edit_user' => $user,
             'old_search' => $oldSearch,
-            'section_query_string' => $this->sectionQueryString
         );
 
         return $template->render($templateData);
@@ -435,7 +425,6 @@ class KTUserAdminDispatcher extends KTAdminDispatcher {
         }
 
         $authenticationProvider->subDispatch($this);
-        exit();
     }
 
     function do_editGroups()
@@ -480,7 +469,6 @@ class KTUserAdminDispatcher extends KTAdminDispatcher {
             'edit_user' => $user,
             'widget' => $jsonWidget,
             'old_search' => $oldSearch,
-            'section_query_string' => $this->sectionQueryString
         );
 
         return $template->render($templateData);
@@ -989,6 +977,11 @@ class KTUserAdminDispatcher extends KTAdminDispatcher {
 
         $this->commitTransaction();
         $this->successRedirectToMain(_kt('Users updated'), 'show_all=1');
+    }
+
+    public function handleOutput($output)
+    {
+        print $output;
     }
 
 }

@@ -6,7 +6,7 @@
 </p>
 
 <h3>{i18n}New workflow information{/i18n}</h3>
-<form action="{$smarty.server.PHP_SELF}?{$section_query_string}" method="POST">
+<form action="{$smarty.server.PHP_SELF}" method="POST">
 	<input type="hidden" name="action" value="branchConfirm" />
 	<input type="hidden" name="workflowId" value="{$workFlowId}" />
 	<table>

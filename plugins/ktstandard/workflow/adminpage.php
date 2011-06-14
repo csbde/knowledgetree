@@ -75,7 +75,6 @@ class WorkflowAllocationSelection extends KTAdminDispatcher {
         $oTemplate->setData(array(
             'context' => $this,
             'trigger_fields' => $aFields,
-            'section_query_string' => $this->sectionQueryString,
         ));
 
         return $oTemplate->render();

@@ -37,16 +37,16 @@ aspects of this particular field.{/i18n}</p>
 <p class="descriptiveText">{i18n}Different fields have different actions and options
 available.{/i18n}</p>
 
-<p><a class="ktAction ktAdd ktActionDescribed" href="{addQS context=$context}fieldset_action=addlookupvalues&{$section_query_string}">{i18n}Add Lookup Values{/i18n}</a>
-<a href="{addQS context=$context}fieldset_action=addlookupvalues&{$section_query_string}">{i18n}Add Lookup Values{/i18n}</a></p>
+<p><a class="ktAction ktAdd ktActionDescribed" href="{addQS context=$context}fieldset_action=addlookupvalues{/addQS}">{i18n}Add Lookup Values{/i18n}</a>
+<a href="{addQS context=$context}fieldset_action=addlookupvalues{/addQS}">{i18n}Add Lookup Values{/i18n}</a></p>
 
 
-<p><a class="ktAction ktEdit ktActionDescribed" href="{addQS context=$context}fieldset_action=managelookups&{$section_query_string}">{i18n}Manage Lookup Values{/i18n}</a>
-<a href="{addQS context=$context}fieldset_action=managelookups&{$section_query_string}">{i18n}Manage Lookup Values{/i18n}</a></p>
+<p><a class="ktAction ktEdit ktActionDescribed" href="{addQS context=$context}fieldset_action=managelookups{/addQS}">{i18n}Manage Lookup Values{/i18n}</a>
+<a href="{addQS context=$context}fieldset_action=managelookups{/addQS}">{i18n}Manage Lookup Values{/i18n}</a></p>
 
 {if $field->getHasLookupTree()}
-<p><a class="ktAction ktEdit ktActionDescribed" href="{addQS context=$context}fieldset_action=managetree&{$section_query_string}">{i18n}Manage Lookup Tree Structure{/i18n}</a>
-<a href="{addQS context=$context}fieldset_action=managetree&{$section_query_string}">{i18n}Manage Lookup Tree Structure{/i18n}</a></p>
+<p><a class="ktAction ktEdit ktActionDescribed" href="{addQS context=$context}fieldset_action=managetree{/addQS}">{i18n}Manage Lookup Tree Structure{/i18n}</a>
+<a href="{addQS context=$context}fieldset_action=managetree{/addQS}">{i18n}Manage Lookup Tree Structure{/i18n}</a></p>
 {/if}
 </fieldset>
 </div>
