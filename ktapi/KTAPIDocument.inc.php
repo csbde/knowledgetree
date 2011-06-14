@@ -1100,36 +1100,6 @@ class KTAPI_Document extends KTAPI_FolderItem
             return new KTAPI_Error(KTAPI_ERROR_INTERNAL_ERROR, $res);
         }
         DBUtil::commit();
-
-		/*
-		list($permission, $user) = $perm_and_user;
-
-		DBUtil::startTransaction();
-		$this->document->setStatusID(ARCHIVED);
-        $res = $this->document->update();
-        if (($res === false) || PEAR::isError($res)) {
-           DBUtil::rollback();
-           return new KTAPI_Error(KTAPI_ERROR_INTERNAL_ERROR, $res);
-        }
-
-        $oDocumentTransaction = new DocumentTransaction($this->document, sprintf(_kt('Document archived: %s'), $reason), 'ktcore.transactions.update');
-        $oDocumentTransaction->create();
-
-        DBUtil::commit();
-
-        $oKTTriggerRegistry = KTTriggerRegistry::getSingleton();
-        $aTriggers = $oKTTriggerRegistry->getTriggers('archive', 'postValidate');
-        foreach ($aTriggers as $aTrigger)
-        {
-            $sTrigger = $aTrigger[0];
-            $oTrigger = new $sTrigger;
-            $aInfo = array(
-                'document' => $this->document,
-            );
-            $oTrigger->setInfo($aInfo);
-            $ret = $oTrigger->postValidate();
-        }
-        */
 	}
 
 	/**
