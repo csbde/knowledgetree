@@ -62,10 +62,9 @@ class AuthenticationDispatcher extends KTDispatcher {
             global $default;
             require_once(KTPluginUtil::getPluginPath('auth.onelogin.plugin') . 'SAMLConsumer.inc.php');
 
-            $user = null;
             $consumer = new SAMLConsumer();
-            if ($consumer->authenticate($_POST['SAMLResponse'], $user)) {
-                $this->startOneloginSession($user, $oneloginErrorMessage);
+            if ($consumer->authenticate($_POST['SAMLResponse'])) {
+                $this->startOneloginSession($consumer->getAuthenticatedUser(), $oneloginErrorMessage);
             }
             else {
                 $this->relocate("login.php?errorMessage=$oneloginErrorMessage");
@@ -109,6 +108,8 @@ class AuthenticationDispatcher extends KTDispatcher {
             $default->log->error("User $user does not exist (OneLogin SAML authentication): " . $user->getMessage());
             $this->relocate("login.php?errorMessage=$oneloginErrorMessage");
         }
+
+        return $user;
     }
 
     private function createOneloginSession($user, $oneloginErrorMessage)
