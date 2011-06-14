@@ -114,7 +114,6 @@ class ArchivedDocumentsDispatcher extends KTAdminDispatcher {
               'folder' => $folder,
               'breadcrumbs' => $breadcrumbs,
               'collection' => $collection,
-              'section_query_string' => $this->sectionQueryString
         );
 
         $template = $this->oValidator->validateTemplate('ktcore/document/admin/archivebrowse');
@@ -148,7 +147,6 @@ class ArchivedDocumentsDispatcher extends KTAdminDispatcher {
         $template->setData(array(
             'context' => $this,
             'documents' => $documents,
-            'section_query_string' => $this->sectionQueryString
         ));
 
         return $template->render();

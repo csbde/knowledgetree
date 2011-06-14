@@ -84,7 +84,6 @@ class RoleAdminDispatcher extends KTAdminDispatcher {
             'edit_role' => $oRole,
             'edit_fields' => $edit_fields,
             'roles' => $aRoles,
-            'section_query_string' => $this->sectionQueryString,
         ));
 
         return $oTemplate->render();

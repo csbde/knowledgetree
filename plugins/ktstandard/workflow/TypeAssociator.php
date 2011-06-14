@@ -156,7 +156,6 @@ class WorkflowTypeAllocationDispatcher extends KTAdminDispatcher {
             'types_mapping' => $aTypeMapping,
             'types' => $aTypes,
             'workflows' => $aWorkflows,
-            'section_query_string' => $this->sectionQueryString,
         ));
         return $oTemplate->render();
     }

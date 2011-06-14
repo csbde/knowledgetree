@@ -50,7 +50,6 @@ class KTPortlet {
     public $sTitle;
     public $oPlugin;
     public $bActive = false;
-	public $sectionQueryString;
 	
     public function KTPortlet($title='') {
         $this->sTitle = $title;

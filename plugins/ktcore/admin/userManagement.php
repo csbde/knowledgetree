@@ -193,7 +193,6 @@ class KTUserAdminDispatcher extends KTAdminDispatcher {
         $templateData = array(
             'context' => $this,
             'add_fields' => $addFields,
-            'section_query_string' => $this->sectionQueryString
         );
 
         return $template->render($templateData);
@@ -305,7 +304,6 @@ class KTUserAdminDispatcher extends KTAdminDispatcher {
             'provider' => $authenticationProvider,
             'source' => $authenticationSource,
             'old_search' => $oldSearch,
-            'section_query_string' => $this->sectionQueryString
         );
 
         return $template->render($templateData);
@@ -364,7 +362,6 @@ class KTUserAdminDispatcher extends KTAdminDispatcher {
             'edit_fields' => $editFields,
             'edit_user' => $user,
             'old_search' => $oldSearch,
-            'section_query_string' => $this->sectionQueryString
         );
 
         return $template->render($templateData);
@@ -434,7 +431,6 @@ class KTUserAdminDispatcher extends KTAdminDispatcher {
         }
 
         $authenticationProvider->subDispatch($this);
-        exit();
     }
 
     function do_editGroups()
@@ -479,7 +475,6 @@ class KTUserAdminDispatcher extends KTAdminDispatcher {
             'edit_user' => $user,
             'widget' => $jsonWidget,
             'old_search' => $oldSearch,
-            'section_query_string' => $this->sectionQueryString
         );
 
         return $template->render($templateData);

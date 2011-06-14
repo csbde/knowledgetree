@@ -75,7 +75,6 @@ class KTNewWorkflowWizard extends KTAdminDispatcher {
             'submit_label' => _kt('Next'),
             'description' => _kt('This first step requires that you provide basic details about the workflow: its name, etc.'),
             'context' => $this,
-            'targeturl' => "{$_SERVER['SCRIPT_NAME']}?{$this->sectionQueryString}"
         ));
         $oForm->setWidgets(array(
             array('ktcore.widgets.string',array(
@@ -412,7 +411,7 @@ class KTNewWorkflowWizard extends KTAdminDispatcher {
         // FIXME nbm:  how do you recommend we do this?
 
         $base = $_SERVER['PHP_SELF'];
-        $qs = sprintf("action=view&fWorkflowId=%d&" . $this->sectionQueryString, $oWorkflow->getId());
+        $qs = sprintf("action=view&fWorkflowId=%d", $oWorkflow->getId());
         $url = KTUtil::addQueryString($base, $qs);
         $this->addInfoMessage(_kt("Your new workflow has been created."));
         redirect($url);

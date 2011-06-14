@@ -87,7 +87,6 @@ class InetDocumentFieldDispatcher extends KTAdminDispatcher {
         $template->setData(array(
 	    	'context' => $this,
             'fieldsets' => $fieldsets,
-	    	'section_query_string' => $this->sectionQueryString
         ));
 
         return $template->render();
@@ -107,10 +106,9 @@ class InetDocumentFieldDispatcher extends KTAdminDispatcher {
             'identifier' => 'ktcore.fieldsets.create',
             'label' => _kt('Create New Fieldset'),
             'submit_label' => _kt('Create Fieldset'),
-            'cancel_url' => "{$_SERVER['SCRIPT_NAME']}?{$this->sectionQueryString}",
-            'fail_url' => "{$_SERVER['SCRIPT_NAME']}?{$this->sectionQueryString}&action=newfieldset",
+            'cancel_action' => 'main',
+            'fail_action' => 'newfieldset',
             'action' => 'create',
-            'targeturl' => "{$_SERVER['SCRIPT_NAME']}?{$this->sectionQueryString}",
             'context' => $this,
         ));
 
@@ -368,7 +366,6 @@ class InetDocumentFieldDispatcher extends KTAdminDispatcher {
             'context' => $this,
             'fieldset_name' => $this->oFieldset->getName(),
             'additional' => $additional,
-	    	'section_query_string' => $this->sectionQueryString
         ));
 
         return $oTemplate->render();

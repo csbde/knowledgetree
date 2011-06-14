@@ -74,7 +74,7 @@
 				{if $can_add}
 				{if $authentication_sources}
 				<td width="{$colwidth}"  valign="top">
-                                        <form action="{$smarty.server.PHP_SELF}?{$section_query_string}" method="POST">
+                                        <form action="{$smarty.server.PHP_SELF}" method="POST">
 					<div class="field"><label>{i18n}Import Users{/i18n}</label></div>
 					<div class="widgetItem">
 						<input type="hidden" name="action" value="addUserFromSource" />
@@ -97,7 +97,7 @@
 {if ($no_search === true)}
 {else}
 {if (!empty($search_results))}
-<form name="editUserForm" action="{$smarty.server.PHP_SELF}?{$section_query_string}" method="post">
+<form name="editUserForm" action="{$smarty.server.PHP_SELF}" method="post">
 	<div class="widgetRow">
 		<table class="kt_collection narrow" cellspacing="0" cellpadding="5">
 			<thead>

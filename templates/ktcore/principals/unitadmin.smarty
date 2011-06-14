@@ -1,4 +1,4 @@
-<h2>{i18n}Unit Administration{/i18n}</h2>
+<h2>{i18n}Unit Administratiosn{/i18n}</h2>
 
 <p class="descriptiveText">{i18n arg_appname="$appname"}#appname# allows administrators the ability to create <strong>Units</strong> that model the organisation's business units. Units may have their own administrators and groups may be assigned to these units.{/i18n}</p>
 
@@ -9,7 +9,10 @@ of the DMS repository to a particular part of your
 organisation.  Unit administrators have additional rights within that
 portion of the document management system, and they can also adjust the
 membership of groups that belong to the unit.{/i18n}</p>
-<p><a href="{addQS}action=addGroup&{$section_query_string}{/addQS}" class="ktAction ktAddGroup ktInline">{i18n}Add Unit{/i18n}</a><a href="{addQS}action=addUnit&{$section_query_string}{/addQS}">{i18n}Add a new unit{/i18n}</a>.</p>
+<p>
+	<a href="{addQS}action=addGroup{/addQS}" class="ktAction ktAddGroup ktInline">{i18n}Add Unit{/i18n}</a>
+	<a href="{addQS}action=addUnit{/addQS}">{i18n}Add a new unit{/i18n}</a>.
+</p>
 </fieldset>
 
 <table class="listing">
@@ -25,8 +28,8 @@ membership of groups that belong to the unit.{/i18n}</p>
      {foreach item=oUnit from=$unit_list}
      <tr>
         <td>{$oUnit->getName()}</td>
-        <td><a href="{addQS}action=editUnit&unit_id={$oUnit->getId()}&{$section_query_string}{/addQS}" class="ktAction ktEdit">{i18n}Edit{/i18n}</a></td>
-        <td><a href="{addQS}action=deleteUnit&unit_id={$oUnit->getId()}&{$section_query_string}{/addQS}" class="ktAction ktDelete">{i18n}Delete{/i18n}</a></td>
+        <td><a href="{addQS}action=editUnit&unit_id={$oUnit->getId()}{/addQS}" class="ktAction ktEdit">{i18n}Edit{/i18n}</a></td>
+        <td><a href="{addQS}action=deleteUnit&unit_id={$oUnit->getId()}{/addQS}" class="ktAction ktDelete">{i18n}Delete{/i18n}</a></td>
         <td><span class="contenttype folder"><a class="contenttype_href" href="{getUrlForFolder
 folder=$oUnit->getFolderId()}">{assign var=oFolder
 value=$oUnit->getFolder()}{$oFolder->getName()}</a></span></td>
