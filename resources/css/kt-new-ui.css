@@ -1259,3 +1259,8 @@ http://devgrow.com/iphone-style-switches/
 #reason-field {
 	width: 97% !important;
 }
+
+#usageStats li {
+	font-size: 15px;
+	line-height: 25px;
+}
