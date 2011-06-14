@@ -4,6 +4,6 @@
 
 {if $has_custom_logo}
 <div class="form_actions">
-    <a href="{$smarty.server.PHP_SELF}?{$section_query_string}&action=resetlogo" class="form_cancel">{i18n}Remove Logo{/i18n}</a>
+    <a href="{$smarty.server.PHP_SELF}&action=resetlogo" class="form_cancel">{i18n}Remove Logo{/i18n}</a>
 </div>
 {/if}

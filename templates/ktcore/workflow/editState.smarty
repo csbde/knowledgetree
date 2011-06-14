@@ -27,7 +27,7 @@ are placed in certain <strong>states</strong>.  For example, an invoice
 which has been mailed might be in the "Pending" <strong>state</strong> after
 the "sent" <strong>transition</strong> has been performed by a user.{/i18n}</p>
 
-<form action="{$smarty.server.PHP_SELF}?{$section_query_string}" method="POST">
+<form action="{$smarty.server.PHP_SELF}" method="POST">
 <fieldset>
 <legend>{i18n}Edit state properties{/i18n}</legend>
 <input type="hidden" name="action" value="saveState" />
@@ -43,7 +43,7 @@ the "sent" <strong>transition</strong> has been performed by a user.{/i18n}</p>
 </form>
 
 
-<form action="{$smarty.server.PHP_SELF}?{$section_query_string}" method="POST">
+<form action="{$smarty.server.PHP_SELF}" method="POST">
 <input type="hidden" name="action" value="saveInform" />
 <input type="hidden" name="fWorkflowId" value="{$oWorkflow->getId()}" />
 <input type="hidden" name="fStateId" value="{$oState->getId()}" />
@@ -104,7 +104,7 @@ with a specific <strong>role</strong> (e.g. Manager) or part of a specific group
 <ul>
 {foreach from=$aTransitionsTo item=oTransition}
   <li><a
-href="{addQS}action=editTransition&fWorkflowId={$oWorkflow->getId()}&fTransitionId={$oTransition->getId()}&{$section_query_string}{/addQS}"
+href="{addQS}action=editTransition&fWorkflowId={$oWorkflow->getId()}&fTransitionId={$oTransition->getId()}{/addQS}"
 title="Transition
 {$oTransition->getId()}">{$oTransition->getName()}</a></li>
 {/foreach}
@@ -116,7 +116,7 @@ title="Transition
 {/if}
 
 <h3>{i18n}Transitions from this state{/i18n}</h3>
-<form action="{$smarty.server.PHP_SELF}?{$section_query_string}" method="POST">
+<form action="{$smarty.server.PHP_SELF}" method="POST">
 <input type="hidden" name="action" value="saveTransitions" />
 <input type="hidden" name="fWorkflowId" value="{$oWorkflow->getId()}" />
 <input type="hidden" name="fStateId" value="{$oState->getId()}" />
@@ -133,7 +133,7 @@ title="Transition
 </fieldset>
 
 {if (!empty($aActions))}
-<form action="{$smarty.server.PHP_SELF}?{$section_query_string}" method="POST">
+<form action="{$smarty.server.PHP_SELF}" method="POST">
 <fieldset>
 <legend>{i18n}Actions allowed{/i18n}</legend>
 
@@ -159,7 +159,7 @@ documents are in this state.{/i18n}</span></div>
 
 
 {if (!empty($permissions))}
-<form action="{$smarty.server.PHP_SELF}?{$section_query_string}" method="POST">
+<form action="{$smarty.server.PHP_SELF}" method="POST">
 <fieldset>
 <legend>{i18n}Controlled Permissions{/i18n}</legend>
 
@@ -180,7 +180,7 @@ documents are in this state.{/i18n}</span></div>
 </form>
 
 {if (!empty($state_permissions))}
-<form action="{$smarty.server.PHP_SELF}?{$section_query_string}" method="POST">
+<form action="{$smarty.server.PHP_SELF}" method="POST">
 
 <input type="hidden" name="action" value="assignStatePermissions" />
 <input type="hidden" name="fWorkflowId" value="{$oWorkflow->getId()}" />

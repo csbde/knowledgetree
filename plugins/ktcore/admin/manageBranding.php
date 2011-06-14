@@ -69,9 +69,7 @@ class ManageBrandDispatcher extends KTAdminDispatcher
         $template = $templating->loadTemplate('ktcore/branding/list');
         $templateData = array(
             'form' => $form,
-            'section_query_string' => $this->sectionQueryString,
             'has_custom_logo' => $config->get('ui/mainLogo'),
-            'section_query_string' => $this->sectionQueryString
         );
 
         return $template->render($templateData);
@@ -90,7 +88,6 @@ class ManageBrandDispatcher extends KTAdminDispatcher
                 'fail_url' => 'main',
                 'encoding' => 'multipart/form-data',
                 'cancel_url' => "javascript:void(jQuery('#branding').toggle());",
-                'targeturl' => "{$_SERVER['SCRIPT_NAME']}?{$this->sectionQueryString}&action=saveLogo",
                 'context' => $this
             ));
 

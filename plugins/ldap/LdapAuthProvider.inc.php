@@ -121,7 +121,6 @@ class LdapAuthProvider extends KTAuthenticationProvider {
             'context' => &$this,
             'fields' => $fields,
             'source_id' => $sourceId,
-            'section_query_string' => $this->getAdminQueryString()
         );
 
         return $template->render($templateData);

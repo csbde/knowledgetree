@@ -20,7 +20,7 @@
 
 <h2>{$section}</h2>
 
-<form name="manageConfigSettings" action="{$smarty.server.PHP_SELF}?{$section_query_string}" method="POST">
+<form name="manageConfigSettings" action="{$smarty.server.PHP_SELF}" method="POST">
 
 {if $groupList}
 

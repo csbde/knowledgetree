@@ -73,10 +73,10 @@ class BasicFieldsetManagementDispatcher extends KTAdminDispatcher {
     {
         $this->persistParams(array('fFieldsetId','action'));
         $oTemplate =& $this->oValidator->validateTemplate('ktcore/metadata/admin/basic_overview');
+        $fields = $oFieldset->getFields();
         $oTemplate->setData(array(
             'context' => $this,
-            'fields' => $oFieldset->getFields(),
-            'section_query_string' => $this->sectionQueryString
+            'fields' => $fields,
         ));
 
         return $oTemplate->render();

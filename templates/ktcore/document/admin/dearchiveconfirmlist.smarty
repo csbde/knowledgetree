@@ -6,7 +6,7 @@ state.{/i18n}</span></div>
 
 {if (!empty($documents))}
 
-<form action="{$smarty.server.PHP_SELF}?{$section_query_string}" method="POST">
+<form action="{$smarty.server.PHP_SELF}" method="POST">
 
 <input type="hidden" name="action" value="finish_restore" />
 

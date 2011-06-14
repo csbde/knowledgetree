@@ -1,10 +1,10 @@
 <h2>{i18n}Group Administration{/i18n}</h2>
 
 <!-- we roll both in here. -->
-<form action="{$smarty.server.PHP_SELF}?{$section_query_string}" method="POST">
+<form action="{$smarty.server.PHP_SELF}" method="POST">
 	<div class="widgetRow">
 		<input type="hidden" name="do_search" value="1" />
-		{capture assign=link}{addQS}show_all=1&{$section_query_string}{/addQS}{/capture}
+		{capture assign=link}{addQS}show_all=1{/addQS}{/capture}
 
 		{foreach item=oWidget from=$search_fields}
 		  {$oWidget->render()}
@@ -53,14 +53,14 @@
 	{$context->_getUnitName($oGroup)}
 	{/if}
 		</td>
-			<td><a href="{addQS}action=editGroup&group_id={$oGroup->getId()}&old_search={$old_search}&{$section_query_string}{/addQS}"
+			<td><a href="{addQS}action=editGroup&group_id={$oGroup->getId()}&old_search={$old_search}{/addQS}"
 	class="ktAction ktEdit">{i18n}Edit{/i18n}</a></td>
-			<td><a href="{addQS}action=deleteGroup&group_id={$oGroup->getId()}&old_search={$old_search}&{$section_query_string}{/addQS}"
+			<td><a href="{addQS}action=deleteGroup&group_id={$oGroup->getId()}&old_search={$old_search}{/addQS}"
 	class="ktAction ktDelete">{i18n}Delete{/i18n}</a></td>
 			<td><a
-	href="{addQS}action=manageUsers&group_id={$oGroup->getId()}&old_search={$old_search}&{$section_query_string}{/addQS}">{i18n}Manage Users{/i18n}</a></td>
+	href="{addQS}action=manageUsers&group_id={$oGroup->getId()}&old_search={$old_search}{/addQS}">{i18n}Manage Users{/i18n}</a></td>
 			<td><a
-	href="{addQS}action=manageSubgroups&group_id={$oGroup->getId()}&old_search={$old_search}&{$section_query_string}{/addQS}">{i18n}Manage sub-groups{/i18n}</a></td>
+	href="{addQS}action=manageSubgroups&group_id={$oGroup->getId()}&old_search={$old_search}{/addQS}">{i18n}Manage sub-groups{/i18n}</a></td>
 			<td class="title"><span class="descriptiveText">{$context->getGroupStringForGroup($oGroup)}</span></td>
 		 </tr>
 		 {/foreach}
@@ -78,10 +78,10 @@
 <div class="widgetRow">
 	<div class="form_actions">
 		<!-- View all groups -->
-		<!--<a style="background: none repeat scroll 0% 0% transparent;" href="{i18n arg_link=$link&{$section_query_string}}#link#{/i18n}">{i18n}View All Groups{/i18n}</a>-->
+		<!--<a style="background: none repeat scroll 0% 0% transparent;" href="{i18n arg_link=$link}#link#{/i18n}">{i18n}View All Groups{/i18n}</a>-->
 
 		<!-- Add a new group -->
-		<a style="background: none repeat scroll 0% 0% transparent;" href="{addQS}action=addGroup&{$section_query_string}{/addQS}">{i18n}Add Group{/i18n}</a>
+		<a style="background: none repeat scroll 0% 0% transparent;" href="{addQS}action=addGroup{/addQS}">{i18n}Add Group{/i18n}</a>
 	</div>
 </div>
 

@@ -3,7 +3,7 @@
 <p class="descriptiveText important">{i18n}Actions which are checked on this page will
 <strong>not</strong> be available to users.{/i18n}</p>
 
-<form method="POST" action="{$smarty.server.PHP_SELF}?{$section_query_string}">
+<form method="POST" action="{$smarty.server.PHP_SELF}">
 
 	{foreach from=$args item=v key=k}
 	    <input type="hidden" name="{$k}" value="{$v}" />
@@ -42,7 +42,7 @@
 	<br/>
 	<div class="form_actions">
 	    <input type="submit" value="{i18n}Block actions{/i18n}" />
-	    <a href="{addQS context=$context}action=actionsoverview&{$section_query_string}{/addQS}" class="form_cancel">{i18n}Cancel{/i18n}</a>
+	    <a href="{addQS context=$context}action=actionsoverview{/addQS}" class="form_cancel">{i18n}Cancel{/i18n}</a>
 	</div>
 
 </form>
