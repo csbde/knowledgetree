@@ -59,7 +59,6 @@ class AuthenticationDispatcher extends KTDispatcher {
         $oneloginErrorMessage = 'Login+failed.++Please+check+your+onelogin+username+and+try+again';
 
         try {
-            global $default;
             require_once(KTPluginUtil::getPluginPath('auth.onelogin.plugin') . 'SAMLConsumer.inc.php');
 
             $consumer = new SAMLConsumer();
@@ -77,6 +76,8 @@ class AuthenticationDispatcher extends KTDispatcher {
 
     private function startOneloginSession($user, $oneloginErrorMessage)
     {
+        global $default;
+
         $user = $this->getOneloginUser($user, $oneloginErrorMessage);
         $this->createOneloginSession($user, $oneloginErrorMessage);
 
@@ -94,6 +95,8 @@ class AuthenticationDispatcher extends KTDispatcher {
 
     private function getOneloginUser($user, $oneloginErrorMessage)
     {
+        global $default;
+
         // Determine user from supplied username.
         $res = DBUtil::getOneResult("SELECT id FROM users WHERE username = '$user'");
         if (PEAR::isError($res) || empty($res['id'])) {
@@ -114,6 +117,8 @@ class AuthenticationDispatcher extends KTDispatcher {
 
     private function createOneloginSession($user, $oneloginErrorMessage)
     {
+        global $default;
+        
         $session = new Session();
         $sessionID = $session->create($user);
         if (PEAR::isError($sessionID)) {
