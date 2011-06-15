@@ -161,7 +161,7 @@ class KTPage {
         */
 
         // set inclusion map
-        // TODO this maybe happens elsewhere and is laoded into the config object?
+        // TODO this maybe happens elsewhere and is loaded into the config object?
         // TODO consider 'all' option, which means will appear on any page.  These could be loaded in addition
         //      to ones matching the current filter.
 
@@ -186,10 +186,6 @@ class KTPage {
                         "resources/$jsResourceLocation/newui/documents/kt.app.buttons.$jsExt" => $files,
                         "resources/$jsResourceLocation/newui/documents/kt.app.viewlets.$jsExt" => $files,
                         "resources/$jsResourceLocation/jquery.form.$jsExt" => $files,
-                        "resources/$jsResourceLocation/newui/kt.app.inviteusers.$jsExt" => $combined,
-                        "resources/$jsResourceLocation/newui/kt.app.sharewithusers.$jsExt" => $files,
-            	        "resources/$jsResourceLocation/jquery.blockui.$jsExt" => $combined,
-            	        //'resources/js/toggleselect.js' => array('browse_collections'),
                         "resources/$jsResourceLocation/newui/browse.helper.$jsExt" => array('browse_collections'),
                         'resources/js/newui/browse/subscriptionActions.js' => $overviews,
                         'resources/js/newui/shared/blockActions.js' => $combined,
@@ -263,9 +259,9 @@ class KTPage {
 
         // Shared users cannot re-share or invite users to the system.
         if (SharedUserUtil::isSharedUser()) {
-            unset($jsIncludes["resources/$jsResourceLocation/newui/kt.app.sharewithusers.$jsExt"]);
-            unset($jsIncludes["resources/$jsResourceLocation/newui/kt.app.inviteusers.$jsExt"]);
-            unset($jsIncludes["resources/$jsResourceLocation/jquery.blockui.$jsExt"]);
+        	$jsIncludes[] = array("resources/$jsResourceLocation/newui/kt.app.sharewithusers.$jsExt" => $files);
+        	$jsIncludes[] = array("resources/$jsResourceLocation/newui/kt.app.inviteusers.$jsExt" => $combined);
+        	$jsIncludes[] = array("resources/$jsResourceLocation/jquery.blockui.$jsExt" => $combined);
         }
 
         // Breadcrumbs

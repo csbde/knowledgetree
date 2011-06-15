@@ -195,7 +195,7 @@ class BrowseView {
         $folderContentItems = $this->getFolderContent($folderId, $totalItems);
         $folderView = $this->buildFolderView($folderId, $folderContentItems, $editable);
         $response['folderContents'] = join($folderView);
-
+		$response['documentCount'] = count($folderContentItems['documents']);
         // Adding Fragments for drag & drop client side processing
         $response['fragments'] = '';
         $response['fragments'] = '';
@@ -466,43 +466,6 @@ class BrowseView {
     }
 
     /**
-     * Checks the systems workflow permissions to see if actions have been overriden
-     *
-     * @param array $item
-     * @return array $item
-     */
-    private function checkWorkflowPermissions($item = null, $oDocument)
-    {
-        $ns = ' not_supported';
-        // Check workflow action restrictions
-        $actions = array_merge(KTDocumentActionUtil::getDocumentActionsForDocument($oDocument, $this->oUser), KTDocumentActionUtil::getDocumentActionsForDocument($oDocument, $this->oUser, 'documentinfo'));
-
-        foreach ($actions as $oAction) {
-            $actionname = $oAction->getName();
-            $aname = explode('.', $actionname);
-            $name = $aname[count($aname) - 1];
-            $allowaction[$name] = $oAction->_show();
-        }
-
-        if (!$allowaction['immutable']) { $item['actions.finalize_document'] = $ns; }
-        if (!$allowaction['ownershipchange']) { $item['actions.change_owner'] = $ns; }
-
-        if (!$allowaction['checkout']) {
-            $item['allowdoczohoedit'] = '';
-            $item['actions.checkout'] = $ns;
-        }
-
-        if (!$allowaction['cancelcheckout']) { $item['actions.cancel_checkout'] = $ns; }
-        if (!$allowaction['checkin']) { $item['actions.checkin'] = $ns; }
-        if (!$allowaction['alert']) { $item['actions.alerts'] = $ns; }
-        if (!$allowaction['email']) { $item['actions.email'] = $ns; }
-        if (!$allowaction['view']) { $item['actions.download'] = $ns; }
-        if (!$allowaction['sharecontent']) { $item['actions.share_document'] = $ns; }
-
-        return $item;
-    }
-
-    /**
      * Renders html block for a document in the new browse
      *
      * @param array $item
@@ -651,14 +614,11 @@ class BrowseView {
         } else {
             $item['document_link'] = KTUtil::buildUrl('view.php', array('fDocumentId' => $item['id']));
         }
-        // Check if document is in workflow and if action has not been restricted.
-        // Another layer of permissions
-        //$item = $this->checkWorkflowPermissions($item, $oDocument);
 
         $item['separatorA'] = $item['actions.copy'] == '' ? '' : $ns;
         $item['separatorB'] = $item['actions.download'] == '' ? '' : $ns;
         $item['separatorC'] = $item['actions.checkout'] == '' || $item['actions.checkin'] == '' || $item['actions.cancel_checkout']== '' ? '' : $ns;
-        $item['separatorD'] = $ns;//($item['actions.alert'] == '' || $item ['actions.email'] == '') && $hasWrite ? '' : $ns;
+        $item['separatorD'] = $ns;
         if ($item['is_immutable'] == '') { $item['separatorB'] = $item['separatorC'] = $item['separatorD'] = $ns; }
         // Add line separator after share link
         if ($item['actions.share_document'] != $ns) {
@@ -783,7 +743,7 @@ class BrowseView {
 
                                         <li class="separator[separatorC]"></li>
 
-                                        <li class="action_alerts [actions.alerts]"><a href="action.php?kt_path_info=alerts.action.document.alert&fDocumentId=[id]">Alerts</a></li>
+                                        <li class="action_alerts [actions.alerts]"><a href="#" onclick="javascript:{alerts.displayAction(\'\', [id], \'browse-view\');}">Alerts</a></li>
                                         <li class="action_email [actions.email]"><a href="action.php?kt_path_info=ktcore.actions.document.email&fDocumentId=[id]">Email</a></li>
 
                                         <li class="separator[separatorD]"></li>
