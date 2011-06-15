@@ -41,32 +41,31 @@ require_once(KT_LIB_DIR . '/authentication/Authenticator.inc');
 require_once(KT_LIB_DIR . '/authentication/DBAuthenticator.inc');
 
 class KTBuiltinAuthenticationProvider extends KTAuthenticationProvider {
-    var $sNamespace = 'ktcore.authentication.builtin';
+    public $sNamespace = 'ktcore.authentication.builtin';
 
-    function KTBuiltinAuthenticationProvider() {
+    public function KTBuiltinAuthenticationProvider() {
         $this->sName = _kt('Built-in authentication provider');
         parent::KTAuthenticationProvider();
     }
 
-    function &getAuthenticator($oSource) {
+    public function &getAuthenticator($oSource) {
         // $oSource is null, since the built-in authentication provider
         // only has a single, non-registered, instance.
         $ret= new BuiltinAuthenticator();
         return $ret;
     }
     
-    function showUserSource($oUser, $oSource) {
+    public function showUserSource($oUser, $oSource) {
         $sQuery = sprintf('action=editUserSource&user_id=%d', $oUser->getId());
         $sUrl = KTUtil::addQueryString($_SERVER['PHP_SELF'], $sQuery);
         return '<p class="descriptiveText"><a href="' . $sUrl . '">' . sprintf(_kt('Change %s\'s password'), $oUser->getName()) . '</a></p>';
     }
 
-    function do_editUserSource() {
+    public function do_editUserSource() {
         $this->redispatch('subaction', 'editUserSource');
-        exit(0);
     }
 
-    function editUserSource_main() {
+    public function editUserSource_main() {
         $this->oPage->setBreadcrumbDetails(_kt('Change User Password'));
         $this->oPage->setTitle(_kt('Change User Password'));
 
@@ -90,7 +89,7 @@ class KTBuiltinAuthenticationProvider extends KTAuthenticationProvider {
         return $oTemplate->render($aTemplateData);
     }
     
-    function editUserSource_forcePasswordChange() {
+    public function editUserSource_forcePasswordChange() {
         $aErrorOptions = array(
             'redirect_to' => array('main'),
         );
@@ -109,7 +108,7 @@ class KTBuiltinAuthenticationProvider extends KTAuthenticationProvider {
         $this->successRedirectTo('editUser', _kt('User will need to change password on next login.'), sprintf('user_id=%d', $oUser->getId()));
     }
 
-    function editUserSource_updatePassword() {
+    public function editUserSource_updatePassword() {
         $aErrorOptions = array(
             'redirect_to' => array('main'),
         );
@@ -143,7 +142,7 @@ class KTBuiltinAuthenticationProvider extends KTAuthenticationProvider {
 
     }
 
-    function login($oUser) {
+    public function login($oUser) {
         $oConfig =& KTConfig::getSingleton();
 
         $iDays = $oConfig->get('builtinauth/password_change_interval');
@@ -171,7 +170,7 @@ class KTBuiltinAuthenticationProvider extends KTAuthenticationProvider {
         }
     }
 
-    function verify($oUser) {
+    public function verify($oUser) {
         if (isset($_SESSION['mustChangePassword'])) {
             $url = generateControllerUrl('login', 'action=providerVerify&type=1');
             $this->addErrorMessage(_kt('Your password has expired'));
@@ -180,12 +179,12 @@ class KTBuiltinAuthenticationProvider extends KTAuthenticationProvider {
         }
     }
 
-    function do_providerVerify() {
+    public function do_providerVerify() {
         $this->redispatch('subaction', 'providerVerify');
         exit(0);
     }
 
-    function providerVerify_main() {
+    public function providerVerify_main() {
         $oTemplate =& $this->oValidator->validateTemplate('ktcore/authentication/force_change_password');
         $edit_fields = array();
         $edit_fields[] = new KTPasswordWidget(_kt('Password'), _kt('Enter a new password for the account.'), 'password', null, $this->oPage, true);
@@ -198,7 +197,7 @@ class KTBuiltinAuthenticationProvider extends KTAuthenticationProvider {
         return $oTemplate->render($aTemplateData);
     }
 
-    function providerVerify_return() {
+    public function providerVerify_return() {
         $url = KTUtil::arrayGet($_SESSION, 'providerVerifyReturnUrl');
         if (empty($url)) {
             $url = generateControllerUrl('login');
@@ -207,7 +206,7 @@ class KTBuiltinAuthenticationProvider extends KTAuthenticationProvider {
         exit(0);
     }
 
-    function providerVerify_updatePassword() {
+    public function providerVerify_updatePassword() {
         $aErrorOptions = array(
             'redirect_to' => array('providerVerify'),
         );

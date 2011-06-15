@@ -1,6 +1,6 @@
 <h2>{i18n}Document Types{/i18n}</h2>
 
-<form method="POST" action="{$smarty.server.PHP_SELF}?{$section_query_string}">
+<form method="POST" action="{$smarty.server.PHP_SELF}">
 
 <fieldset>
 <legend>{i18n}Create a new document type{/i18n}</legend>
@@ -67,17 +67,17 @@ href="{ktLink base="settings.php" query="fCategory=contentManagement&subsection=
 
 <td style="text-align:center">
     <a title="{i18n}Edit document type.{/i18n}" 
-    class="ktAction ktEdit" href="{addQS}{$section_query_string}&action=edit&fDocumentTypeId={$oDocumentType->getId()}{/addQS}">{i18n}Edit{/i18n}</a>
+    class="ktAction ktEdit" href="{addQS}action=edit&fDocumentTypeId={$oDocumentType->getId()}{/addQS}">{i18n}Edit{/i18n}</a>
 </td>
 
 <td style="text-align:center">
 {if $oDocumentType->getDisabled()}
     <a title="{i18n}Enable document type.{/i18n}" 
-    class="ktAction ktAdd" href="{addQS}{$section_query_string}&action=enable&fDocumentTypeId={$oDocumentType->getId()}{/addQS}">{i18n}Enable{/i18n}</a>
+    class="ktAction ktAdd" href="{addQS}action=enable&fDocumentTypeId={$oDocumentType->getId()}{/addQS}">{i18n}Enable{/i18n}</a>
 {else}
     <a title="{i18n}Disable document type.{/i18n}"class="ktAction ktDenied" 
     kt:deleteMessage="{i18n}Are you sure you wish to disable this document type?{/i18n}" 
-    href="{addQS}{$section_query_string}&action=disable&fDocumentTypeId={$oDocumentType->getId()}{/addQS}">{i18n}Disable{/i18n}</a>
+    href="{addQS}action=disable&fDocumentTypeId={$oDocumentType->getId()}{/addQS}">{i18n}Disable{/i18n}</a>
 {/if}
 </td>
 
@@ -85,7 +85,7 @@ href="{ktLink base="settings.php" query="fCategory=contentManagement&subsection=
     {if $oDocumentType->checkDelete($associated_types, $oDocumentType->getId())}
         <a title="{i18n}Delete document type.{/i18n}" class="ktAction ktDelete" 
         kt:deleteMessage="{i18n}Are you sure you wish to delete this document type? It will be permanently removed from the system.{/i18n}" 
-        href="{addQS}{$section_query_string}&action=delete&fDocumentTypeId={$oDocumentType->getId()}{/addQS}">{i18n}Delete{/i18n}</a>
+        href="{addQS}action=delete&fDocumentTypeId={$oDocumentType->getId()}{/addQS}">{i18n}Delete{/i18n}</a>
     {else}
         <span title="{i18n}Document type cannot be deleted{/i18n}" class="ktAction ktDenied"></span> 
     {/if}

@@ -387,8 +387,22 @@ class KTCorePlugin extends KTPlugin {
             _kt('Client Tools'), _kt('View and change settings for the KnowledgeTree Tools Server, Client Tools Policies, WebDAV, and the OpenOffice.org service.'),
             'admin/configSettings.php', null);
 
-        $this->registerAdminPage('generalconfigpage', 'GeneralConfigPageDispatcher', 'sysConfig',
-            _kt('General Settings'), _kt('View and modify settings for KnowledgeTree.'),
+        //$this->registerAdminPage('generalconfigpage', 'GeneralConfigPageDispatcher', 'sysConfig',
+        //    _kt('General Settings'), _kt('View and modify settings for KnowledgeTree.'),
+        //    'admin/configSettings.php', null);
+
+        $this->registerAdminPage('session', 'SessionConfigPageDispatcher', 'security',
+            _kt('Session Management'), _kt('View and modify session settings for KnowledgeTree.'),
+            'admin/configSettings.php', null);
+
+        $this->registerAdminPage('timezone', 'TimezoneConfigPageDispatcher', 'sysConfig',
+            _kt('Timezone'), _kt('View and modify timezone settings for KnowledgeTree.'),
+            'admin/configSettings.php', null);
+
+        // FIXME Get this into the electronic signatures plugin - at the moment that crashes with
+        //       an error about not finding the SecurityConfigPageDispatcher class.
+        $this->registerAdminPage('electronicSignatures', 'SecurityConfigPageDispatcher', 'security',
+            _kt('Electronic Signatures'), _kt('View and modify the electronic signature settings.'),
             'admin/configSettings.php', null);
 
         if ($restrictedEnv !== true) {
@@ -405,13 +419,7 @@ class KTCorePlugin extends KTPlugin {
         }
 
         $this->registerAdminPage('i18nconfigpage', 'i18nConfigPageDispatcher', 'sysConfig',
-            _kt('Internationalization'), _kt('View and modify the default language.'),
-            'admin/configSettings.php', null);
-
-        // FIXME Get this into the electronic signatures plugin - at the moment that crashes with
-        //       an error about not finding the SecurityConfigPageDispatcher class.
-        $this->registerAdminPage('electronicSignatures', 'SecurityConfigPageDispatcher', 'security',
-            _kt('Electronic Signatures'), _kt('View and modify the electronic signature settings.'),
+            _kt('Internationalisation Settings'), _kt('View and modify the default language.'),
             'admin/configSettings.php', null);
 
         // misc

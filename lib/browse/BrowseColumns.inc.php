@@ -5,32 +5,32 @@
  * KnowledgeTree Community Edition
  * Document Management Made Simple
  * Copyright (C) 2008, 2009, 2010 KnowledgeTree Inc.
- * 
- * 
+ *
+ *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License version 3 as published by the
  * Free Software Foundation.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
  * details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- * 
- * You can contact KnowledgeTree Inc., PO Box 7775 #87847, San Francisco, 
+ *
+ * You can contact KnowledgeTree Inc., PO Box 7775 #87847, San Francisco,
  * California 94120-7775, or email info@knowledgetree.com.
- * 
+ *
  * The interactive user interfaces in modified source and object code versions
  * of this program must display Appropriate Legal Notices, as required under
  * Section 5 of the GNU General Public License version 3.
- * 
+ *
  * In accordance with Section 7(b) of the GNU General Public License version 3,
  * these Appropriate Legal Notices must retain the display of the "Powered by
- * KnowledgeTree" logo and retain the original copyright notice. If the display of the 
+ * KnowledgeTree" logo and retain the original copyright notice. If the display of the
  * logo is not reasonably feasible for technical reasons, the Appropriate Legal Notices
- * must display the words "Powered by KnowledgeTree" and retain the original 
+ * must display the words "Powered by KnowledgeTree" and retain the original
  * copyright notice.
  * Contributor( s): ______________________________________
  *
@@ -54,8 +54,8 @@ require_once(KT_LIB_DIR . '/users/User.inc');
 require_once(KT_LIB_DIR . '/workflow/workflowutil.inc.php');
 require_once(KT_LIB_DIR . '/browse/browseutil.inc.php');
 
-
 class BrowseColumn {
+
     var $label = null;
     var $sort_on = false;
     var $sort_direction = 'asc';
@@ -65,6 +65,7 @@ class BrowseColumn {
        $this->label = $sLabel;
        $this->name = $sName;
     }
+
     // FIXME is it _really_ worth using a template here?
     function renderHeader($sReturnURL) {
         $text = _kt('Abstract') . ': ' . $this->label;
@@ -85,6 +86,7 @@ class BrowseColumn {
            return $this->name . ': '. print_r($aDataRow['document']->getName(), true);
         }
     }
+
     function setSortedOn($bIsSortedOn) { $this->sort_on = $bIsSortedOn; }
     function getSortedOn() { return $this->sort_on; }
     function setSortDirection($sSortDirection) { $this->sort_direction = $sSortDirection; }
@@ -92,15 +94,18 @@ class BrowseColumn {
 
     function addToFolderQuery() { return array(null, null, null); }
     function addToDocumentQuery() { return array(null, null, null); }
+
 }
 
 class TitleColumn extends BrowseColumn {
+
     var $aOptions = array();
     var $aIconPaths = array();
 
     function setOptions($aOptions) {
         $this->aOptions = $aOptions;
     }
+
     // unlike others, this DOESN'T give its name.
     function renderHeader($sReturnURL) {
         $text = _kt('Title');
@@ -170,11 +175,12 @@ class TitleColumn extends BrowseColumn {
         require_once(KT_LIB_DIR . '/mime.inc.php');
         return KTMime::getIconPath($iMimeTypeId);
     }
+
 }
 
 
-
 class DateColumn extends BrowseColumn {
+
     var $field_function;
 
     // $sDocumentFieldFunction is _called_ on the document.
@@ -227,13 +233,16 @@ class DateColumn extends BrowseColumn {
     function addToFolderQuery() {
         return array(null, null, null);
     }
+
     function addToDocumentQuery() {
         return array(null, null, $this->name);
     }
+
 }
 
 
 class UserColumn extends BrowseColumn {
+
     var $field_function;
 
     // $sDocumentFieldFunction is _called_ on the document.
@@ -282,16 +291,19 @@ class UserColumn extends BrowseColumn {
     function addToFolderQuery() {
         return array(null, null, null);
     }
+
     function addToDocumentQuery() {
         $sUsersTable = KTUtil::getTableName('users');
         $sJoinSQL = "LEFT JOIN $sUsersTable AS users_order_join ON D.{$this->name} = users_order_join.id";
         return array($sJoinSQL, null, 'users_order_join.name');
     }
+
 }
 
 // use the _name_ parameter + _f_ + id to create a non-clashing checkbox.
 
 class SelectionColumn extends BrowseColumn {
+
     var $show_documents;
     var $show_folders;
 
@@ -335,6 +347,7 @@ class SelectionColumn extends BrowseColumn {
 
 
 class SingleSelectionColumn extends SelectionColumn {
+
     var $show_documents;
     var $show_folders;
 
@@ -344,9 +357,7 @@ class SingleSelectionColumn extends SelectionColumn {
         parent::BrowseColumn($sLabel, $sName);
     }
 
-    function renderHeader($sReturnURL) {
-        global $main;
-    }
+    function renderHeader($sReturnURL) { }
 
     // only include the _f or _d IF WE HAVE THE OTHER TYPE.
     function renderData($aDataRow) {
@@ -406,18 +417,15 @@ class WorkflowColumn extends BrowseColumn {
     }
 }
 
+
 class DownloadColumn extends BrowseColumn {
 
     function renderHeader($sReturnURL) {
-        $text = '&nbsp;';
-
-        return $text;
+        return '&nbsp;';
     }
-
 
     function renderData($aDataRow) {
         $localname = $this->name;
-
 
         // only _ever_ show this folder documents.
         if ($aDataRow['type'] === 'folder') {
@@ -429,6 +437,7 @@ class DownloadColumn extends BrowseColumn {
         $outStr = sprintf('<a href="%s" class="ktAction ktDownload" title="%s">%s</a>', $link, _kt('Download Document'), _kt('Download Document'));
         return $outStr;
     }
+
 }
 
 ?>

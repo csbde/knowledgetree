@@ -4,8 +4,8 @@
 possible to block certain <strong>actions</strong> at any given point.  Actions
 which are not blocked are still controlled by the usual permissions.{/i18n}</p>
 
-<p><a class="ktAction ktActionDescribed ktEdit" href="{addQS context=$context}action=editactions&{$section_query_string}{/addQS}">{i18n}Edit Actions{/i18n}</a>
-<a href="{addQS context=$context}action=editactions&{$section_query_string}{/addQS}">{i18n}Edit Actions{/i18n}</a></p>
+<p><a class="ktAction ktActionDescribed ktEdit" href="{addQS context=$context}action=editactions{/addQS}">{i18n}Edit Actions{/i18n}</a>
+<a href="{addQS context=$context}action=editactions{/addQS}">{i18n}Edit Actions{/i18n}</a></p>
 <div class="action_overview_scroll">
 <table class="kt_collection narrow" width="50" cellspacing="0">
     <thead>

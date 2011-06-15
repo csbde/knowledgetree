@@ -4,7 +4,7 @@
     Configure KnowledgeTree to use your company LDAP server for authenticating users against.
 </p>
 
-<form action="{$smarty.server.PHP_SELF}?{$section_query_string}" method="POST">
+<form action="{$smarty.server.PHP_SELF}" method="POST">
     <input type="hidden" name="source_id" value="{$source_id}" />
     <input type="hidden" name="action" value="performEditSourceProvider" />
 

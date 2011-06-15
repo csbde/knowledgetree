@@ -51,13 +51,20 @@ class BaseConfigDispatcher extends KTAdminDispatcher
 
     public function do_main()
     {
-        // Get the configuration settings
-        $settings = $this->getSettings();
+	return $this->renderPage($this->getSettings());
+    }
 
-        // Check if there are any settings to be saved
-        $settings = $this->saveSettings($settings);
+    public function do_save()
+    {
+	$settings = $this->getSettings();
+	$settings = $this->saveSettings($settings);
 
-        // Organise by group
+	return $this->renderPage($settings);
+    }
+
+    private function renderPage($settings)
+    {
+	// Organise by group
         $groups = array();
         $groupList = array();
         foreach ($settings as $item) {
@@ -77,7 +84,6 @@ class BaseConfigDispatcher extends KTAdminDispatcher
             'groupList' => $groupList,
             'groupSettings' => $groups,
             'section' => $this->name,
-            'section_query_string' => $this->sectionQueryString
         ));
 
         return $template->render();
@@ -279,31 +285,30 @@ class BaseConfigDispatcher extends KTAdminDispatcher
                 $comment = array();
             }
 
-             // If the value in the post array is different from the current value, then update the DB
-             foreach ($currentSettings AS $setting) {
-                 $new = $newSettings[$setting['id']];
-                 if ($setting['value'] != $new) {
-                     // Update the value
-                     $res = DBUtil::autoUpdate('config_settings', array('value' => $new), $setting['id']);
-                     if (PEAR::isError($res)) {
-                         $this->addErrorMessage(sprintf(_kt("The setting %s could not be updated: %s") , $setting['display_name'], $res->getMessage()));
-                     }
-                     if ($log) {
-                         $comment[] = sprintf(_kt("%s from %s to %s") , $setting['display_name'], $setting['value'], $new);
-                     }
-                 }
-             }
+	    foreach ($currentSettings as $setting) {
+		$new = $newSettings[$setting['id']];
+		if ($setting['value'] != $new) {
+		    $res = DBUtil::autoUpdate('config_settings', array('value' => $new), $setting['id']);
+		    if (PEAR::isError($res)) {
+			$this->addErrorMessage(sprintf(_kt("The setting %s could not be updated: %s") , $setting['display_name'], $res->getMessage()));
+		    }
 
-             if ($log) {
-                 $this->logTransaction($comment);
-             }
+		    if ($log) {
+			$comment[] = sprintf(_kt("%s from %s to %s") , $setting['display_name'], $setting['value'], $new);
+		    }
+		}
+	    }
 
-             // Clear the cached settings
-             $oKTConfig = new KTConfig();
-             $oKTConfig->clearCache();
+	    if ($log) {
+		$this->logTransaction($comment);
+	    }
 
-             // Get the new settings from the DB
-             $currentSettings = $this->getSettings();
+	    // Clear the cached settings
+	    $oKTConfig = new KTConfig();
+	    $oKTConfig->clearCache();
+
+	    // Get the new settings from the DB
+	    $currentSettings = $this->getSettings();
         }
 
         return $currentSettings;
@@ -508,17 +513,34 @@ class SecurityConfigPageDispatcher extends BaseConfigDispatcher
         $this->category = 'Security Settings';
         $this->name = _kt('Security Settings');
 
-        //$this->aBreadcrumbs[] = array(
-        //    'url' => $_SERVER['PHP_SELF'],
-        //    'name' => _kt('Security Settings'),
-        //);
-
         return parent::check();
     }
 
     function saveSettings($currentSettings)
     {
         return parent::saveSettings($currentSettings, true);
+    }
+}
+
+class SessionConfigPageDispatcher extends BaseConfigDispatcher
+{
+    public function check()
+    {
+        $this->category = 'Session Management Settings';
+        $this->name = _kt('Session Management');
+
+        return parent::check();
+    }
+}
+
+class TimezoneConfigPageDispatcher extends BaseConfigDispatcher
+{
+    public function check()
+    {
+        $this->category = 'Timezone Settings';
+        $this->name = _kt('Timezone');
+
+        return parent::check();
     }
 }
 ?>

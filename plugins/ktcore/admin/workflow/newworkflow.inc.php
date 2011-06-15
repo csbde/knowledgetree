@@ -69,14 +69,12 @@ class KTNewWorkflowWizard extends KTAdminDispatcher {
 
         $oForm->setOptions(array(
             'action' => 'process_step1',
-            // NBM:  is there a cleaner way to reference the parent?
-            'cancel_url' => KTUtil::addQueryStringSelf('') . "?{$this->sectionQueryString}",
+            'cancel_url' => KTUtil::addQueryStringSelf(''), // NBM:  is there a cleaner way to reference the parent?
             'fail_action' => 'main',
             'label' => _kt('Workflow Details'),
             'submit_label' => _kt('Next'),
             'description' => _kt('This first step requires that you provide basic details about the workflow: its name, etc.'),
             'context' => $this,
-            'targeturl' => "{$_SERVER['SCRIPT_NAME']}?{$this->sectionQueryString}"
         ));
         $oForm->setWidgets(array(
             array('ktcore.widgets.string',array(
@@ -136,7 +134,6 @@ class KTNewWorkflowWizard extends KTAdminDispatcher {
         $oTemplate->setData(array(
             'context' => $this,
             'form' => $this->form_step1(),
-            'section_query_string' => $this->sectionQueryString,
         ));
 
         return $oTemplate->render();
@@ -262,7 +259,6 @@ class KTNewWorkflowWizard extends KTAdminDispatcher {
             'args' => $args,
             'transitions' => $wiz_data['transitions'],
             'states' => $wiz_data['states'],
-            'section_query_string' => $this->sectionQueryString,
         ));
 
         return $oTemplate->render();
@@ -415,7 +411,7 @@ class KTNewWorkflowWizard extends KTAdminDispatcher {
         // FIXME nbm:  how do you recommend we do this?
 
         $base = $_SERVER['PHP_SELF'];
-        $qs = sprintf("action=view&fWorkflowId=%d&" . $this->sectionQueryString, $oWorkflow->getId());
+        $qs = sprintf("action=view&fWorkflowId=%d", $oWorkflow->getId());
         $url = KTUtil::addQueryString($base, $qs);
         $this->addInfoMessage(_kt("Your new workflow has been created."));
         redirect($url);
