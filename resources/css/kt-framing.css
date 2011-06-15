@@ -13,7 +13,8 @@ body
     font-family: sans-serif;
 	min-width: 850px;
 }
-body.settings {
+body.settings,
+body.dashboard {
 	overflow-y: scroll;
 } 
 
@@ -1098,15 +1099,7 @@ a.main_nav_item {
 }
 
 .kt_collection .folder_row td {
-    background-color: #e5e5e5;
-}
-
-.kt_collection .folder_row td.sort_on {
-    background-color: #dbdbdb;
-}
-
-.kt_collection .folder_row.odd td.sort_on {
-    background-color: #e8e8e8;
+    background-color: white;
 }
 
 
@@ -1123,7 +1116,7 @@ a.main_nav_item {
 }
 
 .kt_collection .odd td.sort_on {
-    background-color: #f0f0f0;
+    background-color: white;
 }
 
 /* cheap and nasty hack for gmail-style highlighting. */
@@ -1303,8 +1296,8 @@ The text will be hidden for screen view.  The generic fahrner-ish approach comes
 }
 
 /* FIXME when available icon-naming-conformant sets have better coverage, make these more accurate. */
-.ktActionLink.ktDelete, .ktAction.ktDelete { background-image: url(/resources/graphics/delete.png); }
-.ktActionLink.ktEdit, .ktAction.ktEdit { background-image: url(/thirdparty/icon-theme/16x16/actions/document-properties.png); }
+.ktActionLink.ktDelete, .ktAction.ktDelete { background: url('../graphics/newui/icons/delete.png') no-repeat; }
+.ktActionLink.ktEdit, .ktAction.ktEdit { background: url(../../resources/graphics/newui/icons/edit.png) no-repeat right top; }
 .ktActionLink.ktAddUser, .ktAction.ktAddUser { background-image: url(/thirdparty/icon-theme/16x16/actions/contact-new.png); }
 .ktActionLink.ktAddGroup, .ktAction.ktAddGroup { background-image: url(/thirdparty/icon-theme/16x16/actions/group-new.png); }
 .ktActionLink.ktAdd, .ktAction.ktAdd { background-image: url(/thirdparty/icon-theme/16x16/actions/add.png); }
