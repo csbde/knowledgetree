@@ -55,22 +55,6 @@
 					</div>
 					{/if}
 				</td>
-
-				<td width="{$colwidth}">
-                                        <form action="{$smarty.server.PHP_SELF}" method="POST">
-					<input type="hidden" name="do_search" value="1" />
-					{capture assign=link}{addQS}show_all=1{/addQS}{/capture}
-
-					{foreach item=oWidget from=$search_fields}
-					  {$oWidget->render()}
-					{/foreach}
-
-					<div class="form_actions">
-						<!-- Search button -->
-						<input type="submit" value="{i18n}Filter{/i18n}" />
-					</div>
-                                        </form>
-				</td>
 				{if $can_add}
 				{if $authentication_sources}
 				<td width="{$colwidth}"  valign="top">
@@ -93,7 +77,21 @@
 		</table>
 
 <br/><br/>
-
+<div class="user-filter">
+ 	<form action="{$smarty.server.PHP_SELF}" method="POST">
+ 						<input type="hidden" name="do_search" value="1" />
+ 						{capture assign=link}{addQS}show_all=1{/addQS}{/capture}
+ 	
+ 						{foreach item=oWidget from=$search_fields}
+ 						  {$oWidget->render()}
+ 						{/foreach}
+ 	
+ 						<div class="form_actions">
+ 							<!-- Search button -->
+ 							<input type="submit" value="{i18n}Filter{/i18n}" />
+ 						</div>
+ 	</form>
+ </div>
 {if ($no_search === true)}
 {else}
 {if (!empty($search_results))}

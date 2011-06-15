@@ -13,6 +13,9 @@ body
     font-family: sans-serif;
 	min-width: 850px;
 }
+body.Settings {
+	overflow-y: scroll;
+} 
 
 .floatClear
 {
@@ -1108,11 +1111,11 @@ a.main_nav_item {
 
 
 .kt_collection tr.odd>td {
-    background-color: #e3eef4;
+    background-color: #fafafa;
 }
 
 .kt_collection tr.even>td{
-    background-color: #fafafa;
+    background-color: #e3eef4;
 }
 
 .kt_collection tr.dragdrop td {

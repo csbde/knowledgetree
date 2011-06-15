@@ -32,18 +32,18 @@
 	   <tr>
 		  <th>{i18n}Group Name{/i18n}</th>
 		  <th>{i18n}Unit Name{/i18n}</th>
-		  <th>{i18n}Edit{/i18n}</th>
-		  <th>{i18n}Delete{/i18n}</th>
 		  <th>{i18n}Manage Users{/i18n}</th>
 		  <th>{i18n}Manage sub-groups{/i18n}</th>
 		  <th>{i18n}Subgroups{/i18n}</th>
+		  <th>{i18n}Edit{/i18n}</th>
+		  <th>{i18n}Delete{/i18n}</th>
 	   </tr>
 	</thead>
 	<tbody>
 
 	   <!-- do we want to batch here? -->
 		 {foreach item=oGroup from=$search_results}
-		 <tr>
+		 <tr class="{cycle values=odd,even}">
 			<td>{$oGroup->getName()}</td>
 			<td>
 	{assign var=sUnitName value=$context->_getUnitName($oGroup)}
@@ -53,15 +53,15 @@
 	{$context->_getUnitName($oGroup)}
 	{/if}
 		</td>
-			<td><a href="{addQS}action=editGroup&group_id={$oGroup->getId()}&old_search={$old_search}{/addQS}"
-	class="ktAction ktEdit">{i18n}Edit{/i18n}</a></td>
-			<td><a href="{addQS}action=deleteGroup&group_id={$oGroup->getId()}&old_search={$old_search}{/addQS}"
-	class="ktAction ktDelete">{i18n}Delete{/i18n}</a></td>
 			<td><a
 	href="{addQS}action=manageUsers&group_id={$oGroup->getId()}&old_search={$old_search}{/addQS}">{i18n}Manage Users{/i18n}</a></td>
 			<td><a
 	href="{addQS}action=manageSubgroups&group_id={$oGroup->getId()}&old_search={$old_search}{/addQS}">{i18n}Manage sub-groups{/i18n}</a></td>
 			<td class="title"><span class="descriptiveText">{$context->getGroupStringForGroup($oGroup)}</span></td>
+			<td><a href="{addQS}action=editGroup&group_id={$oGroup->getId()}&old_search={$old_search}{/addQS}"
+	class="ktAction ktEdit">{i18n}Edit{/i18n}</a></td>
+			<td><a href="{addQS}action=deleteGroup&group_id={$oGroup->getId()}&old_search={$old_search}{/addQS}"
+	class="ktAction ktDelete">{i18n}Delete{/i18n}</a></td>
 		 </tr>
 		 {/foreach}
 
