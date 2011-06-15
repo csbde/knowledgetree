@@ -67,7 +67,7 @@
 
 					<div class="form_actions">
 						<!-- Search button -->
-						<input type="submit" value="{i18n}Search For Users{/i18n}" />
+						<input type="submit" value="{i18n}Filter{/i18n}" />
 					</div>
                                         </form>
 				</td>
@@ -104,12 +104,11 @@
 			   <tr>
 				   <th>&nbsp;</th>
 				  <th>{i18n}Name{/i18n}</th>
-				  <th>{i18n}Username{/i18n}</th>
-				  <th>{i18n}Edit{/i18n}</th>
 				  <th>{i18n}Enabled{/i18n}</th>
-
 				  <th>{i18n}Group Memberships{/i18n}</th>
 				  <th>{i18n}Current Groups{/i18n}</th>
+				  <th>{i18n}Edit{/i18n}</th>
+
 			   </tr>
 			</thead>
 
@@ -120,12 +119,11 @@
 					 <tr class="{cycle values=odd,even}">
 						<td class="centered">
 					{if ($oUser->getId() != ADMIN_USER_ID)}<input type="checkbox" name="edit_user[{$oUser->getId()}]" value="1"/>
-					{else}&mdash;{/if}
+					{else}<input type="checkbox" disabled="disabled"/>{/if}
+					<br>
 						</td>
 						<td>
-					{$oUser->getName()}</td>
-						<td>{$oUser->getUsername()}</td>
-						<td><a href="{addQS}action=editUser&user_id={$oUser->getId()}&old_search={$old_search}&{$section_query_string}{/addQS}" class="ktAction ktEdit">{i18n}Edit{/i18n}</a></td>
+					{$oUser->getName()}<br/><span style="font-style:italic; color: #666;">{$oUser->getUsername()}</span></td>
 						<td class="centered">
 						{if ($oUser->getDisabled() == 1)}
 							<span class="ktAction ktDenied" title="{i18n}Disabled{/i18n}">{i18n}Disabled{/i18n}</span>
@@ -147,6 +145,8 @@
 							{/if}
 						</td>
 						<td class="title"><span class="descriptiveText">{$context->getGroupStringForUser($oUser)}</span></td>
+						<td><a href="{addQS}action=editUser&user_id={$oUser->getId()}&old_search={$old_search}&{$section_query_string}{/addQS}" class="ktAction ktEdit">{i18n}Edit{/i18n}</a></td>
+
 					 </tr>
 				 {/if}
 				 {/foreach}

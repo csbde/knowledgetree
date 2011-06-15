@@ -618,12 +618,6 @@ ul.floatleft li.notification {
 	padding-right: 12px;
 	width: 16px;
 	display: inline-block;
-	visibility: visible;
-}
-
-.ul_actions .none {
-	display: none;
-	visibility: hidden;
 }
 
 .action_buttons .action .disabled {
@@ -1269,4 +1263,8 @@ http://devgrow.com/iphone-style-switches/
 #usageStats li {
 	font-size: 15px;
 	line-height: 25px;
+}
+
+#users.settings-content input[name="search_name"] {
+	width: 125px;
 }
