@@ -1,6 +1,6 @@
 <h2>{i18n}Document Type{/i18n}: { $oDocumentType->getName() }</h2>
 
-<form method="POST" action="{$smarty.server.PHP_SELF}?{$section_query_string}">
+<form method="POST" action="{$smarty.server.PHP_SELF}">
 <input type="hidden" name="action" value="editobject">
 <input type="hidden" name="fDocumentTypeId" value="{$oDocumentType->getId()}">
 <input type="textbox" name="name" value="{$sDocTypeName}">
@@ -14,7 +14,7 @@
 <p class="descriptiveText"></p>
 
 { if $aCurrentFieldsets }
-<form method="POST" action="{$smarty.server.PHP_SELF}?{$section_query_string}">
+<form method="POST" action="{$smarty.server.PHP_SELF}">
 <fieldset>
 <legend>{i18n}Linked Fieldsets{/i18n}</legend>
   <input type="hidden" name="action" value="removefieldsets">
@@ -45,7 +45,7 @@
 { /if }
 
 { if $bAvailableFieldsets }
-<form method="POST" action="{$smarty.server.PHP_SELF}?{$section_query_string}">
+<form method="POST" action="{$smarty.server.PHP_SELF}">
 <fieldset>
 <legend>{i18n}Associate Fieldsets{/i18n}</legend>
 

@@ -10,7 +10,7 @@ attached.{/i18n}</p>
 will change to use this workflow, and if their previous workflow was different
 they will lose any progress they have made in that workflow.{/i18n}</p>
 
-<form method="POST" action="{$smarty.server.PHP_SELF}?{$section_query_string}">
+<form method="POST" action="{$smarty.server.PHP_SELF}">
 <input type="hidden" name="action" value="allocate" />
 <input type="hidden" name="fFolderId" value="{$folder_id}" />
 <fieldset>

@@ -57,15 +57,11 @@ class KTUnitAdminDispatcher extends KTAdminDispatcher {
 
     function check()
     {
-        $this->aBreadcrumbs[] = array('url' => $_SERVER['PHP_SELF'], 'name' => _kt('Unit Management'));
         return parent::check();
     }
 
     function do_main()
     {
-        //$this->oPage->setBreadcrumbDetails(_kt('select a unit'));
-        //$this->oPage->setTitle(_kt("Unit Management"));
-
         $unit_list = Unit::getList();
 
         $templating = KTTemplating::getSingleton();
@@ -73,7 +69,6 @@ class KTUnitAdminDispatcher extends KTAdminDispatcher {
         $templateData = array(
             'context' => $this,
             'unit_list' => $unit_list,
-            'section_query_string' => $this->sectionQueryString
         );
 
          return $template->render($templateData);
@@ -92,7 +87,6 @@ class KTUnitAdminDispatcher extends KTAdminDispatcher {
         $templateData = array(
             'context' => $this,
             'add_fields' => $add_fields,
-	    'section_query_string' => $this->sectionQueryString
         );
 
         return $template->render($templateData);
@@ -153,7 +147,6 @@ class KTUnitAdminDispatcher extends KTAdminDispatcher {
             'unit_name' => $sName,
             'folder' => $oFolder,
             'name' => $sName,
-	    'section_query_string' => $this->sectionQueryString
         );
 
         return $template->render($templateData);
@@ -199,6 +192,9 @@ class KTUnitAdminDispatcher extends KTAdminDispatcher {
 
     function do_editUnit()
     {
+	$this->oPage->setBreadcrumbDetails(_kt('Edit unit'));
+        $this->oPage->setTitle(_kt("Edit unit"));
+
         $oUnit = $this->oValidator->validateUnit($_REQUEST['unit_id']);
 
         $fields = array();
@@ -209,7 +205,6 @@ class KTUnitAdminDispatcher extends KTAdminDispatcher {
             'context' => $this,
             'edit_unit' => $oUnit,
             'edit_fields' => $fields,
-	    'section_query_string' => $this->sectionQueryString
         );
 
         return $template->render($templateData);
@@ -255,7 +250,6 @@ class KTUnitAdminDispatcher extends KTAdminDispatcher {
             'context' => $this,
             'unit' => $oUnit,
             'fields' => $fields,
-	    'section_query_string' => $this->sectionQueryString
         );
 
         return $template->render($templateData);

@@ -13,9 +13,9 @@ while the workflow has no documents or document-versions assigned to the workflo
 <fieldset>
 <legend>{i18n}Create a new transition{/i18n}</legend>
 
-<a href="{addQS}action=createTransition&fWorkflowId={$oWorkflow->getId()}&{$section_query_string}{/addQS}"
+<a href="{addQS}action=createTransition&fWorkflowId={$oWorkflow->getId()}{/addQS}"
    class="ktAction ktAdd ktInline">{i18n}Create a new transition{/i18n}</a>
-<a href="{addQS}action=createTransition&fWorkflowId={$oWorkflow->getId()}&{$section_query_string}{/addQS}"
+<a href="{addQS}action=createTransition&fWorkflowId={$oWorkflow->getId()}{/addQS}"
    >{i18n}Create a new transition{/i18n}</a>
 
 </fieldset>
@@ -29,7 +29,7 @@ to add new transitions.{/i18n}</span></div>
 <p class="descriptiveText">{i18n}Click on any transition below to edit it directly,
 or use the checkboxes to assign which states the transition is available from.{/i18n}</p>
 
-<form action="{$smarty.server.PHP_SELF}?{$section_query_string}" method="POST">
+<form action="{$smarty.server.PHP_SELF}" method="POST">
 <input type="hidden" name="action" value="setTransitionAvailability">
 <input type="hidden" name="fWorkflowId" value="{$oWorkflow->getId()}" />
 
@@ -50,8 +50,8 @@ or use the checkboxes to assign which states the transition is available from.{/
   {foreach item=oTransition from=$workflow_info.transitions}
   <tr class='{cycle values="odd,even"}'>
     <td>
-      <a href="{addQS}action=editTransition&fWorkflowId={$oWorkflow->getId()}&fTransitionId={$oTransition->getId()}&{$section_query_string}{/addQS}">{$oTransition->getName()}</a>
-      {if ($workflow_info.can_delete)} | <span class="ktActionLink ktDelete"><a href="{addQS}action=deleteTransition&fTransitionId={$oTransition->getId()}&fWorkflowId={$oWorkflow->getId()}&{$section_query_string}{/addQS}" >{i18n}Delete{/i18n}</a></span>{/if}
+      <a href="{addQS}action=editTransition&fWorkflowId={$oWorkflow->getId()}&fTransitionId={$oTransition->getId()}{/addQS}">{$oTransition->getName()}</a>
+      {if ($workflow_info.can_delete)} | <span class="ktActionLink ktDelete"><a href="{addQS}action=deleteTransition&fTransitionId={$oTransition->getId()}&fWorkflowId={$oWorkflow->getId()}{/addQS}" >{i18n}Delete{/i18n}</a></span>{/if}
     </td>
     {foreach item=oState from=$workflow_info.states}
       <td>

@@ -13,6 +13,6 @@
     />
 {/foreach}
 </map>
-<img src="{addQS context=$context}action=graphimage&{$section_query_string}{/addQS}" usemap="graphmap" style="border: 0;" />
+<img src="{addQS context=$context}action=graphimage{/addQS}" usemap="graphmap" style="border: 0;" />
 </body>
 </html>

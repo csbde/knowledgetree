@@ -83,10 +83,10 @@ class InetDocumentFieldDispatcher extends KTAdminDispatcher {
     public function do_main ()
     {
         $template = $this->oValidator->validateTemplate('ktcore/metadata/admin/list');
+        $fieldsets = KTFieldset::getList("disabled != true AND namespace != 'tagcloud'");
         $template->setData(array(
-	    'context' => $this,
-            'fieldsets' => KTFieldset::getList("disabled != true AND namespace != 'tagcloud'"),
-	    'section_query_string' => $this->sectionQueryString
+	    	'context' => $this,
+            'fieldsets' => $fieldsets,
         ));
 
         return $template->render();
@@ -106,10 +106,9 @@ class InetDocumentFieldDispatcher extends KTAdminDispatcher {
             'identifier' => 'ktcore.fieldsets.create',
             'label' => _kt('Create New Fieldset'),
             'submit_label' => _kt('Create Fieldset'),
-            'cancel_url' => "{$_SERVER['SCRIPT_NAME']}?{$this->sectionQueryString}",
-            'fail_url' => "{$_SERVER['SCRIPT_NAME']}?{$this->sectionQueryString}&action=newfieldset",
+            'cancel_action' => 'main',
+            'fail_action' => 'newfieldset',
             'action' => 'create',
-            'targeturl' => "{$_SERVER['SCRIPT_NAME']}?{$this->sectionQueryString}",
             'context' => $this,
         ));
 
@@ -274,51 +273,51 @@ class InetDocumentFieldDispatcher extends KTAdminDispatcher {
      */
     public function getTypesForFieldset($oFieldset)
     {
-	global $default;
-	if ($oFieldset->getIsGeneric()) {
-	    return _kt('All types use this generic fieldset.');
-	}
-
-	$types = $oFieldset->getAssociatedTypes();
-	if (PEAR::isError($types)) {
-	    $default->log->debug('Fieldsets admin: Error retrieving list of associated document types.');
-	    return _kt('Error retrieving list of types.');
-	}
-
-	if (empty($types)) {
-	    return _kt('None');
-	}
-
-	$aNames = array();
-	foreach ($types as $oType) {
-	    if (!PEAR::isError($oType)) {
-		$aNames[] = $oType->getName();
-	    } else {
-		$default->log->debug('Fieldsets admin: Document type gives error: '.$oType->getMessage());
-	    }
-	}
-
-	$list = implode(', ', $aNames);
-	$length = mb_strlen($list);
-
-	if ($length < 50) {
-	    return $list;
-	}
-
-	$default->log->debug('Fieldsets admin: wrapping the list of doc types from length '.$length);
-
-	// Wrap the list to 50 characters per line
-	$wrapList = '';
-	$cut = 0;
-	while ($length > 50 && $cut !== false) {
-	    $cut = strpos($list, ' ', 50);
-	    $wrapList .= mb_strcut($list, 0, $cut);
-	    $wrapList .= '<br />';
-	    $list = mb_strcut($list, $cut);
-	    $length = mb_strlen($list);
-	}
-
-	return $wrapList . $list;
+		global $default;
+		if ($oFieldset->getIsGeneric()) {
+		    return _kt('All types use this generic fieldset.');
+		}
+	
+		$types = $oFieldset->getAssociatedTypes();
+		if (PEAR::isError($types)) {
+		    $default->log->debug('Fieldsets admin: Error retrieving list of associated document types.');
+		    return _kt('Error retrieving list of types.');
+		}
+	
+		if (empty($types)) {
+		    return _kt('None');
+		}
+	
+		$aNames = array();
+		foreach ($types as $oType) {
+		    if (!PEAR::isError($oType)) {
+			$aNames[] = $oType->getName();
+		    } else {
+			$default->log->debug('Fieldsets admin: Document type gives error: '.$oType->getMessage());
+		    }
+		}
+	
+		$list = implode(', ', $aNames);
+		$length = mb_strlen($list);
+	
+		if ($length < 50) {
+		    return $list;
+		}
+	
+		$default->log->debug('Fieldsets admin: wrapping the list of doc types from length '.$length);
+	
+		// Wrap the list to 50 characters per line
+		$wrapList = '';
+		$cut = 0;
+		while ($length > 50 && $cut !== false) {
+		    $cut = strpos($list, ' ', 50);
+		    $wrapList .= mb_strcut($list, 0, $cut);
+		    $wrapList .= '<br />';
+		    $list = mb_strcut($list, $cut);
+		    $length = mb_strlen($list);
+		}
+	
+		return $wrapList . $list;
     }
 
     /**
@@ -350,14 +349,13 @@ class InetDocumentFieldDispatcher extends KTAdminDispatcher {
 				$oSubDispatcher = new BasicFieldsetManagementDispatcher();
 		    }
         }
-
         $subEventVar = 'fieldset_action';
         $subEvent = KTUtil::arrayGet($_REQUEST, $subEventVar);
         if (!empty($subEvent)) {
             // do nothing, since this will handle everything
             $thisUrl = KTUtil::addQueryStringSelf($this->meldPersistQuery('', 'edit'));
             $oSubDispatcher->redispatch($subEventVar, null, $this, $thisUrl);
-            exit(0);
+			return;
         } else {
             // what we want is the "additional info" section
             $additional = $oSubDispatcher->describe_fieldset($this->oFieldset);
@@ -368,7 +366,6 @@ class InetDocumentFieldDispatcher extends KTAdminDispatcher {
             'context' => $this,
             'fieldset_name' => $this->oFieldset->getName(),
             'additional' => $additional,
-	    	'section_query_string' => $this->sectionQueryString
         ));
 
         return $oTemplate->render();

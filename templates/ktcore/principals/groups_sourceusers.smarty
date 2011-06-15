@@ -3,7 +3,7 @@
 <p class="descriptiveText">{i18n}Users may be associated with Groups which are then used to grant these users security privileges.{/i18n}</p>
 
 
-<form action="{$smarty.server.PHP_SELF}?{$section_query_string}" method="POST">
+<form action="{$smarty.server.PHP_SELF}" method="POST">
    <input type="hidden" name="action" value="synchroniseGroup" />
    <input type="hidden" name="group_id" value="{$group->getId()}" />
    <input type="hidden" name="old_search" value="{$old_search}" />

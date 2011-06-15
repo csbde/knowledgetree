@@ -154,7 +154,7 @@ INSERT INTO `config_groups` VALUES
 (13, 'KTWebDAVSettings', 'WebDAV', 'Configuration options for third-party WebDAV clients', 'Client Tools Settings'),
 (14, 'openoffice', 'OpenOffice.org Service', 'Configuration options for the OpenOffice.org service. Note that several KnowledgeTree features use this service.', 'Search and Indexing Settings'),
 (15, 'search', 'Search', 'Configures settings for KnowledgeTree''s Search function.', 'Search and Indexing Settings'),
-(16, 'session', 'Session Management', 'Session management configuration.', 'General Settings'),
+(16, 'session', 'Session Management', 'Session management configuration.', 'Session Management Settings'),
 (17, 'storage', 'Storage', 'Configure the KnowledgeTree storage manager.', 'System Settings'),
 (18, 'tweaks', 'Tweaks', 'Small configuration tweaks', 'General Settings'),
 (19, 'ui', 'User Interface', 'General user interface configuration', 'User Interface Settings'),
@@ -165,7 +165,7 @@ INSERT INTO `config_groups` VALUES
 (24, 'server', 'Server Settings', 'Configuration settings for the server', 'System Settings'),
 (25, 'explorerCPSettings', 'Explorer CP Settings', 'Configuration options for KnowledgeTree Explorer CP', 'Client Tools Settings'),
 (26, 'actionreasons', 'Document Action Settings', 'Configure how the system deals with reasons for document actions.', 'Document Action Settings'),
-(27, 'timezone', 'Timezone', 'Timezone configuration settings', 'General Settings');
+(27, 'timezone', 'Timezone', 'Timezone configuration settings', 'Timezone Settings');
 /*!40000 ALTER TABLE `config_groups` ENABLE KEYS */;
 UNLOCK TABLES;
 

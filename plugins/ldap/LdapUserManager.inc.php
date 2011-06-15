@@ -4,7 +4,7 @@
  * Manages user functions for LDAP
  */
 
-require_once('ldapManager.php');
+require_once('LdapManager.inc.php');
 
 class LdapUserManager extends LdapManager {
 
@@ -18,12 +18,12 @@ class LdapUserManager extends LdapManager {
      * @param object $source
      * @param array $attributes [optional]
      */
-	public function __construct($source, $attributes = null)
-	{
-		parent::__construct($source);
+    public function __construct($source, $attributes = null)
+    {
+        parent::__construct($source);
 
-	    $config = unserialize($this->source->getConfig());
-		$this->objectClasses = KTUtil::arrayGet($config, 'objectclasses');
+        $config = unserialize($this->source->getConfig());
+        $this->objectClasses = KTUtil::arrayGet($config, 'objectclasses');
         if (empty($this->objectClasses)) {
             $this->objectClasses = array('user', 'inetOrgPerson', 'posixAccount');
         }
@@ -33,18 +33,18 @@ class LdapUserManager extends LdapManager {
             $this->searchAttributes = array('cn', 'mail', 'sAMAccountName');
         }
 
-	    if (!empty($attributes) && is_array($attributes)) {
-	        $this->attributes = $attributes;
-	    }
-	    else {
-	    	$this->attributes = KTUtil::arrayGet($config, 'attributemap', $this->attributes);
-	    }
-	}
+        if (!empty($attributes) && is_array($attributes)) {
+            $this->attributes = $attributes;
+        }
+        else {
+            $this->attributes = KTUtil::arrayGet($config, 'attributemap', $this->attributes);
+        }
+    }
 
-	public function __destruct()
-	{
-	    parent::__destruct();
-	}
+    public function __destruct()
+    {
+        parent::__destruct();
+    }
 
     /**
      * Search the LDAP server for users matching the supplied search string
@@ -110,7 +110,6 @@ class LdapUserManager extends LdapManager {
 
         global $default;
         foreach ($attributes as $k => $v) {
-            /*$default->log->info("LDAP: For DN $dn, attribute $k value is " . print_r($v, true));*/
             if (is_array($v)) {
                 $v = array_shift($v);
             }

@@ -91,7 +91,6 @@ class DeletedDocumentsDispatcher extends KTAdminDispatcher {
             'pagelist' => $aPages,
             'pagecount' => $pages,
             'itemcount' => $items,
-        'section_query_string' => $this->sectionQueryString
         ));
 
         return $template->render();
@@ -143,7 +142,6 @@ class DeletedDocumentsDispatcher extends KTAdminDispatcher {
         $template->setData(array(
             'context' => $this,
             'documents' => $documents,
-            'section_query_string' => $this->sectionQueryString
         ));
 
         return $template->render();
@@ -259,7 +257,6 @@ class DeletedDocumentsDispatcher extends KTAdminDispatcher {
         $template->setData(array(
             'context' => $this,
             'documents' => $documents,
-            'section_query_string' => $this->sectionQueryString
         ));
 
         return $template->render();

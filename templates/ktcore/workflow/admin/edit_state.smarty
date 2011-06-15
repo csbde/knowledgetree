@@ -14,13 +14,13 @@ the way other systems work.  For example:  workflow states can override the perm
 on a document, and reaching a state can cause notifications to be sent out.{/i18n}</p>
 
 <dl>
-    <dt><strong><a href="{addQS context=$context}action=security&{$section_query_string}{/addQS}">{i18n}Security{/i18n}</a></strong></dt>
+    <dt><strong><a href="{addQS context=$context}action=security{/addQS}">{i18n}Security{/i18n}</a></strong></dt>
     <dd class="descriptiveText">{i18n}When a document is in a workflow state, that
     state can override some or all of the permissions that would "normally" be
     assigned to the document (e.g. via the folder it is in).  It can also restrict
     which document actions are available.{/i18n}</dd>
     
-    <dt><a href="{addQS context=$context}action=editnotifications&{$section_query_string}{/addQS}"><strong>{i18n}Notifications{/i18n}</a></strong></dt>
+    <dt><a href="{addQS context=$context}action=editnotifications{/addQS}"><strong>{i18n}Notifications{/i18n}</a></strong></dt>
     <dd class="descriptiveText">{i18n}In order to progress through a workflow, a document
     will usually require collaboration between a number of different users.  
     One way to help this process is to inform certain groups or roles about
