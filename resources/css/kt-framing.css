@@ -13,7 +13,7 @@ body
     font-family: sans-serif;
 	min-width: 850px;
 }
-body.Settings {
+body.settings {
 	overflow-y: scroll;
 } 
 

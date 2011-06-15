@@ -54,6 +54,7 @@ $sectionName = 'dashboard';
 
 class DashboardDispatcher extends KTStandardDispatcher {
 
+	public $sSection = 'dashboard';
     public $notifications = array();
     public $sHelpPage = 'ktcore/dashboard.html';
 	public $aCannotView = array(4);
