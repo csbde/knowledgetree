@@ -18,8 +18,8 @@
 </div>
 <div class="settings-list" style="width: 762px; float: left;">
 	{foreach item=categoryItem from=$items name=itemlist}
-		<div class="settings-item">
-			<a href="" onclick="jQuery('#{$categoryItem.name}').toggle(); return false;">{$categoryItem.title}</a>
+		<div class="settings-item {$categoryItem.name}">
+			<a href="" onclick="jQuery('#{$categoryItem.name}').slideToggle('fast'); return false;">{$categoryItem.title}</a>
 		</div>
 		<div id="{$categoryItem.name}" class="settings-content" style="display:{if $categoryItem.autoDisplay}block{else}none{/if};">
 			{$context->loadSection($categoryItem)}

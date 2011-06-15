@@ -84,7 +84,7 @@
     {/literal}
     </script>
 </head>
-<body {if (!$page->show_portlets)}class="noportlets"{/if} {if $page->onload}onload="{$page->getBodyOnload()}"{/if} >
+<body {if (!$page->show_portlets)}class="noportlets {$page->title|sanitize}"{/if} class="{$page->title|sanitize}" {if $page->onload}onload="{$page->getBodyOnload()}"{/if} >
 
 	<div id="wrapper">
 
