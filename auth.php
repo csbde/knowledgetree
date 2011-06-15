@@ -46,75 +46,93 @@ class AuthenticationDispatcher extends KTDispatcher {
 
     public function do_main()
     {
-        global $default;
-        
-        // TODO move this code to within the plugin?  may wish to share it between methods if we add more auth methods?
-        // dispatch based on received authentication content
-        // OneLogin SAML authentication
         if (!empty($_POST['SAMLResponse']) && KTPluginUtil::pluginIsActive('auth.onelogin.plugin')) {
-            try {
-                require_once(KTPluginUtil::getPluginPath('auth.onelogin.plugin') . 'SAMLConsumer.inc.php');
-                $user = null;
-                $consumer = new SAMLConsumer();
-                if ($consumer->authenticate($_POST['SAMLResponse'], $user)) {
-                    // determine user from supplied username
-                    $res = DBUtil::getOneResult("SELECT id FROM users WHERE username = '$user'");
-                    if (PEAR::isError($res) || empty($res['id'])) {
-                        $default->log->error("Error finding user $user (OneLogin SAML authentication)"
-                        . (PEAR::isError($res) ? ': ' . $res->getMessage() : ''));
-                        // redirect to login screen with appropriate error
-                        $this->relocate('login.php?errorMessage=Login+failed.++Please+check+your+onelogin+username+and+try+again.');
-                    }
-
-                    // set user as logged in
-                    $user = User::get($res['id']);
-                    if (PEAR::isError($user)) {
-                        $default->log->error("User $user does not exist (OneLogin SAML authentication): " . $user->getMessage());
-                        // redirect to login screen with appropriate error
-                        $this->relocate('login.php?errorMessage=Login+failed.++Please+check+your+onelogin+username+and+try+again.');
-                    }
-
-                    $session = new Session();
-                    $sessionID = $session->create($user);
-                    if (PEAR::isError($sessionID)) {
-                        $default->log->error("Error creating session for user $user (OneLogin SAML authentication): " . $sessionID->getMessage());
-                        // redirect to login screen with appropriate error
-                        $this->relocate('login.php?errorMessage=Login+failed.++Please+check+your+onelogin+username+and+try+again.');
-                    }
-
-                    // log authentication method used
-                    $default->log->info('User logged in (OneLogin SAML authentication)');
-
-                    // add a flag to check for bulk downloads after login is succesful; this will be cleared in the code which checks
-                    $_SESSION['checkBulkDownload'] = true;
-
-                    // DEPRECATED initialise page-level authorisation array
-                    $_SESSION['pageAccess'] = null;
-
-                    $redirect = strip_tags(KTUtil::arrayGet($_REQUEST, 'redirect'));
-                    $cookietest = KTUtil::randomString();
-                    setcookie('CookieTestCookie', $cookietest, 0);
-
-                    // make sure to set referrer to local (does not appear to work)
-                    header("Referer: {$_SERVER['HTTP_HOST']}");
-                    $this->redirectTo('checkCookie', array('cookieVerify' => $cookietest, 'redirect' => $redirect));
-                    exit(0);
-                }
-                else {
-                    // redirect to login screen with appropriate error
-                    $this->relocate('login.php?errorMessage=Login+failed.++Please+check+your+onelogin+username+and+try+again.');
-                }
-            }
-            catch (Exception $e) {
-                // redirect to login screen with appropriate error
-                $this->relocate('login.php?errorMessage=Login+failed.++Please+check+your+onelogin+username+and+try+again.');
-            }
+            $this->onelogin();
         }
 
-        // redirect to main login page
         $this->relocate('login.php?errorMessage=Login+failed.++Please+check+your+username+and+password%2C+and+try+again.');
     }
-    
+
+    // TODO Consider moving this code inside the onelogin plugin.
+    private function onelogin()
+    {
+        $oneloginErrorMessage = 'Login+failed.++Please+check+your+onelogin+username+and+try+again';
+
+        try {
+            require_once(KTPluginUtil::getPluginPath('auth.onelogin.plugin') . 'SAMLConsumer.inc.php');
+
+            $consumer = new SAMLConsumer();
+            if ($consumer->authenticate($_POST['SAMLResponse'])) {
+                $this->startOneloginSession($consumer->getAuthenticatedUser(), $oneloginErrorMessage);
+            }
+            else {
+                $this->relocate("login.php?errorMessage=$oneloginErrorMessage");
+            }
+        }
+        catch (Exception $e) {
+            $this->relocate("login.php?errorMessage=$oneloginErrorMessage.");
+        }
+    }
+
+    private function startOneloginSession($user, $oneloginErrorMessage)
+    {
+        global $default;
+
+        $user = $this->getOneloginUser($user, $oneloginErrorMessage);
+        $this->createOneloginSession($user, $oneloginErrorMessage);
+
+        $default->log->info('User logged in (OneLogin SAML authentication)');
+
+        $redirect = strip_tags(KTUtil::arrayGet($_REQUEST, 'redirect'));
+        $cookietest = KTUtil::randomString();
+        setcookie('CookieTestCookie', $cookietest, 0);
+
+        // make sure to set referrer to local (does not appear to work)
+        header("Referer: {$_SERVER['HTTP_HOST']}");
+        $this->redirectTo('checkCookie', array('cookieVerify' => $cookietest, 'redirect' => $redirect));
+        exit(0);
+    }
+
+    private function getOneloginUser($user, $oneloginErrorMessage)
+    {
+        global $default;
+
+        // Determine user from supplied username.
+        $res = DBUtil::getOneResult("SELECT id FROM users WHERE username = '$user'");
+        if (PEAR::isError($res) || empty($res['id'])) {
+            $default->log->error("Error finding user $user (OneLogin SAML authentication)"
+                                . (PEAR::isError($res) ? ': ' . $res->getMessage() : ''));
+            $this->relocate("login.php?errorMessage=$oneloginErrorMessage");
+        }
+
+        // set user as logged in
+        $user = User::get($res['id']);
+        if (PEAR::isError($user)) {
+            $default->log->error("User $user does not exist (OneLogin SAML authentication): " . $user->getMessage());
+            $this->relocate("login.php?errorMessage=$oneloginErrorMessage");
+        }
+
+        return $user;
+    }
+
+    private function createOneloginSession($user, $oneloginErrorMessage)
+    {
+        global $default;
+        
+        $session = new Session();
+        $sessionID = $session->create($user);
+        if (PEAR::isError($sessionID)) {
+            $default->log->error("Error creating session for user $user (OneLogin SAML authentication): " . $sessionID->getMessage());
+            $this->relocate("login.php?errorMessage=$oneloginErrorMessage");
+        }
+
+        // Add a flag to check for bulk downloads after login is succesful; this will be cleared in the code which checks.
+        $_SESSION['checkBulkDownload'] = true;
+
+        // DEPRECATED initialise page-level authorisation array
+        $_SESSION['pageAccess'] = null;
+    }
+
     public function check()
     {
         $oKTConfig = KTConfig::getSingleton();
@@ -127,10 +145,13 @@ class AuthenticationDispatcher extends KTDispatcher {
             $cookietest = KTUtil::randomString();
             setcookie("CookieTestCookie", $cookietest, 0);
 
-            $this->redirectTo('checkCookie', array(
-            'cookieVerify' => $cookietest,
-            'redirect' => $redirect,
-            ));
+            $this->redirectTo(
+                        'checkCookie',
+                        array(
+                            'cookieVerify' => $cookietest,
+                            'redirect' => $redirect,
+                        )
+            );
             exit(0);
             // The old way -> doesn't take the redirect into account
             //exit(redirect(generateControllerLink('dashboard')));
@@ -138,7 +159,7 @@ class AuthenticationDispatcher extends KTDispatcher {
 
         return true;
     }
-    
+
     public function do_checkCookie()
     {
         $cookieTest = KTUtil::arrayGet($_COOKIE, "CookieTestCookie", null);
