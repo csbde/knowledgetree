@@ -540,7 +540,7 @@ class User extends KTEntity {
 
     function create()
     {
-        if (KTPluginUtil::pluginIsActive('ktdms.wintools')) {
+        if (KTPluginUtil::pluginIsActive('ktdms.wintools') && $this->getDisabled() <= 3) {
             $path = KTPluginUtil::getPluginPath('ktdms.wintools');
             require_once($path . 'baobabkeyutil.inc.php');
             $res = BaobabKeyUtil::canAddUser();
