@@ -2,7 +2,7 @@
 
 <p class="descriptiveText">{i18n}Creating a Dynamic Condition involves setting up criteria that filters content in the DMS for the purposes of selectively assigning permissions associated with the Dynamic Condition, according to the specified criteria. Dynamic conditions are assigned on the folder's Permissions management page in Browse Documents. Dynamic Conditions are also used to create Guard permissions, which are required to perform transitions on Workflows. {/i18n}</p>
 
-<form action="{$smarty.server.PHP_SELF}?{$section_query_string}" method="POST">
+<form action="{$smarty.server.PHP_SELF}" method="POST">
 <fieldset>
 <legend>{i18n}Create a new condition{/i18n}</legend>
 <div>
@@ -29,8 +29,8 @@
 {foreach item=oCondition from=$conditions}
     <tr>
         <td>{$oCondition->getName()}</td>
-        <td><a href="{addQS}action=edit&fSavedSearchId={$oCondition->getId()}&{$section_query_string}{/addQS}" class="ktAction ktEdit">{i18n}Edit{/i18n}</a></td>
-        <td><a href="{addQS}action=delete&fSavedSearchId={$oCondition->getId()}&{$section_query_string}{/addQS}" class="ktAction ktDelete">{i18n}Delete{/i18n}</a></td>
+        <td><a href="{addQS}action=edit&fSavedSearchId={$oCondition->getId()}{/addQS}" class="ktAction ktEdit">{i18n}Edit{/i18n}</a></td>
+        <td><a href="{addQS}action=delete&fSavedSearchId={$oCondition->getId()}{/addQS}" class="ktAction ktDelete">{i18n}Delete{/i18n}</a></td>
         <td><a href="{"booleanSearch"|generateControllerUrl}&qs[action]=performSearch&qs[fSavedSearchId]={$oCondition->getId()}">{i18n}Run Condition{/i18n}</a></td>
     </tr>
 {/foreach}

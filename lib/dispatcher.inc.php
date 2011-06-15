@@ -92,8 +92,6 @@ class KTDispatcher {
                 'session',
                 'action_prefix',
                 'bJSONMode',
-                // TODO Find a way to get this in the admin dispatcher only.
-                'sectionQueryString'
             );
             foreach ($core as $k) {
                 if (isset($origDispatcher->$k)) {
@@ -618,9 +616,6 @@ class KTAdminDispatcher extends KTStandardDispatcher {
 
     public $bAdminRequired = true;
     public $sSection = 'administration';
-    protected $category;
-    protected $subsection;
-    protected $sectionQueryString;
 
     public function KTAdminDispatcher()
     {
@@ -634,14 +629,13 @@ class KTAdminDispatcher extends KTStandardDispatcher {
     public function setCategoryDetail($subUrl)
     {
         $parts = explode('/', $subUrl);
-
-        // Not sure this part is really necessary, only using the sectionQueryString at the moment.
-        $this->category = $parts[0];
-        $this->subsection = $parts[1];
-
-        $this->sectionQueryString = "fCategory={$this->category}&subsection={$this->subsection}&expanded=1";
+		$_REQUEST['subsection'] = $parts[1];
+		$_REQUEST['expanded'] = 1;
+		if (!empty($parts[1])) {
+			$_SERVER['PHP_SELF'] .= "&subsection={$parts[1]}&expanded=1";
+		}
     }
-
+    
     public function setActiveStatus($active)
     {
         if (!$active) {
@@ -651,26 +645,17 @@ class KTAdminDispatcher extends KTStandardDispatcher {
 
     public function redirectTo($event, $query = '')
     {
-        parent::redirectTo($event, $this->buildSectionSubQuery($query));
+        parent::redirectTo($event, $query);
     }
 
     public function errorRedirectTo($event, $errorMessage, $query = '', $exception = null)
     {
-        parent::errorRedirectTo($event, $errorMessage, $this->buildSectionSubQuery($query), $exception);
+        parent::errorRedirectTo($event, $errorMessage, $query, $exception);
     }
 
     public function successRedirectTo($event, $infoMessage, $query = '')
     {
-        parent::successRedirectTo($event, $infoMessage, $this->buildSectionSubQuery($query));
-    }
-
-    private function buildSectionSubQuery($query)
-    {
-        if (empty($query) or $query == $this->sectionQueryString) {
-            return $this->sectionQueryString;
-        }
-
-        return "$query&{$this->sectionQueryString}";
+        parent::successRedirectTo($event, $infoMessage, $query);
     }
 
 }

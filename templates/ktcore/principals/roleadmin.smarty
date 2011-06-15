@@ -4,12 +4,12 @@
 
 {if ($for_edit === false)}
 
-<form action="{$smarty.server.PHP_SELF}?{$section_query_string}" method="POST">
+<form action="{$smarty.server.PHP_SELF}" method="POST">
 <fieldset>
    <legend>{i18n}Add a Role{/i18n}</legend>
-   
+
    <input type="hidden" name="action" value="createRole" />
-   
+
    {foreach item=oWidget from=$add_fields}
      {$oWidget->render()}
    {/foreach}
@@ -22,20 +22,20 @@
 
 {else}
 
-<form action="{$smarty.server.PHP_SELF}?{$section_query_string}" method="POST">
+<form action="{$smarty.server.PHP_SELF}" method="POST">
 <fieldset>
    <legend>{i18n}Change a role's details{/i18n}</legend>
-   
+
    <input type="hidden" name="action" value="updateRole" />
    <input type="hidden" name="role_id" value="{$edit_role->getId()}" />
-   
+
    {foreach item=oWidget from=$edit_fields}
      {$oWidget->render()}
    {/foreach}
-   
+
    <div class="form_actions">
       <input type="submit" value="{i18n}update role information{/i18n}" />
-      <input type="submit" name="kt_cancel[]" value="{i18n}Cancel{/i18n}" />
+      <input type="submit" name="kt_cancel[{$smarty.server.PHP_SELF}]" value="{i18n}Cancel{/i18n}" />
    </div class="form_actions">
 </fieldset>
 </form>
@@ -55,14 +55,14 @@
      {foreach item=oRole from=$roles}
      <tr>
         <td>{$oRole->getName()}</td>
-        <td><a href="{addQS}action=editRole&role_id={$oRole->getId()}&{$section_query_string}{/addQS}" class="ktAction ktEdit">{i18n}Edit{/i18n}</a></td>
-        <td><a href="{addQS}action=deleteRole&role_id={$oRole->getId()}&{$section_query_string}{/addQS}" class="ktAction ktDelete">{i18n}Delete{/i18n}</a></td>
-     </tr>   
+        <td><a href="{addQS}action=editRole&role_id={$oRole->getId()}{/addQS}" class="ktAction ktEdit">{i18n}Edit{/i18n}</a></td>
+        <td><a href="{addQS}action=deleteRole&role_id={$oRole->getId()}{/addQS}" class="ktAction ktDelete">{i18n}Delete{/i18n}</a></td>
+     </tr>
      {/foreach}
      {else}
      <tr>
         <td class="ktInfoMessage" colspan="3"><span>{i18n}There are currently no roles created within the system.{/i18n}</td>
-     </tr>   
+     </tr>
      {/if}
 </tbody>
 </table>

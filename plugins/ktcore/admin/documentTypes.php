@@ -75,7 +75,6 @@ class KTDocumentTypeDispatcher extends KTAdminDispatcher {
             'document_types' => $aDocumentTypes,
             'associated_types' => $aAssocDocs,
             'add_fields' => $addFields,
-			'section_query_string' => $this->sectionQueryString
         ));
 
         return $oTemplate->render();
@@ -193,7 +192,6 @@ class KTDocumentTypeDispatcher extends KTAdminDispatcher {
             'bAnyFieldsets' => count($aAvailableFieldsets) > 0,
             'bAvailableFieldsets' => count($vocab) > 0,
             'availableWidget' => $availableTypesWidget,
-			'section_query_string' => $this->sectionQueryString
         ));
 
         return $oTemplate->render();

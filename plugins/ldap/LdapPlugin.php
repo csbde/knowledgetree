@@ -39,8 +39,8 @@
 require_once(KT_LIB_DIR . "/plugins/plugin.inc.php");
 require_once(KT_LIB_DIR . "/plugins/pluginregistry.inc.php");
 
-class LdapPlugin extends KTPlugin
-{
+class LdapPlugin extends KTPlugin {
+
     public $autoRegister = true;
     public $sNamespace = 'ldap.plugin';
 
@@ -54,11 +54,12 @@ class LdapPlugin extends KTPlugin
 
     public function setup()
     {
-        $this->registerAuthenticationProvider(_kt('LDAP Authentication 2'), 'LdapAuthProvider', 'ldap.auth.provider', 'ldapAuthProvider.php');
+        $this->registerAuthenticationProvider(_kt('LDAP Authentication 2'), 'LdapAuthProvider', 'ldap.auth.provider', 'LdapAuthProvider.inc.php');
 
         $templating = KTTemplating::getSingleton();
         $templating->addLocation('ldap auth', '/plugins/ldap/templates');
     }
+
 }
 
 $pluginRegistry = KTPluginRegistry::getSingleton();

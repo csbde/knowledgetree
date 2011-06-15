@@ -63,7 +63,6 @@ class KTCheckoutAdminDispatcher extends KTAdminDispatcher {
         $oTemplate->setData(array(
             'context' => $this,
             'documents' => $aDocuments,
-            'section_query_string' => $this->sectionQueryString
         ));
 
         return $oTemplate->render();
@@ -102,7 +101,6 @@ class KTCheckoutAdminDispatcher extends KTAdminDispatcher {
             'context' => $this,
             'document' => $oDocument,
             'checkout_user' => $oUser,
-            'section_query_string' => $this->sectionQueryString
         ));
 
         return $oTemplate->render();

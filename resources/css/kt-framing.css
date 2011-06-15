@@ -706,7 +706,9 @@ a.main_nav_item {
     line-height: 1.4em;
     margin-bottom: 0.5em;
 }
-
+#content .settings-content .descriptiveText {
+	display:none;
+}
 #content .field label .required
 {
     margin-left: 0.5em;
@@ -1071,10 +1073,10 @@ a.main_nav_item {
 
 .kt_collection th,
 .kt_collection td {
-    padding: 0.25em 0.5em;
+    padding: 3px 10px;
     white-space: nowrap !important;
     overflow: hidden;
-    vertical-align: top;
+    vertical-align: middle;
 }
 
 .kt_collection td.title,
@@ -1106,11 +1108,11 @@ a.main_nav_item {
 
 
 .kt_collection tr.odd>td {
-    background-color: #fafafa;
+    background-color: #e3eef4;
 }
 
 .kt_collection tr.even>td{
-    background-color: #ffffff;
+    background-color: #fafafa;
 }
 
 .kt_collection tr.dragdrop td {

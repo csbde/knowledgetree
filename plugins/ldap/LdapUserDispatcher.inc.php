@@ -44,9 +44,9 @@ require_once(KT_LIB_DIR . '/widgets/fieldWidgets.php');
 require_once(KT_LIB_DIR . '/authentication/authenticationprovider.inc.php');
 require_once(KT_LIB_DIR . '/authentication/authenticationsource.inc.php');
 
-require_once('ldapUserManager.php');
+require_once('LdapUserManager.inc.php');
 
-class ldapUserDispatcher extends KTStandardDispatcher {
+class LdapUserDispatcher extends KTAdminDispatcher {
 
     private $attributes = array ('cn', 'samaccountname', 'givenname', 'sn', 'mail', 'mobile', 'userprincipalname', 'uid');
     private $source;
@@ -56,6 +56,11 @@ class ldapUserDispatcher extends KTStandardDispatcher {
     {
         $this->authenticatorClass = $authenticatorClass;
         $this->source = KTAuthenticationSource::get($_REQUEST['source_id']);
+
+        $category = KTUtil::arrayGet($_REQUEST, 'fCategory');
+        $subsection = KTUtil::arrayGet($_REQUEST, 'subsection');
+        $this->setCategoryDetail("$category/$subsection");
+
         parent::KTStandardDispatcher();
     }
 
@@ -137,15 +142,16 @@ class ldapUserDispatcher extends KTStandardDispatcher {
         $templating = KTTemplating::getSingleton();
         $template = $templating->loadTemplate('ldap_search_user');
         $templateData = array(
-        'context' => &$this,
-        'fields' => $fields,
-        'source' => $this->source,
-        'search_results' => $users,
-        'identifier_field' => $identifierField,
-        'massimport' => $massImport,
+            'context' => $this,
+            'fields' => $fields,
+            'source' => $this->source,
+            'search_results' => $users,
+            'identifier_field' => $identifierField,
+            'massimport' => $massImport,
+            'section_query_string' => $this->sectionQueryString
         );
 
-        return  $template->render($templateData);
+        return $template->render($templateData);
     }
 
     private function _do_createUserFromSource()
@@ -208,6 +214,7 @@ class ldapUserDispatcher extends KTStandardDispatcher {
             'search_results' => $aSearchResults,
             'dn' => $id,
             'samaccountname' => $result['samaccountname'],
+            'section_query_string' => $this->sectionQueryString
         );
 
         return $template->render($templateData);
@@ -299,6 +306,11 @@ class ldapUserDispatcher extends KTStandardDispatcher {
         $user = compact('userName', 'name', 'emailAddress', 'phone');
 
         return $user;
+    }
+
+    public function handleOutput($output)
+    {
+        print $output;
     }
 
 }

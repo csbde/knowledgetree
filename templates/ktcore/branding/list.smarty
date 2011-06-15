@@ -1,3 +1,9 @@
 <h2>{i18n}Manage Branding{/i18n}</h2>
 
 {$form->render()}
+
+{if $has_custom_logo}
+<div class="form_actions">
+    <a href="{$smarty.server.PHP_SELF}&action=resetlogo" class="form_cancel">{i18n}Remove Logo{/i18n}</a>
+</div>
+{/if}

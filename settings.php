@@ -117,7 +117,8 @@ class AdminSplashDispatcher extends KTAdminDispatcher {
         else {
             $categoryDetail = $registry->getCategory($category);
             $this->aBreadcrumbs[] = array('name' => $categoryDetail['title'], 'url' => KTUtil::ktLink('settings.php', '', 'fCategory='.$category));
-            $this->oPage->title = _kt('Settings') . ': ' . $categoryDetail['title'];
+            $this->oPage->title = _kt('Settings');
+            $this->oPage->secondary_title = $categoryDetail['title'];
             $items = $registry->getItemsForCategory($category);
             $message = null;
         }
@@ -184,7 +185,7 @@ if (empty($subUrl)) {
 
        $dispatcher->aBreadcrumbs = array();
        $dispatcher->aBreadcrumbs[] = array('action' => 'settings', 'name' => _kt('Settings'));
-       $dispatcher->aBreadcrumbs[] = array('name' => $category['title'], 'url' => KTUtil::ktLink('admin.php', $parts[0]));
+       $dispatcher->aBreadcrumbs[] = array('name' => $category['title'], 'url' => KTUtil::ktLink('settings.php', $parts[0]));
     } else {
        // FIXME (minor) redirect to no-suburl?
        $dispatcher = new AdminSplashDispatcher();

@@ -1,6 +1,6 @@
 <h2>{i18n}Authentication Sources{/i18n}</h2>
 
-<form method="POST" action="{$smarty.server.PHP_SELF}?{$section_query_string}">
+<form method="POST" action="{$smarty.server.PHP_SELF}">
 <fieldset><legend>{i18n}Edit an authentication source{/i18n}</legend>
 <input type="hidden" name="action" value="savesource" />
 <input type="hidden" name="source_id" value="{$source_id}" />
