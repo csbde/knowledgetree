@@ -102,7 +102,7 @@ class AuthenticationDispatcher extends KTDispatcher {
         if (PEAR::isError($res) || empty($res['id'])) {
             $default->log->error("Error finding user $user (OneLogin SAML authentication)"
                                 . (PEAR::isError($res) ? ': ' . $res->getMessage() : ''));
-            $this->relocate("login.php?errorMessage=$oneLoginErrorMessage");
+            $this->relocate("login.php?errorMessage=$oneloginErrorMessage");
         }
 
         // set user as logged in
