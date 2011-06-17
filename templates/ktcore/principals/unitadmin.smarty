@@ -15,24 +15,25 @@ membership of groups that belong to the unit.{/i18n}</p>
 </p>
 </fieldset>
 
-<table class="listing">
+<table class="kt_collection">
 <thead>
    <tr>
       <th>{i18n}Unit Name{/i18n}</th>
-      <th>{i18n}Edit{/i18n}</th>
-      <th>{i18n}Delete{/i18n}</th>
       <th>{i18n}Folder{/i18n}</th>
+      <th width="10px">{i18n}Edit{/i18n}</th>
+      <th width="10px">{i18n}Delete{/i18n}</th>
    </tr>
 </thead>
 <tbody>
      {foreach item=oUnit from=$unit_list}
-     <tr>
+     <tr class="{cycle values=odd,even}">
         <td>{$oUnit->getName()}</td>
-        <td><a href="{addQS}action=editUnit&unit_id={$oUnit->getId()}{/addQS}" class="ktAction ktEdit">{i18n}Edit{/i18n}</a></td>
-        <td><a href="{addQS}action=deleteUnit&unit_id={$oUnit->getId()}{/addQS}" class="ktAction ktDelete">{i18n}Delete{/i18n}</a></td>
         <td><span class="contenttype folder"><a class="contenttype_href" href="{getUrlForFolder
 folder=$oUnit->getFolderId()}">{assign var=oFolder
 value=$oUnit->getFolder()}{$oFolder->getName()}</a></span></td>
+		 <td><a href="{addQS}action=editUnit&unit_id={$oUnit->getId()}{/addQS}" class="ktAction ktEdit">{i18n}Edit{/i18n}</a></td>
+        <td><a href="{addQS}action=deleteUnit&unit_id={$oUnit->getId()}{/addQS}" class="ktAction ktDelete">{i18n}Delete{/i18n}</a></td>
+
      </tr>
      {/foreach}
 </tbody>

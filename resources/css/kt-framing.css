@@ -1048,6 +1048,7 @@ a.main_nav_item {
     width: 100%;
     white-space: nowrap !important;
     border: 1px solid #ccc;
+    border-spacing: 0px;
 }
 
 .kt_collection.narrow {
@@ -1250,7 +1251,7 @@ The text will be hidden for screen view.  The generic fahrner-ish approach comes
     text-decoration: none;
     overflow: hidden;
     border: 0 !important;
-    margin: 1px;
+    margin: 0px auto;
     padding: 0;
     padding-top: 16px;
     height: 0px !important;

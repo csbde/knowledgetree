@@ -102,10 +102,10 @@
 			   <tr>
 				   <th>&nbsp;</th>
 				  <th>{i18n}Name{/i18n}</th>
-				  <th>{i18n}Enabled{/i18n}</th>
+				  <th width="10px;">{i18n}Enabled{/i18n}</th>
 				  <th>{i18n}Group Memberships{/i18n}</th>
 				  <th>{i18n}Current Groups{/i18n}</th>
-				  <th>{i18n}Edit{/i18n}</th>
+				  <th width="10px;">{i18n}Edit{/i18n}</th>
 
 			   </tr>
 			</thead>
