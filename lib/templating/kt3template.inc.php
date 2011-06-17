@@ -98,8 +98,8 @@ class KTPage {
     public $helpPage = null;
 
     /** the "component".  Used to set the page header (see documentation for explanation). */
-    public $componentLabel = 'Browse Documents';
-    public $componentClass = 'browse_collections';
+    public $componentLabel = 'Default';
+    public $componentClass = 'default';
 
     /** $contents is the center of the page.  In KT < 3, this was CentralPayload. */
     public $contents = '';
@@ -168,7 +168,7 @@ class KTPage {
         // Shortcuts - define the various combinations which are used.
         // This is primarily to prevent wrapping of lines.
         // NOTE $combined excludes only login and other special cases.
-        $combined = array('browse_collections', 'dashboard', 'document_details', 'administration');
+        $combined = array('browse_collections', 'dashboard', 'document_details', 'settings');
         $files = array('browse_collections', 'document_details');
         $overviews = array('browse_collections', 'dashboard');
 
@@ -525,7 +525,7 @@ class KTPage {
     	        $this->breadcrumbIcon[] = $browse;
     	        $this->state = "ondashboard";
     	        break;
-    	    case 'administration':
+    	    case 'settings':
     	    default:
     	    	$this->state = "admin";
     	        if ($dashboard !== false) $this->breadcrumbIcon[] = $dashboard;
@@ -551,15 +551,10 @@ class KTPage {
     public function setSection($sSection)
     {
         switch ($sSection) {
-            case 'administration':
+            case 'settings':
                 $this->componentLabel = _kt('Settings');
-                $this->componentClass = 'administration';
+                $this->componentClass = 'settings';
                 $this->menu['administration']['active'] = 1;
-                break;
-
-            case 'dashboard':
-                $this->componentLabel = _kt('Dashboard');
-                $this->componentClass = 'dashboard';
                 break;
 
             case 'browse':
@@ -571,6 +566,11 @@ class KTPage {
                 $this->componentLabel = _kt('Document Details');
                 $this->componentClass = 'document_details';
                 break;
+                
+            case 'applications':
+                $this->componentLabel = _kt('Applications');
+                $this->componentClass = 'applications';
+                break;
 
             case 'search':
                 $this->componentLabel = _kt('Search');
@@ -581,10 +581,15 @@ class KTPage {
                 $this->componentLabel = _kt('Preferences');
                 $this->componentClass = 'preferences';
                 break;
-
-            default:
+                
+            case 'dashboard':
                 $this->componentLabel = _kt('Dashboard');
                 $this->componentClass = 'dashboard';
+                break;
+
+            default:
+                $this->componentLabel = _kt('General');
+                $this->componentClass = 'general';
         }
     }
 
