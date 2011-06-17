@@ -38,13 +38,13 @@
                 {* <!-- Display the settings, render the input according to the setting type (dropdown / radio / etc) --> *}
                 {foreach from=$groupSettings.$group item=settings}
 
-                    <p style='padding-bottom: 15px;'>
-                        {$settings.display_name}<br>
+                    <div class="settings-field" style='padding-bottom: 15px;'>
+                        <p class="display-name">{$settings.display_name}</p>
                         {if $settings.description}
-                            <span class='descriptiveText'>{$settings.description}</span><br>
+                            <span class='descriptiveText'>{$settings.description}</span>
                         {/if}
-                        {$context->renderInput($settings.id, $settings.type, $settings.value, $settings.default_value, $settings.options)}<br>
-                    </p>
+                        <div class="settings-option">{$context->renderInput($settings.id, $settings.type, $settings.value, $settings.default_value, $settings.options)}</div>
+                    </div>
 
                 {/foreach}
 

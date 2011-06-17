@@ -1185,11 +1185,10 @@ label span.required
 	display: block;
 	background: url(../graphics/plus.gif) no-repeat 10px 10px;
 }
-.settings-item:hover {
-	background: #efefef; 
-}
+
 #content .settings-item a.header:hover {
 	text-decoration: none;
+	background-color: #efefef; 
 }
 .settings-item.expanded a.header{
 	padding: 5px 30px;
@@ -1360,8 +1359,13 @@ http://devgrow.com/iphone-style-switches/
 	border-bottom: 1px solid #DDD;
 	margin-bottom: 5px;
 } 
-
-.settings-section #content .field {
+#content .settings-content fieldset {
+	border: 0px;
+	padding: 0px;
+	
+}
+.settings-section #content .field,
+.settings-field {
 	border: 1px solid #CCC;
 	border-radius: 5px;
 	-moz-border-radius: 5px;
@@ -1374,6 +1378,12 @@ http://devgrow.com/iphone-style-switches/
 	color: #333;
 	font-size: 12px;
 	background: whitesmoke;
+}
+.settings-option {
+	float: right;
+}
+.settings-field .display-name {
+	float: left;
 }
 .settings-section #content .field label {
 	float: left;
