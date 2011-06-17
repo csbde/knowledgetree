@@ -258,10 +258,10 @@ class KTPage {
         $js[] = "resources/$jsResourceLocation/newui/kt.api.$jsExt";
 
         // Shared users cannot re-share or invite users to the system.
-        if (SharedUserUtil::isSharedUser()) {
-        	$jsIncludes[] = array("resources/$jsResourceLocation/newui/kt.app.sharewithusers.$jsExt" => $files);
-        	$jsIncludes[] = array("resources/$jsResourceLocation/newui/kt.app.inviteusers.$jsExt" => $combined);
-        	$jsIncludes[] = array("resources/$jsResourceLocation/jquery.blockui.$jsExt" => $combined);
+        if (!SharedUserUtil::isSharedUser()) {
+        	$jsIncludes["resources/$jsResourceLocation/newui/kt.app.sharewithusers.$jsExt"] = $files;
+        	$jsIncludes["resources/$jsResourceLocation/newui/kt.app.inviteusers.$jsExt"] = $combined;
+        	$jsIncludes["resources/$jsResourceLocation/jquery.blockui.$jsExt"] = $combined;
         }
 
         // Breadcrumbs
