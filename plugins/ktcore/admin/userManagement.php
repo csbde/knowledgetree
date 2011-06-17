@@ -862,7 +862,7 @@ class KTUserAdminDispatcher extends KTAdminDispatcher {
         }
 
         if (count($groups) == 0) {
-            return _kt('User is currently not a member of any groups.');
+            return _kt('');
         }
 
         if (count($groups) > $maxGroups) {

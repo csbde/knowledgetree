@@ -1185,6 +1185,12 @@ label span.required
 	display: block;
 	background: url(../graphics/plus.gif) no-repeat 10px 10px;
 }
+.settings-item:hover {
+	background: #efefef; 
+}
+#content .settings-item a.header:hover {
+	text-decoration: none;
+}
 .settings-item.expanded a.header{
 	padding: 5px 30px;
 	display: block;
@@ -1195,7 +1201,7 @@ label span.required
 	border-radius: 2px;
 	-webkit-border-radius: 2px;
 	-moz-border-radius: 2px;
-	padding: 10px;
+	padding: 15px;
 	background: white;
 }
 .settings-item.systemQuotas a {
@@ -1203,6 +1209,32 @@ label span.required
 }
 .settings-item.systemQuotas .settings-content {
 	border-top: 0px;
+}
+
+.settings-section .kt_collection,
+.settings-section .kt_collection.narrow  {
+	width: 100%;
+	margin: 10px 0px;
+}
+.settings-section .flag.shared {
+	border-radius: 3px;
+	-moz-border-radius: 3px;
+	-webkit-border-radius: 3px;
+	padding: 2px 2px;
+	display: inline-block;
+	border: 1px solid #2F6594;
+	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#609bd1', endColorstr='#2f6694');	
+	background: -webkit-gradient(linear, left top, left bottom, from(#609bd1), to(#2f6694));
+	background: -moz-linear-gradient(top, #609bd1, #2f6694);
+	font-size: 8px;
+	line-height: 8px;
+	height: 8px;
+	text-transform: uppercase;
+	margin: 0px 5px;
+	color: white;
+	position: relative;
+	top: -2px;
+	font-weight: bold;
 }
 /*Tag editor*/
 
@@ -1274,7 +1306,97 @@ http://devgrow.com/iphone-style-switches/
 	font-size: 15px;
 	line-height: 25px;
 }
+#chart_div {
+	min-width: 200px;
+	min-height: 150px; 
+}
 
-#users.settings-content input[name="search_name"] {
+.settings-content input[name="search_name"] {
 	width: 125px;
+	margin-top: 3px;
+	display: inline-block;
+	border: 1px solid #ccc;
+	border-radius: 3px;
+	box-shadow: inset 0px 1px 1px #666;
+	-moz-box-shadow: inset 0px 1px 1px #666;
+	-webkit-box-shadow: inset 0px 1px 1px #666;
+	padding: 2px!important;
+	background: white!important;
+}
+.settings-section #content .search-filter .field  {
+	border: 0px;
+	padding: 0px;
+	clear: both;
+	width: inherit;
+}
+.search-filter .form_actions,
+.search-filter input{
+	float: right;
+}
+.search-filter {
+	height: 35px;
+	display: inline-block;
+	width: 200px;
+	background: whitesmoke;
+	border: 1px solid #ccc;
+	border-radius: 5px 5px 0px 0px;
+	-moz-border-radius: 5px 5px 0px 0px;
+	-webkit-border-radius: 5px 5px 0px 0px;
+	padding: 5px 5px 0px;
+	clear: both;
+	float: right;
+	border-bottom: 0px;
+	margin: -35px 0px 0px 0px;
+	right: 1px;
+	position: relative;
+}
+.ktErrorMessage.filter {
+	border: 1px solid #CCC;
+	text-align: center;
+	padding: 20px;
+	color: #666;
+}
+.settings-section #content h2 {
+	border-bottom: 1px solid #DDD;
+	margin-bottom: 5px;
+} 
+
+.settings-section #content .field {
+	border: 1px solid #CCC;
+	border-radius: 5px;
+	-moz-border-radius: 5px;
+	-webkit-border-radius: 5px;
+	padding: 10px;
+	clear: both;
+	display: inline-block;
+	width: 700px;
+	margin-bottom: 10px; 
+	color: #333;
+	font-size: 12px;
+	background: whitesmoke;
+}
+.settings-section #content .field label {
+	float: left;
+	font-weight: normal;
+	font-size: 13px;
+}
+.settings-section #content .field input,
+.settings-section #content .field select,
+.settings-section #content .field textarea {
+	position: relative;
+	float: right;
+	font-size: 12px;
+
+}
+.settings-section #content .field input {
+	border: 1px solid #ccc;
+	border-radius: 3px;
+	-webkit-border-radius: 3px;
+	-moz-border-radius: 3px;
+	box-shadow: inset 0px 1px 1px #666;
+	-moz-box-shadow: inset 0px 1px 1px #666;
+	-webkit-box-shadow: inset 0px 1px 1px #666;
+	padding: 3px 5px;
+	color: #333;
+	background: #FFF;
 }

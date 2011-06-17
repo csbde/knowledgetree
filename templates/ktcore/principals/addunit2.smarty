@@ -1,11 +1,9 @@
-<h2>{i18n}Add a new unit{/i18n}</h2>
+<h2>{i18n}Choose unit folder location{/i18n}</h2>
 
 <form action="{$smarty.server.PHP_SELF}" method="POST">
    <input type="hidden" name="action" value="createUnit" />
    <input type="hidden" name="unit_name" value="{$name}" />
 
-   <fieldset>
-      <legend>{i18n}Choose unit folder location{/i18n}</legend>
       <p class="descriptiveText">{i18n}Please choose a location to place
 your unit folder.{/i18n}</p>
 
@@ -18,5 +16,4 @@ your unit folder.{/i18n}</p>
          <input type="submit" value="{i18n}create unit{/i18n}" />
          <input type="submit" name="kt_cancel[]" value="{i18n}Cancel{/i18n}" />
       </div>
-   </fieldset>
    </form>

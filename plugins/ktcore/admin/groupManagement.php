@@ -675,7 +675,7 @@ class KTGroupAdminDispatcher extends KTAdminDispatcher {
         $maxGroups = 6;
         $addElipsis = false;
 
-        if (count($groups) == 0) { return _kt('Group currently has no subgroups.'); }
+        if (count($groups) == 0) { return _kt(''); }
 
         if (count($groups) > $maxGroups) {
             $groups = array_slice($groups, 0, $maxGroups);

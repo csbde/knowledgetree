@@ -6,8 +6,6 @@ the system's information about unit <strong>#name#</strong>{/i18n}</p>
 <form action="{$smarty.server.PHP_SELF}" method="POST">
    <input type="hidden" name="action" value="saveUnit" />
    <input type="hidden" name="unit_id" value="{$edit_unit->getId()}" />
-   <fieldset>
-      <legend>{i18n}Change Unit Details{/i18n}</legend>
       <p class="descriptiveText">{i18n}Users may be classed together as Units and these units may be used to set security privileges throughout the document management system.{/i18n}</p>
       {foreach item=oWidget from=$edit_fields}
         {$oWidget->render()}
@@ -16,5 +14,4 @@ the system's information about unit <strong>#name#</strong>{/i18n}</p>
          <input type="submit" value="{i18n}Save Changes to Unit{/i18n}" />
          <input type="submit" name="kt_cancel[]" value="{i18n}Cancel{/i18n}" />
       </div>
-   </fieldset>
    </form>
