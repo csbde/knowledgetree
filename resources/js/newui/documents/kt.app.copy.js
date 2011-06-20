@@ -57,26 +57,13 @@ kt.app.copy = new function() {
     	self.actionType = 'bulk';
     	self.itemList = kt.pages.browse.getSelectedItems();
     	
-    	if (self.getWindowType() == 'tree') {
+    	if (action == 'copy' || action == 'move') {
     		self.showTreeWindow();
     	} 
     	else {
     		// Note: this function is in the drag & drop javascript
     		self.targetFolderId = getQueryVariable('fFolderId');
     		self.showConfirmationWindow();
-    	}
-    }
-    
-    this.getWindowType = function() {
-    	switch (self.action) {
-    		case 'copy':
-    		case 'move':
-    			return 'tree';
-    		case 'delete':
-    		case 'archive':
-    		case 'finalize':
-    		default:
-    			return 'confirm';
     	}
     }
     
@@ -121,6 +108,8 @@ kt.app.copy = new function() {
 
         self.treeWindow = treeWin;
         treeWin.show();
+        
+        jQuery('#select-btn').val(title);
     }
 
     this.closeWindow = function() {
@@ -172,6 +161,12 @@ kt.app.copy = new function() {
     	else {
 	    	params.documentId = self.documentId;
 		    var func = 'documentActionServices.doCopy';
+    	}
+    	
+    	// special case for the move action where the title or filename clashes
+    	if (self.action == 'move') {
+    		params.newname = jQuery('#newname').val();
+    		params.newfilename = jQuery('#newfilename').val();
     	}
 	    
 	    var synchronous = true;
@@ -270,7 +265,12 @@ kt.app.copy = new function() {
 	
     this.confirmationWindow = null;
     this.showConfirmationWindow = function(name) {
-	    var title = 'Confirmation';
+    	var action = self.action;
+    	if (action == 'immutable') {
+    		action = 'finalize';
+    	}
+    	var ucAction = ktjapi._lib.ucString(action);
+	    var title = 'Confirm ' + ucAction;
 	    
         var confirmWin = new Ext.Window({
             id              : 'confirm-window',
@@ -295,18 +295,22 @@ kt.app.copy = new function() {
         if (self.actionType == 'bulk') {
         	jQuery('#action-single').hide();
         	jQuery('#action-bulk').show();
+        	jQuery('#action-bulk').text(jQuery('#action-bulk').text().replace('[action]', action));
         } 
         else {
         	jQuery('#action-bulk').hide();
         	jQuery('#confirm-doc-name').html(name);
+        	jQuery('#action-single').text(jQuery('#action-single').text().replace('[action]', action));
         }
+        
+        jQuery('#select-btn').val(ucAction);
     }
 
     this.closeConfirmWindow = function() {
         confirmationWindow = Ext.getCmp('confirm-window');
         confirmationWindow.destroy();
     }
-	
+    
 	this.showSpinner = function() {
 		jQuery('#select-btn').addClass('none');
 		jQuery('.action-spinner').removeClass('none').addClass('spin');

@@ -1141,7 +1141,8 @@ class KTDocumentArchiveAction extends JavascriptDocumentAction {
     function getOnClick()
     {
     	$id = $this->oDocument->getId();
-        return "javascript:{kt.app.copy.doAction(\"archive\", $id);}";
+    	$name = $this->oDocument->getName();
+        return "javascript:{kt.app.copy.doAction(\"archive\", $id, \"$name\");}";
     }
 
 	function getURL()

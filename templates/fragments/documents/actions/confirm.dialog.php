@@ -5,12 +5,12 @@
 <tr>
 	<td valign="top">
 		<div id='action-single'>
-			<?php echo _kt('Are you sure you want to delete the document') . ': '; ?>
+			<?php echo _kt('Are you sure you want to [action] the document') . ': '; ?>
 			<br />
-			<span id='confirm-doc-name'>Document</span>
+			<span id='confirm-doc-name'>&nbsp;</span>
 		</div>
 		<div id='action-bulk' style="visibility: none">
-			<?php echo _kt('Are you sure you want to delete the selected items') . '?'; ?>
+			<?php echo _kt('Are you sure you want to [action] the selected items') . '?'; ?>
 		</div>
 		<br />
 	</td>

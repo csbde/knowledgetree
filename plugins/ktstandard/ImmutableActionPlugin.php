@@ -81,7 +81,8 @@ class KTDocumentImmutableAction extends JavascriptDocumentAction {
     function getOnClick()
     {
     	$id = $this->oDocument->getId();
-        return "javascript:{kt.app.copy.doAction(\"immutable\", $id);}";
+    	$name = $this->oDocument->getName();
+        return "javascript:{kt.app.copy.doAction(\"immutable\", $id, \"$name\");}";
     }
 
 	function getURL()
