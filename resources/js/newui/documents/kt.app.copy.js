@@ -57,7 +57,7 @@ kt.app.copy = new function() {
     	self.actionType = 'bulk';
     	self.itemList = kt.pages.browse.getSelectedItems();
     	
-    	if (action == 'copy' || action == 'move') {
+    	if (self.getWindowType == 'tree') {
     		self.showTreeWindow();
     	} 
     	else {
@@ -65,6 +65,15 @@ kt.app.copy = new function() {
     		self.targetFolderId = getQueryVariable('fFolderId');
     		self.showConfirmationWindow();
     	}
+    }
+    this.getWindowType = function() {
+        switch (self.action) {
+            case 'copy':
+            case 'move':
+                return 'tree';
+            default:
+                return 'confirm';
+        }
     }
     
     this.checkReasons = function() {
@@ -165,8 +174,12 @@ kt.app.copy = new function() {
     	
     	// special case for the move action where the title or filename clashes
     	if (self.action == 'move') {
-    		params.newname = jQuery('#newname').val();
-    		params.newfilename = jQuery('#newfilename').val();
+    		if (jQuery('#newname').val() != 'undefined') {
+	    		params.newname = encodeURIComponent(jQuery('#newname').val());
+    		}
+    		if (jQuery('#newfilename').val() != 'undefined') {
+	    		params.newfilename = encodeURIComponent(jQuery('#newfilename').val());
+    		}
     	}
 	    
 	    var synchronous = true;

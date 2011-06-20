@@ -280,12 +280,12 @@ class documentActionServices extends client_service {
         	case 'move':
         		$newName = '';
         		if ($params['newname'] != 'undefined') {
-        			$newName = $params['newname'];
+        			$newName = urldecode($params['newname']);
         		}
         		
         		$newFilename = '';
         		if ($params['newfilename'] != 'undefined') {
-        			$newFilename = $params['newfilename'];
+        			$newFilename = urldecode($params['newfilename']);
         		}
         		
         		$reason = ($reason === false) ? _kt('Document moved') : $reason;
