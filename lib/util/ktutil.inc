@@ -169,12 +169,12 @@ class KTUtil {
     }
 
     public static function kt_clean_document_url($documentId) {
-    	return KTUtil::kt_url() . KTBrowseUtil::getUrlForDocument($documentId);
+        return KTUtil::kt_url() . KTBrowseUtil::getUrlForDocument($documentId);
     }
 
     public static function kt_clean_folder_url($folderId) {
-    	return KTUtil::kt_url() . KTBrowseUtil::getUrlForFolder($folderId);
-	}
+        return KTUtil::kt_url() . KTBrowseUtil::getUrlForFolder($folderId);
+    }
 
     public static function kt_internal_url()
     {
@@ -296,11 +296,11 @@ class KTUtil {
     }
 
     /**
-	 * Checks if a filename is valid
-	 *
-	 * @param string $filename
-	 * @return boolean
-	 */
+     * Checks if a filename is valid
+     *
+     * @param string $filename
+     * @return boolean
+     */
     public static function isValidFilename($filename)
     {
         foreach (KTUtil::$invalidFilenameCharacters as $char) {
@@ -1028,7 +1028,27 @@ class KTUtil {
         else {
             $url = $_SERVER['PHP_SELF'];
         }
+
+        $qs = KTUtil::setNewSettingsOptions($qs);
+
         return KTUtil::addQueryString($url, $qs);
+    }
+
+    /**
+     * TODO : Please remove!!! We need to find a way of passing subsection, expanded in form action.
+     */
+    public static function setNewSettingsOptions($qs)
+    {
+        // Check if we are on the settings page.
+        $cat = KTUtil::arrayGet($_REQUEST, 'fCategory');
+        if ($cat != '') {
+            $subsection = KTUtil::arrayGet($_REQUEST, 'subsection');
+            $subsection = ($subsection == '' ? $subsection : $subsection);
+            $expanded = KTUtil::arrayGet($_REQUEST, 'expanded');
+            $qs .= "&subsection=$subsection&expanded=$expanded";
+        }
+
+        return $qs;
     }
 
     public static function isAbsolutePath($sPath)
@@ -1482,13 +1502,13 @@ class KTUtil {
     }
 
     /**
-	 * Encode a string using a key
-	 * http://www.myphpscripts.net/tutorial.php?id=9
-	 *
-	 * @param string $string The string to encode
+     * Encode a string using a key
+     * http://www.myphpscripts.net/tutorial.php?id=9
+     *
+     * @param string $string The string to encode
      * @param string $key The key to use in the encoding
      * @return string The encoded string
-	 */
+     */
     public static function encode($string,$key)
     {
         $key = sha1($key);

@@ -13,6 +13,10 @@ body
     font-family: sans-serif;
 	min-width: 850px;
 }
+body.settings-section,
+body.dashboard-section {
+	overflow-y: scroll;
+} 
 
 .floatClear
 {
@@ -706,7 +710,9 @@ a.main_nav_item {
     line-height: 1.4em;
     margin-bottom: 0.5em;
 }
-
+#content .settings-content .descriptiveText {
+	display:none;
+}
 #content .field label .required
 {
     margin-left: 0.5em;
@@ -1042,6 +1048,9 @@ a.main_nav_item {
     width: 100%;
     white-space: nowrap !important;
     border: 1px solid #ccc;
+    border-spacing: 0px;
+    font-size: 12px;
+    line-height: 18px;
 }
 
 .kt_collection.narrow {
@@ -1071,10 +1080,10 @@ a.main_nav_item {
 
 .kt_collection th,
 .kt_collection td {
-    padding: 0.25em 0.5em;
+    padding: 3px 10px;
     white-space: nowrap !important;
     overflow: hidden;
-    vertical-align: top;
+    vertical-align: middle;
 }
 
 .kt_collection td.title,
@@ -1093,15 +1102,7 @@ a.main_nav_item {
 }
 
 .kt_collection .folder_row td {
-    background-color: #e5e5e5;
-}
-
-.kt_collection .folder_row td.sort_on {
-    background-color: #dbdbdb;
-}
-
-.kt_collection .folder_row.odd td.sort_on {
-    background-color: #e8e8e8;
+    background-color: white;
 }
 
 
@@ -1110,7 +1111,7 @@ a.main_nav_item {
 }
 
 .kt_collection tr.even>td{
-    background-color: #ffffff;
+    background-color: #e3eef4;
 }
 
 .kt_collection tr.dragdrop td {
@@ -1118,7 +1119,7 @@ a.main_nav_item {
 }
 
 .kt_collection .odd td.sort_on {
-    background-color: #f0f0f0;
+    background-color: white;
 }
 
 /* cheap and nasty hack for gmail-style highlighting. */
@@ -1252,7 +1253,7 @@ The text will be hidden for screen view.  The generic fahrner-ish approach comes
     text-decoration: none;
     overflow: hidden;
     border: 0 !important;
-    margin: 1px;
+    margin: 0px auto;
     padding: 0;
     padding-top: 16px;
     height: 0px !important;
@@ -1298,8 +1299,8 @@ The text will be hidden for screen view.  The generic fahrner-ish approach comes
 }
 
 /* FIXME when available icon-naming-conformant sets have better coverage, make these more accurate. */
-.ktActionLink.ktDelete, .ktAction.ktDelete { background-image: url(/resources/graphics/delete.png); }
-.ktActionLink.ktEdit, .ktAction.ktEdit { background-image: url(/thirdparty/icon-theme/16x16/actions/document-properties.png); }
+.ktActionLink.ktDelete, .ktAction.ktDelete { background: url('../graphics/newui/icons/delete.png') no-repeat; }
+.ktActionLink.ktEdit, .ktAction.ktEdit { background: url(../../resources/graphics/newui/icons/edit.png) no-repeat right top; }
 .ktActionLink.ktAddUser, .ktAction.ktAddUser { background-image: url(/thirdparty/icon-theme/16x16/actions/contact-new.png); }
 .ktActionLink.ktAddGroup, .ktAction.ktAddGroup { background-image: url(/thirdparty/icon-theme/16x16/actions/group-new.png); }
 .ktActionLink.ktAdd, .ktAction.ktAdd { background-image: url(/thirdparty/icon-theme/16x16/actions/add.png); }
@@ -2094,6 +2095,7 @@ hr {
 
 .browse_body {
     padding: 0;
+    min-width: inherit;
 }
 
 /* -------------------------- dashboard ------------------------ */

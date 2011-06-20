@@ -44,25 +44,30 @@ require_once(KT_LIB_DIR . '/widgets/fieldWidgets.php');
 require_once(KT_LIB_DIR . '/authentication/authenticationprovider.inc.php');
 require_once(KT_LIB_DIR . '/authentication/authenticationsource.inc.php');
 
-require_once('ldapGroupManager.php');
+require_once('LdapGroupManager.inc.php');
 
-class ldapGroupDispatcher extends KTStandardDispatcher {
-    
+class ldapGroupDispatcher extends KTAdminDispatcher {
+
     private $source;
-    
+
     public function __construct()
     {
         $this->source = KTAuthenticationSource::get($_REQUEST['source_id']);
+
+        $category = KTUtil::arrayGet($_REQUEST, 'fCategory');
+        $subsection = KTUtil::arrayGet($_REQUEST, 'subsection');
+        $this->setCategoryDetail("$category/$subsection");
+        
         parent::KTStandardDispatcher();
     }
-	
+
     public function do_addGroupFromSource()
-    {        
+    {
         $submit = KTUtil::arrayGet($_REQUEST, 'submit');
         if (!is_array($submit)) {
             $submit = array();
         }
-        
+
         if (KTUtil::arrayGet($submit, 'chosen')) {
             $id = KTUtil::arrayGet($_REQUEST, 'id');
             if (!empty($id)) {
@@ -72,11 +77,11 @@ class ldapGroupDispatcher extends KTStandardDispatcher {
                 $this->oPage->addError(_kt('No valid LDAP group chosen'));
             }
         }
-        
+
         if (KTUtil::arrayGet($submit, 'create')) {
             return $this->_do_createGroupFromSource();
         }
-                
+
         $template = $this->oValidator->validateTemplate('ldap_search_group');
 
         $fields = array();
@@ -113,11 +118,12 @@ class ldapGroupDispatcher extends KTStandardDispatcher {
             'source' => $this->source,
             'search_results' => $groups,
             'identifier_field' => 'displayName',
+            'section_query_string' => $this->sectionQueryString
         );
-        
+
         return $template->render($templateData);
     }
-    
+
     private function _do_createGroupFromSource()
     {
         $dn = KTUtil::arrayGet($_REQUEST, 'dn');
@@ -129,7 +135,7 @@ class ldapGroupDispatcher extends KTStandardDispatcher {
         $isUnitAdmin = KTUtil::arrayGet($_REQUEST, 'is_unitadmin', false);
         $isSysAdmin = KTUtil::arrayGet($_REQUEST, 'is_sysadmin', false);
 
-        $group =& Group::createFromArray(array(
+        $group = Group::createFromArray(array(
             'name' => $name,
             'isunitadmin' => $isUnitAdmin,
             'issysadmin' => $isSysAdmin,
@@ -141,19 +147,19 @@ class ldapGroupDispatcher extends KTStandardDispatcher {
             $this->errorRedirectToMain(_kt('failed to create group.'));
             exit(0);
         }
-        
+
         $manager = new LdapGroupManager($this->source);
         $manager->synchroniseGroup($group);
 
         $this->successRedirectToMain(_kt('Created new group') . ': ' . $group->getName());
         exit(0);
     }
-    
+
     private function _do_editGroupFromSource()
     {
         $template = $this->oValidator->validateTemplate('ldap_add_group');
         $id = KTUtil::arrayGet($_REQUEST, 'id');
-        
+
         $manager = new LdapGroupManager($this->source);
         try {
             $attributes = $manager->getGroup($id);
@@ -175,10 +181,11 @@ class ldapGroupDispatcher extends KTStandardDispatcher {
             'source' => $this->source,
             'search_results' => $searchResults,
             'dn' => $attributes['dn'],
+            'section_query_string' => $this->sectionQueryString
         );
-        
+
         return $template->render($templateData);
     }
-    
+
 }
 ?>

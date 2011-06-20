@@ -90,18 +90,15 @@ kt.app.document_actions = new function() {
 		} else {
 			switch (type) {
 				case 'checkout':
-//					description = 'Checking out a document reserves it for your exclusive use. This ensures that you can edit the document without anyone else changing the document and placing it into the document management system.';
 					action = 'ktcore.actions.document.checkoutdownload';
 				break;
 				case 'checkoutdownload':
-//					description = 'Checking out a document reserves it for your exclusive use. This ensures that you can edit the document without anyone else changing the document and placing it into the document management system.';
 					action = 'ktcore.actions.document.checkout';
 				break;
 				case 'checkin':
 					action = 'ktcore.actions.document.checkin';
 				break;
 				case 'cancelcheckout':
-//					description = 'If you do not want to have this document be checked-out, click cancel checkout.';
 					action = 'ktcore.actions.document.cancelcheckout';
 				break;
 			}
@@ -158,7 +155,6 @@ kt.app.document_actions = new function() {
 	}
 
 	this.refresh = function(showNotifications) {
-        
         if (showNotifications == undefined) {
             showNotifications = true;
         }

@@ -1,7 +1,7 @@
 <?php
 
-require_once('ldapManager.php');
-require_once('ldapUserManager.php');
+require_once('LdapManager.inc.php');
+require_once('LdapUserManager.inc.php');
 
 class LdapGroupManager extends LdapManager {
 

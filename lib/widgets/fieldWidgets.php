@@ -71,7 +71,7 @@ class KTBaseWidget {
 
         if (is_null($this->aOptions)) { $this->aOptions = array(); }
         // default to being a bit bigger.
-        $this->aOptions['width'] = KTUtil::arrayGet($this->aOptions, 'width', '45');
+        $this->aOptions['width'] = KTUtil::arrayGet($this->aOptions, 'width', '30');
     }
 
     function render() {

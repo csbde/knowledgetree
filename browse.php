@@ -121,12 +121,10 @@ class BrowseDispatcher extends KTStandardDispatcher {
 	public function do_main()
 	{
 	    global $default;
-
 	    /* New ktapi based method */
-
-            $bulkActions = KTBulkActionUtil::getAllBulkActions();
-            $sidebars = KTFolderActionUtil::getFolderActionsForFolder($this->oFolder, $this->oUser, 'mainfoldersidebar');
-            $folderSidebars = isset($sidebars[0]) ? $sidebars[0] : array();
+        $bulkActions = KTBulkActionUtil::getAllBulkActions();
+        $sidebars = KTFolderActionUtil::getFolderActionsForFolder($this->oFolder, $this->oUser, 'mainfoldersidebar');
+        $folderSidebars = isset($sidebars[0]) ? $sidebars[0] : array();
 
 	    if (ACCOUNT_ROUTING_ENABLED && $default->tier == 'trial') {
 	        $this->includeOlark();
@@ -154,12 +152,24 @@ class BrowseDispatcher extends KTStandardDispatcher {
 
 	        $renderHelper = BrowseViewUtil::getBrowseView();
 	        $renderData = $renderHelper->renderBrowseFolder($folderId, $bulkActions, $this->oFolder, $this->editable);
+	        if($renderData['documentCount'] > 0)
+	        	$this->loadDocumentJS();
 	        $templateData = array_merge($templateData, $renderData);
 	    }
 
 	    return $template->render($templateData);
 	}
 
+	public function loadDocumentJS() {
+		$alertUtilPath = KT_PLUGIN_DIR . '/commercial/alerts/alertUtil.inc.php';
+		if(file_exists($alertUtilPath)) {
+			require_once($alertUtilPath);
+			$pluginPath = alertUtil::getPluginPath();
+	        $this->oPage->requireJSResource($pluginPath . '/resources/blocks/alertsActions.js');
+			$this->oPage->requireCSSResource($pluginPath . '/resources/alerts.css');
+		}
+	}
+	
 	public function showBtns()
 	{
 		$list = array();

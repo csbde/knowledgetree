@@ -9,7 +9,7 @@ specify additional sources of authentication data.{/i18n}</p>
 
 {if $providers}
 <p><a href="{addQS}action=addSource{/addQS}" class="ktAction ktAddGroup
-ktInline">{i18n}Add authentication source{/i18n}</a><a href="{addQS}{$section_query_string}&action=addSource{/addQS}">{i18n}Add a new
+ktInline">{i18n}Add authentication source{/i18n}</a><a href="{addQS}action=addSource{/addQS}">{i18n}Add a new
 authentication source{/i18n}</a>.</p>
 {else}
 <div class="ktInfoMessage"><span>{i18n}Only the standard database authentication is currently available.
@@ -33,9 +33,9 @@ ensure that the Plugin is enabled.{/i18n}<span></div>
      {foreach item=oSource from=$sources}
      <tr>
         <td>{$oSource->getName()}</td>
-        <td><a href="{addQS}{$section_query_string}&action=editSource&source_id={$oSource->getId()}{/addQS}" class="ktAction ktEdit">{i18n}Edit{/i18n}</a></td>
-        <td><a href="{addQS}{$section_query_string}&action=editSourceProvider&source_id={$oSource->getId()}{/addQS}" class="ktAction ktEdit">{i18n}Edit{/i18n}</a></td>
-        <td><a href="{addQS}{$section_query_string}&action=deleteSource&source_id={$oSource->getId()}{/addQS}" class="ktAction ktDelete">{i18n}Delete55{/i18n}</a></td>
+        <td><a href="{addQS}action=editSource&source_id={$oSource->getId()}{/addQS}" class="ktAction ktEdit">{i18n}Edit{/i18n}</a></td>
+        <td><a href="{addQS}action=editSourceProvider&source_id={$oSource->getId()}{/addQS}" class="ktAction ktEdit">{i18n}Edit{/i18n}</a></td>
+        <td><a href="{addQS}action=deleteSource&source_id={$oSource->getId()}{/addQS}" class="ktAction ktDelete">{i18n}Delete55{/i18n}</a></td>
      </tr>
      {/foreach}
 </tbody>

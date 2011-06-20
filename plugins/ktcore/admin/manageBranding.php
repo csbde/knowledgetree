@@ -62,12 +62,14 @@ class ManageBrandDispatcher extends KTAdminDispatcher
     public function do_main()
     {
         $form = $this->getLogoUploadForm();
+        
+        $config = KTConfig::getSingleton();
 
         $templating = KTTemplating::getSingleton();
         $template = $templating->loadTemplate('ktcore/branding/list');
         $templateData = array(
             'form' => $form,
-            'section_query_string' => $this->sectionQueryString,
+            'has_custom_logo' => $config->get('ui/mainLogo'),
         );
 
         return $template->render($templateData);
@@ -81,12 +83,11 @@ class ManageBrandDispatcher extends KTAdminDispatcher
         $form->setOptions(array(
                 'identifier' => 'ktcore.folder.branding',
                 'label' => _kt('Upload Custom Logo'),
-                'submit_label' => _kt('Save'),
+                'submit_label' => _kt('Update'),
                 'action' => 'saveLogo',
                 'fail_url' => 'main',
                 'encoding' => 'multipart/form-data',
-                'cancel_url' => "{$_SERVER['SCRIPT_NAME']}?{$this->sectionQueryString}",
-                'targeturl' => "{$_SERVER['SCRIPT_NAME']}?{$this->sectionQueryString}",
+                'cancel_url' => "javascript:void(jQuery('#branding').toggle());",
                 'context' => $this
             ));
 
@@ -115,6 +116,12 @@ class ManageBrandDispatcher extends KTAdminDispatcher
         $form->setWidgets($widgets);
 
         return $form;
+    }
+    
+    public function do_resetLogo()
+    {
+        $this->saveConfiguration('', '');
+        $this->successRedirectTo('main', _kt('The custom logo has been removed'));
     }
 
     public function do_saveLogo()
@@ -170,7 +177,7 @@ class ManageBrandDispatcher extends KTAdminDispatcher
 
         $extension = $this->isSupportedExtension($extension, $mimeType);
         if ($extension === false) {
-            $supportedList = explode(', ', $this->supportedTypes);
+            $supportedList = implode(', ', $this->supportedTypes);
             return $this->errorRedirectToMain("The file uploaded is not supported. Supported types are: {$supportedList}.");
         }
 

@@ -9,7 +9,7 @@ workflow.{/i18n}</p>
 <p class="descriptiveText">{i18n}Document Types with no pre-allocated workflow will
 either have no workflow set (for new documents) or keep their old workflow (for documents which have had their type changed).{/i18n}</p>
 
-<form action="{$smarty.server.PHP_SELF}?{$section_query_string}" method="POST">
+<form action="{$smarty.server.PHP_SELF}" method="POST">
 <fieldset>
 <legend>{i18n}Workflow Allocations{/i18n}</legend>
 <p class="descriptiveText">{i18n}Please select the appropriate workflows for each document type.{/i18n}</p>

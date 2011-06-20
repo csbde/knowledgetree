@@ -168,28 +168,20 @@ class KTForm {
     }
 
     /**
-     * TODO : Please remove!!!
+     * TODO : Please remove!!! We need to find a way of passing subsection, expanded in form action.
      *
      */
     function setNewSettingsOptions($aOptions) {
     	// Check if we on settings page.
     	$cat = KTUtil::arrayGet($_REQUEST, 'fCategory');
     	if($cat != '') {
-    		preg_match('/\?/', $this->_actionurl, $matches);
-    		if(!isset($matches[0]))
-    		{
-	    		$this->_actionurl .= '?';
-	    		foreach ($_GET as $k=>$v) {
-	    			$this->_actionurl .= "&$k=$v";
-	    		}
-    		}
-
 	        $cancel_action = KTUtil::arrayGet($aOptions, 'cancel_action');
 			$subsection = KTUtil::arrayGet($_REQUEST, 'subsection');
 			$expanded = KTUtil::arrayGet($_REQUEST, 'expanded');
 	        if (!empty($cancel_action)) {
-	    		$this->_cancelurl .= "&fCategory=$cat&subsection=$subsection&expanded=$expanded";
+	    		$this->_cancelurl .= "&subsection=$subsection&expanded=$expanded";
 	        }
+	        $this->_actionurl .= "&subsection=$subsection&expanded=$expanded";
     	}
     }
 

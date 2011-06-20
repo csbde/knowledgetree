@@ -61,7 +61,6 @@ class ManageViewDispatcher extends KTAdminDispatcher {
         $aTemplateData = array(
               'context' => $this,
               'views' => $aViews,
-              'section_query_string' => $this->sectionQueryString
         );
 
         return $oTemplate->render($aTemplateData);
@@ -102,7 +101,6 @@ class ManageViewDispatcher extends KTAdminDispatcher {
               'all_columns' => $aAllColumns,
               'view' => $_REQUEST['viewNS'],
               'add_field' => $add_field,
-              'section_query_string' => $this->sectionQueryString
         );
 
         return $oTemplate->render($aTemplateData);
