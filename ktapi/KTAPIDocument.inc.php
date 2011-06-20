@@ -2758,7 +2758,7 @@ class KTAPI_Document extends KTAPI_FolderItem
 	public function immute()
 	{
 	    if($this->is_checked_out()){
-	        return new PEAR_Error('Document is checked out and can\'t be set to immutable.');
+	        return new PEAR_Error('Document is checked out and can\'t be finalized.');
 	    }
         $this->document->setImmutable(true);
         $this->document->update();

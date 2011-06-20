@@ -220,38 +220,6 @@ class documentActionServices extends client_service {
     	return true;
     }
     
-    public function doDelete($params)
-    {
-    	$action = $params['action'];
-		$reason = (isset($params['reason']) && !empty($params['reason'])) ? $params['reason'] : _kt('Document Deleted.');
-		$documentId = $params['documentId'];
-        
-        $ktapi = $this->KT;
-        $document = KTAPI_Document::get($ktapi, $documentId);
-        
-        if(PEAR::isError($document)) {
-        	$error = $document->getMessage();
-        	$result = array('type' => 'fatal', 'error' => $error);
-        	$this->addResponse('result', json_encode($result));
-        	return;
-        }
-        
-        $docDetails = $document->get_detail();
-        $result = $document->delete($reason);
-        
-        if(PEAR::isError($result)) {
-        	$error = $result->getMessage();
-        	$result = array('type' => 'error', 'error' => $error);
-        	$this->addResponse('result', json_encode($result));
-        	return;
-        }
-        
-        $url = KTUtil::ktLink('browse.php', '', 'fFolderId='.$docDetails['folder_id']);
-        
-        $result = array('type' => 'success', 'url' => $url);
-    	$this->addResponse('result', json_encode($result));
-    }
-    
 	public function doCopy($params)
 	{
 		$action = $params['action'];
@@ -311,11 +279,8 @@ class documentActionServices extends client_service {
         		break;
         		
         	case 'immutable':
-        		$reason = ($reason === false) ? _kt('Document finalized') : $reason;
-        		break;
-        		
-        	case 'ownershipchange':
-        		$reason = ($reason === false) ? _kt('Document owner updated') : $reason;
+        		$result = $document->immute();
+        		$newDocument = $document;
         		break;
     			
         	default:
@@ -357,15 +322,20 @@ class documentActionServices extends client_service {
 
         switch ($action) {
         	case 'copy':
+        		$reason = (isset($params['reason']) && !empty($params['reason'])) ? $params['reason'] : _kt('Bulk copy performed');
         		break;
         	case 'move':
+        		$reason = (isset($params['reason']) && !empty($params['reason'])) ? $params['reason'] : _kt('Bulk move performed');
         		break;
         	case 'delete':
+        		$reason = (isset($params['reason']) && !empty($params['reason'])) ? $params['reason'] : _kt('Bulk delete performed');
         		break;
         	case 'archive':
+        		$reason = (isset($params['reason']) && !empty($params['reason'])) ? $params['reason'] : _kt('Bulk archive performed');
         		break;
+    		default:
+    			$reason = '';
         }
-		$reason = (isset($params['reason']) && !empty($params['reason'])) ? $params['reason'] : 'Bulk Action Performed';
         
         
         $ktapi = $this->KT;
@@ -382,8 +352,8 @@ class documentActionServices extends client_service {
         }
         
         if (!empty($actionResult['results'])) {
-        	$action = ($params['action'] == 'copy') ? _kt('copied') : _kt('moved');
-        	$error = _kt("The following items cannot be {$action}:");
+        	//$action = ($params['action'] == 'copy') ? _kt('copied') : _kt('moved');
+        	$error = _kt("The following items failed:");
         	$failed = $this->formatActionResults($actionResult['results'], $url);
         	
         	$result = array('type' => 'partial', 'error' => $error, 'failed' => $failed, 'url' => $url);

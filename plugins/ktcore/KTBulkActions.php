@@ -816,6 +816,16 @@ class KTBulkArchiveAction extends KTBulkAction {
         return _kt('Archive');
     }
 
+    function getOnClick()
+    {
+        return "javascript:{kt.app.copy.doBulkAction('archive');}";
+    }
+    
+    function getBtnType()
+    {
+    	return 'button';
+    }
+    
     function form_collectinfo() {
         $cancelUrl = $this->getReturnUrl();
 
