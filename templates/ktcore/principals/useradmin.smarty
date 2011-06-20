@@ -89,6 +89,7 @@
 			<thead>
 			   <tr>
 				   <th>&nbsp;</th>
+				   <th>&nbsp;</th>
 				  <th>{i18n}Name{/i18n}</th>
 				  <th width="10px;">{i18n}Enabled{/i18n}</th>
 				  <th>{i18n}Current Groups{/i18n}</th>
@@ -106,6 +107,9 @@
 					{if ($oUser->getId() != ADMIN_USER_ID)}<input type="checkbox" name="edit_user[{$oUser->getId()}]" value="1"/>
 					{else}<input type="checkbox" disabled="disabled"/>{/if}
 					<br>
+						</td>	
+						<td style="padding: 0px;">
+						<img src="http://www.gravatar.com/avatar/{md5Hash string=$oUser->getEmail()}?s=32&d=mm" alt="{$oUser->getName()}" title="{$oUser->getName()}" />
 						</td>
 						<td>
 							{$oUser->getName()}{if $oUser->getDisabled() == 4}<span class="flag shared">shared</span></span>{/if}<br/><span style="font-style:italic; color: #666;">{$oUser->getUsername()}</span></td>
