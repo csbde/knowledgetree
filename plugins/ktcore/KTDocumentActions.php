@@ -426,7 +426,7 @@ class KTDocumentViewAction extends KTDocumentAction {
 
 }
 
-class KTDocumentDeleteAction extends KTDocumentAction {
+class KTDocumentDeleteAction extends JavascriptDocumentAction {
 
     public $sName = 'ktcore.actions.document.delete';
     public $_sShowPermission = 'ktcore.permissions.delete';
@@ -445,6 +445,18 @@ class KTDocumentDeleteAction extends KTDocumentAction {
         }
         return parent::getInfo();
     }
+
+    function getOnClick()
+    {
+    	$id = $this->oDocument->getId();
+    	$name = $this->oDocument->getName();
+        return "javascript:{kt.app.copy.doAction(\"delete\", $id, \"$name\");}";
+    }
+
+	function getURL()
+	{
+		return '#';
+	}
 
     function check() {
         $res = parent::check();
@@ -612,7 +624,7 @@ class KTDocumentMoveAction extends JavascriptDocumentAction {
     function getOnClick()
     {
     	$id = $this->oDocument->getId();
-        return "javascript:{kt.app.copy.doMove($id);}";
+        return "javascript:{kt.app.copy.doTreeAction(\"move\", $id);}";
     }
 
 	function getURL()
@@ -875,7 +887,7 @@ class KTDocumentCopyAction extends JavascriptDocumentAction {
     function getOnClick()
     {
     	$id = $this->oDocument->getId();
-        return "javascript:{kt.app.copy.doCopy($id);}";
+        return "javascript:{kt.app.copy.doTreeAction(\"copy\", $id);}";
     }
 
 	function getURL()
@@ -1106,7 +1118,7 @@ class KTDocumentCopyAction extends JavascriptDocumentAction {
 
 }
 
-class KTDocumentArchiveAction extends KTDocumentAction {
+class KTDocumentArchiveAction extends JavascriptDocumentAction {
 
     public $sName = 'ktcore.actions.document.archive';
     public $_sShowPermission = 'ktcore.permissions.write';
@@ -1125,6 +1137,18 @@ class KTDocumentArchiveAction extends KTDocumentAction {
 
         return parent::getInfo();
     }
+
+    function getOnClick()
+    {
+    	$id = $this->oDocument->getId();
+    	$name = $this->oDocument->getName();
+        return "javascript:{kt.app.copy.doAction(\"archive\", $id, \"$name\");}";
+    }
+
+	function getURL()
+	{
+		return '#';
+	}
 
 	function form_confirm() {
         $oForm = new KTForm;
@@ -1685,7 +1709,7 @@ class KTDocumentWorkflowAction extends KTDocumentAction {
 
 }
 
-class KTOwnershipChangeAction extends KTDocumentAction {
+class KTOwnershipChangeAction extends JavascriptDocumentAction {
 
     public $sName = 'ktcore.actions.document.ownershipchange';
     public $_sShowPermission = 'ktcore.permissions.security';
@@ -1696,6 +1720,17 @@ class KTOwnershipChangeAction extends KTDocumentAction {
     function getDisplayName() {
         return _kt('Change owner');
     }
+
+    function getOnClick()
+    {
+    	$id = $this->oDocument->getId();
+        return "javascript:{kt.app.copy.doAction(\"ownershipchange\", $id);}";
+    }
+
+	function getURL()
+	{
+		return '#';
+	}
 
     function form_owner() {
         $form = new KTForm;

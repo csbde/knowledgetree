@@ -497,6 +497,17 @@ ktjapi._lib = new function() {
         return cObj;
     };
 
+    /**
+    * Converts the first letters of each word in a string to upper case
+    */
+    this.ucString = function(str) {
+	    str = str.toLowerCase().replace(/\b[a-z]/g, convert);
+	    function convert() {
+	          return arguments[0].toUpperCase();
+	    }
+	    return str;
+    }
+	
 };
 
 ktjapi._lib.String = new function() {};
