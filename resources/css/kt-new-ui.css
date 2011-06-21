@@ -1203,7 +1203,7 @@ label span.required
 	padding: 15px;
 	background: white;
 }
-.settings-item.systemQuotas a {
+.settings-item.systemQuotas.expanded a {
 	display: none;
 }
 .settings-item.systemQuotas .settings-content {
