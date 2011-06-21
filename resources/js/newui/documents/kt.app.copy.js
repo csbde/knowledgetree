@@ -3,6 +3,7 @@ if (typeof(kt.api) == 'undefined') { kt.api = {}; }
 
 /**
  * Modal dialog for copying / moving documents / folders
+ * Dialog for confirming delete / archive / finalize of documents
  */
 kt.app.copy = new function() {
 
@@ -11,7 +12,7 @@ kt.app.copy = new function() {
     var fragmentPackage = this.fragmentPackage = []
 
     // contains a list of executable fragments that will get preloaded
-    var execs = this.execs = ['documents/actions/copy.dialog'];
+    var execs = this.execs = ['documents/actions/copy.dialog', 'documents/actions/confirm.dialog'];
     var execPackage = this.execPackage = [execs];
 
     // scope protector. inside this object referrals to self happen via 'self' rather than 'this'
@@ -30,40 +31,49 @@ kt.app.copy = new function() {
         kt.api.preload(fragmentPackage, execPackage, true);
     }
     
-    this.doCopy = function(documentId) {
+    /* Functions to be called by the document / bulk actions */
+    
+    this.doTreeAction = function(action, documentId) {
     	self.checkReasons();
     	self.documentId = documentId;
-    	self.action = 'copy';
+    	self.action = action;
     	self.actionType = 'document';
-    	self.showCopyWindow();
-    	return;
+    	
+		self.showTreeWindow();
+    }
+    
+    this.doAction = function(action, documentId, name) {
+    	self.checkReasons();
+    	self.documentId = documentId;
+    	self.action = action;
+    	self.actionType = 'document';
+    	
+    	self.showConfirmationWindow(name);
     }
 
-    this.doMove = function(documentId) {
+    this.doBulkAction = function(action) {
     	self.checkReasons();
-    	self.documentId = documentId;
-    	self.action = 'move';
-    	self.actionType = 'document';
-    	self.showCopyWindow();
-    	return;
-    }
-    
-    this.doBulkCopy = function() {
-    	self.checkReasons();
-    	self.action = 'copy';
+    	self.action = action;
     	self.actionType = 'bulk';
     	self.itemList = kt.pages.browse.getSelectedItems();
-    	self.showCopyWindow();
-    	return;
+    	
+    	if (self.getWindowType == 'tree') {
+    		self.showTreeWindow();
+    	} 
+    	else {
+    		// Note: this function is in the drag & drop javascript
+    		self.targetFolderId = getQueryVariable('fFolderId');
+    		self.showConfirmationWindow();
+    	}
     }
-    
-    this.doBulkMove = function() {
-    	self.checkReasons();
-    	self.action = 'move';
-    	self.actionType = 'bulk';
-    	self.itemList = kt.pages.browse.getSelectedItems();
-    	self.showCopyWindow();
-    	return;
+    this.getWindowType = function() {
+        switch (self.action) {
+            case 'copy':
+            case 'move':
+                return 'tree';
+            default:
+                return 'confirm';
+        }
     }
     
     this.checkReasons = function() {
@@ -77,15 +87,15 @@ kt.app.copy = new function() {
     	}
     }
 
-    this.copyWindow = null;
-    this.showCopyWindow = function() {
+    this.treeWindow = null;
+    this.showTreeWindow = function() {
 	    var title = 'Copy';
 	    if(self.action == 'move') {
 	    	title = 'Move';
 	    }
 	    
-        var copyWin = new Ext.Window({
-            id              : 'extcopywindow',
+        var treeWin = new Ext.Window({
+            id              : 'tree-window',
             layout          : 'fit',
             width           : 550,
             resizable       : false,
@@ -98,24 +108,26 @@ kt.app.copy = new function() {
             shadow          : true,
             modal           : true,
             title           : title,
-            html            : kt.api.execFragment('documents/actions/copy.dialog')
+            html            : kt.api.execFragment('documents/actions/tree.dialog')
         });
 
         // Using the JSTree jQuery plugin
         // The tree needs to be run on display of the window in order for the javascript to be executed.
-        copyWin.addListener('show', function() { self.tree(); });
+        treeWin.addListener('show', function() { self.tree(); });
 
-        self.copyWindow = copyWin;
-        copyWin.show();
+        self.treeWindow = treeWin;
+        treeWin.show();
+        
+        jQuery('#select-btn').val(title);
     }
 
     this.closeWindow = function() {
-        copyWindow = Ext.getCmp('extcopywindow');
-        copyWindow.destroy();
+        treeWindow = Ext.getCmp('tree-window');
+        treeWindow.destroy();
     }
     
     this.save = function() {
-    	if(self.targetFolderId == undefined) {
+    	if(self.targetFolderId == undefined && self.getWindowType() == 'tree') {
     		alert('Please select a folder');
     		return;
     	}
@@ -159,6 +171,16 @@ kt.app.copy = new function() {
 	    	params.documentId = self.documentId;
 		    var func = 'documentActionServices.doCopy';
     	}
+    	
+    	// special case for the move action where the title or filename clashes
+    	if (self.action == 'move') {
+    		if (jQuery('#newname').val() != 'undefined') {
+	    		params.newname = encodeURIComponent(jQuery('#newname').val());
+    		}
+    		if (jQuery('#newfilename').val() != 'undefined') {
+	    		params.newfilename = encodeURIComponent(jQuery('#newfilename').val());
+    		}
+    	}
 	    
 	    var synchronous = true;
 	    var data = ktjapi.retrieve(func, params, kt.api.persistentDataCacheTimeout);
@@ -166,36 +188,36 @@ kt.app.copy = new function() {
         var response = jQuery.parseJSON(response);
         
         // remove the classes in case the dialog isn't closed before re-attempting the action
-        jQuery('#copy-error').removeClass('warning').removeClass('error');
+        jQuery('#action-error').removeClass('warning').removeClass('error');
         
         switch (response.type) {
         	case 'fatal':
 	        	$msg = 'The following error occurred, please refresh the page and try again: ' + response.error;
-	        	jQuery('#copy-error').html($msg);
-	        	jQuery('#copy-error').addClass('alert').addClass('error');
+	        	jQuery('#action-error').html($msg);
+	        	jQuery('#action-error').addClass('alert').addClass('error');
         		break;
         		
     		case 'error':
 	    		$msg = 'The following error occurred: ' + response.error;
-	        	jQuery('#copy-error').html($msg);
-	        	jQuery('#copy-error').addClass('alert').addClass('error');
+	        	jQuery('#action-error').html($msg);
+	        	jQuery('#action-error').addClass('alert').addClass('error');
     			break;
     			
 			case 'partial':
 				$msg = response.failed;
-				jQuery('#copy-modal').html($msg);
-				jQuery('#copy-modal').css('height', 0);
-				jQuery('#copy-modal').attr('cellspacing', '10px');
+				jQuery('#action-modal').html($msg);
+				jQuery('#action-modal').css('height', 0);
+				jQuery('#action-modal').attr('cellspacing', '10px');
 				
 				$error = response.error;
-				jQuery('#copy-error').html($error);
-	        	jQuery('#copy-error').addClass('alert').addClass('warning');
+				jQuery('#action-error').html($error);
+	        	jQuery('#action-error').addClass('alert').addClass('warning');
 				break;
 				
 			default:
-				$msg = 'Success. You will be redirected to the new document';
-    			jQuery("#copy-error").html($msg);
-	        	jQuery('#copy-error').addClass('alert').addClass('success');
+				$msg = response.msg;
+    			jQuery("#action-error").html($msg);
+	        	jQuery('#action-error').addClass('alert').addClass('success');
 	        	self.redirect(response.url);
         }
     	
@@ -254,14 +276,62 @@ kt.app.copy = new function() {
 	    return nodes;
 	}
 	
+    this.confirmationWindow = null;
+    this.showConfirmationWindow = function(name) {
+    	var action = self.action;
+    	if (action == 'immutable') {
+    		action = 'finalize';
+    	}
+    	var ucAction = ktjapi._lib.ucString(action);
+	    var title = 'Confirm ' + ucAction;
+	    
+        var confirmWin = new Ext.Window({
+            id              : 'confirm-window',
+            layout          : 'fit',
+            width           : 350,
+            resizable       : false,
+            closable        : true,
+            closeAction     : 'destroy',
+            y               : 50,
+            autoScroll      : false,
+            bodyCssClass    : 'ul_win_body',
+            cls             : 'ul_win',
+            shadow          : true,
+            modal           : true,
+            title           : title,
+            html            : kt.api.execFragment('documents/actions/confirm.dialog')
+        });
+
+        self.confirmationWindow = confirmWin;
+        confirmWin.show();
+        
+        if (self.actionType == 'bulk') {
+        	jQuery('#action-single').hide();
+        	jQuery('#action-bulk').show();
+        	jQuery('#action-bulk').text(jQuery('#action-bulk').text().replace('[action]', action));
+        } 
+        else {
+        	jQuery('#action-bulk').hide();
+        	jQuery('#confirm-doc-name').html(name);
+        	jQuery('#action-single').text(jQuery('#action-single').text().replace('[action]', action));
+        }
+        
+        jQuery('#select-btn').val(ucAction);
+    }
+
+    this.closeConfirmWindow = function() {
+        confirmationWindow = Ext.getCmp('confirm-window');
+        confirmationWindow.destroy();
+    }
+    
 	this.showSpinner = function() {
 		jQuery('#select-btn').addClass('none');
-		jQuery('.copy-spinner').removeClass('none').addClass('spin');
+		jQuery('.action-spinner').removeClass('none').addClass('spin');
 	}
 	
 	this.hideSpinner = function() {
 		jQuery('#select-btn').removeClass('none');
-		jQuery('.copy-spinner').removeClass('spin').addClass('none');
+		jQuery('.action-spinner').removeClass('spin').addClass('none');
 	}
 	
     this.init();

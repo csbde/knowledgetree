@@ -51,6 +51,16 @@ class KTBulkDeleteAction extends KTBulkAction {
         return _kt('Delete');
     }
 
+    function getOnClick()
+    {
+        return "javascript:{kt.app.copy.doBulkAction('delete');}";
+    }
+    
+    function getBtnType()
+    {
+    	return 'button';
+    }
+    
     function check_entity($oEntity) {
         if ($oEntity instanceof Document) {
             if (!KTDocumentUtil::canBeDeleted($oEntity, $sError)) {
@@ -300,7 +310,7 @@ class KTBulkMoveAction extends KTBulkAction {
 
     function getOnClick()
     {
-        return "javascript:{kt.app.copy.doBulkMove();}";
+        return "javascript:{kt.app.copy.doBulkAction('move');}";
     }
     
     function getBtnType()
@@ -559,7 +569,7 @@ class KTBulkCopyAction extends KTBulkAction {
 
     function getOnClick()
     {
-        return "javascript:{kt.app.copy.doBulkCopy();}";
+        return "javascript:{kt.app.copy.doBulkAction('copy');}";
     }
     
     function getBtnType()
@@ -806,6 +816,16 @@ class KTBulkArchiveAction extends KTBulkAction {
         return _kt('Archive');
     }
 
+    function getOnClick()
+    {
+        return "javascript:{kt.app.copy.doBulkAction('archive');}";
+    }
+    
+    function getBtnType()
+    {
+    	return 'button';
+    }
+    
     function form_collectinfo() {
         $cancelUrl = $this->getReturnUrl();
 

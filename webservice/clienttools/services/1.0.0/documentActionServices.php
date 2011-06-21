@@ -223,81 +223,186 @@ class documentActionServices extends client_service {
 	public function doCopy($params)
 	{
 		$action = $params['action'];
-		$reason = (isset($params['reason']) && !empty($params['reason'])) ? $params['reason'] : _kt('Document Copied.');
+		$reason = (isset($params['reason']) && !empty($params['reason'])) ? $params['reason'] : false;
         $targetFolderId = str_replace('folder_', '', $params['targetFolderId']);
         $documentId = $params['documentId'];
         
         $ktapi = $this->KT;
         $document = KTAPI_Document::get($ktapi, $documentId);
         
-        if(PEAR::isError($document)) {
+        if (PEAR::isError($document)) {
         	$error = $document->getMessage();
         	$result = array('type' => 'fatal', 'error' => $error);
         	$this->addResponse('result', json_encode($result));
         	return;
         }
         
-        $folder = KTAPI_Folder::get($ktapi, $targetFolderId);
-        
-        if(PEAR::isError($folder)) {
-        	$error = $folder->getMessage();
-        	$result = array('type' => 'fatal', 'error' => $error);
-        	$this->addResponse('result', json_encode($result));
-        	return;
+        if (is_numeric($targetFolderId)) {
+	        $folder = KTAPI_Folder::get($ktapi, $targetFolderId);
+	        
+	        if (PEAR::isError($folder)) {
+	        	$error = $folder->getMessage();
+	        	$result = array('type' => 'fatal', 'error' => $error);
+	        	$this->addResponse('result', json_encode($result));
+	        	return;
+	        }
         }
         
-        if($action == 'move') {
-        	$result = $document->move($folder, $reason);
-        	$newDocument = $document;
-        } else {
-        	$result = $document->copy($folder, $reason);
-        	$newDocument = $result;
+        $redirectTarget = 'document';
+        switch ($action) {
+        	case 'delete':
+        		$reason = ($reason === false) ? _kt('Document deleted') : $reason;
+        		$docDetails = $document->get_detail();
+        		$folderId = $docDetails['folder_id'];
+        		$result = $document->delete($reason);
+        		$redirectTarget = 'folder';
+    			break;
+    			
+        	case 'archive':
+        		$reason = ($reason === false) ? _kt('Document archived') : $reason;
+        		$docDetails = $document->get_detail();
+        		$folderId = $docDetails['folder_id'];
+        		$result = $document->archive($reason);
+        		$redirectTarget = 'folder';
+        		break;
+        		
+        	case 'immutable':
+        		$result = $document->immute();
+        		$newDocument = $document;
+        		break;
+    			
+        	case 'copy':
+        		$reason = ($reason === false) ? _kt('Document copied') : $reason;
+        		$result = $document->copy($folder, $reason);
+        		$newDocument = $result;
+        		break;
+        		
+        	case 'move':
+        		$newName = '';
+        		if ($params['newname'] != 'undefined') {
+        			$newName = urldecode($params['newname']);
+        		}
+        		
+        		$newFilename = '';
+        		if ($params['newfilename'] != 'undefined') {
+        			$newFilename = urldecode($params['newfilename']);
+        		}
+        		
+        		$reason = ($reason === false) ? _kt('Document moved') : $reason;
+        		$result = $document->move($folder, $reason, $newName, $newFilename);
+        		$newDocument = $document;
+        		break;
+        		
+        	default:
+        		$error = _kt('Please refresh the page and try again.');
+	        	$result = array('type' => 'error', 'error' => $error);
+	        	$this->addResponse('result', json_encode($result));
+	        	return;
         }
         
-        if(PEAR::isError($result)) {
+        if (PEAR::isError($result)) {
         	$error = $result->getMessage();
+        	
+        	// special case - if the file exists then a new title and/or filename need to be specified.
+        	if ($action == 'move' && strpos($error, 'already exists in your chosen folder') !== false) {
+        		$error .= $this->getMoveRenameForm($document, $error);
+        	}
+        	
         	$result = array('type' => 'error', 'error' => $error);
         	$this->addResponse('result', json_encode($result));
         	return;
         }
+
+        $newDocId = '';
+        if ($redirectTarget == 'folder'){
+        	$url = KTUtil::kt_clean_folder_url($folderId);
+        	$msg = _kt('Success. You will be redirected shortly.');
+        } 
+        else {
+	        $newDocId = $newDocument->documentid;
+	        $url = KTUtil::kt_clean_document_url($newDocId);
+        	$msg = _kt('Success. You will be redirected to the new document.');
+        }
         
-        $newDocId = $newDocument->documentid;
-        
-        $url = KTUtil::ktLink('view.php', '', 'fDocumentId='.$newDocId);
-        
-        $result = array('type' => 'success', 'newDocId' => $newDocId, 'url' => $url);
+        $result = array('type' => 'success', 'newDocId' => $newDocId, 'url' => $url, 'msg' => $msg);
     	$this->addResponse('result', json_encode($result));
+	}
+	
+	public function getMoveRenameForm($document, $error)
+	{
+		$properties = $document->get_detail();
+		
+		$fields = '<div class="" style="padding: 8px;">';
+		if (strpos($error, 'title') !== false) {
+			$fields .= '<label for="newname"><span class="required"></span><b>' . _kt('Title') . '</b></label><br />';
+			$fields .= "<input name='newname' id='newname' value='{$properties['title']}'><br />";
+		}
+		
+		if (strpos($error, 'filename') !== false) {
+			$fields .= '<label for="newfilename"><span class="required"></span><b>' . _kt('Filename') . '</b></label><br />';
+			$fields .= "<input name='newfilename' id='newfilename' value='{$properties['filename']}'><br />";
+		}
+		
+		$fields .= '</div>';
+		
+		return $fields;
 	}
     
 	public function doBulkCopy($params)
 	{
 		$action = $params['action'];
-		$reason = (isset($params['reason']) && !empty($params['reason'])) ? $params['reason'] : 'Bulk Copy Performed';
-        $targetFolderId = str_replace('folder_', '', $params['targetFolderId']);
-        $itemList = $params['itemList'];
+		$targetFolderId = str_replace('folder_', '', $params['targetFolderId']);
+		
+		$itemList = $params['itemList'];
         $organisedItemList = $this->formatItemList($itemList);
-        $ktapi = $this->KT;
+
+        switch ($action) {
+        	case 'copy':
+        		$reason = (isset($params['reason']) && !empty($params['reason'])) ? $params['reason'] : _kt('Bulk copy performed');
+        		break;
+        	case 'move':
+        		$reason = (isset($params['reason']) && !empty($params['reason'])) ? $params['reason'] : _kt('Bulk move performed');
+        		break;
+        	case 'delete':
+        		$reason = (isset($params['reason']) && !empty($params['reason'])) ? $params['reason'] : _kt('Bulk delete performed');
+        		break;
+        	case 'archive':
+        		$reason = (isset($params['reason']) && !empty($params['reason'])) ? $params['reason'] : _kt('Bulk archive performed');
+        		break;
+    		default:
+    			$reason = '';
+        }
         
+        
+        $ktapi = $this->KT;
         $actionResult = $ktapi->performBulkAction($action, $organisedItemList, $reason, $targetFolderId);
-        $url = KTUtil::ktLink('browse.php', '', 'fFolderId='.$targetFolderId);
+        $url = KTUtil::kt_clean_folder_url($targetFolderId);
                                       
         if ($actionResult['status_code'] == 1) {
         	$error = $actionResult['message'];
-	        $result = array('type' => 'fatal', 'error' => $error, 'url' => $url);
+	        
+        	$result = array('type' => 'fatal', 'error' => $error, 'url' => $url);
 	    	$this->addResponse('result', json_encode($result));
+	    	
+	    	return true;
         }
-        else if (!empty($actionResult['results'])) {
-        	$action = ($params['action'] == 'copy') ? _kt('copied') : _kt('moved');
-        	$error = _kt("The following items cannot be {$action}:");
+        
+        if (!empty($actionResult['results'])) {
+        	$error = _kt("The following items failed:");
         	$failed = $this->formatActionResults($actionResult['results'], $url);
         	
         	$result = array('type' => 'partial', 'error' => $error, 'failed' => $failed, 'url' => $url);
         	$this->addResponse('result', json_encode($result));
+        	
+        	return true;
         }
-        else {
-	        $result = array('type' => 'success', 'url' => $url);
-	    	$this->addResponse('result', json_encode($result));
-        }
+        
+        $msg = _kt('Success. You will be redirected shortly.');
+        
+        $result = array('type' => 'success', 'url' => $url, 'msg' => $msg);
+        $this->addResponse('result', json_encode($result));
+        
+        return true;
 	}
 	
 	public function formatItemList($itemList = array())
@@ -313,6 +418,7 @@ class documentActionServices extends client_service {
         	
     		$organisedItemList[$type][] = $parts[1];
         }
+        
         return $organisedItemList;
 	}
 	
@@ -367,6 +473,7 @@ class documentActionServices extends client_service {
     	
     	$nodes = array();
     	$nodes[] = array('data' => $structure['folder_name'], 'state' => 'open', 'children' => $children, 'attr' => $attributes);
+    	
     	return $nodes;
     }
     
@@ -383,6 +490,7 @@ class documentActionServices extends client_service {
     		$tree[] = array('data' => $nodeItem['title'], 'state' => 'closed', 'children' => $children, 
     			'attr' => $attributes, 'metadata' => $metadata);
     	}
+    	
     	return $tree;
     }
 
