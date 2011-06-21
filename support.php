@@ -34,7 +34,6 @@ class SupportUtil {
     	$klass = $oConfig->get('support/manager', $sDefault);
     	
 		require_once("$klass.php");
-    	$singleton = new $klass;
 	}
 }
 

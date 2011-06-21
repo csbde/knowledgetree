@@ -24,6 +24,7 @@ require_once("config/dmsDefaults.php");
 require_once(KT_LIB_DIR . "/dispatcher.inc.php");
 require_once(KT_LIB_DIR . "/users/User.inc");
 require_once(KT_LIB_DIR . "/templating/templating.inc.php");
+require_once(KT_LIB_DIR . '/config/config.inc.php');
 
 class ZendDeskDispatcher extends KTStandardDispatcher {
 	private $fullname;
@@ -36,8 +37,12 @@ class ZendDeskDispatcher extends KTStandardDispatcher {
 	
 	public function __construct()
 	{
+		$this->persistParams(array('timestamp'=>$_REQUEST['timestamp']));
 		parent::KTStandardDispatcher();
 		
+		if(!isset($_SESSION['userID'])) {
+			return ;
+		}
 		$this->user = new User();
 		$this->user = $this->user->get($_SESSION['userID']);
 		
@@ -47,8 +52,9 @@ class ZendDeskDispatcher extends KTStandardDispatcher {
 		$this->externalId = $_SESSION['userID'];
 		$this->organization = "ktsaas";
 		$this->urlPrefix = 'knowledgetree';
-		$this->token = 'tYLmYHqSeTn7CT75fBa3qN9T1kajGZJlyjTtOxhlGO9womZu';
 		
+		$oConfig = KTConfig::getSingleton();
+		$this->token = $oConfig->get('tokens/zendesk', false);
 	}
 	
     public function do_main() {
@@ -65,26 +71,28 @@ class ZendDeskDispatcher extends KTStandardDispatcher {
     
     /**
      * Build url 
-     * $sso_url = "http://".$sUrlPrefix.".zendesk.com/access/remote/?name=".$sFullName."&email=".$sEmail."&external_id=".$sExternalID."&organization=".$sOrganization."&timestamp=".$sTimestamp."&hash=".$sHash;
      */
     private function getAuthenticationUrl() {
-    	$timestamp = time();
-    	$message = $this->fullname . $this->email . $this->externalId . $this->organization . $this->token . $timestamp;
-    	$hash = md5($message);
-    	$details = array(	'name' => urlencode($this->name),
-    						'email' => urlencode($this->email),
-    						'external_id' => $this->externalId,
-    						'organization' => ACCOUNT_NAME,
-    						'timestamp' => $timestamp,
-    						'hash' => $hash,
-    					);
-
-		$accessPoint = "http://$this->urlPrefix.zendesk.com/access/remote/?";
-    	foreach ($details as $key=>$value) {
-    		$accessPoint .= "$key=$value&";
+    	global $default;
+    	$timestamp = KTUtil::arrayGet($_REQUEST, 'timestamp', 0);
+    	if($timestamp == 0) {
+    		$default->log->info(__CLASS__ . " : " . __FUNCTION__ . " : No timestamp sent.");
+    		$timestamp = time();
+    	} else {
+    		$default->log->info(__CLASS__ . " : " . __FUNCTION__ . " : Timestamp sent - $timestamp generated - " . time());
     	}
+    	$this->fullname = utf8_encode($this->fullname);
+    	$this->email = urlencode($this->email);
+    	$message = $this->fullname . $this->email . $this->externalId . $this->organization . $this->token . $timestamp;
+		$accessPoint = "https://$this->urlPrefix.zendesk.com/access/remote/?";
+		$accessPoint .= 'name=' . $this->fullname . '&';
+		$accessPoint .= 'email=' . $this->email . '&';
+		$accessPoint .= 'external_id=' . $this->externalId . '&';
+		$accessPoint .= 'organization=' . ACCOUNT_NAME . '&';
+		$accessPoint .= 'timestamp=' . $timestamp . '&';
+		$accessPoint .= 'hash=' . md5($message);
+    	$default->log->info(__CLASS__ . " : " . __FUNCTION__ . " : $accessPoint");
     	
-    	die($accessPoint);
     	return $accessPoint;
     }
 }
