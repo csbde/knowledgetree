@@ -1719,11 +1719,16 @@ class KTOwnershipChangeAction extends JavascriptDocumentAction {
     function getDisplayName() {
         return _kt('Change owner');
     }
+    
+    function getFunctionScript()
+    {
+		return 'kt.app.document_actions.changeOwner(\'' . $this->oDocument->getId() . '\')';
+    }
 
     function getOnClick()
     {
     	$id = $this->oDocument->getId();
-        return "javascript:{kt.app.copy.doAction(\"ownershipchange\", $id);}";
+        return "javascript:{kt.app.document_actions.changeOwner($id);}";
     }
 
 	function getURL()

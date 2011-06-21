@@ -221,13 +221,17 @@ kt.api = new function() {
         return ret.data.parsed;
     };
 
-    this.execFragment = function(fragName, data) {
+    this.execFragment = function(fragName, data, cacheTimeout) {
         var params = {};
         params.name = fragName;
         params.data = data;
         var func = 'template.execFragment';
+		
+		if (cacheTimeout == undefined) {
+			cacheTimeout = 30000;
+		}
 
-        ret = ktjapi.retrieve(func, params, 30000);
+        ret = ktjapi.retrieve(func, params, cacheTimeout);
         return ret.data.fragment;
     };
 

@@ -695,7 +695,7 @@ class BrowseView {
                         <td class="doc summary_cell fdebug">
                             <div class="title"><a class="clearLink" href="[document_link]" style="">[title]</a></div>
                             <div class="detail">
-                                <span class="item"> Owner: <span class="user">[owned_by]</span></span><span class="item">Created: <span class="date">[created_date]</span> by <span class="user">[created_by]</span></span><span class="item docupdatedinfo">Updated: <span class="date">[modified_date]</span> by <span class="user">[modified_by]</span></span><span class="item">File size: <span class="user filesize">[filesize]</span></span>
+                                <span class="item"> Owner: <span class="user docowner">[owned_by]</span></span><span class="item">Created: <span class="date">[created_date]</span> by <span class="user">[created_by]</span></span><span class="item docupdatedinfo">Updated: <span class="date">[modified_date]</span> by <span class="user">[modified_by]</span></span><span class="item">File size: <span class="user filesize">[filesize]</span></span>
                             </div>
                         </td>
                         <td>
@@ -748,7 +748,7 @@ class BrowseView {
 
                                         <li class="separator[separatorD]"></li>
 
-                                        <li class="action_change_owner [actions.change_owner]"><a href="action.php?kt_path_info=ktcore.actions.document.ownershipchange&fDocumentId=[id]">Change Owner</a></li>
+                                        <li class="action_change_owner [actions.change_owner]"><a href="javascript:;" onclick="kt.app.document_actions.changeOwner(\'[id]\');">Change Owner</a></li>
                                         <li class="action_finalize_document [actions.finalize_document]"><a href="action.php?kt_path_info=ktcore.actions.document.immutable&fDocumentId=[id]">Finalize Document</a></li>
                                     </ul>
                                 </li>
