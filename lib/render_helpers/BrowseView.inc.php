@@ -176,7 +176,7 @@ class BrowseView {
      * @param boolean $editable
      * @param int $pageCount
      */
-    public function renderBrowseFolder($folderId, $aBulkActions, $folder, $editable, $pageCount = 1)
+    public function renderBrowseFolder($folderId, $aBulkActions, $folder, $permissions, $pageCount = 1)
     {
         $response = array();
 
@@ -193,7 +193,7 @@ class BrowseView {
 
         $totalItems = 0;
         $folderContentItems = $this->getFolderContent($folderId, $totalItems);
-        $folderView = $this->buildFolderView($folderId, $folderContentItems, $editable);
+        $folderView = $this->buildFolderView($folderId, $folderContentItems, $permissions);
         $response['folderContents'] = join($folderView);
 		$response['documentCount'] = count($folderContentItems['documents']);
         // Adding Fragments for drag & drop client side processing
@@ -227,7 +227,7 @@ class BrowseView {
         return $folderItems;
     }
 
-    private function buildFolderView($folderId, $folderContentItems, $editable = null)
+    private function buildFolderView($folderId, $folderContentItems, $permissions = null)
     {
         $folderItems = $this->getFolderItems($folderContentItems);
         $itemCount = count($folderItems);
@@ -250,7 +250,7 @@ class BrowseView {
 
         // Deal with scenario where there are no items in a folder
         if ($itemCount <= 0) {
-            $folderView[$this->pages['count']] .= $this->noFilesOrFoldersMessage($folderId, $editable);
+            $folderView[$this->pages['count']] .= $this->noFilesOrFoldersMessage($folderId, $permissions);
         }
 
         $folderView[$this->pages['count']] .= '</div>';
@@ -334,26 +334,32 @@ class BrowseView {
      * Displays a message when there is no folder content
      *
      * @param int $folderId
-     * @param boolean $editable
+     * @param boolean $permissions
      * @return string
      */
-    public function noFilesOrFoldersMessage($folderId = null, $editable = true)
+    public function noFilesOrFoldersMessage($folderId = null, $permissions = true)
     {
         if (SharedUserUtil::isSharedUser()) {
             $folderMessage = '<h2>There\'s no shared content in this folder yet!</h2>';
             $perm = SharedContent::getPermissions($_SESSION['userID'], $folderId, null, 'folder');
             if ($perm == 1) {
-                $editable = true;
+                $permissions['editable'] = true;
             }
             else {
-                $editable = false;
+                $permissions['editable'] = false;
             }
         }
 
-        if (!$editable) {
+        if (!$permissions['editable']) {
+        	
+        	if ($permissions['folderDetails']) {
+        		$folderMessage = '<h2>There\'s nothing in this folder yet!</h2>';
+        	}
+        	
             if ($folderMessage == '') {
                 $folderMessage = '<h2>You don\'t have permissions to view the contents of this folder!</h2>';
             }
+            
             return "<span class='notification'>".$folderMessage."</span>";
         } else {
             $folderMessage = '<h2>There\'s nothing in this folder yet!</h2>';
