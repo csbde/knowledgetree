@@ -666,6 +666,20 @@ class siteapi extends client_service {
         
         return true;
     }
+	
+	public function changeDocumentOwner($params) {
+		
+		$oUser = User::get($params['newOwnerId']);
+		$username = $oUser->getUserName();
+		
+		$response = $this->KT->change_document_owner($params['documentId'], $username, 'Ownership changed');
+		
+		$this->addResponse('documentId', $params['documentId']);
+		$this->addResponse('username', $username);
+		$this->addResponse('success', $response);
+		
+		return TRUE;
+	}
     
 }
 
