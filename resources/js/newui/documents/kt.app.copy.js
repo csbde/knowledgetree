@@ -27,13 +27,15 @@ kt.app.copy = new function() {
     var showReasons;
     var reasonType;
 
-    this.init = function() {
+    this.init = function() 
+    {
         kt.api.preload(fragmentPackage, execPackage, true);
     }
     
     /* Functions to be called by the document / bulk actions */
     
-    this.doTreeAction = function(action, documentId) {
+    this.doTreeAction = function(action, documentId) 
+    {
     	self.checkReasons();
     	self.documentId = documentId;
     	self.action = action;
@@ -42,7 +44,8 @@ kt.app.copy = new function() {
 		self.showTreeWindow();
     }
     
-    this.doAction = function(action, documentId, name) {
+    this.doAction = function(action, documentId, name) 
+    {
     	self.checkReasons();
     	self.documentId = documentId;
     	self.action = action;
@@ -51,13 +54,14 @@ kt.app.copy = new function() {
     	self.showConfirmationWindow(name);
     }
 
-    this.doBulkAction = function(action) {
+    this.doBulkAction = function(action) 
+    {
     	self.checkReasons();
     	self.action = action;
     	self.actionType = 'bulk';
     	self.itemList = kt.pages.browse.getSelectedItems();
     	
-    	if (self.getWindowType == 'tree') {
+    	if (self.getWindowType() == 'tree') {
     		self.showTreeWindow();
     	} 
     	else {
@@ -66,7 +70,9 @@ kt.app.copy = new function() {
     		self.showConfirmationWindow();
     	}
     }
-    this.getWindowType = function() {
+    
+    this.getWindowType = function() 
+    {
         switch (self.action) {
             case 'copy':
             case 'move':
@@ -76,7 +82,8 @@ kt.app.copy = new function() {
         }
     }
     
-    this.checkReasons = function() {
+    this.checkReasons = function() 
+    {
     	var response = kt.api.esignatures.checkESignatures();
     	self.reasonType = response.esign;
     	
@@ -88,7 +95,8 @@ kt.app.copy = new function() {
     }
 
     this.treeWindow = null;
-    this.showTreeWindow = function() {
+    this.showTreeWindow = function() 
+    {
 	    var title = 'Copy';
 	    if(self.action == 'move') {
 	    	title = 'Move';
@@ -121,12 +129,65 @@ kt.app.copy = new function() {
         jQuery('#select-btn').val(title);
     }
 
-    this.closeWindow = function() {
+    this.closeWindow = function() 
+    {
         treeWindow = Ext.getCmp('tree-window');
         treeWindow.destroy();
     }
     
-    this.save = function() {
+    this.tree = function() 
+    {
+    	var initialFolders = [];
+    	
+        jQuery("#select-tree")
+            .jstree({
+                "core" : {
+                    "animation": 0,
+                    "load_open": true,
+                    "initially_open": initialFolders,
+                    "strings": {"loading": "Fetching data...", "new_node": "New Folder"}
+                },
+                "json_data" : {
+                	"async" : true,
+					"data" : function (node, callback) { 
+						if (node == -1) {
+							var selectedFolderId = 'folder_1';
+						} else {
+							var selectedFolderId = node.attr("id");
+						}
+						var data = self.getNodes(selectedFolderId);
+						callback(data);
+					}
+        		},
+        		"ui" : {
+        			"select_limit" : 1
+        		},
+        		"themes" : {
+        			"theme" : "knowledgetree",
+        			"dots"	: false
+        		},
+                "plugins" : [ "themes", "json_data", "ui" ]
+            })
+            .bind("select_node.jstree", function(event, data){
+            	self.targetFolderId = data.rslt.obj.attr("id");
+            });
+	}
+	
+	this.getNodes = function(selectedFolderId) 
+	{
+	    var func = 'documentActionServices.getFolderStructure';
+	    var synchronous = true;
+	    var params = {};
+	    params.id = selectedFolderId;
+	    params.ignoreIds = self.itemList;
+	    var data = ktjapi.retrieve(func, params, kt.api.persistentDataCacheTimeout);
+	    var response = data.data.nodes;
+        var nodes = jQuery.parseJSON(response);
+	    return nodes;
+	}
+	
+    this.save = function() 
+    {
     	if(self.targetFolderId == undefined && self.getWindowType() == 'tree') {
     		alert('Please select a folder');
     		return;
@@ -149,7 +210,8 @@ kt.app.copy = new function() {
     	self.finaliseAction('');
     }
     
-    this.finaliseEvent = function(e, result, reason) {
+    this.finaliseEvent = function(e, result, reason) 
+    {
     	if (result == 'success') {
     		self.showSpinner();
     		self.finaliseAction(reason);
@@ -157,7 +219,8 @@ kt.app.copy = new function() {
 		return;
     }
 
-    this.finaliseAction = function(reason) {	
+    this.finaliseAction = function(reason) 
+    {	
     	var params = new Array();
     	params.reason = reason;
     	params.targetFolderId = self.targetFolderId;
@@ -225,59 +288,14 @@ kt.app.copy = new function() {
     	self.hideSpinner();
     }
 
-    this.redirect = function(url) {
+    this.redirect = function(url) 
+    {
     	window.location.replace(url);
     }
     
-    this.tree = function() {
-        jQuery("#select-tree")
-            .jstree({
-                "core" : {
-                    "animation": 0,
-                    "load_open": true,
-                    "strings": {"loading": "Fetching data...", "new_node": "New Folder"}
-                },
-                "json_data" : {
-                	"async" : true,
-					"data" : function (node, callback) { 
-						var data = self.getNodes(node);
-						callback(data);
-					}
-        		},
-        		"ui" : {
-        			"select_limit" : 1
-        		},
-        		"themes" : {
-        			"theme" : "knowledgetree",
-        			"dots"	: false
-        		},
-                "plugins" : [ "themes", "json_data", "ui" ]
-            })
-            .bind("select_node.jstree", function(event, data){
-            	self.targetFolderId = data.rslt.obj.attr("id");
-            });
-	}
-	
-	this.getNodes = function(node) {
-		var id;
-		if(node == -1) {
-			id = 'folder_1';
-		} else {
-			id = node.attr("id");
-		}
-	    var func = 'documentActionServices.getFolderStructure';
-	    var synchronous = true;
-	    var params = {};
-	    params.id = id;
-	    params.ignoreIds = self.itemList;
-	    var data = ktjapi.retrieve(func, params, kt.api.persistentDataCacheTimeout);
-	    var response = data.data.nodes;
-        var nodes = jQuery.parseJSON(response);
-	    return nodes;
-	}
-	
     this.confirmationWindow = null;
-    this.showConfirmationWindow = function(name) {
+    this.showConfirmationWindow = function(name) 
+    {
     	var action = self.action;
     	if (action == 'immutable') {
     		action = 'finalize';
@@ -319,19 +337,23 @@ kt.app.copy = new function() {
         jQuery('#select-btn').val(ucAction);
     }
 
-    this.closeConfirmWindow = function() {
+    this.closeConfirmWindow = function() 
+    {
         confirmationWindow = Ext.getCmp('confirm-window');
         confirmationWindow.destroy();
     }
     
-	this.showSpinner = function() {
-		jQuery('#select-btn').addClass('none');
-		jQuery('.action-spinner').removeClass('none').addClass('spin');
+	this.showSpinner = function() 
+	{
+		//jQuery('#select-btn').addClass('none');
+		jQuery('#action-spinner').css('visibility', 'visible');
 	}
 	
-	this.hideSpinner = function() {
-		jQuery('#select-btn').removeClass('none');
-		jQuery('.action-spinner').removeClass('spin').addClass('none');
+	this.hideSpinner = function() 
+	{
+		//jQuery('#select-btn').removeClass('none');
+		//jQuery('.action-spinner').toggleClass('spin');
+		jQuery('#action-spinner').css('visibility', 'hidden');
 	}
 	
     this.init();
