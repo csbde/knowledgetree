@@ -450,19 +450,24 @@ class documentActionServices extends client_service {
 	
     public function getFolderStructure($params)
     {
-        $ktapi = $this->KT;
         $folderId = str_replace('folder_', '', $params['id']);
+        $folderId = is_numeric($folderId) ? $folderId : 1;
+        
         $ignoreIds = $this->formatItemList($params['ignoreIds']);
         $ignoreIds = $ignoreIds['folders'];
+        
         $options = array('permission' => KTAPI_PERMISSION_WRITE);
         $totalItems = 0;
+        
+        $ktapi = $this->KT;
         $contents = $ktapi->get_folder_contents($folderId, '1', 'F', $totalItems, $options);
         $nodes = $this->formatTreeStructure($contents['results'], $ignoreIds);
-        
-        if($folder_id != 1) {
-        	$nodes = $nodes[0]['children'];
-        }
-        
+    	$nodes = $nodes[0]['children'];
+    	
+//    	if ($folderId == 1) {
+//    		$nodes[] = $this->getOrphanedFolders($ignoreIds);
+//    	}
+    	
         $this->addResponse('nodes', json_encode($nodes));
     }
     
