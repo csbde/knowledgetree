@@ -87,7 +87,7 @@ class ManageBrandDispatcher extends KTAdminDispatcher
                 'action' => 'saveLogo',
                 'fail_url' => 'main',
                 'encoding' => 'multipart/form-data',
-                'cancel_url' => "javascript:void(jQuery('#branding').toggle());",
+                'cancel_url' => "javascript:void(cancelBranding());",
                 'context' => $this
             ));
 
@@ -138,6 +138,8 @@ class ManageBrandDispatcher extends KTAdminDispatcher
         $logo = '';
         if (!empty($fileDetails['name'])) {
             $logo = $this->uploadLogo($fileDetails);
+        } else {
+            $logo = FALSE;
         }
 
         if (!$this->saveConfiguration($logoTitle, $logo)) {
@@ -150,9 +152,12 @@ class ManageBrandDispatcher extends KTAdminDispatcher
     public function saveConfiguration($logoTitle, $logoPath)
     {
         $config = KTConfig::getSingleton();
-        $config->set('ui/mainLogoTitle', $logoTitle);
-        $res = $config->set('ui/mainLogo', $logoPath);
-
+        $res = $config->set('ui/mainLogoTitle', $logoTitle);
+        
+        if ($logoPath !== FALSE) {
+            $res = $config->set('ui/mainLogo', $logoPath);
+        }
+        
         return $res;
     }
 

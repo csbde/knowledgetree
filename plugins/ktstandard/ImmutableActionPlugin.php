@@ -57,7 +57,7 @@ class KTImmutableActionPlugin extends KTPlugin {
 $oRegistry =& KTPluginRegistry::getSingleton();
 $oRegistry->registerPlugin('KTImmutableActionPlugin', 'ktstandard.immutableaction.plugin', __FILE__);
 
-class KTDocumentImmutableAction extends KTDocumentAction {
+class KTDocumentImmutableAction extends JavascriptDocumentAction {
     var $sName = "ktcore.actions.document.immutable";
     var $_sShowPermission = 'ktcore.permissions.security';
     var $_bMutator = true;
@@ -77,6 +77,18 @@ class KTDocumentImmutableAction extends KTDocumentAction {
 
         return parent::getInfo();
     }
+
+    function getOnClick()
+    {
+    	$id = $this->oDocument->getId();
+    	$name = $this->oDocument->getName();
+        return "javascript:{kt.app.copy.doAction(\"immutable\", $id, \"$name\");}";
+    }
+
+	function getURL()
+	{
+		return '#';
+	}
 
     /*
      * Checks if document is Checked Out

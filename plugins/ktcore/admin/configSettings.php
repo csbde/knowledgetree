@@ -522,6 +522,22 @@ class SecurityConfigPageDispatcher extends BaseConfigDispatcher
     }
 }
 
+class KtToolsConfigPageDispatcher extends BaseConfigDispatcher
+{
+    public function check()
+    {
+        $this->category = 'KnowledgeTree Tools Settings';
+        $this->name = _kt('KnowledgeTree Tools Settings');
+
+        return parent::check();
+    }
+
+    function saveSettings($currentSettings)
+    {
+        return parent::saveSettings($currentSettings, true);
+    }
+}
+
 class SessionConfigPageDispatcher extends BaseConfigDispatcher
 {
     public function check()
