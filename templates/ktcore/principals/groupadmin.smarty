@@ -58,8 +58,12 @@
 		</td>
 			<td><a
 	href="{addQS}action=manageUsers&group_id={$oGroup->getId()}&old_search={$old_search}{/addQS}">{i18n}Manage Users{/i18n}</a></td>
-			<td class="title">{$context->getGroupStringForGroup($oGroup)} <a
-	href="{addQS}action=manageSubgroups&group_id={$oGroup->getId()}&old_search={$old_search}{/addQS}">{i18n}Manage sub-groups{/i18n}</a></td>
+			<td class="title">	{if $context->getGroupStringForGroup($oGroup) == ''} 
+									<a href="{addQS}action=manageSubgroups&group_id={$oGroup->getId()}&old_search={$old_search}{/addQS}">{i18n}Add sub-groups{/i18n}</a> 
+							 	{else}
+							 		{$context->getGroupStringForGroup($oGroup)} <a href="{addQS}action=manageSubgroups&group_id={$oGroup->getId()}&old_search={$old_search}{/addQS}">({i18n}edit{/i18n})</a> 
+							 	{/if}
+	</td>
 			<td><a href="{addQS}action=editGroup&group_id={$oGroup->getId()}&old_search={$old_search}{/addQS}"
 	class="ktAction ktEdit">{i18n}Edit{/i18n}</a></td>
 			<td><a href="{addQS}action=deleteGroup&group_id={$oGroup->getId()}&old_search={$old_search}{/addQS}"
