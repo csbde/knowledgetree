@@ -74,10 +74,10 @@ kt.app.document_actions = new function() {
 				break;
         }
 
-		if (!self.proceed_with_action(type)) {
-            self.refresh(false);
-            return;
-        }
+//		if (!self.proceed_with_action(type)) {
+//            self.refresh(false);
+//            return;
+//        }
 		
 		var params = {};
 		var signatureEnabled = kt.api.esignatures.checkESignatures();
