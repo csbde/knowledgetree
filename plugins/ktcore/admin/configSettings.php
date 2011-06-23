@@ -237,10 +237,10 @@ class BaseConfigDispatcher extends KTAdminDispatcher
                 }
                 
                 $input .= '<span class="switch">
-                    <input type="radio" id="'.$id.'" name="configArray['.$id.']" value="true" checked="'.$onChecked.'" />
-                    <input type="radio" id="'.$id.'" name="configArray['.$id.']" value="false" checked="'.$onChecked.'" />
-                    <label for="'.$id.'" class="cb-enable '.$onCssClass.'"><span>ON</span></label>
-                    <label for="'.$id.'" class="cb-disable '.$offCssClass.'"><span>OFF</span></label>
+                    <input type="radio" id="on_'.$id.'" name="configArray['.$id.']" value="true" checked="'.$onChecked.'" />
+                    <input type="radio" id="off_'.$id.'" name="configArray['.$id.']" value="false" checked="'.$onChecked.'" />
+                    <label for="on_'.$id.'" class="cb-enable '.$onCssClass.'"><span>ON</span></label>
+                    <label for="off_'.$id.'" class="cb-disable '.$offCssClass.'"><span>OFF</span></label>
                 </span>';
                 
                 break;
