@@ -1572,10 +1572,21 @@ class KTDocumentUtil {
 
         //put the document in the new folder
         $document->setFolderID($folder->getId());
-        $name = $document->getName();
+        
+        $fileRenamed = false;
         $filename = $document->getFileName();
-        $document->setFileName(KTDocumentUtil::getUniqueFilename($destFolder, $filename));
-        $document->setName(KTDocumentUtil::getUniqueDocumentName($destFolder, $name));
+        $newfilename = KTDocumentUtil::getUniqueFilename($destFolder, $filename);
+        if (!strcmp($filename, $newfilename)) {
+        	$document->setFileName($newfilename);
+        	$fileRenamed = true;
+        }
+        
+        $name = $document->getName();
+        $newname = KTDocumentUtil::getUniqueDocumentName($destFolder, $name);
+        if (!strcmp($name, $newname)) {
+        	$document->setName($newname);
+        	$fileRenamed = true;
+        }
 
         $res = $document->update();
         if (PEAR::isError($res)) {
@@ -1599,7 +1610,11 @@ class KTDocumentUtil {
         $sourcePath = ($originalFolder->iId == 1) ? $originalFolder->getName() : $originalFolder->getFullPath();
         $targetPath = ($folder->iId == 1) ? $folder->getName() : $folder->getFullPath();
 
-        $moveMessage = sprintf(_kt("Moved from %s to %s. %s"), $sourcePath, $targetPath, $reason);
+        $additionalMsg = '';
+        if ($fileRenamed) {
+        	$additionalMsg = sprintf(_kt(' Document renamed from %s to %s.'), $name, $newname);
+        }
+        $moveMessage = sprintf(_kt("Moved from %s to %s.%s %s"), $sourcePath, $targetPath, $additionalMsg, $reason);
 
         // create the document transaction record
         $documentTransaction = new DocumentTransaction($document, $moveMessage, 'ktcore.transactions.move');
