@@ -1,22 +1,26 @@
 <link href="/resources/css/kt-new-modal.css" type="text/css" rel="stylesheet" />
 
 <script src="/resources/js/newui/documents/blocks/workflowsBlock.js" type="text/javascript"></script>
-<script src="/resources/js/newui/buttons/formActions.js" type="text/javascript"></script>
 
 <h2>Perform Transition: {$oTransition->getName()}</h2>  
-	<form method=post name=quick_transition>
-        <input name="action" value="performquicktransition" type="hidden">
-        <input name="fDocumentId" value="{$oDocument->getId()}" type="hidden">
-        <input name="fTransitionId" value="{$oTransition->getId()}" type="hidden">
-		<div class="field">
-			<label for="data[reason]">Comment</label>
-			<p class="errorMessage"></p>
-			<textarea name="fComments" rows="3" cols="60"></textarea>
-            <div class="form_actions" id=modal>
-	            <input type="submit" onclick="javascript: {ldelim}workflowBlock.submitForm('quick_transition'){rdelim}; return false;" name="form_submit" value="{i18n}Perform Transition{/i18n}" />
-	            <a href="#" onclick="vActions.closeDisplay('workflow'); return false;" class="form_cancel" style="background: none repeat scroll 0% 0% transparent;">Cancel</a>
-            </div>
-    </div>
-    
-
+<form method=post name=quick_transition>
+	<input name="action" value="performquicktransition" type="hidden">
+	<input name="fDocumentId" value="{$oDocument->getId()}" type="hidden">
+	<input name="fTransitionId" value="{$oTransition->getId()}" type="hidden">
+	<div class="field">
+		<label for="data[reason]">Comment</label>
+		<p class="errorMessage"></p>
+		<textarea name="fComments" rows="3" cols="55"></textarea>
+	</div>
+	<br clear="both" />
+	<div class="form_buttons">
+		<div class="form_actions" id="modal">
+			<input type="submit" onclick="javascript: {ldelim}workflowBlock.submitForm('quick_transition'){rdelim}; return false;" name="form_submit" value="{i18n}Perform Transition{/i18n}" />
+		</div>
+		<div class="form_cancel">
+			<a href="#" onclick="vActions.closeDisplay('workflow'); return false;" class="form_cancel">Cancel</a>
+		</div>
+	</div>
 </form>
+
+<script src="/resources/js/newui/buttons/formActions.js" type="text/javascript"></script>
