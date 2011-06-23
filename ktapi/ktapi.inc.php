@@ -5732,6 +5732,59 @@ class KTAPI {
 	    return $response;
 	}
 
+    public function get_orphaned_folders($user)
+    {
+    	$permissionDescriptors = KTPermissionUtil::getPermissionDescriptorsForUser($user);
+
+        if (empty($permissionDescriptors)) {
+            return array(
+				'status_code' => 1,
+				'results' => array()
+			);
+        }
+        
+        $listPermissionDescriptors = DBUtil::paramArray($permissionDescriptors);
+
+        $readPermission = KTPermission::getByName('ktcore.permissions.read');
+        $readPermissionId = $readPermission->getId();
+        $detailsPermission = KTPermission::getByName('ktcore.permissions.folder_details');
+        $detailsPermissionId = $detailsPermission->getId();
+        $permissionIds = array($readPermissionId, $readPermissionId, $detailsPermissionId, $detailsPermissionId);
+
+        $query = "SELECT DISTINCT F.id AS id FROM
+            folders AS F
+                LEFT JOIN permission_lookups AS PL ON F.permission_lookup_id = PL.id
+                LEFT JOIN permission_lookup_assignments AS PLA ON PLA.permission_lookup_id = PL.id AND (PLA.permission_id = ? || PLA.permission_id = ?)
+
+            LEFT JOIN folders AS F2 ON F.parent_id = F2.id
+                LEFT JOIN permission_lookups AS PL2 ON F2.permission_lookup_id = PL2.id
+                LEFT JOIN permission_lookup_assignments AS PLA2 ON PLA2.permission_lookup_id = PL2.id AND (PLA2.permission_id = ? || PLA.permission_id = ?)
+            WHERE
+                PLA.permission_descriptor_id IN ($listPermissionDescriptors)
+                AND F2.id <> 1
+                AND NOT (PLA2.permission_descriptor_id IN ($listPermissionDescriptors))";
+        $params = kt_array_merge($permissionIds, $permissionDescriptors, $permissionDescriptors);
+        $folderIds = DBUtil::getResultArrayKey(array($query, $params), 'id');
+
+        if (PEAR::isError($folderIds)) {
+            return array(
+				'status_code' => 0,
+				'message' => $folderIds->getMessage()
+			);
+        }
+        
+        $orphans = array();
+        foreach ($folderIds as $folderId) {
+        	$folder = KTAPI_Folder::get($this, $folderId);
+            $orphans[] = $folder->get_detail();
+        }
+        
+        return array(
+				'status_code' => 1,
+				'results' => $orphans
+			);
+    }
+    
 }
 
 /**

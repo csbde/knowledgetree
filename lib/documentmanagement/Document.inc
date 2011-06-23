@@ -274,6 +274,12 @@ class Document {
     }
     // }}}
 
+    // {{{ getParentFolderIds
+    function getParentFolderIds() {
+        return $this->_oDocumentCore->getParentFolderIds();
+    }
+    // }}}
+
     // {{{ getVersion
     /** returns the complete version number as a string */
     function getVersion() {

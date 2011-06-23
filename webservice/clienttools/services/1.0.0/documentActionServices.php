@@ -122,24 +122,16 @@ class documentActionServices extends client_service {
 		return true;
     }
 	
-    public function is_reasons_enabled($params) {
-    	global $default;
+    public function checkESignaturesEnabled($params) 
+    {
+    	$config = KTConfig::getSingleton();
         
-        if (isset($params['documentId'])) {
-            $oDocument = Document::get($params['documentId']);
-            
-            // Check for document error
-            $this->addResponse('checkedout', $oDocument->getIsCheckedOut() ? '1': '0');
-        } else {
-            $this->addResponse('checkedout', '0');
-        }
-        
-    	if($default->enableESignatures) { 
+    	if ($config->get('e_signatures/enableESignatures')) { 
     		$this->addResponse('success', 'esign');
 			return true;
     	}
-    	$oKTConfig = KTConfig::getSingleton();
-    	if($oKTConfig->get('actionreasons/globalReasons')) { 
+    	
+    	if ($config->get('actionreasons/globalReasons')) { 
     		$this->addResponse('success', 'reason');
 			return true;
     	}
@@ -462,11 +454,13 @@ class documentActionServices extends client_service {
         $ktapi = $this->KT;
         $contents = $ktapi->get_folder_contents($folderId, '1', 'F', $totalItems, $options);
         $nodes = $this->formatTreeStructure($contents['results'], $ignoreIds);
-    	$nodes = $nodes[0]['children'];
     	
-//    	if ($folderId == 1) {
-//    		$nodes[] = $this->getOrphanedFolders($ignoreIds);
-//    	}
+    	if ($folderId == 1) {
+    		$nodes[] = $this->getOrphanedFolders($ignoreIds);
+    	} 
+    	else {
+    		$nodes = $nodes[0]['children'];
+    	}
     	
         $this->addResponse('nodes', json_encode($nodes));
     }
@@ -474,6 +468,11 @@ class documentActionServices extends client_service {
     private function formatTreeStructure($structure, $ignoreIds = null)
     {
     	$children = $this->formatChildren($structure['items'], $ignoreIds);
+    	
+    	if (empty($children)) {
+    		return array();
+    	}
+    	
     	$attributes = array('id' => 'folder_'.$structure['folder_id']);
     	
     	$nodes = array();
@@ -492,12 +491,31 @@ class documentActionServices extends client_service {
     		$children = $this->formatChildren($nodeItem['items'], $ignoreIds);
     		$attributes = array('id' => 'folder_'.$nodeItem['id']);
     		$metadata = "node_{$nodeItem['id']}";
-    		$tree[] = array('data' => $nodeItem['title'], 'state' => 'closed', 'children' => $children, 
+    		$name = (isset($nodeItem['title'])) ? $nodeItem['title'] : $nodeItem['folder_name'];
+    		$tree[] = array('data' => $name, 'state' => 'closed', 'children' => $children, 
     			'attr' => $attributes, 'metadata' => $metadata);
     	}
     	
     	return $tree;
     }
 
+    private function getOrphanedFolders($ignoreIds = null)
+    {
+    	$user = User::get($_SESSION['userID']);
+    	$ktapi = $this->KT;
+    	$orphans = $ktapi->get_orphaned_folders($user);
+    	
+    	if ($orphans['status_code'] == 0 || empty($orphans['results'])) {
+    		return array();
+    	}
+    	
+    	$treeOrphans = array();
+    	$treeOrphans['data'] = 'Orphaned Folders';
+    	$treeOrphans['state'] = 'open';
+    	$treeOrphans['attributes'] = array('id' => 'folder_orphans');
+    	$treeOrphans['children'] = $this->formatChildren($orphans['results'], $ignoreIds);
+    	
+    	return $treeOrphans;
+    }
 }
 ?>

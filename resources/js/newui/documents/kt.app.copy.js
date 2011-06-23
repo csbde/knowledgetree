@@ -34,14 +34,14 @@ kt.app.copy = new function() {
     
     /* Functions to be called by the document / bulk actions */
     
-    this.doTreeAction = function(action, documentId) 
+    this.doTreeAction = function(action, documentId, parentFolderIds) 
     {
     	self.checkReasons();
     	self.documentId = documentId;
     	self.action = action;
     	self.actionType = 'document';
     	
-		self.showTreeWindow();
+		self.showTreeWindow(parentFolderIds);
     }
     
     this.doAction = function(action, documentId, name) 
@@ -54,7 +54,7 @@ kt.app.copy = new function() {
     	self.showConfirmationWindow(name);
     }
 
-    this.doBulkAction = function(action) 
+    this.doBulkAction = function(action, parentFolderIds) 
     {
     	self.checkReasons();
     	self.action = action;
@@ -62,7 +62,7 @@ kt.app.copy = new function() {
     	self.itemList = kt.pages.browse.getSelectedItems();
     	
     	if (self.getWindowType() == 'tree') {
-    		self.showTreeWindow();
+    		self.showTreeWindow(parentFolderIds);
     	} 
     	else {
     		// Note: this function is in the drag & drop javascript
@@ -85,7 +85,7 @@ kt.app.copy = new function() {
     this.checkReasons = function() 
     {
     	var response = kt.api.esignatures.checkESignatures();
-    	self.reasonType = response.esign;
+    	self.reasonType = response;
     	
     	if(response == false) {
     		self.showReasons = false;
@@ -95,7 +95,7 @@ kt.app.copy = new function() {
     }
 
     this.treeWindow = null;
-    this.showTreeWindow = function() 
+    this.showTreeWindow = function(parentFolderIds) 
     {
 	    var title = 'Copy';
 	    if(self.action == 'move') {
@@ -121,7 +121,7 @@ kt.app.copy = new function() {
 
         // Using the JSTree jQuery plugin
         // The tree needs to be run on display of the window in order for the javascript to be executed.
-        treeWin.addListener('show', function() { self.tree(); });
+        treeWin.addListener('show', function() { self.tree(parentFolderIds); });
 
         self.treeWindow = treeWin;
         treeWin.show();
@@ -135,9 +135,9 @@ kt.app.copy = new function() {
         treeWindow.destroy();
     }
     
-    this.tree = function() 
+    this.tree = function(parentFolderIds) 
     {
-    	var initialFolders = [];
+    	var initialFolders = self.expandFolderIds(parentFolderIds);
     	
         jQuery("#select-tree")
             .jstree({
@@ -170,9 +170,30 @@ kt.app.copy = new function() {
             })
             .bind("select_node.jstree", function(event, data){
             	self.targetFolderId = data.rslt.obj.attr("id");
+            	if (self.targetFolderId == 'folder_orphans' || self.targetFolderId == '') {
+            		alert('You have selected an invalid folder, please select an alternate folder.');
+            		self.targetFolderId = '';
+            	}
             });
 	}
 	
+    this.expandFolderIds = function(folderIds)
+    {
+    	if (folderIds == undefined || folderIds == '') {
+    		return new Array();
+    	}
+    	
+    	var expandedFolderIds = [];
+    	var folderArray = folderIds.split(',');
+    	var len = folderArray.length;
+    	
+    	for (var i=0; i < len; i++) {
+    		expandedFolderIds[i] = 'folder_' + folderArray[i];
+    	}
+    	
+    	return expandedFolderIds;
+    }
+    
 	this.getNodes = function(selectedFolderId) 
 	{
 	    var func = 'documentActionServices.getFolderStructure';
@@ -188,7 +209,7 @@ kt.app.copy = new function() {
 	
     this.save = function() 
     {
-    	if(self.targetFolderId == undefined && self.getWindowType() == 'tree') {
+    	if(self.getWindowType() == 'tree' && (self.targetFolderId == 'undefined' || self.targetFolderId == '') ) {
     		alert('Please select a folder');
     		return;
     	}

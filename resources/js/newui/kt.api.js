@@ -250,7 +250,7 @@ kt.api.esignatures = new function() {
     this.checkESignatures = function() {
         // are esignatures enabled or reasons enabled - return esign / reason / false
 		var params = {};
-		var func = 'documentActionServices.is_reasons_enabled';
+		var func = 'documentActionServices.checkESignaturesEnabled';
 		var response = ktjapi.retrieve(func, params);
 
 		return response.data.success;
@@ -355,6 +355,9 @@ kt.api.esignatures = new function() {
 				self.hideSpinner();
 				return false;
 			}
+		}
+		else {
+			self.showSpinner();
 		}
 		
 		// Trigger of event created on the action window
