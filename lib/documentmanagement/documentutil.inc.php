@@ -1117,7 +1117,7 @@ class KTDocumentUtil {
             return true;
         }
 
-        if ($document->getImmutable() == true) {
+        if ($document->getImmutable() == true && $_SESSION['adminmode'] !== true) {
             return PEAR::raiseError(sprintf(_kt('The document is immutable and cannot be deleted: %s'), $document->getName()));
         }
 
