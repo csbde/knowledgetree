@@ -538,6 +538,55 @@ class KtToolsConfigPageDispatcher extends BaseConfigDispatcher
     }
 }
 
+class KtWebdavConfigPageDispatcher extends BaseConfigDispatcher
+{
+    public function check()
+    {
+        $this->category = 'WebDAV Settings';
+        $this->name = _kt('WebDAV Settings');
+
+        return parent::check();
+    }
+
+    function saveSettings($currentSettings)
+    {
+        return parent::saveSettings($currentSettings, true);
+    }
+}
+
+class ExplorerConfigPageDispatcher extends BaseConfigDispatcher
+{
+    public function check()
+    {
+        $this->category = 'Explorer CP Settings';
+        $this->name = _kt('Explorer CP');
+
+        return parent::check();
+    }
+
+    function saveSettings($currentSettings)
+    {
+        return parent::saveSettings($currentSettings, true);
+    }
+}
+
+class WebservicesConfigPageDispatcher extends BaseConfigDispatcher
+{
+    public function check()
+    {
+        $this->category = 'Web Services Settings';
+        $this->name = _kt('Web Services');
+
+        return parent::check();
+    }
+
+    function saveSettings($currentSettings)
+    {
+        return parent::saveSettings($currentSettings, true);
+    }
+}
+
+
 class SessionConfigPageDispatcher extends BaseConfigDispatcher
 {
     public function check()

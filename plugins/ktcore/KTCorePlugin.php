@@ -393,15 +393,15 @@ class KTCorePlugin extends KTPlugin {
             _kt('KnowledgeTree Tools'), _kt('View and change settings for the KnowledgeTree Tools Server.'),
             'admin/configSettings.php', null);
             
-        $this->registerAdminPage('explorercpconfigpage', 'KtToolsConfigPageDispatcher', 'clientTools',
+        $this->registerAdminPage('explorercpconfigpage', 'ExplorerConfigPageDispatcher', 'clientTools',
             _kt('Explorer CP'), _kt('View and change settings for the Explorer CP.'),
             'admin/configSettings.php', null);
             
-        $this->registerAdminPage('webdavconfig', 'KtToolsConfigPageDispatcher', 'clientTools',
+        $this->registerAdminPage('KTWebDAVSettings', 'KtWebdavConfigPageDispatcher', 'clientTools',
             _kt('WebDAV'), _kt('View and change settings for WebDAV.'),
             'admin/configSettings.php', null);
             
-        $this->registerAdminPage('webservices', 'KtToolsConfigPageDispatcher', 'clientTools',
+        $this->registerAdminPage('webservicesconfig', 'WebservicesConfigPageDispatcher', 'clientTools',
             _kt('Web Services'), _kt('View and change settings for the KnowledgeTree Web Services.'),
             'admin/configSettings.php', null);
 
