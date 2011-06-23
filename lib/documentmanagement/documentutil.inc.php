@@ -1117,6 +1117,10 @@ class KTDocumentUtil {
             return true;
         }
 
+        if ($document->getImmutable() == true) {
+            return PEAR::raiseError(sprintf(_kt('The document is immutable and cannot be deleted: %s'), $document->getName()));
+        }
+
         $originalFolder = Folder::get($document->getFolderId());
 
         DBUtil::startTransaction();

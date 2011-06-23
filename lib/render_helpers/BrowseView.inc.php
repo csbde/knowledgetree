@@ -176,7 +176,7 @@ class BrowseView {
      * @param boolean $editable
      * @param int $pageCount
      */
-    public function renderBrowseFolder($folderId, $aBulkActions, $folder, $editable, $pageCount = 1)
+    public function renderBrowseFolder($folderId, $aBulkActions, $folder, $permissions, $pageCount = 1)
     {
         $response = array();
 
@@ -193,7 +193,7 @@ class BrowseView {
 
         $totalItems = 0;
         $folderContentItems = $this->getFolderContent($folderId, $totalItems);
-        $folderView = $this->buildFolderView($folderId, $folderContentItems, $editable);
+        $folderView = $this->buildFolderView($folderId, $folderContentItems, $permissions);
         $response['folderContents'] = join($folderView);
 		$response['documentCount'] = count($folderContentItems['documents']);
         // Adding Fragments for drag & drop client side processing
@@ -227,7 +227,7 @@ class BrowseView {
         return $folderItems;
     }
 
-    private function buildFolderView($folderId, $folderContentItems, $editable = null)
+    private function buildFolderView($folderId, $folderContentItems, $permissions = null)
     {
         $folderItems = $this->getFolderItems($folderContentItems);
         $itemCount = count($folderItems);
@@ -250,7 +250,7 @@ class BrowseView {
 
         // Deal with scenario where there are no items in a folder
         if ($itemCount <= 0) {
-            $folderView[$this->pages['count']] .= $this->noFilesOrFoldersMessage($folderId, $editable);
+            $folderView[$this->pages['count']] .= $this->noFilesOrFoldersMessage($folderId, $permissions);
         }
 
         $folderView[$this->pages['count']] .= '</div>';
@@ -334,26 +334,32 @@ class BrowseView {
      * Displays a message when there is no folder content
      *
      * @param int $folderId
-     * @param boolean $editable
+     * @param boolean $permissions
      * @return string
      */
-    public function noFilesOrFoldersMessage($folderId = null, $editable = true)
+    public function noFilesOrFoldersMessage($folderId = null, $permissions = true)
     {
         if (SharedUserUtil::isSharedUser()) {
             $folderMessage = '<h2>There\'s no shared content in this folder yet!</h2>';
             $perm = SharedContent::getPermissions($_SESSION['userID'], $folderId, null, 'folder');
             if ($perm == 1) {
-                $editable = true;
+                $permissions['editable'] = true;
             }
             else {
-                $editable = false;
+                $permissions['editable'] = false;
             }
         }
 
-        if (!$editable) {
+        if (!$permissions['editable']) {
+        	
+        	if ($permissions['folderDetails']) {
+        		$folderMessage = '<h2>There\'s nothing in this folder yet!</h2>';
+        	}
+        	
             if ($folderMessage == '') {
                 $folderMessage = '<h2>You don\'t have permissions to view the contents of this folder!</h2>';
             }
+            
             return "<span class='notification'>".$folderMessage."</span>";
         } else {
             $folderMessage = '<h2>There\'s nothing in this folder yet!</h2>';
@@ -695,7 +701,7 @@ class BrowseView {
                         <td class="doc summary_cell fdebug">
                             <div class="title"><a class="clearLink" href="[document_link]" style="">[title]</a></div>
                             <div class="detail">
-                                <span class="item"> Owner: <span class="user">[owned_by]</span></span><span class="item">Created: <span class="date">[created_date]</span> by <span class="user">[created_by]</span></span><span class="item docupdatedinfo">Updated: <span class="date">[modified_date]</span> by <span class="user">[modified_by]</span></span><span class="item">File size: <span class="user filesize">[filesize]</span></span>
+                                <span class="item"> Owner: <span class="user docowner">[owned_by]</span></span><span class="item">Created: <span class="date">[created_date]</span> by <span class="user">[created_by]</span></span><span class="item docupdatedinfo">Updated: <span class="date">[modified_date]</span> by <span class="user">[modified_by]</span></span><span class="item">File size: <span class="user filesize">[filesize]</span></span>
                             </div>
                         </td>
                         <td>
@@ -748,7 +754,7 @@ class BrowseView {
 
                                         <li class="separator[separatorD]"></li>
 
-                                        <li class="action_change_owner [actions.change_owner]"><a href="action.php?kt_path_info=ktcore.actions.document.ownershipchange&fDocumentId=[id]">Change Owner</a></li>
+                                        <li class="action_change_owner [actions.change_owner]"><a href="javascript:;" onclick="kt.app.document_actions.changeOwner(\'[id]\');">Change Owner</a></li>
                                         <li class="action_finalize_document [actions.finalize_document]"><a href="#" onclick="javascript:{kt.app.copy.doAction(\'immutable\', [id]);}">Finalize Document</a></li>
                                     </ul>
                                 </li>

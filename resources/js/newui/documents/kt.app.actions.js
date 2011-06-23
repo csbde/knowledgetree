@@ -74,10 +74,10 @@ kt.app.document_actions = new function() {
 				break;
         }
 
-		if (!self.proceed_with_action(type)) {
-            self.refresh(false);
-            return;
-        }
+//		if (!self.proceed_with_action(type)) {
+//            self.refresh(false);
+//            return;
+//        }
 		
 		var params = {};
 		var signatureEnabled = kt.api.esignatures.checkESignatures();
@@ -327,6 +327,58 @@ kt.app.document_actions = new function() {
 		Ext.getCmp('checkinmask').getEl().unmask();
 		alert("Checkin Failure");
 	    return true;
+	}
+    
+    this.changeOwner = function(documentId) {
+		
+		namespace = 'ktajax.actions.document.workflow';
+		namespace = 'ktcore.actions.document.ownershipchange';
+		baseUrl = 'action.php?kt_path_info=' + namespace + '&';
+		address = baseUrl + '&fDocumentId=' + documentId;
+		
+		// create the window
+		this.win = new Ext.Window({
+			id          : 'changeowner',
+			title       : 'Change Owner',
+			layout      : 'fit',
+			width       : 350,
+			closeAction :'destroy',
+			resizable   : false,
+			draggable   : false,
+			y           : 75,
+			shadow      : false,
+			modal       : true,
+			html        : '<div id="changeownerhtml"></div>'
+		});
+		
+		this.win.show();
+		
+		// This is done via jQuery to enable the embedded CSS and JS to run
+		jQuery('#changeownerhtml').html(kt.api.execFragment('documents/changeowner', {documentId:documentId}, 0));
+    }
+	
+	this.doChangeOwner = function(documentId, currentOwnerId, newOwnerId) {
+		
+		if (newOwnerId == '') {
+			alert('A new owner has not been entered');
+			return false;
+		}
+		
+		if (currentOwnerId == newOwnerId) {
+			alert('New owner is same as old owner');
+			return false;
+		}
+		
+		Ext.getCmp('changeowner').getEl().mask("Changing Document Owner", "x-mask-loading");
+		
+		var response = ktjapi.retrieve('siteapi.changeDocumentOwner', {documentId:documentId, newOwnerId:newOwnerId});
+		
+		Ext.getCmp('changeowner').close();
+		
+		self.documentId = documentId;
+		self.refresh();
+		
+		return true;
 	}
 
     this.init();

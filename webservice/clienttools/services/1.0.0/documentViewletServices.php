@@ -98,6 +98,13 @@ class documentViewletServices extends client_service {
 				$this->addResponse('checkoutuser', $oCheckoutUser->getName());
 			}
 			
+			$docOwnerUserId = $document->getOwnerID();
+			
+			if (!empty($docOwnerUserId)) {
+				$docOwnerName = User::get($document->getOwnerID());
+				$this->addResponse('docowner', $docOwnerName->getName());
+			}
+			
 		}
     	
     	return true;

@@ -624,7 +624,8 @@ class KTDocumentMoveAction extends JavascriptDocumentAction {
     function getOnClick()
     {
     	$id = $this->oDocument->getId();
-        return "javascript:{kt.app.copy.doTreeAction(\"move\", $id);}";
+    	$parentFolderIds = $this->oDocument->getParentFolderIds();
+        return "javascript:{kt.app.copy.doTreeAction(\"move\", $id, \"$parentFolderIds\");}";
     }
 
 	function getURL()
@@ -887,7 +888,8 @@ class KTDocumentCopyAction extends JavascriptDocumentAction {
     function getOnClick()
     {
     	$id = $this->oDocument->getId();
-        return "javascript:{kt.app.copy.doTreeAction(\"copy\", $id);}";
+    	$parentFolderIds = $this->oDocument->getParentFolderIds();
+        return "javascript:{kt.app.copy.doTreeAction(\"copy\", $id, \"$parentFolderIds\");}";
     }
 
 	function getURL()
@@ -1720,11 +1722,16 @@ class KTOwnershipChangeAction extends JavascriptDocumentAction {
     function getDisplayName() {
         return _kt('Change owner');
     }
+    
+    function getFunctionScript()
+    {
+		return 'kt.app.document_actions.changeOwner(\'' . $this->oDocument->getId() . '\')';
+    }
 
     function getOnClick()
     {
     	$id = $this->oDocument->getId();
-        return "javascript:{kt.app.copy.doAction(\"ownershipchange\", $id);}";
+        return "javascript:{kt.app.document_actions.changeOwner($id);}";
     }
 
 	function getURL()

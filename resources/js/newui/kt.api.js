@@ -221,13 +221,17 @@ kt.api = new function() {
         return ret.data.parsed;
     };
 
-    this.execFragment = function(fragName, data) {
+    this.execFragment = function(fragName, data, cacheTimeout) {
         var params = {};
         params.name = fragName;
         params.data = data;
         var func = 'template.execFragment';
+		
+		if (cacheTimeout == undefined) {
+			cacheTimeout = 30000;
+		}
 
-        ret = ktjapi.retrieve(func, params, 30000);
+        ret = ktjapi.retrieve(func, params, cacheTimeout);
         return ret.data.fragment;
     };
 
@@ -250,7 +254,7 @@ kt.api.esignatures = new function() {
     this.checkESignatures = function() {
         // are esignatures enabled or reasons enabled - return esign / reason / false
 		var params = {};
-		var func = 'documentActionServices.is_reasons_enabled';
+		var func = 'documentActionServices.checkESignaturesEnabled';
 		var response = ktjapi.retrieve(func, params);
 
 		return response.data.success;
@@ -355,6 +359,9 @@ kt.api.esignatures = new function() {
 				self.hideSpinner();
 				return false;
 			}
+		}
+		else {
+			self.showSpinner();
 		}
 		
 		// Trigger of event created on the action window

@@ -12,7 +12,7 @@
 	<td class="ul_actions" align="right" valign="top">
         <input id="select-btn" class="ul_actions_btns" type="button" value="Save" onClick="kt.app.copy.save();" />
         <a class="ul_actions_cancel_link" href="javascript: kt.app.copy.closeWindow();">Cancel</a>
-        <span id="action-spinner" class="action-spinner none">&nbsp;</span>
+        <span id="action-spinner" class="action-spinner spin" style="visibility: hidden; width: 16px; height: 16px;">&nbsp;</span>
     </td>
 </tr>
 </table>

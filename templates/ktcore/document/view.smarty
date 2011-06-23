@@ -58,7 +58,7 @@
 								<th>Created by:</th><td>{$doc_data.creator} on {$document->getDisplayCreatedDateTime()|date_format:"%b %e, %Y"}</td>
 							</tr>
 							<tr>
-								<th>Owned by:</th><td>{$doc_data.owner}</td>
+								<th>Owned by:</th><td id="value-documentowner">{$doc_data.owner}</td>
 							</tr>
 						{if $document->getIsCheckedOut()}
 							<tr id="value-ischeckedout">

@@ -81,10 +81,11 @@ class BrowseDispatcher extends KTStandardDispatcher {
 	public $query = null;
 	public $resultURL;
 	public $sHelpPage = 'ktcore/browse.html';
-	public $editable;
+	public $permissions;
 
 	function __construct()
 	{
+		$this->permissions = array();
 	    $this->aBreadcrumbs = array(array('action' => 'browse', 'name' => _kt('Browse')));
 	    return parent::KTStandardDispatcher();
 	}
@@ -93,7 +94,7 @@ class BrowseDispatcher extends KTStandardDispatcher {
 	{
             $this->browse_mode = KTUtil::arrayGet($_REQUEST, 'fBrowseMode', 'folder');
             $action = KTUtil::arrayGet($_REQUEST, $this->event_var, 'main');
-            $this->editable = false;
+            $this->permissions['editable'] = false;
 
             // catch the alternative actions.
             if ($action != 'main') {
@@ -138,7 +139,7 @@ class BrowseDispatcher extends KTStandardDispatcher {
 	           'context' => $this,
 	           'page' => $main,
 	           'browse_mode' => $this->browse_mode,
-	           'isEditable' => $this->editable,
+	           'isEditable' => $this->permissions['editable'],
 	           'bulkactions' => $bulkActions,
 	           'browseutil' => new KTBrowseUtil(),
 	           'returnaction' => 'browse',
@@ -151,7 +152,7 @@ class BrowseDispatcher extends KTStandardDispatcher {
     		$folderId = $this->oFolder->getId();
 
 	        $renderHelper = BrowseViewUtil::getBrowseView();
-	        $renderData = $renderHelper->renderBrowseFolder($folderId, $bulkActions, $this->oFolder, $this->editable);
+	        $renderData = $renderHelper->renderBrowseFolder($folderId, $bulkActions, $this->oFolder, $this->permissions);
 	        if($renderData['documentCount'] > 0)
 	        	$this->loadDocumentJS();
 	        $templateData = array_merge($templateData, $renderData);
@@ -428,19 +429,20 @@ class BrowseDispatcher extends KTStandardDispatcher {
 	    // check whether the user can edit this folder
 	    if (SharedUserUtil::isSharedUser()) {
 	        if (SharedContent::getPermissions($this->oUser->getId(), $oFolder->getId(), null, 'folder') == 1) {
-	            $this->editable = true;
+	            $this->permissions['editable'] = true;
 	        }
 	        else {
-	            $this->editable = false;
+	            $this->permissions['editable'] = false;
 	        }
 	    }
 	    else {
-	        $oPerm = KTPermission::getByName('ktcore.permissions.write');
-	        if (KTPermissionUtil::userHasPermissionOnItem($this->oUser, $oPerm, $oFolder)) {
-	            $this->editable = true;
+	        if (KTPermissionUtil::userHasPermissionOnItem($this->oUser, 'ktcore.permissions.write', $oFolder)) {
+	            $this->permissions['editable'] = true;
 	        } else {
-	            $this->editable = false;
+	            $this->permissions['editable'] = false;
 	        }
+	        
+	        $this->permissions['folderDetails'] = KTPermissionUtil::userHasPermissionOnItem($this->oUser, 'ktcore.permissions.folder_details', $oFolder);
 	    }
 	}
 
@@ -504,7 +506,7 @@ class BrowseDispatcher extends KTStandardDispatcher {
 	 */
 	private function browseByLookup()
 	{
-	    $this->editable = false;
+	    $this->permissions['editable'] = false;
 
 	    // check the inputs
 	    $field = KTUtil::arrayGet($_REQUEST, 'fField', null);
@@ -540,7 +542,7 @@ class BrowseDispatcher extends KTStandardDispatcher {
 	private function browseByDocument()
 	{
 	    // browsing by document type
-	    $this->editable = false;
+	    $this->permissions['editable'] = false;
 
 	    $doctype = KTUtil::arrayGet($_REQUEST, 'fType',null);
 	    $oDocType = DocumentType::get($doctype);

@@ -246,10 +246,10 @@ class KTJSONLookupWidget extends KTBaseWidget {
         return self::getWidget($label, $type, $parts, $assigned, $options);
     }
 
-    public static function getUserSearchWidget($label, $type, $parts, $members)
+    public static function getUserSearchWidget($label, $type, $parts, $members, $options)
     {
         $assigned = self::getAssignedUsers($members);
-        $options = array('users' => $groups);
+        $options['users'] = $groups;
 
         return self::getWidget($label, $type, $parts, $assigned, $options);
     }
