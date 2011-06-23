@@ -62,6 +62,11 @@ kt.app.document_viewlets = new function() {
 			jQuery('#value-checkedoutby').html(response.data.checkoutuser);
 		}
 		
+		if (jQuery('#value-documentowner') && response.data.docowner) {
+			jQuery('#value-documentowner').html(response.data.docowner);
+		}
+		
+		
 		
 		if (jQuery('span#docItem_'+self.documentId+' span.docupdatedinfo span.date') && response.data.lastupdateddate){
 			jQuery('span#docItem_'+self.documentId+' span.docupdatedinfo span.date').html(response.data.lastupdateddate);
@@ -74,6 +79,12 @@ kt.app.document_viewlets = new function() {
 		if (jQuery('span#docItem_'+self.documentId+' span.docupdatedinfo span.filesize') && response.data.filesize){
 			jQuery('span#docItem_'+self.documentId+' span.filesize').html(response.data.filesize);
 		}
+		
+		if (jQuery('span#docItem_'+self.documentId+' span.docupdatedinfo span.docowner') && response.data.docowner){
+			jQuery('span#docItem_'+self.documentId+' span.docowner').html(response.data.docowner);
+		}
+		
+		
 		
 		
 		// Need a better animation to highlight background color

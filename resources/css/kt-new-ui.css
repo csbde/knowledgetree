@@ -35,9 +35,11 @@ textarea {
 	margin: 0px;
 }
 #logobar .primary {
-	width: 225px;
+	max-height: 50px;
 	position: relative;
 	left: -5px;
+	margin-left: 5px;
+	margin-bottom: 5px;
 }
 .standardBorder {
 	border: 1px solid #CCC;

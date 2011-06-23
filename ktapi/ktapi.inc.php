@@ -3989,9 +3989,14 @@ class KTAPI {
      */
     public function change_document_owner($document_id, $username, $reason, $sig_username = '', $sig_password = '')
     {
-        $response = $this->_check_electronic_signature($document_id, $sig_username, $sig_password, $reason, $reason,
+        /*
+		 
+		// Electronic Signature Check not required here anymore
+		
+		$response = $this->_check_electronic_signature($document_id, $sig_username, $sig_password, $reason, $reason,
                                                        'ktcore.transactions.document_owner_change');
         if ($response['status_code'] == 1) return $response;
+		*/
 
     	$document = &$this->get_document_by_id($document_id);
 		if (PEAR::isError($document))
