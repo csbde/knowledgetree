@@ -1450,7 +1450,7 @@ class KTAjaxDocumentWorkflowAction extends KTDocumentAction {
     }
 }
 
-class KTDocumentWorkflowAction extends KTDocumentAction {
+class KTDocumentWorkflowAction extends JavascriptDocumentAction {
 
     public $sName = 'ktcore.actions.document.workflow';
     public $_sShowPermission = 'ktcore.permissions.read';
@@ -1472,6 +1472,16 @@ class KTDocumentWorkflowAction extends KTDocumentAction {
 
         return _kt('Workflow');
     }
+	
+	function getOnClick()
+    {
+        return "javascript:{workflows.displayAction();}";
+    }
+
+	function getURL()
+	{
+		return '#';
+	}
 
     function getInfo() {
         if ($this->oDocument->getIsCheckedOut()) {

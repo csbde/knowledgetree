@@ -87,12 +87,14 @@
 								</tr>
 								<tr>
 									<td class="alignright">
-										<div class="form_cancel">
-											<a href="#" onclick="vActions.closeDisplay('workflow'); return false;" class=form_cancel style="background: none repeat scroll 0% 0% transparent;">Cancel</a>
-										</div>
-										<div class="form_actions" id="modal">
-											<input type="{$submit.type}" onclick="javascript: {ldelim}workflowBlock.submitForm('transition'){rdelim}; return false;" name=form_submit value="{i18n}Perform Transition{/i18n}" />
-											
+										<div class="form_buttons">
+											<div class="form_actions" id="modal">
+												<input type="{$submit.type}" onclick="javascript: {ldelim}workflowBlock.submitForm('transition'){rdelim}; return false;" name=form_submit value="{i18n}Perform Transition{/i18n}" />
+												
+											</div>
+											<div class="form_cancel">
+												<a href="#" onclick="vActions.closeDisplay('workflow'); return false;" class=form_cancel style="background: none repeat scroll 0% 0% transparent;">Cancel</a>
+											</div>
 										</div>
 									</td>
 								</tr>
@@ -101,6 +103,25 @@
 						</form>
 					{/if}
 				</div>
+			</td>
+        </tr>
+		{else}
+		<tr>
+			<td class="alignright">
+				<form action="{$smarty.server.PHP_SELF}" method=POST name=transition_wf_form>
+					<input type="hidden" name="action" value="startWorkflow" />
+					<input type="hidden" name="fDocumentId" value="{$oDocument->getId()}" />
+					<input type="hidden" name="fWorkflowId" value="{$oWorkflow->getId()}" />
+					<div class="form_buttons">
+						<div class="form_actions" id="modal">
+							<input type="{$submit.type}" onclick="javascript: {ldelim}workflowBlock.submitForm('transition'){rdelim}; return false;" name=form_submit value="{i18n}Restart Workflow{/i18n}" />
+							
+						</div>
+						<div class="form_cancel">
+							<a href="#" onclick="vActions.closeDisplay('workflow'); return false;" class=form_cancel style="background: none repeat scroll 0% 0% transparent; margin-right: 10px;">Cancel</a>
+						</div>
+					</div>
+				</form>
 			</td>
         </tr>
 		{/if}
@@ -144,13 +165,15 @@
 							<br />
 							<table>
 								<tr>
-									<td class="alignright">
-										<div class="form_cancel">
-											<a href="#" onclick="vActions.closeDisplay('workflow'); return false;" class=form_cancel style="background: none repeat scroll 0% 0% transparent;">Cancel</a>
-										</div>
+									<td class="alignright ul_actions">
+										
 										
 										<div class="form_actions" id="modal">
 											<input type="{$submit.type}" onclick="javascript: {ldelim}workflowBlock.submitForm('change'){rdelim}; return false;" name=form_submit value="{i18n}Start Workflow{/i18n}" />
+										</div>
+										
+										<div class="form_cancel">
+											<a href="#" onclick="vActions.closeDisplay('workflow'); return false;"  style="background: none repeat scroll 0% 0% transparent; margin-right: 5px;">Cancel</a>
 										</div>
 										
 									</td>
