@@ -572,7 +572,7 @@ li.notification {
 	height: 20px;
 	position: relative;
 	width: 400px;
-	z-index: 99999;
+	z-index: 8999;
 	padding-top: 5px;
 }
 
@@ -1264,15 +1264,17 @@ a.subscribe_actions {
 IPhone Style Switches
 http://devgrow.com/iphone-style-switches/
 */
-.field.switch {
+.switch {
 	display: inline-block;
 	border-radius: 3px;
-	border: 1px solid #CCC;
+	-moz-border-radius: 3px;
+	-webkit-border-radius: 3px;
+	border: 2px solid #CCC;
 	margin-top: 5px;
 }
 
 .cb-enable, .cb-disable, .cb-enable span, .cb-disable span { display: block; float: left; }
-.cb-enable span, .cb-disable span { box-shadow: inset 0px 1px 0px #666; line-height: 25px; display: block; background: whitesmoke; font-weight: bold; color: #666;}
+.cb-enable span, .cb-disable span { box-shadow: inset 0px 1px 0px #666; line-height: 25px; display: block; background: white; font-weight: bold; color: #666;}
 .cb-enable span { padding: 0 10px; }
 .cb-disable span { padding: 0 10px; }
 .cb-disable.selected { background-position: 0 -30px; }
@@ -1366,6 +1368,9 @@ http://devgrow.com/iphone-style-switches/
 	padding: 0px;
 	
 }
+.settings-section .switch {
+	margin: 0px 0px -5px 0px;
+}
 .settings-section #content .field,
 .settings-field {
 	border: 1px solid #CCC;
@@ -1386,6 +1391,7 @@ http://devgrow.com/iphone-style-switches/
 }
 .settings-field .display-name {
 	float: left;
+	font-size: 13px;
 }
 .settings-section #content .field label {
 	float: left;
@@ -1400,7 +1406,8 @@ http://devgrow.com/iphone-style-switches/
 	font-size: 12px;
 
 }
-.settings-section #content .field input {
+.settings-section #content .field input,
+.settings-section #content .settings-field input  {
 	border: 1px solid #ccc;
 	border-radius: 3px;
 	-webkit-border-radius: 3px;

@@ -260,7 +260,7 @@ class KTBulkAction extends KTStandardDispatcher {
             parent_folder_ids LIKE '{$sFolderId},%' OR
             parent_folder_ids LIKE '%,{$sFolderId},%' OR
             parent_folder_ids LIKE '%,{$sFolderId}'";
-            $aFolderList = $this->oFolder->getList($sWhereClause);
+            $aFolderList = $oFolder->getList($sWhereClause);
             foreach($aFolderList as $oFolderItem){
 	            if ($oFolderItem->isSymbolicLink()){
 	            	$oFolderItem = $oFolderItem->getLinkedFolder();
@@ -713,7 +713,7 @@ class KTBulkActionUtil {
             if (!empty($sPath)) {
                 require_once($sPath);
             }
-            $aObjects[] = new $sClassName(null, null, $oPlugin);
+            $aObjects[] = new $sClassName(null, $oPlugin);
         }
         return $aObjects;
     }

@@ -624,7 +624,8 @@ class KTDocumentMoveAction extends JavascriptDocumentAction {
     function getOnClick()
     {
     	$id = $this->oDocument->getId();
-        return "javascript:{kt.app.copy.doTreeAction(\"move\", $id);}";
+    	$parentFolderIds = $this->oDocument->getParentFolderIds();
+        return "javascript:{kt.app.copy.doTreeAction(\"move\", $id, \"$parentFolderIds\");}";
     }
 
 	function getURL()
@@ -887,7 +888,8 @@ class KTDocumentCopyAction extends JavascriptDocumentAction {
     function getOnClick()
     {
     	$id = $this->oDocument->getId();
-        return "javascript:{kt.app.copy.doTreeAction(\"copy\", $id);}";
+    	$parentFolderIds = $this->oDocument->getParentFolderIds();
+        return "javascript:{kt.app.copy.doTreeAction(\"copy\", $id, \"$parentFolderIds\");}";
     }
 
 	function getURL()
