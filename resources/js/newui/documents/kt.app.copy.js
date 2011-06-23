@@ -151,7 +151,7 @@ kt.app.copy = new function() {
                 	"async" : true,
 					"data" : function (node, callback) { 
 						if (node == -1) {
-							var selectedFolderId = 'folder_1';
+							var selectedFolderId = 'initial-load';
 						} else {
 							var selectedFolderId = node.attr("id");
 						}
@@ -312,6 +312,11 @@ kt.app.copy = new function() {
     this.redirect = function(url) 
     {
     	window.location.replace(url);
+    }
+    
+    this.reload = function() 
+    {
+    	window.location.reload(true);
     }
     
     this.confirmationWindow = null;
