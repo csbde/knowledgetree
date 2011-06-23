@@ -172,7 +172,7 @@ class BaseConfigDispatcher extends KTAdminDispatcher
             }
 
             $defaultValue = "<i>{$defaultValue}</i>";
-            $input .= '<span class="descriptiveText">' . sprintf(_kt("The default value is %s") , $defaultValue) . '</span><br>';
+            $input .= '<span class="descriptiveText">' . sprintf(_kt("The default value is %s") , $defaultValue) . '</span>';
         }
 
         /*
@@ -223,6 +223,27 @@ class BaseConfigDispatcher extends KTAdminDispatcher
 
             case 'boolean':
                 $options['options'] = array('true', 'false');
+                
+                if ($value == 'true') {
+                   $onChecked = 'checked';
+                   $offChecked = '';
+                   $onCssClass = 'selected';
+                   $offCssClass = '';
+                } else {
+                   $onChecked = '';
+                   $offChecked = 'checked';
+                   $onCssClass = '';
+                   $offCssClass = 'selected';
+                }
+                
+                $input .= '<span class="switch">
+                    <input type="radio" id="'.$id.'" name="configArray['.$id.']" value="true" checked="'.$onChecked.'" />
+                    <input type="radio" id="'.$id.'" name="configArray['.$id.']" value="false" checked="'.$onChecked.'" />
+                    <label for="'.$id.'" class="cb-enable '.$onCssClass.'"><span>ON</span></label>
+                    <label for="'.$id.'" class="cb-disable '.$offCssClass.'"><span>OFF</span></label>
+                </span>';
+                
+                break;
 
             case 'radio':
                 $optionValues = array();

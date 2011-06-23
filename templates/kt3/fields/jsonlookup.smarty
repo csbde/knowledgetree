@@ -4,9 +4,7 @@
 <script type="text/javascript" src="/thirdpartyjs/jquery/plugins/tokenizer/src/jquery.selectinput.js"></script>
 <!--{$context->oPage->requireJSStandalone($sJavascript)}-->
 
-<div class="field {if ($has_errors)}error{/if}">
-
-    <p class="descriptiveText">{$description}</p>
+<div class="field {if ($has_errors)}error{/if}" title="{$description}">
 
     {if ($has_errors)}
         {foreach item=sError from=$errors}
