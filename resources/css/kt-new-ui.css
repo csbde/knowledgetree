@@ -572,7 +572,7 @@ li.notification {
 	height: 20px;
 	position: relative;
 	width: 400px;
-	z-index: 99999;
+	z-index: 8999;
 	padding-top: 5px;
 }
 
