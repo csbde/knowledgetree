@@ -227,6 +227,30 @@ class documentActionServices extends client_service {
     	return true;
     }
     
+    public function getParentFolderIds($params)
+    {
+    	$folderId = !empty($params['folderId']) ? $params['folderId'] : KTUtil::decodeId(substr($params['cleanId'], 2));
+    	$parentFolderIds = '';
+    	
+    	$ktapi = $this->KT;
+    	$folder = KTAPI_Folder::get($ktapi, $folderId);
+    	
+    	if (PEAR::isError($folder)) {
+        	$this->addResponse('result', json_encode($parentFolderIds));
+        	return;
+        }
+        
+        $folderEntity = $folder->get_folder();
+        $parentFolderIds = $folderEntity->getParentFolderIDs();
+        
+        if (!empty($parentFolderIds)) {
+        	$parentFolderIds .= ',';
+        }
+        $parentFolderIds .= $folderId;
+        
+    	$this->addResponse('result', json_encode($parentFolderIds));
+    }
+    
 	public function doCopy($params)
 	{
 		$action = $params['action'];
@@ -337,7 +361,7 @@ class documentActionServices extends client_service {
     	$this->addResponse('result', json_encode($result));
 	}
 	
-	public function getMoveRenameForm($document, $error)
+	private function getMoveRenameForm($document, $error)
 	{
 		$properties = $document->get_detail();
 		
@@ -414,7 +438,7 @@ class documentActionServices extends client_service {
         return true;
 	}
 	
-	public function formatItemList($itemList = array())
+	private function formatItemList($itemList = array())
 	{
 		$itemList = is_array($itemList) ? $itemList : array();
 		$organisedItemList = array('documents' => array(), 'folders' => array());
@@ -431,7 +455,7 @@ class documentActionServices extends client_service {
         return $organisedItemList;
 	}
 	
-	public function formatActionResults($results, $url = '')
+	private function formatActionResults($results, $url = '')
 	{
 		$html = '';
 		
