@@ -572,7 +572,7 @@ li.notification {
 	height: 20px;
 	position: relative;
 	width: 400px;
-	z-index: 99999;
+	z-index: 8999;
 	padding-top: 5px;
 }
 
@@ -712,6 +712,20 @@ ul.floatleft li.notification {
 .action_buttons #document-roles {
 	background: url(../graphics/newui/icons/roles.png) no-repeat 4px 4px ;
 }
+
+div.form_buttons {
+	
+}
+
+div.form_buttons div.form_actions, div.form_buttons div.form_cancel {
+	float: right;
+}
+
+div.form_buttons div.form_cancel {
+	margin-right: 10px;
+	line-height: 29px;
+}
+
 div.form_actions {
 	display: inline-block;
 	float: left;

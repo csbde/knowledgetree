@@ -41,6 +41,9 @@ kt.app.copy = new function() {
     	self.action = action;
     	self.actionType = 'document';
     	
+    	if (parentFolderIds == undefined || parentFolderIds == '') {
+    		parentFolderIds = self.getParentFolderIds();
+    	}
 		self.showTreeWindow(parentFolderIds);
     }
     
@@ -54,7 +57,7 @@ kt.app.copy = new function() {
     	self.showConfirmationWindow(name);
     }
 
-    this.doBulkAction = function(action, parentFolderIds) 
+    this.doBulkAction = function(action) 
     {
     	self.checkReasons();
     	self.action = action;
@@ -62,6 +65,7 @@ kt.app.copy = new function() {
     	self.itemList = kt.pages.browse.getSelectedItems();
     	
     	if (self.getWindowType() == 'tree') {
+    		parentFolderIds = self.getParentFolderIds();
     		self.showTreeWindow(parentFolderIds);
     	} 
     	else {
@@ -69,6 +73,32 @@ kt.app.copy = new function() {
     		self.targetFolderId = getQueryVariable('fFolderId');
     		self.showConfirmationWindow();
     	}
+    }
+    
+    this.getParentFolderIds = function()
+    {
+    	var params = {};
+    	var folderId = ktjapi._lib.getQueryVariable('fFolderId');
+		params.folderId = folderId;
+		
+    	if (folderId == '') {
+    		var path = document.location.pathname;
+    	    path = path.replace('/', '');
+    	    params.cleanId = path;
+    	}
+    	
+    	if (folderId == 1 || path == 001) {
+    		return '';
+    	}
+    	
+	    var func = 'documentActionServices.getParentFolderIds';
+	    var synchronous = true;
+	    
+	    var data = ktjapi.retrieve(func, params, kt.api.persistentDataCacheTimeout);
+	    var response = data.data.result;
+        var parentFolderIds = jQuery.parseJSON(response);
+        
+	    return parentFolderIds;
     }
     
     this.getWindowType = function() 
@@ -151,7 +181,7 @@ kt.app.copy = new function() {
                 	"async" : true,
 					"data" : function (node, callback) { 
 						if (node == -1) {
-							var selectedFolderId = 'folder_1';
+							var selectedFolderId = 'initial-load';
 						} else {
 							var selectedFolderId = node.attr("id");
 						}
@@ -312,6 +342,11 @@ kt.app.copy = new function() {
     this.redirect = function(url) 
     {
     	window.location.replace(url);
+    }
+    
+    this.reload = function() 
+    {
+    	window.location.reload(true);
     }
     
     this.confirmationWindow = null;
