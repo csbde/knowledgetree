@@ -223,12 +223,15 @@ kt.app.document_actions = new function() {
 				jQuery('span#docItem_'+self.documentId+' li.action_checkin').addClass('not_supported');
 				
                 if (showNotifications) {
-                    kt.app.notify.show('Document checked-out has been cancelled', false);
+                    kt.app.notify.show('Document check-out has been cancelled', false);
                 }
 				
 				
 				break;
 		}
+		
+		// Unset
+		self.type = '';
 	}
 
 	// TODO : Get action path namespace from server
@@ -370,6 +373,8 @@ kt.app.document_actions = new function() {
 			return false;
 		}
 		
+		kt.app.notify.show('Changing Document Owner', false);
+		
 		Ext.getCmp('changeowner').getEl().mask("Changing Document Owner", "x-mask-loading");
 		
 		var response = ktjapi.retrieve('siteapi.changeDocumentOwner', {documentId:documentId, newOwnerId:newOwnerId});
@@ -378,6 +383,8 @@ kt.app.document_actions = new function() {
 		
 		self.documentId = documentId;
 		self.refresh();
+		
+		kt.app.notify.show('Document Owner Successfully changed');
 		
 		return true;
 	}

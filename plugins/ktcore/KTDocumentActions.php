@@ -1733,6 +1733,19 @@ class KTOwnershipChangeAction extends JavascriptDocumentAction {
         return _kt('Change owner');
     }
     
+	function getInfo() {
+		
+		// Set status to disabled if document is finalized
+        if ($this->oDocument->getImmutable()) {
+            $info = parent::getInfo();
+			$info['status'] = 'disabled';
+			return $info;
+        } else {
+			return null;
+		}
+        
+    }
+	
     function getFunctionScript()
     {
 		return 'kt.app.document_actions.changeOwner(\'' . $this->oDocument->getId() . '\')';
