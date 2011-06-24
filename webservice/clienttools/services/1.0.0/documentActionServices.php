@@ -227,6 +227,30 @@ class documentActionServices extends client_service {
     	return true;
     }
     
+    public function getParentFolderIds($params)
+    {
+    	$folderId = !empty($params['folderId']) ? $params['folderId'] : KTUtil::decodeId(substr($params['cleanId'], 2));
+    	$parentFolderIds = '';
+    	
+    	$ktapi = $this->KT;
+    	$folder = KTAPI_Folder::get($ktapi, $folderId);
+    	
+    	if (PEAR::isError($folder)) {
+        	$this->addResponse('result', json_encode($parentFolderIds));
+        	return;
+        }
+        
+        $folderEntity = $folder->get_folder();
+        $parentFolderIds = $folderEntity->getParentFolderIDs();
+        
+        if (!empty($parentFolderIds)) {
+        	$parentFolderIds .= ',';
+        }
+        $parentFolderIds .= $folderId;
+        
+    	$this->addResponse('result', json_encode($parentFolderIds));
+    }
+    
 	public function doCopy($params)
 	{
 		$action = $params['action'];
@@ -276,12 +300,14 @@ class documentActionServices extends client_service {
         	case 'immutable':
         		$result = $document->immute();
         		$newDocument = $document;
+        		$msg = _kt('Success. The document will be updated shortly.');
         		break;
     			
         	case 'copy':
         		$reason = ($reason === false) ? _kt('Document copied') : $reason;
         		$result = $document->copy($folder, $reason);
         		$newDocument = $result;
+        		$msg = _kt('Success. You will be redirected to the new document.');
         		break;
         		
         	case 'move':
@@ -298,6 +324,7 @@ class documentActionServices extends client_service {
         		$reason = ($reason === false) ? _kt('Document moved') : $reason;
         		$result = $document->move($folder, $reason, $newName, $newFilename);
         		$newDocument = $document;
+        		$msg = _kt('Success. You will be redirected to the updated document shortly.');
         		break;
         		
         	default:
@@ -328,14 +355,13 @@ class documentActionServices extends client_service {
         else {
 	        $newDocId = $newDocument->documentid;
 	        $url = KTUtil::kt_clean_document_url($newDocId);
-        	$msg = _kt('Success. You will be redirected to the new document.');
         }
         
         $result = array('type' => 'success', 'newDocId' => $newDocId, 'url' => $url, 'msg' => $msg);
     	$this->addResponse('result', json_encode($result));
 	}
 	
-	public function getMoveRenameForm($document, $error)
+	private function getMoveRenameForm($document, $error)
 	{
 		$properties = $document->get_detail();
 		
@@ -412,7 +438,7 @@ class documentActionServices extends client_service {
         return true;
 	}
 	
-	public function formatItemList($itemList = array())
+	private function formatItemList($itemList = array())
 	{
 		$itemList = is_array($itemList) ? $itemList : array();
 		$organisedItemList = array('documents' => array(), 'folders' => array());
@@ -429,7 +455,7 @@ class documentActionServices extends client_service {
         return $organisedItemList;
 	}
 	
-	public function formatActionResults($results, $url = '')
+	private function formatActionResults($results, $url = '')
 	{
 		$html = '';
 		
@@ -450,6 +476,7 @@ class documentActionServices extends client_service {
 		$html .= '<tr><td class="ul_actions" align="right" valign="bottom">
 			<span id="copy-spinner" class="copy-spinner none">&nbsp;</span>
         	<input id="select-btn" class="ul_actions_btns" type="button" value="Continue" onClick="kt.app.copy.showSpinner(); kt.app.copy.redirect(\''.$url.'\');" />
+        	<input id="select-btn-return" class="ul_actions_btns" type="button" value="Return to Folder" onClick="kt.app.copy.reload();" />
     		</td></tr>';
 		
 		return $html;
@@ -458,7 +485,24 @@ class documentActionServices extends client_service {
     public function getFolderStructure($params)
     {
         $folderId = str_replace('folder_', '', $params['id']);
-        $folderId = is_numeric($folderId) ? $folderId : 1;
+        
+        // On first load of the tree the folderId is set to 'initial-load' which loads the root folder and immediate sub-folders.
+        // The tree is set to "load_open" which means it will try to load the node based on the node attribute / folderId, this will
+        // create a loading loop where the Root Folder will be added as a sub-folder to the preceding Root Folder, infinitely.
+        // For this reason a folderId of 1 must return an empty array.
+        if ($folderId == 1) {
+        	$this->addResponse('nodes', json_encode(array()));
+        	return ;
+        }
+        
+        if ($folderId == 'initial-load') {
+        	$folderId = 1;
+        }
+        
+        if (!is_numeric($folderId)) {
+        	$this->addResponse('nodes', json_encode(array()));
+        	return ;
+        }
         
         $ignoreIds = $this->formatItemList($params['ignoreIds']);
         $ignoreIds = $ignoreIds['folders'];
@@ -483,10 +527,6 @@ class documentActionServices extends client_service {
     private function formatTreeStructure($structure, $ignoreIds = null)
     {
     	$children = $this->formatChildren($structure['items'], $ignoreIds);
-    	
-    	if (empty($children)) {
-    		return array();
-    	}
     	
     	$attributes = array('id' => 'folder_'.$structure['folder_id']);
     	

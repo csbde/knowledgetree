@@ -838,20 +838,26 @@ class KTAPI_Document extends KTAPI_FolderItem
             }
 		}
 
+		$fileRenamed = false;
 		$name = $this->document->getName();
 		$nameClash = KTDocumentUtil::nameExists($target_folder, $name);
 		
 		if ($nameClash && !is_null($newname)) {
-			$name = $newname;
-        	$nameClash = KTDocumentUtil::nameExists($target_folder, $name);
+        	$nameClash = KTDocumentUtil::nameExists($target_folder, $newname);
+        	$reason = sprintf(_kt(' Document renamed from %s to %s.'), $name, $newname) .' '. $reason;
+        	$fileRenamed = true;
+        	$name = $newname;
 		}
 		
 		$filename=$this->document->getFilename();
 		$filenameClash = KTDocumentUtil::fileExists($target_folder, $filename);
 
 		if ($filenameClash && !is_null($newfilename)) {
-			$filename = $newfilename;
-            $filenameClash = KTDocumentUtil::fileExists($target_folder, $filename);
+            $filenameClash = KTDocumentUtil::fileExists($target_folder, $newfilename);
+            if (!$fileRenamed) {
+            	$reason = sprintf(_kt(' Document filename renamed from %s to %s.'), $filename, $newfilename) .' '. $reason;
+            }
+            $filename = $newfilename;
         }
 		
         if ($nameClash) {

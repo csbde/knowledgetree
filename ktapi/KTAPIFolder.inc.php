@@ -224,9 +224,6 @@ class KTAPI_Folder extends KTAPI_FolderItem {
         //clean uri
         $detail['clean_uri'] = KTBrowseUtil::getUrlForfolder($folder);
 
-        //clean uri
-        $detail['clean_uri'] = KTBrowseUtil::getUrlForfolder($folder);
-
         return $detail;
     }
 
