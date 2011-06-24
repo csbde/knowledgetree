@@ -210,7 +210,7 @@ class AdminSettingsDispatcher extends KTAdminDispatcher {
         }
     }
 
-    // This function is now just an alias for do_main...
+    // This function is now just an alias for do_main.
     public function do_viewCategory()
     {
     	return $this->do_main();
