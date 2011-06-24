@@ -1421,7 +1421,8 @@ http://devgrow.com/iphone-style-switches/
 
 }
 .settings-section #content .field input,
-.settings-section #content .settings-field input  {
+.settings-section #content .settings-field input,
+.settings-section #content textarea  {
 	border: 1px solid #ccc;
 	border-radius: 3px;
 	-webkit-border-radius: 3px;
