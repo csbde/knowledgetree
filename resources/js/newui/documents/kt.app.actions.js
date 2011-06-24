@@ -165,6 +165,7 @@ kt.app.document_actions = new function() {
 		self.refresh_status_indicator(showNotifications);
 		kt.app.document_viewlets.refresh_comments(self.documentId);
 		kt.app.document_viewlets.update_filename_version(self.documentId);
+		kt.app.document_viewlets.update_instantview(self.documentId);
 
 	    return null;
 	}
