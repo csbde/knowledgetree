@@ -2422,16 +2422,18 @@ The code below is for a fix to the ie9 bug: Object doesn't support property or m
 http://stackoverflow.com/questions/5375616/extjs4-ie9-object-doesnt-support-property-or-method-createcontextualfragmen
 
 */
+if (typeof Range != "undefined") {
 
-if (typeof Range.prototype.createContextualFragment == "undefined") {
-    Range.prototype.createContextualFragment = function (html) {
-        var doc = window.document;
-        var container = doc.createElement("div");
-        container.innerHTML = html;
-        var frag = doc.createDocumentFragment(), n;
-        while ((n = container.firstChild)) {
-            frag.appendChild(n);
-        }
-        return frag;
-    };
+    if (typeof Range.prototype.createContextualFragment == "undefined") {
+        Range.prototype.createContextualFragment = function (html) {
+            var doc = window.document;
+            var container = doc.createElement("div");
+            container.innerHTML = html;
+            var frag = doc.createDocumentFragment(), n;
+            while ((n = container.firstChild)) {
+                frag.appendChild(n);
+            }
+            return frag;
+        };
+    }
 }
