@@ -744,6 +744,7 @@ class BrowseView {
                                         <li class="separator[separatorB]"></li>
 
                                         <li class="action_checkout [actions.checkout]"><a href="#" onclick="kt.app.document_actions.checkout_actions(\'[id]\', \'checkout\');">Check-out</a></li>
+                                        <li class="action_checkout [actions.checkout]"><a href="#" onclick="kt.app.document_actions.checkout_actions(\'[id]\', \'checkoutdownload\');">Check-out and Download</a></li>
                                         <li class="action_cancel_checkout [actions.cancel_checkout]"><a href="#" onclick="kt.app.document_actions.checkout_actions(\'[id]\', \'cancelcheckout\');">Cancel Check-out</a></li>
                                         <li class="action_checkin [actions.checkin]"><a href="#" onclick="kt.app.document_actions.checkout_actions(\'[id]\', \'checkin\');">Check-in</a></li>
 
