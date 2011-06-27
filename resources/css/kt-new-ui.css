@@ -1107,8 +1107,16 @@ div.widgetItem {
 	position: relative;
 	float: left;
 }
-
-
+#content div.widgetItem.import-from-source {
+	margin-top: 5px;
+}
+#content div.widgetItem.import-from-source select {
+	background: whiteSmoke;
+	height: 17px;
+	font-size: 11px;
+	padding: 2px;
+	color: #666;
+}
 /*Alerts Modal*/
 
 label span.required

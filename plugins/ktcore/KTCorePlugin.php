@@ -414,7 +414,7 @@ class KTCorePlugin extends KTPlugin {
             'admin/configSettings.php', null);
 
         $this->registerAdminPage('timezone', 'TimezoneConfigPageDispatcher', 'sysConfig',
-            _kt('Timezone'), _kt('View and modify timezone settings for KnowledgeTree.'),
+            _kt('Regional Settings'), _kt('View and modify regional settings for KnowledgeTree.'),
             'admin/configSettings.php', null);
 
         // FIXME Get this into the electronic signatures plugin - at the moment that crashes with
@@ -436,9 +436,9 @@ class KTCorePlugin extends KTPlugin {
                 'admin/manageHelp.php', null);
         }
 
-        $this->registerAdminPage('i18nconfigpage', 'i18nConfigPageDispatcher', 'sysConfig',
-            _kt('Internationalisation Settings'), _kt('View and modify the default language.'),
-            'admin/configSettings.php', null);
+       // $this->registerAdminPage('i18nconfigpage', 'i18nConfigPageDispatcher', 'sysConfig',
+        //    _kt('Internationalisation Settings'), _kt('View and modify the default language.'),
+        //    'admin/configSettings.php', null);
 
         // misc
 
