@@ -572,7 +572,7 @@ li.notification {
 	height: 20px;
 	position: relative;
 	width: 400px;
-	z-index: 8999;
+	z-index: 99999;
 	padding-top: 5px;
 }
 
@@ -712,20 +712,6 @@ ul.floatleft li.notification {
 .action_buttons #document-roles {
 	background: url(../graphics/newui/icons/roles.png) no-repeat 4px 4px ;
 }
-
-div.form_buttons {
-	
-}
-
-div.form_buttons div.form_actions, div.form_buttons div.form_cancel {
-	float: right;
-}
-
-div.form_buttons div.form_cancel {
-	margin-right: 10px;
-	line-height: 29px;
-}
-
 div.form_actions {
 	display: inline-block;
 	float: left;
@@ -1320,13 +1306,14 @@ http://devgrow.com/iphone-style-switches/
 }
 
 #usageStats li {
-	font-size: 15px;
+	font-size: 13px;
 	line-height: 25px;
 }
 #chart_div {
 	min-width: 200px;
 	min-height: 150px; 
 }
+
 
 .settings-content input[name="search_name"] {
 	width: 125px;
@@ -1376,6 +1363,7 @@ http://devgrow.com/iphone-style-switches/
 .settings-section #content h2 {
 	border-bottom: 1px solid #DDD;
 	margin-bottom: 5px;
+	font-size: 13px;
 } 
 #content .settings-content fieldset {
 	border: 0px;
@@ -1410,7 +1398,7 @@ http://devgrow.com/iphone-style-switches/
 .settings-section #content .field label {
 	float: left;
 	font-weight: normal;
-	font-size: 13px;
+	font-size: 12px;
 }
 .settings-section #content .field input,
 .settings-section #content .field select,

@@ -120,8 +120,9 @@ class KTGroupAdminDispatcher extends KTAdminDispatcher {
 
         $editFields = array();
         $editFields[] =  new KTStringWidget(_kt('Group Name'), _kt('A short name for the group.  e.g. <strong>administrators</strong>.'), 'group_name', $group->getName(), $this->oPage, true);
-        $editFields[] =  new KTCheckboxWidget(_kt('Unit Administrators'), _kt('Should all the members of this group be given <strong>unit</strong> administration privileges?'), 'is_unitadmin', $group->getUnitAdmin(), $this->oPage, false);
-        $editFields[] =  new KTCheckboxWidget(_kt('System Administrators'), _kt('Should all the members of this group be given <strong>system</strong> administration privileges?'), 'is_sysadmin', $group->getSysAdmin(), $this->oPage, false);
+        $editFields[] =  new KTBooleanWidget(_kt('System Administration Privileges'), _kt('Should all the members of this group be given system administration privileges?'), 'is_sysadmin', $group->getSysAdmin(), $this->oPage, false);
+        $editFields[] =  new KTBooleanWidget(_kt('Unit Administration Privileges'), _kt('Should all the members of this group be given unit administration privileges?'), 'is_unitadmin', $group->getUnitAdmin(), $this->oPage, false);
+
 
         // grab all units.
         $unitId = $group->getUnitId();
@@ -478,7 +479,7 @@ class KTGroupAdminDispatcher extends KTAdminDispatcher {
             array('ktcore.widgets.boolean',
                 array(
                     'name' => 'sysadmin',
-                    'label' => _kt('System Administrators'),
+                    'label' => _kt('System Administration Privileges'),
                     'description' => _kt('Should all the members of this group be given <strong>system</strong> administration privileges?'),
                     'value' => null,
                 )
@@ -500,6 +501,15 @@ class KTGroupAdminDispatcher extends KTAdminDispatcher {
         $units = Unit::getList();
         if (!PEAR::isError($units) && !empty($units)) {
             $form->addWidgets(array(
+                array('ktcore.widgets.boolean',
+                    array(
+                        'name' => 'unitadmin',
+                        'label' => _kt('Unit Administration Privileges'),
+                        'description' => _kt('Should all the members of this group be given <strong>unit</strong> administration privileges?'),
+                        'important_description' => _kt('Note that its not possible to set a group without a unit as having unit administration privileges.'),
+                        'value' => null,
+                    )
+                ),
                 array('ktcore.widgets.entityselection',
                     array(
                         'name' => 'unit',
@@ -509,15 +519,6 @@ class KTGroupAdminDispatcher extends KTAdminDispatcher {
                         'label_method' => 'getName',
                         'simple_select' => false,
                         'unselected_label' => _kt('No unit'),
-                    )
-                ),
-                array('ktcore.widgets.boolean',
-                    array(
-                        'name' => 'unitadmin',
-                        'label' => _kt('Unit Administrators'),
-                        'description' => _kt('Should all the members of this group be given <strong>unit</strong> administration privileges?'),
-                        'important_description' => _kt('Note that its not possible to set a group without a unit as having unit administration privileges.'),
-                        'value' => null,
                     )
                 )
             ));

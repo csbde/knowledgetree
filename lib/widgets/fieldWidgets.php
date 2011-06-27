@@ -112,6 +112,7 @@ class KTTextWidget extends KTBaseWidget { var $sTemplate = 'kt3/fields/text'; }
 class KTCheckboxWidget extends KTBaseWidget { var $sTemplate = 'kt3/fields/checkbox'; }
 class KTFileUploadWidget extends KTBaseWidget { var $sTemplate = 'kt3/fields/fileupload'; }
 class KTStaticTextWidget extends KTBaseWidget { var $sTemplate = 'kt3/fields/statictext'; }
+class KTBooleanWidget extends KTBaseWidget { var $sTemplate = 'kt3/fields/boolean'; }
 
 /* lookup widget */
 // EXPECTS $aOptions['vocab'] => key, item

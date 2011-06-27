@@ -97,7 +97,7 @@ class ManageBrandDispatcher extends KTAdminDispatcher
 
         $widgets = array();
         $widgets[] = $widgetFactory->get('ktcore.widgets.string', array(
-            'label' => _kt('Title'),
+            'label' => _kt('Image Title'),
             'required' => false,
             'name' => 'logo_title',
             'value' => $logoTitle,
@@ -105,7 +105,7 @@ class ManageBrandDispatcher extends KTAdminDispatcher
         ));
 
         $widgets[] = $widgetFactory->get('ktcore.widgets.file', array(
-            'label' => _kt('Logo Image'),
+            'label' => _kt('Custom Image'),
             'required' => false,
             'name' => 'file',
             'id' => 'file',
