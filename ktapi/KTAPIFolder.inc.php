@@ -971,6 +971,7 @@ class KTAPI_Folder extends KTAPI_FolderItem {
             $defaultToDefaultDocType = $config->get('webservice/useDefaultDocumentTypeIfInvalid',true);
             if ($defaultToDefaultDocType)
             {
+                // FIXME This should not assume the name, it should look it up using id 1.
                 $documenttypeid = KTAPI::get_documenttypeid('Default');
             }
             else
