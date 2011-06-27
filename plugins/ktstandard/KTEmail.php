@@ -286,7 +286,8 @@ function sendEmailHyperlink($destEmailAddress, $documentId, $documentName, $comm
     $message .= " \n";
     $message .= _kt('Click on the hyperlink below to view it.') . '<br>';
     // add the link to the document to the mail
-    $message .= '<br>' . KTUtil::kt_url() . KTBrowseUtil::getUrlForDocument($documentId);
+    $linkUrl = KTUtil::kt_url() . KTBrowseUtil::getUrlForDocument($documentId);
+    $message .= "<br><a href='$linkUrl'>{$linkUrl}</a>";
     // add optional comment
     if (strlen(trim($comment)) > 1) {
         $message .= '<br><br><b>' . _kt('Message') . ':</b><br><br>' . nl2br($comment);
