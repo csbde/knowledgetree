@@ -430,6 +430,10 @@ div.viewletworkflow {
 	border: 1px solid #ccc!important;
 	opacity: 0.5;
 	color: #666!important;
+	
+	/* The next two properties is for IE */
+	filter: alpha(opacity = 50);
+	zoom: 1;
 }
 .activityfeed .item.transaction,
 .activityfeed .item.comment{
