@@ -224,9 +224,6 @@ class KTAPI_Folder extends KTAPI_FolderItem {
         //clean uri
         $detail['clean_uri'] = KTBrowseUtil::getUrlForfolder($folder);
 
-        //clean uri
-        $detail['clean_uri'] = KTBrowseUtil::getUrlForfolder($folder);
-
         return $detail;
     }
 
@@ -1148,7 +1145,8 @@ class KTAPI_Folder extends KTAPI_FolderItem {
         if (PEAR::isError($result))
         {
             DBUtil::rollback();
-            return new KTAPI_Error(KTAPI_ERROR_INTERNAL_ERROR, $result);
+            return $result;
+//            return new KTAPI_Error(KTAPI_ERROR_INTERNAL_ERROR, $result);
         }
 
         // regenerate internal folder object

@@ -7,3 +7,15 @@
     <a href="{$smarty.server.PHP_SELF}&action=resetlogo" class="form_cancel">{i18n}Remove Logo{/i18n}</a>
 </div>
 {/if}
+
+
+{literal}
+<script type="text/javascript">
+
+    function cancelBranding() {
+        jQuery('#branding form')[0].reset();
+        jQuery('#branding').toggle();
+    }
+
+</script>
+{/literal}

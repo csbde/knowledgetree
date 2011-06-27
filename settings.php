@@ -1,4 +1,5 @@
 <?php
+
 /**
  * $Id$
  *
@@ -43,13 +44,15 @@ require_once(KT_LIB_DIR . '/widgets/portlet.inc.php');
 
 require_once(KT_LIB_DIR . '/plugins/KTAdminNavigation.php');
 
-class AdminSplashDispatcher extends KTAdminDispatcher {
+class AdminSettingsDispatcher extends KTAdminDispatcher {
 
+    private $expandedSection = false;
     private $defaultCategory = '';
+
     public $sSection = 'settings';
     public $event_var = null;
 
-    function AdminSplashDispatcher()
+    function __construct()
     {
         $this->aBreadcrumbs = array(
             array('url' => KTUtil::getRequestScriptName($_SERVER), 'name' => _kt('Settings')),
@@ -97,15 +100,14 @@ class AdminSplashDispatcher extends KTAdminDispatcher {
         return $template->render($templateData);
     }
 
-    // TODO Default category display on first entry.
     private function getCategoryItems()
     {
+        $urlParts = $this->parseSubUrl();
+        $category = $this->getCategory($urlParts[0]);
+        $subsection = $this->getSubsection($urlParts[1]);
+        $expanded = $this->sectionExpanded();
+
         $page = $GLOBALS['main'];
-
-        $category = KTUtil::arrayGet($_REQUEST, 'fCategory', $this->defaultCategory);
-        $subsection = KTUtil::arrayGet($_REQUEST, 'subsection', null);
-        $expanded = KTUtil::arrayGet($_REQUEST, 'expanded', false);
-
         $javascript[] = 'resources/js/newui/hide_system_links.js';
         $page->requireJSResources($javascript);
 
@@ -117,7 +119,8 @@ class AdminSplashDispatcher extends KTAdminDispatcher {
         else {
             $categoryDetail = $registry->getCategory($category);
             $this->aBreadcrumbs[] = array('name' => $categoryDetail['title'], 'url' => KTUtil::ktLink('settings.php', '', 'fCategory='.$category));
-            $this->oPage->title = _kt('Settings') . ': ' . $categoryDetail['title'];
+            $this->oPage->title = _kt('Settings');
+            $this->oPage->secondary_title = $categoryDetail['title'];
             $items = $registry->getItemsForCategory($category);
             $message = null;
         }
@@ -133,14 +136,57 @@ class AdminSplashDispatcher extends KTAdminDispatcher {
                 }
             }
         }
-    
+
         return $items;
     }
 
-    // This function is now just an alias for do_main...
-    function do_viewCategory()
+    private function parseSubUrl()
     {
-    	return $this->do_main();
+        $parts = array(null, null);
+
+        $subUrl = KTUtil::arrayGet($_SERVER, 'PATH_INFO');
+        $subUrl = trim(trim($subUrl), '/');
+
+        $registry = KTAdminNavigationRegistry::getSingleton();
+        if ($registry->isRegistered($subUrl)) {
+            $this->expandedSection = true;
+            $parts = explode('/', $subUrl);
+        }
+
+        return $parts;
+    }
+
+    private function getCategory($subUrlCategory = null)
+    {
+        $category = null;
+
+        if (empty($subUrlCategory)) {
+            $category = KTUtil::arrayGet($_REQUEST, 'fCategory', $this->defaultCategory);
+        }
+        else {
+            $category = $subUrlCategory;
+        }
+
+        return $category;
+    }
+
+    private function getSubsection($subUrlsection = null)
+    {
+        $subsection = null;
+
+        if (empty($subUrlsection)) {
+            $subsection = KTUtil::arrayGet($_REQUEST, 'subsection', null);
+        }
+        else {
+            $subsection = $subUrlsection;
+        }
+
+        return $subsection;
+    }
+
+    private function sectionExpanded()
+    {
+        return $this->expandedSection || KTUtil::arrayGet($_REQUEST, 'expanded', false);
     }
 
     private function includeOlark()
@@ -159,42 +205,19 @@ class AdminSplashDispatcher extends KTAdminDispatcher {
             $dispatcher = $registry->getDispatcher($subUrl);
             $dispatcher->setCategoryDetail($subUrl);
             $dispatcher->setActiveStatus($section['autoDisplay']);
-            
+
             return $dispatcher->dispatch();
         }
     }
 
-}
-
-$subUrl = KTUtil::arrayGet($_SERVER, 'PATH_INFO');
-$subUrl = trim($subUrl);
-$subUrl= trim($subUrl, '/');
-
-if (empty($subUrl)) {
-    $dispatcher = new AdminSplashDispatcher();
-} else {
-    $registry = KTAdminNavigationRegistry::getSingleton();
-    if ($registry->isRegistered($subUrl)) {
-       $dispatcher = $registry->getDispatcher($subUrl);
-
-       $parts = explode('/', $subUrl);
-
-       $registry = KTAdminNavigationRegistry::getSingleton();
-       $category = $registry->getCategory($parts[0]);
-
-       $dispatcher->aBreadcrumbs = array();
-       $dispatcher->aBreadcrumbs[] = array('action' => 'settings', 'name' => _kt('Settings'));
-       $dispatcher->aBreadcrumbs[] = array('name' => $category['title'], 'url' => KTUtil::ktLink('admin.php', $parts[0]));
-    } else {
-       // FIXME (minor) redirect to no-suburl?
-       $dispatcher = new AdminSplashDispatcher();
-       $dispatcher->defaultCategory = $subUrl;
+    // This function is now just an alias for do_main.
+    public function do_viewCategory()
+    {
+    	return $this->do_main();
     }
+
 }
 
-// Implement an electronic signature for accessing the admin section, it will appear every 10 minutes
-global $main;
-global $default;
 if ($default->enableAdminSignatures && ($_SESSION['electronic_signature_time'] < time())) {
     $baseUrl = KTUtil::kt_url();
     $url = KTPluginUtil::getPluginPath('electronic.signatures.plugin', true);
@@ -202,5 +225,7 @@ if ($default->enableAdminSignatures && ($_SESSION['electronic_signature_time'] <
     $main->setBodyOnload("javascript: showSignatureForm('{$url}', '{$heading}', 'dms.administration.administration_section_access', 'admin', '{$baseUrl}/browse.php', 'close');");
 }
 
-$dispatcher->dispatch(); // we _may_ be redirected at this point (see KTAdminNavigation)
+$dispatcher = new AdminSettingsDispatcher();
+$dispatcher->dispatch();
+
 ?>

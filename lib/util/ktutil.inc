@@ -1239,7 +1239,7 @@ class KTUtil {
 
         return $sIdentifier;
     }
-
+	
     public static function getKTVersions()
     {
         $aVersions = array();

@@ -336,6 +336,7 @@ jQuery.editableSet.addInputType('tokeninput', {
 	        minChars: 2,
 	        hintText: "Type in a tag name",
 	        prePopulate: '',
+			preventDuplicates: true,
 	        classes: {
 	            tokenList: "token-input-list-facebook",
 	            token: "token-input-token-facebook",

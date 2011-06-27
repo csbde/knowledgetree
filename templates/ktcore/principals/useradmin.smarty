@@ -28,24 +28,14 @@
 <!-- we roll both in here. -->
 		<table width="100%">
 			<tr>
-
 				<td width="{$colwidth}" valign="top">
-					<div class="field"><label>{i18n}Invite Users{/i18n}</label></div>
 					{if $can_add}
 						{if !$authentication}
 							<div class="descriptiveText">{i18n}If you are using an external source of login information, ensure the appropriate plugin is loaded and use the section below.{/i18n}</div>
 						{/if}
-						<p>
-							Send users email invitations, or manually add them.
-						</p>
-					<div class="widgetItem">
+					<div class="widgetItem" style="padding-top: 5px;">
 						<div class="form_actions">
-							<a href="javascript:kt.app.inviteusers.showInviteWindow();" style="background: none repeat scroll 0% 0% transparent;"><span class="inviteButton">{i18n}Invite users{/i18n}</span></a>
-						</div>
-					</div>
-					<div style="float: left;">&nbsp; or &nbsp;</div>
-					<div class="widgetItem">
-						<div class="form_actions">
+							<a href="javascript:kt.app.inviteusers.showInviteWindow();" style="background: none repeat scroll 0% 0% transparent;">{i18n}Invite users{/i18n}</a>
 							<a href="{addQS}action=addUser{/addQS}" style="background: none repeat scroll 0% 0% transparent;">{i18n}Add a new user{/i18n}</a>
 						</div>
 					</div>
@@ -54,22 +44,6 @@
 						<span>{i18n}You do not have enough available licenses to add more active users.<br />Please disable some existing ones if you wish to add new active users.{/i18n}</span>
 					</div>
 					{/if}
-				</td>
-
-				<td width="{$colwidth}">
-                                        <form action="{$smarty.server.PHP_SELF}" method="POST">
-					<input type="hidden" name="do_search" value="1" />
-					{capture assign=link}{addQS}show_all=1{/addQS}{/capture}
-
-					{foreach item=oWidget from=$search_fields}
-					  {$oWidget->render()}
-					{/foreach}
-
-					<div class="form_actions">
-						<!-- Search button -->
-						<input type="submit" value="{i18n}Search For Users{/i18n}" />
-					</div>
-                                        </form>
 				</td>
 				{if $can_add}
 				{if $authentication_sources}
@@ -91,9 +65,21 @@
 				{/if}
 			</tr>
 		</table>
-
-<br/><br/>
-
+<div class="search-filter">
+ 	<form action="{$smarty.server.PHP_SELF}" method="POST">
+ 		<div class="form_actions">
+ 		 	<!-- Search button -->
+ 		 	<input type="submit" value="{i18n}Filter{/i18n}" />
+ 		</div>
+ 		<input type="hidden" name="do_search" value="1" />
+ 		{capture assign=link}{addQS}show_all=1{/addQS}{/capture}
+ 	
+ 		{foreach item=oWidget from=$search_fields}
+ 		  {$oWidget->render()}
+ 		{/foreach}
+ 	
+ 	</form>
+ </div>
 {if ($no_search === true)}
 {else}
 {if (!empty($search_results))}
@@ -103,13 +89,12 @@
 			<thead>
 			   <tr>
 				   <th>&nbsp;</th>
+				   <th>&nbsp;</th>
 				  <th>{i18n}Name{/i18n}</th>
-				  <th>{i18n}Username{/i18n}</th>
-				  <th>{i18n}Edit{/i18n}</th>
-				  <th>{i18n}Enabled{/i18n}</th>
-
-				  <th>{i18n}Group Memberships{/i18n}</th>
+				  <th width="10px;">{i18n}Enabled{/i18n}</th>
 				  <th>{i18n}Current Groups{/i18n}</th>
+				  <th width="10px;">{i18n}Edit{/i18n}</th>
+
 			   </tr>
 			</thead>
 
@@ -120,33 +105,38 @@
 					 <tr class="{cycle values=odd,even}">
 						<td class="centered">
 					{if ($oUser->getId() != ADMIN_USER_ID)}<input type="checkbox" name="edit_user[{$oUser->getId()}]" value="1"/>
-					{else}&mdash;{/if}
+					{else}<input type="checkbox" disabled="disabled"/>{/if}
+					<br>
+						</td>	
+						<td style="padding: 0px;">
+						<img src="http://www.gravatar.com/avatar/{md5Hash string=$oUser->getEmail()}?s=32&d=mm" alt="{$oUser->getName()}" title="{$oUser->getName()}" />
 						</td>
 						<td>
-					{$oUser->getName()}</td>
-						<td>{$oUser->getUsername()}</td>
-						<td><a href="{addQS}action=editUser&user_id={$oUser->getId()}&old_search={$old_search}{/addQS}" class="ktAction ktEdit">{i18n}Edit{/i18n}</a></td>
+							{$oUser->getName()}{if $oUser->getDisabled() == 3}<span class="flag shared">invited</span>{/if}<br/><span style="font-style:italic; color: #666;">{$oUser->getUsername()}</span></td>
 						<td class="centered">
 						{if ($oUser->getDisabled() == 1)}
 							<span class="ktAction ktDenied" title="{i18n}Disabled{/i18n}">{i18n}Disabled{/i18n}</span>
 						{else}
                             {if $oUser->getDisabled() == 3}
                                 {assign var='invited' value='true'}
-    						    <a href="{addQS}action=resendInvite&user_id={$oUser->getId()}{/addQS}" title="{i18n}Resend Invitation{/i18n}">{i18n}Invitation sent{/i18n}</a>
+    						    <a href="{addQS}action=resendInvite&user_id={$oUser->getId()}{/addQS}" title="{i18n}Resend Invitation{/i18n}">{i18n}Resend invite{/i18n}</a>
     						{else}
 							<span class="ktAction ktAllowed" title="{i18n}Enabled{/i18n}">{i18n}Enabled{/i18n}</span>
 							{/if}
 						{/if}
 						</td>
-
-						<td>
-							{if $oUser->getDisabled() != 4}
-								<a href="{addQS}action=editGroups&user_id={$oUser->getId()}&old_search={$old_search}{/addQS}">{i18n}Manage Groups{/i18n}</a>
+						<td class="title">
+						{if $oUser->getDisabled() != 4}
+								{if ($context->getGroupStringForUser($oUser) == '')}
+									 <a href="{addQS}action=editGroups&user_id={$oUser->getId()}&old_search={$old_search}{/addQS}">{i18n}Add Groups{/i18n}</a>
+								{else}
+									{$context->getGroupStringForUser($oUser)} <a href="{addQS}action=editGroups&user_id={$oUser->getId()}&old_search={$old_search}{/addQS}">({i18n}edit{/i18n})</a>
+								{/if}
 							{else}
 								N/A
 							{/if}
-						</td>
-						<td class="title"><span class="descriptiveText">{$context->getGroupStringForUser($oUser)}</span></td>
+						<td><a href="{addQS}action=editUser&user_id={$oUser->getId()}&old_search={$old_search}&{$section_query_string}{/addQS}" class="ktAction ktEdit">{i18n}Edit{/i18n}</a></td>
+
 					 </tr>
 				 {/if}
 				 {/foreach}
@@ -170,7 +160,7 @@
 </form>
 
 	{else}
-	<div class="ktErrorMessage"><span>{i18n}No results for your search.{/i18n}</span></div>
+	<div class="ktErrorMessage filter" style="margin-top: 6px;"><span>{i18n}No results for your search.{/i18n}</span></div>
 
 	{/if}
 

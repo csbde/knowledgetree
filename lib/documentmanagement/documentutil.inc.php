@@ -223,6 +223,10 @@ class KTDocumentUtil {
         if (!KTWorkflowUtil::actionEnabledForDocument($document, 'ktcore.actions.document.archive')) {
             return PEAR::raiseError(_kt('Document cannot be archived as it is restricted by the workflow.'));
         }
+        
+        if ($document->getIsCheckedOut()) {
+        	return PEAR::raiseError(_kt('Document cannot be archived as it has been checked out for editing.'));
+        }
 
         $document->setStatusID(ARCHIVED);
         $res = $document->update();
@@ -1113,6 +1117,10 @@ class KTDocumentUtil {
             return true;
         }
 
+        if ($document->getImmutable() == true && $_SESSION['adminmode'] !== true) {
+            return PEAR::raiseError(sprintf(_kt('The document is immutable and cannot be deleted: %s'), $document->getName()));
+        }
+
         $originalFolder = Folder::get($document->getFolderId());
 
         DBUtil::startTransaction();
@@ -1564,10 +1572,21 @@ class KTDocumentUtil {
 
         //put the document in the new folder
         $document->setFolderID($folder->getId());
-        $name = $document->getName();
+        
+        $fileRenamed = false;
         $filename = $document->getFileName();
-        $document->setFileName(KTDocumentUtil::getUniqueFilename($destFolder, $filename));
-        $document->setName(KTDocumentUtil::getUniqueDocumentName($destFolder, $name));
+        $newfilename = KTDocumentUtil::getUniqueFilename($destFolder, $filename);
+        if (!strcmp($filename, $newfilename)) {
+        	$document->setFileName($newfilename);
+        	$fileRenamed = true;
+        }
+        
+        $name = $document->getName();
+        $newname = KTDocumentUtil::getUniqueDocumentName($destFolder, $name);
+        if (!strcmp($name, $newname)) {
+        	$document->setName($newname);
+        	$fileRenamed = true;
+        }
 
         $res = $document->update();
         if (PEAR::isError($res)) {
@@ -1591,7 +1610,11 @@ class KTDocumentUtil {
         $sourcePath = ($originalFolder->iId == 1) ? $originalFolder->getName() : $originalFolder->getFullPath();
         $targetPath = ($folder->iId == 1) ? $folder->getName() : $folder->getFullPath();
 
-        $moveMessage = sprintf(_kt("Moved from %s to %s. %s"), $sourcePath, $targetPath, $reason);
+        $additionalMsg = '';
+        if ($fileRenamed) {
+        	$additionalMsg = sprintf(_kt(' Document renamed from %s to %s.'), $name, $newname);
+        }
+        $moveMessage = sprintf(_kt("Moved from %s to %s.%s %s"), $sourcePath, $targetPath, $additionalMsg, $reason);
 
         // create the document transaction record
         $documentTransaction = new DocumentTransaction($document, $moveMessage, 'ktcore.transactions.move');
@@ -1725,7 +1748,7 @@ class KTDocumentUtil {
     {
         $sql = "SELECT d.id, d.owner_id, d.folder_id, d.parent_folder_ids, d.permission_lookup_id, m.workflow_state_id, d.restore_folder_path
                 FROM documents d, document_metadata_version m
-                WHERE d.metadata_version_id = m.id AND permission_object_id = {$objectId}";
+                WHERE d.metadata_version_id = m.id AND permission_object_id = {$objectId} AND d.status_id = 1";
 
         $results = DBUtil::getResultArray($sql);
         if (PEAR::isError($results)) {

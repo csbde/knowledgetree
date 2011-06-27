@@ -176,7 +176,7 @@ class BrowseView {
      * @param boolean $editable
      * @param int $pageCount
      */
-    public function renderBrowseFolder($folderId, $aBulkActions, $folder, $editable, $pageCount = 1)
+    public function renderBrowseFolder($folderId, $aBulkActions, $folder, $permissions, $pageCount = 1)
     {
         $response = array();
 
@@ -193,9 +193,9 @@ class BrowseView {
 
         $totalItems = 0;
         $folderContentItems = $this->getFolderContent($folderId, $totalItems);
-        $folderView = $this->buildFolderView($folderId, $folderContentItems, $editable);
+        $folderView = $this->buildFolderView($folderId, $folderContentItems, $permissions);
         $response['folderContents'] = join($folderView);
-
+		$response['documentCount'] = count($folderContentItems['documents']);
         // Adding Fragments for drag & drop client side processing
         $response['fragments'] = '';
         $response['fragments'] = '';
@@ -227,7 +227,7 @@ class BrowseView {
         return $folderItems;
     }
 
-    private function buildFolderView($folderId, $folderContentItems, $editable = null)
+    private function buildFolderView($folderId, $folderContentItems, $permissions = null)
     {
         $folderItems = $this->getFolderItems($folderContentItems);
         $itemCount = count($folderItems);
@@ -250,7 +250,7 @@ class BrowseView {
 
         // Deal with scenario where there are no items in a folder
         if ($itemCount <= 0) {
-            $folderView[$this->pages['count']] .= $this->noFilesOrFoldersMessage($folderId, $editable);
+            $folderView[$this->pages['count']] .= $this->noFilesOrFoldersMessage($folderId, $permissions);
         }
 
         $folderView[$this->pages['count']] .= '</div>';
@@ -334,26 +334,32 @@ class BrowseView {
      * Displays a message when there is no folder content
      *
      * @param int $folderId
-     * @param boolean $editable
+     * @param boolean $permissions
      * @return string
      */
-    public function noFilesOrFoldersMessage($folderId = null, $editable = true)
+    public function noFilesOrFoldersMessage($folderId = null, $permissions = true)
     {
         if (SharedUserUtil::isSharedUser()) {
             $folderMessage = '<h2>There\'s no shared content in this folder yet!</h2>';
             $perm = SharedContent::getPermissions($_SESSION['userID'], $folderId, null, 'folder');
             if ($perm == 1) {
-                $editable = true;
+                $permissions['editable'] = true;
             }
             else {
-                $editable = false;
+                $permissions['editable'] = false;
             }
         }
 
-        if (!$editable) {
+        if (!$permissions['editable']) {
+        	
+        	if ($permissions['folderDetails']) {
+        		$folderMessage = '<h2>There\'s nothing in this folder yet!</h2>';
+        	}
+        	
             if ($folderMessage == '') {
                 $folderMessage = '<h2>You don\'t have permissions to view the contents of this folder!</h2>';
             }
+            
             return "<span class='notification'>".$folderMessage."</span>";
         } else {
             $folderMessage = '<h2>There\'s nothing in this folder yet!</h2>';
@@ -440,7 +446,8 @@ class BrowseView {
         $parts = array();
 
         foreach ($items as $item) {
-            $parts[$item->getName()] = '<input type="submit" name="submit[' . $item->getName() . ']" value="' . $item->getDisplayName() . '" />';
+            $parts[$item->getName()] = '<input type="'.$item->getBtnType().'" name="submit[' . $item->getName() . ']" value="' . $item->getDisplayName() . '"
+            	onclick="'.$item->getOnClick().'" />';
         }
 
         // Unset the bulk actions dependent on the users permissions
@@ -462,43 +469,6 @@ class BrowseView {
         $tpl .= '</td><td class="status" style="width: 200px; text-align: right;"></td></tr></table>';
 
         return $tpl;
-    }
-
-    /**
-     * Checks the systems workflow permissions to see if actions have been overriden
-     *
-     * @param array $item
-     * @return array $item
-     */
-    private function checkWorkflowPermissions($item = null, $oDocument)
-    {
-        $ns = ' not_supported';
-        // Check workflow action restrictions
-        $actions = array_merge(KTDocumentActionUtil::getDocumentActionsForDocument($oDocument, $this->oUser), KTDocumentActionUtil::getDocumentActionsForDocument($oDocument, $this->oUser, 'documentinfo'));
-
-        foreach ($actions as $oAction) {
-            $actionname = $oAction->getName();
-            $aname = explode('.', $actionname);
-            $name = $aname[count($aname) - 1];
-            $allowaction[$name] = $oAction->_show();
-        }
-
-        if (!$allowaction['immutable']) { $item['actions.finalize_document'] = $ns; }
-        if (!$allowaction['ownershipchange']) { $item['actions.change_owner'] = $ns; }
-
-        if (!$allowaction['checkout']) {
-            $item['allowdoczohoedit'] = '';
-            $item['actions.checkout'] = $ns;
-        }
-
-        if (!$allowaction['cancelcheckout']) { $item['actions.cancel_checkout'] = $ns; }
-        if (!$allowaction['checkin']) { $item['actions.checkin'] = $ns; }
-        if (!$allowaction['alert']) { $item['actions.alerts'] = $ns; }
-        if (!$allowaction['email']) { $item['actions.email'] = $ns; }
-        if (!$allowaction['view']) { $item['actions.download'] = $ns; }
-        if (!$allowaction['sharecontent']) { $item['actions.share_document'] = $ns; }
-
-        return $item;
     }
 
     /**
@@ -650,14 +620,11 @@ class BrowseView {
         } else {
             $item['document_link'] = KTUtil::buildUrl('view.php', array('fDocumentId' => $item['id']));
         }
-        // Check if document is in workflow and if action has not been restricted.
-        // Another layer of permissions
-        //$item = $this->checkWorkflowPermissions($item, $oDocument);
 
         $item['separatorA'] = $item['actions.copy'] == '' ? '' : $ns;
         $item['separatorB'] = $item['actions.download'] == '' ? '' : $ns;
         $item['separatorC'] = $item['actions.checkout'] == '' || $item['actions.checkin'] == '' || $item['actions.cancel_checkout']== '' ? '' : $ns;
-        $item['separatorD'] = $ns;//($item['actions.alert'] == '' || $item ['actions.email'] == '') && $hasWrite ? '' : $ns;
+        $item['separatorD'] = $ns;
         if ($item['is_immutable'] == '') { $item['separatorB'] = $item['separatorC'] = $item['separatorD'] = $ns; }
         // Add line separator after share link
         if ($item['actions.share_document'] != $ns) {
@@ -734,7 +701,7 @@ class BrowseView {
                         <td class="doc summary_cell fdebug">
                             <div class="title"><a class="clearLink" href="[document_link]" style="">[title]</a></div>
                             <div class="detail">
-                                <span class="item"> Owner: <span class="user">[owned_by]</span></span><span class="item">Created: <span class="date">[created_date]</span> by <span class="user">[created_by]</span></span><span class="item docupdatedinfo">Updated: <span class="date">[modified_date]</span> by <span class="user">[modified_by]</span></span><span class="item">File size: <span class="user filesize">[filesize]</span></span>
+                                <span class="item"> Owner: <span class="user docowner">[owned_by]</span></span><span class="item">Created: <span class="date">[created_date]</span> by <span class="user">[created_by]</span></span><span class="item docupdatedinfo">Updated: <span class="date">[modified_date]</span> by <span class="user">[modified_by]</span></span><span class="item">File size: <span class="user filesize">[filesize]</span></span>
                             </div>
                         </td>
                         <td>
@@ -770,25 +737,26 @@ class BrowseView {
 
                                         <li class="separator[separatorA]"></li>
 
-                                        <li class="action_copy [actions.copy]"><a href="action.php?kt_path_info=ktcore.actions.document.copy&fDocumentId=[id]">Copy</a></li>
-                                        <li class="action_move [actions.move]"><a href="action.php?kt_path_info=ktcore.actions.document.move&fDocumentId=[id]">Move</a></li>
-                                        <li class="action_delete [actions.delete]"><a href="action.php?kt_path_info=ktcore.actions.document.delete&fDocumentId=[id]">Delete</a></li>
+                                        <li class="action_copy [actions.copy]"><a href="#" onclick="javascript:{kt.app.copy.doTreeAction(\'copy\', [id]);}">Copy</a></li>
+                                        <li class="action_move [actions.move]"><a href="#" onclick="javascript:{kt.app.copy.doTreeAction(\'move\', [id]);}">Move</a></li>
+                                        <li class="action_delete [actions.delete]"><a href="#" onclick="javascript:{kt.app.copy.doAction(\'delete\', [id]);}">Delete</a></li>
 
                                         <li class="separator[separatorB]"></li>
 
                                         <li class="action_checkout [actions.checkout]"><a href="#" onclick="kt.app.document_actions.checkout_actions(\'[id]\', \'checkout\');">Check-out</a></li>
+                                        <li class="action_checkout [actions.checkout]"><a href="#" onclick="kt.app.document_actions.checkout_actions(\'[id]\', \'checkoutdownload\');">Check-out and Download</a></li>
                                         <li class="action_cancel_checkout [actions.cancel_checkout]"><a href="#" onclick="kt.app.document_actions.checkout_actions(\'[id]\', \'cancelcheckout\');">Cancel Check-out</a></li>
                                         <li class="action_checkin [actions.checkin]"><a href="#" onclick="kt.app.document_actions.checkout_actions(\'[id]\', \'checkin\');">Check-in</a></li>
 
                                         <li class="separator[separatorC]"></li>
 
-                                        <li class="action_alerts [actions.alerts]"><a href="action.php?kt_path_info=alerts.action.document.alert&fDocumentId=[id]">Alerts</a></li>
+                                        <li class="action_alerts [actions.alerts]"><a href="#" onclick="javascript:{alerts.displayAction(\'\', [id], \'browse-view\');}">Alerts</a></li>
                                         <li class="action_email [actions.email]"><a href="action.php?kt_path_info=ktcore.actions.document.email&fDocumentId=[id]">Email</a></li>
 
                                         <li class="separator[separatorD]"></li>
 
-                                        <li class="action_change_owner [actions.change_owner]"><a href="action.php?kt_path_info=ktcore.actions.document.ownershipchange&fDocumentId=[id]">Change Owner</a></li>
-                                        <li class="action_finalize_document [actions.finalize_document]"><a href="action.php?kt_path_info=ktcore.actions.document.immutable&fDocumentId=[id]">Finalize Document</a></li>
+                                        <li class="action_change_owner [actions.change_owner]"><a href="javascript:;" onclick="kt.app.document_actions.changeOwner(\'[id]\');">Change Owner</a></li>
+                                        <li class="action_finalize_document [actions.finalize_document]"><a href="#" onclick="javascript:{kt.app.copy.doAction(\'immutable\', [id]);}">Finalize Document</a></li>
                                     </ul>
                                 </li>
                             </ul>';
