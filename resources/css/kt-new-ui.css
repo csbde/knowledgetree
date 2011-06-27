@@ -308,6 +308,10 @@ textarea {
 }
 #breadcrumbs .icon:hover {
 	opacity: 0.7;
+	
+	/* The next two properties is for IE */
+	filter: alpha(opacity = 70);
+	zoom: 1;
 }
 /* ------------------ prototype breadcrumbs -------------- */
 .breadCrumb	{
@@ -627,6 +631,10 @@ ul.floatleft li.notification {
 .action_buttons .action .disabled {
 	opacity: 0.5;
 	cursor: default;
+	
+	/* The next two properties is for IE */
+	filter: alpha(opacity = 50);
+	zoom: 1;
 }
 .action_buttons #add-version {
 	background: url('../graphics/newui/document_exchange.png') no-repeat 7px 4px;

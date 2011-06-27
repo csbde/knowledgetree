@@ -122,14 +122,16 @@
 					<div class="action_buttons above" id=top_actions>
 						{$documentTopActions}
 					</div>
-				</div>				
-				{if !empty($live_preview)}
-					<div style="margin-top:1em;">{$live_preview}</div>
-				{else}
-				<div class="no-preview">
-					<span class="no-preview-text">Preview Not Available</span>
 				</div>
-			{/if}
+                <div id="documentpreview">
+                    {if !empty($live_preview)}
+                        <div style="margin-top:1em;">{$live_preview}</div>
+                    {else}
+                        <div class="no-preview">
+                            <span class="no-preview-text">Preview Not Available</span>
+                        </div>
+                    {/if}
+                </div>
 			<div id=bottom_actions class="action_buttons below" style="display: inline-block; margin-top: 5px;"> 
 				{$documentBottomActions}
 			</div>

@@ -7,7 +7,7 @@
 	<div class="field" style="margin-top: 5px;">
 		<label for="filename">Select a file to check-in<span class="required">(Required)</span></label>
         <br />
-		<input class="modalField" id="checkinfilename" name="filename" size="35" type="file">
+		<input class="modalField" id="checkinfilename" name="filename" size="30" type="file">
 	</div> 
 	<br>
 	<div class="field ">
