@@ -42,7 +42,6 @@ workflowsBlock.prototype.submitForm = function(action) {
 					},
 					success: function(data) {
 						response = jQuery.parseJSON(data);
-						console.log(response);
 						if (response.permission != 1) {
 							var url = response.url;
     						window.location.replace(url);
