@@ -88,7 +88,13 @@ class AdminSettingsDispatcher extends KTAdminDispatcher {
         }
 
         $templating = KTTemplating::getSingleton();
-        $template = $templating->loadTemplate('kt3/settings');
+        
+        if (KTUtil::arrayGet($_REQUEST, 'modal', null) == 'yes') {
+            $template = $templating->loadTemplate('kt3/settings_ajax');
+        } else {
+            $template = $templating->loadTemplate('kt3/settings');
+        }
+        
         $templateData = array(
                             'context' => $this,
                             'categories' => $categories,
@@ -98,6 +104,16 @@ class AdminSettingsDispatcher extends KTAdminDispatcher {
         );
 
         return $template->render($templateData);
+    }
+    
+    function handleOutput($data)
+    {
+        if (KTUtil::arrayGet($_REQUEST, 'modal', null) == 'yes') {
+            echo $data;
+            exit(0);
+        } else {
+            parent::handleOutput($data);
+        }
     }
 
     private function getCategoryItems()
