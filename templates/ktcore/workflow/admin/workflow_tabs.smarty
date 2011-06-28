@@ -1,0 +1,28 @@
+<h2>Workflow: {$workflowName}</h2>
+
+<div id="workflowtabs">
+    <ul>
+    {foreach from=$tabsList key=oTabKeyName item=oTab}
+        {if $oTab.content}
+            <li><a href="#workflow_{$oTabKeyName}">{$oTab.name}</a></li>
+            {capture name=some_content assign=currentDivContent}
+                <div id="workflow_{$oTabKeyName}">{$oTab.content}</div>
+            {/capture}
+        {else}
+            <li><a href="{addQS}{$oTab.query}{/addQS}">{$oTab.name}</a></li>
+        {/if}
+        
+    {/foreach}
+    </ul>
+    {$currentDivContent}
+</div>
+
+{literal}
+<script> 
+	jQuery(function() {
+		jQuery("#workflowtabs").tabs({selected: {/literal}{$selectedTabKey}{literal}});
+	});
+	</script> 
+{/literal}
+
+
