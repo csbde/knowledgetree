@@ -398,9 +398,72 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
 
     // -------------------- Overview -----------------
     // basic view page.
+    
+    /**
+     * This function is a wrapper that places the content of certain actions in a tab
+     *
+     * @param string $output Output of the Template
+     * @param string $selectedTab - Short Name of the tab the content has to be placed under
+     */
+    private function renderWorkflowTabs($output, $selectedTab)
+    {
+        
+        // If coming via modal or ajax, no need to render the tabs
+        if (KTUtil::arrayGet($_REQUEST, 'modal', null) == 'yes') {
+            return $output;
+        }
+        
+        
+        
+        
+        // Load JavaScript
+        $page = $GLOBALS['main'];
+        $javascript[] = 'thirdpartyjs/jquery/ui/jquery-ui-1.8.13.custom.min.js';
+        $page->requireJSResources($javascript);
+        
+        $css[] = 'thirdpartyjs/jquery/themes/base/jquery.ui.all.css';
+        $page->requireCSSResources($css);
+        
+        // Create List of Tabs
+        $listOfTabs = array();
+        $listOfTabs['details']      = array('name' => 'Workflow Details',       'query' => 'action=view&modal=yes&fWorkflowId=' . $this->oWorkflow->getId());
+        $listOfTabs['states']       = array('name' => 'States & Transitions',   'query' => 'action=basic&modal=yes&fWorkflowId=' . $this->oWorkflow->getId());
+        $listOfTabs['processflow']  = array('name' => 'Process Flow',           'query' => 'action=transitionconnections&modal=yes&fWorkflowId=' . $this->oWorkflow->getId());
+        $listOfTabs['security']     = array('name' => 'Security',               'query' => 'action=security&modal=yes&fWorkflowId=' . $this->oWorkflow->getId());
+        $listOfTabs['effects']      = array('name' => 'Effects',                'query' => 'action=effects&modal=yes&fWorkflowId=' . $this->oWorkflow->getId());
+        
+        // Prepared Default Current Tab
+        if (array_key_exists($selectedTab, $listOfTabs)) {
+            $listOfTabs[$selectedTab]['content'] = $output;
+            
+            // A way of getting the key index for the selected item
+            $selectedTabKey = array_search($selectedTab, array_keys($listOfTabs));
+        } else {
+            $selectedTabKey = 0;
+        }
+        
+        // Load Tab
+        $oTemplate = $this->oValidator->validateTemplate('ktcore/workflow/admin/workflow_tabs');
+        
+        $oTemplate->setData(array(
+            //'content' => $output,
+            'workflowName' => $this->oWorkflow->getName(),
+            'tabsList' => $listOfTabs,
+            'selectedTab' => $selectedTab,
+            'selectedTabKey' => $selectedTabKey,
+        ));
+
+        return $oTemplate->render();
+    }
 
     public function do_view()
     {
+        return $this->do_editcore();
+        
+        /*
+         
+         // This action is no longer needed
+        
         $oTemplate = $this->oValidator->validateTemplate('ktcore/workflow/admin/view');
 
         $this->oPage->setBreadcrumbDetails(_kt("Overview"));
@@ -449,7 +512,8 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
             'portlets' => $this->oPage->portlets,
         ));
 
-        return $oTemplate->render();
+        return $this->renderWorkflowTabs($oTemplate->render(), 'details');
+        */
     }
 
     public function form_coreedit()
@@ -519,7 +583,7 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
             'workflow_name' => $this->oWorkflow->getName(),
             'edit_form' => $oForm,
         ));
-        return $oTemplate->render();
+        return $this->renderWorkflowTabs($oTemplate->render(), 'details');
     }
 
     public function do_setcore() {
@@ -583,7 +647,7 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
             'transitions' => $aTransitions,
         ));
 
-        return $oTemplate->render();
+        return $this->renderWorkflowTabs($oTemplate->render(), 'states');
     }
 
     public function form_transitionconnections()
@@ -660,7 +724,7 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
             'availability' => $availability,
         ));
 
-        return $oTemplate->render();
+        return $this->renderWorkflowTabs($oTemplate->render(), 'processflow');
     }
 
     public function do_setconnections() {
@@ -761,7 +825,7 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
             'context' => $this,
             'form' => $oForm,
         ));
-        return $oTemplate->render();
+        return $this->renderWorkflowTabs($oTemplate->render(), 'states');
     }
 
     public function do_createstates() {
@@ -868,7 +932,7 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
             'context' => $this,
             'form' => $oForm,
         ));
-        return $oTemplate->render();
+        return $this->renderWorkflowTabs($oTemplate->render(), 'states');
     }
 
     public function do_createtransitions()
@@ -1001,7 +1065,7 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
             'edit_form' => $oForm,
         ));
 
-        return $oTemplate->render();
+        return $this->renderWorkflowTabs($oTemplate->render(), 'states');
     }
 
     public function do_savestate()
@@ -1095,7 +1159,7 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
             'edit_form' => $oForm,
         ));
 
-        return $oTemplate->render();
+        return $this->renderWorkflowTabs($oTemplate->render(), 'states');
     }
 
     public function do_savetransition() {
@@ -1254,7 +1318,7 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
             'context' => $this,
             'workflow_name' => $this->oWorkflow->getName(),
         ));
-        return $oTemplate->render();
+        return $this->renderWorkflowTabs($oTemplate->render(), 'security');
     }
 
 
@@ -1292,7 +1356,7 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
             'perms' => $aUsefulPermissions,
             'states' => $aStates,
         ));
-        return $oTemplate->render();
+        return $this->renderWorkflowTabs($oTemplate->render(), 'security');
     }
 
     public function form_managepermissions() {
@@ -1339,7 +1403,7 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
             'perms' => $aUsefulPermissions,
             'form' => $oForm,
         ));
-        return $oTemplate->render();
+        return $this->renderWorkflowTabs($oTemplate->render(), 'security');
     }
 
     public function do_setcontrolledpermissions() {
@@ -1423,7 +1487,7 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
             'jsonpermissions' => $sJSONPermissions,
             'args' => $this->meldPersistQuery("","setpermissionallocations",true),
         ));
-        return $oTemplate->render();
+        return $this->renderWorkflowTabs($oTemplate->render(), 'security');
     }
 
     // JSON helper. from permissions.
@@ -1580,7 +1644,7 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
             'actions' => $actions,
             'grid' => $action_grid,
         ));
-        return $oTemplate->render();
+        return $this->renderWorkflowTabs($oTemplate->render(), 'security');
     }
 
     public function do_editactions() {
@@ -1613,7 +1677,7 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
             'grid' => $action_grid,
             'args' => $this->meldPersistQuery("","saveactions", true),
         ));
-        return $oTemplate->render();
+        return $this->renderWorkflowTabs($oTemplate->render(), 'security');
     }
 
     public function do_saveactions() {
@@ -1658,7 +1722,7 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
             'context' => $this,
             'transitions' => $transitions,
         ));
-        return $oTemplate->render();
+        return $this->renderWorkflowTabs($oTemplate->render(), 'security');
     }
 
     // helper
@@ -1745,7 +1809,7 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
             'add_form' => $add_form,
             'aGuardTriggers' => $restrictions,
         ));
-        return $oTemplate->render();
+        return $this->renderWorkflowTabs($oTemplate->render(), 'security');
     }
 
     public function do_addguard() {
@@ -1893,7 +1957,7 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
             'workflow_name' => $this->oWorkflow->getName(),
             
         ));
-        return $oTemplate->render();
+        return $this->renderWorkflowTabs($oTemplate->render(), 'effects');
     }
 
     public function form_addtransitionaction() {
@@ -1960,9 +2024,9 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
         $oTemplate->setData(array(
             'context' => $this,
             'transitions' => $aTransitions,
-            
-       ));
-        return $oTemplate->render();
+        ));
+        
+        return $this->renderWorkflowTabs($oTemplate->render(), 'effects');
     }
 
     // helper
@@ -2002,7 +2066,7 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
             'aActionTriggers' => $actions,
             
         ));
-        return $oTemplate->render();
+        return $this->renderWorkflowTabs($oTemplate->render(), 'effects');
     }
 
     public function do_addactiontrigger() {
@@ -2145,7 +2209,7 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
             'states' => KTWorkflowState::getByWorkflow($this->oWorkflow),
             
         ));
-        return $oTemplate->render();
+        return $this->renderWorkflowTabs($oTemplate->render(), 'effects');
     }
 
     public function describeStateNotifications($oState) {
