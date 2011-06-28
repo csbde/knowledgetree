@@ -1,0 +1,11 @@
+{if ($jscript != '')}
+{$jscript}
+{/if}
+
+
+{foreach item=categoryItem from=$items name=itemlist}
+    {if $categoryItem.autoDisplay}
+        {$context->loadSection($categoryItem)}
+    {/if}
+{/foreach}
+
