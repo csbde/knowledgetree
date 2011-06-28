@@ -63,6 +63,12 @@ class AdminSettingsDispatcher extends KTAdminDispatcher {
 
     public function do_main($viewCategory = false)
     {
+        // This could maybe be considered a hack?  If there is a better way...
+        $requestSource = KTUtil::arrayGet($_REQUEST, 'request_src', null);
+        if ($requestSource == 'ajax') {
+            $this->do_ajax();
+        }
+
         $registry = KTAdminNavigationRegistry::getSingleton();
         $categories = $registry->getCategories();
         reset($categories);
@@ -98,6 +104,16 @@ class AdminSettingsDispatcher extends KTAdminDispatcher {
         );
 
         return $template->render($templateData);
+    }
+
+    public function do_ajax()
+    {
+        $category = KTUtil::arrayGet($_REQUEST, 'fCategory', null);
+        $subsection = KTUtil::arrayGet($_REQUEST, 'subsection', null);
+        $section['fullname'] = "$category/$subsection";
+        $section['autoDisplay'] = true;
+
+        $this->loadSection($section);
     }
 
     private function getCategoryItems()
