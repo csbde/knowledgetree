@@ -49,7 +49,7 @@ class ZendDeskDispatcher extends KTStandardDispatcher {
 		$this->email = $this->user->getEmail();
 		$this->email = ($this->email != '')? $this->email : $this->name . '@knowledgetree.com';
 		$this->externalId = $_SESSION['userID'];
-		$this->urlPrefix = 'ktsandbox';
+		$this->urlPrefix = 'knowledgetree';
 		
 		$oConfig = KTConfig::getSingleton();
 		$this->token = $oConfig->get('tokens/zendesk', false);
