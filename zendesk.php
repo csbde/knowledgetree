@@ -30,14 +30,13 @@ class ZendDeskDispatcher extends KTStandardDispatcher {
 	private $fullname;
 	private $email;
 	private $externalId;
-	private $organization;
 	private $token;
 	private $urlPrefix;
 	private $user;
 	
 	public function __construct()
 	{
-		$this->persistParams(array('timestamp'=>$_REQUEST['timestamp']));
+		$this->persistParams(array('timestamp' => $_REQUEST['timestamp']));
 		parent::KTStandardDispatcher();
 		
 		if(!isset($_SESSION['userID'])) {
@@ -50,8 +49,7 @@ class ZendDeskDispatcher extends KTStandardDispatcher {
 		$this->email = $this->user->getEmail();
 		$this->email = ($this->email != '')? $this->email : $this->name . '@knowledgetree.com';
 		$this->externalId = $_SESSION['userID'];
-		$this->organization = "ktsaas";
-		$this->urlPrefix = 'knowledgetree';
+		$this->urlPrefix = 'ktsandbox';
 		
 		$oConfig = KTConfig::getSingleton();
 		$this->token = $oConfig->get('tokens/zendesk', false);
@@ -74,21 +72,12 @@ class ZendDeskDispatcher extends KTStandardDispatcher {
      */
     private function getAuthenticationUrl() {
     	global $default;
-    	$timestamp = KTUtil::arrayGet($_REQUEST, 'timestamp', 0);
-    	if($timestamp == 0) {
-    		$default->log->info(__CLASS__ . " : " . __FUNCTION__ . " : No timestamp sent.");
-    		$timestamp = time();
-    	} else {
-    		$default->log->info(__CLASS__ . " : " . __FUNCTION__ . " : Timestamp sent - $timestamp generated - " . time());
-    	}
-    	$this->fullname = utf8_encode($this->fullname);
-    	$this->email = urlencode($this->email);
-    	$message = $this->fullname . $this->email . $this->externalId . $this->organization . $this->token . $timestamp;
+		$timestamp = time();
+    	$message = $this->fullname . $this->email . $this->externalId . $this->token . $timestamp;
 		$accessPoint = "https://$this->urlPrefix.zendesk.com/access/remote/?";
 		$accessPoint .= 'name=' . $this->fullname . '&';
 		$accessPoint .= 'email=' . $this->email . '&';
 		$accessPoint .= 'external_id=' . $this->externalId . '&';
-		$accessPoint .= 'organization=' . ACCOUNT_NAME . '&';
 		$accessPoint .= 'timestamp=' . $timestamp . '&';
 		$accessPoint .= 'hash=' . md5($message);
     	$default->log->info(__CLASS__ . " : " . __FUNCTION__ . " : $accessPoint");
