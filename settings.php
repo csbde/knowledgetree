@@ -124,8 +124,9 @@ class AdminSettingsDispatcher extends KTAdminDispatcher {
 
     public function do_ajax()
     {
-        $category = KTUtil::arrayGet($_REQUEST, 'fCategory', null);
-        $subsection = KTUtil::arrayGet($_REQUEST, 'subsection', null);
+        $urlParts = $this->parseSubUrl();
+        $category = $this->getCategory($urlParts[0]);
+        $subsection = $this->getSubsection($urlParts[1]);
         $section['fullname'] = "$category/$subsection";
         $section['autoDisplay'] = true;
 

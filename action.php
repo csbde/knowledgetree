@@ -64,7 +64,8 @@ class KTActionDispatcher extends KTStandardDispatcher {
      * Find the action, and then use its dispatcher.  Error out nicely
      * if we aren't so lucky.
      */
-    function do_main() {
+    public function do_main()
+    {
         $this->error = false;
         $action = KTUtil::arrayGet($_SERVER, 'PATH_INFO');
         $action = trim($action);
@@ -74,20 +75,20 @@ class KTActionDispatcher extends KTStandardDispatcher {
             $this->errorPage(_kt('No action given'));
         }
 
-        $oRegistry =& KTActionRegistry::getSingleton();
-        $aActionInfo = $oRegistry->getActionByNsname($action);
-        if (empty($aActionInfo)) {
+        $registry =& KTActionRegistry::getSingleton();
+        $actionInfo = $registry->getActionByNsname($action);
+        if (empty($actionInfo)) {
             $this->error = true;
             $this->errorPage(sprintf(_kt('No such action exists in %s'), APP_NAME));
         }
 
-        $sFilename = $aActionInfo[1];
-        if (!empty($sFilename)) {
-            require_once($sFilename);
+        $filename = $actionInfo[1];
+        if (!empty($filename)) {
+            require_once($filename);
         }
 
-        $oAction = new $aActionInfo[0];
-        $oAction->dispatch();
+        $action = new $actionInfo[0];
+        $action->dispatch();
     }
 
     function json_main() {
@@ -204,5 +205,5 @@ class KTActionDispatcher extends KTStandardDispatcher {
 
 }
 
-$d = new KTActionDispatcher();
-$d->dispatch();
+$dispatcher = new KTActionDispatcher();
+$dispatcher->dispatch();
