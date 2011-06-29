@@ -329,9 +329,9 @@ class KTPage {
     	    $sUrl = KTPluginUtil::getPluginPath('electronic.signatures.plugin', true);
     	    $heading = _kt('You are attempting to access Settings');
     	    $this->menu['administration']['url'] = '#';
-    	    $this->menu['administration']['onclick'] = "javascript: showSignatureForm('{$sUrl}', '{$heading}', 'dms.administration.administration_section_access', 'admin', '{$sBaseUrl}/admin.php', 'redirect');";
+    	    $this->menu['administration']['onclick'] = "javascript: showSignatureForm('{$sUrl}', '{$heading}', 'dms.administration.administration_section_access', 'admin', '{$sBaseUrl}/settings.php', 'redirect');";
     	} else {
-    	    $this->menu['administration']['url'] = $sBaseUrl.'/admin.php';
+    	    $this->menu['administration']['url'] = $sBaseUrl.'/settings.php';
     	}
     }
 

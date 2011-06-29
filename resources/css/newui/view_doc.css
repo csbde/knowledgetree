@@ -348,7 +348,8 @@ div.viewletworkflow {
 /*	margin: 15px 0px 5px 0px; */
 	line-height:120%;
 	margin-right: 160px;
-	max-width: 560px;
+	/*max-width: 560px;*/
+	width: 560px;
 	word-wrap: break-word;
 }
 .document-title.active,
@@ -429,6 +430,10 @@ div.viewletworkflow {
 	border: 1px solid #ccc!important;
 	opacity: 0.5;
 	color: #666!important;
+	
+	/* The next two properties is for IE */
+	filter: alpha(opacity = 50);
+	zoom: 1;
 }
 .activityfeed .item.transaction,
 .activityfeed .item.comment{

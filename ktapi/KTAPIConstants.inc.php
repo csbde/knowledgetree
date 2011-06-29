@@ -57,7 +57,7 @@ define('KTAPI_ERROR_VERSION_INVALID', 			'The document version could not be reso
 define('KTAPI_ERROR_USER_INVALID', 				'The user could not be resolved.');
 define('KTAPI_ERROR_KTAPI_INVALID', 			'The ktapi could not be resolved.');
 define('KTAPI_ERROR_INSUFFICIENT_PERMISSIONS', 	'The user does not have sufficient permissions to access the resource.');
-define('KTAPI_ERROR_INTERNAL_ERROR', 			'An internal error occurred. Please review the logs.');
+define('KTAPI_ERROR_INTERNAL_ERROR', 			'The following error occurred.');
 define('KTAPI_ERROR_DOCUMENT_TYPE_INVALID', 	'The document type could not be resolved.');
 define('KTAPI_ERROR_DOCUMENT_CHECKED_OUT', 		'The document is checked out.');
 define('KTAPI_ERROR_DOCUMENT_NOT_CHECKED_OUT', 	'The document is not checked out.');

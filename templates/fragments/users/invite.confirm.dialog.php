@@ -1,18 +1,20 @@
 <?php
+
 include_once('../../ktapi/ktapi.inc.php');
 
 $url = KTUtil::kt_url();
 
-$users_url = $url. '/admin.php?kt_path_info=userSetup/users&show_all=1';
-$groups_url = $url. '/admin.php?kt_path_info=userSetup/groups&show_all=1';
+$users_url = $url. '/settings.php?kt_path_info=userSetup/users&show_all=1';
+$groups_url = $url. '/settings.php?kt_path_info=userSetup/groups&show_all=1';
 $contact_url = 'http://www.knowledgetree.com/contact-us';
+
 ?>
 
 <table class="uploadTable" style="height:120%;" border="0">
 
     <tr>
         <td colspan="2" valign="top">
-            Invitations to join KnowledgeTree were sent to: <a href="<?= $users_url; ?>"><span id="invitedUsers"></span> users</a>
+            Invitations to join KnowledgeTree were sent to: <a href="<?php echo $users_url; ?>"><span id="invitedUsers"></span> users</a>
         </td>
     </tr>
 
@@ -32,7 +34,7 @@ $contact_url = 'http://www.knowledgetree.com/contact-us';
 
     <tr id="showShareddGroup" style="display: none;">
         <td colspan="2" style="padding-top: 10px;">
-            As part of the: <a href="<?= $groups_url; ?>"><span id="sharedGroup"></span> group</a>
+            As part of the: <a href="<?php echo $groups_url; ?>"><span id="sharedGroup"></span> group</a>
         </td>
     </tr>
 
@@ -40,7 +42,7 @@ $contact_url = 'http://www.knowledgetree.com/contact-us';
         <td width="15%" valign="top" style="padding-top: 10px;">Warning: </td>
         <td width="85%" valign="top" style="padding-top: 10px;">
             The number of users shared now exceeds your available KnowledgeTree licenses.<br />
-            Please <a href="<?= $contact_url; ?>">contact us</a> to purchase additional licenses.
+            Please <a href="<?php echo $contact_url; ?>">contact us</a> to purchase additional licenses.
         </td>
     </tr>
 

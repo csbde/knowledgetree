@@ -277,21 +277,23 @@ class KTCorePlugin extends KTPlugin {
 
         // Set up the categories.
         $this->registerAdminCategory('userSetup', _kt('Users & Groups'),
-            _kt('Determine how people will access content.'), 90);
-        $this->registerAdminCategory('advancedPermissions', _kt('Advanced Permissions'),
-            _kt('Configure advanced permissions.'), 10);
+            _kt('Determine how people will access content.'), 80);
+        //$this->registerAdminCategory('advancedPermissions', _kt('Dynamic Permissions'),
+          //  _kt('Configure advanced permissions.'), 70);
         $this->registerAdminCategory('reporting', _kt('Reporting'),
-            _kt('View reports.'), 40);
+            _kt('View reports.'), 10);
         $this->registerAdminCategory('security', _kt('Security & Authentication'),
-            _kt('Manage system security.'), 20);
+            _kt('Manage system security.'), 30);
         $this->registerAdminCategory('sysConfig', _kt('System Preferences'),
-            _kt('Configure system preferences.'), 30);
-        $this->registerAdminCategory('contentManagement', _kt('Content Curation'),
-            _kt('Manage content.'), 80);
+            _kt('Configure system preferences.'), 90);
+        $this->registerAdminCategory('contentManagement', _kt('Backup & Restore'),
+            _kt('Manage content.'), 20);
         $this->registerAdminCategory('documentProperties', _kt('Document Properties'),
-            _kt('Manage document properties.'), 70);
+            _kt('Manage document properties.'), 60);
         $this->registerAdminCategory('workflows', _kt('Workflows'),
             _kt('Manage workflows.'), 50);
+            $this->registerAdminCategory('clientTools', _kt('Client Tools & API'),
+            _kt('Client tools settings.'), 40);
 
         // users and groups
 
@@ -301,7 +303,7 @@ class KTCorePlugin extends KTPlugin {
         $this->registerAdminPage('groups', 'KTGroupAdminDispatcher', 'userSetup',
             _kt('Groups'), _kt('Add or remove groups from the system.'),
             'admin/groupManagement.php', null, 9);
-        $this->registerAdminPage('roles', 'RoleAdminDispatcher', 'advancedPermissions',
+        $this->registerAdminPage('roles', 'RoleAdminDispatcher', 'userSetup',
             _kt('Roles'), _kt('Create or delete roles'),
             'admin/roleManagement.php', null, 8);
         $this->registerAdminPage('units', 'KTUnitAdminDispatcher', 'userSetup',
@@ -311,10 +313,10 @@ class KTCorePlugin extends KTPlugin {
         // security
         //$this->registerAdminPage('permissions', 'ManagePermissionsDispatcher', 'advancedPermissions',
         //    _kt('Permissions'), _kt('Create or delete permissions.'), 'admin/managePermissions.php', null, 7);
-        $this->registerAdminPage('conditions', 'KTConditionDispatcher', 'advancedPermissions',
-            _kt('Dynamic Conditions'),
-            _kt('Manage criteria which determine whether a user is permitted to perform a system action.'),
-            'admin/conditions.php', null);
+       // $this->registerAdminPage('conditions', 'KTConditionDispatcher', 'advancedPermissions',
+         //   _kt('Dynamic Conditions'),
+           // _kt('Manage criteria which determine whether a user is permitted to perform a system action.'),
+            //'admin/conditions.php', null);
 
         // documents
         $this->registerAdminPage('typemanagement', 'KTDocumentTypeDispatcher', 'documentProperties',
@@ -383,8 +385,24 @@ class KTCorePlugin extends KTPlugin {
             _kt('User Interface'), _kt('View and modify settings on Browse View actions, OEM name, automatic refresh, search results restrictions, custom logo details, paths to dot binary, graphics, and log directory, and whether to enable/disable condensed UI, \'open\' from downloads, sort metadata, and skinning.'),
             'admin/configSettings.php', null);
 
-        $this->registerAdminPage('clientconfigpage', 'ClientSettingsConfigPageDispatcher', 'sysConfig',
+        $this->registerAdminPage('clientconfigpage', 'ClientSettingsConfigPageDispatcher', 'clientTools',
             _kt('Client Tools'), _kt('View and change settings for the KnowledgeTree Tools Server, Client Tools Policies, WebDAV, and the OpenOffice.org service.'),
+            'admin/configSettings.php', null);
+        //client tools
+        $this->registerAdminPage('kttoolsconfigpage', 'KtToolsConfigPageDispatcher', 'clientTools',
+            _kt('KnowledgeTree Tools'), _kt('View and change settings for the KnowledgeTree Tools Server.'),
+            'admin/configSettings.php', null);
+            
+        $this->registerAdminPage('explorercpconfigpage', 'ExplorerConfigPageDispatcher', 'clientTools',
+            _kt('Explorer CP'), _kt('View and change settings for the Explorer CP.'),
+            'admin/configSettings.php', null);
+            
+        $this->registerAdminPage('KTWebDAVSettings', 'KtWebdavConfigPageDispatcher', 'clientTools',
+            _kt('WebDAV'), _kt('View and change settings for WebDAV.'),
+            'admin/configSettings.php', null);
+            
+        $this->registerAdminPage('webservicesconfig', 'WebservicesConfigPageDispatcher', 'clientTools',
+            _kt('Web Services'), _kt('View and change settings for the KnowledgeTree Web Services.'),
             'admin/configSettings.php', null);
 
         //$this->registerAdminPage('generalconfigpage', 'GeneralConfigPageDispatcher', 'sysConfig',
@@ -396,7 +414,7 @@ class KTCorePlugin extends KTPlugin {
             'admin/configSettings.php', null);
 
         $this->registerAdminPage('timezone', 'TimezoneConfigPageDispatcher', 'sysConfig',
-            _kt('Timezone'), _kt('View and modify timezone settings for KnowledgeTree.'),
+            _kt('Regional Settings'), _kt('View and modify regional settings for KnowledgeTree.'),
             'admin/configSettings.php', null);
 
         // FIXME Get this into the electronic signatures plugin - at the moment that crashes with
@@ -418,9 +436,9 @@ class KTCorePlugin extends KTPlugin {
                 'admin/manageHelp.php', null);
         }
 
-        $this->registerAdminPage('i18nconfigpage', 'i18nConfigPageDispatcher', 'sysConfig',
-            _kt('Internationalisation Settings'), _kt('View and modify the default language.'),
-            'admin/configSettings.php', null);
+       // $this->registerAdminPage('i18nconfigpage', 'i18nConfigPageDispatcher', 'sysConfig',
+        //    _kt('Internationalisation Settings'), _kt('View and modify the default language.'),
+        //    'admin/configSettings.php', null);
 
         // misc
 

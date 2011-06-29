@@ -110,15 +110,16 @@ class KTPlugin {
         $this->registerPluginHelper($sActionNamespace, $sActionClassName, $sFilename, $params, 'general', 'action');
     }
 
-    function registerPage($sWebPath, $sPageClassName, $sFilename = null) {
-        $sFilename = $this->_fixFilename($sFilename);
-        $sWebPath = sprintf("%s/%s", $this->sNamespace, $sWebPath);
+    public function registerPage($webPath, $pageClassName, $filename = null)
+    {
+        $filename = $this->_fixFilename($filename);
+        $webPath = sprintf("%s/%s", $this->sNamespace, $webPath);
 
-        $this->_aPages[$sWebPath] = array($sWebPath, $sPageClassName, $sFilename, $this->sNamespace);
+        $this->_aPages[$webPath] = array($webPath, $pageClassName, $filename, $this->sNamespace);
 
         // Register helper in DB
-        $params = $sWebPath.'|'.$sPageClassName.'|'.$sFilename.'|'.$this->sNamespace;
-        $this->registerPluginHelper($sWebPath, $sPageClassName, $sFilename, $params, 'general', 'page');
+        $params = $webPath.'|'.$pageClassName.'|'.$filename.'|'.$this->sNamespace;
+        $this->registerPluginHelper($webPath, $pageClassName, $filename, $params, 'general', 'page');
     }
 
     function registerWorkflowTrigger($sNamespace, $sTriggerClassName, $sFilename = null) {

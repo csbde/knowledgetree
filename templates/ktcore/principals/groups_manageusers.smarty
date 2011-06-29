@@ -7,8 +7,6 @@
    <input type="hidden" name="old_search" value="{$old_search}" />
 
 
-   <fieldset>
-      <legend>{i18n arg_name=$edit_group->getName()}Manage Users in #name#{/i18n}</legend>
 
       {$widget->render()}
 
@@ -16,5 +14,4 @@
          <input type="submit" value="{i18n}Save Changes{/i18n}" />
          <input type="submit" name="kt_cancel[{addQS}old_search={$old_search}&do_search=1{/addQS}]" value="{i18n}Cancel{/i18n}" />
       </div>
-   </fieldset>
    </form>

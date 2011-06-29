@@ -1,6 +1,6 @@
-<div id="copy-error"></div>
+<div id="action-error"></div>
 
-<table id='copy-modal' class="uploadTable" border="0">
+<table id='action-modal' class="uploadTable" border="0">
 
 <tr>
 	<td valign="top">
@@ -12,7 +12,7 @@
 	<td class="ul_actions" align="right" valign="top">
         <input id="select-btn" class="ul_actions_btns" type="button" value="Save" onClick="kt.app.copy.save();" />
         <a class="ul_actions_cancel_link" href="javascript: kt.app.copy.closeWindow();">Cancel</a>
-        <span id="copy-spinner" class="copy-spinner none">&nbsp;</span>
+        <span id="action-spinner" class="action-spinner spin" style="visibility: hidden; width: 16px; height: 16px;">&nbsp;</span>
     </td>
 </tr>
 </table>

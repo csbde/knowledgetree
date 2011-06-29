@@ -321,12 +321,12 @@ class KTSubscriptionNotification extends KTNotificationHandler {
 		global $default;
 
 		//$default->log->debug('subscription notification:  from ' . print_r($aOptions, true));
-		$default->log->debug('subscription notification:  using ' . print_r($creationInfo, true));
+		//$default->log->debug('subscription notification:  using ' . print_r($creationInfo, true));
 
 		$oNotification =& KTNotification::createFromArray($creationInfo);
 
 
-		$default->log->debug('subscription notification:  created ' . print_r($oNotification, true));
+		//$default->log->debug('subscription notification:  created ' . print_r($oNotification, true));
 
 		return $oNotification; // $res.
 	}

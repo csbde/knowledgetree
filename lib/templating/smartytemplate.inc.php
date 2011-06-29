@@ -120,9 +120,15 @@ class KTSmartyTemplate extends KTTemplate {
         $smarty->register_function('getUrlForFolder', array('KTSmartyTemplate', 'getUrlForFolder'));
         $smarty->register_function('getCrumbStringForDocument', array('KTSmartyTemplate', 'getCrumbStringForDocument'));
         $smarty->register_function('url', array('KTSmartyTemplate', 'buildUrl'));
+        $smarty->register_function('md5Hash', array('KTSmartyTemplate', 'md5Hash'));
 
         return $smarty->fetch($this->sPath);
     }
+    
+    function md5Hash($params)
+	{
+		return md5(strtolower(trim($params['string']))); 
+	}
 
     function _i18n_get_args($arr, $var) {
         if (!is_array($arr)) {
@@ -326,7 +332,7 @@ class KTSmartyTemplate extends KTTemplate {
      *
      * To do this effectively, you need three things:
      *
-     *   @param base              e.g. /admin.php
+     *   @param base              e.g. /settings.php
      *   @param subpath           e.g. /security/permissions/
      *   @param query             e.g. fFolder=1&fMyVar=2
      *
