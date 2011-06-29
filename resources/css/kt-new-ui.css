@@ -1439,3 +1439,92 @@ http://devgrow.com/iphone-style-switches/
 	color: #333;
 	background: #FFF;
 }
+#content .ui-widget-header {
+	background: none;
+	border: 0px;
+}
+#content .ui-widget {
+	font-family: Helvetica, "Arial", sans-serif !important;
+	font-size: 12px;
+}
+#content .ui-tabs {
+	border: 0px;
+}
+.ui-tabs .ui-tabs-nav {
+	margin: 0px auto;
+	display: block;
+	position: relative;
+	text-align: center;
+	z-index: 2;
+}
+#content .ui-tabs .ui-tabs-nav li:first-child {
+	border-radius: 5px 0px 0px 5px;
+	-moz-border-radius: 5px 0px 0px 5px;
+	-webkit-border-radius: 5px 0px 0px 5px;
+	margin-left: 0px;
+}
+#content .ui-tabs .ui-tabs-nav li:last-child {
+	border-radius: 0px 5px 5px 0px;
+	-moz-border-radius: 0px 5px 5px 0px;
+	-webkit-border-radius: 0px 5px 5px 0px;
+	border-right: 1px solid #CCC !important;
+}
+#content .ui-tabs .ui-tabs-nav li {
+	font-size: 12px;
+	padding: 4px 10px;
+	box-shadow: 0px 1px 0px #AAA;
+	-moz-box-shadow: 0px 1px 0px #AAA;
+	-webkit-box-shadow: 0px 1px 0px #AAA;
+	display: inline-block;
+	float:none;
+	border-radius: 0px
+	-moz-border-radius: 0px;
+	-webkit-border-radius: 0px;
+	margin: 0px 0px 0px -5px;
+	background: white;
+	border: 1px solid #CCC !important;
+	border-right: 0px !important;
+	font-weight: bold;
+}
+#content .ui-tabs .ui-tabs-nav li a {
+	float: none;
+	padding: 0px;
+	text-decoration: none;
+}
+#content .ui-tabs .ui-tabs-nav li.ui-state-hover  {
+	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffff', endColorstr='#ededed');
+	background: -webkit-gradient(linear, left top, left bottom, from(white), to(#ededed));
+	background: -moz-linear-gradient(top, white, #ededed);
+}
+#content .ui-tabs .ui-tabs-nav li.ui-state-active  {
+	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#609BD1', endColorstr='#2F6694');
+	background: -webkit-gradient(linear, left top, left bottom, from(#609BD1), to(#2F6694));
+	background: -moz-linear-gradient(top, #609BD1, #2F6694);
+	border: 1px solid #2F6694 !important;
+	z-index: 3;
+}
+
+#content .ui-state-active a {
+	color: white;
+	text-shadow: 0px 1px 0px #666;
+}
+#content .ui-tabs .ui-tabs-panel {
+	border: 1px solid #CCC;
+	border-radius: 5px;
+	-moz-border-radius: 5px;
+	-webkit-border-radius: 5px;
+	padding-top: 20px;
+	position: relative;
+	top: -5px;
+	overflow: hidden;
+	background: whitesmoke;
+	box-shadow: inset 0px 0px 5px #ccc;
+	-moz-box-shadow: inset 0px 0px 5px #ccc;
+	-webkit-box-shadow: inset 0px 0px 5px #ccc;
+}
+#content .ui-tabs .field {
+	background: white;
+}
+#content .ui-tabs h2 {
+	display: none;
+}
