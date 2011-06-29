@@ -278,8 +278,8 @@ class KTCorePlugin extends KTPlugin {
         // Set up the categories.
         $this->registerAdminCategory('userSetup', _kt('Users & Groups'),
             _kt('Determine how people will access content.'), 80);
-        $this->registerAdminCategory('advancedPermissions', _kt('Dynamic Permissions'),
-            _kt('Configure advanced permissions.'), 70);
+        //$this->registerAdminCategory('advancedPermissions', _kt('Dynamic Permissions'),
+          //  _kt('Configure advanced permissions.'), 70);
         $this->registerAdminCategory('reporting', _kt('Reporting'),
             _kt('View reports.'), 10);
         $this->registerAdminCategory('security', _kt('Security & Authentication'),
@@ -303,7 +303,7 @@ class KTCorePlugin extends KTPlugin {
         $this->registerAdminPage('groups', 'KTGroupAdminDispatcher', 'userSetup',
             _kt('Groups'), _kt('Add or remove groups from the system.'),
             'admin/groupManagement.php', null, 9);
-        $this->registerAdminPage('roles', 'RoleAdminDispatcher', 'advancedPermissions',
+        $this->registerAdminPage('roles', 'RoleAdminDispatcher', 'userSetup',
             _kt('Roles'), _kt('Create or delete roles'),
             'admin/roleManagement.php', null, 8);
         $this->registerAdminPage('units', 'KTUnitAdminDispatcher', 'userSetup',
@@ -313,10 +313,10 @@ class KTCorePlugin extends KTPlugin {
         // security
         //$this->registerAdminPage('permissions', 'ManagePermissionsDispatcher', 'advancedPermissions',
         //    _kt('Permissions'), _kt('Create or delete permissions.'), 'admin/managePermissions.php', null, 7);
-        $this->registerAdminPage('conditions', 'KTConditionDispatcher', 'advancedPermissions',
-            _kt('Dynamic Conditions'),
-            _kt('Manage criteria which determine whether a user is permitted to perform a system action.'),
-            'admin/conditions.php', null);
+       // $this->registerAdminPage('conditions', 'KTConditionDispatcher', 'advancedPermissions',
+         //   _kt('Dynamic Conditions'),
+           // _kt('Manage criteria which determine whether a user is permitted to perform a system action.'),
+            //'admin/conditions.php', null);
 
         // documents
         $this->registerAdminPage('typemanagement', 'KTDocumentTypeDispatcher', 'documentProperties',
@@ -414,7 +414,7 @@ class KTCorePlugin extends KTPlugin {
             'admin/configSettings.php', null);
 
         $this->registerAdminPage('timezone', 'TimezoneConfigPageDispatcher', 'sysConfig',
-            _kt('Timezone'), _kt('View and modify timezone settings for KnowledgeTree.'),
+            _kt('Regional Settings'), _kt('View and modify regional settings for KnowledgeTree.'),
             'admin/configSettings.php', null);
 
         // FIXME Get this into the electronic signatures plugin - at the moment that crashes with
@@ -436,9 +436,9 @@ class KTCorePlugin extends KTPlugin {
                 'admin/manageHelp.php', null);
         }
 
-        $this->registerAdminPage('i18nconfigpage', 'i18nConfigPageDispatcher', 'sysConfig',
-            _kt('Internationalisation Settings'), _kt('View and modify the default language.'),
-            'admin/configSettings.php', null);
+       // $this->registerAdminPage('i18nconfigpage', 'i18nConfigPageDispatcher', 'sysConfig',
+        //    _kt('Internationalisation Settings'), _kt('View and modify the default language.'),
+        //    'admin/configSettings.php', null);
 
         // misc
 

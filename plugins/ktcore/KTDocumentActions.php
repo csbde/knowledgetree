@@ -1450,7 +1450,7 @@ class KTAjaxDocumentWorkflowAction extends KTDocumentAction {
     }
 }
 
-class KTDocumentWorkflowAction extends KTDocumentAction {
+class KTDocumentWorkflowAction extends JavascriptDocumentAction {
 
     public $sName = 'ktcore.actions.document.workflow';
     public $_sShowPermission = 'ktcore.permissions.read';
@@ -1472,6 +1472,16 @@ class KTDocumentWorkflowAction extends KTDocumentAction {
 
         return _kt('Workflow');
     }
+	
+	function getOnClick()
+    {
+        return "javascript:{workflows.displayAction();}";
+    }
+
+	function getURL()
+	{
+		return '#';
+	}
 
     function getInfo() {
         if ($this->oDocument->getIsCheckedOut()) {
@@ -1723,6 +1733,19 @@ class KTOwnershipChangeAction extends JavascriptDocumentAction {
         return _kt('Change owner');
     }
     
+	function getInfo() {
+		
+		// Set status to disabled if document is finalized
+        if ($this->oDocument->getImmutable()) {
+            $info = parent::getInfo();
+			$info['status'] = 'disabled';
+			return $info;
+        } else {
+			return null;
+		}
+        
+    }
+	
     function getFunctionScript()
     {
 		return 'kt.app.document_actions.changeOwner(\'' . $this->oDocument->getId() . '\')';

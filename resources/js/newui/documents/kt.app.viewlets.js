@@ -34,6 +34,27 @@ kt.app.document_viewlets = new function() {
 	    return null;
 	}
 	
+	this.update_instantview = function(documentId) {
+		self.documentId = documentId;
+		var params = {};
+		params.documentId = documentId;
+		
+		var synchronous = false;
+		var func = 'documentViewletServices.getInstaView';
+	    var response = ktjapi.retrieve(func, params);
+		
+		if (jQuery('#documentpreview') && response.data.previewCode != undefined) {
+			
+			if (response.data.previewCode == '') {
+				jQuery('#documentpreview').html('<div class="no-preview"><span class="no-preview-text">Preview Not Available</span></div>');
+			} else {
+				jQuery('#documentpreview').html('<div style="margin-top:1em;">'+response.data.previewCode+'</div>');
+			}
+		}
+		
+		return null;
+	}
+	
 	this.update_filename_version = function(documentId) {
 		self.documentId = documentId;
 		var params = {};

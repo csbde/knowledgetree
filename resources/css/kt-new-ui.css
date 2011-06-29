@@ -308,6 +308,10 @@ textarea {
 }
 #breadcrumbs .icon:hover {
 	opacity: 0.7;
+	
+	/* The next two properties is for IE */
+	filter: alpha(opacity = 70);
+	zoom: 1;
 }
 /* ------------------ prototype breadcrumbs -------------- */
 .breadCrumb	{
@@ -572,7 +576,7 @@ li.notification {
 	height: 20px;
 	position: relative;
 	width: 400px;
-	z-index: 8999;
+	z-index: 99999;
 	padding-top: 5px;
 }
 
@@ -627,6 +631,10 @@ ul.floatleft li.notification {
 .action_buttons .action .disabled {
 	opacity: 0.5;
 	cursor: default;
+	
+	/* The next two properties is for IE */
+	filter: alpha(opacity = 50);
+	zoom: 1;
 }
 .action_buttons #add-version {
 	background: url('../graphics/newui/document_exchange.png') no-repeat 7px 4px;
@@ -1099,8 +1107,16 @@ div.widgetItem {
 	position: relative;
 	float: left;
 }
-
-
+#content div.widgetItem.import-from-source {
+	margin-top: 5px;
+}
+#content div.widgetItem.import-from-source select {
+	background: whiteSmoke;
+	height: 17px;
+	font-size: 11px;
+	padding: 2px;
+	color: #666;
+}
 /*Alerts Modal*/
 
 label span.required
@@ -1306,13 +1322,14 @@ http://devgrow.com/iphone-style-switches/
 }
 
 #usageStats li {
-	font-size: 15px;
+	font-size: 13px;
 	line-height: 25px;
 }
 #chart_div {
 	min-width: 200px;
 	min-height: 150px; 
 }
+
 
 .settings-content input[name="search_name"] {
 	width: 125px;
@@ -1362,6 +1379,7 @@ http://devgrow.com/iphone-style-switches/
 .settings-section #content h2 {
 	border-bottom: 1px solid #DDD;
 	margin-bottom: 5px;
+	font-size: 13px;
 } 
 #content .settings-content fieldset {
 	border: 0px;
@@ -1396,7 +1414,7 @@ http://devgrow.com/iphone-style-switches/
 .settings-section #content .field label {
 	float: left;
 	font-weight: normal;
-	font-size: 13px;
+	font-size: 12px;
 }
 .settings-section #content .field input,
 .settings-section #content .field select,
@@ -1407,7 +1425,8 @@ http://devgrow.com/iphone-style-switches/
 
 }
 .settings-section #content .field input,
-.settings-section #content .settings-field input  {
+.settings-section #content .settings-field input,
+.settings-section #content textarea  {
 	border: 1px solid #ccc;
 	border-radius: 3px;
 	-webkit-border-radius: 3px;

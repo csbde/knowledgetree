@@ -2412,3 +2412,28 @@ var style=n.style?n.style.cssText:'';if(style){s+=' style=&quot;<i>'+html(style.
 if(leaf&&n.childNodes.length>0){s+='&gt;<em>'+ellipsis(html(String(n.innerHTML)),35)+'</em>&lt;/'+tag+'&gt;';}else if(leaf){s+=' /&gt;';}else{s+='&gt;';}
 return s;}
 var HtmlNode=function(n){var leaf=!hasChild(n);this.htmlNode=n;this.tagName=n.tagName.toLowerCase();var attr={text:renderNode(n,leaf),leaf:leaf,cls:'x-tree-noicon'};HtmlNode.superclass.constructor.call(this,attr);this.attributes.htmlNode=n;if(!leaf){this.on('expand',this.onExpand,this);this.on('collapse',this.onCollapse,this);}};Ext.extend(HtmlNode,Ext.tree.AsyncTreeNode,{cls:'x-tree-noicon',preventHScroll:true,refresh:function(highlight){var leaf=!hasChild(this.htmlNode);this.setText(renderNode(this.htmlNode,leaf));if(highlight){Ext.fly(this.ui.textNode).highlight();}},onExpand:function(){if(!this.closeNode&&this.parentNode){this.closeNode=this.parentNode.insertBefore(new Ext.tree.TreeNode({text:'&lt;/'+this.tagName+'&gt;',cls:'x-tree-noicon'}),this.nextSibling);}else if(this.closeNode){this.closeNode.ui.show();}},onCollapse:function(){if(this.closeNode){this.closeNode.ui.hide();}},render:function(bulkRender){HtmlNode.superclass.render.call(this,bulkRender);},highlightNode:function(){},highlight:function(){},frame:function(){this.htmlNode.style.border='1px solid #0000ff';},unframe:function(){this.htmlNode.style.border='';}});return HtmlNode;}();
+
+
+
+/*
+
+The code below is for a fix to the ie9 bug: Object doesn't support property or method 'createContextualFragment'
+
+http://stackoverflow.com/questions/5375616/extjs4-ie9-object-doesnt-support-property-or-method-createcontextualfragmen
+
+*/
+if (typeof Range != "undefined") {
+
+    if (typeof Range.prototype.createContextualFragment == "undefined") {
+        Range.prototype.createContextualFragment = function (html) {
+            var doc = window.document;
+            var container = doc.createElement("div");
+            container.innerHTML = html;
+            var frag = doc.createDocumentFragment(), n;
+            while ((n = container.firstChild)) {
+                frag.appendChild(n);
+            }
+            return frag;
+        };
+    }
+}

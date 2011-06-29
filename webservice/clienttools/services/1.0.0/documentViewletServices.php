@@ -109,6 +109,27 @@ class documentViewletServices extends client_service {
     	
     	return true;
     }
+	
+	public function getInstaView($params) {
+		$documentId = $params['documentId'];
+		$document = Document::get($documentId);
+		$user = User::get($_SESSION['userID']);
+		
+		if (KTPluginUtil::pluginIsActive('instaview.processor.plugin')) {
+            $path = KTPluginUtil::getPluginPath ('instaview.processor.plugin');
+            try {
+                require_once($path . 'instaViewLinkAction.php');
+                $livePreviewAction = new instaViewLinkAction($document, $user, null);
+                $livePreview = $livePreviewAction->do_main();
+            } catch(Exception $e) {}
+        } else {
+			$livePreview = '';
+		}
+		
+		$this->addResponse('previewCode', $livePreview);
+		
+		return TRUE;
+	}
     
 }
 ?>

@@ -1,5 +1,5 @@
 {if $authentication_sources}
-{assign var="colwidth" value="33%"}
+{assign var="colwidth" value="100px"}
 {else}
 {assign var="colwidth" value="300"}
 {/if}
@@ -28,7 +28,7 @@
 <!-- we roll both in here. -->
 		<table width="100%">
 			<tr>
-				<td width="{$colwidth}" valign="top">
+				<td width="45px" valign="top">
 					{if $can_add}
 						{if !$authentication}
 							<div class="descriptiveText">{i18n}If you are using an external source of login information, ensure the appropriate plugin is loaded and use the section below.{/i18n}</div>
@@ -47,15 +47,14 @@
 				</td>
 				{if $can_add}
 				{if $authentication_sources}
-				<td width="{$colwidth}"  valign="top">
+				<td width="100px"  valign="top">
                                         <form action="{$smarty.server.PHP_SELF}" method="POST">
-					<div class="field"><label>{i18n}Import Users{/i18n}</label></div>
-					<div class="widgetItem">
+					<div class="widgetItem import-from-source">
 						<input type="hidden" name="action" value="addUserFromSource" />
 						<p class="descriptiveText">{i18n}Add a user from an authentication source{/i18n}</p>
-							<div style="float:left">{entity_select name="source_id" entities=$authentication_sources} &nbsp; </div>
 							<div class="form_actions">
-								<input type="submit" name="submit" value="{i18n}Add from source{/i18n}" />
+								{entity_select name="source_id" entities=$authentication_sources} 
+								<input type="submit" name="submit" value="{i18n}Import from source{/i18n}" />
 							</div>
 
 					</div>
