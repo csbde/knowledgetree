@@ -5,7 +5,7 @@
  * KnowledgeTree Community Edition
  * Document Management Made Simple
  * Copyright (C) 2008, 2009, 2010 KnowledgeTree Inc.
- * 
+ *
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License version 3 as published by the
@@ -91,9 +91,9 @@ class DocumentCollection {
 
    function setBatching($sReturnURL, $iBatchPage, $iBatchSize) {
       $this->returnURL = $sReturnURL;
-	  $this->batchPage = $iBatchPage;
-	  $this->batchSize = $iBatchSize;
-	  $this->batchStart = $this->batchPage * $this->batchSize;
+      $this->batchPage = $iBatchPage;
+      $this->batchSize = $iBatchSize;
+      $this->batchStart = $this->batchPage * $this->batchSize;
    }
 
    // column is the label of the column.
@@ -101,96 +101,96 @@ class DocumentCollection {
    function setSorting($sSortColumn, $sSortOrder) {
       // FIXME affect the column based on this.
 
-	  // defaults
-	  $this->_sDocumentSortField = 'DM.name';
-	  $this->_sFolderSortField = 'F.name';
+      // defaults
+      $this->_sDocumentSortField = 'DM.name';
+      $this->_sFolderSortField = 'F.name';
 
-	  // then we start.
+      // then we start.
       $this->sort_column = $sSortColumn;
-	  $this->sort_order = $sSortOrder;
+      $this->sort_order = $sSortOrder;
 
 
-	  // this is O(n).  Do this only after adding all columns.
-	  foreach ($this->columns as $key => $oColumn) {
-		 if ($oColumn->name == $sSortColumn) {
-		    // nb: don't use $oColumn - its a different object (?)
-			$this->columns[$key]->setSortedOn(true);
-			$this->columns[$key]->setSortDirection($sSortOrder);
+      // this is O(n).  Do this only after adding all columns.
+      foreach ($this->columns as $key => $oColumn) {
+         if ($oColumn->name == $sSortColumn) {
+            // nb: don't use $oColumn - its a different object (?)
+            $this->columns[$key]->setSortedOn(true);
+            $this->columns[$key]->setSortDirection($sSortOrder);
 
-			// get the join params from the object.
-			$aFQ = $this->columns[$key]->addToFolderQuery();
-			$aDQ = $this->columns[$key]->addToDocumentQuery();
+            // get the join params from the object.
+            $aFQ = $this->columns[$key]->addToFolderQuery();
+            $aDQ = $this->columns[$key]->addToDocumentQuery();
 
-			$this->_sFolderJoinClause = $aFQ[0];
-   			$this->_aFolderJoinParams = $aFQ[1];
-			if ($aFQ[2]) { $this->_sFolderSortField = $aFQ[2]; }
-   			$this->_sDocumentJoinClause = $aDQ[0];
-   			$this->_aDocumentJoinParams = $aDQ[1];
-			if ($aDQ[2]) { $this->_sDocumentSortField = $aDQ[2]; }
+            $this->_sFolderJoinClause = $aFQ[0];
+               $this->_aFolderJoinParams = $aFQ[1];
+            if ($aFQ[2]) { $this->_sFolderSortField = $aFQ[2]; }
+               $this->_sDocumentJoinClause = $aDQ[0];
+               $this->_aDocumentJoinParams = $aDQ[1];
+            if ($aDQ[2]) { $this->_sDocumentSortField = $aDQ[2]; }
 
-		 } else {
-		    $this->columns[$key]->setSortedOn(false);
-		 }
+         } else {
+            $this->columns[$key]->setSortedOn(false);
+         }
 
-	  }
+      }
 
    }
 
    // finally, generate the results.  either (documents or folders) could be null/empty
    // FIXME handle column-for-sorting (esp. md?)
    function getResults() {
-	  // we get back strings of numbers.
-	  $this->folderCount = $this->_queryObj->getFolderCount();
+      // we get back strings of numbers.
+      $this->folderCount = $this->_queryObj->getFolderCount();
       if (PEAR::isError($this->folderCount)) {
           $_SESSION['KTErrorMessage'][] = $this->folderCount->toString();
           $this->folderCount = 0;
       }
-	  $this->documentCount = $this->_queryObj->getDocumentCount();
+      $this->documentCount = $this->_queryObj->getDocumentCount();
       if (PEAR::isError($this->documentCount)) {
           $_SESSION['KTErrorMessage'][] = $this->documentCount->toString();
           $this->documentCount = 0;
       }
-	  $this->itemCount = $this->documentCount + $this->folderCount;
+      $this->itemCount = $this->documentCount + $this->folderCount;
 
-	  // now we need the active set:  this is based on the batchsize,
-	  // batchstart.  this is divided into folders/documents. (_no_ intermingling).
-	  $folderSet = null;
-	  $documentSet = null;
+      // now we need the active set:  this is based on the batchsize,
+      // batchstart.  this is divided into folders/documents. (_no_ intermingling).
+      $folderSet = null;
+      $documentSet = null;
 
-	  // assume we have not documents.  This impacts "where" our documents start.
-	  //
-	  $no_folders = true;
-	  $documents_to_get = $this->batchSize;
-	  $folders_to_get = 0;
+      // assume we have not documents.  This impacts "where" our documents start.
+      //
+      $no_folders = true;
+      $documents_to_get = $this->batchSize;
+      $folders_to_get = 0;
 
-	  if ($this->batchStart < $this->folderCount) {
-		 $no_folders = false;
-		 $folders_to_get = $this->folderCount - $this->batchStart;
-		 if ($folders_to_get > $this->batchSize) {
-			$folders_to_get = $this->batchSize;
-			$documents_to_get = 0;
-		 } else {
-		    $documents_to_get -= $folders_to_get; // batch-size less the folders.
-		 }
+      if ($this->batchStart < $this->folderCount) {
+         $no_folders = false;
+         $folders_to_get = $this->folderCount - $this->batchStart;
+         if ($folders_to_get > $this->batchSize) {
+            $folders_to_get = $this->batchSize;
+            $documents_to_get = 0;
+         } else {
+            $documents_to_get -= $folders_to_get; // batch-size less the folders.
+         }
 
-	  }
+      }
 
 
-	  if ($no_folders) {
+      if ($no_folders) {
           $this->batchStart -= $this->folderCount;
-		 $documentSet = $this->_queryObj->getDocuments($documents_to_get, $this->batchStart, $this->_sDocumentSortField, $this->sort_order, $this->_sDocumentJoinClause, $this->_aDocumentJoinParams);
-	  } else {
-	     $folderSet = $this->_queryObj->getFolders($folders_to_get, $this->batchStart, $this->_sFolderSortField, $this->sort_order, $this->_sFolderJoinClause, $this->_aFolderJoinParams);
-		 if ($documents_to_get > 0) {
-	        $documentSet = $this->_queryObj->getDocuments($documents_to_get, 0, $this->_sDocumentSortField, $this->sort_order, $this->_sDocumentJoinClause, $this->_aDocumentJoinParams);
-		 }
+         $documentSet = $this->_queryObj->getDocuments($documents_to_get, $this->batchStart, $this->_sDocumentSortField, $this->sort_order, $this->_sDocumentJoinClause, $this->_aDocumentJoinParams);
+      } else {
+         $folderSet = $this->_queryObj->getFolders($folders_to_get, $this->batchStart, $this->_sFolderSortField, $this->sort_order, $this->_sFolderJoinClause, $this->_aFolderJoinParams);
+         if ($documents_to_get > 0) {
+            $documentSet = $this->_queryObj->getDocuments($documents_to_get, 0, $this->_sDocumentSortField, $this->sort_order, $this->_sDocumentJoinClause, $this->_aDocumentJoinParams);
+         }
 
-	  }
-	  //var_dump($folderSet);
-	  $this->activeset = array(
-		 'folders' => $folderSet,
-		 'documents' => $documentSet,
-	  );
+      }
+      //var_dump($folderSet);
+      $this->activeset = array(
+         'folders' => $folderSet,
+         'documents' => $documentSet,
+      );
    }
 
    // stub:  fetch all relevant information about a document (that will reasonably be fetched).
@@ -204,10 +204,10 @@ class DocumentCollection {
    }
    function _retrieveDocumentInfo($iDocumentId) {
       $row_info = array('docid' => $iDocumentId);
-	  $row_info['type'] = 'document';
-	  $row_info['document'] =& Document::get($iDocumentId);
+      $row_info['type'] = 'document';
+      $row_info['document'] =& Document::get($iDocumentId);
 
-	  return $row_info;
+      return $row_info;
    }
 
    // FIXME get more document info.
@@ -223,39 +223,39 @@ class DocumentCollection {
    // FIXME get more folder info.
    function _retrieveFolderInfo($iFolderId) {
       $row_info = array('folderid' => $iFolderId);
-	  $row_info['type'] = 'folder';
-	  $row_info['folder'] =& Folder::get($iFolderId);
+      $row_info['type'] = 'folder';
+      $row_info['folder'] =& Folder::get($iFolderId);
 
-	  return $row_info;
+      return $row_info;
    }
 
    // render a particular row.
    function renderRow($iDocumentId) { ; }
    // link url for a particular page.
    function pageLink($iPageNumber) {
-	  return $this->returnURL . '&page=' . $iPageNumber . '&sort_on=' . $this->sort_column . '&sort_order=' . $this->sort_order;
+      return $this->returnURL . '&page=' . $iPageNumber . '&sort_on=' . $this->sort_column . '&sort_order=' . $this->sort_order;
    }
 
    function render() {
       // sort out the batch
       $pagecount = (int) floor($this->itemCount / $this->batchSize);
-	  if (($this->itemCount % $this->batchSize) != 0) {
-		 $pagecount += 1;
+      if (($this->itemCount % $this->batchSize) != 0) {
+         $pagecount += 1;
       }
-	  // FIXME expose the current set of rows to the document.
+      // FIXME expose the current set of rows to the document.
 
-      $oTemplating =& KTTemplating::getSingleton();
-	  $oTemplate = $oTemplating->loadTemplate('kt3/document_collection');
-	  $aTemplateData = array(
+      $templating =& KTTemplating::getSingleton();
+      $template = $templating->loadTemplate('kt3/document_collection');
+      $templateData = array(
          'context' => $this,
-		 'pagecount' => $pagecount,
-		 'currentpage' => $this->batchPage,
-		 'returnURL' => $this->returnURL,
-		 'columncount' => count($this->columns),
-	  );
+         'pagecount' => $pagecount,
+         'currentpage' => $this->batchPage,
+         'returnURL' => $this->returnURL,
+         'columncount' => count($this->columns),
+      );
 
-	  // in order to allow OTHER things than batch to move us around, we do:
-	  return $oTemplate->render($aTemplateData);
+      // in order to allow OTHER things than batch to move us around, we do:
+      return $template->render($templateData);
    }
 }
 
@@ -419,7 +419,7 @@ class AdvancedCollection {
                 }
             }
             else {
-        	   $this->columns[$key]->setSortedOn(false);
+               $this->columns[$key]->setSortedOn(false);
             }
         }
     }
@@ -555,10 +555,12 @@ class AdvancedCollection {
     }
 
     // FIXME get more document info.
-    function getFolderInfo($iFolderId) {
+    public function getFolderInfo($iFolderId)
+    {
         if (array_key_exists($iFolderId, $this->_folderData)) {
             return $this->_folderData[$iFolderId];
-        } else {
+        }
+        else {
             $this->_folderData[$iFolderId] = $this->_retrieveFolderInfo($iFolderId);
             return $this->_folderData[$iFolderId];
         }
@@ -582,41 +584,41 @@ class AdvancedCollection {
         return KTUtil::addQueryString($this->returnURL, $qs);
     }
 
-    function render() {
+    public function render()
+    {
         $this->setSorting();
         $this->getResults();
 
-        // ensure all columns use the correct url
-        //var_dump($this->returnURL); exit(0);
-        $aOpt = array('return_url' => $this->returnURL);
+        // Ensure all columns use the correct url.
+        $opt = array('return_url' => $this->returnURL);
         foreach ($this->columns as $k => $v) {
-            $this->columns[$k]->setOptions($aOpt);
+            $this->columns[$k]->setOptions($opt);
         }
 
-        // sort out the batch
+        // Sort out the batch.
         $pagecount = (int) floor($this->itemCount / $this->batchSize);
         if (($this->itemCount % $this->batchSize) != 0) {
             $pagecount += 1;
         }
 
-	    // ick.
-	    global $main;
-	    $main->requireJSResource('resources/js/browsehelper.js');
+        // Ick.
+        global $main;
+        $main->requireJSResource('resources/js/browsehelper.js');
 
-        $oTemplating =& KTTemplating::getSingleton();
-        $oTemplate = $oTemplating->loadTemplate('kt3/document_collection');
-        $aTemplateData = array(
+        $templating =& KTTemplating::getSingleton();
+        $template = $templating->loadTemplate('kt3/document_collection');
+        $templateData = array(
             'context' => $this,
             'pagecount' => $pagecount,
-		    'currentpage' => $this->batchPage,
+            'currentpage' => $this->batchPage,
             'returnURL' => $this->returnURL,
             'columncount' => count($this->columns),
             'bIsBrowseCollection' => $this->is_browse,
             'batch_size' => $this->batchSize,
         );
 
-        // in order to allow OTHER things than batch to move us around, we do:
-        return $oTemplate->render($aTemplateData);
+        // In order to allow OTHER things than batch to move us around, we do:
+        return $template->render($templateData);
     }
 }
 
@@ -656,17 +658,17 @@ class ExtCollection {
     function render() {
 
         global $main;
-	    $main->requireJSResource('thirdpartyjs/extjs/adapter/ext/ext-base.js');
-	    $main->requireJSResource('thirdpartyjs/extjs/ext-all.js');
-	    $main->requireJSResource('resources/js/browse_ext.js');
+        $main->requireJSResource('thirdpartyjs/extjs/adapter/ext/ext-base.js');
+        $main->requireJSResource('thirdpartyjs/extjs/ext-all.js');
+        $main->requireJSResource('resources/js/browse_ext.js');
 
-        $oTemplating =& KTTemplating::getSingleton();
-        $oTemplate = $oTemplating->loadTemplate('kt3/ext_collection');
-        $aTemplateData = array(
+        $templating =& KTTemplating::getSingleton();
+        $template = $templating->loadTemplate('kt3/ext_collection');
+        $templateData = array(
         );
 
         // in order to allow OTHER things than batch to move us around, we do:
-        return $oTemplate->render($aTemplateData);
+        return $template->render($templateData);
     }
 }
 
