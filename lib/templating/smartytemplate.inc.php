@@ -332,7 +332,7 @@ class KTSmartyTemplate extends KTTemplate {
      *
      * To do this effectively, you need three things:
      *
-     *   @param base              e.g. /admin.php
+     *   @param base              e.g. /settings.php
      *   @param subpath           e.g. /security/permissions/
      *   @param query             e.g. fFolder=1&fMyVar=2
      *

@@ -907,6 +907,9 @@ class KTPermissionUtil {
      */
     static function updatePermissionLookupForObject($objectId, $folderId)
     {
+    	global $default;
+    	$default->log->info('Permissions: starting update...');
+    	
         // Create a mapping of the permission id to the allowed groups, users and roles
         // Create a mapping of the permission id to the descriptor id for the above
 		$aPermAssigns = KTPermissionAssignment::getByObjectMulti($objectId);
@@ -1011,6 +1014,8 @@ class KTPermissionUtil {
 
         $conditions_mapping = array();
 		if (!PEAR::isError($aDynamicConditions)) {
+			$default->log->info('Permissions: applying dynamic conditions');
+			
             foreach($aDynamicConditions as $oDynamicCondition) {
                 $iConditionId = $oDynamicCondition->getConditionId();
 
@@ -1047,6 +1052,8 @@ class KTPermissionUtil {
         $states_mapping = array();
 
         if ($states) {
+        	$default->log->info('Permissions: applying workflow state permissions');
+        	
             // Loop through states and get permission assignments
             foreach ($states as $state_id) {
                 $aWorkflowStatePermissionAssignments = KTWorkflowStatePermissionAssignment::getByState($state_id);
@@ -1082,6 +1089,8 @@ class KTPermissionUtil {
         $role_allocations = RoleAllocation::getAllocationsForPO($objectId);
 
         if (!empty($role_allocations)) {
+        	$default->log->info('Permissions: applying role allocations');
+        	
             foreach ($role_allocations as $role_allocation) {
                 $folder_id = $role_allocation['folder_id'];
                 $role_id = $role_allocation['role_id'];
@@ -1122,6 +1131,8 @@ class KTPermissionUtil {
 
         // Clear the cached permissions to force an update of the cache
         self::clearCache();
+        
+        $default->log->info('Permissions: clearing cache and finishing...');
     }
 
     static function getHighestFolder($map, $folders)

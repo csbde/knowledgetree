@@ -391,36 +391,36 @@ class KTStandardDispatcher extends KTDispatcher {
         if ($this->oUser->getId() == -2) {
             redirect(KTUtil::ktLink('login.php','',sprintf('redirect=%s&errorMessage=%s', urlencode($_SERVER['REQUEST_URI']), urlencode(_kt('You must be logged in to perform this action'))))); exit(0);
         }
-		global $default;
+        global $default;
 
-		$msg = _kt('You are on the ' . $default->plan . ' plan which does not have this functionality - ');
-		$msg .= '<a href="/admin.php?kt_path_info=accountInformation/systemQuotas" title="Upgrade"> Upgrade </a>';
-		// Don't sanitize the info, as we would like to display a link
-		$this->oPage->allowHTML = true;
-		// Set message in info flash
+        $msg = _kt('You are on the ' . $default->plan . ' plan which does not have this functionality - ');
+        $msg .= '<a href="/settings.php?kt_path_info=accountInformation/systemQuotas" title="Upgrade"> Upgrade </a>';
+        // Don't sanitize the info, as we would like to display a link
+        $this->oPage->allowHTML = true;
+        // Set message in info flash
         $this->oPage->addInfo($msg);
         // Empty content
         $this->oPage->setPageContents('<div></div>');
         $this->oPage->setUser($this->oUser);
-		$this->oPage->hideSection();
+        $this->oPage->hideSection();
         $this->oPage->render();
         exit(0);
     }
 
     public function loginRequired()
     {
-	   $oKTConfig = KTConfig::getSingleton();
-	   if ($oKTConfig->get('allowAnonymousLogin', false)) {
-	    // anonymous logins are now allowed.
-	    // the anonymous user is -1.
-	    //
-	    // we short-circuit the login mechanisms, setup the session, and go.
+       $oKTConfig = KTConfig::getSingleton();
+       if ($oKTConfig->get('allowAnonymousLogin', false)) {
+        // anonymous logins are now allowed.
+        // the anonymous user is -1.
+        //
+        // we short-circuit the login mechanisms, setup the session, and go.
 
-	    $oUser = User::get(-2);
-	    if (PEAR::isError($oUser) ||($oUser->getName() != 'Anonymous')) {
-		  ; // do nothing - the database integrity would break if we log the user in now.
-	    } else {
-		  $session = new Session();
+        $oUser = User::get(-2);
+        if (PEAR::isError($oUser) ||($oUser->getName() != 'Anonymous')) {
+          ; // do nothing - the database integrity would break if we log the user in now.
+        } else {
+          $session = new Session();
                 $sessionID = $session->create($oUser);
                 $this->sessionStatus = $this->session->verify();
                 if ($this->sessionStatus === true) {
@@ -476,7 +476,7 @@ class KTStandardDispatcher extends KTDispatcher {
             if ($this->sessionStatus !== true) {
                 $this->loginRequired();
             }
-            //var_dump($this->sessionStatus);
+
             $this->oUser = User::get($_SESSION['userID']);
             $oProvider = KTAuthenticationUtil::getAuthenticationProviderForUser($this->oUser);
             $oProvider->verify($this->oUser);
@@ -490,17 +490,17 @@ class KTStandardDispatcher extends KTDispatcher {
         }
 
         if (!empty($this->aCannotView)) {
-        	global $default;
-        	if (in_array($default->plan, $this->aCannotView)) {
-				$this->planDenied();
+            global $default;
+            if (in_array($default->plan, $this->aCannotView)) {
+                $this->planDenied();
                 exit(0);
-        	}
+            }
 
-        	$this->oUser = User::get($_SESSION['userID']);
-        	if (in_array($this->oUser->getDisabled(), $this->aCannotView)) {
-				$this->permissionDenied();
+            $this->oUser = User::get($_SESSION['userID']);
+            if (in_array($this->oUser->getDisabled(), $this->aCannotView)) {
+                $this->permissionDenied();
                 exit(0);
-        	}
+            }
         }
 
         if ($this->check() !== true) {
@@ -629,13 +629,13 @@ class KTAdminDispatcher extends KTStandardDispatcher {
     public function setCategoryDetail($subUrl)
     {
         $parts = explode('/', $subUrl);
-		$_REQUEST['subsection'] = $parts[1];
-		$_REQUEST['expanded'] = 1;
-		if (!empty($parts[1])) {
-			$_SERVER['PHP_SELF'] .= "&subsection={$parts[1]}&expanded=1";
-		}
+        $_REQUEST['subsection'] = $parts[1];
+        $_REQUEST['expanded'] = 1;
+        if (!empty($parts[1])) {
+            $_SERVER['PHP_SELF'] .= "&subsection={$parts[1]}&expanded=1";
+        }
     }
-    
+
     public function setActiveStatus($active)
     {
         if (!$active) {
