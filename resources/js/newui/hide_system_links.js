@@ -3,12 +3,12 @@ var hidelinks = {};
 hidelinks.doHide = true;
 
 hidelinks.linkList = {
-		'System Config :: Client Tools'				:'admin.php?kt_path_info=sysConfig/clientconfigpage',
-//		'System Config :: Email'					:'admin.php?kt_path_info=sysConfig/emailconfigpage',
-		'System Config :: Internationalization'		:'admin.php?kt_path_info=sysConfig/i18nconfigpage',
-		'System Config :: Manage Plugins'			:'admin.php?kt_path_info=sysConfig/plugins',
-		'System Config :: User Interface'			:'admin.php?kt_path_info=sysConfig/uiconfigpage',
-		'Content Setup :: Manage Views'				:'admin.php?kt_path_info=contentSetup/views'
+		'System Config :: Client Tools'				:'settings.php?kt_path_info=sysConfig/clientconfigpage',
+//		'System Config :: Email'					:'settings.php?kt_path_info=sysConfig/emailconfigpage',
+		'System Config :: Internationalization'		:'settings.php?kt_path_info=sysConfig/i18nconfigpage',
+		'System Config :: Manage Plugins'			:'settings.php?kt_path_info=sysConfig/plugins',
+		'System Config :: User Interface'			:'settings.php?kt_path_info=sysConfig/uiconfigpage',
+		'Content Setup :: Manage Views'				:'settings.php?kt_path_info=contentSetup/views'
 };
 
 hidelinks.hideLink = function(urii) {

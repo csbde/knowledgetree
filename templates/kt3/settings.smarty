@@ -9,7 +9,7 @@
    <div>
    		<p>
    			{foreach item=aItem from=$all_items.$cat_id name=itemlist}
-   				<a href="{ktLink base="admin.php" subpath="`$aItem.fullname`"}" class="{$aCategory.name}">{$aItem.title}</a>
+   				<a href="{ktLink base="settings.php" subpath="`$aItem.fullname`"}" class="{$aCategory.name}">{$aItem.title}</a>
    				{if !($smarty.foreach.itemlist.last)} | {/if}
    			{/foreach}
    		</p>
