@@ -69,13 +69,12 @@ kt.app.copy = new function() {
     		self.showTreeWindow(parentFolderIds);
     	} 
     	else {
-    		// Note: this function is in the drag & drop javascript
-    		self.targetFolderId = getQueryVariable('fFolderId');
+    		self.targetFolderId = self.getFolderId();
     		self.showConfirmationWindow();
     	}
     }
     
-    this.getParentFolderIds = function()
+    this.getFolderId = function()
     {
     	var params = {};
     	var folderId = ktjapi._lib.getQueryVariable('fFolderId');
@@ -85,9 +84,16 @@ kt.app.copy = new function() {
     		var path = document.location.pathname;
     	    path = path.replace('/', '');
     	    params.cleanId = path;
-    	}
+    	}	
+    	return params;
+    }
+    
+    this.getParentFolderIds = function()
+    {
+    	var params = {};
+    	params = self.getFolderId();
     	
-    	if (folderId == 1 || path == 001) {
+    	if (params.folderId == 1 || params.path == 001) {
     		return '';
     	}
     	

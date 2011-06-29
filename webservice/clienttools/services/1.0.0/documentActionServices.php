@@ -384,7 +384,15 @@ class documentActionServices extends client_service {
 	public function doBulkCopy($params)
 	{
 		$action = $params['action'];
-		$targetFolderId = str_replace('folder_', '', $params['targetFolderId']);
+		
+		$targetFolderId = $params['targetFolderId'];
+		
+		if (is_array($targetFolderId)) {
+			$targetFolderId = !empty($targetFolderId['folderId']) ? $targetFolderId['folderId'] : KTUtil::decodeId(substr($targetFolderId['cleanId'], 2));
+		}
+		else {
+			$targetFolderId = str_replace('folder_', '', $targetFolderId);
+		}
 		
 		$itemList = $params['itemList'];
         $organisedItemList = $this->formatItemList($itemList);
