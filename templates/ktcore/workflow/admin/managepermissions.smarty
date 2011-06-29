@@ -39,3 +39,5 @@ and roles.{/i18n}</p>
 </table>
 {/capture}
 {$form->renderContaining($permgrid, $form->renderButtons())}
+
+<br clear="both" />

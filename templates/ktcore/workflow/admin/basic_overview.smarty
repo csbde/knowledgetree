@@ -5,8 +5,11 @@ that documents in that workflow follow.  These processes are made up of <strong>
 (which documents are in, e.g. "reviewed" or "published") and <strong>transitions</strong>
 which documents follow (e.g. "submit for review" or "publish").{/i18n}</p>
 
+<!--
 <p><a class="ktAction ktEdit ktActionDescribed" href="{addQS context=$context}action=transitionconnections{/addQS}">{i18n}Configure Workflow Process{/i18n}</a>
 <a href="{addQS context=$context}action=transitionconnections{/addQS}">{i18n}Configure Workflow Process{/i18n}</a> <span class="descriptiveText">{i18n}(e.g. which transitions lead to which states){/i18n}</span></p>
+
+-->
 
 <div style="width: 40%; float: left; ">
 
@@ -73,3 +76,4 @@ which documents follow (e.g. "submit for review" or "publish").{/i18n}</p>
                     </tbody>
                  </table>
 </div>
+<br clear="both" />
