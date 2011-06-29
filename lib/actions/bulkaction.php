@@ -579,6 +579,9 @@ class KTBulkAction extends KTStandardDispatcher {
 
     // perform the action itself, and list results (completion action)
     function do_performaction() {
+    	global $default;
+    	$default->log->info("Bulk Actions: performing bulk action {$this->sName}");
+    	
         $this->get_lists();
         $this->aPersistParams = array();
         $targetFolderId = $_REQUEST['fFolderId'];
