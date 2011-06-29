@@ -107,7 +107,7 @@ textarea {
 	color: #2F6594;
 	font-size: 11px;
 	padding: 0px 5px 2px 8px;
-	font-family: sans-serif;
+	font-family: "Arial", sans-serif;
 }
 #content li.token-input-token-facebook span{
 	width: 10px;
@@ -753,7 +753,7 @@ div.form_actions {
 	font-weight: bold;
 	color: #6A7274;
 	text-decoration: none;
-	font-family: sans-serif;
+	font-family: "Arial", sans-serif;
 	vertical-align: top;
 }
 
@@ -805,7 +805,7 @@ div.form_actions {
 	font-weight: bold;
 	color: #6A7274;
 	text-decoration: none;
-	font-family: sans-serif;
+	font-family: "Arial", sans-serif;
 }
 
 #content .extjs_form_actions a:hover {
@@ -1348,6 +1348,7 @@ http://devgrow.com/iphone-style-switches/
 	padding: 0px;
 	clear: both;
 	width: inherit;
+	display: inline-block;
 }
 .search-filter .form_actions,
 .search-filter input{
@@ -1356,7 +1357,7 @@ http://devgrow.com/iphone-style-switches/
 .search-filter {
 	height: 35px;
 	display: inline-block;
-	width: 200px;
+	width: 201px;
 	background: whitesmoke;
 	border: 1px solid #ccc;
 	border-radius: 5px 5px 0px 0px;
