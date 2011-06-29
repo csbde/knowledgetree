@@ -1,4 +1,4 @@
-<h2>{i18n arg_name=$context->oWorkflow->getName()}States and Transitions: #name#{/i18n}</h2>
+<!-- <h2>{i18n arg_name=$context->oWorkflow->getName()}States and Transitions: #name#{/i18n}</h2> -->
 
 {capture assign=widgets}
 

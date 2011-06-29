@@ -1484,6 +1484,7 @@ http://devgrow.com/iphone-style-switches/
 	background: white;
 	border: 1px solid #CCC !important;
 	border-right: 0px !important;
+	font-size: 13px;
 }
 #content .ui-tabs .ui-tabs-nav li a {
 	float: none;
@@ -1501,12 +1502,11 @@ http://devgrow.com/iphone-style-switches/
 	background: -moz-linear-gradient(top, #609BD1, #2F6694);
 	border: 1px solid #2F6694 !important;
 	z-index: 3;
-	font-weight: bold;
 }
 
 #content .ui-state-active a {
 	color: white;
-	text-shadow: 0px 1px 0px #666;
+	text-shadow: 0px -1px 0px #2F6694;
 }
 #content .ui-tabs .ui-tabs-panel {
 	border: 1px solid #CCC;
@@ -1525,6 +1525,4 @@ http://devgrow.com/iphone-style-switches/
 #content .ui-tabs .field {
 	background: white;
 }
-#content .ui-tabs h2 {
-	display: none;
-}
+

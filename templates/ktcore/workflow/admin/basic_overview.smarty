@@ -1,4 +1,3 @@
-<h2>{i18n arg_name=$workflow_name}States and Transitions: #name#{/i18n}</h2>
 
 <p class="descriptiveText">{i18n}The core of a workflow is the <strong>process</strong>
 that documents in that workflow follow.  These processes are made up of <strong>states</strong>
@@ -11,7 +10,7 @@ which documents follow (e.g. "submit for review" or "publish").{/i18n}</p>
 
 -->
 
-<div style="width: 40%; float: left; ">
+<div style="width: 49%; float: left; ">
 
 <h3>{i18n}States{/i18n}</h3>
                 <a class="ktAction ktAdd ktActionDescribed" href="{addQS context=$context}action=addstates{/addQS}">{i18n}Add New States{/i18n}</a>
@@ -43,7 +42,7 @@ which documents follow (e.g. "submit for review" or "publish").{/i18n}</p>
                     </tbody>
                  </table>
 </div>
-<div style="float: left; width: 40%; margin-left: 1em;">
+<div style="float: left; width: 49%; margin-left: 1em;">
 <h3>{i18n}Transitions{/i18n}</h3>
 
                 <a class="ktAction ktAdd ktActionDescribed" href="{addQS context=$context}action=addtransitions{/addQS}">{i18n}Add New Transitions{/i18n}</a>
