@@ -1039,11 +1039,14 @@ class KTUtil {
      */
     public static function setNewSettingsOptions($qs)
     {
+        if (is_array($qs)) {
+            $qs = http_build_query($qs);
+        }
+
         // Check if we are on the settings page.
         $cat = KTUtil::arrayGet($_REQUEST, 'fCategory');
         if ($cat != '') {
             $subsection = KTUtil::arrayGet($_REQUEST, 'subsection');
-            $subsection = ($subsection == '' ? $subsection : $subsection);
             $expanded = KTUtil::arrayGet($_REQUEST, 'expanded');
             $qs .= "&subsection=$subsection&expanded=$expanded";
         }
