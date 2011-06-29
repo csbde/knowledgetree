@@ -1397,8 +1397,8 @@ http://devgrow.com/iphone-style-switches/
 	-webkit-border-radius: 5px;
 	padding: 10px;
 	clear: both;
-	display: inline-block;
-	width: 700px;
+	display: block;
+	overflow: hidden;
 	margin-bottom: 10px; 
 	color: #333;
 	font-size: 12px;
