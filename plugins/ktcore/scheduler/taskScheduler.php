@@ -5,7 +5,7 @@
  * KnowledgeTree Community Edition
  * Document Management Made Simple
  * Copyright (C) 2008, 2009, 2010 KnowledgeTree Inc.
- * 
+ *
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License version 3 as published by the
@@ -55,11 +55,11 @@ class manageSchedulerDispatcher extends KTAdminDispatcher
         $oTemplate = $oTemplating->loadTemplate('ktcore/scheduler');
 
         // Link for clearing out old tasks
-//        $lClear = KTUtil::ktLink('admin.php', 'sysConfig/scheduler', 'action=clearTasks');
+//        $lClear = KTUtil::ktLink('settings.php', 'sysConfig/scheduler', 'action=clearTasks');
 //        $sClear = "<a href='#' onclick='javascript: clearTasks(\"{$lClear}\");'>"._kt('Clean-up old tasks').'</a>';
 
         // Link for saving the updated frequencies
-        $sUrl = KTUtil::ktLink('admin.php', 'sysConfig/scheduler', 'action=saveFreq');
+        $sUrl = KTUtil::ktLink('settings.php', 'sysConfig/scheduler', 'action=saveFreq');
 
         // Get all tasks
         $aList = SchedulerEntity::getTaskList();

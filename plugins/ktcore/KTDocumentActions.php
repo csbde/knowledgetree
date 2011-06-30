@@ -1741,7 +1741,7 @@ class KTOwnershipChangeAction extends JavascriptDocumentAction {
 			$info['status'] = 'disabled';
 			return $info;
         } else {
-			return null;
+			return parent::getInfo();
 		}
         
     }

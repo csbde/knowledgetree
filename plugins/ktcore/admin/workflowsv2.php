@@ -389,6 +389,14 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
 
     public function do_newWorkflow()
     {
+        // Load JavaScript
+        $page = $GLOBALS['main'];
+        $javascript[] = 'thirdpartyjs/jquery/ui/jquery-ui-1.8.13.custom.min.js';
+        $page->requireJSResources($javascript);
+        
+        $css[] = 'thirdpartyjs/jquery/themes/base/jquery.ui.all.css';
+        $page->requireCSSResources($css);
+        
         // subdispatch this to the NewWorkflowWizard.
         require_once(dirname(__FILE__) . '/workflow/newworkflow.inc.php');
 
@@ -523,7 +531,7 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
             'context' => $this,
             'action' => 'setcore',
             'fail_action' => 'editcore',
-            'cancel_action' => 'view',
+            //'cancel_action' => 'view',
             'submit_label' => _kt('Update Workflow Details'),
         ));
 
@@ -656,9 +664,9 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
         $oForm->setOptions(array(
             'description' => _kt('The process a document follows is controlled by the way that the transitions between states are setup.  A document starts the workflow in the initial state, and then follows transitions between states.  Which users can perform these transitions can be configured in the "Security" section.'),
             'submit_label' => _kt('Update Process'),
-            'cancel_action' => 'basic',
+            //'cancel_action' => 'basic',
             'action' => 'setconnections',
-            'fail_action' => 'transitionconnections', // consistency - this is not really used.
+            'fail_action' => 'security', // consistency - this is not really used.
             'context' => $this,
         ));
 
@@ -1317,13 +1325,16 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
         $oTemplate->setData(array(
             'context' => $this,
             'workflow_name' => $this->oWorkflow->getName(),
+            'permissionsOverview' => $this->do_permissionsoverview(FALSE),
+            'actionsOverview' => $this->do_actionsoverview(FALSE),
+            'transitionSecurityOverview' => $this->do_transitionsecurityoverview(FALSE),
         ));
         return $this->renderWorkflowTabs($oTemplate->render(), 'security');
     }
 
 
     // == PERMISSIONS
-    public function do_permissionsoverview() {
+    public function do_permissionsoverview($useTabs=TRUE) {
         $oTemplate = $this->oValidator->validateTemplate('ktcore/workflow/admin/permissions_overview');
         $this->breadcrumbs_security();
         $this->oPage->setBreadcrumbDetails(_kt("Permissions Overview"));
@@ -1356,7 +1367,13 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
             'perms' => $aUsefulPermissions,
             'states' => $aStates,
         ));
-        return $this->renderWorkflowTabs($oTemplate->render(), 'security');
+        
+        if ($useTabs) {
+            return $this->renderWorkflowTabs($oTemplate->render(), 'security');
+        } else {
+            return $oTemplate->render();
+        }
+        
     }
 
     public function form_managepermissions() {
@@ -1365,7 +1382,7 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
             'submit_label' => _kt("Set controlled permissions"),
             'action' => 'setcontrolledpermissions',
             'fail_action' => 'managepermissions',
-            'cancel_action' => 'permissionsoverview',
+            'cancel_action' => 'security',
             'context' => $this,
         ));
 
@@ -1614,7 +1631,7 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
 
     // ACTIONS
 
-    public function do_actionsoverview() {
+    public function do_actionsoverview($useTabs=TRUE) {
         $oTemplate = $this->oValidator->validateTemplate('ktcore/workflow/admin/actions_overview');
         $this->oPage->setBreadcrumbDetails(_kt("Actions"));
         $this->breadcrumbs_security();
@@ -1644,7 +1661,12 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
             'actions' => $actions,
             'grid' => $action_grid,
         ));
-        return $this->renderWorkflowTabs($oTemplate->render(), 'security');
+        
+        if ($useTabs) {
+            return $this->renderWorkflowTabs($oTemplate->render(), 'security');
+        } else {
+            return $oTemplate->render();
+        }
     }
 
     public function do_editactions() {
@@ -1706,7 +1728,7 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
         $this->successRedirectTo('actionsoverview', _kt('Disabled actions updated.'));
     }
 
-    public function do_transitionsecurityoverview() {
+    public function do_transitionsecurityoverview($useTabs=TRUE) {
         $oTemplate = $this->oValidator->validateTemplate('ktcore/workflow/admin/transition_guards_overview');
         $this->oPage->setBreadcrumbDetails(_kt("Overview"));
         $this->oPage->setTitle(_kt("Transition Restrictions Overview"));
@@ -1722,7 +1744,12 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
             'context' => $this,
             'transitions' => $transitions,
         ));
-        return $this->renderWorkflowTabs($oTemplate->render(), 'security');
+        
+        if ($useTabs) {
+            return $this->renderWorkflowTabs($oTemplate->render(), 'security');
+        } else {
+            return $oTemplate->render();
+        }
     }
 
     // helper
@@ -1746,7 +1773,8 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
         $oForm->setOptions(array(
             'identifier' => 'ktcore.admin.workflow.addguard',
             'action' => 'addguard',
-            'cancel_action' => 'edittransition',
+            //'cancel_action' => 'edittransition',
+            'cancel_action' => 'security',
             'fail_action' => 'manageguards',
             'submit_label' => _kt("Add Restriction"),
             'context' => $this,
@@ -1955,6 +1983,8 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
         $oTemplate->setData(array(
             'context' => $this,
             'workflow_name' => $this->oWorkflow->getName(),
+            'transitionEffects' => $this->do_transitionactions(FALSE),
+            'notifications' => $this->do_managenotifications(FALSE),
             
         ));
         return $this->renderWorkflowTabs($oTemplate->render(), 'effects');
@@ -1965,7 +1995,7 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
         $oForm->setOptions(array(
             'identifier' => 'ktcore.admin.workflow.addaction',
             'action' => 'addactiontrigger',
-            'cancel_action' => 'edittransition',
+            'cancel_action' => 'security',
             'fail_action' => 'managetransitionactions',
             'submit_label' => _kt("Add Action"),
             'context' => $this,
@@ -2009,7 +2039,7 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
         return $oForm;
     }
 
-    public function do_transitionactions() {
+    public function do_transitionactions($useTabs=TRUE) {
         $oTemplate = $this->oValidator->validateTemplate('ktcore/workflow/admin/transition_effects_overview');
         $this->breadcrumb_effects();
         $this->aBreadcrumbs[] = array(
@@ -2026,7 +2056,12 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
             'transitions' => $aTransitions,
         ));
         
-        return $this->renderWorkflowTabs($oTemplate->render(), 'effects');
+        if ($useTabs) {
+            return $this->renderWorkflowTabs($oTemplate->render(), 'effects');
+        } else {
+            return $oTemplate->render();
+        }
+        
     }
 
     // helper
@@ -2196,7 +2231,7 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
         exit(0);
     }
 
-    public function do_managenotifications() {
+    public function do_managenotifications($useTabs=TRUE) {
         $this->breadcrumb_effects();
         $this->aBreadcrumbs[] = array(
             'name' => _kt("Notifications"),
@@ -2209,10 +2244,16 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
             'states' => KTWorkflowState::getByWorkflow($this->oWorkflow),
             
         ));
-        return $this->renderWorkflowTabs($oTemplate->render(), 'effects');
+        
+        if ($useTabs) {
+            return $this->renderWorkflowTabs($oTemplate->render(), 'security');
+        } else {
+            return $oTemplate->render();
+        }
     }
 
     public function describeStateNotifications($oState) {
+        
         $aAllowed = KTWorkflowUtil::getInformedForState($oState);
 
         $aUsers = array();
@@ -2325,7 +2366,7 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
             'context' => $this,
             'identifier' => 'ktcore.workflow.notifications',
             'submit_label' => _kt("Update Notifications"),
-            'cancel_action' => 'managenotifications',
+            'cancel_action' => 'effects',
             'action' => 'savenotifications',
             'fail_action' => 'editnotifications',
         ));
@@ -2335,7 +2376,7 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
                 'label' => _kt("Users to inform"),
                 'description' => _kt("Select which users, groups and roles to be notified."),
                 'name' => 'users',
-                'src' => KTUtil::addQueryStringSelf($this->meldPersistQuery(array('json_action'=> 'notificationusers'), "json")),
+                'src' => KTUtil::addQueryStringSelf($this->meldPersistQuery(array('json_action'=> 'notificationusers', 'request_src'=>'ajax'), "json")),
                 'value' => $this->descriptorToJSON($preval),
             )),
         ));
@@ -2360,7 +2401,9 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
         $this->oPage->setBreadcrumbDetails(_kt("Edit State Notifications"));
 
         $oForm = $this->form_editnotifications($this->oState);
-        return $oForm->renderPage();
+        
+        //return $oForm->renderPage();
+        return $this->renderWorkflowTabs($oForm->renderPage().'<br clear="both">', 'effects');
     }
 
     public function do_savenotifications()
@@ -2423,7 +2466,20 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
             return $oForm->handleError($res->getMessage());
         }
 
-        $this->successRedirectTo("managenotifications", _kt("Notifications updated."));
+        $this->successRedirectTo("effects", _kt("Notifications updated."));
+    }
+    
+    public function do_json()
+    {
+        
+        $jsonAction = 'json_'.KTUtil::arrayGet($_REQUEST, 'json_action');
+        
+        if (method_exists($this, $jsonAction)) {
+            echo json_encode($this->$jsonAction());
+            exit(0);
+        } else {
+            exit(0);
+        }
     }
 
     public function json_notificationusers() {
