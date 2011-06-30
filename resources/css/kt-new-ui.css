@@ -1535,4 +1535,24 @@ li.ui-state-disabled a {
 #content .ui-tabs .field {
 	background: white;
 }
+/*JSTree styling */
 
+#action-modal .jstree-knowledgetree li.jstree-closed a .jstree-icon {
+	background: url(/thirdpartyjs/extjs/resources/images/default/tree/folder.gif) 0px 0px;
+}
+#action-modal .jstree-knowledgetree a .jstree-icon {
+	background: url(/thirdpartyjs/extjs/resources/images/default/tree/folder-open.gif) 0px 0px;
+}
+
+#action-error.alert.warning {
+	background: #F2C1C5;
+	border: 1px solid #A90615;
+	padding: 10px;
+	color: #A90615;
+}
+#action-error.alert.success {
+	background: #d8f9d1;
+	border: 1px solid #53bc3e;
+	padding: 10px;
+	color: #53bc3e;
+}
