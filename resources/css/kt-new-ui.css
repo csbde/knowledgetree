@@ -1486,6 +1486,16 @@ http://devgrow.com/iphone-style-switches/
 	border-right: 0px !important;
 	font-size: 13px;
 }
+
+li.ui-state-disabled {
+	opacity: 1 !important;
+	color: #CCCCCC !important;
+}
+
+li.ui-state-disabled a {
+	color: #CCCCCC !important;
+}
+
 #content .ui-tabs .ui-tabs-nav li a {
 	float: none;
 	padding: 0px;
