@@ -401,11 +401,12 @@ class KTCorePlugin extends KTPlugin {
 	        $this->registerAdminPage('i18nconfigpage', 'i18nConfigPageDispatcher', 'sysConfig',
 	            _kt('Internationalisation Settings'), _kt('View and modify the default language.'),
 	            'admin/configSettings.php', null);
+	            
+	        $this->registerAdminPage('explorercpconfigpage', 'ExplorerConfigPageDispatcher', 'clientTools',
+	            _kt('Explorer CP'), _kt('View and change settings for the Explorer CP.'),
+	            'admin/configSettings.php', null);
+	            
         }
-            
-        $this->registerAdminPage('explorercpconfigpage', 'ExplorerConfigPageDispatcher', 'clientTools',
-            _kt('Explorer CP'), _kt('View and change settings for the Explorer CP.'),
-            'admin/configSettings.php', null);
             
         $this->registerAdminPage('KTWebDAVSettings', 'KtWebdavConfigPageDispatcher', 'clientTools',
             _kt('WebDAV'), _kt('View and change settings for WebDAV.'),
