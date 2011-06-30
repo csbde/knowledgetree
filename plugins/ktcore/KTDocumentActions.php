@@ -1927,11 +1927,11 @@ class KTDocumentPreviewUrlAction extends KTDocumentAction {
 
 class KTDocumentCheckOutDownloadAction extends KTDocumentCheckOutAction {
 	public $sName = 'ktcore.actions.document.checkoutdownload';
-	public $sIconClass = 'checkout-download';
-	public $sParentBtn = 'ktcore.actions.document.checkout';
+	public $sIconClass = 'checkout';
+	public $sParentBtn = '';
 
     function getDisplayName() {
-        return _kt('Check-out And Download');
+        return _kt('Check-out');
     }
 
     function getFunctionScript()
@@ -1952,7 +1952,7 @@ class KTDocumentCheckOutDownloadAction extends KTDocumentCheckOutAction {
 			$js .= $js2 . "\n";
 		}
 		$js .= $this->getScript() . '</script>'. "\n";
-		$js .= '<a onclick="' . $this->getScriptActivation() . '" href="#" id="checkoutdowload">' . $this->getDisplayName() . '</a>'. "\n";
+		$js .= '<a onclick="' . $this->getScriptActivation() . '" href="#" id="checkoutdowload" class="button">' . $this->getDisplayName() . '</a>'. "\n";
 		$aInfo['js'] = $js;
 
         return $aInfo;
@@ -1968,9 +1968,10 @@ class KTDocumentCheckOutAction extends JavascriptDocumentAction {
     public $sIconClass = 'checkout';
 	public $bShowIfWriteShared = true;
 	public $btnOrder = 2;
+	public $sParentBtn = 'ktcore.actions.document.checkoutdownload';
 
     function getDisplayName() {
-        return _kt('Check-out');
+        return _kt('Check-out Only (No Download)');
     }
 
     function _show() {
@@ -2028,7 +2029,7 @@ class KTDocumentCheckOutAction extends JavascriptDocumentAction {
 			$js .= $js2 . "\n";
 		}
 		$js .= $this->getScript() . '</script>'. "\n";
-		$js .= '<a onclick="' . $this->getScriptActivation() . '" href="#" id="checkout" class="button">' . $this->getDisplayName() . '</a>'. "\n";
+		$js .= '<a onclick="' . $this->getScriptActivation() . '" href="#" id="checkout">' . $this->getDisplayName() . '</a>'. "\n";
 		$aInfo['js'] = $js;
 
         return $aInfo;
