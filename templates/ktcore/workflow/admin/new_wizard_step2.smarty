@@ -22,25 +22,32 @@
                 <table class="kt_collection" cellspacing="0">
                     <thead>
                         <tr>
-                            <th>{i18n}Transition{/i18n}</th>
-                            <th>{i18n}Leads to state{/i18n}</th>
+                            <th colspan="{$states|@count}">{i18n}Starting State{/i18n}</th>
+                            <th rowspan="2" style="border-left:1px solid #888888; border-right:1px solid #888888">{i18n}Transition{/i18n}</th>
+                            <th rowspan="2">{i18n}Leads to state{/i18n}</th>
+                        </tr>
+                        <tr>
                             {foreach from=$states item=state}
-                            <th>{$state}</th>
+                            <th>{$state}</th>                
                             {/foreach}
+                            
                         </tr>
                     </thead>
                     <tbody>
                         {foreach from=$transitions item=transition}
                             <tr class="row {cycle values=odd,even}">
-                                <td>{$transition}</td>
-                                <td><select name="fTo[{$transition|sanitize}]">
-                                    {foreach from=$states item=state}
-                                        <option value="{$state|sanitize}">{$state}</option>
-                                    {/foreach}
-                                </select></td>
+                                
                                 {foreach from=$states item=state}
                                     <td><input type="checkbox" name="fFrom[{$transition|sanitize}][{$state|sanitize}]"/></td>
                                 {/foreach}
+                                <td>{$transition}</td>
+                                <td>
+                                    <select name="fTo[{$transition|sanitize}]">
+                                    {foreach from=$states item=state}
+                                        <option value="{$state|sanitize}">{$state}</option>
+                                    {/foreach}
+                                    </select>
+                                </td>
                             </tr>
                         {/foreach}
                     </tbody>
