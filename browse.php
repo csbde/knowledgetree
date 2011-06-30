@@ -156,6 +156,12 @@ class BrowseDispatcher extends KTStandardDispatcher {
 	        if($renderData['documentCount'] > 0)
 	        	$this->loadDocumentJS();
 	        $templateData = array_merge($templateData, $renderData);
+	    } 
+	    else if ($this->oFolder === false) {
+	    	$this->addErrorMessage(_kt('The selected folder cannot be found, it may have been deleted.'));
+	    	$browse = '<a href = "'.KTUtil::buildUrl('browse.php') . '">' . _kt('browse') . '</a>';
+	    	
+	    	return $this->errorPage(_kt("Return to the main {$browse} page."));
 	    }
 
 	    return $template->render($templateData);
@@ -458,6 +464,7 @@ class BrowseDispatcher extends KTStandardDispatcher {
 
 	    $oFolder =& Folder::get($folder_id);
 	    if (PEAR::isError($oFolder)) {
+	    	$this->oFolder = false;
 	        return false; // just fail.
 	    }
 
@@ -499,6 +506,8 @@ class BrowseDispatcher extends KTStandardDispatcher {
 	    $this->oQuery = new BrowseQuery($oFolder->getId(), $this->oUser, $aOptions);
 
 	    $this->resultURL = KTUtil::addQueryString($_SERVER['PHP_SELF'], sprintf('fFolderId=%d', $oFolder->getId()));
+	    
+	    return true;
 	}
 
 	/**
