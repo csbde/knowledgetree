@@ -1,4 +1,4 @@
-<h2>{i18n arg_name=$workflow_name}Security Overview: #name#{/i18n}</h2>
+<!--<h2>{i18n arg_name=$workflow_name}Security Overview: #name#{/i18n}</h2>-->
 
 <p class="descriptiveText">{i18n arg_appname="$appname"}#appname# has a powerful security model, in which users
 can only see documents they have permissions to see.  Workflow is the finest-grained
@@ -8,6 +8,24 @@ assigned at a folder level.{/i18n}</p>
 <p class="descriptiveText">{i18n}There are 3 different ways in which workflows interact
 with the system's security{/i18n}:</p>
 
+<h1>{i18n}Document Permissions{/i18n}</h1>
+{$permissionsOverview}
+
+<br /><br /><br />
+
+<h1>{i18n}Action Restrictions{/i18n}</h1>
+{$actionsOverview}
+
+{* Probably not the _cleanest_ approach, but it works. *}
+{if is_null($context->oState)}
+
+    <br /><br /><br />
+
+    <h1>{i18n}Transition Restrictions{/i18n}</h1>
+    {$transitionSecurityOverview}
+{/if}
+
+<!--
 <ol>
     <li><a href="{addQS context=$context}action=permissionsoverview{/addQS}">{i18n}Document Permissions{/i18n}</a> {i18n}(by state){/i18n}</li>
     <li><a href="{addQS context=$context}action=actionsoverview{/addQS}">{i18n}Action Restrictions{/i18n}</a> {i18n}(by state){/i18n}</li>            
@@ -18,3 +36,4 @@ with the system's security{/i18n}:</p>
     {/if}
 
 </ol>
+-->

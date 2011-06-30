@@ -18,7 +18,7 @@
 
 <h2>{i18n arg_field_name=$field_name}Manage Field: #field_name#{/i18n}</h2>
 
-<p class="descriptiveText">{i18n}This page will allow you to manage the different 
+<p class="descriptiveText">{i18n}This page will allow you to manage the different
 aspects of this particular field.{/i18n}</p>
 
 {if ($field->getHasLookup())}
@@ -60,7 +60,7 @@ available.{/i18n}</p>
 <p class="descriptiveText">{i18n}Different fields have different actions and options
 available.{/i18n}</p>
 
-<form method="POST" action="admin.php?kt_path_info=contentSetup/fieldmanagement2&fieldset_action=updatelargetextoptions&fFieldId={$field_id}&fFieldsetId={$field->getParentFieldsetId()}&action=edit">
+<form method="POST" action="settings.php?kt_path_info=contentSetup/fieldmanagement2&fieldset_action=updatelargetextoptions&fFieldId={$field_id}&fFieldsetId={$field->getParentFieldsetId()}&action=edit">
 
 <div class="field">
 <label for="largefield[size]">Max Length</label>
@@ -77,7 +77,7 @@ available.{/i18n}</p>
 </div>
 
 <div class="form_actions">
-<input type="submit" name="" value="Update Options" /> 
+<input type="submit" name="" value="Update Options" />
 </div>
 
 </form>

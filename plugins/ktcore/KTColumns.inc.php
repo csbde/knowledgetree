@@ -5,7 +5,7 @@
  * KnowledgeTree Community Edition
  * Document Management Made Simple
  * Copyright (C) 2008, 2009, 2010 KnowledgeTree Inc.
- * 
+ *
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License version 3 as published by the
@@ -77,119 +77,134 @@ class AdvancedTitleColumn extends AdvancedColumn {
         );
     }
 
-
-    function renderFolderLink($aDataRow) {
-        /* this check has to be done so that any titles longer than 40 characters is not displayed incorrectly.
-         as mozilla cannot wrap text without white spaces */
+    function renderFolderLink($aDataRow)
+    {
+        // This check has to be done so that any titles longer than 40 characters are
+        // displayed correctly, as mozilla cannot wrap text without white spaces.
         global $default;
         $charLength = (isset($default->titleCharLength)) ? $default->titleCharLength : 40;
 
-        if (mb_strlen($aDataRow["folder"]->getName(), 'UTF-8') > $charLength) {
-        	mb_internal_encoding("UTF-8");
-            $outStr = htmlentities(mb_substr($aDataRow["folder"]->getName(), 0, $charLength, 'UTF-8')."...", ENT_NOQUOTES, 'UTF-8');
-        }else{
-            $outStr = htmlentities($aDataRow["folder"]->getName(), ENT_NOQUOTES, 'UTF-8');
+        if (mb_strlen($aDataRow['folder']->getName(), 'UTF-8') > $charLength) {
+            mb_internal_encoding('UTF-8');
+            $outStr = htmlentities(mb_substr($aDataRow['folder']->getName(), 0, $charLength, 'UTF-8') . '...', ENT_NOQUOTES, 'UTF-8');
+        }
+        else {
+            $outStr = htmlentities($aDataRow['folder']->getName(), ENT_NOQUOTES, 'UTF-8');
         }
 
-        if($this->link_folders) {
+        if ($this->link_folders) {
             $outStr = '<a href="' . $this->buildFolderLink($aDataRow) . '">' . $outStr . '</a>';
         }
+
         return $outStr;
     }
 
-    function renderDocumentLink($aDataRow) {
+    function renderDocumentLink($aDataRow)
+    {
         /* this check has to be done so that any titles longer than 40 characters is not displayed incorrectly.
          as mozilla cannot wrap text without white spaces */
         global $default;
         $charLength = (isset($default->titleCharLength)) ? $default->titleCharLength : 40;
 
         if (mb_strlen($aDataRow["document"]->getName(), 'UTF-8') > $charLength) {
-        	mb_internal_encoding("UTF-8");
+            mb_internal_encoding("UTF-8");
             $outStr = htmlentities(mb_substr($aDataRow["document"]->getName(), 0, $charLength, 'UTF-8')."...", ENT_NOQUOTES, 'UTF-8');
-        }else{
+        }
+        else {
             $outStr = htmlentities($aDataRow["document"]->getName(), ENT_NOQUOTES, 'UTF-8');
         }
 
-        if($this->link_documents) {
+        if ($this->link_documents) {
             $outStr = '<a href="' . $this->buildDocumentLink($aDataRow) . '" title="' . htmlentities($aDataRow["document"]->getFilename(), ENT_QUOTES, 'UTF-8').'">' .
                 $outStr . '</a>';
         }
+
         return $outStr;
     }
 
-    function buildDocumentLink($aDataRow) {
-    	if($aDataRow['document']->isSymbolicLink()){
-    		$iDocId = $aDataRow['document']->getRealDocumentId();
-    	}else{
-    		$iDocId = $aDataRow["document"]->getId();
-    	}
+    function buildDocumentLink($aDataRow)
+    {
+        if ($aDataRow['document']->isSymbolicLink()) {
+            $iDocId = $aDataRow['document']->getRealDocumentId();
+        }
+        else {
+            $iDocId = $aDataRow["document"]->getId();
+        }
 
         $url = KTBrowseUtil::getUrlForDocument($iDocId);
-        if($aDataRow['document']->isSymbolicLink()){
-        	$aDataRow['document']->switchToRealCore();
-        	$url .= "&fShortcutFolder=".$aDataRow['document']->getFolderId();
+        if ($aDataRow['document']->isSymbolicLink()) {
+            $aDataRow['document']->switchToRealCore();
+            $url .= "&fShortcutFolder=".$aDataRow['document']->getFolderId();
         }
+
         return $url;
     }
-
 
     // 'folder_link' allows you to link to a different URL when you're connecting, instead of addQueryStringSelf
     // 'direct_folder' means that you want to go to 'browse folder'
     // 'qs_params' is an array (or string!) of params to add to the link
-
-    function buildFolderLink($aDataRow) {
+    function buildFolderLink($dataRow)
+    {
         if (is_null(KTUtil::arrayGet($this->aOptions, 'direct_folder'))) {
-           $dest = KTUtil::arrayGet($this->aOptions, 'folder_link');
-           if($aDataRow['folder']->isSymbolicLink()){
-           		$params = array('fFolderId' => $aDataRow['folder']->getLinkedFolderId(),
-				     'fShortcutFolder' => $aDataRow['folder']->getParentID());
-           }else{
-          		$params = array('fFolderId' => $aDataRow['folder']->getId());
-           }
-	   		$params = kt_array_merge(KTUtil::arrayGet($this->aOptions, 'qs_params', array()),
-				     $params);
+            $dest = KTUtil::arrayGet($this->aOptions, 'folder_link');
+            if ($dataRow['folder']->isSymbolicLink()) {
+                $params = array(
+                            'fFolderId' => $dataRow['folder']->getLinkedFolderId(),
+                            'fShortcutFolder' => $dataRow['folder']->getParentID()
+                );
+            }
+            else {
+                $params = array('fFolderId' => $dataRow['folder']->getId());
+            }
+
+            $params = kt_array_merge(KTUtil::arrayGet($this->aOptions, 'qs_params', array()), $params);
 
             if (empty($dest)) {
                 return KTUtil::addQueryStringSelf($params);
-            } else {
+            }
+            else {
                 return KTUtil::addQueryString($dest, $params);
             }
-
-        } else {
-        	if($aDataRow['folder']->isSymbolicLink()){
-        		return KTBrowseUtil::getUrlForFolder($aDataRow['folder']->getLinkedFolder())."&fShortcutFolder=".$aDataRow['folder']->getParentID();
-        	}else{
-            	return KTBrowseUtil::getUrlForFolder($aDataRow['folder']);
-        	}
+        }
+        else {
+            if ($dataRow['folder']->isSymbolicLink()) {
+                return KTBrowseUtil::getUrlForFolder($dataRow['folder']->getLinkedFolder())."&fShortcutFolder=".$dataRow['folder']->getParentID();
+            }
+            else {
+                return KTBrowseUtil::getUrlForFolder($dataRow['folder']);
+            }
         }
     }
 
-    // use inline, since its just too heavy to even _think_ about using smarty.
-    function renderData($aDataRow) {
-        if ($aDataRow["type"] == "folder") {
+    // Use inline, since its just too heavy to even _think_ about using smarty.
+    public function renderData($aDataRow)
+    {
+        if ($aDataRow['type'] == 'folder') {
             $contenttype = 'folder';
             $link = $this->renderFolderLink($aDataRow);
 
             // If folder is a shortcut display the shortcut mime icon
-            if($aDataRow['folder']->isSymbolicLink()){
+            if ($aDataRow['folder']->isSymbolicLink()) {
                 $contenttype .= '_shortcut';
             }
             // Separate the link from the mime icon to allow for right-to-left languages
             return "<div style='float: left' class='contenttype $contenttype'>&nbsp;</div>$link";
-        } else {
+        }
+        else {
             $type = '';
             $size = '';
-            if($aDataRow['document']->isSymbolicLink()){
+            if ($aDataRow['document']->isSymbolicLink()) {
                 // If document is a shortcut - display the shortcut mime type
                 $type = 'shortcut';
-            }else{
+            }
+            else {
                 // Display the document size if it is not a shortcut
-                $size = $this->prettySize($aDataRow["document"]->getSize());
+                $size = $this->prettySize($aDataRow['document']->getSize());
                 $size = "&nbsp;($size)";
             }
 
             $link = $this->renderDocumentLink($aDataRow);
-            $contenttype = $this->_mimeHelper($aDataRow["document"]->getMimeTypeId(), $type);
+            $contenttype = $this->_mimeHelper($aDataRow['document']->getMimeTypeId(), $type);
 
             // Separate the link from the mime icon and the size to allow for right-to-left languages
             return "<div style='float: left' class='contenttype $contenttype'>&nbsp;</div><div style='float: left'>$link</div>$size";
@@ -364,38 +379,41 @@ class AdvancedSelectionColumn extends AdvancedColumn {
         $this->show_documents = KTUtil::arrayGet($this->aOptions, 'show_documents', $this->show_documents, false);
     }
 
-    function renderHeader($sReturnURL) {
+    public function renderHeader($sReturnURL)
+    {
         global $main;
         $main->requireJSResource("resources/js/toggleselect.js");
 
         return sprintf('<input type="checkbox" title="toggle all" onclick="toggleSelectFor(this, \'%s\')" />', $this->rangename);
-
     }
 
-    // only include the _f or _d IF WE HAVE THE OTHER TYPE.
-    function renderData($aDataRow) {
+    // Only include the _f or _d IF WE HAVE THE OTHER TYPE.
+    public function renderData($aDataRow)
+    {
         $localname = htmlentities($this->rangename,ENT_QUOTES,'UTF-8');
 
-        if (($aDataRow["type"] === "folder") && ($this->show_folders)) {
+        if (($aDataRow['type'] === 'folder') && ($this->show_folders)) {
             if ($this->show_documents) {
-                $localname .= "_f[]";
+                $localname .= '_f[]';
             }
-            $v = $aDataRow["folderid"];
-        } else if (($aDataRow["type"] === "document") && $this->show_documents) {
+            $v = $aDataRow['folderid'];
+        }
+        else if (($aDataRow['type'] === 'document') && $this->show_documents) {
             if ($this->show_folders) {
-                $localname .= "_d[]";
+                $localname .= '_d[]';
             }
-            $v = $aDataRow["docid"];
-        } else {
+            $v = $aDataRow['docid'];
+        }
+        else {
             return '&nbsp;';
         }
 
         return sprintf('<input type="checkbox" name="%s" onclick="activateRow(this)" value="%s"/>', $localname, $v);
     }
 
-
-    // no label, but we do have a title
-    function getName() {
+    // No label, but we do have a title.
+    public function getName()
+    {
         return _kt("Multiple Selection");
     }
 }
@@ -410,10 +428,10 @@ class AdvancedSingleSelectionColumn extends AdvancedSelectionColumn {
     }
 
     function renderHeader() {
-    	global $main;
+        global $main;
         //include some javascript to force real single selections
-        if($this->show_folders && $this->show_documents){
-        	$main->requireJSResource("resources/js/singleselect.js");
+        if ($this->show_folders && $this->show_documents) {
+            $main->requireJSResource("resources/js/singleselect.js");
         }
         return '&nbsp;';
     }
@@ -437,8 +455,8 @@ class AdvancedSingleSelectionColumn extends AdvancedSelectionColumn {
         }
 
         $return =  '<input type="radio" name="' . $localname . '" value="' . $v . '" ';
-        if($this->show_folders && $this->show_documents){
-        	$return .= 'onClick="forceSingleSelect(this)" ';
+        if ($this->show_folders && $this->show_documents) {
+            $return .= 'onClick="forceSingleSelect(this)" ';
         }
         $return .='/>';
         return $return;
@@ -454,10 +472,10 @@ class AdvancedSingleSelectionColumn extends AdvancedSelectionColumn {
 class AdvancedWorkflowColumn extends AdvancedColumn {
     var $namespace = 'ktcore.columns.workflow_state';
     var $folder_sort_column = null;
-    
+
     function AdvancedWorkflowColumn() {
         $this->label = _kt("Workflow State");
-		$this->sortable = true;
+        $this->sortable = true;
     }
 
     // use inline, since its just too heavy to even _think_ about using smarty.
@@ -478,7 +496,7 @@ class AdvancedWorkflowColumn extends AdvancedColumn {
             );
         }
     }
-    
+
     function addToDocumentQuery() {
             return array(null,
             null,
@@ -505,7 +523,7 @@ class CheckedOutByColumn extends AdvancedColumn {
         // Check if document is checked out
         $bIsCheckedOut = $aDataRow['document']->getIsCheckedOut();
 
-        if($bIsCheckedOut){
+        if ($bIsCheckedOut) {
             // Get the user id
             $iUserId = $aDataRow['document']->getCheckedOutUserID();
             $oUser = User::get($iUserId);
@@ -535,7 +553,7 @@ class DocumentTypeColumn extends AdvancedColumn {
         // Check if document is checked out
         $iDocTypeId = $aDataRow['document']->getDocumentTypeID();
 
-        if(!empty($iDocTypeId)){
+        if (!empty($iDocTypeId)) {
             $oDocumentType = DocumentType::get($iDocTypeId);
             $sType = $oDocumentType->getName();
 

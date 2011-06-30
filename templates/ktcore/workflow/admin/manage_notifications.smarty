@@ -15,7 +15,7 @@
         <tr>
             <td>{$oState->getName()}</td>
             <td class="centered"><a href="{addQS context=$context}action=editnotifications&fStateId={$state_id}{/addQS}" class="ktAction ktEdit"></a></td>
-            <td><span class="descriptiveText">{$context->describeStateNotifications($oState)}</span></td>
+            <td><span>{$context->describeStateNotifications($oState)}</span></td>
         </tr>
       {/foreach}
     </tbody>
