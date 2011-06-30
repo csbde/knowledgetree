@@ -1,3 +1,5 @@
 <h2>{i18n}{i18n}Add States to Workflow{/i18n}{/i18n}</h2>
 
 {$form->render()}
+
+<br clear="both" />

@@ -1,3 +1,5 @@
 <h2>{i18n}Add Transitions to Workflow{/i18n}</h2>
 
 {$form->render()}
+
+<br clear="both" />

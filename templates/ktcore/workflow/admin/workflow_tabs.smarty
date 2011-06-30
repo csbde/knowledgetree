@@ -1,4 +1,4 @@
-<h2>Workflow: {$workflowName}</h2>
+<h2>{i18n}Editing Workflow{/i18n}: {$workflowName}</h2>
 
 <div id="workflowtabs">
     <ul>
@@ -26,3 +26,5 @@
 {/literal}
 
 
+<br />
+<a href="{addQS}action=main{/addQS}">Back to List of Workflows</a>

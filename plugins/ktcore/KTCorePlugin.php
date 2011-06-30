@@ -288,7 +288,7 @@ class KTCorePlugin extends KTPlugin {
             _kt('Configure system preferences.'), 90);
         $this->registerAdminCategory('contentManagement', _kt('Backup & Restore'),
             _kt('Manage content.'), 20);
-        $this->registerAdminCategory('documentProperties', _kt('Document Properties'),
+        $this->registerAdminCategory('documentProperties', _kt('Alerts & Properties'),
             _kt('Manage document properties.'), 60);
         $this->registerAdminCategory('workflows', _kt('Workflows'),
             _kt('Manage workflows.'), 50);
@@ -381,17 +381,27 @@ class KTCorePlugin extends KTPlugin {
             _kt('Document Action Settings'), _kt('Define system behaviour when document actions are performed. (e.g. Enforce reasons for Check-out)'),
             'admin/configSettings.php', null);
 
-        $this->registerAdminPage('uiconfigpage', 'UIConfigPageDispatcher', 'sysConfig',
-            _kt('User Interface'), _kt('View and modify settings on Browse View actions, OEM name, automatic refresh, search results restrictions, custom logo details, paths to dot binary, graphics, and log directory, and whether to enable/disable condensed UI, \'open\' from downloads, sort metadata, and skinning.'),
-            'admin/configSettings.php', null);
+        if ($restrictedEnv !== true) {
+	        $this->registerAdminPage('uiconfigpage', 'UIConfigPageDispatcher', 'sysConfig',
+	            _kt('User Interface'), _kt('View and modify settings on Browse View actions, OEM name, automatic refresh, search results restrictions, custom logo details, paths to dot binary, graphics, and log directory, and whether to enable/disable condensed UI, \'open\' from downloads, sort metadata, and skinning.'),
+	            'admin/configSettings.php', null);
+	
+	        $this->registerAdminPage('clientconfigpage', 'ClientSettingsConfigPageDispatcher', 'clientTools',
+	            _kt('Client Tools'), _kt('View and change settings for the KnowledgeTree Tools Server, Client Tools Policies, WebDAV, and the OpenOffice.org service.'),
+	            'admin/configSettings.php', null);
+	        //client tools
+	        $this->registerAdminPage('kttoolsconfigpage', 'KtToolsConfigPageDispatcher', 'clientTools',
+	            _kt('KnowledgeTree Tools'), _kt('View and change settings for the KnowledgeTree Tools Server.'),
+	            'admin/configSettings.php', null);
 
-        $this->registerAdminPage('clientconfigpage', 'ClientSettingsConfigPageDispatcher', 'clientTools',
-            _kt('Client Tools'), _kt('View and change settings for the KnowledgeTree Tools Server, Client Tools Policies, WebDAV, and the OpenOffice.org service.'),
-            'admin/configSettings.php', null);
-        //client tools
-        $this->registerAdminPage('kttoolsconfigpage', 'KtToolsConfigPageDispatcher', 'clientTools',
-            _kt('KnowledgeTree Tools'), _kt('View and change settings for the KnowledgeTree Tools Server.'),
-            'admin/configSettings.php', null);
+	        $this->registerAdminPage('generalconfigpage', 'GeneralConfigPageDispatcher', 'sysConfig',
+	            _kt('General Settings'), _kt('View and modify settings for KnowledgeTree.'),
+	            'admin/configSettings.php', null);
+
+	        $this->registerAdminPage('i18nconfigpage', 'i18nConfigPageDispatcher', 'sysConfig',
+	            _kt('Internationalisation Settings'), _kt('View and modify the default language.'),
+	            'admin/configSettings.php', null);
+        }
             
         $this->registerAdminPage('explorercpconfigpage', 'ExplorerConfigPageDispatcher', 'clientTools',
             _kt('Explorer CP'), _kt('View and change settings for the Explorer CP.'),
@@ -404,11 +414,6 @@ class KTCorePlugin extends KTPlugin {
         $this->registerAdminPage('webservicesconfig', 'WebservicesConfigPageDispatcher', 'clientTools',
             _kt('Web Services'), _kt('View and change settings for the KnowledgeTree Web Services.'),
             'admin/configSettings.php', null);
-
-        //$this->registerAdminPage('generalconfigpage', 'GeneralConfigPageDispatcher', 'sysConfig',
-        //    _kt('General Settings'), _kt('View and modify settings for KnowledgeTree.'),
-        //    'admin/configSettings.php', null);
-
         $this->registerAdminPage('session', 'SessionConfigPageDispatcher', 'security',
             _kt('Session Management'), _kt('View and modify session settings for KnowledgeTree.'),
             'admin/configSettings.php', null);
@@ -436,9 +441,6 @@ class KTCorePlugin extends KTPlugin {
                 'admin/manageHelp.php', null);
         }
 
-       // $this->registerAdminPage('i18nconfigpage', 'i18nConfigPageDispatcher', 'sysConfig',
-        //    _kt('Internationalisation Settings'), _kt('View and modify the default language.'),
-        //    'admin/configSettings.php', null);
 
         // misc
 
