@@ -288,7 +288,7 @@ class KTCorePlugin extends KTPlugin {
             _kt('Configure system preferences.'), 90);
         $this->registerAdminCategory('contentManagement', _kt('Backup & Restore'),
             _kt('Manage content.'), 20);
-        $this->registerAdminCategory('documentProperties', _kt('Document Properties'),
+        $this->registerAdminCategory('documentProperties', _kt('Alerts & Properties'),
             _kt('Manage document properties.'), 60);
         $this->registerAdminCategory('workflows', _kt('Workflows'),
             _kt('Manage workflows.'), 50);
