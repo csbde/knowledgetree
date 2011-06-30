@@ -36,7 +36,6 @@ class ZendDeskDispatcher extends KTStandardDispatcher {
 	
 	public function __construct()
 	{
-		$this->persistParams(array('timestamp' => $_REQUEST['timestamp']));
 		parent::KTStandardDispatcher();
 		
 		if(!isset($_SESSION['userID'])) {
@@ -44,7 +43,6 @@ class ZendDeskDispatcher extends KTStandardDispatcher {
 		}
 		$this->user = new User();
 		$this->user = $this->user->get($_SESSION['userID']);
-		
 		$this->fullname = $this->user->getUserName();
 		$this->email = $this->user->getEmail();
 		$this->email = ($this->email != '')? $this->email : $this->name . '@knowledgetree.com';
