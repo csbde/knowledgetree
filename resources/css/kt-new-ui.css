@@ -657,13 +657,13 @@ ul.floatleft li.notification {
 .action_buttons .hover #share {
 	background: url('../graphics/newui/icons/share_hover.png') no-repeat 4px 4px !important;
 }
-.action_buttons #checkout {
+.action_buttons #checkoutdowload {
 	background: url('../graphics/newui/icons/lock.png') no-repeat 4px 4px;
 }
-.action_buttons .hover #checkout {
+.action_buttons .hover #checkoutdowload {
 	background: url('../graphics/newui/icons/lock_hover.png') no-repeat 4px 4px !important;
 }
-.action_buttons #checkoutdowload {
+.action_buttons #checkout {
 	background: url('../graphics/newui/icons/lock.png') no-repeat 4px 4px;
 }
 .action_buttons #checkin {
