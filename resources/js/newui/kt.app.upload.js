@@ -467,7 +467,7 @@ kt.app.upload = new function() {
 
     this.fadeProgress = function(time)
     {
-        jQuery('#uploadProgress').fadeOut(time);
+        jQuery('#uploadProgress').fadeOut(1000);
     }
 
     // iterates through all the files and checks whether they have been added to S3

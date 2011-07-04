@@ -10,6 +10,7 @@ body {
 }
 #wrapper  {
 	padding-bottom: 25px;
+	position: relative;
 }
 
 textarea {
@@ -657,13 +658,13 @@ ul.floatleft li.notification {
 .action_buttons .hover #share {
 	background: url('../graphics/newui/icons/share_hover.png') no-repeat 4px 4px !important;
 }
-.action_buttons #checkoutdowload {
+.action_buttons #checkout {
 	background: url('../graphics/newui/icons/lock.png') no-repeat 4px 4px;
 }
-.action_buttons .hover #checkoutdowload {
+.action_buttons .hover #checkout {
 	background: url('../graphics/newui/icons/lock_hover.png') no-repeat 4px 4px !important;
 }
-.action_buttons #checkout {
+.action_buttons #checkoutdowload {
 	background: url('../graphics/newui/icons/lock.png') no-repeat 4px 4px;
 }
 .action_buttons #checkin {
@@ -1034,25 +1035,29 @@ div#activationNotice span {
 
 div#uploadProgress {
 	margin-right: 15px;
-	background: #F2EBAE;
+	background: rgba(40, 40, 40, 0.9);
 	height: 50px;
-	float: right;
+	float: left;
 	text-align: left;
 	padding: 10px 20px 0 20px;
-	border-radius: 6px;
-	border: 2px solid #AAA;
-	box-shadow: 0px 0px 8px #AAA;
+	border-radius: 3px;
+	-moz-border-radius: 3px;
+	-webkit-border-radius: 3px;
+	border: 0px;
+	box-shadow: 0px 0px 5px #aaa;
+	-moz-box-shadow: 0px 0px 5px #aaa;
+	-webkit-box-shadow: 0px 0px 5px #aaa;
 	position: absolute;
-	right: 0;/* Was -17px;*/
+	right: -17px;
 	z-index: 999999;
-	color: #666;
+	color: #fff;
 	width: 199px;
 	font-weight: bold;
-	top: 7px;
-	text-shadow: 0px 1px 0px white;
-
+	text-shadow: 0px 1px 0px black;
+	top: 10px;
 	display: none;
     visibility: hidden;
+    line-height: 16px;
 }
 span#uploadProgress .title {
 	font-size: 12px;
