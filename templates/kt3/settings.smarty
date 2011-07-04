@@ -4,7 +4,7 @@
 <div class="sidebar standardBorder" id="settings">
    {foreach item=aCategory from=$categories}
    <div>
-   		{capture assign="cat_id"}{$aCategory.name}{/capture}<a href="{$smarty.server.PHP_SELF|addQueryString:"action=viewCategory&fCategory=$cat_id"}" class="{$aCategory.name}">{$aCategory.title}</a>
+   		{capture assign="cat_id"}{$aCategory.name}{/capture}<a href="{$smarty.server.PHP_SELF|addQueryString:"action=viewCategory&fCategory=$cat_id"}" class="{$aCategory.name}{if $aCategory.name == $currentCategory} currentSettingsCategory{/if}">{$aCategory.title}</a>
    </div>
    <div>
    		<p>
