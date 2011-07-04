@@ -101,9 +101,13 @@ class AdminSettingsDispatcher extends KTAdminDispatcher {
             $template = $templating->loadTemplate('kt3/settings');
         }
         
+        $urlParts = $this->parseSubUrl();
+        $currentCategory = $this->getCategory($urlParts[0]);
+        
         $templateData = array(
                             'context' => $this,
                             'categories' => $categories,
+                            'currentCategory' => $currentCategory,
                             'all_items' => $allItems,
                             'items' => $this->getCategoryItems(),
                             'baseurl' => $_SERVER['PHP_SELF'],

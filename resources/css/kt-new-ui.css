@@ -1569,3 +1569,7 @@ li.ui-state-disabled a {
 	padding: 10px;
 	color: #53bc3e;
 }
+
+a.currentSettingsCategory {
+	background: yellow;
+}
