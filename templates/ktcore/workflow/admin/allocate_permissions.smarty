@@ -2,7 +2,7 @@
 {$context->oPage->requireJSResource("resources/js/jsonlookup.js")}
 {$context->oPage->requireJSResource("resources/js/permissions.js")}
 
-{capture assign=sJavascript}initializePermissions('entities', '{addQS context=$context}action=json&json_action=getEntities{/addQS}', {$jsonpermissions});{/capture}
+{capture assign=sJavascript}initializePermissions('entities', '{addQS context=$context}action=json&json_action=getEntities&request_src=ajax{/addQS}', {$jsonpermissions});{/capture}
 {$context->oPage->requireJSStandalone($sJavascript)}
 
 <form action="{$smarty.server.PHP_SELF}" method="POST">
