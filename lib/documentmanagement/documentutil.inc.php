@@ -1468,12 +1468,6 @@ class KTDocumentUtil {
             KTDocumentUtil::copyMetadata($document, $previousMetadataVersion);
         }
 
-        // rename file in storage driver
-        $res = $storageManager->renameDocument($document, $oldContentVersion, $sNewFilename);
-        if (!$res) {
-            return PEAR::raiseError(_kt('An error occurred while storing the new file'));
-        }
-
         $document->setLastModifiedDate(getCurrentDateTime());
         $document->setModifiedUserId($user->getId());
 
