@@ -707,7 +707,7 @@ ul.floatleft li.notification {
 	background: url('../graphics/newui/icons/mail.png') no-repeat 4px 4px;
 }
 .action_buttons #download-pdf {
-	background: url('../graphics/mimetypes/pdf.png') no-repeat 4px 4px;
+	background: url('../graphics/newui/icons/pdf.png') no-repeat 4px 4px;
 }
 .action_buttons #more {
 	background: url('../graphics/newui/icons/more.png') no-repeat 4px 4px;
@@ -1035,7 +1035,8 @@ div#activationNotice span {
 
 div#uploadProgress {
 	margin-right: 15px;
-	background: rgba(40, 40, 40, 0.9);
+	background: rgb(150,150,150);
+	background: rgba(0, 0, 0, 0.7);
 	height: 50px;
 	float: left;
 	text-align: left;
