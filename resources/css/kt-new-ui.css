@@ -1189,12 +1189,14 @@ label span.required
 /*Settings */
 .sidebar#settings {
 	float: left;
-	width: 175px;
-	padding: 10px;
+	width: 195px;
 	background: #F5F5F5;
 }
 .sidebar#settings a {
-	line-height: 25px;
+	line-height: 22px;
+	display: block;
+	padding: 0px 10px;
+	margin: 5px 0px 5px 0px;
 }
 .settings-item {
 	border: 1px solid #CCC;
@@ -1571,5 +1573,7 @@ li.ui-state-disabled a {
 }
 
 a.currentSettingsCategory {
-	background: yellow;
+	font-weight: bold;
+	background: url('/resources/graphics/newui/popover_tip.png') no-repeat right;
+	margin-right: -1px!important;
 }
