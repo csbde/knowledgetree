@@ -430,7 +430,7 @@ class KTPermissionUtil {
         $iRoleSourceFolder = null;
         if ($is_a_document) {
             $iRoleSourceFolder = $oFolderOrDocument->getFolderID();
-        }else {
+        } else {
             $iRoleSourceFolder = $oFolderOrDocument->getId();
         }
 
@@ -486,7 +486,6 @@ class KTPermissionUtil {
         print '</pre>';
         */
 
-
         //if (is_null($oPermLookup)) {
             $aMapPermDesc = array();
             foreach ($aMapPermAllowed as $iPermissionId => $aAllowed) {
@@ -501,7 +500,13 @@ class KTPermissionUtil {
         //}
 
         $oFolderOrDocument->setPermissionLookupID($oPermLookup->getID());
-        $oFolderOrDocument->update();
+        //$oFolderOrDocument->update();
+        if ($oFolderOrDocument instanceof Document) {
+            $oFolderOrDocument->updateDocumentCore();
+        }
+        else {
+            $oFolderOrDocument->update();
+        }
     }
     // }}}
 

@@ -295,6 +295,14 @@ class Document {
     }
     // }}}
 
+    function updateDocumentCore($bPathMove = false)
+    {
+        $res = $this->_oDocumentCore->update($bPathMove);
+        if (PEAR::isError($res)) { var_dump($res); return $res; }
+
+        return $res;
+    }
+
     // {{{ update
     function update($bPathMove = false) {
         $res = $this->_oDocumentCore->update($bPathMove);
