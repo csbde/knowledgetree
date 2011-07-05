@@ -46,17 +46,20 @@ require_once(KT_LIB_DIR . '/plugins/plugin.inc.php');
 require_once(KT_LIB_DIR . '/plugins/pluginregistry.inc.php');
 
 class KTWorkflowAssociationPlugin extends KTPlugin {
+
     var $sNamespace = "ktstandard.workflowassociation.plugin";
     var $sFriendlyName = null;
     var $sHelpPage = 'ktcore/admin/automatic workflows';
 
-    function KTWorkflowAssociationPlugin($sFilename = null) {
+    function KTWorkflowAssociationPlugin($sFilename = null)
+    {
         $res = parent::KTPlugin($sFilename);
         $this->sFriendlyName = _kt('Workflow Association Plugin');
         return $res;
     }
 
-    function setup() {
+    function setup()
+    {
         $this->registerTrigger('add', 'postValidate', 'KTWADAddTrigger',
             'ktstandard.triggers.workflowassociation.addDocument');
         $this->registerTrigger('moveDocument', 'postValidate', 'KTWADMoveTrigger',
@@ -70,14 +73,17 @@ class KTWorkflowAssociationPlugin extends KTPlugin {
             _kt('Configure how documents are allocated to workflows.'), 'workflow/adminpage.php');
             $this->registeri18n('knowledgeTree', KT_DIR . '/i18n');
     }
+
 }
 
 // base class for delegation.
 class KTWorkflowAssociationDelegator {
+
     var $_handler;
     var $_document;
 
-    function KTWorkflowAssociationDelegator() {
+    function KTWorkflowAssociationDelegator()
+    {
         $oKTTriggerRegistry = KTTriggerRegistry::getSingleton();
         $aTriggers = $oKTTriggerRegistry->getTriggers('workflow', 'objectModification');
 
@@ -102,22 +108,26 @@ class KTWorkflowAssociationDelegator {
         }
     }
 
-    function applyWorkflow($oWorkflow) {
+    function applyWorkflow($oWorkflow)
+    {
         return true;
     }
 
-    function setInfo($aOptions) {
+    function setInfo($aOptions)
+    {
         $this->_document = $aOptions['document'];
     }
 
     function postValidate() {
         return KTWorkflowUtil::getWorkflowForDocument($this->_document);
     }
+
 }
 
-// Add
 class KTWADAddTrigger extends KTWorkflowAssociationDelegator {
-    function postValidate() {
+
+    function postValidate()
+    {
         $oWorkflow = $this->_handler->addTrigger($this->_document);
 
         // catch disabled workflows.
@@ -127,11 +137,13 @@ class KTWADAddTrigger extends KTWorkflowAssociationDelegator {
 
         $ret = KTWorkflowUtil::changeWorkflowOnDocument($oWorkflow, $this->_document);
     }
+
 }
 
-// Edit
-class KTWADEditTrigger extends KTWorkflowAssociationDelegator {
-    function postValidate() {
+class KTWADEditTrigger extends KTWorkflowAssociationDelegator
+{
+    function postValidate()
+    {
         $oWorkflow = $this->_handler->editTrigger($this->_document);
 
         // catch disabled workflows.
@@ -141,11 +153,13 @@ class KTWADEditTrigger extends KTWorkflowAssociationDelegator {
 
         $ret = KTWorkflowUtil::changeWorkflowOnDocument($oWorkflow, $this->_document);
     }
+
 }
 
-// Move
 class KTWADMoveTrigger extends KTWorkflowAssociationDelegator {
-    function postValidate() {
+
+    function postValidate()
+    {
         $oWorkflow = $this->_handler->moveTrigger($this->_document);
 
         // catch disabled workflows.
@@ -155,11 +169,13 @@ class KTWADMoveTrigger extends KTWorkflowAssociationDelegator {
 
         $ret = KTWorkflowUtil::changeWorkflowOnDocument($oWorkflow, $this->_document);
     }
+
 }
 
-// Move
 class KTWADCopyTrigger extends KTWorkflowAssociationDelegator {
-    function postValidate() {
+
+    function postValidate()
+    {
         $oWorkflow = $this->_handler->copyTrigger($this->_document);
 
         // catch disabled workflows.
@@ -169,20 +185,22 @@ class KTWADCopyTrigger extends KTWorkflowAssociationDelegator {
 
         $ret = KTWorkflowUtil::changeWorkflowOnDocument($oWorkflow, $this->_document);
     }
+
 }
 
 // "base class" for fallback.  should be subclassed and cross-referenced, otherwise
 // has no impact when called.
 class KTWorkflowAssociationHandler {
+
     function addTrigger($oDocument) { return KTWorkflowUtil::getWorkflowForDocument($oDocument); }
     function editTrigger($oDocument) { return KTWorkflowUtil::getWorkflowForDocument($oDocument); }
     function moveTrigger($oDocument) { return KTWorkflowUtil::getWorkflowForDocument($oDocument); }
     function copyTrigger($oDocument) { return KTWorkflowUtil::getWorkflowForDocument($oDocument); }
+
 }
 
-
-$oPluginRegistry =& KTPluginRegistry::getSingleton();
-$oPluginRegistry->registerPlugin('KTWorkflowAssociationPlugin', 'ktstandard.workflowassociation.plugin', __FILE__);
+$pluginRegistry =& KTPluginRegistry::getSingleton();
+$pluginRegistry->registerPlugin('KTWorkflowAssociationPlugin', 'ktstandard.workflowassociation.plugin', __FILE__);
 
 
 /* include others */
