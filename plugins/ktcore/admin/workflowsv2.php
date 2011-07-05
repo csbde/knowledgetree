@@ -417,7 +417,7 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
     {
         
         // If coming via modal or ajax, no need to render the tabs
-        if (KTUtil::arrayGet($_REQUEST, 'modal', null) == 'yes') {
+        if (KTUtil::arrayGet($_REQUEST, 'modal') == 'yes' || KTUtil::arrayGet($_REQUEST, 'request_src') == 'ajax') {
             return $output;
         }
         
@@ -1725,7 +1725,7 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
             $res = KTWorkflowUtil::setDisabledActionsForState($oState, $disable);
         }
 
-        $this->successRedirectTo('actionsoverview', _kt('Disabled actions updated.'));
+        $this->successRedirectTo('security', _kt('Disabled actions updated.'));
     }
 
     public function do_transitionsecurityoverview($useTabs=TRUE) {

@@ -10,6 +10,7 @@ body {
 }
 #wrapper  {
 	padding-bottom: 25px;
+	position: relative;
 }
 
 textarea {
@@ -706,7 +707,7 @@ ul.floatleft li.notification {
 	background: url('../graphics/newui/icons/mail.png') no-repeat 4px 4px;
 }
 .action_buttons #download-pdf {
-	background: url('../graphics/mimetypes/pdf.png') no-repeat 4px 4px;
+	background: url('../graphics/newui/icons/pdf.png') no-repeat 4px 4px;
 }
 .action_buttons #more {
 	background: url('../graphics/newui/icons/more.png') no-repeat 4px 4px;
@@ -1034,25 +1035,30 @@ div#activationNotice span {
 
 div#uploadProgress {
 	margin-right: 15px;
-	background: #F2EBAE;
+	background: rgb(150,150,150);
+	background: rgba(0, 0, 0, 0.7);
 	height: 50px;
-	float: right;
+	float: left;
 	text-align: left;
 	padding: 10px 20px 0 20px;
-	border-radius: 6px;
-	border: 2px solid #AAA;
-	box-shadow: 0px 0px 8px #AAA;
+	border-radius: 3px;
+	-moz-border-radius: 3px;
+	-webkit-border-radius: 3px;
+	border: 0px;
+	box-shadow: 0px 0px 5px #aaa;
+	-moz-box-shadow: 0px 0px 5px #aaa;
+	-webkit-box-shadow: 0px 0px 5px #aaa;
 	position: absolute;
-	right: 0;/* Was -17px;*/
+	right: -17px;
 	z-index: 999999;
-	color: #666;
+	color: #fff;
 	width: 199px;
 	font-weight: bold;
-	top: 7px;
-	text-shadow: 0px 1px 0px white;
-
+	text-shadow: 0px 1px 0px black;
+	top: 10px;
 	display: none;
     visibility: hidden;
+    line-height: 16px;
 }
 span#uploadProgress .title {
 	font-size: 12px;
@@ -1183,12 +1189,14 @@ label span.required
 /*Settings */
 .sidebar#settings {
 	float: left;
-	width: 175px;
-	padding: 10px;
+	width: 195px;
 	background: #F5F5F5;
 }
 .sidebar#settings a {
-	line-height: 25px;
+	line-height: 22px;
+	display: block;
+	padding: 0px 10px;
+	margin: 5px 0px 5px 0px;
 }
 .settings-item {
 	border: 1px solid #CCC;
@@ -1461,13 +1469,13 @@ http://devgrow.com/iphone-style-switches/
 	border-radius: 5px 0px 0px 5px;
 	-moz-border-radius: 5px 0px 0px 5px;
 	-webkit-border-radius: 5px 0px 0px 5px;
+	border-left: 1px solid #CCC !important;
 	margin-left: 0px;
 }
 #content .ui-tabs .ui-tabs-nav li:last-child {
 	border-radius: 0px 5px 5px 0px;
 	-moz-border-radius: 0px 5px 5px 0px;
 	-webkit-border-radius: 0px 5px 5px 0px;
-	border-right: 1px solid #CCC !important;
 }
 #content .ui-tabs .ui-tabs-nav li {
 	font-size: 12px;
@@ -1483,10 +1491,16 @@ http://devgrow.com/iphone-style-switches/
 	margin: 0px 0px 0px -5px;
 	background: white;
 	border: 1px solid #CCC !important;
-	border-right: 0px !important;
 	font-size: 13px;
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	user-select: none;
 }
-
+#content .ui-corner-top {
+	border-radius: 0px
+	-moz-border-radius: 0px;
+	-webkit-border-radius: 0px;
+}
 li.ui-state-disabled {
 	opacity: 1 !important;
 	color: #CCCCCC !important;
@@ -1500,6 +1514,7 @@ li.ui-state-disabled a {
 	float: none;
 	padding: 0px;
 	text-decoration: none;
+	outline: none;
 }
 #content .ui-tabs .ui-tabs-nav li.ui-state-hover  {
 	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffff', endColorstr='#ededed');
@@ -1555,4 +1570,10 @@ li.ui-state-disabled a {
 	border: 1px solid #53bc3e;
 	padding: 10px;
 	color: #53bc3e;
+}
+
+a.currentSettingsCategory {
+	font-weight: bold;
+	background: url('/resources/graphics/newui/popover_tip.png') no-repeat right;
+	margin-right: -1px!important;
 }
