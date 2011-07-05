@@ -144,6 +144,7 @@ class BrowseDispatcher extends KTStandardDispatcher {
 	           'browseutil' => new KTBrowseUtil(),
 	           'returnaction' => 'browse',
 	           'folderSidebars' => $folderSidebars,
+	           'notifyBulkAction' => $this->getBulkNotification(),
 	    );
 
 	    // NOTE Don't quite know why this is in here. Someone reports that it is there for search browsing which seem to be disabled.
@@ -616,6 +617,19 @@ class BrowseDispatcher extends KTStandardDispatcher {
 	    }
 	}
 
+	private function getBulkNotification() {
+	    $usersBulkActions = MemCacheUtil::get("bulkaction_" . $this->oUser->getId());
+	    $usersBulkActions = unserialize($usersBulkActions);
+	    foreach ($usersBulkActions as $action => $folderIds) {
+	    	foreach ($folderIds as $folderId) {
+		    	if($folderId == $this->oFolder->getId()) {
+		    		return "Bulk $action action in progress.";
+		    	}
+	    	}
+	    }
+		
+	    return '';
+	}
 }
 
 $oDispatcher = new BrowseDispatcher();

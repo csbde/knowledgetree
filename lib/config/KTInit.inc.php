@@ -1,5 +1,7 @@
 <?php
 
+require_once('config.inc.php');
+
 class KTInit {
 
     protected static $handlerMapping = array(

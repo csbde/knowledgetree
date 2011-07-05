@@ -325,6 +325,14 @@ textarea {
 	float: right;
 	position: relative;
 }
+.breadcrumbsNotify {
+	float: left;
+	position: relative;
+}
+.breadcrumbsNotify span.notifyAction {
+	background: none repeat scroll 0 0 #F2EBAE !important;
+	border: 1px solid #FFE877 !important;
+}
 .breadCrumb ul {
 	margin: 0;
 	padding: 0;

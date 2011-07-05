@@ -32,6 +32,11 @@
 <tr>
 	<td width="745" valign="top">
 		<div class="breadcrumbBtns">
+			<div class="breadcrumbsNotify">
+				{if $notifyBulkAction}
+					<span class="notifyAction"> {$notifyBulkAction} </span>
+				{/if}
+			</div>
 			<div class="breadcrumbActionBtns">
 	            <nobr>
 				{foreach item=aBtn from=$context->actionBtns.buttons name=btn}

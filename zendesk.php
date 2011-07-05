@@ -66,7 +66,7 @@ class ZendDeskDispatcher extends KTStandardDispatcher {
     }
     
     /**
-     * Build url 
+     * Build redirect url
      */
     private function getAuthenticationUrl() {
     	global $default;

@@ -1498,8 +1498,15 @@ class KTAPI {
         $response['status_code'] = 1;
 
         if (!is_array($items)) {
-            $response['message'] = sprintf(_kt("The list of id's must be an array of format array('documents' => array(1,2), 'folders' => array(2,3)). Received: %s") , $items);
-            return $response;
+        	global $default;
+        	$items = unserialize($items);
+        	$reason = urldecode($reason);
+        	if(!is_array($items)) {
+        		$response['message'] = sprintf(_kt("The list of id's must be an array of format array('documents' => array(1,2), 'folders' => array(2,3)). Received: %s") , $items);
+            	return $response;
+        	}
+        	$default->log->info('performBulkAction' . print_r($target_folder_id, true));
+        	$default->log->info("$action | $items | $reason | $target_folder_id");
         }
 
         if (empty($items)) {
