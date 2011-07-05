@@ -77,7 +77,7 @@ class KTDocTypeWorkflowAssociationPlugin extends KTPlugin {
                 _kt('This installation assigns workflows by Document Type. Configure this process here.'), __FILE__);
         }
         else {
-            $this->deRegisterPluginHelper('contentManagement/workflow_type_allocation', 'admin_page');
+            $this->deRegisterPluginHelper('workflows/workflow_type_allocation', 'admin_page');
         }
 
         return true;

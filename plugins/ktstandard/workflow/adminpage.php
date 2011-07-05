@@ -103,6 +103,7 @@ class WorkflowAllocationSelection extends KTAdminDispatcher {
             $query .= ' WHERE event_ns = ?';
             $params = array('ktstandard.workflowassociation.handler');
             DBUtil::runQuery(array($query, $params));
+            
             $this->successRedirectToMain(_kt('Handler removed.'));
         }
         else {
@@ -123,7 +124,7 @@ class WorkflowAllocationSelection extends KTAdminDispatcher {
             $params = array($selectionNamespace);
 
             DBUtil::runQuery(array($query, $params));
-            
+
             $this->successRedirectToMain(_kt('Handler set.'));
         }
     }
