@@ -1,4 +1,3 @@
-<h2>{i18n}Manage Branding{/i18n}</h2>
 
 {$form->render()}
 

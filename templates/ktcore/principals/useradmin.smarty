@@ -3,10 +3,6 @@
 {else}
 {assign var="colwidth" value="300"}
 {/if}
-
-
-
-<h2>{i18n}User Management{/i18n}</h2>
 {literal}
 <script type="text/javascript">
 	function updateUser(updateAction)
