@@ -62,6 +62,7 @@ class KTCorePlugin extends KTPlugin {
         $this->registerAction('documentaction', 'KTDocumentViewAction', 'ktcore.actions.document.view', 'KTDocumentActions.php');
         $this->registerAction('documentaction', 'KTOwnershipChangeAction', 'ktcore.actions.document.ownershipchange', 'KTDocumentActions.php');
         $this->registerAction('documentaction', 'KTDocumentCheckOutAction', 'ktcore.actions.document.checkout', 'KTDocumentActions.php');
+        $this->registerAction('documentaction', 'KTDocumentCheckOutDownloadAction', 'ktcore.actions.document.checkoutdownload', 'KTDocumentActions.php');
         $this->registerAction('documentaction', 'KTDocumentCancelCheckOutAction', 'ktcore.actions.document.cancelcheckout', 'KTDocumentActions.php');
         $this->registerAction('documentaction', 'SharedContentDocumentAction', 'ktcore.actions.document.sharecontent', KT_PLUGIN_DIR . '/sharedcontent/SharedContentDocumentAction.php');
         $this->registerAction('folderaction', 'SharedContentFolderAction', 'ktcore.actions.folder.sharecontent', KT_PLUGIN_DIR . '/sharedcontent/SharedContentDocumentAction.php');
@@ -234,7 +235,8 @@ class KTCorePlugin extends KTPlugin {
         $this->registerWidget('KTCoreImageCropWidget', 'ktcore.widgets.imagecrop', 'KTWidgets.php');
 		$this->registerWidget('KTCoreSWFFileSelectWidget', 'ktcore.widgets.swffileselect', 'KTWidgets.php');
 		$this->registerWidget('KTCoreAjaxUploadWidget', 'ktcore.widgets.ajaxupload', 'KTWidgets.php');
-
+		$this->registerWidget('KTCoreDivWidget', 'ktcore.widgets.div', 'KTWidgets.php');
+		
         $this->registerPage('collection', 'KTCoreCollectionPage', 'KTWidgets.php');
         $this->registerPage('notifications', 'KTNotificationOverflowPage', 'KTMiscPages.php');
 

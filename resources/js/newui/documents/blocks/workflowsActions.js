@@ -33,12 +33,12 @@ workflowActions.prototype.displayAction = function(transitionId) {
 		address = this.baseUrl + 'fDocumentId=' + documentId;
 	} else {
 		if(transitionId == undefined) {
-			width = '600px';
+			width = '400px';
 			height = '400px';
 			title = 'Transition a workflow';
 			address = this.baseUrl + 'fDocumentId=' + documentId;
 		} else {
-			width = '500px';
+			width = '400px';
 			height = '400px';
 			title = 'Perform Transition';
 			address = this.baseUrl + 'action=quicktransition&fDocumentId=' + documentId + '&fTransitionId=' + transitionId;
@@ -54,6 +54,8 @@ workflowActions.prototype.displayAction = function(transitionId) {
         width       : width,
         height      : height,
         closeAction :'destroy',
+		resizable   : false,
+		draggable   : false,
         y           : 75,
         shadow: false,
         modal: true
@@ -72,7 +74,7 @@ workflowActions.prototype.displayAction = function(transitionId) {
 		}
 	});
 };
-
+			
 /* 
 * Refresh workflow sidebar
 */
@@ -87,7 +89,7 @@ workflowActions.prototype.refeshSidebar = function(documentId) {
 			jQuery('.workflow_transitions').html(data);
 		},
 		error: function(response, code) {
-			alert('Error. Could not reload alerts.'+response + code);
+			alert('Error. Could not reload workflow.'+response + code);
 		}
 	});	
 };

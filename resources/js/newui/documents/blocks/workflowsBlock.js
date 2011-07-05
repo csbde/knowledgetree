@@ -19,7 +19,7 @@ function workflowsBlock() {
 * Submit the form
 */
 workflowsBlock.prototype.submitForm = function(action) {
-	if(this.validateForm() == false) { return false; }
+	if(this.validateForm(action) == false) { return false; }
 	var documentId = jQuery('#documentId').attr('value');
 	var address;
 	// Check workflow action to perform.
@@ -41,8 +41,16 @@ workflowsBlock.prototype.submitForm = function(action) {
 						jQuery('#add_workflow').html('Saving...');
 					},
 					success: function(data) {
+						response = jQuery.parseJSON(data);
+						console.log(response);
+						if (response.permission != 1) {
+							var url = response.url;
+    						window.location.replace(url);
+    						return true;
+						}
+						
 						// Display saved message
-						jQuery('#add_workflow').html(data);
+						jQuery('#add_workflow').html(response.message);
 						// Remove modal window
 						jQuery('#workflows-panel').remove().delay(2000);
 						// Refresh alert sidebar
@@ -56,9 +64,9 @@ workflowsBlock.prototype.submitForm = function(action) {
 /*
 * Validate the time
 */
-workflowsBlock.prototype.validateForm = function () {
+workflowsBlock.prototype.validateForm = function (action) {
 	var comment = jQuery('textarea[name="fComments"]').val();
-	if(comment == '') { alert("Please specify a comment"); return false; }
+	if(comment == ''  && action != 'change') { alert("Please specify a comment"); return false; }
 	return true;
 }
 

@@ -1,0 +1,71 @@
+<link href="/resources/css/newui/browse.css" type="text/css" rel="stylesheet" />
+<link href="/resources/css/kt-new-modal.css" type="text/css" rel="stylesheet" />
+<link href="/resources/css/newui/browse/subscriptions.css" type="text/css" rel="stylesheet" />
+
+<script src="/resources/js/newui/buttons/formActions.js" type="text/javascript"></script>
+
+{if !$aFolderSubscriptions && !$aDocumentSubscriptions}
+	<div class=ktErrorMessage>
+		<span>{i18n}You have no subscriptions{/i18n}</span>
+	</div>
+	<div class=form_actions id=modal>
+		<a href="#" class="form_cancel" onclick="vActions.closeDisplay('subscription'); return false;">Close</a>
+	</div>
+{else}
+	<p class=descriptiveText>{i18n}You are subscribed to the folders and
+	documents listed below.  You can remove your subscription by selecting
+	the folders and documents to which you no longer wish to
+	subscribe.{/i18n}</p>
+	<br/>
+	<form method=POST action="{$smarty.server.PHP_SELF}" name=update_subscriptions_form>
+	<input type=hidden name=action value=removeSubscriptions />
+
+	{if $aFolderSubscriptions}
+	<h4>Folders</h4>
+		<table class="subscription_manage">
+			<th> <input  id=allfolders type=checkbox onclick="javascript:{ldelim}subscriptions.selectAllFolders();{rdelim}"> </th>
+			<th colspan="2"> <span class=descriptiveText> (Select All) <span> </th>
+			{foreach from=$aFolderSubscriptions item=aFolderSubscription}
+			<tr>
+				<td class="checkbox">
+					<input class=folder_sub type=checkbox value="{$aFolderSubscription->getId()}" name="foldersubscriptions[]">
+				</td>
+				<td class="name"> 
+					{$aFolderSubscription->getContentLink()}
+				</td>
+				<td>
+					{if $aFolderSubscription->bWithSubFolders > 0}
+						<span style="color:red;">(Folder And Subfolders)</span>
+					{else}
+						
+					{/if}
+				</td>
+			</tr>
+			{/foreach}
+		</table>
+	{/if}
+	
+	{if $aDocumentSubscriptions}
+	<h4>Documents</h4>
+		<table class="subscription_manage">
+			<th> <input id=alldocuments type=checkbox onclick="javascript:{ldelim}subscriptions.selectAllDocuments();{rdelim}"> </th>
+			<th colspan="2"> <span class=descriptiveText> (Select All) <span> </th>
+			{foreach from=$aDocumentSubscriptions item=aDocumentSubscription}
+			<tr>
+				<td class="checkbox">
+					<input class="document_sub" type="checkbox" value="{$aDocumentSubscription->getId()}" name="documentsubscriptions[]">
+				</td>
+				<td class="name">
+					{$aDocumentSubscription->getContentLink()}
+				</td>
+			</tr>
+			{/foreach}
+		</table>
+	{/if}
+	</form>
+	
+	<div class="form_actions" id="modal">
+		<input type="submit" name="submit" onclick="subscriptions.submitForm(); return false;" value="{i18n}Remove subscription{/i18n}" />
+		<a href="#" class="form_cancel" onclick="vActions.closeDisplay('subscription'); return false;">Close</a>
+	</div>
+{/if}

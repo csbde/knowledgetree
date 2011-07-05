@@ -394,31 +394,56 @@ class kt extends client_service {
 
 		foreach ($detail as $fieldset) {
 			foreach ($fieldset ['fields'] as $field) {
-				$prepArray = array('fieldset' => $fieldset ['fieldset'], 'name' => $field ['name'],  'fieldid' => $field ['fieldid'],
-
-				// Change for value. If blank value is set to 1, change value to ''
-				// Overcomes issue of n/a
-				'value' => ($document_id > 0 ? ($field ['blankvalue'] == '1' ? '' : $field ['value']) : ''),
-
-				'description' => $field ['description'], 'control_type' => $field ['control_type'], 'selection' => $field ['selection'], 'required' => $field ['required'], 'blankvalue' => $field ['blankvalue'], 'index' => $index);
+				$prepArray = array(
+                    'fieldset' => $fieldset ['fieldset'],
+                    'name' => $field ['name'],
+                    'fieldid' => $field ['fieldid'],
+                    
+                    // Change for value. If blank value is set to 1, change value to ''
+                    // Overcomes issue of n/a
+                    'value' => ($document_id > 0 ? ($field ['blankvalue'] == '1' ? '' : $field ['value']) : ''),
+                    'selection' => $field ['selection'],
+                    'description' => $field ['description'],
+                    'control_type' => $field ['control_type'],
+                    'required' => $field ['required'],
+                    'blankvalue' => $field ['blankvalue'],
+                    'index' => $index
+                );
 
 				// Small Adjustment for multiselect to real type
 				if ($field ['control_type'] == 'multiselect') {
-					$prepArray ['control_type'] = $field ['options']['type'];
-				}
-
+					$prepArray['control_type'] = $field ['options']['type'];
+                    
+                // Major adjustment needed for the tree field type
+                // The entire selection field needs to be simplifed
+				} else if ($field ['control_type'] == 'tree') {
+                    
+                    $this->logTrace((__METHOD__.'('.__FILE__.' '.__LINE__.')'), 'TOHIR TREE ***********');
+                    
+                    // Final Selection Array
+                    $varArray = array();
+                    
+                    $this->prepTreeStructure($field['selection'][0], $varArray, $prepArray['value']);
+                    
+                    $this->logTrace((__METHOD__.'('.__FILE__.' '.__LINE__.')'), json_encode($varArray));
+                    
+                    // Overwrite Selection Value
+                    $prepArray['selection'] = $varArray;
+                }
+                
+                // HTML Options
 				if (isset($field ['options']['ishtml'])) {
 					$prepArray ['ishtml'] = $field ['options']['ishtml'];
 				} else {
 					$prepArray ['ishtml'] = '0';
 				}
-
+                
 				if (isset($field ['options']['maxlength'])) {
 					$prepArray ['maxlength'] = $field ['options']['maxlength'];
 				} else {
 					$prepArray ['maxlength'] = '-1';
 				}
-
+                
 				$items[] = $prepArray;
 				$index++;
 			}
@@ -434,6 +459,43 @@ class kt extends client_service {
 
 		return true;
 	}
+    
+    private function prepTreeStructure($item, &$parentArray, $value)
+    {
+        $this->logTrace((__METHOD__.'('.__FILE__.' '.__LINE__.')'),'Enter Function');
+        
+        if ($item['type'] == 'tree') {
+            
+            if (!empty($item['treename'])) {
+                $itemArray = array('text'=>$item['treename'], 'expanded'=>TRUE);
+                
+                if (count($item['fields']) > 0) {
+                    foreach ($item['fields'] as $subField) {
+                        $this->prepTreeStructure($subField, $itemArray, $value);
+                    }
+                }
+                
+                if ($item['treeid'] == 0) {
+                    $parentArray = $itemArray;
+                } else {
+                    $parentArray['children'][] = $itemArray;
+                }
+                
+            }
+            
+            
+            
+        } else if ($item['type'] == 'field') {
+            
+            if (!empty($item['name'])) {
+                
+                $checked = ($item['name'] == $value) ? TRUE : FALSE;
+                
+                $itemArray = array('text'=>$item['name'], 'leaf'=>TRUE,  'cls'=>'x-tree-node-leaf', 'checked'=>$checked);
+                $parentArray['children'][] = $itemArray;
+            }
+        }
+    }
 
 	public function get_documenttypes($params)
 	{
@@ -785,8 +847,8 @@ class kt extends client_service {
 
 		$returnPolicies = array();
 		$test = $config->get('clientToolPolicies/allowRememberPassword');
-		global $default;
-		$default->log->error('I am here-' . $test);
+		//global $default;
+		//$default->log->error('I am here-' . $test);
 		foreach ($policies as $policy_name) {
 			$policyInfo = array('name' => $policy_name, 'value' => serviceHelper::bool2str($config->get('clientToolPolicies/' . $policy_name)), 'type' => 'boolean');
 

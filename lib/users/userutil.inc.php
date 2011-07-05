@@ -675,6 +675,7 @@ class KTUserUtil {
         $params['sender'] = array($emailFrom => 'KnowledgeTree');
         $params['recipients'] = $list;
         $params['action'] = $action;
+        $params['priority'] = KTUtil::mapQueuePriority('email');
 
         $oQueueDispatcher = new queueDispatcher();
         $oQueueDispatcher->addProcess('mailer', $params);

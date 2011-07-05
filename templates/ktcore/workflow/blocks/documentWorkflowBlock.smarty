@@ -8,46 +8,104 @@
     <p>{i18n}Document is not currently assigned to a workflow.{/i18n}</p>
 {else}
 
-<div class=workflow_details>
+<div class="workflow_details">
 	<table>
+        <tr>
+            <td>
+				{if $aWorkflows && $bHasPerm && oWorkflow}
+					<form action="{$smarty.server.PHP_SELF}" method="POST" name="start_workflow_form">
+						<input type="hidden" name="action" value="startWorkflow" />
+						<input type="hidden" name="fDocumentId" value="{$oDocument->getId()}" />
+				{/if}
+                {if empty($transition_fields)}
+                    <div>
+                {else}
+                    <div style="bottom: 50px;">
+                {/if}
+                    <!--<label for=comment><b>{i18n}Workflow for{/i18n} :</b> </label>
+                    <span> {$oDocument->getName()|sanitize} </span> -->
+                    
+                    <label for=comment><b>{i18n}Workflow{/i18n} :</b> </label>
+					
+					
+                    
+                    
+					{if $aWorkflows && $bHasPerm && oWorkflow}
+						{entity_select entities=$aWorkflows name=fWorkflowId id=fWorkflowId none=true selected=$oWorkflow->getId()}
+					{else}
+						<span>{$oWorkflow->getName()}</span>
+					{/if}
+					
+					<br /><br />
+					
+					<label for=comment><b>{i18n}Current State{/i18n} :</b> </label>
+                    <span>{$oState->getName()}</span>
+                    <br />
+                </div>
+				{if $aWorkflows && $bHasPerm && oWorkflow}
+					</form>
+					
+{literal}
+
+<script type="text/javascript">
+	jQuery('#fWorkflowId').change(function() {
+		var confirmChange = confirm('Changing a workflow that has already been initiated \nwill reset all completed workflow steps.\n\nAre you sure you want to change this workflow?');
+		
+		if (confirmChange) {
+			workflowBlock.submitForm('change')
+		} else {
+			{/literal}
+			jQuery("#fWorkflowId option[value='{$oWorkflow->getId()}']").attr('selected', 'selected');
+			{literal}
+		}
+	});
+</script>
+{/literal}
+					
+					
+				{/if}
+            </td>
+        </tr>
+        
 		{if !empty($transition_fields)}
-		<td>
-			<div class=workflow_transition>
-				{if $aTransitions}
-			        <form action="{$smarty.server.PHP_SELF}" method=POST name=transition_wf_form>
-			            <input type=hidden name=action value=performTransition />
-			            <input type=hidden name=fDocumentId value="{$oDocument->getId()}" />
-			            <input type=hidden name=fWorkflowId value="{$oWorkflow->getId()}" />
-			            {foreach from=$transition_fields item=oWidget }
-			                {$oWidget->render()}
-			            {/foreach}
-			            <div class=form_actions id=modal>
-				            <input type="{$submit.type}" onclick="javascript: {ldelim}workflowBlock.submitForm('transition'){rdelim}; return false;" name=form_submit value="{i18n}Perform Transition{/i18n}" />
-				            <a href="#" onclick="vActions.closeDisplay('workflow'); return false;" class=form_cancel style="background: none repeat scroll 0% 0% transparent;">Cancel</a>
-			            </div>
-			        </form>
-		    	{/if}
-			</div>
-		</td>
+        <tr>
+			<td>
+				<div class=workflow_transition>
+					{if $aTransitions}
+						<form action="{$smarty.server.PHP_SELF}" method=POST name=transition_wf_form>
+							<table>
+								<tr>
+									<td>
+										<input type=hidden name=action value=performTransition />
+										<input type=hidden name=fDocumentId value="{$oDocument->getId()}" />
+										<input type=hidden name=fWorkflowId value="{$oWorkflow->getId()}" />
+										{foreach from=$transition_fields item=oWidget }
+											{$oWidget->render()}
+										{/foreach}
+										<br />
+									</td>
+								</tr>
+								<tr>
+									<td class="alignright">
+										<div class="form_cancel">
+											<a href="#" onclick="vActions.closeDisplay('workflow'); return false;" class=form_cancel style="background: none repeat scroll 0% 0% transparent;">Cancel</a>
+										</div>
+										<div class="form_actions" id="modal">
+											<input type="{$submit.type}" onclick="javascript: {ldelim}workflowBlock.submitForm('transition'){rdelim}; return false;" name=form_submit value="{i18n}Perform Transition{/i18n}" />
+											
+										</div>
+									</td>
+								</tr>
+							</table>
+							
+						</form>
+					{/if}
+				</div>
+			</td>
+        </tr>
 		{/if}
 		
-		<td>
-			{if empty($transition_fields)}
-				<div class=workflow_info>
-			{else}
-				<div class=workflow_info style="bottom: 50px;">
-			{/if}
-				<label for=comment><b>{i18n}Workflow for{/i18n} :</b> </label>
-				<span> {$oDocument->getName()|sanitize} </span>
-				<br/>
-				<label for=comment><b>{i18n}Workflow{/i18n} :</b> </label>
-				<span>{$oWorkflow->getName()}</span>
-				<br/>
-				<label for=comment><b>{i18n}State{/i18n} :</b> </label>
-				<span>{$oState->getName()}</span>
-				<br/>
-			</div>
-		</td>
+		
 	</table>
 </div>
 
@@ -71,27 +129,41 @@
     {/if}
     {if $aWorkflows}
         {if $bHasPerm}
-        		<label for=comment><b>{i18n}Choose Workflow{/i18n}</b> </label>
-            <form action="{$smarty.server.PHP_SELF}" method=POST name=start_workflow_form>
-				<div class=widgetRow>
-					<div class=widgetItem>
-						<input type=hidden name=action value=startWorkflow />
-						<input type=hidden name=fDocumentId value="{$oDocument->getId()}" />
-						{entity_select entities=$aWorkflows name=fWorkflowId none=$none selected=$defaultSelectedWorkflow}
-					</div>
-					<br/><br/>
-					<div class=widgetItem>
-						<div class=form_actions id=modal>
-							{if !$oWorkflow}
-								<input type="{$submit.type}" onclick="javascript: {ldelim}workflowBlock.submitForm('change'){rdelim}; return false;" name=form_submit value="{i18n}Start Workflow{/i18n}" />
-							{else}
-								<input type="{$submit.type}" onclick="javascript: {ldelim}workflowBlock.submitForm('change'){rdelim}; return false;" name=form_submit value="{i18n}Change Workflow{/i18n}" />
-							{/if}
-							<a href="#" onclick="vActions.closeDisplay('workflow'); return false;" class=form_cancel style="background: none repeat scroll 0% 0% transparent;">Cancel</a>
+            {if !$oWorkflow}
+        		
+				<form action="{$smarty.server.PHP_SELF}" method=POST name="start_workflow_form">
+					<div class=widgetRow>
+						<div class=widgetItem>
+							<input type=hidden name=action value=startWorkflow />
+							<input type=hidden name=fDocumentId value="{$oDocument->getId()}" />
+							<label for=comment><b>{i18n}Choose Workflow{/i18n} : </b> </label>
+							{entity_select entities=$aWorkflows name=fWorkflowId id=fWorkflowId none=$none}
+						</div>
+						<br/><br/>
+						<div class=widgetItem>
+							<br />
+							<table>
+								<tr>
+									<td class="alignright">
+										<div class="form_cancel">
+											<a href="#" onclick="vActions.closeDisplay('workflow'); return false;" class=form_cancel style="background: none repeat scroll 0% 0% transparent;">Cancel</a>
+										</div>
+										
+										<div class="form_actions" id="modal">
+											<input type="{$submit.type}" onclick="javascript: {ldelim}workflowBlock.submitForm('change'){rdelim}; return false;" name=form_submit value="{i18n}Start Workflow{/i18n}" />
+										</div>
+										
+									</td>
+								</tr>
+							</table>
 						</div>
 					</div>
-				</div>
-            </form>
+				</form>
+				
+            {else}
+        		
+            {/if}
+            
         {else}
 			<div class=widgetRow>
 				<div class=ktInfoMessage>
@@ -111,3 +183,10 @@
 	</div>
     {/if}
 {/if}
+
+{literal}
+<style type="text/css">
+	div.workflow_transition p.descriptiveText { display: none !important; }
+	div.workflow_transition p.errorMessage { display: none !important; }
+</style>
+{/literal}

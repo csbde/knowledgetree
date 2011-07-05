@@ -60,11 +60,11 @@ require_once(KT_LIB_DIR . '/workflow/workflowutil.inc.php');
 
 class KTDocumentUtil {
 
-    public static function checkin($document, $filename, $checkInComment, $user, $options = false, $bulkAction = false)
+    public static function checkin($document, $tmpFilename, $checkInComment, $user, $options = false, $bulkAction = false)
     {
         $storageManager = KTStorageManagerUtil::getSingleton();
 
-        $fileSize = $storageManager->fileSize($filename);
+        $fileSize = $storageManager->fileSize($tmpFilename);
         $previousMetadataVersion = $document->getMetadataVersionId();
 
         $success = $document->startNewContentVersion($user);
@@ -74,7 +74,21 @@ class KTDocumentUtil {
 
         KTDocumentUtil::copyMetadata($document, $previousMetadataVersion);
 
-        $options['temp_file'] = $filename;
+        if (is_array($options)) {
+            $newFilename = KTUtil::arrayGet($options, 'newfilename', '');
+            if (!empty($newFilename)) {
+                global $default;
+                $document->setFileName($newFilename);
+                $default->log->info('renamed document ' . $document->getId() . ' to ' . $newFilename);
+
+                // detection of mime types needs to be refactored. this stuff is damn messy!
+                // If the filename has changed then update the mime type
+                $mimeTypeId = KTMime::getMimeTypeID('', $newFilename);
+                $document->setMimeTypeId($mimeTypeId);
+            }
+        }
+
+        $options['temp_file'] = $tmpFilename;
         $res = KTDocumentUtil::storeContents($document, '', $options);
         if (PEAR::isError($res)) {
             return $res;
@@ -86,28 +100,14 @@ class KTDocumentUtil {
         $document->setCheckedOutUserID(-1);
 
         if ($options['major_update']) {
-            $document->setMajorVersionNumber($document->getMajorVersionNumber()+1);
+            $document->setMajorVersionNumber($document->getMajorVersionNumber() + 1);
             $document->setMinorVersionNumber('0');
         }
         else {
-            $document->setMinorVersionNumber($document->getMinorVersionNumber()+1);
+            $document->setMinorVersionNumber($document->getMinorVersionNumber() + 1);
         }
 
         $document->setFileSize($fileSize);
-
-        if (is_array($options)) {
-            $filename = KTUtil::arrayGet($options, 'newfilename', '');
-            if (!empty($filename)) {
-                global $default;
-                $document->setFileName($filename);
-                $default->log->info('renamed document ' . $document->getId() . ' to ' . $filename);
-
-                // detection of mime types needs to be refactored. this stuff is damn messy!
-                // If the filename has changed then update the mime type
-                $mimeTypeId = KTMime::getMimeTypeID('', $filename);
-                $document->setMimeTypeId($mimeTypeId);
-            }
-        }
 
         $success = $document->update();
         if ($success !== true) {
@@ -512,35 +512,7 @@ class KTDocumentUtil {
             }
             return PEAR::raiseError(_kt('An error occurred while storing this document in the database'));
         }
-        /*
-        // create the document transaction record
-        $documentTransaction = new DocumentTransaction($document, $checkInComment, 'ktcore.transactions.check_in');
-        $documentTransaction->create();
 
-        $KTTriggerRegistry = KTTriggerRegistry::getSingleton();
-        $triggers = $KTTriggerRegistry->getTriggers('content', 'scan');
-        foreach ($triggers as $trigger) {
-        $triggerName = $trigger[0];
-        $trigger = new $triggerName;
-        $trigger->setDocument($document);
-        $ret = $trigger->scan();
-        if (PEAR::isError($ret)) {
-        $document->delete();
-        return $ret;
-        }
-        }
-
-        // NEW SEARCH
-
-        Indexer::index($document);
-
-
-        // fire subscription alerts for the checked in document
-        $subscriptionEvent = new SubscriptionEvent();
-        $folder = Folder::get($document->getFolderID());
-        $subscriptionEvent->CheckinDocument($document, $folder);
-
-        */
         return true;
     }
 
@@ -916,7 +888,7 @@ class KTDocumentUtil {
         $document->clearAllCaches();
 
         // NEW SEARCH
-        Indexer::index($document);
+        Indexer::index($document, 'A', $options);
 
         $uploadChannel->sendMessage(new KTUploadGenericMessage(_kt('Creating transaction')));
         $options = array('user' => $user);

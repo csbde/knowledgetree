@@ -1245,21 +1245,21 @@ class KTAPI {
 	private function _load_metadata_tree($fieldid, $parentid=0)
 	{
 		//get the fields other than for Root
-		$sql = "SELECT mlt.metadata_lookup_tree_parent AS parentid, ml.treeorg_parent AS treeid, mlt.name AS treename, ml.id AS id, ml.name AS fieldname
-				FROM metadata_lookup ml
-				INNER JOIN (metadata_lookup_tree mlt) ON (ml.treeorg_parent = mlt.id)
-				WHERE ml.disabled=0 AND ml.document_field_id=$fieldid
+		$sql = "SELECT mlt.metadata_lookup_tree_parent AS parentid, mlt.id AS treeid, mlt.name AS treename, ml.id AS id, ml.name AS fieldname
+				FROM metadata_lookup_tree mlt
+				LEFT JOIN (metadata_lookup ml) ON (ml.treeorg_parent = mlt.id)
+				WHERE  mlt.document_field_id=$fieldid AND (ml.disabled=0 OR ml.disabled IS NULL)
 				ORDER BY parentid, id";
-		
+
 		$rows = DBUtil::getResultArray($sql);
-		
+
 		//get Root's fields
 		$sqlRoot = "SELECT -1 AS parentid, 0 AS treeid, \"Root\" AS treename, ml.id AS id, ml.name AS fieldname
 				FROM metadata_lookup ml
 				LEFT JOIN (metadata_lookup_tree mlt) ON (ml.treeorg_parent = mlt.id)
 				WHERE ml.disabled=0 AND ml.document_field_id=$fieldid AND (ml.treeorg_parent IS NULL OR ml.treeorg_parent = 0)
 				ORDER BY parentid, id";
-		
+
 		$rowsRoot = DBUtil::getResultArray($sqlRoot);
 
 		//if no results for Root, add dummy
@@ -1267,9 +1267,9 @@ class KTAPI {
 		{
 			$rowsRoot[] = array('parentid' => -1, 'treeid' => 0, 'treename' => 'Root', 'id' => -1, 'fieldname' => '');
 		}
-		
+
 		$rows = array_merge($rowsRoot, $rows);
-		
+
 		$results = array();
 
 		if (sizeof($rows) > 0) {
@@ -1291,22 +1291,28 @@ class KTAPI {
 	    // first pass - get the array indexed by the primary id
 	   	foreach ($flat as $row) {
         	$treeID = $row[$idTree];
+			
+			// Check if Tree Field Exists
         	if (!isset($indexed[$treeID])) {
         		$path = '';
         		$treepath .= $row['tree_name'].'\\';
         		$indexed[$treeID] = array('treeid' => $treeID,
         									'parentid' => $row[$parentIdField],
         									'treename' => $row['treename'],
-        									'type' => 'tree');//$row;
+        									'type' => 'tree'
+										);//$row;
 	        	$indexed[$treeID]['fields'] = array();
-        	}
-
-        	$path .= $treepath.$row['fieldname'];
-
-	        $indexed[$treeID]['fields'][$row[$idField]] = array('fieldid' => $row[$idField],
+			}
+			
+			if (!empty($row['fieldname'])) {
+				
+				$path .= $treepath.$row['fieldname'];
+				
+				$indexed[$treeID]['fields'][$row[$idField]] = array('fieldid' => $row[$idField],
 	        													'parentid' => $treeID,
 	        													'name' =>  $row['fieldname'],
 	        													'type' => 'field');
+			}
 
 	        if ($row[$parentIdField] < $root) {
 	        	$root = $row[$parentIdField];
@@ -1322,17 +1328,71 @@ class KTAPI {
 	    }
 
 	    $results = array($root => $indexed[$root]);
-	    
+
 	    //get the first element's key
 	    reset($results);
 		$first_key = key($results);
-		
-		$res = $results[$first_key]['fields'];
-		
-		//$GLOBALS['default']->log->debug('convertToTree res '.print_r($res, true));
 
-	    //strip out the unneccesary outer array
-	    return $res;
+		$res = $results[$first_key]['fields'];
+
+		//$GLOBALS['default']->log->debug('convertToTree res '.print_r($res, true));
+		
+		// New Array for Results
+		$newArray = array();
+		
+		// Start Process of cleaning up empty nodes
+		KTAPI::cleanUpTreeNodes($res[0], $newArray);
+		
+	    // Root needs to be in an array
+	    return array($newArray);
+	}
+	
+	private function cleanUpTreeNodes($item, &$parent)
+	{
+		// Check it is a tree of field
+		if ($item['type'] == 'tree') {
+			
+			// Recreate, without Fields
+			$newItemArray = array(
+				'treeid'		=> $item['treeid'],
+				'parentid'		=> $item['parentid'],
+				'treename'		=> $item['treename'],
+				'type'			=> $item['type'],
+				'childrenCount' => 0
+			);
+			
+			// Loop through children
+			if (count($item['fields']) > 0) {
+				foreach ($item['fields'] as $subField) {
+					KTAPI::cleanUpTreeNodes($subField, $newItemArray);
+				}
+			}
+			
+			// If Root, Set as Tree
+			if ($item['treeid'] == 0) {
+				$parent = $newItemArray;
+			} else {
+				
+				// Else add to parent and update count
+				$parent['childrenCount'] += $newItemArray['childrenCount'];
+				
+				// Only Add if Item has children or subitems have children
+				if ($newItemArray['childrenCount'] > 0) {
+					$parent['fields'][] = $newItemArray;
+				}
+				
+			}
+			
+		} else if ($item['type'] == 'field') {
+			
+			if (!empty($item['name'])) {
+				
+				// Re-add to field and update Counter
+                $parent['fields'][] = $item;
+				$parent['childrenCount']++;
+                
+            }
+		}
 	}
 
 	/**
@@ -1346,8 +1406,10 @@ class KTAPI {
 	public function get_metadata_tree($fieldid)
 	{
 		$results = KTAPI::_load_metadata_tree($fieldid);
-
-		//$GLOBALS['default']->log->debug('get_metadata_tree results '.print_r($results, true));
+		
+		
+		//global $default;
+		//$default->log->info('get_metadata_tree results '.print_r($results, true));
 		return $results;
 	}
 
@@ -3242,37 +3304,38 @@ class KTAPI {
     {
         $response = $this->_check_electronic_signature($document_id, $sig_username, $sig_password, $reason, $reason,
                                                       'ktcore.transactions.check_in');
-        if ($response['status_code'] == 1) return $response;
+        if ($response['status_code'] == 1) { return $response; }
 
     	// we need to add some security to ensure that people don't frig the checkin process to access restricted files.
 		// possibly should change 'tempfilename' to be a hash or id of some sort if this is troublesome.
     	$upload_manager = new KTUploadManager();
     	if (!$upload_manager->is_valid_temporary_file($tempfilename))
     	{
-    	    $response['status_code'] = 1;
-			$response['message'] = 'Invalid temporary file';
-			return $response;
+            return $this->getErrorResponse('Invalid temporary file');
     	}
 
     	$document = &$this->get_document_by_id($document_id);
-		if (PEAR::isError($document))
-		{
-    	    $response['status_code'] = 1;
-			$response['message'] = $document->getMessage();
-			return $response;
-		}
+        if (PEAR::isError($document))
+        {
+            return $this->getErrorResponse($document->getMessage());
+        }
 
-		// checkin
-		$result = $document->checkin($filename, $reason, $tempfilename, $major_update);
-		if (PEAR::isError($result))
-		{
-    	    $response['status_code'] = 1;
-			$response['message'] = $result->getMessage();
-			return $response;
-		}
+        // checkin
+        $result = $document->checkin($filename, $reason, $tempfilename, $major_update);
+        if (PEAR::isError($result))
+        {
+            return $this->getErrorResponse($result->getMessage());
+        }
 
-    	// get status after checkin
-		return $this->get_document_detail($document_id);
+        // get status after checkin
+        return $this->get_document_detail($document_id);
+    }
+
+    protected function getErrorResponse($message)
+    {
+        $response['status_code'] = 1;
+        $response['message'] = $message;
+        return $response;
     }
 
     public function checkin_small_document_with_metadata($document_id,  $filename, $reason, $base64, $major_update,
@@ -5417,6 +5480,10 @@ class KTAPI {
 			else
 			{
 				$GLOBALS['default']->log->error("Error in getting folder $folder_id ".$folder->getMessage());
+				
+				$response['status_code'] = 1;
+				$response['message'] = "ERROR: could not retrieve folder {$folder_id}: {$folder->getMessage()}";
+				return $response;
 			}
 
 			$children_ids = $folder->get_children_ids();

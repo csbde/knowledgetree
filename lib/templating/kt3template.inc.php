@@ -178,11 +178,18 @@ class KTPage {
             	        'thirdpartyjs/jquery/plugins/loading/jquery.loading.1.6.4.min.js' => $overviews,
                         "resources/$jsResourceLocation/newui/kt.eventhandler.$jsExt" => $combined,
                         "resources/$jsResourceLocation/newui/kt.app.upload.$jsExt" => $overviews,
+                        "resources/$jsResourceLocation/newui/kt.app.notify.$jsExt" => $files,
+                        "resources/$jsResourceLocation/newui/documents/kt.app.actions.$jsExt" => $files,
+                        "resources/$jsResourceLocation/newui/documents/kt.app.buttons.$jsExt" => $files,
+                        "resources/$jsResourceLocation/newui/documents/kt.app.viewlets.$jsExt" => $files,
+                        "resources/$jsResourceLocation/jquery.form.$jsExt" => $files,
                         "resources/$jsResourceLocation/newui/kt.app.inviteusers.$jsExt" => $combined,
                         "resources/$jsResourceLocation/newui/kt.app.sharewithusers.$jsExt" => $files,
             	        "resources/$jsResourceLocation/jquery.blockui.$jsExt" => $combined,
             	        //'resources/js/toggleselect.js' => array('browse_collections'),
-                        "resources/$jsResourceLocation/newui/browse.helper.$jsExt" => array('browse_collections')
+                        "resources/$jsResourceLocation/newui/browse.helper.$jsExt" => array('browse_collections'),
+                        'resources/js/newui/browse/subscriptionActions.js' => $overviews,
+                        'resources/js/newui/shared/blockActions.js' => $combined,
                       );
 
         $oConfig = KTConfig::getSingleton();
@@ -199,6 +206,7 @@ class KTPage {
             'resources/css/newui/dropdown.css',
             /* REWORK INTO SINGLE STYLE SHEET */
             'resources/css/newui/dropdown_styles.css',
+            'resources/css/newui/dropdown.vertical.css',
         );
 
         // load area specific files
@@ -295,7 +303,8 @@ class KTPage {
     public function initMenu()
     {
     	// FIXME:  we lost the getDefaultAction stuff - do we care?
-    	// note that key == action. this is _important_, since we crossmatch the breadcrumbs against this for "active"
+    	// note that key == action. this is _important_, since we crossmatch the breadcrumbs against this for "active"<br>
+		$sBaseUrl = KTUtil::kt_url();
     	$this->menu = array();
 
     	if (!SharedUserUtil::isSharedUser()) {
