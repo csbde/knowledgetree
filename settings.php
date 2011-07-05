@@ -135,7 +135,10 @@ class AdminSettingsDispatcher extends KTAdminDispatcher {
         }
         else {
             $categoryDetail = $registry->getCategory($category);
-            $this->aBreadcrumbs[] = array('name' => $categoryDetail['title'], 'url' => KTUtil::ktLink('settings.php', '', 'fCategory='.$category));
+            $this->aBreadcrumbs[] = array(
+                                        'name' => $categoryDetail['title'],
+                                        'url' => KTUtil::ktLink('settings.php', '', 'fCategory='.$category)
+                                    );
             $this->oPage->title = _kt('Settings') . ': ' . $categoryDetail['title'];
             $items = $registry->getItemsForCategory($category);
             $message = null;

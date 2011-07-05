@@ -1,4 +1,5 @@
 <?php
+
 /**
  * $Id$
  *
@@ -41,7 +42,6 @@ require_once(KT_LIB_DIR . "/dispatcher.inc.php");
 
 require_once(KT_LIB_DIR . '/widgets/fieldWidgets.php');
 
-
 class WorkflowAllocationSelection extends KTAdminDispatcher {
 
     var $sHelpPage = 'ktcore/admin/automatic workflows.html';
@@ -51,7 +51,9 @@ class WorkflowAllocationSelection extends KTAdminDispatcher {
     function check()
     {
         $res = parent::check();
-        if (!$res) { return false; }
+        if (!$res) {
+            return false;
+        }
 
         //$this->aBreadcrumbs[] = array('url' => $_SERVER['PHP_SELF'], 'name'=> _kt('Automatic Workflow Assignments'));
 
@@ -80,52 +82,55 @@ class WorkflowAllocationSelection extends KTAdminDispatcher {
         return $oTemplate->render();
     }
 
-    public function handleOutput($output)
-    {
-        print $output;
-    }
-
     function getHandler()
     {
         $sQuery = 'SELECT selection_ns FROM ' . KTUtil::getTableName('trigger_selection');
         $sQuery .= ' WHERE event_ns = ?';
         $aParams = array('ktstandard.workflowassociation.handler');
         $res = DBUtil::getOneResultKey(array($sQuery, $aParams), 'selection_ns');
-        return $res;
 
+        return $res;
     }
 
-    function do_assign_handler()
+    public function do_assign_handler()
     {
-        $oKTTriggerRegistry = KTTriggerRegistry::getSingleton();
-        $aTriggers = $oKTTriggerRegistry->getTriggers('workflow', 'objectModification');
+        $KTTriggerRegistry = KTTriggerRegistry::getSingleton();
+        $triggers = $KTTriggerRegistry->getTriggers('workflow', 'objectModification');
 
-        $selection_ns = KTUtil::arrayGet($_REQUEST, 'selection_ns');
-        if (empty($selection_ns)) {
-            $sQuery = 'DELETE FROM ' . KTUtil::getTableName('trigger_selection');
-            $sQuery .= ' WHERE event_ns = ?';
-            $aParams = array('ktstandard.workflowassociation.handler');
-            DBUtil::runQuery(array($sQuery, $aParams));
+        $selectionNamespace = KTUtil::arrayGet($_REQUEST, 'selection_ns');
+        if (empty($selectionNamespace)) {
+            $query = 'DELETE FROM ' . KTUtil::getTableName('trigger_selection');
+            $query .= ' WHERE event_ns = ?';
+            $params = array('ktstandard.workflowassociation.handler');
+            DBUtil::runQuery(array($query, $params));
             $this->successRedirectToMain(_kt('Handler removed.'));
-        } else {
-            if (!array_key_exists($selection_ns, $aTriggers)) {
+        }
+        else {
+            if (!array_key_exists($selectionNamespace, $triggers)) {
                 $this->errorRedirectToMain(_kt('Invalid assignment'));
             }
 
             // clear
-            $sQuery = 'DELETE FROM ' . KTUtil::getTableName('trigger_selection');
-            $sQuery .= ' WHERE event_ns = ?';
-            $aParams = array('ktstandard.workflowassociation.handler');
-            DBUtil::runQuery(array($sQuery, $aParams));
+            $query = 'DELETE FROM ' . KTUtil::getTableName('trigger_selection');
+            $query .= ' WHERE event_ns = ?';
+            $params = array('ktstandard.workflowassociation.handler');
+            DBUtil::runQuery(array($query, $params));
 
             // set
-            $sQuery = 'INSERT INTO ' . KTUtil::getTableName('trigger_selection');
-            $sQuery .= ' (event_ns, selection_ns)';
-            $sQuery .= ' VALUES ("ktstandard.workflowassociation.handler",?)';
-            $aParams = array($selection_ns);
-            DBUtil::runQuery(array($sQuery, $aParams));
+            $query = 'INSERT INTO ' . KTUtil::getTableName('trigger_selection');
+            $query .= ' (event_ns, selection_ns)';
+            $query .= ' VALUES ("ktstandard.workflowassociation.handler",?)';
+            $params = array($selectionNamespace);
+
+            DBUtil::runQuery(array($query, $params));
+            
             $this->successRedirectToMain(_kt('Handler set.'));
         }
+    }
+
+    public function handleOutput($output)
+    {
+        print $output;
     }
 
 }
