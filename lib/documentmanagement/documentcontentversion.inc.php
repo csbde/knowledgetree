@@ -39,6 +39,7 @@
 require_once(KT_LIB_DIR . '/ktentity.inc');
 
 class KTDocumentContentVersion extends KTEntity {
+
     var $_bUsePearError = true;
 
     /** Which document is this content a version of? */
@@ -115,9 +116,6 @@ class KTDocumentContentVersion extends KTEntity {
         return  KTEntityUtil::createFromArray('KTDocumentContentVersion', $aOptions);
     }
 
-
-
-
     function create() {
         if (empty($this->iSize)) {
             $this->iSize = 0;
@@ -147,6 +145,65 @@ class KTDocumentContentVersion extends KTEntity {
             'document_id' => $iDocumentId,
         ), $aOptions);
     }
+
+    public function update()
+    {
+        if (defined('ACCOUNT_ROUTING_ENABLED') && ACCOUNT_ROUTING_ENABLED) {
+            $documentDetail = array(
+                                'docId' => $this->getDocumentId(),
+                                'storagePath' => $this->getStoragePath(),
+                                'filename' => $this->getFileName()
+            );
+            $cloudContentVersion = new CloudContentVersion($documentDetail);
+            $cloudContentVersion->updateContentDisposition();
+        }
+
+        parent::update();
+    }
+
+}
+
+if (defined('ACCOUNT_ROUTING_ENABLED') && ACCOUNT_ROUTING_ENABLED) {
+
+    class CloudContentVersion {
+
+        private $document;
+        private $storagePath;
+        private $newFilename;
+        private $currentFilename;
+
+        public function __construct($documentDetail)
+        {
+            $this->document = Document::get($documentDetail['docId']);
+            $this->storagePath = "Documents/{$documentDetail['storagePath']}";
+            $this->newFilename = $documentDetail['filename'];
+        }
+
+        public function updateContentDisposition()
+        {
+            $this->storageManager = KTStorageManagerUtil::getSingleton();
+            $response = $this->storageManager->headS3Object($this->storagePath);
+            if ($this->storageManager->isValidResponse($response)) {
+                $this->setCurrentFilename($response->header);
+                $this->renameIfNeeded();
+            }
+        }
+
+        private function setCurrentFilename($header)
+        {
+            preg_match('/filename="([^"]*)"/', $header['content-disposition'], $matches);
+            $this->currentFilename = $matches[1];
+        }
+
+        private function renameIfNeeded()
+        {
+            if ($this->currentFilename != $this->newFilename) {
+                $this->storageManager->renameDocument($this->document, null, $this->newFilename);
+            }
+        }
+
+    }
+
 }
 
 ?>
