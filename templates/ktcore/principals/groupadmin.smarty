@@ -37,8 +37,8 @@
 		  <th>{i18n}Unit{/i18n}</th>
 		  <th>{i18n}Manage Users{/i18n}</th>
 		  <th>{i18n}Subgroups{/i18n}</th>
-		  <th>{i18n}Edit{/i18n}</th>
-		  <th>{i18n}Delete{/i18n}</th>
+		  <th width="10px">{i18n}Edit{/i18n}</th>
+		  <th width="10px">{i18n}Delete{/i18n}</th>
 	   </tr>
 	</thead>
 	<tbody>

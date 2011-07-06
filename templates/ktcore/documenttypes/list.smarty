@@ -20,8 +20,6 @@ please enter a name for the type below.{/i18n}</p>
 </form>
 
 <fieldset>
-<legend>{i18n}Existing document types{/i18n}</legend>
-
 <p class="descriptiveText">{i18n}Select a document type from the list below to change
 its details, or use the enable/disable buttons to change its availability state.{/i18n}</p>
 
@@ -40,7 +38,7 @@ its details, or use the enable/disable buttons to change its availability state.
   <tbody>
 
 {foreach from=$document_types item=oDocumentType}
-<tr>
+<tr class="{cycle values=odd,even}">
 
 <td>
     { $oDocumentType->getName() }
