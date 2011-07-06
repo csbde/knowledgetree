@@ -94,16 +94,16 @@ class AdminSettingsDispatcher extends KTAdminDispatcher {
         }
 
         $templating = KTTemplating::getSingleton();
-        
+
         if (KTUtil::arrayGet($_REQUEST, 'modal', null) == 'yes') {
             $template = $templating->loadTemplate('kt3/settings_ajax');
         } else {
             $template = $templating->loadTemplate('kt3/settings');
         }
-        
+
         $urlParts = $this->parseSubUrl();
         $currentCategory = $this->getCategory($urlParts[0]);
-        
+
         $templateData = array(
                             'context' => $this,
                             'categories' => $categories,
@@ -115,13 +115,14 @@ class AdminSettingsDispatcher extends KTAdminDispatcher {
 
         return $template->render($templateData);
     }
-    
+
     function handleOutput($data)
     {
         if (KTUtil::arrayGet($_REQUEST, 'modal', null) == 'yes') {
             echo $data;
             exit(0);
-        } else {
+        }
+        else {
             parent::handleOutput($data);
         }
     }
@@ -155,9 +156,14 @@ class AdminSettingsDispatcher extends KTAdminDispatcher {
         }
         else {
             $categoryDetail = $registry->getCategory($category);
-            $this->aBreadcrumbs[] = array('name' => $categoryDetail['title'], 'url' => KTUtil::ktLink('settings.php', '', 'fCategory='.$category));
+            $this->aBreadcrumbs[] = array(
+                                        'name' => $categoryDetail['title'],
+                                        'url' => KTUtil::ktLink('settings.php',
+                                        '',
+                                        'fCategory=' . $category));
             $this->oPage->title = _kt('Settings');
             $this->oPage->secondary_title = $categoryDetail['title'];
+
             $items = $registry->getItemsForCategory($category);
             $message = null;
         }

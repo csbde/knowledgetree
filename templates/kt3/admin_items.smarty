@@ -5,7 +5,6 @@
 </div>
 
 <div style="margin-left:100px; margin-top:5px;">
-	<h2>{$category.title}</h2>
 
 	{if ($jscript != '')}
 	{$jscript}

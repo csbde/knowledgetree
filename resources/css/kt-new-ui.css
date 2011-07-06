@@ -707,7 +707,7 @@ ul.floatleft li.notification {
 	background: url('../graphics/newui/icons/mail.png') no-repeat 4px 4px;
 }
 .action_buttons #download-pdf {
-	background: url('../graphics/mimetypes/pdf.png') no-repeat 4px 4px;
+	background: url('../graphics/newui/icons/pdf.png') no-repeat 4px 4px;
 }
 .action_buttons #more {
 	background: url('../graphics/newui/icons/more.png') no-repeat 4px 4px;
@@ -1035,7 +1035,8 @@ div#activationNotice span {
 
 div#uploadProgress {
 	margin-right: 15px;
-	background: rgba(40, 40, 40, 0.9);
+	background: rgb(150,150,150);
+	background: rgba(0, 0, 0, 0.7);
 	height: 50px;
 	float: left;
 	text-align: left;
@@ -1188,12 +1189,14 @@ label span.required
 /*Settings */
 .sidebar#settings {
 	float: left;
-	width: 175px;
-	padding: 10px;
+	width: 195px;
 	background: #F5F5F5;
 }
 .sidebar#settings a {
-	line-height: 25px;
+	line-height: 22px;
+	display: block;
+	padding: 0px 10px;
+	margin: 5px 0px 5px 0px;
 }
 .settings-item {
 	border: 1px solid #CCC;
@@ -1225,6 +1228,9 @@ label span.required
 	-moz-border-radius: 2px;
 	padding: 15px;
 	background: white;
+}
+.settings-section #content fieldset legend {
+	padding: 0px;
 }
 .settings-item.systemQuotas.expanded a {
 	display: none;
@@ -1570,5 +1576,7 @@ li.ui-state-disabled a {
 }
 
 a.currentSettingsCategory {
-	background: yellow;
+	font-weight: bold;
+	background: url('/resources/graphics/newui/popover_tip.png') no-repeat right;
+	margin-right: -1px!important;
 }
