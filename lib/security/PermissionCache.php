@@ -35,7 +35,8 @@
  * Contributor( s): ______________________________________
  */
 
-require_once(KT_DIR . '/lib/memcache/MemCacheUtil.helper.php');
+require_once(KT_LIB_DIR . '/memcache/ktmemcache.php');
+
 /**
  * Uses the permissions cache to determine whether the current user has access to an object (folder / document)
  *
@@ -108,6 +109,7 @@ class PermissionCache
      */
     public static function getSingleton()
     {
+    	unset($_SESSION['Permissions_Cache']);
         if (empty(self::$permCache)) {
             self::$permCache = new PermissionCache();
         }
@@ -564,6 +566,8 @@ class PermissionMemCache
      * @var int
      */
     private $expiration;
+    
+    private $memcache;
 
     /**
      * Initialise the connection to memcache and setup the namespace key.
@@ -572,9 +576,9 @@ class PermissionMemCache
      */
     public function __construct()
     {
-        $enabled = $this->initMemcache();
+        $this->memcache = $this->initMemcache();
 
-        if (!$enabled) {
+        if ($this->memcache->isEnabled() === false) {
             throw new Exception('Memcache cannot be initialised');
         }
 
@@ -748,7 +752,7 @@ class PermissionMemCache
      */
     private function getItem($key)
     {
-        $value = MemCacheUtil::get($key);
+        $value = $this->memcache->get($key);
         return $value;
     }
 
@@ -765,7 +769,7 @@ class PermissionMemCache
     private function setItem($key, $value, $expiration = null)
     {
         $expiration = (is_numeric($expiration)) ? $expiration : $this->expiration;
-        $res = MemCacheUtil::set($key, $value, $expiration);
+        $res = $this->memcache->set($key, $value, $expiration);
         return $res;
     }
 
@@ -778,7 +782,7 @@ class PermissionMemCache
      */
     private function clearItem($key)
     {
-        $res = MemCacheUtil::clear($key);
+        $res = $this->memcache->clear($key);
         return $res;
     }
 
@@ -790,11 +794,8 @@ class PermissionMemCache
      */
     private function initMemcache()
     {
-        if (MemCacheUtil::$enabled) { return true; }
-
-        $oConfig = KTConfig::getSingleton();
-        $enabled = $oConfig->setMemcache();
-        return $enabled;
+    	$memcache = KTMemcache::getKTMemcache();
+    	return $memcache;
     }
 }
 
