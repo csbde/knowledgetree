@@ -1,21 +1,69 @@
-<!-- Preferences -->
-<h2>{i18n}Preferences{/i18n}</h2>
 
-{$edit_form->render()}
 
-<br clear="both" /><br/>
 
-<!-- Password -->
-{if $show_password}
-	<h2>{i18n}Password{/i18n}</h2>
-    <div class="form_actions"><a href="{addQS}action=setPassword{/addQS}">{i18n}Change password{/i18n}</a></div>
-    <br clear="both" />
-{/if}
+<script src="/resources/js/jquery.form.js"></script>
 
-<br clear="both" />
+<div class="settings-list">
+    <div class="settings-item user_preferences_section">
+        <a onclick="jQuery('#user_preferences_section').slideToggle('fast', {literal}function(){ jQuery(this).parent().toggleClass('expanded');}{/literal}); return false;" href="#" class="header">{i18n}Preferences{/i18n}</a>
+        <div class="settings-content" id="user_preferences_section">
+            
+            {$edit_form->render()}
+            
+            <br clear="both" />
+        </div>
+    </div>
+    
+    {if $show_password}
+    <div class="settings-item user_password_section">
+        <a onclick="jQuery('#user_password_section').slideToggle('fast', {literal}function(){ jQuery(this).parent().toggleClass('expanded');}{/literal}); return false;" href="#" class="header">{i18n}Change Password{/i18n}</a>
+        <div class="settings-content" id="user_password_section">
+            {$changePasswordForm}
+            
+            <br clear="both" />
+        </div>
+    </div>
+    {/if}
+    
+    {if $adminPortletContent}
+    <div class="settings-item user_adminmode_section">
+        <a onclick="jQuery('#user_adminmode_section').slideToggle('fast', {literal}function(){ jQuery(this).parent().toggleClass('expanded');}{/literal}); return false;" href="#" class="header">{i18n}Enable Admin Mode{/i18n}</a>
+        <div class="settings-content" id="user_adminmode_section">
+            {$adminPortletContent}
+            
+            <br clear="both" />
+        </div>
+    </div>
+    {/if}
+</div>
 
-<!-- Admin mode -->
-{if $adminPortletContent}
-	<h2>{i18n}Administrator Mode{/i18n}</h2>
-	{$adminPortletContent}
-{/if}
+
+
+{literal}
+<script type="text/javascript">
+jQuery(document).ready(function()
+{
+    kt.app.userPreferences.ajaxifyForms();
+    {/literal}
+        
+        jQuery('#userPreferencesName').html('{$userFullName}');
+        
+        {if $reloadMenus == 'true'}
+            if (kt.app.document_actions != undefined) kt.app.document_actions.refresh();
+        {/if}
+        
+        {if (!empty($errorMessages))}
+            {foreach item=sError from=$errorMessages}
+                kt.app.notify.show('{$sError}', true);
+            {/foreach}
+        {/if}
+        {if (!empty($successMessages))}
+            {foreach item=sInfo from=$successMessages}
+                kt.app.notify.show('{$sInfo}');
+            {/foreach}
+        {/if}
+    {literal}
+    
+});
+</script>
+{/literal}
