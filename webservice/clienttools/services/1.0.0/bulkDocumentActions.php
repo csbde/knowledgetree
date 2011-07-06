@@ -35,7 +35,7 @@
  * Contributor( s): ______________________________________
  */
 
-class bulkDocumentActions
+class BulkDocumentActions
 {
 	/**
 	 * Bulk action name
@@ -53,23 +53,23 @@ class bulkDocumentActions
 	 */	
 	private $reason;
 	/**
-	 * Bulk action target folder if needed
+	 * Bulk action target folder id
 	 * @var string
 	 */
 	private $targetFolderId;
 	/**
-	 * Users id
+	 * Logged in user's id
 	 * @var string
 	 */
 	private $userId;
 	/**
 	 * If number of documents to process exceeds threshold, 
 	 * send operation to queue
-	 * @var int
+	 * @var array
 	 */
-	private $threshold = array(	'documents' => 10,
-											'folders' => 0
-										);
+	private $threshold = array(	'documents' => 0,
+								'folders' => 0
+								);
 	
 	public function __construct($action, $list, $reason = '', $targetFolderId) {
 		$this->action = $action;
@@ -92,7 +92,7 @@ class bulkDocumentActions
 	
 	public function queueBulkAction() {
     	require_once(KT_LIVE_DIR . '/sqsqueue/dispatchers/bulkactionDispatcher.php');
-    	$bulkActionDispatcher = new bulkactionDispatcher();
+    	$bulkActionDispatcher = new BulkactionDispatcher();
     	$params['action'] = $this->action;
     	$params['files_and_folders'] = $this->list;
     	$params['reason'] = $this->reason;
@@ -101,7 +101,7 @@ class bulkDocumentActions
     	$queueResponse = $bulkActionDispatcher->sendToQueue();
     	if($queueResponse) {
 			$this->saveEvent();
-    	} 
+    	}
     	
     	return $queueResponse;
 	}

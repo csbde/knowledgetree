@@ -413,7 +413,7 @@ class documentActionServices extends client_service {
     		default:
     			$reason = '';
         }
-        $bulkDocumentActions = new bulkDocumentActions($action, $organisedItemList, $reason, $targetFolderId);
+        $bulkDocumentActions = new BulkDocumentActions($action, $organisedItemList, $reason, $targetFolderId);
         if($bulkDocumentActions->canSendToQueue()) {
         	$bulkDocumentActions->setUser($_SESSION['userID']);
         	$queueResponse = $bulkDocumentActions->queueBulkAction();
