@@ -704,7 +704,7 @@ class KTPage {
         			$sUrl = KTPluginUtil::getPluginPath('electronic.signatures.plugin', true);
         			$heading = _kt('You are attempting to modify Preferences');
         			$this->userMenu['preferences']['url'] = '#';
-        			$this->userMenu['preferences']['onclick'] = "javascript: showSignatureForm('{$sUrl}', '{$heading}', 'dms.administration.accessing_preferences', 'system', 'kt.app.userPreferences.show', 'javascript');";
+        			$this->userMenu['preferences']['onclick'] = "javascript: showSignatureForm('{$sUrl}', '{$heading}', 'dms.administration.accessing_preferences', 'system', kt.app.userPreferences.show, 'javascript');";
         		} else {
         			$this->userMenu['preferences']['onclick'] = "javascript:kt.app.userPreferences.show();";
                     $this->userMenu['preferences']['url'] = '#';
