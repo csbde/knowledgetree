@@ -6,7 +6,8 @@ class KTMemcache
     protected $memcache;
     protected $isEnabled = false;
     protected $serverList = array();
-    protected $errors = array();
+    protected static $errors = array();
+    protected static $extensionDisabled = false;
      
 	private $persist = true;
 	private $weight = 1;
@@ -15,6 +16,12 @@ class KTMemcache
 
     protected function __construct()
     {
+    	if (self::$extensionDisabled) {
+    		$this->isEnabled = false;
+    		$this->memcache = false;
+    		
+    		return;
+    	}
         $this->isEnabled = $this->connect();
     }
     
@@ -25,7 +32,7 @@ class KTMemcache
 
     public function getErrors()
     {
-    	return $this->errors;
+    	return self::$errors;
     }
     
     public function get($key)
@@ -67,8 +74,8 @@ class KTMemcache
         if (!isset(self::$ktMemcache) || empty(self::$ktMemcache)){
         	$extension = self::checkExtension();
         	
-        	if ($extension === 'false') {
-        		return false;
+        	if ($extension === false) {
+        		self::$extensionDisabled = true;
         	}
         	
             self::$ktMemcache = ($extension == 'memcached') ?  new KTMemcached() : new KTMemcache();
@@ -88,7 +95,7 @@ class KTMemcache
     	else if (extension_loaded('memcached')) {
     		return 'memcached';
     	}
-		$this->errors[] = "MEMCACHE PHP Extension is not enabled";
+		self::$errors[] = "MEMCACHE PHP Extension is not enabled";
     		
 		return false;
     }
@@ -98,7 +105,7 @@ class KTMemcache
     	$servers = $this->getServerList();
     	
     	if (!$servers || empty($servers)) {
-    		$this->errors[] = 'No Memcache servers have been defined.';
+    		self::$errors[] = 'No Memcache servers have been defined.';
     		
     		return false;
     	}
@@ -124,13 +131,13 @@ class KTMemcache
 				$this->memcache->addServer($server['url'], $server['port'], $this->persist, $this->weight, $this->timeout, $this->retryInterval);
 			}
 			else {
-				$this->errors[] = "MEMCACHE - Failed to connect to {$host}:{$port}";
+				self::$errors[] = "MEMCACHE - Failed to connect to {$host}:{$port}";
 			}
 		}
 		
 		
 		if (count($this->serverList) <= 0) {
-			$this->errors[] = "MEMCACHE - No Memcache Servers Available.";
+			self::$errors[] = "MEMCACHE - No Memcache Servers Available.";
 			
 			return false;
 		}
@@ -180,7 +187,7 @@ class KTMemcached extends KTMemcache
     	$servers = $this->getServerList();
     	
     	if (!$servers || empty($servers)) {
-    		$this->errors[] = 'No Memcache servers have been defined.';
+    		self::$errors[] = 'No Memcache servers have been defined.';
     		
     		return false;
     	}
@@ -198,7 +205,7 @@ class KTMemcached extends KTMemcache
             $result = $this->memcache->addServer($host, $port);
 
             if (!$result){
-                $this->errors[] = "MEMCACHE - Failed to connect to {$host}:{$port}";
+                self::$errors[] = "MEMCACHE - Failed to connect to {$host}:{$port}";
             }
             else {
             	$this->serverList[] = $server;
@@ -206,7 +213,7 @@ class KTMemcached extends KTMemcache
         }
 
 		if (count($this->serverList) <= 0) {
-			$this->errors[] = "MEMCACHE - No Memcache Servers Available.";
+			self::$errors[] = "MEMCACHE - No Memcache Servers Available.";
 			
 			return false;
 		}
