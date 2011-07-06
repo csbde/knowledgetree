@@ -1229,6 +1229,9 @@ label span.required
 	padding: 15px;
 	background: white;
 }
+.settings-section #content fieldset legend {
+	padding: 0px;
+}
 .settings-item.systemQuotas.expanded a {
 	display: none;
 }

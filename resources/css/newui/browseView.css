@@ -221,6 +221,7 @@
 .doc.browseView .actionMenu .actionIcon.actions > ul li.action_rename_folder, .splitmenu a.rename-folder { background: url("../../../resources/graphics/newui/icons/folder_edit.png") no-repeat left center !important; }
 .doc.browseView .actionMenu .actionIcon.actions > ul li.action_folder_permissions, .splitmenu a.permissions { background: url("../../../resources/graphics/newui/icons/permissions.png") no-repeat left center !important; }
 .doc.browseView .actionMenu .actionIcon.actions > ul li.action_folder_permissions, .splitmenu a.allocate-roles { background: url("../../../resources/graphics/newui/icons/roles_allocate.png") no-repeat left center !important; }
+#content .breadcrumbBtns .splitmenu li a.workflow { background: url("../../../resources/graphics/newui/icons/workflow.png") no-repeat left center !important; }
 .doc.browseView .actionMenu .actionIcon.actions > ul li.action_folder_index, .splitmenu a.folder-index { background: url("../../../resources/graphics/newui/icons/icon_schedule_indexing.png") no-repeat left center !important; }
 .doc.browseView .actionMenu .actionIcon.actions > ul li.action_view_transactions, .splitmenu a.create-shortcut { background: url("../../../resources/graphics/newui/icons/shortcut.png") no-repeat left center !important; }
 .doc.browseView .actionMenu .actionIcon.actions > ul li.action_view_transactions, .splitmenu a.usage-info { background: url("../../../resources/graphics/newui/icons/usage_information.png") no-repeat left center !important; }
