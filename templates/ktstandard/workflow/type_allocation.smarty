@@ -3,7 +3,7 @@
 <p class="descriptiveText">{i18n arg_appname="$appname"}Workflow types are allocated by Document Type in this
 #appname# installation.  Documents will be assigned a workflow based on their document
 type and will have their allocated workflows changed if their document type changes.  Naturally,
-if the workflow changes then the documents will lose any "progress" in the old 
+if the workflow changes then the documents will lose any "progress" in the old
 workflow.{/i18n}</p>
 
 <p class="descriptiveText">{i18n}Document Types with no pre-allocated workflow will

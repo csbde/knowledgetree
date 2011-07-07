@@ -497,6 +497,30 @@ ktjapi._lib = new function() {
         return cObj;
     };
 
+    /**
+    * Converts the first letters of each word in a string to upper case
+    */
+    this.ucString = function(str) {
+	    str = str.toLowerCase().replace(/\b[a-z]/g, convert);
+	    function convert() {
+	          return arguments[0].toUpperCase();
+	    }
+	    return str;
+    }
+	
+    
+	this.getQueryVariable = function (ji) {
+		hu = window.location.search.substring(1);
+		gy = hu.split("&");
+		for (i=0;i<gy.length;i++) {
+			ft = gy[i].split("=");
+			if (ft[0] == ji) {
+				return ft[1];
+			}
+		}
+		return '';
+	}
+
 };
 
 ktjapi._lib.String = new function() {};

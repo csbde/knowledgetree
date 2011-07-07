@@ -85,7 +85,7 @@ class KTPlugin {
         $this->_aPortlets[$sPortletNamespace] = array($aLocation, $sPortletClassName, $sPortletNamespace, $sFilename, $this->sNamespace);
 
         // Register helper in DB
-        if(is_array($aLocation)){
+        if (is_array($aLocation)) {
             $aLocation = serialize($aLocation);
         }
         $params = $aLocation.'|'.$sPortletClassName.'|'.$sPortletNamespace.'|'.$sFilename.'|'.$this->sNamespace;
@@ -110,15 +110,16 @@ class KTPlugin {
         $this->registerPluginHelper($sActionNamespace, $sActionClassName, $sFilename, $params, 'general', 'action');
     }
 
-    function registerPage($sWebPath, $sPageClassName, $sFilename = null) {
-        $sFilename = $this->_fixFilename($sFilename);
-        $sWebPath = sprintf("%s/%s", $this->sNamespace, $sWebPath);
+    public function registerPage($webPath, $pageClassName, $filename = null)
+    {
+        $filename = $this->_fixFilename($filename);
+        $webPath = sprintf("%s/%s", $this->sNamespace, $webPath);
 
-        $this->_aPages[$sWebPath] = array($sWebPath, $sPageClassName, $sFilename, $this->sNamespace);
+        $this->_aPages[$webPath] = array($webPath, $pageClassName, $filename, $this->sNamespace);
 
         // Register helper in DB
-        $params = $sWebPath.'|'.$sPageClassName.'|'.$sFilename.'|'.$this->sNamespace;
-        $this->registerPluginHelper($sWebPath, $sPageClassName, $sFilename, $params, 'general', 'page');
+        $params = $webPath.'|'.$pageClassName.'|'.$filename.'|'.$this->sNamespace;
+        $this->registerPluginHelper($webPath, $pageClassName, $filename, $params, 'general', 'page');
     }
 
     function registerWorkflowTrigger($sNamespace, $sTriggerClassName, $sFilename = null) {
@@ -152,22 +153,31 @@ class KTPlugin {
         $this->registerPluginHelper($sNamespace, $sClass, $sFilename, $params, 'general', 'authentication_provider');
     }
 
-    function registerAdminPage($sName, $sClass, $sCategory, $sTitle, $sDescription, $sFilename, $sURL = null, $order = 0) {
-        $sFullname = $sCategory . '/' . $sName;
-        $sFilename = $this->_fixFilename($sFilename);
-        $this->_aAdminPages[$sFullname] = array($sName, $sClass, $sCategory, $sTitle, $sDescription, $sFilename, null, $this->sNamespace);
+    public function registerAdminCategory($path, $name, $description, $order = 0)
+    {
+        $this->_aAdminCategories[$path] = array($path, $name, $description);
 
-        // Register helper in DB
-        $params = $sName.'|'.$sClass.'|'.$sCategory.'|'.$sTitle.'|'.$sDescription.'|'.$sFilename.'|'.null.'|'.$this->sNamespace .'|'. $order;
-        $this->registerPluginHelper($sFullname, $sClass, $sFilename, $params, 'general', 'admin_page');
+        $params = "$path|$name|$description|$order";
+        $this->registerPluginHelper($path, $name, $path, $params, 'general', 'admin_category');
     }
 
-    function registerAdminCategory($sPath, $sName, $sDescription) {
-        $this->_aAdminCategories[$sPath] = array($sPath, $sName, $sDescription);
+    public function registerAdminPage($name, $class, $category, $title, $description, $filename, $url = null, $order = 0)
+    {
+        $fullname = $category . '/' . $name;
+        $filename = $this->_fixFilename($filename);
+        $this->_aAdminPages[$fullname] = array(
+                                                $name,
+                                                $class,
+                                                $category,
+                                                $title,
+                                                $description,
+                                                $filename,
+                                                $url,
+                                                $this->sNamespace
+        );
 
-        // Register helper in DB
-        $params = $sPath.'|'.$sName.'|'.$sDescription;
-        $this->registerPluginHelper($sPath, $sName, $sPath, $params, 'general', 'admin_category');
+        $params = "$name|$class|$category|$title|$description|$filename|$url|{$this->sNamespace}|$order";
+        $this->registerPluginHelper($fullname, $class, $filename, $params, 'general', 'admin_page');
     }
 
     /**
@@ -289,7 +299,7 @@ class KTPlugin {
         $this->_aCriteria[$sNamespace] = array($sClassName, $sNamespace, $sFilename, $aInitialize);
 
         // Register helper in DB
-        if(is_array($aInitialize)){
+        if (is_array($aInitialize)) {
             $aInitialize = serialize($aInitialize);
         }
 
@@ -348,7 +358,7 @@ class KTPlugin {
         $res = DBUtil::getOneResult($sql);
 
         // if record exists - ignore it.
-        if(!empty($res)){
+        if (!empty($res)) {
             return true;
         }
 
@@ -363,7 +373,7 @@ class KTPlugin {
 
         // Insert into DB
         $res = DBUtil::autoInsert('plugin_helper', $aValues);
-        if(PEAR::isError($res)){
+        if (PEAR::isError($res)) {
             return $res;
         }
         return true;
@@ -427,124 +437,120 @@ class KTPlugin {
      * Load the actions, portlets, etc as part of the parent plugin
      *
      */
-    function load() {
-        // Include any required resources, javascript files, etc
-        $res = $this->run_setup();
-
-        if(!$res){
-            return false;
-        }
-        return true;
+    function load()
+    {
+        return $this->run_setup();
     }
 
-    function loadHelpers() {
-
+    function loadHelpers()
+    {
         // Get actions, portlets, etc, create arrays as part of plugin
         $query = "SELECT * FROM plugin_helper h WHERE plugin = '{$this->sNamespace}'";
         $aPluginHelpers = DBUtil::getResultArray($query);
 
-        if(!empty($aPluginHelpers)){
+        if (!empty($aPluginHelpers)) {
             foreach ($aPluginHelpers as $plugin) {
                 $sName = $plugin['namespace'];
-            	$sParams = $plugin['object'];
-            	$aParams = explode('|', $sParams);
-            	$sClassType = $plugin['classtype'];
+                $sParams = $plugin['object'];
+                $aParams = explode('|', $sParams);
+                $sClassType = $plugin['classtype'];
 
-            	switch ($sClassType) {
-            	    case 'portlet':
-            	        $aLocation = unserialize($aParams[0]);
-            	        if($aLocation != false){
-        	               $aParams[0] = $aLocation;
-            	        }
+                switch ($sClassType) {
+                    case 'portlet':
+                        $aLocation = unserialize($aParams[0]);
+                        if ($aLocation != false) {
+                           $aParams[0] = $aLocation;
+                        }
                         $this->_aPortlets[$sName] = $aParams;
-            	        break;
+                        break;
 
-            	    case 'trigger':
-            	        $this->_aTriggers[$sName] = $aParams;
-            	        break;
+                    case 'trigger':
+                        $this->_aTriggers[$sName] = $aParams;
+                        break;
 
-            	    case 'action':
-            	        $this->_aActions[$sName] = $aParams;
-            	        break;
+                    case 'action':
+                        $this->_aActions[$sName] = $aParams;
+                        break;
 
-            	    case 'page':
-            	        $this->_aPages[$sName] = $aParams;
-            	        break;
+                    case 'page':
+                        $this->_aPages[$sName] = $aParams;
+                        break;
 
-            	    case 'authentication_provider':
-            	        $this->_aAuthenticationProviders[$sName] = $aParams;
-            	        break;
+                    case 'authentication_provider':
+                        $this->_aAuthenticationProviders[$sName] = $aParams;
+                        break;
 
-            	    case 'admin_category':
-            	        $this->_aAdminCategories[$sName] = $aParams;
-            	        break;
+                    case 'admin_category':
+                        $this->_aAdminCategories[$sName] = $aParams;
+                        break;
 
-            	    case 'admin_page':
-            	        $this->_aAdminPages[$sName] = $aParams;
-            	        break;
+                    case 'admin_page':
+                        $this->_aAdminPages[$sName] = $aParams;
+                        break;
 
-            	    case 'dashlet':
-            	        $this->_aDashlets[$sName] = $aParams;
-            	        break;
+                    case 'dashlet':
+                        $this->_aDashlets[$sName] = $aParams;
+                        break;
 
-            	    case 'i18n':
-            	        $this->_ai18n[$sName] = $aParams;
-            	        break;
+                    case 'i18n':
+                        $this->_ai18n[$sName] = $aParams;
+                        break;
 
-            	    case 'i18nlang':
-            	        $this->_ai18nLang[$sName] = $aParams;
-            	        break;
+                    case 'i18nlang':
+                        $this->_ai18nLang[$sName] = $aParams;
+                        break;
 
-            	    case 'language':
-            	        $this->_aLanguage[$sName] = $aParams;
-            	        break;
+                    case 'language':
+                        $this->_aLanguage[$sName] = $aParams;
+                        break;
 
-            	    case 'help_language':
-            	        $this->_aHelpLanguage[$sName] = $aParams;
-            	        break;
+                    case 'help_language':
+                        $this->_aHelpLanguage[$sName] = $aParams;
+                        break;
 
-            	    case 'workflow_trigger':
-            	        $this->_aWFTriggers[$sName] = $aParams;
-            	        break;
+                    case 'workflow_trigger':
+                        $this->_aWFTriggers[$sName] = $aParams;
+                        break;
 
-            	    case 'column':
-            	        $this->_aColumns[$sName] = $aParams;
-            	        break;
+                    case 'column':
+                        $this->_aColumns[$sName] = $aParams;
+                        break;
 
-            	    case 'view':
-            	        $this->_aViews[$sName] = $aParams;
-            	        break;
+                    case 'view':
+                        $this->_aViews[$sName] = $aParams;
+                        break;
 
-            	    case 'notification_handler':
-            	        $this->_aNotificationHandlers[$sName] = $aParams;
-            	        break;
+                    case 'notification_handler':
+                        $this->_aNotificationHandlers[$sName] = $aParams;
+                        break;
 
-            	    case 'template_location':
-            	        $this->_aTemplateLocations[$sName] = $aParams;
-            	        break;
+                    case 'template_location':
+                        $this->_aTemplateLocations[$sName] = $aParams;
+                        break;
 
-            	    case 'criterion':
-            	        $aInit = unserialize($aParams[3]);
-            	        if($aInit != false){
-        	               $aParams[3] = $aInit;
-            	        }
-            	        $this->_aCriteria[$sName] = $aParams;
-            	        break;
+                    case 'criterion':
+                        $aInit = unserialize($aParams[3]);
+                        if ($aInit != false) {
+                           $aParams[3] = $aInit;
+                        }
+                        $this->_aCriteria[$sName] = $aParams;
+                        break;
 
-            	    case 'widget':
-            	        $this->_aWidgets[$sName] = $aParams;
-            	        break;
+                    case 'widget':
+                        $this->_aWidgets[$sName] = $aParams;
+                        break;
 
-            	    case 'validator':
-            	        $this->_aValidators[$sName] = $aParams;
-            	        break;
+                    case 'validator':
+                        $this->_aValidators[$sName] = $aParams;
+                        break;
 
-            	    case 'interceptor':
-            	        $this->_aInterceptors[$sName] = $aParams;
-            	        break;
-            	}
-        	}
+                    case 'interceptor':
+                        $this->_aInterceptors[$sName] = $aParams;
+                        break;
+                }
+            }
         }
+
         return true;
     }
 
@@ -685,11 +691,11 @@ class KTPlugin {
         return true;
     }
 
-    function setAvailability($sNamespace, $bAvailable = true){
-    	$aValues = array('unavailable' => $bAvailable);
-    	$aWhere = array('namespace' => $sNamespace);
-    	$res = DBUtil::whereUpdate('plugins', $aValues, $aWhere);
-    	return $res;
+    function setAvailability($sNamespace, $bAvailable = true) {
+        $aValues = array('unavailable' => $bAvailable);
+        $aWhere = array('namespace' => $sNamespace);
+        $res = DBUtil::whereUpdate('plugins', $aValues, $aWhere);
+        return $res;
     }
 
     function stripKtDir($sFilename) {
@@ -773,7 +779,7 @@ class KTPlugin {
             $this->setup();
             return $oEntity;
         }
-        if(PEAR::isError($oEntity) && !($oEntity instanceof KTEntityNoObjects)){
+        if (PEAR::isError($oEntity) && !($oEntity instanceof KTEntityNoObjects)) {
             $default->log->error("Plugin register: the plugin {$friendly_name}, namespace: {$this->sNamespace} returned an error: ".$oEntity->getMessage());
             return $oEntity;
         }
@@ -810,15 +816,15 @@ class KTPlugin {
 
     function getURLPath($filename = null)
     {
-		$config = KTConfig::getSingleton();
-		$dir = $config->get('KnowledgeTree/fileSystemRoot');
+        $config = KTConfig::getSingleton();
+        $dir = $config->get('KnowledgeTree/fileSystemRoot');
 
-		$path = substr(dirname($this->sFilename), strlen($dir));
-		if (!is_null($filename))
-		{
-			$path .= '/' . $filename;
-		}
-		return $path;
+        $path = substr(dirname($this->sFilename), strlen($dir));
+        if (!is_null($filename))
+        {
+            $path .= '/' . $filename;
+        }
+        return $path;
     }
 
 }

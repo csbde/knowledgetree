@@ -33,6 +33,7 @@ kt.app.sharewithusers = new function() {
     // userType of 'shared' means shared user, else regular user
     this.inviteUsers  =  function(userType) {
         emails = document.getElementById('share.emails').value;
+        emails = kt.api.newline2comma(emails);
         if (emails.length < 3) {
 	        alert('Please enter a valid email address.');
 	    } else {

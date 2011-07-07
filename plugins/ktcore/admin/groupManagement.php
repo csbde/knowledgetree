@@ -58,14 +58,13 @@ class KTGroupAdminDispatcher extends KTAdminDispatcher {
 
     function predispatch()
     {
-        $this->aBreadcrumbs[] = array('url' => $_SERVER['PHP_SELF'], 'name' => _kt('Group Management'));
         $this->persistParams(array('old_search'));
     }
 
     function do_main()
     {
-        $this->oPage->setBreadcrumbDetails(_kt('select a group'));
-        $this->oPage->setTitle(_kt('Group Management'));
+        //$this->oPage->setBreadcrumbDetails(_kt('select a group'));
+        //$this->oPage->setTitle(_kt('Group Management'));
 
         $KTConfig =& KTConfig::getSingleton();
         $alwaysAll = 1; //$KTConfig->get('alwaysShowAll');
@@ -121,12 +120,15 @@ class KTGroupAdminDispatcher extends KTAdminDispatcher {
 
         $editFields = array();
         $editFields[] =  new KTStringWidget(_kt('Group Name'), _kt('A short name for the group.  e.g. <strong>administrators</strong>.'), 'group_name', $group->getName(), $this->oPage, true);
-        $editFields[] =  new KTCheckboxWidget(_kt('Unit Administrators'), _kt('Should all the members of this group be given <strong>unit</strong> administration privileges?'), 'is_unitadmin', $group->getUnitAdmin(), $this->oPage, false);
-        $editFields[] =  new KTCheckboxWidget(_kt('System Administrators'), _kt('Should all the members of this group be given <strong>system</strong> administration privileges?'), 'is_sysadmin', $group->getSysAdmin(), $this->oPage, false);
+        $editFields[] =  new KTBooleanWidget(_kt('System Administration Privileges'), _kt('Should all the members of this group be given system administration privileges?'), 'is_sysadmin', $group->getSysAdmin(), $this->oPage, false);
+        $editFields[] =  new KTBooleanWidget(_kt('Unit Administration Privileges'), _kt('Should all the members of this group be given unit administration privileges?'), 'is_unitadmin', $group->getUnitAdmin(), $this->oPage, false);
+
 
         // grab all units.
         $unitId = $group->getUnitId();
-        if ($unitId == null) { $unitId = 0; }
+        if ($unitId == null) {
+            $unitId = 0;
+        }
 
         $units = Unit::getList();
         $vocab = array();
@@ -353,8 +355,8 @@ class KTGroupAdminDispatcher extends KTAdminDispatcher {
     {
         $group = $this->getGroupFromRequest();
         $this->aBreadcrumbs[] = array('name' => $group->getName());
-        $this->oPage->setBreadcrumbDetails(_kt('manage members'));
-        $this->oPage->setTitle(sprintf(_kt('Manage members of %s'), $group->getName()));
+        $this->oPage->setBreadcrumbDetails(_kt('manage sub-groups'));
+        $this->oPage->setTitle(sprintf(_kt('Manage sub-groups of %s'), $group->getName()));
 
         // Set up and instantiate group selector widget.
         $members = KTJSONLookupWidget::formatMemberGroups($group->getMemberGroups());
@@ -461,7 +463,7 @@ class KTGroupAdminDispatcher extends KTAdminDispatcher {
             'action' => 'createGroup',
             'fail_action' => 'addGroup',
             'cancel_action' => 'main',
-            'context' => $this,
+            'context' => $this
         ));
 
         $form->setWidgets(array(
@@ -477,7 +479,7 @@ class KTGroupAdminDispatcher extends KTAdminDispatcher {
             array('ktcore.widgets.boolean',
                 array(
                     'name' => 'sysadmin',
-                    'label' => _kt('System Administrators'),
+                    'label' => _kt('System Administration Privileges'),
                     'description' => _kt('Should all the members of this group be given <strong>system</strong> administration privileges?'),
                     'value' => null,
                 )
@@ -495,10 +497,19 @@ class KTGroupAdminDispatcher extends KTAdminDispatcher {
             )),
         ));
 
-        // if we have any units.
+        // If we have any units.
         $units = Unit::getList();
         if (!PEAR::isError($units) && !empty($units)) {
             $form->addWidgets(array(
+                array('ktcore.widgets.boolean',
+                    array(
+                        'name' => 'unitadmin',
+                        'label' => _kt('Unit Administration Privileges'),
+                        'description' => _kt('Should all the members of this group be given <strong>unit</strong> administration privileges?'),
+                        'important_description' => _kt('Note that its not possible to set a group without a unit as having unit administration privileges.'),
+                        'value' => null,
+                    )
+                ),
                 array('ktcore.widgets.entityselection',
                     array(
                         'name' => 'unit',
@@ -508,15 +519,6 @@ class KTGroupAdminDispatcher extends KTAdminDispatcher {
                         'label_method' => 'getName',
                         'simple_select' => false,
                         'unselected_label' => _kt('No unit'),
-                    )
-                ),
-                array('ktcore.widgets.boolean',
-                    array(
-                        'name' => 'unitadmin',
-                        'label' => _kt('Unit Administrators'),
-                        'description' => _kt('Should all the members of this group be given <strong>unit</strong> administration privileges?'),
-                        'important_description' => _kt('Note that its not possible to set a group without a unit as having unit administration privileges.'),
-                        'value' => null,
                     )
                 )
             ));
@@ -600,7 +602,7 @@ class KTGroupAdminDispatcher extends KTAdminDispatcher {
             $unit = $data['unit']->getId();
         }
 
-        $group =& Group::createFromArray(array(
+        $group = Group::createFromArray(array(
              'sName' => $data['group_name'],
              'bIsUnitAdmin' => KTUtil::arrayGet($data, 'unitadmin', false),
              'bIsSysAdmin' => $data['sysadmin'],
@@ -665,7 +667,6 @@ class KTGroupAdminDispatcher extends KTAdminDispatcher {
         $authenticationProvider->oPage->setTitle(_kt('Modify Group Details'));
 
         $authenticationProvider->dispatch();
-        exit(0);
     }
 
     function getGroupStringForGroup($group)
@@ -675,7 +676,7 @@ class KTGroupAdminDispatcher extends KTAdminDispatcher {
         $maxGroups = 6;
         $addElipsis = false;
 
-        if (count($groups) == 0) { return _kt('Group currently has no subgroups.'); }
+        if (count($groups) == 0) { return _kt(''); }
 
         if (count($groups) > $maxGroups) {
             $groups = array_slice($groups, 0, $maxGroups);
@@ -691,6 +692,11 @@ class KTGroupAdminDispatcher extends KTAdminDispatcher {
         }
 
         return implode(', ', $groupNames);
+    }
+
+    public function handleOutput($output)
+    {
+        print $output;
     }
 
 }

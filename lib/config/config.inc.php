@@ -234,9 +234,11 @@ class KTConfig {
         $filename = $this->getCacheFilename();
 
         if (ACCOUNT_ROUTING_ENABLED) {
-            $this->setMemcache();
-            MemCacheUtil::clear($filename);
-            return true;
+            if ($this->setMemcache()) {
+            	MemCacheUtil::clear($filename);
+            	return true;
+            }
+            return false;
         }
 
         if ($filename !== false && file_exists($filename)) {
@@ -497,8 +499,7 @@ class KTConfig {
             }
 
 	    $configId = DBUtil::autoInsert('config_settings', array('item' => $var ,'value' => $value, 'group_name' => $groupName, 'can_edit' => $can_edit));
-            if (PEAR::isError($configId))
-            {
+            if (PEAR::isError($configId)) {
                 $default->log->error(sprintf(_kt("Couldn't insert config value:%s"), $configId->getMessage()));
                 return false;
             }

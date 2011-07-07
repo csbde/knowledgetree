@@ -714,37 +714,23 @@ class KTAPI_Document extends KTAPI_FolderItem
         {
         	$name = $newname;
         	$clash = KTDocumentUtil::nameExists($target_folder, $name);
-        }
-        if ($clash)
-        {
-            if (is_null($newname))
-            {
-                $name = KTDocumentUtil::getUniqueDocumentName($target_folder, $name);
-            }
-            else
-            {
-                return new PEAR_Error('A document with this title already exists in your chosen folder.  '
+        	
+        	if ($clash) {
+        		return new PEAR_Error('A document with this title already exists in your chosen folder.  '
                                     . 'Please choose a different folder, or specify a new title for the copied document.');
-            }
+        	}
         }
 
         $filename=$this->document->getFilename();
         $clash = KTDocumentUtil::fileExists($target_folder, $filename);
 
-        if ($clash && !is_null($newname))
+        if ($clash && !is_null($newfilename))
         {
 			$filename = $newfilename;
             $clash = KTDocumentUtil::fileExists($target_folder, $filename);
-        }
-        if ($clash)
-        {
-            if (is_null($newfilename))
-            {
-                $filename = KTDocumentUtil::getUniqueFilename($target_folder, $newfilename);
-            }
-            else
-            {
-        	   return new PEAR_Error('A document with this filename already exists in your chosen folder.  '
+            
+            if ($clash) {
+            	return new PEAR_Error('A document with this filename already exists in your chosen folder.  '
                                    . 'Please choose a different folder, or specify a new filename for the copied document.');
             }
         }
@@ -755,11 +741,15 @@ class KTAPI_Document extends KTAPI_FolderItem
         if (PEAR::isError($new_document))
         {
             DBUtil::rollback();
-			return new KTAPI_Error(KTAPI_ERROR_INTERNAL_ERROR,$new_document );
+			return new KTAPI_Error(KTAPI_ERROR_INTERNAL_ERROR, $new_document );
         }
 
-        $new_document->setName($name);
-        $new_document->setFilename($filename);
+        if (!is_null($newname)) {
+        	$new_document->setName($name);
+        }
+        if (!is_null($newfilename)) {
+        	$new_document->setFilename($filename);
+        }
 
         $res = $new_document->update();
 
@@ -815,71 +805,72 @@ class KTAPI_Document extends KTAPI_FolderItem
 		assert(!is_null($ktapi_target_folder));
 		assert($ktapi_target_folder instanceof KTAPI_Folder);  // $ktapi_target_folder instanceof KTAPI_Folder);
 
-		if (empty($newname))
-		{
+		if (empty($newname)) {
 			$newname=null;
 		}
-		if (empty($newfilename))
-		{
+		if (empty($newfilename)) {
 			$newfilename=null;
 		}
 
 		$user = $this->can_user_access_object_requiring_permission( $this->document, KTAPI_PERMISSION_DOCUMENT_MOVE);
 
-		if (PEAR::isError($user))
-		{
+		if (PEAR::isError($user)) {
 			return $user;
 		}
 
-		if ($this->document->getIsCheckedOut())
-		{
+		if ($this->document->getIsCheckedOut()) {
 			return new PEAR_Error(KTAPI_ERROR_DOCUMENT_CHECKED_OUT);
 		}
 
 		$target_folder = $ktapi_target_folder->get_folder();
-
 		$result=  $this->can_user_access_object_requiring_permission(  $target_folder, KTAPI_PERMISSION_WRITE);
 
-		if (PEAR::isError($result))
-		{
+		if (PEAR::isError($result)) {
 			return $result;
 		}
 
-		if (!KTDocumentUtil::canBeMoved($this->document, $error))
-		{
-            if (PEAR::isError($error))
-            {
+		if (!KTDocumentUtil::canBeMoved($this->document, $error)) {
+            if (PEAR::isError($error)) {
                 return $error;
             }
-            else
-            {
+            else {
                 return new PEAR_Error('Document cannot be moved.');
             }
 		}
 
+		$fileRenamed = false;
 		$name = $this->document->getName();
-		$clash = KTDocumentUtil::nameExists($target_folder, $name);
-        if ($clash && !is_null($newname))
-        {
+		$nameClash = KTDocumentUtil::nameExists($target_folder, $name);
+		
+		if ($nameClash && !is_null($newname)) {
+        	$nameClash = KTDocumentUtil::nameExists($target_folder, $newname);
+        	$reason = sprintf(_kt(' Document renamed from %s to %s.'), $name, $newname) .' '. $reason;
+        	$fileRenamed = true;
         	$name = $newname;
-        	$clash = KTDocumentUtil::nameExists($target_folder, $name);
+		}
+		
+		$filename=$this->document->getFilename();
+		$filenameClash = KTDocumentUtil::fileExists($target_folder, $filename);
+
+		if ($filenameClash && !is_null($newfilename)) {
+            $filenameClash = KTDocumentUtil::fileExists($target_folder, $newfilename);
+            if (!$fileRenamed) {
+            	$reason = sprintf(_kt(' Document filename renamed from %s to %s.'), $filename, $newfilename) .' '. $reason;
+            }
+            $filename = $newfilename;
         }
-        if ($clash)
-        {
+		
+        if ($nameClash) {
+        	if ($filenameClash) {
+        		return new PEAR_Error('A document with this title and filename already exists in your chosen folder.  '
+                                . 'Please choose a different folder, or specify a new title and filename for the moved document.');
+        	}
+        	
         	return new PEAR_Error('A document with this title already exists in your chosen folder.  '
                                 . 'Please choose a different folder, or specify a new title for the moved document.');
         }
-
-        $filename=$this->document->getFilename();
-        $clash = KTDocumentUtil::fileExists($target_folder, $filename);
-
-        if ($clash && !is_null($newname))
-        {
-			$filename = $newfilename;
-            $clash = KTDocumentUtil::fileExists($target_folder, $filename);
-        }
-        if ($clash)
-        {
+        
+        if ($filenameClash) {
         	return new PEAR_Error('A document with this filename already exists in your chosen folder.  '
                                 . 'Please choose a different folder, or specify a new filename for the moved document.');
         }
@@ -887,19 +878,21 @@ class KTAPI_Document extends KTAPI_FolderItem
 		DBUtil::startTransaction();
 
         $res = KTDocumentUtil::move($this->document, $target_folder, $user, $reason);
-        if (PEAR::isError($res))
-        {
+        if (PEAR::isError($res)) {
             DBUtil::rollback();
 			return new KTAPI_Error(KTAPI_ERROR_INTERNAL_ERROR, $res );
         }
 
-        $this->document->setName($name);
-        $this->document->setFilename($filename);
+        if (!is_null($newname)) {
+        	$this->document->setName($name);
+        }
+        if (!is_null($newfilename)) {
+        	$this->document->setFilename($filename);
+        }
 
         $res = $this->document->update();
 
-        if (PEAR::isError($res))
-        {
+        if (PEAR::isError($res)) {
             DBUtil::rollback();
 			return new KTAPI_Error(KTAPI_ERROR_INTERNAL_ERROR,$res );
         }
@@ -1100,36 +1093,6 @@ class KTAPI_Document extends KTAPI_FolderItem
             return new KTAPI_Error(KTAPI_ERROR_INTERNAL_ERROR, $res);
         }
         DBUtil::commit();
-
-		/*
-		list($permission, $user) = $perm_and_user;
-
-		DBUtil::startTransaction();
-		$this->document->setStatusID(ARCHIVED);
-        $res = $this->document->update();
-        if (($res === false) || PEAR::isError($res)) {
-           DBUtil::rollback();
-           return new KTAPI_Error(KTAPI_ERROR_INTERNAL_ERROR, $res);
-        }
-
-        $oDocumentTransaction = new DocumentTransaction($this->document, sprintf(_kt('Document archived: %s'), $reason), 'ktcore.transactions.update');
-        $oDocumentTransaction->create();
-
-        DBUtil::commit();
-
-        $oKTTriggerRegistry = KTTriggerRegistry::getSingleton();
-        $aTriggers = $oKTTriggerRegistry->getTriggers('archive', 'postValidate');
-        foreach ($aTriggers as $aTrigger)
-        {
-            $sTrigger = $aTrigger[0];
-            $oTrigger = new $sTrigger;
-            $aInfo = array(
-                'document' => $this->document,
-            );
-            $oTrigger->setInfo($aInfo);
-            $ret = $oTrigger->postValidate();
-        }
-        */
 	}
 
 	/**
@@ -2788,7 +2751,7 @@ class KTAPI_Document extends KTAPI_FolderItem
 	public function immute()
 	{
 	    if($this->is_checked_out()){
-	        return new PEAR_Error('Document is checked out and can\'t be set to immutable.');
+	        return new PEAR_Error('Document is checked out and can\'t be finalized.');
 	    }
         $this->document->setImmutable(true);
         $this->document->update();

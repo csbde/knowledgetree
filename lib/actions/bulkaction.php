@@ -119,6 +119,16 @@ class KTBulkAction extends KTStandardDispatcher {
         }
     }
 
+    function getOnClick()
+    {
+    	return '';
+    }
+    
+    function getBtnType()
+    {
+    	return 'submit';
+    }
+    
     function getInfo() {
         if ($this->_show() === false) {
             return null;
@@ -250,7 +260,7 @@ class KTBulkAction extends KTStandardDispatcher {
             parent_folder_ids LIKE '{$sFolderId},%' OR
             parent_folder_ids LIKE '%,{$sFolderId},%' OR
             parent_folder_ids LIKE '%,{$sFolderId}'";
-            $aFolderList = $this->oFolder->getList($sWhereClause);
+            $aFolderList = $oFolder->getList($sWhereClause);
             foreach($aFolderList as $oFolderItem){
 	            if ($oFolderItem->isSymbolicLink()){
 	            	$oFolderItem = $oFolderItem->getLinkedFolder();
@@ -569,6 +579,9 @@ class KTBulkAction extends KTStandardDispatcher {
 
     // perform the action itself, and list results (completion action)
     function do_performaction() {
+    	global $default;
+    	$default->log->info("Bulk Actions: performing bulk action {$this->sName}");
+    	
         $this->get_lists();
         $this->aPersistParams = array();
         $targetFolderId = $_REQUEST['fFolderId'];
@@ -703,7 +716,7 @@ class KTBulkActionUtil {
             if (!empty($sPath)) {
                 require_once($sPath);
             }
-            $aObjects[] = new $sClassName(null, null, $oPlugin);
+            $aObjects[] = new $sClassName(null, $oPlugin);
         }
         return $aObjects;
     }

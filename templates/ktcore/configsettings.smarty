@@ -1,24 +1,3 @@
-<script type='text/javascript'>
-{literal}
-    function toggleSettingsDisplay(id)
-    {
-        var el = document.getElementById(id);
-        var head = document.getElementById(id+'_head');
-
-        if(el.style.visibility == 'visible'){
-            el.style.visibility = 'hidden';
-            el.style.display = 'none';
-            head.className = 'collapse';
-        }else{
-            el.style.visibility = 'visible';
-            el.style.display = 'block';
-            head.className = 'expand';
-        }
-    }
-{/literal}
-</script>
-
-<h2>{$section}</h2>
 
 <form name="manageConfigSettings" action="{$smarty.server.PHP_SELF}" method="POST">
 
@@ -27,34 +6,29 @@
     {* <!-- Display the group name and description --> *}
     {foreach from=$groupList item=groupItem}
         {assign var=group value=$groupItem.name}
-
-        <h4 style='margin-top: 20px;'><span class="expand" id='{$groupItem.id}_head' onclick='javascript: toggleSettingsDisplay("{$groupItem.id}");' style='cursor: pointer;'>
-            {$group}
+            
         </span></h3>
         <span class='descriptiveText'>{$groupItem.description}</span>
             <div id='{$groupItem.id}' style='visibility: visible;'>
-                <fieldset>
 
                 {* <!-- Display the settings, render the input according to the setting type (dropdown / radio / etc) --> *}
                 {foreach from=$groupSettings.$group item=settings}
 
-                    <p style='padding-bottom: 15px;'>
-                        {$settings.display_name}<br>
-                        {if $settings.description}
-                            <span class='descriptiveText'>{$settings.description}</span><br>
-                        {/if}
-                        {$context->renderInput($settings.id, $settings.type, $settings.value, $settings.default_value, $settings.options)}<br>
-                    </p>
+                    <div class="settings-field" style='padding-bottom: 15px;' {if $settings.description}title="{$settings.description}"{/if}>
+                        <p class="display-name">{$settings.display_name}</p>
+                        <div class="settings-option">
+{$context->renderInput($settings.id, $settings.type, $settings.value, $settings.default_value, $settings.options)}</div>
+                    </div>
 
                 {/foreach}
 
-                </fieldset>
             </div>
     {/foreach}
 
     <br><hr>
     <div class="form_actions">
         <input type="submit" name="AlterConfig" value="{i18n}Save Config Settings{/i18n}" />
+        <input type="hidden" name="action" value="save" />
     </div>
 {else}
 

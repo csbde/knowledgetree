@@ -4,46 +4,47 @@
 <strong>not</strong> be available to users.{/i18n}</p>
 
 <form method="POST" action="{$smarty.server.PHP_SELF}">
-<fieldset><legend>{i18n}Assign Blocked Actions{/i18n}</legend>
 
-{foreach from=$args item=v key=k}
-    <input type="hidden" name="{$k}" value="{$v}" />
-{/foreach}
-<div class="action_overview_scroll">
-<table class="kt_collection narrow" cellspacing="0">
-    <thead>
-        <th>{i18n}State{/i18n}</th>
-      {foreach from=$actions item=oAction}
-    	{if $oAction->getDisplayName() != ''}
-        	<th>
-        		{$oAction->getDisplayName()}
-            </th>
-    	{/if}
-      {/foreach}
-    </thead>
+	{foreach from=$args item=v key=k}
+	    <input type="hidden" name="{$k}" value="{$v}" />
+	{/foreach}
+	<div class="action_overview_scroll">
+	<table class="kt_collection narrow" cellspacing="0">
+	    <thead>
+	        <th>{i18n}State{/i18n}</th>
+	      {foreach from=$actions item=oAction}
+	    	{if $oAction->getDisplayName() != ''}
+	        	<th>
+	        		{$oAction->getDisplayName()}
+	            </th>
+	    	{/if}
+	      {/foreach}
+	    </thead>
+	
+	    <tbody>
+	      {foreach from=$states item=oState}
+	      {assign value=$oState->getId() var=state_id}
+	        <tr>
+	            <td>{$oState->getName()}</td>
+	            {foreach from=$actions item=oAction}
+	                {if ($oAction->getDisplayName() != '')}
+	                {assign value=$oAction->getName() var=action_id}
+	                    <td class="centered">
+	                        <input type="checkbox" name="fActions[{$state_id}][{$action_id}]" value="{$action_id}" {if ($grid.$state_id.$action_id)}checked="true"{/if} />
+	                    </td>
+	                {/if}
+	            {/foreach}
+	        </tr>
+	      {/foreach}
+	    </tbody>
+	</table>
+	</div>
+	<br/>
+	<div class="form_actions">
+	    <input type="submit" value="{i18n}Block actions{/i18n}" />
+	    <a href="{addQS context=$context}action=security{/addQS}" class="form_cancel">{i18n}Cancel{/i18n}</a>
+	</div>
 
-    <tbody>
-      {foreach from=$states item=oState}
-      {assign value=$oState->getId() var=state_id}
-        <tr>
-            <td>{$oState->getName()}</td>
-            {foreach from=$actions item=oAction}
-                {if ($oAction->getDisplayName() != '')}
-                {assign value=$oAction->getName() var=action_id}
-                    <td class="centered">
-                        <input type="checkbox" name="fActions[{$state_id}][{$action_id}]" value="{$action_id}" {if ($grid.$state_id.$action_id)}checked="true"{/if} />
-                    </td>
-                {/if}
-            {/foreach}
-        </tr>
-      {/foreach}
-    </tbody>
-</table>
-</div>
-<div class="form_actions">
-    <input type="submit" value="{i18n}Block actions{/i18n}" />
-    <a href="{addQS context=$context}action=actionsoverview{/addQS}" class="form_cancel">{i18n}Cancel{/i18n}</a>
-</div>
-
-</fieldset>
 </form>
+
+<br clear="both" />

@@ -1,0 +1,13 @@
+/* Admin Page Landing */
+div.menuitems { padding: 30px; width: 370px; position: relative; text-align: left; }
+div.adminheadings { position:relative; top: 20px; height:30px; font-family:"Arial", sans-serif; font-weight:bold; font-style:normal; font-size:24px; color: Gray; z-index:1; background-color:white; text-align:center; }
+div.stats { padding: 15px; width: 450px; position: relative; }
+.settingHeads { left: -75px; width: 220px; }
+.upgradeHead { width: 120px; left: 80px; }
+.usageHead { width: 95px; left: 30px; }
+div#upgradePlan { width:320px;}
+#usageStats table { color: #999; }
+#usageStats td { padding-bottom: 6px; vertical-align: top; }
+.usage { color: #5899B9; font-size:16px; font-variant: normal; text-transform: capitalize; }
+span.astat { font-weight:bold; }
+span.sharingtree { background:url("../graphics/newui/home.png") no-repeat; color:transparent !important; margin:0; overflow:hidden; padding:0; width:25px; }

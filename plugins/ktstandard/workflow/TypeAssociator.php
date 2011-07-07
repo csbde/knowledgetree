@@ -1,11 +1,12 @@
 <?php
+
 /**
  * $Id$
  *
  * KnowledgeTree Community Edition
  * Document Management Made Simple
  * Copyright (C) 2008, 2009, 2010 KnowledgeTree Inc.
- * 
+ *
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License version 3 as published by the
@@ -41,14 +42,18 @@ require_once(KT_LIB_DIR . '/workflow/workflow.inc.php');
 require_once(KT_LIB_DIR . '/dispatcher.inc.php');
 
 class KTDocTypeWorkflowAssociationPlugin extends KTPlugin {
-    var $sNamespace = "ktstandard.workflowassociation.documenttype.plugin";
-    function KTDocTypeWorkflowAssociationPlugin($sFilename = null) {
-        $res = parent::KTPlugin($sFilename);
+
+    var $sNamespace = 'ktstandard.workflowassociation.documenttype.plugin';
+
+    function KTDocTypeWorkflowAssociationPlugin($filename = null)
+    {
+        $res = parent::KTPlugin($filename);
         $this->sFriendlyName = _kt('Workflow allocation by document type');
         return $res;
     }
 
-    function setup() {
+    function setup()
+    {
         $this->registerTrigger('workflow', 'objectModification', 'DocumentTypeWorkflowAssociator',
             'ktstandard.triggers.workflowassociation.documenttype.handler');
         $this->registeri18n('knowledgeTree', KT_DIR . '/i18n');
@@ -59,71 +64,88 @@ class KTDocTypeWorkflowAssociationPlugin extends KTPlugin {
      *
      * @return unknown
      */
-    function run_setup() {
-        $sQuery = 'SELECT selection_ns FROM ' . KTUtil::getTableName('trigger_selection');
-        $sQuery .= ' WHERE event_ns = ?';
-        $aParams = array('ktstandard.workflowassociation.handler');
-        $res = DBUtil::getOneResultKey(array($sQuery, $aParams), 'selection_ns');
+    function run_setup()
+    {
+        $query = 'SELECT selection_ns FROM ' . KTUtil::getTableName('trigger_selection');
+        $query .= ' WHERE event_ns = ?';
+        $params = array('ktstandard.workflowassociation.handler');
+        $res = DBUtil::getOneResultKey(array($query, $params), 'selection_ns');
 
         if ($res == 'ktstandard.triggers.workflowassociation.documenttype.handler') {
             $this->registerAdminPage('workflow_type_allocation', 'WorkflowTypeAllocationDispatcher',
-                'contentManagement', _kt('Workflow Allocation by Document Types'),
+                'workflows', _kt('Workflow Allocation by Document Types'),
                 _kt('This installation assigns workflows by Document Type. Configure this process here.'), __FILE__);
-        }else{
-            $this->deRegisterPluginHelper('contentManagement/workflow_type_allocation', 'admin_page');
         }
+        else {
+            $this->deRegisterPluginHelper('workflows/workflow_type_allocation', 'admin_page');
+        }
+
         return true;
     }
+
 }
 
 class DocumentTypeWorkflowAssociator extends KTWorkflowAssociationHandler {
-    function addTrigger($oDocument) {
-       return $this->getWorkflowForType($oDocument->getDocumentTypeID(), $oDocument);
+
+    function addTrigger($document)
+    {
+       return $this->getWorkflowForType($document->getDocumentTypeID(), $document);
     }
 
-    function editTrigger($oDocument) {
-       return $this->getWorkflowForType($oDocument->getDocumentTypeID(), $oDocument);
+    function editTrigger($document)
+    {
+       return $this->getWorkflowForType($document->getDocumentTypeID(), $document);
     }
 
-    function moveTrigger($oDocument) {
-       return $this->getWorkflowForType($oDocument->getDocumentTypeID(), $oDocument);
+    function moveTrigger($document)
+    {
+       return $this->getWorkflowForType($document->getDocumentTypeID(), $document);
     }
 
-    function copyTrigger($oDocument) {
-       return $this->getWorkflowForType($oDocument->getDocumentTypeID(), $oDocument);
+    function copyTrigger($document)
+    {
+       return $this->getWorkflowForType($document->getDocumentTypeID(), $document);
     }
 
-
-    function getWorkflowForType($iDocTypeId, $oDocument) {
-        if (is_null($iDocTypeId)) { return null; }
+    function getWorkflowForType($docTypeId, $document)
+    {
+        if (is_null($docTypeId)) {
+            return null;
+        }
 
         // Link to the workflows table to ensure disabled workflows aren't associated
-        $sQuery = 'SELECT `workflow_id` FROM ' . KTUtil::getTableName('type_workflow_map') .' m';
-        $sQuery .= ' LEFT JOIN workflows w ON w.id = m.workflow_id
+        $query = 'SELECT `workflow_id` FROM ' . KTUtil::getTableName('type_workflow_map') .' m';
+        $query .= ' LEFT JOIN workflows w ON w.id = m.workflow_id
             WHERE document_type_id = ? AND w.enabled = 1';
 
-        $aParams = array($iDocTypeId);
-        $res = DBUtil::getOneResultKey(array($sQuery, $aParams), 'workflow_id');
+        $params = array($docTypeId);
+        $res = DBUtil::getOneResultKey(array($query, $params), 'workflow_id');
 
         if (PEAR::isError($res) || (is_null($res))) {
-            return KTWorkflowUtil::getWorkflowForDocument($oDocument); // don't remove if type changed out.
+            return KTWorkflowUtil::getWorkflowForDocument($document); // don't remove if type changed out.
         }
+
         return KTWorkflow::get($res);
     }
+
 }
 
 class WorkflowTypeAllocationDispatcher extends KTAdminDispatcher {
+
     var $bAutomaticTransaction = true;
     var $sSection = 'administration';
 
-    function check() {
+    function check()
+    {
         $res = parent::check();
-        if (!$res) { return false; }
+        if (!$res) {
+            return false;
+        }
 
-        $sQuery = 'SELECT selection_ns FROM ' . KTUtil::getTableName('trigger_selection');
-        $sQuery .= ' WHERE event_ns = ?';
-        $aParams = array('ktstandard.workflowassociation.handler');
-        $res = DBUtil::getOneResultKey(array($sQuery, $aParams), 'selection_ns');
+        $query = 'SELECT selection_ns FROM ' . KTUtil::getTableName('trigger_selection');
+        $query .= ' WHERE event_ns = ?';
+        $params = array('ktstandard.workflowassociation.handler');
+        $res = DBUtil::getOneResultKey(array($query, $params), 'selection_ns');
 
         if ($res != 'ktstandard.triggers.workflowassociation.documenttype.handler') {
             return false;
@@ -134,67 +156,85 @@ class WorkflowTypeAllocationDispatcher extends KTAdminDispatcher {
         return true;
     }
 
-    function do_main() {
-        $sQuery = 'SELECT document_type_id, workflow_id FROM ' . KTUtil::getTableName('type_workflow_map');
-        $aParams = array();
-        $res = DBUtil::getResultArray(array($sQuery, $aParams));
-        $aWorkflows = KTWorkflow::getList('start_state_id IS NOT NULL AND enabled = 1');
-        $aTypes = DocumentType::getList();
+    function do_main()
+    {
+        $query = 'SELECT document_type_id, workflow_id FROM ' . KTUtil::getTableName('type_workflow_map');
+        $params = array();
+        $res = DBUtil::getResultArray(array($query, $params));
+        $workflows = KTWorkflow::getList('start_state_id IS NOT NULL AND enabled = 1');
+        $types = DocumentType::getList();
 
-        $aTypeMapping = array();
+        $typeMap = array();
         if (PEAR::isError($res)) {
             $this->oPage->addError(_kt('Failed to get type mapping: ') . $res->getMessage());
-        } else {
-            foreach ($res as $aRow) {
-                $aTypeMapping[$aRow['document_type_id']] = $aRow['workflow_id'];
+        }
+        else {
+            foreach ($res as $row) {
+                $typeMap[$row['document_type_id']] = $row['workflow_id'];
             }
         }
 
-        $oTemplate =& $this->oValidator->validateTemplate('ktstandard/workflow/type_allocation');
-        $oTemplate->setData(array(
+        $template =& $this->oValidator->validateTemplate('ktstandard/workflow/type_allocation');
+        $template->setData(array(
             'context' => $this,
-            'types_mapping' => $aTypeMapping,
-            'types' => $aTypes,
-            'workflows' => $aWorkflows,
+            'types_mapping' => $typeMap,
+            'types' => $types,
+            'workflows' => $workflows,
         ));
-        return $oTemplate->render();
+
+        return $template->render();
     }
 
-    function isActiveWorkflow($oType, $oWorkflow, $types_mapping) {
-        if (!array_key_exists($oType->getId(), $types_mapping)) { return false; }
+    function isActiveWorkflow($type, $workflow, $typeMap)
+    {
+        if (!array_key_exists($type->getId(), $typeMap)) {
+            return false;
+        }
         else {
-            return $types_mapping[$oType->getId()] == $oWorkflow->getId();
+            return $typeMap[$type->getId()] == $workflow->getId();
         }
     }
 
-    function do_update() {
-        $types_mapping = (array) KTUtil::arrayGet($_REQUEST, 'fDocumentTypeAssignment');
+    function do_update()
+    {
+        $typeMap = (array) KTUtil::arrayGet($_REQUEST, 'fDocumentTypeAssignment');
 
-        $aWorkflows = KTWorkflow::getList();
-        $aTypes = DocumentType::getList();
+        //$workflows = KTWorkflow::getList();
+        $types = DocumentType::getList();
 
-        $sQuery = 'DELETE FROM ' . KTUtil::getTableName('type_workflow_map');
-        $aParams = array();
-        DBUtil::runQuery(array($sQuery, $aParams));
+        $query = 'DELETE FROM ' . KTUtil::getTableName('type_workflow_map');
+        $params = array();
+        DBUtil::runQuery(array($query, $params));
 
-        $aOptions = array('noid' => true);
-        $sTable = KTUtil::getTableName('type_workflow_map');
-        foreach ($aTypes as $oType) {
-            $t = $types_mapping[$oType->getId()];
-            if ($t == null) { $t = null; }
-            $res = DBUtil::autoInsert($sTable, array(
-                'document_type_id' => $oType->getId(),
-                'workflow_id' => $t,
-            ), $aOptions);
+        $options = array('noid' => true);
+        $table = KTUtil::getTableName('type_workflow_map');
+        foreach ($types as $type) {
+            $typeId = $type->getId();
+            $workflowId = $typeMap[$typeId];
+            if (empty($workflowId)) {
+                $workflowId = null;
+            }
+
+            $res = DBUtil::autoInsert($table, array(
+                'document_type_id' => $typeId,
+                'workflow_id' => $workflowId,
+            ), $options);
         }
 
         $this->successRedirectToMain(_kt('Type mapping updated.'));
     }
+
+    public function handleOutput($output)
+    {
+        print $output;
+    }
+
 }
 
-
-$oPluginRegistry =& KTPluginRegistry::getSingleton();
-$oPluginRegistry->registerPlugin('KTDocTypeWorkflowAssociationPlugin', 'ktstandard.workflowassociation.documenttype.plugin', __FILE__);
-
+$pluginRegistry =& KTPluginRegistry::getSingleton();
+$pluginRegistry->registerPlugin(
+                            'KTDocTypeWorkflowAssociationPlugin',
+                            'ktstandard.workflowassociation.documenttype.plugin', __FILE__
+);
 
 ?>

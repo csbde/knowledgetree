@@ -151,21 +151,21 @@ INSERT INTO `config_groups` VALUES
 (10, 'import', 'Import', 'Configures settings on Bulk Import.', 'System Settings'),
 (11, 'indexer', 'Document Indexer', 'Configures the Document Indexer. Only advanced users should change these settings.', 'Search and Indexing Settings'),
 (12, 'KnowledgeTree', 'KnowledgeTree', 'Configures general settings for your KnowledgeTree server installation.', 'System Settings'),
-(13, 'KTWebDAVSettings', 'WebDAV', 'Configuration options for third-party WebDAV clients', 'Client Tools Settings'),
+(13, 'KTWebDAVSettings', 'WebDAV', 'Configuration options for third-party WebDAV clients', 'WebDAV Settings'),
 (14, 'openoffice', 'OpenOffice.org Service', 'Configuration options for the OpenOffice.org service. Note that several KnowledgeTree features use this service.', 'Search and Indexing Settings'),
 (15, 'search', 'Search', 'Configures settings for KnowledgeTree''s Search function.', 'Search and Indexing Settings'),
-(16, 'session', 'Session Management', 'Session management configuration.', 'General Settings'),
+(16, 'session', 'Session Management', 'Session management configuration.', 'Session Management Settings'),
 (17, 'storage', 'Storage', 'Configure the KnowledgeTree storage manager.', 'System Settings'),
 (18, 'tweaks', 'Tweaks', 'Small configuration tweaks', 'General Settings'),
 (19, 'ui', 'User Interface', 'General user interface configuration', 'User Interface Settings'),
 (20, 'urls', 'Urls', 'The paths to the KnowledgeTree server and filesystem. <br>Full values are specific to your installation (Windows or Linux). Only advanced users should change these settings.', 'System Settings'),
 (21, 'user_prefs', 'User Preferences', 'Configures user preferences.', 'System Settings'),
-(22, 'webservice', 'Web Services', 'KnowledgeTree Web Service Interface configuration. Note that a number of KnowledgeTree Tools rely on this service.', 'Client Tools Settings'),
+(22, 'webservice', 'Web Services', 'KnowledgeTree Web Service Interface configuration. Note that a number of KnowledgeTree Tools rely on this service.', 'Web Services Settings'),
 (23, 'ldapAuthentication', 'LDAP Authentication', 'Configures LDAP Authentication', 'System Settings'),
 (24, 'server', 'Server Settings', 'Configuration settings for the server', 'System Settings'),
-(25, 'explorerCPSettings', 'Explorer CP Settings', 'Configuration options for KnowledgeTree Explorer CP', 'Client Tools Settings'),
+(25, 'explorerCPSettings', 'Explorer CP Settings', 'Configuration options for KnowledgeTree Explorer CP', 'Explorer CP Settings'),
 (26, 'actionreasons', 'Document Action Settings', 'Configure how the system deals with reasons for document actions.', 'Document Action Settings'),
-(27, 'timezone', 'Timezone', 'Timezone configuration settings', 'General Settings');
+(27, 'timezone', 'Regional Settings', 'Timezone configuration settings', 'Timezone Settings');
 /*!40000 ALTER TABLE `config_groups` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -301,7 +301,9 @@ INSERT INTO `config_settings` VALUES
 (123, 'user_prefs', 'Use Email Address to Login', 'Defines whether the username or the users email address is used for logging in', 'useEmailLogin', 'true', 'false', 'boolean', NULL, 0),
 (124, 'timezone', '', '', 'setTimezone', 'default', 'UTC', 'class', 'a:2:{s:5:"class";s:13:"datetime_view";s:4:"file";s:34:"plugins/datetime/datetime_view.php";}', 1),
 (125, 'foldersync', 'Max number of files to sync', 'Defines the threshhold number of files to sync before warning user ', 'maxFilesSync', 'default', '200', 'numeric_string', NULL, 0),
-(126, 'foldersync', 'Max size of files to sync', 'Defines the threshhold size of total files (in bytes) to sync before warning user', 'maxFileSizeSync', 'default', '524288000', 'numeric_string', NULL, 0);
+(126, 'foldersync', 'Max size of files to sync', 'Defines the threshhold size of total files (in bytes) to sync before warning user', 'maxFileSizeSync', 'default', '524288000', 'numeric_string', NULL, 0),
+(127, 'ui', 'Custom Logo', 'The path / url to a custom logo for display on the left side of the header.', 'mainLogo', 'default', '', 'string', NULL, 0),
+(128, 'ui', 'Custom Logo Title', 'The title displayed when hovering over the custom logo', 'mainLogoTitle', 'default', '', 'string', NULL, 0);
 /*!40000 ALTER TABLE `config_settings` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1475,8 +1477,8 @@ LOCK TABLES `system_settings` WRITE;
 /*!40000 ALTER TABLE `system_settings` DISABLE KEYS */;
 INSERT INTO `system_settings` VALUES
 (1,'lastIndexUpdate','0'),
-(2,'knowledgeTreeVersion','3.7.1.1'),
-(3,'databaseVersion','3.7.1.1'),
+(2,'knowledgeTreeVersion','3.7.1.2'),
+(3,'databaseVersion','3.7.1.2'),
 (4,'server_name','127.0.0.1');
 /*!40000 ALTER TABLE `system_settings` ENABLE KEYS */;
 UNLOCK TABLES;
@@ -1818,7 +1820,12 @@ INSERT INTO `upgrades` VALUES
 (262,'sql*3.7.1.0*0*3.7.1.0/folder_changes.sql','Database upgrade to version 3.7.1.0: Folder Changes','2011-02-02 00:00:00',1,'upgrade*3.7.1.0*99*upgrade3.7.1.0'),
 (263,'upgrade*3.7.1.0*99*upgrade3.7.1.0','Upgrade from version 3.7.0.9 to 3.7.1.0','2011-02-02 00:00:00',1,'upgrade*3.7.1.0*99*upgrade3.7.1.0'),
 (264,'sql*3.7.1.1*0*3.7.1.1/foldersync_maxfiles.sql','Database upgrade to version 3.7.1.1: Foldersync Maxfiles','2011-04-13 00:00:00',1,'upgrade*3.7.1.1*99*upgrade3.7.1.1'),
-(265,'upgrade*3.7.1.1*99*upgrade3.7.1.1','Upgrade from version 3.7.1.0 to 3.7.1.1','2011-04-12 00:00:00',1,'upgrade*3.7.1.1*99*upgrade3.7.1.1');
+(265,'upgrade*3.7.1.1*99*upgrade3.7.1.1','Upgrade from version 3.7.1.0 to 3.7.1.1','2011-04-12 00:00:00',1,'upgrade*3.7.1.1*99*upgrade3.7.1.1'),
+(266,'sql*3.7.1.2*0*3.7.1.2/config_groups_update_categories.sql','Database upgrade to version 3.7.1.2: Config Groups Update Categories','2011-06-30 00:00:00',1,'upgrade*3.7.1.2*99*upgrade3.7.1.2'),
+(267,'sql*3.7.1.2*0*3.7.1.2/custom_logo_configs.sql','Database upgrade to version 3.7.1.2: Custom Logo Configs','2011-06-30 00:00:00',1,'upgrade*3.7.1.2*99*upgrade3.7.1.2'),
+(268,'sql*3.7.1.2*0*3.7.1.2/settings_redordering.sql','Database upgrade to version 3.7.1.2: Settings Redordering','2011-06-30 00:00:00',1,'upgrade*3.7.1.2*99*upgrade3.7.1.2'),
+(269,'sql*3.7.1.2*0*3.7.1.2/update_mime_type.sql','Database upgrade to version 3.7.1.2: Update Mime Type','2011-06-30 00:00:00',1,'upgrade*3.7.1.2*99*upgrade3.7.1.2'),
+(270,'upgrade*3.7.1.2*99*upgrade3.7.1.2','Upgrade from version 3.7.1.1 to 3.7.1.2','2011-06-30 00:00:00',1,'upgrade*3.7.1.2*99*upgrade3.7.1.2');
 /*!40000 ALTER TABLE `upgrades` ENABLE KEYS */;
 UNLOCK TABLES;
 

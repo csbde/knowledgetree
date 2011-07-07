@@ -4,9 +4,7 @@
 <script type="text/javascript" src="/thirdpartyjs/jquery/plugins/tokenizer/src/jquery.selectinput.js"></script>
 <!--{$context->oPage->requireJSStandalone($sJavascript)}-->
 
-<div class="field {if ($has_errors)}error{/if}">
-
-    <p class="descriptiveText">{$description}</p>
+<div class="field {if ($has_errors)}error{/if}" title="{$description}">
 
     {if ($has_errors)}
         {foreach item=sError from=$errors}
@@ -46,27 +44,30 @@
 
         <tr>
             <td style="vertical-align: top" colspan="2">
-                <input type="text" name="groups_roles" id="groups_roles"/>
+                <input type="text" name="groups_roles" id="groups-roles-selector-widget"/>
             </td>
         </tr>
 
         {literal}
         <script type="text/javascript">
-            jQuery("#groups_roles").selectInput(document.getElementById('select_members_avail'), {
-                prePopulate: [{/literal}{$options.assigned[0]}{literal}],
-                classes: {
-                    tokenList: "token-input-list-facebook",
-                    token: "token-input-token-facebook",
-                    tokenDelete: "token-input-delete-token-facebook",
-                    selectedToken: "token-input-selected-token-facebook",
-                    highlightedToken: "token-input-highlighted-token-facebook",
-                    dropdown: null,
-                    dropdownItem: null,
-                    dropdownItem2: null,
-                    selectedDropdownItem: null,
-                    inputToken: null
+            jQuery("#groups-roles-selector-widget").selectInput(
+                document.getElementById('select_members_avail'),
+                {
+                    prePopulate: [{/literal}{$options.assigned[0]}{literal}],
+                    classes: {
+                        tokenList: "token-input-list-facebook",
+                        token: "token-input-token-facebook",
+                        tokenDelete: "token-input-delete-token-facebook",
+                        selectedToken: "token-input-selected-token-facebook",
+                        highlightedToken: "token-input-highlighted-token-facebook",
+                        dropdown: null,
+                        dropdownItem: null,
+                        dropdownItem2: null,
+                        selectedDropdownItem: null,
+                        inputToken: null
+                    }
                 }
-            });
+            );
         </script>
         {/literal}
         {/if}
@@ -78,27 +79,40 @@
 
         <tr>
             <td style="vertical-align: top" colspan="2">
-                <input type="text" name="users" id="users"/>
+                <input type="text" name="users" id="user-search-widget"/>
             </td>
         </tr>
 
         {literal}
         <script type="text/javascript">
-            jQuery("#users").tokenInput("/plugins/ktcore/users/filterUsers.php?type={/literal}{$options.type}{literal}", {
-                minChars: 2,
-                prePopulate: [{/literal}{$options.assigned[1]}{literal}],
-                classes: {
-                    tokenList: "token-input-list-facebook",
-                    token: "token-input-token-facebook",
-                    tokenDelete: "token-input-delete-token-facebook",
-                    selectedToken: "token-input-selected-token-facebook",
-                    highlightedToken: "token-input-highlighted-token-facebook",
-                    dropdown: "token-input-dropdown-facebook",
-                    dropdownItem: "token-input-dropdown-item-facebook",
-                    dropdownItem2: "token-input-dropdown-item2-facebook",
-                    selectedDropdownItem: "token-input-selected-dropdown-item-facebook",
-                    inputToken: "token-input-input-token-facebook"
-                }
+            jQuery(document).ready(function() {
+                jQuery("#user-search-widget").tokenInput(
+                    "/plugins/ktcore/users/filterUsers.php?type={/literal}{$options.type}{literal}",
+                    {
+                        
+                        {/literal}
+                        
+                        {* Some Options to Customize the TokenInput *}
+                        {if $options.tokenLimit} tokenLimit: {$options.tokenLimit}, {/if}
+                        
+                        {literal}
+                        preventDuplicates: true,
+                        minChars: 2,
+                        prePopulate: [{/literal}{$options.assigned[1]}{literal}],
+                        classes: {
+                            tokenList: "token-input-list-facebook",
+                            token: "token-input-token-facebook",
+                            tokenDelete: "token-input-delete-token-facebook",
+                            selectedToken: "token-input-selected-token-facebook",
+                            highlightedToken: "token-input-highlighted-token-facebook",
+                            dropdown: "token-input-dropdown-facebook",
+                            dropdownItem: "token-input-dropdown-item-facebook",
+                            dropdownItem2: "token-input-dropdown-item2-facebook",
+                            selectedDropdownItem: "token-input-selected-dropdown-item-facebook",
+                            inputToken: "token-input-input-token-facebook"
+                        }
+                    }
+                );
             });
         </script>
         {/literal}

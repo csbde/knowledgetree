@@ -1,1 +1,19 @@
-      <input type="checkbox" name="{$name}" {if $has_id}id="{$id}"{/if} {if ($has_value && ($value == true))}checked="checked"{/if} class="noborder"/>
+         {if $value == '1'}
+            {assign var="onChecked" value='checked="checked"'}
+            {assign var="offChecked" value=""}
+            {assign var="onCssClass" value="selected"}
+            {assign var="offCssClass" value=""}
+         {else}
+            {assign var="onChecked" value=""}
+            {assign var="offChecked" value='checked="checked"'}
+            {assign var="onCssClass" value=""}
+            {assign var="offCssClass" value="selected"}
+         {/if}
+                 
+        <span class="switch" style="float:right; margin-bottom: 1px;">
+             <input type="radio" id="on_{$name}" name="{$name}" value="1" {$onChecked} />
+             <input type="radio" id="off_{$name}" name="{$name}" value="0" {$offChecked} />
+             <label for="on_{$name}" class="cb-enable {$onCssClass}"><span>ON</span></label>
+             <label for="off_{$name}" class="cb-disable {$offCssClass}"><span>OFF</span></label>
+         </span>
+

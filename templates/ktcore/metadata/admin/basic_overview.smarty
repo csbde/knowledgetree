@@ -22,22 +22,22 @@ of related information.{/i18n}</p>
                 {$oField->getName()|escape:'htmlall'}
             </td>
             <td class="centered">
-                <a href="{addQS context=$context}fieldset_action=managefield&fFieldId={$oField->getId()}{/addQS}" class="ktAction ktEdit">{i18n}edit{/i18n}</a>
+                <a href="{addQS context=$context}fieldset_action=managefield&fFieldId={$oField->getId()}" class="ktAction ktEdit{/addQS}">{i18n}edit{/i18n}</a>
             </td>
             <td class="centered">
-                <a href="{addQS context=$context}fieldset_action=deletefield&fFieldId={$oField->getId()}{/addQS}" class="ktAction ktDelete">{i18n}delete{/i18n}</a>
+                <a href="{addQS context=$context}fieldset_action=deletefield&fFieldId={$oField->getId()}" class="ktAction ktDelete{/addQS}">{i18n}delete{/i18n}</a>
             </td>
             <td>
                 <span class="descriptiveText">{$oField->getTypeDescription()}</span>
             </td>
             <td>
                 {if !$smarty.foreach.fieldlist.first}
-                    <a href="{addQS context=$context}fieldset_action=orderUp&fFieldId={$oField->getId()}{/addQS}" class="ktAction ktMoveUp">{i18n}Reorder up{/i18n}</a>
+                    <a href="{addQS context=$context}fieldset_action=orderUp&fFieldId={$oField->getId()}" class="ktAction ktMoveUp{/addQS}">{i18n}Reorder up{/i18n}</a>
                 {/if}
             </td>
             <td>
                 {if !$smarty.foreach.fieldlist.last}
-                    <a href="{addQS context=$context}fieldset_action=orderDown&fFieldId={$oField->getId()}{/addQS}" class="ktAction ktMoveDown">{i18n}Reorder down{/i18n}</a>
+                    <a href="{addQS context=$context}fieldset_action=orderDown&fFieldId={$oField->getId()}" class="ktAction ktMoveDown{/addQS}">{i18n}Reorder down{/i18n}</a>
                 {/if}
             </td>
         </tr>

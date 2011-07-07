@@ -75,6 +75,7 @@ class KTPortlet {
     public function getActive() {
         return $this->bActive;
     }
+    
 }
 
 

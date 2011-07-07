@@ -1,5 +1,5 @@
 
-   <form action="{$smarty.server.PHP_SELF}" method="POST">
+   <form action="{$smarty.server.PHP_SELF}?{$section_query_string}" method="POST">
    <input type="hidden" name="action" value="addGroupFromSource" />
    <input type="hidden" name="source_id" value="{$source->getId()}" />
    <fieldset>
@@ -10,8 +10,7 @@
       <input type="hidden" name="dn" value="{$dn}" />
       <div class="form_actions">
          <input type="submit" name="submit[create]" value="{i18n}create group{/i18n}" />
-         <input type="submit" name="kt_cancel[]" value="{i18n}Cancel{/i18n}" />
+         <input type="submit" name="kt_cancel[{$smarty.server.PHP_SELF}?{$section_query_string}]" value="{i18n}Cancel{/i18n}" />
       </div>
    </fieldset>
    </form>
-

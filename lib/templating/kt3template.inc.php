@@ -98,8 +98,8 @@ class KTPage {
     public $helpPage = null;
 
     /** the "component".  Used to set the page header (see documentation for explanation). */
-    public $componentLabel = 'Browse Documents';
-    public $componentClass = 'browse_collections';
+    public $componentLabel = 'Default';
+    public $componentClass = 'default';
 
     /** $contents is the center of the page.  In KT < 3, this was CentralPayload. */
     public $contents = '';
@@ -161,18 +161,21 @@ class KTPage {
         */
 
         // set inclusion map
-        // TODO this maybe happens elsewhere and is laoded into the config object?
+        // TODO this maybe happens elsewhere and is loaded into the config object?
         // TODO consider 'all' option, which means will appear on any page.  These could be loaded in addition
         //      to ones matching the current filter.
 
         // Shortcuts - define the various combinations which are used.
         // This is primarily to prevent wrapping of lines.
         // NOTE $combined excludes only login and other special cases.
-        $combined = array('browse_collections', 'dashboard', 'document_details', 'administration');
+        $combined = array('browse_collections', 'dashboard', 'document_details', 'settings');
         $files = array('browse_collections', 'document_details');
         $overviews = array('browse_collections', 'dashboard');
 
-        $cssIncludes = array('resources/css/newui/newui.upload.css' => $combined);
+        $cssIncludes = array(
+                        'resources/css/newui/newui.upload.css' => $combined,
+                        'thirdpartyjs/jquery/plugins/jstree/themes/default/style.css' => $files
+                       );
         $jsIncludes = array(
                         'thirdpartyjs/jquery/plugins/ajaxupload/fileuploader.min.js' => $overviews,
             	        'thirdpartyjs/jquery/plugins/loading/jquery.loading.1.6.4.min.js' => $overviews,
@@ -183,13 +186,13 @@ class KTPage {
                         "resources/$jsResourceLocation/newui/documents/kt.app.buttons.$jsExt" => $files,
                         "resources/$jsResourceLocation/newui/documents/kt.app.viewlets.$jsExt" => $files,
                         "resources/$jsResourceLocation/jquery.form.$jsExt" => $files,
-                        "resources/$jsResourceLocation/newui/kt.app.inviteusers.$jsExt" => $combined,
-                        "resources/$jsResourceLocation/newui/kt.app.sharewithusers.$jsExt" => $files,
-            	        "resources/$jsResourceLocation/jquery.blockui.$jsExt" => $combined,
-            	        //'resources/js/toggleselect.js' => array('browse_collections'),
                         "resources/$jsResourceLocation/newui/browse.helper.$jsExt" => array('browse_collections'),
                         'resources/js/newui/browse/subscriptionActions.js' => $overviews,
                         'resources/js/newui/shared/blockActions.js' => $combined,
+                        "resources/$jsResourceLocation/newui/documents/kt.app.copy.$jsExt" => $files,
+                        'thirdpartyjs/jquery/plugins/jstree/jquery.hotkeys.js' => $files,
+                        'thirdpartyjs/jquery/plugins/jstree/jquery.cookie.js' => $files,
+                        'thirdpartyjs/jquery/plugins/jstree/jquery.jstree.js' => $files
                       );
 
         $oConfig = KTConfig::getSingleton();
@@ -253,12 +256,13 @@ class KTPage {
         $js[] = "resources/$jsResourceLocation/newui/kt.containers.$jsExt";
         $js[] = "resources/$jsResourceLocation/newui/kt.lib.$jsExt";
         $js[] = "resources/$jsResourceLocation/newui/kt.api.$jsExt";
+        $js[] = "resources/$jsResourceLocation/jquery.form.js";
 
         // Shared users cannot re-share or invite users to the system.
-        if (SharedUserUtil::isSharedUser()) {
-            unset($jsIncludes["resources/$jsResourceLocation/newui/kt.app.sharewithusers.$jsExt"]);
-            unset($jsIncludes["resources/$jsResourceLocation/newui/kt.app.inviteusers.$jsExt"]);
-            unset($jsIncludes["resources/$jsResourceLocation/jquery.blockui.$jsExt"]);
+        if (!SharedUserUtil::isSharedUser()) {
+        	$jsIncludes["resources/$jsResourceLocation/newui/kt.app.sharewithusers.$jsExt"] = $files;
+        	$jsIncludes["resources/$jsResourceLocation/newui/kt.app.inviteusers.$jsExt"] = $combined;
+        	$jsIncludes["resources/$jsResourceLocation/jquery.blockui.$jsExt"] = $combined;
         }
 
         // Breadcrumbs
@@ -266,6 +270,8 @@ class KTPage {
 
         // TODO check these for section
         $js[] = "resources/$jsResourceLocation/newui/newUIFunctionality.$jsExt";
+        $js[] = "resources/$jsResourceLocation/newui/kt.app.userPreferences.$jsExt";
+        $js[] = "resources/$jsResourceLocation/newui/kt.app.notify.$jsExt";
         $js[] = "resources/$jsResourceLocation/newui/jquery.helper.$jsExt";
         $js[] = "resources/$jsResourceLocation/newui/buttontabs.jquery.$jsExt";
         $js[] = 'thirdpartyjs/jquery/plugins/dotimeout/jquery.ba-dotimeout.min.js';
@@ -326,9 +332,9 @@ class KTPage {
     	    $sUrl = KTPluginUtil::getPluginPath('electronic.signatures.plugin', true);
     	    $heading = _kt('You are attempting to access Settings');
     	    $this->menu['administration']['url'] = '#';
-    	    $this->menu['administration']['onclick'] = "javascript: showSignatureForm('{$sUrl}', '{$heading}', 'dms.administration.administration_section_access', 'admin', '{$sBaseUrl}/admin.php', 'redirect');";
+    	    $this->menu['administration']['onclick'] = "javascript: showSignatureForm('{$sUrl}', '{$heading}', 'dms.administration.administration_section_access', 'admin', '{$sBaseUrl}/settings.php', 'redirect');";
     	} else {
-    	    $this->menu['administration']['url'] = $sBaseUrl.'/admin.php';
+    	    $this->menu['administration']['url'] = $sBaseUrl.'/settings.php';
     	}
     }
 
@@ -522,7 +528,7 @@ class KTPage {
     	        $this->breadcrumbIcon[] = $browse;
     	        $this->state = "ondashboard";
     	        break;
-    	    case 'administration':
+    	    case 'settings':
     	    default:
     	    	$this->state = "admin";
     	        if ($dashboard !== false) $this->breadcrumbIcon[] = $dashboard;
@@ -548,15 +554,10 @@ class KTPage {
     public function setSection($sSection)
     {
         switch ($sSection) {
-            case 'administration':
+            case 'settings':
                 $this->componentLabel = _kt('Settings');
-                $this->componentClass = 'administration';
+                $this->componentClass = 'settings';
                 $this->menu['administration']['active'] = 1;
-                break;
-
-            case 'dashboard':
-                $this->componentLabel = _kt('Dashboard');
-                $this->componentClass = 'dashboard';
                 break;
 
             case 'browse':
@@ -568,6 +569,11 @@ class KTPage {
                 $this->componentLabel = _kt('Document Details');
                 $this->componentClass = 'document_details';
                 break;
+                
+            case 'applications':
+                $this->componentLabel = _kt('Applications');
+                $this->componentClass = 'applications';
+                break;
 
             case 'search':
                 $this->componentLabel = _kt('Search');
@@ -578,10 +584,15 @@ class KTPage {
                 $this->componentLabel = _kt('Preferences');
                 $this->componentClass = 'preferences';
                 break;
-
-            default:
+                
+            case 'dashboard':
                 $this->componentLabel = _kt('Dashboard');
                 $this->componentClass = 'dashboard';
+                break;
+
+            default:
+                $this->componentLabel = _kt('General');
+                $this->componentClass = 'general';
         }
     }
 
@@ -693,9 +704,10 @@ class KTPage {
         			$sUrl = KTPluginUtil::getPluginPath('electronic.signatures.plugin', true);
         			$heading = _kt('You are attempting to modify Preferences');
         			$this->userMenu['preferences']['url'] = '#';
-        			$this->userMenu['preferences']['onclick'] = "javascript: showSignatureForm('{$sUrl}', '{$heading}', 'dms.administration.accessing_preferences', 'system', '{$sBaseUrl}/preferences.php', 'redirect');";
+        			$this->userMenu['preferences']['onclick'] = "javascript: showSignatureForm('{$sUrl}', '{$heading}', 'dms.administration.accessing_preferences', 'system', kt.app.userPreferences.show, 'javascript');";
         		} else {
-        			$this->userMenu['preferences']['url'] = $sBaseUrl.'/preferences.php';
+        			$this->userMenu['preferences']['onclick'] = "javascript:kt.app.userPreferences.show();";
+                    $this->userMenu['preferences']['url'] = '#';
         		}
 
         		if (KTPluginUtil::pluginIsActive('gettingstarted.plugin')) {
@@ -708,7 +720,7 @@ class KTPage {
 				$this->userMenu['applications'] = array('label' => _kt('Applications'), 'url' => $sBaseUrl.'/plugins/ktlive/applications.php');
 				$this->userMenu['supportpage'] = array('label' => _kt('Get Help'), 'url' => $sBaseUrl.'/support.php', 'extra'=>'target="_blank"');
         		//	        $this->userMenu['preferences'] = array('label' => _kt('Preferences'), 'url' => $sBaseUrl.'/preferences.php');
-        		$this->userMenu['preferences']['label'] = '<span class="normalTransformText">'.$this->user->getName().'</span>';
+        		$this->userMenu['preferences']['label'] = '<span id="userPreferencesName" class="normalTransformText">'.$this->user->getName().'</span>';
 				// About Moved to Footer
 				//$this->userMenu['aboutkt'] = array('label' => _kt('About'), 'url' => $sBaseUrl.'/about.php');
 				$this->userMenu['logout'] = array('label' => _kt('Logout'), 'url' => $sBaseUrl.'/presentation/logout.php');

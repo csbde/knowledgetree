@@ -619,12 +619,12 @@ class KTAPI {
         }
         */
 
- 		$permissions = &KTAPI::get_permission($permission);
-		if (is_null($permissions) || PEAR::isError($permissions))
-		{
-			$error = $permissions;
-			return $error;
-		}
+// 		$permissions = &KTAPI::get_permission($permission);
+//		if (is_null($permissions) || PEAR::isError($permissions))
+//		{
+//			$error = $permissions;
+//			return $error;
+//		}
 
  		$user = &KTAPI::get_user();
 		if (is_null($user) || PEAR::isError($user))
@@ -1555,21 +1555,23 @@ class KTAPI {
         $ktapi_bulkactions = new KTAPI_BulkActions($this);
 
         // Get target folder object if required
-        if (in_array($action, array('move', 'copy'))) {
-            if (!is_int($target_folder_id) || empty($target_folder_id)) {
-                $response['message'] = _kt('No target folder has been specified.');
-                return $response;
-            }
-            $target = $this->get_folder_by_id($target_folder_id);
-
-            // call the action
-            $result = $ktapi_bulkactions->$action($objects, $target, $reason);
-        } else if ($action == 'immute') {
-            // call the action
-            $result = $ktapi_bulkactions->$action($objects);
-        } else {
-            // call the action
-            $result = $ktapi_bulkactions->$action($objects, $reason);
+        switch($action) {
+        	case 'move':
+        	case 'copy':
+        		if (!is_numeric($target_folder_id) || empty($target_folder_id)) {
+	                $response['message'] = _kt('No target folder has been specified.');
+	                return $response;
+	            }
+	            $target = $this->get_folder_by_id($target_folder_id);
+	            $result = $ktapi_bulkactions->$action($objects, $target, $reason);
+        		break;
+        		
+        	case 'immute':
+        		$result = $ktapi_bulkactions->$action($objects);
+        		break;
+        		
+    		default:
+    			$result = $ktapi_bulkactions->$action($objects, $reason);
         }
 
         if (PEAR::isError($result)) {
@@ -3987,9 +3989,14 @@ class KTAPI {
      */
     public function change_document_owner($document_id, $username, $reason, $sig_username = '', $sig_password = '')
     {
-        $response = $this->_check_electronic_signature($document_id, $sig_username, $sig_password, $reason, $reason,
+        /*
+		 
+		// Electronic Signature Check not required here anymore
+		
+		$response = $this->_check_electronic_signature($document_id, $sig_username, $sig_password, $reason, $reason,
                                                        'ktcore.transactions.document_owner_change');
         if ($response['status_code'] == 1) return $response;
+		*/
 
     	$document = &$this->get_document_by_id($document_id);
 		if (PEAR::isError($document))
@@ -5730,6 +5737,59 @@ class KTAPI {
 	    return $response;
 	}
 
+    public function get_orphaned_folders($user)
+    {
+    	$permissionDescriptors = KTPermissionUtil::getPermissionDescriptorsForUser($user);
+
+        if (empty($permissionDescriptors)) {
+            return array(
+				'status_code' => 1,
+				'results' => array()
+			);
+        }
+        
+        $listPermissionDescriptors = DBUtil::paramArray($permissionDescriptors);
+
+        $readPermission = KTPermission::getByName('ktcore.permissions.read');
+        $readPermissionId = $readPermission->getId();
+        $detailsPermission = KTPermission::getByName('ktcore.permissions.folder_details');
+        $detailsPermissionId = $detailsPermission->getId();
+        $permissionIds = array($readPermissionId, $readPermissionId, $detailsPermissionId, $detailsPermissionId);
+
+        $query = "SELECT DISTINCT F.id AS id FROM
+            folders AS F
+                LEFT JOIN permission_lookups AS PL ON F.permission_lookup_id = PL.id
+                LEFT JOIN permission_lookup_assignments AS PLA ON PLA.permission_lookup_id = PL.id AND (PLA.permission_id = ? || PLA.permission_id = ?)
+
+            LEFT JOIN folders AS F2 ON F.parent_id = F2.id
+                LEFT JOIN permission_lookups AS PL2 ON F2.permission_lookup_id = PL2.id
+                LEFT JOIN permission_lookup_assignments AS PLA2 ON PLA2.permission_lookup_id = PL2.id AND (PLA2.permission_id = ? || PLA.permission_id = ?)
+            WHERE
+                PLA.permission_descriptor_id IN ($listPermissionDescriptors)
+                AND F2.id <> 1
+                AND NOT (PLA2.permission_descriptor_id IN ($listPermissionDescriptors))";
+        $params = kt_array_merge($permissionIds, $permissionDescriptors, $permissionDescriptors);
+        $folderIds = DBUtil::getResultArrayKey(array($query, $params), 'id');
+
+        if (PEAR::isError($folderIds)) {
+            return array(
+				'status_code' => 0,
+				'message' => $folderIds->getMessage()
+			);
+        }
+        
+        $orphans = array();
+        foreach ($folderIds as $folderId) {
+        	$folder = KTAPI_Folder::get($this, $folderId);
+            $orphans[] = $folder->get_detail();
+        }
+        
+        return array(
+				'status_code' => 1,
+				'results' => $orphans
+			);
+    }
+    
 }
 
 /**

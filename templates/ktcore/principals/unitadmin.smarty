@@ -1,36 +1,36 @@
-<h2>{i18n}Unit Administration{/i18n}</h2>
 
 <p class="descriptiveText">{i18n arg_appname="$appname"}#appname# allows administrators the ability to create <strong>Units</strong> that model the organisation's business units. Units may have their own administrators and groups may be assigned to these units.{/i18n}</p>
 
-<fieldset>
-<legend>{i18n}Add New Unit{/i18n}</legend>
 <p class="descriptiveText">{i18n}Units allow you to delegate the administration of a portion
 of the DMS repository to a particular part of your
 organisation.  Unit administrators have additional rights within that
 portion of the document management system, and they can also adjust the
 membership of groups that belong to the unit.{/i18n}</p>
-<p><a href="{addQS}action=addGroup{/addQS}" class="ktAction ktAddGroup ktInline">{i18n}Add Unit{/i18n}</a><a href="{addQS}action=addUnit{/addQS}">{i18n}Add a new unit{/i18n}</a>.</p>
-</fieldset>
 
-<table class="listing">
+<div class="form_actions" style="margin: 5px 0px;">
+	<a href="{addQS}action=addUnit{/addQS}">{i18n}Add a new unit{/i18n}</a>
+</div>
+
+<table class="kt_collection">
 <thead>
    <tr>
       <th>{i18n}Unit Name{/i18n}</th>
-      <th>{i18n}Edit{/i18n}</th>
-      <th>{i18n}Delete{/i18n}</th>
       <th>{i18n}Folder{/i18n}</th>
+      <th width="10px">{i18n}Edit{/i18n}</th>
+      <th width="10px">{i18n}Delete{/i18n}</th>
    </tr>
 </thead>
 <tbody>
      {foreach item=oUnit from=$unit_list}
-     <tr>
+     <tr class="{cycle values=odd,even}">
         <td>{$oUnit->getName()}</td>
-        <td><a href="{addQS}action=editUnit&unit_id={$oUnit->getId()}{/addQS}" class="ktAction ktEdit">{i18n}Edit{/i18n}</a></td>
-        <td><a href="{addQS}action=deleteUnit&unit_id={$oUnit->getId()}{/addQS}" class="ktAction ktDelete">{i18n}Delete{/i18n}</a></td>
         <td><span class="contenttype folder"><a class="contenttype_href" href="{getUrlForFolder
 folder=$oUnit->getFolderId()}">{assign var=oFolder
 value=$oUnit->getFolder()}{$oFolder->getName()}</a></span></td>
-     </tr>   
+		 <td><a href="{addQS}action=editUnit&unit_id={$oUnit->getId()}{/addQS}" class="ktAction ktEdit">{i18n}Edit{/i18n}</a></td>
+        <td><a href="{addQS}action=deleteUnit&unit_id={$oUnit->getId()}{/addQS}" class="ktAction ktDelete">{i18n}Delete{/i18n}</a></td>
+
+     </tr>
      {/foreach}
 </tbody>
 </table>

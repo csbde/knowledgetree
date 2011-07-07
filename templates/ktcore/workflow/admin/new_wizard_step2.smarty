@@ -1,45 +1,74 @@
 <h2>{i18n}Step 2:  Connect transitions to states{/i18n}</h2>
 
-<p class="descriptiveText">{i18n}In order to move between states, the transitions
-you specified earlier must be configured to move from a set of states to a "destination"
-states.  Use the table below to configure this behaviour.{/i18n}</p>
-
-<form method="POST" action="{$smarty.server.PHP_SELF}">
-    {foreach from=$args key=k item=v}
-        <input type="hidden" name="{$k}" value="{$v}" />
-    {/foreach}
-    <input type="hidden" name="fWizardKey" value="{$fWizardKey}" />
-    <div class="workflow_step2">
-    <table class="kt_collection" cellspacing="0">
-        <thead>
-            <tr>
-                <th>{i18n}Transition{/i18n}</th>
-                <th>{i18n}Leads to state{/i18n}</th>
-                {foreach from=$states item=state}
-                <th>{$state}</th>
-                {/foreach}
-            </tr>
-        </thead>
-        <tbody>
-            {foreach from=$transitions item=transition}
-                <tr class="row {cycle values=odd,even}">
-                    <td>{$transition}</td>
-                    <td><select name="fTo[{$transition|sanitize}]">
-                        {foreach from=$states item=state}
-                            <option value="{$state|sanitize}">{$state}</option>
-                        {/foreach}
-                    </select></td>
-                    {foreach from=$states item=state}
-                        <td><input type="checkbox" name="fFrom[{$transition|sanitize}][{$state|sanitize}]"/></td>
-                    {/foreach}
-                </tr>
+<div id="workflowtabs">
+    <ul>
+        <li><a href="#">Workflow Details</a></li>
+        <li><a href="#">States & Transitions</a></li>
+        <li><a href="#processflow">Process Flow</a></li>
+        <li><a href="#">Security</a></li>
+        <li><a href="#">Effects</a></li>
+    </ul>
+    <div id="processflow">
+        <p class="descriptiveText">{i18n}In order to move between states, the transitions
+        you specified earlier must be configured to move from a set of states to a "destination"
+        states.  Use the table below to configure this behaviour.{/i18n}</p>
+        
+        <form method="POST" action="{$smarty.server.PHP_SELF}">
+            {foreach from=$args key=k item=v}
+                <input type="hidden" name="{$k}" value="{$v}" />
             {/foreach}
-        </tbody>
-    </table>
+            <input type="hidden" name="fWizardKey" value="{$fWizardKey}" />
+            <div class="workflow_step2">
+                <table class="kt_collection" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th colspan="{$states|@count}">{i18n}Starting State{/i18n}</th>
+                            <th rowspan="2" style="border-left:1px solid #888888; border-right:1px solid #888888">{i18n}Transition{/i18n}</th>
+                            <th rowspan="2">{i18n}Leads to state{/i18n}</th>
+                        </tr>
+                        <tr>
+                            {foreach from=$states item=state}
+                            <th>{$state}</th>                
+                            {/foreach}
+                            
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {foreach from=$transitions item=transition}
+                            <tr class="row {cycle values=odd,even}">
+                                
+                                {foreach from=$states item=state}
+                                    <td><input type="checkbox" name="fFrom[{$transition|sanitize}][{$state|sanitize}]"/></td>
+                                {/foreach}
+                                <td>{$transition}</td>
+                                <td>
+                                    <select name="fTo[{$transition|sanitize}]">
+                                    {foreach from=$states item=state}
+                                        <option value="{$state|sanitize}">{$state}</option>
+                                    {/foreach}
+                                    </select>
+                                </td>
+                            </tr>
+                        {/foreach}
+                    </tbody>
+                </table>
+            </div>
+        
+            <br/>
+            <div class="form_actions">
+                <input type="submit" value="{i18n}Create Workflow{/i18n}" />
+                <a href="{$smarty.server.PHP_SELF}">{i18n}Cancel{/i18n}</a>
+            </div>
+        </form>
+        <br clear="both" />
     </div>
+</div>
 
-    <div class="form_actions">
-        <input type="submit" value="{i18n}Create Workflow{/i18n}" />
-        <a href="{$smarty.server.PHP_SELF}">{i18n}Cancel{/i18n}</a>
-    </div>
-</form>
+{literal}
+<script> 
+	jQuery(function() {
+		jQuery("#workflowtabs").tabs({selected: 2, disabled: [0,1,3,4]});
+	});
+	</script> 
+{/literal}
+

@@ -1,24 +1,23 @@
-<h2>{i18n}Checked Out Documents{/i18n}</h2>
-<p class="descriptiveText">{i18n}It may be necessary to override the <strong>checked-out</strong> status of a document if{/i18n}:
+<p class="">{i18n}It may be necessary to override the <strong>checked-out</strong> status of a document if{/i18n}:
 <ul>
 <li>{i18n}the local copy of the checked-out document has been lost{/i18n};</li>
 <li>{i18n}the user who did the check-out is not currently available to check it back in{/i18n}.</li>
 </ul>
+<br/>
 {i18n}Use the <strong>force check-in</strong> action in the listing below to
 override the checked-out status.{/i18n}</p>
 <!-- FIXME set classes here for listing. -->
 {if (count($documents) !== 0)}
-<table class="listing" cellspacing="5px">
+<table class="listing kt_collection" cellspacing="5px">
     <thead>
         <tr>
             <th>{i18n}Document{/i18n}</th>
             <th>{i18n}Checked out by{/i18n}</th>
             <th>{i18n}Location{/i18n}</th>
-            <th>&nbsp;</th>
         </tr>
     </thead>
     <tbody>
-      
+
       {foreach item=oDocument from=$documents}
         <tr class="{cycle values=even,odd}">
             <td>{$oDocument->getName()}</td>

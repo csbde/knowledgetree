@@ -204,6 +204,8 @@ class KTWebService {
     	global $_KT_starttime;
     	$time = number_format(KTUtil::getBenchmarkTime() - $_KT_starttime, 2);
     	$this->debug($time, 'time from start', 4);
+    	
+    	$this->info("{$_SERVER['HTTP_HOST']} | Request time: {$time}", $_SERVER['HTTP_SOAPACTION']);
     }
 
 	/**
@@ -276,6 +278,8 @@ class KTWebService {
 		}
 
 		$result = eval("return \$this->$method($paramstr);");
+		
+		$this->info('JSON', $method);
 
 		// return the json encoded result
 		print json_encode(KTWebService::decodeSOAPValue($result));
@@ -317,6 +321,12 @@ class KTWebService {
         return null;
     }
 
+    function info($msg, $function)
+    {
+    	global $default;
+    	$default->log->info("WS - {$function} | {$msg}");
+    }
+    
     function debug($msg, $function = null, $level=0)
     {
     	if ($this->mustDebug == 0) { return; }
