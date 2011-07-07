@@ -41,18 +41,18 @@
 
 {/if}
 
-<table class="listing">
+<table class="kt_collection">
 <thead>
    <tr>
       <th>{i18n}Role Name{/i18n}</th>
-      <th>{i18n}Edit{/i18n}</th>
-      <th>{i18n}Delete{/i18n}</th>
+      <th width="10px">{i18n}Edit{/i18n}</th>
+      <th width="10px">{i18n}Delete{/i18n}</th>
    </tr>
 </thead>
 <tbody>
      {if (count($roles) !== 0)}
      {foreach item=oRole from=$roles}
-     <tr>
+     <tr class="{cycle values=odd,even}">
         <td>{$oRole->getName()}</td>
         <td><a href="{addQS}action=editRole&role_id={$oRole->getId()}{/addQS}" class="ktAction ktEdit">{i18n}Edit{/i18n}</a></td>
         <td><a href="{addQS}action=deleteRole&role_id={$oRole->getId()}{/addQS}" class="ktAction ktDelete">{i18n}Delete{/i18n}</a></td>

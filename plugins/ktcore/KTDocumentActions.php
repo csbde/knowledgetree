@@ -827,8 +827,10 @@ class KTDocumentMoveAction extends JavascriptDocumentAction {
             return $oForm->handleError(null, $extra_errors);
         }
 
+        $this->oDocument->setName($name);       // if needed.
+        $this->oDocument->setFilename($filename);   // if needed.
+
         $this->startTransaction();
-        // now try update it.
 
         $res = KTDocumentUtil::move($this->oDocument, $data['browse'], $this->oUser, $sReason);
         if (PEAR::isError($oNewDoc)) {
@@ -836,13 +838,10 @@ class KTDocumentMoveAction extends JavascriptDocumentAction {
             exit(0);
         }
 
-        $this->oDocument->setName($name);       // if needed.
-        $this->oDocument->setFilename($filename);   // if needed.
-
-        $res = $this->oDocument->update();
-        if (PEAR::isError($res)) {
-            return $this->errorRedirectTo('main', _kt('Failed to move document: ') . $res->getMessage());
-        }
+        //$res = $this->oDocument->update();
+        //if (PEAR::isError($res)) {
+        //    return $this->errorRedirectTo('main', _kt('Failed to move document: ') . $res->getMessage());
+        //}
 
         $this->commitTransaction();
 
@@ -1472,7 +1471,7 @@ class KTDocumentWorkflowAction extends JavascriptDocumentAction {
 
         return _kt('Workflow');
     }
-	
+
 	function getOnClick()
     {
         return "javascript:{workflows.displayAction();}";
@@ -1732,9 +1731,9 @@ class KTOwnershipChangeAction extends JavascriptDocumentAction {
     function getDisplayName() {
         return _kt('Change owner');
     }
-    
+
 	function getInfo() {
-		
+
 		// Set status to disabled if document is finalized
         if ($this->oDocument->getImmutable()) {
             $info = parent::getInfo();
@@ -1743,9 +1742,9 @@ class KTOwnershipChangeAction extends JavascriptDocumentAction {
         } else {
 			return parent::getInfo();
 		}
-        
+
     }
-	
+
     function getFunctionScript()
     {
 		return 'kt.app.document_actions.changeOwner(\'' . $this->oDocument->getId() . '\')';

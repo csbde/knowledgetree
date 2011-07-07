@@ -44,6 +44,7 @@ require_once(KT_LIB_DIR . "/templating/templating.inc.php");
 require_once(KT_LIB_DIR . "/dispatcher.inc.php");
 require_once(KT_LIB_DIR . "/widgets/forms.inc.php");
 require_once(KT_DIR . '/plugins/ktcore/KTPortlets.php');
+require_once(KT_LIB_DIR . '/users/userhistory.inc.php');
 
 class PreferencesDispatcher extends KTStandardDispatcher {
     var $sSection = 'preferences';
@@ -57,6 +58,11 @@ class PreferencesDispatcher extends KTStandardDispatcher {
         $this->aBreadcrumbs = array(array('action' => 'preferences', 'name' => _kt('Preferences')));
         return parent::check();
     }
+    
+    function handleOutput($data)
+    {
+        echo $data;
+    }
 
     function form_main() {
         $oForm = new KTForm;
@@ -68,6 +74,7 @@ class PreferencesDispatcher extends KTStandardDispatcher {
         $oForm->setOptions(array(
             'context' => &$this,
             'identifier' => 'ktcore.preferences.main',
+            'formId' => 'updatePreferencesForm',
             'action' => 'updatePreferences',
             'fail_action' => 'main',
             'label' => _kt('Your Details'),
@@ -127,11 +134,11 @@ class PreferencesDispatcher extends KTStandardDispatcher {
         $oForm->setOptions(array(
             'context' => &$this,
             'identifier' => 'ktcore.preferences.password',
+            'formId' => 'updatePasswordForm',
             'action' => 'updatePassword',
             'fail_action' => 'setPassword',
-            'cancel_action' => 'main',
             'label' => _kt('Change password'),
-            'submit_label' => _kt('Set password'),
+            'submit_label' => _kt('Update password'),
             'extraargs' => $this->meldPersistQuery("","", true),
         ));
 
@@ -181,11 +188,20 @@ class PreferencesDispatcher extends KTStandardDispatcher {
         $adminPortlet = new KTAdminModePortlet();
 
         $aTemplateData = array(
-              "context" => $this,
-              'edit_form' => $oForm,
-              "show_password" => $bChangePassword,
-              "adminPortletContent" => $adminPortlet->render(TRUE),
+            "context" => $this,
+            'edit_form' => $oForm,
+            "show_password" => $bChangePassword,
+            "userFullName" => sanitizeForHTML($this->oUser->getName()),
+            "changePasswordForm" => $this->do_setPassword(),
+            "adminPortletContent" => $adminPortlet->render(TRUE),
+            "errorMessages" => KTUtil::arrayGet($_SESSION, 'KTErrorMessage', array()),
+            "successMessages" => KTUtil::arrayGet($_SESSION, 'KTInfoMessage', array()),
+            "reloadMenus" => KTUtil::arrayGet($_REQUEST, 'adminmodechanged', 'false'),
         );
+        
+        $_SESSION['KTErrorMessage'] = array(); // clean it out.
+        $_SESSION['KTInfoMessage'] = array(); // clean it out.
+        
         return $oTemplate->render($aTemplateData);
     }
 
@@ -198,9 +214,15 @@ class PreferencesDispatcher extends KTStandardDispatcher {
         $oTemplating =& KTTemplating::getSingleton();
         $oTemplate = $oTemplating->loadTemplate("ktcore/principals/password");
         $aTemplateData = array(
-              "context" => $this,
-              'form' => $oForm,
+            "context" => $this,
+            'form' => $oForm,
+            "errorMessages" => KTUtil::arrayGet($_SESSION, 'KTErrorMessage', array()),
+            "successMessages" => KTUtil::arrayGet($_SESSION, 'KTInfoMessage', array()),
         );
+        
+        $_SESSION['KTErrorMessage'] = array(); // clean it out.
+        $_SESSION['KTInfoMessage'] = array(); // clean it out
+        
         return $oTemplate->render($aTemplateData);
     }
 
@@ -269,6 +291,57 @@ class PreferencesDispatcher extends KTStandardDispatcher {
         $this->successRedirectToMain(_kt('Your details have been updated.'));
 
     }
+    
+    public function do_enableAdminMode()
+	{
+		if (!Permission::userIsSystemAdministrator() && !Permission::userIsUnitAdministrator()) {
+			$this->errorRedirectToMain(_kt('You are not an administrator'));
+		}
+
+		// log this entry
+		$oLogEntry =& KTUserHistory::createFromArray(array(
+            'userid' => $this->oUser->getId(),
+            'datetime' => date('Y-m-d H:i:s', time()),
+            'actionnamespace' => 'ktcore.user_history.enable_admin_mode',
+            'comments' => 'Admin Mode enabled',
+            'sessionid' => $_SESSION['sessionID'],
+		));
+		$aOpts = array(
+            'redirect_to' => 'main',
+            'message' => _kt('Unable to log admin mode entry.  Not activating admin mode.'),
+		);
+		$this->oValidator->notError($oLogEntry, $aOpts);
+
+		$_SESSION['adminmode'] = true;
+
+		$this->successRedirectToMain(_kt('Administrator mode enabled'), 'adminmodechanged=true');
+	}
+
+	public function do_disableAdminMode()
+	{
+
+		if (!Permission::userIsSystemAdministrator() && !Permission::userIsUnitAdministrator()) {
+			$this->errorRedirectToMain(_kt('You are not an administrator'));
+		}
+
+		// log this entry
+		$oLogEntry =& KTUserHistory::createFromArray(array(
+            'userid' => $this->oUser->getId(),
+            'datetime' => date('Y-m-d H:i:s', time()),
+            'actionnamespace' => 'ktcore.user_history.disable_admin_mode',
+            'comments' => 'Admin Mode disabled',
+            'sessionid' => $_SESSION['sessionID'],
+		));
+		$aOpts = array(
+            'redirect_to' => 'main',
+            'message' => _kt('Unable to log admin mode exit.  Not de-activating admin mode.'),
+		);
+		$this->oValidator->notError($oLogEntry, $aOpts);
+
+		$_SESSION['adminmode'] = false;
+
+		$this->successRedirectToMain(_kt('Administrator mode disabled'), 'adminmodechanged=true');
+	}
 
 
 }

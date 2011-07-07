@@ -69,6 +69,8 @@ class KTForm {
     var $_errors;
     var $_method;
     var $_noframe;
+    
+    var $_formId;
 
     var $_oVF;
     var $_oWF;
@@ -85,6 +87,8 @@ class KTForm {
         // form name
         $this->_kt_form_name = KTUtil::arrayGet($aOptions, '_kt_form_name',
         $this->generateFormName($this->sIdentifier), false);
+        
+        $this->_formId = KTUtil::arrayGet($aOptions, 'formId');
 
         // form labelling
         $this->sLabel = KTUtil::arrayGet($aOptions, 'label');

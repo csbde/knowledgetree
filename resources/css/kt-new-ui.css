@@ -1219,7 +1219,7 @@ label span.required
 .settings-item.expanded a.header{
 	padding: 5px 30px;
 	display: block;
-	background: url(../graphics/minus.gif) no-repeat 10px 10px;
+	background: #EFEFEF url(../graphics/minus.gif) no-repeat 10px 10px;
 }
 .settings-content {
 	border-top: 1px solid #CCC;
