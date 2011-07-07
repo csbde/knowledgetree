@@ -60,6 +60,15 @@
 			
 			//now call the appropriate function
 			var params = $('form', self).serializeForm($.parseJSON(opts.params));
+
+			// Escape all ampersands in the values
+			for (var item in params) {
+				
+				// Item should not be a function
+				if (!jQuery.isFunction(params[item])) {
+					params[item] = params[item].replace(/&/g, "%26");
+				}
+			}
 			
 			var func = opts.action;
 			
