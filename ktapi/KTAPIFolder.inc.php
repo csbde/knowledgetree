@@ -703,7 +703,7 @@ class KTAPI_Folder extends KTAPI_FolderItem {
         if (isset($queryOptions['permission']) && !empty($queryOptions['permission'])) {
         	$permission = $queryOptions['permission'];
         }
-        
+
         $res = KTSearchUtil::permissionToSQL($user, $permission, 'F');
         if (PEAR::isError($res)) {
             return $res;
@@ -932,34 +932,32 @@ class KTAPI_Folder extends KTAPI_FolderItem {
     }
 
     /**
-	 * This adds a document to the current folder.
-	 *
-	 * <code>
-	 * $kt = new KTAPI();
-	 * $kt->start_session("admin", "admin");
-	 * $folder = $kt->get_folder_by_name("My New folder");
-	 * $res = $folder->add_document("Test Document", "test.txt", "Default", $tmpfname);
-	 * </code>
-	 *
-	 * @author KnowledgeTree Team
-	 * @access public
-	 * @param string $title This is the title for the file in the repository.
-	 * @param string $filename This is the filename in the system for the file.
-	 * @param string $documenttype This is the name or id of the document type. It first looks by name, then by id.
-	 * @param string $tempfilename This is a reference to the file that is accessible locally on the file system.
-	 * @return KTAPI_Document
-	 */
+     * This adds a document to the current folder.
+     *
+     * <code>
+     * $kt = new KTAPI();
+     * $kt->start_session("admin", "admin");
+     * $folder = $kt->get_folder_by_name("My New folder");
+     * $res = $folder->add_document("Test Document", "test.txt", "Default", $tmpfname);
+     * </code>
+     *
+     * @author KnowledgeTree Team
+     * @access public
+     * @param string $title This is the title for the file in the repository.
+     * @param string $filename This is the filename in the system for the file.
+     * @param string $documenttype This is the name or id of the document type. It first looks by name, then by id.
+     * @param string $tempfilename This is a reference to the file that is accessible locally on the file system.
+     * @return KTAPI_Document
+     */
     function add_document($title, $filename, $documenttype, $tempfilename)
     {
         $storage = KTStorageManagerUtil::getSingleton();
-        if (!$storage->isFile($tempfilename))
-        {
+        if (!$storage->isFile($tempfilename)) {
             return new PEAR_Error('File does not exist.');
         }
 
         $user = $this->can_user_access_object_requiring_permission($this->folder, KTAPI_PERMISSION_WRITE);
-        if (PEAR::isError($user))
-        {
+        if (PEAR::isError($user)) {
             return $user;
         }
 
@@ -967,41 +965,38 @@ class KTAPI_Folder extends KTAPI_FolderItem {
         //$title = KTUtil::replaceInvalidCharacters($title);
         $filename = basename($filename);
         $filename = KTUtil::replaceInvalidCharacters($filename);
-        $documenttypeid = KTAPI::get_documenttypeid($documenttype);
-        if (PEAR::isError($documenttypeid))
-        {
+        $documentTypeId = KTAPI::get_documenttypeid($documenttype);
+        if (PEAR::isError($documentTypeId)) {
             $config = KTCache::getSingleton();
             $defaultToDefaultDocType = $config->get('webservice/useDefaultDocumentTypeIfInvalid',true);
-            if ($defaultToDefaultDocType)
-            {
-                $documenttypeid = KTAPI::get_documenttypeid('Default');
+            if ($defaultToDefaultDocType) {
+                // Should be able to assume that the default document type is 1.
+                $documentTypeId = 1;
             }
-            else
-            {
+            else {
                 return new KTAPI_DocumentTypeError('The document type could not be resolved or is disabled: ' . $documenttype);
             }
         }
 
-
         $options = array(
-        'contents' => new KTFSFileLike($tempfilename),
-        'temp_file' => $tempfilename,
-        'novalidate' => true,
-        'documenttype' => DocumentType::get($documenttypeid),
-        'description' => $title,
-        'metadata'=>array(),
-        'cleanup_initial_file' => true,
-        'source' => 'ktapi'
+            'contents' => new KTFSFileLike($tempfilename),
+            'temp_file' => $tempfilename,
+            'novalidate' => true,
+            'documenttype' => DocumentType::get($documentTypeId),
+            'description' => $title,
+            'metadata'=>array(),
+            'cleanup_initial_file' => true,
+            'source' => 'ktapi'
         );
 
         DBUtil::startTransaction();
         $document =& KTDocumentUtil::add($this->folder, $filename, $user, $options);
 
-        if (PEAR::isError($document))
-        {
+        if (PEAR::isError($document)) {
             DBUtil::rollback();
             return new PEAR_Error(KTAPI_ERROR_INTERNAL_ERROR . ' : ' . $document->getMessage());
         }
+
         DBUtil::commit();
 
         KTUploadManager::temporary_file_imported($tempfilename);
