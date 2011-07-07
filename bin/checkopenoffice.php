@@ -136,7 +136,7 @@ if(OS_WINDOWS){
 	$default->log->error('Check Open Office Task: Open office service could not be started. Error code '.$result2);
 
 	// Attempt using the dmsctl batch script
-	$sPath = realpath('../../bin/dmsctl.bat');
+	$sPath = realpath('../bin/dmsctl.bat');
 
 	if(file_exists($sPath)){
 	    $sCmd = "\"$sPath\" start";
@@ -159,7 +159,7 @@ if(OS_WINDOWS){
 	}
 }else{
     // If the OS is Unix or Linux
-    $sPath = realpath('../../dmsctl.sh');
+    $sPath = realpath('../dmsctl.sh');
     if(file_exists($sPath)){
         // If Open office needs to be restarted - stop it here
         if($restartOO){
