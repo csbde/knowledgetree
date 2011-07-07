@@ -1,7 +1,6 @@
 {$context->oPage->requireJSResource('resources/js/toggleselect.js')}
 {$context->oPage->requireJSResource('resources/js/expungeList.js')}
 
-<h2>{i18n}Deleted Documents{/i18n}</h2>
 
 <p class="descriptiveText">{i18n}Documents which are deleted by users are hidden from view
 but still available for restoration.  Since "soft deletes" consume system resources, it
@@ -30,7 +29,7 @@ can <strong>restore</strong> them as necessary.{/i18n}</p>
   </thead>
   <tbody id="output">
     {foreach item=oDoc from=$documents}
-    <tr>
+    <tr class="{cycle values=even,odd}">
       <td><input type="checkbox" name="selected_docs[]" value="{$oDoc->getId()}"/></td>
       <td>{$oDoc->getName()|sanitize}</td>
 {*      <td>{getCrumbStringForDocument document=$oDoc}</td> *}

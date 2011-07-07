@@ -1227,7 +1227,7 @@ label span.required
 .settings-item.expanded a.header{
 	padding: 5px 30px;
 	display: block;
-	background: url(../graphics/minus.gif) no-repeat 10px 10px;
+	background: #EFEFEF url(../graphics/minus.gif) no-repeat 10px 10px;
 }
 .settings-content {
 	border-top: 1px solid #CCC;
@@ -1236,6 +1236,9 @@ label span.required
 	-moz-border-radius: 2px;
 	padding: 15px;
 	background: white;
+}
+.settings-section #content fieldset legend {
+	padding: 0px;
 }
 .settings-item.systemQuotas.expanded a {
 	display: none;

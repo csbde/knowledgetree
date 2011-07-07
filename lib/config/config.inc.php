@@ -39,7 +39,8 @@
 require_once("Config.php");
 
 require_once(KT_LIB_DIR . '/util/ktutil.inc');
-require_once (KT_LIB_DIR. '/database/dbutil.inc');
+require_once(KT_LIB_DIR. '/database/dbutil.inc');
+require_once(KT_LIB_DIR . '/memcache/ktmemcache.php');
 
 class KTConfig {
     var $conf = array();
@@ -58,12 +59,14 @@ class KTConfig {
     public static function getCacheFilename()
     {
         if (ACCOUNT_ROUTING_ENABLED) {
+        	
             return ACCOUNT_NAME . '-configcache';
         }
 
         $pathFile = KT_DIR .  '/config/cache-path';
 
         if (!file_exists($pathFile)) {
+        	
             return false;
         }
 
@@ -77,26 +80,19 @@ class KTConfig {
         return $cacheFile;
     }
 
-    public function setMemcache()
+    public function parseKTCnf()
     {
-        if (MemCacheUtil::$enabled) {
-            return true;
-        }
-
-		$isEnabled = false;
-        $ktconfpath = KT_PLUGIN_DIR . '/ktlive/config/kt-path';
-        if (file_exists($ktconfpath)) {
-        	$this->confPath = trim(file_get_contents($ktconfpath));
-        	if (!file_exists($this->confPath)) {
-        		$this->confPath = '/etc/kt/kt.cnf';
-        	}
-        }
-        else {
-        	$this->confPath = '/etc/kt/kt.cnf';
+    	$this->confPath = '/etc/kt/kt.cnf';
+        $ktConfPath = KT_PLUGIN_DIR . '/ktlive/config/kt-path';
+        
+        if (file_exists($ktConfPath)) {
+        	$newConfPath = trim(file_get_contents($ktConfPath));
+        	$this->confPath = (file_exists($newConfPath)) ? $newConfPath : $this->confPath;
         }
 
         $root = $this->parseConfig($this->confPath);
         if ($root == false) {
+        	
             return false;
         }
 
@@ -111,38 +107,8 @@ class KTConfig {
                 }
             }
         }
-
-        $server_list = $this->get('memcache/servers', false);
-
-        if ($server_list == false) {
-                return false;
-        }
-        //$filename = $this->getCacheFilename();
-
-        $server_arr = explode('|', $server_list);
-        $servers = array();
-
-        foreach ($server_arr as $server) {
-            if (empty($server)) {
-                continue;
-            }
-
-            $portArr = explode(':', $server);
-
-            $servers[] = array(
-                'url' => $portArr[0],
-                'port' => (int)(isset($portArr[1])) ? $portArr[1] : 11211
-                );
-        }
-
-        try {
-            	$isEnabled=MemCacheUtil::init($servers);
-        } catch (Exception $e) {
-            return false;
-        }
-
-
-        return $isEnabled;
+        
+        return true;
     }
 
     public static function parseConfig($filename)
@@ -157,31 +123,34 @@ class KTConfig {
 
     public static function logErrors()
     {
-        if (ACCOUNT_ROUTING_ENABLED) {
-            /* Log Failed Memcache Server Connects */
-            foreach (MemCacheUtil::$errors as $error) {
-            	if ($error) {
-            		if ($GLOBALS['default']->log)$GLOBALS['default']->log->error($error);
-            	}
-            }
+        /* Log Failed Memcache Server Connects */
+        $memcache = KTMemcache::getKTMemcache();
+        $memcacheErrors = $memcache->getErrors();
+        foreach ($memcacheErrors as $error) {
+        	if ($error && $GLOBALS['default']->log) {
+    			$GLOBALS['default']->log->error($error);
+        	}
         }
     }
 
-    // FIXME nbm:  how do we cache errors here?
     public function loadCache()
     {
         $filename = $this->getCacheFilename();
         if ($filename === false) {
+        	
             return false;
         }
 
-        if (ACCOUNT_ROUTING_ENABLED) {
-            $config_str = MemCacheUtil::get($filename);
-        } else {
-            $config_str = file_get_contents($filename);
+        $config_str = '';
+        $memcache = KTMemcache::getKTMemcache();
+        if ($memcache->isEnabled()) {
+            $config_str = $memcache->get($filename);
         }
+        
+        //$config_str = file_get_contents($filename);
 
         if (empty($config_str)) {
+        	
             return false;
         }
 
@@ -192,12 +161,13 @@ class KTConfig {
         $this->expanding = (isset($config_cache['expanding'])) ? $config_cache['expanding'] : array();
 
         if (empty($this->flatns)) {
+        	
             return false;
         }
 
         $this->populateDefault();
 
-	return true;
+		return true;
     }
 
     public function createCache()
@@ -212,16 +182,16 @@ class KTConfig {
 
         $config_cache = serialize($config_cache);
 
-        if (ACCOUNT_ROUTING_ENABLED) {
-            	if ($this->setMemcache()) {
-                    MemCacheUtil::set($filename, $config_cache);
-                    return true;
-                }
-
-            	return false;
+        $memcache = KTMemcache::getKTMemcache();
+    	if ($memcache->isEnabled()) {
+            $memcache->set($filename, $config_cache);
+            
+            return true;
         }
 
-        @file_put_contents($filename, $config_cache);
+    	return false;
+
+        //@file_put_contents($filename, $config_cache);
     }
 
     /**
@@ -233,17 +203,18 @@ class KTConfig {
     {
         $filename = $this->getCacheFilename();
 
-        if (ACCOUNT_ROUTING_ENABLED) {
-            if ($this->setMemcache()) {
-            	MemCacheUtil::clear($filename);
-            	return true;
-            }
-            return false;
+        $memcache = KTMemcache::getKTMemcache();
+        if ($memcache->isEnabled()) {
+        	$memcache->delete($filename);
+        	
+        	return true;
         }
+        
+        return false;
 
-        if ($filename !== false && file_exists($filename)) {
-            @unlink($filename);
-        }
+        //if ($filename !== false && file_exists($filename)) {
+        //    @unlink($filename);
+        //}
     }
 
     public function readConfig ()

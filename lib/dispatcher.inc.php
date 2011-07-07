@@ -57,14 +57,14 @@ class KTDispatchStandardRedirector {
 
 class KTDispatcher {
 
-    var $event_var = 'action';
-    var $action_prefix = 'do';
-    var $cancel_var = 'kt_cancel';
-    var $bAutomaticTransaction = false;
-    var $bTransactionStarted = false;
-    var $oValidator = null;
-    var $sParentUrl = null; // it is handy for subdispatched items to have an "exit" url, for cancels, etc.
-    var $aPersistParams = array();
+    public $event_var = 'action';
+    public $action_prefix = 'do';
+    public $cancel_var = 'kt_cancel';
+    public $bAutomaticTransaction = false;
+    public $bTransactionStarted = false;
+    public $oValidator = null;
+    public $sParentUrl = null; // it is handy for subdispatched items to have an "exit" url, for cancels, etc.
+    public $aPersistParams = array();
 
     public function KTDispatcher()
     {
@@ -107,8 +107,28 @@ class KTDispatcher {
 
     public function dispatch()
     {
+        $this->checkCancel();
+
+        if ($this->bAutomaticTransaction) {
+            $this->startTransaction();
+        }
+
+        if (method_exists($this, 'predispatch')) {
+            $this->predispatch();
+        }
+
+        $this->runMethod();
+
+        if ($this->bTransactionStarted) {
+            $this->commitTransaction();
+        }
+    }
+
+    protected function checkCancel()
+    {
         if (array_key_exists($this->cancel_var, $_REQUEST)) {
             $var = $_REQUEST[$this->cancel_var];
+
             if (is_array($var)) {
                 $keys = array_keys($var);
                 if (empty($keys[0])) {
@@ -118,12 +138,23 @@ class KTDispatcher {
                 redirect($keys[0]);
                 exit(0);
             }
+
             if (!empty($var)) {
                 redirect($_SERVER['PHP_SELF']);
                 exit(0);
             }
         }
+    }
 
+    protected function runMethod()
+    {
+        $method = $this->getMethod();
+        $result = $this->$method();
+        $this->handleOutput($result);
+    }
+
+    protected function getMethod()
+    {
         $method = sprintf('%s_main', $this->action_prefix);
 
         if (array_key_exists($this->event_var, $_REQUEST)) {
@@ -135,20 +166,7 @@ class KTDispatcher {
             }
         }
 
-        if ($this->bAutomaticTransaction) {
-            $this->startTransaction();
-        }
-
-        if (method_exists($this, 'predispatch')) {
-            $this->predispatch();
-        }
-
-        $ret = $this->$method();
-        $this->handleOutput($ret);
-
-        if ($this->bTransactionStarted) {
-            $this->commitTransaction();
-        }
+        return $method;
     }
 
     public function subDispatch(&$oOrigDispatcher)
@@ -368,10 +386,7 @@ class KTStandardDispatcher extends KTDispatcher {
 
     public function permissionDenied()
     {
-        // handle anonymous specially.
-        if ($this->oUser->getId() == -2) {
-            redirect(KTUtil::ktLink('login.php','',sprintf('redirect=%s&errorMessage=%s', urlencode($_SERVER['REQUEST_URI']), urlencode(_kt('You must be logged in to perform this action'))))); exit(0);
-        }
+        $this->checkAnonymous();
 
         global $default;
 
@@ -382,7 +397,17 @@ class KTStandardDispatcher extends KTDispatcher {
         $this->oPage->hideSection();
 
         $this->oPage->render();
+
         exit(0);
+    }
+
+    protected function checkAnonymous()
+    {
+        // handle anonymous specially.
+        if ($this->oUser->getId() == -2) {
+            redirect(KTUtil::ktLink('login.php','',sprintf('redirect=%s&errorMessage=%s', urlencode($_SERVER['REQUEST_URI']), urlencode(_kt('You must be logged in to perform this action')))));
+            exit(0);
+        }
     }
 
     public function planDenied()
@@ -419,7 +444,8 @@ class KTStandardDispatcher extends KTDispatcher {
         $oUser = User::get(-2);
         if (PEAR::isError($oUser) ||($oUser->getName() != 'Anonymous')) {
           ; // do nothing - the database integrity would break if we log the user in now.
-        } else {
+        }
+        else {
           $session = new Session();
                 $sessionID = $session->create($oUser);
                 $this->sessionStatus = $this->session->verify();
@@ -471,24 +497,48 @@ class KTStandardDispatcher extends KTDispatcher {
     public function dispatch()
     {
         if (empty($this->session)) {
-            $this->session = new Session();
-            $this->sessionStatus = $this->session->verify();
-            if ($this->sessionStatus !== true) {
-                $this->loginRequired();
-            }
-
-            $this->oUser = User::get($_SESSION['userID']);
-            $oProvider = KTAuthenticationUtil::getAuthenticationProviderForUser($this->oUser);
-            $oProvider->verify($this->oUser);
+            $this->checkSession();
+            $this->verifyUser();
         }
 
+        $this->checkAdminRequired();
+        $this->checkViewAccess();
+
+        if ($this->check() === true) {
+            return parent::dispatch();
+        }
+        else {
+            $this->permissionDenied();
+        }
+    }
+
+    protected function checkSession()
+    {
+        $this->session = new Session();
+        $this->sessionStatus = $this->session->verify();
+        if ($this->sessionStatus !== true) {
+            $this->loginRequired();
+        }
+    }
+
+    protected function verifyUser()
+    {
+        $this->oUser = User::get($_SESSION['userID']);
+        $oProvider = KTAuthenticationUtil::getAuthenticationProviderForUser($this->oUser);
+        $oProvider->verify($this->oUser);
+    }
+
+    protected function checkAdminRequired()
+    {
         if ($this->bAdminRequired !== false) {
             if (!Permission::userIsSystemAdministrator($_SESSION['userID'])) {
                 $this->permissionDenied();
-                exit(0);
             }
         }
+    }
 
+    protected function checkViewAccess()
+    {
         if (!empty($this->aCannotView)) {
             global $default;
             if (in_array($default->plan, $this->aCannotView)) {
@@ -499,16 +549,8 @@ class KTStandardDispatcher extends KTDispatcher {
             $this->oUser = User::get($_SESSION['userID']);
             if (in_array($this->oUser->getDisabled(), $this->aCannotView)) {
                 $this->permissionDenied();
-                exit(0);
             }
         }
-
-        if ($this->check() !== true) {
-            $this->permissionDenied();
-            exit(0);
-        }
-
-        return parent::dispatch();
     }
 
     public function check()
@@ -626,14 +668,36 @@ class KTAdminDispatcher extends KTStandardDispatcher {
         return parent::KTStandardDispatcher();
     }
 
+    public function permissionDenied()
+    {
+        $this->checkAnonymous();
+        $this->handleOutput('<h2>' . _kt('Permission Denied') . '</h2>');
+    }
+
     public function setCategoryDetail($subUrl)
     {
         $parts = explode('/', $subUrl);
         $_REQUEST['subsection'] = $parts[1];
         $_REQUEST['expanded'] = 1;
+
         if (!empty($parts[1])) {
-            $_SERVER['PHP_SELF'] .= "&subsection={$parts[1]}&expanded=1";
+            $split = explode('&', $_SERVER['PHP_SELF']);
+            foreach ($split as $key => $element) {
+                if ($this->isCategoryElement($element)) {
+                    unset($split[$key]);
+                }
+            }
+
+            $split[] = "subsection={$parts[1]}";
+            $split[] = 'expanded=1';
+
+            $_SERVER['PHP_SELF'] = implode('&', $split);
         }
+    }
+
+    private function isCategoryElement($element)
+    {
+        return strpos($element, 'subsection=') !== false || strpos($element, 'expanded=') !== false;
     }
 
     public function setActiveStatus($active)
