@@ -917,8 +917,8 @@ class KTAPI {
     */
 	public function &get_folder_by_name($foldername, $parent_id = 1)
 	{
-		$folder = KTAPI_Folder::_get_folder_by_name($this, $foldername, $parent_id);
-		return $folder;
+            $folder = KTAPI_Folder::_get_folder_by_name($this, $foldername, $parent_id);
+            return $folder;
 	}
 
 	/**
