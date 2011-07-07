@@ -107,8 +107,8 @@ class BulkDocumentActions
 	}
 	
 	private function saveEvent() {
-		require_once(KT_LIB_DIR . '/memcache/MemCacheUtil.helper.php');
-		$usersBulkActions = MemCacheUtil::get("bulkaction_{$this->userId}");
+		require_once(KT_LIB_DIR . '/memcache/KTMemcache.helper.php');
+		$usersBulkActions = KTMemcache::get("bulkaction_{$this->userId}");
 		if(empty($usersBulkActions))
 			$folderIds = array();
 		else {
@@ -116,7 +116,7 @@ class BulkDocumentActions
 		}
 			
 		$folderIds[$this->action][$this->targetFolderId] = $this->targetFolderId;
-		MemCacheUtil::set("bulkaction_{$this->userId}", serialize($folderIds));
+		KTMemcache::set("bulkaction_{$this->userId}", serialize($folderIds));
 	}
 }
 ?>
