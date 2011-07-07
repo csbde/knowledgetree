@@ -258,9 +258,9 @@
             						{foreach item=aCrumb from=$page->breadcrumbs name=bc}
             						    <li>
                 							{if ($aCrumb.url) }
-                								<a href="{$aCrumb.url}">{$aCrumb.label|mb_truncate:20:"...":true|sanitize}</a>
+                								<a href="{$aCrumb.url}" {if $aCrumb.id}id="{$aCrumb.id}" {/if}>{$aCrumb.label|mb_truncate:20:"...":true|sanitize}</a>
                 							{else}
-                								<span class="additional">{$aCrumb.label|mb_truncate:40:"...":true|sanitize}</span>
+                								<span class="additional" {if $aCrumb.id}id="{$aCrumb.id}" {/if}>{$aCrumb.label|mb_truncate:40:"...":true|sanitize}</span>
                 							{/if}
             							</li>
             						{/foreach}
