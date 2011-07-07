@@ -69,6 +69,8 @@ require_once(KT_LIB_DIR . '/render_helpers/browseView.helper.php');
 
 require_once(KT_PLUGIN_DIR . '/ktstandard/KTSubscriptions.php');
 
+require_once(KT_LIB_DIR . '/memcache/ktmemcache.php');
+
 $sectionName = 'browse';
 
 class BrowseDispatcher extends KTStandardDispatcher {
@@ -618,7 +620,10 @@ class BrowseDispatcher extends KTStandardDispatcher {
 	}
 
 	private function getBulkNotification() {
-	    $usersBulkActions = KTMemcache::get("bulkaction_" . $this->oUser->getId());
+		$userKey = "bulkaction_" . ACCOUNT_NAME . $this->oUser->getId();
+		$memcache = KTMemcache::getKTMemcache();
+		if(!$memcache->isEnabled()) return ;
+	    $usersBulkActions = $memcache->get($userKey);
 	    $usersBulkActions = unserialize($usersBulkActions);
 	    foreach ($usersBulkActions as $action => $folderIds) {
 	    	foreach ($folderIds as $folderId) {

@@ -67,7 +67,7 @@ class BulkDocumentActions
 	 * send operation to queue
 	 * @var array
 	 */
-	private $threshold = array(	'documents' => 0,
+	private $threshold = array(	'documents' => 10,
 								'folders' => 0
 								);
 	
@@ -107,8 +107,11 @@ class BulkDocumentActions
 	}
 	
 	private function saveEvent() {
-		require_once(KT_LIB_DIR . '/memcache/KTMemcache.helper.php');
-		$usersBulkActions = KTMemcache::get("bulkaction_{$this->userId}");
+		require_once(KT_LIB_DIR . '/memcache/ktmemcache.php');
+		$memcache = KTMemcache::getKTMemcache();
+		if(!$memcache->isEnabled()) return ;
+		$userKey = "bulkaction_" . ACCOUNT_NAME . "{$this->userId}";
+		$usersBulkActions = $memcache->get($userKey);
 		if(empty($usersBulkActions))
 			$folderIds = array();
 		else {
@@ -116,7 +119,7 @@ class BulkDocumentActions
 		}
 			
 		$folderIds[$this->action][$this->targetFolderId] = $this->targetFolderId;
-		KTMemcache::set("bulkaction_{$this->userId}", serialize($folderIds));
+		$memcache->set($userKey, serialize($folderIds));
 	}
 }
 ?>
