@@ -735,25 +735,25 @@ class BrowseView {
                                         <li class="action_download [actions.download]"><a href="action.php?kt_path_info=ktcore.actions.document.view&fDocumentId=[id]">Download</a></li>
                                         [allowdoczohoedit]
 
-                                        <li class="separator[separatorA]"></li>
+                                        <li class="separator separatorA[separatorA]"></li>
 
                                         <li class="action_copy [actions.copy]"><a href="#" onclick="javascript:{kt.app.copy.doTreeAction(\'copy\', [id]);}">Copy</a></li>
                                         <li class="action_move [actions.move]"><a href="#" onclick="javascript:{kt.app.copy.doTreeAction(\'move\', [id]);}">Move</a></li>
                                         <li class="action_delete [actions.delete]"><a href="#" onclick="javascript:{kt.app.copy.doAction(\'delete\', [id]);}">Delete</a></li>
 
-                                        <li class="separator[separatorB]"></li>
+                                        <li class="separator separatorB[separatorB]"></li>
 
                                         <li class="action_checkout [actions.checkout]"><a href="#" onclick="kt.app.document_actions.checkout_actions(\'[id]\', \'checkoutdownload\');">Check-out</a></li>
                                         <li class="action_checkout [actions.checkout]"><a href="#" onclick="kt.app.document_actions.checkout_actions(\'[id]\', \'checkout\');">Check-out Only (No Download)</a></li>
                                         <li class="action_cancel_checkout [actions.cancel_checkout]"><a href="#" onclick="kt.app.document_actions.checkout_actions(\'[id]\', \'cancelcheckout\');">Cancel Check-out</a></li>
                                         <li class="action_checkin [actions.checkin]"><a href="#" onclick="kt.app.document_actions.checkout_actions(\'[id]\', \'checkin\');">Check-in</a></li>
 
-                                        <li class="separator[separatorC]"></li>
+                                        <li class="separator separatorC[separatorC]"></li>
 
                                         <li class="action_alerts [actions.alerts]"><a href="#" onclick="javascript:{alerts.displayAction(\'\', [id], \'browse-view\');}">Alerts</a></li>
                                         <li class="action_email [actions.email]"><a href="action.php?kt_path_info=ktcore.actions.document.email&fDocumentId=[id]">Email</a></li>
 
-                                        <li class="separator[separatorD]"></li>
+                                        <li class="separator separatorD[separatorD]"></li>
 
                                         <li class="action_change_owner [actions.change_owner]"><a href="javascript:;" onclick="kt.app.document_actions.changeOwner(\'[id]\');">Change Owner</a></li>
                                         <li class="action_finalize_document [actions.finalize_document]"><a href="#" onclick="javascript:{kt.app.copy.doAction(\'immutable\', [id]);}">Finalize Document</a></li>
