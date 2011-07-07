@@ -42,63 +42,55 @@
 
 //debugger_start_debug();
 $output = 'php';
-if (array_key_exists('output', $_POST))
-{
-	$format = $_POST['output'];
-	switch($format)
-	{
-		case 'xml':
-		case 'json':
-		case 'php':
-			$output = $format;
-			break;
-		default:
-			// don't do anything - defaulting to php
-	}
-	unset($format);
+if (array_key_exists('output', $_POST)) {
+    $format = $_POST['output'];
+    switch($format) {
+        case 'xml':
+        case 'json':
+        case 'php':
+            $output = $format;
+            break;
+        default:
+            // don't do anything - defaulting to php
+    }
+    unset($format);
 }
 
 // TODO: allow for linking of related documents.
 
-if (!array_key_exists('session_id', $_POST))
-{
-	respond(1, 'Session not specified.');
+if (!array_key_exists('session_id', $_POST)) {
+    respond(1, 'Session not specified.');
 }
 
-if (!array_key_exists('action', $_POST))
-{
-	respond(2, 'Action not specified.');
+if (!array_key_exists('action', $_POST)) {
+    respond(2, 'Action not specified.');
 }
 
 $unique_file_id = false;
-if(array_key_exists('unique_file_id', $_POST)){
+if (array_key_exists('unique_file_id', $_POST)) {
     $unique_file_id = $_POST['unique_file_id'];
 }
 
 $action = $_POST['action'];
-if (!in_array($action,array('C','A')))
-{
-	respond(3, 'Invalid action specified.');
+if (!in_array($action, array('C', 'A'))) {
+    respond(3, 'Invalid action specified.');
 }
 
 //$session_id = $_POST['session_id'];
 $file_count = count($_FILES);
-if ($file_count == 0)
-{
-	respond(5, 'No files have been uploaded.');
+if ($file_count == 0) {
+    respond(5, 'No files have been uploaded.');
 }
 
-if($file_count > 1 && $unique_file_id !== false){
+if ($file_count > 1 && $unique_file_id !== false) {
     respond(5, 'Only one file can be uploaded with a unique file id.');
 }
 
-if ($action == 'C')
-{
-	if (!array_key_exists('document_id',$_POST))
-	{
-		respond(6, 'Document ID not specified.');
-	}
-	$document_id = $_POST['document_id'];
+if ($action == 'C') {
+    if (!array_key_exists('document_id', $_POST)) {
+        respond(6, 'Document ID not specified.');
+    }
+    $document_id = $_POST['document_id'];
 }
 
 require_once('../ktapi/ktapi.inc.php');
@@ -109,9 +101,8 @@ $session_id = $_POST['session_id'];
 
 $ktapi = new KTAPI();
 $session = $ktapi->get_active_session($session_id, null, $apptype);
-if (PEAR::isError($session))
-{
-	respond(4, $session->getMessage());
+if (PEAR::isError($session)) {
+    respond(4, $session->getMessage());
 }
 
 $upload_manager = new KTUploadManager();
@@ -119,102 +110,95 @@ $upload_manager->cleanup();
 $upload_manager->set_session($session);
 
 $failed = 0;
-$added=array();
-$lastMessage='';
-foreach($_FILES as $key =>$file)
-{
-	$filename=$file['name'];
-	$tempfile=$file['tmp_name'];
+$added = array();
+$lastMessage = '';
+foreach ($_FILES as $key => $file) {
+    $filename = $file['name'];
+    $tempfile = $file['tmp_name'];
 
-	$error=$file['error'];
-    $extra = urlencode($filename).'-'.$tempfile.'-'.$error;
-	if ($error == UPLOAD_ERR_OK)
-	{
-		$result = $upload_manager->uploaded($filename, $tempfile, $action, $unique_file_id);
-		if (PEAR::isError($result))
-		{
-			$lastMessage=$result->getMessage();
-			$default->log->error("Cannot upload file '$filename'. Temp location: '$tempfile'. " . $lastMessage);
-			$failed++;
-			continue;
-		}
-		if ($result !== false)
-		{
-			$file['tmp_name'] = $result;
-			$added[$key]=$file;
-		}
-		else
-		{
-			$failed++;
-		}
-	}
+    $error = $file['error'];
+    $extra = urlencode($filename) . '-' . $tempfile . '-' . $error;
+    if ($error == UPLOAD_ERR_OK) {
+        $result = $upload_manager->uploaded($filename, $tempfile, $action, $unique_file_id);
+        if (PEAR::isError($result)) {
+            $lastMessage=$result->getMessage();
+            $default->log->error("Cannot upload file '$filename'. Temp location: '$tempfile'. " . $lastMessage);
+            $failed++;
+            continue;
+        }
+
+        if ($result !== false) {
+            $file['tmp_name'] = $result;
+            $added[$key] = $file;
+        }
+        else {
+            $failed++;
+        }
+    }
 }
 
-if ($failed)
-{
-	respond(7, 'Could not add files to the system. Please inspect the log file. ' . $lastMessage);
+if ($failed) {
+    respond(7, 'Could not add files to the system. Please inspect the log file. ' . $lastMessage);
 }
-else
-{
-	respond(0, 'It worked'.$extra, $added);
+else {
+    respond(0, 'It worked. ' . $extra, $added);
 }
 
-function respond($code, $msg, $uploads=array())
+function respond($code, $msg, $uploads = array())
 {
-	global $output;
+    file_put_contents('e:\etc\curl_out', 'response page');
 
+    global $output;
 
-	$response =array(
-		'status_code'=>$code,
-		'msg'=>$msg,
-		'upload_status'=>$uploads
-	);
+    $response = array(
+        'status_code' => $code,
+        'msg' => $msg,
+        'upload_status' => $uploads
+    );
 
-	switch($output)
-	{
-		case 'xml':
-			$xml = "<response>\n";
-			$xml .= "\t<status_code>$code</status_code>\n";
-			$xml .= "\t<msg>$msg</msg>\n";
-			$xml .= "\t<upload_status>\n";
-			$i=0;
-			foreach($uploads as $key=>$value)
-			{
-				$servername = $value['tmp_name'];
-				$filesize = $value['size'];
-				$error = $value['error'];
-				$name  = urlencode($value['name']);
-				$xml .= "\t\t<file>\n";
-				$xml .= "\t\t\t<offset>$i</offset>\n";
-				$xml .= "\t\t\t<name>$name</name>\n";
-				$xml .= "\t\t\t<filename>$servername</filename>\n";
-				$xml .= "\t\t\t<filesize>$filesize</filesize>\n";
-				$xml .= "\t\t\t<error>$error</error>\n";
-				$xml .= "\t\t</file>\n";
-				$i++;
-			}
-			$xml .= "\t</upload_status>\n";
-			$xml .= "</response>\n";
-			print $xml;
-			exit;
-		case 'json':
-			print json_encode($response);
-			exit;
-		case 'php':
-		default:
-			$msg = urlencode($msg);
-			$response['upload_status'] = serialize($response['upload_status']);
-			$str = '';
-			$i=0;
-			foreach($response as $key=>$value)
-			{
-				if ($i++>0) $str .= '&';
-				$str .= "$key=$value";
-			}
-			print $str;
-			exit;
-	}
+    switch($output) {
+        case 'xml':
+            $xml = "<response>\n";
+            $xml .= "\t<status_code>$code</status_code>\n";
+            $xml .= "\t<msg>$msg</msg>\n";
+            $xml .= "\t<upload_status>\n";
+            $i = 0;
+            foreach ($uploads as $key => $value) {
+                $servername = $value['tmp_name'];
+                $filesize = $value['size'];
+                $error = $value['error'];
+                $name  = urlencode($value['name']);
+                $xml .= "\t\t<file>\n";
+                $xml .= "\t\t\t<offset>$i</offset>\n";
+                $xml .= "\t\t\t<name>$name</name>\n";
+                $xml .= "\t\t\t<filename>$servername</filename>\n";
+                $xml .= "\t\t\t<filesize>$filesize</filesize>\n";
+                $xml .= "\t\t\t<error>$error</error>\n";
+                $xml .= "\t\t</file>\n";
+                $i++;
+            }
+            $xml .= "\t</upload_status>\n";
+            $xml .= "</response>\n";
+            print $xml;
+            exit;
+        case 'json':
+            print json_encode($response);
+            exit;
+        case 'php':
+        default:
+            $msg = urlencode($msg);
+            $response['upload_status'] = serialize($response['upload_status']);
+            $str = '';
+            $i = 0;
+            foreach ($response as $key=>$value) {
+                if ($i++>0) {
+                    $str .= '&';
+                }
+                $str .= "$key=$value";
+            }
+            print $str;
+            exit;
+    }
 }
-
 
 ?>

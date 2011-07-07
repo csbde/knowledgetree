@@ -1059,130 +1059,115 @@ class KTAPI {
 		return $response;
 	}
 
-	/**
-	* This should actually not be in ktapi, but in webservice
-	* This method gets metadata fieldsets based on the document type
-	*
+    /**
+    * This should actually not be in ktapi, but in webservice
+    * This method gets metadata fieldsets based on the document type
+    *
     * @author KnowledgeTree Team
     * @access public
-	* @param string $document_type The type of document
-	* @return mixed Error object|SOAP object|Array of fieldsets
-	*/
-	public function get_document_type_metadata($document_type='Default')
-	{
-    	// now get document type specifc ids
-    	$typeid =$this->get_documenttypeid($document_type);
+    * @param string $document_type The type of document
+    * @return mixed Error object|SOAP object|Array of fieldsets
+    */
+    public function get_document_type_metadata($document_type = 'Default')
+    {
+        // now get document type specifc ids
+        $typeid = $this->get_documenttypeid($document_type);
 
-    	if ($typeid instanceof KTAPI_DocumentTypeError)
-    	{
-			return $typeid;
-    	}
+        if ($typeid instanceof KTAPI_DocumentTypeError) {
+            return $typeid;
+        }
 
-    	if (is_null($typeid) || PEAR::isError($typeid))
-    	{
-    		$response['message'] = $typeid->getMessage();
-    		return new SOAP_Value('return',"{urn:$this->namespace}kt_metadata_response", $response);
-    	}
+        if (is_null($typeid) || PEAR::isError($typeid)) {
+            $response['message'] = $typeid->getMessage();
+            return new SOAP_Value('return',"{urn:$this->namespace}kt_metadata_response", $response);
+        }
 
-    	$doctype_ids = KTFieldset::getForDocumentType($typeid, array('ids' => false));
-    	if (is_null($doctype_ids) || PEAR::isError($doctype_ids))
-    	{
-    		$response['message'] = $generic_ids->getMessage();
-    		return new SOAP_Value('return',"{urn:$this->namespace}kt_metadata_response", $response);
-    	}
+        $doctype_ids = KTFieldset::getForDocumentType($typeid, array('ids' => false));
+        if (is_null($doctype_ids) || PEAR::isError($doctype_ids)) {
+            $response['message'] = $generic_ids->getMessage();
+            return new SOAP_Value('return',"{urn:$this->namespace}kt_metadata_response", $response);
+        }
 
-		// first get generic ids
-    	$generic_ids = KTFieldset::getGenericFieldsets(array('ids' => false));
-    	if (is_null($generic_ids) || PEAR::isError($generic_ids))
-    	{
-    		$response['message'] = $generic_ids->getMessage();
-    		return new SOAP_Value('return',"{urn:$this->namespace}kt_metadata_response", $response);
-    	}
+        // first get generic ids
+        $generic_ids = KTFieldset::getGenericFieldsets(array('ids' => false));
+        if (is_null($generic_ids) || PEAR::isError($generic_ids)) {
+            $response['message'] = $generic_ids->getMessage();
+            return new SOAP_Value('return',"{urn:$this->namespace}kt_metadata_response", $response);
+        }
 
         // lets merge the results
         $fieldsets = kt_array_merge($generic_ids, $doctype_ids);
 
-		$results = array();
+        $results = array();
 
-		foreach ($fieldsets as $fieldset)
-		{
-			//if ($fieldset->getIsConditional()) {	/* this is not implemented...*/	continue;	}
+        foreach ($fieldsets as $fieldset) {
+            $fields = $fieldset->getFields();
+            $result = array(
+                        'fieldset' => $fieldset->getName(),
+                        'description' => $fieldset->getDescription()
+            );
 
-			$fields = $fieldset->getFields();
-			$result = array(
-							'fieldset' => $fieldset->getName(),
-							'description' => $fieldset->getDescription()
-					  );
+            $fieldsresult = array();
 
-			$fieldsresult = array();
+            foreach ($fields as $field) {
+                $value = 'n/a';
+                $controltype = strtolower($field->getDataType());
+                if ($field->getHasLookup()) {
+                    $controltype = 'lookup';
+                    if ($field->getHasLookupTree()) {
+                        $controltype = 'tree';
+                    }
+                }
 
-			foreach ($fields as $field)
-			{
-				$value = 'n/a';
-
-
-				//$controltype = 'string';
-
-                // Replace with true
-				$controltype = strtolower($field->getDataType());
-				if ($field->getHasLookup())
-				{
-					$controltype = 'lookup';
-					if ($field->getHasLookupTree())
-					{
-						$controltype = 'tree';
-					}
-				}
                 $options = array();
 
-                if ($field->getInetLookupType() == 'multiwithcheckboxes' || $field->getInetLookupType() == 'multiwithlist') {
+                if ($field->getInetLookupType() == 'multiwithcheckboxes'
+                    || $field->getInetLookupType() == 'multiwithlist') {
                     $controltype = 'multiselect';
                 }
 
-
-				switch ($controltype)
-				{
-					case 'lookup':
-						$selection = KTAPI::get_metadata_lookup($field->getId());
-						break;
-					case 'tree':
-						$selection = KTAPI::get_metadata_tree($field->getId());
-						break;
+                switch ($controltype) {
+                    case 'lookup':
+                        $selection = KTAPI::get_metadata_lookup($field->getId());
+                        break;
+                    case 'tree':
+                        $selection = KTAPI::get_metadata_tree($field->getId());
+                        break;
                     case 'large text':
                         $options = array(
                                 'ishtml' => $field->getIsHTML(),
                                 'maxlength' => $field->getMaxLength()
-                            );
+                        );
                         $selection= array();
                         break;
                     case 'multiselect':
                         $selection = KTAPI::get_metadata_lookup($field->getId());
                         $options = array(
                                 'type' => $field->getInetLookupType()
-                            );
+                        );
                         break;
-					default:
-						$selection= array();
-				}
+                    default:
+                    $selection = array();
+                }
 
+                $fieldsresult[] = array(
+                    'name' => $field->getName(),
+                    'required' => $field->getIsMandatory(),
+                    'fieldid' => $field->getId(),
+                    'value' => $value,
+                    'description' => $field->getDescription(),
+                    'control_type' => $controltype,
+                    'selection' => $selection,
+                    'options' => $options
+                );
+            }
 
-				$fieldsresult[] = array(
-					'name' => $field->getName(),
-					'required' => $field->getIsMandatory(),
-					'fieldid' => $field->getId(),
-					'value' => $value,
-					'description' => $field->getDescription(),
-					'control_type' => $controltype,
-					'selection' => $selection,
-					'options' => $options
-				);
-			}
-			$result['fields'] = $fieldsresult;
-			$results [] = $result;
-		}
+            $result['fields'] = $fieldsresult;
+            $results [] = $result;
+        }
 
-		return $results;
-	}
+        return $results;
+    }
 
 	/**
     * Returns an array of username/name combinations or an error object.
@@ -1291,7 +1276,7 @@ class KTAPI {
 	    // first pass - get the array indexed by the primary id
 	   	foreach ($flat as $row) {
         	$treeID = $row[$idTree];
-			
+
 			// Check if Tree Field Exists
         	if (!isset($indexed[$treeID])) {
         		$path = '';
@@ -1303,11 +1288,11 @@ class KTAPI {
 										);//$row;
 	        	$indexed[$treeID]['fields'] = array();
 			}
-			
+
 			if (!empty($row['fieldname'])) {
-				
+
 				$path .= $treepath.$row['fieldname'];
-				
+
 				$indexed[$treeID]['fields'][$row[$idField]] = array('fieldid' => $row[$idField],
 	        													'parentid' => $treeID,
 	        													'name' =>  $row['fieldname'],
@@ -1336,22 +1321,22 @@ class KTAPI {
 		$res = $results[$first_key]['fields'];
 
 		//$GLOBALS['default']->log->debug('convertToTree res '.print_r($res, true));
-		
+
 		// New Array for Results
 		$newArray = array();
-		
+
 		// Start Process of cleaning up empty nodes
 		KTAPI::cleanUpTreeNodes($res[0], $newArray);
-		
+
 	    // Root needs to be in an array
 	    return array($newArray);
 	}
-	
+
 	private function cleanUpTreeNodes($item, &$parent)
 	{
 		// Check it is a tree of field
 		if ($item['type'] == 'tree') {
-			
+
 			// Recreate, without Fields
 			$newItemArray = array(
 				'treeid'		=> $item['treeid'],
@@ -1360,37 +1345,37 @@ class KTAPI {
 				'type'			=> $item['type'],
 				'childrenCount' => 0
 			);
-			
+
 			// Loop through children
 			if (count($item['fields']) > 0) {
 				foreach ($item['fields'] as $subField) {
 					KTAPI::cleanUpTreeNodes($subField, $newItemArray);
 				}
 			}
-			
+
 			// If Root, Set as Tree
 			if ($item['treeid'] == 0) {
 				$parent = $newItemArray;
 			} else {
-				
+
 				// Else add to parent and update count
 				$parent['childrenCount'] += $newItemArray['childrenCount'];
-				
+
 				// Only Add if Item has children or subitems have children
 				if ($newItemArray['childrenCount'] > 0) {
 					$parent['fields'][] = $newItemArray;
 				}
-				
+
 			}
-			
+
 		} else if ($item['type'] == 'field') {
-			
+
 			if (!empty($item['name'])) {
-				
+
 				// Re-add to field and update Counter
                 $parent['fields'][] = $item;
 				$parent['childrenCount']++;
-                
+
             }
 		}
 	}
@@ -1406,8 +1391,8 @@ class KTAPI {
 	public function get_metadata_tree($fieldid)
 	{
 		$results = KTAPI::_load_metadata_tree($fieldid);
-		
-		
+
+
 		//global $default;
 		//$default->log->info('get_metadata_tree results '.print_r($results, true));
 		return $results;
@@ -1565,11 +1550,11 @@ class KTAPI {
 	            $target = $this->get_folder_by_id($target_folder_id);
 	            $result = $ktapi_bulkactions->$action($objects, $target, $reason);
         		break;
-        		
+
         	case 'immute':
         		$result = $ktapi_bulkactions->$action($objects);
         		break;
-        		
+
     		default:
     			$result = $ktapi_bulkactions->$action($objects, $reason);
         }
@@ -3087,43 +3072,50 @@ class KTAPI {
      * @param string $tempfilename
      * @return kt_document_detail.
      */
-    public function add_document($folder_id,  $title, $filename, $documenttype, $tempfilename,
+    public function add_document($folder_id, $title, $filename, $documenttype, $tempfilename,
                                  $sig_username = '', $sig_password = '', $reason = '')
     {
-        $response = $this->_check_electronic_signature($document_id, $sig_username, $sig_password, $reason, $reason,
-                                                      'ktcore.transactions.add');
-        if ($response['status_code'] == 1) return $response;
+        $response = $this->_check_electronic_signature(
+                                                    $document_id,
+                                                    $sig_username,
+                                                    $sig_password,
+                                                    $reason,
+                                                    $reason,
+                                                    'ktcore.transactions.add'
+        );
 
-		// we need to add some security to ensure that people don't frig the checkin process to access restricted files.
-		// possibly should change 'tempfilename' to be a hash or id of some sort if this is troublesome.
-    	$upload_manager = new KTUploadManager();
-    	if (!$upload_manager->is_valid_temporary_file($tempfilename))
-    	{
-    	    $response['status_code'] = 1;
-    		$response['message'] = "Invalid temporary file: $tempfilename. Not compatible with $upload_manager->temp_dir.";
-    		return $response;
-    	}
+        if ($response['status_code'] == 1) {
+            return $response;
+        }
 
-    	$folder = &$this->get_folder_by_id($folder_id);
-		if (PEAR::isError($folder))
-		{
-    	    $response['status_code'] = 1;
-    		$response['message'] = $folder->getMessage();
-    		return $response;
-		}
+        // we need to add some security to ensure that people don't frig the checkin process to access restricted files.
+        // possibly should change 'tempfilename' to be a hash or id of some sort if this is troublesome.
+        $upload_manager = new KTUploadManager();
+        if (!$upload_manager->is_valid_temporary_file($tempfilename)) {
+            $response['status_code'] = 1;
+            $response['message'] = "Invalid temporary file: $tempfilename. Not compatible with $upload_manager->temp_dir.";
+            return $response;
+        }
 
-    	$document = &$folder->add_document($title, $filename, $documenttype, $tempfilename);
-		if (PEAR::isError($document))
-		{
-    	    $response['status_code'] = 1;
-    		$response['message'] = $document->getMessage();
-    		return $response;
-		}
+        $folder = &$this->get_folder_by_id($folder_id);
+        if (PEAR::isError($folder)) {
+            $response['status_code'] = 1;
+            $response['message'] = $folder->getMessage();
+            return $response;
+        }
 
-    	$response['status_code'] = 0;
-		$response['message'] = '';
-		$response['results'] = $document->get_detail();
-    	return $response;
+        $document = &$folder->add_document($title, $filename, $documenttype, $tempfilename);
+        if (PEAR::isError($document)) {
+            $response['status_code'] = 1;
+            $response['message'] = $document->getMessage();
+            return $response;
+        }
+
+        $response['status_code'] = 0;
+        $response['message'] = '';
+        $response['results'] = $document->get_detail();
+
+        return $response;
     }
 
     public function add_small_document_with_metadata($folder_id,  $title, $filename, $documenttype, $base64, $metadata, $sysdata,
@@ -3990,9 +3982,9 @@ class KTAPI {
     public function change_document_owner($document_id, $username, $reason, $sig_username = '', $sig_password = '')
     {
         /*
-		 
+
 		// Electronic Signature Check not required here anymore
-		
+
 		$response = $this->_check_electronic_signature($document_id, $sig_username, $sig_password, $reason, $reason,
                                                        'ktcore.transactions.document_owner_change');
         if ($response['status_code'] == 1) return $response;
@@ -5487,7 +5479,7 @@ class KTAPI {
 			else
 			{
 				$GLOBALS['default']->log->error("Error in getting folder $folder_id ".$folder->getMessage());
-				
+
 				$response['status_code'] = 1;
 				$response['message'] = "ERROR: could not retrieve folder {$folder_id}: {$folder->getMessage()}";
 				return $response;
@@ -5747,7 +5739,7 @@ class KTAPI {
 				'results' => array()
 			);
         }
-        
+
         $listPermissionDescriptors = DBUtil::paramArray($permissionDescriptors);
 
         $readPermission = KTPermission::getByName('ktcore.permissions.read');
@@ -5777,19 +5769,19 @@ class KTAPI {
 				'message' => $folderIds->getMessage()
 			);
         }
-        
+
         $orphans = array();
         foreach ($folderIds as $folderId) {
         	$folder = KTAPI_Folder::get($this, $folderId);
             $orphans[] = $folder->get_detail();
         }
-        
+
         return array(
 				'status_code' => 1,
 				'results' => $orphans
 			);
     }
-    
+
 }
 
 /**
