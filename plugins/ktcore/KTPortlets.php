@@ -167,7 +167,7 @@ class KTAdminModePortlet extends KTPortlet {
 			if (KTUtil::arrayGet($_SESSION, 'adminmode', false) == false) {
 				$toggleMode = 'action=enableAdminMode';
 			}
-			$QS = sprintf('fDocumentId=%s&fFolderId=%s&%s',$iDocumentId, $iFolderId, $toggleMode);
+			$QS = sprintf('fDocumentId=%s&fFolderId=%s',$iDocumentId, $iFolderId);
 
 			$toggleUrl = KTUtil::addQueryString(KTBrowseUtil::getBrowseBaseUrl(), $QS);
 
