@@ -290,9 +290,9 @@ class KTBrowseUtil {
         }
 
         if ($bFinal) {
-            $aBreadcrumbs[] = array('name' => $oDocument->getName());
+            $aBreadcrumbs[] = array('name' => $oDocument->getName(), 'id'=>'docBreadCrumbName');
         } else {
-            $aBreadcrumbs[] = array('url' => $url, 'name' => $oDocument->getName());
+            $aBreadcrumbs[] = array('url' => $url, 'name' => $oDocument->getName(), 'id'=>'docBreadCrumbName');
         }
         return $aBreadcrumbs;
     }

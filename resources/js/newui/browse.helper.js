@@ -334,11 +334,13 @@ jQuery(document).ready(function() {
 		}
 
 		// If (parent position+child height) > (window height + scroll offset), Reposition child
-		if (jQuery(this).offset().top+jQuery(this).children("ul:first").height()+5 > jQuery(window).height()+jQuery(scrollElement).scrollTop()) {
+		// 35 is height of footer
+		
+		if (jQuery(this).offset().top+jQuery(this).children("ul:first").height()+5+35 > jQuery(window).height()+jQuery(scrollElement).scrollTop()) {
 			diff = (jQuery(this).offset().top+jQuery(this).children("ul:first").height()) - (jQuery(window).height() + jQuery(scrollElement).scrollTop());
 
 			// Move item up by difference + 20px
-			jQuery(this).children("ul:first").css('margin-top', '-'+(diff+18)+'px');
+			jQuery(this).children("ul:first").css('margin-top', '-'+(diff+18+35)+'px');
 		}
 	});
 
