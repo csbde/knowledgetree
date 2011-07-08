@@ -225,6 +225,7 @@ kt.app.document_actions = new function() {
 				jQuery('span#docItem_'+self.documentId+' li.action_copy').removeClass('not_supported');
 				jQuery('span#docItem_'+self.documentId+' li.action_move').removeClass('not_supported');
 				jQuery('span#docItem_'+self.documentId+' li.action_delete').removeClass('not_supported');
+				jQuery('span#docItem_'+self.documentId+' li.separatorA').removeClass('not_supported');
 				jQuery('span#docItem_'+self.documentId+' li.separatorB').removeClass('not_supported');
 				
 				
@@ -249,6 +250,7 @@ kt.app.document_actions = new function() {
 				jQuery('span#docItem_'+self.documentId+' li.action_move').removeClass('not_supported');
 				jQuery('span#docItem_'+self.documentId+' li.action_delete').removeClass('not_supported');
 				jQuery('span#docItem_'+self.documentId+' li.separatorB').removeClass('not_supported');
+				jQuery('span#docItem_'+self.documentId+' li.separatorA').removeClass('not_supported');
 				
 				jQuery('span#docItem_'+self.documentId+' span.checked_out').addClass('not_supported');
 				jQuery('span#docItem_'+self.documentId+' li.action_cancel_checkout').addClass('not_supported');
