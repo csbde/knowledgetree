@@ -109,6 +109,8 @@ textarea {
 	font-size: 11px;
 	padding: 0px 5px 2px 8px;
 	font-family: "Helvetica", "Arial", sans-serif;
+	max-width: 180px;
+	word-wrap: break-word;
 }
 #content li.token-input-token-facebook span{
 	width: 10px;
@@ -128,6 +130,7 @@ textarea {
 	width: 10px;
 	color: white;
 	display: inline-block;
+
 }
 .token-input-dropdown-facebook li {
 	list-style: none;
@@ -616,9 +619,9 @@ ul.floatleft li.notification {
     overflow: hidden;
 }
 #content .form_actions a {
-	padding: 6px 2px 2px 6px !important;
-	border-right: 1px solid #ccc;
-	line-height: 24px;
+	line-height: 25px;
+	height: 25px;
+	display: inline-block;
 }
 
 .ul_actions .spin {
@@ -724,7 +727,6 @@ ul.floatleft li.notification {
 div.form_actions {
 	display: inline-block;
 	float: left;
-	background: url('../graphics/newui/gridtoolbarbkg.png') repeat-x;
 	padding: 1px 0px 0px 0px;
 	margin: 0;
     line-height: 29px;
@@ -735,49 +737,60 @@ div.form_actions {
 #content .form_actions *
 {
 	border: none;
-	background: transparent;
 	padding: 0;
 	margin: 0;
-	height: 29px;
-    line-height: 29px;
+	height: 25px;
+    line-height: 25px;
 }
 #content .form_actions a:last-child {
-	border: none;
+	
 }
 #content .form_actions input, #content .form_actions a {
-	background: transparent url('../graphics/newui/gridtoolbarline.png') top right no-repeat;
-	padding: 0 10px 0 10px;
-	height: 24px;
-	line-height: 26px;
+	background: -webkit-linear-gradient(top,#fff,#e8e8e8)!important;
+	background: -moz-linear-gradient(top,#fff,#e8e8e8)!important;
+	background: -ms-linear-gradient(top,#fff,#e8e8e8)!important;
+	background: linear-gradient(top,#fff,#e8e8e8)!important;
+	border: 1px solid #aaa;
+	border-radius: 3px;
+	-moz-border-radius: 3px;
+	-webkit-border-radius: 3px;
+	padding: 0px 15px;
+	line-height: 25px;
 	/*text-transform:uppercase;*/
-	font-size: 10px;
+	font-size: 11px;
 	font-weight: bold;
-	color: #6A7274;
+	color: #555;
 	text-decoration: none;
 	font-family: "Helvetica", "Arial", sans-serif;
 	vertical-align: top;
+	text-shadow: 0px 1px 0px white; 
 }
-
+#content .form_actions input.form_cancel, #content .form_actions a.form_cancel {
+	background: none!important;
+	border: 0px;
+	color: #2F6594;
+}
+#content .form_actions input.form_cancel:hover, #content .form_actions a.form_cancel:hover {
+	text-decoration: underline!important;
+	background: none!important;
+	color: #2F6594;
+}
 #content .form_actions input:hover, #content .form_actions a:hover {
-	color: #000;
+	color: #333;
 	cursor: pointer;
 	text-decoration: none;
-	border-bottom: none;
+	background: #DDD!important;
+}
+#content .form_actions input:active,
+#content .form_actions a:active {
+	box-shadow: inset 0px 0px 5px #aaa; 
+	-webkit-box-shadow: inset 0px 0px 5px #aaa; 
+	-moz-box-shadow: inset 0px 0px 5px #aaa; 
 }
 
-#content .form_actions div.roundleft {
-    background: #FFF url('../graphics/newui/gridtoolbarleft.png');
-    width: 10px;
-    margin: -1px 0px 0px 0px;
-	float: left;
-}
-
+#content .form_actions div.roundleft, 
 #content .form_actions div.roundright2 {
-    background: #FFF url('../graphics/newui/gridtoolbarright.png') 50% 50%;
-    margin: -1px 0px 0px 0px;
-	float: right;
-	width: 9px;
-	padding: 0px;
+    display: none;
 }
 
 #content #document_status_area {
@@ -1228,6 +1241,7 @@ label span.required
 	-moz-border-radius: 2px;
 	padding: 15px;
 	background: white;
+	overflow: hidden;
 }
 .settings-section #content fieldset legend {
 	padding: 0px;
@@ -1238,7 +1252,21 @@ label span.required
 .settings-item.systemQuotas .settings-content {
 	border-top: 0px;
 }
-
+.settings-item.users .name {
+	padding-right: 5px;
+}
+.settings-item.users .name.empty {
+	padding-right: 0px;
+}
+.settings-item #branding .form_actions {
+	display: block;
+	overflow: hidden;
+	width: 720px;
+	border-top: 1px solid #CCC;
+	padding: 15px;
+	background: whiteSmoke;
+	margin: 20px 0px -15px -15px;
+}
 .settings-section .kt_collection,
 .settings-section .kt_collection.narrow  {
 	width: 100%;
@@ -1258,12 +1286,22 @@ label span.required
 	line-height: 8px;
 	height: 8px;
 	text-transform: uppercase;
-	margin: 0px 5px;
 	color: white;
 	position: relative;
 	top: -2px;
 	font-weight: bold;
 }
+.settings-section .settings-item .action-footer {
+	display: block;
+	overflow: hidden;
+	width: 720px;
+	border-top: 1px solid #CCC;
+	padding: 15px;
+	background: whiteSmoke;
+	margin: 20px 0px -15px -15px;
+}
+
+
 /*Tag editor*/
 
 #content .token-input-list-facebook {

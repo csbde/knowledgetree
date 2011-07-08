@@ -5,18 +5,15 @@
 
 <div class="settings-list">
     <div class="settings-item user_preferences_section">
-        <a onclick="jQuery('#user_preferences_section').slideToggle('fast', {literal}function(){ jQuery(this).parent().toggleClass('expanded');}{/literal}); return false;" href="#" class="header">{i18n}Preferences{/i18n}</a>
         <div class="settings-content" id="user_preferences_section">
             
             {$edit_form->render()}
             
-            <br clear="both" />
         </div>
     </div>
     
     {if $show_password}
     <div class="settings-item user_password_section">
-        <a onclick="jQuery('#user_password_section').slideToggle('fast', {literal}function(){ jQuery(this).parent().toggleClass('expanded');}{/literal}); return false;" href="#" class="header">{i18n}Change Password{/i18n}</a>
         <div class="settings-content" id="user_password_section">
             {$changePasswordForm}
             
@@ -27,7 +24,6 @@
     
     {if $adminPortletContent}
     <div class="settings-item user_adminmode_section">
-        <a onclick="jQuery('#user_adminmode_section').slideToggle('fast', {literal}function(){ jQuery(this).parent().toggleClass('expanded');}{/literal}); return false;" href="#" class="header">{i18n}Enable Admin Mode{/i18n}</a>
         <div class="settings-content" id="user_adminmode_section">
             {$adminPortletContent}
             

@@ -976,6 +976,9 @@ a.main_nav_item {
 	background: #ffffff;
 }
 
+#content .doc_description .metadatatable select {
+	max-width: 170px;
+}
 .editable-control {
 	visibility: hidden;
 	cursor: pointer;
@@ -983,6 +986,7 @@ a.main_nav_item {
 	min-width: 20px;
 	height: 16px;
 	vertical-align: top;
+	word-spacing: 
 }
 .editable-control.undo{
 	visibility: visible;
@@ -1166,23 +1170,18 @@ a.main_nav_item {
 
 /* block level. */
 .ktInfo {
-    padding: 0.1em 1em 1em 1em;
-    margin: 0 0 1em 0.5em;
+    background: #fffdc5;
+    border: 1px solid #ffd825;
+	border-radius: 3px;
+	color: #333;
+	font-size: 13px;
+	font-weight: bold;
+	text-align: center;
+	text-shadow: 0px 1px 0px white;
+	padding: 10px 5px;
+	margin-bottom: 5px;
 }
 
-
-.ktInfo .info_list {
-    background: #DEDEDE;
-    padding-left: 10px;
-    margin-top: 20px;
-    padding-bottom: 8px;
-}
-
-.ktInfo .info_item {
-    padding-left: 25px;
-    background: #DEDEDE url(/thirdparty/icon-theme/16x16/status/dialog-information.png) top left no-repeat;
-    padding-bottom: 3px;
-}
 
 .ktBlock {
 	position: relative;
