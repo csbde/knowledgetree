@@ -141,6 +141,9 @@ class PreferencesDispatcher extends KTStandardDispatcher {
             'submit_label' => _kt('Update password'),
             'extraargs' => $this->meldPersistQuery("","", true),
         ));
+        
+        $KTConfig =& KTConfig::getSingleton();
+        $minLength = ((int) $KTConfig->get('user_prefs/passwordLength', 6));
 
         // widgets
         $oForm->setWidgets(array(
@@ -151,15 +154,16 @@ class PreferencesDispatcher extends KTStandardDispatcher {
                 'confirm' => true,
                 'required' => true,
                 'name' => 'new_password',
+                'id' => 'new_password',
                 'autocomplete' => false)),
+            array('ktcore.widgets.hidden', array(
+                'id' => 'minlength',
+                'value' => $minLength)),
         ));
-
-
-        $KTConfig =& KTConfig::getSingleton();
-        $minLength = ((int) $KTConfig->get('user_prefs/passwordLength', 6));
 
         $oForm->setValidators(array(
             array('ktcore.validators.string', array(
+                'id' => 'password_2',
                 'test' => 'new_password',
                 'min_length' => $minLength,
                 'min_length_warning' => sprintf(_kt("Your password is too short - passwords must be at least %d characters long."), $minLength),
