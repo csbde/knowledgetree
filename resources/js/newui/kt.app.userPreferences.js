@@ -14,9 +14,11 @@ kt.app.userPreferences = new function() {
 		var win = new Ext.Window({
 			id: 'preferencesWindow',
 			title: 'Preferences',
-			width: 700,
+			width: 400,
 			height: 450,
 			layout: 'fit',
+			modal: true,
+			resizable: false,
 			autoLoad: {
 				url : '/preferences.php',
 				scripts: true

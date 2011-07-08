@@ -1,11 +1,8 @@
-
-
-
 <script src="/resources/js/jquery.form.js"></script>
 
-<div class="settings-list">
+<div class="settings-list" id="modal">
     <div class="settings-item user_preferences_section">
-        <a onclick="jQuery('#user_preferences_section').slideToggle('fast', {literal}function(){ jQuery(this).parent().toggleClass('expanded');}{/literal}); return false;" href="#" class="header">{i18n}Preferences{/i18n}</a>
+        <a onclick="jQuery('#user_preferences_section').slideToggle('fast', {literal}function(){ jQuery(this).parent().toggleClass('expanded');}{/literal}); return false;" href="#" class="header">{i18n}User Details and Email Notifications{/i18n}</a>
         <div class="settings-content" id="user_preferences_section">
             
             {$edit_form->render()}
@@ -67,3 +64,5 @@ jQuery(document).ready(function()
 });
 </script>
 {/literal}
+
+<script src="/resources/js/newui/buttons/formActions.js"></script>

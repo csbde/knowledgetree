@@ -1600,3 +1600,18 @@ a.currentSettingsCategory {
 	background: url('/resources/graphics/newui/popover_tip.png') no-repeat right;
 	margin-right: -1px!important;
 }
+
+#preferencesWindow br {
+	line-height: 1;
+}
+#preferencesWindow div.field {
+	margin-bottom: 10px;
+}
+
+#updatePreferencesForm div.form_actions {
+	margin-top: 10px;
+}
+
+#updatePreferencesForm input {
+	max-width: 300px;
+}
