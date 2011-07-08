@@ -27,7 +27,7 @@ if (!function_exists('getDocTypes')) {
     <div>
        <table class="metadataTable" border="0" cellspacing="0" cellpadding="0">
        	<tr><td class="ul_meta_selectDocType">Select Document Type<span class="ul_meta_docTypeOptions">
-	        <select class="ul_doctype" onChange="kt.app.upload.getMetaItem(this).changeDocType(this.options[this.selectedIndex].value);">
+	        <select class="ul_doctype" onchange="kt.app.upload.getMetaItem(this).changeDocType(this.options[this.selectedIndex].value);">
 	        	<?php
 	        	  $docTypes = getDocTypes();
 	        	  foreach ($docTypes as $docTypeId => $docType) :
