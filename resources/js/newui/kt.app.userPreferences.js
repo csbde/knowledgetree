@@ -33,16 +33,40 @@ kt.app.userPreferences = new function() {
     }
 	
 	this.ajaxifyForms = function() {
-		jQuery('#updatePreferencesForm, #updatePasswordForm').ajaxForm({ //#adminModeForm
+		jQuery('#updatePreferencesForm').ajaxForm({ //#adminModeForm
 			beforeSubmit: kt.app.userPreferences.beforeSubmit,
 			success: kt.app.userPreferences.afterSubmit
 		});
+		
+		jQuery('#updatePasswordForm').ajaxForm({
+			beforeSubmit: kt.app.userPreferences.checkPasswords,
+			success: kt.app.userPreferences.afterSubmit
+		});
+	}
+	
+	this.checkPasswords = function() {
+		
+		if (jQuery('#new_password').val() != jQuery('#new_password_confirm').val()) {
+			
+			alert('Passwords do not match');
+			
+			return false;
+		} else if (jQuery('#new_password').val().length < jQuery('#minlength').val()) {
+			
+			alert('Password is too short. Needs to be '+jQuery('#minlength').val()+' characters');
+			
+			return false;
+		} else {
+			return kt.app.userPreferences.beforeSubmit();
+		}
 	}
 	
 	this.beforeSubmit = function() {
 		
 		jQuery('.ktInfo,.ktError').hide();
         Ext.getCmp('preferencesWindow').getEl().mask("Updating Details", "x-mask-loading");
+		
+		return true;
 	}
 	
 	this.afterSubmit = function(data) {

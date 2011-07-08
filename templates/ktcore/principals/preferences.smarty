@@ -45,10 +45,6 @@ jQuery(document).ready(function()
         
         jQuery('#userPreferencesName').html('{$userFullName}');
         
-        {if $reloadMenus == 'true'}
-            if (kt.app.document_actions != undefined) kt.app.document_actions.refresh();
-        {/if}
-        
         {if (!empty($errorMessages))}
             {foreach item=sError from=$errorMessages}
                 kt.app.notify.show('{$sError}', true);
@@ -64,5 +60,3 @@ jQuery(document).ready(function()
 });
 </script>
 {/literal}
-
-<script src="/resources/js/newui/buttons/formActions.js"></script>
