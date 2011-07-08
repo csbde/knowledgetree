@@ -3,7 +3,7 @@
 		<span class="ul_meta_label_descr">[description]</span>
 	</span>
 	<span class="ul_meta_field">
-		<select id="ul_meta_field_[id]" class="ul_meta_fullField ul_meta_field_[id]" onChange="kt.dragdrop.metadata.setMetaData('[id]',this.options[this.selectedIndex].text);"></select>
+		<select id="ul_meta_field_[id]" class="ul_meta_fullField ul_meta_field_[id]" onchange="kt.dragdrop.metadata.setMetaData('[id]',this.options[this.selectedIndex].text);"></select>
 	</span>
 </span>
 
@@ -42,7 +42,7 @@ Ext.onReady(function(){
 		//register as required field
 		kt.dragdrop.metadata.registerRequiredFieldNotDone('ul_meta_field_[id]');
 
-		jQuery('#ul_meta_field_[id]').click(function() {
+		jQuery('#ul_meta_field_[id]').change(function() {
 			if (this.selectedIndex <= 0){
 				kt.dragdrop.metadata.registerRequiredFieldNotDone('ul_meta_field_[id]');
 				kt.dragdrop.metadata.checkRequiredFieldsCompleted();
