@@ -47,7 +47,7 @@ kt.app.notify = new function() {
 		
 		if (autoHide) {
 			
-			jQuery('#uploadProgress').delay(2000).fadeOut(1000);
+			jQuery('#uploadProgress').delay(3000).fadeOut(1000);
 		}
 		
     }

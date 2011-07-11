@@ -2,19 +2,15 @@
 <p class="descriptiveText">{i18n}Creating a Dynamic Condition involves setting up criteria that filters content in the DMS for the purposes of selectively assigning permissions associated with the Dynamic Condition, according to the specified criteria. Dynamic conditions are assigned on the folder's Permissions management page in Browse Documents. Dynamic Conditions are also used to create Guard permissions, which are required to perform transitions on Workflows. {/i18n}</p>
 
 <form action="{$smarty.server.PHP_SELF}" method="POST">
-<fieldset>
-<legend>{i18n}Create a new condition{/i18n}</legend>
-<div>
-<input type="hidden" name="action" value="new" />
-<input type="submit" name="submit" value="{i18n}New{/i18n}" />
+ <div class="form_actions">
+	<input type="hidden" name="action" value="new" />
+	<input type="submit" name="submit" value="{i18n}Create New Condition{/i18n}" />
+
 </div>
-</fieldset>
 </form>
 
 
 {if $conditions}
-<h2>{i18n}Existing Conditions{/i18n}</h2>
-
 <table class="kt_collection">
 <thead>
     <tr>

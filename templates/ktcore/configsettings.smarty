@@ -25,10 +25,11 @@
             </div>
     {/foreach}
 
-    <br><hr>
-    <div class="form_actions">
-        <input type="submit" name="AlterConfig" value="{i18n}Save Config Settings{/i18n}" />
-        <input type="hidden" name="action" value="save" />
+    <div class="action-footer">
+    	<div class="form_actions">
+        	<input type="submit" name="AlterConfig" value="{i18n}Save Config Settings{/i18n}" />
+        	<input type="hidden" name="action" value="save" />
+    	</div>
     </div>
 {else}
 

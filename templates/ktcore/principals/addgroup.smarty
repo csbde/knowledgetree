@@ -15,9 +15,11 @@ intervention from the administrator, and that the group's membership
 will be maintained as it is in the authentication source.{/i18n}</p>
 
    {entity_select name="source_id" entities=$authentication_sources}
-   <div class="form_actions ">
-     <input type="submit" name="submit" value="{i18n}Add from source{/i18n}" />
-   </div>
+   <div class="action-footer">
+   		<div class="form_actions ">
+   		  <input type="submit" name="submit" value="{i18n}Add from source{/i18n}" />
+   		</div>
+   	</div>
    </fieldset>
    </form>
 </p>
