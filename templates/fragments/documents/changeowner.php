@@ -30,6 +30,11 @@ $jsonWidget = KTJSONLookupWidget::getUserSearchWidget($label, 'group', 'users', 
 
 
 ?>
+<style type="text/css">
+	.usersearchwidgetwrap label {display: none !important;}
+	.usersearchwidgetwrap ul.token-input-list-facebook {width: 250px !important}
+	.token-input-dropdown-facebook {width: 250px !important}
+</style>
 <table class="uploadTable" style="height:100px;">
 	<tbody>
 		<!--
@@ -43,12 +48,6 @@ $jsonWidget = KTJSONLookupWidget::getUserSearchWidget($label, 'group', 'users', 
 			</td>
 		</tr>
 		<tr>
-			<td>
-				&nbsp;
-			</td>
-		</tr>
-		
-		<tr>
 			<td><b>New Owner</b> : Type to Search
 				<div class="usersearchwidgetwrap">
 					<?php echo $jsonWidget->render(); ?>
@@ -60,17 +59,12 @@ $jsonWidget = KTJSONLookupWidget::getUserSearchWidget($label, 'group', 'users', 
 				&nbsp;
 			</td>
 		</tr>
-		<tr>
-	    	<td align="right" valign="top" class="ul_actions">
-				<input type="hidden" name="changeowner_document" id="changeowner_document" value="<?php echo $data['documentId']; ?>" />
-				<input name="changeowner_submit" type="button" onclick="kt.app.document_actions.doChangeOwner('<?php echo $data['documentId']; ?>', '<?php echo $ownerId; ?>', jQuery('#user-search-widget').val());" value="Change Owner">
-				<a href="#" onclick="Ext.getCmp('changeowner').close(); return false;" class="ul_actions_cancel_link">Cancel</a>
-	    	</td>
-		</tr>
 	</tbody>
 </table>
-<style type="text/css">
-	.usersearchwidgetwrap label {display: none !important;}
-	.usersearchwidgetwrap ul.token-input-list-facebook {width: 310px !important}
-	.token-input-dropdown-facebook {width: 310px !important}
-</style>
+<div class="action-footer">
+	<div class="form_actions">
+		<input type="hidden" name="changeowner_document" id="changeowner_document" value="<?php echo $data['documentId']; ?>" />
+    	<a href="#" onclick="Ext.getCmp('changeowner').close(); return false;" class="ul_actions_cancel_link">Cancel</a>
+    	<input name="changeowner_submit" type="button" onclick="kt.app.document_actions.doChangeOwner('<?php echo $data['documentId']; ?>', '<?php echo $ownerId; ?>', jQuery('#user-search-widget').val());" value="Change Owner">
+    </div>
+</div>	

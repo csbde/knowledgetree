@@ -745,6 +745,7 @@ div.form_actions {
 #content .form_actions a:last-child {
 	
 }
+.x-window .form_actions input, .x-window .form_actions a, 
 #content .form_actions input, #content .form_actions a {
 	background: -webkit-linear-gradient(top,#fff,#e8e8e8)!important;
 	background: -moz-linear-gradient(top,#fff,#e8e8e8)!important;
@@ -765,11 +766,19 @@ div.form_actions {
 	vertical-align: top;
 	text-shadow: 0px 1px 0px white; 
 }
+.x-window .form_actions input.ul_actions_cancel_link, 
+.x-window .form_actions a.ul_actions_cancel_link, 
+.x-window .form_actions a.form_cancel,
 #content .form_actions input.form_cancel, #content .form_actions a.form_cancel {
 	background: none!important;
 	border: 0px;
 	color: #2F6594;
 }
+.x-window .form_actions input:disabled,
+.x-window .form_actions a:disabled {
+ 	color: #CCC;
+ }
+.x-window .form_actions input.form_cancel:hover, .x-window .form_actions a.form_cancel:hover,
 #content .form_actions input.form_cancel:hover, #content .form_actions a.form_cancel:hover {
 	text-decoration: underline!important;
 	background: none!important;
@@ -1085,12 +1094,48 @@ div#uploadProgress .progress {
 	background: #FF9c9d !important;
 	/*background: url('../graphics/newui/notice_red.png') no-repeat top right !important;*/
 }
-
+.upload-breadcrumb {
+	display: block; 
+	margin-top: 10px; 
+	background: whitesmoke; 
+	border: 1px solid #CCC; 
+	border-radius: 3px;
+	-webkit-border-radius: 3px;
+	-moz-border-radius: 3px;
+	line-height: 30px;
+	color: #333;
+	padding: 0px 5px;
+	overflow: hidden;
+}
+.upload-breadcrumb em {
+	background: url(../graphics/newui/bc_separator.png) no-repeat 100% 0;
+}
+#uploadpathstring span,
+.upload-breadcrumb em {
+	display: inline-block;
+	float: left;
+	margin-right: 5px;
+	padding-right: 10px;
+}
+#changepathlink {
+	display:inline-block; 
+	width: 13px; 
+	height: 12px; 
+	float: left;
+	margin: 9px 5px 5px 2px;
+	background: url(/resources/graphics/plus.gif) no-repeat 0px 0px;
+}
+#changepathlink.enabled{
+	background: url(/resources/graphics/minus.gif) no-repeat 0px 0px;
+}
 #content select.perpageselect {
 	border: none;
 	background: transparent url('../graphics/newui/per_page_select.png') no-repeat top right;
 	padding: 5px;
 }
+div#folderpathchooser ul#currentPathStuff li:nth-child(even) {
+	background-color: #E3EEF4;
+} 
 
 
 #subscriptionResponse {
@@ -1291,14 +1336,29 @@ label span.required
 	top: -2px;
 	font-weight: bold;
 }
+.x-window .action-footer,
 .settings-section .settings-item .action-footer {
 	display: block;
 	overflow: hidden;
-	width: 720px;
 	border-top: 1px solid #CCC;
 	padding: 15px;
 	background: whiteSmoke;
 	margin: 20px 0px -15px -15px;
+}
+.settings-section .settings-item .action-footer {
+	width: 720px;
+}
+.x-window-body {
+	padding: 10px;
+}
+.x-window .x-tool {
+	background: url(/resources/graphics/bullet_toggle_close.png) no-repeat;
+}
+.x-window .action-footer {
+	margin: 20px -10px -10px -10px;
+}
+.x-window .action-footer .form_actions {
+	float: right;
 }
 
 
@@ -1599,7 +1659,9 @@ li.ui-state-disabled a {
 #action-modal .jstree-knowledgetree a .jstree-icon {
 	background: url(/thirdpartyjs/extjs/resources/images/default/tree/folder-open.gif) 0px 0px;
 }
-
+.x-window .jstree-knowledgetree.select-tree {
+	background: url("/thirdpartyjs/jquery/plugins/jstree/themes/knowledgetree/bg.jpg") left top repeat;
+}
 #action-error.alert.warning {
 	background: #F2C1C5;
 	border: 1px solid #A90615;

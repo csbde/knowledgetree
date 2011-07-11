@@ -1,13 +1,11 @@
 .ul_win, .ul_meta { /* background-color: #F1F1F1; */ }
 .ul_win .x-window-mc, .ul_win .x-window-ml, .ul_win .x-window-mr, .ul_win .x-window-bl, .ul_win .x-window-br, .ul_win .x-window-bc, .ul_meta .x-window-mc, .ul_meta .x-window-ml, .ul_meta .x-window-mr, .ul_meta .x-window-bl, .ul_meta .x-window-br, .ul_meta .x-window-bc { background-color: #FFFFFF; border: none; }
-.ul_win .x-window-ml, .ul_win .x-window-bl, .ul_win .x-window-br, .ul_meta .x-window-ml, .ul_meta .x-window-bl, .ul_meta .x-window-br { padding-left: 3px; }
-.ul_win .x-window-mr, .ul_win .x-window-br, .ul_meta .x-window-mr, .ul_meta .x-window-br { padding-right: 3px; }
 .ul_win .x-window-bc, .ul_meta .x-window-bc { height: 3px; }
-.ul_win .x-window-mc, .ul_meta .x-window-mc { background-color: #FFFFFF; padding: 10px; }
+.ul_win .x-window-mc, .ul_meta .x-window-mc { background-color: #FFFFFF;}
 
 .ul_win_body, .ul_meta_body { overflow: hidden; background-color: #FFFFFF; border: none; }
 
-table.uploadTable { width: 100%; height: 300px; }
+table.uploadTable { width: 100%; height: 250px; }
 table.uploadTable input, table.uploadTable label { font-family: tahoma,arial,helvetica,sans-serif; }
 table.uploadTable td { height: 1px; }
 table.uploadTable .ul_doctype { float: right; display: inline-block; width: 120px; }
@@ -83,7 +81,7 @@ table.metadataTable .ul_meta_actionbar .ul_actions_cancel_link { float: right; m
 table.metadataTable .ul_meta_actionbar label { display: block; padding-left: 5px; margin-top: 10px; /*text-indent: 5px;*/ float: left; font-size: 11px; }
 table.metadataTable .ul_meta_actionbar input[type="checkbox"] { float: left; padding-left: 2px; margin-top: 10px; }
 
-div#folderpathchooser { background: #fff; border: 1px solid #000; padding: 3px; height: 100px; overflow: auto; margin: 10px 0px; }
+div#folderpathchooser { display:block; clear:both; background: #fff; border: 1px solid #ccc; padding: 1px; height: 100px; overflow: auto; margin: 10px 0px; }
 div#folderpathchooser div.loading { background: url(../../graphics/newui/preview-loading.gif) no-repeat 50% 50%; height: 90px; }
 div#folderpathchooser ul#currentPathStuff li { margin-bottom: 3px; padding: 2px; padding-left: 25px; background: url(../../graphics/folder_closed.png) no-repeat 0 50%; border: 1px solid transparent; /* border-bottom: 1px solid #F1F1F1; */ }
 div#folderpathchooser ul#currentPathStuff li.folder_up { background: url(../../graphics/folder_up.png) no-repeat 0 50%; }
