@@ -37,14 +37,12 @@
         	<input type="checkbox" name="readonly" id="readonly" class="readonly">&nbsp;<label for="read.only">Read-only</label>
         </td>
     </tr>
-
-    <tr>
-        <td align="right" class="ul_actions">
-        	<a class="ul_actions_cancel_link" href="javascript: kt.app.sharewithusers.closeWindow();">Cancel</a>
-			<input id="ul_actions_upload_btn" class="ul_actions_btns" type="button" value="Share" onClick="kt.app.sharewithusers.inviteUsers('shared');" />
-            <input type="hidden" name="object.id" id="object.id" value="">
-            <input type="hidden" name="object.type" id="object.type" value="">
-        </td>
-    </tr>
-
 </table>
+<div class="action-footer">
+	<div class="form_actions">
+		<a class="ul_actions_cancel_link" href="javascript: kt.app.sharewithusers.closeWindow();">Cancel</a>
+		<input id="ul_actions_upload_btn" class="ul_actions_btns" type="button" value="Share" onClick="kt.app.sharewithusers.inviteUsers('shared');" />
+		<input type="hidden" name="object.id" id="object.id" value="">
+		<input type="hidden" name="object.type" id="object.type" value="">
+	</div>
+</div>

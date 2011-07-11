@@ -1,6 +1,5 @@
 <!--div id="adminmode" style="padding: 10px;"-->
 {if $enabled}
-    <p class="descriptiveText">{i18n}Administrator mode is enabled.{/i18n}</p>
 
     {assign var='enabledChecked' value='checked="checked"'}
     {assign var='enabledSelected' value='selected'}
@@ -8,7 +7,6 @@
     {assign var='disabledSelected' value=''}
 {else}
     
-    <p class="descriptiveText">{i18n}Administrator mode is not enabled.{/i18n}</p>
 
     {assign var='enabledChecked' value=''}
     {assign var='enabledSelected' value=''}
@@ -20,11 +18,12 @@
 
 
 <form action="{$toggleurl}" id="adminModeForm">
+<label>Administrator Mode</label>
     <span class="field switch">
         <input type="radio" id="radio1" name="action" value="enableAdminMode" {$enabledChecked} />
         <input type="radio" id="radio2" name="action" value="disableAdminMode" {$disabledChecked} />
-        <label for="radio1" class="cb-enable {$enabledSelected}"><span>Enable Admin Mode</span></label>
-        <label for="radio2" class="cb-disable {$disabledSelected}"><span>Disable Admin Mode</span></label>
+        <label for="radio1" class="cb-enable {$enabledSelected}"><span>ON</span></label>
+        <label for="radio2" class="cb-disable {$disabledSelected}"><span>OFF</span></label>
     </span>
     
     <br clear="both">

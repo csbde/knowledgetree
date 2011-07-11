@@ -13,9 +13,10 @@ membership of groups that belong to the unit.{/i18n}</p>
       {foreach item=oWidget from=$add_fields}
         {$oWidget->render()}
       {/foreach}
-
+	<div class="action-footer">
       <div class="form_actions">
          <input type="submit" value="{i18n}Next{/i18n}" />
-         <input type="submit" name="kt_cancel[]" value="{i18n}Cancel{/i18n}" />
+         <input type="submit" class="form_cancel" name="kt_cancel[]" value="{i18n}Cancel{/i18n}" />
       </div>
+     </div>
    </form>

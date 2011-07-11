@@ -15,7 +15,7 @@
 	the members of this group within the document management
         system.  Select the button below to synchronise the group from
         the authentication source.{/i18n}</p>
-
+	
       <div class="form_actions">
          <input type="submit" value="{i18n}synchronise{/i18n}" />
       </div>
