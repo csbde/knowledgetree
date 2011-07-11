@@ -196,6 +196,14 @@ kt.app.document_actions = new function() {
 				jQuery('#value-ischeckedout').slideDown();
 
 				jQuery('span#docItem_'+self.documentId+' li.action_checkout').addClass('not_supported');
+				jQuery('span#docItem_'+self.documentId+' li.action_finalize_document').addClass('not_supported');
+				jQuery('span#docItem_'+self.documentId+' li.action_zoho_document').addClass('not_supported');
+				jQuery('span#docItem_'+self.documentId+' li.action_copy').addClass('not_supported');
+				jQuery('span#docItem_'+self.documentId+' li.action_move').addClass('not_supported');
+				jQuery('span#docItem_'+self.documentId+' li.action_delete').addClass('not_supported');
+				jQuery('span#docItem_'+self.documentId+' li.separatorB').addClass('not_supported');
+				
+				
 				jQuery('span#docItem_'+self.documentId+' span.checked_out').removeClass('not_supported');
 				jQuery('span#docItem_'+self.documentId+' li.action_cancel_checkout').removeClass('not_supported');
 				jQuery('span#docItem_'+self.documentId+' li.action_checkin').removeClass('not_supported');
@@ -212,6 +220,15 @@ kt.app.document_actions = new function() {
 				jQuery('#value-ischeckedout').slideUp();
 
 				jQuery('span#docItem_'+self.documentId+' li.action_checkout').removeClass('not_supported');
+				jQuery('span#docItem_'+self.documentId+' li.action_finalize_document').removeClass('not_supported');
+				jQuery('span#docItem_'+self.documentId+' li.action_zoho_document').removeClass('not_supported');
+				jQuery('span#docItem_'+self.documentId+' li.action_copy').removeClass('not_supported');
+				jQuery('span#docItem_'+self.documentId+' li.action_move').removeClass('not_supported');
+				jQuery('span#docItem_'+self.documentId+' li.action_delete').removeClass('not_supported');
+				jQuery('span#docItem_'+self.documentId+' li.separatorA').removeClass('not_supported');
+				jQuery('span#docItem_'+self.documentId+' li.separatorB').removeClass('not_supported');
+				
+				
 				jQuery('span#docItem_'+self.documentId+' span.checked_out').addClass('not_supported');
 				jQuery('span#docItem_'+self.documentId+' li.action_cancel_checkout').addClass('not_supported');
 				jQuery('span#docItem_'+self.documentId+' li.action_checkin').addClass('not_supported');
@@ -227,6 +244,14 @@ kt.app.document_actions = new function() {
 				jQuery('#value-ischeckedout').slideUp();
 
 				jQuery('span#docItem_'+self.documentId+' li.action_checkout').removeClass('not_supported');
+				jQuery('span#docItem_'+self.documentId+' li.action_finalize_document').removeClass('not_supported');
+				jQuery('span#docItem_'+self.documentId+' li.action_zoho_document').removeClass('not_supported');
+				jQuery('span#docItem_'+self.documentId+' li.action_copy').removeClass('not_supported');
+				jQuery('span#docItem_'+self.documentId+' li.action_move').removeClass('not_supported');
+				jQuery('span#docItem_'+self.documentId+' li.action_delete').removeClass('not_supported');
+				jQuery('span#docItem_'+self.documentId+' li.separatorB').removeClass('not_supported');
+				jQuery('span#docItem_'+self.documentId+' li.separatorA').removeClass('not_supported');
+				
 				jQuery('span#docItem_'+self.documentId+' span.checked_out').addClass('not_supported');
 				jQuery('span#docItem_'+self.documentId+' li.action_cancel_checkout').addClass('not_supported');
 				jQuery('span#docItem_'+self.documentId+' li.action_checkin').addClass('not_supported');

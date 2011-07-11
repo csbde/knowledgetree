@@ -17,7 +17,7 @@ jQuery(function() {
 		
 		jQuery(element).css({'top': (jQuery(element).parent().prev().height())+'px', 'margin-left':0, 'margin-top':0, 'position':'absolute', 'margin-top':0});
 		
-		heightOffset = jQuery(element).parent().offset().top +  jQuery(element).height() + jQuery(element).prev().height();
+		heightOffset = jQuery(element).parent().offset().top +  jQuery(element).height() + jQuery(element).prev().height()+10;
 		
 		windowAndScrollOffset = jQuery(window).height()+jQuery(scrollElement).scrollTop();
 		
@@ -33,7 +33,7 @@ jQuery(function() {
 		console.log('windowAndScrollOffset: '+windowAndScrollOffset);
 		*/
 		
-		if (heightOffset > windowAndScrollOffset) {
+		if (heightOffset+25 > windowAndScrollOffset) {
 			//console.log('need to move up');
 			diff = heightOffset - windowAndScrollOffset;
 			

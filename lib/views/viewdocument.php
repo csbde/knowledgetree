@@ -131,7 +131,7 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
             $breadcrumbsFolder = Folder::get($symLinkFolderId);
             $options['final'] = false;
             $this->aBreadcrumbs = kt_array_merge($this->aBreadcrumbs, KTBrowseUtil::breadcrumbsForFolder($breadcrumbsFolder,$options));
-            $this->aBreadcrumbs[] = array('name' => $this->document->getName());
+            $this->aBreadcrumbs[] = array('name' => $this->document->getName(), 'id'=>'docBreadCrumbName');
         }
         else {
             $this->aBreadcrumbs = kt_array_merge($this->aBreadcrumbs, KTBrowseUtil::breadcrumbsForDocument($this->document, $options, $symLinkFolderId));

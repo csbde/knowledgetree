@@ -848,6 +848,11 @@ class KTPage {
 		} else {
 		   $aTuple['url'] = false;
 		}
+        
+        // Id for use with JavaScript
+        if ($aActionTuple['id']) {
+            $aTuple['id'] = $aActionTuple['id'];
+        }
 
 		return $aTuple;
     }
