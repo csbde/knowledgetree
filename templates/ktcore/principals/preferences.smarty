@@ -1,10 +1,8 @@
-
-
-
 <script src="/resources/js/jquery.form.js"></script>
 
-<div class="settings-list">
+<div class="settings-list" id="modal">
     <div class="settings-item user_preferences_section">
+
         <div class="settings-content" id="user_preferences_section">
             
             {$edit_form->render()}
@@ -43,10 +41,6 @@ jQuery(document).ready(function()
     {/literal}
         
         jQuery('#userPreferencesName').html('{$userFullName}');
-        
-        {if $reloadMenus == 'true'}
-            if (kt.app.document_actions != undefined) kt.app.document_actions.refresh();
-        {/if}
         
         {if (!empty($errorMessages))}
             {foreach item=sError from=$errorMessages}

@@ -1264,10 +1264,30 @@ label span.required
 	-moz-border-radius: 2px;
 	margin: 5px 0px 10px 10px;
 }
+
+#preferencesWindow .settings-item {
+	margin-right: 10px;
+}
+
+#preferencesWindow .settings-content {
+	display: none;
+}
+
+#preferencesWindow .form_actions {
+	clear: both;
+}
+
+#preferencesWindow span.switch {
+	float: left !important;
+}
+
 .settings-item a.header{
 	padding: 5px 30px;
 	display: block;
 	background: url(../graphics/plus.gif) no-repeat 10px 10px;
+	color: #2F6594;
+	line-height: 1.6em;
+	text-decoration: none;
 }
 
 #content .settings-item a.header:hover {
@@ -1679,4 +1699,19 @@ a.currentSettingsCategory {
 	font-weight: bold;
 	background: url('/resources/graphics/newui/popover_tip.png') no-repeat right;
 	margin-right: -1px!important;
+}
+
+#preferencesWindow br {
+	line-height: 1;
+}
+#preferencesWindow div.field {
+	margin-bottom: 10px;
+}
+
+#updatePreferencesForm div.form_actions {
+	margin-top: 10px;
+}
+
+#updatePreferencesForm input {
+	max-width: 300px;
 }

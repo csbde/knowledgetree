@@ -57,7 +57,8 @@ kt.pages.browse = new function() {
     self.limit = 3;
     self.retryIn = 3000; // milliseconds
 
-    this.addDocumentItem = function(item) {
+    this.addDocumentItem = function(item)
+    {
         item.is_shortcut = item.is_shortcut ? '' : ' not_supported';
         item.is_immutable = item.is_immutable ? '' : ' not_supported';
         item.is_checkedout = item.is_checkedout ? '' : ' not_supported';
@@ -70,7 +71,8 @@ kt.pages.browse = new function() {
         jQuery('.page.page_' + self.curPage).append(elem);
     };
 
-    this.viewPage = function(pageNum, folderId, fetch) {
+    this.viewPage = function(pageNum, folderId, fetch)
+    {
         if (self.loading) { return self.retry(pageNum, folderId, fetch); }
 
         // TODO consider rather just returning if pageNum < 1?
@@ -109,14 +111,16 @@ kt.pages.browse = new function() {
         }
     };
 
-    this.retry = function(pageNum, folderId, fetch) {
+    this.retry = function(pageNum, folderId, fetch)
+    {
         jQuery.loading(false);
         jQuery.loading(true, { text: 'Busy, please wait...trying again in ' + (self.retryIn / 1000) + ' seconds', max: self.retryIn });
         setTimeout(function() { self.viewPage(pageNum, folderId, fetch); }, self.retryIn);
         return;
     }
 
-    this.checkRange = function(requested) {
+    this.checkRange = function(requested)
+    {
         requested = Number(requested);
 
         var mid = null;
@@ -146,7 +150,8 @@ kt.pages.browse = new function() {
         return pages.length > 0;
     }
 
-    this.loaded = function(data, pageNum, pageItem, loaded) {
+    this.loaded = function(data, pageNum, pageItem, loaded)
+    {
         try {
             var responseJSON = jQuery.parseJSON(data);
         }
@@ -182,12 +187,14 @@ kt.pages.browse = new function() {
         self.loading = false;
     }
 
-    this.loadingFailed = function(request, errorType, thrown) {
+    this.loadingFailed = function(request, errorType, thrown)
+    {
         jQuery.loading(false);
         self.loading = false;
     }
 
-    this.showPage = function(pageNum, pageItem) {
+    this.showPage = function(pageNum, pageItem)
+    {
         jQuery('.page').hide(0, function() { jQuery('.page.page_' + pageNum).show(0); })
         jQuery('.paginate>li.item').removeClass('highlight');
         pageItem.addClass('highlight');
@@ -198,17 +205,20 @@ kt.pages.browse = new function() {
         jQuery('.select_all').attr('checked', (selectedItems > 0));
     }
 
-    this.nextPage = function(folderId) {
+    this.nextPage = function(folderId)
+    {
         self.viewPage(self.curPage + 1, folderId);
         return false;
     };
 
-    this.prevPage = function(folderId) {
+    this.prevPage = function(folderId)
+    {
         self.viewPage(self.curPage - 1, folderId);
         return false;
     };
 
-    this.selectAllItems = function() {
+    this.selectAllItems = function()
+    {
         jQuery('.page.page_' + self.curPage + ' .item .checkbox > input:checkbox:enabled').each(function() {
             if (!this.checked) { jQuery(this).click(); }
             jQuery(this).parents('.item').addClass('highlighted');
@@ -217,7 +227,8 @@ kt.pages.browse = new function() {
         return false;
     }
 
-    this.deSelectAllItems = function() {
+    this.deSelectAllItems = function()
+    {
         jQuery('.page.page_' + self.curPage + ' .item .checkbox > input:checkbox:enabled').each(function() {
             if (this.checked) { jQuery(this).click(); }
             jQuery(this).parents('.item').removeClass('highlighted');
@@ -226,19 +237,22 @@ kt.pages.browse = new function() {
         return false;
     }
 
-    this.getSelectedItems = function() {
+    this.getSelectedItems = function()
+    {
     	var list = new Array;
     	var name;
-    	jQuery('.page.page_' + self.curPage + ' .item .checkbox > input:checkbox:enabled').each(function() {
-            if (this.checked) { 
-            	name = this.name.replace('[]', '');
-            	list.push(name+'_'+this.value); 
+        jQuery('.page .item .checkbox > input:checkbox:enabled').each(function() {
+            if (this.checked) {
+                name = this.name.replace('[]', '');
+                list.push(name+'_'+this.value);
             }
         });
+
         return list;
     }
-    
-    this.setBulkActionMenuStatus = function() {
+
+    this.setBulkActionMenuStatus = function()
+    {
         var selectedItems = jQuery('.itemContainer .item .checkbox>input:checkbox:checked:enabled').length;
         if (selectedItems > 0) {
         	jQuery('.browseView.bulkActionMenu td:first-child').removeClass('disabled');
@@ -305,34 +319,30 @@ jQuery(document).ready(function() {
     })();
     }
 
-
-
 	/**
 	 * Functionality to place the menu in an always visible state
-	 */	
+	 */
 	jQuery('.doc.browseView .item .actionMenu .actions').live("hover", function() {
-		
 		// Reset Position Everytime relative to the parent item
 		jQuery(this).children("ul:first").css({'top': 15+'px', 'position':'absolute', 'margin-top':0});
-		
+
 		// Chrome/Safari uses body, IE/Firefox uses HTML for scrolling offset
 		if (jQuery("body").scrollTop() > jQuery("html").scrollTop()) {
 			scrollElement = "body";
 		} else {
 			scrollElement = "html";
 		}
-		
-		
+
 		// If (parent position+child height) > (window height + scroll offset), Reposition child
-		if (jQuery(this).offset().top+jQuery(this).children("ul:first").height()+5 > jQuery(window).height()+jQuery(scrollElement).scrollTop()) {
+		// 35 is height of footer
+		
+		if (jQuery(this).offset().top+jQuery(this).children("ul:first").height()+5+35 > jQuery(window).height()+jQuery(scrollElement).scrollTop()) {
 			diff = (jQuery(this).offset().top+jQuery(this).children("ul:first").height()) - (jQuery(window).height() + jQuery(scrollElement).scrollTop());
-			
+
 			// Move item up by difference + 20px
-			jQuery(this).children("ul:first").css('margin-top', '-'+(diff+18)+'px');
+			jQuery(this).children("ul:first").css('margin-top', '-'+(diff+18+35)+'px');
 		}
 	});
-	
-	
 
     kt.pages.browse.setBulkActionMenuStatus();
 

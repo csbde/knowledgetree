@@ -38,29 +38,26 @@
  *
  */
 
-if (!array_key_exists('code',$_GET))
-{
-	$msg = urlencode('Code not specified.');
-	print "status_code=1&msg=$msg";
-	exit;
+if (!array_key_exists('code',$_GET)) {
+    $msg = urlencode('Code not specified.');
+    print "status_code=1&msg=$msg";
+    exit;
 }
 
 $hash = $_GET['code'];
 
-if (!array_key_exists('d',$_GET))
-{
-	$msg = urlencode('Document not specified.');
-	print "status_code=2&msg=$msg";
-	exit;
+if (!array_key_exists('d', $_GET)) {
+    $msg = urlencode('Document not specified.');
+    print "status_code=2&msg=$msg";
+    exit;
 }
 
 $document_id = $_GET['d'];
 
-if (!array_key_exists('u',$_GET))
-{
-	$msg = urlencode('Session not specified.');
-	print "status_code=3&msg=$msg";
-	exit;
+if (!array_key_exists('u', $_GET)) {
+    $msg = urlencode('Session not specified.');
+    print "status_code=3&msg=$msg";
+    exit;
 }
 
 $session = $_GET['u'];
@@ -74,11 +71,10 @@ $download_manager = new KTDownloadManager();
 $download_manager->set_session($session);
 
 $response = $download_manager->download($document_id, $hash, $apptype);
-if (PEAR::isError($response))
-{
-	$msg = urlencode($response->getMessage());
-	print "status_code=4&msg=$msg:".$_GET["u"].":".$_GET["d"].":".$_GET["code"].":".$_GET["apptype"].":";
-	exit;
+if (PEAR::isError($response)) {
+    $msg = urlencode($response->getMessage());
+    print "status_code=4&msg=$msg:{$_GET['u']}:{$_GET['d']}:{$_GET['code']}:{$_GET['apptype']}:";
+    exit;
 }
 
 ?>

@@ -30,7 +30,7 @@ if (!function_exists('getDocTypes')) {
         	<!--  tr><td class="ul_heading">Heading</td></tr -->
         	<tr>
         		<td valign="middle" style="height:29px; vertical-align: middle;">
-        			<select class="ul_doctype" onChange="kt.app.upload.changeGlobalDoctype(this.options[this.selectedIndex].value);">
+        			<select class="ul_doctype" onchange="kt.app.upload.changeGlobalDoctype(this.options[this.selectedIndex].value);">
         				<?php
         				  $docTypes=getDocTypes();
         				  foreach ($docTypes as $docTypeId => $docType) :
