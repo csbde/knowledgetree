@@ -1,18 +1,20 @@
 <script src="/resources/js/jquery.form.js"></script>
 
 <div class="settings-list" id="modal">
-    <div class="settings-item user_preferences_section">
-
-        <div class="settings-content" id="user_preferences_section">
+    <div class="settings-item">
+        <a class="header">{i18n}User Details and Email Notifications{/i18n}</a>
+        <div class="settings-content" style="display:block">
             
             {$edit_form->render()}
             
+            <br clear="both" />
         </div>
     </div>
     
     {if $show_password}
-    <div class="settings-item user_password_section">
-        <div class="settings-content" id="user_password_section">
+    <div class="settings-item">
+        <a class="header">{i18n}Change Password{/i18n}</a>
+        <div class="settings-content" style="display:block">
             {$changePasswordForm}
             
             <br clear="both" />
@@ -21,8 +23,9 @@
     {/if}
     
     {if $adminPortletContent}
-    <div class="settings-item user_adminmode_section">
-        <div class="settings-content" id="user_adminmode_section">
+    <div class="settings-item">
+        <a class="header">{i18n}Enable Admin Mode{/i18n}</a>
+        <div class="settings-content" style="display:block">
             {$adminPortletContent}
             
             <br clear="both" />

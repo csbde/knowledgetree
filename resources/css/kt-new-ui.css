@@ -1704,14 +1704,32 @@ a.currentSettingsCategory {
 #preferencesWindow br {
 	line-height: 1;
 }
+
 #preferencesWindow div.field {
 	margin-bottom: 10px;
 }
 
-#updatePreferencesForm div.form_actions {
+#preferencesWindow #adminModeForm label {
+	display: none;
+}
+
+#preferencesWindow #adminModeForm span.switch {
+	clear: both;
+}
+
+#preferencesWindow #adminModeForm span.switch label {
+	display: inherit;
+}
+
+#preferencesWindow #updatePreferencesForm div.form_actions {
 	margin-top: 10px;
 }
 
-#updatePreferencesForm input {
-	max-width: 300px;
+#preferencesWindow #updatePreferencesForm input {
+	max-width: 280px;
+}
+
+#preferencesWindow a.header {
+	background: none;
+	padding: 5px;
 }

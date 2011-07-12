@@ -36,7 +36,7 @@ kt.lib.parseTemplate = function(str, obj) {
     var to = new Array();
     if (typeof(obj) == 'object') {
         for(var item in obj) {
-            fr[fr.length] = '[' + item + ']';
+            fr[fr.length] = '[' + kt.lib.str_replace('__dot__', '.', item) + ']';
             to[to.length] = obj[item] + '';
         }
 
@@ -63,6 +63,18 @@ kt.pages.browse = new function() {
         item.is_immutable = item.is_immutable ? '' : ' not_supported';
         item.is_checkedout = item.is_checkedout ? '' : ' not_supported';
         item.document_link = item.document_url;
+		
+		if (item.is_checkedout == ' not_supported') {
+			item.actions__dot__checkout = '';
+			item.actions__dot__cancel_checkout = ' not_supported';
+			item.actions__dot__checkin = ' not_supported';
+		} else {
+			item.actions__dot__checkout = ' not_supported';
+			item.actions__dot__cancel_checkout = '';
+			item.actions__dot__checkin = '';
+		}
+		
+		item.allowdoczohoedit = '';
 
         var newItem = jQuery(jQuery('.fragment.document')[0]).html();
         newItem = kt.lib.parseTemplate(newItem, item);
