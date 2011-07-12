@@ -75,8 +75,6 @@ class BackgroundPermissions {
             return ;
         }
         
-        sleep(10);
-        
         $success = KTPermissionUtil::updatePermissionLookupForObject($permissionObjectId, $this->folderId);
         if ($success === false) {
             $this->setTransaction('rollback');
