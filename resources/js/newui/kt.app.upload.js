@@ -193,17 +193,17 @@ kt.app.upload = new function() {
         nodeInTree = jQuery('ul#loadedpath li[folderid='+folderId+']');
 
         if (folderId == 1) {
-            pathToItem = ' / (Root Directory)';
+            pathToItem = '<em></em> (Root Directory)';
         } else {
             pathToItem = kt.app.upload.getNodeTxt(nodeInTree.html());
-
+			img = '</em><em>';
 			nodeInTree.parentsUntil('#loadedpath').each(function(i) {
 				if (jQuery(this).get(0).tagName == 'LI') {
 					// console.log('Parent folder id '+jQuery(this).attr('folderid'));
 					if (jQuery(this).attr('folderid') == 1) {
-						pathToItem = '/'+pathToItem;
+						pathToItem = img+pathToItem;
 					} else {
-						pathToItem = kt.app.upload.getNodeTxt(jQuery(this).html())+'/'+pathToItem;
+						pathToItem = kt.app.upload.getNodeTxt(jQuery(this).html())+img+pathToItem;
 					}
 				}
             });
@@ -588,10 +588,10 @@ kt.app.upload = new function() {
 				
 				
 				var path = kt.app.upload.getNodePath(jQuery('#currentPath').val());
-				var limit = 45;
+				var limit = 60;
 				if (path.length > limit) {
 					var index = path.length - limit;
-					path = '.../'+path.substr(index, limit);
+					path = '...'+path.substr(index, limit);
 				}
 
 				jQuery('#uploadpathstring').html(path);
@@ -632,9 +632,9 @@ kt.app.upload = new function() {
 				jQuery('#folderpathchooser').toggle();
 
 				if (jQuery('#folderpathchooser').css('display') == 'none') {
-					jQuery('#changepathlink').html('Change');
+					jQuery('#changepathlink').toggleClass('enabled');
 				} else {
-					jQuery('#changepathlink').html('Done');
+					jQuery('#changepathlink').toggleClass('enabled');
 					kt.app.upload.loadFolderPath(jQuery('#currentPath').val());
 				}
 			});

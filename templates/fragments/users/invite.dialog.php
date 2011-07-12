@@ -61,10 +61,10 @@ $aGroupsList = getGroupsList();
     </tr>
 
     <tr>
-        <td class="ul_actions" align="right" valign="top">
-            <a class="ul_actions_cancel_link" href="javascript: kt.app.inviteusers.closeWindow();">Cancel</a>
-            <input id="invite_actions_invite_btn" class="ul_actions_btns" type="button" value="Invite" onClick="kt.app.inviteusers.inviteUsers();" />
-        </td>
-    </tr>
-
 </table>
+<div class="action-footer">
+	<div class="form_actions">    
+    	<a class="ul_actions_cancel_link" href="javascript: kt.app.inviteusers.closeWindow();">Cancel</a>
+        <input id="invite_actions_invite_btn" class="ul_actions_btns" type="button" value="Invite" onClick="kt.app.inviteusers.inviteUsers();" />
+    </div>
+</div>
