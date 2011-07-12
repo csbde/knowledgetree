@@ -169,7 +169,7 @@ class KTFolderPermissionsAction extends KTFolderAction {
 
             $aInfo = array(
                 'group' => $group->getName(),
-                'name' => $c->getName(),
+                'name' => $savedSearch->getName(),
             );
 
             $aAssign = $oDynCondition->getAssignment();
