@@ -304,81 +304,87 @@ class KTFolderPermissionsAction extends KTFolderAction {
 
     function do_edit() {
         $this->oPage->setBreadcrumbDetails(_kt('Viewing Permissions'));
-        $iFolderId = $this->oFolder->getId();
+        
+        $folderId = $this->oFolder->getId();
         $permissionObject = KTPermissionObject::get($this->oFolder->getPermissionObjectId());
-        $aOptions = array('redirect_to' => array('main', 'fFolderId=' .  $iFolderId));
+        $options = array('redirect_to' => array('main', 'fFolderId=' .  $folderId));
 
         if (!KTBrowseUtil::inAdminMode($this->oUser, $this->oFolder)) {
-            $this->oValidator->userHasPermissionOnItem($this->oUser, $this->_sEditShowPermission, $this->oFolder, $aOptions);
+            $this->oValidator->userHasPermissionOnItem($this->oUser, $this->_sEditShowPermission, $this->oFolder, $options);
         }
 
         // copy permissions if they were inherited
-        $oInherited = KTPermissionUtil::findRootObjectForPermissionObject($permissionObject);
-        if ($oInherited->getId() !== $iFolderId) {
+        $inheritedFolderObject = KTPermissionUtil::findRootObjectForPermissionObject($permissionObject);
+        $inheritedFolderId = $inheritedFolderObject->getId();
+        if ($inheritedFolderId !== $folderId) {
             $override = KTUtil::arrayGet($_REQUEST, 'override', false);
             if (empty($override)) {
-                $this->errorRedirectToMain(_kt('This folder does not override its permissions'), sprintf('fFolderId=%d', $iFolderId));
+                $this->errorRedirectToMain(_kt('This folder does not define its own permissions'), sprintf('fFolderId=%d', $folderId));
             }
 
             $this->startTransaction();
 
             if ($this->_copyPermissions() === false) {
                 $this->rollbackTransaction();
-                return $this->errorRedirectToMain(_kt('Could not override folder permissions'), sprintf('fFolderId=%d', $iFolderId));
+                return $this->errorRedirectToMain(_kt('Could not override folder permissions'), sprintf('fFolderId=%d', $folderId));
             }
 
             $this->commitTransaction();
 
             $permissionObject = KTPermissionObject::get($this->oFolder->getPermissionObjectId());
         }
-
-        // permissions in JS format
-        $aPermissionsToJSON = array();
-        $aPermList = KTPermission::getList();
-        foreach($aPermList as $oP) {
-            $aPermissionsToJSON[] = array('id' => $oP->getId(), 'name' => $oP->getHumanName());
+        
+        if ($this->checkIfBackgrounded($folderId)) {
+            $this->redirectToMain('fFolderId=' . $folderId);
+            exit();
         }
 
-        $oJSON = new Services_JSON;
-        $sJSONPermissions = $oJSON->encode($aPermissionsToJSON);
+        // permissions in JS format
+        $permissionsToJSON = array();
+        $permissionsList = KTPermission::getList();
+        foreach($permissionsList as $permission) {
+            $permissionsToJSON[] = array('id' => $permission->getId(), 'name' => $permission->getHumanName());
+        }
+
+        $jsonService = new Services_JSON;
+        $jsonPermissions = $jsonService->encode($permissionsToJSON);
 
         // dynamic conditions
-        $aDynamicConditions = KTPermissionDynamicCondition::getByPermissionObject($permissionObject);
+        $dynamicConditions = KTPermissionDynamicCondition::getByPermissionObject($permissionObject);
 
         // templating
         $templating =& KTTemplating::getSingleton();
         $template = $templating->loadTemplate('ktcore/folder/permissions');
 
-        $bCanInherit = ($iFolderId != 1);
+        $canInherit = ($folderId != 1);
 
         global $default;
         if ($default->enableESignatures) {
-            $sUrl = KTPluginUtil::getPluginPath('electronic.signatures.plugin', true);
+            $url = KTPluginUtil::getPluginPath('electronic.signatures.plugin', true);
             $heading = _kt('You are attempting to modify permissions');
             $input['type'] = 'button';
-            $input['onclick'] = "javascript: showSignatureForm('{$sUrl}', '{$heading}', 'ktcore.transactions.permissions_change', 'folder', 'update_permissions_form', 'submit', {$iFolderId});";
+            $input['onclick'] = "javascript: showSignatureForm('{$url}', '{$heading}', 'ktcore.transactions.permissions_change', 'folder', 'update_permissions_form', 'submit', {$folderId});";
         }
         else {
             $input['type'] = 'submit';
             $input['onclick'] = '';
         }
 
-        $perms = $aPermList;
-        $docperms = KTPermission::getDocumentRelevantList();
+        $docPermissions = KTPermission::getDocumentRelevantList();
 
         $templateData = array(
-            'iFolderId' => $iFolderId,
+            'iFolderId' => $folderId,
             'roles' => Role::getList(),
             'groups' => Group::getList(),
             'conditions' => KTSavedSearch::getConditions(),
-            'dynamic_conditions' => $aDynamicConditions,
-            'context' => &$this,
+            'dynamic_conditions' => $dynamicConditions,
+            'context' => $this,
             'foldername' => $this->oFolder->getName(),
-            'jsonpermissions' => $sJSONPermissions,
+            'jsonpermissions' => $jsonPermissions,
             'edit' => true,
-            'permissions' => $perms,
-            'document_permissions' => $docperms,
-            'can_inherit' => $bCanInherit,
+            'permissions' => $permissionsList,
+            'document_permissions' => $docPermissions,
+            'can_inherit' => $canInherit,
             'input' => $input
         );
 
