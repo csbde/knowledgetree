@@ -509,8 +509,10 @@ class BrowseView {
 
         // Get the users permissions on the document
         $permissions = $item['permissions'];
+        
         $hasWrite = (strpos($permissions, 'W') === false) ? false : true;
         $hasDelete = (strpos($permissions, 'D') === false) ? false : true;
+        $hasSecurity = (strpos($permissions, 'S') === false) ? false : true;
 
         $item['filename'] = (strlen($item['filename']) > $fileNameCutoff) ? (substr($item['filename'], 0, $fileNameCutoff - 3) . "...") : $item['filename'];
 
@@ -554,8 +556,10 @@ class BrowseView {
 
         $item['actions.finalize_document'] = ($isCheckedOut) ? $ns : $item['actions.finalize_document'];
 
+        $item['actions.change_owner'] = $hasSecurity ? '' : $ns;
+        $item['actions.finalize_document'] = $hasSecurity ? '' : $ns;
+
         if (!$hasWrite) {
-            $item['actions.change_owner'] = $ns;
             $item['actions.share_document'] = $ns;
             if ($isCheckedOut || $item['actions.finalize_document']) {
                 $this->oUser = is_null($this->oUser) ? User::get($user_id) : $this->oUser;
@@ -564,10 +568,9 @@ class BrowseView {
                     $item['actions.share_document'] = '';
                 }
             }
-            $item['actions.finalize_document'] = $ns;
             $item['separatorE']=$ns;
         }
-
+        
         // Check if the thumbnail exists
         $dev_no_thumbs = (isset($_GET['noThumbs']) || $_SESSION['browse_no_thumbs']) ? true : false;
         $_SESSION['browse_no_thumbs'] = $dev_no_thumbs;
