@@ -573,34 +573,50 @@ class KTFolderPermissionsAction extends KTFolderAction {
     }
     
     function do_inheritPermissions() {
-        $aOptions = array('redirect_to' => array('main', 'fFolderId=' .  $this->oFolder->getId()));
+        $folderId = $this->oFolder->getId();
+        $options = array('redirect_to' => array('main', 'fFolderId=' . $folderId));
 
         if (!KTBrowseUtil::inAdminMode($this->oUser, $this->oFolder)) {
-            $this->oValidator->userHasPermissionOnItem($this->oUser, $this->_sEditShowPermission, $this->oFolder, $aOptions);
+            $this->oValidator->userHasPermissionOnItem($this->oUser, $this->_sEditShowPermission, $this->oFolder, $options);
+        }
+        
+        $parentFolderId = $this->oFolder->getParentID();
+        $parentFolder = Folder::get($parentFolderId);
+        
+        $permissionObject = KTPermissionObject::get($parentFolder->getPermissionObjectID());
+        $inheritedFolder = KTPermissionUtil::findRootObjectForPermissionObject($permissionObject);
+        $inheritedFolderId = $inheritedFolder->getId();
+        
+        // Ensure an update is not in progress on the parent folder
+        if ($this->checkIfBackgrounded($inheritedFolderId)) {
+            $inheritedFolderName = $inheritedFolder->getName();
+            $error = _kt("The permissions cannot be inherited. The folder, {$inheritedFolderName}, is currently being updated. Please try again later.");
+            $this->errorRedirectTo('edit', $error, 'fFolderId=' . $folderId);
+            exit();
         }
 
-        $oTransaction = KTFolderTransaction::createFromArray(array(
-            'folderid' => $this->oFolder->getId(),
+        $transaction = KTFolderTransaction::createFromArray(array(
+            'folderid' => $folderId,
             'comment' => _kt('Inherit permissions from parent'),
             'transactionNS' => 'ktcore.transactions.permissions_change',
             'userid' => $_SESSION['userID'],
             'ip' => Session::getClientIP(),
-            'parentid' => $this->oFolder->getParentID(),
+            'parentid' => $parentFolderId,
         ));
-        $aOptions = array(
+        $options = array(
             'defaultmessage' => _kt('Error updating permissions'),
-            'redirect_to' => array('edit', sprintf('fFolderId=%d', $this->oFolder->getId())),
+            'redirect_to' => array('edit', sprintf('fFolderId=%d', $folderId)),
         );
-        $this->oValidator->notErrorFalse($oTransaction, $aOptions);
+        $this->oValidator->notErrorFalse($transaction, $options);
 
         $res = KTPermissionUtil::inheritPermissionObject($this->oFolder);
         if ($res === false) {
             $this->rollbackTransaction();
             $this->errorRedirectTo('main', _kt('Error, permissions could not be updated'),
-                array('fFolderId' => $this->oFolder->getId()));
+                array('fFolderId' => $folderId));
         }
 
-        return $this->successRedirectTo('main', _kt('Permissions updated'), array('fFolderId' => $this->oFolder->getId()));
+        return $this->successRedirectTo('main', _kt('Permissions updated'), array('fFolderId' => $folderId));
     }
 
     function do_newDynamicPermission() {
