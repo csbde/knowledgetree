@@ -500,6 +500,12 @@ class BrowseView {
         } else {
             $item['mimeicon'] = '';
         }
+        
+        if ($item['hidecheckbox']) {
+            $item['hidecheckbox'] = ' class="not_supported"';
+        } else {
+            $item['hidecheckbox'] = '';
+        }
 
         // Get the users permissions on the document
         $permissions = $item['permissions'];
@@ -634,7 +640,7 @@ class BrowseView {
         }
 
         $tpl = $this->getDocumentTemplate(1, '<td width="1" class="checkbox">
-                            <input name="selection_d[]" type="checkbox" value="[id]" />
+                            <input name="selection_d[]" type="checkbox" value="[id]" [hidecheckbox] />
                         </td>', $share_separator, '<span class="shortcut[is_shortcut]">
                                     <span>This is a shortcut to the file.</span>
                                 </span>');
