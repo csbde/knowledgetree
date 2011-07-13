@@ -1570,14 +1570,14 @@ class KTDocumentUtil {
         $fileRenamed = false;
         $filename = $document->getFileName();
         $newfilename = KTDocumentUtil::getUniqueFilename($destFolder, $filename);
-        if (!strcmp($filename, $newfilename)) {
+        if (strcmp($filename, $newfilename) != 0) {
         	$document->setFileName($newfilename);
         	$fileRenamed = true;
         }
         
         $name = $document->getName();
         $newname = KTDocumentUtil::getUniqueDocumentName($destFolder, $name);
-        if (!strcmp($name, $newname)) {
+        if (strcmp($name, $newname) != 0) {
         	$document->setName($newname);
         	$fileRenamed = true;
         }

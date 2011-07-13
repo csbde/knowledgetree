@@ -1,4 +1,3 @@
-<h2>{i18n}Automatic Workflow Selection{/i18n}</h2>
 
 <form action="{$smarty.server.PHP_SELF}" method="POST">
     <fieldset>
@@ -8,9 +7,11 @@
     {foreach item=oWidget from=$trigger_fields}
         {$oWidget->render()}
     {/foreach}
+ <div class="action-footer">
     <div class="form_actions">
         <input type="submit" value="{i18n}Update{/i18n}" />
         <input type="hidden" name="action" value="assign_handler" />
     </div>
+ </div>
     </fieldset>
 </form>

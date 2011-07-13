@@ -5,16 +5,13 @@
     <input type="hidden" name="action" value="checkin" />
     <input type="hidden" name="fDocumentId" value="{$documentId}" />
 	<div class="field" style="margin-top: 5px;">
-		<label for="filename">Select a file to check-in<span class="required">(Required)</span></label>
+		<label for="filename">Select a file to check-in<span class="required"></span></label>
         <br />
 		<input class="modalField" id="checkinfilename" name="filename" size="30" type="file">
 	</div> 
 	<br>
-	<div class="field ">
-		<label>Version</label>
-        <br />
-        <table><tr>
-            <td>
+	<div class="field-group">
+		<label>Version Update</label>
                 <span class="field switch">
                     
                     
@@ -24,12 +21,8 @@
                     <label for="radio2" class="cb-disable"><span>Major</span></label>
                     
                 </span>
-            </td>
-        </tr></table>
 	</div>
-    
-    <br /><br />
-	
+    <br />
 	{if !$disableForceFilenameOption}
 		<!--<div class="field ">
 			<label for="forcefilename">Force Original Filename</label>
@@ -38,19 +31,12 @@
         </div>-->
         <input type="hidden" id="forcefilenameVal"  name="forcefilenameVal" value="{$forceFilename}">
      {/if}	
-
-	<div class="modal-actions">
-		<div class="cancel">
-				<a href="#" onclick="vActions.closeDisplay('checkin'); return false;" class="form_cancel">Cancel</a>
+	<div class="action-footer" style="margin: 20px -15px -20px -20px;">
+		<div class="form_actions">
+			<a href="#" onclick="vActions.closeDisplay('checkin'); return false;" class="form_cancel">Cancel</a>
+			<input type="submit" name="form_submit" value="{i18n}Check-in{/i18n}" />
 		</div>
-		
-		<div class="form_actions" id="modal">
-		<input type="submit" name="form_submit" value="{i18n}Check-in{/i18n}" />
-		</div>
-	</td>
 	</div>
 	
-	
-
 </form>
 

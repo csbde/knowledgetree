@@ -27,6 +27,18 @@ jQuery(document).ready(function() {
     // Animation complete.
   });;
 });
+
+/**
+ * Tooltips
+ */
+jQuery(document).ready(function() { 
+	jQuery(".help").tooltip({
+	});
+	
+});
+ 
+
+
 /**
  * Documents View Page
  */

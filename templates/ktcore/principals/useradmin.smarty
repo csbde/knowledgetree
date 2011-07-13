@@ -140,7 +140,7 @@
 		</table>
 	</div>
 
-	<div class="widgetRow">
+	<div class="widgetRow table-footer">
 		<div class="form_actions">
 			<input type="hidden" name="action" value="change_enabled" />
 			<input type="hidden" name="update_value" id="update_value" value="" />
