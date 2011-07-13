@@ -500,11 +500,19 @@ class BrowseView {
         } else {
             $item['mimeicon'] = '';
         }
+        
+        if ($item['hidecheckbox']) {
+            $item['hidecheckbox'] = ' class="not_supported"';
+        } else {
+            $item['hidecheckbox'] = '';
+        }
 
         // Get the users permissions on the document
         $permissions = $item['permissions'];
+        
         $hasWrite = (strpos($permissions, 'W') === false) ? false : true;
         $hasDelete = (strpos($permissions, 'D') === false) ? false : true;
+        $hasSecurity = (strpos($permissions, 'S') === false) ? false : true;
 
         $item['filename'] = (strlen($item['filename']) > $fileNameCutoff) ? (substr($item['filename'], 0, $fileNameCutoff - 3) . "...") : $item['filename'];
 
@@ -548,8 +556,10 @@ class BrowseView {
 
         $item['actions.finalize_document'] = ($isCheckedOut) ? $ns : $item['actions.finalize_document'];
 
+        $item['actions.change_owner'] = $hasSecurity ? '' : $ns;
+        $item['actions.finalize_document'] = $hasSecurity ? '' : $ns;
+
         if (!$hasWrite) {
-            $item['actions.change_owner'] = $ns;
             $item['actions.share_document'] = $ns;
             if ($isCheckedOut || $item['actions.finalize_document']) {
                 $this->oUser = is_null($this->oUser) ? User::get($user_id) : $this->oUser;
@@ -558,10 +568,9 @@ class BrowseView {
                     $item['actions.share_document'] = '';
                 }
             }
-            $item['actions.finalize_document'] = $ns;
             $item['separatorE']=$ns;
         }
-
+        
         // Check if the thumbnail exists
         $dev_no_thumbs = (isset($_GET['noThumbs']) || $_SESSION['browse_no_thumbs']) ? true : false;
         $_SESSION['browse_no_thumbs'] = $dev_no_thumbs;
@@ -604,6 +613,8 @@ class BrowseView {
             if (Zoho::resolve_type($oDocument)) {
                 if ($item['actions.checkout'] != $ns) {
                     $item['allowdoczohoedit'] = '<li class="action_zoho_document"><a href="javascript:;" onclick="zohoEdit(\'' . $item['id'] . '\')">Edit Document Online</a></li>';
+                } else {
+                    $item['allowdoczohoedit'] = '<li class="action_zoho_document not_supported"><a href="javascript:;" onclick="zohoEdit(\'' . $item['id'] . '\')">Edit Document Online</a></li>';
                 }
             }
         }
@@ -632,7 +643,7 @@ class BrowseView {
         }
 
         $tpl = $this->getDocumentTemplate(1, '<td width="1" class="checkbox">
-                            <input name="selection_d[]" type="checkbox" value="[id]" />
+                            <input name="selection_d[]" type="checkbox" value="[id]" [hidecheckbox] />
                         </td>', $share_separator, '<span class="shortcut[is_shortcut]">
                                     <span>This is a shortcut to the file.</span>
                                 </span>');

@@ -22,7 +22,6 @@
 			<a class="header" href="" onclick="jQuery('#{$categoryItem.name}').slideToggle('fast', {literal}function(){ jQuery(this).parent().toggleClass('expanded');});{/literal} return false;">{$categoryItem.title}</a>
 			<div id="{$categoryItem.name}" class="settings-content" style="display:{if $categoryItem.autoDisplay}block{else}none{/if};">
 			{$context->loadSection($categoryItem)}
-			<div style="clear:both">&nbsp;</div>
 			</div>
 
 		</div>

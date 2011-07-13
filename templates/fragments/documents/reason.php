@@ -26,19 +26,19 @@ if($default->useEmailLogin) {
 		</tr>
 		<tr id="user" style='display:none;'>
 			<td> 
-				<label for="username"><?php echo $username; ?></label>  <br />
+				<label for="username"><?php echo $username; ?><span class="required" title="<?php echo _kt('Required'); ?>">&nbsp;</span></label>  <br />
 				<input name="sign-username" size="30"> 
 			</td>
 		</tr>
 		<tr id="pass" style='display:none;'>
 			<td> 
-				<label for="password">Password</label> <br />
+				<label for="password">Password<span class="required" title="<?php echo _kt('Required'); ?>">&nbsp;</span></label> <br />
 				<input type="password" name="sign-password" size="30"> 
 			</td>
 		</tr>
 		<tr id="reason">
 			<td>
-				<label for="reason" name="reason-label" id="reason-label">Note</label> <br />
+				<label for="reason" name="reason-label" id="reason-label">Note<span class="required" title="<?php echo _kt('Required'); ?>">&nbsp;</span></label> <br />
 				<textarea cols="50" rows="5" name="reason" id="reason-field"></textarea>
 		    </td>
 		</tr>
