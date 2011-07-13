@@ -338,6 +338,8 @@ kt.app.copy = new function() {
 				$msg = response.msg;
     			jQuery("#action-error").html($msg);
 	        	jQuery('#action-error').addClass('alert').addClass('success');
+				jQuery('#action-modal').hide();
+				jQuery('div.action-footer div.form_actions').hide();
 	        	self.redirect(response.url);
         }
 
