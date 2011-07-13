@@ -72,6 +72,7 @@ kt.app.sharewithusers = new function() {
             cls             : 'ul_win',
             shadow          : true,
             modal           : true,
+			draggable   	: false,
             title           : 'Content Shared',
             html            : kt.api.execFragment('users/invite.shared.confirm.dialog')
         });
@@ -109,6 +110,7 @@ kt.app.sharewithusers = new function() {
             cls             : 'ul_win',
             shadow          : true,
             modal           : true,
+			draggable   	: false,
             //title           : '<span class="sharingtree">&nbsp;</span> Sharing',
             title           : 'Sharing',
             html            : kt.api.getFragment('users/invite.shared.dialog')
