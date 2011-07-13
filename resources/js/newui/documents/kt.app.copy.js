@@ -151,6 +151,7 @@ kt.app.copy = new function() {
             cls             : 'ul_win',
             shadow          : true,
             modal           : true,
+			draggable   	: false,
             title           : title,
             html            : kt.api.execFragment('documents/actions/tree.dialog')
         });
@@ -380,6 +381,7 @@ kt.app.copy = new function() {
             cls             : 'ul_win',
             shadow          : true,
             modal           : true,
+			draggable   	: false,
             title           : title,
             html            : kt.api.execFragment('documents/actions/confirm.dialog')
         });

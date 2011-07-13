@@ -297,8 +297,9 @@ kt.app.document_actions = new function() {
 	        height      : height,
 	        closeAction :'destroy',
 	        y           : 75,
-	        shadow: false,
-	        modal: true
+	        shadow		: false,
+	        modal		: true,
+			draggable   : false
 	    });
 
 	    this.win.show();
@@ -387,6 +388,7 @@ kt.app.document_actions = new function() {
 			y           : 75,
 			shadow      : false,
 			modal       : true,
+			draggable   : false,
 			html        : '<div id="changeownerhtml"></div>'
 		});
 

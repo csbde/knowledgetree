@@ -36,8 +36,9 @@ var showDownloadNotification = function(sUrl, head, action, code, request_type, 
         closable    : false,
         closeAction :'destroy',
         y           : 150,
-        shadow: false,
-        modal: true
+        shadow		: false,
+        modal		: true,
+		draggable   : false
     });
     this.win.show();
 
