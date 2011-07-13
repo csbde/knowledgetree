@@ -2034,23 +2034,24 @@ class KTAPI_Document extends KTAPI_FolderItem
 	function get_permission_string($document)
 	{
 		$perms = 'R';
-		if (Permission::userHasDocumentWritePermission($document))
-		{
+		if (Permission::userHasDocumentWritePermission($document)) {
 			$perms .= 'W';
 
 			$user_id = $_SESSION['userID'];
 			$co_user_id = $document->getCheckedOutUserID();
 
-			if (!empty($co_user_id) && ($user_id == $co_user_id))
-			{
+			if (!empty($co_user_id) && ($user_id == $co_user_id)) {
 				$perms .= 'E';
 			}
 		}
 
 		// delete document is a separate permission to the write permission
-		if(Permission::userHasDeleteDocumentPermission($document))
-		{
+		if (Permission::userHasDeleteDocumentPermission($document)) {
 		    $perms .= 'D';
+		}
+		
+		if (Permission::userHasSecurityFolderPermission($document)) {
+		    $perms .= 'S';
 		}
 		return $perms;
 	}
