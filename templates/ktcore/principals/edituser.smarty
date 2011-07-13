@@ -1,4 +1,9 @@
-<h2>{i18n}Edit User Details{/i18n}: {$edit_user->getName()}</h2>
+{if ($edit_user->getName() == '')}
+	<h2>{i18n}Edit User Details{/i18n}: {$edit_user->getUsername()}</h2>
+{else}
+	<h2>{i18n}Edit User Details{/i18n}: {$edit_user->getName()}</h2>
+{/if}
+
 
 <div class="widgetRow">
 {assign var=provider_stuff value=$provider->showUserSource($edit_user, $source)}

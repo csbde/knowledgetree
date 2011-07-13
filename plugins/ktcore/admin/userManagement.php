@@ -439,7 +439,7 @@ class KTUserAdminDispatcher extends KTAdminDispatcher {
         $oldSearch = KTUtil::arrayGet($_REQUEST, 'old_search');
 
         $this->aBreadcrumbs[] = array('url' => $_SERVER['PHP_SELF'], 'name' => _kt('User Management'));
-        $this->oPage->setBreadcrumbDetails($user->getName() .': ' . _kt('edit groups'));
+        $this->oPage->setBreadcrumbDetails(_kt('edit groups'));
         $this->oPage->setTitle(sprintf(_kt("Edit %s's groups"), $user->getName()));
 
         // generate a list of groups this user is authorised to assign.
@@ -454,7 +454,7 @@ class KTUserAdminDispatcher extends KTAdminDispatcher {
         $members = KTJSONLookupWidget::formatMemberGroups(GroupUtil::listGroupsForUser($user));
         $options = array('selection_default' => 'Select groups', 'optgroups' => false);
         $label['header'] = 'Groups';
-        $label['text'] = 'Select the groups which this user should belong to from the drop down list. Remove groups by clicking the X.  Once you have added all the groups that you require, press <strong>save changes</strong>.';
+        $label['text'] = 'Select the groups which this user should belong to from the drop down list. Remove groups by clicking the X.  Once you have added all the groups that you require, press save changes.';
         $jsonWidget = KTJSONLookupWidget::getGroupSelectorWidget(
                                                                 $label,
                                                                 'group',
