@@ -1,5 +1,4 @@
-
-<p class="descriptiveText">{i18n}Workflow actions may be assigned to certain roles within the DMS. User groups are allocated to roles on a per-directory basis and are inherited from the root folder of the DMS. Roles may for example include "Document Creator", "Document Reviewer", "Document Publisher".{/i18n}</p>
+<a href="#" class="help" title="{i18n}Workflow actions may be assigned to certain roles within the DMS. User groups are allocated to roles on a per-directory basis and are inherited from the root folder of the DMS. Roles may for example include 'Document Creator', 'Document Reviewer', 'Document Publisher'.{/i18n}"></a>
 
 {if ($for_edit === false)}
 
@@ -65,3 +64,5 @@
      {/if}
 </tbody>
 </table>
+
+
