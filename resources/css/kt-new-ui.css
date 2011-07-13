@@ -1108,14 +1108,14 @@ div#uploadProgress .progress {
 	overflow: hidden;
 }
 .upload-breadcrumb em {
-	background: url(../graphics/newui/bc_separator.png) no-repeat 100% 0;
+	background: url(../graphics/newui/bc_separator.png) no-repeat 0 0;
 }
 #uploadpathstring span,
 .upload-breadcrumb em {
 	display: inline-block;
 	float: left;
-	margin-right: 5px;
-	padding-right: 10px;
+	margin-left: 2px;
+	padding-left: 13px;
 }
 #changepathlink {
 	display:inline-block; 
@@ -1307,6 +1307,13 @@ label span.required
 	padding: 15px;
 	background: white;
 	overflow: hidden;
+}
+.settings-section .help {
+	background: url(../graphics/newui/icons/help.png) no-repeat center center;
+	display: block;
+	float: right;
+	width: 25px;
+	height: 25px;
 }
 .settings-section #content fieldset legend {
 	padding: 0px;

@@ -81,7 +81,7 @@ class KTGroupAdminDispatcher extends KTAdminDispatcher {
         }
 
         $searchFields = array();
-        $searchFields[] =  new KTStringWidget(_kt(''), _kt("Enter part of the group's name: <strong>ad</strong> will match <strong>administrators</strong>."), 'search_name', $name, $this->oPage, false);
+        $searchFields[] =  new KTStringWidget(_kt(''), _kt("Enter part of the group's name: ad will match administrators."), 'search_name', $name, $this->oPage, false);
 
         if (!empty($name)) {
             $searchResults =& Group::getList('WHERE name LIKE \'%' . DBUtil::escapeSimple($name) . '%\' AND id > 0');
@@ -119,7 +119,7 @@ class KTGroupAdminDispatcher extends KTAdminDispatcher {
         $this->oPage->setTitle(sprintf(_kt('Edit Group (%s)'), $group->getName()));
 
         $editFields = array();
-        $editFields[] =  new KTStringWidget(_kt('Group Name'), _kt('A short name for the group.  e.g. <strong>administrators</strong>.'), 'group_name', $group->getName(), $this->oPage, true);
+        $editFields[] =  new KTStringWidget(_kt('Group Name'), _kt('A short name for the group.  e.g. administrators.'), 'group_name', $group->getName(), $this->oPage, true);
         $editFields[] =  new KTBooleanWidget(_kt('System Administration Privileges'), _kt('Should all the members of this group be given system administration privileges?'), 'is_sysadmin', $group->getSysAdmin(), $this->oPage, false);
         $editFields[] =  new KTBooleanWidget(_kt('Unit Administration Privileges'), _kt('Should all the members of this group be given unit administration privileges?'), 'is_unitadmin', $group->getUnitAdmin(), $this->oPage, false);
 
@@ -243,7 +243,7 @@ class KTGroupAdminDispatcher extends KTAdminDispatcher {
         // Set up and instantiate user search widget.
         $members = KTJSONLookupWidget::formatMemberUsers($group->getMembers());
         $label['header'] = 'Users';
-        $label['text'] = 'Select the users which should be part of this group. Once you have added all the users that you require, click <strong>save changes</strong>.';
+        $label['text'] = 'Select the users which should be part of this group. Once you have added all the users that you require, click save changes.';
         $jsonWidget = KTJSONLookupWidget::getUserSearchWidget($label, 'group', 'users', $members);
 
         return $this->renderTemplateWithWidget($group, $jsonWidget, 'ktcore/principals/groups_manageusers');
@@ -362,7 +362,7 @@ class KTGroupAdminDispatcher extends KTAdminDispatcher {
         $members = KTJSONLookupWidget::formatMemberGroups($group->getMemberGroups());
         $options = array('selection_default' => 'Select groups', 'optgroups' => false);
         $label['header'] = 'Groups';
-        $label['text'] = 'Select the sub-groups which should be part of this group. Once you have added all the sub-groups that you require, click <strong>save changes</strong>.';
+        $label['text'] = 'Select the sub-groups which should be part of this group. Once you have added all the sub-groups that you require, click save changes.';
         $jsonWidget = KTJSONLookupWidget::getGroupSelectorWidget(
                                                                 $label,
                                                                 'group',
@@ -471,7 +471,7 @@ class KTGroupAdminDispatcher extends KTAdminDispatcher {
                 array(
                     'name' => 'group_name',
                     'label' => _kt('Group Name'),
-                    'description' => _kt('A short name for the group.  e.g. <strong>administrators</strong>.'),
+                    'description' => _kt('A short name for the group.  e.g. administrators.'),
                     'value' => null,
                     'required' => true,
                 )
@@ -480,7 +480,7 @@ class KTGroupAdminDispatcher extends KTAdminDispatcher {
                 array(
                     'name' => 'sysadmin',
                     'label' => _kt('System Administration Privileges'),
-                    'description' => _kt('Should all the members of this group be given <strong>system</strong> administration privileges?'),
+                    'description' => _kt('Should all the members of this group be given system administration privileges?'),
                     'value' => null,
                 )
             ),
@@ -505,7 +505,7 @@ class KTGroupAdminDispatcher extends KTAdminDispatcher {
                     array(
                         'name' => 'unitadmin',
                         'label' => _kt('Unit Administration Privileges'),
-                        'description' => _kt('Should all the members of this group be given <strong>unit</strong> administration privileges?'),
+                        'description' => _kt('Should all the members of this group be given unit administration privileges?'),
                         'important_description' => _kt('Note that its not possible to set a group without a unit as having unit administration privileges.'),
                         'value' => null,
                     )

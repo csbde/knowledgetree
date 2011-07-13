@@ -710,9 +710,7 @@ a.main_nav_item {
     line-height: 1.4em;
     margin-bottom: 0.5em;
 }
-#content .settings-content .descriptiveText {
-	display:none;
-}
+
 #content .field label .required
 {
     margin-left: 0.5em;
@@ -2603,3 +2601,26 @@ div.extjs_form_actions {
 .advanced-search-form .name { width:100px; }
 .advanced-search-form .widget_values { width:100px; }
 .advanced-search-form .the_button { width:100px; }
+
+/*Tooltips*/
+
+.tooltip{
+    background: white;
+    font-size: 11px;
+    height: auto;
+    max-width: 210px;
+    padding: 5px 10px 5px 10px;
+    color: #666;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    -moz-border-radius: 3px;
+    -webkit-border-radius: 3px;
+    box-shadow: 0px 1px 0px #888;
+    -moz-box-shadow: 0px 0px 1px #888;
+    -webkit-box-shadow: 0px 0px 1px #888;
+    margin: -10px 0px 0px 10px;
+}
+.tooltip span {
+    background: url(/resources/graphics/newui/popover_tip_down.png) no-repeat bottom center;
+    padding-bottom: 35px;
+}
