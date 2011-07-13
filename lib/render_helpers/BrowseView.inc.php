@@ -556,8 +556,8 @@ class BrowseView {
 
         $item['actions.finalize_document'] = ($isCheckedOut) ? $ns : $item['actions.finalize_document'];
 
-        $item['actions.change_owner'] = $hasSecurity ? '' : $ns;
-        $item['actions.finalize_document'] = $hasSecurity ? '' : $ns;
+        $item['actions.change_owner'] = $hasSecurity ? $item['actions.change_owner'] : $ns;
+        $item['actions.finalize_document'] = $hasSecurity ? $item['actions.finalize_document'] : $ns;
 
         if (!$hasWrite) {
             $item['actions.share_document'] = $ns;
@@ -623,6 +623,9 @@ class BrowseView {
         // Sanitize document title
         $item['title'] = sanitizeForHTML($item['title']);
         $item['filesize'] = KTUtil::filesizeToString($item['filesize'], 'KB');
+
+        $item['title_sanitized'] = str_replace('\'', '\\\'', $item['title']);
+        $item['title_sanitized'] = str_replace('"', '&quot;', $item['title_sanitized']);
 
         // Check if the document is a shortcut
         if (!is_null($item['linked_document_id'])) {
@@ -750,7 +753,7 @@ class BrowseView {
 
                                         <li class="action_copy [actions.copy]"><a href="#" onclick="javascript:{kt.app.copy.doTreeAction(\'copy\', [id]);}">Copy</a></li>
                                         <li class="action_move [actions.move]"><a href="#" onclick="javascript:{kt.app.copy.doTreeAction(\'move\', [id]);}">Move</a></li>
-                                        <li class="action_delete [actions.delete]"><a href="#" onclick="javascript:{kt.app.copy.doAction(\'delete\', [id]);}">Delete</a></li>
+                                        <li class="action_delete [actions.delete]"><a href="#" onclick="javascript:{kt.app.copy.doAction(\'delete\', [id], \'[title_sanitized]\');}">Delete</a></li>
 
                                         <li class="separator separatorB[separatorB]"></li>
 
@@ -767,7 +770,7 @@ class BrowseView {
                                         <li class="separator separatorD[separatorD]"></li>
 
                                         <li class="action_change_owner [actions.change_owner]"><a href="javascript:;" onclick="kt.app.document_actions.changeOwner(\'[id]\');">Change Owner</a></li>
-                                        <li class="action_finalize_document [actions.finalize_document]"><a href="#" onclick="javascript:{kt.app.copy.doAction(\'immutable\', [id]);}">Finalize Document</a></li>
+                                        <li class="action_finalize_document [actions.finalize_document]"><a href="#" onclick="javascript:{kt.app.copy.doAction(\'immutable\', [id], \'[title_sanitized]\');}">Finalize Document</a></li>
                                     </ul>
                                 </li>
                             </ul>';

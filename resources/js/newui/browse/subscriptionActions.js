@@ -61,8 +61,9 @@ subscriptionActions.prototype.displayAction = function() {
         height      : height,
         closeAction :'destroy',
         y           : 75,
-        shadow: false,
-        modal: true
+        shadow		: false,
+        modal		: true,
+		draggable   : false
     });
 
     this.win.show();
