@@ -12,6 +12,6 @@
 <div class="form_actions">
 <input type="{$input.type}" name="btn_submit" value="{i18n}Rename{/i18n}" onclick="{$input.onclick}" />
 
-<input type="submit" name="kt_cancel[{$link}]" value="{i18n}Cancel{/i18n}" />
+<a href="{$parentLink}">{i18n}Cancel{/i18n}</a>
 </div>
 </form>
