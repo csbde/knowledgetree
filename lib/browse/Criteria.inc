@@ -205,9 +205,9 @@ class BrowseCriterion {
 	    if (array_key_exists($k, $aPreValue)) {
 		$preval = $aPreValue[$k];
 	    }
-            return $this->getNotWidget($aPreValue) . "<input type=\"text\" size=\"50\" name=\"" . $this->getWidgetBase() . "\" value=\"" . $preval . "\"/>";
+            return $this->getNotWidget($aPreValue) . "<input class=\"dyncond_text\" type=\"text\" size=\"50\" name=\"" . $this->getWidgetBase() . "\" value=\"" . $preval . "\"/>";
         } else {
-            return $this->getNotWidget($aPreValue) . "<input type=\"text\" size=\"50\" name=\"" . $this->getWidgetBase() . "\" />";
+            return $this->getNotWidget($aPreValue) . "<input class=\"dyncond_text\" type=\"text\" size=\"50\" name=\"" . $this->getWidgetBase() . "\" />";
         }
     }
 
@@ -842,30 +842,30 @@ class SizeCriterion extends BrowseCriterion {
     }
 
     function parameterDisplay($aData) {
-	$sBase = $this->getWidgetBase();
-	return sprintf("%s %s %s %s", $this->baseParameterDisplay(), $this->aCmps[$aData[$sBase.'_not']], htmlentities($aData[$sBase.'_num'],ENT_QUOTES,'UTF-8'), $this->aTypes[$aData[$sBase.'_type']]);
+        $sBase = $this->getWidgetBase();
+        return sprintf("%s %s %s %s", $this->baseParameterDisplay(), $this->aCmps[$aData[$sBase.'_not']], htmlentities($aData[$sBase.'_num'],ENT_QUOTES,'UTF-8'), $this->aTypes[$aData[$sBase.'_type']]);
     }
 
     function searchWidget ($aRequest, $aPreValue = null) {
-	$sBase = $this->getWidgetBase();
-	$sCmpWidget = $sBase . '_not';
+        $sBase = $this->getWidgetBase();
+        $sCmpWidget = $sBase . '_not';
         $sNumWidget = $sBase . '_num';
         $sTypeWidget = $sBase . '_type';
 
-	// build gt/lt/eq/neq widget
-	$sCmpSelect = '<select name="'.$sCmpWidget.'">';
-	$sCmpSelect .= KTUtil::buildSelectOptions($this->aCmps, KTUtil::arrayGet($aPreValue, $sCmpWidget, 'LT'));
-	$sCmpSelect .= '</select>';
-
-	// build number
-	$sNumInput = sprintf('<input type="text" name="%s" value="%s"/>', $sNumWidget, KTUtil::arrayGet($aPreValue, $sNumWidget, ''));
-
-	// build type selection widget
-	$sTypeSelect = '<select name="'.$sTypeWidget.'">';
-	$sTypeSelect .= KTUtil::buildSelectOptions($this->aTypes, KTUtil::arrayGet($aPreValue, $sTypeWidget, 'M'));
-	$sTypeWidget .= '</select>';
-
-	$sToRender = sprintf("%s %s %s", $sCmpSelect, $sNumInput, $sTypeSelect);
+        // build gt/lt/eq/neq widget
+        $sCmpSelect = '<select name="'.$sCmpWidget.'">';
+        $sCmpSelect .= KTUtil::buildSelectOptions($this->aCmps, KTUtil::arrayGet($aPreValue, $sCmpWidget, 'LT'));
+        $sCmpSelect .= '</select>';
+    
+        // build number
+        $sNumInput = sprintf('<input class="dyncond_filesize" type="text" name="%s" value="%s"/>', $sNumWidget, KTUtil::arrayGet($aPreValue, $sNumWidget, ''));
+    
+        // build type selection widget
+        $sTypeSelect = '<select name="'.$sTypeWidget.'">';
+        $sTypeSelect .= KTUtil::buildSelectOptions($this->aTypes, KTUtil::arrayGet($aPreValue, $sTypeWidget, 'M'));
+        $sTypeWidget .= '</select>';
+    
+        $sToRender = sprintf("%s %s %s", $sCmpSelect, $sNumInput, $sTypeSelect);
 
         return $sToRender;
     }
@@ -953,7 +953,7 @@ class WorkflowStateCriterion extends BrowseCriterion {
             $preval = $aPreValue[$k];
         }
         $sRet = $this->getNotWidget($aPreValue);
-        $sRet .= "<select size=\"1\" name=\"" . $this->getWidgetBase() . "\">\n";
+        $sRet .= "<select class=\"dyncond_dropdown\" size=\"1\" name=\"" . $this->getWidgetBase() . "\">\n";
         $aStates = KTWorkflowState::getList();
         $sRet .= "<option value=\"-1\">None</option>\n";
         foreach ($aStates as $oState) {
@@ -1030,30 +1030,30 @@ class DateCreatedDeltaCriterion extends DateCreatedCriterion {
     }
 
     function parameterDisplay($aData) {
-	$sNum = KTUtil::arrayGet($aData, $this->getWidgetBase() . '_num');
-	$sType = KTUtil::arrayGet($aData, $this->getWidgetBase() . '_type');
-	return sprintf('%s %s %s', $this->baseParameterDisplay(), $sNum, $this->aTypes[$sType]);
+		$sNum = KTUtil::arrayGet($aData, $this->getWidgetBase() . '_num');
+		$sType = KTUtil::arrayGet($aData, $this->getWidgetBase() . '_type');
+		return sprintf('%s %s %s', $this->baseParameterDisplay(), $sNum, $this->aTypes[$sType]);
     }
 
     function searchWidget ($aRequest, $aPreValue = null) {
         $sNumWidget = $this->getWidgetBase() . '_num';
         $sTypeWidget = $this->getWidgetBase() . '_type';
-
-	// build type selection widget
-	$sSelect = '<select name="'.$sTypeWidget.'">';
-	foreach($this->aTypes as $k=>$v) {
-	    $sSelect .= '<option value="'.$k.'"';
-	    $t = KTUtil::arrayGet($aPreValue, $sTypeWidget, 'DAY');
-	    if ($k==$t) {
-                $sSelect .= ' selected="selected"';
-            }
-	    $sSelect .= '>'.$v.'</option>';
-	}
-	$sSelect .= '</select>';
+    
+        // build type selection widget
+        $sSelect = '<select name="'.$sTypeWidget.'">';
+        foreach($this->aTypes as $k=>$v) {
+            $sSelect .= '<option value="'.$k.'"';
+            $t = KTUtil::arrayGet($aPreValue, $sTypeWidget, 'DAY');
+            if ($k==$t) {
+                    $sSelect .= ' selected="selected"';
+                }
+            $sSelect .= '>'.$v.'</option>';
+        }
+        $sSelect .= '</select>';
 
         $sToRender = $this->getNotWidget($aPreValue);
 
-	$sToRender .= '<input name="'.$sNumWidget.'" value="'.$aPreValue[$sNumWidget].'"/>'.$sSelect._kt(' ago');
+		$sToRender .= '<input class="dyncond_date" name="'.$sNumWidget.'" value="'.$aPreValue[$sNumWidget].'"/>'.$sSelect._kt(' ago');
 
         return $sToRender;
     }

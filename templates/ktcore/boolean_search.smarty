@@ -79,7 +79,7 @@ legend { border: 1px dotted #999;}
                 <th>&nbsp;</th>
                 </tr>
                 <tr>
-                    <td><select name="querytype">
+                    <td><select name="querytype" class="dyncond_dropdown">
                          {foreach item=oCriteria from=$aCriteria} {if ($oCriteria->bVisible == true)}
                              <option value="{$oCriteria->getNamespace()}">{$oCriteria->headerDisplay()}</option>
 							 {/if}
