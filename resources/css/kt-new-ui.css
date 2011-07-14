@@ -1798,3 +1798,45 @@ a.currentSettingsCategory {
 #tree_edit p.descriptiveText {
 	clear: both;
 }
+
+
+/**
+ * CSS for Dynamic Conditions
+ */
+
+
+select.dyncond_dropdown {
+	width: 200px;
+}
+
+input.dyncond_text {
+	width: 90%
+}
+
+input.dyncond_date {
+	width: 100px;
+	margin-right: 5px;
+}
+
+input.dyncond_filesize {
+	width: 150px;
+}
+
+div.criteria_label {
+	display: none;
+}
+
+tr.dyncond_selector td {
+	padding-top: 10px;
+}
+
+#conditions fieldset {
+	border: 1px dotted #999999 !important;
+	padding: 5px !important;
+	margin-bottom: 20px;
+}
+
+#conditions legend {
+	padding-left: 10px !important;
+	padding-right: 10px !important;
+}
