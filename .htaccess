@@ -124,6 +124,8 @@ RewriteEngine on
 RewriteEngine On
 RewriteBase /
 # - #
+RewriteCond %{REQUEST_FILENAME} google.php
+RewriteRule ^(google\.)php$ /plugins/ktlive/google/login/KTSSOAuthentication.php [L]
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteRule . /redirect.php [L]
