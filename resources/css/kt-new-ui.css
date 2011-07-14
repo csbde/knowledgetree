@@ -1756,3 +1756,11 @@ a.currentSettingsCategory {
 #updatePreferencesForm input {
 	max-width: 300px;
 }
+
+
+/**
+ * Small Adjustment for Folder Structure Templates
+ */
+#tree_edit p.descriptiveText {
+	clear: both;
+}
