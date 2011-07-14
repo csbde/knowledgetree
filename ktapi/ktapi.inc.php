@@ -4114,91 +4114,87 @@ class KTAPI {
     /**
      * Returns the metadata on a document.
      *
-	 * @author KnowledgeTree Team
-	 * @access public
+     * @author KnowledgeTree Team
+     * @access public
      * @param int $document_id
      * @return array
      */
-	public function get_document_metadata($document_id)
-	{
-    	$document = &$this->get_document_by_id($document_id);
-		if (PEAR::isError($document))
-    	{
-    		$response['status_code'] = 1;
-    		$response['message'] = $document->getMessage();
-			return $response;
-    	}
+    public function get_document_metadata($document_id)
+    {
+        $document = &$this->get_document_by_id($document_id);
+        if (PEAR::isError($document)) {
+            $response['status_code'] = 1;
+            $response['message'] = $document->getMessage();
+            return $response;
+        }
 
-    	$metadata = $document->get_metadata();
+        $metadata = $document->get_metadata();
 
-		$num_metadata=count($metadata);
-		for($i=0;$i<$num_metadata;$i++)
-		{
-			$num_fields = count($metadata[$i]['fields']);
-			for($j=0;$j<$num_fields;$j++)
-			{
-				$selection=$metadata[$i]['fields'][$j]['selection'];
-				$new = array();
+        $num_metadata = count($metadata);
+        for($i = 0; $i < $num_metadata; $i++) {
+            $num_fields = count($metadata[$i]['fields']);
+            for($j = 0; $j < $num_fields; $j++) {
+                $selection = $metadata[$i]['fields'][$j]['selection'];
+                $new = array();
 
-				foreach ($selection as $item)
-				{
-					$new[] = array(
-						'id'=>null,
-						'name' => $item,
-						'value' => $item,
-						'parent_id'=>null
-					);
-				}
-				$metadata[$i]['fields'][$j]['selection'] = $new;
-			}
-		}
+                foreach ($selection as $item) {
+                    $new[] = array(
+                        'id'=>null,
+                        'name' => $item,
+                        'value' => $item,
+                        'parent_id'=>null
+                    );
+                }
+                
+                $metadata[$i]['fields'][$j]['selection'] = $new;
+            }
+        }
 
-		$response['status_code'] = 0;
-		$response['result'] = $metadata;
-    	return $response;
-	}
+        $response['status_code'] = 0;
+        $response['result'] = $metadata;
+        return $response;
+    }
 
-	/**
-	 * Updates document metadata.
-	 *
-	 * @author KnowledgeTree Team
-	 * @access public
-	 * @param int $document_id
-	 * @param array $metadata
-	 * @return array
-	 */
-	public function update_document_metadata($document_id, $metadata, $sysdata = null, $sig_username = '', $sig_password = '', $reason = '')
-	{
+    /**
+     * Updates document metadata.
+     *
+     * @author KnowledgeTree Team
+     * @access public
+     * @param int $document_id
+     * @param array $metadata
+     * @return array
+     */
+    public function update_document_metadata($document_id, $metadata, $sysdata = null, $sig_username = '', $sig_password = '', $reason = '')
+    {
         $response = $this->_check_electronic_signature($document_id, $sig_username, $sig_password, $reason, $reason,
                                                       'ktcore.transactions.metadata_update');
-        if ($response['status_code'] == 1) return $response;
+        if ($response['status_code'] == 1) {
+            return $response;
+        }
 
-    	$document = &$this->get_document_by_id($document_id);
-		if (PEAR::isError($document))
-    	{
-    		$response['status_code'] = 1;
-    		$response['message'] = $document->getMessage();
-			return $response;
-    	}
+        $document = &$this->get_document_by_id($document_id);
+        if (PEAR::isError($document)) {
+            $response['status_code'] = 1;
+            $response['message'] = $document->getMessage();
+            return $response;
+        }
 
-    	$result = $document->update_metadata($metadata);
-    	if (PEAR::isError($result))
-    	{
-    		$response['status_code'] = 1;
-    		$response['message'] = $result->getMessage();
-			return $response;
-    	}
+        $result = $document->update_metadata($metadata);
+        if (PEAR::isError($result)) {
+            $response['status_code'] = 1;
+            $response['message'] = $result->getMessage();
+            return $response;
+        }
 
-    	$result = $document->update_sysdata($sysdata);
-    	if (PEAR::isError($result))
-    	{
-    		$response['status_code'] = 1;
-    		$response['message'] = $result->getMessage();
-			return $response;
-    	}
+        $result = $document->update_sysdata($sysdata);
+        if (PEAR::isError($result)) {
+            $response['status_code'] = 1;
+            $response['message'] = $result->getMessage();
+            return $response;
+        }
 
-    	return $this->get_document_detail($document_id, 'M');
-	}
+        return $this->get_document_detail($document_id, 'M');
+    }
 
 	/**
 	 * Returns a list of available transitions on a give document with a workflow.
@@ -4542,36 +4538,36 @@ class KTAPI {
 		return $response;
 	}
 
-	/**
-	 * This is the search interface
-	 *
-	 * @author KnowledgeTree Team
-	 * @access public
-	 * @param string $query
-	 * @param string $options
-	* @return array $response The formatted response array
-	 */
-	public function search($query, $options)
-	{
-    	$response['status_code'] = 1;
-		$response['results'] = array();
+    /**
+     * This is the search interface
+     *
+     * @author KnowledgeTree Team
+     * @access public
+     * @param string $query
+     * @param string $options
+     * @return array $response The formatted response array
+     */
+    public function search($query, $options)
+    {
+        $response['status_code'] = 1;
+        $response['results'] = array();
 
-		$results = processSearchExpression($query);
-		if (PEAR::isError($results))
-		{
-			$response['message'] = _kt('Could not process query.')  . $results->getMessage();
-			return $response;
-		}
+        $results = processSearchExpression($query);
+        if (PEAR::isError($results)) {
+            $response['message'] = _kt('Could not process query.')  . $results->getMessage();
+            return $response;
+        }
 
-		$response['message'] = '';
-		if (empty($results)) {
-    		$response['message'] = _kt('Your search did not return any results');
-		}
-		$response['status_code'] = 0;
-		$response['results'] = $results;
+        $response['message'] = '';
+        if (empty($results)) {
+            $response['message'] = _kt('Your search did not return any results');
+        }
 
-		return $response;
-	}
+        $response['status_code'] = 0;
+        $response['results'] = $results;
+
+        return $response;
+    }
 
 	/**
 	* Method to create a saved search
