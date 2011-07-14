@@ -49,7 +49,7 @@ function getTarget() {
 
     
 
-function confirmDelete(e) {
+function confirmDeletion(e) {
     var target = getTarget();
     if(!isUndefinedOrNull(target)) {
         var msg = target.getAttribute('kt:deleteMessage');
@@ -84,7 +84,7 @@ function initDeleteProtection(m) {
         addEvent(node, 'click', fn, true);        
     }
     
-    var fn = confirmDelete;
+    var fn = confirmDeletion;
     message = m;
 
     var elements = getElementsByTagAndClassName(null,'ktDelete');

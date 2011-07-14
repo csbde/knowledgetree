@@ -514,6 +514,7 @@ kt.app.upload = new function() {
 			cls			: 'ul_win',
 			shadow      : true,
 			modal       : true,
+			draggable   : false,
 			title       : 'Upload Files',
             html        : kt.api.getFragment('upload/upload.dialog')
         });
@@ -793,6 +794,7 @@ kt.app.upload.uploadStructure = function(options) {
 			cls			: 'ul_meta',
 			shadow      : true,
 			modal       : true,
+			draggable   : false,
 			title       : 'Document Properties',
 			html        : kt.api.execFragment('upload/upload.metadata.dialog')
 		});

@@ -107,7 +107,7 @@
 						<img src="http://www.gravatar.com/avatar/{md5Hash string=$oUser->getEmail()}?s=32&d=mm" alt="{$oUser->getName()}" title="{$oUser->getName()}" />
 						</td>
 						<td>
-							<span class="name {if ($oUser->getName() == '')}empty{/if}">{$oUser->getName()}</span>{if $oUser->getDisabled() == 3}<span class="flag shared">invited</span>{/if}{if $oUser->getDisabled() == 4}<span class="flag shared">shared</span>{/if}<br/><span style="font-style:italic; color: #666;">{$oUser->getUsername()}</span></td>
+							<span class="name {if ($oUser->getName() == '')}empty{/if}">{$oUser->getName()}</span>{if $oUser->getDisabled() == 3}<span class="flag">invited</span>{/if}{if $oUser->getDisabled() == 4}<span class="flag">shared</span>{/if}<br/><span style="font-style:italic; color: #666;">{$oUser->getUsername()}</span></td>
 						<td class="centered">
 						{if ($oUser->getDisabled() == 1)}
 							<span class="ktAction ktDenied" title="{i18n}Disabled{/i18n}">{i18n}Disabled{/i18n}</span>
@@ -140,7 +140,7 @@
 		</table>
 	</div>
 
-	<div class="widgetRow">
+	<div class="widgetRow table-footer">
 		<div class="form_actions">
 			<input type="hidden" name="action" value="change_enabled" />
 			<input type="hidden" name="update_value" id="update_value" value="" />

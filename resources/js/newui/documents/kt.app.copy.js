@@ -151,6 +151,7 @@ kt.app.copy = new function() {
             cls             : 'ul_win',
             shadow          : true,
             modal           : true,
+			draggable   	: false,
             title           : title,
             html            : kt.api.execFragment('documents/actions/tree.dialog')
         });
@@ -338,6 +339,8 @@ kt.app.copy = new function() {
 				$msg = response.msg;
     			jQuery("#action-error").html($msg);
 	        	jQuery('#action-error').addClass('alert').addClass('success');
+				jQuery('#action-modal').hide();
+				jQuery('div.action-footer div.form_actions').hide();
 	        	self.redirect(response.url);
         }
 
@@ -378,6 +381,7 @@ kt.app.copy = new function() {
             cls             : 'ul_win',
             shadow          : true,
             modal           : true,
+			draggable   	: false,
             title           : title,
             html            : kt.api.execFragment('documents/actions/confirm.dialog')
         });

@@ -18,7 +18,7 @@ begin.{/i18n}</p>
 {if !$search_results}
       <div class="ktInfoMessage">
          <!-- never show a very large set, if you can help it. -->
-         <span>{i18n}No search specified, or no results for your search.  Please choose some criteria from the list above to find groups.{/i18n}</span>
+         <span>{i18n}No search specified, or no results for your search.{/i18n}</span>
       </div>
 {else}
 <form method="POST" action="{$smarty.server.PHP_SELF}">

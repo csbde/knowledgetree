@@ -1108,14 +1108,14 @@ div#uploadProgress .progress {
 	overflow: hidden;
 }
 .upload-breadcrumb em {
-	background: url(../graphics/newui/bc_separator.png) no-repeat 100% 0;
+	background: url(../graphics/newui/bc_separator.png) no-repeat 0 0;
 }
 #uploadpathstring span,
 .upload-breadcrumb em {
 	display: inline-block;
 	float: left;
-	margin-right: 5px;
-	padding-right: 10px;
+	margin-left: 2px;
+	padding-left: 13px;
 }
 #changepathlink {
 	display:inline-block; 
@@ -1308,6 +1308,13 @@ label span.required
 	background: white;
 	overflow: hidden;
 }
+.settings-section .help {
+	background: url(../graphics/newui/icons/help.png) no-repeat center center;
+	display: block;
+	float: right;
+	width: 25px;
+	height: 25px;
+}
 .settings-section #content fieldset legend {
 	padding: 0px;
 }
@@ -1323,6 +1330,17 @@ label span.required
 .settings-item.users .name.empty {
 	padding-right: 0px;
 }
+.widgetRow.table-footer {
+	background: whiteSmoke;
+	overflow: hidden;
+	border: 1px solid #CCC;
+	margin-top: -10px;
+	border-top: 0px;
+	border-radius: 0px 0px 3px 3px;
+	-moz-border-radius: 0px 0px 3px 3px;
+	-webkit-border-radius: 0px 0px 3px 3px;
+	padding: 5px;
+}
 .settings-item #branding .form_actions {
 	display: block;
 	overflow: hidden;
@@ -1332,12 +1350,16 @@ label span.required
 	background: whiteSmoke;
 	margin: 20px 0px -15px -15px;
 }
+.settings-item #branding .form_actions #cancelBranding {
+	height: 23px;
+	margin-left: 5px;
+}
 .settings-section .kt_collection,
 .settings-section .kt_collection.narrow  {
 	width: 100%;
 	margin: 10px 0px;
 }
-.settings-section .flag.shared {
+.settings-section .flag {
 	border-radius: 3px;
 	-moz-border-radius: 3px;
 	-webkit-border-radius: 3px;
@@ -1380,6 +1402,25 @@ label span.required
 .x-window .action-footer .form_actions {
 	float: right;
 }
+.field-group {
+	background: whitesmoke;
+	border: 1px solid #CCC;
+	border-radius: 3px;
+	-moz-border-radius: 3px;
+	-webkit-border-radius: 3px;
+	padding: 10px;
+	overflow: hidden;
+}
+.field-group .field {
+	float: right;
+}
+.field-group > label {
+	float: left;
+	padding-top: 5px;
+}
+.field-group .switch {
+	margin-top: 0px;
+}
 
 
 /*Tag editor*/
@@ -1403,7 +1444,7 @@ a.subscribe_actions {
 #checkins #checkinfilename {
 	padding: 5px;
 	margin-top: 5px;
-	width: 350px;
+	width: 355px;
 }
 /*
 IPhone Style Switches
@@ -1704,32 +1745,22 @@ a.currentSettingsCategory {
 #preferencesWindow br {
 	line-height: 1;
 }
-
 #preferencesWindow div.field {
 	margin-bottom: 10px;
 }
 
-#preferencesWindow #adminModeForm label {
-	display: none;
-}
-
-#preferencesWindow #adminModeForm span.switch {
-	clear: both;
-}
-
-#preferencesWindow #adminModeForm span.switch label {
-	display: inherit;
-}
-
-#preferencesWindow #updatePreferencesForm div.form_actions {
+#updatePreferencesForm div.form_actions {
 	margin-top: 10px;
 }
 
-#preferencesWindow #updatePreferencesForm input {
-	max-width: 280px;
+#updatePreferencesForm input {
+	max-width: 300px;
 }
 
-#preferencesWindow a.header {
-	background: none;
-	padding: 5px;
+
+/**
+ * Small Adjustment for Folder Structure Templates
+ */
+#tree_edit p.descriptiveText {
+	clear: both;
 }
