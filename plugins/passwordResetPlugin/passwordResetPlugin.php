@@ -90,17 +90,20 @@ class PasswordResetPlugin extends KTPlugin {
 
     function setup()
     {
+        // Check if interceptor instance exists
+        $interceptorNamespace = 'password.reset.login.interceptor';
+        $interceptor = KTInterceptorInstance::getByInterceptorNamespace($interceptorNamespace);
+    	if (!($interceptor instanceof KTEntityNoObjects)) { return ; }
         // Register the interceptor
-        $this->registerInterceptor('PasswordResetInterceptor', 'password.reset.login.interceptor', __FILE__);
+        $this->registerInterceptor('PasswordResetInterceptor', $interceptorNamespace, __FILE__);
 
         // Interceptor has to be added to the DB to be found
         $options = array(
             'sName' => 'Password Reset Interceptor',
-            'sInterceptorNamespace' => 'password.reset.login.interceptor',
+            'sInterceptorNamespace' => $interceptorNamespace,
             'sConfig' => ''
         );
         KTInterceptorInstance::createFromArray($options);
-
         // Add templates directory to list
         $dir = dirname(__FILE__);
         $templating =& KTTemplating::getSingleton();
