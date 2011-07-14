@@ -586,10 +586,8 @@ a.main_nav_item {
 }
 
 
-#content .descriptiveText.important {
-    padding-left: 25px;
-    color: black;
-    background: transparent  url(/thirdparty/icon-theme/16x16/status/dialog-information.png) center left no-repeat;
+.settings-item .descriptiveText.important {
+	max-width: 300px;
 }
 
 
@@ -724,10 +722,7 @@ a.main_nav_item {
     font-weight: bold;
 }
 
-#content .field .errorMessage
-{
-    display: none;
-}
+
 
 /*
 #content .form_actions {
@@ -1048,11 +1043,11 @@ a.main_nav_item {
 .kt_collection
 {
     width: 100%;
-    white-space: nowrap !important;
     border: 1px solid #ccc;
     border-spacing: 0px;
     font-size: 12px;
     line-height: 18px;
+    background: white;
 }
 
 .kt_collection.narrow {
@@ -1062,7 +1057,6 @@ a.main_nav_item {
 .kt_collection thead th {
     border-bottom: 1px solid #888;
     text-align: left;
-    white-space: normal !important;
     font-weight: bold;
 }
 
@@ -1083,7 +1077,6 @@ a.main_nav_item {
 .kt_collection th,
 .kt_collection td {
     padding: 3px 10px;
-    white-space: nowrap !important;
     overflow: hidden;
     vertical-align: middle;
 }
@@ -1146,25 +1139,29 @@ a.main_nav_item {
 .ktInlineError {
     color: #db9d09;
 }
-
+.settings-section #content .field.error input,
+.settings-section #content .field.error select,
+.settings-section #content .field.error textarea {
+	background: #ffeded;
+	border: 1px solid #ff6060;
+}
+#content .field.error .errorMessage{
+	color: #f93333;
+}
 /* block level. */
 .ktError {
-    padding: 0.1em 1em 1em 1em;
-    margin: 0 0 1em 0.5em;
+   	background: #ffeded;
+    border: 1px solid #f93333;
+	border-radius: 3px;
+	color: #f93333;
+	font-size: 13px;
+	font-weight: bold;
+	text-align: center;
+	text-shadow: 0px 1px 0px white;
+	padding: 10px 5px;
+	margin-bottom: 5px;
 }
 
-.ktError .err_list {
-    background: #ffdd80;
-    padding-left: 10px;
-    margin-top: 20px;
-    padding-bottom: 8px;
-}
-
-.ktError .err_item {
-    padding-left: 25px;
-    background: #ffdd80 url(/thirdparty/icon-theme/16x16/status/dialog-warning.png) top left no-repeat;
-    padding-bottom: 3px;
-}
 
 /* block level. */
 .ktInfo {
@@ -1296,8 +1293,8 @@ The text will be hidden for screen view.  The generic fahrner-ish approach comes
 }
 
 /* FIXME when available icon-naming-conformant sets have better coverage, make these more accurate. */
-.ktActionLink.ktDelete, .ktAction.ktDelete { background: url('../graphics/newui/icons/delete.png') no-repeat; }
-.ktActionLink.ktEdit, .ktAction.ktEdit { background: url(../../resources/graphics/newui/icons/edit.png) no-repeat right top; }
+.ktActionLink.ktDelete, .ktAction.ktDelete { background: url('../graphics/newui/icons/delete.png') no-repeat center center; }
+.ktActionLink.ktEdit, .ktAction.ktEdit { background: url(../../resources/graphics/newui/icons/edit.png) no-repeat center center; }
 .ktActionLink.ktAddUser, .ktAction.ktAddUser { background-image: url(/thirdparty/icon-theme/16x16/actions/contact-new.png); }
 .ktActionLink.ktAddGroup, .ktAction.ktAddGroup { background-image: url(/thirdparty/icon-theme/16x16/actions/group-new.png); }
 .ktActionLink.ktAdd, .ktAction.ktAdd { background-image: url(/thirdparty/icon-theme/16x16/actions/add.png); }
@@ -2322,11 +2319,6 @@ input#add_dashlet {
 	margin-right: 25px;
 }
 
-.workflow_step2
-{
-	overflow:scroll;
-
-}
 
 .role_allocation
 {

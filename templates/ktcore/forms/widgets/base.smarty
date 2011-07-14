@@ -1,4 +1,4 @@
-    <div {if ($options.field_id)}id="{$options.field_id}"{/if} class="field {if ($has_errors)}error{/if}" {if ($description)}title="{$description}"{/if}>
+    <div {if ($options.field_id)}id="{$options.field_id}"{/if} class="field {$options.name} {if ($has_errors)}error{/if}" {if ($description)}title="{$description}"{/if}>
       <label for="{$name}">{$label}{if ($required === true)}<span class="required" title="{i18n}Required{/i18n}">&nbsp;</span>{/if}</label>
       {if ($options.important_description)}<p class="descriptiveText important">{$options.important_description}</p>{/if}
       {if ($has_errors)}

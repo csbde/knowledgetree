@@ -22,15 +22,15 @@
 aspects of this particular field.{/i18n}</p>
 
 {if ($field->getHasLookup() or $field->getHasInetLookup())}
-<div class="twocolumn">
+<div class="">
 {/if}
 {if ($field->getDataType() == "LARGE TEXT")}
-<div class="twocolumn">
+<div class="">
 {/if}
 {$form->render()}
 {if ($field->getHasLookup() or $field->getHasInetLookup())}
 </div>
-<div class="twocolumn second">
+<div>
 <fieldset>
 <legend>{i18n}Extra Options{/i18n}</legend>
 
@@ -53,7 +53,7 @@ available.{/i18n}</p>
 {/if}
 {if ($field->getDataType() == "LARGE TEXT")}
 </div>
-<div class="twocolumn second">
+<div style="clear:both;">
 <fieldset>
 <legend>{i18n}Extra Options{/i18n}</legend>
 

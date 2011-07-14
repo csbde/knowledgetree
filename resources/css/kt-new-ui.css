@@ -745,6 +745,12 @@ div.form_actions {
 #content .form_actions a:last-child {
 	
 }
+.form_actions.standalone {
+	margin: 10px 0px; 
+	float: none;
+	text-align: left;
+	display: block;
+}
 .x-window .form_actions input, .x-window .form_actions a, 
 #content .form_actions input, #content .form_actions a {
 	background: -webkit-linear-gradient(top,#fff,#e8e8e8)!important;
@@ -1330,7 +1336,21 @@ label span.required
 .settings-item.users .name.empty {
 	padding-right: 0px;
 }
-.widgetRow.table-footer {
+.settings-item.emailconfigpage .descriptiveText {
+	display: none;
+}
+#content .settings-item.workflows_2 .field.fWizardKey {
+	background: none;
+	border: 0px;
+	padding: 0px;
+}
+#workflowtabs .kt_collection select {
+	max-width: 140px;
+}
+#workflowtabs #workflow_details .form_actions input {
+	float: right;
+}
+.settings-item .table-footer {
 	background: whiteSmoke;
 	overflow: hidden;
 	border: 1px solid #CCC;
@@ -1358,6 +1378,20 @@ label span.required
 .settings-section .kt_collection.narrow  {
 	width: 100%;
 	margin: 10px 0px;
+}
+.settings-section .simple-selection {
+	display: block;
+	float: right;
+	min-width: 270px;
+}
+.settings-section .simple-selection input[type="radio"] {
+	float: left !important;
+	margin: 4px;
+}
+.settings-section #content .field .descriptiveText {
+	float: left;
+	clear: left;
+
 }
 .settings-section .flag {
 	border-radius: 3px;

@@ -304,10 +304,6 @@
 				<!-- Error messages added here. -->
 				{if (!empty($page->errStack))}
 					<div class="ktError">
-						<div class="error_dashlet_rightrepeat_top_small"></div>
-						<div class="error_dashlet_leftrepeat_top"></div>
-						<div class="error_dashlet_rightrepeat_bottom"></div>
-						<div class="error_dashlet_leftrepeat_bottom"></div>
 						<div class="err_list">
 							{foreach item=sError from=$page->errStack}
 							<div class="err_item">
@@ -319,13 +315,6 @@
 							</div>
 							{/foreach}
 						</div>
-						<div class="error_dashlet_topleft_small"></div>
-						<div class="error_dashlet_toprepeat_small"></div>
-						<div class="error_dashlet_topright_small"></div>
-
-						<div class="error_dashlet_bottomleft"></div>
-						<div class="error_dashlet_bottomrepeat_small"></div>
-						<div class="error_dashlet_bottomright"></div>
 					</div>
 				{/if}
 						<!-- Status messages added here. -->

@@ -6,7 +6,7 @@
               {foreach item=oColumn from=$context->columns}
                 
                 {if $oColumn->getSortedOn() }
-                  <th class="sort_on sort_{$oColumn->getSortDirection()}">
+                  <th width="10px" class="sort_on sort_{$oColumn->getSortDirection()}">
                 {else}
                   <th>
                 {/if}
