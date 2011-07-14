@@ -32,5 +32,6 @@
 </tbody>
 </table>
 {else}
+<br clear="both" />
 <div class="ktInfoMessage"><span>{i18n}No Conditions have been defined.{/i18n}</span></div>
 {/if}

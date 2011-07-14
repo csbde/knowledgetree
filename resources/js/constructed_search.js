@@ -167,6 +167,7 @@ function createAdditionalCriteriaOption(parent_table) {
     
     // clone, and append.
     var clonedObject = master_div.getElementsByTagName('select')[0].cloneNode(true);
+    clonedObject.className += " dyncond_dropdown";
     var select_entry = TD(null, clonedObject);
     var notification_entry = TD(null, createDOM('P',{'class':'helpText'},_('first select a type of query')));
     var add_button = INPUT({'type':'button', 'value':_('Add')});
