@@ -1359,7 +1359,7 @@ label span.required
 	width: 100%;
 	margin: 10px 0px;
 }
-.settings-section .flag.shared {
+.settings-section .flag {
 	border-radius: 3px;
 	-moz-border-radius: 3px;
 	-webkit-border-radius: 3px;
@@ -1755,4 +1755,12 @@ a.currentSettingsCategory {
 
 #updatePreferencesForm input {
 	max-width: 300px;
+}
+
+
+/**
+ * Small Adjustment for Folder Structure Templates
+ */
+#tree_edit p.descriptiveText {
+	clear: both;
 }

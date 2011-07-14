@@ -1,18 +1,19 @@
 
 <p class="descriptiveText">{i18n}Collections of fields are associated into fieldsets.  These represent a set of related information which can be associated with a document and thus comprise part of the document's metadata.{/i18n}</p>
+<br/>
 
-<p><a class="ktAction ktAdd ktActionDescribed" href="{addQS context=$context}action=newfieldset{/addQS}">{i18n}Create new Fieldset{/i18n}</a>
-<a href="{addQS context=$context}action=newfieldset{/addQS}">{i18n}Create New Fieldset{/i18n}</a>
-</p>
-
+<div class="form_actions">
+	<a href="{addQS context=$context}action=newfieldset{/addQS}">{i18n}Create New Fieldset{/i18n}</a>
+</div>
+<br/>
+<br/>
 { if $fieldsets}
 
 <table class="kt_collection narrow" cellpadding="1.5em" cellspacing="0">
   <thead>
     <tr>
       <th>{i18n}Name{/i18n}</th>
-      <th class="centered">{i18n}Generic{/i18n}</th>
-      <th class="centered">{i18n}System{/i18n}</th>
+      <!--<th class="centered">{i18n}System{/i18n}</th>-->
       <th>{i18n}Fields{/i18n}</th>
       <th>{i18n}Document Types{/i18n}</th>
       <th>{i18n}Edit{/i18n}</th>
@@ -23,22 +24,8 @@
 {foreach from=$fieldsets item=oFieldset}
     <tr class="{cycle values=odd,even}">
       <td>
-         { $oFieldset->getName()|mb_truncate:40:"..." }
+         { $oFieldset->getName()|mb_truncate:40:"..." } {if ($oFieldset->getIsGeneric())}<br><span class="flag">{i18n}Generic{/i18n}</span>{else}{/if}
         </a>
-      </td>
-      <td class="centered">
-{if ($oFieldset->getIsGeneric())}
-    <span class="ktAction ktAllowed">{i18n}Yes{/i18n}</span>
-{else}
-	<span class="ktAction ktDenied">{i18n}No{/i18n}</span>
-{/if}
-      </td>
-      <td class="centered">
-{if ($oFieldset->getIsSystem())}
-	<span class="ktAction ktAllowed">{i18n}Yes{/i18n}</span>
-{else}
-	<span class="ktAction ktDenied">{i18n}No{/i18n}</span>
-{/if}
       </td>
       <td>
 {assign var="aFields" value=$oFieldset->getFields()}
