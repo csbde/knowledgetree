@@ -1,23 +1,19 @@
-
-
-
 <script src="/resources/js/jquery.form.js"></script>
 
-<div class="settings-list">
-    <div class="settings-item user_preferences_section">
-        <a onclick="jQuery('#user_preferences_section').slideToggle('fast', {literal}function(){ jQuery(this).parent().toggleClass('expanded');}{/literal}); return false;" href="#" class="header">{i18n}Preferences{/i18n}</a>
-        <div class="settings-content" id="user_preferences_section">
+<div class="settings-list" id="modal">
+    <div class="settings-item">
+        <a class="header">{i18n}User Details and Email Notifications{/i18n}</a>
+        <div class="settings-content" style="display:block">
             
             {$edit_form->render()}
             
-            <br clear="both" />
         </div>
     </div>
     
     {if $show_password}
-    <div class="settings-item user_password_section">
-        <a onclick="jQuery('#user_password_section').slideToggle('fast', {literal}function(){ jQuery(this).parent().toggleClass('expanded');}{/literal}); return false;" href="#" class="header">{i18n}Change Password{/i18n}</a>
-        <div class="settings-content" id="user_password_section">
+    <div class="settings-item">
+        <a class="header">{i18n}Change Password{/i18n}</a>
+        <div class="settings-content" style="display:block">
             {$changePasswordForm}
             
             <br clear="both" />
@@ -26,9 +22,9 @@
     {/if}
     
     {if $adminPortletContent}
-    <div class="settings-item user_adminmode_section">
-        <a onclick="jQuery('#user_adminmode_section').slideToggle('fast', {literal}function(){ jQuery(this).parent().toggleClass('expanded');}{/literal}); return false;" href="#" class="header">{i18n}Enable Admin Mode{/i18n}</a>
-        <div class="settings-content" id="user_adminmode_section">
+    <div class="settings-item">
+        <a class="header">{i18n}Enable Admin Mode{/i18n}</a>
+        <div class="settings-content" style="display:block">
             {$adminPortletContent}
             
             <br clear="both" />
@@ -47,10 +43,6 @@ jQuery(document).ready(function()
     {/literal}
         
         jQuery('#userPreferencesName').html('{$userFullName}');
-        
-        {if $reloadMenus == 'true'}
-            if (kt.app.document_actions != undefined) kt.app.document_actions.refresh();
-        {/if}
         
         {if (!empty($errorMessages))}
             {foreach item=sError from=$errorMessages}

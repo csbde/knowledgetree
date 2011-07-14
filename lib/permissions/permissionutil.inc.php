@@ -905,6 +905,47 @@ class KTPermissionUtil {
     }
     // }}}
 
+    function updatePermissionObject($folder, $permissionObjectId, $selectedPermissions, $userId)
+    {
+    	$folderId = $folder->getId();
+    	$permissionsList = KTPermission::getList();
+
+        $permissionObject = KTPermissionObject::get($permissionObjectId);
+    	
+        foreach ($permissionsList as $permission) {
+            $permissionId = $permission->getId();
+
+            $allowed = KTUtil::arrayGet($selectedPermissions, $permissionId, array());
+            $result = KTPermissionUtil::setPermissionForId($permission, $permissionObject, $allowed);
+
+            if ($result === false) {	
+            	global $default;
+		    	$msg = (isset($_SESSION["errorMessage"])) ? $_SESSION["errorMessage"] : 'permission set failed';
+		    	$default->log->error('Permissions: update failed - ' . $msg);
+            	return false;
+            }
+        }
+
+        // Create the transaction before backgrounding the task - we don't want the permissions to fail because the transaction could not be created.
+        $transaction = KTFolderTransaction::createFromArray(array(
+            'folderid' => $folderId,
+            'comment' => _kt('Updated permissions'),
+            'transactionNS' => 'ktcore.transactions.permissions_change',
+            'userid' => $userId,
+            'ip' => Session::getClientIP(),
+            'parentid' => $folder->getParentID(),
+        ));
+        
+        if (PEAR::isError($transaction) || ($transaction === false)) {
+        	global $default;
+        	$msg = (PEAR::isError($transaction)) ? $transaction->getMessage() : 'transaction insert failed';
+        	$default->log->error('Permissions: update failed - ' . $msg);
+        	return false;
+        }
+        
+        return true;
+    }
+
     /**
      * Update the permission lookup id for a given permission object
      *
@@ -1092,7 +1133,7 @@ class KTPermissionUtil {
         // We've already checked roles on the top level folder
         // Find any roles allocated on folders associated with the permission object
         $role_allocations = RoleAllocation::getAllocationsForPO($objectId);
-
+        
         if (!empty($role_allocations)) {
         	$default->log->info('Permissions: applying role allocations');
         	
@@ -1349,7 +1390,5 @@ class KTPermissionGenericMessage {
         return $this->sMessage;
     }
 }
-
-
 
 ?>

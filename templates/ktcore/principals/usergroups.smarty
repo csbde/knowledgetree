@@ -1,4 +1,9 @@
-<h2>{i18n arg_name=$edit_user->getName()}Change #name#'s Groups{/i18n}</h2>
+{if ($edit_user->getName() == '')}
+	<h2>{i18n arg_name=$edit_user->getUsername()}Change #name#'s Groups{/i18n}</h2>
+	
+{else}
+	<h2>{i18n arg_name=$edit_user->getName()}Change #name#'s Groups{/i18n}</h2>
+{/if}
 
 <p class="descriptiveText">{i18n}Users may be classed together as Groups and these groups may be used to set security privileges throughout the document management system.{/i18n}</p>
 
@@ -9,9 +14,10 @@
 
 
 	{$widget->render()}
-
-	<div class="form_actions">
-            <input type="submit" value="{i18n}Save Changes{/i18n}" />
-            <input type="submit" name="kt_cancel[{addQS}old_search={$old_search}&do_search=1{/addQS}]" value="{i18n}Cancel{/i18n}" />
+  	<div class="action-footer">
+		<div class="form_actions">
+    	        <input type="submit" value="{i18n}Save Changes{/i18n}" />
+    	        <input type="submit" class="form_cancel" name="kt_cancel[{addQS}old_search={$old_search}&do_search=1{/addQS}]" value="{i18n}Cancel{/i18n}" />
         </div>
+    </div>
    </form>

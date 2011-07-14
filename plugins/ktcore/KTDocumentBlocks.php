@@ -65,7 +65,6 @@ class KTDocumentStatusBlock extends KTDocumentViewlet {
 		$this->oPage->requireCSSResource('resources/css/newui/documents/blocks/blockActions.css');
 		$this->oPage->requireJSResource('resources/js/newui/documents/blocks/subscriptionsBlock.js');
 		// Jquery tooltip
-		$this->oPage->requireJSResource('thirdpartyjs/jquery/ui/minified/jquery.tools.min.js');
 		
 		$workflowState = $alertState = $subscribeState = 'disabled';
 

@@ -8,7 +8,7 @@
         {assign var=group value=$groupItem.name}
             
         </span></h3>
-        <span class='descriptiveText'>{$groupItem.description}</span>
+        <span class='descriptiveText'></span>
             <div id='{$groupItem.id}' style='visibility: visible;'>
 
                 {* <!-- Display the settings, render the input according to the setting type (dropdown / radio / etc) --> *}
@@ -25,10 +25,11 @@
             </div>
     {/foreach}
 
-    <br><hr>
-    <div class="form_actions">
-        <input type="submit" name="AlterConfig" value="{i18n}Save Config Settings{/i18n}" />
-        <input type="hidden" name="action" value="save" />
+    <div class="action-footer">
+    	<div class="form_actions">
+        	<input type="submit" name="AlterConfig" value="{i18n}Save Config Settings{/i18n}" />
+        	<input type="hidden" name="action" value="save" />
+    	</div>
     </div>
 {else}
 

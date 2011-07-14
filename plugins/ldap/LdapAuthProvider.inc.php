@@ -268,11 +268,11 @@ class LdapAuthProvider extends KTAuthenticationProvider {
 
         $fields[] = new KTPasswordWidget(_kt('Search Password'), _kt('The password for the user account in the LDAP directory that performs searches'), 'searchpwd', $searchPwd, $this->oPage, true);
 
-        $fields[] = new KTTextWidget(_kt('Search Attributes'), _kt('The LDAP attributes to use to search for users when given their name (one per line, examples: <strong>cn</strong>, <strong>mail</strong>)'), 'searchattributes_nls', join("\n", $searchAttributes), $this->oPage, true, null, null, $aOptions);
+        $fields[] = new KTTextWidget(_kt('Search Attributes'), _kt('The LDAP attributes to use to search for users when given their name (one per line, examples: cn, mail)'), 'searchattributes_nls', join("\n", $searchAttributes), $this->oPage, true, null, null, $aOptions);
 
-        $fields[] = new KTTextWidget(_kt('Object Classes'), _kt('The LDAP object classes to search for users (one per line, example: <strong>user</strong>, <strong>inetOrgPerson</strong>, <strong>posixAccount</strong>)'), 'objectclasses_nls', join("\n", $objectClasses), $this->oPage, true, null, null, $aOptions);
+        $fields[] = new KTTextWidget(_kt('Object Classes'), _kt('The LDAP object classes to search for users (one per line, example: user, inetOrgPerson, posixAccount)'), 'objectclasses_nls', join("\n", $objectClasses), $this->oPage, true, null, null, $aOptions);
 
-        $fields[] = new KTTextWidget(_kt('Group Member Attributes'), _kt('The attribute name(s) to use when syncing groups (one per line, example: <strong>member</strong>, <strong>memberUid</strong>, <strong>uniqueMember</strong>)'), 'memberattributes_nls', join("\n", $memberAttributes), $this->oPage, true, null, null, $aOptions);
+        $fields[] = new KTTextWidget(_kt('Group Member Attributes'), _kt('The attribute name(s) to use when syncing groups (one per line, example: member, memberUid, uniqueMember)'), 'memberattributes_nls', join("\n", $memberAttributes), $this->oPage, true, null, null, $aOptions);
 
         return $fields;
     }

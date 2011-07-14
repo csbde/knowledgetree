@@ -2,7 +2,7 @@
 jQuery(document).ready(function() {
     jQuery(".form_actions input:not([type='text'],[type='hidden'],[type='password'],[type='checkbox'],[type='radio']):last").css({background:"none"});
     jQuery(".form_actions a:last-child").css({background:"none"});
-    jQuery('.form_actions').prepend('<div class="roundleft"></div>').prepend('<div class="roundright2"></div>');
+    //jQuery('.form_actions').prepend('<div class="roundleft"></div>').prepend('<div class="roundright2"></div>');
     jQuery('.buttonsList').appendTo(jQuery('#bigbuttons'));
 	jQuery(".cb-enable").live('click', function() {
         var parent = jQuery(this).parents('.switch');
@@ -17,6 +17,27 @@ jQuery(document).ready(function() {
         jQuery('.checkbox',parent).attr('checked', false);
     });
 });
+
+//KT Info notification animations to hide and dissapear
+jQuery(document).ready(function() {
+	jQuery(".ktInfo").delay(3000).animate({
+    	opacity: 0.5,
+    	height: 'toggle'
+ 		 }, 400, function() {
+    // Animation complete.
+  });;
+});
+
+/**
+ * Tooltips
+ */
+jQuery(document).ready(function() { 
+	jQuery(".help").tooltip({
+	});
+	
+});
+ 
+
 
 /**
  * Documents View Page
@@ -36,8 +57,8 @@ jQuery(document).ready(function() {
 			containerClass:''
 		});
 
-		$('td.info a').prepend('<img class="leftimg" src="resources/graphics/newui/midbarleft.png" />');
-		$('td.info a').prepend('<img class="rightimg" src="resources/graphics/newui/midbarright.png" />');
+		//$('td.info a').prepend('<img class="leftimg" src="resources/graphics/newui/midbarleft.png" />');
+		//$('td.info a').prepend('<img class="rightimg" src="resources/graphics/newui/midbarright.png" />');
 
 		$('a.arrow_upload').attr('href', 'javascript:kt.app.upload.showUploadWindow();');
 	});

@@ -12,14 +12,15 @@
         	</tr>
         	<tr><td class="ul_list modalField"><span class="no_files_selected">No files selected</span><!-- span class="files"></span --></td></tr>
         	
-        	<tr><td class="ul_actions"><div style="display: inline-block; margin-top: 10px;">Upload files to:
-        	<span id="uploadpathstring">...</span> &nbsp; <a href="javascript:;" id="changepathlink" style="display:none">Change</a></div>
-			<div id="folderpathchooser" style="background:#FFF;display:none;"></div>
-			<a class="ul_actions_cancel_link" href="javascript:kt.app.upload.closeWindow();">Cancel</a>
-			<input id="ul_actions_upload_btn" class="ul_actions_btns" type="button" value="Add" onClick="kt.app.upload.addDocuments();" /></td></tr>
-        
+        	<tr><td class="ul_actions"><div class="upload-breadcrumb"><a href="javascript:;" id="changepathlink"></a><span class="icon"style="float:left;"></span><span style="float:left; font-weight:bold;">Upload to:&nbsp;</span>
+        	<span id="uploadpathstring">...</span></div>
+			<div id="folderpathchooser" class="modalField" style="background:#FFF;display:none;"></div>        
         </table>
-		
-		
+        <div class="action-footer">
+			<div class="form_actions">
+				<a class="ul_actions_cancel_link" href="javascript:kt.app.upload.closeWindow();">Cancel</a>
+				<input id="ul_actions_upload_btn" class="ul_actions_btns" type="button" value="Add" onClick="kt.app.upload.addDocuments();" /></td></tr>
+			</div>
+		</div>
     </form>
     </div>

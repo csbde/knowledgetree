@@ -13,6 +13,7 @@ var showInfo = function(iDocId, sUrl, sDir, loading, mwidth){
             layout: 'fit',
             shadow: false,
             modal: true,
+            draggable   : false,
             plain: false,
             width: mwidth,
             height: 360,

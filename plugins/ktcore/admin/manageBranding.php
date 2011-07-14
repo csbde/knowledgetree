@@ -81,6 +81,7 @@ class ManageBrandDispatcher extends KTAdminDispatcher
 
         $form = new KTForm();
         $form->setOptions(array(
+        		'formId' => 'brandingForm',
                 'identifier' => 'ktcore.folder.branding',
                 'label' => _kt('Upload Custom Logo'),
                 'submit_label' => _kt('Update'),

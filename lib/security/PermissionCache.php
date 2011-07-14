@@ -782,7 +782,7 @@ class PermissionMemCache
      */
     private function clearItem($key)
     {
-        $res = $this->memcache->clear($key);
+        $res = $this->memcache->delete($key);
         return $res;
     }
 

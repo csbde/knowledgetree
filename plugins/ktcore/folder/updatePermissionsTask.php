@@ -1,8 +1,6 @@
 <?php
-
 /**
- *
- * This does the download of a file based on the download_files table.
+ * $Id$
  *
  * KnowledgeTree Community Edition
  * Document Management Made Simple
@@ -38,43 +36,38 @@
  *
  */
 
-if (!array_key_exists('code',$_GET)) {
-    $msg = urlencode('Code not specified.');
-    print "status_code=1&msg=$msg";
-    exit;
+$folderId = $argv[1];
+$accountName = isset($argv[2]) ? $argv[2] : '';
+
+if (!empty($accountName)) {
+	define('ACCOUNT_ROUTING_ENABLED', true);
+	define('ACCOUNT_NAME', $accountName);
 }
 
-$hash = $_GET['code'];
+$dir = dirname(__FILE__);
+require_once($dir . '/../../../config/dmsDefaults.php');
+require_once(KT_LIB_DIR . '/permissions/BackgroundPermissions.php');
 
-if (!array_key_exists('d', $_GET)) {
-    $msg = urlencode('Document not specified.');
-    print "status_code=2&msg=$msg";
-    exit;
+// set errors and time out after dmsDefaults to prevent being overridden
+set_time_limit(0);
+error_reporting(E_ERROR | E_CORE_ERROR);
+
+$updateTask = new BackgroundPermissions($folderId, $accountName);
+
+register_shutdown_function(array($updateTask, 'handleShutdown'));
+
+if (function_exists('pcntl_signal')) {
+
+	declare(ticks=1);
+	
+	pcntl_signal(SIGHUP, array($updateTask, 'handleInterrupt'));
+    pcntl_signal(SIGINT, array($updateTask, 'handleInterrupt'));
+    pcntl_signal(SIGQUIT, array($updateTask, 'handleInterrupt'));
+    pcntl_signal(SIGABRT, array($updateTask, 'handleInterrupt'));
+    pcntl_signal(SIGTERM, array($updateTask, 'handleInterrupt'));
 }
 
-$document_id = $_GET['d'];
+$updateTask->updatePermissions();
 
-if (!array_key_exists('u', $_GET)) {
-    $msg = urlencode('Session not specified.');
-    print "status_code=3&msg=$msg";
-    exit;
-}
-
-$session = $_GET['u'];
-$apptype = (isset($_GET['apptype'])) ? $_GET['apptype'] : 'ws';
-
-require_once('../config/dmsDefaults.php');
-require_once('../ktapi/ktapi.inc.php');
-require_once('KTDownloadManager.inc.php');
-
-$download_manager = new KTDownloadManager();
-$download_manager->set_session($session);
-
-$response = $download_manager->download($document_id, $hash, $apptype);
-if (PEAR::isError($response)) {
-    $msg = urlencode($response->getMessage());
-    print "status_code=4&msg=$msg:{$_GET['u']}:{$_GET['d']}:{$_GET['code']}:{$_GET['apptype']}:";
-    exit;
-}
-
+exit(0);
 ?>
