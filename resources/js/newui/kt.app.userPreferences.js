@@ -18,6 +18,7 @@ kt.app.userPreferences = new function() {
 			height: 450,
 			layout: 'fit',
 			modal: true,
+			draggable   : false,
 			resizable: false,
 			autoLoad: {
 				url : '/preferences.php',

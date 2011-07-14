@@ -90,6 +90,7 @@ class KTFolderRenameAction extends KTFolderAction {
             'fields' => $fields,
             'input' => $input,
             'folderName' => $this->oFolder->getName(),
+            'parentLink' => KTBrowseUtil::getUrlForFolder($this->oFolder->getParentID()),
         ));
         return $oTemplate->render();
     }
