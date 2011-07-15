@@ -50,8 +50,10 @@ class PasswordResetInterceptor extends KTInterceptor {
 
     function authenticated() {}
 
-    function takeover()
+    function takeOver()
     {
+    	// Skip take over if authentication is through google
+    	if(KTUtil::arrayGet($_GET, 'auth', '') == 'google') return ;
         $pluginRegistry =& KTPluginRegistry::getSingleton();
         $plugin =& $pluginRegistry->getPlugin('password.reset.plugin');
 
@@ -93,10 +95,13 @@ class PasswordResetPlugin extends KTPlugin {
         // Check if interceptor instance exists
         $interceptorNamespace = 'password.reset.login.interceptor';
         $interceptor = KTInterceptorInstance::getByInterceptorNamespace($interceptorNamespace);
-    	if (!($interceptor instanceof KTEntityNoObjects)) { return ; }
         // Register the interceptor
         $this->registerInterceptor('PasswordResetInterceptor', $interceptorNamespace, __FILE__);
-
+        // Add templates directory to list
+        $dir = dirname(__FILE__);
+        $templating =& KTTemplating::getSingleton();
+        $templating->addLocation('passwordResetPlugin', $dir . '/templates');
+    	if (!($interceptor instanceof KTEntityNoObjects)) { return ; }
         // Interceptor has to be added to the DB to be found
         $options = array(
             'sName' => 'Password Reset Interceptor',
@@ -104,10 +109,6 @@ class PasswordResetPlugin extends KTPlugin {
             'sConfig' => ''
         );
         KTInterceptorInstance::createFromArray($options);
-        // Add templates directory to list
-        $dir = dirname(__FILE__);
-        $templating =& KTTemplating::getSingleton();
-        $templating->addLocation('passwordResetPlugin', $dir . '/templates');
     }
 
 }
