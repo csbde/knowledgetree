@@ -25,7 +25,7 @@ specify how it controls permissions.</strong>{/i18n}</p>
     <tbody>
         {foreach from=$states item=oState}
         {assign value=$oState->getId() var=state_id}
-        <tr>
+        <tr  class="{cycle values=odd,even name=permissions}">
             <td><a href="{addQS context=$context}action=managepermissions&fStateId={$state_id}{/addQS}">{$oState->getName()}</a></td>
             <td class="centered">{if ($controllers.$state_id)} <span class="ktAction ktAllowed">yes</span> {else} <span class="ktAction ktDenied">no</span> {/if}</td>
           {foreach from=$perms item=oPerm}

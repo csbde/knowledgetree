@@ -1,8 +1,5 @@
 <h2>{i18n arg_field_name=$field_name}Manage Lookups for  "#field_name#"{/i18n}</h2>
 
-<fieldset>
-<legend>{i18n}Manage Lookups{/i18n}</legend>
-
 <p class="descriptiveText">{i18n}Over time, the lookup values which make sense will
 change and evolve as your organisation does. You may thus need to change the lookup
 values associated with a given field.  There are a number of different states
@@ -27,7 +24,7 @@ that are possible for a given lookup{/i18n}:</p>
 <table class="kt_collection narrow" cellspacing="0">
     <thead>
         <tr>
-            <th>&nbsp;</th>
+            <th width="10px;">&nbsp;</th>
             <th>{i18n}Lookup Value{/i18n}</th>
             <th class="centered">{i18n}Enabled{/i18n}</th>
             <th class="centered">{i18n}Sticky{/i18n}</th>
@@ -37,7 +34,7 @@ that are possible for a given lookup{/i18n}:</p>
     <tbody>
       {foreach from=$lookups item=oLookup}
       {assign var='id' value=$oLookup->getId()}
-        <tr>
+        <tr  class="{cycle values=odd,even}">
             <td><input type="checkbox" name="metadata[]" value="{$oLookup->getId()}" /></td>
             <td><div id="{$id}">{$oLookup->getName()}</div></td>
             <td class="centered">{if (!$oLookup->getDisabled())}<span class="ktAction ktAllowed">{i18n}Yes{/i18n}</span>{else}<span class="ktAction ktDenied">{i18n}No{/i18n}</span>{/if}</td>
@@ -47,13 +44,16 @@ that are possible for a given lookup{/i18n}:</p>
       {/foreach}
     </tbody>
 </table>
-
-<div class="form_actions">
-<input type="submit" name="submit[toggleenabled]" value="{i18n}Toggle enabled state{/i18n}" />
-<input type="submit" name="submit[togglestickiness]" value="{i18n}Toggle stickiness{/i18n}" />
-<input type="submit" name="submit[remove]" value="{i18n}Delete{/i18n}" />
-<a class="form_cancel" href="{addQS context=$context}fieldset_action=managefield{/addQS}">{i18n}Cancel{/i18n}</a>
+<div class="table-footer">
+	<div class="form_actions">
+		<input type="submit" name="submit[toggleenabled]" value="{i18n}Toggle enabled state{/i18n}" />
+		<input type="submit" name="submit[togglestickiness]" value="{i18n}Toggle stickiness{/i18n}" />
+		<input type="submit" name="submit[remove]" value="{i18n}Delete{/i18n}" />
+	</div>
 </div>
-
-</fieldset>
+<div class="action-footer">
+<div class="form_actions">
+	<a class="form_cancel" href="{addQS context=$context}fieldset_action=managefield{/addQS}">{i18n}Back{/i18n}</a>
+</div>
+</div>
 </form>

@@ -44,7 +44,7 @@ its details, or use the enable/disable buttons to change its availability state.
     { $oDocumentType->getName() }
 </td>
 
-      <td>
+      <td width="300px;">
 {assign var="aFieldsets" value=$oDocumentType->getFieldsets()}
 {if $aFieldsets}
 
@@ -52,7 +52,7 @@ its details, or use the enable/disable buttons to change its availability state.
 
     {capture assign=fsid}{$oFieldset->getId()}{/capture}
 <a title="{i18n}Edit fieldset.{/i18n}"
-href="{ktLink base="settings.php" query="fCategory=contentManagement&subsection=ratpfieldset&expanded=1&action=edit&fFieldsetId=`$fsid`"}">{$oFieldset->getName()}</a>{if (!$smarty.foreach.fieldsets.last)}, {/if} 
+href="{ktLink base="settings.php" query="fCategory=documentProperties&subsection=ratpfieldset&expanded=1&action=edit&fFieldsetId=`$fsid`"}">{$oFieldset->getName()}</a>{if (!$smarty.foreach.fieldsets.last)}, {/if} 
 
 {/foreach}
 
