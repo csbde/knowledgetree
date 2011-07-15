@@ -58,7 +58,7 @@
 								<th>Created by:</th><td>{$doc_data.creator} on {$document->getDisplayCreatedDateTime()|date_format:"%b %e, %Y"}</td>
 							</tr>
 							<tr>
-								<th>Owned by:</th><td>{$doc_data.owner}</td>
+								<th>Owned by:</th><td id="value-documentowner">{$doc_data.owner}</td>
 							</tr>
 						{if $document->getIsCheckedOut()}
 							<tr id="value-ischeckedout">
@@ -122,14 +122,16 @@
 					<div class="action_buttons above" id=top_actions>
 						{$documentTopActions}
 					</div>
-				</div>				
-				{if !empty($live_preview)}
-					<div style="margin-top:1em;">{$live_preview}</div>
-				{else}
-				<div class="no-preview">
-					<span class="no-preview-text">Preview Not Available</span>
 				</div>
-			{/if}
+                <div id="documentpreview">
+                    {if !empty($live_preview)}
+                        <div style="margin-top:1em;">{$live_preview}</div>
+                    {else}
+                        <div class="no-preview">
+                            <span class="no-preview-text">Preview Not Available</span>
+                        </div>
+                    {/if}
+                </div>
 			<div id=bottom_actions class="action_buttons below" style="display: inline-block; margin-top: 5px;"> 
 				{$documentBottomActions}
 			</div>

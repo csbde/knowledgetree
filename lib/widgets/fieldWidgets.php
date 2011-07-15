@@ -71,7 +71,7 @@ class KTBaseWidget {
 
         if (is_null($this->aOptions)) { $this->aOptions = array(); }
         // default to being a bit bigger.
-        $this->aOptions['width'] = KTUtil::arrayGet($this->aOptions, 'width', '45');
+        $this->aOptions['width'] = KTUtil::arrayGet($this->aOptions, 'width', '30');
     }
 
     function render() {
@@ -112,6 +112,7 @@ class KTTextWidget extends KTBaseWidget { var $sTemplate = 'kt3/fields/text'; }
 class KTCheckboxWidget extends KTBaseWidget { var $sTemplate = 'kt3/fields/checkbox'; }
 class KTFileUploadWidget extends KTBaseWidget { var $sTemplate = 'kt3/fields/fileupload'; }
 class KTStaticTextWidget extends KTBaseWidget { var $sTemplate = 'kt3/fields/statictext'; }
+class KTBooleanWidget extends KTBaseWidget { var $sTemplate = 'kt3/fields/boolean'; }
 
 /* lookup widget */
 // EXPECTS $aOptions['vocab'] => key, item
@@ -134,7 +135,10 @@ class KTJSONLookupWidget extends KTBaseWidget {
 
     var $sTemplate = 'kt3/fields/jsonlookup';
 
-    public function setTemplate($template) { $this->sTemplate = $template; }
+    public function setTemplate($template)
+    {
+        $this->sTemplate = $template;
+    }
 
     public static function getGroupsAndRoles()
     {
@@ -243,10 +247,10 @@ class KTJSONLookupWidget extends KTBaseWidget {
         return self::getWidget($label, $type, $parts, $assigned, $options);
     }
 
-    public static function getUserSearchWidget($label, $type, $parts, $members)
+    public static function getUserSearchWidget($label, $type, $parts, $members, $options)
     {
         $assigned = self::getAssignedUsers($members);
-        $options = array('users' => $groups);
+        $options['users'] = $groups;
 
         return self::getWidget($label, $type, $parts, $assigned, $options);
     }

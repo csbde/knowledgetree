@@ -113,7 +113,7 @@ class KTFolderAddFolderAction extends KTFolderAction {
 				),
             );
         $usertype = '';
-        if($this->oUser instanceof UserProxy)
+        if ($this->oUser instanceof UserProxy)
         {
             $usertype = $this->oUser->getDisabled();
         }
@@ -123,10 +123,10 @@ class KTFolderAddFolderAction extends KTFolderAction {
         	$usertype = $oUser->getDisabled();
         }
         // Shared users should not see folder template structures
-        if($usertype != 4)
+        if ($usertype != 4)
         {
 			$aFolderTemplates = $this->folderTemplateOptions(); // Get folder structure creation option
-			if(is_array($aFolderTemplates)) { // Check if any results are returned
+			if (is_array($aFolderTemplates)) { // Check if any results are returned
 				 $folderWidgets[] = $aFolderTemplates;
 			}
         }
@@ -135,7 +135,7 @@ class KTFolderAddFolderAction extends KTFolderAction {
 
         // Electronic Signature if enabled
         global $default;
-        if($default->enableESignatures){
+        if ($default->enableESignatures){
             $oForm->addWidget(array('ktcore.widgets.info', array(
                     'label' => _kt('This action requires authentication'),
                     'description' => _kt('Please provide your user credentials as confirmation of this action.'),
@@ -168,8 +168,8 @@ class KTFolderAddFolderAction extends KTFolderAction {
             )),
         ));
 
-        if($default->enableESignatures){
-            $oForm->addValidator(array('electonic.signatures.validators.authenticate', array(
+        if ($default->enableESignatures){
+            $oForm->addValidator(array('electronic.signatures.validators.authenticate', array(
                 'object_id' => $this->oFolder->getId(),
                 'type' => 'folder',
                 'action' => 'ktcore.transactions.add_folder',
@@ -217,11 +217,11 @@ class KTFolderAddFolderAction extends KTFolderAction {
         if (!empty($res['errors'])) {
             $oForm->handleError();
         }
-        $res = $res['results'];
 
-    	if(KTFolderUtil::exists($this->oFolder, $res['name'])) {
-	        $oForm->handleError(null, array('name' => _kt('A folder with that name already exists.')));
-	    }
+        $res = $res['results'];
+    	if (KTFolderUtil::exists($this->oFolder, $res['name'])) {
+	    $oForm->handleError(null, array('name' => _kt('A folder with that name already exists.')));
+	}
 
         $this->startTransaction();
 
@@ -247,7 +247,7 @@ class KTFolderAddFolderAction extends KTFolderAction {
         // On successful creation of a folder
         $templateId = isset($_POST['data']) ? KTUtil::arrayGet($_POST['data'], 'templateId', false) : false;
         // Check if a folder template needs to be applied
-        if($templateId != false)
+        if ($templateId != false)
         	$this->applyTemplate($oFolder->getId(), $templateId);
         controllerRedirect('browse', sprintf('fFolderId=%d', $oFolder->getId()));
 

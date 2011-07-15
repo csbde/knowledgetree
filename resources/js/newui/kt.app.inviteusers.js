@@ -39,7 +39,8 @@ kt.app.inviteusers = new function() {
 
     // send the invites and add the users to the system
     this.inviteUsers  =  function() {
-        emails = jQuery.trim(document.getElementById('invite.emails').value);
+        emails = document.getElementById('invite.emails').value;
+		emails = kt.api.newline2comma(emails);
         if (emails.length < 3) {
 	        alert('Please enter a valid email address.');
 	    } else {
@@ -155,7 +156,7 @@ kt.app.inviteusers = new function() {
         inviteConfirmWin = Ext.getCmp('extinviteconfirmwindow');
         inviteConfirmWin.destroy();
     }
-
+    
     // Call the initialization function at object instantiation.
     this.init();
 }

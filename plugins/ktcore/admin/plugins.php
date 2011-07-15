@@ -5,7 +5,7 @@
  * KnowledgeTree Community Edition
  * Document Management Made Simple
  * Copyright (C) 2008, 2009, 2010 KnowledgeTree Inc.
- * 
+ *
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License version 3 as published by the
@@ -69,7 +69,8 @@ class KTPluginDispatcher extends KTAdminDispatcher {
             'plugins' => $aPlugins,
             'enabled_plugins' => $aEnabledPluginIds,
         ));
-        return $oTemplate;
+
+        return $oTemplate->render();
     }
 
     function do_update() {
@@ -160,6 +161,11 @@ class KTPluginDispatcher extends KTAdminDispatcher {
          * KTPluginUtil::registerPlugins();
         */
         $this->successRedirectToMain(_kt('Plugins read from the filesystem'));
+    }
+
+    public function handleOutput($output)
+    {
+        print $output;
     }
 }
 

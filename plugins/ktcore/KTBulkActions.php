@@ -51,9 +51,19 @@ class KTBulkDeleteAction extends KTBulkAction {
         return _kt('Delete');
     }
 
+    function getOnClick()
+    {
+        return "javascript:{kt.app.copy.doBulkAction('delete');}";
+    }
+    
+    function getBtnType()
+    {
+    	return 'button';
+    }
+    
     function check_entity($oEntity) {
-        if($oEntity instanceof Document) {
-            if(!KTDocumentUtil::canBeDeleted($oEntity, $sError)) {
+        if ($oEntity instanceof Document) {
+            if (!KTDocumentUtil::canBeDeleted($oEntity, $sError)) {
                 if (PEAR::isError($sError))
                 {
                     return $sError;
@@ -62,7 +72,7 @@ class KTBulkDeleteAction extends KTBulkAction {
             }
         }
 
-        if($oEntity instanceof Folder) {
+        if ($oEntity instanceof Folder) {
             $aDocuments = array();
             $aChildFolders = array();
 
@@ -76,7 +86,7 @@ class KTBulkDeleteAction extends KTBulkAction {
             $aDocuments = (!empty($sDocuments)) ? explode(',', $sDocuments) : array();
 
             // Loop through documents and send to this function for checking
-            if(!empty($aDocuments)){
+            if (!empty($aDocuments)){
                 foreach($aDocuments as $sDocID){
                     $oDocument = Document::get($sDocID);
                     $res = $this->check_entity($oDocument);
@@ -95,7 +105,7 @@ class KTBulkDeleteAction extends KTBulkAction {
             $aChildFolders = $this->oFolder->getList($sWhereClause);
 
             // Loop through subfolders and check each in the same way as the parent
-            if(!empty($aChildFolders)){
+            if (!empty($aChildFolders)){
                 foreach($aChildFolders as $oChild){
                     $res = $this->check_entity($oChild);
                     if (PEAR::isError($res))
@@ -127,7 +137,7 @@ class KTBulkDeleteAction extends KTBulkAction {
         ));
 
         // Electronic Signature if enabled
-        if($default->enableESignatures){
+        if ($default->enableESignatures){
             $widgets[] = array('ktcore.widgets.info', array(
                     'label' => _kt('This action requires authentication'),
                     'description' => _kt('Please provide your user credentials as confirmation of this action.'),
@@ -146,7 +156,7 @@ class KTBulkDeleteAction extends KTBulkAction {
         }
 
 
-        if($this->oConfig->get('actionreasons/globalReasons') || $default->enableESignatures){
+        if ($this->oConfig->get('actionreasons/globalReasons') || $default->enableESignatures){
 	        $widgets[] = array('ktcore.widgets.reason',array(
 	                'name' => 'reason',
 	                'label' => _kt('Note'),
@@ -162,8 +172,8 @@ class KTBulkDeleteAction extends KTBulkAction {
                 'output' => 'reason',
             ));
 
-        if($default->enableESignatures){
-            $validators[] = array('electonic.signatures.validators.authenticate', array(
+        if ($default->enableESignatures){
+            $validators[] = array('electronic.signatures.validators.authenticate', array(
                 'object_id' => $this->oFolder->getID(),
                 'type' => 'bulk',
                 'action' => 'ktcore.transactions.bulk_delete',
@@ -225,7 +235,7 @@ class KTBulkDeleteAction extends KTBulkAction {
     // info collection step
     function do_collectinfo() {
         global $default;
-        if(!$default->enableESignatures && !$this->oConfig->get('actionreasons/globalReasons',false)){
+        if (!$default->enableESignatures && !$this->oConfig->get('actionreasons/globalReasons',false)){
 	        $this->store_lists();
 	        return $this->do_performaction();
         }
@@ -235,9 +245,9 @@ class KTBulkDeleteAction extends KTBulkAction {
         $this->get_lists();
 
      	//check if a the symlinks deletion confirmation has been passed yet
-		if(KTutil::arrayGet($_REQUEST['data'],'delete_confirmed') != 1){
+		if (KTutil::arrayGet($_REQUEST['data'],'delete_confirmed') != 1){
 			//check if there are actually any symlinks involved.
-        	if($this->symlinksLinkingToCurrentList()){
+        	if ($this->symlinksLinkingToCurrentList()){
         		$this->redirectTo("confirm");
         	}
         }
@@ -271,13 +281,13 @@ class KTBulkDeleteAction extends KTBulkAction {
     function perform_action($oEntity) {
         $sReason = $this->res['reason'];
 
-        if($oEntity instanceof Document) {
+        if ($oEntity instanceof Document) {
             $res = KTDocumentUtil::delete($oEntity, $sReason, null, true);
             if (PEAR::isError($res)) {
                 return $res;
             }
             return "RemoveChildDocument";
-        } else if($oEntity instanceof Folder) {
+        } else if ($oEntity instanceof Folder) {
             $res = KTFolderUtil::delete($oEntity, $this->oUser, $sReason, null, true);
             if (PEAR::isError($res)) {
                 return $res;
@@ -298,6 +308,16 @@ class KTBulkMoveAction extends KTBulkAction {
         return _kt('Move');
     }
 
+    function getOnClick()
+    {
+        return "javascript:{kt.app.copy.doBulkAction('move');}";
+    }
+    
+    function getBtnType()
+    {
+    	return 'button';
+    }
+    
     function form_collectinfo() {
         $cancelUrl = $this->getReturnUrl();
 
@@ -359,7 +379,7 @@ class KTBulkMoveAction extends KTBulkAction {
 
         // Electronic Signature if enabled
         global $default;
-        if($default->enableESignatures){
+        if ($default->enableESignatures){
             $oForm->addWidget(array('ktcore.widgets.info', array(
                     'label' => _kt('This action requires authentication'),
                     'description' => _kt('Please provide your user credentials as confirmation of this action.'),
@@ -378,7 +398,7 @@ class KTBulkMoveAction extends KTBulkAction {
         }
 
 
-        if($this->oConfig->get('actionreasons/globalReasons') || $default->enableESignatures) {
+        if ($this->oConfig->get('actionreasons/globalReasons') || $default->enableESignatures) {
             $oForm->addWidget(
                 array('ktcore.widgets.reason',array(
                     'name' => 'reason',
@@ -396,8 +416,8 @@ class KTBulkMoveAction extends KTBulkAction {
             )),
         ));
 
-        if($default->enableESignatures){
-            $oForm->addValidator(array('electonic.signatures.validators.authenticate', array(
+        if ($default->enableESignatures){
+            $oForm->addValidator(array('electronic.signatures.validators.authenticate', array(
                 'object_id' => $this->oFolder->getID(),
                 'type' => 'bulk',
                 'action' => 'ktcore.transactions.bulk_move',
@@ -412,8 +432,8 @@ class KTBulkMoveAction extends KTBulkAction {
 
     function check_entity($oEntity) {
 
-        if($oEntity instanceof Document) {
-            if(!KTDocumentUtil::canBeMoved($oEntity, $sError)) {
+        if ($oEntity instanceof Document) {
+            if (!KTDocumentUtil::canBeMoved($oEntity, $sError)) {
                 if (PEAR::isError($sError))
                 {
                     return $sError;
@@ -422,7 +442,7 @@ class KTBulkMoveAction extends KTBulkAction {
             }
         }
 
-        if($oEntity instanceof Folder) {
+        if ($oEntity instanceof Folder) {
             $aDocuments = array();
             $aChildFolders = array();
 
@@ -436,7 +456,7 @@ class KTBulkMoveAction extends KTBulkAction {
             $aDocuments = (!empty($sDocuments)) ? explode(',', $sDocuments) : array();
 
             // Loop through documents and send to this function for checking
-            if(!empty($aDocuments)){
+            if (!empty($aDocuments)){
                 foreach($aDocuments as $sDocID){
                     $oDocument = Document::get($sDocID);
                     $res = $this->check_entity($oDocument);
@@ -455,7 +475,7 @@ class KTBulkMoveAction extends KTBulkAction {
             $aChildFolders = $this->oFolder->getList($sWhereClause);
 
             // Loop through subfolders and check each in the same way as the parent
-            if(!empty($aChildFolders)){
+            if (!empty($aChildFolders)){
                 foreach($aChildFolders as $oChild){
                     $res = $this->check_entity($oChild);
                     if (PEAR::isError($res))
@@ -499,20 +519,20 @@ class KTBulkMoveAction extends KTBulkAction {
         // Store initial folder
         $_REQUEST['fOriginalFolderId'] = $this->oFolder->getId();
         // does it exists
-        if(PEAR::isError($this->oTargetFolder)) {
+        if (PEAR::isError($this->oTargetFolder)) {
             $this->errorRedirectTo('collectinfo', _kt('Invalid target folder selected'));
             exit(0);
         }
 
         if ($_REQUEST['fReturnAction'] != 'search2') {
-            if($this->iTargetFolderId == $this->oFolder->getId()){
+            if ($this->iTargetFolderId == $this->oFolder->getId()){
                 $this->errorRedirectTo('collectinfo', _kt('Invalid target folder selected: Target folder is the same as the current folder.'));
                 exit(0);
             }
         }
 
         // does the user have write permission
-        if(!Permission::userHasFolderWritePermission($this->oTargetFolder)) {
+        if (!Permission::userHasFolderWritePermission($this->oTargetFolder)) {
             $this->errorRedirectTo('collectinfo', _kt('You do not have permission to move items to this location'));
             exit(0);
         }
@@ -526,9 +546,9 @@ class KTBulkMoveAction extends KTBulkAction {
       *
       */
     function perform_action($oEntity) {
-        if($oEntity instanceof Document) {
+        if ($oEntity instanceof Document) {
             $res = KTDocumentUtil::move($oEntity, $this->oTargetFolder, $this->oUser, $this->sReason, true);
-        } else if($oEntity instanceof Folder) {
+        } else if ($oEntity instanceof Folder) {
             $res = KTFolderUtil::move($oEntity, $this->oTargetFolder, $this->oUser, $this->sReason, true);
         }
         if (PEAR::isError($res))
@@ -547,6 +567,16 @@ class KTBulkCopyAction extends KTBulkAction {
         return _kt('Copy');
     }
 
+    function getOnClick()
+    {
+        return "javascript:{kt.app.copy.doBulkAction('copy');}";
+    }
+    
+    function getBtnType()
+    {
+    	return 'button';
+    }
+    
     function form_collectinfo() {
         $cancelUrl = $this->getReturnUrl();
 
@@ -606,7 +636,7 @@ class KTBulkCopyAction extends KTBulkAction {
 
         // Electronic Signature if enabled
         global $default;
-        if($default->enableESignatures){
+        if ($default->enableESignatures){
             $oForm->addWidget(array('ktcore.widgets.info', array(
                     'label' => _kt('This action requires authentication'),
                     'description' => _kt('Please provide your user credentials as confirmation of this action.'),
@@ -624,7 +654,7 @@ class KTBulkCopyAction extends KTBulkAction {
                 )));
         }
 
-       if($this->oConfig->get('actionreasons/globalReasons') || $default->enableESignatures) {
+       if ($this->oConfig->get('actionreasons/globalReasons') || $default->enableESignatures) {
            $oForm->addWidget(
                 array('ktcore.widgets.reason',array(
                     'name' => 'reason',
@@ -642,8 +672,8 @@ class KTBulkCopyAction extends KTBulkAction {
             )),
         ));
 
-        if($default->enableESignatures){
-            $oForm->addValidator(array('electonic.signatures.validators.authenticate', array(
+        if ($default->enableESignatures){
+            $oForm->addValidator(array('electronic.signatures.validators.authenticate', array(
                 'object_id' => $this->oFolder->getID(),
                 'type' => 'bulk',
                 'action' => 'ktcore.transactions.bulk_copy',
@@ -657,8 +687,8 @@ class KTBulkCopyAction extends KTBulkAction {
     }
 
     function check_entity($oEntity) {
-        if($oEntity instanceof Document) {
-            if(!KTDocumentUtil::canBeCopied($oEntity, $sError)) {
+        if ($oEntity instanceof Document) {
+            if (!KTDocumentUtil::canBeCopied($oEntity, $sError)) {
                 if (PEAR::isError($sError))
                 {
                     return $sError;
@@ -667,7 +697,7 @@ class KTBulkCopyAction extends KTBulkAction {
             }
         }
 
-        if($oEntity instanceof Folder) {
+        if ($oEntity instanceof Folder) {
             $aDocuments = array();
             $aChildFolders = array();
 
@@ -681,7 +711,7 @@ class KTBulkCopyAction extends KTBulkAction {
             $aDocuments = (!empty($sDocuments)) ? explode(',', $sDocuments) : array();
 
             // Loop through documents and send to this function for checking
-            if(!empty($aDocuments)){
+            if (!empty($aDocuments)){
                 foreach($aDocuments as $sDocID){
                     $oDocument = Document::get($sDocID);
                     $res = $this->check_entity($oDocument);
@@ -700,7 +730,7 @@ class KTBulkCopyAction extends KTBulkAction {
             $aChildFolders = $this->oFolder->getList($sWhereClause);
 
             // Loop through subfolders and check each in the same way as the parent
-            if(!empty($aChildFolders)){
+            if (!empty($aChildFolders)){
                 foreach($aChildFolders as $oChild){
                     $res = $this->check_entity($oChild);
                     if (PEAR::isError($res))
@@ -742,12 +772,12 @@ class KTBulkCopyAction extends KTBulkAction {
         $_REQUEST['fFolderId'] = $this->iTargetFolderId;
 
         // does it exists
-        if(PEAR::isError($this->oTargetFolder)) {
+        if (PEAR::isError($this->oTargetFolder)) {
             return PEAR::raiseError(_kt('Invalid target folder selected'));
         }
 
         // does the user have write permission
-        if(!Permission::userHasFolderWritePermission($this->oTargetFolder)) {
+        if (!Permission::userHasFolderWritePermission($this->oTargetFolder)) {
             $this->errorRedirectTo('collectinfo', _kt('You do not have permission to move items to this location'));
         }
 
@@ -760,13 +790,13 @@ class KTBulkCopyAction extends KTBulkAction {
 	  *
       */
     function perform_action($oEntity) {
-        if($oEntity instanceof Document) {
+        if ($oEntity instanceof Document) {
             $res = KTDocumentUtil::copy($oEntity, $this->oTargetFolder, $this->sReason, null, true);
             if (PEAR::isError($res)) {
                 return $res;
             }
 
-        } else if($oEntity instanceof Folder) {
+        } else if ($oEntity instanceof Folder) {
             $res = KTFolderUtil::copy($oEntity, $this->oTargetFolder, $this->oUser, $this->sReason, null, true);
             if (PEAR::isError($res)) {
                 return $res;
@@ -786,6 +816,16 @@ class KTBulkArchiveAction extends KTBulkAction {
         return _kt('Archive');
     }
 
+    function getOnClick()
+    {
+        return "javascript:{kt.app.copy.doBulkAction('archive');}";
+    }
+    
+    function getBtnType()
+    {
+    	return 'button';
+    }
+    
     function form_collectinfo() {
         $cancelUrl = $this->getReturnUrl();
 
@@ -801,7 +841,7 @@ class KTBulkArchiveAction extends KTBulkAction {
 
         // Electronic Signature if enabled
         global $default;
-        if($default->enableESignatures){
+        if ($default->enableESignatures){
             $oForm->addWidget(array('ktcore.widgets.info', array(
                     'label' => _kt('This action requires authentication'),
                     'description' => _kt('Please provide your user credentials as confirmation of this action.'),
@@ -819,7 +859,7 @@ class KTBulkArchiveAction extends KTBulkAction {
                 )));
         }
 
-        if($this->oConfig->get('actionreasons/globalReasons') || $default->enableESignatures) {
+        if ($this->oConfig->get('actionreasons/globalReasons') || $default->enableESignatures) {
             $oForm->addWidget(
                 array('ktcore.widgets.reason',array(
                     'name' => 'reason',
@@ -837,8 +877,8 @@ class KTBulkArchiveAction extends KTBulkAction {
             )),
         ));
 
-        if($default->enableESignatures){
-            $oForm->addValidator(array('electonic.signatures.validators.authenticate', array(
+        if ($default->enableESignatures){
+            $oForm->addValidator(array('electronic.signatures.validators.authenticate', array(
                 'object_id' => $this->oFolder->getID(),
                 'type' => 'bulk',
                 'action' => 'ktcore.transactions.bulk_archive',
@@ -855,16 +895,16 @@ class KTBulkArchiveAction extends KTBulkAction {
         // NOTE: these checks don't have an equivalent in the delete and move functions.
         //       possibly they are no longer needed but I am leaving them here
         //       to avoid any potential problems I may not be aware of
-        if((!($oEntity instanceof Document)) && (!($oEntity instanceof Folder))) {
+        if ((!($oEntity instanceof Document)) && (!($oEntity instanceof Folder))) {
             return PEAR::raiseError(_kt('Document cannot be archived'));
         }
 
-        if($oEntity->isSymbolicLink()){
+        if ($oEntity->isSymbolicLink()){
         	return PEAR::raiseError(_kt("It is not possible to archive a shortcut. Please archive the target document or folder instead."));
         }
 
-        if($oEntity instanceof Document) {
-            if(!KTDocumentUtil::canBeArchived($oEntity, $sError)) {
+        if ($oEntity instanceof Document) {
+            if (!KTDocumentUtil::canBeArchived($oEntity, $sError)) {
                 if (PEAR::isError($sError))
                 {
                     return $sError;
@@ -873,7 +913,7 @@ class KTBulkArchiveAction extends KTBulkAction {
             }
         }
 
-        if($oEntity instanceof Folder) {
+        if ($oEntity instanceof Folder) {
             $aDocuments = array();
             $aChildFolders = array();
 
@@ -887,7 +927,7 @@ class KTBulkArchiveAction extends KTBulkAction {
             $aDocuments = (!empty($sDocuments)) ? explode(',', $sDocuments) : array();
 
             // Loop through documents and send to this function for checking
-            if(!empty($aDocuments)){
+            if (!empty($aDocuments)){
                 foreach($aDocuments as $sDocID){
                     $oDocument = Document::get($sDocID);
                     $res = $this->check_entity($oDocument);
@@ -906,7 +946,7 @@ class KTBulkArchiveAction extends KTBulkAction {
             $aChildFolders = $this->oFolder->getList($sWhereClause);
 
             // Loop through subfolders and check each in the same way as the parent
-            if(!empty($aChildFolders)){
+            if (!empty($aChildFolders)){
                 foreach($aChildFolders as $oChild){
                     $res = $this->check_entity($oChild);
                     if (PEAR::isError($res))
@@ -970,7 +1010,7 @@ class KTBulkArchiveAction extends KTBulkAction {
     // info collection step
     function do_collectinfo() {
         global $default;
-        if(!$default->enableESignatures && !$this->oConfig->get('actionreasons/globalReasons',false)){
+        if (!$default->enableESignatures && !$this->oConfig->get('actionreasons/globalReasons',false)){
 	        $this->store_lists();
 	        return $this->do_performaction();
         }
@@ -979,9 +1019,9 @@ class KTBulkArchiveAction extends KTBulkAction {
         $this->get_lists();
 
         //check if a the symlinks deletion confirmation has been passed yet
-		if(KTutil::arrayGet($_REQUEST['data'],'archive_confirmed') != 1){
+		if (KTutil::arrayGet($_REQUEST['data'],'archive_confirmed') != 1){
 			//check if there are actually any symlinks involved.
-        	if($this->symlinksLinkingToCurrentList()){
+        	if ($this->symlinksLinkingToCurrentList()){
         		$this->redirectTo("confirm");
         	}
         }
@@ -1014,14 +1054,14 @@ class KTBulkArchiveAction extends KTBulkAction {
       *
       */
     function perform_action($oEntity) {
-        if($oEntity instanceof Document) {
+        if ($oEntity instanceof Document) {
 
             $res = KTDocumentUtil::archive($oEntity, $this->sReason, true);
 
-            if(PEAR::isError($res)){
+            if (PEAR::isError($res)){
                 return $res;
             }
-        }else if($oEntity instanceof Folder) {
+        }else if ($oEntity instanceof Folder) {
             $aDocuments = array();
             $aChildFolders = array();
             $oFolder = $oEntity;
@@ -1041,7 +1081,7 @@ class KTBulkArchiveAction extends KTBulkAction {
             $aChildFolders = $this->oFolder->getList($sWhereClause);
 
             // Loop through folders and get documents
-            if(!empty($aChildFolders)){
+            if (!empty($aChildFolders)){
                 foreach($aChildFolders as $oChild){
                     $sChildId = $oChild->getID();
                     $sChildDocs = $oChild->getDocumentIDs($sChildId);
@@ -1049,7 +1089,7 @@ class KTBulkArchiveAction extends KTBulkAction {
                        return false;
                     }
 
-                    if(!empty($sChildDocs)){
+                    if (!empty($sChildDocs)){
                         $aChildDocs = explode(',', $sChildDocs);
                         $aDocuments = array_merge($aDocuments, $aChildDocs);
                     }
@@ -1057,17 +1097,17 @@ class KTBulkArchiveAction extends KTBulkAction {
             }
 
             // Archive all documents
-            if(!empty($aDocuments)){
+            if (!empty($aDocuments)){
                 foreach($aDocuments as $sDocumentId){
                     $oDocument = Document::get($sDocumentId);
 
-                    if(PEAR::isError($oDocument)){
+                    if (PEAR::isError($oDocument)){
                         return $oDocument;
                     }
 
                     $res = KTDocumentUtil::archive($oDocument, $this->sReason, true);
 
-                    if(PEAR::isError($res)){
+                    if (PEAR::isError($res)){
                         return $res;
                     }
                 }
@@ -1093,17 +1133,17 @@ class KTBrowseBulkExportAction extends KTBulkAction {
     }
 
     function check_entity($oEntity) {
-        if((!($oEntity instanceof Document)) && (!($oEntity instanceof Folder))) {
+        if ((!($oEntity instanceof Document)) && (!($oEntity instanceof Folder))) {
                 return PEAR::raiseError(_kt('Document cannot be exported'));
         }
         //we need to do an extra folder permission check in case of a shortcut
-        if(($oEntity instanceof Folder) && $oEntity->isSymbolicLink()){
-	    	if(!KTPermissionUtil::userHasPermissionOnItem($this->oUser, $this->_sPermission, $oEntity->getLinkedFolder())) {
+        if (($oEntity instanceof Folder) && $oEntity->isSymbolicLink()){
+	    	if (!KTPermissionUtil::userHasPermissionOnItem($this->oUser, $this->_sPermission, $oEntity->getLinkedFolder())) {
 	            return PEAR::raiseError(_kt('You do not have the required permissions'));
 	        }
         }
-        if($oEntity instanceof Document){
-            if(!KTWorkflowUtil::actionEnabledForDocument($oEntity, 'ktcore.actions.document.view')){
+        if ($oEntity instanceof Document){
+            if (!KTWorkflowUtil::actionEnabledForDocument($oEntity, 'ktcore.actions.document.view')){
                 return PEAR::raiseError(_kt('Document cannot be exported as it is restricted by the workflow.'));
             }
         }
@@ -1126,7 +1166,7 @@ class KTBrowseBulkExportAction extends KTBulkAction {
 
         $download_url = KTUtil::addQueryStringSelf("action=downloadZipFile&fFolderId={$this->oFolder->getId()}&exportcode={$this->sExportCode}");
 
-        if($useQueue){
+        if ($useQueue){
             $result = parent::do_performaction();
 
             $url = KTUtil::kt_url() . '/presentation/lookAndFeel/knowledgeTree/bulkdownload/downloadTask.php';
@@ -1146,7 +1186,7 @@ class KTBrowseBulkExportAction extends KTBulkAction {
         $this->oZip = new ZipFolder('', $this->sExportCode);
         $res = $this->oZip->checkConvertEncoding();
 
-        if(PEAR::isError($res)){
+        if (PEAR::isError($res)){
             $this->addErrorMessage($res->getMessage());
             return $sReturn;
         }
@@ -1157,7 +1197,7 @@ class KTBrowseBulkExportAction extends KTBulkAction {
 
         $sExportCode = $this->oZip->createZipFile();
 
-        if(PEAR::isError($sExportCode)){
+        if (PEAR::isError($sExportCode)){
             $this->addErrorMessage($sExportCode->getMessage());
             $this->rollbackTransaction();
             return $sReturn;
@@ -1203,30 +1243,30 @@ class KTBrowseBulkExportAction extends KTBulkAction {
         $config = KTConfig::getSingleton();
         $useQueue = $config->get('export/useDownloadQueue');
 
-        if($oEntity instanceof Document) {
+        if ($oEntity instanceof Document) {
 
 			$oDocument = $oEntity;
-	        if($oDocument->isSymbolicLink()){
+	        if ($oDocument->isSymbolicLink()){
 	    		$oDocument->switchToLinkedCore();
 	    	}
 
-	    	if($useQueue){
+	    	if ($useQueue){
                 DownloadQueue::addItem($this->sExportCode, $this->oFolder->getId(), $oDocument->iId, 'document');
 	    	}else{
                 $oQueue->addDocument($this->oZip, $oDocument->iId, false);
 	    	}
 
 
-        }else if($oEntity instanceof Folder) {
+        }else if ($oEntity instanceof Folder) {
             $aDocuments = array();
             $oFolder = $oEntity;
 
-            if($oFolder->isSymbolicLink()){
+            if ($oFolder->isSymbolicLink()){
             	$oFolder = $oFolder->getLinkedFolder();
             }
             $sFolderId = $oFolder->getId();
 
-            if($useQueue){
+            if ($useQueue){
                 DownloadQueue::addItem($this->sExportCode, $this->oFolder->getId(), $sFolderId, 'folder');
             }else{
                 $oQueue->addFolder($this->oZip, $sFolderId);
@@ -1242,7 +1282,7 @@ class KTBrowseBulkExportAction extends KTBulkAction {
         $this->oZip = new ZipFolder('', $sCode);
         $res = $this->oZip->downloadZipFile($sCode);
 
-        if(PEAR::isError($res)){
+        if (PEAR::isError($res)){
             $this->addErrorMessage($res->getMessage());
             $redirectUrl = $_SESSION['export_return_url'];
             unset($_SESSION['export_return_url']);
@@ -1263,8 +1303,8 @@ class KTBrowseBulkCheckoutAction extends KTBulkAction {
     }
 
     function check_entity($oEntity) {
-        if($oEntity instanceof Document) {
-            if($oEntity->getImmutable())
+        if ($oEntity instanceof Document) {
+            if ($oEntity->getImmutable())
             {
             	return PEAR::raiseError(_kt('Document cannot be checked out as it is immutable'));
             }
@@ -1274,22 +1314,22 @@ class KTBrowseBulkCheckoutAction extends KTBulkAction {
                 $checkedOutUser = $oEntity->getCheckedOutUserID();
                 $sUserId = $_SESSION['userID'];
 
-                if($checkedOutUser != $sUserId){
+                if ($checkedOutUser != $sUserId){
                     $oCheckedOutUser = User::get($checkedOutUser);
                     return PEAR::raiseError($oEntity->getName().': '._kt('Document has already been checked out by ').$oCheckedOutUser->getName());
                 }
             }
 
             // Check that the checkout action isn't restricted for the document
-            if(!KTWorkflowUtil::actionEnabledForDocument($oEntity, 'ktcore.actions.document.checkout')){
+            if (!KTWorkflowUtil::actionEnabledForDocument($oEntity, 'ktcore.actions.document.checkout')){
                 return PEAR::raiseError($oEntity->getName().': '._kt('Checkout is restricted by the workflow state.'));
             }
-        }else if(!($oEntity instanceof Folder)) {
+        }else if (!($oEntity instanceof Folder)) {
                 return PEAR::raiseError(_kt('Document cannot be checked out'));
         }
     	//we need to do an extra folder permission check in case of a shortcut
-        if(($oEntity instanceof Folder) && $oEntity->isSymbolicLink()){
-	    	if(!KTPermissionUtil::userHasPermissionOnItem($this->oUser, $this->_sPermission, $oEntity->getLinkedFolder())) {
+        if (($oEntity instanceof Folder) && $oEntity->isSymbolicLink()){
+	    	if (!KTPermissionUtil::userHasPermissionOnItem($this->oUser, $this->_sPermission, $oEntity->getLinkedFolder())) {
 	            return PEAR::raiseError(_kt('You do not have the required permissions'));
 	        }
         }
@@ -1311,7 +1351,7 @@ class KTBrowseBulkCheckoutAction extends KTBulkAction {
 
         // Electronic Signature if enabled
         global $default;
-        if($default->enableESignatures){
+        if ($default->enableESignatures){
             $widgets[] = array('ktcore.widgets.info', array(
                     'label' => _kt('This action requires authentication'),
                     'description' => _kt('Please provide your user credentials as confirmation of this action.'),
@@ -1329,7 +1369,7 @@ class KTBrowseBulkCheckoutAction extends KTBulkAction {
                 ));
         }
 
-        if($this->oConfig->get('actionreasons/globalReasons') || $default->enableESignatures) {
+        if ($this->oConfig->get('actionreasons/globalReasons') || $default->enableESignatures) {
             $widgets[] = array('ktcore.widgets.reason',array(
                     'name' => 'reason',
                     'label' => _kt('Note'),
@@ -1359,8 +1399,8 @@ class KTBrowseBulkCheckoutAction extends KTBulkAction {
             )),
         ));
 
-        if($default->enableESignatures){
-            $oForm->addValidator(array('electonic.signatures.validators.authenticate', array(
+        if ($default->enableESignatures){
+            $oForm->addValidator(array('electronic.signatures.validators.authenticate', array(
                 'object_id' => $this->oFolder->getID(),
                 'type' => 'bulk',
                 'action' => 'ktcore.transactions.bulk_check_out',
@@ -1406,12 +1446,12 @@ class KTBrowseBulkCheckoutAction extends KTBulkAction {
         $this->startTransaction();
 
         // if files are to be downloaded - create the temp directory for the bulk export
-        if($this->bDownload){
+        if ($this->bDownload){
             $folderName = $this->oFolder->getName();
             $this->oZip = new ZipFolder($folderName);
             $res = $this->oZip->checkConvertEncoding();
 
-            if(PEAR::isError($res)){
+            if (PEAR::isError($res)){
                 $this->addErrorMessage($res->getMessage());
                 return $sReturn;
             }
@@ -1420,15 +1460,15 @@ class KTBrowseBulkCheckoutAction extends KTBulkAction {
 
         $result = parent::do_performaction();
 
-        if(PEAR::isError($result)){
+        if (PEAR::isError($result)){
             $this->addErrorMessage($result->getMessage());
             return $sReturn;
         }
 
-        if($this->bDownload){
+        if ($this->bDownload){
             $sExportCode = $this->oZip->createZipFile();
 
-            if(PEAR::isError($sExportCode)){
+            if (PEAR::isError($sExportCode)){
                 $this->addErrorMessage($sExportCode->getMessage());
                 return $sReturn;
             }
@@ -1436,7 +1476,7 @@ class KTBrowseBulkCheckoutAction extends KTBulkAction {
 
         $this->commitTransaction();
 
-        if($this->bDownload){
+        if ($this->bDownload){
 
             $url = KTUtil::addQueryStringSelf(sprintf('action=downloadZipFile&fFolderId=%d&exportcode=%s', $this->oFolder->getId(), $sExportCode));
             $str = sprintf('<p>' . _kt('Go <a href="%s">here</a> to download the zip file if you are not automatically redirected there') . "</p>\n", $url);
@@ -1465,30 +1505,30 @@ class KTBrowseBulkCheckoutAction extends KTBulkAction {
         // checkout document
         $sReason = $this->sReason;
 
-        if($oEntity instanceof Document) {
+        if ($oEntity instanceof Document) {
 
-            if($oEntity->getImmutable())
+            if ($oEntity->getImmutable())
             {
             	return PEAR::raiseError($oEntity->getName() .': '. _kt('Document cannot be checked out as it is immutable'));
             }
 
-            if($oEntity->getIsCheckedOut()){
+            if ($oEntity->getIsCheckedOut()){
                 $checkedOutUser = $oEntity->getCheckedOutUserID();
                 $sUserId = $_SESSION['userID'];
 
-                if($checkedOutUser != $sUserId){
+                if ($checkedOutUser != $sUserId){
                     $oCheckedOutUser = User::get($checkedOutUser);
                     return PEAR::raiseError($oEntity->getName().': '._kt('Document has already been checked out by ').$oCheckedOutUser->getName());
                 }
             }else{
                 $res = KTDocumentUtil::checkout($oEntity, $sReason, $this->oUser, true);
 
-                if(PEAR::isError($res)) {
+                if (PEAR::isError($res)) {
                     return PEAR::raiseError($oEntity->getName().': '.$res->getMessage());
                 }
             }
 
-            if($this->bDownload){
+            if ($this->bDownload){
                 if ($this->bNoisy) {
                     $oDocumentTransaction = new DocumentTransaction($oEntity, "Document part of bulk checkout", 'ktcore.transactions.check_out', array());
                     $oDocumentTransaction->create();
@@ -1510,21 +1550,21 @@ class KTBrowseBulkCheckoutAction extends KTBulkAction {
                 }
                 $this->oZip->addDocumentToZip($oEntity);
             }
-            if(!PEAR::isError($res)) {
+            if (!PEAR::isError($res)) {
             }
-        }else if($oEntity instanceof Folder) {
+        }else if ($oEntity instanceof Folder) {
             // get documents and subfolders
             $aDocuments = array();
             $oFolder = $oEntity;
 
-        	if($oFolder->isSymbolicLink()){
+        	if ($oFolder->isSymbolicLink()){
             	$oFolder = $oFolder->getLinkedFolder();
             }
             $sFolderId = $oFolder->getId();
             $sFolderDocs = $oFolder->getDocumentIDs($sFolderId);
 
             // get documents directly in the folder
-            if(!empty($sFolderDocs)){
+            if (!empty($sFolderDocs)){
                 $aDocuments = explode(',', $sFolderDocs);
             }
 
@@ -1542,23 +1582,23 @@ class KTBrowseBulkCheckoutAction extends KTBulkAction {
             $aFolderObjects[$sFolderId] = $oFolder;
 
             // Get the documents within the folder
-            if(!empty($aFolderList)){
+            if (!empty($aFolderList)){
 	                foreach($aFolderList as $k => $oFolderItem){
-	                	if(Permission::userHasFolderReadPermission($oFolderItem)){
+	                	if (Permission::userHasFolderReadPermission($oFolderItem)){
 	                    // Get documents for each folder
-	              		if($oFolderItem->isSymbolicLink()){
+	              		if ($oFolderItem->isSymbolicLink()){
             				$oFolderItem = $oFolderItem->getLinkedFolder();
             			}
 	                    $sFolderItemId = $oFolderItem->getID();
 	                    $sFolderItemDocs = $oFolderItem->getDocumentIDs($sFolderItemId);
 
-	                    if(!empty($sFolderItemDocs)){
+	                    if (!empty($sFolderItemDocs)){
 	                        $aFolderDocs = explode(',', $sFolderItemDocs);
 	                        $aDocuments = array_merge($aDocuments, $aFolderDocs);
 	                    }
 
 	                    // Add the folder to the zip file
-	                    if($this->bDownload){
+	                    if ($this->bDownload){
 	                        $this->oZip->addFolderToZip($oFolderItem);
 	                        $aFolderObjects[$oFolderItem->getId()] = $oFolderItem;
 	                    }
@@ -1567,37 +1607,37 @@ class KTBrowseBulkCheckoutAction extends KTBulkAction {
             }
 
             // Checkout each document within the folder structure
-            if(!empty($aDocuments)){
+            if (!empty($aDocuments)){
                 foreach($aDocuments as $sDocId){
                     $oDocument = Document::get($sDocId);
-                    if(PEAR::isError($oDocument)) {
+                    if (PEAR::isError($oDocument)) {
                         // add message, skip document and continue
                         $this->addErrorMessage($oDocument->getName().': '.$oDocument->getMessage());
                         continue;
                     }
-               		if($oDocument->isSymbolicLink()){
+               		if ($oDocument->isSymbolicLink()){
 	    				$oDocument->switchToLinkedCore();
 	    			}
 
-                    if($oDocument->getImmutable())
+                    if ($oDocument->getImmutable())
                     {
                     	$this->addErrorMessage($oDocument->getName() .': '. _kt('Document cannot be checked out as it is immutable'));
                     	continue;
                     }
 
                     // Check if the action is restricted by workflow on the document
-                    if(!KTWorkflowUtil::actionEnabledForDocument($oDocument, 'ktcore.actions.document.checkout')){
+                    if (!KTWorkflowUtil::actionEnabledForDocument($oDocument, 'ktcore.actions.document.checkout')){
                         $this->addErrorMessage($oDocument->getName().': '._kt('Checkout is restricted by the workflow state.'));
                         continue;
                     }
 
                     // Check if document is already checked out, check the owner.
                     // If the current user is the owner, then include to the download, otherwise ignore.
-                    if($oDocument->getIsCheckedOut()){
+                    if ($oDocument->getIsCheckedOut()){
                         $checkedOutUser = $oDocument->getCheckedOutUserID();
                         $sUserId = $_SESSION['userID'];
 
-                        if($checkedOutUser != $sUserId){
+                        if ($checkedOutUser != $sUserId){
                             $oCheckedOutUser = User::get($checkedOutUser);
                             $this->addErrorMessage($oDocument->getName().': '._kt('Document has already been checked out by ').$oCheckedOutUser->getName());
                             continue;
@@ -1606,14 +1646,14 @@ class KTBrowseBulkCheckoutAction extends KTBulkAction {
                         // Check out document
                         $res = KTDocumentUtil::checkout($oDocument, $sReason, $this->oUser, true);
 
-                        if(PEAR::isError($res)) {
+                        if (PEAR::isError($res)) {
                             $this->addErrorMessage($oDocument->getName().': '._kt('Document could not be checked out. ').$res->getMessage());
                             continue;
                         }
                     }
 
                     // Add document to the zip file
-                    if($this->bDownload){
+                    if ($this->bDownload){
                         if ($this->bNoisy) {
                             $oDocumentTransaction = new DocumentTransaction($oDocument, 'Document part of bulk checkout', 'ktcore.transactions.check_out', array());
                             $oDocumentTransaction->create();
@@ -1653,7 +1693,7 @@ class KTBrowseBulkCheckoutAction extends KTBulkAction {
 
         $res = $this->oZip->downloadZipFile($sCode);
 
-        if(PEAR::isError($res)){
+        if (PEAR::isError($res)){
             $this->addErrorMessage($res->getMessage());
             redirect(generateControllerUrl("browse", "fBrowseType=folder&fFolderId=" . $this->oFolder->getId()));
         }

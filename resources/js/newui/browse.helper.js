@@ -226,6 +226,18 @@ kt.pages.browse = new function() {
         return false;
     }
 
+    this.getSelectedItems = function() {
+    	var list = new Array;
+    	var name;
+    	jQuery('.page.page_' + self.curPage + ' .item .checkbox > input:checkbox:enabled').each(function() {
+            if (this.checked) { 
+            	name = this.name.replace('[]', '');
+            	list.push(name+'_'+this.value); 
+            }
+        });
+        return list;
+    }
+    
     this.setBulkActionMenuStatus = function() {
         var selectedItems = jQuery('.itemContainer .item .checkbox>input:checkbox:checked:enabled').length;
         if (selectedItems > 0) {
@@ -303,10 +315,17 @@ jQuery(document).ready(function() {
 		// Reset Position Everytime relative to the parent item
 		jQuery(this).children("ul:first").css({'top': 15+'px', 'position':'absolute', 'margin-top':0});
 		
+		// Chrome/Safari uses body, IE/Firefox uses HTML for scrolling offset
+		if (jQuery("body").scrollTop() > jQuery("html").scrollTop()) {
+			scrollElement = "body";
+		} else {
+			scrollElement = "html";
+		}
+		
 		
 		// If (parent position+child height) > (window height + scroll offset), Reposition child
-		if (jQuery(this).offset().top+jQuery(this).children("ul:first").height()+5 > jQuery(window).height()+jQuery("html").scrollTop()) {
-			diff = (jQuery(this).offset().top+jQuery(this).children("ul:first").height()) - (jQuery(window).height() + jQuery("html").scrollTop());
+		if (jQuery(this).offset().top+jQuery(this).children("ul:first").height()+5 > jQuery(window).height()+jQuery(scrollElement).scrollTop()) {
+			diff = (jQuery(this).offset().top+jQuery(this).children("ul:first").height()) - (jQuery(window).height() + jQuery(scrollElement).scrollTop());
 			
 			// Move item up by difference + 20px
 			jQuery(this).children("ul:first").css('margin-top', '-'+(diff+18)+'px');

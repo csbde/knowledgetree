@@ -266,6 +266,17 @@ class KTDocumentCore extends KTEntity {
     }
     // }}}
 
+    function getParentFolderIds()
+    {
+    	$parentFolderIds = $this->getFolderId();
+    	
+    	if (!empty($this->sParentFolderIds)) {
+    		$parentFolderIds = $this->sParentFolderIds . ',' . $parentFolderIds;
+    	}
+    	
+    	return $parentFolderIds;
+    }
+    
     // {{{ ktentity requirements
     function _fieldValues () {
         static $lastFolder = null;

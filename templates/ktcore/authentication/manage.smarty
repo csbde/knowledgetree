@@ -35,7 +35,7 @@ ensure that the Plugin is enabled.{/i18n}<span></div>
         <td>{$oSource->getName()}</td>
         <td><a href="{addQS}action=editSource&source_id={$oSource->getId()}{/addQS}" class="ktAction ktEdit">{i18n}Edit{/i18n}</a></td>
         <td><a href="{addQS}action=editSourceProvider&source_id={$oSource->getId()}{/addQS}" class="ktAction ktEdit">{i18n}Edit{/i18n}</a></td>
-        <td><a href="{addQS}action=deleteSource&source_id={$oSource->getId()}{/addQS}" class="ktAction ktDelete">{i18n}Delete{/i18n}</a></td>
+        <td><a href="{addQS}action=deleteSource&source_id={$oSource->getId()}{/addQS}" class="ktAction ktDelete">{i18n}Delete55{/i18n}</a></td>
      </tr>
      {/foreach}
 </tbody>

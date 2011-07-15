@@ -55,7 +55,7 @@ class InetBasicFieldsetManagementDispatcher extends KTAdminDispatcher {
 	 *
 	 * iNET Process
 	 */
-    function predispatch() {
+    public function predispatch() {
         $this->persistParams(array('fFieldId'));
         $this->oFieldset = KTFieldset::get(KTUtil::arrayGet($_REQUEST, 'fFieldsetId'));
         if (PEAR::isError($this->oFieldset)) {
@@ -79,12 +79,13 @@ class InetBasicFieldsetManagementDispatcher extends KTAdminDispatcher {
 	 *
 	 * iNET Process
 	 */
-    function describe_fieldset($oFieldset) {
+    public function describe_fieldset($oFieldset) {
         $this->persistParams(array('fFieldsetId','action'));
-        $oTemplate =& $this->oValidator->validateTemplate('ktcore/metadata/admin/basic_overview');
+        $oTemplate = $this->oValidator->validateTemplate('ktcore/metadata/admin/basic_overview');
+        $fields = $oFieldset->getFields();
         $oTemplate->setData(array(
             'context' => $this,
-            'fields' => $oFieldset->getFields(),
+            'fields' => $fields,
         ));
         return $oTemplate->render();
     }
@@ -92,7 +93,7 @@ class InetBasicFieldsetManagementDispatcher extends KTAdminDispatcher {
 	 * Nothing doing
 	 * iNET Process
 	 */
-    function do_main () {
+    public function do_main () {
         return _kt("Something very unexpected happened.");
     }
 
@@ -104,7 +105,7 @@ class InetBasicFieldsetManagementDispatcher extends KTAdminDispatcher {
 	 *
 	 * iNET Process
 	 */
-    function getFieldTypeVocab() {
+    public function getFieldTypeVocab() {
         $types = array(
             'normal' => _kt("Normal (String)"),
             'lookup' => _kt("Lookup"),
@@ -123,7 +124,7 @@ class InetBasicFieldsetManagementDispatcher extends KTAdminDispatcher {
 	 * 
 	 * iNET Process
 	 */
-	function getLookupFieldTypeVocab() {
+	public function getLookupFieldTypeVocab() {
         $types = array(
             
             'multiwithlist' => _kt("Multiselect with a list"),
@@ -138,7 +139,7 @@ class InetBasicFieldsetManagementDispatcher extends KTAdminDispatcher {
 	 * 
 	 * iNET Process
 	 */
-	function getDefaultLookupType() {
+	public function getDefaultLookupType() {
         return 'multiwithlist';
 		
     }
@@ -149,7 +150,7 @@ class InetBasicFieldsetManagementDispatcher extends KTAdminDispatcher {
 	 * 
 	 * iNET Process
 	 */
-    function getDefaultType() {
+    public function getDefaultType() {
         return 'normal';
     }
 	/**
@@ -158,7 +159,7 @@ class InetBasicFieldsetManagementDispatcher extends KTAdminDispatcher {
 	 * 
 	 * iNET Process
 	 */
-    function form_newfield() {
+    public function form_newfield() {
         $this->oPage->setBreadcrumbDetails(_kt('add field'));
 
         $oForm = new KTForm;
@@ -230,7 +231,7 @@ class InetBasicFieldsetManagementDispatcher extends KTAdminDispatcher {
 	 * 
 	 * iNET Process
 	 */
-    function do_newfield() {
+    public function do_newfield() {
         $oForm = $this->form_newfield();
 
         return $oForm->render();
@@ -243,7 +244,7 @@ class InetBasicFieldsetManagementDispatcher extends KTAdminDispatcher {
 	 * 
 	 * iNET Process
 	 */
-    function do_createfield() {
+    public function do_createfield() {
         $oForm = $this->form_newfield();
         $res = $oForm->validate();
 
@@ -319,7 +320,7 @@ class InetBasicFieldsetManagementDispatcher extends KTAdminDispatcher {
 	 * 
 	 * iNET Process
 	 */
-    function form_editfield($oField) {
+    public function form_editfield($oField) {
         $oForm = new KTForm;
         $oForm->setOptions(array(
             'identifier' => 'ktcore.fieldsets.basic.field.edit',
@@ -436,7 +437,7 @@ class InetBasicFieldsetManagementDispatcher extends KTAdminDispatcher {
 	 * 
 	 * iNET Process
 	 */
-    function do_managefield() {
+    public function do_managefield() {
         $oTemplate = $this->oValidator->validateTemplate('manage_field');
 
         $oTemplate->setData(array(
@@ -449,7 +450,7 @@ class InetBasicFieldsetManagementDispatcher extends KTAdminDispatcher {
         return $oTemplate->render();
     }
     
-    function do_updatelargetextoptions() {
+    public function do_updatelargetextoptions() {
 
         $this->oField = DocumentField::get(KTUtil::arrayGet($_REQUEST, 'fFieldId'));
     	
@@ -481,7 +482,7 @@ class InetBasicFieldsetManagementDispatcher extends KTAdminDispatcher {
 	 * 
 	 * iNET Process
 	 */
-    function do_updatefield() {
+    public function do_updatefield() {
         $oForm = $this->form_editfield($this->oField);
         $res = $oForm->validate();
         $data = $res['results'];
@@ -525,7 +526,7 @@ class InetBasicFieldsetManagementDispatcher extends KTAdminDispatcher {
 	 * 
 	 * iNET Process
 	 */
-    function form_addlookups() {
+    public function form_addlookups() {
        $oForm = new KTForm;
         $oForm->setOptions(array(
             'identifier' => 'ktcore.fieldsets.basic.field.addlookup',
@@ -564,7 +565,7 @@ class InetBasicFieldsetManagementDispatcher extends KTAdminDispatcher {
 	 * 
 	 * iNET Process
 	 */
-    function do_addlookupvalues() {
+    public function do_addlookupvalues() {
         $this->oPage->setBreadcrumbDetails(_kt('add lookup values'));
 
         $oForm = $this->form_addlookups();
@@ -574,7 +575,7 @@ class InetBasicFieldsetManagementDispatcher extends KTAdminDispatcher {
 	 * Create lookup values
 	 * @return 
 	 */
-    function do_createlookupvalues() {
+    public function do_createlookupvalues() {
         $oForm = $this->form_addlookups();
         $res = $oForm->validate();
         $data = $res['results'];
@@ -645,7 +646,7 @@ class InetBasicFieldsetManagementDispatcher extends KTAdminDispatcher {
 	 * 
 	 * iNET Process
 	 */
-    function do_managelookups() {
+    public function do_managelookups() {
         $this->oPage->setBreadcrumbDetails(_kt('manage lookup values'));
 
         // Add javascript to create the edit form
@@ -689,6 +690,7 @@ class InetBasicFieldsetManagementDispatcher extends KTAdminDispatcher {
             'lookups' => $lookups,
             'args' => $args,
         ));
+
         return $oTemplate->render();
     }
 
@@ -700,7 +702,7 @@ class InetBasicFieldsetManagementDispatcher extends KTAdminDispatcher {
 	 *
 	 * iNET Process
 	 */
-    function do_metadataMultiAction() {
+    public function do_metadataMultiAction() {
         $subaction = array_keys(KTUtil::arrayGet($_REQUEST, 'submit', array()));
         $this->oValidator->notEmpty($subaction, array("message" => _kt("No action specified")));
         $subaction = $subaction[0];
@@ -721,7 +723,7 @@ class InetBasicFieldsetManagementDispatcher extends KTAdminDispatcher {
 	 *
 	 * iNET Process
 	 */
-    function lookup_remove() {
+    public function lookup_remove() {
         $oFieldset =& $this->oValidator->validateFieldset($_REQUEST['fFieldsetId']);
         $oField =& DocumentField::get($_REQUEST['fFieldId']);
         $aMetadata = KTUtil::arrayGet($_REQUEST, 'metadata');
@@ -748,7 +750,7 @@ class InetBasicFieldsetManagementDispatcher extends KTAdminDispatcher {
 	 *
 	 * iNET Process
 	 */
-    function lookup_disable() {
+    public function lookup_disable() {
         $oFieldset =& $this->oValidator->validateFieldset($_REQUEST['fFieldsetId']);
         $oField =& DocumentField::get($_REQUEST['fFieldId']);
         $aMetadata = KTUtil::arrayGet($_REQUEST, 'metadata');
@@ -776,7 +778,7 @@ class InetBasicFieldsetManagementDispatcher extends KTAdminDispatcher {
 	 *
      *iNET Process
      */
-    function lookup_edit(){
+    public function lookup_edit(){
         $aLookupValues = $_REQUEST['lookup'];
 
         if(empty($aLookupValues)){
@@ -817,7 +819,7 @@ class InetBasicFieldsetManagementDispatcher extends KTAdminDispatcher {
 	 *
 	 * iNET Process
 	 */
-    function lookup_toggleenabled() {
+    public function lookup_toggleenabled() {
         $oFieldset =& $this->oValidator->validateFieldset($_REQUEST['fFieldsetId']);
         $oField =& DocumentField::get($_REQUEST['fFieldId']);
         $aMetadata = KTUtil::arrayGet($_REQUEST, 'metadata');
@@ -845,7 +847,7 @@ class InetBasicFieldsetManagementDispatcher extends KTAdminDispatcher {
 	 *
 	 * iNET Process
 	 */
-    function lookup_togglestickiness() {
+    public function lookup_togglestickiness() {
         $oFieldset =& $this->oValidator->validateFieldset($_REQUEST['fFieldsetId']);
         $oField =& DocumentField::get($_REQUEST['fFieldId']);
         $aMetadata = KTUtil::arrayGet($_REQUEST, 'metadata');
@@ -875,7 +877,7 @@ class InetBasicFieldsetManagementDispatcher extends KTAdminDispatcher {
 	 *
 	 * iNET Process
 	 */
-    function do_managetree() {
+    public function do_managetree() {
         global $default;
         // extract.
         $iFieldsetId = KTUtil::getId($this->oFieldset);
@@ -983,7 +985,7 @@ class InetBasicFieldsetManagementDispatcher extends KTAdminDispatcher {
 	 * 
 	 * iNET Process
 	 */
-    function subact_addCategory($field_id, $current_node, $new_category, &$constructedTree) {
+    public function subact_addCategory($field_id, $current_node, $new_category, &$constructedTree) {
         $newCategory = MDTreeNode::createFromArray(array (
              "iFieldId" => $field_id,
              "sName" => $new_category,
@@ -1002,7 +1004,7 @@ class InetBasicFieldsetManagementDispatcher extends KTAdminDispatcher {
 	 * @param $constructedTree Object
 	 * @param $current_node Object
 	 */
-    function subact_deleteCategory(&$constructedTree, $current_node) {
+    public function subact_deleteCategory(&$constructedTree, $current_node) {
         $constructedTree->deleteNode($current_node);
         return true;
     }
@@ -1015,7 +1017,7 @@ class InetBasicFieldsetManagementDispatcher extends KTAdminDispatcher {
 	 *
 	 * iNET Process
 	 */
-    function subact_unlinkKeyword(&$constructedTree, $keyword) {
+    public function subact_unlinkKeyword(&$constructedTree, $keyword) {
         $oKW = MetaData::get($keyword);
         if (PEAR::isError($oKW)) {
             return true;
@@ -1033,7 +1035,7 @@ class InetBasicFieldsetManagementDispatcher extends KTAdminDispatcher {
 	 *
 	 * iNET Process
 	 */
-    function subact_linkKeywords(&$constructedTree, $current_node, $keywords) {
+    public function subact_linkKeywords(&$constructedTree, $current_node, $keywords) {
         foreach ($keywords as $md_id)
         {
             $constructedTree->reparentKeyword($md_id, $current_node);
@@ -1056,7 +1058,7 @@ class InetBasicFieldsetManagementDispatcher extends KTAdminDispatcher {
 	 *
 	 * iNET Process
 	 */
-    function _evilTreeRecursion($subnode, $treeToRender)
+    private function _evilTreeRecursion($subnode, $treeToRender)
     {
         // deliver us from evil....
         $iFieldId = $treeToRender->field_id;
@@ -1097,7 +1099,7 @@ class InetBasicFieldsetManagementDispatcher extends KTAdminDispatcher {
 	 *
 	 * iNET Process
 	 */
-    function _evilTreeRenderer($treeToRender) {
+    private function _evilTreeRenderer($treeToRender) {
         //global $default;
 
         $treeStr = "<!-- this is rendered with an unholy hack. sorry. -->";
@@ -1151,7 +1153,7 @@ class InetBasicFieldsetManagementDispatcher extends KTAdminDispatcher {
 	 *
 	 * iNET Process
 	 */
-    function _evilActionHelper($iFieldsetId, $iFieldId, $bIsKeyword, $current_node) {
+    private function _evilActionHelper($iFieldsetId, $iFieldId, $bIsKeyword, $current_node) {
         $actionStr = " (";
         if ($bIsKeyword === true) {
            $actionStr .= '<a href="' . KTUtil::addQueryStringSelf(KTUtil::addQueryStringSelf($this->meldPersistQuery('keyword_id='.$current_node.'&subaction=unlinkKeyword', 'managetree'))) . '">' . _kt('unlink') . '</a>';
@@ -1168,7 +1170,7 @@ class InetBasicFieldsetManagementDispatcher extends KTAdminDispatcher {
 	 * 
 	 * iNET Process
 	 */
-    function do_deletefield() {
+    public function do_deletefield() {
         $res = $this->oField->delete();
         if (PEAR::isError($res)) {
             $this->errorRedirectToParent(sprintf(_kt("Unable to delete field: %s"), $res->getMessage()));
@@ -1182,7 +1184,7 @@ class InetBasicFieldsetManagementDispatcher extends KTAdminDispatcher {
      * 
      * iNET Process
      */
-    function do_orderUp() {
+    public function do_orderUp() {
         $iId = $this->oField->getID();
         $iFieldsetId = $this->oField->getParentFieldsetId();
 
@@ -1199,7 +1201,7 @@ class InetBasicFieldsetManagementDispatcher extends KTAdminDispatcher {
      * 
      * iNET Process
      */
-    function do_orderDown() {
+    public function do_orderDown() {
         $iId = $this->oField->getID();
         $iFieldsetId = $this->oField->getParentFieldsetId();
 
@@ -1209,6 +1211,11 @@ class InetBasicFieldsetManagementDispatcher extends KTAdminDispatcher {
         }
 
         $this->successRedirectToParent(_kt("Field moved down."));
+    }
+    
+    public function handleOutput($output)
+    {
+        print $output;
     }
 }
 

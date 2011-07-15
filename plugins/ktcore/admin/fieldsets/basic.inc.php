@@ -6,7 +6,7 @@
  * KnowledgeTree Community Edition
  * Document Management Made Simple
  * Copyright (C) 2008, 2009, 2010 KnowledgeTree Inc.
- * 
+ *
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License version 3 as published by the
@@ -44,17 +44,21 @@ require_once(KT_LIB_DIR . '/plugins/pluginutil.inc.php');
 require_once(KT_LIB_DIR . "/documentmanagement/MDTree.inc");
 
 class BasicFieldsetManagementDispatcher extends KTAdminDispatcher {
+
     var $bAutomaticTransaction = true;
     var $bHaveConditional = null;
     var $sHelpPage = 'ktcore/admin/document fieldsets.html';
 
-    function predispatch() {
+    public function predispatch()
+    {
         $this->persistParams(array('fFieldId'));
+
         $this->oFieldset = KTFieldset::get(KTUtil::arrayGet($_REQUEST, 'fFieldsetId'));
         if (PEAR::isError($this->oFieldset)) {
             $this->oFieldset = null;
             unset($_REQUEST['fFieldsetId']); // prevent further attacks.
         }
+
         $this->oField = DocumentField::get(KTUtil::arrayGet($_REQUEST, 'fFieldId'));
         if (PEAR::isError($this->oField)) {
             $this->oField = null;
@@ -65,21 +69,26 @@ class BasicFieldsetManagementDispatcher extends KTAdminDispatcher {
     }
 
     // API:  this provides information about the fieldset, including which actions are available.
-    function describe_fieldset($oFieldset) {
+    public function describe_fieldset($oFieldset)
+    {
         $this->persistParams(array('fFieldsetId','action'));
         $oTemplate =& $this->oValidator->validateTemplate('ktcore/metadata/admin/basic_overview');
+        $fields = $oFieldset->getFields();
         $oTemplate->setData(array(
             'context' => $this,
-            'fields' => $oFieldset->getFields(),
+            'fields' => $fields,
         ));
+
         return $oTemplate->render();
     }
 
-    function do_main () {
+    public function do_main ()
+    {
         return _kt("Something very unexpected happened.");
     }
 
-    function getFieldTypeVocab() {
+    public function getFieldTypeVocab()
+    {
         $types = array(
             'normal' => _kt("Normal (String)"),
             'lookup' => _kt("Lookup"),
@@ -87,14 +96,17 @@ class BasicFieldsetManagementDispatcher extends KTAdminDispatcher {
             'largetextbox' => _kt("Large Text"),
             'date' => _kt("Date"),
         );
+
         return $types;
     }
 
-    function getDefaultType() {
+    public function getDefaultType()
+    {
         return 'normal';
     }
 
-    function form_newfield() {
+    public function form_newfield()
+    {
         $this->oPage->setBreadcrumbDetails(_kt('add field'));
 
         $oForm = new KTForm;
@@ -136,7 +148,6 @@ class BasicFieldsetManagementDispatcher extends KTAdminDispatcher {
                 'name' => 'required',
                 'description' => _kt("Required fields must be filled in, or the adding process will be rejected."),
             )),
-
         ));
 
         $oForm->setValidators(array(
@@ -161,13 +172,14 @@ class BasicFieldsetManagementDispatcher extends KTAdminDispatcher {
         return $oForm;
     }
 
-    function do_newfield() {
+    public function do_newfield()
+    {
         $oForm = $this->form_newfield();
-
         return $oForm->render();
     }
 
-    function do_createfield() {
+    public function do_createfield()
+    {
         $oForm = $this->form_newfield();
         $res = $oForm->validate();
 
@@ -190,20 +202,20 @@ class BasicFieldsetManagementDispatcher extends KTAdminDispatcher {
         //$largeField = false;
 
         $DataType = 'STRING';
-        
+
         if ($data['field_type'] == 'lookup') {
             $lookup = true;
         } else if ($data['field_type'] == 'tree') {
             $lookup = true;
             $tree = true;
         } else if ($data['field_type'] == 'largetextbox') {
-        	//$largeField = true;        	
+        	//$largeField = true;
         	$DataType = 'LARGE TEXT';
         } else if ($data['field_type'] == 'date') {
-        	//$largeField = true;        	
+        	//$largeField = true;
         	$DataType = 'DATE';
         }
-        
+
         $oField = DocumentField::createFromArray(array(
             'Name' => $data['name'],
             'Description' => $data['description'],
@@ -222,7 +234,8 @@ class BasicFieldsetManagementDispatcher extends KTAdminDispatcher {
         $this->successRedirectTo('managefield', _kt("Field created."), sprintf('fFieldId=%d', $oField->getId()));
     }
 
-    function form_editfield($oField) {
+    public function form_editfield($oField)
+    {
         $oForm = new KTForm;
         $oForm->setOptions(array(
             'identifier' => 'ktcore.fieldsets.basic.field.edit',
@@ -276,9 +289,9 @@ class BasicFieldsetManagementDispatcher extends KTAdminDispatcher {
         return $oForm;
     }
 
-    function do_managefield() {
+    public function do_managefield()
+    {
         $oTemplate = $this->oValidator->validateTemplate('ktcore/metadata/admin/manage_field');
-
         $oTemplate->setData(array(
             'context' => $this,
             'field_name' => $this->oField->getName(),
@@ -286,26 +299,21 @@ class BasicFieldsetManagementDispatcher extends KTAdminDispatcher {
             'form' => $this->form_editfield($this->oField),
             'field' => $this->oField,
         ));
+
         return $oTemplate->render();
     }
-    
-    function do_updatelargetextoptions() {
 
+    public function do_updatelargetextoptions()
+    {
         $this->oField = DocumentField::get(KTUtil::arrayGet($_REQUEST, 'fFieldId'));
-    	
-        $oValues = KTUtil::arrayGet($_REQUEST, 'largefield');
 
-        if($oValues['size'] != "")
-    		$this->oField->setMaxLength($oValues['size']);
-    	
+        $oValues = KTUtil::arrayGet($_REQUEST, 'largefield');
+        if ($oValues['size'] != "") {
+    	    $this->oField->setMaxLength($oValues['size']);
+        }
+
     	$this->oField->setIsHTML($oValues['html']);
-    	//$this->oField->setIsHTML(true);
-    	
-    	//$oValue = $this->oField->_fieldValues();
-        //$this->successRedirectTo('managefield',_kt("Field updated. -> ") . $this->oField->getMaxLength() . " -> " . $oValue['max_length']);
-        
-        //$this->successRedirectTo('managefield',_kt("Field updated. -> ") . $oValues['html']);
-        
+
         $res = $this->oField->update();
         if (PEAR::isError($res)) {
             return $oForm->handleError(sprintf(_kt("Failed to update field: %s"), $res->getMessage()));
@@ -314,7 +322,8 @@ class BasicFieldsetManagementDispatcher extends KTAdminDispatcher {
         $this->successRedirectTo('managefield',_kt("Field updated."));
     }
 
-    function do_updatefield() {
+    public function do_updatefield()
+    {
         $oForm = $this->form_editfield($this->oField);
         $res = $oForm->validate();
         $data = $res['results'];
@@ -346,8 +355,9 @@ class BasicFieldsetManagementDispatcher extends KTAdminDispatcher {
         $this->successRedirectTo('managefield',_kt("Field updated."));
     }
 
-    function form_addlookups() {
-       $oForm = new KTForm;
+    public function form_addlookups()
+    {
+        $oForm = new KTForm;
         $oForm->setOptions(array(
             'identifier' => 'ktcore.fieldsets.basic.field.addlookup',
             'label' => _kt("Add Lookup Values"),
@@ -379,20 +389,21 @@ class BasicFieldsetManagementDispatcher extends KTAdminDispatcher {
         return $oForm;
     }
 
-    function do_addlookupvalues() {
+    public function do_addlookupvalues()
+    {
         $this->oPage->setBreadcrumbDetails(_kt('add lookup values'));
 
         $oForm = $this->form_addlookups();
         return $oForm->render();
     }
 
-    function do_createlookupvalues() {
+    public function do_createlookupvalues()
+    {
         $oForm = $this->form_addlookups();
         $res = $oForm->validate();
         $data = $res['results'];
         $errors = $res['errors'];
         $extra_errors = array();
-
 
         $failed = array();
         $lookups = array();
@@ -401,7 +412,6 @@ class BasicFieldsetManagementDispatcher extends KTAdminDispatcher {
         $lookup_candidates = explode("\n", $raw_lookups);
         foreach ($lookup_candidates as $candidate) {
             $name = trim($candidate);
-
             if (empty($name)) {
                 continue;
             }
@@ -424,6 +434,7 @@ class BasicFieldsetManagementDispatcher extends KTAdminDispatcher {
 
             $lookups[$name] = $name;
         }
+
         if (!empty($failed)) {
             $extra_errors['lookups'][] = sprintf(_kt("The following lookups you specified already exist, or are specified twice: %s"), implode(', ', $failed));
         } else if (empty($lookups)) {
@@ -444,6 +455,7 @@ class BasicFieldsetManagementDispatcher extends KTAdminDispatcher {
                 'bDisabled' => false,
                 'bIsStuck' => false,
             ));
+
             if (PEAR::isError($oLookup)) {
                 return $oForm->handleError(sprintf(_kt("Failed to create lookup: %s"), $oLookup->getMessage()));
             }
@@ -452,7 +464,8 @@ class BasicFieldsetManagementDispatcher extends KTAdminDispatcher {
         $this->successRedirectTo('managefield', sprintf(_kt("%d lookups added."), count($lookups)));
     }
 
-    function do_managelookups() {
+    public function do_managelookups()
+    {
         $this->oPage->setBreadcrumbDetails(_kt('manage lookup values'));
 
         // Add javascript to create the edit form
@@ -464,7 +477,7 @@ class BasicFieldsetManagementDispatcher extends KTAdminDispatcher {
                 <!-- Replace all double quotes with &#34; -->\n
                 matches = value.match(/\"/g);\n
                 var newValue = value;\n
-                if(matches){\n
+                if (matches){\n
                     for(var i = 0; i < matches.length; i++){\n
                         newValue = newValue.replace('\"', '&#34;');\n
                     }\n
@@ -496,31 +509,36 @@ class BasicFieldsetManagementDispatcher extends KTAdminDispatcher {
             'lookups' => $lookups,
             'args' => $args,
         ));
+
         return $oTemplate->render();
     }
 
-    // {{{ do_metadataMultiAction
-    function do_metadataMultiAction() {
+    public function do_metadataMultiAction()
+    {
         $subaction = array_keys(KTUtil::arrayGet($_REQUEST, 'submit', array()));
         $this->oValidator->notEmpty($subaction, array("message" => _kt("No action specified")));
+
         $subaction = $subaction[0];
         $method = null;
         if (method_exists($this, 'lookup_' . $subaction)) {
             $method = 'lookup_' . $subaction;
         }
+
         $this->oValidator->notEmpty($method, array("message" => _kt("Unknown action specified")));
+
         return $this->$method();
     }
-    // }}}
 
-    // {{{ lookup_remove
-    function lookup_remove() {
+    public function lookup_remove()
+    {
         $oFieldset =& $this->oValidator->validateFieldset($_REQUEST['fFieldsetId']);
         $oField =& DocumentField::get($_REQUEST['fFieldId']);
+
         $aMetadata = KTUtil::arrayGet($_REQUEST, 'metadata');
         if (empty($aMetadata)) {
             $this->errorRedirectTo('managelookups', _kt('No lookups selected'));
         }
+
         foreach ($_REQUEST['metadata'] as $iMetaDataId) {
             $oMetaData =& MetaData::get($iMetaDataId);
             if (PEAR::isError($oMetaData)) {
@@ -528,19 +546,21 @@ class BasicFieldsetManagementDispatcher extends KTAdminDispatcher {
             }
             $oMetaData->delete();
         }
+
         $this->successRedirectTo('managelookups', _kt('Lookups removed'));
         exit(0);
     }
-    // }}}
 
-    // {{{ lookup_disable
-    function lookup_disable() {
+    public function lookup_disable()
+    {
         $oFieldset =& $this->oValidator->validateFieldset($_REQUEST['fFieldsetId']);
         $oField =& DocumentField::get($_REQUEST['fFieldId']);
+
         $aMetadata = KTUtil::arrayGet($_REQUEST, 'metadata');
         if (empty($aMetadata)) {
             $this->errorRedirectTo('managelookups', _kt('No lookups selected'));
         }
+
         foreach ($_REQUEST['metadata'] as $iMetaDataId) {
             $oMetaData =& MetaData::get($iMetaDataId);
             if (PEAR::isError($oMetaData)) {
@@ -549,19 +569,19 @@ class BasicFieldsetManagementDispatcher extends KTAdminDispatcher {
             $oMetaData->setDisabled(true);
             $oMetaData->update();
         }
+
         $this->successRedirectTo('managelookups', _kt('Lookups disabled'));
         exit(0);
     }
-    // }}}
 
     /**
      * Save the edited lookup values
-     *
      */
-    function lookup_edit(){
+    public function lookup_edit()
+    {
         $aLookupValues = $_REQUEST['lookup'];
 
-        if(empty($aLookupValues)){
+        if (empty($aLookupValues)){
             $this->errorRedirectTo('managelookups', _kt('No lookups were selected for editing'));
             exit;
         }
@@ -571,15 +591,16 @@ class BasicFieldsetManagementDispatcher extends KTAdminDispatcher {
             if (PEAR::isError($oMetaData)) {
                 $this->addErrorMessage(_kt('Invalid lookup selected').': '.$sValue);
                 continue;
-                //$this->errorRedirectTo('managelookups', _kt('Invalid lookup selected'));
             }
-            if(empty($sValue)){
+
+            if (empty($sValue)){
                 $this->addErrorMessage(_kt('Lookup cannot be empty').': '.$oMetaData->getName());
-                if(count($aLookupValues) == 1){
+                if (count($aLookupValues) == 1){
                     $this->redirectTo('managelookups');
                 }
                 continue;
             }
+
             $oMetaData->setName($sValue);
             $oMetaData->update();
         }
@@ -588,14 +609,16 @@ class BasicFieldsetManagementDispatcher extends KTAdminDispatcher {
         exit(0);
     }
 
-    // {{{ lookup_enable
-    function lookup_toggleenabled() {
+    public function lookup_toggleenabled()
+    {
         $oFieldset =& $this->oValidator->validateFieldset($_REQUEST['fFieldsetId']);
         $oField =& DocumentField::get($_REQUEST['fFieldId']);
+
         $aMetadata = KTUtil::arrayGet($_REQUEST, 'metadata');
         if (empty($aMetadata)) {
             $this->errorRedirectTo('managelookups', _kt('No lookups selected'));
         }
+
         foreach ($_REQUEST['metadata'] as $iMetaDataId) {
             $oMetaData =& MetaData::get($iMetaDataId);
             if (PEAR::isError($oMetadata)) {
@@ -604,19 +627,21 @@ class BasicFieldsetManagementDispatcher extends KTAdminDispatcher {
             $oMetaData->setDisabled(!$oMetaData->getDisabled());
             $oMetaData->update();
         }
+
         $this->successRedirectTo('managelookups', _kt('Status Toggled'));
         exit(0);
     }
-    // }}}
 
-    // {{{ lookup_togglestickiness
-    function lookup_togglestickiness() {
+    public function lookup_togglestickiness()
+    {
         $oFieldset =& $this->oValidator->validateFieldset($_REQUEST['fFieldsetId']);
         $oField =& DocumentField::get($_REQUEST['fFieldId']);
+
         $aMetadata = KTUtil::arrayGet($_REQUEST, 'metadata');
         if (empty($aMetadata)) {
             $this->errorRedirectTo('managelookups', _kt('No lookups selected'));
         }
+
         foreach ($_REQUEST['metadata'] as $iMetaDataId) {
             $oMetaData =& MetaData::get($iMetaDataId);
             if (PEAR::isError($oMetaData)) {
@@ -626,16 +651,16 @@ class BasicFieldsetManagementDispatcher extends KTAdminDispatcher {
             $oMetaData->setIsStuck(!$bStuck);
             $oMetaData->update();
         }
+
         $this->successRedirectTo('managelookups', _kt('Lookup stickiness toggled'));
         exit(0);
     }
-    // }}}
 
-// {{{ TREE
     // create and display the tree editing form.
-    function do_managetree() {
+    public function do_managetree()
+    {
         global $default;
-        // extract.
+
         $iFieldsetId = KTUtil::getId($this->oFieldset);
         $iFieldId = KTUtil::getId($this->oField);
 
@@ -649,9 +674,14 @@ class BasicFieldsetManagementDispatcher extends KTAdminDispatcher {
         $subaction = KTUtil::arrayGet($_REQUEST, 'subaction');
 
         // validate
-        if (empty($field_id)) { return $this->errorRedirectToMain(_kt("Must select a field to edit.")); }
+        if (empty($field_id)) {
+            return $this->errorRedirectToMain(_kt("Must select a field to edit."));
+        }
+
         $oField =& DocumentField::get($field_id);
-        if (PEAR::isError($oField)) { return $this->errorRedirectToMain(_kt("Invalid field.")); }
+        if (PEAR::isError($oField)) {
+            return $this->errorRedirectToMain(_kt("Invalid field."));
+        }
 
         $aErrorOptions = array(
             'redirect_to' => array('editTree', sprintf('field_id=%d', $field_id)),
@@ -675,11 +705,13 @@ class BasicFieldsetManagementDispatcher extends KTAdminDispatcher {
                 }
                 $msg = _kt('Category added'). ': ' . $new_category;
             }
+
             if ($subaction === "deleteCategory") {
                 $this->subact_deleteCategory($fieldTree, $current_node);
                 $current_node = 0;      // clear out, and don't try and render the newly deleted category.
                 $msg = _kt('Category removed.');
             }
+
             if ($subaction === "linkKeywords") {
                 $keywords = KTUtil::arrayGet($_REQUEST, 'keywordsToAdd');
                 $aErrorOptions['message'] = _kt("No keywords selected");
@@ -688,15 +720,18 @@ class BasicFieldsetManagementDispatcher extends KTAdminDispatcher {
                 $current_node = 0;      // clear out, and don't try and render the newly deleted category.
                 $msg = _kt('Keywords added to category.');
             }
+
             if ($subaction === "unlinkKeyword") {
                 $keyword = KTUtil::arrayGet($_REQUEST, 'keyword_id');
                 $this->subact_unlinkKeyword($fieldTree, $keyword);
                 $msg = _kt('Keyword moved to base of tree.');
             }
+
             // now redirect
             $query = sprintf('field_id=%d&fFieldsetId=%d', $field_id, $iFieldsetId);
             return $this->successRedirectTo($target, $msg, $query);
         }
+
         if ($fieldTree->root === null) {
             return $this->errorRedirectToMain(_kt("Error building tree. Is this a valid tree-lookup field?"));
         }
@@ -711,7 +746,9 @@ class BasicFieldsetManagementDispatcher extends KTAdminDispatcher {
 
         $this->oPage->setTitle(_kt('Edit Lookup Tree'));
 
-        if ($current_node == 0) { $category_name = 'Root'; }
+        if ($current_node == 0) {
+            $category_name = 'Root';
+        }
         else {
             $oNode = MDTreeNode::get($current_node);
             $category_name = $oNode->getName();
@@ -727,45 +764,52 @@ class BasicFieldsetManagementDispatcher extends KTAdminDispatcher {
             "currentNode" => $current_node,
             'category_name' => $category_name,
             "freechildren" => $free_metadata,
-
         );
+
         return $oTemplate->render($aTemplateData);
     }
 
-    function subact_addCategory($field_id, $current_node, $new_category, &$constructedTree) {
+    public function subact_addCategory($field_id, $current_node, $new_category, &$constructedTree)
+    {
         $newCategory = MDTreeNode::createFromArray(array (
              "iFieldId" => $field_id,
              "sName" => $new_category,
              "iParentNode" => $current_node,
         ));
-        if (PEAR::isError($newCategory))
-        {
+
+        if (PEAR::isError($newCategory)) {
             return false;
         }
+
         $constructedTree->addNode($newCategory);
+
         return true;
     }
 
-    function subact_deleteCategory(&$constructedTree, $current_node) {
+    public function subact_deleteCategory(&$constructedTree, $current_node)
+    {
         $constructedTree->deleteNode($current_node);
         return true;
     }
 
-    function subact_unlinkKeyword(&$constructedTree, $keyword) {
+    public function subact_unlinkKeyword(&$constructedTree, $keyword)
+    {
         $oKW = MetaData::get($keyword);
         if (PEAR::isError($oKW)) {
             return true;
         }
+
         $constructedTree->reparentKeyword($oKW->getId(), 0);
+
         return true;
     }
 
-
-    function subact_linkKeywords(&$constructedTree, $current_node, $keywords) {
-        foreach ($keywords as $md_id)
-        {
+    public function subact_linkKeywords(&$constructedTree, $current_node, $keywords)
+    {
+        foreach ($keywords as $md_id) {
             $constructedTree->reparentKeyword($md_id, $current_node);
         }
+
         return true;
     }
 
@@ -775,7 +819,7 @@ class BasicFieldsetManagementDispatcher extends KTAdminDispatcher {
      *  to non-sucking Smarty recursion.
      */
 
-    function _evilTreeRecursion($subnode, $treeToRender)
+    public function _evilTreeRecursion($subnode, $treeToRender)
     {
         // deliver us from evil....
         $iFieldId = $treeToRender->field_id;
@@ -783,33 +827,30 @@ class BasicFieldsetManagementDispatcher extends KTAdminDispatcher {
         $iFieldsetId = $oField->getParentFieldsetId();
 
         $treeStr = "<ul>";
-        foreach ($treeToRender->contents[$subnode] as $subnode_id => $subnode_val)
-        {
+        foreach ($treeToRender->contents[$subnode] as $subnode_id => $subnode_val) {
             if ($subnode_id !== "leaves") {
                 $treeStr .= '<li class="treenode active"><a class="pathnode inactive"  onclick="toggleElementClass(\'active\', this.parentNode); toggleElementClass(\'inactive\', this.parentNode);">' . $treeToRender->mapnodes[$subnode_val]->getName() . '</a>';
                 $treeStr .= $this->_evilActionHelper($iFieldsetId, $iFieldId, false, $subnode_val);
                 $treeStr .= $this->_evilTreeRecursion($subnode_val, $treeToRender);
                 $treeStr .= '</li>';
             }
-            else
-            {
-                foreach ($subnode_val as $leaf)
-                {
+            else {
+                foreach ($subnode_val as $leaf) {
                     $treeStr .= '<li class="leafnode">' . $treeToRender->lookups[$leaf]->getName();
                     $treeStr .= $this->_evilActionHelper($iFieldsetId, $iFieldId, true, $leaf);
                     $treeStr .=  '</li>';            }
                 }
         }
         $treeStr .= '</ul>';
+
         return $treeStr;
 
     }
 
     // I can't seem to do recursion in smarty, and recursive templates seems a bad solution.
     // Come up with a better way to do this (? NBM)
-    function _evilTreeRenderer($treeToRender) {
-        //global $default;
-
+    public function _evilTreeRenderer($treeToRender)
+    {
         $treeStr = "<!-- this is rendered with an unholy hack. sorry. -->";
         $stack = array();
         $exitstack = array();
@@ -821,8 +862,7 @@ class BasicFieldsetManagementDispatcher extends KTAdminDispatcher {
         $treeStr .= '<ul>';
 
         //$default->log->debug("EVILRENDER: " . print_r($treeToRender, true));
-        foreach ($treeToRender->getRoot() as $node_id => $subtree_nodes)
-        {
+        foreach ($treeToRender->getRoot() as $node_id => $subtree_nodes) {
             //$default->log->debug("EVILRENDER: ".$node_id." => ".$subtree_nodes." (".($node_id === "leaves").")");
             // leaves are handled differently.
             if ($node_id !== "leaves") {
@@ -832,10 +872,8 @@ class BasicFieldsetManagementDispatcher extends KTAdminDispatcher {
                 $treeStr .= $this->_evilTreeRecursion($subtree_nodes, $treeToRender);
                 $treeStr .= '</li>';
             }
-            else
-            {
-                foreach ($subtree_nodes as $leaf)
-                {
+            else {
+                foreach ($subtree_nodes as $leaf) {
                     $treeStr .= '<li class="leafnode">' . $treeToRender->lookups[$leaf]->getName();
                     $treeStr .= $this->_evilActionHelper($iFieldsetId, $iFieldId, true, $leaf);
                     $treeStr .=  '</li>';
@@ -851,7 +889,8 @@ class BasicFieldsetManagementDispatcher extends KTAdminDispatcher {
     // BS: don't hate me.
     // BD: sorry. I hate you.
 
-    function _evilActionHelper($iFieldsetId, $iFieldId, $bIsKeyword, $current_node) {
+    public function _evilActionHelper($iFieldsetId, $iFieldId, $bIsKeyword, $current_node)
+    {
         $actionStr = " (";
         if ($bIsKeyword === true) {
            $actionStr .= '<a href="' . KTUtil::addQueryStringSelf(KTUtil::addQueryStringSelf($this->meldPersistQuery('keyword_id='.$current_node.'&subaction=unlinkKeyword', 'managetree'))) . '">' . _kt('unlink') . '</a>';
@@ -860,10 +899,12 @@ class BasicFieldsetManagementDispatcher extends KTAdminDispatcher {
            $actionStr .= '| <a href="' . KTUtil::addQueryStringSelf($this->meldPersistQuery('current_node='.$current_node.'&subaction=deleteCategory', 'managetree')) . '">' . _kt('delete') . '</a>';
         }
         $actionStr .= ")";
+
         return $actionStr;
     }
 
-    function do_deletefield() {
+    public function do_deletefield()
+    {
         $res = $this->oField->delete();
         if (PEAR::isError($res)) {
             $this->errorRedirectToParent(sprintf(_kt("Unable to delete field: %s"), $res->getMessage()));
@@ -872,35 +913,29 @@ class BasicFieldsetManagementDispatcher extends KTAdminDispatcher {
         $this->successRedirectToParent(_kt("Field deleted."));
     }
 
-    /**
-     * Move field up in the order
-     */
-    function do_orderUp() {
+    public function do_orderUp()
+    {
+        $this->order('up');
+    }
+
+    public function do_orderDown()
+    {
+        $this->order('down');
+    }
+
+    private function order($direction)
+    {
         $iId = $this->oField->getID();
         $iFieldsetId = $this->oField->getParentFieldsetId();
 
-        $res = $this->oField->movePosition($iFieldsetId, $iId, 'up');
+        $res = $this->oField->movePosition($iFieldsetId, $iId, $direction);
         if ($res === false) {
-            $this->errorRedirectToParent(_kt("Unable to move field up"));
+            $this->errorRedirectToParent(_kt("Unable to move field $direction"));
         }
 
-        $this->successRedirectToParent(_kt("Field moved up."));
+        $this->successRedirectToParent(_kt("Field moved $direction."));
     }
 
-    /**
-     * Move field down in the order
-     */
-    function do_orderDown() {
-        $iId = $this->oField->getID();
-        $iFieldsetId = $this->oField->getParentFieldsetId();
-
-        $res = $this->oField->movePosition($iFieldsetId, $iId, 'down');
-        if ($res === false) {
-            $this->errorRedirectToParent(_kt("Unable to move field down"));
-        }
-
-        $this->successRedirectToParent(_kt("Field moved down."));
-    }
 }
 
 ?>

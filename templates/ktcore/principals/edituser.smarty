@@ -1,4 +1,4 @@
-<h2>{i18n}Edit User Details{/i18n}</h2>
+<h2>{i18n}Edit User Details{/i18n}: {$edit_user->getName()}</h2>
 
 <div class="widgetRow">
 {assign var=provider_stuff value=$provider->showUserSource($edit_user, $source)}
@@ -19,8 +19,8 @@
 				{$oWidget->render()}
 			{/foreach}
 		<div class="form_actions">
-			<input type="submit" value="{i18n}Save Changes{/i18n}" />
 			<input type="submit" name="kt_cancel[{addQS}old_search={$old_search}&do_search=1{/addQS}]" value="{i18n}Cancel{/i18n}" />
+			<input type="submit" value="{i18n}Save Changes{/i18n}" />
 		</div>
 	</form>
 </div>

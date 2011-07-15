@@ -38,6 +38,7 @@ states.  Use the table below to configure this behaviour.{/i18n}</p>
     </table>
     </div>
 
+    <br/>
     <div class="form_actions">
         <input type="submit" value="{i18n}Create Workflow{/i18n}" />
         <a href="{$smarty.server.PHP_SELF}">{i18n}Cancel{/i18n}</a>

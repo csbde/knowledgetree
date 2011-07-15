@@ -7,6 +7,8 @@
 <input type="submit" name="submit" value="{i18n}Change{/i18n}" />
 </form>
 
+<br />
+
 <h2>{i18n}Type-specific field sets{/i18n}</h2>
 
 <p class="descriptiveText"></p>
@@ -30,7 +32,7 @@
         <td><label><input type="checkbox" name="fieldsetid[]" value="{$oFieldset->getId() }" />{$oFieldset->getName() }</label></td>
       </tr>
     {/foreach}
-    
+
   </tbody>
   </table>
   <div class="form_actions">
@@ -49,15 +51,15 @@
 
   <input type="hidden" name="action" value="addfieldsets">
   <input type="hidden" name="fDocumentTypeId" value="{$oDocumentType->getId()}">
-  
+
   {$availableWidget->render()}
-  
+
   <div class="form_actions">
     <input type="submit" name="submit" value="{i18n}Associate Fieldsets{/i18n}" />
   </div>
 </fieldset>
 </form>
 {elseif !$bAnyFieldsets}
-<div class="ktInfoMessage"><span>{i18n}No fieldsets are available to be added.  To add a fieldset, please go to 
+<div class="ktInfoMessage"><span>{i18n}No fieldsets are available to be added.  To add a fieldset, please go to
 Administration{/i18n} &raquo; {i18n} Content Setup {/i18n} &raquo {i18n}Document Fieldsets{/i18n} </span></div>
 { /if }

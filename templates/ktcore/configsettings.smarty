@@ -38,13 +38,11 @@
                 {* <!-- Display the settings, render the input according to the setting type (dropdown / radio / etc) --> *}
                 {foreach from=$groupSettings.$group item=settings}
 
-                    <p style='padding-bottom: 15px;'>
-                        {$settings.display_name}<br>
-                        {if $settings.description}
-                            <span class='descriptiveText'>{$settings.description}</span><br>
-                        {/if}
-                        {$context->renderInput($settings.id, $settings.type, $settings.value, $settings.default_value, $settings.options)}<br>
-                    </p>
+                    <div class="settings-field" style='padding-bottom: 15px;' {if $settings.description}title="{$settings.description}"{/if}>
+                        <p class="display-name">{$settings.display_name}</p>
+                        <div class="settings-option">
+{$context->renderInput($settings.id, $settings.type, $settings.value, $settings.default_value, $settings.options)}</div>
+                    </div>
 
                 {/foreach}
 
@@ -55,6 +53,7 @@
     <br><hr>
     <div class="form_actions">
         <input type="submit" name="AlterConfig" value="{i18n}Save Config Settings{/i18n}" />
+        <input type="hidden" name="action" value="save" />
     </div>
 {else}
 

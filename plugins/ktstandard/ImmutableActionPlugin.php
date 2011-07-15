@@ -57,7 +57,7 @@ class KTImmutableActionPlugin extends KTPlugin {
 $oRegistry =& KTPluginRegistry::getSingleton();
 $oRegistry->registerPlugin('KTImmutableActionPlugin', 'ktstandard.immutableaction.plugin', __FILE__);
 
-class KTDocumentImmutableAction extends KTDocumentAction {
+class KTDocumentImmutableAction extends JavascriptDocumentAction {
     var $sName = "ktcore.actions.document.immutable";
     var $_sShowPermission = 'ktcore.permissions.security';
     var $_bMutator = true;
@@ -77,6 +77,18 @@ class KTDocumentImmutableAction extends KTDocumentAction {
 
         return parent::getInfo();
     }
+
+    function getOnClick()
+    {
+    	$id = $this->oDocument->getId();
+    	$name = $this->oDocument->getName();
+        return "javascript:{kt.app.copy.doAction(\"immutable\", $id, \"$name\");}";
+    }
+
+	function getURL()
+	{
+		return '#';
+	}
 
     /*
      * Checks if document is Checked Out
@@ -125,7 +137,7 @@ class KTDocumentImmutableAction extends KTDocumentAction {
 
         // Electronic Signature if enabled
         global $default;
-        if($default->enableESignatures){
+        if ($default->enableESignatures) {
             $widgets[] = array('ktcore.widgets.info', array(
                     'label' => _kt('This action requires authentication'),
                     'description' => _kt('Please provide your user credentials as confirmation of this action.'),
@@ -143,7 +155,7 @@ class KTDocumentImmutableAction extends KTDocumentAction {
                 ));
         }
 
-        if($this->oConfig->get('actionreasons/globalReasons'))$widgets[] = array('ktcore.widgets.reason', array(
+        if ($this->oConfig->get('actionreasons/globalReasons'))$widgets[] = array('ktcore.widgets.reason', array(
                 'label' => _kt('Note'),
                 'name' => 'reason',
 				'required' => false
@@ -151,15 +163,15 @@ class KTDocumentImmutableAction extends KTDocumentAction {
 
         $oForm->setWidgets($widgets);
 
-        if($this->oConfig->get('actionreasons/globalReasons'))$validators[] = array('ktcore.validators.string', array(
+        if ($this->oConfig->get('actionreasons/globalReasons'))$validators[] = array('ktcore.validators.string', array(
                 'test' => 'reason',
                 'min_length' => 1,
                 'max_length' => 250,
                 'output' => 'reason',
             ));
 
-        if($default->enableESignatures){
-            $validators[] = array('electonic.signatures.validators.authenticate', array(
+        if ($default->enableESignatures) {
+            $validators[] = array('electronic.signatures.validators.authenticate', array(
                 'object_id' => $this->oDocument->iId,
                 'type' => 'document',
                 'action' => 'ktcore.transactions.immutable',
@@ -176,7 +188,7 @@ class KTDocumentImmutableAction extends KTDocumentAction {
     function do_main() {
         $this->oPage->setBreadcrumbDetails(_kt('Finalize'));
     	//check if we need confirmation for symblolic links linking to this document
-		if(count($this->oDocument->getSymbolicLinks())>0 && KTutil::arrayGet($_REQUEST,'postReceived') != 1){
+		if (count($this->oDocument->getSymbolicLinks())>0 && KTutil::arrayGet($_REQUEST,'postReceived') != 1) {
         	$this->redirectTo("confirm");
         }
         $oTemplate =& $this->oValidator->validateTemplate('ktstandard/action/immutable');
@@ -188,7 +200,7 @@ class KTDocumentImmutableAction extends KTDocumentAction {
         return $oTemplate->render();
     }
 
-    function do_confirm(){
+    function do_confirm() {
     	$this->oPage->setBreadcrumbDetails(_kt('Confirm making document final'));
     	$oTemplate =& $this->oValidator->validateTemplate('ktstandard/action/immutable_confirm');
         $oForm = $this->form_confirm();
@@ -221,7 +233,7 @@ class KTDocumentImmutableAction extends KTDocumentAction {
 
     // No validation main()
 //    function do_main() {
-//        if(!$this->oDocument->getIsCheckedOut())
+//        if (!$this->oDocument->getIsCheckedOut())
 //        {
 //	        $this->oDocument->setImmutable(true);
 //	        $this->oDocument->update();
@@ -235,4 +247,3 @@ class KTDocumentImmutableAction extends KTDocumentAction {
 //    }
 
 }
-

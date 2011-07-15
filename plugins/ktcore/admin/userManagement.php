@@ -55,15 +55,11 @@ require_once(KT_LIB_DIR . '/authentication/builtinauthenticationprovider.inc.php
 
 class KTUserAdminDispatcher extends KTAdminDispatcher {
 
-    var $sHelpPage = 'ktcore/admin/manage users.html';
+    public $sHelpPage = 'ktcore/admin/manage users.html';
 
-    function do_main()
+    public function do_main()
     {
-        $this->aBreadcrumbs[] = array('url' => $_SERVER['PHP_SELF'], 'name' => _kt('User Management'));
-        $this->oPage->setBreadcrumbDetails(_kt('select a user'));
-        $this->oPage->setTitle(_kt('User Management'));
-
-        $KTConfig =& KTConfig::getSingleton();
+        $KTConfig = KTConfig::getSingleton();
         $alwaysAll = $KTConfig->get('alwaysShowAll');
         $alwaysAll = true;
 
@@ -79,20 +75,20 @@ class KTUserAdminDispatcher extends KTAdminDispatcher {
         }
 
         $searchFields = array();
-        $searchFields[] =  new KTStringWidget(_kt('Search for Users'), _kt("Enter part of the person's username.  e.g. <strong>ra</strong> will match <strong>brad</strong>."), 'search_name', $name, $this->oPage);
+        $searchFields[] =  new KTStringWidget(_kt(''), _kt(""), 'search_name', $name, $this->oPage);
 
         // FIXME handle group search stuff.
         $searchResults = null;
         if (!empty($name)) {
-            $searchResults =& User::getList('WHERE username LIKE \'%' . DBUtil::escapeSimple($name) . '%\' AND id > 0');
+            $searchResults = User::getList('WHERE username LIKE \'%' . DBUtil::escapeSimple($name) . '%\' AND id > 0');
         }
         else if ($showAll !== false) {
-            $searchResults =& User::getList('id > 0');
+            $searchResults = User::getList('id > 0');
             $noSearch = false;
             $name = '*';
         }
 
-        $authenticationSources =& KTAuthenticationSource::getList();
+        $authenticationSources = KTAuthenticationSource::getList();
 
         $canAdd = true;
         if (KTPluginUtil::pluginIsActive('ktdms.wintools')) {
@@ -104,7 +100,7 @@ class KTUserAdminDispatcher extends KTAdminDispatcher {
             }
         }
 
-        $templating =& KTTemplating::getSingleton();
+        $templating = KTTemplating::getSingleton();
         $template = $templating->loadTemplate('ktcore/principals/useradmin');
         $templateData = array(
             'context' => $this,
@@ -115,17 +111,14 @@ class KTUserAdminDispatcher extends KTAdminDispatcher {
             'old_search' => $name,
             'can_add' => $canAdd,
             'invited' => false,
-            'authentication' => ACCOUNT_ROUTING
+            'authentication' => ACCOUNT_ROUTING,
+            'gravatar' => KTSmartyTemplate::md5Hash('$oUser->getEmail()'),
         );
 
         return $template->render($templateData);
     }
 
-    /**
-     * Resend an invite to a user
-     *
-     */
-    function do_resendInvite()
+    public function do_resendInvite()
     {
         $userId = $_REQUEST['user_id'];
         $user = User::get($userId);
@@ -144,7 +137,7 @@ class KTUserAdminDispatcher extends KTAdminDispatcher {
         $this->errorRedirectToMain(_kt("Invitation could not be sent to user ({$userId})"), 'show_all=1');
     }
 
-    function do_addUser()
+    public function do_addUser()
     {
         $this->aBreadcrumbs[] = array('url' => $_SERVER['PHP_SELF'], 'name' => _kt('User Management'));
         $this->oPage->setBreadcrumbDetails(_kt('add a new user'));
@@ -167,13 +160,15 @@ class KTUserAdminDispatcher extends KTAdminDispatcher {
 
         $showAll = KTUtil::arrayGet($_REQUEST, 'show_all', false);
         $addUser = KTUtil::arrayGet($_REQUEST, 'add_user', false);
-        if ($addUser !== false) { $addUser = true; } // HUH?
+        if ($addUser !== false) {
+            $addUser = true; // HUH?
+        }
         $editUser = KTUtil::arrayGet($_REQUEST, 'edit_user', false);
         $options = array('autocomplete' => false);
 
         // sometimes even admin is restricted in what they can do.
 
-        $KTConfig =& KTConfig::getSingleton();
+        $KTConfig = KTConfig::getSingleton();
         $minLength = ((int) $KTConfig->get('user_prefs/passwordLength', 6));
         $restrictAdmin = ((bool) $KTConfig->get('user_prefs/restrictAdminPasswords', false));
         $passwordAddRequirement = '';
@@ -189,7 +184,7 @@ class KTUserAdminDispatcher extends KTAdminDispatcher {
             $addFields = $this->getOldAddUserFields($username, $emailAddress, $passwordAddRequirement, $maxSessions, $options);
         }
 
-        $templating =& KTTemplating::getSingleton();
+        $templating = KTTemplating::getSingleton();
         $template = $templating->loadTemplate('ktcore/principals/adduser');
         $templateData = array(
             'context' => $this,
@@ -204,7 +199,7 @@ class KTUserAdminDispatcher extends KTAdminDispatcher {
         $addFields[] =  new KTStringWidget(_kt('Username'), sprintf(_kt('The username the user will enter to get access to %s.  e.g. <strong>jsmith</strong>'), APP_NAME), 'newusername', $username, $this->oPage, true, null, null, $options);
         $addFields[] =  new KTStringWidget(_kt('Name'), _kt('The full name of the user.  This is shown in reports and listings.  e.g. <strong>John Smith</strong>'), 'name', $name, $this->oPage, true, null, null, $options);
         $addFields[] =  new KTStringWidget(_kt('Email Address'), _kt('The email address of the user.  Notifications and alerts are mailed to this address if <strong>email notifications</strong> is set below. e.g. <strong>jsmith@acme.com</strong>'), 'email_address', $emailAddress, $this->oPage, false, null, null, $options);
-        $addFields[] =  new KTCheckboxWidget(_kt('Email Notifications'), _kt("If this is specified then the user will have notifications sent to the email address entered above.  If it isn't set, then the user will only see notifications on the <strong>Dashboard</strong>"), 'email_notifications', $emailNotification, $this->oPage, false, null, null, $options);
+        $addFields[] =  new KTBooleanWidget(_kt('Email Notifications'), _kt("If this is specified then the user will have notifications sent to the email address entered above.  If it isn't set, then the user will only see notifications on the Dashboard"), 'email_notifications', $emailNotification, $this->oPage, false, null, null, $options);
         $addFields[] =  new KTPasswordWidget(_kt('Password'), _kt('Specify an initial password for the user.') . $passwordAddRequirement, 'new_password', null, $this->oPage, true, null, null, $options);
         $addFields[] =  new KTPasswordWidget(_kt('Confirm Password'), _kt('Confirm the password specified above.'), 'confirm_password', null, $this->oPage, true, null, null, $options);
         // nice, easy bits.
@@ -219,7 +214,7 @@ class KTUserAdminDispatcher extends KTAdminDispatcher {
         $userInfo = sprintf('The username the user will enter to get access to %s.  e.g. <strong>jsmith</strong>', APP_NAME);
         $addFields[] =  new KTStringWidget(_kt('Email Address'), _kt($userInfo . '<br/>Notifications and alerts are mailed to this address if <strong>email notifications</strong> is set below. e.g. <strong>jsmith@acme.com</strong>'), 'email_address', $emailAddress, $this->oPage, true, null, null, $options);
         $addFields[] =  new KTStringWidget(_kt('Name'), _kt('The full name of the user.  This is shown in reports and listings.  e.g. <strong>John Smith</strong>'), 'name', $name, $this->oPage, true, null, null, $options);
-        $addFields[] =  new KTCheckboxWidget(_kt('Email Notifications'), _kt("If this is specified then the user will have notifications sent to the email address entered above.  If it isn't set, then the user will only see notifications on the <strong>Dashboard</strong>"), 'email_notifications', $emailNotification, $this->oPage, false, null, null, $options);
+        $addFields[] =  new KTBooleanWidget(_kt('Email Notifications'), _kt("If this is specified then the user will have notifications sent to the email address entered above.  If it isn't set, then the user will only see notifications on the Dashboard"), 'email_notifications', $emailNotification, $this->oPage, false, null, null, $options);
         $addFields[] =  new KTPasswordWidget(_kt('Password'), _kt('Specify an initial password for the user.') . $passwordAddRequirement, 'new_password', null, $this->oPage, true, null, null, $options);
         $addFields[] =  new KTPasswordWidget(_kt('Confirm Password'), _kt('Confirm the password specified above.'), 'confirm_password', null, $this->oPage, true, null, null, $options);
         // nice, easy bits.
@@ -231,10 +226,10 @@ class KTUserAdminDispatcher extends KTAdminDispatcher {
 
     function do_addUserFromSource()
     {
-        $authenticationSource =& KTAuthenticationSource::get($_REQUEST['source_id']);
+        $authenticationSource = KTAuthenticationSource::get($_REQUEST['source_id']);
         $providerName = $authenticationSource->getAuthenticationProvider();
-        $authenticationRegistry =& KTAuthenticationProviderRegistry::getSingleton();
-        $authenticationProvider =& $authenticationRegistry->getAuthenticationProvider($providerName);
+        $authenticationRegistry = KTAuthenticationProviderRegistry::getSingleton();
+        $authenticationProvider = $authenticationRegistry->getAuthenticationProvider($providerName);
 
         $this->aBreadcrumbs[] = array('url' => $_SERVER['PHP_SELF'], 'name' => _kt('User Management'));
         $this->aBreadcrumbs[] = array('url' => KTUtil::addQueryStringSelf('action=addUser'), 'name' => _kt('add a new user'));
@@ -243,7 +238,6 @@ class KTUserAdminDispatcher extends KTAdminDispatcher {
         $authenticationProvider->oPage->setTitle(_kt('Add New User'));
 
         $authenticationProvider->dispatch();
-        exit(0);
     }
 
     function do_editUser()
@@ -253,7 +247,7 @@ class KTUserAdminDispatcher extends KTAdminDispatcher {
         $this->oPage->setTitle(_kt('Modify User Details'));
 
         $userId = KTUtil::arrayGet($_REQUEST, 'user_id');
-        $user =& User::get($userId);
+        $user = User::get($userId);
 
         $oldSearch = KTUtil::arrayGet($_REQUEST, 'old_search');
 
@@ -277,7 +271,7 @@ class KTUserAdminDispatcher extends KTAdminDispatcher {
 
         $this->aBreadcrumbs[] = array('name' => $user->getName());
 
-        $KTConfig =& KTConfig::getSingleton();
+        $KTConfig = KTConfig::getSingleton();
         $useEmail = $KTConfig->get('user_prefs/useEmailLogin', false);
         if ($useEmail) {
             $editFields = $this->getNewEditUserFields($username, $name, $emailNotification, $mobileNum, $emailAddress, $maxSessions);
@@ -288,15 +282,15 @@ class KTUserAdminDispatcher extends KTAdminDispatcher {
 
         $authenticationSource = KTAuthenticationSource::getForUser($user);
         if (is_null($authenticationSource)) {
-            $authenticationProvider =& new KTBuiltinAuthenticationProvider;
+            $authenticationProvider = new KTBuiltinAuthenticationProvider;
         }
         else {
             $providerName = $authenticationSource->getAuthenticationProvider();
-            $authenticationRegistry =& KTAuthenticationProviderRegistry::getSingleton();
+            $authenticationRegistry = KTAuthenticationProviderRegistry::getSingleton();
             $authenticationProvider = $authenticationRegistry->getAuthenticationProvider($providerName);
         }
 
-        $templating =& KTTemplating::getSingleton();
+        $templating = KTTemplating::getSingleton();
         $template = $templating->loadTemplate('ktcore/principals/edituser');
         $templateData = array(
             'context' => $this,
@@ -315,7 +309,7 @@ class KTUserAdminDispatcher extends KTAdminDispatcher {
         $editFields[] =  new KTStringWidget(_kt('Username'), sprintf(_kt('The username the user will enter to get access to %s.  e.g. <strong>jsmith</strong>'), APP_NAME), 'newusername', $username, $this->oPage, true);
         $editFields[] =  new KTStringWidget(_kt('Name'), _kt('The full name of the user.  This is shown in reports and listings.  e.g. <strong>John Smith</strong>'), 'name', $name, $this->oPage, true);
         $editFields[] =  new KTStringWidget(_kt('Email Address'), _kt('The email address of the user.  Notifications and alerts are mailed to this address if <strong>email notifications</strong> is set below. e.g. <strong>jsmith@acme.com</strong>'), 'email_address', $emailAddress, $this->oPage, false);
-        $editFields[] =  new KTCheckboxWidget(_kt('Email Notifications'), _kt('If this is specified then the user will have notifications sent to the email address entered above.  If it is not set, then the user will only see notifications on the <strong>Dashboard</strong>'), 'email_notifications', $emailNotification, $this->oPage, false);
+        $editFields[] =  new KTBooleanWidget(_kt('Email Notifications'), _kt('If this is specified then the user will have notifications sent to the email address entered above.  If it is not set, then the user will only see notifications on the <strong>Dashboard</strong>'), 'email_notifications', $emailNotification, $this->oPage, false);
         $editFields[] =  new KTStringWidget(_kt('Mobile Number'), _kt("The mobile phone number of the user.  e.g. <strong>999 9999 999</strong>"), 'mobile_number', $mobileNum, $this->oPage, false);
         $editFields[] =  new KTStringWidget(_kt('Maximum Sessions'), _kt('As a safety precaution, it is useful to limit the number of times a given account can log in, before logging out.  This prevents a single account being used by many different people.'), 'max_sessions', $maxSessions, $this->oPage, true);
 
@@ -327,7 +321,7 @@ class KTUserAdminDispatcher extends KTAdminDispatcher {
         $userInfo = sprintf('The username the user will enter to get access to %s.  e.g. <strong>jsmith</strong>', APP_NAME);
         $editFields[] =  new KTStringWidget(_kt('Email Address'), _kt($userInfo . '<br/>Notifications and alerts are mailed to this address if <strong>email notifications</strong> is set below. e.g. <strong>jsmith@acme.com</strong>'), 'email_address', $emailAddress, $this->oPage, true);
         $editFields[] =  new KTStringWidget(_kt('Name'), _kt('The full name of the user.  This is shown in reports and listings.  e.g. <strong>John Smith</strong>'), 'name', $name, $this->oPage, true);
-        $editFields[] =  new KTCheckboxWidget(_kt('Email Notifications'), _kt('If this is specified then the user will have notifications sent to the email address entered above.  If it is not set, then the user will only see notifications on the <strong>Dashboard</strong>'), 'email_notifications', $emailNotification, $this->oPage, false);
+        $editFields[] =  new KTBooleanWidget(_kt('Email Notifications'), _kt('If this is specified then the user will have notifications sent to the email address entered above.  If it is not set, then the user will only see notifications on the <strong>Dashboard</strong>'), 'email_notifications', $emailNotification, $this->oPage, true);
         $editFields[] =  new KTStringWidget(_kt('Mobile Number'), _kt("The mobile phone number of the user.  e.g. <strong>999 9999 999</strong>"), 'mobile_number', $mobileNum, $this->oPage, false);
         $editFields[] =  new KTStringWidget(_kt('Maximum Sessions'), _kt('As a safety precaution, it is useful to limit the number of times a given account can log in, before logging out.  This prevents a single account being used by many different people.'), 'max_sessions', $maxSessions, $this->oPage, true);
 
@@ -343,7 +337,7 @@ class KTUserAdminDispatcher extends KTAdminDispatcher {
         $oldSearch = KTUtil::arrayGet($_REQUEST, 'old_search');
 
         $userId = KTUtil::arrayGet($_REQUEST, 'user_id');
-        $user =& User::get($userId);
+        $user = User::get($userId);
 
         if (PEAR::isError($user) || $user == false) {
             $this->errorRedirectToMain(_kt('Please select a user first.'));
@@ -356,7 +350,7 @@ class KTUserAdminDispatcher extends KTAdminDispatcher {
         $editFields[] =  new KTPasswordWidget(_kt('Password'), _kt('Specify an initial password for the user.'), 'new_password', null, $this->oPage, true);
         $editFields[] =  new KTPasswordWidget(_kt('Confirm Password'), _kt('Confirm the password specified above.'), 'confirm_password', null, $this->oPage, true);
 
-        $templating =& KTTemplating::getSingleton();
+        $templating = KTTemplating::getSingleton();
         $template = $templating->loadTemplate('ktcore/principals/updatepassword');
         $templateData = array(
             'context' => $this,
@@ -377,7 +371,7 @@ class KTUserAdminDispatcher extends KTAdminDispatcher {
         $password = KTUtil::arrayGet($_REQUEST, 'new_password');
         $confirmPassword = KTUtil::arrayGet($_REQUEST, 'confirm_password');
 
-        $KTConfig =& KTConfig::getSingleton();
+        $KTConfig = KTConfig::getSingleton();
         $minLength = ((int) $KTConfig->get('user_prefs/passwordLength', 6));
 
         $restrictAdmin = ((bool) $KTConfig->get('user_prefs/restrictAdminPasswords', false));
@@ -395,7 +389,7 @@ class KTUserAdminDispatcher extends KTAdminDispatcher {
         // validated and ready..
         $this->startTransaction();
 
-        $user =& User::get($userId);
+        $user = User::get($userId);
         if (PEAR::isError($user) || $user == false) {
             $this->errorRedirectToMain(_kt('Please select a user to modify first.'));
         }
@@ -417,22 +411,21 @@ class KTUserAdminDispatcher extends KTAdminDispatcher {
     function do_editUserSource()
     {
         $userId = KTUtil::arrayGet($_REQUEST, 'user_id');
-        $user =& $this->oValidator->validateUser($userId);
+        $user = $this->oValidator->validateUser($userId);
         $this->aBreadcrumbs[] = array('url' => $_SERVER['PHP_SELF'], 'name' => _kt('User Management'));
         $this->aBreadcrumbs[] = array('name' => $user->getName());
 
         $authenticationSource = KTAuthenticationSource::getForUser($user);
         if (is_null($authenticationSource)) {
-            $authenticationProvider =& new KTBuiltinAuthenticationProvider;
+            $authenticationProvider = new KTBuiltinAuthenticationProvider;
         }
         else {
             $providerName = $authenticationSource->getAuthenticationProvider();
-            $authenticationRegistry =& KTAuthenticationProviderRegistry::getSingleton();
+            $authenticationRegistry = KTAuthenticationProviderRegistry::getSingleton();
             $authenticationProvider = $authenticationRegistry->getAuthenticationProvider($providerName);
         }
 
         $authenticationProvider->subDispatch($this);
-        exit();
     }
 
     function do_editGroups()
@@ -443,9 +436,10 @@ class KTUserAdminDispatcher extends KTAdminDispatcher {
             $this->errorRedirectToMain(_kt('No such user.'), sprintf('old_search=%s&do_search=1', $oldSearch));
         }
 
+        $oldSearch = KTUtil::arrayGet($_REQUEST, 'old_search');
+
         $this->aBreadcrumbs[] = array('url' => $_SERVER['PHP_SELF'], 'name' => _kt('User Management'));
         $this->oPage->setBreadcrumbDetails($user->getName() .': ' . _kt('edit groups'));
-        $oldSearch = KTUtil::arrayGet($_REQUEST, 'old_search');
         $this->oPage->setTitle(sprintf(_kt("Edit %s's groups"), $user->getName()));
 
         // generate a list of groups this user is authorised to assign.
@@ -469,12 +463,10 @@ class KTUserAdminDispatcher extends KTAdminDispatcher {
                                                                 $options
         );
 
-        $templating =& KTTemplating::getSingleton();
+        $templating = KTTemplating::getSingleton();
         $template = $templating->loadTemplate('ktcore/principals/usergroups');
         $templateData = array(
             'context' => $this,
-            'unused_groups' => $aFreeGroups,
-            'user_groups' => $aUserGroups,
             'edit_user' => $user,
             'widget' => $jsonWidget,
             'old_search' => $oldSearch,
@@ -490,11 +482,13 @@ class KTUserAdminDispatcher extends KTAdminDispatcher {
         $errorOptions = array(
             'redirect_to' => array('editUser', sprintf('user_id=%d&old_search=%s&do_search=1', $userId, $oldSearch))
         );
+
         $inputKeys = array('name', 'email_address', 'email_notifications', 'mobile_number', 'max_sessions');
         $this->persistParams($inputKeys);
+
         $name = $this->oValidator->validateString(
-        KTUtil::arrayGet($_REQUEST, 'name'),
-        KTUtil::meldOptions($errorOptions, array('message' => _kt('You must provide a name')))
+            KTUtil::arrayGet($_REQUEST, 'name'),
+            KTUtil::meldOptions($errorOptions, array('message' => _kt('You must provide a name')))
         );
 
         $emailAddress = KTUtil::arrayGet($_REQUEST, 'email_address');
@@ -503,19 +497,21 @@ class KTUserAdminDispatcher extends KTAdminDispatcher {
         }
 
         $emailNotifications = KTUtil::arrayGet($_REQUEST, 'email_notifications', false);
-        if ($emailNotifications !== false) $emailNotifications = true;
+        if ($emailNotifications !== false) {
+            $emailNotifications = true;
+        }
 
         $mobileNumber = KTUtil::arrayGet($_REQUEST, 'mobile_number');
         $maxSessions = KTUtil::arrayGet($_REQUEST, 'max_sessions', '3', false);
 
         $this->startTransaction();
 
-        $user =& User::get($userId);
+        $user = User::get($userId);
         if (PEAR::isError($user) || $user == false) {
             $this->errorRedirectToMain(_kt('Please select a user to modify first.'), sprintf('old_search=%s&do_search=1', $oldSearch));
         }
 
-        $duplicateUser =& User::getByUserName($emailAddress);
+        $duplicateUser = User::getByUserName($emailAddress);
         if (!PEAR::isError($duplicateUser)) {
             if ($duplicateUser->getId() != $user->getId()) {
                 $this->errorRedirectTo('addUser', _kt('A user with that email address already exists'));
@@ -540,7 +536,7 @@ class KTUserAdminDispatcher extends KTAdminDispatcher {
 
     function do_saveUser()
     {
-        $KTConfig =& KTConfig::getSingleton();
+        $KTConfig = KTConfig::getSingleton();
 
         $useEmail = $KTConfig->get('user_prefs/useEmailLogin', false);
         if ($useEmail) { return $this->saveEmailUser(); }
@@ -578,12 +574,12 @@ class KTUserAdminDispatcher extends KTAdminDispatcher {
         // validated and ready..
         $this->startTransaction();
 
-        $user =& User::get($userId);
+        $user = User::get($userId);
         if (PEAR::isError($user) || $user == false) {
             $this->errorRedirectToMain(_kt('Please select a user to modify first.'), sprintf('old_search=%s&do_search=1', $oldSearch));
         }
 
-        $duplicateUser =& User::getByUserName($username);
+        $duplicateUser = User::getByUserName($username);
         if (!PEAR::isError($duplicateUser)) {
             if ($duplicateUser->getId() != $user->getId()) {
                 $this->errorRedirectTo('addUser', _kt('A user with that username already exists'));
@@ -618,12 +614,15 @@ class KTUserAdminDispatcher extends KTAdminDispatcher {
         $errorOptions = array(
             'redirect_to' => array('addUser', sprintf('old_search=%s&do_search=1', $oldSearch))
         );
+
         $inputKeys = array('name', 'email_address', 'email_notifications', 'mobile_number', 'max_sessions');
         $this->persistParams($inputKeys);
+
         $name = $this->oValidator->validateString(
         KTUtil::arrayGet($_REQUEST, 'name'),
             KTUtil::meldOptions($errorOptions, array('message' => _kt('You must provide a name')))
         );
+
         $emailAddress = $this->oValidator->validateEmailAddress(
             trim(KTUtil::arrayGet($_REQUEST, 'email_address')),
             KTUtil::meldOptions($errorOptions, array('message' => _kt('You must provide a valid email address.')))
@@ -633,10 +632,12 @@ class KTUserAdminDispatcher extends KTAdminDispatcher {
         if ($emailNotifications !== false) { $emailNotifications = true; }
 
         $mobileNumber = KTUtil::arrayGet($_REQUEST, 'mobile_number');
+
         $maxSessions = $this->oValidator->validateInteger(
-        KTUtil::arrayGet($_REQUEST, 'max_sessions'),
+            KTUtil::arrayGet($_REQUEST, 'max_sessions'),
             KTUtil::meldOptions($errorOptions, array('message' => _kt('You must specify a numeric value for maximum sessions.')))
         );
+
         $password = KTUtil::arrayGet($_REQUEST, 'new_password');
         $confirmPassword = KTUtil::arrayGet($_REQUEST, 'confirm_password');
         $KTConfig = KTConfig::getSingleton();
@@ -710,7 +711,7 @@ class KTUserAdminDispatcher extends KTAdminDispatcher {
         $password = KTUtil::arrayGet($_REQUEST, 'new_password');
         $confirmPassword = KTUtil::arrayGet($_REQUEST, 'confirm_password');
 
-        $KTConfig =& KTConfig::getSingleton();
+        $KTConfig = KTConfig::getSingleton();
         $minLength = ((int) $KTConfig->get('user_prefs/passwordLength', 6));
         $restrictAdmin = ((bool) $KTConfig->get('user_prefs/restrictAdminPasswords', false));
 
@@ -857,8 +858,14 @@ class KTUserAdminDispatcher extends KTAdminDispatcher {
         $maxGroups = 6;
         $addElipsis = false;
 
-        if ($user->getDisabled() == 4) {return _kt('Shared users cannot be assigned to groups.'); }
-        if (count($groups) == 0) { return _kt('User is currently not a member of any groups.'); }
+        if ($user->getDisabled() == 4) {
+            return _kt('Shared users cannot be assigned to groups.');
+        }
+
+        if (count($groups) == 0) {
+            return _kt('');
+        }
+
         if (count($groups) > $maxGroups) {
             $groups = array_slice($groups, 0, $maxGroups);
             $addElipsis = true;
@@ -902,12 +909,16 @@ class KTUserAdminDispatcher extends KTAdminDispatcher {
 
                 // else enable user
                 $user = User::get((int)$userId);
-                if (PEAR::isError($user)) { $this->errorRedirectToMain(_kt('Error getting user object')); }
+                if (PEAR::isError($user)) {
+                    $this->errorRedirectToMain(_kt('Error getting user object'));
+                }
 
                 $user->enable();
 
                 $res = $user->update();
-                if (PEAR::isError($res)) { $this->errorRedirectToMain(_kt('Error updating user')); }
+                if (PEAR::isError($res)) {
+                    $this->errorRedirectToMain(_kt('Error updating user'));
+                }
 
                 ++$enabledUsers;
             }
@@ -916,12 +927,16 @@ class KTUserAdminDispatcher extends KTAdminDispatcher {
         if ($_REQUEST['update_value'] == 'disable') {
             foreach (KTUtil::arrayGet($_REQUEST, 'edit_user', array()) as $userId => $v) {
                 $user = User::get((int)$userId);
-                if (PEAR::isError($user)) { $this->errorRedirectToMain(_kt('Error getting user object')); }
+                if (PEAR::isError($user)) {
+                    $this->errorRedirectToMain(_kt('Error getting user object'));
+                }
 
                 $user->disable();
 
                 $res = $user->update();
-                if (PEAR::isError($res)) { $this->errorRedirectToMain(_kt('Error updating user')); }
+                if (PEAR::isError($res)) {
+                    $this->errorRedirectToMain(_kt('Error updating user'));
+                }
 
                 --$enabledUsers;
             }
@@ -930,10 +945,17 @@ class KTUserAdminDispatcher extends KTAdminDispatcher {
         if ($_REQUEST['update_value'] == 'delete') {
             foreach (KTUtil::arrayGet($_REQUEST, 'edit_user', array()) as $userId => $v) {
                 $user = User::get((int)$userId);
-                if (PEAR::isError($user)) { $this->errorRedirectToMain(_kt('Error getting user object')); }
+                if (PEAR::isError($user)) {
+                    $this->errorRedirectToMain(_kt('Error getting user object'));
+                }
+
                 $user->delete();
+
                 $res = $user->update();
-                if (PEAR::isError($res)) { $this->errorRedirectToMain(_kt('Error updating user')); }
+                if (PEAR::isError($res)) {
+                    $this->errorRedirectToMain(_kt('Error updating user'));
+                }
+
                 $enabledUsers--;
             }
         }
@@ -942,7 +964,9 @@ class KTUserAdminDispatcher extends KTAdminDispatcher {
             $inviteList = array();
             foreach (KTUtil::arrayGet($_REQUEST, 'edit_user', array()) as $userId => $v) {
                 $user = User::get((int)$userId);
-                if (PEAR::isError($user)) { $this->errorRedirectToMain(_kt('Error getting user object')); }
+                if (PEAR::isError($user)) {
+                    $this->errorRedirectToMain(_kt('Error getting user object'));
+                }
 
                 if ($user->getDisabled() == 3) {
                     $inviteList[] = array('id' => $userId, 'email' => $user->getEmail());
@@ -954,6 +978,11 @@ class KTUserAdminDispatcher extends KTAdminDispatcher {
 
         $this->commitTransaction();
         $this->successRedirectToMain(_kt('Users updated'), 'show_all=1');
+    }
+
+    public function handleOutput($output)
+    {
+        print $output;
     }
 
 }

@@ -84,10 +84,9 @@
     {/literal}
     </script>
 </head>
-<body {if (!$page->show_portlets)}class="noportlets"{/if} {if $page->onload}onload="{$page->getBodyOnload()}"{/if} onresize="kt.lib.setFooter()">
+<body {if (!$page->show_portlets)}class="noportlets {$page->componentClass|lower}-section"{/if} class="{$page->componentClass|lower}-section" {if $page->onload}onload="{$page->getBodyOnload()}"{/if} >
 
 	<div id="wrapper">
-
 		<input type="hidden" name="kt-core-baseurl" id="kt-core-baseurl" value="{$rootUrl}" />
 		<div id="pageHeader">
 
@@ -168,7 +167,7 @@
 			{/if}
 			<div id="logobar">
 				{if $config->get("ui/mainLogo") != ''}
-					<a href="{$config->get("ui/mainLogoUrl")}"><img src="{$config->get("ui/mainLogo")}" class="primary" alt="{$config->get("ui/mainLogoTitle")}" title="{$config->get("ui/mainLogoTitle")}"/></a>
+					<!--<a href="{$config->get("ui/mainLogoUrl")}">--><img src="{$config->get("ui/mainLogo")}" class="primary" alt="{$config->get("ui/mainLogoTitle")}" title="{$config->get("ui/mainLogoTitle")}"/><!--</a>-->
 				{else}
 					<!--<a href="{$page->systemURL}">--><img src="{$rootUrl}/resources/graphics/ktlogo-topbar-right.png" class="primary" title="{$page->systemName}"/><!--</a>-->
 				{/if}

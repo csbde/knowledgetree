@@ -13,6 +13,10 @@ body
     font-family: sans-serif;
 	min-width: 850px;
 }
+body.settings-section,
+body.dashboard-section {
+	overflow-y: scroll;
+} 
 
 .floatClear
 {
@@ -36,7 +40,7 @@ body
     min-height: 200px;
     overflow: auto;
     position: relative;
-    width: 80%;
+    width: 90%;
 }
 
 #wrapper {
@@ -706,7 +710,9 @@ a.main_nav_item {
     line-height: 1.4em;
     margin-bottom: 0.5em;
 }
-
+#content .settings-content .descriptiveText {
+	display:none;
+}
 #content .field label .required
 {
     margin-left: 0.5em;
@@ -740,7 +746,7 @@ a.main_nav_item {
 
 #content h2
 {
-    font-family: "Lucida Grande", Tahoma, sans-serif; /* "Bitstream Vera Sans" */
+    font-family: "Arial", sans-serif; /* "Bitstream Vera Sans" */
     padding-bottom: 5px;
     border-width: 0 0 0 0;
     border-style: solid;
@@ -821,6 +827,9 @@ a.main_nav_item {
     /*width: 100%;*/
     font-size: 12px;
 }
+.doc_description .metadatatable {
+	table-layout: fixed;
+}
 
 .metadatatable.narrow {
     width: auto !important;
@@ -850,6 +859,7 @@ a.main_nav_item {
 	color: #2F6594;
 	float: none;
 	width: 225px;
+	word-wrap: break-word;
 }
 
 .metadatatable .versioned td {
@@ -1038,6 +1048,9 @@ a.main_nav_item {
     width: 100%;
     white-space: nowrap !important;
     border: 1px solid #ccc;
+    border-spacing: 0px;
+    font-size: 12px;
+    line-height: 18px;
 }
 
 .kt_collection.narrow {
@@ -1067,10 +1080,10 @@ a.main_nav_item {
 
 .kt_collection th,
 .kt_collection td {
-    padding: 0.25em 0.5em;
+    padding: 3px 10px;
     white-space: nowrap !important;
     overflow: hidden;
-    vertical-align: top;
+    vertical-align: middle;
 }
 
 .kt_collection td.title,
@@ -1089,15 +1102,7 @@ a.main_nav_item {
 }
 
 .kt_collection .folder_row td {
-    background-color: #e5e5e5;
-}
-
-.kt_collection .folder_row td.sort_on {
-    background-color: #dbdbdb;
-}
-
-.kt_collection .folder_row.odd td.sort_on {
-    background-color: #e8e8e8;
+    background-color: white;
 }
 
 
@@ -1106,7 +1111,7 @@ a.main_nav_item {
 }
 
 .kt_collection tr.even>td{
-    background-color: #ffffff;
+    background-color: #e3eef4;
 }
 
 .kt_collection tr.dragdrop td {
@@ -1114,7 +1119,7 @@ a.main_nav_item {
 }
 
 .kt_collection .odd td.sort_on {
-    background-color: #f0f0f0;
+    background-color: white;
 }
 
 /* cheap and nasty hack for gmail-style highlighting. */
@@ -1248,7 +1253,7 @@ The text will be hidden for screen view.  The generic fahrner-ish approach comes
     text-decoration: none;
     overflow: hidden;
     border: 0 !important;
-    margin: 1px;
+    margin: 0px auto;
     padding: 0;
     padding-top: 16px;
     height: 0px !important;
@@ -1294,8 +1299,8 @@ The text will be hidden for screen view.  The generic fahrner-ish approach comes
 }
 
 /* FIXME when available icon-naming-conformant sets have better coverage, make these more accurate. */
-.ktActionLink.ktDelete, .ktAction.ktDelete { background-image: url(/resources/graphics/delete.png); }
-.ktActionLink.ktEdit, .ktAction.ktEdit { background-image: url(/thirdparty/icon-theme/16x16/actions/document-properties.png); }
+.ktActionLink.ktDelete, .ktAction.ktDelete { background: url('../graphics/newui/icons/delete.png') no-repeat; }
+.ktActionLink.ktEdit, .ktAction.ktEdit { background: url(../../resources/graphics/newui/icons/edit.png) no-repeat right top; }
 .ktActionLink.ktAddUser, .ktAction.ktAddUser { background-image: url(/thirdparty/icon-theme/16x16/actions/contact-new.png); }
 .ktActionLink.ktAddGroup, .ktAction.ktAddGroup { background-image: url(/thirdparty/icon-theme/16x16/actions/group-new.png); }
 .ktActionLink.ktAdd, .ktAction.ktAdd { background-image: url(/thirdparty/icon-theme/16x16/actions/add.png); }
@@ -2090,6 +2095,7 @@ hr {
 
 .browse_body {
     padding: 0;
+    min-width: inherit;
 }
 
 /* -------------------------- dashboard ------------------------ */
@@ -2224,7 +2230,7 @@ hr {
     border: 8px solid #888;
     background-color: white;
     padding: 0px;
-    margin: 10% 30%;
+    margin: 15% 30%;
     opacity: 1;
     overflow: hidden;
     text-align: left;
@@ -2260,6 +2266,11 @@ hr {
     border: 1px solid #ccd5e4;
     background-color: #eff2f7;
    	text-shadow: 0px 1px 0px white;
+   	font-size: 12px;
+   	-moz-user-select: -moz-none;
+   	-khtml-user-select: none;
+   	-webkit-user-select: none;
+   	user-select: none;
 }
 .addDialog .dashletLink:hover {
 	background: #d5e0f2;
@@ -2277,6 +2288,11 @@ hr {
 	background: url(../graphics/bullet_toggle_close.png) no-repeat;
 	text-indent: -3000px;
 	width: 15px;
+}
+.addDialog .dashletLink:before {
+	content: " + ";
+	font-weight: bold;
+	font-size: 13px;
 }
 body #content #add_dashlet
 {
@@ -2582,3 +2598,9 @@ div.extjs_form_actions {
     background: transparent;
     overflow: auto;
 }
+
+/* Settings Admin Dynamic Conditions */
+.advanced-search-form { width:100%; }
+.advanced-search-form .name { width:100px; }
+.advanced-search-form .widget_values { width:100px; }
+.advanced-search-form .the_button { width:100px; }

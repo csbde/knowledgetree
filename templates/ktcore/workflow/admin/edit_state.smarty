@@ -4,6 +4,8 @@
 
 {* The real meat is down here.  We define and list a set of actions and links to them. *}
 
+<br/><br/>
+
 <h3>{i18n}State Effects{/i18n}</h3>
 
 <p class="descriptiveText">{i18n arg_appname="$appname"}One of the reasons that workflow is so key to

@@ -216,6 +216,12 @@ class KTOnDiskHashedStorageManager extends KTStorageManager {
         return $this->freeTemporaryFile($sPath);
     }
 
+    public function getStoragePath($path)
+    {
+    	global $default;
+    	return $default->varDirectory . DIRECTORY_SEPARATOR . $path;
+    }
+    
     public function download($oDocument, $bIsCheckout = false) {
         global $default;
 

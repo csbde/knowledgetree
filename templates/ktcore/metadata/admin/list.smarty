@@ -66,12 +66,8 @@
 	     <a href="{addQS}action=delete&fFieldsetId={$oFieldset->getId()}{/addQS}" class="ktAction ktDelete">{i18n}Delete{/i18n}</a>
 	  </td>
 
-
-
     </tr>
   </tbody>
 {/foreach}
 </table>
 {/if}
-
-
