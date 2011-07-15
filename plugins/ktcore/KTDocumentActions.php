@@ -450,6 +450,10 @@ class KTDocumentDeleteAction extends JavascriptDocumentAction {
     {
     	$id = $this->oDocument->getId();
     	$name = $this->oDocument->getName();
+		
+		$name = str_replace("'", "&apos;", $name);
+        $name = str_replace('"', '\"', $name);
+		
         return "javascript:{kt.app.copy.doAction(\"delete\", $id, \"$name\");}";
     }
 
@@ -827,8 +831,10 @@ class KTDocumentMoveAction extends JavascriptDocumentAction {
             return $oForm->handleError(null, $extra_errors);
         }
 
+        $this->oDocument->setName($name);       // if needed.
+        $this->oDocument->setFilename($filename);   // if needed.
+
         $this->startTransaction();
-        // now try update it.
 
         $res = KTDocumentUtil::move($this->oDocument, $data['browse'], $this->oUser, $sReason);
         if (PEAR::isError($oNewDoc)) {
@@ -836,13 +842,10 @@ class KTDocumentMoveAction extends JavascriptDocumentAction {
             exit(0);
         }
 
-        $this->oDocument->setName($name);       // if needed.
-        $this->oDocument->setFilename($filename);   // if needed.
-
-        $res = $this->oDocument->update();
-        if (PEAR::isError($res)) {
-            return $this->errorRedirectTo('main', _kt('Failed to move document: ') . $res->getMessage());
-        }
+        //$res = $this->oDocument->update();
+        //if (PEAR::isError($res)) {
+        //    return $this->errorRedirectTo('main', _kt('Failed to move document: ') . $res->getMessage());
+        //}
 
         $this->commitTransaction();
 
@@ -1144,6 +1147,10 @@ class KTDocumentArchiveAction extends JavascriptDocumentAction {
     {
     	$id = $this->oDocument->getId();
     	$name = $this->oDocument->getName();
+		
+		$name = str_replace("'", "&apos;", $name);
+        $name = str_replace('"', '\"', $name);
+		
         return "javascript:{kt.app.copy.doAction(\"archive\", $id, \"$name\");}";
     }
 
@@ -1472,7 +1479,7 @@ class KTDocumentWorkflowAction extends JavascriptDocumentAction {
 
         return _kt('Workflow');
     }
-	
+
 	function getOnClick()
     {
         return "javascript:{workflows.displayAction();}";
@@ -1732,20 +1739,20 @@ class KTOwnershipChangeAction extends JavascriptDocumentAction {
     function getDisplayName() {
         return _kt('Change owner');
     }
-    
+
 	function getInfo() {
-		
+
 		// Set status to disabled if document is finalized
         if ($this->oDocument->getImmutable()) {
             $info = parent::getInfo();
 			$info['status'] = 'disabled';
 			return $info;
         } else {
-			return null;
+			return parent::getInfo();
 		}
-        
+
     }
-	
+
     function getFunctionScript()
     {
 		return 'kt.app.document_actions.changeOwner(\'' . $this->oDocument->getId() . '\')';
@@ -1927,11 +1934,11 @@ class KTDocumentPreviewUrlAction extends KTDocumentAction {
 
 class KTDocumentCheckOutDownloadAction extends KTDocumentCheckOutAction {
 	public $sName = 'ktcore.actions.document.checkoutdownload';
-	public $sIconClass = 'checkout-download';
-	public $sParentBtn = 'ktcore.actions.document.checkout';
+	public $sIconClass = 'checkout';
+	public $sParentBtn = '';
 
     function getDisplayName() {
-        return _kt('Check-out And Download');
+        return _kt('Check-out');
     }
 
     function getFunctionScript()
@@ -1952,7 +1959,7 @@ class KTDocumentCheckOutDownloadAction extends KTDocumentCheckOutAction {
 			$js .= $js2 . "\n";
 		}
 		$js .= $this->getScript() . '</script>'. "\n";
-		$js .= '<a onclick="' . $this->getScriptActivation() . '" href="#" id="checkoutdowload">' . $this->getDisplayName() . '</a>'. "\n";
+		$js .= '<a onclick="' . $this->getScriptActivation() . '" href="#" id="checkoutdowload" class="button">' . $this->getDisplayName() . '</a>'. "\n";
 		$aInfo['js'] = $js;
 
         return $aInfo;
@@ -1968,9 +1975,10 @@ class KTDocumentCheckOutAction extends JavascriptDocumentAction {
     public $sIconClass = 'checkout';
 	public $bShowIfWriteShared = true;
 	public $btnOrder = 2;
+	public $sParentBtn = 'ktcore.actions.document.checkoutdownload';
 
     function getDisplayName() {
-        return _kt('Check-out');
+        return _kt('Check-out Only (No Download)');
     }
 
     function _show() {
@@ -2028,7 +2036,7 @@ class KTDocumentCheckOutAction extends JavascriptDocumentAction {
 			$js .= $js2 . "\n";
 		}
 		$js .= $this->getScript() . '</script>'. "\n";
-		$js .= '<a onclick="' . $this->getScriptActivation() . '" href="#" id="checkout" class="button">' . $this->getDisplayName() . '</a>'. "\n";
+		$js .= '<a onclick="' . $this->getScriptActivation() . '" href="#" id="checkout">' . $this->getDisplayName() . '</a>'. "\n";
 		$aInfo['js'] = $js;
 
         return $aInfo;

@@ -32,6 +32,11 @@
 <tr>
 	<td width="745" valign="top">
 		<div class="breadcrumbBtns">
+			<div class="breadcrumbsNotify">
+				{if $notifyBulkAction}
+					<span class="notifyAction"> {$notifyBulkAction} </span>
+				{/if}
+			</div>
 			<div class="breadcrumbActionBtns">
 	            <nobr>
 				{foreach item=aBtn from=$context->actionBtns.buttons name=btn}
@@ -43,26 +48,30 @@
 	     		{/foreach}
 
 	     		{assign var=aSplit value=$context->actionBtns.split}
-     		<div class="splitbutton"><span class="split"><span class="button" id="{$aSplit.class}">{$aSplit.name}</span>&#9660;</span></div>
-	     		{* Display the drop down menu's on the split buttons *}
-	            <ul class="splitmenu dropdown dropdown-vertical dropdown-vertical-rtl" id="more">
-	                {foreach item=menuitem from=$aSplit.submenu}
-	                	{if $menuitem.render}
-                			<li class="dir">
-                				<a class="{$menuitem.class}" href="#">{$menuitem.name}</a>
-                				<div class="left_action {$menuitem.class}">{$menuitem.context->render()}</div>
-                			</li>
-	                	{else}
-	                    {if $menuitem.status === 'disabled'}
-	                        <li><a class="{$menuitem.class} disabled" id="{$menuitem.icon_class}">{$menuitem.name}</a></li>
-	                    {else}
-	                        <li><a class="{$menuitem.class}" href="{$menuitem.url}" onclick='{$menuitem.onclick}'>{$menuitem.name}</a></li>
-	                    {/if}
-	                    {/if}
-	                {/foreach}
-	            </ul>
-	     		</nobr>
-	     	</div>
+				{if $aSplit != NULL}
+					<div class="splitbutton"><span class="split"><span class="button" id="{$aSplit.class}">{$aSplit.name}</span>&#9660;</span></div>
+					
+						{* Display the drop down menu's on the split buttons *}
+						<ul class="splitmenu dropdown dropdown-vertical dropdown-vertical-rtl" id="more">
+							{foreach item=menuitem from=$aSplit.submenu}
+								{if $menuitem.render}
+									<li class="dir">
+										<a class="{$menuitem.class}" href="#">{$menuitem.name}</a>
+										<div class="left_action {$menuitem.class}">{$menuitem.context->render()}</div>
+									</li>
+								{else}
+								{if $menuitem.status === 'disabled'}
+									<li><a class="{$menuitem.class} disabled" id="{$menuitem.icon_class}">{$menuitem.name}</a></li>
+								{else}
+									<li><a class="{$menuitem.class}" href="{$menuitem.url}" onclick='{$menuitem.onclick}'>{$menuitem.name}</a></li>
+								{/if}
+								{/if}
+							{/foreach}
+						</ul>
+				{/if}
+				</nobr>
+			</div>
+				
 
     	</div>
 <form action="{$browseutil->getActionBaseUrl()}" method="post">
@@ -141,6 +150,9 @@
         {if ($folderSidebars)}
             {$folderSidebars->getFolderSidebars()}
         {/if}
+		{if $tagcloudportlet}
+			{$tagcloudportlet}
+		{/if}
     </div>
 </td>
 </tr>

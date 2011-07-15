@@ -59,7 +59,7 @@ class datetime_view extends KTAdminDispatcher
     	$input .= '<select onchange="javascript:{kt.datetime.change_region();}" id="country_select" name="country_select">&nbsp;&nbsp;';
     	$input .= datetime_view::renderRegions($value);
     	$input .= '</select>';
-    	$input .= '<br/><br/>';
+    	$input .= '<br/>';
     	$input .= datetime_view::renderTimezoneLabel();
     	$input .= "<select class='countryList' id='{$id}' name='configArray[{$id}]'>&nbsp;&nbsp;";
     	$input .= datetime_view::renderTimezones($value);

@@ -6,6 +6,8 @@
 
 <br/><br/>
 
+<div class="workflowHidden">
+
 <h3>{i18n}State Effects{/i18n}</h3>
 
 <p class="descriptiveText">{i18n arg_appname="$appname"}One of the reasons that workflow is so key to
@@ -26,3 +28,5 @@ on a document, and reaching a state can cause notifications to be sent out.{/i18
     One way to help this process is to inform certain groups or roles about
     the document's current state.{/i18n}</dd>
 </dl>
+
+</div>

@@ -256,6 +256,7 @@ class KTPage {
         $js[] = "resources/$jsResourceLocation/newui/kt.containers.$jsExt";
         $js[] = "resources/$jsResourceLocation/newui/kt.lib.$jsExt";
         $js[] = "resources/$jsResourceLocation/newui/kt.api.$jsExt";
+        $js[] = "resources/$jsResourceLocation/jquery.form.js";
 
         // Shared users cannot re-share or invite users to the system.
         if (!SharedUserUtil::isSharedUser()) {
@@ -268,10 +269,14 @@ class KTPage {
         $js[] = 'resources/js/jquery.breadcrumbs.js';
 
         // TODO check these for section
+        $js[] = 'thirdpartyjs/jquery/ui/minified/jquery.tools.min.js';
         $js[] = "resources/$jsResourceLocation/newui/newUIFunctionality.$jsExt";
+        $js[] = "resources/$jsResourceLocation/newui/kt.app.userPreferences.$jsExt";
+        $js[] = "resources/$jsResourceLocation/newui/kt.app.notify.$jsExt";
         $js[] = "resources/$jsResourceLocation/newui/jquery.helper.$jsExt";
         $js[] = "resources/$jsResourceLocation/newui/buttontabs.jquery.$jsExt";
         $js[] = 'thirdpartyjs/jquery/plugins/dotimeout/jquery.ba-dotimeout.min.js';
+
 
         // load area specific files
         foreach ($jsIncludes as $jsFile => $includeLocations) {
@@ -329,9 +334,9 @@ class KTPage {
     	    $sUrl = KTPluginUtil::getPluginPath('electronic.signatures.plugin', true);
     	    $heading = _kt('You are attempting to access Settings');
     	    $this->menu['administration']['url'] = '#';
-    	    $this->menu['administration']['onclick'] = "javascript: showSignatureForm('{$sUrl}', '{$heading}', 'dms.administration.administration_section_access', 'admin', '{$sBaseUrl}/admin.php', 'redirect');";
+    	    $this->menu['administration']['onclick'] = "javascript: showSignatureForm('{$sUrl}', '{$heading}', 'dms.administration.administration_section_access', 'admin', '{$sBaseUrl}/settings.php', 'redirect');";
     	} else {
-    	    $this->menu['administration']['url'] = $sBaseUrl.'/admin.php';
+    	    $this->menu['administration']['url'] = $sBaseUrl.'/settings.php';
     	}
     }
 
@@ -701,9 +706,10 @@ class KTPage {
         			$sUrl = KTPluginUtil::getPluginPath('electronic.signatures.plugin', true);
         			$heading = _kt('You are attempting to modify Preferences');
         			$this->userMenu['preferences']['url'] = '#';
-        			$this->userMenu['preferences']['onclick'] = "javascript: showSignatureForm('{$sUrl}', '{$heading}', 'dms.administration.accessing_preferences', 'system', '{$sBaseUrl}/preferences.php', 'redirect');";
+        			$this->userMenu['preferences']['onclick'] = "javascript: showSignatureForm('{$sUrl}', '{$heading}', 'dms.administration.accessing_preferences', 'system', kt.app.userPreferences.show, 'javascript');";
         		} else {
-        			$this->userMenu['preferences']['url'] = $sBaseUrl.'/preferences.php';
+        			$this->userMenu['preferences']['onclick'] = "javascript:kt.app.userPreferences.show();";
+                    $this->userMenu['preferences']['url'] = '#';
         		}
 
         		if (KTPluginUtil::pluginIsActive('gettingstarted.plugin')) {
@@ -716,7 +722,7 @@ class KTPage {
 				$this->userMenu['applications'] = array('label' => _kt('Applications'), 'url' => $sBaseUrl.'/plugins/ktlive/applications.php');
 				$this->userMenu['supportpage'] = array('label' => _kt('Get Help'), 'url' => $sBaseUrl.'/support.php', 'extra'=>'target="_blank"');
         		//	        $this->userMenu['preferences'] = array('label' => _kt('Preferences'), 'url' => $sBaseUrl.'/preferences.php');
-        		$this->userMenu['preferences']['label'] = '<span class="normalTransformText">'.$this->user->getName().'</span>';
+        		$this->userMenu['preferences']['label'] = '<span id="userPreferencesName" class="normalTransformText">'.$this->user->getName().'</span>';
 				// About Moved to Footer
 				//$this->userMenu['aboutkt'] = array('label' => _kt('About'), 'url' => $sBaseUrl.'/about.php');
 				$this->userMenu['logout'] = array('label' => _kt('Logout'), 'url' => $sBaseUrl.'/presentation/logout.php');
@@ -844,6 +850,11 @@ class KTPage {
 		} else {
 		   $aTuple['url'] = false;
 		}
+        
+        // Id for use with JavaScript
+        if ($aActionTuple['id']) {
+            $aTuple['id'] = $aActionTuple['id'];
+        }
 
 		return $aTuple;
     }

@@ -500,11 +500,19 @@ class BrowseView {
         } else {
             $item['mimeicon'] = '';
         }
+        
+        if ($item['hidecheckbox']) {
+            $item['hidecheckbox'] = ' class="not_supported"';
+        } else {
+            $item['hidecheckbox'] = '';
+        }
 
         // Get the users permissions on the document
         $permissions = $item['permissions'];
+        
         $hasWrite = (strpos($permissions, 'W') === false) ? false : true;
         $hasDelete = (strpos($permissions, 'D') === false) ? false : true;
+        $hasSecurity = (strpos($permissions, 'S') === false) ? false : true;
 
         $item['filename'] = (strlen($item['filename']) > $fileNameCutoff) ? (substr($item['filename'], 0, $fileNameCutoff - 3) . "...") : $item['filename'];
 
@@ -548,8 +556,10 @@ class BrowseView {
 
         $item['actions.finalize_document'] = ($isCheckedOut) ? $ns : $item['actions.finalize_document'];
 
+        $item['actions.change_owner'] = $hasSecurity ? $item['actions.change_owner'] : $ns;
+        $item['actions.finalize_document'] = $hasSecurity ? $item['actions.finalize_document'] : $ns;
+
         if (!$hasWrite) {
-            $item['actions.change_owner'] = $ns;
             $item['actions.share_document'] = $ns;
             if ($isCheckedOut || $item['actions.finalize_document']) {
                 $this->oUser = is_null($this->oUser) ? User::get($user_id) : $this->oUser;
@@ -558,10 +568,9 @@ class BrowseView {
                     $item['actions.share_document'] = '';
                 }
             }
-            $item['actions.finalize_document'] = $ns;
             $item['separatorE']=$ns;
         }
-
+        
         // Check if the thumbnail exists
         $dev_no_thumbs = (isset($_GET['noThumbs']) || $_SESSION['browse_no_thumbs']) ? true : false;
         $_SESSION['browse_no_thumbs'] = $dev_no_thumbs;
@@ -604,6 +613,8 @@ class BrowseView {
             if (Zoho::resolve_type($oDocument)) {
                 if ($item['actions.checkout'] != $ns) {
                     $item['allowdoczohoedit'] = '<li class="action_zoho_document"><a href="javascript:;" onclick="zohoEdit(\'' . $item['id'] . '\')">Edit Document Online</a></li>';
+                } else {
+                    $item['allowdoczohoedit'] = '<li class="action_zoho_document not_supported"><a href="javascript:;" onclick="zohoEdit(\'' . $item['id'] . '\')">Edit Document Online</a></li>';
                 }
             }
         }
@@ -612,6 +623,9 @@ class BrowseView {
         // Sanitize document title
         $item['title'] = sanitizeForHTML($item['title']);
         $item['filesize'] = KTUtil::filesizeToString($item['filesize'], 'KB');
+
+        $item['title_sanitized'] = str_replace('\'', '\\\'', $item['title']);
+        $item['title_sanitized'] = str_replace('"', '&quot;', $item['title_sanitized']);
 
         // Check if the document is a shortcut
         if (!is_null($item['linked_document_id'])) {
@@ -632,7 +646,7 @@ class BrowseView {
         }
 
         $tpl = $this->getDocumentTemplate(1, '<td width="1" class="checkbox">
-                            <input name="selection_d[]" type="checkbox" value="[id]" />
+                            <input name="selection_d[]" type="checkbox" value="[id]" [hidecheckbox] />
                         </td>', $share_separator, '<span class="shortcut[is_shortcut]">
                                     <span>This is a shortcut to the file.</span>
                                 </span>');
@@ -735,28 +749,28 @@ class BrowseView {
                                         <li class="action_download [actions.download]"><a href="action.php?kt_path_info=ktcore.actions.document.view&fDocumentId=[id]">Download</a></li>
                                         [allowdoczohoedit]
 
-                                        <li class="separator[separatorA]"></li>
+                                        <li class="separator separatorA[separatorA]"></li>
 
                                         <li class="action_copy [actions.copy]"><a href="#" onclick="javascript:{kt.app.copy.doTreeAction(\'copy\', [id]);}">Copy</a></li>
                                         <li class="action_move [actions.move]"><a href="#" onclick="javascript:{kt.app.copy.doTreeAction(\'move\', [id]);}">Move</a></li>
-                                        <li class="action_delete [actions.delete]"><a href="#" onclick="javascript:{kt.app.copy.doAction(\'delete\', [id]);}">Delete</a></li>
+                                        <li class="action_delete [actions.delete]"><a href="#" onclick="javascript:{kt.app.copy.doAction(\'delete\', [id], \'[title_sanitized]\');}">Delete</a></li>
 
-                                        <li class="separator[separatorB]"></li>
+                                        <li class="separator separatorB[separatorB]"></li>
 
-                                        <li class="action_checkout [actions.checkout]"><a href="#" onclick="kt.app.document_actions.checkout_actions(\'[id]\', \'checkout\');">Check-out</a></li>
-                                        <li class="action_checkout [actions.checkout]"><a href="#" onclick="kt.app.document_actions.checkout_actions(\'[id]\', \'checkoutdownload\');">Check-out and Download</a></li>
+                                        <li class="action_checkout [actions.checkout]"><a href="#" onclick="kt.app.document_actions.checkout_actions(\'[id]\', \'checkoutdownload\');">Check-out</a></li>
+                                        <li class="action_checkout [actions.checkout]"><a href="#" onclick="kt.app.document_actions.checkout_actions(\'[id]\', \'checkout\');">Check-out Only (No Download)</a></li>
                                         <li class="action_cancel_checkout [actions.cancel_checkout]"><a href="#" onclick="kt.app.document_actions.checkout_actions(\'[id]\', \'cancelcheckout\');">Cancel Check-out</a></li>
                                         <li class="action_checkin [actions.checkin]"><a href="#" onclick="kt.app.document_actions.checkout_actions(\'[id]\', \'checkin\');">Check-in</a></li>
 
-                                        <li class="separator[separatorC]"></li>
+                                        <li class="separator separatorC[separatorC]"></li>
 
                                         <li class="action_alerts [actions.alerts]"><a href="#" onclick="javascript:{alerts.displayAction(\'\', [id], \'browse-view\');}">Alerts</a></li>
                                         <li class="action_email [actions.email]"><a href="action.php?kt_path_info=ktcore.actions.document.email&fDocumentId=[id]">Email</a></li>
 
-                                        <li class="separator[separatorD]"></li>
+                                        <li class="separator separatorD[separatorD]"></li>
 
                                         <li class="action_change_owner [actions.change_owner]"><a href="javascript:;" onclick="kt.app.document_actions.changeOwner(\'[id]\');">Change Owner</a></li>
-                                        <li class="action_finalize_document [actions.finalize_document]"><a href="#" onclick="javascript:{kt.app.copy.doAction(\'immutable\', [id]);}">Finalize Document</a></li>
+                                        <li class="action_finalize_document [actions.finalize_document]"><a href="#" onclick="javascript:{kt.app.copy.doAction(\'immutable\', [id], \'[title_sanitized]\');}">Finalize Document</a></li>
                                     </ul>
                                 </li>
                             </ul>';

@@ -3,10 +3,9 @@
 <div style="margin-left:45px;">
 	<img src="resources/graphics/admin_{$category.name}.png" align="left">
 </div>
-	
+
 <div style="margin-left:100px; margin-top:5px;">
-	<h2>{$category.title}</h2>
-	
+
 	{if ($jscript != '')}
 	{$jscript}
 	{/if}
@@ -20,7 +19,7 @@
 		{if ($items)}
 			{foreach item=aItem from=$items}
 				<div style="margin-top:5px;">
-					<a href="{ktLink base="admin.php" subpath="`$aItem.fullname`"}">{$aItem.title}</a>
+					<a href="{ktLink base="settings.php" subpath="`$aItem.fullname`"}">{$aItem.title}</a>
 					<div class="descriptiveText">{$aItem.description}</div>
 				</div>
 			{/foreach}

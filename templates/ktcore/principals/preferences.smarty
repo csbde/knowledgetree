@@ -1,21 +1,61 @@
-<!-- Preferences -->
-<h2>{i18n}Preferences{/i18n}</h2>
+<script src="/resources/js/jquery.form.js"></script>
 
-{$edit_form->render()}
+<div class="settings-list" id="modal">
+    <div class="settings-item">
+        <a class="header">{i18n}User Details and Email Notifications{/i18n}</a>
+        <div class="settings-content" style="display:block">
+            
+            {$edit_form->render()}
+            
+        </div>
+    </div>
+    
+    {if $show_password}
+    <div class="settings-item">
+        <a class="header">{i18n}Change Password{/i18n}</a>
+        <div class="settings-content" style="display:block">
+            {$changePasswordForm}
+            
+            <br clear="both" />
+        </div>
+    </div>
+    {/if}
+    
+    {if $adminPortletContent}
+    <div class="settings-item">
+        <a class="header">{i18n}Enable Admin Mode{/i18n}</a>
+        <div class="settings-content" style="display:block">
+            {$adminPortletContent}
+            
+            <br clear="both" />
+        </div>
+    </div>
+    {/if}
+</div>
 
-<br clear="both" /><br/>
 
-<!-- Password -->
-{if $show_password}
-	<h2>{i18n}Password{/i18n}</h2>
-    <div class="form_actions"><a href="{addQS}action=setPassword{/addQS}">{i18n}Change password{/i18n}</a></div>
-    <br clear="both" />
-{/if}
 
-<br clear="both" />
-
-<!-- Admin mode -->
-{if $adminPortletContent}
-	<h2>{i18n}Administrator Mode{/i18n}</h2>
-	{$adminPortletContent}
-{/if}
+{literal}
+<script type="text/javascript">
+jQuery(document).ready(function()
+{
+    kt.app.userPreferences.ajaxifyForms();
+    {/literal}
+        
+        jQuery('#userPreferencesName').html('{$userFullName}');
+        
+        {if (!empty($errorMessages))}
+            {foreach item=sError from=$errorMessages}
+                kt.app.notify.show('{$sError}', true);
+            {/foreach}
+        {/if}
+        {if (!empty($successMessages))}
+            {foreach item=sInfo from=$successMessages}
+                kt.app.notify.show('{$sInfo}');
+            {/foreach}
+        {/if}
+    {literal}
+    
+});
+</script>
+{/literal}

@@ -204,9 +204,9 @@
         $pos = strpos($script, '/setup/wizard/');
         $root_url = substr($script, 0, $pos);
         if($port == '')
-        	$redirect = "http://".$_SERVER['SERVER_NAME'].$root_url."/admin.php";
+        	$redirect = "http://".$_SERVER['SERVER_NAME'].$root_url."/settings.php";
         else
-        	$redirect = "http://".$_SERVER['SERVER_NAME'].":$port".$root_url."/admin.php";
+        	$redirect = "http://".$_SERVER['SERVER_NAME'].":$port".$root_url."/settings.php";
 	?>
 	<?php if($migrate_check) { ?>
 		<input type="submit" name="Upgrade" value="Next" class="button_next"/>

@@ -35,8 +35,8 @@ body.dashboard-section {
 
 .action_overview_scroll {
     border: 1px none;
-    margin-left: 30px;
-    margin-top: 30px;
+    /*margin-left: 30px;
+    margin-top: 30px;*/
     min-height: 200px;
     overflow: auto;
     position: relative;
@@ -710,9 +710,7 @@ a.main_nav_item {
     line-height: 1.4em;
     margin-bottom: 0.5em;
 }
-#content .settings-content .descriptiveText {
-	display:none;
-}
+
 #content .field label .required
 {
     margin-left: 0.5em;
@@ -976,6 +974,9 @@ a.main_nav_item {
 	background: #ffffff;
 }
 
+#content .doc_description .metadatatable select {
+	max-width: 170px;
+}
 .editable-control {
 	visibility: hidden;
 	cursor: pointer;
@@ -983,6 +984,7 @@ a.main_nav_item {
 	min-width: 20px;
 	height: 16px;
 	vertical-align: top;
+	word-spacing: 
 }
 .editable-control.undo{
 	visibility: visible;
@@ -1166,23 +1168,18 @@ a.main_nav_item {
 
 /* block level. */
 .ktInfo {
-    padding: 0.1em 1em 1em 1em;
-    margin: 0 0 1em 0.5em;
+    background: #fffdc5;
+    border: 1px solid #ffd825;
+	border-radius: 3px;
+	color: #333;
+	font-size: 13px;
+	font-weight: bold;
+	text-align: center;
+	text-shadow: 0px 1px 0px white;
+	padding: 10px 5px;
+	margin-bottom: 5px;
 }
 
-
-.ktInfo .info_list {
-    background: #DEDEDE;
-    padding-left: 10px;
-    margin-top: 20px;
-    padding-bottom: 8px;
-}
-
-.ktInfo .info_item {
-    padding-left: 25px;
-    background: #DEDEDE url(/thirdparty/icon-theme/16x16/status/dialog-information.png) top left no-repeat;
-    padding-bottom: 3px;
-}
 
 .ktBlock {
 	position: relative;
@@ -2534,7 +2531,7 @@ div.extjs_form_actions {
 	background:#EEE;
 	overflow:hidden;
     zoom:1;
-    padding: 5px;
+    padding: 5px 10px;
 }
 
 .x-window-tl {
@@ -2604,3 +2601,26 @@ div.extjs_form_actions {
 .advanced-search-form .name { width:100px; }
 .advanced-search-form .widget_values { width:100px; }
 .advanced-search-form .the_button { width:100px; }
+
+/*Tooltips*/
+
+.tooltip{
+    background: white;
+    font-size: 11px;
+    height: auto;
+    max-width: 210px;
+    padding: 5px 10px 5px 10px;
+    color: #666;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    -moz-border-radius: 3px;
+    -webkit-border-radius: 3px;
+    box-shadow: 0px 1px 0px #888;
+    -moz-box-shadow: 0px 0px 1px #888;
+    -webkit-box-shadow: 0px 0px 1px #888;
+    margin: -10px 0px 0px 10px;
+}
+.tooltip span {
+    background: url(/resources/graphics/newui/popover_tip_down.png) no-repeat bottom center;
+    padding-bottom: 35px;
+}

@@ -11,9 +11,10 @@ your unit folder.{/i18n}</p>
         {$oWidget->render()}
       {/foreach}
 
-
+	<div class="action-footer">
       <div class="form_actions">
          <input type="submit" value="{i18n}create unit{/i18n}" />
-         <input type="submit" name="kt_cancel[]" value="{i18n}Cancel{/i18n}" />
+         <input type="submit" class="form_cancel" name="kt_cancel[]" value="{i18n}Cancel{/i18n}" />
       </div>
+    </div>
    </form>

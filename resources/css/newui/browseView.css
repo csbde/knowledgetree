@@ -169,7 +169,7 @@
 .doc.browseView .doc.summary_cell .detail .item .date { font-weight: normal; }
 .doc.browseView .folder.item.debug * { border: 1px solid transparent; }
 .doc.browseView .folder.item.debug *:hover { border: 1px solid #A10000 !important; }
-.doc.browseView .folder.item { font-family: sans-serif; font-size: 11px; color: #333333; border: 1px solid transparent; border-bottom: 1px solid #dbdbdb; padding: 5px; margin: 5px 0px; }
+.doc.browseView .folder.item { font-family: "Arial", sans-serif; font-size: 11px; color: #333333; border: 1px solid transparent; border-bottom: 1px solid #dbdbdb; padding: 5px; margin: 5px 0px; }
 .doc.browseView .folder.item td { vertical-align: top; }
 .doc.browseView .folder.item td.checkbox { vertical-align: middle; padding-right: 12px; }
 .doc.browseView .folder.item:hover { -webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px; background-color: #f0f0f0; border: 1px solid #dbdbdb; }
@@ -221,6 +221,7 @@
 .doc.browseView .actionMenu .actionIcon.actions > ul li.action_rename_folder, .splitmenu a.rename-folder { background: url("../../../resources/graphics/newui/icons/folder_edit.png") no-repeat left center !important; }
 .doc.browseView .actionMenu .actionIcon.actions > ul li.action_folder_permissions, .splitmenu a.permissions { background: url("../../../resources/graphics/newui/icons/permissions.png") no-repeat left center !important; }
 .doc.browseView .actionMenu .actionIcon.actions > ul li.action_folder_permissions, .splitmenu a.allocate-roles { background: url("../../../resources/graphics/newui/icons/roles_allocate.png") no-repeat left center !important; }
+#content .breadcrumbBtns .splitmenu li a.workflow { background: url("../../../resources/graphics/newui/icons/workflow.png") no-repeat left center !important; }
 .doc.browseView .actionMenu .actionIcon.actions > ul li.action_folder_index, .splitmenu a.folder-index { background: url("../../../resources/graphics/newui/icons/icon_schedule_indexing.png") no-repeat left center !important; }
 .doc.browseView .actionMenu .actionIcon.actions > ul li.action_view_transactions, .splitmenu a.create-shortcut { background: url("../../../resources/graphics/newui/icons/shortcut.png") no-repeat left center !important; }
 .doc.browseView .actionMenu .actionIcon.actions > ul li.action_view_transactions, .splitmenu a.usage-info { background: url("../../../resources/graphics/newui/icons/usage_information.png") no-repeat left center !important; }

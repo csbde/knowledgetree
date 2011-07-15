@@ -22,7 +22,7 @@ kt.app.notify = new function() {
 		// If the notification snippet does not exist, create it and append to body
         if (progress.length == 0) {
 			
-			jQuery('body').append('<div class="uploadProgress" id="uploadProgress"><div class="progress" id="progress"></div></div>');
+			jQuery('#wrapper').append('<div class="uploadProgress" id="uploadProgress"><div class="progress" id="progress"></div></div>');
 			
 			var progress = jQuery('.uploadProgress');
 		}
@@ -44,8 +44,10 @@ kt.app.notify = new function() {
 		progress.text(message).css('display', 'block').css('visibility', 'visible');
 		
 		// Set fadeout - 5 seconds
+		
 		if (autoHide) {
-			jQuery('#uploadProgress').fadeOut(5000);
+			
+			jQuery('#uploadProgress').delay(3000).fadeOut(1000);
 		}
 		
     }

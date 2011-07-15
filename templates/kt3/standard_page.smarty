@@ -87,6 +87,7 @@
 <body {if (!$page->show_portlets)}class="noportlets {$page->componentClass|lower}-section"{/if} class="{$page->componentClass|lower}-section" {if $page->onload}onload="{$page->getBodyOnload()}"{/if} >
 
 	<div id="wrapper">
+		{$uploadProgress}
 		<input type="hidden" name="kt-core-baseurl" id="kt-core-baseurl" value="{$rootUrl}" />
 		<div id="pageHeader">
 
@@ -174,7 +175,6 @@
 				{if $config->get("ui/companyLogo") != ''}
 					<!--<a href="{$config->get("ui/companyLogoUrl")}"><img src="{$config->get("ui/companyLogo")}" height="50px" width="{$config->get("ui/companyLogoWidth")}" alt="{$config->get("ui/companyLogoTitle")}" title="{$config->get("ui/companyLogoTitle")}" class="secondary" /></a>-->
 				{/if}
-				{$uploadProgress}
 
 				<div class="floatClear"></div>
 				
@@ -258,9 +258,9 @@
             						{foreach item=aCrumb from=$page->breadcrumbs name=bc}
             						    <li>
                 							{if ($aCrumb.url) }
-                								<a href="{$aCrumb.url}">{$aCrumb.label|mb_truncate:20:"...":true|sanitize}</a>
+                								<a href="{$aCrumb.url}" {if $aCrumb.id}id="{$aCrumb.id}" {/if}>{$aCrumb.label|mb_truncate:20:"...":true|sanitize}</a>
                 							{else}
-                								<span class="additional">{$aCrumb.label|mb_truncate:40:"...":true|sanitize}</span>
+                								<span class="additional" {if $aCrumb.id}id="{$aCrumb.id}" {/if}>{$aCrumb.label|mb_truncate:40:"...":true|sanitize}</span>
                 							{/if}
             							</li>
             						{/foreach}
@@ -328,14 +328,9 @@
 						<div class="error_dashlet_bottomright"></div>
 					</div>
 				{/if}
-
-				<!-- Status messages added here. -->
+						<!-- Status messages added here. -->
 				{if (!empty($page->infoStack))}
 					<div class="ktInfo">
-						<div class="info_dashlet_rightrepeat_top_small"></div>
-						<div class="info_dashlet_rightrepeat_bottom"></div>
-						<div class="info_dashlet_leftrepeat_top"></div>
-						<div class="info_dashlet_leftrepeat_bottom"></div>
 						<div class="info_list">
 						{foreach item=sInfo from=$page->infoStack}
 							{if (!$page->allowHTML)}
@@ -345,15 +340,9 @@
 							{/if}
 						{/foreach}
 						</div>
-						<div class="info_dashlet_topleft_small"></div>
-						<div class="info_dashlet_toprepeat_small"></div>
-						<div class="info_dashlet_topright_small"></div>
-
-						<div class="info_dashlet_bottomleft"></div>
-						<div class="info_dashlet_bottomrepeat_small"></div>
-						<div class="info_dashlet_bottomright"></div>
 					</div>
 				{/if}
+				
 
 				<!-- Content added here. -->
 				{$page->contents}

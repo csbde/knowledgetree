@@ -150,6 +150,12 @@ kt.app.metadata = new function()
 					{
 						parsedJSON = jQuery.parseJSON(data.success);
 						jQuery('#value-title').text(parsedJSON[0].documentTitle);
+						jQuery('#docBreadCrumbName').text(parsedJSON[0].documentTitle);
+						
+						// Change Title of Window
+						document.title = parsedJSON[0].documentTitle+" | KnowledgeTree";
+						
+						
 					}
 					else if (data.error)
 					{

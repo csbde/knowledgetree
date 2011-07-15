@@ -1,5 +1,5 @@
     <div class="field {if ($has_errors)}error{/if}" title="{$description}">
-      <label for="{$name}">{$label}{if ($required === true)}<span class="required">({i18n}Required{/i18n})</span>{/if}</label>
+      <label for="{$name}">{$label}{if ($required === true)}<span class="required" title="{i18n}Required{/i18n}">&nbsp;</span>{/if}</label>
       {if ($has_errors)}
       {foreach item=sError from=$errors}
       <p class="errorMessage">
@@ -11,20 +11,20 @@
       {/if}
                 
                 {if $value == '1'}
-                   {assign var="onChecked" value="checked"}
+                   {assign var="onChecked" value='checked="checked"'}
                    {assign var="offChecked" value=""}
                    {assign var="onCssClass" value="selected"}
                    {assign var="offCssClass" value=""}
                 {else}
                    {assign var="onChecked" value=""}
-                   {assign var="offChecked" value="checked"}
+                   {assign var="offChecked" value='checked="checked"'}
                    {assign var="onCssClass" value=""}
                    {assign var="offCssClass" value="selected"}
                 {/if}
              
                <span class="switch" style="float:right; margin-bottom: 1px;">
-                    <input type="radio" id="on_{$name}" name="{$name}" value="1" checked="{$onChecked}" />
-                    <input type="radio" id="off_{$name}" name="{$name}" value="0" checked="{$offChecked}" />
+                    <input type="radio" id="on_{$name}" name="{$name}" value="1" {$onChecked} />
+                    <input type="radio" id="off_{$name}" name="{$name}" value="0" {$offChecked} />
                     <label for="on_{$name}" class="cb-enable {$onCssClass}"><span>ON</span></label>
                     <label for="off_{$name}" class="cb-disable {$offCssClass}"><span>OFF</span></label>
                 </span>

@@ -63,6 +63,12 @@ class AdminSettingsDispatcher extends KTAdminDispatcher {
 
     public function do_main($viewCategory = false)
     {
+        // This could maybe be considered a hack?  If there is a better way...
+        $requestSource = KTUtil::arrayGet($_REQUEST, 'request_src', null);
+        if ($requestSource == 'ajax') {
+            $this->do_ajax();
+        }
+
         $registry = KTAdminNavigationRegistry::getSingleton();
         $categories = $registry->getCategories();
         reset($categories);
@@ -88,16 +94,48 @@ class AdminSettingsDispatcher extends KTAdminDispatcher {
         }
 
         $templating = KTTemplating::getSingleton();
-        $template = $templating->loadTemplate('kt3/settings');
+
+        if (KTUtil::arrayGet($_REQUEST, 'modal', null) == 'yes') {
+            $template = $templating->loadTemplate('kt3/settings_ajax');
+        } else {
+            $template = $templating->loadTemplate('kt3/settings');
+        }
+
+        $urlParts = $this->parseSubUrl();
+        $currentCategory = $this->getCategory($urlParts[0]);
+
         $templateData = array(
                             'context' => $this,
                             'categories' => $categories,
+                            'currentCategory' => $currentCategory,
                             'all_items' => $allItems,
                             'items' => $this->getCategoryItems(),
                             'baseurl' => $_SERVER['PHP_SELF'],
         );
 
         return $template->render($templateData);
+    }
+
+    function handleOutput($data)
+    {
+        if (KTUtil::arrayGet($_REQUEST, 'modal', null) == 'yes') {
+            echo $data;
+            exit(0);
+        }
+        else {
+            parent::handleOutput($data);
+        }
+    }
+
+    public function do_ajax()
+    {
+        $urlParts = $this->parseSubUrl();
+        $category = $this->getCategory($urlParts[0]);
+        $subsection = $this->getSubsection($urlParts[1]);
+        $section['fullname'] = "$category/$subsection";
+        $section['autoDisplay'] = true;
+
+        $this->loadSection($section);
     }
 
     private function getCategoryItems()
@@ -118,9 +156,14 @@ class AdminSettingsDispatcher extends KTAdminDispatcher {
         }
         else {
             $categoryDetail = $registry->getCategory($category);
-            $this->aBreadcrumbs[] = array('name' => $categoryDetail['title'], 'url' => KTUtil::ktLink('settings.php', '', 'fCategory='.$category));
+            $this->aBreadcrumbs[] = array(
+                                        'name' => $categoryDetail['title'],
+                                        'url' => KTUtil::ktLink('settings.php',
+                                        '',
+                                        'fCategory=' . $category));
             $this->oPage->title = _kt('Settings');
             $this->oPage->secondary_title = $categoryDetail['title'];
+
             $items = $registry->getItemsForCategory($category);
             $message = null;
         }

@@ -3,7 +3,7 @@
 		<span class="ul_meta_label_descr">[description]</span>
 	</span>
 	<span class="ul_meta_field">
-		<select id="ul_meta_field_[id]" class="ul_meta_fullField ul_meta_field_[id]" onChange="kt.app.upload.getMetaItem(this).setMetaData('[id]',this.options[this.selectedIndex].text);"></select>
+		<select id="ul_meta_field_[id]" class="ul_meta_fullField ul_meta_field_[id]" onchange="kt.app.upload.getMetaItem(this).setMetaData('[id]',this.options[this.selectedIndex].text);"></select>
 	</span>
 </span>
 
@@ -56,7 +56,7 @@ Ext.onReady(function(){
 			kt.app.upload.getMetaItem(jQuery('#ul_meta_field_[id]')).registerRequiredFieldNotDone('ul_meta_field_[id]');
 		}
 
-		jQuery('#ul_meta_field_[id]').click(function() {
+		jQuery('#ul_meta_field_[id]').change(function() {
 			if (this.selectedIndex <= 0){
 				kt.app.upload.getMetaItem(jQuery('#ul_meta_field_[id]')).registerRequiredFieldNotDone('ul_meta_field_[id]');
 			} else {

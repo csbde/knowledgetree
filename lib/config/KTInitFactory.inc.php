@@ -13,6 +13,14 @@ class KTInitFactory {
 
     private static function initSystem()
     {
+    	if (defined('ACCOUNT_NAME') && defined('ACCOUNT_ROUTING_ENABLED')) {
+    		require_once(KT_PLUGIN_DIR . '/ktlive/liveEnable.php');
+
+            define('KTLIVE_CALLBACK_PATH', '/plugins/ktlive/webservice/callback.php');
+            define('KTLIVE_TRACE_PATH', KTLIVE_CALLBACK_PATH . '?action=trace');
+    		return ;
+    	}
+    	
         if (file_exists(KT_PLUGIN_DIR . '/ktlive/liveEnable.php')) {
             define('ACCOUNT_ROUTING_ENABLED', true);
             require_once(KT_PLUGIN_DIR . '/ktlive/liveEnable.php');

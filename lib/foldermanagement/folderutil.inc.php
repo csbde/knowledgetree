@@ -393,13 +393,13 @@ class KTFolderUtil {
             $sFD = '';
             $sFF = '';
             if (!empty($aFailedDocuments)) {
-                $sFD = _kt('Documents: ') . implode(', ', $aFailedDocuments) . '. ';
+                $sFD = '<b>'._kt('Documents: ') .'</b>' . implode(', ', $aFailedDocuments) . '. ';
             }
             if (!empty($aFailedFolders)) {
-                $sFF = _kt('Folders: ') . implode(', ', $aFailedFolders) . '.';
+                $sFF = '<b>'._kt('Folders: ') .'</b>' . implode(', ', $aFailedFolders) . '.';
             }
 
-            return PEAR::raiseError(_kt('You do not have permission to delete these items. ') . $sFD . $sFF);
+            return PEAR::raiseError(_kt('The following items cannot be deleted: ') . $sFD . $sFF);
         }
 
         // now we can go ahead.

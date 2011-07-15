@@ -69,6 +69,8 @@ require_once(KT_LIB_DIR . '/render_helpers/browseView.helper.php');
 
 require_once(KT_PLUGIN_DIR . '/ktstandard/KTSubscriptions.php');
 
+require_once(KT_LIB_DIR . '/memcache/ktmemcache.php');
+
 $sectionName = 'browse';
 
 class BrowseDispatcher extends KTStandardDispatcher {
@@ -144,6 +146,7 @@ class BrowseDispatcher extends KTStandardDispatcher {
 	           'browseutil' => new KTBrowseUtil(),
 	           'returnaction' => 'browse',
 	           'folderSidebars' => $folderSidebars,
+	           'notifyBulkAction' => $this->getBulkNotification(),
 	    );
 
 	    // NOTE Don't quite know why this is in here. Someone reports that it is there for search browsing which seem to be disabled.
@@ -156,6 +159,12 @@ class BrowseDispatcher extends KTStandardDispatcher {
 	        if($renderData['documentCount'] > 0)
 	        	$this->loadDocumentJS();
 	        $templateData = array_merge($templateData, $renderData);
+	    } 
+	    else if ($this->oFolder === false) {
+	    	$this->addErrorMessage(_kt('The selected folder cannot be found, it may have been deleted.'));
+	    	$browse = '<a href = "'.KTUtil::buildUrl('browse.php') . '">' . _kt('browse') . '</a>';
+	    	
+	    	return $this->errorPage(_kt("Return to the main {$browse} page."));
 	    }
 
 	    return $template->render($templateData);
@@ -458,6 +467,7 @@ class BrowseDispatcher extends KTStandardDispatcher {
 
 	    $oFolder =& Folder::get($folder_id);
 	    if (PEAR::isError($oFolder)) {
+	    	$this->oFolder = false;
 	        return false; // just fail.
 	    }
 
@@ -499,6 +509,8 @@ class BrowseDispatcher extends KTStandardDispatcher {
 	    $this->oQuery = new BrowseQuery($oFolder->getId(), $this->oUser, $aOptions);
 
 	    $this->resultURL = KTUtil::addQueryString($_SERVER['PHP_SELF'], sprintf('fFolderId=%d', $oFolder->getId()));
+	    
+	    return true;
 	}
 
 	/**
@@ -607,6 +619,22 @@ class BrowseDispatcher extends KTStandardDispatcher {
 	    }
 	}
 
+	private function getBulkNotification() {
+		$userKey = "bulkaction_" . ACCOUNT_NAME . $this->oUser->getId();
+		$memcache = KTMemcache::getKTMemcache();
+		if(!$memcache->isEnabled()) return ;
+	    $usersBulkActions = $memcache->get($userKey);
+	    $usersBulkActions = unserialize($usersBulkActions);
+	    foreach ($usersBulkActions as $action => $folderIds) {
+	    	foreach ($folderIds as $folderId) {
+		    	if($folderId == $this->oFolder->getId()) {
+		    		return "Bulk $action action in progress.";
+		    	}
+	    	}
+	    }
+		
+	    return '';
+	}
 }
 
 $oDispatcher = new BrowseDispatcher();

@@ -42,7 +42,6 @@ require_once(KT_LIB_DIR . '/triggers/triggerregistry.inc.php');
 require_once(KT_LIB_DIR . '/storage/storagemanager.inc.php');
 
 class documentActionServices extends client_service {
-	
 	public function run_action($params) {
 		$classaction = $params['action'];
 		$classname = $params['name'];
@@ -383,8 +382,17 @@ class documentActionServices extends client_service {
     
 	public function doBulkCopy($params)
 	{
+		require_once('bulkDocumentActions.php');
 		$action = $params['action'];
-		$targetFolderId = str_replace('folder_', '', $params['targetFolderId']);
+		
+		$targetFolderId = $params['targetFolderId'];
+		
+		if (is_array($targetFolderId)) {
+			$targetFolderId = !empty($targetFolderId['folderId']) ? $targetFolderId['folderId'] : KTUtil::decodeId(substr($targetFolderId['cleanId'], 2));
+		}
+		else {
+			$targetFolderId = str_replace('folder_', '', $targetFolderId);
+		}
 		
 		$itemList = $params['itemList'];
         $organisedItemList = $this->formatItemList($itemList);
@@ -405,8 +413,20 @@ class documentActionServices extends client_service {
     		default:
     			$reason = '';
         }
-        
-        
+        $bulkDocumentActions = new BulkDocumentActions($action, $organisedItemList, $reason, $targetFolderId);
+        if($bulkDocumentActions->canSendToQueue()) {
+        	$bulkDocumentActions->setUser($_SESSION['userID']);
+        	$queueResponse = $bulkDocumentActions->queueBulkAction();
+	    	if($queueResponse)
+	        	$msg = _kt('Success. You will be redirected shortly.');
+	        else 
+	        	$msg = _kt('Failure. Could not send message.');
+	        $url = KTUtil::kt_clean_folder_url($targetFolderId);
+	        $result = array('type' => 'success', 'url' => $url, 'msg' => $msg, 'bulk' => $queueResponse);
+	        $this->addResponse('result', json_encode($result));
+	        
+        	return true;
+        }
         $ktapi = $this->KT;
         $actionResult = $ktapi->performBulkAction($action, $organisedItemList, $reason, $targetFolderId);
         $url = KTUtil::kt_clean_folder_url($targetFolderId);
@@ -437,6 +457,8 @@ class documentActionServices extends client_service {
         
         return true;
 	}
+	
+
 	
 	private function formatItemList($itemList = array())
 	{

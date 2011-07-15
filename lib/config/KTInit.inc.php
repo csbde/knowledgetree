@@ -1,5 +1,7 @@
 <?php
 
+require_once('config.inc.php');
+
 class KTInit {
 
     protected static $handlerMapping = array(
@@ -270,9 +272,8 @@ class KTInit {
         $useCache = false;
         $storeCache = true;
 
-        // If the cache needs to be cleared for debugging purposes uncomment the following lines..
-        /*$KTConfig->clearCache();
-        $useCache = false;*/
+        // If the cache needs to be cleared for debugging purposes uncomment the following line..
+        //$KTConfig->clearCache();
 
         if (!isset($_SERVER['HTTP_HOST']) || empty($_SERVER['HTTP_HOST'])) {
             // If the http_host server variable is not set then the serverName gets set to localhost
@@ -280,14 +281,10 @@ class KTInit {
             $storeCache = false;
         }
 
-        $useCache = $KTConfig->setMemCache();
-
-        if ($useCache) {
-            $useCache = $KTConfig->loadCache();
-        }
+        $useCache = $KTConfig->loadCache();
 
         if ($useCache === false) {
-            //Read in DB settings and config settings
+            // Read in DB settings and config settings
             $KTConfig->readDBConfig();
         }
 

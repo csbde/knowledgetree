@@ -1,4 +1,9 @@
-<h2>{i18n}Edit User Details{/i18n}: {$edit_user->getName()}</h2>
+{if ($edit_user->getName() == '')}
+	<h2>{i18n}Edit User Details{/i18n}: {$edit_user->getUsername()}</h2>
+{else}
+	<h2>{i18n}Edit User Details{/i18n}: {$edit_user->getName()}</h2>
+{/if}
+
 
 <div class="widgetRow">
 {assign var=provider_stuff value=$provider->showUserSource($edit_user, $source)}
@@ -18,9 +23,11 @@
 			{foreach item=oWidget from=$edit_fields}
 				{$oWidget->render()}
 			{/foreach}
-		<div class="form_actions">
-			<input type="submit" name="kt_cancel[{addQS}old_search={$old_search}&do_search=1{/addQS}]" value="{i18n}Cancel{/i18n}" />
-			<input type="submit" value="{i18n}Save Changes{/i18n}" />
+		<div class="action-footer">
+			<div class="form_actions">
+				<input type="submit" value="{i18n}Save Changes{/i18n}" />
+				<input type="submit" class="form_cancel" name="kt_cancel[{addQS}old_search={$old_search}&do_search=1{/addQS}]" value="{i18n}Cancel{/i18n}" />
+			</div>
 		</div>
 	</form>
 </div>

@@ -151,7 +151,7 @@ INSERT INTO `config_groups` VALUES
 (10, 'import', 'Import', 'Configures settings on Bulk Import.', 'System Settings'),
 (11, 'indexer', 'Document Indexer', 'Configures the Document Indexer. Only advanced users should change these settings.', 'Search and Indexing Settings'),
 (12, 'KnowledgeTree', 'KnowledgeTree', 'Configures general settings for your KnowledgeTree server installation.', 'System Settings'),
-(13, 'KTWebDAVSettings', 'WebDAV', 'Configuration options for third-party WebDAV clients', 'Client Tools Settings'),
+(13, 'KTWebDAVSettings', 'WebDAV', 'Configuration options for third-party WebDAV clients', 'WebDAV Settings'),
 (14, 'openoffice', 'OpenOffice.org Service', 'Configuration options for the OpenOffice.org service. Note that several KnowledgeTree features use this service.', 'Search and Indexing Settings'),
 (15, 'search', 'Search', 'Configures settings for KnowledgeTree''s Search function.', 'Search and Indexing Settings'),
 (16, 'session', 'Session Management', 'Session management configuration.', 'Session Management Settings'),
@@ -160,12 +160,12 @@ INSERT INTO `config_groups` VALUES
 (19, 'ui', 'User Interface', 'General user interface configuration', 'User Interface Settings'),
 (20, 'urls', 'Urls', 'The paths to the KnowledgeTree server and filesystem. <br>Full values are specific to your installation (Windows or Linux). Only advanced users should change these settings.', 'System Settings'),
 (21, 'user_prefs', 'User Preferences', 'Configures user preferences.', 'System Settings'),
-(22, 'webservice', 'Web Services', 'KnowledgeTree Web Service Interface configuration. Note that a number of KnowledgeTree Tools rely on this service.', 'Client Tools Settings'),
+(22, 'webservice', 'Web Services', 'KnowledgeTree Web Service Interface configuration. Note that a number of KnowledgeTree Tools rely on this service.', 'Web Services Settings'),
 (23, 'ldapAuthentication', 'LDAP Authentication', 'Configures LDAP Authentication', 'System Settings'),
 (24, 'server', 'Server Settings', 'Configuration settings for the server', 'System Settings'),
-(25, 'explorerCPSettings', 'Explorer CP Settings', 'Configuration options for KnowledgeTree Explorer CP', 'Client Tools Settings'),
+(25, 'explorerCPSettings', 'Explorer CP Settings', 'Configuration options for KnowledgeTree Explorer CP', 'Explorer CP Settings'),
 (26, 'actionreasons', 'Document Action Settings', 'Configure how the system deals with reasons for document actions.', 'Document Action Settings'),
-(27, 'timezone', 'Timezone', 'Timezone configuration settings', 'Timezone Settings');
+(27, 'timezone', 'Regional Settings', 'Timezone configuration settings', 'Timezone Settings');
 /*!40000 ALTER TABLE `config_groups` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -195,18 +195,18 @@ INSERT INTO `config_settings` VALUES
 (17, 'email', 'Allow Attachment', 'Defines whether to allow users to send attachments from within KnowledgeTree. Default is \'False\'.', 'allowAttachment', 'default', 'false', 'boolean', NULL, 1),
 (18, 'email', 'Allow External Email Addresses', 'Defines whether to allow KnowledgeTree users to send email to any email address - to other KnowledgeTree users and to external users. Default is \'False\'.', 'allowEmailAddresses', 'default', 'false', 'boolean', NULL, 1),
 (19, 'email', 'Send As System', 'Defines whether to always send email from the KnowledgeTree \'Email From\' address, even if there is an identifiable sending user. Default is \'False\'.', 'sendAsSystem', 'default', 'false', 'boolean', NULL, 1),
-(20, 'email', 'Only Own Groups', 'Defines whether to restrict users to sending emails only within their KnowledgeTree user group. <br>Default is \'False\'. <br>Set to \'True\' to disable sending of emails outside of the user\'s group.', 'onlyOwnGroups', 'default', 'false', 'boolean', NULL, 1),
+(20, 'email', 'Only Own Groups', 'Defines whether to restrict users to sending emails only within their KnowledgeTree user group. Default is \'OFF\'.  Set to \'ON\' to disable sending of emails outside of the user\'s group.', 'onlyOwnGroups', 'default', 'false', 'boolean', NULL, 1),
 (21, 'user_prefs', 'Password Length', 'Defines the minimum password length on password-setting. ', 'passwordLength', 'default', '6', 'numeric_string', NULL, 1),
 (22, 'user_prefs', 'Restrict Admin Passwords', 'Defines whether to require the admin user to apply minimum password length when creating and editing accounts. Default is \'False\', which allows admin users to create accounts with shorter passwords than the specified minimum.', 'restrictAdminPasswords', 'default', 'false', 'boolean', NULL, 1),
 (23, 'user_prefs', 'Restrict Preferences', 'Defines whether to restrict users from accessing the Preferences menu. Default is \'False\'.', 'restrictPreferences', 'default', 'false', 'boolean', NULL, 1),
 (24, 'session', 'Session Timeout', 'Defines the period, in seconds, after which the system times out following a period of inactivity.', 'sessionTimeout', 'default', '1200', 'numeric_string', NULL, 1),
-(25, 'session', 'Anonymous Login', 'Defines whether to allow anonymous users to log in automatically. Default is \'False\'. <br>Best practice is not to allow automatic login of anonymous users unless you understand KnowledgeTree\'s security mechanisms, and have sensibly applied the roles \'Everyone\' and \'Authenticated Users\'. ', 'allowAnonymousLogin', 'default', 'false', 'boolean', NULL, 1),
+(25, 'session', 'Anonymous Login', 'Defines whether to allow anonymous users to log in automatically. Default is OFF.  Best practice is not to allow automatic login of anonymous users unless you understand KnowledgeTree\'s security mechanisms, and have sensibly applied the roles \'Everyone\' and \'Licensed Users\'', 'allowAnonymousLogin', 'default', 'false', 'boolean', NULL, 1),
 (26, 'ui', 'Company Logo', 'Specifies the path (relative to the KnowledgeTree directory) to the custom logo for the KnowledgeTree user interface. <br>The logo must be 50px tall, and on a white background.', 'companyLogo', 'default', '${rootUrl}/resources/companylogo.png', 'string', NULL, 1),
 (27, 'ui', 'Company Logo Width', 'Defines the width, in pixels, of your custom logo.', 'companyLogoWidth', 'default', '313px', 'string', NULL, 1),
 (28, 'ui', 'Company Logo Title', 'Alternative text for the title of your custom company logo, for accessibility purposes.', 'companyLogoTitle', 'default', 'Add Company Name', 'string', NULL, 1),
 (29, 'ui', 'Always Show All Results', 'Defines, where \'show all users\' is an available action, whether to display the full list of users and groups on page load, without requiring the user to click \'show all users\'. Default is \'False\'.', 'alwaysShowAll', 'default', 'false', 'boolean', NULL, 1),
 (30, 'ui', 'Condensed Admin UI', 'Defines whether to use a condensed (compact) version of the KnowledgeTree user interface for the admin user. Default is \'False\'.', 'condensedAdminUI', 'default', 'false', 'boolean', NULL, 1),
-(31, 'ui', 'Fake Mimetype', 'Defines whether browsers may provide the option to \'open\' a document from download. Default is \'False\'.<br>Change to \'True\' to prevent (most) browsers from giving users the \'Open\' option.', 'fakeMimetype', 'default', 'false', 'boolean', NULL, 1),
+(31, 'ui', 'Fake Mimetype', 'Defines whether browsers may provide the option to \'open\' a document from download. Default is \'OFF\'. Change to \'ON\' to prevent (most) browsers from giving users the \'Open\' option.', 'fakeMimetype', 'default', 'false', 'boolean', NULL, 1),
 (32, 'i18n', 'UseLike', 'Enables \'search ideographic language\' on languages that do not have distinguishable words (typically, where there is no space character), and allows KnowledgeTree\'s Search function to deal with this issue. Default is \'False\'.', 'useLike', 'default', 'false', 'boolean', NULL, 1),
 (33, 'import', 'unzip', 'Specifies the location of the unzip binary. The unzip command uses \'execSearchPath\' to find the unzip binary if the path is not provided. Values are auto-populated, specific to your installation (Windows or Linux).', 'unzip', 'default', 'unzip', 'string', NULL, 1),
 (34, 'export', 'zip', 'The location of the zip binary. <br>The zip command uses \'execSearchPath\' to find the zip binary if the path is not provided. Values are auto-populated, specific to your installation (Windows or Linux).', 'zip', 'default', 'zip', 'string', NULL, 1),
@@ -1477,8 +1477,8 @@ LOCK TABLES `system_settings` WRITE;
 /*!40000 ALTER TABLE `system_settings` DISABLE KEYS */;
 INSERT INTO `system_settings` VALUES
 (1,'lastIndexUpdate','0'),
-(2,'knowledgeTreeVersion','3.7.1.1'),
-(3,'databaseVersion','3.7.1.1'),
+(2,'knowledgeTreeVersion','3.7.1.2'),
+(3,'databaseVersion','3.7.1.2'),
 (4,'server_name','127.0.0.1');
 /*!40000 ALTER TABLE `system_settings` ENABLE KEYS */;
 UNLOCK TABLES;
@@ -1820,7 +1820,13 @@ INSERT INTO `upgrades` VALUES
 (262,'sql*3.7.1.0*0*3.7.1.0/folder_changes.sql','Database upgrade to version 3.7.1.0: Folder Changes','2011-02-02 00:00:00',1,'upgrade*3.7.1.0*99*upgrade3.7.1.0'),
 (263,'upgrade*3.7.1.0*99*upgrade3.7.1.0','Upgrade from version 3.7.0.9 to 3.7.1.0','2011-02-02 00:00:00',1,'upgrade*3.7.1.0*99*upgrade3.7.1.0'),
 (264,'sql*3.7.1.1*0*3.7.1.1/foldersync_maxfiles.sql','Database upgrade to version 3.7.1.1: Foldersync Maxfiles','2011-04-13 00:00:00',1,'upgrade*3.7.1.1*99*upgrade3.7.1.1'),
-(265,'upgrade*3.7.1.1*99*upgrade3.7.1.1','Upgrade from version 3.7.1.0 to 3.7.1.1','2011-04-12 00:00:00',1,'upgrade*3.7.1.1*99*upgrade3.7.1.1');
+(265,'upgrade*3.7.1.1*99*upgrade3.7.1.1','Upgrade from version 3.7.1.0 to 3.7.1.1','2011-04-12 00:00:00',1,'upgrade*3.7.1.1*99*upgrade3.7.1.1'),
+(266,'sql*3.7.1.2*0*3.7.1.2/config_groups_update_categories.sql','Database upgrade to version 3.7.1.2: Config Groups Update Categories','2011-06-30 00:00:00',1,'upgrade*3.7.1.2*99*upgrade3.7.1.2'),
+(267,'sql*3.7.1.2*0*3.7.1.2/custom_logo_configs.sql','Database upgrade to version 3.7.1.2: Custom Logo Configs','2011-06-30 00:00:00',1,'upgrade*3.7.1.2*99*upgrade3.7.1.2'),
+(268,'sql*3.7.1.2*0*3.7.1.2/settings_redordering.sql','Database upgrade to version 3.7.1.2: Settings Redordering','2011-06-30 00:00:00',1,'upgrade*3.7.1.2*99*upgrade3.7.1.2'),
+(269,'sql*3.7.1.2*0*3.7.1.2/update_mime_type.sql','Database upgrade to version 3.7.1.2: Update Mime Type','2011-06-30 00:00:00',1,'upgrade*3.7.1.2*99*upgrade3.7.1.2'),
+(270,'sql*3.7.1.2*0*3.7.1.2/update_settings_descriptions.sql','Database upgrade to version 3.7.1.2: Update Settings Descriptions','2011-07-13 00:00:00',1,'upgrade*3.7.1.2*99*upgrade3.7.1.2'),
+(271,'upgrade*3.7.1.2*99*upgrade3.7.1.2','Upgrade from version 3.7.1.1 to 3.7.1.2','2011-07-16 00:00:00',1,'upgrade*3.7.1.2*99*upgrade3.7.1.2');
 /*!40000 ALTER TABLE `upgrades` ENABLE KEYS */;
 UNLOCK TABLES;
 

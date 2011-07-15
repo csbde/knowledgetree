@@ -1,3 +1,25 @@
 <h2>{i18n}Step 1:  Basic Workflow Details{/i18n}</h2>
 
-{$form->render()}
+<div id="workflowtabs">
+    <ul>
+        <li><a href="#workflow_details">Workflow Details</a></li>
+        <li><a href="#">States & Transitions</a></li>
+        <li><a href="#">Process Flow</a></li>
+        <li><a href="#">Security</a></li>
+        <li><a href="#">Effects</a></li>
+    </ul>
+    <div id="workflow_details">
+        {$form->render()}
+        
+        <br clear="both" />
+    </div>
+</div>
+
+{literal}
+<script> 
+	jQuery(function() {
+		jQuery("#workflowtabs").tabs({selected: 0, disabled: [1,2,3,4]});
+	});
+	</script> 
+{/literal}
+

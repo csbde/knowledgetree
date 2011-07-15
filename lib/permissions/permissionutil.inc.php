@@ -430,7 +430,7 @@ class KTPermissionUtil {
         $iRoleSourceFolder = null;
         if ($is_a_document) {
             $iRoleSourceFolder = $oFolderOrDocument->getFolderID();
-        }else {
+        } else {
             $iRoleSourceFolder = $oFolderOrDocument->getId();
         }
 
@@ -486,7 +486,6 @@ class KTPermissionUtil {
         print '</pre>';
         */
 
-
         //if (is_null($oPermLookup)) {
             $aMapPermDesc = array();
             foreach ($aMapPermAllowed as $iPermissionId => $aAllowed) {
@@ -501,7 +500,13 @@ class KTPermissionUtil {
         //}
 
         $oFolderOrDocument->setPermissionLookupID($oPermLookup->getID());
-        $oFolderOrDocument->update();
+        //$oFolderOrDocument->update();
+        if ($oFolderOrDocument instanceof Document) {
+            $oFolderOrDocument->updateDocumentCore();
+        }
+        else {
+            $oFolderOrDocument->update();
+        }
     }
     // }}}
 
@@ -900,6 +905,47 @@ class KTPermissionUtil {
     }
     // }}}
 
+    function updatePermissionObject($folder, $permissionObjectId, $selectedPermissions, $userId)
+    {
+    	$folderId = $folder->getId();
+    	$permissionsList = KTPermission::getList();
+
+        $permissionObject = KTPermissionObject::get($permissionObjectId);
+    	
+        foreach ($permissionsList as $permission) {
+            $permissionId = $permission->getId();
+
+            $allowed = KTUtil::arrayGet($selectedPermissions, $permissionId, array());
+            $result = KTPermissionUtil::setPermissionForId($permission, $permissionObject, $allowed);
+
+            if ($result === false) {	
+            	global $default;
+		    	$msg = (isset($_SESSION["errorMessage"])) ? $_SESSION["errorMessage"] : 'permission set failed';
+		    	$default->log->error('Permissions: update failed - ' . $msg);
+            	return false;
+            }
+        }
+
+        // Create the transaction before backgrounding the task - we don't want the permissions to fail because the transaction could not be created.
+        $transaction = KTFolderTransaction::createFromArray(array(
+            'folderid' => $folderId,
+            'comment' => _kt('Updated permissions'),
+            'transactionNS' => 'ktcore.transactions.permissions_change',
+            'userid' => $userId,
+            'ip' => Session::getClientIP(),
+            'parentid' => $folder->getParentID(),
+        ));
+        
+        if (PEAR::isError($transaction) || ($transaction === false)) {
+        	global $default;
+        	$msg = (PEAR::isError($transaction)) ? $transaction->getMessage() : 'transaction insert failed';
+        	$default->log->error('Permissions: update failed - ' . $msg);
+        	return false;
+        }
+        
+        return true;
+    }
+
     /**
      * Update the permission lookup id for a given permission object
      *
@@ -907,6 +953,9 @@ class KTPermissionUtil {
      */
     static function updatePermissionLookupForObject($objectId, $folderId)
     {
+    	global $default;
+    	$default->log->info('Permissions: starting update...');
+    	
         // Create a mapping of the permission id to the allowed groups, users and roles
         // Create a mapping of the permission id to the descriptor id for the above
 		$aPermAssigns = KTPermissionAssignment::getByObjectMulti($objectId);
@@ -1011,6 +1060,8 @@ class KTPermissionUtil {
 
         $conditions_mapping = array();
 		if (!PEAR::isError($aDynamicConditions)) {
+			$default->log->info('Permissions: applying dynamic conditions');
+			
             foreach($aDynamicConditions as $oDynamicCondition) {
                 $iConditionId = $oDynamicCondition->getConditionId();
 
@@ -1047,6 +1098,8 @@ class KTPermissionUtil {
         $states_mapping = array();
 
         if ($states) {
+        	$default->log->info('Permissions: applying workflow state permissions');
+        	
             // Loop through states and get permission assignments
             foreach ($states as $state_id) {
                 $aWorkflowStatePermissionAssignments = KTWorkflowStatePermissionAssignment::getByState($state_id);
@@ -1080,8 +1133,10 @@ class KTPermissionUtil {
         // We've already checked roles on the top level folder
         // Find any roles allocated on folders associated with the permission object
         $role_allocations = RoleAllocation::getAllocationsForPO($objectId);
-
+        
         if (!empty($role_allocations)) {
+        	$default->log->info('Permissions: applying role allocations');
+        	
             foreach ($role_allocations as $role_allocation) {
                 $folder_id = $role_allocation['folder_id'];
                 $role_id = $role_allocation['role_id'];
@@ -1122,6 +1177,8 @@ class KTPermissionUtil {
 
         // Clear the cached permissions to force an update of the cache
         self::clearCache();
+        
+        $default->log->info('Permissions: clearing cache and finishing...');
     }
 
     static function getHighestFolder($map, $folders)
@@ -1333,7 +1390,5 @@ class KTPermissionGenericMessage {
         return $this->sMessage;
     }
 }
-
-
 
 ?>
