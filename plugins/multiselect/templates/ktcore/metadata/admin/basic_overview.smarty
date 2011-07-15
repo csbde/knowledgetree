@@ -16,7 +16,7 @@ of related information.{/i18n}</p>
     </thead>
     <tbody>
       {foreach name=fieldlist from=$fields item=oField}
-        <tr>
+        <tr  class="{cycle values=odd,even name=fieldsets}">
             <td width="10px;">
                 {if !$smarty.foreach.fieldlist.first}
                     <a href="{addQS context=$context}fieldset_action=orderUp&fFieldId={$oField->getId()}{/addQS}" class="ktAction ktMoveUp">{i18n}Reorder up{/i18n}</a>
