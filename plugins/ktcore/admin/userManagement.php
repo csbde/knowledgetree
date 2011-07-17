@@ -147,6 +147,7 @@ class KTUserAdminDispatcher extends KTAdminDispatcher {
         $name = KTUtil::arrayGet($_REQUEST, 'name');
         $username = KTUtil::arrayGet($_REQUEST, 'newusername');
         $emailAddress = KTUtil::arrayGet($_REQUEST, 'email_address');
+        $googleID = KTUtil::arrayGet($_REQUEST, 'googleID');
         $mobileNum = KTUtil::arrayGet($_REQUEST, 'mobile_number');
         $maxSessions = KTUtil::arrayGet($_REQUEST, 'max_sessions', '3');
 
@@ -159,10 +160,6 @@ class KTUserAdminDispatcher extends KTAdminDispatcher {
         }
 
         $showAll = KTUtil::arrayGet($_REQUEST, 'show_all', false);
-        $addUser = KTUtil::arrayGet($_REQUEST, 'add_user', false);
-        if ($addUser !== false) {
-            $addUser = true; // HUH?
-        }
         $editUser = KTUtil::arrayGet($_REQUEST, 'edit_user', false);
         $options = array('autocomplete' => false);
 
@@ -178,10 +175,10 @@ class KTUserAdminDispatcher extends KTAdminDispatcher {
 
         $useEmail = $KTConfig->get('user_prefs/useEmailLogin', false);
         if ($useEmail) {
-            $addFields = $this->getNewAddUserFields($username, $emailAddress, $passwordAddRequirement, $maxSessions, $options);
+            $addFields = $this->getNewAddUserFields($username, $emailAddress, $googleID, $passwordAddRequirement, $maxSessions, $options);
         }
         else {
-            $addFields = $this->getOldAddUserFields($username, $emailAddress, $passwordAddRequirement, $maxSessions, $options);
+            $addFields = $this->getOldAddUserFields($username, $emailAddress, $googleID, $passwordAddRequirement, $maxSessions, $options);
         }
 
         $templating = KTTemplating::getSingleton();
@@ -194,11 +191,12 @@ class KTUserAdminDispatcher extends KTAdminDispatcher {
         return $template->render($templateData);
     }
 
-    private function getOldAddUserFields($username, $emailAddress, $passwordAddRequirement, $maxSessions, $options)
+    private function getOldAddUserFields($username, $emailAddress, $googleID, $passwordAddRequirement, $maxSessions, $options)
     {
         $addFields[] =  new KTStringWidget(_kt('Username'), sprintf(_kt('The username the user will enter to get access to %s.  e.g. jsmith'), APP_NAME), 'newusername', $username, $this->oPage, true, null, null, $options);
         $addFields[] =  new KTStringWidget(_kt('Name'), _kt('The full name of the user.  This is shown in reports and listings.  e.g. John Smith'), 'name', $name, $this->oPage, true, null, null, $options);
         $addFields[] =  new KTStringWidget(_kt('Email Address'), _kt('The email address of the user.  Notifications and alerts are mailed to this address if email notifications is set below. e.g. jsmith@acme.com'), 'email_address', $emailAddress, $this->oPage, false, null, null, $options);
+        $addFields[] =  new KTStringWidget(_kt('Google OpenID Email'), _kt('If KnowledgeTree has been installed as an appliaction in your google domain.  e.g. yourname@yourcompany.com'), 'googleID', $googleID, $this->oPage, false, null, null, $options);
         $addFields[] =  new KTBooleanWidget(_kt('Email Notifications'), _kt("If this is specified then the user will have notifications sent to the email address entered above.  If it isn't set, then the user will only see notifications on the Dashboard"), 'email_notifications', $emailNotification, $this->oPage, false, null, null, $options);
         $addFields[] =  new KTPasswordWidget(_kt('Password'), _kt('Specify an initial password for the user.') . $passwordAddRequirement, 'new_password', null, $this->oPage, true, null, null, $options);
         $addFields[] =  new KTPasswordWidget(_kt('Confirm Password'), _kt('Confirm the password specified above.'), 'confirm_password', null, $this->oPage, true, null, null, $options);
@@ -209,11 +207,12 @@ class KTUserAdminDispatcher extends KTAdminDispatcher {
         return $addFields;
     }
 
-    private function getNewAddUserFields($username, $emailAddress, $passwordAddRequirement, $maxSessions, $options)
+    private function getNewAddUserFields($username, $emailAddress, $googleID, $passwordAddRequirement, $maxSessions, $options)
     {
         $userInfo = sprintf('The username the user will enter to get access to %s.  e.g. jsmith', APP_NAME);
         $addFields[] =  new KTStringWidget(_kt('Email Address'), _kt($userInfo . 'Notifications and alerts are mailed to this address if email notifications is set below. e.g. jsmith@acme.com'), 'email_address', $emailAddress, $this->oPage, true, null, null, $options);
         $addFields[] =  new KTStringWidget(_kt('Name'), _kt('The full name of the user.  This is shown in reports and listings.  e.g. John Smith'), 'name', $name, $this->oPage, true, null, null, $options);
+        $addFields[] =  new KTStringWidget(_kt('Google OpenID Email'), _kt('If KnowledgeTree has been installed as an appliaction in your google domain.  e.g. yourname@yourcompany.com'), 'googleID', $googleID, $this->oPage, false, null, null, $options);
         $addFields[] =  new KTBooleanWidget(_kt('Email Notifications'), _kt("If this is specified then the user will have notifications sent to the email address entered above.  If it isn't set, then the user will only see notifications on the Dashboard"), 'email_notifications', $emailNotification, $this->oPage, false, null, null, $options);
         $addFields[] =  new KTPasswordWidget(_kt('Password'), _kt('Specify an initial password for the user.') . $passwordAddRequirement, 'new_password', null, $this->oPage, true, null, null, $options);
         $addFields[] =  new KTPasswordWidget(_kt('Confirm Password'), _kt('Confirm the password specified above.'), 'confirm_password', null, $this->oPage, true, null, null, $options);
@@ -261,7 +260,7 @@ class KTUserAdminDispatcher extends KTAdminDispatcher {
         $emailAddress = KTUtil::arrayGet($_REQUEST, 'email_address', $user->getEmail());
         $mobileNum = KTUtil::arrayGet($_REQUEST, 'mobile_number', $user->getMobile());
         $maxSessions = KTUtil::arrayGet($_REQUEST, 'max_sessions', $user->getMaxSessions());
-
+        
         if (isset($_REQUEST['name']) || isset($_REQUEST['newusername'])) {
             $emailNotification = (KTUtil::arrayGet($_REQUEST, 'email_notification') == 'on') ? true : false;
         }
@@ -271,13 +270,18 @@ class KTUserAdminDispatcher extends KTAdminDispatcher {
 
         $this->aBreadcrumbs[] = array('name' => $user->getName());
 
+    	require_once(KT_LIVE_DIR . '/google/lib/KTSSOAccountLookup.php');
+    	$lookup = new KTSSOAccountLookup();
+		
         $KTConfig = KTConfig::getSingleton();
         $useEmail = $KTConfig->get('user_prefs/useEmailLogin', false);
         if ($useEmail) {
-            $editFields = $this->getNewEditUserFields($username, $name, $emailNotification, $mobileNum, $emailAddress, $maxSessions);
+			$googleID = $lookup->getUserGoogleID($emailAddress);
+            $editFields = $this->getNewEditUserFields($username, $name, $googleID, $emailNotification, $mobileNum, $emailAddress, $maxSessions);
         }
         else {
-            $editFields = $this->getOldEditUserFields($username, $name, $emailNotification, $mobileNum, $emailAddress, $maxSessions);
+        	$googleID = $lookup->getUserGoogleID($username);
+            $editFields = $this->getOldEditUserFields($username, $name, $googleID, $emailNotification, $mobileNum, $emailAddress, $maxSessions);
         }
 
         $authenticationSource = KTAuthenticationSource::getForUser($user);
@@ -304,10 +308,11 @@ class KTUserAdminDispatcher extends KTAdminDispatcher {
         return $template->render($templateData);
     }
 
-    private function getOldEditUserFields($username, $name, $emailNotification, $mobileNum, $emailAddress, $maxSessions)
+    private function getOldEditUserFields($username, $name, $googleID, $emailNotification, $mobileNum, $emailAddress, $maxSessions)
     {
         $editFields[] =  new KTStringWidget(_kt('Username'), sprintf(_kt('The username the user will enter to get access to %s.  e.g. jsmith'), APP_NAME), 'newusername', $username, $this->oPage, true);
         $editFields[] =  new KTStringWidget(_kt('Name'), _kt('The full name of the user.  This is shown in reports and listings.  e.g. John Smith'), 'name', $name, $this->oPage, true);
+        $editFields[] =  new KTStringWidget(_kt('Google OpenID Email'), _kt('If KnowledgeTree has been installed as an appliaction in your google domain.  e.g. yourname@yourcompany.com'), 'googleID', $googleID, $this->oPage, false, null, null, $options);
         $editFields[] =  new KTStringWidget(_kt('Email Address'), _kt('The email address of the user.  Notifications and alerts are mailed to this address if email notifications is set below. e.g. jsmith@acme.com'), 'email_address', $emailAddress, $this->oPage, false);
         $editFields[] =  new KTBooleanWidget(_kt('Email Notifications'), _kt('If this is specified then the user will have notifications sent to the email address entered above.  If it is not set, then the user will only see notifications on the Dashboard'), 'email_notifications', $emailNotification, $this->oPage, false);
         $editFields[] =  new KTStringWidget(_kt('Mobile Number'), _kt("The mobile phone number of the user.  e.g. 999 9999 999"), 'mobile_number', $mobileNum, $this->oPage, false);
@@ -316,11 +321,12 @@ class KTUserAdminDispatcher extends KTAdminDispatcher {
         return $editFields;
     }
 
-    private function getNewEditUserFields($username, $name, $emailNotification, $mobileNum, $emailAddress, $maxSessions)
+    private function getNewEditUserFields($username, $name, $googleID, $emailNotification, $mobileNum, $emailAddress, $maxSessions)
     {
         $userInfo = sprintf('The username the user will enter to get access to %s.  e.g. jsmith', APP_NAME);
         $editFields[] =  new KTStringWidget(_kt('Email Address'), _kt($userInfo . 'Notifications and alerts are mailed to this address if email notifications is set below. e.g. jsmith@acme.com'), 'email_address', $emailAddress, $this->oPage, true);
         $editFields[] =  new KTStringWidget(_kt('Name'), _kt('The full name of the user.  This is shown in reports and listings.  e.g. John Smith'), 'name', $name, $this->oPage, true);
+        $editFields[] =  new KTStringWidget(_kt('Google OpenID Email'), _kt('If KnowledgeTree has been installed as an appliaction in your google domain.  e.g. yourname@yourcompany.com'), 'googleID', $googleID, $this->oPage, false, null, null, $options);
         $editFields[] =  new KTBooleanWidget(_kt('Email Notifications'), _kt('If this is specified then the user will have notifications sent to the email address entered above.  If it is not set, then the user will only see notifications on the Dashboard'), 'email_notifications', $emailNotification, $this->oPage, true);
         $editFields[] =  new KTStringWidget(_kt('Mobile Number'), _kt("The mobile phone number of the user.  e.g. 999 9999 999"), 'mobile_number', $mobileNum, $this->oPage, false);
         $editFields[] =  new KTStringWidget(_kt('Maximum Sessions'), _kt('As a safety precaution, it is useful to limit the number of times a given account can log in, before logging out.  This prevents a single account being used by many different people.'), 'max_sessions', $maxSessions, $this->oPage, true);
@@ -525,6 +531,17 @@ class KTUserAdminDispatcher extends KTAdminDispatcher {
         $user->setMobile($mobileNumber);
         $user->setMaxSessions($maxSessions);
 
+        // Update Google Open ID.
+        $googleID = KTUtil::arrayGet($_REQUEST, 'googleID', '');
+        if(!empty($googleID)) {
+        	require_once(KT_LIVE_DIR . '/google/lib/KTSSOAccountLookup.php');
+        	$lookup = new KTSSOAccountLookup();
+        	$result = $lookup->insertUser($emailAddress, $googleID);
+        	if(!$result) {
+        		$this->errorRedirectTo('addUser', sprintf(_kt('Failed updating google single sign on user.'), $minLength), sprintf('old_search=%s&do_search=1', $oldSearch));
+        	}
+        }
+        
         $res = $user->update();
         if (PEAR::isError($res) || ($res == false)) {
             $this->errorRedirectoToMain(_kt('Failed to update user.'), sprintf('old_search=%s&do_search=1', $oldSearch));
@@ -658,6 +675,17 @@ class KTUserAdminDispatcher extends KTAdminDispatcher {
             $this->errorRedirectTo('addUser', _kt('You have entered an invalid character in your name.'));
         }
 
+        // Store Google Open ID.
+        $googleID = KTUtil::arrayGet($_REQUEST, 'googleID', '');
+        if(!empty($googleID)) {
+        	require_once(KT_LIVE_DIR . '/google/lib/KTSSOAccountLookup.php');
+        	$lookup = new KTSSOAccountLookup();
+        	$result = $lookup->insertUser($emailAddress, $googleID);
+        	if(!$result) {
+        		$this->errorRedirectTo('addUser', sprintf(_kt('Failed creating google single sign on user.'), $minLength), sprintf('old_search=%s&do_search=1', $oldSearch));
+        	}
+        }
+        
         $user = KTUserUtil::createUser($emailAddress, $name, $password, $emailAddress, $emailNotifications, $mobileNumber, $maxSessions);
         if (PEAR::isError($user)) {
             if ($user->getMessage() == _kt('A user with that username already exists')) {
@@ -732,7 +760,7 @@ class KTUserAdminDispatcher extends KTAdminDispatcher {
         if (preg_match('/[\!\$\#\%\^\&\*]/', $name)) {
             $this->errorRedirectTo('addUser', _kt('You have entered an invalid character in your name.'));
         }
-
+        
         $user = KTUserUtil::createUser($username, $name, $password, $emailAddress, $emailNotifications, $mobileNumber, $maxSessions);
         if (PEAR::isError($user)) {
             if ($user->getMessage() == _kt('A user with that username already exists')) {
