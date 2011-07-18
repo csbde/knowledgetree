@@ -2,12 +2,10 @@
 {$context->oPage->requireJSResource('resources/js/expungeList.js')}
 
 
-<p class="descriptiveText">{i18n}Documents which are deleted by users are hidden from view
-but still available for restoration.  Since "soft deletes" consume system resources, it
-is possible to <strong>expunge</strong> these documents.  Alternatively, you
-can <strong>restore</strong> them as necessary.{/i18n}</p>
+<p class="help" title="{i18n}<h2>Deleted Documents</h2>Documents which are deleted by users are hidden from view
+but still available for restoration.  Since 'soft deletes' consume system resources, it is possible to <strong>expunge</strong> these documents.  Alternatively, you can <strong>restore</strong> them as necessary.{/i18n}"></p>
 
-
+<br style="clear:both">
 {if (!empty($documents))}
 
 <form action="{$smarty.server.PHP_SELF}" method="POST">
@@ -29,7 +27,7 @@ can <strong>restore</strong> them as necessary.{/i18n}</p>
   </thead>
   <tbody id="output">
     {foreach item=oDoc from=$documents}
-    <tr class="{cycle values=even,odd}">
+    <tr class="{cycle values=odd,even name=deleted}">
       <td><input type="checkbox" name="selected_docs[]" value="{$oDoc->getId()}"/></td>
       <td>{$oDoc->getName()|sanitize}</td>
 {*      <td>{getCrumbStringForDocument document=$oDoc}</td> *}
@@ -56,13 +54,15 @@ can <strong>restore</strong> them as necessary.{/i18n}</p>
   </tfoot>
 </table>
 </div>
-<div class="form_actions">
-   <input type="submit" name="submit[restore]" value="{i18n}Restore{/i18n}" />
-   <input type="submit" name="submit[expunge]" value="{i18n}Expunge{/i18n}" />
-   <input type="submit" name="submit[expungeall]" value="{i18n}Expunge All{/i18n}" />
+<div class="table-footer">
+	<div class="form_actions">
+	   <input type="submit" name="submit[restore]" value="{i18n}Restore{/i18n}" />
+	   <input type="submit" name="submit[expunge]" value="{i18n}Expunge{/i18n}" />
+	   <input type="submit" name="submit[expungeall]" value="{i18n}Expunge All{/i18n}" />
+	</div>
 </div>
 </form>
 
 {else}
-<div class="ktInfoMessage"><span>{i18n}No documents are marked as deleted.{/i18n}</span></div>
+<div class="empty-boilerplate"><span>{i18n}No documents are marked as deleted.{/i18n}</span></div>
 {/if}

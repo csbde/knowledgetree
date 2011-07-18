@@ -1,14 +1,10 @@
-<h2>{i18n}Workflow Admin{/i18n}</h2>
 
-<p class="descriptiveText">{i18n}Workflow is a description of a document's lifecycle. It is made up of workflow states, which describe where in the lifecycle the document is, and workflow transitions, which describe the next steps within the lifecycle of the document.{/i18n}</p>
+<p class="help" title="{i18n}<h2>Workflows</h2>A workflow is a description of a document's lifecycle. It is made up of workflow states, which describe where in the lifecycle the document is, and workflow transitions, which describe the next steps within the lifecycle of the document.{/i18n}"></p>
 
 <div class="form_actions standalone" style="display:block;">
 	<a href="{addQS context=$context}action=newWorkflow{/addQS}">{i18n}Create New Workflow{/i18n}</a>
 </div>
 {if !empty($workflows)}
-
-<h3>{i18n}Existing workflows{/i18n}</h3>
-<p class="descriptiveText">{i18n}Select a workflow to modify. To enable a disabled workflow, edit it and set a proper starting state.{/i18n}</p>
 
 <form action="{$smarty.server.PHP_SELF}" method="POST">
 
@@ -19,8 +15,8 @@
     <tr>
       <th></th>
       <th>{i18n}Name{/i18n}</th>
-      <th width="10px;">{i18n}Status{/i18n}</th>
-      <th width="10px;">{i18n}Edit{/i18n}</th>
+      <th class="icon-column">{i18n}Status{/i18n}</th>
+      <th class="icon-column">{i18n}Edit{/i18n}</th>
     </tr>
   </thead>
   

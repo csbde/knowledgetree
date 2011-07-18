@@ -34,9 +34,7 @@
 					{else}
 						<span>{$oWorkflow->getName()}</span>
 					{/if}
-					
-					<br /><br />
-					
+					<br />					
 					<label for=comment><b>{i18n}Current State{/i18n} :</b> </label>
                     <span>{$oState->getName()}</span>
                     <br />
@@ -81,21 +79,16 @@
 										{foreach from=$transition_fields item=oWidget }
 											{$oWidget->render()}
 										{/foreach}
-										<br />
 									</td>
 								</tr>
 							</table>
 							<div class="action-footer">
 								<div class="form_actions" id="modal">
+									<a href="#" onclick="vActions.closeDisplay('workflow'); return false;" class=form_cancel style="background: none repeat scroll 0% 0% transparent;">Cancel</a>
 								    <input type="{$submit.type}" onclick="javascript: {ldelim}workflowBlock.submitForm('transition'){rdelim}; return false;" name=form_submit value="{i18n}Perform Transition{/i18n}" />
-								    
-								</div>
-								<div class="form_cancel">
-								    <a href="#" onclick="vActions.closeDisplay('workflow'); return false;" class=form_cancel style="background: none repeat scroll 0% 0% transparent;">Cancel</a>
 								</div>
 							</div>
 
-							
 						</form>
 					{/if}
 				</div>
@@ -156,10 +149,10 @@
 							{entity_select entities=$aWorkflows name=fWorkflowId id=fWorkflowId none=$none}
 						</div>
 										
-						<div class="action-footer" style="margin: 29px -15px -15px -17px;">
+						<div class="action-footer">
 							<div class="form_actions" id="modal">
 									<input type="{$submit.type}" onclick="javascript: {ldelim}workflowBlock.submitForm('change'){rdelim}; return false;" name=form_submit value="{i18n}Start Workflow{/i18n}" />
-									<a href="#" class="ul_actions_cancel_link" onclick="vActions.closeDisplay('workflow'); return false;">Cancel</a>
+									<a href="#" class="form_cancel" onclick="vActions.closeDisplay('workflow'); return false;">Cancel</a>
 							</div>
 						</div>
 				</form>

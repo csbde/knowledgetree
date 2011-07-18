@@ -333,7 +333,7 @@ class KTCorePlugin extends KTPlugin {
             _kt('Override the checked-out status of documents if a user has failed to do so.'),
             'admin/documentCheckout.php', null);
         $this->registerAdminPage('archived', 'ArchivedDocumentsDispatcher', 'contentManagement',
-            _kt('Archived Document Restoration'), _kt('Restore old (archived) documents, usually at a user\'s request.'),
+            _kt('Restore Archived Documents'), _kt('Restore old (archived) documents, usually at a user\'s request.'),
             'admin/archivedDocuments.php', null);
         $this->registerAdminPage('expunge', 'DeletedDocumentsDispatcher', 'contentManagement',
             _kt('Restore or Expunge Deleted Documents'), _kt('Restore previously deleted documents, or permanently expunge them.'),
