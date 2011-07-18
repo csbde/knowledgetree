@@ -54,7 +54,7 @@ class KTDocTypeWorkflowAssociationPlugin extends KTPlugin {
 
     function setup()
     {
-        $this->registerTrigger('workflow', 'objectModification', 'DocumentTypeWorkflowAssociator',
+        $this->registerTrigger('workflow', 'objectModification', 'Document Type Workflow Associator',
             'ktstandard.triggers.workflowassociation.documenttype.handler');
         $this->registeri18n('knowledgeTree', KT_DIR . '/i18n');
     }

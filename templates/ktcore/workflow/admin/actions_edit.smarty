@@ -11,10 +11,10 @@
 	<div class="action_overview_scroll">
 	<table class="kt_collection narrow" cellspacing="0">
 	    <thead>
-	        <th>{i18n}State{/i18n}</th>
+	        <th style="word-break:initial;">{i18n}State{/i18n}</th>
 	      {foreach from=$actions item=oAction}
 	    	{if $oAction->getDisplayName() != ''}
-	        	<th>
+	        	<th style="word-break:initial;">
 	        		{$oAction->getDisplayName()}
 	            </th>
 	    	{/if}
@@ -25,11 +25,11 @@
 	      {foreach from=$states item=oState}
 	      {assign value=$oState->getId() var=state_id}
 	        <tr>
-	            <td>{$oState->getName()}</td>
+	            <td  style="word-break:initial;">{$oState->getName()}</td>
 	            {foreach from=$actions item=oAction}
 	                {if ($oAction->getDisplayName() != '')}
 	                {assign value=$oAction->getName() var=action_id}
-	                    <td class="centered">
+	                    <td class="centered"  style="word-break:initial;">
 	                        <input type="checkbox" name="fActions[{$state_id}][{$action_id}]" value="{$action_id}" {if ($grid.$state_id.$action_id)}checked="true"{/if} />
 	                    </td>
 	                {/if}
