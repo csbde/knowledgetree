@@ -125,10 +125,29 @@ class KTFolderAddFolderAction extends KTFolderAction {
         // Shared users should not see folder template structures
         if ($usertype != 4)
         {
-			$aFolderTemplates = $this->folderTemplateOptions(); // Get folder structure creation option
-			if (is_array($aFolderTemplates)) { // Check if any results are returned
-				 $folderWidgets[] = $aFolderTemplates;
-			}
+			// Check if folder templates plugin is active
+        	if (KTPluginUtil::pluginIsActive('folder.templates.plugin'))
+        	{
+        		// Get folder structure creation option
+				$aFolderTemplates = $this->folderTemplateOptions();
+				// Check if any results are returned
+				if (is_array($aFolderTemplates)) {
+					global $main;
+	        		// Load folder templates css and js
+	        		$main->requireCSSResource(FTemplates_DIR . "/resources/folder_templates.css");
+	        		if(preg_match("/MSIE 7\.\d/", $_SERVER['HTTP_USER_AGENT']))
+	        		{
+	       				$main->requireCSSResource(FTemplates_DIR . "/resources/folder_templates_ie_7.css");
+	       			}
+	       			if(preg_match("/Firefox\/2\.\d/", $_SERVER['HTTP_USER_AGENT']))
+	       			{
+	       				$main->requireCSSResource(FTemplates_DIR . "/resources/folder_templates_ff_2.css");
+	       			}
+	       			$main->requireJSResource(FTemplates_DIR . "/resources/folder_templates.js");
+					$folderWidgets[] = $aFolderTemplates;
+					$folderWidgets[] = array('ktcore.widgets.div', array('id' => 'outer'));
+				}
+        	}
         }
 
         $oForm->setWidgets($folderWidgets);
@@ -187,13 +206,11 @@ class KTFolderAddFolderAction extends KTFolderAction {
      *
      * @return unknown
      */
-    function folderTemplateOptions() {
-		if (KTPluginUtil::pluginIsActive('folder.templates.plugin')) { // Check if folder templates plugin is active
-			require_once(FolderTemplatesPlugin_DIR . DIRECTORY_SEPARATOR. "FolderTemplate.inc.php");
-			return FolderTemplateRenders::getTemplates();
-		}
+    function folderTemplateOptions()
+    {
+		require_once(FolderTemplatesPlugin_DIR . DIRECTORY_SEPARATOR. "FolderTemplate.inc.php");
 
-		return false;
+		return FolderTemplateRenders::getTemplates('folder_add');
     }
 
     function do_main() {
