@@ -420,11 +420,11 @@ class BrowseView {
         $idClass = $pageClass . '_[page]';
         $pages = array();
         $pages[] = '<ul class="' . $paginationClass . '">';
-        $pages[] = '<li class="' . $itemClass . '" onclick="' . $prevScript . '">&#9666</li>';
+        $pages[] = '<li class="prevBrowseButton ' . $itemClass . '" onclick="' . $prevScript . '">&#9666</li>';
         for($i = 1; $i <= $pageCount; ++$i) {
             $pages[] = ktVar::parseString('<li class="' . $itemClass . ' ' . $idClass . '" onclick="' . $pageScript . '">' . $i . '</li>', array('page'=> $i, 'folder' => $this->folderId));
         }
-        $pages[] = '<li class="' . $itemClass . '" onclick="' . $nextScript . '">&#9656</li>';
+        $pages[] = '<li class="nextBrowseButton ' . $itemClass . '" onclick="' . $nextScript . '">&#9656</li>';
         $pages[] = '</ul>';
         $pages = join($pages);
 
