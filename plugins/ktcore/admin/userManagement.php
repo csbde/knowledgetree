@@ -976,13 +976,20 @@ class KTUserAdminDispatcher extends KTAdminDispatcher {
                 if (PEAR::isError($user)) {
                     $this->errorRedirectToMain(_kt('Error getting user object'));
                 }
-
+                
+				if(KTPluginUtil::pluginIsActive('single.sign.on.plugin'))
+				{
+					$lookup = SingleSignOnPlugin::getSSOAccountLookup();
+					$lookup->deleteUser($user->getUserName());
+				}
+				
                 $user->delete();
 
                 $res = $user->update();
                 if (PEAR::isError($res)) {
                     $this->errorRedirectToMain(_kt('Error updating user'));
                 }
+				// Remove user from Single Sign On, if plugin is enabled.
 
                 $enabledUsers--;
             }
