@@ -1079,6 +1079,8 @@ a.main_nav_item {
     padding: 3px 10px;
     overflow: hidden;
     vertical-align: middle;
+    word-wrap: break-word;
+    word-break: break-all;
 }
 
 .kt_collection td.title,
@@ -1135,7 +1137,9 @@ a.main_nav_item {
 }
 
 .kt_collection tbody#datadrop.dropzone tr td.browse_column.select { width: 12px; }
-
+.kt_collection .sort-header{
+	width: 10px;
+}
 .ktInlineError {
     color: #db9d09;
 }
@@ -2600,7 +2604,7 @@ div.extjs_form_actions {
     background: white;
     font-size: 11px;
     height: auto;
-    max-width: 210px;
+    max-width: 300px;
     padding: 5px 10px 5px 10px;
     color: #666;
     border: 1px solid #ccc;
