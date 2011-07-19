@@ -25,6 +25,8 @@ $this->assign("oChildField", DocumentField::get($this->_tpl_vars['aRow']['child_
 
 { if $free_fields }
 
+<br />
+
 <form action="{$smarty.server.PHP_SELF}" method="POST">
 <fieldset>
 {foreach from=$orderingargs item=v key=k}
@@ -50,4 +52,6 @@ $this->assign("oChildField", DocumentField::get($this->_tpl_vars['aRow']['child_
 </form>
 {/if}
 
+<br />
+<a href="{addQS context=$context}{/addQS}">&#171; {i18n}Back to Fieldset{/i18n}</a> &nbsp; | &nbsp; <a href="{addQS context=$context}fieldset_action=editconditional{/addQS}">{i18n}Manage Conditional Behaviours{/i18n}</a>
 

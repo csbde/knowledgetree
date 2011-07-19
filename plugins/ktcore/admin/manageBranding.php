@@ -46,6 +46,7 @@ require_once(KT_LIB_DIR . '/widgets/widgetfactory.inc.php');
 require_once(KT_LIB_DIR . '/validation/dispatchervalidation.inc.php');
 require_once(KT_LIB_DIR . '/metadata/fieldsetregistry.inc.php');
 require_once(KT_LIB_DIR . '/validation/validatorfactory.inc.php');
+require_once(KT_LIB_DIR . '/widgets/forms.inc.php');
 
 class ManageBrandDispatcher extends KTAdminDispatcher
 {

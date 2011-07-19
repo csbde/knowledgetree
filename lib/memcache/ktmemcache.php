@@ -58,11 +58,11 @@ class KTMemcache
 				continue;
 			}
 			
-			if ($this->get($key) === false) {
-				$this->memcache->set($key, $value, null, $expiration);
+			if ($_test->get($key) === false) {
+				$_test->set($key, $value, null, $expiration);
 			}
 			else {
-				$this->memcache->replace($key, $value, null, $expiration);
+				$_test->replace($key, $value, null, $expiration);
 			}
 		}
     }
@@ -72,7 +72,7 @@ class KTMemcache
     	if ($timeout == 0) {
     		$timeout = 1;
     	}
-    	$this->memcache->set($key, '', $timeout);
+    	$this->set($key, '', $timeout);
     }
     
 	/**
