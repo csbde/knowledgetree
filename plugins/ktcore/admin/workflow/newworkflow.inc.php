@@ -85,7 +85,7 @@ class KTNewWorkflowWizard extends KTAdminDispatcher {
             )),
             array('ktcore.widgets.text',array(
                 'label' => _kt('States'),
-                'description' => _kt('As documents progress through their lifecycle, they pass through a number of <strong>states</strong>.  These states describe a step in the process the document must follow.  Examples of states include "reviewed","submitted" or "pending".  Please enter a list of states, one per line.  State names must be unique.'),
+                'description' => _kt('As documents progress through their lifecycle, they pass through a number of states.  These states describe a step in the process the document must follow.  Examples of states include \'reviewed\', \'submitted\' or \'pending\'.  Please enter a list of states, one per line.  State names must be unique.'),
                 'important_description' => _kt('Note that the first state you list is the one in which documents will start the workflow - this can be changed later on. '),
                 'required' => true,
                 'name' => 'states',
@@ -93,7 +93,7 @@ class KTNewWorkflowWizard extends KTAdminDispatcher {
             )),
             array('ktcore.widgets.text',array(
                 'label' => _kt('Transitions'),
-                'description' => _kt('In order to move between states, users will cause "transitions" to occur.  These transitions represent processes followed, e.g. "review document", "distribute invoice" or "publish".  Please enter a list of transitions, one per line.  Transition names must be unique.  You\'ll assign transitions to states in the next step.'),
+                'description' => _kt('In order to move between states, users will cause \'transitions\' to occur.  These transitions represent processes followed, e.g. \'review document\', \'distribute invoice\' or \'publish\'.  Please enter a list of transitions, one per line.  Transition names must be unique.  You\'ll assign transitions to states in the next step.'),
                 'required' => false,
                 'name' => 'transitions',
             )),

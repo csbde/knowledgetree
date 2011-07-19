@@ -24,18 +24,21 @@ are immediately stored, so when you are done simply navigate back to the field m
   would be continents &mdash; e.g. Africa, Europe, Asia, The Americas &mdash; followed by 
   subcategories that contain actual countries &mdash; e.g. Western Europe, Sub-Saharan Africa, 
   Australasia.{/i18n}</p>
-  
+  <br/>
   {foreach from=$args item=v key=k}
    <input type="hidden" name="{$k}" value="{$v}" />
   {/foreach}
   <input type="hidden" name="subaction" value="addCategory" />
   <input type="hidden" name="current_node" value="{$currentNode}" />
-
-<input type="text" name="category_name"/>
-
+<div class="field">
+	<label>Category name </label>
+	<input type="text" name="category_name"/>
+</div>
 <div class="form_actions">
+	
   <input type="submit" name="submit" value="{i18n}add new subcategory{/i18n}" />
 </div>
+
 </fieldset>
 </form>
 

@@ -753,9 +753,15 @@ div.form_actions {
 #content .form_actions a:last-child {
 	
 }
+.form_actions.standalone {
+	margin: 5px 0px; 
+	float: none;
+	text-align: left;
+	display: block;
+}
 .x-window .form_actions input, .x-window .form_actions a, 
-#content .form_actions input, #content .form_actions a {
-	background: -webkit-linear-gradient(top,#fff,#e8e8e8)!important;
+#content .form_actions input, #content .form_actions a { 
+	background: -webkit-gradient(linear, left top, left bottom, from(#fff), to(#e8e8e8)) !important;
 	background: -moz-linear-gradient(top,#fff,#e8e8e8)!important;
 	background: -ms-linear-gradient(top,#fff,#e8e8e8)!important;
 	background: linear-gradient(top,#fff,#e8e8e8)!important;
@@ -1023,7 +1029,11 @@ table.kt_collection {
 	margin: 5px;
 	width: 98%;
 }
-
+.kt_collection .icon-column {
+	white-space: nowrap;
+	text-align: center;
+	width: 50px;
+}
 div#activationNotice {
 	background: url('../graphics/newui/notice_v2.png') no-repeat top right;
 	width: 160px;
@@ -1322,6 +1332,9 @@ label span.required
 	float: right;
 	width: 25px;
 	height: 25px;
+	position: relative;
+	margin: 5px 0px;
+	z-index: 1;
 }
 .settings-section #content fieldset legend {
 	padding: 0px;
@@ -1338,7 +1351,21 @@ label span.required
 .settings-item.users .name.empty {
 	padding-right: 0px;
 }
-.widgetRow.table-footer {
+.settings-item.emailconfigpage .descriptiveText {
+	display: none;
+}
+#content .settings-item.workflows_2 .field.fWizardKey {
+	background: none;
+	border: 0px;
+	padding: 0px;
+}
+#workflowtabs .kt_collection select {
+	max-width: 140px;
+}
+#workflowtabs #workflow_details .form_actions input {
+	float: right;
+}
+.settings-item .table-footer {
 	background: whiteSmoke;
 	overflow: hidden;
 	border: 1px solid #CCC;
@@ -1362,10 +1389,27 @@ label span.required
 	height: 23px;
 	margin-left: 5px;
 }
+.settings-item #workflow_allocation select {
+	width: 200px;
+}
 .settings-section .kt_collection,
 .settings-section .kt_collection.narrow  {
 	width: 100%;
 	margin: 10px 0px;
+}
+.settings-section .simple-selection {
+	display: block;
+	float: right;
+	min-width: 270px;
+}
+.settings-section .simple-selection input[type="radio"] {
+	float: left !important;
+	margin: 4px;
+}
+.settings-section #content .field .descriptiveText {
+	float: left;
+	clear: left;
+
 }
 .settings-section .flag {
 	border-radius: 3px;
@@ -1429,7 +1473,25 @@ label span.required
 .field-group .switch {
 	margin-top: 0px;
 }
-
+.empty-boilerplate {
+	display: block;
+	text-align: center;
+	min-height: 100px;
+	line-height: 100px;
+	width: auto;
+	-webkit-box-shadow: inset 0px 0px 5px #CCC;
+	-moz-box-shadow: inset 0px 0px 5px #CCC;
+	box-shadow: inset 0px 0px 5px #CCC;
+	border: 1px solid #DDD;
+	-webkit-border-radius: 3px;
+	-moz-border-radius: 3px;
+	border-radius: 3px;
+	background-color: #F6F6F6;
+	margin: 10px 0px;
+	padding: 20px;
+	color: #777 !important;
+	text-shadow: 0px 1px 0px white;
+}
 
 /*Tag editor*/
 
@@ -1563,7 +1625,7 @@ http://devgrow.com/iphone-style-switches/
 #content .settings-content fieldset {
 	border: 0px;
 	padding: 0px;
-	
+	clear: both;
 }
 .settings-section .switch {
 	margin: 0px 0px -5px 0px;
@@ -1728,20 +1790,21 @@ li.ui-state-disabled a {
 #action-modal .jstree-knowledgetree a .jstree-icon {
 	background: url(/thirdpartyjs/extjs/resources/images/default/tree/folder-open.gif) 0px 0px;
 }
-.x-window .jstree-knowledgetree.select-tree {
-	background: url("/thirdpartyjs/jquery/plugins/jstree/themes/knowledgetree/bg.jpg") left top repeat;
+.jstree-knowledgetree > ul {
+	overflow: auto;
+	min-height: 250px;
 }
 #action-error.alert.warning {
-	background: #F2C1C5;
-	border: 1px solid #A90615;
+	background: #ffeded;
+	border: 1px solid #f93333;
 	padding: 10px;
-	color: #A90615;
+	color: #f93333;
 }
 #action-error.alert.success {
-	background: #d8f9d1;
-	border: 1px solid #53bc3e;
+	background: #fffdc5;
+	border: 1px solid #ffd825;
 	padding: 10px;
-	color: #53bc3e;
+	color: #333;
 }
 
 a.currentSettingsCategory {
