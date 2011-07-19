@@ -129,3 +129,6 @@ refresh the page.{/i18n}</p>
 </tbody>
 </table>
 *}
+
+<br />
+<a href="{addQS context=$context}{/addQS}">&#171; {i18n}Back to Fieldset{/i18n}</a>
