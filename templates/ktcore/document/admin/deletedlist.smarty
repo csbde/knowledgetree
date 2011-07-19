@@ -5,9 +5,25 @@
 <p class="help" title="{i18n}<h2>Deleted Documents</h2>Documents which are deleted by users are hidden from view
 but still available for restoration.  Since 'soft deletes' consume system resources, it is possible to <strong>expunge</strong> these documents.  Alternatively, you can <strong>restore</strong> them as necessary.{/i18n}"></p>
 
-<br style="clear:both">
+<br style="clear:both; line-height:70px;">
 {if (!empty($documents))}
 
+<div class="search-filter" style="padding-bottom: 4px;">
+ 	<form action="{$smarty.server.PHP_SELF}" method="POST">
+ 		<div class="form_actions">
+ 		 	<!-- Search button -->
+ 		 	<input type="submit" value="{i18n}Filter{/i18n}" />
+ 		</div>
+ 		<input type="hidden" name="do_search" value="1" />
+ 		{capture assign=link}{addQS}show_all=1{/addQS}{/capture}
+ 	
+ 		{foreach item=oWidget from=$searchFields}
+ 		  {$oWidget->render()}
+ 		{/foreach}
+ 	
+ 	</form>
+ </div>
+ 
 <form action="{$smarty.server.PHP_SELF}" method="POST">
 
 <input type="hidden" name="action" value="branchConfirm" />
@@ -42,15 +58,23 @@ but still available for restoration.  Since 'soft deletes' consume system resour
   			<span style="float: left">{$itemcount} {i18n}items, 10 per page{/i18n}</span>
   		</td>
   	</tr>
+  	{if $itemcount > 10}
   	<tr>
   		<td colspan="4">
-  			<div align="center">
+  		<div class="paginationContainer" style="width: 100%; text-align: center;">
+  			<ul class='paginate'>
 	  			{foreach item=page from=$pagelist}
-					<a href="#" onclick="buildList(this.innerHTML)">{$page}</a>
+	  			    {if $page == 1} 
+	  			        <li class="item highlight"><a href="#tableoutput" onclick="buildList(this.innerHTML, '{$searchText}')">{$page}</a></li>
+	  			    {else}
+					   <li class="item"><a href="#tableoutput" onclick="buildList(this.innerHTML, '{$searchText}')">{$page}</a></li>
+				   {/if}
 				{/foreach}
+			</ul>
 			</div>
 		</td>
   	</tr>
+  	{/if}
   </tfoot>
 </table>
 </div>

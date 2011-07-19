@@ -41,8 +41,32 @@ require_once(KT_LIB_DIR . '/browse/browseutil.inc.php');
 require_once(KT_LIB_DIR . '/documentmanagement/Document.inc');
 require_once(KT_LIB_DIR . '/documentmanagement/DocumentTransaction.inc');
 
-$sWhere = 'status_id=' . DELETED;
-$aDocuments = Document::getList($sWhere);
+function getDocumentList($searchText) 
+{
+    if ($searchText == '*') {
+        $showAll = true;
+        $searchText = '';
+    }
+    else {
+        $showAll = KTUtil::arrayGet($_REQUEST, 'show_all', $alwaysAll);
+    }
+    
+    $documents = null;
+    if (!empty($searchText)) {
+        $documents = Document::getList('status_id=' . DELETED . ' AND full_path LIKE \'%' . DBUtil::escapeSimple($searchText) . '%\'');
+        
+    }
+    else if ($showAll !== false) {
+        $documents = Document::getList('status_id=' . DELETED);
+        $noSearch = false;
+        $searchText = '*';
+    }
+    
+    return $documents;
+}
+
+$searchText = urldecode(KTUtil::arrayGet($_REQUEST, 'search'));
+$aDocuments = getDocumentList($searchText);
 
 $pageNum = $_REQUEST['page'];
 
@@ -77,11 +101,13 @@ $output = "<table class=\"kt_collection\">
                       <th>'._kt('Deletion Comment').'</th>
                 </tr>
                   </thead>
-                <tbody>';
+                <tbody id="output">';
 
+$trClass = 'even';
 for ($i = $listStart; $i <= $listEnd; $i++) {
+    $trClass = ($trClass == 'even') ? 'odd' : 'even';
     $output .= "
-                <tr>
+                <tr class=\"{$trClass}\">
           <td><input type=\"checkbox\" name=\"selected_docs[]\" value=\"" . $aDocuments[$i]->getId() . "\"/></td>
           <td>" . $aDocuments[$i]->getName() . "</td>
           <td>" . $aDocuments[$i]->getDisplayLastModifiedDate() . "</td>
@@ -98,13 +124,16 @@ $output .= '<tfoot>
       </tr>
       <tr>
           <td colspan="4">
-              <div align="center">';
+              <div class="paginationContainer" style="width: 100%; text-align: center;">
+                <ul class="paginate">';
 
 foreach($aPages as $page) {
-    $output .= '<a href="#" onclick="buildList(this.innerHTML)">' . $page.'</a>&nbsp;';
+    $liClass = ($page == $pageNum) ? 'item highlight' : 'item';
+    $output .= '<li class="' .$liClass. '"><a href="#tableoutput" onclick="buildList(this.innerHTML, \'' . $searchText . '\')">' . $page.'</a></li>';
 }
 
-$output .= '</div>
+$output .= '</ul>
+            </div>
         </td>
       </tr>
   </tfoot>

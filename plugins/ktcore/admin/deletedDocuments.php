@@ -57,7 +57,29 @@ class DeletedDocumentsDispatcher extends KTAdminDispatcher {
         //
         //$this->oPage->setBreadcrumbDetails(_kt('view'));
 
-        $documents = Document::getList('status_id=' . DELETED);
+        $noSearch = (KTUtil::arrayGet($_REQUEST, 'do_search', false) === false);
+        $name = KTUtil::arrayGet($_REQUEST, 'search_name', KTUtil::arrayGet($_REQUEST, 'old_search'));
+        if ($name == '*') {
+            $showAll = true;
+            $name = '';
+        }
+        else {
+            $showAll = KTUtil::arrayGet($_REQUEST, 'show_all', $alwaysAll);
+        }
+
+        $searchFields = array();
+        $searchFields[] =  new KTStringWidget(_kt(''), _kt(""), 'search_name', $name, $this->oPage);
+
+        $documents = null;
+        if (!empty($name)) {
+            $documents = Document::getList('status_id=' . DELETED . ' AND full_path LIKE \'%' . DBUtil::escapeSimple($name) . '%\'');
+            
+        }
+        else if ($showAll !== false) {
+            $documents = Document::getList('status_id=' . DELETED);
+            $noSearch = false;
+            $name = '*';
+        }
 
         if (!empty($documents)) {
             $items = count($documents);
@@ -81,7 +103,7 @@ class DeletedDocumentsDispatcher extends KTAdminDispatcher {
                 $documentsList[] = $documents[$i];
             }
         }
-
+        
         $templating =& KTTemplating::getSingleton();
         $template = $templating->loadTemplate('ktcore/document/admin/deletedlist');
         $template->setData(array(
@@ -91,11 +113,13 @@ class DeletedDocumentsDispatcher extends KTAdminDispatcher {
             'pagelist' => $aPages,
             'pagecount' => $pages,
             'itemcount' => $items,
+            'searchFields' => $searchFields,
+            'searchText' => $name
         ));
 
         return $template->render();
     }
-
+    
     public function do_branchConfirm()
     {
         $submit = KTUtil::arrayGet($_REQUEST, 'submit' , array());
