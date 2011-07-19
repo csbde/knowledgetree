@@ -20,7 +20,7 @@
                 {/if}
 
                 {* Display the drop down menu's on the split buttons *}
-                <ul class="splitmenu"  style="right: auto; margin-left: -1px; ">
+                <ul class="splitmenu"  style="right: auto; ">
                     {foreach item=menuitem from=$btn.menu}
                         {if $menuitem.status === 'disabled'}
                             <li>

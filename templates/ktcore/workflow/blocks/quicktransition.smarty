@@ -10,7 +10,7 @@
 	<div class="field">
 		<label for="data[reason]">Comment</label>
 		<p class="errorMessage"></p>
-		<textarea name="fComments" rows="3" cols="55"></textarea>
+		<textarea name="fComments" class="modalField" rows="3" cols="55"></textarea>
 	</div>
 	<div class="action-footer">
 		<div class="form_actions" id="modal">
