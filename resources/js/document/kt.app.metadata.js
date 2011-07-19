@@ -750,7 +750,7 @@ kt.app.metadata = new function()
 					if(field.options.ishtml)
 					{
 						//strip all html tags
-						jQuery('#value-'+field.fieldid).text(field.value.replace(/<\/?[a-z][a-z0-9]*[^<>]*>/ig, ""));
+						jQuery('#value-'+field.fieldid).html(field.value);    //.replace(/<\/?[a-z][a-z0-9]*[^<>]*>/ig, ""));
 					}
 					else
 					{
