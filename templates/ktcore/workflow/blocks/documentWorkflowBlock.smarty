@@ -116,7 +116,7 @@
 </div>
 
 {/if}
-<br/>
+
 
 
 {if $bIsCheckedOut}
