@@ -7,7 +7,6 @@
             
             {$edit_form->render()}
             
-            <br clear="both" />
         </div>
     </div>
     
