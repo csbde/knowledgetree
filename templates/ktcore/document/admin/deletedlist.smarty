@@ -27,8 +27,8 @@ but still available for restoration.  Since 'soft deletes' consume system resour
 <form action="{$smarty.server.PHP_SELF}" method="POST">
 
 <input type="hidden" name="action" value="branchConfirm" />
-{foreach item=oFDoc from=$fullList}
-	<input type="hidden" name="docIds[]" value="{$oFDoc->getId()}">
+{foreach item=document from=$fullList}
+	<input type="hidden" name="docIds[]" value="{$document->getId()}">
 {/foreach}
 <div id="tableoutput">
 <table class="kt_collection">
@@ -42,13 +42,13 @@ but still available for restoration.  Since 'soft deletes' consume system resour
     </tr>
   </thead>
   <tbody id="output">
-    {foreach item=oDoc from=$documents}
+    {foreach item=doc from=$documents}
     <tr class="{cycle values=odd,even name=deleted}">
-      <td><input type="checkbox" name="selected_docs[]" value="{$oDoc->getId()}"/></td>
-      <td>{$oDoc->getName()|sanitize}</td>
-{*      <td>{getCrumbStringForDocument document=$oDoc}</td> *}
-      <td>{$oDoc->getDisplayLastModifiedDate()}</td>
-      <td>{$oDoc->getLastDeletionComment()}</td>
+      <td><input type="checkbox" name="selected_docs[]" value="{$doc->getId()}"/></td>
+      <td>{$doc->getName()|sanitize}</td>
+{*      <td>{getCrumbStringForDocument document=$doc}</td> *}
+      <td>{$doc->getDisplayLastModifiedDate()}</td>
+      <td>{$doc->getLastDeletionComment()}</td>
     </tr>
     {/foreach}
   </tbody>
@@ -67,7 +67,7 @@ but still available for restoration.  Since 'soft deletes' consume system resour
 	  			    {if $page == 1} 
 	  			        <li class="item highlight"><a href="#tableoutput" onclick="buildList(this.innerHTML, '{$searchText}')">{$page}</a></li>
 	  			    {else}
-					   <li class="item"><a href="#tableoutput" onclick="buildList(this.innerHTML, '{$searchText}')">{$page}</a></li>
+					   <li class="item" onclick="buildList(this.innerHTML, '{$searchText}')">{$page}</a></li>
 				   {/if}
 				{/foreach}
 			</ul>

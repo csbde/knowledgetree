@@ -81,6 +81,7 @@ class DeletedDocumentsDispatcher extends KTAdminDispatcher {
             $name = '*';
         }
 
+        $pageList = array();
         if (!empty($documents)) {
             $items = count($documents);
             if (fmod($items, 10) > 0) {
@@ -90,7 +91,7 @@ class DeletedDocumentsDispatcher extends KTAdminDispatcher {
             }
 
             for ($i = 1; $i <= $pages; $i++) {
-                $aPages[] = $i;
+                $pageList[] = $i;
             }
 
             if ($items < 10) {
@@ -110,7 +111,7 @@ class DeletedDocumentsDispatcher extends KTAdminDispatcher {
             'context' => $this,
             'fullList' => $documents,
             'documents' => $documentsList,
-            'pagelist' => $aPages,
+            'pagelist' => $pageList,
             'pagecount' => $pages,
             'itemcount' => $items,
             'searchFields' => $searchFields,
