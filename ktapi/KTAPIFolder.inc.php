@@ -638,9 +638,7 @@ class KTAPI_Folder extends KTAPI_FolderItem {
         // Set a static boolean value which will instruct recursive calls to ignore the depth parameter;
         // negative indicates full tree, positive goes to specified depth, 0 = nothing
         static $fullTree = null;
-        if (is_null($fullTree)) {
-            $fullTree = ($depth < 0) ? true : false;
-        }
+        is_null($fullTree) or $fullTree = $depth < 0;
 
         // if we are not getting the full listing, we need to kick out if depth less than 1
         if (!$fullTree && ($depth < 1)) {
