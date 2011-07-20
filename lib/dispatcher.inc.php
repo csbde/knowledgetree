@@ -672,6 +672,7 @@ class KTAdminDispatcher extends KTStandardDispatcher {
     {
         $this->checkAnonymous();
         $this->handleOutput('<h2>' . _kt('Permission Denied') . '</h2>');
+        exit(0);
     }
 
     public function setCategoryDetail($subUrl)
