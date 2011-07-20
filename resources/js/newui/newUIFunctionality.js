@@ -9,12 +9,22 @@ jQuery(document).ready(function() {
         jQuery('.cb-disable',parent).removeClass('selected');
         jQuery(this).addClass('selected');
         jQuery('.checkbox',parent).attr('checked', true);
+
+		// Done Here for any items that comes via AJAX
+		if (jQuery.browser.msie && jQuery.browser.version.substring(0, 2) == "8.") {
+			jQuery('span.switch input').show();
+		}
     });
     jQuery(".cb-disable").live('click', function() {
         var parent = jQuery(this).parents('.switch');
         jQuery('.cb-enable',parent).removeClass('selected');
         jQuery(this).addClass('selected');
         jQuery('.checkbox',parent).attr('checked', false);
+
+		// Done Here for any items that comes via AJAX
+		if (jQuery.browser.msie && jQuery.browser.version.substring(0, 2) == "8.") {
+			jQuery('span.switch input').show();
+		}
     });
 });
 
