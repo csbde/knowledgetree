@@ -262,8 +262,14 @@ class KTUserAdminDispatcher extends KTAdminDispatcher {
     	if(!$this->authDomainSet()) { return false; }
     	require_once(KT_LIVE_DIR . '/google/lib/KTSSOAccounts.php');
     	$lookup = new KTSSOAccounts(ACCOUNT_NAME);
+		$googleID = $lookup->getUserGoogleID($username);
+		if(!$googleID) {
+			return '';
+		}
+		else {
+			return $googleID;
+		}
 
-    	return $lookup->getUserGoogleID($username);
     }
 
     public function insertSSOUser($googleID, $emailAddress)
@@ -317,7 +323,7 @@ class KTUserAdminDispatcher extends KTAdminDispatcher {
         $KTConfig = KTConfig::getSingleton();
         $useEmail = $KTConfig->get('user_prefs/useEmailLogin', false);
         if ($useEmail) {
-			$googleID = $this->lookupUser($useEmail);
+			$googleID = $this->lookupUser($emailAddress);
             $editFields = $this->getNewEditUserFields($username, $name, $googleID, $emailNotification, $mobileNum, $emailAddress, $maxSessions);
         }
         else {
