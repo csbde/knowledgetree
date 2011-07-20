@@ -323,7 +323,7 @@ class KTWebService {
     function info($msg, $function)
     {
         global $default;
-        $default->log->info("WS - {$function} | {$msg}");
+        $default->wsLog->info("WS - {$function} | {$msg}");
     }
 
     function debug($msg, $function = null, $level=0)
@@ -336,7 +336,7 @@ class KTWebService {
             {
                 $function = "$function - ";
             }
-            $default->log->debug('WS - ' . $function . $msg);
+            $default->wsLog->debug('WS - ' . $function . $msg);
         }
     }
 
@@ -349,7 +349,7 @@ class KTWebService {
             {
                 $function = "$function - ";
             }
-            $default->log->error('WS - ' . $function . $msg);
+            $default->wsLog->error('WS - ' . $function . $msg);
         }
     }
 
@@ -2906,7 +2906,7 @@ class KTWebService {
 
                     KTWebService::_populate_tree($selection, $tree);
 
-                    $GLOBALS['default']->log->debug('get_document_type_metadata tree after population '.print_r($tree, true));
+                    //$GLOBALS['default']->log->debug('get_document_type_metadata tree after population '.print_r($tree, true));
 
                     $metadata[$i]['fields'][$j]['selection'] = $tree;
                 }
@@ -3023,7 +3023,7 @@ class KTWebService {
 
                     KTWebService::_populate_tree($selection, $tree);
 
-                    $GLOBALS['default']->log->debug('get_document_metadata tree after population '.print_r($tree, true));
+                    //$GLOBALS['default']->log->debug('get_document_metadata tree after population '.print_r($tree, true));
 
                     $metadata[$i]['fields'][$j]['selection'] = $tree;
                 }
@@ -4062,7 +4062,7 @@ class KTWebService {
      */
     function get_folder_total_files($session_id, $folder_id)
     {
-        $GLOBALS['default']->log->debug("get_folder_total_files $folder_id");
+        //$GLOBALS['default']->log->debug("get_folder_total_files $folder_id");
 
         $kt = &$this->get_ktapi($session_id );
         if (is_array($kt))
@@ -4088,7 +4088,7 @@ class KTWebService {
      */
     function get_is_folder_empty($session_id, $folder_id)
     {
-        $GLOBALS['default']->log->debug("get_is_folder_empty $folder_id");
+        //$GLOBALS['default']->log->debug("get_is_folder_empty $folder_id");
 
         $kt = &$this->get_ktapi($session_id );
         if (is_array($kt))
@@ -4159,7 +4159,7 @@ class KTWebService {
      */
     function get_folder_changes($session_id, $folder_ids, $timestamp = 0, $depth = 1)
     {
-        $GLOBALS['default']->log->debug("WS get_folder_changes $session_id ".print_r($folder_ids, true)." $timestamp");
+        //$GLOBALS['default']->log->debug("WS get_folder_changes $session_id ".print_r($folder_ids, true)." $timestamp");
 
         $kt = &$this->get_ktapi($session_id );
         if (is_array($kt))
@@ -4169,7 +4169,7 @@ class KTWebService {
 
         $result = &$kt->get_folder_changes($folder_ids, $timestamp, $depth, 'DF');
 
-        $GLOBALS['default']->log->debug('WS get_folder_changes result '.print_r($result, true));
+        //$GLOBALS['default']->log->debug('WS get_folder_changes result '.print_r($result, true));
 
         if ($result['status_code'] !== 0)
         {
