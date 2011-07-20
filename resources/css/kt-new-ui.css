@@ -1026,6 +1026,10 @@ table.kt_collection {
 	text-align: center;
 	width: 50px;
 }
+#content .kt_collection.document-summary thead th{
+	word-break: normal;
+	word-break: normal;
+}
 div#activationNotice {
 	background: url('../graphics/newui/notice_v2.png') no-repeat top right;
 	width: 160px;
@@ -1173,6 +1177,7 @@ div.widgetRow {
 	margin: 1px;
 	clear: both;
 	/*outline: 1px solid black;*/
+	
 }
 
 /* There can be many widgetItems in a row. */
@@ -1384,6 +1389,9 @@ label span.required
 .settings-item #workflow_allocation select {
 	width: 200px;
 }
+.settings-item #archived .kt_collection th.sort_on.sort_asc {
+	background: transparent!important;
+}
 .settings-section .kt_collection,
 .settings-section .kt_collection.narrow  {
 	width: 100%;
@@ -1403,7 +1411,8 @@ label span.required
 	clear: left;
 
 }
-.settings-section .flag {
+.settings-section .flag,
+.x-window .flag  {
 	border-radius: 3px;
 	-moz-border-radius: 3px;
 	-webkit-border-radius: 3px;
@@ -1468,8 +1477,8 @@ label span.required
 .empty-boilerplate {
 	display: block;
 	text-align: center;
-	min-height: 100px;
-	line-height: 100px;
+	min-height: 50px;
+	line-height: 50px;
 	width: auto;
 	-webkit-box-shadow: inset 0px 0px 5px #CCC;
 	-moz-box-shadow: inset 0px 0px 5px #CCC;
@@ -1623,6 +1632,7 @@ http://devgrow.com/iphone-style-switches/
 	margin: 0px 0px -5px 0px;
 }
 .settings-section #content .field,
+.workflow_transition .field,
 .settings-field {
 	border: 1px solid #CCC;
 	border-radius: 5px;
@@ -1637,6 +1647,12 @@ http://devgrow.com/iphone-style-switches/
 	font-size: 12px;
 	background: whitesmoke;
 }
+.workflow_transition {
+	margin-top: -10px;
+}
+.workflow_transition table {
+	border-spacing: 0px;
+}
 .settings-option {
 	float: right;
 }
@@ -1644,6 +1660,36 @@ http://devgrow.com/iphone-style-switches/
 	float: left;
 	font-size: 13px;
 }
+.settings-field label {
+	line-height: 20px;
+}
+.settings-field .stamp {
+	color: #f93333;
+	border-top: 2px solid #f93333;
+	border-bottom: 2px solid #f93333;
+	float: right;
+	font-family: "Courier New", Courier, monospace;
+	font-weight: bold;
+	line-height: 14px;
+	letter-spacing: 1px;
+	text-transform: uppercase;
+}
+.settings-field .stamp.end-workflow {
+	color: #007fff;
+	border-top: 2px solid #007fff;
+	border-bottom: 2px solid #007fff;
+}
+.workflow_transition .field select{
+	float: right;
+}
+.workflow_transition .field textarea{
+	display: inline-block;
+	border: 1px solid #ccc;
+	border-radius: 3px;
+	box-shadow: inset 0px 1px 1px #666;
+	padding: 2px;
+}
+
 .settings-section #content .field label {
 	float: left;
 	font-weight: normal;
@@ -1651,6 +1697,7 @@ http://devgrow.com/iphone-style-switches/
 }
 .settings-section #content .field input,
 .settings-section #content .field select,
+.settings-field select,
 .settings-section #content .field textarea {
 	position: relative;
 	float: right;
@@ -1783,8 +1830,8 @@ li.ui-state-disabled a {
 	background: url(/thirdpartyjs/extjs/resources/images/default/tree/folder-open.gif) 0px 0px;
 }
 .jstree-knowledgetree > ul {
+	height: 252px;
 	overflow: auto;
-	min-height: 250px;
 }
 #action-error.alert.warning {
 	background: #ffeded;

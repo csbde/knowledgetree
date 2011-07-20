@@ -5,12 +5,14 @@
 <script src="/resources/js/newui/buttons/formActions.js" type="text/javascript"></script>
 
 {if !$aFolderSubscriptions && !$aDocumentSubscriptions}
-	<div class=ktErrorMessage>
-		<span>{i18n}You have no subscriptions{/i18n}</span>
+	<div class="empty-boilerplate">
+		{i18n}You have no subscriptions{/i18n}
 	</div>
+<div class="action-footer">
 	<div class=form_actions id=modal>
 		<a href="#" class="form_cancel" onclick="vActions.closeDisplay('subscription'); return false;">Close</a>
 	</div>
+</div>
 {else}
 	<p class=descriptiveText>{i18n}You are subscribed to the folders and
 	documents listed below.  You can remove your subscription by selecting
@@ -35,7 +37,7 @@
 				</td>
 				<td>
 					{if $aFolderSubscription->bWithSubFolders > 0}
-						<span style="color:red;">(Folder And Subfolders)</span>
+						<span class="flag">Folder And Subfolders</span>
 					{else}
 						
 					{/if}
@@ -63,9 +65,10 @@
 		</table>
 	{/if}
 	</form>
-	
+<div class="action-footer">
 	<div class="form_actions" id="modal">
-		<input type="submit" name="submit" onclick="subscriptions.submitForm(); return false;" value="{i18n}Remove subscription{/i18n}" />
 		<a href="#" class="form_cancel" onclick="vActions.closeDisplay('subscription'); return false;">Close</a>
+		<input type="submit" name="submit" onclick="subscriptions.submitForm(); return false;" value="{i18n}Remove subscription{/i18n}" />
 	</div>
+</div>
 {/if}

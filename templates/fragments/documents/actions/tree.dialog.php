@@ -4,7 +4,7 @@
 
 <tr>
 	<td valign="top" class="modalField" style="height:auto;">
-		<div id="select-tree" class="select-tree" style="width: 500px; height: 250px; overflow: auto;"></div>
+		<div id="select-tree" class="select-tree" style="width: 500px; height: 250px;"></div>
 	</td>
 </tr>
 </table>
