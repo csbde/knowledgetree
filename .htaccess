@@ -90,9 +90,6 @@ RewriteBase /
 # Redirect if google SSO authentication 
 RewriteCond %{REQUEST_FILENAME} google.php
 RewriteRule ^(google\.)php$ /plugins/ktlive/google/login/KTSSOAuthentication.php [L]
-# Change login URL if SSO authentication 
-#RewriteCond %{REQUEST_FILENAME} ^login\.php\?auth=*$
-#RewriteRule ^login\.php\?auth=*$ login.php 
 # Tiny URLs
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
