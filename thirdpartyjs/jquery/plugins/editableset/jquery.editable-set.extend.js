@@ -198,7 +198,7 @@ jQuery.editableSet.addInputType('htmleditor', {
 		var val = '';
 		if (attrs['data-value-id'] != null)
 		{
-			val = jQuery('#'+attrs['data-value-id']).text();
+			val = jQuery('#'+attrs['data-value-id']).html();
 			//hide the 'value' span
 			jQuery('#'+attrs['data-value-id']).hide();
 		}

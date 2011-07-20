@@ -13,7 +13,7 @@
 {if ($can_inherit)}
     <div class="ktInfoMessage">
     <span>{i18n}This folder defines its own permissions.{/i18n}
-    <a class="ktActionLink ktDelete"
+    <a class="ktActionLink"
        kt:deleteMessage="{i18n}Are you sure you wish to reinstate inherited permissions?{/i18n}"
        href="{addQS context=$context}action=inheritPermissions{/addQS}">{i18n}Inherit permissions{/i18n}</a></span>
     </div>

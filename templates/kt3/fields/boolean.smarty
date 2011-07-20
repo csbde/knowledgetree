@@ -11,13 +11,13 @@
       {/if}
                 
                 {if $value == '1'}
-                   {assign var="onChecked" value='checked="checked"'}
+                   {assign var="onChecked" value="checked='checked'"}
                    {assign var="offChecked" value=""}
                    {assign var="onCssClass" value="selected"}
                    {assign var="offCssClass" value=""}
                 {else}
                    {assign var="onChecked" value=""}
-                   {assign var="offChecked" value='checked="checked"'}
+                   {assign var="offChecked" value="checked='checked'"}
                    {assign var="onCssClass" value=""}
                    {assign var="offCssClass" value="selected"}
                 {/if}
