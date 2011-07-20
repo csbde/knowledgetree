@@ -1402,6 +1402,11 @@ label span.required
 	float: right;
 	min-width: 270px;
 }
+
+.settings-section .simple-selection br{
+	clear: both;
+}
+
 .settings-section .simple-selection input[type="radio"] {
 	float: left !important;
 	margin: 4px;
