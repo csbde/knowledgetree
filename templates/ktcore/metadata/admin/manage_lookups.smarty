@@ -24,7 +24,7 @@ that are possible for a given lookup{/i18n}:</p>
 <table class="kt_collection narrow" cellspacing="0">
     <thead>
         <tr>
-            <th width="10px;">&nbsp;</th>
+            <th>&nbsp;</th>
             <th>{i18n}Lookup Value{/i18n}</th>
             <th class="centered">{i18n}Enabled{/i18n}</th>
             <th class="centered">{i18n}Sticky{/i18n}</th>

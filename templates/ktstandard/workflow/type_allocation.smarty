@@ -1,20 +1,9 @@
-<h2>{i18n}Workflow Allocation by Document Type{/i18n}</h2>
 
-<p class="descriptiveText">{i18n arg_appname="$appname"}Workflow types are allocated by Document Type in this
-#appname# installation.  Documents will be assigned a workflow based on their document
-type and will have their allocated workflows changed if their document type changes.  Naturally,
-if the workflow changes then the documents will lose any "progress" in the old
-workflow.{/i18n}</p>
-
-<p class="descriptiveText">{i18n}Document Types with no pre-allocated workflow will
-either have no workflow set (for new documents) or keep their old workflow (for documents which have had their type changed).{/i18n}</p>
+<p class="help" title="{i18n}<h2>Wokflow by Document Type</h2>Workflow types are allocated by Document Type when Automatic Workflow Assignments are set. Document Types with no pre-allocated workflow will either have no workflow set (for new documents) or keep their old workflow (for documents which have had their type changed). {/i18n}"></p>
 
 <form action="{$smarty.server.PHP_SELF}" method="POST">
-<fieldset>
-<legend>{i18n}Workflow Allocations{/i18n}</legend>
-<p class="descriptiveText">{i18n}Please select the appropriate workflows for each document type.{/i18n}</p>
-
-<table class="listing" cellspacing="0">
+<p class="descriptiveText">{i18n}Select the appropriate workflows for each document type.{/i18n}</p>
+<table class="kt_collection" cellspacing="0">
 <thead>
     <tr>
         <th>{i18n}Document Type{/i18n}</th>
@@ -23,7 +12,7 @@ either have no workflow set (for new documents) or keep their old workflow (for 
 </thead>
 <tbody>
 {foreach item=oType from=$types}
-    <tr>
+    <tr class="{cycle values=odd,even}">
         <td>{$oType->getName()}</td>
         <td>
           <select name="fDocumentTypeAssignment[{$oType->getId()}]">
@@ -37,9 +26,10 @@ either have no workflow set (for new documents) or keep their old workflow (for 
 {/foreach}
 </tbody>
 </table>
-<div class="form_actions">
-   <input type='submit' value="{i18n}Apply{/i18n}" />
-   <input type="hidden" name="action" value="update" />
+<div class="action-footer">
+	<div class="form_actions">
+   		<input type='submit' value="{i18n}Apply{/i18n}" />
+   		<input type="hidden" name="action" value="update" />
+	</div>
 </div>
-</fieldset>
 </form>

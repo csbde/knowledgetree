@@ -1,11 +1,7 @@
-
+<p class="help" title="<h2>Document Types</h2>KnowledgeTree groups documents by their 'Document Type' - e.g. Invoice, Report, Quotation, Order, etc. Each Document Type is associated with one or more Fieldsets"></p>
 <form method="POST" action="{$smarty.server.PHP_SELF}">
-
 <fieldset>
-<legend>{i18n}Create a new document type{/i18n}</legend>
-
-<p class="descriptiveText">{i18n}To start the process of creating a new document type,
-please enter a name for the type below.{/i18n}</p>
+<legend>{i18n}Create a new Document Type{/i18n}</legend>
 
 {foreach item=oWidget from=$add_fields}
   {$oWidget->render()}
@@ -13,15 +9,13 @@ please enter a name for the type below.{/i18n}</p>
 
 <div class="form_actions">
 <input type="hidden" name="action" value="new">
-<input type="submit" name="submit" value="{i18n}Create{/i18n}">
+<input type="submit" name="submit" value="{i18n}Create Document Type{/i18n}">
 </div>
 </fieldset>
 
 </form>
 
 <fieldset>
-<p class="descriptiveText">{i18n}Select a document type from the list below to change
-its details, or use the enable/disable buttons to change its availability state.{/i18n}</p>
 
 <table class="kt_collection narrow" cellspacing="0" cellpadding="5">
 
@@ -29,9 +23,9 @@ its details, or use the enable/disable buttons to change its availability state.
     <tr>
       <th>{i18n}Document Type{/i18n}</th>
       <th>{i18n}Associated Fieldsets{/i18n}</th>
-      <th>{i18n}Edit{/i18n}</th>
-      <th>{i18n}Disable/Enable{/i18n}</th>
-      <th>{i18n}Delete{/i18n}</th>
+      <th class="icon-column">{i18n}Edit{/i18n}</th>
+      <th class="icon-column">{i18n}Disable/Enable{/i18n}</th>
+      <th class="icon-column">{i18n}Delete{/i18n}</th>
     </tr>
   </thead>
   

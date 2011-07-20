@@ -41,12 +41,30 @@ require_once(KT_LIB_DIR . '/browse/browseutil.inc.php');
 require_once(KT_LIB_DIR . '/documentmanagement/Document.inc');
 require_once(KT_LIB_DIR . '/documentmanagement/DocumentTransaction.inc');
 
-$sWhere = 'status_id=' . DELETED;
-$aDocuments = Document::getList($sWhere);
+function getDocumentList($searchText) 
+{
+    if ($searchText == '*') {
+        $searchText = '';
+    }
+    
+    $documents = null;
+    if (!empty($searchText)) {
+        $documents = Document::getList('status_id=' . DELETED . ' AND full_path LIKE \'%' . DBUtil::escapeSimple($searchText) . '%\'');
+        
+    }
+    else {
+        $documents = Document::getList('status_id=' . DELETED);
+    }
+    
+    return $documents;
+}
+
+$searchText = urldecode(KTUtil::arrayGet($_REQUEST, 'search'));
+$documents = getDocumentList($searchText);
 
 $pageNum = $_REQUEST['page'];
 
-$items = count($aDocuments);
+$items = count($documents);
 if (fmod($items, 10) > 0) {
     $pages = floor($items/10)+1;
 } else {
@@ -62,7 +80,7 @@ if ($pageNum == 1) {
     $listEnd = 9;
 } else if ($pageNum == $pages) {
     $listStart = (10*($pageNum-1));
-    $listEnd = count($aDocuments)-1;
+    $listEnd = count($documents)-1;
 } else {
     $listStart = (10*($pageNum-1));
     $listEnd = $listStart+9;
@@ -77,15 +95,17 @@ $output = "<table class=\"kt_collection\">
                       <th>'._kt('Deletion Comment').'</th>
                 </tr>
                   </thead>
-                <tbody>';
+                <tbody id="output">';
 
+$trClass = 'even';
 for ($i = $listStart; $i <= $listEnd; $i++) {
+    $trClass = ($trClass == 'even') ? 'odd' : 'even';
     $output .= "
-                <tr>
-          <td><input type=\"checkbox\" name=\"selected_docs[]\" value=\"" . $aDocuments[$i]->getId() . "\"/></td>
-          <td>" . $aDocuments[$i]->getName() . "</td>
-          <td>" . $aDocuments[$i]->getDisplayLastModifiedDate() . "</td>
-          <td>" . $aDocuments[$i]->getLastDeletionComment() . "</td>
+                <tr class=\"{$trClass}\">
+          <td><input type=\"checkbox\" name=\"selected_docs[]\" value=\"" . $documents[$i]->getId() . "\"/></td>
+          <td>" . $documents[$i]->getName() . "</td>
+          <td>" . $documents[$i]->getDisplayLastModifiedDate() . "</td>
+          <td>" . $documents[$i]->getLastDeletionComment() . "</td>
         </tr>";
 
 }
@@ -98,13 +118,16 @@ $output .= '<tfoot>
       </tr>
       <tr>
           <td colspan="4">
-              <div align="center">';
+              <div class="paginationContainer" style="width: 100%; text-align: center;">
+                <ul class="paginate">';
 
 foreach($aPages as $page) {
-    $output .= '<a href="#" onclick="buildList(this.innerHTML)">' . $page.'</a>&nbsp;';
+    $liClass = ($page == $pageNum) ? 'item highlight' : 'item';
+    $output .= '<li class="' .$liClass. '" onclick="buildList(this.innerHTML, \'' . $searchText . '\')">' . $page.'</a></li>';
 }
 
-$output .= '</div>
+$output .= '</ul>
+            </div>
         </td>
       </tr>
   </tfoot>

@@ -1,23 +1,17 @@
 
-<p class="descriptiveText">{i18n arg_appname="$appname"}#appname# allows administrators the ability to create <strong>Units</strong> that model the organisation's business units. Units may have their own administrators and groups may be assigned to these units.{/i18n}</p>
+<p class="help" title="{i18n arg_appname="$appname"}<h2>Control Units</h2>#appname# allows administrators the ability to create <strong>Units</strong> that model the organisation's business units. Units may have their own administrators and groups may be assigned to these units. <br><br>Units allow you to delegate the administration of a portion of the DMS repository to a particular part of your organisation. {/i18n}"</p>
 
-<p class="descriptiveText">{i18n}Units allow you to delegate the administration of a portion
-of the DMS repository to a particular part of your
-organisation.  Unit administrators have additional rights within that
-portion of the document management system, and they can also adjust the
-membership of groups that belong to the unit.{/i18n}</p>
-
-<div class="form_actions" style="margin: 5px 0px;">
-	<a href="{addQS}action=addUnit{/addQS}">{i18n}Add a new unit{/i18n}</a>
+<div class="form_actions standalone" style="margin: 5px 0px;">
+	<a href="{addQS}action=addUnit{/addQS}">{i18n}Add Unit{/i18n}</a>
 </div>
-
+{if $unit_list}
 <table class="kt_collection">
 <thead>
    <tr>
       <th>{i18n}Unit Name{/i18n}</th>
       <th>{i18n}Folder{/i18n}</th>
-      <th width="10px">{i18n}Edit{/i18n}</th>
-      <th width="10px">{i18n}Delete{/i18n}</th>
+      <th class="icon-column">{i18n}Edit{/i18n}</th>
+      <th class="icon-column">{i18n}Delete{/i18n}</th>
    </tr>
 </thead>
 <tbody>
@@ -31,6 +25,12 @@ value=$oUnit->getFolder()}{$oFolder->getName()}</a></span></td>
         <td><a href="{addQS}action=deleteUnit&unit_id={$oUnit->getId()}{/addQS}" class="ktAction ktDelete">{i18n}Delete{/i18n}</a></td>
 
      </tr>
-     {/foreach}
+    {/foreach}
 </tbody>
 </table>
+{else}
+	 <p class="empty-boilerplate">{i18n}No control units have been configured{/i18n}</p>
+{/if}
+
+
+
