@@ -3,25 +3,25 @@
 <p class="descriptiveText">{i18n}This page provides details of all activities that have been carried out on the document.{/i18n}</p>
 
 
-    <table class="document_history" summary="{i18n arg_appname="$appname"}Document History for #appname# New UI Presentation{/i18n}" cellspacing="0" width="100%">
+    <table class="kt_collection" summary="{i18n arg_appname="$appname"}Document History for #appname# New UI Presentation{/i18n}" cellspacing="0" width="100%">
 
         <thead>
             <tr>
                 <th class="username">{i18n}User{/i18n}</th>
                 <th class="action">{i18n}Action{/i18n}</th>
-                <th class="date">{i18n}Date{/i18n}</th>
-                <th class="contentversion">{i18n}Content version{/i18n}</th>
+                <th class="date icon-column">{i18n}Date{/i18n}</th>
+                <th class="contentversion icon-column">{i18n}Content version{/i18n}</th>
                 <th class="comment">{i18n}Comment{/i18n}</th>
             </tr>
         </thead>
         <tbody>
           {foreach item=aTransactionRow from=$transactions}
-            <tr class="{cycle values=even,odd}">
+            <tr class="{cycle values=odd,even}">
                 <td class="username">{$aTransactionRow.user_name}</td>
                 <td class="action">{i18n}{$aTransactionRow.transaction_name}{/i18n}</td>
-                <td class="date">{$aTransactionRow.datetime}</td>
-                <td class="contentversion">{$aTransactionRow.version}</td>
-                <td class="comment" style="width:20%;">{$aTransactionRow.comment|sanitize}</td>
+                <td class="date icon-column">{$aTransactionRow.datetime}</td>
+                <td class="contentversion icon-column">{$aTransactionRow.version}</td>
+                <td class="comment" style="width:40%;">{$aTransactionRow.comment|sanitize}</td>
             </tr>
             {/foreach}
         </tbody>

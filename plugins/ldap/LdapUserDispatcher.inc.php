@@ -135,8 +135,7 @@ class LdapUserDispatcher extends KTAdminDispatcher {
 
         $fields[] = new KTStringWidget(_kt("User's name"), _kt("The user's name, or part thereof, to find the user that you wish to add"), 'ldap_name', '', $this->oPage, true);
         $fields[] = new KTCheckboxWidget(_kt('Mass import'),
-        _kt('Allow for multiple users to be selected to be added (will not get to manually verify the details if selected)').'.<br>'.
-        _kt('The list may be long and take some time to load if the search is not filtered and there are a number of users in the system.')
+        _kt('Allow for multiple users to be selected to be added (will not get to manually verify the details if selected). The list may be long and take some time to load if the search is not filtered and there are a number of users in the system.')
         , 'massimport', $isMassImport, $this->oPage, true);
 
         $templating = KTTemplating::getSingleton();

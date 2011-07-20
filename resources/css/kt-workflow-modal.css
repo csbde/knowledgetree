@@ -2,8 +2,7 @@
 #workflows form div.field label { font-weight:bold;}
 #workflows .workflow_info { bottom: 0px; position: relative; }
 #workflows .workflow_details {  }
-#workflows .workflow_details table, .widgetItem table { width: 370px; }
-#workflows .workflow_transition { float: left; }
+#workflows .workflow_details table, .widgetItem table { width: 379px; }
 
 #workflows .modalheader {
     color: #2F6594 !important;
@@ -26,7 +25,6 @@ td.alignright div.form_actions, td.alignright div.form_cancel {
 }
 
 div.form_cancel {
-    
     line-height: 29px;
     font-size: 11px;
     margin-left: 15px;

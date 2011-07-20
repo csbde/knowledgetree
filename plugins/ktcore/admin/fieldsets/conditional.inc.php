@@ -317,7 +317,7 @@ ordering!");
                 'value' => $this->oFieldset->getMasterFieldId(),
                 'vocab' => $this->oFieldset->getFields(),
                 'label_method' => 'getName',
-                'use_simple' => false,
+                'simple_select' => false,
                 'required' => true,
             )),
         ));
@@ -401,7 +401,7 @@ ordering!");
         $this->commitTransaction();
         
         $this->addInfoMessage(_kt("Fields ordered."));
-        redirect($this->sParentUrl);
+        redirect($this->sParentUrl.'&fieldset_action=manageordering');
         exit(0);
     }
     // }}}
@@ -432,7 +432,7 @@ ordering!");
         $res = $this->oFieldset->update();
 
         $this->commitTransaction();
-        redirect($this->sParentUrl);
+        redirect($this->sParentUrl.'&fieldset_action=manageordering');
         exit(0);
     }
     // }}}

@@ -1,19 +1,4 @@
-{capture assign=sCSS}
-{literal}
-.twocolumn {
-    width: 60%;
-    margin-right: 1em;
-    float: left;
-    min-width: 28em;
-}
 
-.second {
-    width: 30%;
-    margin-right: 0;
-}
-
-{/literal}
-{/capture}
 {$context->oPage->requireCSSStandalone($sCSS)}
 
 <h2>{i18n arg_field_name=$field_name}Manage Field: #field_name#{/i18n}</h2>
@@ -22,15 +7,15 @@
 aspects of this particular field.{/i18n}</p>
 
 {if ($field->getHasLookup())}
-<div class="twocolumn">
+<div class="">
 {/if}
 {if ($field->getDataType() == "LARGE TEXT")}
-<div class="twocolumn">
+<div class="">
 {/if}
 {$form->render()}
 {if ($field->getHasLookup())}
 </div>
-<div class="twocolumn second">
+<div style="clear:both;">
 <fieldset>
 <legend>{i18n}Extra Options{/i18n}</legend>
 
@@ -60,7 +45,7 @@ available.{/i18n}</p>
 <p class="descriptiveText">{i18n}Different fields have different actions and options
 available.{/i18n}</p>
 
-<form method="POST" action="settings.php?kt_path_info=contentSetup/fieldmanagement2&fieldset_action=updatelargetextoptions&fFieldId={$field_id}&fFieldsetId={$field->getParentFieldsetId()}&action=edit">
+<form method="POST" action="{addQS context=$context}fieldset_action=updatelargetextoptions&fFieldId={$field_id}&fFieldsetId={$field->getParentFieldsetId()}&action=edit{/addQS}">
 
 <div class="field">
 <label for="largefield[size]">Max Length</label>

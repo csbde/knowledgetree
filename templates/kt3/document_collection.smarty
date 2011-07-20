@@ -8,7 +8,7 @@
                 {if $oColumn->getSortedOn() }
                   <th class="sort_on sort_{$oColumn->getSortDirection()}">
                 {else}
-                  <th>
+                  <th class="sort-header">
                 {/if}
                 
                 {$oColumn->renderHeader($context->returnURL)}</th>

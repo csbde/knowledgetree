@@ -53,7 +53,7 @@ class KTFolderWorkflowAssociationPlugin extends KTPlugin {
     }
 
     function setup() {
-        $this->registerTrigger('workflow', 'objectModification', 'FolderWorkflowAssociator',
+        $this->registerTrigger('workflow', 'objectModification', 'Folder Workflow Associator',
             'ktstandard.triggers.workflowassociation.folder.handler');
         }
 

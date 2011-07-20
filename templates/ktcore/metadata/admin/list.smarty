@@ -1,14 +1,9 @@
+<p class="help" title="{i18n}<h2>Document Fieldsets</h2>Collections of fields are associated into fieldsets.  These represent a set of related information which can be associated with a document and thus comprise part of the document's metadata.{/i18n}"></p>
 
-<p class="descriptiveText">{i18n}Collections of fields are associated into fieldsets.  These represent a set of related information which can be associated with a document and thus comprise part of the document's metadata.{/i18n}</p>
-<br/>
-
-<div class="form_actions">
-	<a href="{addQS context=$context}action=newfieldset{/addQS}">{i18n}Create New Fieldset{/i18n}</a>
+<div class="form_actions standalone">
+	<a href="{addQS context=$context}action=newfieldset{/addQS}">{i18n}Create Fieldset{/i18n}</a>
 </div>
-<br/>
-<br/>
 { if $fieldsets}
-
 <table class="kt_collection narrow" cellpadding="1.5em" cellspacing="0">
   <thead>
     <tr>
@@ -16,8 +11,8 @@
       <!--<th class="centered">{i18n}System{/i18n}</th>-->
       <th>{i18n}Fields{/i18n}</th>
       <th>{i18n}Document Types{/i18n}</th>
-      <th>{i18n}Edit{/i18n}</th>
-      <th>{i18n}Delete{/i18n}</th>
+      <th class="icon-column">{i18n}Edit{/i18n}</th>
+      <th class="icon-column">{i18n}Delete{/i18n}</th>
     </tr>
   </thead>
   <tbody>
