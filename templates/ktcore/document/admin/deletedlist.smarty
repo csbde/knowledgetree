@@ -5,7 +5,7 @@
 <p class="help" title="{i18n}<h2>Deleted Documents</h2>Documents which are deleted by users are hidden from view
 but still available for restoration.  Since 'soft deletes' consume system resources, it is possible to <strong>expunge</strong> these documents.  Alternatively, you can <strong>restore</strong> them as necessary.{/i18n}"></p>
 
-<br style="clear:both; line-height:70px;">
+<br style="clear:both;">
 {if (!empty($documents))}
 
 <div class="search-filter" style="padding-bottom: 4px;">
