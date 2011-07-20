@@ -551,6 +551,7 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
                 'vocab' => KTWorkflowState::getByWorkflow($this->oWorkflow),
                 'value' => $this->oWorkflow->getStartStateId(),
                 'required' => true,
+                'simple_select' => false,
             )),
             array('ktcore.widgets.boolean', array(
                 'label' => _kt('Enabled'),
