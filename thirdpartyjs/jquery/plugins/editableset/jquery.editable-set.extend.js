@@ -231,6 +231,7 @@ jQuery.editableSet.addInputType('htmleditor', {
 			enableColors: false,
 			enableAlignments: false,
 			enableSourceEdit: false,
+			enableFontSize: false,
 			value:	val,
 			listeners: {
 				'activate': function(editor){

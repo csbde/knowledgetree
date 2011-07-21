@@ -1034,9 +1034,16 @@ table.kt_collection {
 	text-align: center;
 	width: 50px;
 }
-#content .kt_collection.document-summary thead th{
+#content .kt_collection.document-summary thead th,
+.kt_collection.scrollable th,
+.kt_collection.scrollable td{
 	word-break: normal;
 	word-break: normal;
+}
+.kt_collection.scrollable {
+	width: 100%;
+	overflow: auto;
+	display: block;
 }
 div#activationNotice {
 	background: url('../graphics/newui/notice_v2.png') no-repeat top right;
@@ -1410,6 +1417,11 @@ label span.required
 	float: right;
 	min-width: 270px;
 }
+
+.settings-section .simple-selection br{
+	clear: both;
+}
+
 .settings-section .simple-selection input[type="radio"] {
 	float: left !important;
 	margin: 4px;
@@ -1564,6 +1576,17 @@ http://devgrow.com/iphone-style-switches/
 }
 .switch label { cursor: pointer; }
 .switch input { display: none; }
+
+
+/* This CSS is needed for a fake view in IE8 - Tohir */
+.switch input {
+	border: none !important;
+	padding: 0 !important;
+	margin: 0 !important;
+	height: 0px !important;
+	width: 0px !important;
+	overflow: hidden;
+}
 
 
 #reason-field {
@@ -1838,8 +1861,10 @@ li.ui-state-disabled a {
 	background: url(/thirdpartyjs/extjs/resources/images/default/tree/folder-open.gif) 0px 0px;
 }
 .jstree-knowledgetree > ul {
-	height: 252px;
-	overflow: auto;
+	display: inline-block !important;
+	background: transparent url("/thirdpartyjs/jquery/plugins/jstree/themes/knowledgetree/bg.jpg") left top repeat!important;
+	min-height: 235px;
+	min-width: 500px;
 }
 #action-error.alert.warning {
 	background: #ffeded;
