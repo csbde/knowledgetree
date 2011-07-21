@@ -375,7 +375,7 @@ class KTFolderUtil {
                         continue;
                     }
                 }
-                if ($bIgnorePermissions || (KTPermissionUtil::userHasPermissionOnItem($oUser, $oPerm, $oDoc) && ($oDoc->getIsCheckedOut() == false)) ) {
+                if ($bIgnorePermissions || (KTPermissionUtil::userHasPermissionOnItem($oUser, $oPerm, $oDoc) && KTDocumentUtil::canBeDeleted($oDoc)) ) {
                     $aDocuments[] = $oDoc;
                 } else {
                     $aFailedDocuments[] = $oDoc->getName();

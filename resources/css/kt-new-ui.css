@@ -1584,6 +1584,17 @@ http://devgrow.com/iphone-style-switches/
 .switch input { display: none; }
 
 
+/* This CSS is needed for a fake view in IE8 - Tohir */
+.switch input {
+	border: none !important;
+	padding: 0 !important;
+	margin: 0 !important;
+	height: 0px !important;
+	width: 0px !important;
+	overflow: hidden;
+}
+
+
 #reason-field {
 	width: 97% !important;
 }

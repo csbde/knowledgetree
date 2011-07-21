@@ -19,6 +19,8 @@
 
 <form action="{$toggleurl}" id="adminModeForm">
 <label>Administrator Mode</label>
+
+<br clear="both" />
     <span class="field switch">
         <input type="radio" id="radio1" name="action" value="enableAdminMode" {$enabledChecked} />
         <input type="radio" id="radio2" name="action" value="disableAdminMode" {$disabledChecked} />

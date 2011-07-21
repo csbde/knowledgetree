@@ -1544,7 +1544,7 @@ class KTDocumentUtil {
      *                 string $reason
      *                 boolean $bulkAction
      */
-    public static function move($document, $destFolder, $user = null, $reason = null, $bulkAction = false)
+    public static function move($document, $destFolder, $user = null, $reason = null, $bulkAction = false, $options = array())
     {
         $storageManager = KTStorageManagerUtil::getSingleton();
         //make sure we move the symlink, and the document it's linking to
@@ -1569,14 +1569,18 @@ class KTDocumentUtil {
         
         $fileRenamed = false;
         $filename = $document->getFileName();
-        $newfilename = KTDocumentUtil::getUniqueFilename($destFolder, $filename);
+        $newfilename = (isset($options['filename']) && !empty($options['filename'])) ? $options['filename'] : $filename;
+        
+        $newfilename = KTDocumentUtil::getUniqueFilename($destFolder, $newfilename);
         if (strcmp($filename, $newfilename) != 0) {
         	$document->setFileName($newfilename);
         	$fileRenamed = true;
         }
         
         $name = $document->getName();
-        $newname = KTDocumentUtil::getUniqueDocumentName($destFolder, $name);
+        $newname = (isset($options['name']) && !empty($options['name'])) ? $options['name'] : $name;
+        
+        $newname = KTDocumentUtil::getUniqueDocumentName($destFolder, $newname);
         if (strcmp($name, $newname) != 0) {
         	$document->setName($newname);
         	$fileRenamed = true;
