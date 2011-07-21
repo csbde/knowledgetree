@@ -48,7 +48,7 @@ class KTNewFeatureNotificationPlugin extends KTPlugin {
 	public function __construct($sFilename = null)
 	{
 		$res = parent::KTPlugin($sFilename);
-		$this->sFriendlyName = _kt('Open Id');
+		$this->sFriendlyName = _kt('New Features Notfications');
 
 		return $res;
 	}
