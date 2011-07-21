@@ -310,14 +310,6 @@ class KTCorePlugin extends KTPlugin {
             _kt('Control Units'), _kt('Specify which organisational units are available within the repository.'),
             'admin/unitManagement.php', null);
 
-        // security
-        //$this->registerAdminPage('permissions', 'ManagePermissionsDispatcher', 'advancedPermissions',
-        //    _kt('Permissions'), _kt('Create or delete permissions.'), 'admin/managePermissions.php', null, 7);
-        //$this->registerAdminPage('conditions', 'KTConditionDispatcher', 'advancedPermissions',
-          //  _kt('Dynamic Conditions'),
-            //_kt('Manage criteria which determine whether a user is permitted to perform a system action.'),
-            //'admin/conditions.php', null);
-
         // documents
         $this->registerAdminPage('typemanagement', 'KTDocumentTypeDispatcher', 'documentProperties',
             _kt('Document Types'),
@@ -341,6 +333,15 @@ class KTCorePlugin extends KTPlugin {
 
         //Search and Indexing
         if ($restrictedEnv !== true) {
+                // security
+                $this->registerAdminPage('permissions', 'ManagePermissionsDispatcher', 'advancedPermissions',
+                    _kt('Permissions'), _kt('Create or delete permissions.'), 'admin/managePermissions.php', null, 7);
+
+                $this->registerAdminPage('conditions', 'KTConditionDispatcher', 'advancedPermissions',
+                    _kt('Dynamic Conditions'),
+                    _kt('Manage criteria which determine whether a user is permitted to perform a system action.'),
+                    'admin/conditions.php', null);
+
                 $this->registerAdminPage('managemimetypes', 'ManageMimeTypesDispatcher', 'contentIndexing',
                 _kt('Mime Types'), sprintf(_kt('This report lists all mime types and extensions that can be identified by %s.'), APP_NAME),
                 '../search2/reporting/ManageMimeTypes.php', null);
