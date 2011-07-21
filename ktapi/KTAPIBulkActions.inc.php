@@ -432,11 +432,16 @@ class KTAPI_BulkActions
 
             $docOrFolder = ($item instanceof KTAPI_Document) ? 'docs' : 'folders';
 
-            $res = $item->delete($reason);
-
-            if(PEAR::isError($res)){
-                $failed[$docOrFolder][] = array('object' => $item, 'reason' => $res->getMessage());
-                continue;
+            $error = '';
+            if ($docOrFolder == 'folders' || KTDocumentUtil::canBeDeleted($item->getObject(), $error)) {
+                $res = $item->delete($reason);
+    
+                if(PEAR::isError($res)){
+                    $failed[$docOrFolder][] = array('object' => $item, 'reason' => $res->getMessage());
+                    continue;
+                }
+            } else {
+                $failed[$docOrFolder][] = array('object' => $item, 'reason' => $error->getMessage());
             }
         }
 
