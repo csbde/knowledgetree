@@ -54,10 +54,9 @@ class KTNewFeatureNotificationPlugin extends KTPlugin {
 	}
 
 	public function setup() {
-		$templating = KTTemplating::getSingleton();
 		$dir = dirname(__FILE__) . DIRECTORY_SEPARATOR;
 		$dir = str_replace(KT_DIR, '', $dir);
-		$templating->addLocation('newfeature', "$dir/templates", 'new.feature.notification.plugin');
+
 	}
 }
 

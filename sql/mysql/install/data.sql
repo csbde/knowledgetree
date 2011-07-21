@@ -1118,6 +1118,20 @@ LOCK TABLES `news` WRITE;
 UNLOCK TABLES;
 
 --
+-- Dumping data for table `new_features_areas`
+--
+
+LOCK TABLES `new_features_areas` WRITE;
+/*!40000 ALTER TABLE `new_features_areas` DISABLE KEYS */;
+INSERT INTO `new_features_areas` (`id`, `name`) VALUES
+(1, 'dashboard'),
+(2, 'settings'),
+(3, 'browse'),
+(4, 'view_details');
+/*!40000 ALTER TABLE `new_features_areas` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Dumping data for table `notifications`
 --
 

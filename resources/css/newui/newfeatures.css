@@ -1,0 +1,61 @@
+div.helperTextOverlay {
+   position: absolute;
+   z-index: 2000;
+   background: red;
+   width: 150px;
+
+   padding:15px;
+   padding-right: 25px;
+   margin:1em 0 3em;
+   color:#FFF;
+   font-weight: bold;
+
+   /* css3 */
+   -moz-border-radius:10px;
+   -webkit-border-radius:10px;
+   border-radius:10px;
+}
+
+/* creates triangle */
+div.helperTextOverlay:after {
+   content:"";
+   display:block; /* reduce the damage in FF3.0 */
+   position:absolute;
+   width:0;
+
+   top:-15px; /* value = - border-top-width - border-bottom-width */
+   left: 25px; /* controls horizontal position */
+   bottom:auto;
+
+   border-style: solid;
+   border-width: 0 15px 15px; /* vary these values to change the angle of the vertex */
+   border-color: red transparent;
+}
+
+div.helperTextOverlay a {
+   position: absolute;
+   top: 10px;
+   right: 10px;
+   background: #FFF;
+   color: #000;
+   padding: 2px 4px;
+   text-decoration: none;
+   font-size: 10px;
+}
+
+div.helperTextOverlay a:hover {
+   background: yellow;
+   color: red;
+}
+
+
+div#helpText1 {
+   top: 25px;
+   left: 580px;
+   width: 200px; /* Optional */
+}
+
+div#helpText2 {
+   left: -20px;
+   top: 80px;
+}
