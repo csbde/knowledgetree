@@ -3,6 +3,14 @@
 <script src="/resources/js/newui/documents/blocks/workflowsBlock.js" type="text/javascript"></script>
 <script src="/resources/js/newui/buttons/formActions.js" type="text/javascript"></script>
 
+{if $bIsCheckedOut}
+	<div class=widgetRow>
+    	<div class="ktError">
+        	<span>{i18n}The workflow cannot be changed while the document is checked out.{/i18n}</span>
+   		 </div>
+	</div>
+{/if}
+
 {if !$oWorkflow}
     <p class="empty-boilerplate">{i18n}Document is not currently assigned to a workflow.{/i18n}</p>
 {else}
@@ -81,7 +89,7 @@
 									</td>
 								</tr>
 							</table>
-							<div class="action-footer" style="margin-bottom: -25px;">
+							<div class="action-footer" style="margin-bottom: -10px;">
 								<div class="form_actions" id="modal">
 									<a href="#" onclick="vActions.closeDisplay('workflow'); return false;" class=form_cancel style="background: none repeat scroll 0% 0% transparent;">Cancel</a>
 								    <input type="{$submit.type}" onclick="javascript: {ldelim}workflowBlock.submitForm('transition'){rdelim}; return false;" name=form_submit value="{i18n}Perform Transition{/i18n}" />
@@ -100,10 +108,10 @@
 					<input type="hidden" name="action" value="startWorkflow" />
 					<input type="hidden" name="fDocumentId" value="{$oDocument->getId()}" />
 					<input type="hidden" name="fWorkflowId" value="{$oWorkflow->getId()}" />
-					<div class="action-footer"  style="margin-bottom: -25px;">
+					<div class="action-footer"  style="margin-bottom: -10px;">
 						<div class="form_actions" id="modal">
 							<a href="#" onclick="vActions.closeDisplay('workflow'); return false;" class="form_cancel" style="background: none repeat scroll 0% 0% transparent; margin-right: 10px;">Cancel</a>
-							<input type="{$submit.type}" onclick="javascript: {ldelim}workflowBlock.submitForm('transition'){rdelim}; return false;" name=form_submit value="{i18n}Restart Workflow{/i18n}" />
+							<input type="{$submit.type}" onclick="javascript: {ldelim}workflowBlock.submitForm('transition'){rdelim}; return false;" name=form_submit {if $bIsCheckedOut}disabled="disabled"{/if} value="{i18n}Restart Workflow{/i18n}" />
 						</div>
 					</div>
 				</form>
@@ -120,11 +128,7 @@
 
 
 {if $bIsCheckedOut}
-<div class=widgetRow>
-    <div class=ktInfoMessage>
-        <span>{i18n}The workflow cannot be changed while the document is checked out.{/i18n}</span>
-    </div>
-</div>
+
 {else}
     {if !$oWorkflow}
       {assign var=none value=""}

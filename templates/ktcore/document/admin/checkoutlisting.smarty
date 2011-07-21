@@ -20,12 +20,12 @@ override the checked-out status.{/i18n}"></p>
 
       {foreach item=oDocument from=$documents}
         <tr class="{cycle values=even,odd}">
-            <td>{$oDocument->getName()}</td>
+            <td><p style="max-width: 200px;">{$oDocument->getName()}</p></td>
             <td>{assign var=iUserId
 value=$oDocument->getCheckedOutUserId()}{php}$oUser =
 User::get($this->_tpl_vars['iUserId']);  if (!PEAR::isError($oUser)) { print
 $oUser->getName(); } else { print _kt("N/A"); }{/php}</td>
-            <td class="descriptiveText">{$oDocument->getDisplayPath()}</td>
+            <td class="descriptiveText"><p style="max-width: 200px;">{$oDocument->getDisplayPath()}</p></td>
             <td class="icon-column"><a href="{addQS}action=confirm&fDocumentId={$oDocument->getId()}{/addQS}">{i18n}force check-in{/i18n}</a></td>
         </tr>
       {/foreach}
