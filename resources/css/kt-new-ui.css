@@ -1250,6 +1250,20 @@ label span.required
 	border-top-right-radius: 3px;
 	border-bottom-right-radius: 3px;
 }
+#content .modalField.date input{
+	box-shadow: none!important;
+	-moz-box-shadow: none!important;
+	-webkit-box-shadow: none !important;
+	border: 0px !important;
+}
+.modalField.date .x-form-field-wrap .x-form-date-trigger,
+.modalField.date .x-form-field-wrap .x-form-date-trigger .x-form-trigger-over,
+.modalField.date .x-form-field-wrap .x-form-date-trigger .x-form-trigger-click {
+	background: url(../graphics/newui/icons/calendar.png) no-repeat center center;
+	border: 0px;
+	display: inline-block;
+	padding-right: 5px;
+}
 
 .modal-actions {
 	float: right;
@@ -1527,7 +1541,7 @@ a.subscribe_actions {
 #checkins #checkinfilename {
 	padding: 5px;
 	margin-top: 5px;
-	width: 355px;
+	width: 365px;
 }
 /*
 IPhone Style Switches
@@ -1714,7 +1728,18 @@ http://devgrow.com/iphone-style-switches/
 	position: relative;
 	float: right;
 	font-size: 12px;
-
+}
+ #content .field .date-field {
+	clear: right;
+	float: right;
+	margin: 5px 0px;
+}
+#content .field .date-field input {
+	float: none;
+}
+#content .field .date-field input[type='radio'] {
+	top: 2px;
+	margin: 2px;
 }
 .settings-section #content .field input,
 .settings-section #content .settings-field input,
