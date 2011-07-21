@@ -1740,12 +1740,16 @@ http://devgrow.com/iphone-style-switches/
 	float: right;
 	font-size: 12px;
 }
+.settings-section #content .field .date-field {
+	width: 400px;
+}
  #content .field .date-field {
 	clear: right;
 	float: right;
 	margin: 5px 0px;
 }
-#content .field .date-field input {
+#content .field .date-field input,
+#content .field .date-field select {
 	float: none;
 }
 #content .field .date-field input[type='radio'] {
