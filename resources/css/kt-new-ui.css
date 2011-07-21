@@ -751,6 +751,24 @@ div.form_actions {
 	text-align: left;
 	display: block;
 }
+.form_actions.dropdown {
+	background: #EEE;
+	border: 1px solid #CCC;
+	border-radius: 3px;
+	-webkit-border-radius: 3px;
+	-moz-border-radius: 3px;
+	height: 23px;
+	margin-top: 2px;
+	padding: 0px;
+}
+#content .form_actions.dropdown select {
+	background: transparent!important;
+	top: -2px !important;
+	position: relative;
+}
+#content .form_actions.dropdown input {
+	margin: -1px !important;
+}
 .x-window .form_actions input, .x-window .form_actions a, 
 #content .form_actions input, #content .form_actions a { 
 	background: -webkit-gradient(linear, left top, left bottom, from(#fff), to(#e8e8e8)) !important;
