@@ -20,11 +20,29 @@
  *
  */
 
+require_once(KT_LIB_DIR . '/security/permissions/Permission.inc');
+
 class KTNewFeatures {
+
+	protected $area_table = 'new_features_area';
+	protected $messages_table = 'new_features_messages';
+	protected $users_table = 'new_features_users';
 
 	static public function getUsersNewFeatures()
 	{
 		$user_id = $_SESSION['userID'];
-		$query = "select ";
+		$section = $_SESSION['sSection'];
+		$isAdmin = Permission::userIsSystemAdministrator($user_id);
+		//$query = 'SELECT m.id, m.message, m.div, m.area, m.type, m.enabled FROM ' . self::messages_table . ' WHERE ';
+		$query = 'SELECT * FROM ' . self::area_table . 'as a, ' . self::messages_table . ' as m WHERE a.name = \'' .$section . '\' AND a.id = m.area_id';
+		if($isAdmin)
+		{
+
+		}
+		else {
+
+		}
+		$results = DBUtil::getResultArray($query);
+
 	}
 }

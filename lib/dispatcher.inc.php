@@ -70,6 +70,7 @@ class KTDispatcher {
     {
         $this->oValidator = new KTDispatcherValidation($this);
         $this->oRedirector = new KTDispatchStandardRedirector($this);
+        $_SESSION['sSection'] = ($this->sSection) ? $this->sSection : $_SESSION['sSection'];
     }
 
     public function redispatch($eventVar, $actionPrefix = null, $origDispatcher = null, $parentUrl = null)
