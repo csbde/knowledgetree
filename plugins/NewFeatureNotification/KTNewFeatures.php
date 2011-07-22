@@ -20,29 +20,121 @@
  *
  */
 
-require_once(KT_LIB_DIR . '/security/permissions/Permission.inc');
+require_once(KT_LIB_DIR . '/security/Permission.inc');
+require_once(KT_LIB_DIR . '/database/dbutil.inc');
 
 class KTNewFeatures {
 
-	protected $area_table = 'new_features_area';
+	private $messageIds = array();
+	protected $area_table = 'new_features_areas';
 	protected $messages_table = 'new_features_messages';
 	protected $users_table = 'new_features_users';
 
-	static public function getUsersNewFeatures()
+	public function getUsersNewFeatures()
 	{
-		$user_id = $_SESSION['userID'];
+		$userID = $_SESSION['userID'];
 		$section = $_SESSION['sSection'];
-		$isAdmin = Permission::userIsSystemAdministrator($user_id);
-		//$query = 'SELECT m.id, m.message, m.div, m.area, m.type, m.enabled FROM ' . self::messages_table . ' WHERE ';
-		$query = 'SELECT * FROM ' . self::area_table . 'as a, ' . self::messages_table . ' as m WHERE a.name = \'' .$section . '\' AND a.id = m.area_id';
+		$isAdmin = Permission::userIsSystemAdministrator($userID);
+		$features = $this->getFeatures($userID, $section, $isAdmin);
+		$seenFeatures = $this->seenFeatures($features);
+		$unseenFeatures = $this->unSeenFeatures($features, $seenFeatures);
+		$this->saveSeenFeatures($unseenFeatures);
+
+		return $unseenFeatures;
+	}
+
+	private function getFeatures($userID, $section, $isAdmin)
+	{
+		$query = 'SELECT a.id as aid, a.name as aname, m.id as mid, m.message as mmessage, m.div as mdiv, m.area_id as marea_id, m.type as mtype, m.status as mstatus FROM ' . $this->area_table . ' as a, ' . $this->messages_table . ' as m WHERE a.name = \'' .$section . '\' AND a.id = m.area_id';
 		if($isAdmin)
 		{
-
+			$query .= ' AND (m.type=\'admin\' OR m.type = \'all\')';
 		}
 		else {
-
+			$query .= ' AND (m.type=\'normal\' OR m.type = \'all\')';
 		}
+
+		return DBUtil::getResultArray($query);
+	}
+
+	private function seenFeatures($features)
+	{
+		if (empty($features)) {
+			return array();
+		}
+		$userID = $_SESSION['userID'];
+		$query = 'SELECT * FROM ' . $this->users_table . ' WHERE user_id = \'' . $userID .'\' AND message_id ';
+		$i = 1;
+		$numResults = count($features);
+		$in = 'IN (';
+		foreach ($features as $feature) {
+			if($i == $numResults) {
+				$in .= $feature['mid'];
+			}
+			else {
+				$in .= $feature['mid'] . ',';
+			}
+			array_push($this->messageIds, $feature['mid']);
+			$i++;
+		}
+		$in .= ')';
+		$query .= $in;
 		$results = DBUtil::getResultArray($query);
 
+		return $results;
+	}
+
+	private function unSeenFeatures($features, $seenFeatures)
+	{
+		$unSeenFeatures = array();
+		if(empty($seenFeatures)) {
+			return $features;
+		}
+		else {
+			foreach ($seenFeatures as $seenFeature) {
+				if(!in_array($seenFeature['message_id'], $this->messageIds)) {
+					$unSeenFeatures[] = $seenFeature;
+				}
+			}
+
+			return $unSeenFeatures;
+		}
+	}
+
+	private function saveSeenFeatures($seenFeatures)
+	{
+		if (empty($seenFeatures)) {
+			return true;
+		}
+		$results = array();
+		$addEntry = false;
+		$userID = $_SESSION['userID'];
+		$i = 1;
+		$numResults = count($seenFeatures);
+		$query = 'INSERT into ' . $this->users_table . ' (`user_id`, `message_id`) VALUES ';
+		foreach ($seenFeatures as $seenFeature) {
+			if(!$this->seenEntryExists($userID, $seenFeature['mid'])) {
+				if($i == $numResults) {
+					$query .= '(' . $userID . ', ' . $seenFeature['mid'] . ');';
+				}
+				else {
+					$query .= '(' . $userID . ', ' . $seenFeature['mid'] . '),';
+				}
+				$addEntry = true;
+			}
+			$i++;
+		}
+		if($addEntry)
+			DBUtil::runQuery($query);
+
+		return true;
+	}
+
+	private function seenEntryExists($userID, $messageID)
+	{
+		$query = "SELECT * FROM {$this->users_table} WHERE user_id = '$userID' AND message_id = '$messageID'";
+		$results = DBUtil::getResultArray($query);
+
+		return (count($results) > 0);
 	}
 }

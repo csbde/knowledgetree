@@ -43,7 +43,8 @@ class NewFeaturesNotification extends client_service {
 	{
 		$newFeatures = new KTNewFeatures();
 		$response = $newFeatures->getUsersNewFeatures();
-    	$this->addResponse('success', $response);
+    	$this->addResponse('features', $response);
+		$this->addResponse('success', 'true');
 
         return true;
 	}

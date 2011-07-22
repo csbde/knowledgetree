@@ -8,46 +8,39 @@ if (typeof(kt.api) == 'undefined') { kt.api = {}; }
  * Dialogs to display notifications around new features
  */
 kt.app.newfeatures = new function() {
-    var fragments = this.fragments = [];
-    var fragmentPackage = this.fragmentPackage = []
-    var execs = this.execs = ['notifications/new.feature.dialog'];
-    var execPackage = this.execPackage = [execs];
     var self = this;
-    var elems = this.elems = {};
 
     this.init = function() {
-        kt.api.preload(fragmentPackage, execPackage, true);
+    	this.getUsersNewFeatures();
     }
 
     // send the invites and add the users to the system
     this.getUsersNewFeatures = function() {
-    	var features = kt.api.getUsersNewFeatures(this.inviteCallback, function() {});
-		this.displayFeatures(features);
-	}
-
-	this.displayFeatures = function(features) {
-   		jQuery('#wrapper').prepend('<div id="helpText1" class="helperTextOverlay"><a href="#">X</a>Click here to Invite Users</div>');
-   		jQuery('#wrapper').prepend('<div id="helpText2" class="helperTextOverlay"><a href="#">X</a>Click here to go to the dashboard</div>');
-   		jQuery('div.helperTextOverlay a').click(function() {
-      		jQuery(this).parent().hide();
-   		});
-	}
-
-	this.getUsersNewFeatures = function(callback, errorCallback) {
 		var params = {};
         var synchronous = false;
         var func = 'NewFeaturesNotification.getUsersNewFeatures';
+        var callback = this.displayFeatures;
+        var synchronous = false;
+        var errorCallback = function() {};
+        ktjapi.callMethod(func, params, callback, synchronous, errorCallback, 200, 30000);
 
-		return ktjapi.retrieve(func, params, 200, 30000);
+		return null;
 	}
 
-    this.closeWindow = function() {
 
-    }
-
-    this.closeConfirmWindow = function() {
-
-    }
+	this.displayFeatures = function(response) {
+		var features = response.data.features;
+		var message;
+		for(var i in features)
+		{
+			if(features[i]['mid'] != undefined)
+			{
+				message = '<div id=feature_' + features[i]['mid'] + ' class=helperTextOverlay><a href="#">X</a>' + features[i]['mmessage'] + '</div>';
+				jQuery('#wrapper').prepend(message);
+			}
+		}
+		jQuery(this).parent().hide();
+	}
 
     // Call the initialization function at object instantiation.
     this.init();
