@@ -12,7 +12,7 @@
             </tr>
             <tr>
                 {foreach from=$states item=oState}
-                <th class="icon-column">{$oState->getName()}</th>                
+                <th class="icon-column" style="word-break:normal; white-space: normal;">{$oState->getName()}</th>                
                 {/foreach}
                 
             </tr>

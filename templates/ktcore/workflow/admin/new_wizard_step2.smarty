@@ -28,7 +28,7 @@
                         </tr>
                         <tr>
                             {foreach from=$states item=state}
-                            <th>{$state}</th>                
+                            <th  style="word-break:normal; white-space: normal;">{$state}</th>                
                             {/foreach}
                             
                         </tr>
