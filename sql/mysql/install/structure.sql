@@ -1114,7 +1114,7 @@ CREATE TABLE IF NOT EXISTS `new_features_messages` (
   `div` varchar(255) NOT NULL COMMENT 'The div that the massage should point at',
   `area_id` int(2) unsigned NOT NULL,
   `type` enum('all', 'admin', 'normal') default 'all',
-  `status` enum('enabled', 'disabled') default 'enabled',
+  `version` varchar(255) default 'all',
   PRIMARY KEY (`id`),
   KEY `area_id` (`area_id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
