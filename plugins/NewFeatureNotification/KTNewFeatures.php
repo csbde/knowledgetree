@@ -32,10 +32,13 @@ class KTNewFeatures {
 
 	public function getUsersNewFeatures()
 	{
+		global $default;
+
 		$userID = $_SESSION['userID'];
 		$section = $_SESSION['sSection'];
 		$isAdmin = Permission::userIsSystemAdministrator($userID);
-		$features = $this->getFeatures($userID, $section, $isAdmin);
+		$ktVersion = $default->systemVersion;
+		$features = $this->getFeatures($userID, $section, $isAdmin, $ktVersion);
 		$seenFeatures = $this->seenFeatures($features);
 		$unseenFeatures = $this->unSeenFeatures($features, $seenFeatures);
 		$this->saveSeenFeatures($unseenFeatures);
@@ -43,9 +46,9 @@ class KTNewFeatures {
 		return $unseenFeatures;
 	}
 
-	private function getFeatures($userID, $section, $isAdmin)
+	private function getFeatures($userID, $section, $isAdmin, $ktVersion)
 	{
-		$query = 'SELECT a.id as aid, a.name as aname, m.id as mid, m.message as mmessage, m.div as mdiv, m.area_id as marea_id, m.type as mtype, m.status as mstatus FROM ' . $this->area_table . ' as a, ' . $this->messages_table . ' as m WHERE a.name = \'' .$section . '\' AND a.id = m.area_id';
+		$query = 'SELECT a.id as aid, a.name as aname, m.id as mid, m.message as mmessage, m.div as mdiv, m.area_id as marea_id, m.type as mtype, m.version as mversion FROM ' . $this->area_table . ' as a, ' . $this->messages_table . ' as m WHERE a.name = \'' .$section . '\' AND a.id = m.area_id AND (m.version = \'' . $ktVersion . '\' OR m.version = \'all\')';
 		if($isAdmin)
 		{
 			$query .= ' AND (m.type=\'admin\' OR m.type = \'all\')';
