@@ -1001,7 +1001,7 @@ INSERT INTO `mime_types` VALUES
 (65,'oda','application/oda',NULL,'',NULL,NULL),
 (66,'pbm','image/x-portable-bitmap','image','',NULL,NULL),
 (67,'pdb','chemical/x-pdb',NULL,'',NULL,NULL),
-(68,'pdf','application/pdf','pdf','Acrobat PDF',NULL,NULL),
+(68,'pdf','application/pdf','pdf','PDF',NULL,NULL),
 (69,'pgm','image/x-portable-graymap','image','',NULL,NULL),
 (70,'pgn','application/x-chess-pgn',NULL,'',NULL,NULL),
 (71,'png','image/png','image','PNG Image',NULL,NULL),
