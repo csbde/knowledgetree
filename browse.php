@@ -85,10 +85,11 @@ class BrowseDispatcher extends KTStandardDispatcher {
 	public $sHelpPage = 'ktcore/browse.html';
 	public $permissions;
 
-	function __construct()
+	public function __construct()
 	{
 		$this->permissions = array();
 	    $this->aBreadcrumbs = array(array('action' => 'browse', 'name' => _kt('Browse')));
+
 	    return parent::KTStandardDispatcher();
 	}
 
@@ -124,9 +125,9 @@ class BrowseDispatcher extends KTStandardDispatcher {
 	public function do_main()
 	{
 	    global $default;
+	    $this->bulkActionInProgress = $this->isBulkActionInProgress();
 	    $bulkActions = '';
-	    $bulkActionInProgress = $this->isBulkActionInProgress();
-	    if($bulkActionInProgress == '') {
+	    if($this->bulkActionInProgress == '') {
 		    /* New ktapi based method */
 	        $bulkActions = KTBulkActionUtil::getAllBulkActions();
 	    }
@@ -151,8 +152,8 @@ class BrowseDispatcher extends KTStandardDispatcher {
 	           'folderSidebars' => $folderSidebars,
 	    );
 
-	    if($bulkActionInProgress != '') {
-	    	$templateData['notifyBulkAction'] = $this->getBulkNotification($bulkActionInProgress);
+	    if($this->bulkActionInProgress != '') {
+	    	$templateData['notifyBulkAction'] = $this->getBulkNotification();
 	    }
 
 	    // NOTE Don't quite know why this is in here. Someone reports that it is there for search browsing which seem to be disabled.
@@ -160,7 +161,7 @@ class BrowseDispatcher extends KTStandardDispatcher {
 	        $this->showBtns();
     		$folderId = $this->oFolder->getId();
 
-	        $renderHelper = BrowseViewUtil::getBrowseView($bulkActionInProgress);
+	        $renderHelper = BrowseViewUtil::getBrowseView($this->bulkActionInProgress);
 	        $renderData = $renderHelper->renderBrowseFolder($folderId, $bulkActions, $this->oFolder, $this->permissions);
 	        if($renderData['documentCount'] > 0)
 	        	$this->loadDocumentJS();
@@ -192,6 +193,7 @@ class BrowseDispatcher extends KTStandardDispatcher {
 		$submenu = array();
 		$actions = KTFolderActionUtil::getFolderActionsForFolder($this->oFolder, $this->oUser);
 		foreach ($actions as $oAction) {
+			$oAction->setBulkAction($this->bulkActionInProgress);
             $info = $oAction->getInfo();
             // Skip if action is disabled
             if (is_null($info)) { continue; }
@@ -625,28 +627,8 @@ class BrowseDispatcher extends KTStandardDispatcher {
 	    }
 	}
 
-	private function isBulkActionInProgress()
-	{
-		$folderIdsPath = Folder::generateFolderIDs($this->oFolder->getId());
-		$folderIdsPath = explode(',', $folderIdsPath);
-		$key = ACCOUNT_NAME . '_bulkaction';
-		$memcache = KTMemcache::getKTMemcache();
-		if(!$memcache->isEnabled()) return ;
-	    $bulkActions = $memcache->get($key);
-	    $bulkActions = unserialize($bulkActions);
-	    if($bulkActions) {
-		    foreach ($bulkActions as $action => $folderIds) {
-		    	foreach ($folderIds as $folderId) {
-			    	if(in_array($folderId, $folderIdsPath)) {
-			    		return $action;
-			    	}
-		    	}
-		    }
-	    }
-	}
-
-	private function getBulkNotification($action) {
-   		return "Bulk $action action in progress.";
+	private function getBulkNotification() {
+   		return "Bulk {$this->bulkActionInProgress} action in progress.";
 	}
 }
 

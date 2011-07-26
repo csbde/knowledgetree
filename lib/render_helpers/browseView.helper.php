@@ -32,7 +32,7 @@ class BrowseViewUtil {
 	{
     	switch ($userType) {
     		case 0 :
-   				return new BulkActionBrowse();
+   				return new UserBrowseView();
     			break;
     		case 4 :
     			return new SharedUserBrowseView();
@@ -45,17 +45,21 @@ class BrowseViewUtil {
 
 	private static function getBulkActionBrowse($bulkActionInProgress)
 	{
-    	switch ($userType) {
+
+    	switch ($bulkActionInProgress) {
     		case 0 :
-    			return new UserBrowseView();
+    			$bulkActionBrowse = new BulkActionBrowse();
     			break;
     		case 4 :
-    			return new SharedBulkActionBrowse();
+    			$bulkActionBrowse = new SharedBulkActionBrowse();
     			break;
     		default:
-    			return new UserBrowseView();
+    			$bulkActionBrowse = new BulkActionBrowse();
     			break;
     	}
+    	$bulkActionBrowse->setAction($bulkActionInProgress);
+
+    	return $bulkActionBrowse;
 	}
 }
 

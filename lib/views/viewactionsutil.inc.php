@@ -40,9 +40,14 @@ class ViewActionsUtil
 {
 	protected $actions;
 	protected $list;
-	
-	public function __construct() {}
-	
+	protected $bulkActionInProgress = '';
+	protected $hasMoreActions;
+
+	public function __construct($bulkActionInProgress = '') {
+		$this->hasMoreActions = false;
+		$this->bulkActionInProgress = $bulkActionInProgress;
+	}
+
 	/**
 	 * Retrieve document actions
 	 *
@@ -54,7 +59,7 @@ class ViewActionsUtil
         $info = KTDocumentActionUtil::getDocumentActionsForDocument($oDocument, $oUser, 'documentinfo');
         $this->actions = array_merge($actions, $info);
 	}
-	
+
     /**
      * Get the info for displaying the action buttons on the page
      *
@@ -70,6 +75,7 @@ class ViewActionsUtil
         $this->list[$btn['btn_position']][$btn['ns']] = $btn;
 
         foreach ($this->actions as $oAction) {
+        	$oAction->setBulkAction($this->bulkActionInProgress);
             $info = $oAction->getInfo();
 
             // Skip if action is disabled
@@ -91,6 +97,7 @@ class ViewActionsUtil
             else {
                 $menus[$info['parent_btn']]['menu'][$info['ns']] = $info;
             }
+            $this->hasMoreActions = true;
         }
 
         if (!empty($menus)) {
@@ -107,9 +114,10 @@ class ViewActionsUtil
                 }
             }
         }
+
         uasort($this->list['above'], array($this, 'sortBtns'));
     }
-    
+
     /**
      * Retrieve top document actions
      *
@@ -118,7 +126,7 @@ class ViewActionsUtil
 	protected function getTopActions() {
 		return $this->list['above'];
 	}
-	
+
     /**
      * Retrieve bottom document actions
      *
@@ -127,7 +135,7 @@ class ViewActionsUtil
 	protected function getBottomActions() {
 		return $this->list['below'];
 	}
-	
+
     /**
      * Retrieve document link actions
      *
@@ -136,7 +144,7 @@ class ViewActionsUtil
 	protected function getLinkActions() {
 		return $this->list['links'];
 	}
-	
+
 	/**
 	 * Sort buttons
 	 *
@@ -164,7 +172,7 @@ class ViewActionsUtil
         if ($a['name'] > $b['name']) return 1;
         return 0;
     }
-    
+
     /**
 	 * Render HTML document view actions
 	 *
@@ -179,20 +187,21 @@ class ViewActionsUtil
 			    						'actionBtns' => $this->getTopActions(),
 			    						);
 				break;
-				
+
 			case 'bottom':
 				$template = $templating->loadTemplate('ktcore/document/actions/view_bottom_actions');
 		        $templateData = array(
 		        						'actionBtns' => $this->getBottomActions(),
 		        						'actionLinks' => $this->getLinkActions(),
+		        						'hasMoreActions' => $this->hasMoreActions,
 		        						);
 				break;
-				
+
 			case 'init':
 				$template = $templating->loadTemplate('ktcore/document/actions/init_button_actions');
 				break;
 		}
-		
+
 		return $template->render($templateData);
 	}
 }
