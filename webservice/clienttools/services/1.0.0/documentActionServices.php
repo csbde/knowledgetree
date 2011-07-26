@@ -386,6 +386,7 @@ class documentActionServices extends client_service {
 		$action = $params['action'];
 
 		$targetFolderId = $params['targetFolderId'];
+		$currentFolderId = $params['currentFolderId'];
 
 		if (is_array($targetFolderId)) {
 			$targetFolderId = !empty($targetFolderId['folderId']) ? $targetFolderId['folderId'] : KTUtil::decodeId(substr($targetFolderId['cleanId'], 2));
@@ -413,7 +414,7 @@ class documentActionServices extends client_service {
     		default:
     			$reason = '';
         }
-        $bulkDocumentActions = new BulkDocumentActions($action, $organisedItemList, $reason, $targetFolderId);
+        $bulkDocumentActions = new BulkDocumentActions($action, $organisedItemList, $reason, $targetFolderId, $currentFolderId);
         if($bulkDocumentActions->checkIfNeedsBackgrounding()) {
         	$bulkDocumentActions->setUser($_SESSION['userID']);
         	$queueResponse = $bulkDocumentActions->queueBulkAction();
@@ -422,6 +423,7 @@ class documentActionServices extends client_service {
 	        else
 	        	$msg = _kt('Failure. Could not send message.');
 	        $url = KTUtil::kt_clean_folder_url($targetFolderId);
+	        $msg = "Your operation is being processed. You wil receive an email on completion.";
 	        $result = array('type' => 'success', 'url' => $url, 'msg' => $msg, 'bulk' => $queueResponse);
 	        $this->addResponse('result', json_encode($result));
 

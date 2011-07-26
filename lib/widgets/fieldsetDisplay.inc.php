@@ -5,32 +5,32 @@
  * KnowledgeTree Community Edition
  * Document Management Made Simple
  * Copyright (C) 2008, 2009, 2010 KnowledgeTree Inc.
- * 
- * 
+ *
+ *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License version 3 as published by the
  * Free Software Foundation.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
  * details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- * 
- * You can contact KnowledgeTree Inc., PO Box 7775 #87847, San Francisco, 
+ *
+ * You can contact KnowledgeTree Inc., PO Box 7775 #87847, San Francisco,
  * California 94120-7775, or email info@knowledgetree.com.
- * 
+ *
  * The interactive user interfaces in modified source and object code versions
  * of this program must display Appropriate Legal Notices, as required under
  * Section 5 of the GNU General Public License version 3.
- * 
+ *
  * In accordance with Section 7(b) of the GNU General Public License version 3,
  * these Appropriate Legal Notices must retain the display of the "Powered by
- * KnowledgeTree" logo and retain the original copyright notice. If the display of the 
+ * KnowledgeTree" logo and retain the original copyright notice. If the display of the
  * logo is not reasonably feasible for technical reasons, the Appropriate Legal Notices
- * must display the words "Powered by KnowledgeTree" and retain the original 
+ * must display the words "Powered by KnowledgeTree" and retain the original
  * copyright notice.
  * Contributor( s): ______________________________________
  *
@@ -383,22 +383,22 @@ class GenericFieldsetDisplay extends KTFieldsetDisplay {
 // The generic object
 class SimpleFieldsetDisplay extends KTFieldsetDisplay {
 
-    function render($aDocumentData) {
+    function render($aDocumentData, $bulkActionInProgress = '') {
         // we do a fair bit of fetching, etc. in here.
         $document = $aDocumentData['document'];
 
         // we need to extract the fields.
         $fields =& $this->fieldset->getFields();
-		 	
+
         //$result = array('fieldset' => $fieldset->getName(),
         	//'description' => $fieldset->getDescription());
 
 		 $fieldsresult = array();
-   
-		 foreach ($fields as $field)   
+
+		 foreach ($fields as $field)
 		 {
 		 	//$GLOBALS['default']->log->debug('SimpleFieldsetDisplay field '.print_r($field, true));
-		 	
+
                 $value = '';
 
 				$fieldvalue = DocumentFieldLink::getByDocumentAndField($document, $field);
@@ -411,7 +411,7 @@ class SimpleFieldsetDisplay extends KTFieldsetDisplay {
                 //$controltype = 'string';
                 // Replace with true
                 $controltype = strtolower($field->getDataType());
-                
+
                 //$GLOBALS['default']->log->debug("SimpleFieldsetDisplay field controltype $controltype");
 
                 if ($field->getHasLookup())
@@ -429,7 +429,7 @@ class SimpleFieldsetDisplay extends KTFieldsetDisplay {
                 if ($field->getInetLookupType() == 'multiwithcheckboxes' || $field->getInetLookupType() == 'multiwithlist') {
                     $controltype = 'multiselect';
                 }
-                
+
                 //$GLOBALS['default']->log->debug("SimpleFieldsetDisplay field controltype2 $controltype");
 
                 switch ($controltype)
@@ -439,7 +439,7 @@ class SimpleFieldsetDisplay extends KTFieldsetDisplay {
                 		break;
                 	case 'tree':
                 		$selection = KTAPI::get_metadata_tree($field->getId());
-						
+
 						//we need to get rid of values that we do not need else the JSON object we create will be incorrect!
 						SimpleFieldsetDisplay::recursive_unset($selection, array('treeid', 'parentid', 'fieldid'));
 
@@ -507,6 +507,7 @@ class SimpleFieldsetDisplay extends KTFieldsetDisplay {
             'fieldset' => $this->fieldset,
             'fieldset_values' => $fieldset_values,
             'description' => $this->fieldset->getDescription(),
+            'bulkActionInProgress' => $bulkActionInProgress,
         );
         return $oTemplate->render($aTemplateData);
     }
@@ -576,7 +577,7 @@ class SimpleFieldsetDisplay extends KTFieldsetDisplay {
 
         return $oTemplate->render($aTemplateData);
     }
-    
+
     /**
      * Recursively unsets elements from a nested array
      *
@@ -588,7 +589,7 @@ class SimpleFieldsetDisplay extends KTFieldsetDisplay {
     	{
 	    	unset($array[$unwanted_key]);
     	}
-    	
+
 	    foreach ($array as &$value) {
 	        if (is_array($value)) {
 	            SimpleFieldsetDisplay::recursive_unset($value, $unwanted_keys);

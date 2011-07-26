@@ -42,14 +42,14 @@ require_once(KT_LIB_DIR . '/actions/folderaction.inc.php');
 // {{{ SharedContentDocumentAction
 class SharedContentDocumentAction extends KTDocumentAction {
 
-    var $sName = 'ktcore.actions.document.sharecontent';
-    var $_sShowPermission = 'ktcore.permissions.write';
-	var $sDisplayName = 'Share';
+    public $sName = 'ktcore.actions.document.sharecontent';
+    public $_sShowPermission = 'ktcore.permissions.write';
+	public $sDisplayName = 'Share';
 
-    var $sIconClass = 'share';
-	var $btnOrder = 4;
+    public $sIconClass = 'share';
+	public $btnOrder = 4;
 
-    function getDisplayName()
+    public public function getDisplayName()
     {
     	// Check if we are in the document view and return a link,
     	// otherwise return the display name only.
@@ -66,7 +66,7 @@ class SharedContentDocumentAction extends KTDocumentAction {
     	}
     }
 
-    function _show() {
+    public function _show() {
         $check = parent::_show();
         if($check === false) {
             return 'disabled';
@@ -74,12 +74,12 @@ class SharedContentDocumentAction extends KTDocumentAction {
         return $check;
     }
 
-    function getOnClick()
+    public function getOnClick()
     {
         return "javascript:{kt.app.sharewithusers.shareContentWindow(\"{$this->oDocument->getId()}\", \"D\", \"{$_SESSION['userID']}\");}";
     }
 
-	function getURL()
+	public function getURL()
 	{
 		return '#';
 	}
@@ -89,18 +89,18 @@ class SharedContentDocumentAction extends KTDocumentAction {
 // {{{ SharedContentDocumentAction
 class SharedContentFolderAction extends KTFolderAction {
 
-    var $sName = 'ktcore.actions.folder.sharecontent';
-    var $_sShowPermission = 'ktcore.permissions.write';
-	var $sDisplayName = 'Share';
+    public $sName = 'ktcore.actions.folder.sharecontent';
+    public $_sShowPermission = 'ktcore.permissions.write';
+	public $sDisplayName = 'Share';
 
-    var $cssClass = 'share';
+    public $cssClass = 'share';
 
-    function getDisplayName()
+    public function getDisplayName()
     {
     	return _kt('Share this Folder');
     }
 
-    function getURL()
+    public function getURL()
     {
         return "javascript:kt.app.sharewithusers.shareContentWindow('{$this->oFolder->getID()}','F','{$_SESSION['userID']}');";
     }

@@ -58,6 +58,11 @@ class BulkDocumentActions
 	 */
 	private $targetFolderId;
 	/**
+	 * Bulk action current folder id
+	 * @var string
+	 */
+	private $currentFolderId;
+	/**
 	 * Logged in user's id
 	 * @var string
 	 */
@@ -66,12 +71,12 @@ class BulkDocumentActions
 	 * Number of documents
 	 * @var int
 	 */
-	private $numberDocuments = 0;
+	private $numDocuments = 0;
 	/**
 	 * Number of folders
 	 * @var int
 	 */
-	private $numberFolders = 0;
+	private $numFolders = 0;
 	/**
 	 * If number of documents to process exceeds threshold,
 	 * send operation to queue
@@ -81,30 +86,28 @@ class BulkDocumentActions
 								'folders' => 50
 								);
 
-	public function __construct($action, $list, $reason = '', $targetFolderId)
+	public function __construct($action, $list, $reason = '', $targetFolderId, $currentFolderId)
 	{
 		$this->action = $action;
 		$this->list = $list;
 		$this->reason = $reason;
 		$this->targetFolderId = $targetFolderId;
-		$this->numberFolders = count($this->list['folders']);
-		$this->numberDocuments = count($this->list['documents']);
+		$this->currentFolderId = $currentFolderId;
+		$this->numFolders = 0;
+		$this->numDocuments = 0;
 	}
 
 	public function checkIfNeedsBackgrounding()
 	{
-		// Check number of folders and documents
-		$folders = $this->list['folders'];
-		$folderIds = $this->list['folders'];
+		$this->numFolders = count($this->list['folders']);
+		$this->numDocuments = count($this->list['documents']);
 		while (count($folders) > 0) {
 			$folderId = array_pop($folders);
 			$this->getFolderDocuments($folderId);
 			$folders = $this->getFolderSubFolders($folderId, $folders);
-			if($this->numberDocuments > $this->threshold['documents'])
-				return true;
-			if($this->numberFolders > $this->threshold['folders'])
-				return true;
 		}
+		if(($this->numDocuments > $this->threshold['documents']) || ($this->numFolders > $this->threshold['folders']))
+			return true;
 
 		return false;
 	}
@@ -117,7 +120,7 @@ class BulkDocumentActions
 		if($results)
 		{
 			foreach ($results as $aResult) {
-				$this->numberDocuments++;
+				$this->numDocuments++;
 			}
 		}
 	}
@@ -138,7 +141,7 @@ class BulkDocumentActions
 				else {
 					array_push($folders, $aResult['linked_folder_id']);
 				}
-				$this->numberFolders++;
+				$this->numFolders++;
 			}
 		}
 
@@ -152,12 +155,13 @@ class BulkDocumentActions
 
 	public function queueBulkAction()
 	{
-    	require_once(KT_LIVE_DIR . '/sqsqueue/dispatchers/bulkactionDispatcher.php');
+    	require_once(KT_LIVE_DIR . '/sqsqueue/dispatchers/BulkactionDispatcher.php');
     	$bulkActionDispatcher = new BulkactionDispatcher();
     	$params['action'] = $this->action;
     	$params['files_and_folders'] = $this->list;
     	$params['reason'] = $this->reason;
     	$params['targetFolderId'] = $this->targetFolderId;
+    	$params['currentFolderId'] = $this->currentFolderId;
     	$bulkActionDispatcher->addProcess("bulkactions", $params);
     	$queueResponse = $bulkActionDispatcher->sendToQueue();
     	if($queueResponse) {
@@ -172,16 +176,21 @@ class BulkDocumentActions
 		require_once(KT_LIB_DIR . '/memcache/ktmemcache.php');
 		$memcache = KTMemcache::getKTMemcache();
 		if(!$memcache->isEnabled()) return ;
-		$userKey = "bulkaction_" . ACCOUNT_NAME . "{$this->userId}";
-		$usersBulkActions = $memcache->get($userKey);
-		if(empty($usersBulkActions))
+		$key = ACCOUNT_NAME . '_bulkaction';
+		$bulkActions = $memcache->get($key);
+		if(empty($bulkActions))
 			$folderIds = array();
 		else {
-			$folderIds = unserialize($usersBulkActions);
+			$folderIds = unserialize($bulkActions);
 		}
-
+		// Store current and target folder.
+		$folderIds[$this->action][$this->currentFolderId] = $this->currentFolderId;
 		$folderIds[$this->action][$this->targetFolderId] = $this->targetFolderId;
-		$memcache->set($userKey, serialize($folderIds));
+		// Store all subfolders
+		foreach ($this->list['folders'] as $folderId) {
+			$folderIds[$this->action][$folderId] = $folderId;
+		}
+		$memcache->set($key, serialize($folderIds));
 	}
 }
 ?>

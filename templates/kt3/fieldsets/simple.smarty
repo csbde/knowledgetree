@@ -1,8 +1,12 @@
 {assign var='valueClass' value=''}
 <!-- FILE: kt3/fieldsets/simple.smarty -->
 	<div class="detail-fieldset" rel='{literal}{{/literal}"documentID":"{$document->getId()}"{literal}}{/literal}'>
-	    <h3 title='{$description}'>{$fieldset->getName()}<span title="Click to edit" class="editable-control metadata edit">&nbsp;</span></h3>
-		
+	    <h3 title='{$description}'>{$fieldset->getName()}
+	    {if $bulkActionInProgress == ''}
+	    	<span title="Click to edit" class="editable-control metadata edit">&nbsp;</span>
+	    {/if}
+	    </h3>
+
 	    <table class="metadatatable" cellspacing="0" cellpadding="5">
 	      {foreach item=aFieldPair from=$fieldset_values name=fields}
 	    <tr class="metadatarow {if ($aFieldPair.required==='1')}required{/if}" id="metadatafield-{$aFieldPair.fieldid}">
@@ -18,9 +22,9 @@
 		        		<td class="metadata-htmleditor">
 						<span class="descriptiveText" id="richtexteditor_{$aFieldPair.fieldid}" data-name="{$aFieldPair.fieldid}" data-type='htmleditor' data-value-id="value-{$aFieldPair.fieldid}" {if ($aFieldPair.options.maxlength)}data-maxlength="{$aFieldPair.options.maxlength}"{/if}></span>
 					{else}
-						
+
 						{assign var='valueClass' value=' class="textareaVal" '}
-						
+
 						<td class="metadata-textarea">
 						<span class="descriptiveText" id="textarea_{$aFieldPair.fieldid}" data-name="{$aFieldPair.fieldid}" data-type='textarea' data-value-id="value-{$aFieldPair.fieldid}" {if ($aFieldPair.options.maxlength)}data-maxlength="{$aFieldPair.options.maxlength}"{/if}></span>
 					{/if}
@@ -52,5 +56,5 @@
 
 	    <div class="floatClear"><!-- --> </div>
 	</div>
- 
+
 <!-- FILE_END:  kt3/fieldsets/simple.smarty -->

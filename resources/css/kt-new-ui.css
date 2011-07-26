@@ -1223,11 +1223,11 @@ div.widgetItem {
 	margin-top: 5px;
 }
 #content div.widgetItem.import-from-source select {
-	background: whiteSmoke;
 	height: 17px;
 	font-size: 11px;
 	padding: 2px;
 	color: #666;
+	max-width: 125px;
 }
 /*Alerts Modal*/
 
@@ -1281,6 +1281,9 @@ label span.required
 	-moz-box-shadow: none!important;
 	-webkit-box-shadow: none !important;
 	border: 0px !important;
+}
+.modalField.date{
+	min-width: 120px;
 }
 .modalField.date .x-form-field-wrap .x-form-date-trigger,
 .modalField.date .x-form-field-wrap .x-form-date-trigger .x-form-trigger-over,
@@ -1379,6 +1382,9 @@ label span.required
 	position: relative;
 	margin: 5px 0px;
 	z-index: 1;
+}
+#workflowtabs .help {
+	margin-top: -2px;
 }
 .settings-section #content fieldset legend {
 	padding: 0px;
@@ -1772,7 +1778,7 @@ http://devgrow.com/iphone-style-switches/
 	font-size: 12px;
 }
 .settings-section #content .field .date-field {
-	width: 400px;
+	width: 410px;
 }
  #content .field .date-field {
 	clear: right;
