@@ -658,9 +658,9 @@ class KTStandardDispatcher extends KTDispatcher {
 	{
 		// Cater for both folder and document views.
 		// TODO : How to block actions in admin sections.
-		if(!is_null($this->document)) {
+		if(!is_null($this->document) && $this->document instanceof Document) {
 			$folderIdsPath = $this->document->getParentFolderIds();
-		} elseif(!is_null($this->oFolder)) {
+		} elseif(!is_null($this->oFolder) && ($this->oFolder instanceof Folder || $this->oFolder instanceof FolderProxy)) {
 			$folderIdsPath = Folder::generateFolderIDs($this->oFolder->getId());
 		} else {
 			return '';
