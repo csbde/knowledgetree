@@ -82,8 +82,8 @@ class BulkDocumentActions
 	 * send operation to queue
 	 * @var array
 	 */
-	private $threshold = array(	'documents' => 0,
-								'folders' => 0
+	private $threshold = array(	'documents' => 1000,
+								'folders' => 50
 								);
 
 	public function __construct($action, $list, $reason = '', $targetFolderId, $currentFolderId)
