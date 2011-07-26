@@ -90,18 +90,17 @@ class BulkDocumentActions
 	{
 		$this->action = $action;
 		$this->list = $list;
-		$this->numFolders = count($this->list['folders']);
-		$this->numDocuments = count($this->list['documents']);
 		$this->reason = $reason;
 		$this->targetFolderId = $targetFolderId;
 		$this->currentFolderId = $currentFolderId;
+		$this->numFolders = 0;
+		$this->numDocuments = 0;
 	}
 
 	public function checkIfNeedsBackgrounding()
 	{
-		// Check number of folders and documents
-		$this->numDocuments = $this->list['documents'];
-		$this->numFolders = $this->list['folders'];
+		$this->numFolders = count($this->list['folders']);
+		$this->numDocuments = count($this->list['documents']);
 		while (count($folders) > 0) {
 			$folderId = array_pop($folders);
 			$this->getFolderDocuments($folderId);

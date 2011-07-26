@@ -423,6 +423,7 @@ class documentActionServices extends client_service {
 	        else
 	        	$msg = _kt('Failure. Could not send message.');
 	        $url = KTUtil::kt_clean_folder_url($targetFolderId);
+	        $msg = "Your operation is being processed. You wil receive an email on completion.";
 	        $result = array('type' => 'success', 'url' => $url, 'msg' => $msg, 'bulk' => $queueResponse);
 	        $this->addResponse('result', json_encode($result));
 
