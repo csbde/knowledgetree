@@ -10,8 +10,6 @@ class SavedSearchSubscriptionTrigger
 
     function postValidate()
     {
-        global $default;
-
         $document =& $this->aInfo["document"];
 
         $documentid = $document->getId();

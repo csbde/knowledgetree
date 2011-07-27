@@ -759,6 +759,24 @@ div.form_actions {
 	text-align: left;
 	display: block;
 }
+.form_actions.dropdown {
+	background: #EEE;
+	border: 1px solid #CCC;
+	border-radius: 3px;
+	-webkit-border-radius: 3px;
+	-moz-border-radius: 3px;
+	height: 23px;
+	margin-top: 2px;
+	padding: 0px;
+}
+#content .form_actions.dropdown select {
+	background: transparent!important;
+	top: -2px !important;
+	position: relative;
+}
+#content .form_actions.dropdown input {
+	margin: -1px !important;
+}
 .x-window .form_actions input, .x-window .form_actions a, 
 #content .form_actions input, #content .form_actions a { 
 	background: -webkit-gradient(linear, left top, left bottom, from(#fff), to(#e8e8e8)) !important;
@@ -1034,9 +1052,16 @@ table.kt_collection {
 	text-align: center;
 	width: 50px;
 }
-#content .kt_collection.document-summary thead th{
+#content .kt_collection.document-summary thead th,
+.kt_collection.scrollable th,
+.kt_collection.scrollable td{
 	word-break: normal;
 	word-break: normal;
+}
+.kt_collection.scrollable {
+	width: 100%;
+	overflow: auto;
+	display: block;
 }
 div#activationNotice {
 	background: url('../graphics/newui/notice_v2.png') no-repeat top right;
@@ -1198,11 +1223,11 @@ div.widgetItem {
 	margin-top: 5px;
 }
 #content div.widgetItem.import-from-source select {
-	background: whiteSmoke;
 	height: 17px;
 	font-size: 11px;
 	padding: 2px;
 	color: #666;
+	max-width: 125px;
 }
 /*Alerts Modal*/
 
@@ -1250,6 +1275,23 @@ label span.required
 	height: 22px !important;
 	border-top-right-radius: 3px;
 	border-bottom-right-radius: 3px;
+}
+#content .modalField.date input{
+	box-shadow: none!important;
+	-moz-box-shadow: none!important;
+	-webkit-box-shadow: none !important;
+	border: 0px !important;
+}
+.modalField.date{
+	min-width: 120px;
+}
+.modalField.date .x-form-field-wrap .x-form-date-trigger,
+.modalField.date .x-form-field-wrap .x-form-date-trigger .x-form-trigger-over,
+.modalField.date .x-form-field-wrap .x-form-date-trigger .x-form-trigger-click {
+	background: url(../graphics/newui/icons/calendar.png) no-repeat center center;
+	border: 0px;
+	display: inline-block;
+	padding-right: 5px;
 }
 
 .modal-actions {
@@ -1341,6 +1383,9 @@ label span.required
 	margin: 5px 0px;
 	z-index: 1;
 }
+#workflowtabs .help {
+	margin-top: -2px;
+}
 .settings-section #content fieldset legend {
 	padding: 0px;
 }
@@ -1410,6 +1455,11 @@ label span.required
 	float: right;
 	min-width: 270px;
 }
+
+.settings-section .simple-selection br{
+	clear: both;
+}
+
 .settings-section .simple-selection input[type="radio"] {
 	float: left !important;
 	margin: 4px;
@@ -1509,6 +1559,11 @@ label span.required
 	list-style: none;
 	padding: 0px;
 }
+.group .token-input-list-facebook input {
+	box-shadow: none!important;
+	-moz-box-shadow: none!important;
+	-webkit-box-shadow: none!important;
+}
 #content .tags div.token-input-dropdown-facebook {
 }
 
@@ -1523,7 +1578,7 @@ a.subscribe_actions {
 #checkins #checkinfilename {
 	padding: 5px;
 	margin-top: 5px;
-	width: 355px;
+	width: 365px;
 }
 /*
 IPhone Style Switches
@@ -1564,6 +1619,17 @@ http://devgrow.com/iphone-style-switches/
 }
 .switch label { cursor: pointer; }
 .switch input { display: none; }
+
+
+/* This CSS is needed for a fake view in IE8 - Tohir */
+.switch input {
+	border: none !important;
+	padding: 0 !important;
+	margin: 0 !important;
+	height: 0px !important;
+	width: 0px !important;
+	overflow: hidden;
+}
 
 
 #reason-field {
@@ -1710,7 +1776,22 @@ http://devgrow.com/iphone-style-switches/
 	position: relative;
 	float: right;
 	font-size: 12px;
-
+}
+.settings-section #content .field .date-field {
+	width: 410px;
+}
+ #content .field .date-field {
+	clear: right;
+	float: right;
+	margin: 5px 0px;
+}
+#content .field .date-field input,
+#content .field .date-field select {
+	float: none;
+}
+#content .field .date-field input[type='radio'] {
+	top: 2px;
+	margin: 2px;
 }
 .settings-section #content .field input,
 .settings-section #content .settings-field input,
@@ -1838,8 +1919,10 @@ li.ui-state-disabled a {
 	background: url(/thirdpartyjs/extjs/resources/images/default/tree/folder-open.gif) 0px 0px;
 }
 .jstree-knowledgetree > ul {
-	height: 252px;
-	overflow: auto;
+	display: inline-block !important;
+	background: transparent url("/thirdpartyjs/jquery/plugins/jstree/themes/knowledgetree/bg.jpg") left top repeat!important;
+	min-height: 235px;
+	min-width: 500px;
 }
 #action-error.alert.warning {
 	background: #ffeded;

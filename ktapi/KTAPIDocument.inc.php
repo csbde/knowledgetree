@@ -823,7 +823,7 @@ class KTAPI_Document extends KTAPI_FolderItem
 		}
 
 		$target_folder = $ktapi_target_folder->get_folder();
-		$result=  $this->can_user_access_object_requiring_permission(  $target_folder, KTAPI_PERMISSION_WRITE);
+		$result = $this->can_user_access_object_requiring_permission(  $target_folder, KTAPI_PERMISSION_WRITE);
 
 		if (PEAR::isError($result)) {
 			return $result;
@@ -839,14 +839,14 @@ class KTAPI_Document extends KTAPI_FolderItem
 		}
 
 		$fileRenamed = false;
+		$options = array();
 		$name = $this->document->getName();
 		$nameClash = KTDocumentUtil::nameExists($target_folder, $name);
 
 		if ($nameClash && !is_null($newname)) {
         	$nameClash = KTDocumentUtil::nameExists($target_folder, $newname);
-        	$reason = sprintf(_kt(' Document renamed from %s to %s.'), $name, $newname) .' '. $reason;
-        	$fileRenamed = true;
         	$name = $newname;
+        	$options['name'] = $name;
 		}
 
 		$filename=$this->document->getFilename();
@@ -854,10 +854,8 @@ class KTAPI_Document extends KTAPI_FolderItem
 
 		if ($filenameClash && !is_null($newfilename)) {
             $filenameClash = KTDocumentUtil::fileExists($target_folder, $newfilename);
-            if (!$fileRenamed) {
-            	$reason = sprintf(_kt(' Document filename renamed from %s to %s.'), $filename, $newfilename) .' '. $reason;
-            }
             $filename = $newfilename;
+        	$options['filename'] = $filename;
         }
 
         if ($nameClash) {
@@ -877,24 +875,10 @@ class KTAPI_Document extends KTAPI_FolderItem
 
 		DBUtil::startTransaction();
 
-        $res = KTDocumentUtil::move($this->document, $target_folder, $user, $reason);
+        $res = KTDocumentUtil::move($this->document, $target_folder, $user, $reason, false, $options);
         if (PEAR::isError($res)) {
             DBUtil::rollback();
 			return new KTAPI_Error(KTAPI_ERROR_INTERNAL_ERROR, $res );
-        }
-
-        if (!is_null($newname)) {
-        	$this->document->setName($name);
-        }
-        if (!is_null($newfilename)) {
-        	$this->document->setFilename($filename);
-        }
-
-        $res = $this->document->update();
-
-        if (PEAR::isError($res)) {
-            DBUtil::rollback();
-			return new KTAPI_Error(KTAPI_ERROR_INTERNAL_ERROR,$res );
         }
 
         DBUtil::commit();

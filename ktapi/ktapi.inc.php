@@ -5459,7 +5459,7 @@ class KTAPI {
 
 	public function get_folder_total_size($include_folder_ids, $exclude_folder_ids)
 	{
-		$GLOBALS['default']->log->debug('KTAPI get_folder_total_size '.print_r($include_folder_ids, true).' '.print_r($exclude_folder_ids, true));
+		//$GLOBALS['default']->log->debug('KTAPI get_folder_total_size '.print_r($include_folder_ids, true).' '.print_r($exclude_folder_ids, true));
 
 		$size = array('total_files' => 0, 'total_size' => 0);
 
@@ -5474,8 +5474,8 @@ class KTAPI {
 				$size['total_files'] += $parent_size['total_files'];
 				$size['total_size'] += $parent_size['total_size'];
 
-				$GLOBALS['default']->log->debug("KTAPI get_folder_total_size parent result $folder_id ".print_r($parent_size, true));
-				$GLOBALS['default']->log->debug('KTAPI get_folder_total_size parent result carried over '.print_r($size, true));
+				//$GLOBALS['default']->log->debug("KTAPI get_folder_total_size parent result $folder_id ".print_r($parent_size, true));
+				//$GLOBALS['default']->log->debug('KTAPI get_folder_total_size parent result carried over '.print_r($size, true));
 			}
 			else
 			{
@@ -5488,11 +5488,11 @@ class KTAPI {
 
 			$children_ids = $folder->get_children_ids();
 
-			$GLOBALS['default']->log->debug('KTAPI get_folder_total_size children_ids '.print_r($children_ids, true));
+			//$GLOBALS['default']->log->debug('KTAPI get_folder_total_size children_ids '.print_r($children_ids, true));
 
 			foreach ($children_ids as $child_id)
 			{
-				$GLOBALS['default']->log->debug("KTAPI get_folder_total_size check if $child_id is in excluded list ".print_r($exclude_folder_ids, true));
+				//$GLOBALS['default']->log->debug("KTAPI get_folder_total_size check if $child_id is in excluded list ".print_r($exclude_folder_ids, true));
 
 				//only use that child if it wasn't excluded!
 				if (!in_array($child_id, $exclude_folder_ids))
@@ -5506,7 +5506,7 @@ class KTAPI {
 						$size['total_files'] += $child_size['total_files'];
 						$size['total_size'] += $child_size['total_size'];
 
-						$GLOBALS['default']->log->debug("KTAPI get_folder_total_size child $child_id ".print_r($child_size, true));
+						//$GLOBALS['default']->log->debug("KTAPI get_folder_total_size child $child_id ".print_r($child_size, true));
 					}
 					else
 					{
@@ -5515,7 +5515,7 @@ class KTAPI {
 				}
 			}
 
-			$GLOBALS['default']->log->debug('KTAPI get_folder_total_size result '.print_r($size, true));
+			//$GLOBALS['default']->log->debug('KTAPI get_folder_total_size result '.print_r($size, true));
 		}
 
 		$config = KTConfig::getSingleton();
@@ -5541,7 +5541,7 @@ class KTAPI {
 			$response['message'] = '';
 		}
 
-		$GLOBALS['default']->log->debug('KTAPI get_folder_total_size response '.print_r($response, true));
+		//$GLOBALS['default']->log->debug('KTAPI get_folder_total_size response '.print_r($response, true));
 
 		return $response;
 	}
@@ -5594,7 +5594,7 @@ class KTAPI {
      */
 	public function get_folder_changes($folder_ids, $timestamp, $depth = 1, $what = 'DF')
 	{
-		$GLOBALS['default']->log->debug("KTAPI get_folder_changes ".print_r($folder_ids, true)." $timestamp $depth '$what'");
+		//$GLOBALS['default']->log->debug("KTAPI get_folder_changes ".print_r($folder_ids, true)." $timestamp $depth '$what'");
 
 		$results = array();
 		$changes = array();
