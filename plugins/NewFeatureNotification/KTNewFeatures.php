@@ -30,12 +30,12 @@ class KTNewFeatures {
 	protected $messages_table = 'new_features_messages';
 	protected $users_table = 'new_features_users';
 
-	public function getUsersNewFeatures()
+	public function getUsersNewFeatures($location)
 	{
 		global $default;
 
 		$userID = $_SESSION['userID'];
-		$section = $_SESSION['sSection'];
+		$section = $this->determinePageLocation($location);
 		$isAdmin = Permission::userIsSystemAdministrator($userID);
 		$ktVersion = $default->systemVersion;
 		$features = $this->getFeatures($userID, $section, $isAdmin, $ktVersion);
@@ -44,6 +44,28 @@ class KTNewFeatures {
 		$this->saveSeenFeatures($unseenFeatures);
 
 		return $unseenFeatures;
+	}
+	
+	private function determinePageLocation($location)
+	{
+		if (preg_match('/settings\.php/', $location)) {
+			return 'settings';
+		}
+		
+		if (preg_match('/dashboard\.php/', $location)) {
+			return 'dashboard';
+		}
+		
+		// Not in use??
+		if (preg_match('/action\.php/', $location)) {
+			return 'action';
+		}
+		
+		if (preg_match('%/01\d*%', $location)) {
+			return 'view_details';
+		}
+		
+		return 'browse';
 	}
 
 	private function getFeatures($userID, $section, $isAdmin, $ktVersion)
@@ -77,7 +99,7 @@ class KTNewFeatures {
 			else {
 				$in .= $feature['mid'] . ',';
 			}
-			array_push($this->messageIds, $feature['mid']);
+			
 			$i++;
 		}
 		$in .= ')';
@@ -90,13 +112,29 @@ class KTNewFeatures {
 	private function unSeenFeatures($features, $seenFeatures)
 	{
 		$unSeenFeatures = array();
+		
+		// If all features have not been seen yet
 		if(empty($seenFeatures)) {
-			return $features;
+			
+			// Only return the first three
+			return array_slice($features, 0, 3);
 		}
 		else {
-			foreach ($seenFeatures as $seenFeature) {
-				if(!in_array($seenFeature['message_id'], $this->messageIds)) {
-					$unSeenFeatures[] = $seenFeature;
+			
+			$seenIds = array();
+			
+			foreach ($seenFeatures as $seenFeature)
+			{
+				$seenIds[] = $seenFeature['message_id'];
+			}
+			
+			$counter = 0;
+			
+			foreach ($features as $unSeenFeatureItem) {
+				
+				if(!in_array($unSeenFeatureItem['mid'], $seenIds) && $counter < 3) {
+					$unSeenFeatures[] = $unSeenFeatureItem;
+					$counter++;
 				}
 			}
 
@@ -127,8 +165,9 @@ class KTNewFeatures {
 			}
 			$i++;
 		}
-		if($addEntry)
+		if($addEntry) {
 			DBUtil::runQuery($query);
+		}
 
 		return true;
 	}

@@ -16,7 +16,7 @@ kt.app.newfeatures = new function() {
 
     // send the invites and add the users to the system
     this.getUsersNewFeatures = function() {
-		var params = {};
+		var params = {pathname:window.location.pathname};
         var synchronous = false;
         var func = 'NewFeaturesNotification.getUsersNewFeatures';
         var callback = this.displayFeatures;
@@ -35,7 +35,7 @@ kt.app.newfeatures = new function() {
 		{
 			if(features[i]['mid'] != undefined)
 			{
-				message = '<div id=feature_' + features[i]['mid'] + ' class=helperTextOverlay><a href="#">X</a>' + features[i]['mmessage'] + '</div>';
+				message = '<div id="' + features[i]['mdiv'] + '" class="helperTextOverlay"><a href="#">X</a>' + features[i]['mmessage'] + '</div>';
 				jQuery('#wrapper').prepend(message);
 			}
 		}

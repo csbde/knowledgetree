@@ -39,10 +39,15 @@ require_once(KT_PLUGIN_DIR . '/NewFeatureNotification/KTNewFeatures.php');
 
 class NewFeaturesNotification extends client_service {
 
-	public function getUsersNewFeatures()
+	public function getUsersNewFeatures($params)
 	{
 		$newFeatures = new KTNewFeatures();
-		$response = $newFeatures->getUsersNewFeatures();
+		
+		if (!isset($params['pathname'])) {
+			$params['pathname'] = '';
+		}
+		
+		$response = $newFeatures->getUsersNewFeatures($params['pathname']);
     	$this->addResponse('features', $response);
 		$this->addResponse('success', 'true');
 
