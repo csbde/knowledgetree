@@ -1,5 +1,4 @@
 <?php
-
 /**
  * $Id$
  *
@@ -34,32 +33,34 @@
  * must display the words "Powered by KnowledgeTree" and retain the original
  * copyright notice.
  * Contributor( s): ______________________________________
+ *
  */
-
 require_once(KT_LIB_DIR . '/plugins/plugin.inc.php');
 require_once(KT_LIB_DIR . '/plugins/pluginregistry.inc.php');
+require_once(KT_LIB_DIR . '/templating/templating.inc.php');
 
-class commentPlugin extends KTPlugin
-{
-    public $sNamespace = 'comment.feeds.plugin';
-    public $iVersion = 0;
-    public $autoRegister = true;
-    public $showInAdmin = false;
+class KTNewFeatureNotificationPlugin extends KTPlugin {
+	public $sNamespace = 'new.feature.notification.plugin';
+	public $iVersion = 0;
+	public $autoRegister = true;
+	public $showInAdmin = false;
 
-    function commentPlugin($sFilename = null)
-    {
-        $res = parent::KTPlugin($sFilename);
-        $this->sFriendlyName = _kt('Activity Feed Comments');
-        $this->dir = dirname(__FILE__) . DIRECTORY_SEPARATOR;
-        $this->sSQLDir = $this->dir . 'sql' . DIRECTORY_SEPARATOR;
-        return $res;
-    }
+	public function __construct($sFilename = null)
+	{
+		$res = parent::KTPlugin($sFilename);
+		$this->sFriendlyName = _kt('New Features Notfications');
 
-    function setup()
-    {
-    }
+		return $res;
+	}
+
+	public function setup() {
+		$dir = dirname(__FILE__) . DIRECTORY_SEPARATOR;
+		$dir = str_replace(KT_DIR, '', $dir);
+
+	}
 }
 
-$oPluginRegistry =& KTPluginRegistry::getSingleton();
-$oPluginRegistry->registerPlugin('commentPlugin', 'comment.feeds.plugin', __FILE__);
+$oPluginRegistry = KTPluginRegistry::getSingleton();
+$oPluginRegistry->registerPlugin('KTNewFeatureNotificationPlugin', 'new.feature.notification.plugin', __FILE__);
+
 ?>

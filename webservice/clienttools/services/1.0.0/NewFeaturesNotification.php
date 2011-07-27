@@ -1,5 +1,4 @@
 <?php
-
 /**
  * $Id$
  *
@@ -36,30 +35,23 @@
  * Contributor( s): ______________________________________
  */
 
-require_once(KT_LIB_DIR . '/plugins/plugin.inc.php');
-require_once(KT_LIB_DIR . '/plugins/pluginregistry.inc.php');
+require_once(KT_PLUGIN_DIR . '/NewFeatureNotification/KTNewFeatures.php');
 
-class commentPlugin extends KTPlugin
-{
-    public $sNamespace = 'comment.feeds.plugin';
-    public $iVersion = 0;
-    public $autoRegister = true;
-    public $showInAdmin = false;
+class NewFeaturesNotification extends client_service {
 
-    function commentPlugin($sFilename = null)
-    {
-        $res = parent::KTPlugin($sFilename);
-        $this->sFriendlyName = _kt('Activity Feed Comments');
-        $this->dir = dirname(__FILE__) . DIRECTORY_SEPARATOR;
-        $this->sSQLDir = $this->dir . 'sql' . DIRECTORY_SEPARATOR;
-        return $res;
-    }
+	public function getUsersNewFeatures($params)
+	{
+		$newFeatures = new KTNewFeatures();
+		
+		if (!isset($params['pathname'])) {
+			$params['pathname'] = '';
+		}
+		
+		$response = $newFeatures->getUsersNewFeatures($params['pathname']);
+    	$this->addResponse('features', $response);
+		$this->addResponse('success', 'true');
 
-    function setup()
-    {
-    }
+        return true;
+	}
 }
-
-$oPluginRegistry =& KTPluginRegistry::getSingleton();
-$oPluginRegistry->registerPlugin('commentPlugin', 'comment.feeds.plugin', __FILE__);
 ?>
