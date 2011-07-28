@@ -40,7 +40,7 @@
 }
 #sidebar_item {
 	border-bottom: 1px solid #ccc;
-	width: 213px;
+	width: 215px;
 }
 #sidebar_item:last-child {
 	border-bottom: none;
@@ -146,7 +146,7 @@ div.viewletworkflow {
 	min-width: 80px;
 	font-size: 11px;
 	padding: 0px;
-	left: 0px; 
+	left: 0px;
 }
 #content ul#checkin {
 	width: 150px;
@@ -430,7 +430,7 @@ div.viewletworkflow {
 	border: 1px solid #ccc!important;
 	opacity: 0.5;
 	color: #666!important;
-	
+
 	/* The next two properties is for IE */
 	filter: alpha(opacity = 50);
 	zoom: 1;
@@ -572,7 +572,7 @@ span.doc_info {
     text-align: center;
     text-shadow: 0 1px 0 white;
     width: 690px !important;
-   
+
 }
 .activityfeed img {
 	width: 48px;

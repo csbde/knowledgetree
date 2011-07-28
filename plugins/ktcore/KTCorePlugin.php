@@ -94,10 +94,13 @@ class KTCorePlugin extends KTPlugin {
         $this->registerAction('documentaction', 'KTDocumentDownloadUrlAction', 'ktcore.actions.document.downloadurl', 'KTDocumentActions.php');
         $this->registerAction('documentaction', 'KTDocumentPreviewUrlAction', 'ktcore.actions.document.previewurl', 'KTDocumentActions.php');
 
-        // Folder Sidebar
+        // Sidebars
+        // Dashboard
+        $this->registerAction('maindashsidebar', 'KTDashboardSidebars', 'ktcore.sidebars.dashboard', 'KTDashboardSidebars.php');
+        $this->registerAction('dashboardsidebar', 'KTCheckoutSidebar', 'ktcore.sidebars.dashboard.checkout', 'KTDashboardSidebars.php');
+        // Folders
         $this->registerAction('mainfoldersidebar', 'KTFolderSidebar', 'ktcore.sidebars.folder', 'KTFolderSidebars.php');
-
-        // Document Sidebar
+        // Documents
         $this->registerAction('maindocsidebar', 'KTDocumentSidebar', 'ktcore.sidebars.document', 'KTDocumentSidebars.php');
         $this->registerAction('documentsidebar', 'KTWorkflowSidebar', 'ktcore.sidebar.workflow', 'KTDocumentSidebars.php');
 
@@ -386,7 +389,7 @@ class KTCorePlugin extends KTPlugin {
 	        $this->registerAdminPage('uiconfigpage', 'UIConfigPageDispatcher', 'sysConfig',
 	            _kt('User Interface'), _kt('View and modify settings on Browse View actions, OEM name, automatic refresh, search results restrictions, custom logo details, paths to dot binary, graphics, and log directory, and whether to enable/disable condensed UI, \'open\' from downloads, sort metadata, and skinning.'),
 	            'admin/configSettings.php', null);
-	
+
 	        $this->registerAdminPage('clientconfigpage', 'ClientSettingsConfigPageDispatcher', 'clientTools',
 	            _kt('Client Tools'), _kt('View and change settings for the KnowledgeTree Tools Server, Client Tools Policies, WebDAV, and the OpenOffice.org service.'),
 	            'admin/configSettings.php', null);
@@ -402,20 +405,20 @@ class KTCorePlugin extends KTPlugin {
 	        $this->registerAdminPage('i18nconfigpage', 'i18nConfigPageDispatcher', 'sysConfig',
 	            _kt('Internationalisation Settings'), _kt('View and modify the default language.'),
 	            'admin/configSettings.php', null);
-	            
+
 	        $this->registerAdminPage('explorercpconfigpage', 'ExplorerConfigPageDispatcher', 'clientTools',
 	            _kt('Explorer CP'), _kt('View and change settings for the Explorer CP.'),
 	            'admin/configSettings.php', null);
-	        
+
             $this->registerAdminPage('webservicesconfig', 'WebservicesConfigPageDispatcher', 'clientTools',
                 _kt('Web Services'), _kt('View and change settings for the KnowledgeTree Web Services.'),
-                'admin/configSettings.php', null);    
+                'admin/configSettings.php', null);
         }
-            
+
         $this->registerAdminPage('KTWebDAVSettings', 'KtWebdavConfigPageDispatcher', 'clientTools',
             _kt('WebDAV'), _kt('View and change settings for WebDAV.'),
             'admin/configSettings.php', null);
-            
+
         $this->registerAdminPage('session', 'SessionConfigPageDispatcher', 'security',
             _kt('Session Management'), _kt('View and modify session settings for KnowledgeTree.'),
             'admin/configSettings.php', null);

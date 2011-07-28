@@ -49,6 +49,7 @@ require_once(KT_LIB_DIR . '/templating/kt3template.inc.php');
 require_once(KT_LIB_DIR . '/dispatcher.inc.php');
 require_once(KT_LIB_DIR . '/dashboard/DashletDisables.inc.php');
 require_once(KT_LIB_DIR . '/foldermanagement/Folder.inc');
+require_once(KT_PLUGIN_DIR . '/ktcore/KTDashboardSidebars.php');
 
 $sectionName = 'dashboard';
 
@@ -59,7 +60,7 @@ class DashboardDispatcher extends KTStandardDispatcher {
     public $sHelpPage = 'ktcore/dashboard.html';
 	public $aCannotView = array(4);
 
-    function DashboardDispatcher() {
+    public function DashboardDispatcher() {
         $this->aBreadcrumbs = array(
             array('action' => 'dashboard', 'name' => _kt('Dashboard')),
         );
@@ -67,7 +68,7 @@ class DashboardDispatcher extends KTStandardDispatcher {
         return parent::KTStandardDispatcher();
     }
 
-    function do_main() {
+    public function do_main() {
         $this->oPage->setShowPortlets(false);
         // retrieve action items for the user.
         // FIXME what is the userid?
@@ -151,6 +152,9 @@ class DashboardDispatcher extends KTStandardDispatcher {
             unset($_SESSION['isFirstLogin']);
         }
 
+        // It aint a folder, or a document, no need to get action
+        // $sidebars = KTDocumentActionUtil::getDocumentActionsForDocument($this->document, $this->oUser, 'dashboardsidebar');
+       	// $sidebars = new KTDashboardSidebar();
         // render
         $oTemplating =& KTTemplating::getSingleton();
         $oTemplate = $oTemplating->loadTemplate('kt3/dashboard');
@@ -158,11 +162,12 @@ class DashboardDispatcher extends KTStandardDispatcher {
               'context' => $this,
               'dashlets_left' => $aDashletsLeft,
               'dashlets_right' => $aDashletsRight,
-              'ktOlarkPopup' => $ktOlarkPopup
+              'ktOlarkPopup' => $ktOlarkPopup,
+              'sidebars' => $sidebars,
         );
 
 		// TODO : Is this ok?
-		if (file_exists(KT_DIR.DIRECTORY_SEPARATOR . 'var' . DIRECTORY_SEPARATOR . 'bin' . DIRECTORY_SEPARATOR . 'firstlogin.lock')) {
+		if (file_exists(KT_DIR . DIRECTORY_SEPARATOR . 'var' . DIRECTORY_SEPARATOR . 'bin' . DIRECTORY_SEPARATOR . 'firstlogin.lock')) {
 			$this->runFirstLoginWizard($oTemplate, $aTemplateData);
 		}
 
@@ -170,23 +175,22 @@ class DashboardDispatcher extends KTStandardDispatcher {
     }
 
     //
-    function runFirstLoginWizard($oTemplate, $aTemplateData) {
+    public function runFirstLoginWizard($oTemplate, $aTemplateData) {
     	$this->oPage->requireCSSResource('setup/wizard/resources/css/modal.css');
     	$this->oPage->requireJSResource('setup/wizard/resources/js/jquery-1.4.2.min.js');
-    	//$this->oPage->requireJSResource('thirdpartyjs/jquery/jquery-1.3.2.min.js');
     	$this->oPage->requireJSResource('thirdpartyjs/jquery/jquery_noconflict.js');
     	$this->oPage->requireJSResource('setup/wizard/resources/js/firstlogin.js');
     }
 
     // return some kind of ID for each dashlet
     // currently uses the class name
-    function _getDashletId($oDashlet) {
+    public function _getDashletId($oDashlet) {
         return get_class($oDashlet);
     }
 
     // disable a dashlet.
     // FIXME this very slightly violates the separation of concerns, but its not that flagrant.
-    function do_disableDashlet() {
+    public function do_disableDashlet() {
         $sNamespace = KTUtil::arrayGet($_REQUEST, 'fNamespace');
         $iUserId = $this->oUser->getId();
 
@@ -208,7 +212,7 @@ class DashboardDispatcher extends KTStandardDispatcher {
         $this->successRedirectToMain('Dashlet disabled.');
     }
 
-    function json_saveDashboardState() {
+    public function json_saveDashboardState() {
         $sState = KTUtil::arrayGet($_REQUEST, 'state', array('error' => true));
         $this->oUser->setDashboardState($sState);
         return array('success' => true);

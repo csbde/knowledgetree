@@ -206,8 +206,8 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
             $info = $action->getInfo();
             if (!is_null($info)) {
                 if (($info['ns'] == 'ktcore.viewlet.document.activityfeed') || ($info['ns'] == 'thumbnail.viewlets')) {
-                	// use the action, since we display_viewlet() later.
-                    $viewlets[] = $action->display_viewlet();
+                	// use the action, since we displayViewlet() later.
+                    $viewlets[] = $action->displayViewlet();
                 }
             }
         }

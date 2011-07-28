@@ -51,11 +51,11 @@ class KTWorkflowViewlet extends KTDocumentViewlet {
         if ($this->_show() === false) {
             return null;
         }
-        
+
         return true;
     }
-    
-    function display_viewlet()
+
+    function displayViewlet()
     {
         $oKTTemplating =& KTTemplating::getSingleton();
         $oTemplate =& $oKTTemplating->loadTemplate('ktcore/document/viewlets/workflow');
@@ -135,10 +135,10 @@ class KTDocumentActivityFeedAction extends KTDocumentViewlet {
 	private $displayMax = 10;
 
 	function ajax_get_viewlet() {
-		return $this->display_viewlet(true);
+		return $this->displayViewlet(true);
 	}
-	
-    function display_viewlet($onlyComments = false)
+
+    function displayViewlet($onlyComments = false)
     {
         $iDocumentId = $this->oDocument->getId();
         $mainArray = array();
@@ -299,7 +299,7 @@ class KTInlineEditViewlet extends KTDocumentViewlet {
     public $bShowIfReadShared = true;
     public $bShowIfWriteShared = true;
 
-    function display_viewlet()
+    function displayViewlet()
     {
         $oKTTemplating =& KTTemplating::getSingleton();
         $oTemplate =& $oKTTemplating->loadTemplate("ktcore/document/viewlets/inline_edit");
