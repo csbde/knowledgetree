@@ -398,7 +398,8 @@ class KTFolderActionUtil {
     {
         $objects = array();
 
-        foreach (KTFolderActionUtil::getFolderActions($slot) as $action) {
+        $folderActions = KTFolderActionUtil::getFolderActions($slot);
+        foreach ($folderActions as $action) {
             list($class, $path, $plugin) = $action;
             $pluginRegistry =& KTPluginRegistry::getSingleton();
             $plugin =& $pluginRegistry->getPlugin($plugin);
