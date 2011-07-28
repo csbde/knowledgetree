@@ -328,7 +328,7 @@ class KTDocumentAction extends KTStandardDispatcher {
     	}
     }
 
-    public public function do_reason() {
+    public function do_reason() {
         $oTemplate = $this->oValidator->validateTemplate('ktcore/document/reason');
         $aTemplateData = array(
               'documentId' => $this->oDocument->getId(),
