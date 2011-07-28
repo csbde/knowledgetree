@@ -192,7 +192,8 @@ class KTPage {
                         "resources/$jsResourceLocation/newui/documents/kt.app.copy.$jsExt" => $files,
                         'thirdpartyjs/jquery/plugins/jstree/jquery.hotkeys.js' => $files,
                         'thirdpartyjs/jquery/plugins/jstree/jquery.cookie.js' => $files,
-                        'thirdpartyjs/jquery/plugins/jstree/jquery.jstree.js' => $files
+                        'thirdpartyjs/jquery/plugins/jstree/jquery.jstree.js' => $files,
+                        'resources/js/newui/documents/kt.app.ratingcontent.js' => $files,
                       );
 
         $oConfig = KTConfig::getSingleton();

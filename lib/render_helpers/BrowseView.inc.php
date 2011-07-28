@@ -28,6 +28,13 @@ class BrowseView {
         } else {
             $this->zohoEnabled = false;
         }
+		
+		if (KTPluginUtil::pluginIsActive('actionableinsights.ratingcontent.plugin')) {
+            $this->ratingContentEnabled = true;
+            require_once(KT_PLUGIN_DIR . '/RatingContent/KTRatingContent.php');
+        } else {
+            $this->ratingContentEnabled = false;
+        }
 
         // Include new browse view css
         $page = $GLOBALS['main'];
