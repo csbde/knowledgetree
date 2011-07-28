@@ -136,14 +136,12 @@ class SubscriptionEvent {
             $actionTypeEmail = $this->actionTypeEmail($eventType);
             // Better subject header with just the modified folder location
             $eSubject = "Subscription Notification: Bulk {$actionTypeEmail['message']}";
-            
+
 			// now the email content.
-			
+
 			$eContent = '&#160;&#160;&#160;&#160;<b>'._kt('Subscription notification').': Bulk '.$actionTypeEmail['message'].'</b><br /><br />';
             //$eContent .= "You are receiving this notification because you are subscribed to the \"$locationName\"<br/>";
             $eContent .= "Your colleague, {$oUser->getName()}, has performed a Bulk {$actionTypeEmail['type']} in the \"$locationName\" folder.<br/>";
-            // REMOVE: debugger
-            global $default;
             // Get first document/folders details into a notification
             $oNotification = false;
             foreach($oDocObjects as $oDocObject) {
@@ -548,7 +546,7 @@ class SubscriptionContent {
         "DownloadDocument" => 'document',
         "RestoredArchivedDocument" => 'document',
         "DiscussDocument" => 'document');
-    
+
     // have to be instantiated, or the i18n can't work.
 	function __construct() {
 	    $this->_eventTypeNames = array(

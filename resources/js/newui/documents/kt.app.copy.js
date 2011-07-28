@@ -280,6 +280,7 @@ kt.app.copy = new function() {
     this.finaliseAction = function(reason)
     {
     	var params = new Array();
+    	params.currentFolderId = jQuery('[name="fFolderId"]').val();
     	params.reason = reason;
     	params.targetFolderId = self.targetFolderId;
     	params.action = self.action;
@@ -423,5 +424,5 @@ kt.app.copy = new function() {
 	}
 
     this.init();
-    
+
 }

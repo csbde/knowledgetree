@@ -1,5 +1,4 @@
 <?php
-
 /**
  * $Id$
  *
@@ -36,22 +35,32 @@
  * Contributor( s): ______________________________________
  *
  */
+require_once(KT_LIB_DIR . '/plugins/plugin.inc.php');
+require_once(KT_LIB_DIR . '/plugins/pluginregistry.inc.php');
+require_once(KT_LIB_DIR . '/templating/templating.inc.php');
 
-require_once(KT_LIB_DIR . '/actions/documentaction.inc.php');
+class KTNewFeatureNotificationPlugin extends KTPlugin {
+	public $sNamespace = 'new.feature.notification.plugin';
+	public $iVersion = 0;
+	public $autoRegister = true;
+	public $showInAdmin = false;
 
-class KTDocumentViewlet extends KTDocumentAction {
-    public $sName;
-    public $sDescription;
+	public function __construct($sFilename = null)
+	{
+		$res = parent::KTPlugin($sFilename);
+		$this->sFriendlyName = _kt('New Features Notfications');
 
-    public $_sShowPermission = 'ktcore.permissions.read';
+		return $res;
+	}
 
-    // the only major distinction of the viewlet vs. the action is the
-    // display_viewlet() method.
+	public function setup() {
+		$dir = dirname(__FILE__) . DIRECTORY_SEPARATOR;
+		$dir = str_replace(KT_DIR, '', $dir);
 
-    public function display_viewlet()
-    {
-        return '';
-    }
+	}
 }
+
+$oPluginRegistry = KTPluginRegistry::getSingleton();
+$oPluginRegistry->registerPlugin('KTNewFeatureNotificationPlugin', 'new.feature.notification.plugin', __FILE__);
 
 ?>

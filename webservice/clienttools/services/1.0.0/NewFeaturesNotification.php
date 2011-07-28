@@ -1,5 +1,4 @@
 <?php
-
 /**
  * $Id$
  *
@@ -34,24 +33,25 @@
  * must display the words "Powered by KnowledgeTree" and retain the original
  * copyright notice.
  * Contributor( s): ______________________________________
- *
  */
 
-require_once(KT_LIB_DIR . '/actions/documentaction.inc.php');
+require_once(KT_PLUGIN_DIR . '/NewFeatureNotification/KTNewFeatures.php');
 
-class KTDocumentViewlet extends KTDocumentAction {
-    public $sName;
-    public $sDescription;
+class NewFeaturesNotification extends client_service {
 
-    public $_sShowPermission = 'ktcore.permissions.read';
+	public function getUsersNewFeatures($params)
+	{
+		$newFeatures = new KTNewFeatures();
+		
+		if (!isset($params['pathname'])) {
+			$params['pathname'] = '';
+		}
+		
+		$response = $newFeatures->getUsersNewFeatures($params['pathname']);
+    	$this->addResponse('features', $response);
+		$this->addResponse('success', 'true');
 
-    // the only major distinction of the viewlet vs. the action is the
-    // display_viewlet() method.
-
-    public function display_viewlet()
-    {
-        return '';
-    }
+        return true;
+	}
 }
-
 ?>

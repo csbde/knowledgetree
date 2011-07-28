@@ -72,25 +72,12 @@ class DashboardDispatcher extends KTStandardDispatcher {
         // retrieve action items for the user.
         // FIXME what is the userid?
 
-        // This creates a pseudo portlet to get the upload and add a folder button
-        // for the root directory to display them on the dashboard
-        $oFolder =& Folder::get(1);
-        $portlet = new KTActionPortlet(sprintf(_kt('Actions'))); // Usually part of actions
-        $aActions = KTFolderActionUtil::getFolderActionsForFolder($oFolder, $this->oUser);
-        $portlet->setActions($aActions,null);
-
-        /**REMOVE
-        $midToolbarButtons = $portlet->showButtons();
-		REMOVE**/
-        
         $oDashletRegistry =& KTDashletRegistry::getSingleton();
         $aDashlets = $oDashletRegistry->getDashlets($this->oUser);
 
         $this->sSection = 'dashboard';
         $this->oPage->showDashboardBtn = true;
-        //$this->oPage->setBreadcrumbDetails(_kt('Home'));
         $this->oPage->title = _kt('Dashboard');
-        //$this->oPage->hideSection();
 
         // simplistic improvement over the standard rendering:  float half left
         // and half right.  +Involves no JS -can leave lots of white-space at the bottom.
@@ -171,9 +158,6 @@ class DashboardDispatcher extends KTStandardDispatcher {
               'context' => $this,
               'dashlets_left' => $aDashletsLeft,
               'dashlets_right' => $aDashletsRight,
-              /**REMOVE
-              'midToolbarButtons' => $midToolbarButtons,
-              REMOVE**/
               'ktOlarkPopup' => $ktOlarkPopup
         );
 
