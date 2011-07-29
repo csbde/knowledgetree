@@ -32,24 +32,42 @@ class KTRatingContent {
 		$this->table = 'ratingcontent_document';
 	}
 	
-	public function getLikesInCollection($documentIds)
+	public function getLikesInCollection(&$listOfDocuments, $userId=NULL)
 	{
+		$documentIds = array();
 		
+		foreach ($listOfDocuments as $document)
+		{
+			$documentIds[] = $document['id'];
+		}
+		
+		$documentLikesCount = $this->getLikesInCollectionQuery($documentIds);
+		$userLikesCount = $this->getUserLikesInCollectionQuery($userId, $documentIds);
+		
+		foreach ($listOfDocuments as &$document)
+		{
+			if (array_key_exists('doc_'.$document['id'], $documentLikesCount)) {
+				$document['like_count'] = $documentLikesCount['doc_'.$document['id']];
+			} else {
+				$document['like_count'] = 0;
+			}
+			
+			if (in_array($document['id'], $userLikesCount)) {
+				$document['user_likes_document'] = TRUE;
+			} else {
+				$document['user_likes_document'] = FALSE;
+			}
+		}
+		
+		// Relevant. List passed by reference
+		return $listOfDocuments;
 	}
 
 	public function getLikesInCollectionQuery($documentIds)
 	{
 		$sql = 'SELECT CONCAT("doc_", document_id) AS document_id, count( * ) AS likeCount FROM ratingcontent_document';
 		
-		$where = ' WHERE document_id IN (';
-		$comma = '';
-		
-		foreach ($documentIds as $documentId) {
-			$where .= $comma.$documentId;
-			$comma = ', ';
-		}
-		
-		$where .= ') GROUP BY document_id';
+		$where = ' WHERE document_id IN ('.implode(',', $documentIds).') GROUP BY document_id';
 		
 		$results = DBUtil::getResultArray($sql.$where);
 		
@@ -65,17 +83,13 @@ class KTRatingContent {
 	
 	public function getUserLikesInCollectionQuery($userId, $documentIds)
 	{
-		$sql = 'SELECT document_id FROM ratingcontent_document ';
-		
-		$where = ' WHERE user_id = "'.$userId.'" AND document_id IN (';
-		$comma = '';
-		
-		foreach ($documentIds as $documentId) {
-			$where .= $comma.$documentId;
-			$comma = ', ';
+		if ($userId == NULL) {
+			return array();
 		}
 		
-		$where .= ')';
+		$sql = 'SELECT document_id FROM ratingcontent_document ';
+		
+		$where = ' WHERE user_id = "'.$userId.'" AND document_id IN ('.implode(',', $documentIds).')';
 		
 		$results = DBUtil::getResultArray($sql.$where);
 		

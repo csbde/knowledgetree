@@ -36,6 +36,9 @@ kt.app.ratingcontent = new function() {
 			var callback = this.updateDocumentView;
 		}
 		
+		self.documentId = documentId;
+		self.action = action;
+		
 		var synchronous = false;
         var func = 'RatingContent.'+action;
         
@@ -47,7 +50,19 @@ kt.app.ratingcontent = new function() {
 	
 	this.updateBrowseView = function(response)
 	{
-		console.dir(response);
+		if (response.data.success == 'true') {
+			
+			if (self.action == 'likeDocument') {
+				str = '<a href="javascript:;" onclick="kt.app.ratingcontent.unlikeDocument('+self.documentId+');"><img src="resources/graphics/newui/document_liked.png" /></a>';
+			} else {
+				str = '<a href="javascript:;" onclick="kt.app.ratingcontent.likeDocument('+self.documentId+');"><img src="resources/graphics/newui/document_notliked.png" /></a>';
+			}
+			
+			// Update with some animation
+			jQuery('#docItem_'+self.documentId+' span.like_status').fadeOut('fast',function() {
+					jQuery(this).html(str);
+				}).fadeIn();
+		}
 	}
 	
 	this.updateDocumentView = function(response)
