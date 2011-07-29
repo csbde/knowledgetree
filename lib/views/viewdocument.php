@@ -226,7 +226,19 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
                 $livePreview = $livePreviewAction->do_main();
             } catch(Exception $e) {}
         }
-
+        
+        if (KTPluginUtil::pluginIsActive('actionableinsights.ratingcontent.plugin')) {
+            $ratingContentEnabled = true;
+            require_once(KT_PLUGIN_DIR . '/RatingContent/KTRatingContent.php');
+        } else {
+            $ratingContentEnabled = false;
+        }
+		
+		// Remove next two lines - just for dev - rely on above
+		$ratingContentEnabled = true;
+		require_once(KT_PLUGIN_DIR . '/RatingContent/KTRatingContent.php');
+        
+        
         $ownerUser = KTUserUtil::getUserField($this->document->getOwnerID(), 'name');
         $creatorUser = KTUserUtil::getUserField($this->document->getCreatorID(), 'name');
         $lastModifierUser = KTUserUtil::getUserField($this->document->getModifiedUserId(), 'name');
@@ -283,6 +295,16 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
         // Conditionally include live_preview
         if ($livePreview) {
             $templateData['live_preview'] = $livePreview;
+        }
+        
+        $templateData['ratingContentEnabled'] = FALSE;
+        
+        if ($ratingContentEnabled) {
+            $KTRatingContent = new KTRatingContent();
+            
+            $templateData['ratingContentEnabled'] = TRUE;
+			$templateData['userLikesDocument'] = $KTRatingContent->doesUserLikeDocument($this->oUser->getId(), $documentId);
+			$templateData['numDocumentLikes'] = $KTRatingContent->getNumDocumentLikes($documentId);
         }
 
         // Setting Document Notifications Status

@@ -32,6 +32,28 @@ class KTRatingContent {
 		$this->table = 'ratingcontent_document';
 	}
 	
+	public function doesUserLikeDocument($userId, $documentId)
+	{
+		$userLikesCount = $this->getUserLikesInCollectionQuery($userId, array($documentId));
+		
+		if (in_array($documentId, $userLikesCount)) {
+			return TRUE;
+		} else {
+			return FALSE;
+		}
+	}
+	
+	public function getNumDocumentLikes($documentId)
+	{
+		$documentLikesCount = $this->getLikesInCollectionQuery(array($documentId));
+		
+		if (array_key_exists('doc_'.$documentId, $documentLikesCount)) {
+			return $documentLikesCount['doc_'.$documentId];
+		} else {
+			return 0;
+		}
+	}
+	
 	public function getLikesInCollection(&$listOfDocuments, $userId=NULL)
 	{
 		$documentIds = array();

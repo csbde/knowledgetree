@@ -67,21 +67,28 @@ kt.app.ratingcontent = new function() {
 	
 	this.updateDocumentView = function(response)
 	{
-		console.dir(response.data.results);
-	}
-	
-	this.testCollection = function() {
+		if (response.data.success == 'true') {
+			if (self.action == 'likeDocument') {
+				str = '<a href="javascript:;" onclick="kt.app.ratingcontent.unlikeDocument('+self.documentId+', false);"><img src="resources/graphics/newui/document_liked.png" /></a>';
+			} else {
+				str = '<a href="javascript:;" onclick="kt.app.ratingcontent.likeDocument('+self.documentId+', false);"><img src="resources/graphics/newui/document_notliked.png" /></a>';
+			}
+			
+			if (response.data.newNumLikes == 1) {
+				countStr = 'One User likes this document';
+			} else {
+				countStr = response.data.newNumLikes+' Users like this document';
+			}
+			
+			// Update with some animation
+			jQuery('#documentLikeStatus span.like_status').fadeOut('fast',function() {
+					jQuery(this).html(str);
+				}).fadeIn();
+			
+			jQuery('#documentLikeStatus span.like_count').html(countStr);
+			
+		}
 		
-		var params = {};
-		var callback = this.updateDocumentView;
-		
-		var synchronous = false;
-        var func = 'RatingContent.testCollection';
-        
-        var synchronous = false;
-        var errorCallback = function() {};
-        ktjapi.callMethod(func, params, callback);
-		return null;
 	}
 
 
