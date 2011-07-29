@@ -96,8 +96,9 @@ class KTCorePlugin extends KTPlugin {
 
         // Sidebars
         // Dashboard
-        $this->registerAction('maindashsidebar', 'KTDashboardSidebars', 'ktcore.sidebars.dashboard', 'KTDashboardSidebars.php');
+        $this->registerAction('maindashsidebar', 'KTDashboardSidebar', 'ktcore.sidebars.dashboard', 'KTDashboardSidebars.php');
         $this->registerAction('dashboardsidebar', 'KTCheckoutSidebar', 'ktcore.sidebars.dashboard.checkout', 'KTDashboardSidebars.php');
+        $this->registerAction('dashboardsidebar', 'QuicklinksSidebar', 'ktcore.sidebars.dashboard.quicklinks', 'KTDashboardSidebars.php');
         // Folders
         $this->registerAction('mainfoldersidebar', 'KTFolderSidebar', 'ktcore.sidebars.folder', 'KTFolderSidebars.php');
         // Documents
@@ -105,7 +106,6 @@ class KTCorePlugin extends KTPlugin {
         $this->registerAction('documentsidebar', 'KTWorkflowSidebar', 'ktcore.sidebar.workflow', 'KTDocumentSidebars.php');
 
         $this->registerAction('documentaction', 'KTDocumentAssistAction', 'ktcore.actions.document.assist', 'KTAssist.php');
-        // $this->registerAction('folderaction', 'KTDocumentAssistAction', 'ktcore.actions.folder.assist', 'KTAssist.php');
 
         // Viewlets
         $this->registerAction('documentviewlet', 'KTWorkflowViewlet', 'ktcore.viewlets.document.workflow', 'KTDocumentViewlets.php');

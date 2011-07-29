@@ -1,4 +1,5 @@
 <?php
+
 /**
  * $Id$
  *
@@ -36,45 +37,19 @@
  *
  */
 
-class KTActionRegistry {
-    var $actions = array();
+require_once(KT_LIB_DIR . '/actions/dashboardaction.inc.php');
 
-    static function &getSingleton () {
-		if (!KTUtil::arrayGet($GLOBALS['_KT_PLUGIN'], 'oKTActionRegistry'))
-		{
-			$GLOBALS['_KT_PLUGIN']['oKTActionRegistry'] = new KTActionRegistry;
-		}
-		return $GLOBALS['_KT_PLUGIN']['oKTActionRegistry'];
-    }
+class KTDashboardViewlet extends KTDashboardAction {
+    public $sName;
+    public $sDescription;
 
-    function registerAction($slot, $name, $nsname, $path = '', $sPlugin = null) {
-    	if($sPlugin == 'bd.Quicklinks.plugin') {
-    		die('a');
-    	}
-        $this->actions[$slot] = KTUtil::arrayGet($this->actions, $slot, array());
-        $this->actions[$slot][$nsname] = array($name, $path, $nsname, $sPlugin);
-        $this->nsnames[$nsname] = array($name, $path, $nsname, $sPlugin);
-    }
+    public $_sShowPermission = 'ktcore.permissions.read';
 
-    function getActions($slot) {
-        return KTUtil::arrayGet($this->actions, $slot, array());
-    }
+    // the only major distinction of the viewlet vs. the action is the
+    // displayViewlet() method.
 
-    function getActionByNsname($nsname) {
-        return $this->nsnames[$nsname];
-    }
-
-    function initializeAction($nsname, $oUser) {
-        list($sClassName, $sPath, $sName, $sPlugin) = $this->getActionByNsname($nsname);
-        if (!empty($sPath)) {
-            require_once($sPath);
-        }
-
-        $oPluginRegistry =& KTPluginRegistry::getSingleton();
-        $oPlugin =& $oPluginRegistry->getPlugin($sPlugin);
-        $oAction =new $sClassName($oUser, $oPlugin);
-
-        return $oAction;
+    function displayViewlet() {
+        return '';
     }
 
 

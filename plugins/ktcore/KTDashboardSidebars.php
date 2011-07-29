@@ -35,17 +35,16 @@
  * Contributor( s): ______________________________________
  *
  */
-require_once(KT_LIB_DIR . "/actions/folderviewlet.inc.php");
+require_once(KT_LIB_DIR . "/actions/dashboardviewlet.inc.php");
 
-class KTDashboardSidebar extends KTFolderViewlet {
-    public $sName = 'ktcore.sidebars.folder';
+class KTDashboardSidebar extends KTDashboardViewlet {
+    public $sName = 'ktcore.sidebars.dashboard';
 	public $_sShowPermission = 'ktcore.permissions.read';
 	public $order = 1;
 	public $oUser;
 
-	private $folderNamespaces = array('ktcore.sidebar.recent.folder');
-	private $documentNamespaces = array('ktcore.sidebar.recent.document');
-	private $dashboardNamespaces = array('ktcore.sidebars.dashboard.checkout');
+	private $folderNamespaces 		= array(	'ktcore.sidebar.recent.folder');
+	private $documentNamespaces		= array(	'ktcore.sidebar.recent.document');
 
 	/**
 	 * Get the class name of a sidebar item
@@ -99,11 +98,16 @@ class KTDashboardSidebar extends KTFolderViewlet {
 	private function getDashboardSidebars()
 	{
 		$sidebars = array();
+		// The folde rand document objects are not available on the dashboard
+		// as we are out of context. But reusing existing actions seems
+		// better than copying and pasting.
+		// TODO : Copy and paste if that makes more sense.
 		$this->oFolder = null;
 		$this->oDocument = null;
 		$folderSidebars = KTFolderActionUtil::getFolderActionsForFolder($this->oFolder, $this->oUser, 'foldersidebar');
 		$documentSidebars = KTDocumentActionUtil::getDocumentActionsForDocument($this->oDocument, $this->oUser, 'documentsidebar');
-		$dashboardSidebars = KTDocumentActionUtil::getDocumentActionsForDocument($this->oDocument, $this->oUser, 'dashboardsidebar');
+		// Get dashboard actions that were never sidebars to begin with.
+		$dashboardSidebars = KTDashboardActionUtil::getActionsForDashboard($this->oUser, 'dashboardsidebar');
 
 		foreach ($folderSidebars as $sidebar) {
 			if(in_array($sidebar->sName, $this->folderNamespaces)) {
@@ -116,22 +120,17 @@ class KTDashboardSidebar extends KTFolderViewlet {
 				$sidebars[] = $sidebar;
 			}
 		}
-
-		foreach ($dashboardSidebars as $sidebar) {
-			if(in_array($sidebar->sName, $this->dashboardNamespaces)) {
-				$sidebars[] = $sidebar;
-			}
-		}
+		$sidebars = array_merge($sidebars, $dashboardSidebars);
 
 		return $sidebars;
 	}
 }
 
-// replace the old checked-out docs.
+// Replace the old checked-out docs.
 class KTCheckoutSidebar extends KTDashboardSidebar {
 	public $sName = 'ktcore.sidebars.dashboard.checkout';
 	public $_sShowPermission = 'ktcore.permissions.read';
-	public $order = 1;
+	public $order = 3;
 	public $bShowIfReadShared = true;
 	public $bShowIfWriteShared = true;
 
@@ -142,6 +141,7 @@ class KTCheckoutSidebar extends KTDashboardSidebar {
 
     public function displayViewlet()
     {
+    	return 'checked-out';
 		$documents = Document::getList(array('checked_out_user_id = ?', $this->oUser->getId()));
         $templating = KTTemplating::getSingleton();
         $template = $templating->loadTemplate('ktcore/dashlets/sidebars/checkedout');
@@ -150,6 +150,24 @@ class KTCheckoutSidebar extends KTDashboardSidebar {
         );
 
         return $template->render($templateData);
+    }
+}
+
+class QuicklinksSidebar extends KTDashboardSidebar {
+    public $sName = 'ktcore.sidebars.dashboard.quicklinks';
+	public $_sShowPermission = 'ktcore.permissions.read';
+	public $order = 3;
+	public $bShowIfReadShared = true;
+	public $bShowIfWriteShared = true;
+
+   	public function getCSSName()
+	{
+		return 'quicklinks-documents';
+	}
+
+    public function displayViewlet() {
+		// Check if plugin is active.
+    	return 'quicklinks';
     }
 }
 

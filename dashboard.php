@@ -49,7 +49,7 @@ require_once(KT_LIB_DIR . '/templating/kt3template.inc.php');
 require_once(KT_LIB_DIR . '/dispatcher.inc.php');
 require_once(KT_LIB_DIR . '/dashboard/DashletDisables.inc.php');
 require_once(KT_LIB_DIR . '/foldermanagement/Folder.inc');
-require_once(KT_PLUGIN_DIR . '/ktcore/KTDashboardSidebars.php');
+require_once(KT_LIB_DIR . '/actions/dashboardaction.inc.php');
 
 $sectionName = 'dashboard';
 
@@ -153,7 +153,8 @@ class DashboardDispatcher extends KTStandardDispatcher {
         }
 
         // It aint a folder, or a document, no need to get action
-        // $sidebars = KTDocumentActionUtil::getDocumentActionsForDocument($this->document, $this->oUser, 'dashboardsidebar');
+		$sidebars = KTDashboardActionUtil::getActionsForDashboard($this->oUser, 'maindashsidebar');
+		$sidebars = isset($sidebars[0]) ? $sidebars[0] : array();
        	// $sidebars = new KTDashboardSidebar();
         // render
         $oTemplating =& KTTemplating::getSingleton();
