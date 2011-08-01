@@ -41,12 +41,12 @@ jQuery(document).ready(function() {
 /**
  * Tooltips
  */
-jQuery(document).ready(function() { 
+jQuery(document).ready(function() {
 	jQuery(".help").tooltip({
 
 	})
 });
- 
+
 
 /**
  * Documents View Page

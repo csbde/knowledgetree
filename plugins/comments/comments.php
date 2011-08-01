@@ -36,77 +36,94 @@
  * Contributor( s): ______________________________________
  */
 
-class Comments
-{
+class Comments {
+
     /**
      * Get the list of comments on a document ordered by the date created
      *
-     * @param int $document_id
+     * @param int $documentId
      * @return array
      */
-    static public function get_comments($document_id, $order = 'DESC')
+    public static function getDocumentComments($documentId, $order = 'DESC')
     {
-        global $default;
-        $list = array();
-        if(!is_numeric($document_id)){
+        if (!is_numeric($documentId)) {
+            global $default;
             $default->log->error('COMMENTS|get: Document ID must be numeric');
             throw new Exception('Document ID must be numeric', 1);
         }
 
+        $list = DBUtil::getResultArray(self::buildCommentQuery($documentId, $order));
+
+        return self::formatCommentResult($list);
+    }
+
+    private static function buildCommentQuery($documentId = null, $order = 'DESC')
+    {
         $sql = "SELECT c.id, c.user_id, c.comment, c.date_created AS date, u.name AS user_name, u.username AS user_username, u.email
                 FROM document_comments c
                 INNER JOIN users u on u.id = c.user_id
-                WHERE document_id = {$document_id}
+                " . (empty($documentId) ? '' : "WHERE document_id = {$documentId}") . "
                 ORDER BY date_created {$order}";
 
-        $list = DBUtil::getResultArray($sql);
+        return $sql;
+    }
 
-        if(PEAR::isError($list)){
+    private static function formatCommentResult($list)
+    {
+        if (PEAR::isError($list)) {
+            global $default;
             $default->log->error("COMMENTS|get: Error fetching document comments: {$list->getMessage()}");
             throw new Exception("Error fetching document comments: {$list->getMessage()}", 1);
         }
 
-        $formatted_list = array();
-        foreach ($list as $item){
+        $formattedList = array();
+
+        foreach ($list as $item) {
             $item['action'] = '';
             $item['version'] = '';
-            $formatted_list[] = $item;
+            $formattedList[] = $item;
         }
 
-        return $formatted_list;
+        return $formattedList;
+    }
+
+    public static function getAllComments($order = 'DESC')
+    {
+        $list = DBUtil::getResultArray(self::buildCommentQuery(null, $order));
+        return self::formatCommentResult($list);
     }
 
     /**
      * Add a comment on a document
      *
-     * @param int $document_id
+     * @param int $documentId
      * @param string $comment
      */
-    static public function add_comment($document_id, $comment)
+    public static function addComment($documentId, $comment)
     {
         global $default;
-        if(!is_numeric($document_id)){
+        if (!is_numeric($documentId)) {
             $default->log->error('COMMENTS|add: Document ID must be numeric');
             throw new Exception('Document ID must be numeric', 1);
         }
 
-        if(empty($comment)){
+        if (empty($comment)) {
             $default->log->warn('COMMENTS|add: Comment can\'t be empty');
             throw new Exception('Comment can\'t be empty', 1);
         }
 
         $date = date('Y-m-d H:i:s');
-        $user_id = $_SESSION['userID'];
+        $userId = $_SESSION['userID'];
 
         $fields = array();
-        $fields['document_id'] = $document_id;
-        $fields['user_id'] = $user_id;
+        $fields['document_id'] = $documentId;
+        $fields['user_id'] = $userId;
         $fields['date_created'] = $date;
         $fields['comment'] = $comment;
 
         $res = DBUtil::autoInsert('document_comments', $fields);
 
-        if(PEAR::isError($res)){
+        if (PEAR::isError($res)) {
             $default->log->error("COMMENTS|add: Error saving comment: {$res->getMessage()}");
             throw new Exception("Error saving comment: {$res->getMessage()}", 1);
         }
@@ -118,18 +135,18 @@ class Comments
      * Not Used!
      * Allow the user to edit the comment within a few minutes of posting it.
      *
-     * @param int $comment_id The id of the comment being edited
+     * @param int $commentId The id of the comment being edited
      * @param string $comment The updated comment
      */
-    static public function update_comment($comment_id, $comment)
+    public static function updateComment($commentId, $comment)
     {
         global $default;
-        if(!is_numeric($comment_id)){
+        if (!is_numeric($commentId)) {
             $default->log->error('COMMENTS|update: Comment ID must be numeric');
             throw new Exception('Comment ID must be numeric', 1);
         }
 
-        if(empty($comment)){
+        if (empty($comment)) {
             $default->log->warn('COMMENTS|update: Comment can\'t be empty');
             throw new Exception('Comment can\'t be empty', 1);
         }
@@ -137,9 +154,9 @@ class Comments
         $fields = array();
         $fields['comment'] = $comment;
 
-        $res = DBUtil::autoUpdate('document_comments', $fields, $comment_id);
+        $res = DBUtil::autoUpdate('document_comments', $fields, $commentId);
 
-        if(PEAR::isError($res)){
+        if (PEAR::isError($res)) {
             $default->log->error("COMMENTS|update: Error updating comment: {$res->getMessage()}");
             throw new Exception("Error updating comment: {$res->getMessage()}", 1);
         }
@@ -152,19 +169,19 @@ class Comments
      * Allow the user to delete the comment within a few minutes of posting it.
      * Or use as a moderator tool
      *
-     * @param int $comment_id The id of the comment being deleted
+     * @param int $commentId The id of the comment being deleted
      */
-    static public function delete_comment($comment_id)
+    public static function deleteComment($commentId)
     {
         global $default;
-        if(!is_numeric($comment_id)){
+        if (!is_numeric($commentId)) {
             $default->log->error('COMMENTS|delete: Comment ID must be numeric');
             throw new Exception('Comment ID must be numeric', 1);
         }
 
-        $res = DBUtil::autoDelete('document_comments', $comment_id);
+        $res = DBUtil::autoDelete('document_comments', $commentId);
 
-        if(PEAR::isError($res)){
+        if (PEAR::isError($res)) {
             $default->log->error("COMMENTS|delete: Error deleting comment: {$res->getMessage()}");
             throw new Exception("Error deleting comment: {$res->getMessage()}", 1);
         }

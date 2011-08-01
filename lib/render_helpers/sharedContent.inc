@@ -124,7 +124,7 @@ class SharedContent extends KTEntity {
                 $oWithUser = User::get($this->iUserId);
                 $username = $oFromUser->getUserName();
                 $sharedname = $oWithUser->getUserName();
-                Comments::add_comment($this->iObjectId, "$username has shared this document with $sharedname");
+                Comments::addComment($this->iObjectId, "$username has shared this document with $sharedname");
             }
         }
 

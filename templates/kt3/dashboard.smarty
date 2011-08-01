@@ -1,6 +1,9 @@
+<script type="text/javascript" src="/resources/js/document/kt.app.activityFeed.js"></script>
+
 <table style="border-spacing: 0px;">
 	<td width="745" valign="top">
-
+            <div id="activityfeed-container" style="margin-top:1em;"></div>
+            {$global_activity_feed->displayGlobalActivityFeed()}
 	</td>
 
 	<td valign="top" id="sidebar" class="standardBorder" height="100%" width="215">

@@ -100,7 +100,7 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
 
             return $this->do_error();
         }
-		$this->bulkActionInProgress = $this->isBulkActionInProgress();
+        $this->bulkActionInProgress = $this->isBulkActionInProgress();
 
         $documentId = $this->document->getId();
         $documentData['document_id'] = $documentId;
@@ -138,17 +138,17 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
             $this->aBreadcrumbs = kt_array_merge($this->aBreadcrumbs, KTBrowseUtil::breadcrumbsForDocument($this->document, $options, $symLinkFolderId));
         }
 
-		$oViewUtil = new ViewActionsUtil($this->bulkActionInProgress);
-		$oViewUtil->initActions($this->document, $this->oUser);
-        $oViewUtil->createButtons();
-		$documentTopActions = $oViewUtil->renderActions('top');
-        $documentBottomActions = $oViewUtil->renderActions('bottom');
+        $viewUtil = new ViewActionsUtil($this->bulkActionInProgress);
+        $viewUtil->initActions($this->document, $this->oUser);
+        $viewUtil->createButtons();
+        $documentTopActions = $viewUtil->renderActions('top');
+        $documentBottomActions = $viewUtil->renderActions('bottom');
 
         $documentData['document'] = $this->document;
         $documentData['document_type'] =& DocumentType::get($this->document->getDocumentTypeID());
         $isValidDoctype = true;
 
-        $documentTypes = & DocumentType::getList('disabled=0');
+        $documentTypes =& DocumentType::getList('disabled=0');
 
         if (PEAR::isError($documentData['document_type'])) {
             $this->oPage->addError(_kt('The document you requested has an invalid <strong>document type</strong>.  Unfortunately, this means that we cannot effectively display it.'));
@@ -186,7 +186,6 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
             }
             else {
                 $displayClass = $fieldsetDisplayReg->getHandler($fieldset->getNamespace());
-
                 array_push($fieldsets, new $displayClass($fieldset));
             }
         }
@@ -199,14 +198,13 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
             }
         }
 
-        // viewlets
         $viewlets = array();
         $viewletActions = KTDocumentActionUtil::getDocumentActionsForDocument($this->document, $this->oUser, 'documentviewlet');
         foreach ($viewletActions as $action) {
             $info = $action->getInfo();
             if (!is_null($info)) {
                 if (($info['ns'] == 'ktcore.viewlet.document.activityfeed') || ($info['ns'] == 'thumbnail.viewlets')) {
-                	// use the action, since we displayViewlet() later.
+                    // use the action, since we displayViewlet() later.
                     $viewlets[] = $action->displayViewlet();
                 }
             }
@@ -227,7 +225,10 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
                 require_once($path . 'instaViewLinkAction.php');
                 $livePreviewAction = new instaViewLinkAction($this->document, $this->oUser, null);
                 $livePreview = $livePreviewAction->do_main();
-            } catch(Exception $e) {}
+            }
+            catch(Exception $e) {
+                // Should really do something here, swallowing exceptions = bad.
+            }
         }
         
         if (KTPluginUtil::pluginIsActive('actionableinsights.ratingcontent.plugin')) {
@@ -248,11 +249,11 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
         $blocks = KTDocumentActionUtil::getDocumentActionsForDocument($this->document, $this->oUser, 'documentblock');
         $documentBlocks = isset($blocks[0]) ? $blocks[0] : array();
         if (!empty($documentBlocks)) {
-			$documentBlocks->setBulkAction($this->bulkActionInProgress);
-			$info = $documentBlocks->getInfo();
-        	if (is_null($info)) {
-        		$documentBlocks = array();
-        	}
+            $documentBlocks->setBulkAction($this->bulkActionInProgress);
+            $info = $documentBlocks->getInfo();
+            if (is_null($info)) {
+                $documentBlocks = array();
+            }
         }
         $sidebars = KTDocumentActionUtil::getDocumentActionsForDocument($this->document, $this->oUser, 'maindocsidebar');
         $documentSidebars = isset($sidebars[0]) ? $sidebars[0] : array();
