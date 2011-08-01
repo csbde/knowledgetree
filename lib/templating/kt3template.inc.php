@@ -194,6 +194,7 @@ class KTPage {
                         'thirdpartyjs/jquery/plugins/jstree/jquery.cookie.js' => $files,
                         'thirdpartyjs/jquery/plugins/jstree/jquery.jstree.js' => $files,
                         'resources/js/newui/new_features/kt.app.newfeatures.js' => $overviews,
+                        'resources/js/newui/documents/kt.app.ratingcontent.js' => $files,
                       );
 
         $oConfig = KTConfig::getSingleton();

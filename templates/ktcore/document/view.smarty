@@ -50,6 +50,24 @@
                 <!-- <td style="display:none;" width="1" valign="top" style="padding-right: 15px;"><span id="doc_thumb" style="float:left;" /></td> -->
 			<td height="1" valign="top" width="310">
                     <div class="doc_description">
+						{if $ratingContentEnabled}
+							<div id="documentLikeStatus">
+								{if $userLikesDocument}
+									<span class="like_status"><a href="javascript:;" onclick="kt.app.ratingcontent.unlikeDocument({$document->getId()}, false);"><img src="resources/graphics/newui/document_liked.png" /></a></span>
+								{else}
+									<span class="like_status"><a href="javascript:;" onclick="kt.app.ratingcontent.likeDocument({$document->getId()}, false);"><img src="resources/graphics/newui/document_notliked.png" /></a></span>
+								{/if}
+								
+								<span class="like_count">
+									{if $numDocumentLikes == 1}
+										{i18n}One User likes this document{/i18n}
+									{else}
+										{$numDocumentLikes} {i18n}Users like this document{/i18n}
+									{/if}
+								</span>
+							</div>
+						{/if}
+						
                         <span class="doc_info" style="display: block;">
                         <table class="metadatatable">
                         	<tr>
