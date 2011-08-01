@@ -48,9 +48,6 @@ class KTActionRegistry {
     }
 
     function registerAction($slot, $name, $nsname, $path = '', $sPlugin = null) {
-    	if($sPlugin == 'bd.Quicklinks.plugin') {
-    		die('a');
-    	}
         $this->actions[$slot] = KTUtil::arrayGet($this->actions, $slot, array());
         $this->actions[$slot][$nsname] = array($name, $path, $nsname, $sPlugin);
         $this->nsnames[$nsname] = array($name, $path, $nsname, $sPlugin);
