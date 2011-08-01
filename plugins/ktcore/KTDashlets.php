@@ -175,47 +175,6 @@ class KTNotificationDashlet extends KTBaseDashlet {
     }
 }
 
-
-
-// replace the old checked-out docs.
-class KTCheckoutDashlet extends KTBaseDashlet {
-
-    var $oUser;
-
-    function KTCheckoutDashlet() {
-        $this->sTitle = _kt('Your Checked-out Documents');
-    }
-
-    function is_active($oUser) {
-
-    	$this->oUser = $oUser;
-        $this->checked_out_documents = Document::getList(array('checked_out_user_id = ?', $this->oUser->getId()));
-
-        global $default;
-    	$oConfig =& KTConfig::getSingleton();
-    	if($oConfig->get('dashboard/alwaysShowYCOD')) return true;
-
-        return (!empty($this->checked_out_documents));
-    }
-
-    function getDocumentLink($oDocument) {
-    	return KTUtil::kt_clean_document_url($oDocument->getId());
-        //return generateControllerLink('viewDocument', 'fDocumentId=' . $oDocument->getId());
-    }
-
-    function render() {
-        $oTemplating =& KTTemplating::getSingleton();
-        $oTemplate = $oTemplating->loadTemplate('ktcore/dashlets/checkedout');
-        $aTemplateData = array(
-            'context' => $this,
-            'documents' => $this->checked_out_documents,
-        );
-        return $oTemplate->render($aTemplateData);
-    }
-}
-
-
-// replace the old checked-out docs.
 class KTIndexerStatusDashlet extends KTBaseDashlet {
 
     var $aTriggerSet;
