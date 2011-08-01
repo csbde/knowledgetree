@@ -98,7 +98,6 @@ class KTCorePlugin extends KTPlugin {
         // Dashboard
         $this->registerAction('maindashsidebar', 'KTDashboardSidebar', 'ktcore.sidebars.dashboard', 'KTDashboardSidebars.php');
         $this->registerAction('dashboardsidebar', 'KTCheckoutSidebar', 'ktcore.sidebars.dashboard.checkout', 'KTDashboardSidebars.php');
-        $this->registerAction('dashboardsidebar', 'QuicklinksSidebar', 'ktcore.sidebars.dashboard.quicklinks', 'KTDashboardSidebars.php');
         // Folders
         $this->registerAction('mainfoldersidebar', 'KTFolderSidebar', 'ktcore.sidebars.folder', 'KTFolderSidebars.php');
         // Documents
@@ -135,7 +134,6 @@ class KTCorePlugin extends KTPlugin {
         // Dashlets
         $this->registerDashlet('KTInfoDashlet', 'ktcore.dashlet.info', 'KTDashlets.php');
         $this->registerDashlet('KTNotificationDashlet', 'ktcore.dashlet.notifications', 'KTDashlets.php');
-        $this->registerDashlet('KTCheckoutDashlet', 'ktcore.dashlet.checkout', 'KTDashlets.php');
 
         if ($restrictedEnv !== true) {
             $this->registerDashlet('KTMailServerDashlet', 'ktcore.dashlet.mail_server', 'KTDashlets.php');

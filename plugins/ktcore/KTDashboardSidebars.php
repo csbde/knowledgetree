@@ -120,6 +120,7 @@ class KTDashboardSidebar extends KTDashboardViewlet {
 				$sidebars[] = $sidebar;
 			}
 		}
+
 		$sidebars = array_merge($sidebars, $dashboardSidebars);
 
 		return $sidebars;
@@ -130,7 +131,7 @@ class KTDashboardSidebar extends KTDashboardViewlet {
 class KTCheckoutSidebar extends KTDashboardSidebar {
 	public $sName = 'ktcore.sidebars.dashboard.checkout';
 	public $_sShowPermission = 'ktcore.permissions.read';
-	public $order = 3;
+	public $order = 4;
 	public $bShowIfReadShared = true;
 	public $bShowIfWriteShared = true;
 
@@ -141,33 +142,20 @@ class KTCheckoutSidebar extends KTDashboardSidebar {
 
     public function displayViewlet()
     {
-    	return 'checked-out';
-		$documents = Document::getList(array('checked_out_user_id = ?', $this->oUser->getId()));
+    	$where = array(	'checked_out_user_id = ?', $this->oUser->getId(),
+    					);
+		$options = array(	'limit' => 5,
+							'orderby' => 'created desc',
+							);
+		$documents = Document::getList($where, $options);
         $templating = KTTemplating::getSingleton();
         $template = $templating->loadTemplate('ktcore/dashlets/sidebars/checkedout');
         $templateData = array(
             'documents' => $documents,
+            'browseUtil' => new KTBrowseUtil(),
         );
 
         return $template->render($templateData);
-    }
-}
-
-class QuicklinksSidebar extends KTDashboardSidebar {
-    public $sName = 'ktcore.sidebars.dashboard.quicklinks';
-	public $_sShowPermission = 'ktcore.permissions.read';
-	public $order = 3;
-	public $bShowIfReadShared = true;
-	public $bShowIfWriteShared = true;
-
-   	public function getCSSName()
-	{
-		return 'quicklinks-documents';
-	}
-
-    public function displayViewlet() {
-		// Check if plugin is active.
-    	return 'quicklinks';
     }
 }
 

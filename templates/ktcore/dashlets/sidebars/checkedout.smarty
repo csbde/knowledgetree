@@ -1,7 +1,7 @@
 {if $documents}
 	<h2> My checked-out documents </h2>
 	{foreach from=$documents item=oEntry}
-    	{capture assign=sLink}{$oEntry->getUrlForItem()}{/capture}
+    	{capture assign=sLink}{$browseUtil->getUrlForDocument($oEntry)}{/capture}
 		<ul style="font-size: 11px;">
 			<li><a class="contenttype_href" href="{$sLink}">{$oEntry->getName()|mb_truncate:25:"...":true|sanitize}</a></li>
 		</ul>
