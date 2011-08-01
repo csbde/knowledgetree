@@ -121,6 +121,7 @@ class DashboardDispatcher extends KTStandardDispatcher {
         $this->oPage->requireJSResource('thirdpartyjs/yui/dom/dom.js');
         $this->oPage->requireJSResource('thirdpartyjs/yui/dragdrop/dragdrop.js');
         $this->oPage->requireJSResource('resources/js/DDList.js');
+        $this->oPage->requireJSResource('resources/js/newui/dashboard/moreSidebarItems.js');
 
         $this->oUser->refreshDashboadState();
 
@@ -152,10 +153,10 @@ class DashboardDispatcher extends KTStandardDispatcher {
             unset($_SESSION['isFirstLogin']);
         }
 
-        // It aint a folder, or a document, no need to get action
+        // Retrieve the main dashboard sidebar action.
 		$sidebars = KTDashboardActionUtil::getActionsForDashboard($this->oUser, 'maindashsidebar');
 		$sidebars = isset($sidebars[0]) ? $sidebars[0] : array();
-       	// $sidebars = new KTDashboardSidebar();
+
         // render
         $oTemplating =& KTTemplating::getSingleton();
         $oTemplate = $oTemplating->loadTemplate('kt3/dashboard');

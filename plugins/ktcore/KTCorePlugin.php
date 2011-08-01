@@ -98,6 +98,9 @@ class KTCorePlugin extends KTPlugin {
         // Dashboard
         $this->registerAction('maindashsidebar', 'KTDashboardSidebar', 'ktcore.sidebars.dashboard', 'KTDashboardSidebars.php');
         $this->registerAction('dashboardsidebar', 'KTCheckoutSidebar', 'ktcore.sidebars.dashboard.checkout', 'KTDashboardSidebars.php');
+        // This should not be here, but it does not register in the plugin itself
+        // TODO : Move into quicklinks plugin QuicklinksPlugin.php
+        $this->registerAction('dashboardsidebar', 'QuicklinksSidebar', 'bd.Quicklinks.dashboard.quicklinks', 'KTDashboardSidebars.php');
         // Folders
         $this->registerAction('mainfoldersidebar', 'KTFolderSidebar', 'ktcore.sidebars.folder', 'KTFolderSidebars.php');
         // Documents
