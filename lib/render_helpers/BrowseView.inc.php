@@ -36,13 +36,6 @@ class BrowseView {
             $this->ratingContentEnabled = false;
         }
 		
-		// Remove next two lines - just for dev - rely on above
-		$this->ratingContentEnabled = true;
-		require_once(KT_PLUGIN_DIR . '/RatingContent/KTRatingContent.php');
-		// End Remove
-		
-		
-
         // Include new browse view css
         $page = $GLOBALS['main'];
         $page->requireCSSResource('resources/css/newui/browseView.css');

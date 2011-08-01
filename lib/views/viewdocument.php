@@ -233,11 +233,6 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
         } else {
             $ratingContentEnabled = false;
         }
-		
-		// Remove next two lines - just for dev - rely on above
-		$ratingContentEnabled = true;
-		require_once(KT_PLUGIN_DIR . '/RatingContent/KTRatingContent.php');
-        
         
         $ownerUser = KTUserUtil::getUserField($this->document->getOwnerID(), 'name');
         $creatorUser = KTUserUtil::getUserField($this->document->getCreatorID(), 'name');
