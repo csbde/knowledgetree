@@ -19,6 +19,7 @@ class BrowseView {
     //      the value may be overridden by the javascript, but this value is always a fallback.
     private $limit = 3;
     private $folderId;
+	public $showSelection = true;
 
     public function __construct()
     {
@@ -351,15 +352,15 @@ class BrowseView {
         }
 
         if (!$permissions['editable']) {
-        	
+
         	if ($permissions['folderDetails']) {
         		$folderMessage = '<h2>There\'s nothing in this folder yet!</h2>';
         	}
-        	
+
             if ($folderMessage == '') {
                 $folderMessage = '<h2>You don\'t have permissions to view the contents of this folder!</h2>';
             }
-            
+
             return "<span class='notification'>".$folderMessage."</span>";
         } else {
             $folderMessage = '<h2>There\'s nothing in this folder yet!</h2>';
@@ -420,11 +421,11 @@ class BrowseView {
         $idClass = $pageClass . '_[page]';
         $pages = array();
         $pages[] = '<ul class="' . $paginationClass . '">';
-        $pages[] = '<li class="' . $itemClass . '" onclick="' . $prevScript . '">&#9666</li>';
+        $pages[] = '<li class="prevBrowseButton ' . $itemClass . '" onclick="' . $prevScript . '">&#9666</li>';
         for($i = 1; $i <= $pageCount; ++$i) {
             $pages[] = ktVar::parseString('<li class="' . $itemClass . ' ' . $idClass . '" onclick="' . $pageScript . '">' . $i . '</li>', array('page'=> $i, 'folder' => $this->folderId));
         }
-        $pages[] = '<li class="' . $itemClass . '" onclick="' . $nextScript . '">&#9656</li>';
+        $pages[] = '<li class="nextBrowseButton ' . $itemClass . '" onclick="' . $nextScript . '">&#9656</li>';
         $pages[] = '</ul>';
         $pages = join($pages);
 
@@ -501,10 +502,18 @@ class BrowseView {
             $item['mimeicon'] = '';
         }
 
+        if ($item['hidecheckbox']) {
+            $item['hidecheckbox'] = ' class="not_supported"';
+        } else {
+            $item['hidecheckbox'] = '';
+        }
+
         // Get the users permissions on the document
         $permissions = $item['permissions'];
+
         $hasWrite = (strpos($permissions, 'W') === false) ? false : true;
         $hasDelete = (strpos($permissions, 'D') === false) ? false : true;
+        $hasSecurity = (strpos($permissions, 'S') === false) ? false : true;
 
         $item['filename'] = (strlen($item['filename']) > $fileNameCutoff) ? (substr($item['filename'], 0, $fileNameCutoff - 3) . "...") : $item['filename'];
 
@@ -518,7 +527,10 @@ class BrowseView {
         $item['actions.move'] = $item['actions.copy'] = $item['actions.delete'] = $ns;
 
         $isCheckedOut = ($item['checked_out_date']) ? true : false;
+        $isRealDocument = false;
         if (get_class($oDocument) == 'Document') {
+            $isRealDocument = true;
+            
             if ($hasWrite) {
                 $item['actions.checkout'] = $item['checked_out_date'] ? $ns : '';
                 $hasCheckedOut = ($_SESSION['userID'] == $item['checked_out_by_id']);
@@ -548,17 +560,18 @@ class BrowseView {
 
         $item['actions.finalize_document'] = ($isCheckedOut) ? $ns : $item['actions.finalize_document'];
 
+        $item['actions.change_owner'] = $hasSecurity ? $item['actions.change_owner'] : $ns;
+        $item['actions.finalize_document'] = $hasSecurity ? $item['actions.finalize_document'] : $ns;
+
         if (!$hasWrite) {
-            $item['actions.change_owner'] = $ns;
             $item['actions.share_document'] = $ns;
             if ($isCheckedOut || $item['actions.finalize_document']) {
                 $this->oUser = is_null($this->oUser) ? User::get($user_id) : $this->oUser;
-                $sPermissions = 'ktcore.permissions.write';
-                if (KTPermissionUtil::userHasPermissionOnItem($this->oUser, $sPermissions, $oDocument)) {
+                
+                if ($isRealDocument && KTPermissionUtil::userHasPermissionOnItem($this->oUser, 'ktcore.permissions.write', $oDocument)) {
                     $item['actions.share_document'] = '';
                 }
             }
-            $item['actions.finalize_document'] = $ns;
             $item['separatorE']=$ns;
         }
 
@@ -615,6 +628,9 @@ class BrowseView {
         $item['title'] = sanitizeForHTML($item['title']);
         $item['filesize'] = KTUtil::filesizeToString($item['filesize'], 'KB');
 
+        $item['title_sanitized'] = str_replace('\'', '\\\'', $item['title']);
+        $item['title_sanitized'] = str_replace('"', '&quot;', $item['title_sanitized']);
+
         // Check if the document is a shortcut
         if (!is_null($item['linked_document_id'])) {
             $item['actions.share_document'] = $ns;
@@ -633,9 +649,12 @@ class BrowseView {
             $share_separator = '<li class="separator[separatorE]"></li>';
         }
 
-        $tpl = $this->getDocumentTemplate(1, '<td width="1" class="checkbox">
-                            <input name="selection_d[]" type="checkbox" value="[id]" />
-                        </td>', $share_separator, '<span class="shortcut[is_shortcut]">
+        $selection = '';
+		if ($this->showSelection) {
+			$selection = '<td width="1" class="checkbox"><input name="selection_d[]" type="checkbox" value="[id]" [hidecheckbox] /></td>';
+		}
+
+        $tpl = $this->getDocumentTemplate(1, $selection, $share_separator, '<span class="shortcut[is_shortcut]">
                                     <span>This is a shortcut to the file.</span>
                                 </span>');
 
@@ -671,10 +690,11 @@ class BrowseView {
         } else {
             $item['link'] = KTUtil::buildUrl('browse.php', array('fFolderId'=> $item['id']));
         }
-
-        $tpl = $this->getFolderTemplate(true, '<td width="1" class="checkbox">
-                        <input name="selection_f[]" type="checkbox" value="[id]" />
-                    </td>', '<span class="shortcut[is_shortcut]"><span>This is a shortcut to the folder.</span></span>');
+        $selection = '';
+		if ($this->showSelection) {
+			$selection = '<td width="1" class="checkbox"><input name="selection_f[]" type="checkbox" value="[id]" /></td>';
+		}
+        $tpl = $this->getFolderTemplate(true, $selection, '<span class="shortcut[is_shortcut]"><span>This is a shortcut to the folder.</span></span>');
 
         if ($empty) { return '<span class="fragment folder" style="display:none;">' . $tpl . '</span>'; }
 
@@ -741,7 +761,7 @@ class BrowseView {
 
                                         <li class="action_copy [actions.copy]"><a href="#" onclick="javascript:{kt.app.copy.doTreeAction(\'copy\', [id]);}">Copy</a></li>
                                         <li class="action_move [actions.move]"><a href="#" onclick="javascript:{kt.app.copy.doTreeAction(\'move\', [id]);}">Move</a></li>
-                                        <li class="action_delete [actions.delete]"><a href="#" onclick="javascript:{kt.app.copy.doAction(\'delete\', [id]);}">Delete</a></li>
+                                        <li class="action_delete [actions.delete]"><a href="#" onclick="javascript:{kt.app.copy.doAction(\'delete\', [id], \'[title_sanitized]\');}">Delete</a></li>
 
                                         <li class="separator separatorB[separatorB]"></li>
 
@@ -758,7 +778,7 @@ class BrowseView {
                                         <li class="separator separatorD[separatorD]"></li>
 
                                         <li class="action_change_owner [actions.change_owner]"><a href="javascript:;" onclick="kt.app.document_actions.changeOwner(\'[id]\');">Change Owner</a></li>
-                                        <li class="action_finalize_document [actions.finalize_document]"><a href="#" onclick="javascript:{kt.app.copy.doAction(\'immutable\', [id]);}">Finalize Document</a></li>
+                                        <li class="action_finalize_document [actions.finalize_document]"><a href="#" onclick="javascript:{kt.app.copy.doAction(\'immutable\', [id], \'[title_sanitized]\');}">Finalize Document</a></li>
                                     </ul>
                                 </li>
                             </ul>';

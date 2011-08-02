@@ -13,21 +13,21 @@ which documents follow (e.g. "submit for review" or "publish").{/i18n}</p>
 <div style="width: 49%; float: left; ">
 
 <h3>{i18n}States{/i18n}</h3>
-                <a class="ktAction ktAdd ktActionDescribed" href="{addQS context=$context}action=addstates{/addQS}">{i18n}Add New States{/i18n}</a>
+      <div class="form_actions standalone">
                 <a href="{addQS context=$context}action=addstates{/addQS}">{i18n}Add New States{/i18n}</a><br /><br />
-            
+      </div>
             
                 <table class="kt_collection" cellspacing="0">
                     <thead>
                         <tr>
                             <th>{i18n}State Name{/i18n}</th>
-                            <th>{i18n}Edit{/i18n}</th>                            
-                            <th>{i18n}Delete{/i18n}</th>                                                        
+                            <th class="icon-column">{i18n}Edit{/i18n}</th>                            
+                            <th class="icon-column">{i18n}Delete{/i18n}</th>                                                        
                         </tr>
                     </thead>
                     <tbody>
                       {foreach from=$states item=oState}                    
-                        <tr>
+                        <tr  class="{cycle name=states values=odd,even}">
                             <td>
                                 {$oState->getName()}
                             </td>
@@ -44,23 +44,22 @@ which documents follow (e.g. "submit for review" or "publish").{/i18n}</p>
 </div>
 <div style="float: left; width: 49%; margin-left: 1em;">
 <h3>{i18n}Transitions{/i18n}</h3>
-
-                <a class="ktAction ktAdd ktActionDescribed" href="{addQS context=$context}action=addtransitions{/addQS}">{i18n}Add New Transitions{/i18n}</a>
+        <div class="form_actions standalone">
                 <a href="{addQS context=$context}action=addtransitions{/addQS}">{i18n}Add New Transitions{/i18n}</a><br /><br />
-
+		</div>
 
 
                 <table class="kt_collection" cellspacing="0">
                     <thead>
                         <tr>
                             <th>{i18n}Transition Name{/i18n}</th>
-                            <th>{i18n}Edit{/i18n}</th>                            
-                            <th>{i18n}Delete{/i18n}</th>                                                        
+                            <th class="icon-column">{i18n}Edit{/i18n}</th>                            
+                            <th class="icon-column">{i18n}Delete{/i18n}</th>                                                        
                         </tr>
                     </thead>
                     <tbody>
               {foreach from=$transitions item=oTransition}               
-                        <tr>
+                        <tr  class="{cycle name=transition values=odd,even}">
                             <td>
                                 {$oTransition->getName()}
                             </td>

@@ -39,48 +39,51 @@
 require_once(KT_LIB_DIR . '/database/sqlfile.inc.php');
 
 class KTPlugin {
-    var $sNamespace;
-    var $sFilename = null;
-    var $bAlwaysInclude = false;
-    var $iVersion = 0;
-    var $iOrder = 0;
-    var $sFriendlyName = null;
-    var $sSQLDir = null;
+    public $sNamespace;
+    public $sFilename = null;
+    public $bAlwaysInclude = false;
+    public $iVersion = 0;
+    public $iOrder = 0;
+    public $sFriendlyName = null;
+    public $sSQLDir = null;
 
-    var $autoRegister = false;
-    var $showInAdmin = true;
+    public $autoRegister = false;
+    public $showInAdmin = true;
 
-    var $_aPortlets = array();
-    var $_aTriggers = array();
-    var $_aActions = array();
-    var $_aPages = array();
-    var $_aAuthenticationProviders = array();
-    var $_aAdminCategories = array();
-    var $_aAdminPages = array();
-    var $_aDashlets = array();
-    var $_ai18n = array();
-    var $_ai18nLang = array();
-    var $_aLanguage = array();
-    var $_aHelpLanguage = array();
-    var $_aWFTriggers = array();
-    var $_aColumns = array();
-    var $_aViews = array();
-    var $_aNotificationHandlers = array();
-    var $_aTemplateLocations = array();
-    var $_aWidgets = array();
-    var $_aValidators = array();
-    var $_aCriteria = array();
-    var $_aInterceptors = array();
+    public $_aPortlets = array();
+    public $_aTriggers = array();
+    public $_aActions = array();
+    public $_aPages = array();
+    public $_aAuthenticationProviders = array();
+    public $_aAdminCategories = array();
+    public $_aAdminPages = array();
+    public $_aDashlets = array();
+    public $_ai18n = array();
+    public $_ai18nLang = array();
+    public $_aLanguage = array();
+    public $_aHelpLanguage = array();
+    public $_aWFTriggers = array();
+    public $_aColumns = array();
+    public $_aViews = array();
+    public $_aNotificationHandlers = array();
+    public $_aTemplateLocations = array();
+    public $_aWidgets = array();
+    public $_aValidators = array();
+    public $_aCriteria = array();
+    public $_aInterceptors = array();
 
-    function KTPlugin($sFilename = null) {
+    public function KTPlugin($sFilename = null)
+    {
         $this->sFilename = $sFilename;
     }
 
-    function setFilename($sFilename) {
+    public function setFilename($sFilename)
+    {
         $this->sFilename = $sFilename;
     }
 
-    function registerPortlet($aLocation, $sPortletClassName, $sPortletNamespace, $sFilename = null) {
+    public function registerPortlet($aLocation, $sPortletClassName, $sPortletNamespace, $sFilename = null)
+    {
         $sFilename = $this->_fixFilename($sFilename);
         $this->_aPortlets[$sPortletNamespace] = array($aLocation, $sPortletClassName, $sPortletNamespace, $sFilename, $this->sNamespace);
 
@@ -92,7 +95,8 @@ class KTPlugin {
         $this->registerPluginHelper($sPortletNamespace, $sPortletClassName, $sFilename, $params, 'general', 'portlet');
     }
 
-    function registerTrigger($sAction, $sStage, $sTriggerClassName, $sTriggerNamespace, $sFilename = null) {
+    public function registerTrigger($sAction, $sStage, $sTriggerClassName, $sTriggerNamespace, $sFilename = null)
+    {
         $sFilename = $this->_fixFilename($sFilename);
         $this->_aTriggers[$sTriggerNamespace] = array($sAction, $sStage, $sTriggerClassName, $sTriggerNamespace, $sFilename, $this->sNamespace);
 
@@ -101,7 +105,8 @@ class KTPlugin {
         $this->registerPluginHelper($sTriggerNamespace, $sTriggerClassName, $sFilename, $params, 'general', 'trigger');
     }
 
-    function registerAction($sActionType, $sActionClassName, $sActionNamespace, $sFilename = null) {
+    public function registerAction($sActionType, $sActionClassName, $sActionNamespace, $sFilename = null)
+    {
         $sFilename = $this->_fixFilename($sFilename);
         $this->_aActions[$sActionNamespace] = array($sActionType, $sActionClassName, $sActionNamespace, $sFilename, $this->sNamespace);
 
@@ -122,7 +127,7 @@ class KTPlugin {
         $this->registerPluginHelper($webPath, $pageClassName, $filename, $params, 'general', 'page');
     }
 
-    function registerWorkflowTrigger($sNamespace, $sTriggerClassName, $sFilename = null) {
+    public function registerWorkflowTrigger($sNamespace, $sTriggerClassName, $sFilename = null) {
         $sFilename = $this->_fixFilename($sFilename);
         $this->_aWFTriggers[$sNamespace] = array($sNamespace, $sTriggerClassName, $sFilename);
 
@@ -131,7 +136,8 @@ class KTPlugin {
         $this->registerPluginHelper($sNamespace, $sTriggerClassName, $sFilename, $params, 'general', 'workflow_trigger');
     }
 
-    function getPagePath($sPath) {
+    public function getPagePath($sPath)
+    {
         $sExt = ".php";
         if (KTUtil::arrayGet($_SERVER, 'kt_no_extensions')) {
             $sExt = "";
@@ -144,7 +150,8 @@ class KTPlugin {
         }
     }
 
-    function registerAuthenticationProvider($sName, $sClass, $sNamespace, $sFilename = null) {
+    public function registerAuthenticationProvider($sName, $sClass, $sNamespace, $sFilename = null)
+    {
         $sFilename = $this->_fixFilename($sFilename);
         $this->_aAuthenticationProviders[$sNamespace] = array($sName, $sClass, $sNamespace, $sFilename, $this->sNamespace);
 
@@ -187,7 +194,8 @@ class KTPlugin {
      * @param string $sNamespace
      * @param string $sFilename
      */
-    function registerDashlet($sClassName, $sNamespace, $sFilename) {
+    public function registerDashlet($sClassName, $sNamespace, $sFilename)
+    {
         $sFilename = $this->_fixFilename($sFilename);
         $this->_aDashlets[$sNamespace] = array($sClassName, $sNamespace, $sFilename, $this->sNamespace);
 
@@ -195,7 +203,8 @@ class KTPlugin {
         $this->registerPluginHelper($sNamespace, $sClassName, $sFilename, $params, 'dashboard', 'dashlet');
     }
 
-    function registeri18n($sDomain, $sPath) {
+    public function registeri18n($sDomain, $sPath)
+    {
         $sPath = $this->_fixFilename($sPath);
         $this->_ai18n[$sDomain] = array($sDomain, $sPath);
 
@@ -204,7 +213,8 @@ class KTPlugin {
         $this->registerPluginHelper($sDomain, $sDomain, $sPath, $params, 'general', 'i18n');
     }
 
-    function registeri18nLang($sDomain, $sLang, $sPath) {
+    public function registeri18nLang($sDomain, $sLang, $sPath)
+    {
         if ($sPath !== "default") {
             $sPath = $this->_fixFilename($sPath);
         }
@@ -215,7 +225,8 @@ class KTPlugin {
         $this->registerPluginHelper("$sDomain/$sLang", $sDomain, $sPath, $params, 'general', 'i18nlang');
     }
 
-    function registerLanguage($sLanguage, $sLanguageName) {
+    public function registerLanguage($sLanguage, $sLanguageName)
+    {
         $this->_aLanguage[$sLanguage] = array($sLanguage, $sLanguageName);
 
         // Register helper in DB
@@ -223,7 +234,8 @@ class KTPlugin {
         $this->registerPluginHelper($sLanguage, $sClassName, $sFilename, $params, 'general', 'language');
     }
 
-    function registerHelpLanguage($sPlugin, $sLanguage, $sBasedir) {
+    public function registerHelpLanguage($sPlugin, $sLanguage, $sBasedir)
+    {
         $sBasedir = (!empty($sBasedir)) ? $this->_fixFilename($sBasedir) : '';
         $this->_aHelpLanguage[$sLanguage] = array($sPlugin, $sLanguage, $sBasedir);
 
@@ -232,7 +244,8 @@ class KTPlugin {
         $this->registerPluginHelper($sLanguage, $sClassName, '', $params, 'general', 'help_language');
     }
 
-    function registerColumn($sName, $sNamespace, $sClassName, $sFile) {
+    public function registerColumn($sName, $sNamespace, $sClassName, $sFile)
+    {
         $sFile = $this->_fixFilename($sFile);
         $this->_aColumns[$sNamespace] = array($sName, $sNamespace, $sClassName, $sFile);
 
@@ -241,7 +254,8 @@ class KTPlugin {
         $this->registerPluginHelper($sNamespace, $sClassName, $sFile, $params, 'general', 'column');
     }
 
-    function registerView($sName, $sNamespace) {
+    public function registerView($sName, $sNamespace)
+    {
         $this->_aViews[$sNamespace] = array($sName, $sNamespace);
 
         // Register helper in DB
@@ -249,7 +263,8 @@ class KTPlugin {
         $this->registerPluginHelper($sNamespace, '', '', $params, 'general', 'view');
     }
 
-    function registerNotificationHandler($sName, $sNamespace, $sPath) {
+    public function registerNotificationHandler($sName, $sNamespace, $sPath)
+    {
         $sPath = $this->_fixFilename($sPath);
         $this->_aNotificationHandlers[$sNamespace] = array($sNamespace, $sName, $sPath);
 
@@ -258,7 +273,8 @@ class KTPlugin {
         $this->registerPluginHelper($sNamespace, $sName, $sPath, $params, 'general', 'notification_handler');
     }
 
-    function registerTemplateLocation($sName, $sPath) {
+    public function registerTemplateLocation($sName, $sPath)
+    {
         $sPath = $this->_fixFilename($sPath);
         $this->_aTemplateLocations[$sName] = array($sName, $sPath);
 
@@ -267,7 +283,6 @@ class KTPlugin {
         $this->registerPluginHelper($sName, $sName, $sPath, $params, 'general', 'template_location');
     }
 
-
     /**
      * Register a new widget
      *
@@ -275,7 +290,8 @@ class KTPlugin {
      * @param unknown_type $sNamespace
      * @param unknown_type $sPath
      */
-    function registerWidget($sClassname, $sNamespace, $sPath) {
+    public function registerWidget($sClassname, $sNamespace, $sPath)
+    {
         $sPath = $this->_fixFilename($sPath);
         $this->_aWidgets[$sNamespace] = array($sClassname, $sNamespace, $sPath);
 
@@ -284,7 +300,8 @@ class KTPlugin {
         $this->registerPluginHelper($sNamespace, $sClassname, $sPath, $params, 'general', 'widget');
     }
 
-    function registerValidator($sClassname, $sNamespace, $sPath) {
+    public function registerValidator($sClassname, $sNamespace, $sPath)
+    {
         $sPath = $this->_fixFilename($sPath);
         $this->_aValidators[$sNamespace] = array($sClassname, $sNamespace, $sPath);
 
@@ -294,7 +311,8 @@ class KTPlugin {
     }
 
 
-    function registerCriterion($sClassName, $sNamespace, $sFilename = null, $aInitialize = null) {
+    public function registerCriterion($sClassName, $sNamespace, $sFilename = null, $aInitialize = null)
+    {
         $sFilename = $this->_fixFilename($sFilename);
         $this->_aCriteria[$sNamespace] = array($sClassName, $sNamespace, $sFilename, $aInitialize);
 
@@ -307,7 +325,8 @@ class KTPlugin {
         $this->registerPluginHelper($sNamespace, $sClassName, $sFilename, $params, 'general', 'criterion');
     }
 
-    function registerInterceptor($sClassname, $sNamespace, $sPath = null) {
+    public function registerInterceptor($sClassname, $sNamespace, $sPath = null)
+    {
         $sPath = $this->_fixFilename($sPath);
         $this->_aInterceptors[$sNamespace] = array($sClassname, $sNamespace, $sPath);
 
@@ -320,7 +339,7 @@ class KTPlugin {
      * Register a new document processor class
      * See Search2/DocumentProcessor
      */
-    function registerProcessor($sClassname, $sNamespace, $sPath)
+    public function registerProcessor($sClassname, $sNamespace, $sPath)
     {
         $sPath = $this->_fixFilename($sPath);
         $this->_aInterceptors[$sNamespace] = array($sClassname, $sNamespace, $sPath);
@@ -334,7 +353,7 @@ class KTPlugin {
      * Register search criteria for a plugin
      * See Search2/search/fieldRegistry.inc.php
      */
-    function registerSearchCriteria($sNamespace, $sPath)
+    public function registerSearchCriteria($sNamespace, $sPath)
     {
         $sPath = $this->_fixFilename($sPath);
 
@@ -352,7 +371,7 @@ class KTPlugin {
      * @param unknown_type $object
      * @param unknown_type $type
      */
-    function registerPluginHelper($sNamespace, $sClassName, $path, $object, $view, $type) {
+    public function registerPluginHelper($sNamespace, $sClassName, $path, $object, $view, $type) {
 
         $sql = "SELECT id FROM plugin_helper WHERE namespace = '{$sNamespace}' AND classtype = '{$type}'";
         $res = DBUtil::getOneResult($sql);
@@ -376,17 +395,21 @@ class KTPlugin {
         if (PEAR::isError($res)) {
             return $res;
         }
+
         return true;
     }
 
-    function deRegisterPluginHelper($sNamespace, $sClass) {
+    public function deRegisterPluginHelper($sNamespace, $sClass)
+    {
         $aWhere['namespace'] = $sNamespace;
         $aWhere['classtype'] = $sClass;
         $res = DBUtil::whereDelete('plugin_helper', $aWhere);
+
         return $res;
     }
 
-    function _fixFilename($sFilename) {
+    public function _fixFilename($sFilename)
+    {
         if (empty($sFilename)) {
             $sFilename = $this->sFilename;
         }
@@ -402,10 +425,12 @@ class KTPlugin {
         $sFilename = realpath($sFilename);
         $sFilename = str_replace('\\', '/', $sFilename);
         $sFilename = str_replace($sKtDir.'/', '', $sFilename);
+
         return $sFilename;
     }
 
-    function isRegistered() {
+    public function isRegistered()
+    {
         if ($this->bAlwaysInclude) {
             return true;
         }
@@ -420,6 +445,7 @@ class KTPlugin {
                 // isn't registered or something, perhaps.
                 return false;
             }
+
             return false;
         }
         if (!($oEntity instanceof KTPluginEntity)) {
@@ -430,6 +456,7 @@ class KTPlugin {
         if ($oEntity->getDisabled()) {
             return false;
         }
+
         return true;
     }
 
@@ -437,12 +464,12 @@ class KTPlugin {
      * Load the actions, portlets, etc as part of the parent plugin
      *
      */
-    function load()
+    public function load()
     {
         return $this->run_setup();
     }
 
-    function loadHelpers()
+    public function loadHelpers()
     {
         // Get actions, portlets, etc, create arrays as part of plugin
         $query = "SELECT * FROM plugin_helper h WHERE plugin = '{$this->sNamespace}'";
@@ -554,158 +581,34 @@ class KTPlugin {
         return true;
     }
 
-    /**
-     * Original load function for the plugins
-     * @deprecated
-     */
-    function load2() {
-        if (!$this->isRegistered()) {
-            return;
-        }
-        $this->setup();
-
-        require_once(KT_LIB_DIR . '/actions/actionregistry.inc.php');
-        require_once(KT_LIB_DIR . '/actions/portletregistry.inc.php');
-        require_once(KT_LIB_DIR . '/triggers/triggerregistry.inc.php');
-        require_once(KT_LIB_DIR . '/plugins/pageregistry.inc.php');
-        require_once(KT_LIB_DIR . '/authentication/authenticationproviderregistry.inc.php');
-        require_once(KT_LIB_DIR . "/plugins/KTAdminNavigation.php");
-        require_once(KT_LIB_DIR . "/dashboard/dashletregistry.inc.php");
-        require_once(KT_LIB_DIR . "/i18n/i18nregistry.inc.php");
-        require_once(KT_LIB_DIR . "/help/help.inc.php");
-        require_once(KT_LIB_DIR . "/workflow/workflowutil.inc.php");
-        require_once(KT_LIB_DIR . "/widgets/widgetfactory.inc.php");
-        require_once(KT_LIB_DIR . "/validation/validatorfactory.inc.php");
-        require_once(KT_LIB_DIR . "/browse/columnregistry.inc.php");
-        require_once(KT_LIB_DIR . "/browse/criteriaregistry.php");
-        require_once(KT_LIB_DIR . "/authentication/interceptorregistry.inc.php");
-
-        $oPRegistry =& KTPortletRegistry::getSingleton();
-        $oTRegistry =& KTTriggerRegistry::getSingleton();
-        $oARegistry =& KTActionRegistry::getSingleton();
-        $oPageRegistry =& KTPageRegistry::getSingleton();
-        $oAPRegistry =& KTAuthenticationProviderRegistry::getSingleton();
-        $oAdminRegistry =& KTAdminNavigationRegistry::getSingleton();
-        $oDashletRegistry =& KTDashletRegistry::getSingleton();
-        $oi18nRegistry =& KTi18nRegistry::getSingleton();
-        $oKTHelpRegistry =& KTHelpRegistry::getSingleton();
-        $oWFTriggerRegistry =& KTWorkflowTriggerRegistry::getSingleton();
-        $oColumnRegistry =& KTColumnRegistry::getSingleton();
-        $oNotificationHandlerRegistry =& KTNotificationRegistry::getSingleton();
-        $oTemplating =& KTTemplating::getSingleton();
-        $oWidgetFactory =& KTWidgetFactory::getSingleton();
-        $oValidatorFactory =& KTValidatorFactory::getSingleton();
-        $oCriteriaRegistry =& KTCriteriaRegistry::getSingleton();
-        $oInterceptorRegistry =& KTInterceptorRegistry::getSingleton();
-
-        foreach ($this->_aPortlets as $k => $v) {
-            call_user_func_array(array(&$oPRegistry, 'registerPortlet'), $v);
-        }
-
-        foreach ($this->_aTriggers as $k => $v) {
-            call_user_func_array(array(&$oTRegistry, 'registerTrigger'), $v);
-        }
-
-        foreach ($this->_aActions as $k => $v) {
-            call_user_func_array(array(&$oARegistry, 'registerAction'), $v);
-        }
-
-        foreach ($this->_aPages as $k => $v) {
-            call_user_func_array(array(&$oPageRegistry, 'registerPage'), $v);
-        }
-
-        foreach ($this->_aAuthenticationProviders as $k => $v) {
-            call_user_func_array(array(&$oAPRegistry, 'registerAuthenticationProvider'), $v);
-        }
-
-        foreach ($this->_aAdminCategories as $k => $v) {
-            call_user_func_array(array(&$oAdminRegistry, 'registerCategory'), $v);
-        }
-
-        foreach ($this->_aAdminPages as $k => $v) {
-            call_user_func_array(array(&$oAdminRegistry, 'registerLocation'), $v);
-        }
-
-        foreach ($this->_aDashlets as $k => $v) {
-            call_user_func_array(array(&$oDashletRegistry, 'registerDashlet'), $v);
-        }
-
-        foreach ($this->_ai18n as $k => $v) {
-            call_user_func_array(array(&$oi18nRegistry, 'registeri18n'), $v);
-        }
-
-        foreach ($this->_ai18nLang as $k => $v) {
-            call_user_func_array(array(&$oi18nRegistry, 'registeri18nLang'), $v);
-        }
-
-        foreach ($this->_aLanguage as $k => $v) {
-            call_user_func_array(array(&$oi18nRegistry, 'registerLanguage'), $v);
-        }
-
-        foreach ($this->_aHelpLanguage as $k => $v) {
-            call_user_func_array(array(&$oKTHelpRegistry, 'registerHelp'), $v);
-        }
-
-        foreach ($this->_aWFTriggers as $k => $v) {
-            call_user_func_array(array(&$oWFTriggerRegistry, 'registerWorkflowTrigger'), $v);
-        }
-
-        foreach ($this->_aColumns as $k => $v) {
-            call_user_func_array(array(&$oColumnRegistry, 'registerColumn'), $v);
-        }
-
-        foreach ($this->_aViews as $k => $v) {
-            call_user_func_array(array(&$oColumnRegistry, 'registerView'), $v);
-        }
-
-        foreach ($this->_aNotificationHandlers as $k => $v) {
-            call_user_func_array(array(&$oNotificationHandlerRegistry, 'registerNotificationHandler'), $v);
-        }
-
-        foreach ($this->_aTemplateLocations as $k => $v) {
-            call_user_func_array(array(&$oTemplating, 'addLocation'), $v);
-        }
-
-        foreach ($this->_aCriteria as $k => $v) {
-            call_user_func_array(array(&$oCriteriaRegistry, 'registerCriterion'), $v);
-        }
-
-        foreach ($this->_aWidgets as $k => $v) {
-            call_user_func_array(array(&$oWidgetFactory, 'registerWidget'), $v);
-        }
-
-        foreach ($this->_aValidators as $k => $v) {
-            call_user_func_array(array(&$oValidatorFactory, 'registerValidator'), $v);
-        }
-
-        foreach ($this->_aInterceptors as $k => $v) {
-            call_user_func_array(array(&$oInterceptorRegistry, 'registerInterceptor'), $v);
-        }
-    }
-
-    function setup() {
+    public function setup()
+    {
         return;
     }
 
-    function run_setup() {
+    public function run_setup()
+    {
         return true;
     }
 
-    function setAvailability($sNamespace, $bAvailable = true) {
+    public function setAvailability($sNamespace, $bAvailable = true)
+    {
         $aValues = array('unavailable' => $bAvailable);
         $aWhere = array('namespace' => $sNamespace);
         $res = DBUtil::whereUpdate('plugins', $aValues, $aWhere);
         return $res;
     }
 
-    function stripKtDir($sFilename) {
+    public function stripKtDir($sFilename)
+    {
         if (strpos($sFilename, KT_DIR) === 0 ||strpos($sFilename, realpath(KT_DIR)) === 0) {
             return substr($sFilename, strlen(KT_DIR) + 1);
         }
         return $sFilename;
     }
 
-    function upgradePlugin($iStart, $iEnd) {
+    public function upgradePlugin($iStart, $iEnd)
+    {
         if (is_null($this->sSQLDir)) {
             return $iEnd; // no db changes, must reach the "end".
         }
@@ -727,7 +630,7 @@ class KTPlugin {
         return $iEnd;
     }
 
-    function register() {
+    public function register() {
         $oEntity = KTPluginEntity::getByNamespace($this->sNamespace);
         $friendly_name = '';
         $iOrder = $this->iOrder;
@@ -814,7 +717,7 @@ class KTPlugin {
         return true;
     }
 
-    function getURLPath($filename = null)
+    public function getURLPath($filename = null)
     {
         $config = KTConfig::getSingleton();
         $dir = $config->get('KnowledgeTree/fileSystemRoot');

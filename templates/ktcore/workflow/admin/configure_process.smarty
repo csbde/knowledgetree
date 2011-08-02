@@ -6,13 +6,13 @@
     <table class="kt_collection" cellspacing="0">
         <thead>
             <tr>
-                <th colspan="{$states|@count}">{i18n}Starting State{/i18n}</th>
+                <th colspan="{$states|@count}" class="centered">{i18n}Starting State{/i18n}</th>
                 <th rowspan="2" style="border-left:1px solid #888888; border-right:1px solid #888888">{i18n}Transition{/i18n}</th>
                 <th rowspan="2">{i18n}Leads to state{/i18n}</th>
             </tr>
             <tr>
                 {foreach from=$states item=oState}
-                <th>{$oState->getName()}</th>                
+                <th class="icon-column" style="word-break:normal; white-space: normal;">{$oState->getName()}</th>                
                 {/foreach}
                 
             </tr>
@@ -23,7 +23,7 @@
                     {foreach from=$states item=oState}
                         {assign value=$oTransition->getId() var=trans_id}
                         {assign value=$oState->getId() var=state_id}                        
-                        <td><input type="checkbox" name="fFrom[{$trans_id}][{$state_id}]" 
+                        <td class="icon-column"><input type="checkbox" name="fFrom[{$trans_id}][{$state_id}]" 
                             {if ($availability.$trans_id.$state_id)}checked="true"{/if}/></td>
                     {/foreach}
                     <td style="border-left:1px solid #888888; border-right:1px solid #888888">{$oTransition->getName()}</td>

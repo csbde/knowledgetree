@@ -53,6 +53,7 @@ require_once(KT_LIB_DIR . '/widgets/fieldWidgets.php');
 require_once(KT_LIB_DIR . '/actions/bulkaction.php');
 
 require_once(KT_DIR . '/plugins/tagcloud/TagCloudPortlet.php');
+require_once(KT_DIR . '/plugins/tagcloud/TagCloudDashlet.php');
 
 require_once(KT_LIB_DIR .'/render_helpers/browseView.helper.php');
 
@@ -124,6 +125,8 @@ class TagCloudRedirectPage extends KTStandardDispatcher {
             if ($item['checked_out_date'] == 'n/a') {
                 $item['checked_out_date'] = '';
             }
+            
+            $item['hidecheckbox'] = TRUE;
 
             $preFolderView[] = $browseViewRenderer->renderDocumentItem($item);
         }
@@ -162,6 +165,7 @@ class TagCloudRedirectPage extends KTStandardDispatcher {
             'boolean_search' => false,
             'bulkactions' => KTBulkActionUtil::getAllBulkActions(),
             'browseutil' => new KTBrowseUtil(),
+            'tagcloudportlet' => $this->loadTagCloudPortlet($tag, $user),
             'returnaction' => $returnUrl,
         );
 
@@ -188,6 +192,23 @@ class TagCloudRedirectPage extends KTStandardDispatcher {
         $ret = array('folders' => array(), 'documents' => $results['results'], 'shortcuts' => array());
 
         return $ret;
+    }
+    
+    public function loadTagCloudPortlet($tag, $user)
+    {
+        $portlet = new TagCloudPortlet(NULL, $tag);
+        
+        $str = '<h2>'._kt('Related Tags').'</h2>'.$portlet->render();
+        
+        $dashlet = new TagCloudDashlet();
+        
+        if ($dashlet->is_active($user)) {
+            $str .= '<div id="TagCloudDashlet"><h2>'._kt('All Tags').'</h2><div id="tagcloud">'.$dashlet->render().'</div></div>';
+        }
+        
+        
+        
+        return $str;
     }
 
 }

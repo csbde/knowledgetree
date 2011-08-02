@@ -287,6 +287,7 @@ kt.api.esignatures = new function() {
 			height      : height,
 	        y           : 50,
 	        shadow      : true,
+			draggable   : false,
 	        modal       : true,
 			autoHeight  : true,
 	        html        : kt.api.execFragment('documents/reason')

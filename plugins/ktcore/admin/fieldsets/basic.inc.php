@@ -935,6 +935,11 @@ class BasicFieldsetManagementDispatcher extends KTAdminDispatcher {
 
         $this->successRedirectToParent(_kt("Field moved $direction."));
     }
+    
+    public function handleOutput($output)
+    {
+        print $output;
+    }
 
 }
 

@@ -104,7 +104,7 @@ legend { border: 1px dotted #999;}
 			
                 <tr>
                     <td class="name">
-                    	<select name="querytype">
+                    	<select name="querytype" class="dyncond_dropdown">
                          {foreach item=oCriteria from=$aCriteria} {if ($oCriteria->bVisible == true)}
                              <option value="{$oCriteria->getNamespace()}">{$oCriteria->headerDisplay()}</option>
 							 {/if}
@@ -120,17 +120,16 @@ legend { border: 1px dotted #999;}
     </fieldset>
     
     {/foreach}
-    
-    <div class="form_actions">
-    
-    <input type="button" value="{i18n}add another set of criteria{/i18n}" onclick="addBooleanGroup(this)" />
-    
-    
-{capture assign=defaultsubmit}
-{i18n}Search{/i18n}
-{/capture}
-    <input type="submit" name="submit" value="{$searchButton|default:$defaultsubmit}" />
-	</div>
+    <br clear="both" />
+
+		<input type="button" value="{i18n}add another set of criteria{/i18n}" onclick="addBooleanGroup(this)" />
+		
+		{capture assign=defaultsubmit}
+		{i18n}Search{/i18n}
+		{/capture}
+		<input type="submit" name="submit" value="{$searchButton|default:$defaultsubmit}" />
+	
+	<br clear="both" />
 </form>
 
 <!--

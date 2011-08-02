@@ -6,6 +6,7 @@ class KTMemcache
     protected $memcache;
     protected $isEnabled = false;
     protected $serverList = array();
+    protected $configuredServers;
     protected static $errors = array();
     protected static $extensionDisabled = false;
      
@@ -14,7 +15,7 @@ class KTMemcache
 	private $timeout = 0.1;
 	private $retryInterval = 15;
 
-    protected function __construct()
+    protected function __construct($configuredServers = null)
     {
     	if (self::$extensionDisabled) {
     		$this->isEnabled = false;
@@ -22,6 +23,11 @@ class KTMemcache
     		
     		return;
     	}
+    	
+    	if (!empty($configuredServers)) {
+    		$this->configuredServers = $configuredServers;
+    	}
+    	
         $this->isEnabled = $this->connect();
     }
     
@@ -52,11 +58,11 @@ class KTMemcache
 				continue;
 			}
 			
-			if ($this->get($key) === false) {
-				$this->memcache->set($key, $value, null, $expiration);
+			if ($_test->get($key) === false) {
+				$_test->set($key, $value, null, $expiration);
 			}
 			else {
-				$this->memcache->replace($key, $value, null, $expiration);
+				$_test->replace($key, $value, null, $expiration);
 			}
 		}
     }
@@ -66,10 +72,13 @@ class KTMemcache
     	if ($timeout == 0) {
     		$timeout = 1;
     	}
-    	$this->memcache->set($key, '', $timeout);
+    	$this->set($key, '', $timeout);
     }
     
-    public static function getKTMemcache()
+	/**
+	 * @param string $configuredServers Optional. Used when overriding the memcache server list stored in the conf file.
+	 */
+    public static function getKTMemcache($configuredServers = null)
     {
         if (!isset(self::$ktMemcache) || empty(self::$ktMemcache)){
         	$extension = self::checkExtension();
@@ -78,7 +87,7 @@ class KTMemcache
         		self::$extensionDisabled = true;
         	}
         	
-            self::$ktMemcache = ($extension == 'memcached') ?  new KTMemcached() : new KTMemcache();
+            self::$ktMemcache = ($extension == 'memcached') ?  new KTMemcached($configuredServers) : new KTMemcache($configuredServers);
         }
         if (!isset(self::$ktMemcache->memcache)){
         	$this->isEnabled = self::$ktMemcache->connect();
@@ -147,14 +156,20 @@ class KTMemcache
     
     protected function getServerList()
     {
-    	$config = KTConfig::getSingleton();
-    	$result = $config->parseKTCnf();
-    	
-    	if (!$result) {
-    		return false;
+    	if (!empty($this->configuredServers) && is_string($this->configuredServers)) {
+    		$serverList = $this->configuredServers;
     	}
-
-        $serverList = $config->get('memcache/servers', false);
+    	else {
+	    	$config = KTConfig::getSingleton();
+	    	$result = $config->parseKTCnf();
+	    	
+	    	if (!$result) {
+	    		return false;
+	    	}
+	
+	        $serverList = $config->get('memcache/servers', false);
+	        $this->configuredServers = $serverList;
+    	}
 
         if ($serverList == false) {
             return false;

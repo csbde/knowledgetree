@@ -369,4 +369,11 @@ jQuery(document).ready(function() {
     if (jQuery('ul.paginate li.item').length == 3) {
     	jQuery('ul.paginate').hide();
     }
+	
+	// Change left and right button to something that does show on IE8
+	if (jQuery.browser.msie && jQuery.browser.version.substring(0, 2) == "8.") {
+		jQuery('li.prevBrowseButton').html('&#171;');
+		jQuery('li.nextBrowseButton').html('&#187;');
+	}
+	
 });

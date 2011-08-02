@@ -1,3 +1,4 @@
+<div class="simple-selection">
   {if empty($vocab)}
       <div class="ktInfoMessage"><span>{$context->sEmptyMessage}</span></div>
   {else}
@@ -9,7 +10,7 @@
           {/foreach}  
       {else}
           {if $options.initial_string}
-            <input type="radio" name="{$name}" {if $context->selected('')}checked="true"{/if}>{$options.initial_string} <br />
+           <input type="radio" name="{$name}" {if $context->selected('')}checked="true"{/if}>{$options.initial_string} <br />
     {/if}          
           {foreach item=lookup key=lookup_key from=$vocab}
                <input type="radio" name="{$name}" value="{$lookup_key}" {if $context->selected($lookup_key)}checked="true"{/if}>{$lookup} <br />
@@ -17,3 +18,4 @@
       {/if}
   
   {/if}
+</div>

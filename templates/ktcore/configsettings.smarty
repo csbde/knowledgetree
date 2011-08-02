@@ -8,7 +8,7 @@
         {assign var=group value=$groupItem.name}
             
         </span></h3>
-        <span class='descriptiveText'>{$groupItem.description}</span>
+        <span class='descriptiveText'></span>
             <div id='{$groupItem.id}' style='visibility: visible;'>
 
                 {* <!-- Display the settings, render the input according to the setting type (dropdown / radio / etc) --> *}

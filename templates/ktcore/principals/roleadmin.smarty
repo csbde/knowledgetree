@@ -1,5 +1,4 @@
-
-<p class="descriptiveText">{i18n}Workflow actions may be assigned to certain roles within the DMS. User groups are allocated to roles on a per-directory basis and are inherited from the root folder of the DMS. Roles may for example include "Document Creator", "Document Reviewer", "Document Publisher".{/i18n}</p>
+<a href="#" class="help" title="{i18n}<h2>Roles</h2>Workflow actions may be assigned to certain roles within the DMS. User groups are allocated to roles on a per-directory basis and are inherited from the root folder of the DMS. <br><br>Roles may for example include 'Document Creator', 'Document Reviewer', 'Document Publisher'.{/i18n}"></a>
 
 {if ($for_edit === false)}
 
@@ -14,7 +13,7 @@
    {/foreach}
 
    <div class="form_actions">
-      <input type="submit" value="{i18n}create new role{/i18n}" />
+      <input type="submit" value="{i18n}Create Role{/i18n}" />
    </div class="form_actions">
 </fieldset>
 </form>
@@ -45,8 +44,8 @@
 <thead>
    <tr>
       <th>{i18n}Role Name{/i18n}</th>
-      <th width="10px">{i18n}Edit{/i18n}</th>
-      <th width="10px">{i18n}Delete{/i18n}</th>
+      <th class="icon-column">{i18n}Edit{/i18n}</th>
+      <th class="icon-column">{i18n}Delete{/i18n}</th>
    </tr>
 </thead>
 <tbody>
@@ -65,3 +64,5 @@
      {/if}
 </tbody>
 </table>
+
+

@@ -278,8 +278,8 @@ class KTCorePlugin extends KTPlugin {
         // Set up the categories.
         $this->registerAdminCategory('userSetup', _kt('Users & Groups'),
             _kt('Determine how people will access content.'), 80);
-        $this->registerAdminCategory('advancedPermissions', _kt('Permissions'),
-            _kt('Configure permissions.'), 70);
+        //$this->registerAdminCategory('advancedPermissions', _kt('Permissions'),
+          //  _kt('Configure permissions.'), 70);
         $this->registerAdminCategory('reporting', _kt('Reporting'),
             _kt('View reports.'), 10);
         $this->registerAdminCategory('security', _kt('Security & Authentication'),
@@ -310,14 +310,6 @@ class KTCorePlugin extends KTPlugin {
             _kt('Control Units'), _kt('Specify which organisational units are available within the repository.'),
             'admin/unitManagement.php', null);
 
-        // security
-        //$this->registerAdminPage('permissions', 'ManagePermissionsDispatcher', 'advancedPermissions',
-        //    _kt('Permissions'), _kt('Create or delete permissions.'), 'admin/managePermissions.php', null, 7);
-        $this->registerAdminPage('conditions', 'KTConditionDispatcher', 'advancedPermissions',
-            _kt('Dynamic Conditions'),
-            _kt('Manage criteria which determine whether a user is permitted to perform a system action.'),
-            'admin/conditions.php', null);
-
         // documents
         $this->registerAdminPage('typemanagement', 'KTDocumentTypeDispatcher', 'documentProperties',
             _kt('Document Types'),
@@ -333,7 +325,7 @@ class KTCorePlugin extends KTPlugin {
             _kt('Override the checked-out status of documents if a user has failed to do so.'),
             'admin/documentCheckout.php', null);
         $this->registerAdminPage('archived', 'ArchivedDocumentsDispatcher', 'contentManagement',
-            _kt('Archived Document Restoration'), _kt('Restore old (archived) documents, usually at a user\'s request.'),
+            _kt('Restore Archived Documents'), _kt('Restore old (archived) documents, usually at a user\'s request.'),
             'admin/archivedDocuments.php', null);
         $this->registerAdminPage('expunge', 'DeletedDocumentsDispatcher', 'contentManagement',
             _kt('Restore or Expunge Deleted Documents'), _kt('Restore previously deleted documents, or permanently expunge them.'),
@@ -341,6 +333,15 @@ class KTCorePlugin extends KTPlugin {
 
         //Search and Indexing
         if ($restrictedEnv !== true) {
+                // security
+                $this->registerAdminPage('permissions', 'ManagePermissionsDispatcher', 'advancedPermissions',
+                    _kt('Permissions'), _kt('Create or delete permissions.'), 'admin/managePermissions.php', null, 7);
+
+                $this->registerAdminPage('conditions', 'KTConditionDispatcher', 'advancedPermissions',
+                    _kt('Dynamic Conditions'),
+                    _kt('Manage criteria which determine whether a user is permitted to perform a system action.'),
+                    'admin/conditions.php', null);
+
                 $this->registerAdminPage('managemimetypes', 'ManageMimeTypesDispatcher', 'contentIndexing',
                 _kt('Mime Types'), sprintf(_kt('This report lists all mime types and extensions that can be identified by %s.'), APP_NAME),
                 '../search2/reporting/ManageMimeTypes.php', null);
@@ -405,16 +406,16 @@ class KTCorePlugin extends KTPlugin {
 	        $this->registerAdminPage('explorercpconfigpage', 'ExplorerConfigPageDispatcher', 'clientTools',
 	            _kt('Explorer CP'), _kt('View and change settings for the Explorer CP.'),
 	            'admin/configSettings.php', null);
-	            
+	        
+            $this->registerAdminPage('webservicesconfig', 'WebservicesConfigPageDispatcher', 'clientTools',
+                _kt('Web Services'), _kt('View and change settings for the KnowledgeTree Web Services.'),
+                'admin/configSettings.php', null);    
         }
             
         $this->registerAdminPage('KTWebDAVSettings', 'KtWebdavConfigPageDispatcher', 'clientTools',
             _kt('WebDAV'), _kt('View and change settings for WebDAV.'),
             'admin/configSettings.php', null);
             
-        $this->registerAdminPage('webservicesconfig', 'WebservicesConfigPageDispatcher', 'clientTools',
-            _kt('Web Services'), _kt('View and change settings for the KnowledgeTree Web Services.'),
-            'admin/configSettings.php', null);
         $this->registerAdminPage('session', 'SessionConfigPageDispatcher', 'security',
             _kt('Session Management'), _kt('View and modify session settings for KnowledgeTree.'),
             'admin/configSettings.php', null);

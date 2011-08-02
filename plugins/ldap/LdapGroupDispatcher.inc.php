@@ -171,9 +171,9 @@ class ldapGroupDispatcher extends KTAdminDispatcher {
 
         $fields = array();
         $fields[] = new KTStaticTextWidget(_kt('LDAP DN'), _kt('The location of the group within the LDAP directory.'), 'dn', $attributes['dn'], $this->oPage);
-        $fields[] = new KTStringWidget(_kt('Group Name'), sprintf(_kt('The name the group will enter to gain access to %s.  e.g. <strong>accountants</strong>'), APP_NAME), 'ldap_groupname', $attributes['cn'][0], $this->oPage, true);
-        $fields[] = new KTCheckboxWidget(_kt('Unit Administrators'), _kt('Should all the members of this group be given <strong>unit</strong> administration privileges?'), 'is_unitadmin', false, $this->oPage, false);
-        $fields[] = new KTCheckboxWidget(_kt('System Administrators'), _kt('Should all the members of this group be given <strong>system</strong> administration privileges?'), 'is_sysadmin', false, $this->oPage, false);
+        $fields[] = new KTStringWidget(_kt('Group Name'), sprintf(_kt('The name the group will enter to gain access to %s.  e.g. accountants'), APP_NAME), 'ldap_groupname', $attributes['cn'][0], $this->oPage, true);
+        $fields[] = new KTCheckboxWidget(_kt('Unit Administrators'), _kt('Should all the members of this group be given unit administration privileges?'), 'is_unitadmin', false, $this->oPage, false);
+        $fields[] = new KTCheckboxWidget(_kt('System Administrators'), _kt('Should all the members of this group be given system administration privileges?'), 'is_sysadmin', false, $this->oPage, false);
 
         $templateData = array(
             'context' => &$this,

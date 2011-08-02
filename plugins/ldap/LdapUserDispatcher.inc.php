@@ -135,8 +135,7 @@ class LdapUserDispatcher extends KTAdminDispatcher {
 
         $fields[] = new KTStringWidget(_kt("User's name"), _kt("The user's name, or part thereof, to find the user that you wish to add"), 'ldap_name', '', $this->oPage, true);
         $fields[] = new KTCheckboxWidget(_kt('Mass import'),
-        _kt('Allow for multiple users to be selected to be added (will not get to manually verify the details if selected)').'.<br>'.
-        _kt('The list may be long and take some time to load if the search is not filtered and there are a number of users in the system.')
+        _kt('Allow for multiple users to be selected to be added (will not get to manually verify the details if selected). The list may be long and take some time to load if the search is not filtered and there are a number of users in the system.')
         , 'massimport', $isMassImport, $this->oPage, true);
 
         $templating = KTTemplating::getSingleton();
@@ -200,11 +199,11 @@ class LdapUserDispatcher extends KTAdminDispatcher {
 
         $fields = array();
         $fields[] =  new KTStaticTextWidget(_kt('LDAP DN'), _kt('The location of the user within the LDAP directory.'), 'dn', $id, $this->oPage);
-        $fields[] =  new KTStringWidget(_kt('Username'), sprintf(_kt('The username the user will enter to gain access to %s.  e.g. <strong>jsmith</strong>'), APP_NAME), 'ldap_username', $userName, $this->oPage, true);
-        $fields[] =  new KTStringWidget(_kt('Name'), _kt('The full name of the user.  This is shown in reports and listings.  e.g. <strong>John Smith</strong>'), 'name', $name, $this->oPage, true);
-        $fields[] =  new KTStringWidget(_kt('Email Address'), _kt('The email address of the user.  Notifications and alerts are mailed to this address if <strong>email notifications</strong> is set below. e.g. <strong>jsmith@acme.com</strong>'), 'emailAddress', $emailAddress, $this->oPage, false);
-        $fields[] =  new KTCheckboxWidget(_kt('Email Notifications'), _kt('If this is specified then the user will have notifications sent to the email address entered above.  If it is not set, then the user will only see notifications on the <strong>Dashboard</strong>'), 'emailNotifications', true, $this->oPage, false);
-        $fields[] =  new KTStringWidget(_kt('Mobile Number'), _kt('The mobile phone number of the user.  e.g. <strong>999 9999 999</strong>'), 'mobile_number', $phone, $this->oPage, false);
+        $fields[] =  new KTStringWidget(_kt('Username'), sprintf(_kt('The username the user will enter to gain access to %s.  e.g. jsmith'), APP_NAME), 'ldap_username', $userName, $this->oPage, true);
+        $fields[] =  new KTStringWidget(_kt('Name'), _kt('The full name of the user.  This is shown in reports and listings.  e.g. John Smith'), 'name', $name, $this->oPage, true);
+        $fields[] =  new KTStringWidget(_kt('Email Address'), _kt('The email address of the user.  Notifications and alerts are mailed to this address if email notifications is set below. e.g. jsmith@acme.com'), 'emailAddress', $emailAddress, $this->oPage, false);
+        $fields[] =  new KTCheckboxWidget(_kt('Email Notifications'), _kt('If this is specified then the user will have notifications sent to the email address entered above.  If it is not set, then the user will only see notifications on the Dashboard'), 'emailNotifications', true, $this->oPage, false);
+        $fields[] =  new KTStringWidget(_kt('Mobile Number'), _kt('The mobile phone number of the user.  e.g. 999 9999 999'), 'mobile_number', $phone, $this->oPage, false);
         $fields[] =  new KTStringWidget(_kt('Maximum Sessions'), _kt('As a safety precaution, it is useful to limit the number of times a given account can log in, before logging out.  This prevents a single account being used by many different people.'), 'max_sessions', '3', $this->oPage, true);
 
         $templateData = array(

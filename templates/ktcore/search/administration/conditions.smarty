@@ -1,8 +1,8 @@
 
-<p class="descriptiveText">{i18n}Creating a Dynamic Condition involves setting up criteria that filters content in the DMS for the purposes of selectively assigning permissions associated with the Dynamic Condition, according to the specified criteria. Dynamic conditions are assigned on the folder's Permissions management page in Browse Documents. Dynamic Conditions are also used to create Guard permissions, which are required to perform transitions on Workflows. {/i18n}</p>
+<p class="help" title="{i18n}<h2>Dynamic Conditions</h2>Creating a Dynamic Condition involves setting up criteria that filters content for the purposes of selectively assigning permissions associated with the Dynamic Condition, according to the specified criteria. Dynamic conditions are assigned on the folder's Permissions management. <br><br>Dynamic Conditions are also used to create Guard permissions, which are required to perform transitions on Workflows. {/i18n}"></p>
 
 <form action="{$smarty.server.PHP_SELF}" method="POST">
- <div class="form_actions">
+ <div class="form_actions standalone">
 	<input type="hidden" name="action" value="new" />
 	<input type="submit" name="submit" value="{i18n}Create New Condition{/i18n}" />
 
@@ -16,8 +16,8 @@
     <tr>
         <th>{i18n}Condition Name{/i18n}</th>
         <th>{i18n}View Results{/i18n}</th>
-        <th width="10px">{i18n}Edit{/i18n}</th>
-        <th width="10px">{i18n}Delete{/i18n}</th>
+        <th class="icon-column">{i18n}Edit{/i18n}</th>
+        <th class="icon-column">{i18n}Delete{/i18n}</th>
     </tr>
 </thead>
 <tbody>
@@ -32,5 +32,5 @@
 </tbody>
 </table>
 {else}
-<div class="ktInfoMessage"><span>{i18n}No Conditions have been defined.{/i18n}</span></div>
+<div class="empty-boilerplate">{i18n}No Conditions have been defined.{/i18n}</div>
 {/if}

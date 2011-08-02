@@ -53,7 +53,7 @@ legend { border: 1px dotted #999;}
 {/capture}
 <h2>{$title|default:$defaulttitle}</h2>
 
-<form method="POST">
+<form method="POST" id="conditions">
     <input type="hidden" name="action" value="performSearch" />
 
 {capture assign=options}
@@ -99,7 +99,7 @@ legend { border: 1px dotted #999;}
 				{/foreach}
 			
                 <tr>
-                    <td><select name="querytype">
+                    <td><select name="querytype" class="dyncond_dropdown">
                          {foreach item=oCriteria from=$aCriteria} {if ($oCriteria->bVisible == true)}
                              <option value="{$oCriteria->getNamespace()}">{$oCriteria->headerDisplay()}</option>
 							 {/if}
@@ -115,15 +115,14 @@ legend { border: 1px dotted #999;}
     </fieldset>
     
     {/foreach}
+    <br clear="both" />
+
     
-    <div class="form_actions">
-    
-    <input type="button" value="{i18n}add another set of criteria{/i18n}" onclick="addBooleanGroup(this)" />
-    
-    
-{capture assign=defaultsubmit}
-{i18n}Search{/i18n}
-{/capture}
-    <input type="submit" name="submit" value="{$searchButton|default:$defaultsubmit}" />
-	</div>
+		<input type="button" value="{i18n}add another set of criteria{/i18n}" onclick="addBooleanGroup(this)" />
+		{capture assign=defaultsubmit}
+		{i18n}Search{/i18n}
+		{/capture}
+		<input type="submit" name="submit" value="{$searchButton|default:$defaultsubmit}" />
+
+	<br clear="both" />
 </form>

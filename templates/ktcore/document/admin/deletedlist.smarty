@@ -2,19 +2,33 @@
 {$context->oPage->requireJSResource('resources/js/expungeList.js')}
 
 
-<p class="descriptiveText">{i18n}Documents which are deleted by users are hidden from view
-but still available for restoration.  Since "soft deletes" consume system resources, it
-is possible to <strong>expunge</strong> these documents.  Alternatively, you
-can <strong>restore</strong> them as necessary.{/i18n}</p>
+<p class="help" title="{i18n}<h2>Deleted Documents</h2>Documents which are deleted by users are hidden from view
+but still available for restoration.  Since 'soft deletes' consume system resources, it is possible to <strong>expunge</strong> these documents.  Alternatively, you can <strong>restore</strong> them as necessary.{/i18n}"></p>
 
-
+<br style="clear:both;">
 {if (!empty($documents))}
 
+<div class="search-filter" style="padding-bottom: 4px;">
+ 	<form action="{$smarty.server.PHP_SELF}" method="POST">
+ 		<div class="form_actions">
+ 		 	<!-- Search button -->
+ 		 	<input type="submit" value="{i18n}Filter{/i18n}" />
+ 		</div>
+ 		<input type="hidden" name="do_search" value="1" />
+ 		{capture assign=link}{addQS}show_all=1{/addQS}{/capture}
+ 	
+ 		{foreach item=oWidget from=$searchFields}
+ 		  {$oWidget->render()}
+ 		{/foreach}
+ 	
+ 	</form>
+ </div>
+ 
 <form action="{$smarty.server.PHP_SELF}" method="POST">
 
 <input type="hidden" name="action" value="branchConfirm" />
-{foreach item=oFDoc from=$fullList}
-	<input type="hidden" name="docIds[]" value="{$oFDoc->getId()}">
+{foreach item=document from=$fullList}
+	<input type="hidden" name="docIds[]" value="{$document->getId()}">
 {/foreach}
 <div id="tableoutput">
 <table class="kt_collection">
@@ -28,13 +42,13 @@ can <strong>restore</strong> them as necessary.{/i18n}</p>
     </tr>
   </thead>
   <tbody id="output">
-    {foreach item=oDoc from=$documents}
-    <tr class="{cycle values=even,odd}">
-      <td><input type="checkbox" name="selected_docs[]" value="{$oDoc->getId()}"/></td>
-      <td>{$oDoc->getName()|sanitize}</td>
-{*      <td>{getCrumbStringForDocument document=$oDoc}</td> *}
-      <td>{$oDoc->getDisplayLastModifiedDate()}</td>
-      <td>{$oDoc->getLastDeletionComment()}</td>
+    {foreach item=doc from=$documents}
+    <tr class="{cycle values=odd,even name=deleted}">
+      <td><input type="checkbox" name="selected_docs[]" value="{$doc->getId()}"/></td>
+      <td>{$doc->getName()|sanitize}</td>
+{*      <td>{getCrumbStringForDocument document=$doc}</td> *}
+      <td>{$doc->getDisplayLastModifiedDate()}</td>
+      <td>{$doc->getLastDeletionComment()}</td>
     </tr>
     {/foreach}
   </tbody>
@@ -44,25 +58,35 @@ can <strong>restore</strong> them as necessary.{/i18n}</p>
   			<span style="float: left">{$itemcount} {i18n}items, 10 per page{/i18n}</span>
   		</td>
   	</tr>
+  	{if $itemcount > 10}
   	<tr>
   		<td colspan="4">
-  			<div align="center">
+  		<div class="paginationContainer" style="width: 100%; text-align: center;">
+  			<ul class='paginate'>
 	  			{foreach item=page from=$pagelist}
-					<a href="#" onclick="buildList(this.innerHTML)">{$page}</a>
+	  			    {if $page == 1} 
+	  			        <li class="item highlight"><a href="#tableoutput" onclick="buildList(this.innerHTML, '{$searchText}')">{$page}</a></li>
+	  			    {else}
+					   <li class="item" onclick="buildList(this.innerHTML, '{$searchText}')">{$page}</a></li>
+				   {/if}
 				{/foreach}
+			</ul>
 			</div>
 		</td>
   	</tr>
+  	{/if}
   </tfoot>
 </table>
 </div>
-<div class="form_actions">
-   <input type="submit" name="submit[restore]" value="{i18n}Restore{/i18n}" />
-   <input type="submit" name="submit[expunge]" value="{i18n}Expunge{/i18n}" />
-   <input type="submit" name="submit[expungeall]" value="{i18n}Expunge All{/i18n}" />
+<div class="table-footer">
+	<div class="form_actions">
+	   <input type="submit" name="submit[restore]" value="{i18n}Restore{/i18n}" />
+	   <input type="submit" name="submit[expunge]" value="{i18n}Expunge{/i18n}" />
+	   <input type="submit" name="submit[expungeall]" value="{i18n}Expunge All{/i18n}" />
+	</div>
 </div>
 </form>
 
 {else}
-<div class="ktInfoMessage"><span>{i18n}No documents are marked as deleted.{/i18n}</span></div>
+<div class="empty-boilerplate"><span>{i18n}No documents are marked as deleted.{/i18n}</span></div>
 {/if}

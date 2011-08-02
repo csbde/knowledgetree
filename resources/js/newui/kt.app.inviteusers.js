@@ -79,6 +79,7 @@ kt.app.inviteusers = new function() {
             cls             : 'ul_win',
             shadow          : true,
             modal           : true,
+			draggable  	 	: false,
             title           : 'User Invitations Sent',
             html            : kt.api.execFragment('users/invite.confirm.dialog')
         });
@@ -138,6 +139,7 @@ kt.app.inviteusers = new function() {
             cls             : 'ul_win',
             shadow          : true,
             modal           : true,
+			draggable   	: false,
             title           : 'Invite Users',
             html            : kt.api.execFragment('users/invite.dialog')
         });
@@ -156,7 +158,7 @@ kt.app.inviteusers = new function() {
         inviteConfirmWin = Ext.getCmp('extinviteconfirmwindow');
         inviteConfirmWin.destroy();
     }
-    
+
     // Call the initialization function at object instantiation.
     this.init();
 }

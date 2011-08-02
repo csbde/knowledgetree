@@ -323,7 +323,7 @@ class KTWebService {
     function info($msg, $function)
     {
         global $default;
-        $default->log->info("WS - {$function} | {$msg}");
+        $default->wsLog->info("WS - {$function} | {$msg}");
     }
 
     function debug($msg, $function = null, $level=0)
@@ -336,7 +336,7 @@ class KTWebService {
             {
                 $function = "$function - ";
             }
-            $default->log->debug('WS - ' . $function . $msg);
+            $default->wsLog->debug('WS - ' . $function . $msg);
         }
     }
 
@@ -349,7 +349,7 @@ class KTWebService {
             {
                 $function = "$function - ";
             }
-            $default->log->error('WS - ' . $function . $msg);
+            $default->wsLog->error('WS - ' . $function . $msg);
         }
     }
 
@@ -2794,10 +2794,10 @@ class KTWebService {
      */
     function _encode_metadata_fieldset($fieldset, $name = 'fieldset')
     {
-        if (!empty($fieldset['fields']))
-        {
+        if (!empty($fieldset['fields'])) {
             $fieldset['fields'] = KTWebService::_encode_metadata_fields($fieldset['fields']);
         }
+
         return new SOAP_Value($name, "{urn:$this->namespace}kt_metadata_fieldset", $fieldset);
     }
 
@@ -2812,15 +2812,15 @@ class KTWebService {
      */
     function _encode_metadata_fieldsets($fieldsets, $name = 'metadata')
     {
-        $encoded=array();
-        foreach($fieldsets as $fieldset)
-        {
+        $encoded = array();
+        foreach ($fieldsets as $fieldset) {
             $encoded[] = KTWebService::_encode_metadata_fieldset($fieldset);
         }
-        if (empty($encoded))
-        {
+
+        if (empty($encoded)) {
             $encoded = null;
         }
+
         return new SOAP_Value($name, "{urn:$this->namespace}kt_metadata_fieldsets", $encoded);
     }
 
@@ -2906,7 +2906,7 @@ class KTWebService {
 
                     KTWebService::_populate_tree($selection, $tree);
 
-                    $GLOBALS['default']->log->debug('get_document_type_metadata tree after population '.print_r($tree, true));
+                    //$GLOBALS['default']->log->debug('get_document_type_metadata tree after population '.print_r($tree, true));
 
                     $metadata[$i]['fields'][$j]['selection'] = $tree;
                 }
@@ -3023,7 +3023,7 @@ class KTWebService {
 
                     KTWebService::_populate_tree($selection, $tree);
 
-                    $GLOBALS['default']->log->debug('get_document_metadata tree after population '.print_r($tree, true));
+                    //$GLOBALS['default']->log->debug('get_document_metadata tree after population '.print_r($tree, true));
 
                     $metadata[$i]['fields'][$j]['selection'] = $tree;
                 }
@@ -3098,6 +3098,57 @@ class KTWebService {
         return new SOAP_Value('return', "{urn:$this->namespace}$responseType", $response);
     }
 
+    /**
+     * Updates document metadata using a simpler input format.
+     * Most of the fields used in the response (and required for the other metadata update functions,)
+     * has been eliminated.  This allows the user to only submit the information absolutely required.)
+     *
+     * @param string $session_id
+     * @param int $document_id
+     * @param array $metadata
+     * @return kt_document_detail
+     */
+    // TODO Remove duplicated code from update_document_metadata (since there will hopefully be a refactor
+    //      of this whole class at some point, we can do it then.)
+    function simple_metadata_update($session_id, $document_id, $metadata)
+    {
+        $this->debug("simple_metadata_update('$session_id', $document_id, " . print_r($metadata, true));
+
+        $ktapi = &$this->get_ktapi($session_id);
+        $responseType = 'kt_response';
+        if ($this->version >= 2) {
+            $responseType = 'kt_document_detail';
+        }
+
+        if (is_array($ktapi)) {
+            return new SOAP_Value('return', "{urn:$this->namespace}$responseType", $ktapi);
+        }
+
+        $response = KTWebService::_status(KTWS_ERR_INVALID_DOCUMENT);
+
+        $document = &$ktapi->get_document_by_id($document_id);
+        if (PEAR::isError($document)) {
+            $response['message'] = $document->getMessage();
+            $this->debug("update_document_metadata - cannot get documentid $document_id - "  . $document->getMessage(), $session_id);
+            return new SOAP_Value('return', "{urn:$this->namespace}$responseType", $response);
+        }
+
+        $result = $document->update_metadata($metadata);
+        if (PEAR::isError($result)) {
+            $response['message'] = $result->getMessage();
+            $this->debug("update_document_metadata - cannot update metadata - "  . $result->getMessage(), $session_id);
+            return new SOAP_Value('return', "{urn:$this->namespace}$responseType", $response);
+        }
+
+        // NOTE This was after the sysdata update code, but presumably did not rely on that code.
+        if ($this->version >= 2) {
+            return $this->get_document_detail($session_id, $document_id, 'M');
+        }
+
+        $response['status_code'] = KTWS_SUCCESS;
+
+        return new SOAP_Value('return', "{urn:$this->namespace}$responseType", $response);
+    }
     /**
      * Updates document tag word
      *
@@ -3701,36 +3752,31 @@ class KTWebService {
         $this->debug("search('$session_id', '$query', '$options')");
 
         $ktapi = &$this->get_ktapi($session_id);
-        if (is_array($ktapi))
-        {
+        if (is_array($ktapi)) {
             return new SOAP_Value('return', "{urn:$this->namespace}kt_search_response", $ktapi);
         }
 
         $response = KTWebService::_status(KTWS_ERR_PROBLEM);
         $response['hits'] = array();
 
-        if (!defined('HAS_SEARCH_FUNCTIONALITY'))
-        {
+        if (!defined('HAS_SEARCH_FUNCTIONALITY')) {
             $response['message'] = _kt('Search has not been implemented for this version of KnowledgeTree');
             return new SOAP_Value('return', "{urn:$this->namespace}kt_search_response", $response);
         }
 
         $results = processSearchExpression($query);
-        if (PEAR::isError($results))
-        {
+        if (PEAR::isError($results)) {
             $response['message'] = _kt('Could not process query.')  . $results->getMessage();
             $results = array();
         }
-        else
-        {
-            foreach($results as $key => $item)
-            {
+        else {
+            foreach($results as $key => $item) {
                 $results[$key] = new SOAP_Value('item', "{urn:$this->namespace}kt_search_result_item", $item);
             }
             $response['message'] = '';
             $response['status_code'] = KTWS_SUCCESS;
-
         }
+
         $response['hits'] = new SOAP_Value('hits', "{urn:$this->namespace}kt_search_results", $results);
 
         return new SOAP_Value('return', "{urn:$this->namespace}kt_search_response", $response);
@@ -4062,7 +4108,7 @@ class KTWebService {
      */
     function get_folder_total_files($session_id, $folder_id)
     {
-        $GLOBALS['default']->log->debug("get_folder_total_files $folder_id");
+        //$GLOBALS['default']->log->debug("get_folder_total_files $folder_id");
 
         $ktapi = &$this->get_ktapi($session_id);
         if (is_array($ktapi))
@@ -4088,7 +4134,7 @@ class KTWebService {
      */
     function get_is_folder_empty($session_id, $folder_id)
     {
-        $GLOBALS['default']->log->debug("get_is_folder_empty $folder_id");
+        //$GLOBALS['default']->log->debug("get_is_folder_empty $folder_id");
 
         $ktapi = &$this->get_ktapi($session_id);
         if (is_array($ktapi))
@@ -4156,7 +4202,7 @@ class KTWebService {
      */
     function get_folder_changes($session_id, $folder_ids, $timestamp = 0, $depth = 1)
     {
-        $GLOBALS['default']->log->debug("WS get_folder_changes $session_id ".print_r($folder_ids, true)." $timestamp");
+        //$GLOBALS['default']->log->debug("WS get_folder_changes $session_id ".print_r($folder_ids, true)." $timestamp");
 
         $ktapi = &$this->get_ktapi($session_id);
         if (is_array($ktapi))
@@ -4166,7 +4212,7 @@ class KTWebService {
 
         $result = &$ktapi->get_folder_changes($folder_ids, $timestamp, $depth, 'DF');
 
-        $GLOBALS['default']->log->debug('WS get_folder_changes result '.print_r($result, true));
+        //$GLOBALS['default']->log->debug('WS get_folder_changes result '.print_r($result, true));
 
         if ($result['status_code'] !== 0)
         {
@@ -4599,7 +4645,6 @@ class KTWebService {
                 'mime_display' => 'string',
 
                 'storage_path' => 'string',
-
 
                    'metadata' => "{urn:$this->namespace}kt_metadata_fieldsets",
                  'links' => "{urn:$this->namespace}kt_linked_documents",
@@ -5062,7 +5107,37 @@ class KTWebService {
                     'message' => 'string',
                     'folder_id' => 'int'
                 );
+
+            // Simple metadata for easier update.
+
+        $this->__typedef["{urn:$this->namespace}kt_simple_metadata_field"] =
+             array(
+                'name' => 'string',
+                'value' => 'string'
+            );
+
+        $this->__typedef["{urn:$this->namespace}kt_simple_metadata_fields"] =
+            array(
+                array(
+                        'field' => "{urn:$this->namespace}kt_simple_metadata_field"
+                 )
+           );
+
+        $this->__typedef["{urn:$this->namespace}kt_simple_metadata_fieldset"] =
+             array(
+                'fieldset' => 'string',
+                'fields' => "{urn:$this->namespace}kt_simple_metadata_fields" ,
+            );
          }
+
+            $this->__typedef["{urn:$this->namespace}kt_simple_metadata"] =
+            array(
+                array(
+                        'fieldset' => "{urn:$this->namespace}kt_simple_metadata_fieldset"
+                 )
+           );
+
+        // End simple metadata section.
     }
 
     private function setDispatchMap()
@@ -5657,6 +5732,7 @@ class KTWebService {
             array('in' => array('session_id' => 'string', 'document_type' => 'string'  ),
              'out' => array( 'return' => "{urn:$this->namespace}kt_metadata_response"),
            );
+
             //update_document_metadata
             $this->__dispatch_map['update_document_metadata'] =
             array('in' => array('session_id' => 'string', 'document_id' => 'int', 'metadata'=>"{urn:$this->namespace}kt_metadata_fieldsets"),
@@ -5759,6 +5835,12 @@ class KTWebService {
                 array('in' => array('session_id' => 'string', 'folder_path' => 'string'),
                     'out' => array( 'return' => "{urn:$this->namespace}locate_folder_by_path_response")
                );
+
+            //update_document_metadata
+            $this->__dispatch_map['simple_metadata_update'] =
+            array('in' => array('session_id' => 'string', 'document_id' => 'int', 'metadata'=>"{urn:$this->namespace}kt_simple_metadata"),
+             'out' => array( 'return' => "{urn:$this->namespace}kt_response"),
+           );
         }
     }
 

@@ -47,9 +47,27 @@ function getTarget() {
 	return event.srcElement;
 }
 
+function registerEvent(el, eventType, eventFunction, bool) {
+	if(eventType.indexOf("on")==0) eventType = eventType.substring(2,eventType.length);
+	if(bool==undefined) bool = false;
+	if(window.addEventListener) el.addEventListener(eventType, eventFunction, bool);
+	else el.attachEvent("on"+eventType, eventFunction);
+	if(!el.eventHolder) el.eventHolder = [];
+	el.eventHolder[el.eventHolder.length] = new Array(eventType, String(eventFunction));
+}
+
+function hasEvent(el, eventType, eventFunction) {
+	if(eventType.indexOf("on")==0) eventType = eventType.substring(2,eventType.length);
+	if(!el.eventHolder) return false;
+	for(var i=0; i<el.eventHolder.length; i++) {
+		if(el.eventHolder[i][0]==eventType && el.eventHolder[i][1]==String(eventFunction)) return true;
+	}
+	return false;
+}
+
     
 
-function confirmDelete(e) {
+function confirmDeletion(e) {
     var target = getTarget();
     if(!isUndefinedOrNull(target)) {
         var msg = target.getAttribute('kt:deleteMessage');
@@ -81,10 +99,12 @@ function initDeleteProtection(m) {
             else { return null; }
         }
 
-        addEvent(node, 'click', fn, true);        
+        if (!hasEvent(node, 'click', fn)) {
+			registerEvent(node, 'click', fn, true);
+		}
     }
     
-    var fn = confirmDelete;
+    var fn = confirmDeletion;
     message = m;
 
     var elements = getElementsByTagAndClassName(null,'ktDelete');

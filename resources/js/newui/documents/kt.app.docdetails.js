@@ -67,6 +67,7 @@ kt.app.docdetails = new function() {
             cls             : 'ul_win',
             shadow          : true,
             modal           : true,
+			draggable  	 	: false,
             title           : title,
             html            : html
         });

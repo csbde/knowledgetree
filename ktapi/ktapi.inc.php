@@ -1483,8 +1483,13 @@ class KTAPI {
         $response['status_code'] = 1;
 
         if (!is_array($items)) {
-            $response['message'] = sprintf(_kt("The list of id's must be an array of format array('documents' => array(1,2), 'folders' => array(2,3)). Received: %s") , $items);
-            return $response;
+        	global $default;
+        	$items = unserialize($items);
+        	$reason = urldecode($reason);
+        	if(!is_array($items)) {
+        		$response['message'] = sprintf(_kt("The list of id's must be an array of format array('documents' => array(1,2), 'folders' => array(2,3)). Received: %s") , $items);
+            	return $response;
+        	}
         }
 
         if (empty($items)) {
@@ -4114,91 +4119,87 @@ class KTAPI {
     /**
      * Returns the metadata on a document.
      *
-	 * @author KnowledgeTree Team
-	 * @access public
+     * @author KnowledgeTree Team
+     * @access public
      * @param int $document_id
      * @return array
      */
-	public function get_document_metadata($document_id)
-	{
-    	$document = &$this->get_document_by_id($document_id);
-		if (PEAR::isError($document))
-    	{
-    		$response['status_code'] = 1;
-    		$response['message'] = $document->getMessage();
-			return $response;
-    	}
+    public function get_document_metadata($document_id)
+    {
+        $document = &$this->get_document_by_id($document_id);
+        if (PEAR::isError($document)) {
+            $response['status_code'] = 1;
+            $response['message'] = $document->getMessage();
+            return $response;
+        }
 
-    	$metadata = $document->get_metadata();
+        $metadata = $document->get_metadata();
 
-		$num_metadata=count($metadata);
-		for($i=0;$i<$num_metadata;$i++)
-		{
-			$num_fields = count($metadata[$i]['fields']);
-			for($j=0;$j<$num_fields;$j++)
-			{
-				$selection=$metadata[$i]['fields'][$j]['selection'];
-				$new = array();
+        $num_metadata = count($metadata);
+        for($i = 0; $i < $num_metadata; $i++) {
+            $num_fields = count($metadata[$i]['fields']);
+            for($j = 0; $j < $num_fields; $j++) {
+                $selection = $metadata[$i]['fields'][$j]['selection'];
+                $new = array();
 
-				foreach ($selection as $item)
-				{
-					$new[] = array(
-						'id'=>null,
-						'name' => $item,
-						'value' => $item,
-						'parent_id'=>null
-					);
-				}
-				$metadata[$i]['fields'][$j]['selection'] = $new;
-			}
-		}
+                foreach ($selection as $item) {
+                    $new[] = array(
+                        'id'=>null,
+                        'name' => $item,
+                        'value' => $item,
+                        'parent_id'=>null
+                    );
+                }
+                
+                $metadata[$i]['fields'][$j]['selection'] = $new;
+            }
+        }
 
-		$response['status_code'] = 0;
-		$response['result'] = $metadata;
-    	return $response;
-	}
+        $response['status_code'] = 0;
+        $response['result'] = $metadata;
+        return $response;
+    }
 
-	/**
-	 * Updates document metadata.
-	 *
-	 * @author KnowledgeTree Team
-	 * @access public
-	 * @param int $document_id
-	 * @param array $metadata
-	 * @return array
-	 */
-	public function update_document_metadata($document_id, $metadata, $sysdata = null, $sig_username = '', $sig_password = '', $reason = '')
-	{
+    /**
+     * Updates document metadata.
+     *
+     * @author KnowledgeTree Team
+     * @access public
+     * @param int $document_id
+     * @param array $metadata
+     * @return array
+     */
+    public function update_document_metadata($document_id, $metadata, $sysdata = null, $sig_username = '', $sig_password = '', $reason = '')
+    {
         $response = $this->_check_electronic_signature($document_id, $sig_username, $sig_password, $reason, $reason,
                                                       'ktcore.transactions.metadata_update');
-        if ($response['status_code'] == 1) return $response;
+        if ($response['status_code'] == 1) {
+            return $response;
+        }
 
-    	$document = &$this->get_document_by_id($document_id);
-		if (PEAR::isError($document))
-    	{
-    		$response['status_code'] = 1;
-    		$response['message'] = $document->getMessage();
-			return $response;
-    	}
+        $document = &$this->get_document_by_id($document_id);
+        if (PEAR::isError($document)) {
+            $response['status_code'] = 1;
+            $response['message'] = $document->getMessage();
+            return $response;
+        }
 
-    	$result = $document->update_metadata($metadata);
-    	if (PEAR::isError($result))
-    	{
-    		$response['status_code'] = 1;
-    		$response['message'] = $result->getMessage();
-			return $response;
-    	}
+        $result = $document->update_metadata($metadata);
+        if (PEAR::isError($result)) {
+            $response['status_code'] = 1;
+            $response['message'] = $result->getMessage();
+            return $response;
+        }
 
-    	$result = $document->update_sysdata($sysdata);
-    	if (PEAR::isError($result))
-    	{
-    		$response['status_code'] = 1;
-    		$response['message'] = $result->getMessage();
-			return $response;
-    	}
+        $result = $document->update_sysdata($sysdata);
+        if (PEAR::isError($result)) {
+            $response['status_code'] = 1;
+            $response['message'] = $result->getMessage();
+            return $response;
+        }
 
-    	return $this->get_document_detail($document_id, 'M');
-	}
+        return $this->get_document_detail($document_id, 'M');
+    }
 
 	/**
 	 * Returns a list of available transitions on a give document with a workflow.
@@ -4542,36 +4543,36 @@ class KTAPI {
 		return $response;
 	}
 
-	/**
-	 * This is the search interface
-	 *
-	 * @author KnowledgeTree Team
-	 * @access public
-	 * @param string $query
-	 * @param string $options
-	* @return array $response The formatted response array
-	 */
-	public function search($query, $options)
-	{
-    	$response['status_code'] = 1;
-		$response['results'] = array();
+    /**
+     * This is the search interface
+     *
+     * @author KnowledgeTree Team
+     * @access public
+     * @param string $query
+     * @param string $options
+     * @return array $response The formatted response array
+     */
+    public function search($query, $options)
+    {
+        $response['status_code'] = 1;
+        $response['results'] = array();
 
-		$results = processSearchExpression($query);
-		if (PEAR::isError($results))
-		{
-			$response['message'] = _kt('Could not process query.')  . $results->getMessage();
-			return $response;
-		}
+        $results = processSearchExpression($query);
+        if (PEAR::isError($results)) {
+            $response['message'] = _kt('Could not process query.')  . $results->getMessage();
+            return $response;
+        }
 
-		$response['message'] = '';
-		if (empty($results)) {
-    		$response['message'] = _kt('Your search did not return any results');
-		}
-		$response['status_code'] = 0;
-		$response['results'] = $results;
+        $response['message'] = '';
+        if (empty($results)) {
+            $response['message'] = _kt('Your search did not return any results');
+        }
 
-		return $response;
-	}
+        $response['status_code'] = 0;
+        $response['results'] = $results;
+
+        return $response;
+    }
 
 	/**
 	* Method to create a saved search
@@ -5458,7 +5459,7 @@ class KTAPI {
 
 	public function get_folder_total_size($include_folder_ids, $exclude_folder_ids)
 	{
-		$GLOBALS['default']->log->debug('KTAPI get_folder_total_size '.print_r($include_folder_ids, true).' '.print_r($exclude_folder_ids, true));
+		//$GLOBALS['default']->log->debug('KTAPI get_folder_total_size '.print_r($include_folder_ids, true).' '.print_r($exclude_folder_ids, true));
 
 		$size = array('total_files' => 0, 'total_size' => 0);
 
@@ -5473,8 +5474,8 @@ class KTAPI {
 				$size['total_files'] += $parent_size['total_files'];
 				$size['total_size'] += $parent_size['total_size'];
 
-				$GLOBALS['default']->log->debug("KTAPI get_folder_total_size parent result $folder_id ".print_r($parent_size, true));
-				$GLOBALS['default']->log->debug('KTAPI get_folder_total_size parent result carried over '.print_r($size, true));
+				//$GLOBALS['default']->log->debug("KTAPI get_folder_total_size parent result $folder_id ".print_r($parent_size, true));
+				//$GLOBALS['default']->log->debug('KTAPI get_folder_total_size parent result carried over '.print_r($size, true));
 			}
 			else
 			{
@@ -5487,11 +5488,11 @@ class KTAPI {
 
 			$children_ids = $folder->get_children_ids();
 
-			$GLOBALS['default']->log->debug('KTAPI get_folder_total_size children_ids '.print_r($children_ids, true));
+			//$GLOBALS['default']->log->debug('KTAPI get_folder_total_size children_ids '.print_r($children_ids, true));
 
 			foreach ($children_ids as $child_id)
 			{
-				$GLOBALS['default']->log->debug("KTAPI get_folder_total_size check if $child_id is in excluded list ".print_r($exclude_folder_ids, true));
+				//$GLOBALS['default']->log->debug("KTAPI get_folder_total_size check if $child_id is in excluded list ".print_r($exclude_folder_ids, true));
 
 				//only use that child if it wasn't excluded!
 				if (!in_array($child_id, $exclude_folder_ids))
@@ -5505,7 +5506,7 @@ class KTAPI {
 						$size['total_files'] += $child_size['total_files'];
 						$size['total_size'] += $child_size['total_size'];
 
-						$GLOBALS['default']->log->debug("KTAPI get_folder_total_size child $child_id ".print_r($child_size, true));
+						//$GLOBALS['default']->log->debug("KTAPI get_folder_total_size child $child_id ".print_r($child_size, true));
 					}
 					else
 					{
@@ -5514,7 +5515,7 @@ class KTAPI {
 				}
 			}
 
-			$GLOBALS['default']->log->debug('KTAPI get_folder_total_size result '.print_r($size, true));
+			//$GLOBALS['default']->log->debug('KTAPI get_folder_total_size result '.print_r($size, true));
 		}
 
 		$config = KTConfig::getSingleton();
@@ -5540,7 +5541,7 @@ class KTAPI {
 			$response['message'] = '';
 		}
 
-		$GLOBALS['default']->log->debug('KTAPI get_folder_total_size response '.print_r($response, true));
+		//$GLOBALS['default']->log->debug('KTAPI get_folder_total_size response '.print_r($response, true));
 
 		return $response;
 	}
@@ -5593,7 +5594,7 @@ class KTAPI {
      */
 	public function get_folder_changes($folder_ids, $timestamp, $depth = 1, $what = 'DF')
 	{
-		$GLOBALS['default']->log->debug("KTAPI get_folder_changes ".print_r($folder_ids, true)." $timestamp $depth '$what'");
+		//$GLOBALS['default']->log->debug("KTAPI get_folder_changes ".print_r($folder_ids, true)." $timestamp $depth '$what'");
 
 		$results = array();
 		$changes = array();

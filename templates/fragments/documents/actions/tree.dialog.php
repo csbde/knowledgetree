@@ -3,8 +3,8 @@
 <table id='action-modal' class="uploadTable" border="0">
 
 <tr>
-	<td valign="top">
-		<div id="select-tree" class="select-tree modalField" style="width: 500px; height: 250px; overflow: auto;"></div>
+	<td valign="top" class="modalField" style="height:auto;">
+		<div id="select-tree" class="select-tree" style="width: 500px; height: 250px; overflow: auto;"></div>
 	</td>
 </tr>
 </table>

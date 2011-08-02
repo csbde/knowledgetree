@@ -3,17 +3,13 @@
 <table class="metadatatable" cellspacing="0">
     <tbody>
         <tr class="first">
-            <th>{i18n}Name{/i18n}</th><td>{$context->oFieldset->getName()}</td>
+            <th>{i18n}Name{/i18n}</th><td>{$context->oFieldset->getName()} {if $context->oFieldset->getIsGeneric()}
+            <span class="flag">{i18n}Generic{/i18n}</span>
+{/if}</td>
+</td>
         </tr>
         <tr>
             <th>{i18n}Description{/i18n}</th><td>{$context->oFieldset->getDescription()}</td>
-        </tr>
-        <tr>
-            <th>{i18n}Generic{/i18n}</th><td>{if $context->oFieldset->getIsGeneric()}
-            <span class="ktAction ktAllowed">{i18n}Yes{/i18n}</span>
-            {else}
-            <span class="ktAction ktDenied">{i18n}No{/i18n}</span>
-            {/if}</td>
         </tr>
         {if (!$context->oFieldset->getIsGeneric())}
         <tr>

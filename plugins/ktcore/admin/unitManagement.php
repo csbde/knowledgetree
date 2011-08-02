@@ -80,7 +80,7 @@ class KTUnitAdminDispatcher extends KTAdminDispatcher {
         $this->oPage->setTitle(_kt("Add a new unit"));
 
         $add_fields = array();
-        $add_fields[] =  new KTStringWidget(_kt('Unit Name'), _kt('A short name for the unit.  e.g. <strong>Accounting</strong>.'), 'unit_name', null, $this->oPage, true);
+        $add_fields[] =  new KTStringWidget(_kt('Unit Name'), _kt('A short name for the unit.  e.g. Accounting.'), 'unit_name', null, $this->oPage, true);
 
         $templating = KTTemplating::getSingleton();
         $template = $templating->loadTemplate("ktcore/principals/addunit");
@@ -128,14 +128,14 @@ class KTUnitAdminDispatcher extends KTAdminDispatcher {
         $oWF = KTWidgetFactory::getSingleton();
         $oWidget = $oWF->get('ktcore.widgets.collection',
                              array('label' => _kt('Target Folder'),
-                                   'description' => _kt('<p>The unit folder will be created here.</p>'),
+                                   'description' => _kt('The unit folder will be created here.'),
                                    'required' => true,
                                    'name' => 'browse',
                                    'folder_id' => $oFolder->getId(),
                                    'collection' => $collection));
 
         $add_fields = array();
-        $add_fields[] =  new KTStaticTextWidget(_kt('Unit Name'), _kt('A short name for the unit.  e.g. <strong>Accounting</strong>.'), 'unit_name', $sName, $this->oPage, true);
+        $add_fields[] =  new KTStaticTextWidget(_kt('Unit Name'), _kt('A short name for the unit.  e.g. Accounting.'), 'unit_name', $sName, $this->oPage, true);
 
         $add_fields[] = $oWidget;
 
@@ -198,7 +198,7 @@ class KTUnitAdminDispatcher extends KTAdminDispatcher {
         $oUnit = $this->oValidator->validateUnit($_REQUEST['unit_id']);
 
         $fields = array();
-        $fields[] =  new KTStringWidget(_kt('Unit Name'), _kt('A short name for the unit.  e.g. <strong>Accounting</strong>.'), 'unit_name', $oUnit->getName(), $this->oPage, true);
+        $fields[] =  new KTStringWidget(_kt('Unit Name'), _kt('A short name for the unit.  e.g. Accounting.'), 'unit_name', $oUnit->getName(), $this->oPage, true);
 
         $template = $this->oValidator->validateTemplate('ktcore/principals/editunit');
         $templateData = array(

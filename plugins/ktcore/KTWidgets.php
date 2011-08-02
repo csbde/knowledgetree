@@ -176,7 +176,7 @@ class KTCorePasswordWidget extends KTWidget {
 class KTCoreSelectionWidget extends KTWidget {
     public $sNamespace = 'ktcore.widgets.selection';
     public $bMulti = false;    // multiselection
-    public $USE_SIMPLE = 10;   // point at which to switch to a dropdown/multiselect
+    public $USE_SIMPLE = 5;   // point at which to switch to a dropdown/multiselect
     public $bUseSimple;    // only use checkboxes, regardless of size
     public $aVocab;
     public $sEmptyMessage;
@@ -189,7 +189,7 @@ class KTCoreSelectionWidget extends KTWidget {
         if (PEAR::isError($res)) {
             return $res;
         }
-
+        
         $this->bUseSimple = KTUtil::arrayGet($aOptions, 'simple_select', null, false);
         $this->bMulti = KTUtil::arrayGet($aOptions, 'multi', false);
 

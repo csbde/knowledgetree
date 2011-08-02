@@ -82,6 +82,10 @@ class KTDocumentImmutableAction extends JavascriptDocumentAction {
     {
     	$id = $this->oDocument->getId();
     	$name = $this->oDocument->getName();
+		
+		$name = str_replace("'", "&apos;", $name);
+        $name = str_replace('"', '\"', $name);
+		
         return "javascript:{kt.app.copy.doAction(\"immutable\", $id, \"$name\");}";
     }
 

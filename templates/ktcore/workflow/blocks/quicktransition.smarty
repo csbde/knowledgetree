@@ -10,15 +10,12 @@
 	<div class="field">
 		<label for="data[reason]">Comment</label>
 		<p class="errorMessage"></p>
-		<textarea name="fComments" rows="3" cols="55"></textarea>
+		<textarea name="fComments" class="modalField" rows="3" cols="55"></textarea>
 	</div>
-	<br clear="both" />
-	<div class="form_buttons">
+	<div class="action-footer">
 		<div class="form_actions" id="modal">
-			<input type="submit" onclick="javascript: {ldelim}workflowBlock.submitForm('quick_transition'){rdelim}; return false;" name="form_submit" value="{i18n}Perform Transition{/i18n}" />
-		</div>
-		<div class="form_cancel">
 			<a href="#" onclick="vActions.closeDisplay('workflow'); return false;" class="form_cancel">Cancel</a>
+			<input type="submit" onclick="javascript: {ldelim}workflowBlock.submitForm('quick_transition'){rdelim}; return false;" name="form_submit" value="{i18n}Perform Transition{/i18n}" />
 		</div>
 	</div>
 </form>

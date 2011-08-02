@@ -176,18 +176,14 @@ function storeRelationship(selected_lookup, child_lookups) {
 }
 
 function addInformationNote(message) {
-  // this is _NOT_ the best way to handle this ...
-  var dynamicMessage = getElement('condy-simple-notice');
-  if (dynamicMessage == null) {
-    dynamicMessage = DIV({'id':'condy-simple-notice','class':'ktInfo'},null);
-    var contentBox = getElement('content');
-    var secondHeaders = contentBox.getElementsByTagName('h2'); // should only be one.
-    var sH = secondHeaders[0];
-    contentBox.insertBefore(dynamicMessage, sH);
-  }
-
-  var newStr = createDOM('P',null,message);
-  replaceChildNodes(dynamicMessage, newStr);
+    
+    var dynamicMessage = jQuery('#condy-simple-notice');
+    
+    if (dynamicMessage.length == 0) {
+        jQuery('#content #ratpfieldset h2').before('<div id="condy-simple-notice" class="ktInfo"></div>');
+    }
+    
+    jQuery('#condy-simple-notice').html('<p>'+message+'</p>');
 }
 
 // receives a very simple list of fields.

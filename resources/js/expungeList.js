@@ -2,13 +2,14 @@ var xmlHttp;
 
 var currloc = location.pathname.substring(0,location.pathname.lastIndexOf('/')+1);
 // Loadfeed function that is called by event
-function buildList(value){
+function buildList(value, searchTerm){
 	xmlHttp=GetXmlHttpObject();
 	if (xmlHttp===null){
 		alert ("Browser does not support HTTP Request");
 		return;
 	}
-	var url=currloc+"plugins/ktcore/admin/expungeList.php?page="+value;
+	searchTerm = encodeURIComponent(searchTerm);
+	var url=currloc+"plugins/ktcore/admin/expungeList.php?page="+value+"&search="+searchTerm;
 	xmlHttp.onreadystatechange=stateChanged;
 	xmlHttp.open("GET",url,true);
 	xmlHttp.send(null);

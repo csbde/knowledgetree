@@ -328,6 +328,14 @@ textarea {
 	float: right;
 	position: relative;
 }
+.breadcrumbsNotify {
+	float: left;
+	position: relative;
+}
+.breadcrumbsNotify span.notifyAction {
+	background: none repeat scroll 0 0 #F2EBAE !important;
+	border: 1px solid #FFE877 !important;
+}
 .breadCrumb ul {
 	margin: 0;
 	padding: 0;
@@ -745,9 +753,33 @@ div.form_actions {
 #content .form_actions a:last-child {
 	
 }
+.form_actions.standalone {
+	margin: 5px 0px; 
+	float: none;
+	text-align: left;
+	display: block;
+}
+.form_actions.dropdown {
+	background: #EEE;
+	border: 1px solid #CCC;
+	border-radius: 3px;
+	-webkit-border-radius: 3px;
+	-moz-border-radius: 3px;
+	height: 23px;
+	margin-top: 2px;
+	padding: 0px;
+}
+#content .form_actions.dropdown select {
+	background: transparent!important;
+	top: -2px !important;
+	position: relative;
+}
+#content .form_actions.dropdown input {
+	margin: -1px !important;
+}
 .x-window .form_actions input, .x-window .form_actions a, 
-#content .form_actions input, #content .form_actions a {
-	background: -webkit-linear-gradient(top,#fff,#e8e8e8)!important;
+#content .form_actions input, #content .form_actions a { 
+	background: -webkit-gradient(linear, left top, left bottom, from(#fff), to(#e8e8e8)) !important;
 	background: -moz-linear-gradient(top,#fff,#e8e8e8)!important;
 	background: -ms-linear-gradient(top,#fff,#e8e8e8)!important;
 	background: linear-gradient(top,#fff,#e8e8e8)!important;
@@ -1015,7 +1047,22 @@ table.kt_collection {
 	margin: 5px;
 	width: 98%;
 }
-
+.kt_collection .icon-column {
+	white-space: nowrap;
+	text-align: center;
+	width: 50px;
+}
+#content .kt_collection.document-summary thead th,
+.kt_collection.scrollable th,
+.kt_collection.scrollable td{
+	word-break: normal;
+	word-break: normal;
+}
+.kt_collection.scrollable {
+	width: 100%;
+	overflow: auto;
+	display: block;
+}
 div#activationNotice {
 	background: url('../graphics/newui/notice_v2.png') no-repeat top right;
 	width: 160px;
@@ -1108,14 +1155,14 @@ div#uploadProgress .progress {
 	overflow: hidden;
 }
 .upload-breadcrumb em {
-	background: url(../graphics/newui/bc_separator.png) no-repeat 100% 0;
+	background: url(../graphics/newui/bc_separator.png) no-repeat 0 0;
 }
 #uploadpathstring span,
 .upload-breadcrumb em {
 	display: inline-block;
 	float: left;
-	margin-right: 5px;
-	padding-right: 10px;
+	margin-left: 2px;
+	padding-left: 13px;
 }
 #changepathlink {
 	display:inline-block; 
@@ -1163,6 +1210,7 @@ div.widgetRow {
 	margin: 1px;
 	clear: both;
 	/*outline: 1px solid black;*/
+	
 }
 
 /* There can be many widgetItems in a row. */
@@ -1175,11 +1223,11 @@ div.widgetItem {
 	margin-top: 5px;
 }
 #content div.widgetItem.import-from-source select {
-	background: whiteSmoke;
 	height: 17px;
 	font-size: 11px;
 	padding: 2px;
 	color: #666;
+	max-width: 125px;
 }
 /*Alerts Modal*/
 
@@ -1227,6 +1275,23 @@ label span.required
 	height: 22px !important;
 	border-top-right-radius: 3px;
 	border-bottom-right-radius: 3px;
+}
+#content .modalField.date input{
+	box-shadow: none!important;
+	-moz-box-shadow: none!important;
+	-webkit-box-shadow: none !important;
+	border: 0px !important;
+}
+.modalField.date{
+	min-width: 120px;
+}
+.modalField.date .x-form-field-wrap .x-form-date-trigger,
+.modalField.date .x-form-field-wrap .x-form-date-trigger .x-form-trigger-over,
+.modalField.date .x-form-field-wrap .x-form-date-trigger .x-form-trigger-click {
+	background: url(../graphics/newui/icons/calendar.png) no-repeat center center;
+	border: 0px;
+	display: inline-block;
+	padding-right: 5px;
 }
 
 .modal-actions {
@@ -1308,6 +1373,19 @@ label span.required
 	background: white;
 	overflow: hidden;
 }
+.settings-section .help {
+	background: url(../graphics/newui/icons/help.png) no-repeat center center;
+	display: block;
+	float: right;
+	width: 25px;
+	height: 25px;
+	position: relative;
+	margin: 5px 0px;
+	z-index: 1;
+}
+#workflowtabs .help {
+	margin-top: -2px;
+}
 .settings-section #content fieldset legend {
 	padding: 0px;
 }
@@ -1323,6 +1401,31 @@ label span.required
 .settings-item.users .name.empty {
 	padding-right: 0px;
 }
+.settings-item.emailconfigpage .descriptiveText {
+	display: none;
+}
+#content .settings-item.workflows_2 .field.fWizardKey {
+	background: none;
+	border: 0px;
+	padding: 0px;
+}
+#workflowtabs .kt_collection select {
+	max-width: 140px;
+}
+#workflowtabs #workflow_details .form_actions input {
+	float: right;
+}
+.settings-item .table-footer {
+	background: whiteSmoke;
+	overflow: hidden;
+	border: 1px solid #CCC;
+	margin-top: -10px;
+	border-top: 0px;
+	border-radius: 0px 0px 3px 3px;
+	-moz-border-radius: 0px 0px 3px 3px;
+	-webkit-border-radius: 0px 0px 3px 3px;
+	padding: 5px;
+}
 .settings-item #branding .form_actions {
 	display: block;
 	overflow: hidden;
@@ -1332,12 +1435,42 @@ label span.required
 	background: whiteSmoke;
 	margin: 20px 0px -15px -15px;
 }
+.settings-item #branding .form_actions #cancelBranding {
+	height: 23px;
+	margin-left: 5px;
+}
+.settings-item #workflow_allocation select {
+	width: 200px;
+}
+.settings-item #archived .kt_collection th.sort_on.sort_asc {
+	background: transparent!important;
+}
 .settings-section .kt_collection,
 .settings-section .kt_collection.narrow  {
 	width: 100%;
 	margin: 10px 0px;
 }
-.settings-section .flag.shared {
+.settings-section .simple-selection {
+	display: block;
+	float: right;
+	min-width: 270px;
+}
+
+.settings-section .simple-selection br{
+	clear: both;
+}
+
+.settings-section .simple-selection input[type="radio"] {
+	float: left !important;
+	margin: 4px;
+}
+.settings-section #content .field .descriptiveText {
+	float: left;
+	clear: left;
+
+}
+.settings-section .flag,
+.x-window .flag  {
 	border-radius: 3px;
 	-moz-border-radius: 3px;
 	-webkit-border-radius: 3px;
@@ -1380,7 +1513,44 @@ label span.required
 .x-window .action-footer .form_actions {
 	float: right;
 }
-
+.field-group {
+	background: whitesmoke;
+	border: 1px solid #CCC;
+	border-radius: 3px;
+	-moz-border-radius: 3px;
+	-webkit-border-radius: 3px;
+	padding: 10px;
+	overflow: hidden;
+}
+.field-group .field {
+	float: right;
+}
+.field-group > label {
+	float: left;
+	padding-top: 5px;
+}
+.field-group .switch {
+	margin-top: 0px;
+}
+.empty-boilerplate {
+	display: block;
+	text-align: center;
+	min-height: 50px;
+	line-height: 50px;
+	width: auto;
+	-webkit-box-shadow: inset 0px 0px 5px #CCC;
+	-moz-box-shadow: inset 0px 0px 5px #CCC;
+	box-shadow: inset 0px 0px 5px #CCC;
+	border: 1px solid #DDD;
+	-webkit-border-radius: 3px;
+	-moz-border-radius: 3px;
+	border-radius: 3px;
+	background-color: #F6F6F6;
+	margin: 10px 0px;
+	padding: 20px;
+	color: #777 !important;
+	text-shadow: 0px 1px 0px white;
+}
 
 /*Tag editor*/
 
@@ -1388,6 +1558,11 @@ label span.required
 	border: none;
 	list-style: none;
 	padding: 0px;
+}
+.group .token-input-list-facebook input {
+	box-shadow: none!important;
+	-moz-box-shadow: none!important;
+	-webkit-box-shadow: none!important;
 }
 #content .tags div.token-input-dropdown-facebook {
 }
@@ -1403,7 +1578,7 @@ a.subscribe_actions {
 #checkins #checkinfilename {
 	padding: 5px;
 	margin-top: 5px;
-	width: 350px;
+	width: 365px;
 }
 /*
 IPhone Style Switches
@@ -1444,6 +1619,17 @@ http://devgrow.com/iphone-style-switches/
 }
 .switch label { cursor: pointer; }
 .switch input { display: none; }
+
+
+/* This CSS is needed for a fake view in IE8 - Tohir */
+.switch input {
+	border: none !important;
+	padding: 0 !important;
+	margin: 0 !important;
+	height: 0px !important;
+	width: 0px !important;
+	overflow: hidden;
+}
 
 
 #reason-field {
@@ -1514,12 +1700,13 @@ http://devgrow.com/iphone-style-switches/
 #content .settings-content fieldset {
 	border: 0px;
 	padding: 0px;
-	
+	clear: both;
 }
 .settings-section .switch {
 	margin: 0px 0px -5px 0px;
 }
 .settings-section #content .field,
+.workflow_transition .field,
 .settings-field {
 	border: 1px solid #CCC;
 	border-radius: 5px;
@@ -1534,6 +1721,12 @@ http://devgrow.com/iphone-style-switches/
 	font-size: 12px;
 	background: whitesmoke;
 }
+.workflow_transition {
+	margin-top: -10px;
+}
+.workflow_transition table {
+	border-spacing: 0px;
+}
 .settings-option {
 	float: right;
 }
@@ -1541,6 +1734,36 @@ http://devgrow.com/iphone-style-switches/
 	float: left;
 	font-size: 13px;
 }
+.settings-field label {
+	line-height: 20px;
+}
+.settings-field .stamp {
+	color: #f93333;
+	border-top: 2px solid #f93333;
+	border-bottom: 2px solid #f93333;
+	float: right;
+	font-family: "Courier New", Courier, monospace;
+	font-weight: bold;
+	line-height: 14px;
+	letter-spacing: 1px;
+	text-transform: uppercase;
+}
+.settings-field .stamp.end-workflow {
+	color: #007fff;
+	border-top: 2px solid #007fff;
+	border-bottom: 2px solid #007fff;
+}
+.workflow_transition .field select{
+	float: right;
+}
+.workflow_transition .field textarea{
+	display: inline-block;
+	border: 1px solid #ccc;
+	border-radius: 3px;
+	box-shadow: inset 0px 1px 1px #666;
+	padding: 2px;
+}
+
 .settings-section #content .field label {
 	float: left;
 	font-weight: normal;
@@ -1548,11 +1771,27 @@ http://devgrow.com/iphone-style-switches/
 }
 .settings-section #content .field input,
 .settings-section #content .field select,
+.settings-field select,
 .settings-section #content .field textarea {
 	position: relative;
 	float: right;
 	font-size: 12px;
-
+}
+.settings-section #content .field .date-field {
+	width: 410px;
+}
+ #content .field .date-field {
+	clear: right;
+	float: right;
+	margin: 5px 0px;
+}
+#content .field .date-field input,
+#content .field .date-field select {
+	float: none;
+}
+#content .field .date-field input[type='radio'] {
+	top: 2px;
+	margin: 2px;
 }
 .settings-section #content .field input,
 .settings-section #content .settings-field input,
@@ -1679,20 +1918,23 @@ li.ui-state-disabled a {
 #action-modal .jstree-knowledgetree a .jstree-icon {
 	background: url(/thirdpartyjs/extjs/resources/images/default/tree/folder-open.gif) 0px 0px;
 }
-.x-window .jstree-knowledgetree.select-tree {
-	background: url("/thirdpartyjs/jquery/plugins/jstree/themes/knowledgetree/bg.jpg") left top repeat;
+.jstree-knowledgetree > ul {
+	display: inline-block !important;
+	background: transparent url("/thirdpartyjs/jquery/plugins/jstree/themes/knowledgetree/bg.jpg") left top repeat!important;
+	min-height: 235px;
+	min-width: 500px;
 }
 #action-error.alert.warning {
-	background: #F2C1C5;
-	border: 1px solid #A90615;
+	background: #ffeded;
+	border: 1px solid #f93333;
 	padding: 10px;
-	color: #A90615;
+	color: #f93333;
 }
 #action-error.alert.success {
-	background: #d8f9d1;
-	border: 1px solid #53bc3e;
+	background: #fffdc5;
+	border: 1px solid #ffd825;
 	padding: 10px;
-	color: #53bc3e;
+	color: #333;
 }
 
 a.currentSettingsCategory {
@@ -1704,32 +1946,72 @@ a.currentSettingsCategory {
 #preferencesWindow br {
 	line-height: 1;
 }
-
 #preferencesWindow div.field {
 	margin-bottom: 10px;
 }
 
-#preferencesWindow #adminModeForm label {
-	display: none;
-}
-
-#preferencesWindow #adminModeForm span.switch {
-	clear: both;
-}
-
-#preferencesWindow #adminModeForm span.switch label {
-	display: inherit;
-}
-
-#preferencesWindow #updatePreferencesForm div.form_actions {
+#updatePreferencesForm div.form_actions {
 	margin-top: 10px;
 }
 
-#preferencesWindow #updatePreferencesForm input {
-	max-width: 280px;
+#updatePreferencesForm input {
+	max-width: 300px;
 }
 
-#preferencesWindow a.header {
-	background: none;
-	padding: 5px;
+
+/**
+ * Small Adjustment for Folder Structure Templates
+ */
+#tree_edit p.descriptiveText {
+	clear: both;
 }
+
+
+/**
+ * CSS for Dynamic Conditions
+ */
+
+
+select.dyncond_dropdown {
+	width: 200px;
+}
+
+input.dyncond_text {
+	width: 90%
+}
+
+input.dyncond_date {
+	width: 100px;
+	margin-right: 5px;
+}
+
+input.dyncond_filesize {
+	width: 150px;
+}
+
+div.criteria_label {
+	display: none;
+}
+
+tr.dyncond_selector td {
+	padding-top: 10px;
+}
+
+#conditions fieldset {
+	border: 1px dotted #999999 !important;
+	padding: 5px !important;
+	margin-bottom: 20px;
+}
+
+#conditions legend {
+	padding-left: 10px !important;
+	padding-right: 10px !important;
+}
+
+/* Pagination */
+
+.paginationContainer .paginate { list-type: none; list-style: none !important; font-size: 10px; margin: 10px auto 15px auto; padding: 0px 5px !important; -webkit-border-radius: 5px; -moz-border-radius: 5px; border-radius: 5px; color: #666; text-shadow: 0px 1px 0px white; background-color: #e1e1e1; -webkit-box-shadow: 0px 0px 2px #626262; -moz-box-shadow: 0px 0px 2px #626262; box-shadow: 0px 0px 2px #626262; display: inline-block; }
+.paginationContainer .paginate > li.item { display: inline-block; padding: 0px 5px; background-color: #e1e1e1; margin: 2px 2px; cursor: pointer; -webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px; }
+.paginationContainer .paginate > li.highlight { background-color: #497faa; color: white; text-shadow: 0px -1px 0px #2F6594; }
+.paginationContainer .paginate > li.highlight:hover { background-color: #6598bf; }
+.paginationContainer .paginate > li:hover { background-color: #fbfbfb; -webkit-box-shadow: 0px 0px 2px #626262; -moz-box-shadow: 0px 0px 2px #626262; box-shadow: 0px 0px 2px #626262; }
