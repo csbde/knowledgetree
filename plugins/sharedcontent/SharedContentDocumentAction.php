@@ -49,7 +49,7 @@ class SharedContentDocumentAction extends KTDocumentAction {
     public $sIconClass = 'share';
 	public $btnOrder = 4;
 
-    public public function getDisplayName()
+    public function getDisplayName()
     {
     	// Check if we are in the document view and return a link,
     	// otherwise return the display name only.

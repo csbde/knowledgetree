@@ -58,7 +58,23 @@ class BackgroundPermissions {
     public function updatePermissions()
     {
         $info = $this->getInfoFromMemcache();
+        $type = $info['type'];
         
+        switch ($type) {
+            case 'inherit':
+                $this->runInherit($info);
+                break;
+            case 'update':
+                $this->runUpdate($info);
+                break;
+            default:
+                $this->userId = $info['userId'];
+                $this->taskKilled('Unknown update type');
+        }
+    }
+    
+    private function runUpdate($info)
+    {
         $startTime = $this->getTime();
         $this->setTransaction('start');
         
@@ -76,11 +92,41 @@ class BackgroundPermissions {
         }
         
         $success = KTPermissionUtil::updatePermissionLookupForObject($permissionObjectId, $this->folderId);
+        
         if ($success === false) {
             $this->setTransaction('rollback');
             $this->finishUpdate($success, $startTime);
             return;
         }
+        $this->setTransaction('end');
+        $this->finishUpdate(true, $startTime);
+    }
+    
+    private function runInherit($info)
+    {
+        $startTime = $this->getTime();
+        $this->setTransaction('start');
+        
+        $this->userId = $info['userId'];
+        $folder = Folder::get($this->folderId);
+        $parentFolderId = $folder->getParentID();
+        
+        $success = KTPermissionUtil::createInheritPermTransaction($this->folderId, $parentFolderId, $this->userId);
+        
+        if ($success === false) {
+        	$this->setTransaction('rollback');
+            $this->finishUpdate($success, $startTime);
+            return ;
+        }
+        
+        $success = KTPermissionUtil::inheritPermissionObject($folder);
+        
+        if ($success === false) {
+            $this->setTransaction('rollback');
+            $this->finishUpdate($success, $startTime);
+            return ;
+        }
+        
         $this->setTransaction('end');
         $this->finishUpdate(true, $startTime);
     }
@@ -114,9 +160,9 @@ class BackgroundPermissions {
         return false;
     }
     
-    public function backgroundPermissionsUpdate($permissionObjectId, $selectedPermissions, $userId)
+    public function backgroundPermissionsUpdate($permissionObjectId, $selectedPermissions, $userId, $type)
     {
-        $this->setAsBackgrounded($permissionObjectId, $selectedPermissions, $userId);
+        $this->setAsBackgrounded($permissionObjectId, $selectedPermissions, $userId, $type);
     
         global $default;	
     	$phpPath = $default->php;
@@ -127,13 +173,14 @@ class BackgroundPermissions {
     	KTUtil::pexec($command);
     }
     
-    private function setAsBackgrounded($permissionObjectId, $selectedPermissions, $userId)
+    private function setAsBackgrounded($permissionObjectId, $selectedPermissions, $userId, $type)
     {
         $info = array();
         $info['permissionObjectId'] = $permissionObjectId;
         $info['folderId'] = $this->folderId;
         $info['selectedPermissions'] = $selectedPermissions;
         $info['userId'] = $userId;
+        $info['type'] = $type;
         
         $expiry = 60*60*5;  // 5 hour expiry on the permissions task - too high? too low?
         
