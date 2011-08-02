@@ -167,7 +167,6 @@ class KTDocumentActivityFeedAction extends KTDocumentViewlet {
 
     private function getDocumentTransactions($documentId)
     {
-        /* *** Get the document transactions *** */
         $query = 'SELECT DTT.name AS transaction_name, DT.transaction_namespace, U.name AS user_name, U.email as email,
             DT.version AS version, DT.comment AS comment, DT.datetime AS datetime
             FROM ' . KTUtil::getTableName('document_transactions') . ' AS DT
@@ -336,19 +335,52 @@ class KTDocumentActivityFeedAction extends KTDocumentViewlet {
 
     private function getAllTransactions($filter = array())
     {
-        /* *** Get the document transactions *** */
-        $query = 'SELECT DTT.name AS transaction_name, DT.transaction_namespace, U.name AS user_name, U.email as email,
+        $query = "SELECT D.id as document_id, DMV.name, DTT.name AS transaction_name, DT.transaction_namespace,
+            U.name AS user_name, U.email as email,
             DT.version AS version, DT.comment AS comment, DT.datetime AS datetime
-            FROM ' . KTUtil::getTableName('document_transactions') . ' AS DT
-            INNER JOIN ' . KTUtil::getTableName('users') . ' AS U ON DT.user_id = U.id
-            LEFT JOIN ' . KTUtil::getTableName('transaction_types') . ' AS DTT ON DTT.namespace = DT.transaction_namespace
-            WHERE DT.transaction_namespace != \'ktcore.transactions.view\'
-            ' . $this->buildFilterQuery($filter) . '
-            ORDER BY DT.id DESC';
-            // AND DT.transaction_namespace NOT LIKE \'ktcore.transactions.view\' - Not sure why this was a LIKE query.
-            // ORDER BY DT.datetime DESC => replaced the order by so that they come out in the order they were added, reversed.
+            FROM " . KTUtil::getTableName('document_transactions') . " AS DT
+            INNER JOIN " . KTUtil::getTableName('users') . " AS U ON DT.user_id = U.id
+            LEFT JOIN " . KTUtil::getTableName('transaction_types') . "
+            AS DTT ON DTT.namespace = DT.transaction_namespace,
+            documents D
+            INNER JOIN document_metadata_version DMV ON DMV.id = D.metadata_version_id
+            INNER JOIN document_content_version DCV ON DCV.id = DMV.content_version_id
+            {$this->getPermissionsQuery()}
+            DT.transaction_namespace != 'ktcore.transactions.view'
+            {$this->buildFilterQuery($filter)}
+            AND DT.document_id = D.id
+            ORDER BY DT.id DESC";
 
-        return $this->getTransactionResult($query);
+        return $this->getTransactionResult(array($query, $permissionParams));
+    }
+
+    // FIXME Lots of duplication, see comments plugin.
+    private function getPermissionsQuery()
+    {
+        if ($this->inAdminMode()) {
+            return 'WHERE';
+        }
+        else {
+            $user = User::get($_SESSION['userID']);
+            $permission = KTPermission::getByName('ktcore.permissions.read');
+            $permId = $permission->getID();
+            $permissionDescriptors = KTPermissionUtil::getPermissionDescriptorsForUser($user);
+            $permissionDescriptors = empty($permissionDescriptors) ? -1 : implode(',', $permissionDescriptors);
+
+            $query = "INNER JOIN permission_lookups AS PL ON D.permission_lookup_id = PL.id
+                INNER JOIN permission_lookup_assignments AS PLA ON PL.id = PLA.permission_lookup_id
+                AND PLA.permission_id = $permId
+                WHERE PLA.permission_descriptor_id IN ($permissionDescriptors) AND";
+
+            return $query;
+        }
+    }
+
+    private function inAdminMode()
+    {
+        return isset($_SESSION['adminmode'])
+            && ((int)$_SESSION['adminmode'])
+            && Permission::adminIsInAdminMode();
     }
 
     private function buildFilterQuery($filter = array())
@@ -401,10 +433,10 @@ class KTDocumentActivityFeedAction extends KTDocumentViewlet {
 
     function getEmailForId($iUserId)
     {
-        $u = User::get($iUserId);
-        if (PEAR::isError($u) || ($u == false)) { return _kt('User no longer exists'); }
+        $user = User::get($iUserId);
+        if (PEAR::isError($user) || ($user == false)) { return _kt('User no longer exists'); }
 
-        return $u->getEmail();
+        return $user->getEmail();
     }
 
 }
