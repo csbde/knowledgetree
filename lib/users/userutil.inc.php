@@ -73,7 +73,10 @@ class KTUserUtil {
         if (PEAR::isError($user) || ($user == false)) {
             $error = ($user === false) ? '' : $user->getMessage();
             $default->log->error('Couldn\'t create user: '. $error);
-            return PEAR::raiseError(_kt("failed to create user."));
+			if ($error == '') {
+				$error = "Failed to create user.";
+			}
+            return PEAR::raiseError(_kt($error));
         }
 
         // run triggers on user creation
