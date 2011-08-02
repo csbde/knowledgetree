@@ -527,7 +527,10 @@ class BrowseView {
         $item['actions.move'] = $item['actions.copy'] = $item['actions.delete'] = $ns;
 
         $isCheckedOut = ($item['checked_out_date']) ? true : false;
+        $isRealDocument = false;
         if (get_class($oDocument) == 'Document') {
+            $isRealDocument = true;
+            
             if ($hasWrite) {
                 $item['actions.checkout'] = $item['checked_out_date'] ? $ns : '';
                 $hasCheckedOut = ($_SESSION['userID'] == $item['checked_out_by_id']);
@@ -564,8 +567,8 @@ class BrowseView {
             $item['actions.share_document'] = $ns;
             if ($isCheckedOut || $item['actions.finalize_document']) {
                 $this->oUser = is_null($this->oUser) ? User::get($user_id) : $this->oUser;
-                $sPermissions = 'ktcore.permissions.write';
-                if (KTPermissionUtil::userHasPermissionOnItem($this->oUser, $sPermissions, $oDocument)) {
+                
+                if ($isRealDocument && KTPermissionUtil::userHasPermissionOnItem($this->oUser, 'ktcore.permissions.write', $oDocument)) {
                     $item['actions.share_document'] = '';
                 }
             }
