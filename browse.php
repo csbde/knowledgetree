@@ -178,6 +178,7 @@ class BrowseDispatcher extends KTStandardDispatcher {
 	}
 
 	public function loadDocumentJS() {
+		// TODO : Check if plugin is available.
 		$alertUtilPath = KT_PLUGIN_DIR . '/commercial/alerts/alertUtil.inc.php';
 		if(file_exists($alertUtilPath)) {
 			require_once($alertUtilPath);

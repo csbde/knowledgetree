@@ -16,7 +16,7 @@
 	width: 650px;
 }
 
-#sidebar { width: 215px; position: relative; margin-top: 5px; }
+#sidebar { width: 215px; position: relative; margin-top: 5px;}
 #sidebar h2 { border-bottom: 1px solid #ccc; font-size: 13px; color: #666; text-shadow: 0px 1px white; padding: 3px 10px; background: #ddd; }
 #sidebar_item p { padding:10px; }
 #sidebar_item ul { padding-left: 20px; }

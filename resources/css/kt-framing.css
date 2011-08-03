@@ -16,7 +16,7 @@ body
 body.settings-section,
 body.dashboard-section {
 	overflow-y: scroll;
-} 
+}
 
 .floatClear
 {
@@ -991,7 +991,7 @@ a.main_nav_item {
 	min-width: 20px;
 	height: 16px;
 	vertical-align: top;
-	word-spacing: 
+	word-spacing:
 }
 .editable-control.undo{
 	visibility: visible;
@@ -1446,14 +1446,14 @@ The text will be hidden for screen view.  The generic fahrner-ish approach comes
 }
 
 .dashboard_block_rightrepeat_bottom,
-.dashboard_block_rightrepeat_top, 
+.dashboard_block_rightrepeat_top,
 .dashboard_block_topleft,
 .dashboard_block_topright,
-.dashboard_block_rightrepeat_top, 
-.dashboard_block_leftrepeat_top, 
-.dashboard_block_leftrepeat_bottom, 
+.dashboard_block_rightrepeat_top,
+.dashboard_block_leftrepeat_top,
+.dashboard_block_leftrepeat_bottom,
 .dashboard_block_bottomleft,
-.dashboard_block_bottomright, 
+.dashboard_block_bottomright,
 .dashboard_block_bottomrepeat {
    	display: none;
 }
@@ -2015,7 +2015,7 @@ hr {
 
 /* Just for some spacing */
 #content ol li {
-	margin-top: 3px; 
+	margin-top: 3px;
 	margin-bottom: 3px;
 }
 
@@ -2131,7 +2131,7 @@ hr {
 
 .dashboard_block_handle
 {
-    cursor: pointer;
+    /* cursor: pointer; */
     font-size:small;
     padding: 5px 8px
 }
@@ -2270,7 +2270,7 @@ hr {
 	height: auto;
 	width: 98%;
 	word-wrap: break-word
-	
+
 }
 .addDialog .dashletLink
 {
@@ -2298,7 +2298,7 @@ hr {
 .addDialog .dashletLink:before {
 	content: "+ ";
 	font-weight: bold;
-} 
+}
 
 .addDialog .closeLink {
 	position: absolute;

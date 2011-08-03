@@ -143,12 +143,11 @@ class KTNotificationDashlet extends KTBaseDashlet {
     function is_active($oUser) {
         $this->oUser = $oUser;
         $notifications = KTNotification::getList(array('user_id = ?', $this->oUser->getId()));
-        if (empty($notifications)) { return false; }
+//        if (empty($notifications)) { return false; }
         return true;
     }
 
     function render() {
-
         $notifications = KTNotification::getList(array('user_id = ?', $this->oUser->getId()));
         $num_notifications = count($notifications);
 
