@@ -5,7 +5,7 @@
  * KnowledgeTree Community Edition
  * Document Management Made Simple
  * Copyright (C) 2008, 2009, 2010 KnowledgeTree Inc.
- * 
+ *
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License version 3 as published by the
@@ -41,6 +41,7 @@
  */
 
 class KTMime {
+
     /**
      * Get the mime type primary key for a specific mime type
      *
@@ -48,7 +49,8 @@ class KTMime {
      * @param string filename
      * @return int mime type primary key if found, else default mime type primary key (text/plain)
      */
-    function getMimeTypeID($sMimeType, $sFileName, $sTempFile = null) {
+    function getMimeTypeID($sMimeType, $sFileName, $sTempFile = null)
+    {
     	global $default;
     	$sTable = KTUtil::getTableName('mimetypes');
 
@@ -100,7 +102,8 @@ class KTMime {
     * @return int default mime type
     *
     */
-    function getDefaultMimeTypeID() {
+    function getDefaultMimeTypeID()
+    {
         $sTable = KTUtil::getTableName('mimetypes');
         $sQuery = "SELECT id FROM " . $sTable . " WHERE mimetypes = 'application/octet-stream'";
         $aQuery = array($sQuery, array());
@@ -112,27 +115,29 @@ class KTMime {
         }
     }
 
-    function getMimeTypeName($iMimeTypeID) {
+    function getMimeTypeName($iMimeTypeID)
+    {
         $sTable = KTUtil::getTableName('mimetypes');
         $sQuery = "SELECT mimetypes FROM " . $sTable . " WHERE id = ?";
         $aQuery = array($sQuery, array($iMimeTypeID));
         $res = DBUtil::getResultArray($aQuery);
         if (PEAR::isError($res)) {
             return $res;
-        } else if (count($res) != 0){
+        } else if (count($res) != 0) {
             return $res[0]['mimetypes'];
         }
         return "application/octet-stream";
     }
 
-    function getFriendlyNameForString($sMimeType) {
+    function getFriendlyNameForString($sMimeType)
+    {
         $sTable = KTUtil::getTableName('mimetypes');
         $sQuery = "SELECT friendly_name, filetypes FROM " . $sTable . " WHERE mimetypes = ?";
         $aQuery = array($sQuery, array($sMimeType));
         $res = DBUtil::getResultArray($aQuery);
         if (PEAR::isError($res)) {
             return $res;
-        } else if (count($res) != 0){
+        } else if (count($res) != 0) {
             $friendly_name = $res[0]['friendly_name'];
             if (!empty($friendly_name)) {
                 return sprintf(_kt('%s') , $friendly_name);
@@ -152,7 +157,8 @@ class KTMime {
     * @param string file on disk
     * @return string mime time for given filename, or NULL
     */
-    function getMimeTypeFromFile($sFileName) {
+    function getMimeTypeFromFile($sFileName)
+    {
         if (extension_loaded('fileinfo')) {
             // NOTE: fileinfo doesn't like all magic files. ensure it is pointing to a compatible one if it does not work.
 
@@ -208,20 +214,19 @@ class KTMime {
         return null;
     }
 
-    function getIconPath($iMimeTypeId, $type = null) {
-        $icon = KTUtil::arrayGet($GLOBALS['_KT_icon_path_cache'], $iMimeTypeId);
+    public static function getIconPath($mimeTypeId, $type = null)
+    {
+        $icon = KTUtil::arrayGet($GLOBALS['_KT_icon_path_cache'], $mimeTypeId);
         if (empty($icon)) {
-            $GLOBALS['_KT_icon_path_cache'][$iMimeTypeId] = KTMime::_getIconPath($iMimeTypeId);
-            $icon = $GLOBALS['_KT_icon_path_cache'][$iMimeTypeId];
+            $GLOBALS['_KT_icon_path_cache'][$mimeTypeId] = KTMime::_getIconPath($mimeTypeId);
+            $icon = $GLOBALS['_KT_icon_path_cache'][$mimeTypeId];
         }
 
-        if(!empty($type)){
-            $icon .= '_'.$type;
-        }
-        return $icon;
+        return empty($type) ? $icon : $icon . '_' . $type;
     }
 
-    function _getIconPath($iMimeTypeId) {
+    function _getIconPath($iMimeTypeId)
+    {
         $sQuery = 'SELECT icon_path FROM mime_types WHERE id = ?';
         $res = DBUtil::getOneResult(array($sQuery, array($iMimeTypeId)));
 
@@ -232,7 +237,8 @@ class KTMime {
         }
     }
 
-    function getAllMimeTypes($sAdditional = '') {
+    function getAllMimeTypes($sAdditional = '')
+    {
         $sTable = KTUtil::getTableName('mimetypes');
         $aQuery = array("SELECT id, mimetypes FROM " . $sTable . ' ' .$sAdditional, array());
         $res = DBUtil::getResultArray($aQuery);
@@ -246,7 +252,8 @@ class KTMime {
     * @param string filename
     * @return string extension for given file, without filename itself
     */
-    function stripAllButExtension($sFileName) {
+    function stripAllButExtension($sFileName)
+    {
         return strtolower(substr($sFileName, strrpos($sFileName, ".")+1, strlen($sFileName) - strrpos($sFileName, ".")));
     }
 
@@ -304,3 +311,5 @@ class KTMime {
 }
 
 $_KT_icon_path_cache = array();
+
+?>

@@ -85,6 +85,7 @@ class Comments {
     public static function getAllComments($order = 'DESC')
     {
         $sql = "SELECT D.id AS document_id, DMV.name as document_name,
+            DCV.mime_id,
             c.id, c.user_id, c.comment, c.date_created AS date,
             u.name AS user_name, u.username AS user_username, u.email
             FROM document_comments c

@@ -13,9 +13,7 @@
 	        <span class="activityfeed item version metaflag">{$version.version}</span>
 	    {else}
 	    	<div class="activityfeed item {$version.type}">
-	            <div class="icon">
-	            	<img src="http://www.gravatar.com/avatar/{$version.email}?s=48" alt="{$version.name}" title="{$version.name}" />
-	            </div>
+                    <div class="doc icon" style="{$version.mimeicon}"></div>
 	            <div class="activityfeed-content">
 	                <span class="title"><a class="clearLink" href="{$version.document_link}" style="">{$version.document_name}</a><br/><br/></span>
 	                <span class="user">{$version.name}</span>

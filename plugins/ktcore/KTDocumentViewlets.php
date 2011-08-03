@@ -193,6 +193,8 @@ class KTDocumentActivityFeedAction extends KTDocumentViewlet {
         return $res;
     }
 
+    // FIXME Some of these values are not in the detail view query.
+    //       Warnings will be squashed, but should be dealt with properly.
     private function getActivityFeed($transactions)
     {
         // Set the namespaces where not in the transactions lookup
@@ -205,6 +207,7 @@ class KTDocumentActivityFeedAction extends KTDocumentViewlet {
             $activityFeed[] = array(
                 'document_name' => $transaction['document_name'],
                 'document_link' => KTUtil::buildUrl('view.php', array('fDocumentId' => $transaction['document_id'])),
+                'mime_id' => $transaction['mime_id'],
                 'name' => $transaction['user_name'],
                 'email' => md5(strtolower($transaction['email'])),
                 'transaction_name' => $transaction['transaction_name'],
@@ -276,6 +279,8 @@ class KTDocumentActivityFeedAction extends KTDocumentViewlet {
         return $comments;
     }
 
+    // FIXME Some of these values are not in the detail view query.
+    //       Warnings will be squashed, but should be dealt with properly.
     private function formatCommentsResult($result)
     {
         $comments = array();
@@ -284,6 +289,7 @@ class KTDocumentActivityFeedAction extends KTDocumentViewlet {
             $comments[] = array(
                 'document_name' => $comment['document_name'],
                 'document_link' => KTUtil::buildUrl('view.php', array('fDocumentId' => $comment['document_id'])),
+                'mime_id' => $comment['mime_id'],
                 'name' => $comment['user_name'],
                 'email' => md5(strtolower($comment['email'])),
                 'transaction_name' => _kt('Comment'),
@@ -308,7 +314,12 @@ class KTDocumentActivityFeedAction extends KTDocumentViewlet {
 
     public function displayGlobalActivityFeed()
     {
-        // You evil evil duplicator, you!
+        $page = $GLOBALS['main'];
+        $page->requireCSSResource('resources/css/newui/browseView.css');
+
+        // FIXME There is some duplication here.
+        //       The mime icon stuff for instance can be abstracted to
+        //       a third file and used both here and in the browse view.
 
         $filter = array(
             'ktcore.transactions.create',
@@ -319,6 +330,7 @@ class KTDocumentActivityFeedAction extends KTDocumentViewlet {
 
         $comments = $this->getAllComments();
         $activityFeed = array_merge($activityFeed, $comments);
+        $activityFeed = $this->setMimeIcons($activityFeed);
 
         usort($activityFeed, array($this, 'sortTable'));
 
@@ -339,6 +351,7 @@ class KTDocumentActivityFeedAction extends KTDocumentViewlet {
     private function getAllTransactions($filter = array())
     {
         $query = "SELECT D.id as document_id, DMV.name as document_name,
+            DCV.mime_id,
             DTT.name AS transaction_name, DT.transaction_namespace,
             U.name AS user_name, U.email as email,
             DT.version AS version, DT.comment AS comment, DT.datetime AS datetime
@@ -401,6 +414,27 @@ class KTDocumentActivityFeedAction extends KTDocumentViewlet {
         return $filterQuery;
     }
 
+    private function setMimeIcons($activityFeed)
+    {
+        foreach ($activityFeed as $key => $item) {
+            $iconFile = 'resources/mimetypes/newui/' . KTMime::getIconPath($item['mime_id']) . '.png';
+            $item['icon_exists'] = file_exists(KT_DIR . '/' . $iconFile);
+            $item['icon_file'] = $iconFile;
+
+            if ($item['icon_exists']) {
+                $item['mimeicon'] = str_replace('\\', '/', $GLOBALS['default']->rootUrl . '/' . $iconFile);
+                $item['mimeicon'] = 'background-image: url(' . $item['mimeicon'] . ')';
+            }
+            else {
+                $item['mimeicon'] = '';
+            }
+
+            $activityFeed[$key] = $item;
+        }
+
+        return $activityFeed;
+    }
+
     private function getAllComments()
     {
         $comments = array();
@@ -417,12 +451,12 @@ class KTDocumentActivityFeedAction extends KTDocumentViewlet {
         return $comments;
     }
 
-    function _getActionNameForNamespace($sNamespace)
+    function _getActionNameForNamespace($namespace)
     {
-        $aNames = split('\.', $sNamespace);
-        $sName = array_pop($aNames);
-        $sName = str_replace('_', ' ', $sName);
-        $sName = ucwords($sName);
+        $names = split('\.', $namespace);
+        $name = array_pop($names);
+        $name = str_replace('_', ' ', $name);
+        $name = ucwords($name);
 
         return $sName;
     }
@@ -430,7 +464,9 @@ class KTDocumentActivityFeedAction extends KTDocumentViewlet {
     function getUserForId($iUserId)
     {
         $user = User::get($iUserId);
-        if (PEAR::isError($user) || ($user == false)) { return _kt('User no longer exists'); }
+        if (PEAR::isError($user) || ($user == false)) {
+            return _kt('User no longer exists');
+        }
 
         return $user->getName();
     }
@@ -438,7 +474,9 @@ class KTDocumentActivityFeedAction extends KTDocumentViewlet {
     function getEmailForId($iUserId)
     {
         $user = User::get($iUserId);
-        if (PEAR::isError($user) || ($user == false)) { return _kt('User no longer exists'); }
+        if (PEAR::isError($user) || ($user == false)) {
+            return _kt('User no longer exists');
+        }
 
         return $user->getEmail();
     }
@@ -452,7 +490,7 @@ class KTInlineEditViewlet extends KTDocumentViewlet {
     public $bShowIfReadShared = true;
     public $bShowIfWriteShared = true;
 
-    function displayViewlet()
+    public function displayViewlet()
     {
         $templating =& KTTemplating::getSingleton();
         $template =& $templating->loadTemplate("ktcore/document/viewlets/inline_edit");
@@ -460,10 +498,10 @@ class KTInlineEditViewlet extends KTDocumentViewlet {
         // Get document fieldsets
         $fieldsets = array();
         $fieldsetDisplayReg = KTFieldsetDisplayRegistry::getSingleton();
-        $aDocFieldsets = KTMetadataUtil::fieldsetsForDocument($this->oDocument);
-        foreach ($aDocFieldsets as $oFieldset) {
-            $displayClass = $fieldsetDisplayReg->getHandler($oFieldset->getNamespace());
-            array_push($fieldsets, new $displayClass($oFieldset));
+        $docFieldsets = KTMetadataUtil::fieldsetsForDocument($this->oDocument);
+        foreach ($docFieldsets as $fieldset) {
+            $displayClass = $fieldsetDisplayReg->getHandler($fieldset->getNamespace());
+            array_push($fieldsets, new $displayClass($fieldset));
         }
 
         $template->setData(array(
