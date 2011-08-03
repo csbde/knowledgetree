@@ -39,10 +39,6 @@
 	    	<div class="info_dashlet_leftrepeat_top"></div>
 	    	<div class="info_dashlet_leftrepeat_bottom"></div>
 	    	{/if}
-            <div class="dashboard_block_icons">
-                <a href="#" class="action action_rollup">&nbsp;</a>
-                <a href="#" class="action action_close">&nbsp;</a>
-            </div>
 
             <h2 class="dashboard_block_handle">{$oDashlet->sTitle}</h2>
 
@@ -104,10 +100,7 @@
         	<div class="info_dashlet_leftrepeat_top"></div>
         	<div class="info_dashlet_leftrepeat_bottom"></div>
         	{/if}
-            <div class="dashboard_block_icons">
-                <a href="#" class="action action_rollup">&nbsp;</a>
-                <a href="#" class="action action_close">&nbsp;</a>
-            </div>
+
             <h2 class="dashboard_block_handle">{$oDashlet->sTitle}</h2>
 
             <div class="dashboard_block_body">
