@@ -203,13 +203,15 @@ class KTDocumentActivityFeedAction extends KTDocumentViewlet {
             }
 
             $activityFeed[] = array(
+                'document_name' => $transaction['document_name'],
+                'document_link' => KTUtil::buildUrl('view.php', array('fDocumentId' => $transaction['document_id'])),
                 'name' => $transaction['user_name'],
                 'email' => md5(strtolower($transaction['email'])),
                 'transaction_name' => $transaction['transaction_name'],
                 'datetime' => getDateTimeDifference($transaction['datetime']),
                 'actual_datetime' => $transaction['datetime'],
                 'version' => $transaction['version'],
-                'comment' => $transaction['comment'],
+                'comment' => trim($transaction['comment']),
                 'type' => 'transaction'
             );
         }
@@ -280,6 +282,8 @@ class KTDocumentActivityFeedAction extends KTDocumentViewlet {
 
         foreach ($result as $comment) {
             $comments[] = array(
+                'document_name' => $comment['document_name'],
+                'document_link' => KTUtil::buildUrl('view.php', array('fDocumentId' => $comment['document_id'])),
                 'name' => $comment['user_name'],
                 'email' => md5(strtolower($comment['email'])),
                 'transaction_name' => _kt('Comment'),
@@ -326,8 +330,7 @@ class KTDocumentActivityFeedAction extends KTDocumentViewlet {
               'documentId' => $documentId,
               'versions' => $activityFeed,
               'displayMax' => $this->displayMax,
-              'commentsCount' => count($activityFeed),
-              'onlyComments' => false,
+              'commentsCount' => count($activityFeed)
         );
 
         return $template->render($templateData);
@@ -335,7 +338,8 @@ class KTDocumentActivityFeedAction extends KTDocumentViewlet {
 
     private function getAllTransactions($filter = array())
     {
-        $query = "SELECT D.id as document_id, DMV.name, DTT.name AS transaction_name, DT.transaction_namespace,
+        $query = "SELECT D.id as document_id, DMV.name as document_name,
+            DTT.name AS transaction_name, DT.transaction_namespace,
             U.name AS user_name, U.email as email,
             DT.version AS version, DT.comment AS comment, DT.datetime AS datetime
             FROM " . KTUtil::getTableName('document_transactions') . " AS DT

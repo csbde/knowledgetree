@@ -17,6 +17,7 @@
 	            	<img src="http://www.gravatar.com/avatar/{$version.email}?s=48" alt="{$version.name}" title="{$version.name}" />
 	            </div>
 	            <div class="activityfeed-content">
+	                <span class="title"><a class="clearLink" href="{$version.document_link}" style="">{$version.document_name}</a><br/><br/></span>
 	                <span class="user">{$version.name}</span>
 	                <span class="description">{$version.comment|sanitize|nl2br}</span>
 	                <span class="date">{$version.datetime}</span>
@@ -32,10 +33,8 @@
 		<span class=activityfeed-more>
 			<div><span class=activityfeed-more-text onclick="javascript: kt.app.activityFeed.toggleMore();">more...</span></div>
 		</span>
-	{/if}
-{if !$onlyComments}
+    {/if}
 </div>
-{/if}
 
 {literal}
 <script type="text/javascript">
