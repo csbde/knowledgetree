@@ -175,7 +175,6 @@ class KTBrowseUtil {
         $sAction = KTUtil::arrayGet($aOptions, 'folderaction');
 
 		if(PEAR::isError($oFolder)) {
-			//$url = KTUtil::addQueryStringSelf('fFolderId=1');
 		    $url = KTUtil::buildUrl('browse.php', array('fFolderId'=>'1'));
 		    if(!empty($sAction)) {
 			$url = generateControllerUrl($sAction, 'fFolderId=1');
