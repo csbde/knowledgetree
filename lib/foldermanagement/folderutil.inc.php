@@ -640,7 +640,7 @@ class KTFolderUtil {
             if (PEAR::isError($res) || ($res === false)) {
                 $oStorage->removeFolder($oNewBaseFolder);
                 DBUtil::rollback();
-                return PEAR::raiseError(_kt('Delete Aborted. Unexpected failure to copydocument: ') . $oDocument->getName() . $res->getMessage());
+                return PEAR::raiseError(_kt('Copy Aborted. Unexpected failure to copy document: ') . $oDocument->getName() . $res->getMessage());
             }
         }
 
@@ -681,7 +681,7 @@ class KTFolderUtil {
 
         if($res === false) {
             DBUtil::rollback();
-            return PEAR::raiseError(_kt('Delete Aborted. Unexpected failure to update permissions'));
+            return PEAR::raiseError(_kt('Copy Aborted. Unexpected failure to update permissions'));
         }
 
         // and store

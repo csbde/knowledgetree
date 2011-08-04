@@ -99,15 +99,28 @@ class BulkDocumentActions
 
 	public function checkIfNeedsBackgrounding()
 	{
+		// Check number of folders and documents
+		$folders = $this->list['folders'];
 		$this->numFolders = count($this->list['folders']);
 		$this->numDocuments = count($this->list['documents']);
 		while (count($folders) > 0) {
 			$folderId = array_pop($folders);
 			$this->getFolderDocuments($folderId);
 			$folders = $this->getFolderSubFolders($folderId, $folders);
+			if($this->hitThreshold()) {
+				return true;
+			}
 		}
-		if(($this->numDocuments > $this->threshold['documents']) || ($this->numFolders > $this->threshold['folders']))
-			return true;
+
+		return $this->hitThreshold();
+
+	}
+
+	private function hitThreshold()
+	{
+		if(($this->numDocuments > $this->threshold['documents']) || ($this->numFolders > $this->threshold['folders'])) {
+				return true;
+		}
 
 		return false;
 	}

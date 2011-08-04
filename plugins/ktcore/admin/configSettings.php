@@ -223,7 +223,7 @@ class BaseConfigDispatcher extends KTAdminDispatcher
 
             case 'boolean':
                 $options['options'] = array('true', 'false');
-                
+
                 if ($value == 'true') {
                    $onChecked = 'checked="checked"';
                    $offChecked = '';
@@ -235,14 +235,14 @@ class BaseConfigDispatcher extends KTAdminDispatcher
                    $onCssClass = '';
                    $offCssClass = 'selected';
                 }
-                
+
                 $input .= '<span class="switch">
                     <input type="radio" id="on_'.$id.'" name="configArray['.$id.']" value="true" '.$onChecked.' />
                     <input type="radio" id="off_'.$id.'" name="configArray['.$id.']" value="false" '.$offChecked.' />
                     <label for="on_'.$id.'" class="cb-enable '.$onCssClass.'"><span>ON</span></label>
                     <label for="off_'.$id.'" class="cb-disable '.$offCssClass.'"><span>OFF</span></label>
                 </span>';
-                
+
                 break;
 
             case 'radio':
@@ -268,10 +268,7 @@ class BaseConfigDispatcher extends KTAdminDispatcher
                 break;
 
             case 'class':
-                if (!file_exists($options['file'])) {
-                return ;
-            }
-
+            	if (!file_exists($options['file'])) { return ; }
                 require_once($options['file']);
                 $oClass = new $options['class']();
                 $input = $oClass->getInputs($id, $type, $value, $defaultValue, $options);
@@ -288,6 +285,20 @@ class BaseConfigDispatcher extends KTAdminDispatcher
         $input .= isset($options['append']) ? '&nbsp;&nbsp;'.sprintf(_kt('%s') , $options['append']) : '';
 
         return $input;
+    }
+
+    public function getStyle($options)
+    {
+        if (empty($options)) { return ''; }
+        $options = unserialize($options);
+    	if (!file_exists($options['file'])) { return ; }
+        require_once($options['file']);
+        $oClass = new $options['class']();
+		if(method_exists($oClass, 'getStyle')) {
+			return $oClass->getStyle();
+		}
+
+		return '';
     }
 
     /**

@@ -117,15 +117,6 @@ class SharedContent extends KTEntity {
                     }
                 }
             }
-            else if ($this->sType == 'document')
-            {
-                // Add a comment
-                $oFromUser = User::get($this->iSystemUserId);
-                $oWithUser = User::get($this->iUserId);
-                $username = $oFromUser->getUserName();
-                $sharedname = $oWithUser->getUserName();
-                Comments::addComment($this->iObjectId, "$username has shared this document with $sharedname");
-            }
         }
 
         return $res;
