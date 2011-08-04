@@ -4,7 +4,7 @@
 
 {if $isUpdateInProgress}
 	<br />
-	<p class='alert warning' id='action-error'>{i18n}An update is in progress, the permissions cannot be changed until it is completed.{/i18n}</p>
+	<p class='alert warning' id='action-error'>{i18n}A permissions update is in progress, the permissions cannot be changed until it has completed.{/i18n}</p>
 {/if}
 
 {if $edit}<br/>

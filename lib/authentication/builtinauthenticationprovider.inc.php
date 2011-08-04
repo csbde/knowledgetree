@@ -5,32 +5,32 @@
  * KnowledgeTree Community Edition
  * Document Management Made Simple
  * Copyright (C) 2008, 2009, 2010 KnowledgeTree Inc.
- * 
- * 
+ *
+ *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License version 3 as published by the
  * Free Software Foundation.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
  * details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- * 
- * You can contact KnowledgeTree Inc., PO Box 7775 #87847, San Francisco, 
+ *
+ * You can contact KnowledgeTree Inc., PO Box 7775 #87847, San Francisco,
  * California 94120-7775, or email info@knowledgetree.com.
- * 
+ *
  * The interactive user interfaces in modified source and object code versions
  * of this program must display Appropriate Legal Notices, as required under
  * Section 5 of the GNU General Public License version 3.
- * 
+ *
  * In accordance with Section 7(b) of the GNU General Public License version 3,
  * these Appropriate Legal Notices must retain the display of the "Powered by
- * KnowledgeTree" logo and retain the original copyright notice. If the display of the 
+ * KnowledgeTree" logo and retain the original copyright notice. If the display of the
  * logo is not reasonably feasible for technical reasons, the Appropriate Legal Notices
- * must display the words "Powered by KnowledgeTree" and retain the original 
+ * must display the words "Powered by KnowledgeTree" and retain the original
  * copyright notice.
  * Contributor( s): ______________________________________
  *
@@ -42,6 +42,7 @@ require_once(KT_LIB_DIR . '/authentication/DBAuthenticator.inc');
 
 class KTBuiltinAuthenticationProvider extends KTAuthenticationProvider {
     public $sNamespace = 'ktcore.authentication.builtin';
+	public $defaultOutput = array('providerVerify');
 
     public function KTBuiltinAuthenticationProvider() {
         $this->sName = _kt('Built-in authentication provider');
@@ -54,7 +55,7 @@ class KTBuiltinAuthenticationProvider extends KTAuthenticationProvider {
         $ret= new BuiltinAuthenticator();
         return $ret;
     }
-    
+
     public function showUserSource($oUser, $oSource) {
         $sQuery = sprintf('action=editUserSource&user_id=%d', $oUser->getId());
         $sUrl = KTUtil::addQueryString($_SERVER['PHP_SELF'], $sQuery);
@@ -78,7 +79,7 @@ class KTBuiltinAuthenticationProvider extends KTAuthenticationProvider {
         }
 
         $edit_fields = array();
-        $edit_fields[] =  new KTPasswordWidget(_kt('Password'), _kt('Specify an initial password for the user.'), 'password', null, $this->oPage, true);         $edit_fields[] =  new KTPasswordWidget(_kt('Confirm Password'), _kt('Confirm the password specified above.'), 'confirm_password', null, $this->oPage, true); 
+        $edit_fields[] =  new KTPasswordWidget(_kt('Password'), _kt('Specify an initial password for the user.'), 'password', null, $this->oPage, true);         $edit_fields[] =  new KTPasswordWidget(_kt('Confirm Password'), _kt('Confirm the password specified above.'), 'confirm_password', null, $this->oPage, true);
         $oTemplating =& KTTemplating::getSingleton();
         $oTemplate = $oTemplating->loadTemplate('ktcore/principals/updatepassword');
         $aTemplateData = array(
@@ -88,7 +89,7 @@ class KTBuiltinAuthenticationProvider extends KTAuthenticationProvider {
         );
         return $oTemplate->render($aTemplateData);
     }
-    
+
     public function editUserSource_forcePasswordChange() {
         $aErrorOptions = array(
             'redirect_to' => array('main'),
@@ -159,7 +160,7 @@ class KTBuiltinAuthenticationProvider extends KTAuthenticationProvider {
             );
 
             $iRes = DBUtil::getOneResultKey($aSql, 'id');
-        
+
             if (!empty($iRes)) {
                 $_SESSION['mustChangePassword'] = true;
             }
@@ -264,7 +265,7 @@ class BuiltinAuthenticator extends Authenticator {
         else {
             return ($res == 1);
         }
-        
+
     }
 
     /**
@@ -275,24 +276,24 @@ class BuiltinAuthenticator extends Authenticator {
      * @return array containing the users found
      */
     function getUser($sUserName, $aAttributes) {
-        $sTable = KTUtil::getTableName('users'); 
+        $sTable = KTUtil::getTableName('users');
         $sQuery = 'SELECT ';/*ok*/
         $sQuery .= implode(', ', $aAttributes);
         $sQuery .= " FROM $sTable WHERE username = ?";
         $aParams = array($sUserName);
         $res = DBUtil::getResultArray(array($sQuery, $aParams));
-        if (PEAR::isError($res)) { 
-            return false; 
+        if (PEAR::isError($res)) {
+            return false;
         }
-        
-        $aUserResults = array();        
+
+        $aUserResults = array();
         foreach ($res as $aRow) {
             foreach ($aAttributes as $sAttrName) {
                 $aUserResults[$sUserName][$sAttrName] = $aRow[$sAttrName];
             }
-        } 
+        }
         return $aUserResults;
-        
+
     }
 
     /**
@@ -305,16 +306,16 @@ class BuiltinAuthenticator extends Authenticator {
     function searchUsers($sUserNameSearch, $aAttributes) {
         $sTable = KTUtil::getTableName('users');
         $sQuery = 'SELECT '; /*ok*/
-        $sQuery .= implode(', ', $aAttributes); 
+        $sQuery .= implode(', ', $aAttributes);
         $sQuery .= " FROM $sTable where username like '%" . DBUtil::escapeSimple($sUserNameSearch) . "%'";
 
         $res = DBUtil::getResultArray(array($sQuery, array()));
         if (PEAR::isError($res)) {
             return false; // return $res;
         }
-        
+
         $aUserResults = array();
-        foreach ($res as $aRow) {    
+        foreach ($res as $aRow) {
             $sUserName = $aRow['username'];
             foreach ($aAttributes as $sAttrName) {
                 $aUserResults[$sUserName][$sAttrName] = $aRow[$sAttrName];

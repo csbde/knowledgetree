@@ -67,9 +67,9 @@ class KTDocumentUtil {
         $fileSize = $storageManager->fileSize($tmpFilename);
         $previousMetadataVersion = $document->getMetadataVersionId();
 
-        $success = $document->startNewContentVersion($user);
-        if (PEAR::isError($success)) {
-            return $success;
+        $result = $document->startNewContentVersion($user);
+        if (PEAR::isError($result)) {
+            return $result;
         }
 
         KTDocumentUtil::copyMetadata($document, $previousMetadataVersion);
@@ -109,10 +109,10 @@ class KTDocumentUtil {
 
         $document->setFileSize($fileSize);
 
-        $success = $document->update();
-        if ($success !== true) {
-            if (PEAR::isError($success)) {
-                return $success;
+        $result = $document->update();
+        if ($result !== true) {
+            if (PEAR::isError($result)) {
+                return $result;
             }
             return PEAR::raiseError(_kt('An error occurred while storing this document in the database'));
         }
@@ -139,7 +139,7 @@ class KTDocumentUtil {
 
         foreach ($triggers as $trigger) {
             $triggerName = $trigger[0];
-            $trigger = new $triggerName;
+            $trigger = new $triggerName();
             $info = array(
                         'document' => $document,
                         'aOptions' => $originalOptions,
@@ -223,7 +223,7 @@ class KTDocumentUtil {
         if (!KTWorkflowUtil::actionEnabledForDocument($document, 'ktcore.actions.document.archive')) {
             return PEAR::raiseError(_kt('Document cannot be archived as it is restricted by the workflow.'));
         }
-        
+
         if ($document->getIsCheckedOut()) {
         	return PEAR::raiseError(_kt('Document cannot be archived as it has been checked out for editing.'));
         }
@@ -509,10 +509,10 @@ class KTDocumentUtil {
         $mimeTypeId = KTMime::getMimeTypeID($mimeType, $document->getFileName());
         $document->setMimeTypeId($mimeTypeId);
 
-        $success = $document->update();
-        if ($success !== true) {
-            if (PEAR::isError($success)) {
-                return $success;
+        $result = $document->update();
+        if ($result !== true) {
+            if (PEAR::isError($result)) {
+                return $result;
             }
             return PEAR::raiseError(_kt('An error occurred while storing this document in the database'));
         }
@@ -1478,9 +1478,9 @@ class KTDocumentUtil {
 
         // We only need to start a new content version if the version is in fact changing.
         if ($updateVersion) {
-            $success = $document->startNewContentVersion($user);
-            if (PEAR::isError($success)) {
-                return $success;
+            $result = $document->startNewContentVersion($user);
+            if (PEAR::isError($result)) {
+                return $result;
             }
 
             KTDocumentUtil::copyMetadata($document, $previousMetadataVersion);
@@ -1499,10 +1499,10 @@ class KTDocumentUtil {
         $mimeTypeId = KTMime::getMimeTypeID($mimeType, $sNewFilename);
         $document->setMimeTypeId($mimeTypeId);
 
-        $success = $document->update();
-        if ($success !== true) {
-            if (PEAR::isError($success)) {
-                return $success;
+        $result = $document->update();
+        if ($result !== true) {
+            if (PEAR::isError($result)) {
+                return $result;
             }
             return PEAR::raiseError(_kt('An error occurred while storing this document in the database'));
         }
@@ -1566,20 +1566,20 @@ class KTDocumentUtil {
 
         //put the document in the new folder
         $document->setFolderID($folder->getId());
-        
+
         $fileRenamed = false;
         $filename = $document->getFileName();
         $newfilename = (isset($options['filename']) && !empty($options['filename'])) ? $options['filename'] : $filename;
-        
+
         $newfilename = KTDocumentUtil::getUniqueFilename($destFolder, $newfilename);
         if (strcmp($filename, $newfilename) != 0) {
         	$document->setFileName($newfilename);
         	$fileRenamed = true;
         }
-        
+
         $name = $document->getName();
         $newname = (isset($options['name']) && !empty($options['name'])) ? $options['name'] : $name;
-        
+
         $newname = KTDocumentUtil::getUniqueDocumentName($destFolder, $newname);
         if (strcmp($name, $newname) != 0) {
         	$document->setName($newname);

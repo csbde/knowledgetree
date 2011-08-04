@@ -40,17 +40,20 @@ require_once(KT_LIB_DIR . '/plugins/plugin.inc.php');
 require_once(KT_LIB_DIR . '/plugins/pluginregistry.inc.php');
 
 class DeleteThumbnailTrigger {
+
     var $namespace = 'thumbnail.triggers.delete.document.checkin';
     var $aInfo = null;
 
-    function setInfo($info) {
+    function setInfo($info)
+    {
         $this->aInfo = $info;
     }
 
     /**
      * On checkin of a document, delete the thumbnail so a new one can be generated
      */
-    function postValidate() {
+    function postValidate()
+    {
     	$storageManager = KTStorageManagerUtil::getSingleton();
         $doc = $this->aInfo['document'];
         $docId = $doc->getId();
@@ -61,14 +64,17 @@ class DeleteThumbnailTrigger {
             $storageManager->unlink($file);
         }
     }
+
 }
 
 class thumbnailsPlugin extends KTPlugin {
+
     var $sNamespace = 'thumbnails.generator.processor.plugin';
     var $iVersion = 0;
     var $autoRegister = true;
 
-    function thumbnailsPlugin($sFilename = null) {
+    function thumbnailsPlugin($sFilename = null)
+    {
         $res = parent::KTPlugin($sFilename);
         $this->sFriendlyName = _kt('Thumbnail Generator');
         $this->sSQLDir = dirname(__FILE__) . DIRECTORY_SEPARATOR . 'sql' . DIRECTORY_SEPARATOR;
@@ -79,7 +85,8 @@ class thumbnailsPlugin extends KTPlugin {
      * Setup the plugin: add the processor, viewlet action and template location
      *
      */
-    function setup() {
+    function setup()
+    {
         $pluginDir = dirname(__FILE__) . DIRECTORY_SEPARATOR;
         $dir = $pluginDir . 'thumbnails.php';
         $this->registerProcessor('thumbnailGenerator', 'thumbnails.generator.processor', $dir);
@@ -101,6 +108,7 @@ class thumbnailsPlugin extends KTPlugin {
 	    					. '"string", NULL, 1);');
 		}
     }
+
 }
 
 $pluginRegistry =& KTPluginRegistry::getSingleton();
