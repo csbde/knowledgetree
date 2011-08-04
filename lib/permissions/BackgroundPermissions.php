@@ -160,6 +160,31 @@ class BackgroundPermissions {
         return false;
     }
     
+    public function checkIfFolderAffected()
+    {
+        $folder = Folder::get($this->folderId);
+        
+        $permissionObjectId = $folder->getPermissionObjectID();
+        $permissionObject = KTPermissionObject::get($permissionObjectId);
+        $inheritedFolder = KTPermissionUtil::findRootObjectForPermissionObject($permissionObject);
+        $inheritedFolderId = $inheritedFolder->getID();
+        
+        $memcacheKey = $this->actionNameSpace . '|' . $inheritedFolderId . '|' . $this->accountName;
+        
+        $memcache = KTMemcache::getKTMemcache();
+        $info = $memcache->get($memcacheKey);
+        
+        if ($info === false) {
+            return false;
+        }
+        
+        if (!empty($info)) {
+            return true;
+        }
+        
+        return false;
+    }
+    
     public function backgroundPermissionsUpdate($permissionObjectId, $selectedPermissions, $userId, $type)
     {
         $this->setAsBackgrounded($permissionObjectId, $selectedPermissions, $userId, $type);
