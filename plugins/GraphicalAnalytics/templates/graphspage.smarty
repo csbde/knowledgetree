@@ -1,0 +1,10 @@
+<h2>Graphs Page</h2>
+
+{$topTenDocuments}
+
+<br /><br />
+
+{$topTenUsers}
+
+
+
