@@ -282,22 +282,26 @@ class KTFolderPermissionsAction extends KTFolderAction {
         return $template->render($templateData);
     }
 
-    function _copyPermissions() {
-        $oTransaction = KTFolderTransaction::createFromArray(array(
-            'folderid' => $this->oFolder->getId(),
+    function _copyPermissions() 
+    {
+        $folderId = $this->oFolder->getId();
+        $parentFolderId = $this->oFolder->getParentID();
+        
+        $transaction = KTFolderTransaction::createFromArray(array(
+            'folderid' => $folderId,
             'comment' => _kt('Override permissions from parent'),
             'transactionNS' => 'ktcore.transactions.permissions_change',
             'userid' => $_SESSION['userID'],
             'ip' => Session::getClientIP(),
-            'parentid' => $this->oFolder->getParentID(),
+            'parentid' => $parentFolderId,
         ));
 
-        $aOptions = array(
+        $options = array(
             'defaultmessage' => _kt('Error updating permissions'),
-            'redirect_to' => array('edit', sprintf('fFolderId=%d', $this->oFolder->getId())),
+            'redirect_to' => array('edit', sprintf('fFolderId=%d', $folderId)),
         );
 
-        $this->oValidator->notErrorFalse($oTransaction, $aOptions);
+        $this->oValidator->notErrorFalse($transaction, $options);
 
         return KTPermissionUtil::copyPermissionObject($this->oFolder);
     }
