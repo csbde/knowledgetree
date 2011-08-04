@@ -158,7 +158,7 @@ kt.app.inviteusers = new function() {
         inviteConfirmWin = Ext.getCmp('extinviteconfirmwindow');
         inviteConfirmWin.destroy();
     }
-    
+
     // Call the initialization function at object instantiation.
     this.init();
 }

@@ -51,12 +51,18 @@ class KTFolderAction extends KTStandardDispatcher {
     public $sHelpPage = 'ktcore/browse.html';
     public $_bAdminAlwaysAvailable = false;
     public $sSection = 'browse';
-	public $bShowIfReadShared = false;
-	public $bShowIfWriteShared = false;
 	public $cssClass = '';
 	public $parentBtn = 'more';
 
-    function KTFolderAction($oFolder = null, $oUser = null, $oPlugin = null)
+    /** Shared user mutators to deal with bypassing permissions */
+	public $bShowIfReadShared = false;
+	public $bShowIfWriteShared = false;
+
+	/** Handle bulk action lock */
+	protected $showIfBulkActions = array();
+	protected $bulkActionInProgress = '';
+
+    public function KTFolderAction($oFolder = null, $oUser = null, $oPlugin = null)
     {
         parent::KTStandardDispatcher();
         $this->oFolder =& $oFolder;
@@ -68,17 +74,17 @@ class KTFolderAction extends KTStandardDispatcher {
         $this->persistParams(array('fFolderId'));
     }
 
-    function setFolder(&$oFolder)
+    public function setFolder(&$oFolder)
     {
         $this->oFolder =& $oFolder;
     }
 
-    function setUser(&$oUser)
+    public function setUser(&$oUser)
     {
         $this->oUser =& $oUser;
     }
 
-    function _show()
+    public function _show()
     {
     	// If this is a shared user the object permissions are different.
     	if(SharedUserUtil::isSharedUser())
@@ -102,7 +108,7 @@ class KTFolderAction extends KTStandardDispatcher {
         return KTPermissionUtil::userHasPermissionOnItem($this->oUser, $oPermission, $this->oFolder);
     }
 
-    function getURL()
+    public function getURL()
     {
         $oKTConfig =& KTConfig::getSingleton();
         $sExt = '.php';
@@ -118,8 +124,13 @@ class KTFolderAction extends KTStandardDispatcher {
         }
     }
 
-    function getInfo()
+    public function getInfo()
     {
+    	if(!empty($this->bulkActionInProgress)) {
+    		if(!in_array($this->bulkActionInProgress, $this->showIfBulkActions)) {
+    			return '';
+    		}
+    	}
         $status = '';
         if ($this->_show() === false) {
             $status = 'disabled';
@@ -138,34 +149,34 @@ class KTFolderAction extends KTStandardDispatcher {
         return $this->customiseInfo($aInfo);
     }
 
-    function getName()
+    public function getName()
     {
         return sanitizeForSQLtoHTML($this->sName);
     }
 
-    function getDisplayName()
+    public function getDisplayName()
     {
         // This should be overridden by the i18nised display name
         // This implementation is only here for backwards compatibility
         return sanitizeForSQLtoHTML($this->sDisplayName);
     }
 
-    function getDescription()
+    public function getDescription()
     {
         return sanitizeForSQLtoHTML($this->sDescription);
     }
 
-    function getButton()
+    public function getButton()
     {
         return false;
     }
 
-    function customiseInfo($aInfo)
+    public function customiseInfo($aInfo)
     {
         return $aInfo;
     }
 
-    function check()
+    public function check()
     {
         $this->oFolder =& $this->oValidator->validateFolder($_REQUEST['fFolderId']);
 
@@ -202,7 +213,7 @@ class KTFolderAction extends KTStandardDispatcher {
         return true;
     }
 
-    function do_main()
+    public function do_main()
     {
         return _kt('Dispatcher component of action not implemented.');
     }
@@ -212,7 +223,7 @@ class KTFolderAction extends KTStandardDispatcher {
      *
      * @return unknown
      */
-    function shareduser_show()
+    public function shareduser_show()
     {
 		// Check if actions display for both users
 		if ($this->bShowIfReadShared && $this->bShowIfWriteShared)
@@ -240,12 +251,16 @@ class KTFolderAction extends KTStandardDispatcher {
      * Set the shared object permission
      *
      */
-    function getPermission()
+    public function getPermission()
     {
 		$iUserId = $this->oUser->getID();
 		$iFolderId = $this->oFolder->getID();
 		$iParentId = $this->oFolder->getParentID();
 		return SharedContent::getPermissions($iUserId, $iFolderId, $iParentId, 'folder');
+    }
+
+    public function setBulkAction($bulkActionInProgress) {
+    	$this->bulkActionInProgress = $bulkActionInProgress;
     }
 
 }
@@ -257,45 +272,45 @@ class JavascriptFolderAction extends KTFolderAction {
 	 *
 	 * @var array
 	 */
-	var $js_paths = array();
+	public $js_paths = array();
 	/**
 	 * This is custom javascript that should be included
 	 *
 	 * @var array
 	 */
-	var $js = array();
+	public $js = array();
 	/**
 	 * Indicates if a custom function should be provided, or if the function is part of an existing js file.
 	 * If true
 	 *
 	 * @var boolean
 	 */
-	var $function_provided_by_action = true;
+	public $function_provided_by_action = true;
 
 	/**
 	 * Set the function name if you have a custom name you want to provide.
 	 *
 	 * @var string
 	 */
-	var $function_name = null;
+	public $function_name = null;
 
-	function JavascriptFolderAction($oFolder = null, $oUser = null, $oPlugin = null)
+	public function JavascriptFolderAction($oFolder = null, $oUser = null, $oPlugin = null)
 	{
 		parent::KTFolderAction($oFolder, $oUser, $oPlugin);
 		$this->js_initialise();
 	}
 
-	function js_initialise()
+	public function js_initialise()
 	{
 		// this will be overridden
 	}
 
-	function js_include($js)
+	public function js_include($js)
 	{
 		$this->js[] = $js;
 	}
 
-	function js_include_file($path)
+	public function js_include_file($path)
 	{
 		global $AjaxDocumentJSPaths;
 
@@ -311,7 +326,7 @@ class JavascriptFolderAction extends KTFolderAction {
 		}
 	}
 
-	function customiseInfo($aInfo)
+	public function customiseInfo($aInfo)
 	{
 		$js = '';
 		foreach($this->js_paths as $path)
@@ -335,7 +350,7 @@ class JavascriptFolderAction extends KTFolderAction {
         return $aInfo;
     }
 
-    function getScript()
+    public function getScript()
     {
     	if ($this->function_provided_by_action === false)
     	{
@@ -345,12 +360,12 @@ class JavascriptFolderAction extends KTFolderAction {
     	return "function " . $this->getScriptActivation() . '{'.$this->getFunctionScript().'}';
     }
 
-	function getFunctionScript()
+	public function getFunctionScript()
 	{
 		return 'alert(\''. $this->getDisplayName()  .' not implemented!\');';
 	}
 
-    function getScriptActivation()
+    public function getScriptActivation()
     {
     	if (!is_null($this->function_name))
     	{
@@ -367,23 +382,24 @@ class JavascriptFolderAction extends KTFolderAction {
 
 class KTFolderActionUtil {
 
-    function getFolderActions($slot)
+    public function getFolderActions($slot)
     {
         $oRegistry =& KTActionRegistry::getSingleton();
         return $oRegistry->getActions($slot);
     }
 
-    function getFolderInfoActions()
+    public function getFolderInfoActions()
     {
         $oRegistry =& KTActionRegistry::getSingleton();
         return $oRegistry->getActions('folderinfo');
     }
 
-    static public function getFolderActionsForFolder($folder, $user, $slot = 'folderaction')
+    public static function getFolderActionsForFolder($folder, $user, $slot = 'folderaction')
     {
         $objects = array();
 
-        foreach (KTFolderActionUtil::getFolderActions($slot) as $action) {
+        $folderActions = KTFolderActionUtil::getFolderActions($slot);
+        foreach ($folderActions as $action) {
             list($class, $path, $plugin) = $action;
             $pluginRegistry =& KTPluginRegistry::getSingleton();
             $plugin =& $pluginRegistry->getPlugin($plugin);
@@ -398,7 +414,7 @@ class KTFolderActionUtil {
         return $objects;
     }
 
-    function &getFolderInfoActionsForFolder($oFolder, $oUser)
+    public function &getFolderInfoActionsForFolder($oFolder, $oUser)
     {
         $aObjects = array();
 

@@ -40,39 +40,46 @@ require_once(KT_LIB_DIR . '/plugins/plugin.inc.php');
 require_once(KT_LIB_DIR . '/plugins/pluginregistry.inc.php');
 
 class DeletePDFTrigger {
+
     var $namespace = 'pdf.converter.triggers.delete';
     var $aInfo = null;
 
-    function setInfo($aInfo) {
+    function setInfo($aInfo)
+    {
         $this->aInfo = $aInfo;
     }
 
     /**
      * On deleting/checkin a document, send the document owner and alert creator a notification email
      */
-    function postValidate() {
-    	$oStorage = KTStorageManagerUtil::getSingleton();
+    function postValidate()
+    {
+    	$storage = KTStorageManagerUtil::getSingleton();
         $oDoc = $this->aInfo['document'];
         $docId = $oDoc->getId();
         $docInfo = array('id' => $docId, 'name' => $oDoc->getName());
 
-        // Delete the pdf document
+        // NOTE This was leaving files on S3.
+        //      They were no longer represented in the interface but still present in storage.
+        //$file = $storage->getDocStoragePath($oDoc, 'pdf');
+        $file = $default->varDirectory . DIRECTORY_SEPARATOR . "Pdf" . DIRECTORY_SEPARATOR . "$docId.pdf";
 
-        $file = $oStorage->getDocStoragePath($oDoc, 'pdf');
-
-        if($oStorage->file_exists($file)){
-            $oStorage->unlink($file);
+        if ($storage->file_exists($file)) {
+            $storage->unlink($file);
         }
     }
+
 }
 
 class pdfConverterPlugin extends KTPlugin {
+
     var $sNamespace = 'pdf.converter.processor.plugin';
     var $iVersion = 0;
     var $autoRegister = true;
     var $createSQL = true;
 
-    function pdfConverterPlugin($sFilename = null) {
+    function pdfConverterPlugin($sFilename = null)
+    {
         $res = parent::KTPlugin($sFilename);
         $this->sFriendlyName = _kt('Document PDF Converter');
         $this->dir = dirname(__FILE__) . DIRECTORY_SEPARATOR;
@@ -80,14 +87,17 @@ class pdfConverterPlugin extends KTPlugin {
         return $res;
     }
 
-    function setup() {
+    function setup()
+    {
         $dir = dirname(__FILE__) . DIRECTORY_SEPARATOR . 'pdfConverter.php';
         $this->registerProcessor('PDFConverter', 'pdf.converter.processor', $dir);
         $this->registerTrigger('delete', 'postValidate', 'DeletePDFTrigger','pdf.converter.triggers.delete', __FILE__);
         $this->registerTrigger('checkin', 'postValidate', 'DeletePDFTrigger','pdf.triggers.delete.document.checkin', __FILE__);
     }
+
 }
 
-$oPluginRegistry =& KTPluginRegistry::getSingleton();
-$oPluginRegistry->registerPlugin('pdfConverterPlugin', 'pdf.converter.processor.plugin', __FILE__);
+$pluginRegistry =& KTPluginRegistry::getSingleton();
+$pluginRegistry->registerPlugin('pdfConverterPlugin', 'pdf.converter.processor.plugin', __FILE__);
+
 ?>
