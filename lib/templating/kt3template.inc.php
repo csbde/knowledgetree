@@ -192,7 +192,9 @@ class KTPage {
                         "resources/$jsResourceLocation/newui/documents/kt.app.copy.$jsExt" => $files,
                         'thirdpartyjs/jquery/plugins/jstree/jquery.hotkeys.js' => $files,
                         'thirdpartyjs/jquery/plugins/jstree/jquery.cookie.js' => $files,
-                        'thirdpartyjs/jquery/plugins/jstree/jquery.jstree.js' => $files
+                        'thirdpartyjs/jquery/plugins/jstree/jquery.jstree.js' => $files,
+                        'resources/js/newui/documents/kt.app.ratingcontent.js' => $files,
+                        'resources/js/newui/new_features/kt.app.newfeatures.js' => $overviews,
                       );
 
         $oConfig = KTConfig::getSingleton();
@@ -210,6 +212,7 @@ class KTPage {
             /* REWORK INTO SINGLE STYLE SHEET */
             'resources/css/newui/dropdown_styles.css',
             'resources/css/newui/dropdown.vertical.css',
+            'resources/css/newui/newfeatures.css',
         );
 
         // load area specific files
@@ -571,7 +574,7 @@ class KTPage {
                 $this->componentLabel = _kt('Document Details');
                 $this->componentClass = 'document_details';
                 break;
-                
+
             case 'applications':
                 $this->componentLabel = _kt('Applications');
                 $this->componentClass = 'applications';
@@ -586,7 +589,7 @@ class KTPage {
                 $this->componentLabel = _kt('Preferences');
                 $this->componentClass = 'preferences';
                 break;
-                
+
             case 'dashboard':
                 $this->componentLabel = _kt('Dashboard');
                 $this->componentClass = 'dashboard';
@@ -850,7 +853,7 @@ class KTPage {
 		} else {
 		   $aTuple['url'] = false;
 		}
-        
+
         // Id for use with JavaScript
         if ($aActionTuple['id']) {
             $aTuple['id'] = $aActionTuple['id'];

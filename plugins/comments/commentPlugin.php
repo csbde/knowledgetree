@@ -55,10 +55,6 @@ class commentPlugin extends KTPlugin
         return $res;
     }
 
-    /**
-     * Setup the plugin: add the processor, viewlet action and template location
-     *
-     */
     function setup()
     {
     }

@@ -1,0 +1,42 @@
+div.helperTextOverlay {
+   position: absolute;
+   z-index: 2000;
+   background: transparent no-repeat ;
+   width: 150px;
+
+   padding:15px;
+   padding-right: 25px;
+   /*margin:1em 0 3em;*/
+   color:#FFF;
+   font-weight: bold;
+
+   /* css3 */
+   -moz-border-radius:10px;
+   -webkit-border-radius:10px;
+   border-radius:10px;
+}
+
+div.helperTextOverlay a {
+   position: absolute;
+   top: 10px;
+   right: 10px;
+   background: #FFF;
+   color: #000;
+   padding: 2px 4px;
+   text-decoration: none;
+   font-size: 10px;
+   border: 1px solid #000;
+}
+
+div.helperTextOverlay a:hover {
+   background: yellow;
+   color: red;
+}
+
+#new_feture_settings_2 {
+   background:url('newfeatures/settings.gif') no-repeat;
+   left: 400px;
+   top: 100px;
+   color: transparent;
+   height: 133px;
+}
