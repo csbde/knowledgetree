@@ -6,5 +6,7 @@
 
 {$topTenUsers}
 
+<br /><br />
 
+{$documentViews}
 

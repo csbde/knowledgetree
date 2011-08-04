@@ -68,9 +68,9 @@ class GraphAnalyticsPage extends KTStandardDispatcher {
 		global $main;
 	    $templateData = array(
 	           'context' => $this,
-	           'msg' => 'Test Message',
 	           'topTenUsers' => $ktAnalytics->getTop10UsersTemplate(),
 	           'topTenDocuments' => $ktAnalytics->getTop10DocumentsTemplate(),
+	           'documentViews' => $ktAnalytics->getDocumentViewsOverWeekTemplate(),
         );
         
 	    return $template->render($templateData);

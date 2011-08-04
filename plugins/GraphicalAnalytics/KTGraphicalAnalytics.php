@@ -73,13 +73,36 @@ class KTGraphicalAnalytics {
 		return $this->loadTemplate('getTop10Users', 'top10users');
 	}
 	
+	public function getDocumentViewsOverWeek()
+    {
+        $sql = '
+		SELECT COUNT( document_id ) AS count , transaction_namespace, ABS( TIMESTAMPDIFF( WEEK, NOW( ) , datetime ) ) AS week_number
+		FROM document_transactions
+		WHERE transaction_namespace = "ktcore.transactions.view"
+		GROUP BY week_number
+		ORDER BY week_number
+		LIMIT 0 , 30
+        ';
+        
+        return DBUtil::getResultArray($sql);
+    }
+	
+	public function getDocumentViewsOverWeekTemplate()
+	{
+		return $this->loadTemplate('getDocumentViewsOverWeek', 'documentviews_week');
+	}
+	
+	
+	
+	
+	
 	public function loadTemplate($function, $template)
 	{
 		$templating =& KTTemplating::getSingleton();
 	    $template = $templating->loadTemplate($template);
 		
 	    $templateData = array(
-	           'context' => $this,
+
 	           'data' => $this->$function()
         );
         

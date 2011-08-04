@@ -1,0 +1,16 @@
+<h3>Document Views over Week</h3>
+
+<table>
+    <thead>
+        <th>Week</th>
+        <th>Document Views</th>
+    </thead>
+    <tbody>
+        {foreach from=$data item=week}
+        <tr>
+            <td>{$week.week_number}</td>
+            <td>{$week.count}</td>
+        </tr>
+        {/foreach}
+    </tbody>
+</table>
