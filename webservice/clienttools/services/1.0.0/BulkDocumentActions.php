@@ -82,8 +82,15 @@ class BulkDocumentActions
 	 * send operation to queue
 	 * @var array
 	 */
-	private $threshold = array(	'documents' => 1000,
-								'folders' => 50
+	private $threshold = array(	'move' =>	array(	'documents' => 1000,
+													'folders' => 50
+												),
+								'delete' =>	array(	'documents' => 350,
+													'folders' => 15
+												),
+								'copy' =>	array(	'documents' => 200,
+													'folders' => 10
+												)
 								);
 
 	public function __construct($action, $list, $reason = '', $targetFolderId, $currentFolderId)
@@ -118,7 +125,7 @@ class BulkDocumentActions
 
 	private function hitThreshold()
 	{
-		if(($this->numDocuments > $this->threshold['documents']) || ($this->numFolders > $this->threshold['folders'])) {
+		if(($this->numDocuments > $this->threshold[$this->action]['documents']) || ($this->numFolders > $this->threshold[$this->action]['folders'])) {
 				return true;
 		}
 
