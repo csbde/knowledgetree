@@ -570,18 +570,21 @@ class KTStandardDispatcher extends KTDispatcher {
         $_SESSION['KTErrorMessage'][] = $sMessage;
     }
 
-    public function errorPage($errorMessage, $oException = null)
+    public function errorPage($errorMessage, $exception = null)
     {
         if ($this->bTransactionStarted) {
             $this->rollbackTransaction();
         }
 
-        $sOutput = $errorMessage;
-        if ($oException) {
-            // $sOutput .= $oException->toString();
+        $output = '<div id="action-error" class="alert warning">';
+        $output .= $errorMessage;
+        $output .= '</div>';
+        
+        if ($exception) {
+            // $output .= $exception->toString();
         }
 
-        $this->handleOutput($sOutput);
+        $this->handleOutput($output);
         exit(0);
     }
 

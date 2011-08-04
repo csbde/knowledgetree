@@ -271,6 +271,13 @@ kt.app.copy = new function() {
     		alert('Please select a folder');
     		return;
     	}
+    	
+    	// check for background task preventing the action on the target folder
+    	var result = kt.app.blockActions.checkForBackgroundedTasks(self.action, self.targetFolderId);
+    	
+    	if (result) {
+    	    return false;
+    	}
 
     	self.showSpinner();
 
@@ -455,17 +462,20 @@ kt.app.blockActions = new function() {
 
     this.init = function()
     {
-        self.blockedActions = ['move', 'copy', 'delete', 'archive', 'immutable', 'checkin', 'checkout', 'checkoutdownload', 'cancelcheckout', 'ownershipchange'];
+        self.blockedActions = ['move', 'copy', 'delete', 'archive', 'immutable', 'checkin', 'checkout', 'checkoutdownload', 'cancelcheckout', 'ownershipchange', 'addDocument'];
     }
     
-    this.checkForBackgroundedTasks = function(action)
+    this.checkForBackgroundedTasks = function(action, folderId)
     {
         if (!ktjapi._lib.inArray(action, self.blockedActions)) {
             return false;
         }
         
     	var params = {};
-    	var folderId = ktjapi._lib.getQueryVariable('fFolderId');
+    	
+    	if (folderId == undefined || folderId == '') {
+        	var folderId = ktjapi._lib.getQueryVariable('fFolderId');
+    	}
     	params.folderId = folderId;
     	params.action = action;
     
