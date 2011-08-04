@@ -653,36 +653,6 @@ class KTStandardDispatcher extends KTDispatcher {
     public function json_main() {
         return array('type'=>'error', 'value'=>'Not implemented');
     }
-
-    public function isBulkActionInProgress()
-	{
-		// Cater for both folder and document views.
-		// TODO : How to block actions in admin sections.
-		if(!is_null($this->document) && $this->document instanceof Document) {
-			$folderIdsPath = $this->document->getParentFolderIds();
-		} elseif(!is_null($this->oFolder) && ($this->oFolder instanceof Folder || $this->oFolder instanceof FolderProxy)) {
-			$folderIdsPath = Folder::generateFolderIDs($this->oFolder->getId());
-		} else {
-			return '';
-		}
-		$folderIdsPath = explode(',', $folderIdsPath);
-		$key = ACCOUNT_NAME . '_bulkaction';
-		$memcache = KTMemcache::getKTMemcache();
-		if(!$memcache->isEnabled()) return ;
-	    $bulkActions = $memcache->get($key);
-	    $bulkActions = unserialize($bulkActions);
-	    if($bulkActions) {
-		    foreach ($bulkActions as $action => $folderIds) {
-		    	foreach ($folderIds as $folderId) {
-			    	if(in_array($folderId, $folderIdsPath)) {
-			    		return $action;
-			    	}
-		    	}
-		    }
-	    }
-
-	    return '';
-	}
 }
 
 class KTAdminDispatcher extends KTStandardDispatcher {
