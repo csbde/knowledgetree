@@ -35,6 +35,7 @@
  */
 
 require_once('viewactionsutil.inc.php');
+require_once(KT_LIB_DIR . '/backgroundactions/backgroundaction.inc.php');
 
 class ViewDocumentDispatcher extends KTStandardDispatcher {
 
@@ -100,7 +101,8 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
 
             return $this->do_error();
         }
-		$this->bulkActionInProgress = $this->isBulkActionInProgress();
+
+		$this->bulkActionInProgress = backgroundaction::isDocumentInBulkAction($this->document);
 
         $documentId = $this->document->getId();
         $documentData['document_id'] = $documentId;

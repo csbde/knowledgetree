@@ -1,3 +1,7 @@
 <h2>{i18n}Add a folder to{/i18n}: {$context->oFolder->getName()|sanitize}</h2>
 
 {$form->render()}
+
+<script>
+	jQuery('#folder_name').focus();
+</script>
