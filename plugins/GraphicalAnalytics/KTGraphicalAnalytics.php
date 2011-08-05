@@ -81,7 +81,7 @@ class KTGraphicalAnalytics {
 		WHERE transaction_namespace = "ktcore.transactions.view"
 		GROUP BY week_number
 		ORDER BY week_number
-		LIMIT 0 , 30
+		LIMIT 0, 10
         ';
         
         return DBUtil::getResultArray($sql);
@@ -89,22 +89,48 @@ class KTGraphicalAnalytics {
 	
 	public function getDocumentViewsOverWeekTemplate()
 	{
-		return $this->loadTemplate('getDocumentViewsOverWeek', 'documentviews_week');
+		return $this->loadTemplate('getDocumentViewsOverWeek', 'documentviews_week', 'generateDocViewsGraphData');
+	}
+	
+	private function generateDocViewsGraphData($data)
+	{
+		$weeks = array();
+		$score = array();
+		
+		foreach($data as $item)
+		{
+			switch ($item['week_number'])
+			{
+				case 0: $str = 'This Week'; break;
+				case 1: $str = 'Last Week'; break;
+				default: $str = $item['week_number'].' Weeks Ago'; break;
+			}
+			
+			$weeks[] = $str;
+			$score[] = $item['count'];
+		}
+		
+		$weeks = '"'.implode('", "', $weeks).'"';
+		$score = implode(', ', $score);
+		
+		return array('weeks'=>$weeks, 'score'=>$score);
 	}
 	
 	
-	
-	
-	
-	public function loadTemplate($function, $template)
+	public function loadTemplate($function, $template, $graphFunction='')
 	{
 		$templating =& KTTemplating::getSingleton();
 	    $template = $templating->loadTemplate($template);
 		
+		$GLOBALS['page_js_resources'][] = 'thirdpartyjs/highcharts/highcharts.js';
+		
 	    $templateData = array(
-
-	           'data' => $this->$function()
+	        'data' => $this->$function()
         );
+		
+		if ($graphFunction != '') {
+			$templateData['graphdata'] = $this->$graphFunction($templateData['data']);
+		}
         
 	    return $template->render($templateData);
 	}
