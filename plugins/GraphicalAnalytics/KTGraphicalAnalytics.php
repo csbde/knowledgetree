@@ -131,21 +131,135 @@ class KTGraphicalAnalytics {
 	public function getTransactionViewsSql()
     {
         $sql = '
-		SELECT COUNT( document_id ) AS count , transaction_namespace, ABS( TIMESTAMPDIFF( WEEK, NOW( ) , datetime ) ) AS weeks
+		SELECT COUNT( document_id ) AS count , transaction_namespace, ABS( TIMESTAMPDIFF( WEEK, NOW( ) , datetime ) ) AS week_number
 		FROM document_transactions
-		GROUP BY weeks
-		ORDER BY weeks
-		LIMIT 0 , 30
+		GROUP BY week_number
+		ORDER BY week_number
+		LIMIT 0 , 10
         ';
         
         return DBUtil::getResultArray($sql);
     }
 	
+	public function getTransactionOverWeekTemplate()
+	{
+		$templateData = array('data'=>$this->getTransactionViewsSql());
+		
+		$templateData['graphdata'] = $this->getTransactionOverWeekData($templateData['data']);
+		
+		return $this->loadTemplate($templateData, 'transactions_week');
+	}
+	
+	private function getTransactionOverWeekData($data)
+	{
+		$weeks = array();
+		$score = array();
+		
+		foreach($data as $item)
+		{
+			switch ($item['week_number'])
+			{
+				case 0: $str = 'This Week'; break;
+				case 1: $str = 'Last Week'; break;
+				default: $str = $item['week_number'].' Weeks Ago'; break;
+			}
+			
+			$weeks[] = $str;
+			$score[] = $item['count'];
+		}
+		
+		$weeks = '"'.implode('", "', $weeks).'"';
+		$score = implode(', ', $score);
+		
+		return array('weeks'=>$weeks, 'score'=>$score);
+	}
+	
+	
+	/******************************************************************************************************************/
+	
+	public function getTransactionsVsViewsOverWeekTemplate()
+	{
+		$templateData = array();
+		
+		$templateData['transactions'] = $this->getTransactionOverWeekData($this->getTransactionViewsSql());
+		$templateData['document_views'] = $this->generateDocViewsGraphData($this->getDocumentViewsOverWeek());
+		
+		return $this->loadTemplate($templateData, 'transactions_vs_comments_week');
+	}
+	
+	
+	/******************************************************************************************************************/
+	
+	public function getViewsVsCommentsOverWeekTemplate()
+	{
+		$templateData = array();
+		
+		$templateData['comments'] = $this->getDocumentCommentsPerWeekData();
+		$templateData['document_views'] = $this->generateDocViewsGraphData($this->getDocumentViewsOverWeek());
+		
+		return $this->loadTemplate($templateData, 'views_vs_comments_week');
+	}
+	
+	/******************************************************************************************************************/
+	
+	public function getDocumentCommentsSql()
+    {
+        $sql = '
+		SELECT COUNT(document_id) as comment_count, ABS(TIMESTAMPDIFF(WEEK,NOW(),date_created)) AS week_number
+		FROM document_comments
+		WHERE ABS(TIMESTAMPDIFF(WEEK,NOW(),date_created)) < 10
+		GROUP BY week_number 
+		ORDER BY week_number
+		LIMIT 10
+        ';
+        
+        return DBUtil::getResultArray($sql);
+    }
+	
+	public function getDocumentCommentsPerWeekTemplate()
+	{
+		$templateData = array('data'=>$this->getDocumentCommentsPerWeekData());
+		
+		return $this->loadTemplate($templateData, 'comments_week');
+	}
+	
+	
+	
+	private function getDocumentCommentsPerWeekData()
+	{
+		$data = $this->getDocumentCommentsSql();
+		
+		$rowCounter = 0;
+		
+		$weeks = array();
+		$commentsCounter = array();
+		$commentsArray = array();
+		
+		for ($i=0; $i<10;$i++) {
+			$week = $this->formatWeekStr($i);
+			
+			if ($data[$rowCounter]['week_number'] == $i) {
+				$num = $data[$rowCounter]['comment_count'];
+				$rowCounter++;
+			} else {
+				$num = 0;
+			}
+			
+			$commentsCounter[] = $num;
+			$commentsArray[] = array('week_number'=>$i, 'count'=>$num);
+		}
+		
+		$weeks = '"'.implode('", "', $weeks).'"';
+		$commentsCounter = implode(', ', $commentsCounter);
+		
+		return array('weeks'=>$weeks, 'counter'=>$commentsCounter, 'comments'=>$commentsArray);
+	}
+	
 	
 	/******************************************************************************************************************/
 	
 	
-	public function loadTemplate($templateData, $template)
+	private function loadTemplate($templateData, $template)
 	{
 		$templating =& KTTemplating::getSingleton();
 	    $template = $templating->loadTemplate($template);
@@ -153,6 +267,18 @@ class KTGraphicalAnalytics {
 		$GLOBALS['page_js_resources'][] = 'thirdpartyjs/highcharts/highcharts.js';
         
 	    return $template->render($templateData);
+	}
+	
+	private function formatWeekStr($week)
+	{
+		switch ($week)
+		{
+			case 0: $str = 'This Week'; break;
+			case 1: $str = 'Last Week'; break;
+			default: $str = $week.' Weeks Ago'; break;
+		}
+		
+		return $str;
 	}
 
 }
