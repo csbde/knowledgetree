@@ -38,10 +38,12 @@
 
 require_once(KT_LIB_DIR . '/actions/dashboardviewlet.inc.php');
 require_once(KT_LIB_DIR . '/util/ktutil.inc');
-require_once(KT_DIR . '/plugins/ktcore/KTDocumentViewlets.php');
-require_once('KTGraphicalAnalytics.php');
 
-class KTDashboardActivityFeedAction extends KTDashboardViewlet {
+require_once(KT_DIR . '/plugins/ktcore/KTDocumentViewlets.php');
+
+require_once(KT_PLUGIN_DIR . '/GraphicalAnalytics/GraphicalAnalyticsTemplates.php');
+
+class KTDashboardActivityFeedViewlet extends KTDashboardViewlet {
 
     public $sName = 'ktcore.viewlet.dashboard.activityfeed';
     public $bShowIfReadShared = true;
@@ -52,7 +54,7 @@ class KTDashboardActivityFeedAction extends KTDashboardViewlet {
 
     public function __construct()
     {
-    	parent::KTDashboardViewlet();
+    	parent::__construct();
     	$this->documentActivityFeedAction = new KTDocumentActivityFeedAction();
     }
 
@@ -156,7 +158,7 @@ class KTDashboardActivityFeedAction extends KTDashboardViewlet {
     }
 }
 
-class KTGraphicalAnalytics extends KTDashboardViewlet
+class KTGraphicalAnalyticsViewlet extends KTDashboardViewlet
 {
     public $sName = 'ktcore.viewlet.dashboard.analytics';
     public $bShowIfReadShared = true;
@@ -170,12 +172,20 @@ class KTGraphicalAnalytics extends KTDashboardViewlet
 
 	public function displayViewlet()
 	{
+		$ktAnalytics = new GraphicalAnalyticsTemplates();
+
+	    $templateData = array(
+	           'context' => $this,
+	           'topTenUsers' => $ktAnalytics->getTop10UsersTemplate(),
+	           'topTenDocuments' => $ktAnalytics->getTop10DocumentsTemplate(),
+	           'documentViews' => $ktAnalytics->getDocumentViewsOverWeekTemplate(),
+	           //'transactionsPerWeek' => $ktAnalytics->getTransactionOverWeekTemplate(),
+	           'commentsPerWeek' => $ktAnalytics->getDocumentCommentsPerWeekTemplate(),
+	           'commentsVsViewsPerWeek' => $ktAnalytics->getViewsVsCommentsOverWeekTemplate(),
+        );
+
         $templating = KTTemplating::getSingleton();
         $template = $templating->loadTemplate('ktcore/dashboard/viewlets/graphical_analytics');
-
-        $templateData = array(
-              'context' => $this,
-        );
 
         return $template->render($templateData);
 	}

@@ -1,1 +1,22 @@
-graphs
+<h2>Graphs Page</h2>
+{$topTenDocuments} // table
+
+<br /><br />
+
+{$topTenUsers} // table
+
+<br /><br />
+
+{$documentViews} // table + graph
+
+<br /><br />
+
+{$transactionsPerWeek} // Under construction
+
+<br /><br />
+
+{$commentsPerWeek} // table + graph
+
+<br /><br />
+
+{$commentsVsViewsPerWeek} / graph

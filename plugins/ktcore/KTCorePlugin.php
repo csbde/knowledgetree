@@ -113,8 +113,8 @@ class KTCorePlugin extends KTPlugin {
         $this->registerAction('documentviewlet', 'KTWorkflowViewlet', 'ktcore.viewlets.document.workflow', 'KTDocumentViewlets.php');
         $this->registerAction('documentviewlet', 'KTInlineEditViewlet', 'ktcore.viewlets.document.inline.edit', 'KTDocumentViewlets.php');
 		// Dashboard
-		$this->registerAction('dashboardviewlet', 'KTDashboardActivityFeedAction', 'ktcore.viewlet.dashboard.activityfeed', 'KTDashboardViewlets.php');
-		$this->registerAction('dashboardviewlet', 'KTGraphicalAnalytics', 'ktcore.viewlet.dashboard.analytics', 'KTDashboardViewlets.php');
+		$this->registerAction('dashboardviewlet', 'KTDashboardActivityFeedViewlet', 'ktcore.viewlet.dashboard.activityfeed', 'KTDashboardViewlets.php');
+		$this->registerAction('dashboardviewlet', 'KTGraphicalAnalyticsViewlet', 'ktcore.viewlet.dashboard.analytics', 'KTDashboardViewlets.php');
 
         // Blocks
         $this->registerAction('documentblock', 'KTDocumentStatusBlock', 'ktcore.blocks.document.status', 'KTDocumentBlocks.php');
