@@ -49,8 +49,11 @@ class KTGraphicalAnalytics {
 	
 	public function getTop10DocumentsTemplate()
 	{
-		return $this->loadTemplate('getTop10Documents', 'top10documents');
+		return $this->loadTemplate(array('data'=>$this->getTop10Documents()), 'top10documents');
 	}
+	
+	
+	/******************************************************************************************************************/
 	
 	public function getTop10Users()
 	{
@@ -70,8 +73,10 @@ class KTGraphicalAnalytics {
 	
 	public function getTop10UsersTemplate()
 	{
-		return $this->loadTemplate('getTop10Users', 'top10users');
+		return $this->loadTemplate(array('data'=>$this->getTop10Users()), 'top10users');
 	}
+	
+	/******************************************************************************************************************/
 	
 	public function getDocumentViewsOverWeek()
     {
@@ -89,7 +94,11 @@ class KTGraphicalAnalytics {
 	
 	public function getDocumentViewsOverWeekTemplate()
 	{
-		return $this->loadTemplate('getDocumentViewsOverWeek', 'documentviews_week', 'generateDocViewsGraphData');
+		$templateData = array('data'=>$this->getDocumentViewsOverWeek());
+		
+		$templateData['graphdata'] = $this->generateDocViewsGraphData($templateData['data']);
+		
+		return $this->loadTemplate($templateData, 'documentviews_week');
 	}
 	
 	private function generateDocViewsGraphData($data)
@@ -116,21 +125,32 @@ class KTGraphicalAnalytics {
 		return array('weeks'=>$weeks, 'score'=>$score);
 	}
 	
+	/******************************************************************************************************************/
 	
-	public function loadTemplate($function, $template, $graphFunction='')
+	
+	public function getTransactionViewsSql()
+    {
+        $sql = '
+		SELECT COUNT( document_id ) AS count , transaction_namespace, ABS( TIMESTAMPDIFF( WEEK, NOW( ) , datetime ) ) AS weeks
+		FROM document_transactions
+		GROUP BY weeks
+		ORDER BY weeks
+		LIMIT 0 , 30
+        ';
+        
+        return DBUtil::getResultArray($sql);
+    }
+	
+	
+	/******************************************************************************************************************/
+	
+	
+	public function loadTemplate($templateData, $template)
 	{
 		$templating =& KTTemplating::getSingleton();
 	    $template = $templating->loadTemplate($template);
 		
 		$GLOBALS['page_js_resources'][] = 'thirdpartyjs/highcharts/highcharts.js';
-		
-	    $templateData = array(
-	        'data' => $this->$function()
-        );
-		
-		if ($graphFunction != '') {
-			$templateData['graphdata'] = $this->$graphFunction($templateData['data']);
-		}
         
 	    return $template->render($templateData);
 	}
