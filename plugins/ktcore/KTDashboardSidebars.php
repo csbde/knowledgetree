@@ -72,7 +72,7 @@ class KTDashboardSidebar extends KTDashboardViewlet {
         	// Skip info check
     		$order = $sidebar->getOrder();
     		// Sidebars cannot overwrite each other.
-        	if(isset($ordered[$sidebar->getOrder()])) {
+        	if(isset($ordered[$order])) {
         		$order++;
         		$ordered[$order] = $sidebar;
         	}

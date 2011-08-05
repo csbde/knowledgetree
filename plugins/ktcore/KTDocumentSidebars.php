@@ -62,7 +62,7 @@ class KTDocumentSidebar extends KTDocumentViewlet {
         	if($info != null) {
         		$order = $sidebar->getOrder();
         		// Sidebars cannot overwrite each other.
-	        	if(isset($ordered[$sidebar->getOrder()])) {
+	        	if(isset($ordered[$order])) {
 	        		$order++;
 	        		$ordered[$order] = $sidebar;
 	        	} else {
