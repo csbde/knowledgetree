@@ -77,7 +77,7 @@ kt.app.ratingcontent = new function() {
 			if (response.data.newNumLikes == 1) {
 				countStr = '1 person likes this';
 			} else {
-				countStr = response.data.newNumLikes+' people like this';
+				countStr = 'You and '+(response.data.newNumLikes)+' people like this';
 			}
 			
 			// Update with some animation

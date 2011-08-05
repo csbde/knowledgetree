@@ -727,7 +727,12 @@ class BrowseView {
                         ' . $checkbox . '
                         <td class="doc icon_cell" width="1">
                             <div class="doc icon" style="[mimeicon]">
-                                
+                                <span class="immutable_info[is_immutable]">FINALIZED
+                                    <span>This document has been <strong>finalized</strong> and can no longer be modified.</span>
+                                </span>
+                                <span class="checked_out[is_checkedout]">CHECKED OUT
+                                    <span>This document is <strong>checked-out</strong> by <strong>[checked_out_by]</strong> and cannot be edited until it is Checked-in.</span>
+                                </span>
                                 ' . $shortcut . '
                                 <span class="doc [thumbnailclass]">[thumbnail]</span>
                             </div>
@@ -738,7 +743,7 @@ class BrowseView {
                                 <span class="item"> Owner: <span class="user docowner">[owned_by]</span></span><span class="item">Created: <span class="date">[created_date]</span> by <span class="user">[created_by]</span></span><span class="item docupdatedinfo">Updated: <span class="date">[modified_date]</span> by <span class="user">[modified_by]</span></span><span class="item">File size: <span class="user filesize">[filesize]</span></span>
                             </div>
                         </td>
-                        <td style="width: 99px;">
+                        <td style="width: 99px;ZZ">
                             ' . $this->getDocumentActionMenu($share_separator) . '
                         </td>
                     </tr>
