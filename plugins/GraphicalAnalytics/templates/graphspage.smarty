@@ -10,3 +10,14 @@
 
 {$documentViews}
 
+<br /><br />
+
+{$transactionsPerWeek}
+
+<br /><br />
+
+{$commentsPerWeek}
+
+<br /><br />
+
+{$commentsVsViewsPerWeek}

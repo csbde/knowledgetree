@@ -71,6 +71,9 @@ class GraphAnalyticsPage extends KTStandardDispatcher {
 	           'topTenUsers' => $ktAnalytics->getTop10UsersTemplate(),
 	           'topTenDocuments' => $ktAnalytics->getTop10DocumentsTemplate(),
 	           'documentViews' => $ktAnalytics->getDocumentViewsOverWeekTemplate(),
+	           //'transactionsPerWeek' => $ktAnalytics->getTransactionOverWeekTemplate(),
+	           'commentsPerWeek' => $ktAnalytics->getDocumentCommentsPerWeekTemplate(),
+	           'commentsVsViewsPerWeek' => $ktAnalytics->getViewsVsCommentsOverWeekTemplate(),
         );
         
 	    return $template->render($templateData);
