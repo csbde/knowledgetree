@@ -181,7 +181,7 @@ class KTDocumentActivityFeedAction extends KTDocumentViewlet {
         return $this->getTransactionResult($query);
     }
 
-    private function getTransactionResult($query)
+    public function getTransactionResult($query)
     {
         $res = DBUtil::getResultArray($query);
         if (PEAR::isError($res)) {
@@ -195,7 +195,7 @@ class KTDocumentActivityFeedAction extends KTDocumentViewlet {
 
     // FIXME Some of these values are not in the detail view query.
     //       Warnings will be squashed, but should be dealt with properly.
-    private function getActivityFeed($transactions)
+    public function getActivityFeed($transactions)
     {
         // Set the namespaces where not in the transactions lookup
         $activityFeed = array();
@@ -312,67 +312,8 @@ class KTDocumentActivityFeedAction extends KTDocumentViewlet {
         return $date1 < $date2 ? 1 : -1;
     }
 
-    public function displayGlobalActivityFeed()
-    {
-        $page = $GLOBALS['main'];
-        $page->requireCSSResource('resources/css/newui/browseView.css');
-
-        // FIXME There is some duplication here.
-        //       The mime icon stuff for instance can be abstracted to
-        //       a third file and used both here and in the browse view.
-
-        $filter = array(
-            'ktcore.transactions.create',
-            'ktcore.transactions.delete',
-            'ktcore.transactions.check_in'
-        );
-        $activityFeed = $this->getActivityFeed($this->getAllTransactions($filter));
-
-        $comments = $this->getAllComments();
-        $activityFeed = array_merge($activityFeed, $comments);
-        $activityFeed = $this->setMimeIcons($activityFeed);
-
-        usort($activityFeed, array($this, 'sortTable'));
-
-        $templating =& KTTemplating::getSingleton();
-        $template = $templating->loadTemplate('ktcore/document/viewlets/global_activity_feed');
-
-        $templateData = array(
-              'context' => $this,
-              'documentId' => $documentId,
-              'versions' => $activityFeed,
-              'displayMax' => $this->displayMax,
-              'commentsCount' => count($activityFeed)
-        );
-
-        return $template->render($templateData);
-    }
-
-    private function getAllTransactions($filter = array())
-    {
-        $query = "SELECT D.id as document_id, DMV.name as document_name,
-            DCV.mime_id,
-            DTT.name AS transaction_name, DT.transaction_namespace,
-            U.name AS user_name, U.email as email,
-            DT.version AS version, DT.comment AS comment, DT.datetime AS datetime
-            FROM " . KTUtil::getTableName('document_transactions') . " AS DT
-            INNER JOIN " . KTUtil::getTableName('users') . " AS U ON DT.user_id = U.id
-            LEFT JOIN " . KTUtil::getTableName('transaction_types') . "
-            AS DTT ON DTT.namespace = DT.transaction_namespace,
-            documents D
-            INNER JOIN document_metadata_version DMV ON DMV.id = D.metadata_version_id
-            INNER JOIN document_content_version DCV ON DCV.id = DMV.content_version_id
-            {$this->getPermissionsQuery()}
-            DT.transaction_namespace != 'ktcore.transactions.view'
-            {$this->buildFilterQuery($filter)}
-            AND DT.document_id = D.id
-            ORDER BY DT.id DESC";
-
-        return $this->getTransactionResult(array($query, $permissionParams));
-    }
-
     // FIXME Lots of duplication, see comments plugin.
-    private function getPermissionsQuery()
+    public function getPermissionsQuery()
     {
         if ($this->inAdminMode()) {
             return 'WHERE';
@@ -400,42 +341,7 @@ class KTDocumentActivityFeedAction extends KTDocumentViewlet {
             && Permission::adminIsInAdminMode();
     }
 
-    private function buildFilterQuery($filter = array())
-    {
-        $filterQuery = '';
-
-        if (!empty($filter)) {
-            foreach ($filter as $namespace) {
-                $filterQueries[] = "DT.transaction_namespace = '$namespace'";
-            }
-            $filterQuery = 'AND (' . implode(' OR ', $filterQueries) . ')';
-        }
-
-        return $filterQuery;
-    }
-
-    private function setMimeIcons($activityFeed)
-    {
-        foreach ($activityFeed as $key => $item) {
-            $iconFile = 'resources/mimetypes/newui/' . KTMime::getIconPath($item['mime_id']) . '.png';
-            $item['icon_exists'] = file_exists(KT_DIR . '/' . $iconFile);
-            $item['icon_file'] = $iconFile;
-
-            if ($item['icon_exists']) {
-                $item['mimeicon'] = str_replace('\\', '/', $GLOBALS['default']->rootUrl . '/' . $iconFile);
-                $item['mimeicon'] = 'background-image: url(' . $item['mimeicon'] . ')';
-            }
-            else {
-                $item['mimeicon'] = '';
-            }
-
-            $activityFeed[$key] = $item;
-        }
-
-        return $activityFeed;
-    }
-
-    private function getAllComments()
+    public function getAllComments()
     {
         $comments = array();
 

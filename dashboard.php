@@ -50,7 +50,6 @@ require_once(KT_LIB_DIR . '/dispatcher.inc.php');
 require_once(KT_LIB_DIR . '/dashboard/DashletDisables.inc.php');
 require_once(KT_LIB_DIR . '/foldermanagement/Folder.inc');
 require_once(KT_LIB_DIR . '/actions/dashboardaction.inc.php');
-require_once(KT_DIR . '/plugins/ktcore/KTDocumentViewlets.php');
 
 $sectionName = 'dashboard';
 
@@ -140,7 +139,8 @@ class DashboardDispatcher extends KTStandardDispatcher {
         }
 
         $sidebars = KTDashboardActionUtil::getActionsForDashboard($this->oUser, 'maindashsidebar');
-        $sidebars = isset($sidebars[0]) ? $sidebars[0] : array();
+		$dashboardViewlets = KTDashboardActionUtil::getAllDashboardActions('dashboardviewlet');
+		$orderedKeys = KTDashboardActionUtil::sortActions($dashboardViewlets);
 
         // render
         $templating =& KTTemplating::getSingleton();
@@ -150,7 +150,8 @@ class DashboardDispatcher extends KTStandardDispatcher {
               'dashlets_left' => $aDashletsLeft,
               'dashlets_right' => $aDashletsRight,
               'ktOlarkPopup' => $ktOlarkPopup,
-              'global_activity_feed' => new KTDocumentActivityFeedAction(),
+              'dashboardViewlets' => $orderedKeys['ordered'],
+              'keys' => $orderedKeys['keys'],
               'sidebars' => $sidebars,
         );
 

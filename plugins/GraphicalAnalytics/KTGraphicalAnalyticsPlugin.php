@@ -52,15 +52,14 @@ class KTGraphicalAnalyticsPlugin extends KTPlugin {
 		$this->sFriendlyName = _kt('Actionable Insights Graphical Analytics');
 		$this->dir = dirname(__FILE__) . DIRECTORY_SEPARATOR;
 		$this->sSQLDir = $this->dir . 'sql' . DIRECTORY_SEPARATOR;
+
 		return $res;
 	}
 
-	public function setup() {
-		$dir = dirname(__FILE__) . DIRECTORY_SEPARATOR;
-		$dir = str_replace(KT_DIR, '', $dir);
-		
+	public function setup()
+	{
         $templating =& KTTemplating::getSingleton();
-        $templating->addLocation('graphicalanalytics', '/plugins/GraphicalAnalytics/templates', 'actionableinsights.graphicalanalytics.plugin');
+        $templating->addLocation('graphicalanalytics', $this->dir . 'templates', 'actionableinsights.graphicalanalytics.plugin');
 	}
 }
 

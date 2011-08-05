@@ -2,8 +2,12 @@
 
 <table style="border-spacing: 0px;">
 	<td width="745" valign="top">
-            <div id="activityfeed-container" style="margin-top:1em;"></div>
-            {$global_activity_feed->displayGlobalActivityFeed()}
+		{foreach item=key from=$keys}
+			<div id="dashboard-viewlets" class="{$dashboardViewlets[$key]->getCSSName()}">
+				{assign var="content" value=$dashboardViewlets[$key]->displayViewlet()}
+				{$content}
+			</div>
+		{/foreach}
 	</td>
 
 	<td valign="top" id="sidebar" class="standardBorder" height="100%" width="215">
@@ -140,6 +144,4 @@
     <div class="dashboard_block_empty" id="end-right">&nbsp;</div>
 </div>
 
-{*
 {$ktOlarkPopup}
-*}
