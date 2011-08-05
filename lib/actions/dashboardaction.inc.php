@@ -48,19 +48,22 @@ require_once(KT_LIB_DIR . '/dispatcher.inc.php');
 
 class KTDashboardAction extends KTStandardDispatcher {
 
-    public function KTDashboardAction($oUser = null, $oPlugin = null) {
-        $this->oUser = $oUser;
-        $this->oPlugin = $oPlugin;
+    public function __construct($user = null, $plugin = null)
+    {
+        $this->oUser = $user;
+        $this->oPlugin = $plugin;
         $this->oConfig = KTConfig::getSingleton();
 
         parent::KTStandardDispatcher();
     }
 
-    public function _show() {
+    public function _show()
+    {
     	return true;
     }
 
-	public function getInfo() {
+	public function getInfo()
+	{
     	if(!empty($this->bulkActionInProgress)) {
     		if(!in_array($this->bulkActionInProgress, $this->showIfBulkActions)) {
     			return '';
@@ -81,80 +84,115 @@ class KTDashboardAction extends KTStandardDispatcher {
         return $aInfo;
     }
 
-    public function getName() {
+    public function getName()
+    {
         return $this->sName;
     }
 
-    public function getDisplayName() {
+    public function getDisplayName()
+    {
         // Should be overridden by the i18nised display name
         // This is here solely for backwards compatibility
         return $this->sDisplayName;
     }
 
-    public function getDescription() {
+    public function getDescription()
+    {
         return $this->sDescription;
     }
 
-    public function getButton(){
+    public function getButton()
+    {
         return false;
     }
 
-    public function customiseInfo($aInfo) {
+    public function customiseInfo($aInfo)
+    {
         return $aInfo;
     }
 }
 
 class KTDashboardActionUtil {
-    public function getDashboardActionInfo($slot = 'dashboardsidebar') {
-        $oRegistry = KTActionRegistry::getSingleton();
-        return $oRegistry->getActions($slot);
+    public static function getDashboardActionInfo($slot = 'dashboardsidebar')
+    {
+        $registry = KTActionRegistry::getSingleton();
+        return $registry->getActions($slot);
     }
 
-    public static function getActionsForDashboard($oUser, $slot = 'dashboardsidebar') {
-        $aObjects = array();
+    public static function getActionsForDashboard($user, $slot = 'dashboardsidebar')
+    {
+        $objects = array();
         $actions = KTDashboardActionUtil::getDashboardActionInfo($slot);
-        foreach ($actions as $aAction) {
-            list($sClassName, $sPath, $sPlugin) = $aAction;
-            $oRegistry = KTPluginRegistry::getSingleton();
-            $oPlugin = $oRegistry->getPlugin($sPlugin);
-            if (!empty($sPath)) {
-                require_once($sPath);
+        foreach ($actions as $action) {
+            list($className, $path, $plugin) = $action;
+            $registry = KTPluginRegistry::getSingleton();
+            $plugin = $registry->getPlugin($plugin);
+            if (!empty($path)) {
+                require_once($path);
             }
-            $aObjects[] = new $sClassName($oUser, $oPlugin);
+            $objects[] = new $className($user, $plugin);
         }
-        return $aObjects;
+        if(count($objects) == 1) {
+        	return $objects[0];
+        }
+        else {
+        	return $objects;
+        }
     }
 
-    public function getAllDashboardActions($slot = 'dashboardsidebar') {
-        $aObjects = array();
-        $oUser = null;
-        foreach (KTDashboardActionUtil::getDashboardActionInfo($slot) as $aAction) {
-            list($sClassName, $sPath, $sName, $sPlugin) = $aAction;
-            $oRegistry = KTPluginRegistry::getSingleton();
-            $oPlugin = $oRegistry->getPlugin($sPlugin);
-            if (!empty($sPath)) {
-                require_once($sPath);
+    public static function getAllDashboardActions($slot = 'dashboardsidebar')
+    {
+        $objects = array();
+        $user = null;
+        foreach (KTDashboardActionUtil::getDashboardActionInfo($slot) as $action) {
+            list($className, $path, $sName, $plugin) = $action;
+            $registry = KTPluginRegistry::getSingleton();
+            $plugin = $registry->getPlugin($plugin);
+            if (!empty($path)) {
+                require_once($path);
             }
-            $aObjects[] = new $sClassName($oUser, $oPlugin);
+            $objects[] = new $className($user, $plugin);
         }
-        return $aObjects;
+        return $objects;
     }
 
-    public function getDashboardActionsByNames($aNames, $slot = 'dashboardsidebar', $oUser = null) {
-        $aObjects = array();
-        foreach (KTDashboardActionUtil::getDashboardActionInfo($slot) as $aAction) {
-            list($sClassName, $sPath, $sName, $sPlugin) = $aAction;
-            $oRegistry = KTPluginRegistry::getSingleton();
-            $oPlugin = $oRegistry->getPlugin($sPlugin);
+    public static function getDashboardActionsByNames($aNames, $slot = 'dashboardsidebar', $user = null)
+    {
+        $objects = array();
+        foreach (KTDashboardActionUtil::getDashboardActionInfo($slot) as $action) {
+            list($className, $path, $sName, $plugin) = $action;
+            $registry = KTPluginRegistry::getSingleton();
+            $plugin = $registry->getPlugin($plugin);
             if (!in_array($sName, $aNames)) {
                 continue;
             }
-            if (!empty($sPath)) {
-                require_once($sPath);
+            if (!empty($path)) {
+                require_once($path);
             }
-            $aObjects[] = new $sClassName($oUser, $oPlugin);
+            $objects[] = new $className($user, $plugin);
         }
-        return $aObjects;
+        return $objects;
+    }
+
+    public static function sortActions($actions)
+    {
+		$ordered = $keys = array();
+        foreach ($actions as $action) {
+        	$info = $action->getInfo();
+        	if($info != null) {
+        		$order = $action->getOrder();
+	        	if(isset($ordered[$order])) {
+	        		$order++;
+	        		$ordered[$order] = $action;
+	        	} else {
+	        		$ordered[$order] = $action;
+	        	}
+	        	$keys[$order] = $order;
+        	}
+        }
+		sort($keys);
+
+        return array('ordered' => $ordered, 'keys'=> $keys);
     }
 }
 

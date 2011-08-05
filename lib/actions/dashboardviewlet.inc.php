@@ -44,14 +44,24 @@ class KTDashboardViewlet extends KTDashboardAction {
     public $sDescription;
 
     public $_sShowPermission = 'ktcore.permissions.read';
+	public $order = 1;
+
+	/**
+	 * Get the class name of the item
+	 *
+	 */
+	public function getCSSName() {}
+
+	/**
+	 * Get the ordering of the item
+	 *
+	 * @return int
+	 */
+	public function getOrder() { return $this->order; }
 
     // the only major distinction of the viewlet vs. the action is the
     // displayViewlet() method.
-
-    function displayViewlet() {
-        return '';
-    }
-
+    public function displayViewlet() { return ''; }
 
 }
 
