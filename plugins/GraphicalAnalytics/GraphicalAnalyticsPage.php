@@ -35,32 +35,48 @@
  * Contributor( s): ______________________________________
  */
 
-require_once(KT_LIB_DIR . '/plugins/pluginutil.inc.php');
-if (KTPluginUtil::pluginIsActive('new.feature.notification.plugin')) {
-	require_once(KT_PLUGIN_DIR . '/NewFeatureNotification/KTNewFeatures.php');
-}
+// main library routines and defaults
+require_once('../../config/dmsDefaults.php');
+require_once(KT_LIB_DIR . '/templating/templating.inc.php');
+require_once(KT_LIB_DIR . '/templating/kt3template.inc.php');
+require_once(KT_LIB_DIR . '/dispatcher.inc.php');
+require_once(KT_LIB_DIR . '/util/ktutil.inc');
 
-class NewFeaturesNotification extends client_service {
 
-	public function getUsersNewFeatures($params)
+
+require_once('KTGraphicalAnalytics.php');
+
+class GraphAnalyticsPage extends KTStandardDispatcher {
+    
+    
+    function __construct()
 	{
-		if (KTPluginUtil::pluginIsActive('new.feature.notification.plugin')) {
-			$newFeatures = new KTNewFeatures();
-			
-			if (!isset($params['pathname'])) {
-				$params['pathname'] = '';
-			}
-			
-			$response = $newFeatures->getUsersNewFeatures($params['pathname']);
-			$this->addResponse('features', $response);
-			$this->addResponse('success', 'true');
-			
-			return true;
-		} else {
-			$this->addResponse('success', 'true');
-			
-			return true;
-		}
+		$this->permissions = array();
+	    //$this->aBreadcrumbs = array(array('action' => 'browse', 'name' => _kt('Browse')));
+	    return parent::KTStandardDispatcher();
 	}
+    
+    public function do_main()
+	{
+	    global $default;
+        
+	    $templating =& KTTemplating::getSingleton();
+	    $template = $templating->loadTemplate('graphspage');
+        
+        $ktAnalytics = new KTGraphicalAnalytics();
+        
+		global $main;
+	    $templateData = array(
+	           'context' => $this,
+	           'topTenUsers' => $ktAnalytics->getTop10UsersTemplate(),
+	           'topTenDocuments' => $ktAnalytics->getTop10DocumentsTemplate(),
+	           'documentViews' => $ktAnalytics->getDocumentViewsOverWeekTemplate(),
+        );
+        
+	    return $template->render($templateData);
+	}
+    
 }
-?>
+
+$oDispatcher = new GraphAnalyticsPage();
+$oDispatcher->dispatch();

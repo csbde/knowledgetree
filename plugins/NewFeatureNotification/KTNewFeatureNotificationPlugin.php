@@ -49,13 +49,13 @@ class KTNewFeatureNotificationPlugin extends KTPlugin {
 	{
 		$res = parent::KTPlugin($sFilename);
 		$this->sFriendlyName = _kt('New Features Notfications');
+		$this->sSQLDir = dirname(__FILE__) . DIRECTORY_SEPARATOR. 'sql' . DIRECTORY_SEPARATOR;
+		$this->dir = dirname(__FILE__);
 
 		return $res;
 	}
 
 	public function setup() {
-		$dir = dirname(__FILE__) . DIRECTORY_SEPARATOR;
-		$dir = str_replace(KT_DIR, '', $dir);
 
 	}
 }

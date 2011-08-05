@@ -226,6 +226,27 @@ class documentActionServices extends client_service {
     	return true;
     }
 
+    public function checkBackgroundedAction($params)
+    {
+        include_once(KT_LIB_DIR . '/permissions/BackgroundPermissions.php');
+        
+        // Check if there's a permissions update in progress for the current folder / document
+        $folderId = !empty($params['folderId']) ? $params['folderId'] : KTUtil::decodeId(substr($params['cleanId'], 2));
+        $accountName = (defined('ACCOUNT_NAME')) ? ACCOUNT_NAME : '';
+        
+        $backgroundPerms = new BackgroundPermissions($folderId, $accountName);
+        $check = $backgroundPerms->checkIfFolderAffected();
+        $message = '';
+        
+        if ($check) {
+            $message = 'This action cannot be performed as a permissions update is currently in progress. Please try again later.';
+        }
+        
+        $response = array('check' => $check, 'message' => $message);
+        
+        $this->addResponse('result', json_encode($response));
+    }
+    
     public function getParentFolderIds($params)
     {
     	$folderId = !empty($params['folderId']) ? $params['folderId'] : KTUtil::decodeId(substr($params['cleanId'], 2));
@@ -459,8 +480,6 @@ class documentActionServices extends client_service {
 
         return true;
 	}
-
-
 
 	private function formatItemList($itemList = array())
 	{

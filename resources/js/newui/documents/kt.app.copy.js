@@ -36,6 +36,13 @@ kt.app.copy = new function() {
 
     this.doTreeAction = function(action, documentId, parentFolderIds)
     {
+    	// check for background task preventing the action
+    	var result = kt.app.blockActions.checkForBackgroundedTasks(action);
+    	
+    	if (result) {
+    	    return false;
+    	}
+    	
     	self.checkReasons();
     	self.documentId = documentId;
     	self.action = action;
@@ -49,16 +56,30 @@ kt.app.copy = new function() {
 
     this.doAction = function(action, documentId, name)
     {
+    	// check for background task preventing the action
+    	var result = kt.app.blockActions.checkForBackgroundedTasks(action);
+    	
+    	if (result) {
+    	    return false;
+    	}
+
     	self.checkReasons();
     	self.documentId = documentId;
     	self.action = action;
     	self.actionType = 'document';
-
+    	
     	self.showConfirmationWindow(name);
     }
 
     this.doBulkAction = function(action)
     {
+    	// check for background task preventing the action
+    	var result = kt.app.blockActions.checkForBackgroundedTasks(action);
+    	
+    	if (result) {
+    	    return false;
+    	}
+        
     	self.checkReasons();
     	self.action = action;
     	self.actionType = 'bulk';
@@ -425,4 +446,81 @@ kt.app.copy = new function() {
 
     this.init();
 
+}
+
+kt.app.blockActions = new function() {
+    
+    var self = this;
+    var blockedActions = {};
+
+    this.init = function()
+    {
+        self.blockedActions = ['move', 'copy', 'delete', 'archive', 'immutable', 'checkin', 'checkout', 'checkoutdownload', 'cancelcheckout', 'ownershipchange'];
+    }
+    
+    this.checkForBackgroundedTasks = function(action)
+    {
+        if (!ktjapi._lib.inArray(action, self.blockedActions)) {
+            return false;
+        }
+        
+    	var params = {};
+    	var folderId = ktjapi._lib.getQueryVariable('fFolderId');
+    	params.folderId = folderId;
+    	params.action = action;
+    
+    	if (folderId == '') {
+    		var path = document.location.pathname;
+    	    path = path.replace('/', '');
+    	    params.cleanId = path;
+    	}
+    	
+    	var func = 'documentActionServices.checkBackgroundedAction';
+    	var data = ktjapi.retrieve(func, params, 0);
+        var response = data.data.result;
+        var response = jQuery.parseJSON(response);
+        
+        var check = response.check;
+        var message = response.message;
+        
+        if (check) {
+            self.showBlockedWindow(message);
+        }
+        
+        return check;
+    }
+    
+    this.errorBlockedWindow = null;
+    this.showBlockedWindow = function(message)
+    {
+        var errorBlockedWindow = new Ext.Window({
+            id              : 'error-blocked-window',
+            layout          : 'fit',
+            width           : 550,
+            resizable       : false,
+            closable        : true,
+            closeAction     : 'destroy',
+            y               : 50,
+            autoScroll      : false,
+            bodyCssClass    : 'ul_win_body',
+            cls             : 'ul_win',
+            shadow          : true,
+            modal           : true,
+			draggable   	: false,
+            title           : 'Requested Action Unavailable',
+            html            : kt.api.getFragment('documents/actions/errorActionBlocked.dialog')
+        });
+
+        self.errorBlockedWindow = errorBlockedWindow;
+        errorBlockedWindow.show();
+        
+        jQuery('#action-error').html(message);
+    }
+
+    this.closeWindow = function()
+    {
+        self.errorBlockedWindow.destroy();
+    }
+
+    this.init();
 }
