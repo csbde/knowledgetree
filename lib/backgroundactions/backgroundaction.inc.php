@@ -81,14 +81,14 @@ class backgroundaction
 	 * send operation to queue
 	 * @var array
 	 */
-	private $threshold = array(	'move' =>	array(	'documents' => 10,
-													'folders' => 5
+	private $threshold = array(	'move' =>	array(	'documents' => 500,
+													'folders' => 50
 												),
-								'delete' =>	array(	'documents' => 3,
-													'folders' => 5
+								'delete' =>	array(	'documents' => 250,
+													'folders' => 25
 												),
-								'copy' =>	array(	'documents' => 2,
-													'folders' => 1
+								'copy' =>	array(	'documents' => 100,
+													'folders' => 10
 												)
 								);
 
