@@ -54,11 +54,11 @@
 									<span class="like_status"><a href="javascript:;" onclick="kt.app.ratingcontent.likeDocument({$document->getId()}, false);"><img src="resources/graphics/newui/document_notliked.png" /></a></span>
 								{/if}
 								
-								<span class="like_count">
+								<span class="like_count" style="vertical-align:top;">
 									{if $numDocumentLikes == 1}
-										{i18n}One User likes this document{/i18n}
+										{i18n}1 person likes this{/i18n}
 									{else}
-										{$numDocumentLikes} {i18n}Users like this document{/i18n}
+										{$numDocumentLikes} {i18n}people like this{/i18n}
 									{/if}
 								</span>
 							</div>

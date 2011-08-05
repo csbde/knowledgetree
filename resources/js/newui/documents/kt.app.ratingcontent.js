@@ -75,9 +75,9 @@ kt.app.ratingcontent = new function() {
 			}
 			
 			if (response.data.newNumLikes == 1) {
-				countStr = 'One User likes this document';
+				countStr = '1 person likes this';
 			} else {
-				countStr = response.data.newNumLikes+' Users like this document';
+				countStr = response.data.newNumLikes+' people like this';
 			}
 			
 			// Update with some animation

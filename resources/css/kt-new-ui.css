@@ -2015,3 +2015,11 @@ tr.dyncond_selector td {
 .paginationContainer .paginate > li.highlight { background-color: #497faa; color: white; text-shadow: 0px -1px 0px #2F6594; }
 .paginationContainer .paginate > li.highlight:hover { background-color: #6598bf; }
 .paginationContainer .paginate > li:hover { background-color: #fbfbfb; -webkit-box-shadow: 0px 0px 2px #626262; -moz-box-shadow: 0px 0px 2px #626262; box-shadow: 0px 0px 2px #626262; }
+
+
+/*like */
+
+.like_status {
+	display: inline-block;
+	
+}
