@@ -108,8 +108,8 @@ class KTGraphicalAnalytics {
 		$divider = $topDoc / 4; // We need to divide by this value to get things into groups of five
 		
 		$sql = '
-		SELECT merged_twice.documentscore, COUNT(merged_twice.document_id) FROM (
-			SELECT merged_table.document_id, document_content_version.filename, ROUND(('.$topDoc.'-SUM(documentscore))/'.$divider.') AS documentscore FROM
+		SELECT merged_twice.documentscore, COUNT(merged_twice.documentscore) as scoregroup FROM (
+			SELECT merged_table.document_id, document_content_version.filename, SUM(documentscore), ROUND((SUM(documentscore))/'.$divider.') AS documentscore FROM
 			(
 				
 				(
@@ -141,7 +141,7 @@ class KTGraphicalAnalytics {
 			
 			ORDER BY documentscore DESC
 		) merged_twice
-		GROUP BY merged_twice.documentscore
+		GROUP BY documentscore
 		';
 		
 		$ratingContentEnable = FALSE; // Fix Up
