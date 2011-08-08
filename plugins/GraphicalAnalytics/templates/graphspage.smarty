@@ -1,5 +1,13 @@
 <h2>Graphs Page</h2>
 
+{$uploadsPerWeek}
+
+<br /><br />
+
+{$userAccessPerWeek}
+
+<br /><br />
+
 {$topTenDocuments}
 
 <br /><br />
@@ -17,6 +25,10 @@
 <br /><br />
 
 {$commentsPerWeek}
+
+<br /><br />
+
+{$likesPerWeek}
 
 <br /><br />
 

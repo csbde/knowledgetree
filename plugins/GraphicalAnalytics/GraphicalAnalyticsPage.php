@@ -73,7 +73,16 @@ class GraphAnalyticsPage extends KTStandardDispatcher {
 	           'documentViews' => $ktAnalytics->getDocumentViewsOverWeekTemplate(),
 	           //'transactionsPerWeek' => $ktAnalytics->getTransactionOverWeekTemplate(),
 	           'commentsPerWeek' => $ktAnalytics->getDocumentCommentsPerWeekTemplate(),
-	           'commentsVsViewsPerWeek' => $ktAnalytics->getViewsVsCommentsOverWeekTemplate(),
+	           
+			   'likesPerWeek' => $ktAnalytics->getDocumentLikesPerWeekTemplate(),
+			   'uploadsPerWeek' => $ktAnalytics->getUploadsPerWeekTemplate(),
+			   'userAccessPerWeek' => $ktAnalytics->getUserAccessPerWeekTemplate(),
+			   
+			   
+			   
+			   
+			   
+			   'commentsVsViewsPerWeek' => $ktAnalytics->getViewsVsCommentsOverWeekTemplate(),
         );
         
 	    return $template->render($templateData);

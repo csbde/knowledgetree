@@ -1,7 +1,28 @@
-<h3>Views Vs Comments per Week</h3>
+<h3>Uploads per Week</h3>
+
+<div style="width: 25%; float: left">
+<table>
+    <thead>
+        <th>Week</th>
+        <th>Number of Uploads</th>
+    </thead>
+    <tbody>
+        {foreach from=$uploadsArray item=week}
+        <tr>
+            <th>{$week.week_str}</th>
+            <td>{$week.count}</td>
+        </tr>
+        {/foreach}
+    </tbody>
+</table>
+</div>
+<div style="width: 70%; float: left">
+    <div id="uploads_per_week"></div>
+</div>
+
+<br clear="both" />
 
 
-<div id="views_vs_comments_per_week"></div>
 
 {literal}
 <script type="text/javascript">
@@ -9,17 +30,17 @@
     jQuery(document).ready(function() {
         documentViewChart = new Highcharts.Chart({
             chart: {
-                renderTo: 'views_vs_comments_per_week',
-                defaultSeriesType: 'column'
+                renderTo: 'uploads_per_week',
+                defaultSeriesType: 'line'
             },
             title: {
-                text: 'Views Vs Comments per Week '
+                text: 'Uploads per Week'
             },
             subtitle: {
-                text: 'How many documents were viewed per week for the last 10 weeks'
+                text: 'How many documents were uploaded per week for the last 10 weeks'
             },
             xAxis: {
-                categories: [{/literal}{$comments.weeks}{literal}],
+                categories: [{/literal}{$weeks}{literal}],
                 title: {
                     text: null
                 }
@@ -27,7 +48,7 @@
             yAxis: {
                 min: 0,
                 title: {
-                    text: 'Document Views',
+                    text: 'Document Uploads',
                     align: 'high'
                 }
             },
@@ -58,19 +79,10 @@
             credits: {
                 enabled: false
             },
-            series: [
-                {
-                    name: 'Document Views',
-                    data: [{/literal}{$document_views.score}{literal}]
-                },
-                {
-                    name: 'Comments',
-                    data: [{/literal}{$comments.counter}{literal}]
-                },
-                {
-                    name: 'Likes',
-                    data: [{/literal}{$document_likes.counter}{literal}]
-                }
+            series: [{
+                name: 'Document Uploads',
+                data: [{/literal}{$uploadsCounter}{literal}]
+            }
             ]
         });
         

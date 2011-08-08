@@ -80,7 +80,7 @@
                 enabled: false
             },
             series: [{
-                name: 'Document Views',
+                name: 'Document Comments',
                 data: [{/literal}{$data.counter}{literal}]
             }
             ]
