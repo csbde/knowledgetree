@@ -98,6 +98,83 @@ class KTGraphicalAnalytics {
 	
 	/******************************************************************************************************************/
 	
+	public function getDocumentsByRating()
+	{
+		$topDoc = $this->getTop10Documents();
+		
+		$topDoc = $topDoc[0]['documentscore'];
+		
+		$topDoc = round($topDoc, -1); // Round to the nearest 10th.
+		$divider = $topDoc / 4; // We need to divide by this value to get things into groups of five
+		
+		$sql = '
+		SELECT merged_twice.documentscore, COUNT(merged_twice.document_id) FROM (
+			SELECT merged_table.document_id, document_content_version.filename, ROUND(('.$topDoc.'-SUM(documentscore))/'.$divider.') AS documentscore FROM
+			(
+				
+				(
+					SELECT document_id,
+					SUM(IF ((ABS(TIMESTAMPDIFF(WEEK,NOW(),datetime)) = 0), score, score/ABS(TIMESTAMPDIFF(WEEK,NOW(),datetime)))) AS documentscore
+					FROM document_transactions
+					INNER JOIN graphicalanalysis_scoring ON (transaction_namespace = namespace)
+					GROUP BY document_id
+				) 
+				
+				UNION ALL
+				
+				(
+					SELECT document_id, 
+					SUM(IF ((ABS(TIMESTAMPDIFF(WEEK,NOW(),date_created)) != 0), [-COMMENT-SCORE-]/ABS(TIMESTAMPDIFF(WEEK,NOW(),date_created)), [-COMMENT-SCORE-])) AS documentscore
+					FROM document_comments
+					GROUP BY document_id
+				)
+				
+				[-CONTENT-RATING-]
+			
+			) merged_table
+			
+			INNER JOIN documents ON (merged_table.document_id = documents.id)
+			INNER JOIN document_metadata_version ON (documents.metadata_version_id = document_metadata_version.id)
+			INNER JOIN document_content_version ON (document_metadata_version.content_version_id = document_content_version.id)
+			
+			GROUP BY document_id
+			
+			ORDER BY documentscore DESC
+		) merged_twice
+		GROUP BY merged_twice.documentscore
+		';
+		
+		$ratingContentEnable = FALSE; // Fix Up
+		
+		if ($ratingContentEnable) {
+			
+			$sql = str_replace('[-CONTENT-RATING-]', 
+			'
+			UNION ALL
+			
+			(
+				SELECT document_id, 
+				SUM(IF ((ABS(TIMESTAMPDIFF(WEEK,NOW(),date_time )) != 0), [-RATING-SCORE-]/ABS(TIMESTAMPDIFF(WEEK,NOW(),date_time )), [-RATING-SCORE-])) AS documentscore
+				FROM ratingcontent_document
+				GROUP BY document_id
+			) ', $sql);
+		} else {
+			$sql = str_replace('[-CONTENT-RATING-]', '', $sql);
+		}
+		
+		$sql = str_replace('[-COMMENT-SCORE-]', '4', $sql);
+		$sql = str_replace('[-RATING-SCORE-]', '2', $sql);
+		
+		echo '<pre>';
+		echo $sql;
+		echo '</pre>';
+		
+        return DBUtil::getResultArray($sql);
+		
+	}
+	
+	/******************************************************************************************************************/
+	
 	public function getPointsOverWeeks()
     {
 		$sql = '
@@ -290,7 +367,7 @@ class KTGraphicalAnalytics {
 	
 	/******************************************************************************************************************/
 	
-	/******************************************************************************************************************/
+	
 	
 	public function getUserAccessPerWeekSql()
     {
@@ -344,6 +421,7 @@ class KTGraphicalAnalytics {
 		return array('weeks'=>$weeks, 'accessCounter'=>$accessCounter, 'accessArray'=>$accessArray);
 	}
 	
+	/******************************************************************************************************************/
 	
 	public function getTransactionViewsSql()
     {
