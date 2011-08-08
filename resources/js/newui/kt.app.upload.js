@@ -490,6 +490,13 @@ kt.app.upload = new function() {
     // and hook up the AjaxUploader callbacks to the correct functions.
     this.showUploadWindow = function()
     {
+    	// check for background task preventing the action
+    	var result = kt.app.blockActions.checkForBackgroundedTasks('addDocument');
+    	
+    	if (result) {
+    	    return false;
+    	}
+    	
         var docTypeHasRequiredFields = false;
 
         self.data = {};

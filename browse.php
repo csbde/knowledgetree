@@ -71,6 +71,8 @@ require_once(KT_PLUGIN_DIR . '/ktstandard/KTSubscriptions.php');
 
 require_once(KT_LIB_DIR . '/memcache/ktmemcache.php');
 
+require_once(KT_LIB_DIR . '/backgroundactions/backgroundaction.inc.php');
+
 $sectionName = 'browse';
 
 class BrowseDispatcher extends KTStandardDispatcher {
@@ -125,9 +127,9 @@ class BrowseDispatcher extends KTStandardDispatcher {
 	public function do_main()
 	{
 	    global $default;
-	    $this->bulkActionInProgress = $this->isBulkActionInProgress();
+		$this->bulkActionInProgress = backgroundaction::isFolderInBulkAction($this->oFolder);
 	    $bulkActions = '';
-	    if($this->bulkActionInProgress == '') {
+	    if(!$this->bulkActionInProgress) {
 		    /* New ktapi based method */
 	        $bulkActions = KTBulkActionUtil::getAllBulkActions();
 	    }
@@ -152,7 +154,7 @@ class BrowseDispatcher extends KTStandardDispatcher {
 	           'folderSidebars' => $folderSidebars,
 	    );
 
-	    if($this->bulkActionInProgress != '') {
+	    if($this->bulkActionInProgress) {
 	    	$templateData['notifyBulkAction'] = $this->getBulkNotification();
 	    }
 
