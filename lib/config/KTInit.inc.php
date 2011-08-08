@@ -30,7 +30,7 @@ class KTInit {
         $this->configureLog($logDir, $logLevel, $userId, $dbName);
 
         $default->log = LoggerManager::getLogger('default');
-        //$default->wsLog = LoggerManager::getLogger('webservice');
+        $default->wsLog = LoggerManager::getLogger('webservice');
         $default->queryLog = LoggerManager::getLogger('sql');
         $default->timerLog = LoggerManager::getLogger('timer');
         $default->phpErrorLog = LoggerManager::getLogger('php');
@@ -54,17 +54,9 @@ class KTInit {
         $properties['log4php.appender.default.datePattern'] = 'Y-m-d';
         $properties['log4php.appender.default.file'] = $logDir . '/kt%s.' . KTUtil::running_user() . '.log.txt';
         
-        /* Create webservice log file
-        $properties['log4php.appender.webservice'] = 'LoggerAppenderDailyFile';
-        $properties['log4php.appender.webservice.layout'] = 'LoggerPatternLayout';
-        $properties['log4php.appender.webservice.layout.conversionPattern'] = '%d{Y-m-d | H:i:s} | %p | %t | %r | %X{userid} | %X{db} | %c | %M | %m%n';
-        $properties['log4php.appender.webservice.datePattern'] = 'Y-m-d';
-        $properties['log4php.appender.webservice.file'] = $logDir . '/ws-%s.log.txt';
-        */
-
         // get the log level set in the configuration settings to override the level set in ktlog.ini
         // for the default / main logging. Additional logging can be configured through the ini file
-        $properties['log4php.rootLogger'] = $logLevel . ', default'; //, webservice';
+        $properties['log4php.rootLogger'] = $logLevel . ', default';
 
         $configurator->doConfigureProperties($properties, $repository);
 
