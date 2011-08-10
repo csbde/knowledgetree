@@ -1,6 +1,7 @@
 <h3>Top Rated Documents</h3>
 
-<table style="width:250px;">
+<div style="overflow:hidden; width:250px;">
+<table>
     <tbody>
         {foreach from=$data item=document}
         <tr>
@@ -9,11 +10,6 @@
         {/foreach}
     </tbody>
 </table>
-
-{literal}
-<style type="text/css">
-    td.docnowrap { white-space: nowrap; overflow: hidden; width: 200px;}
-</style>
-{/literal}
+</div>
 
 Add Links!

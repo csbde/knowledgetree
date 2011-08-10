@@ -5,10 +5,6 @@
 
 
 {literal}
-<style type="text/css">
-    div.graph { width: 250px; height: 200px; border: 1px solid red;}
-</style>
-
 <script type="text/javascript">
     var documentViewChart;
     jQuery(document).ready(function() {

@@ -17,42 +17,10 @@
             {$topFiveDocuments}
         </td>
         <td width="33%" valign="top">
-            {$topTenUsers}
+            {$topFiveUsers}
         </td>
         <td width="33%" valign="top">
-            a
+            {$mostViewedDocuments}
         </td>
     </tr>
 </table>
-
-
-
-
-
-<br /><br />
-
-
-
-<br /><br />
-
-
-
-<br /><br />
-
-{$documentViews}
-
-<br /><br />
-
-{$transactionsPerWeek}
-
-<br /><br />
-
-{$commentsPerWeek}
-
-<br /><br />
-
-{$likesPerWeek}
-
-<br /><br />
-
-{$commentsVsViewsPerWeek}

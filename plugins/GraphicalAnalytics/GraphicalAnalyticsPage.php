@@ -74,23 +74,9 @@ class GraphAnalyticsPage extends KTStandardDispatcher {
 			   'uploadsPerWeek' => $ktAnalytics->getUploadsPerWeekDashlet(),
 			   'documentRating' => $ktAnalytics->getDocumentsByRatingTemplate(TRUE), // TRUE for Dashlet
 			   'topFiveDocuments' => $ktAnalytics->getTop5DocumentsDashlet(),
-	           'topTenUsers' => $ktAnalytics->getTop5UsersDashlet(),
-	           
-	           'documentViews' => $ktAnalytics->getDocumentViewsOverWeekTemplate(),
-	           //'transactionsPerWeek' => $ktAnalytics->getTransactionOverWeekTemplate(),
-	           'commentsPerWeek' => $ktAnalytics->getDocumentCommentsPerWeekTemplate(),
-	           
-			   'likesPerWeek' => $ktAnalytics->getDocumentLikesPerWeekTemplate(),
+	           'topFiveUsers' => $ktAnalytics->getTop5UsersDashlet(),
+	           'mostViewedDocuments' => $ktAnalytics->getMostViewedDocumentsDashlet(),
 			   
-			   
-			   
-			   
-			   
-			   
-			   
-			   
-			   
-			   'commentsVsViewsPerWeek' => $ktAnalytics->getViewsVsCommentsOverWeekTemplate(),
         );
         
 	    return $template->render($templateData);
