@@ -62,24 +62,29 @@ class GraphAnalyticsPage extends KTStandardDispatcher {
         
 	    $templating =& KTTemplating::getSingleton();
 	    $template = $templating->loadTemplate('graphspage');
+	    $template = $templating->loadTemplate('graphs_viewlet');
         
         $ktAnalytics = new KTGraphicalAnalytics();
         
 		global $main;
 	    $templateData = array(
 	           'context' => $this,
-	           'topTenUsers' => $ktAnalytics->getTop10UsersTemplate(),
-	           'topTenDocuments' => $ktAnalytics->getTop10DocumentsTemplate(),
+			   
+			   'userAccessPerWeek' => $ktAnalytics->getUserAccessPerWeekDashlet(),
+			   'uploadsPerWeek' => $ktAnalytics->getUploadsPerWeekDashlet(),
+			   'documentRating' => $ktAnalytics->getDocumentsByRatingTemplate(TRUE), // TRUE for Dashlet
+			   'topFiveDocuments' => $ktAnalytics->getTop5DocumentsDashlet(),
+	           'topTenUsers' => $ktAnalytics->getTop5UsersDashlet(),
+	           
 	           'documentViews' => $ktAnalytics->getDocumentViewsOverWeekTemplate(),
 	           //'transactionsPerWeek' => $ktAnalytics->getTransactionOverWeekTemplate(),
 	           'commentsPerWeek' => $ktAnalytics->getDocumentCommentsPerWeekTemplate(),
 	           
 			   'likesPerWeek' => $ktAnalytics->getDocumentLikesPerWeekTemplate(),
-			   'uploadsPerWeek' => $ktAnalytics->getUploadsPerWeekTemplate(),
-			   'userAccessPerWeek' => $ktAnalytics->getUserAccessPerWeekTemplate(),
 			   
 			   
-			   'documentRating' => $ktAnalytics->getDocumentsByRatingTemplate(),
+			   
+			   
 			   
 			   
 			   
