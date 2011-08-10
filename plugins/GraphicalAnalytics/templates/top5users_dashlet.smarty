@@ -1,0 +1,11 @@
+<h3>Top Rated Users</h3>
+
+<table>
+    <tbody>
+        {foreach from=$data item=user}
+        <tr>
+            <td>{$user.name}</td>
+        </tr>
+        {/foreach}
+    </tbody>
+</table>

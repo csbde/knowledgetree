@@ -1,0 +1,58 @@
+<h2>Graphs Viewlet Demo</h2>
+
+<table border="1" width="100%">
+    <tr>
+        <td width="33%" valign="top">
+            {$userAccessPerWeek}
+        </td>
+        <td width="33%" valign="top">
+            {$uploadsPerWeek}
+        </td>
+        <td width="33%" valign="top">
+            {$documentRating}
+        </td>
+    </tr>
+    <tr>
+        <td width="33%" valign="top">
+            {$topFiveDocuments}
+        </td>
+        <td width="33%" valign="top">
+            {$topTenUsers}
+        </td>
+        <td width="33%" valign="top">
+            a
+        </td>
+    </tr>
+</table>
+
+
+
+
+
+<br /><br />
+
+
+
+<br /><br />
+
+
+
+<br /><br />
+
+{$documentViews}
+
+<br /><br />
+
+{$transactionsPerWeek}
+
+<br /><br />
+
+{$commentsPerWeek}
+
+<br /><br />
+
+{$likesPerWeek}
+
+<br /><br />
+
+{$commentsVsViewsPerWeek}

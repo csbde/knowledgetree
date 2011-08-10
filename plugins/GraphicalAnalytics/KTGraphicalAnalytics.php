@@ -28,9 +28,7 @@ class KTGraphicalAnalytics {
 
 	private $table;
 
-	public function __construct() { }
-
-	public function getTop10Documents()
+	public function getTop10Documents($limit = 10)
     {
 		$sql = '
 		SELECT merged_table.document_id, document_content_version.filename, SUM(documentscore) AS documentscore FROM
@@ -66,9 +64,9 @@ class KTGraphicalAnalytics {
 		GROUP BY document_id
 
 		ORDER BY documentscore DESC
-		LIMIT 0, 10';
+		LIMIT 0, ' . $limit;
 
-		$ratingContentEnable = FALSE; // Fix Up
+		$ratingContentEnable = false; // Fix Up
 
 		if ($ratingContentEnable) {
 			$sql = str_replace('[-CONTENT-RATING-]',
@@ -97,8 +95,12 @@ class KTGraphicalAnalytics {
 		return $this->loadTemplate(array('data'=>$this->getTop10Documents()), 'top10documents');
 	}
 
+	public function getTop5DocumentsDashlet()
+	{
+		return $this->loadTemplate(array('data'=>$this->getTop10Documents(5)), 'top5documents_dashlet');
+	}
 
-	/******************************************************************************************************************/
+/******************************************************************************************************************/
 
 	public function getDocumentsByRating()
 	{
@@ -110,7 +112,7 @@ class KTGraphicalAnalytics {
 		$divider = $topDoc / 4; // We need to divide by this value to get things into groups of five
 
 		$sql = '
-		SELECT merged_twice.documentscore, COUNT(merged_twice.documentscore) as scoregroup FROM (
+		SELECT merged_twice.documentscore as scoregroup, COUNT(merged_twice.documentscore) as numitems FROM (
 			SELECT merged_table.document_id, document_content_version.filename, SUM(documentscore), ROUND((SUM(documentscore))/'.$divider.') AS documentscore FROM
 			(
 
@@ -146,9 +148,10 @@ class KTGraphicalAnalytics {
 			ORDER BY documentscore DESC
 		) merged_twice
 		GROUP BY documentscore
+		ORDER BY documentscore DESC
 		';
 
-		$ratingContentEnable = FALSE; // Fix Up
+		$ratingContentEnable = false; // Fix Up
 
 		if ($ratingContentEnable) {
 
@@ -169,12 +172,31 @@ class KTGraphicalAnalytics {
 		$sql = str_replace('[-COMMENT-SCORE-]', '4', $sql);
 		$sql = str_replace('[-RATING-SCORE-]', '2', $sql);
 
-		echo '<pre>';
-		echo $sql;
-		echo '</pre>';
-
         return DBUtil::getResultArray($sql);
 
+	}
+
+	public function getDocumentsByRatingTemplate($dashlet = false)
+	{
+		$data = $this->getDocumentsByRating();
+
+		$pointScale = array('1 Star', '2 Stars', '3 Stars', '4 Stars', '5 Stars');
+		$score = array('point_1' => 0, 'point_2' => 0, 'point_3' => 0, 'point_4' => 0, 'point_5' => 0);
+
+		foreach ($data as $item)
+		{
+			$point = $item['scoregroup'] + 1;
+			$score['point_'.$point] = $item['numitems'];
+		}
+
+		$pointScale = '"'.implode('", "', $pointScale).'"';
+		$score = implode(', ', $score);
+
+		if ($dashlet) {
+			return $this->loadTemplate(array('pointScale'=>$pointScale, 'score'=>$score), 'document_ratings_dashlet');
+		} else {
+			return $this->loadTemplate(array('pointScale'=>$pointScale, 'score'=>$score), 'document_ratings');
+		}
 	}
 
 	/******************************************************************************************************************/
@@ -215,7 +237,7 @@ class KTGraphicalAnalytics {
 		ORDER BY documentscore DESC
 		LIMIT 0, 10';
 
-		$ratingContentEnable = FALSE; // Fix Up
+		$ratingContentEnable = false; // Fix Up
 
 		if ($ratingContentEnable) {
 
@@ -238,17 +260,11 @@ class KTGraphicalAnalytics {
 
         return DBUtil::getResultArray($sql);
     }
-
-	public function getTop10DocumentsTemplate333333333()
-	{
-		return $this->loadTemplate(array('data'=>$this->getTop10Documents()), 'top10documents');
-	}
-
-
 	/******************************************************************************************************************/
 
-	public function getTop10Users()
+	public function getTop10Users($limit = 10)
 	{
+		// Needs to consider likes and comments
 		$sql = '
         SELECT user_id, username, users.name,
 		SUM(IF ((ABS(TIMESTAMPDIFF(WEEK,NOW(),datetime)) = 0), score, score/ABS(TIMESTAMPDIFF(WEEK,NOW(),datetime)))) AS userscore
@@ -258,7 +274,7 @@ class KTGraphicalAnalytics {
 		INNER JOIN users ON (document_transactions.user_id = users.id)
 		GROUP BY user_id
 		ORDER BY userscore DESC
-		LIMIT 10';
+		LIMIT ' . $limit;
 
 		return DBUtil::getResultArray($sql);
 	}
@@ -266,6 +282,11 @@ class KTGraphicalAnalytics {
 	public function getTop10UsersTemplate()
 	{
 		return $this->loadTemplate(array('data'=>$this->getTop10Users()), 'top10users');
+	}
+
+	public function getTop5UsersDashlet()
+	{
+		return $this->loadTemplate(array('data'=>$this->getTop10Users(5)), 'top5users_dashlet');
 	}
 
 	/******************************************************************************************************************/
@@ -349,6 +370,11 @@ class KTGraphicalAnalytics {
 		return $this->loadTemplate($this->generateUploadsPerWeekGraphData(), 'uploads_week');
 	}
 
+	public function getUploadsPerWeekDashlet()
+	{
+		return $this->loadTemplate($this->generateUploadsPerWeekGraphData(), 'uploads_week_dashlet');
+	}
+
 	private function generateUploadsPerWeekGraphData()
 	{
 		$data = $this->getUploadsPerWeekSql();
@@ -403,6 +429,11 @@ class KTGraphicalAnalytics {
 	public function getUserAccessPerWeekTemplate()
 	{
 		return $this->loadTemplate($this->generateUserAccessPerWeekGraphData(), 'user_access_week');
+	}
+
+	public function getUserAccessPerWeekDashlet()
+	{
+		return $this->loadTemplate($this->generateUserAccessPerWeekGraphData(), 'user_access_week_dashlet');
 	}
 
 	private function generateUserAccessPerWeekGraphData()
