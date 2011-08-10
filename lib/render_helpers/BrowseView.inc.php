@@ -637,9 +637,13 @@ class BrowseView {
 		$item['like_status'] = '';
 		if ($this->ratingContentEnabled) {
 			if ($item['user_likes_document']) {
-				$item['like_status'] = '<span class="like_status liked"><a href="javascript:;" onclick="kt.app.ratingcontent.unlikeDocument('.$item['id'].');"><img src="resources/graphics/newui/document_liked.png" /></a></span>';
+				$item['like_status'] = '<span class="like_status liked"><a href="javascript:;" onclick="kt.app.ratingcontent.unlikeDocument('.$item['id'].');">'.$item['like_count'].'</a></span>';
 			} else {
-				$item['like_status'] = '<span class="like_status"><a href="javascript:;" onclick="kt.app.ratingcontent.likeDocument('.$item['id'].');"><img src="resources/graphics/newui/document_notliked.png" /></a></span>';
+				if ($item['like_count'] == 0) {
+					$item['like_status'] = '<span class="like_status"><a href="javascript:;" onclick="kt.app.ratingcontent.likeDocument('.$item['id'].');">like</a></span>';
+				} else {
+					$item['like_status'] = '<span class="like_status"><a href="javascript:;" onclick="kt.app.ratingcontent.likeDocument('.$item['id'].');">'.$item['like_count'].'</a></span>';
+				}
 			}
 			
         }

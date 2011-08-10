@@ -49,9 +49,9 @@
 						{if $ratingContentEnabled}
 							<div id="documentLikeStatus">
 								{if $userLikesDocument}
-									<span class="like_status"><a href="javascript:;" onclick="kt.app.ratingcontent.unlikeDocument({$document->getId()}, false);"><img src="resources/graphics/newui/document_liked.png" /></a></span>
+									<span class="like_status liked"><a href="javascript:;" onclick="kt.app.ratingcontent.unlikeDocument({$document->getId()}, false);">Like</a></span>
 								{else}
-									<span class="like_status"><a href="javascript:;" onclick="kt.app.ratingcontent.likeDocument({$document->getId()}, false);"><img src="resources/graphics/newui/document_notliked.png" /></a></span>
+									<span class="like_status"><a href="javascript:;" onclick="kt.app.ratingcontent.likeDocument({$document->getId()}, false);">Like</a></span>
 								{/if}
 								
 								<span class="like_count" style="vertical-align:top; margin-left: 2px;">

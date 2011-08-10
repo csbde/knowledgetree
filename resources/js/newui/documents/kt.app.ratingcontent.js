@@ -53,9 +53,9 @@ kt.app.ratingcontent = new function() {
 		if (response.data.success == 'true') {
 			
 			if (self.action == 'likeDocument') {
-				str = '<a href="javascript:;" onclick="kt.app.ratingcontent.unlikeDocument('+self.documentId+');"><img src="resources/graphics/newui/document_liked.png" /></a>';
+				str = '<a href="javascript:;" onclick="kt.app.ratingcontent.unlikeDocument('+self.documentId+');">'+(response.data.newNumLikes)+'</a>';
 			} else {
-				str = '<a href="javascript:;" onclick="kt.app.ratingcontent.likeDocument('+self.documentId+');"><img src="resources/graphics/newui/document_notliked.png" /></a>';
+				str = '<a href="javascript:;" onclick="kt.app.ratingcontent.likeDocument('+self.documentId+');">Like</a>';
 			}
 			
 			// Update with some animation
