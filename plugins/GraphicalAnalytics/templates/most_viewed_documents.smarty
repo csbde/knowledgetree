@@ -1,0 +1,14 @@
+<h3>Most Viewed Documents</h3>
+
+<div style="overflow:hidden; width:250px;">
+<table>
+    <tbody>
+        {foreach from=$data item=item}
+        <tr>
+            <td>icon</td>
+            <td class="docnowrap">{$item.filename}</td>
+        </tr>
+        {/foreach}
+    </tbody>
+</table>
+</div>
