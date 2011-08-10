@@ -1,11 +1,12 @@
 <h3>Top Rated Users</h3>
-
-<table>
-    <tbody>
-        {foreach from=$data item=user}
-        <tr>
-            <td>{$user.name}</td>
-        </tr>
-        {/foreach}
-    </tbody>
-</table>
+<div style="overflow:hidden; width:250px;">
+    <table>
+        <tbody>
+            {foreach from=$data item=user}
+            <tr>
+                <td>{$user.name}</td>
+            </tr>
+            {/foreach}
+        </tbody>
+    </table>
+</div>

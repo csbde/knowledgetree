@@ -343,6 +343,33 @@ class KTGraphicalAnalytics {
 	
 	/******************************************************************************************************************/
 	
+	public function getMostViewedDocuments()
+    {
+        $sql = '
+		SELECT document_transactions.document_id, COUNT( document_transactions.document_id ) AS count, document_content_version.filename
+		FROM document_transactions
+		INNER JOIN documents ON (document_transactions.document_id = documents.id)
+		INNER JOIN document_metadata_version ON (documents.metadata_version_id = document_metadata_version.id)
+		INNER JOIN document_content_version ON (document_metadata_version.content_version_id = document_content_version.id)
+		WHERE transaction_namespace = "ktcore.transactions.view"
+		GROUP BY document_transactions.document_id
+		ORDER BY count DESC
+		LIMIT 0, 5
+        ';
+        
+        return DBUtil::getResultArray($sql);
+    }
+	
+	public function getMostViewedDocumentsDashlet()
+	{
+		$templateData = array('data'=>$this->getMostViewedDocuments());
+		
+		return $this->loadTemplate($templateData, 'most_viewed_documents');
+	}
+	
+	
+	/******************************************************************************************************************/
+	
 	public function getUploadsPerWeekSql()
     {
         $sql = '
