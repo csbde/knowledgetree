@@ -108,7 +108,7 @@ class KTGraphicalAnalytics {
 		$divider = $topDoc / 4; // We need to divide by this value to get things into groups of five
 		
 		$sql = '
-		SELECT merged_twice.documentscore, COUNT(merged_twice.documentscore) as scoregroup FROM (
+		SELECT merged_twice.documentscore as scoregroup, COUNT(merged_twice.documentscore) as numitems FROM (
 			SELECT merged_table.document_id, document_content_version.filename, SUM(documentscore), ROUND((SUM(documentscore))/'.$divider.') AS documentscore FROM
 			(
 				
@@ -142,6 +142,7 @@ class KTGraphicalAnalytics {
 			ORDER BY documentscore DESC
 		) merged_twice
 		GROUP BY documentscore
+		ORDER BY documentscore DESC
 		';
 		
 		$ratingContentEnable = FALSE; // Fix Up
@@ -165,12 +166,27 @@ class KTGraphicalAnalytics {
 		$sql = str_replace('[-COMMENT-SCORE-]', '4', $sql);
 		$sql = str_replace('[-RATING-SCORE-]', '2', $sql);
 		
-		echo '<pre>';
-		echo $sql;
-		echo '</pre>';
-		
         return DBUtil::getResultArray($sql);
 		
+	}
+	
+	public function getDocumentsByRatingTemplate()
+	{
+		$data = $this->getDocumentsByRating();
+		
+		$pointScale = array('1 Star', '2 Stars', '3 Stars', '4 Stars', '5 Stars');
+		$score = array('point_1' => 0, 'point_2' => 0, 'point_3' => 0, 'point_4' => 0, 'point_5' => 0);
+		
+		foreach ($data as $item)
+		{
+			$point = $item['scoregroup'] + 1;
+			$score['point_'.$point] = $item['numitems'];
+		}
+		
+		$pointScale = '"'.implode('", "', $pointScale).'"';
+		$score = implode(', ', $score);
+		
+		return $this->loadTemplate(array('pointScale'=>$pointScale, 'score'=>$score), 'document_ratings');
 	}
 	
 	/******************************************************************************************************************/

@@ -79,6 +79,9 @@ class GraphAnalyticsPage extends KTStandardDispatcher {
 			   'userAccessPerWeek' => $ktAnalytics->getUserAccessPerWeekTemplate(),
 			   
 			   
+			   'documentRating' => $ktAnalytics->getDocumentsByRatingTemplate(),
+			   
+			   
 			   
 			   
 			   
