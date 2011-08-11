@@ -19,6 +19,7 @@ class BrowseView {
     //      the value may be overridden by the javascript, but this value is always a fallback.
     private $limit = 3;
     private $folderId;
+	public $showSelection = true;
 
     public function __construct()
     {
@@ -366,15 +367,15 @@ class BrowseView {
         }
 
         if (!$permissions['editable']) {
-        	
+
         	if ($permissions['folderDetails']) {
         		$folderMessage = '<h2>There\'s nothing in this folder yet!</h2>';
         	}
-        	
+
             if ($folderMessage == '') {
                 $folderMessage = '<h2>You don\'t have permissions to view the contents of this folder!</h2>';
             }
-            
+
             return "<span class='notification'>".$folderMessage."</span>";
         } else {
             $folderMessage = '<h2>There\'s nothing in this folder yet!</h2>';
@@ -515,7 +516,7 @@ class BrowseView {
         } else {
             $item['mimeicon'] = '';
         }
-        
+
         if ($item['hidecheckbox']) {
             $item['hidecheckbox'] = ' class="not_supported"';
         } else {
@@ -524,7 +525,7 @@ class BrowseView {
 
         // Get the users permissions on the document
         $permissions = $item['permissions'];
-        
+
         $hasWrite = (strpos($permissions, 'W') === false) ? false : true;
         $hasDelete = (strpos($permissions, 'D') === false) ? false : true;
         $hasSecurity = (strpos($permissions, 'S') === false) ? false : true;
@@ -541,7 +542,10 @@ class BrowseView {
         $item['actions.move'] = $item['actions.copy'] = $item['actions.delete'] = $ns;
 
         $isCheckedOut = ($item['checked_out_date']) ? true : false;
+        $isRealDocument = false;
         if (get_class($oDocument) == 'Document') {
+            $isRealDocument = true;
+            
             if ($hasWrite) {
                 $item['actions.checkout'] = $item['checked_out_date'] ? $ns : '';
                 $hasCheckedOut = ($_SESSION['userID'] == $item['checked_out_by_id']);
@@ -578,14 +582,14 @@ class BrowseView {
             $item['actions.share_document'] = $ns;
             if ($isCheckedOut || $item['actions.finalize_document']) {
                 $this->oUser = is_null($this->oUser) ? User::get($user_id) : $this->oUser;
-                $sPermissions = 'ktcore.permissions.write';
-                if (KTPermissionUtil::userHasPermissionOnItem($this->oUser, $sPermissions, $oDocument)) {
+                
+                if ($isRealDocument && KTPermissionUtil::userHasPermissionOnItem($this->oUser, 'ktcore.permissions.write', $oDocument)) {
                     $item['actions.share_document'] = '';
                 }
             }
             $item['separatorE']=$ns;
         }
-        
+
         // Check if the thumbnail exists
         $dev_no_thumbs = (isset($_GET['noThumbs']) || $_SESSION['browse_no_thumbs']) ? true : false;
         $_SESSION['browse_no_thumbs'] = $dev_no_thumbs;
@@ -674,9 +678,12 @@ class BrowseView {
             $share_separator = '<li class="separator[separatorE]"></li>';
         }
 
-        $tpl = $this->getDocumentTemplate(1, '<td width="1" class="checkbox">
-                            <input name="selection_d[]" type="checkbox" value="[id]" [hidecheckbox] />
-                        </td>', $share_separator, '<span class="shortcut[is_shortcut]">
+        $selection = '';
+		if ($this->showSelection) {
+			$selection = '<td width="1" class="checkbox"><input name="selection_d[]" type="checkbox" value="[id]" [hidecheckbox] /></td>';
+		}
+
+        $tpl = $this->getDocumentTemplate(1, $selection, $share_separator, '<span class="shortcut[is_shortcut]">
                                     <span>This is a shortcut to the file.</span>
                                 </span>');
 
@@ -712,10 +719,11 @@ class BrowseView {
         } else {
             $item['link'] = KTUtil::buildUrl('browse.php', array('fFolderId'=> $item['id']));
         }
-
-        $tpl = $this->getFolderTemplate(true, '<td width="1" class="checkbox">
-                        <input name="selection_f[]" type="checkbox" value="[id]" />
-                    </td>', '<span class="shortcut[is_shortcut]"><span>This is a shortcut to the folder.</span></span>');
+        $selection = '';
+		if ($this->showSelection) {
+			$selection = '<td width="1" class="checkbox"><input name="selection_f[]" type="checkbox" value="[id]" /></td>';
+		}
+        $tpl = $this->getFolderTemplate(true, $selection, '<span class="shortcut[is_shortcut]"><span>This is a shortcut to the folder.</span></span>');
 
         if ($empty) { return '<span class="fragment folder" style="display:none;">' . $tpl . '</span>'; }
 

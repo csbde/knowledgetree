@@ -53,7 +53,8 @@ class PasswordResetInterceptor extends KTInterceptor {
     function takeOver()
     {
     	// Skip take over if authentication is through google
-    	if(KTUtil::arrayGet($_GET, 'auth', 'singlesignon') == 'google') return ;
+    	$type = KTUtil::arrayGet($_GET, 'auth', '');
+    	if($type == 'google' || $type == 'singlesignon') return ;
         $pluginRegistry =& KTPluginRegistry::getSingleton();
         $plugin =& $pluginRegistry->getPlugin('password.reset.plugin');
 

@@ -35,6 +35,7 @@
  */
 
 require_once('viewactionsutil.inc.php');
+require_once(KT_LIB_DIR . '/backgroundactions/backgroundaction.inc.php');
 
 class ViewDocumentDispatcher extends KTStandardDispatcher {
 
@@ -101,6 +102,8 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
             return $this->do_error();
         }
 
+		$this->bulkActionInProgress = backgroundaction::isDocumentInBulkAction($this->document);
+
         $documentId = $this->document->getId();
         $documentData['document_id'] = $documentId;
 
@@ -137,12 +140,12 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
             $this->aBreadcrumbs = kt_array_merge($this->aBreadcrumbs, KTBrowseUtil::breadcrumbsForDocument($this->document, $options, $symLinkFolderId));
         }
 
-		$oViewUtil = new ViewActionsUtil();
+		$oViewUtil = new ViewActionsUtil($this->bulkActionInProgress);
 		$oViewUtil->initActions($this->document, $this->oUser);
         $oViewUtil->createButtons();
 		$documentTopActions = $oViewUtil->renderActions('top');
         $documentBottomActions = $oViewUtil->renderActions('bottom');
-        
+
         $documentData['document'] = $this->document;
         $documentData['document_type'] =& DocumentType::get($this->document->getDocumentTypeID());
         $isValidDoctype = true;
@@ -185,6 +188,7 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
             }
             else {
                 $displayClass = $fieldsetDisplayReg->getHandler($fieldset->getNamespace());
+
                 array_push($fieldsets, new $displayClass($fieldset));
             }
         }
@@ -202,9 +206,10 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
         $viewletActions = KTDocumentActionUtil::getDocumentActionsForDocument($this->document, $this->oUser, 'documentviewlet');
         foreach ($viewletActions as $action) {
             $info = $action->getInfo();
-            if ($info !== null) {
+            if (!is_null($info)) {
                 if (($info['ns'] == 'ktcore.viewlet.document.activityfeed') || ($info['ns'] == 'thumbnail.viewlets')) {
-                    $viewlets[] = $action->display_viewlet(); // use the action, since we display_viewlet() later.
+                	// use the action, since we display_viewlet() later.
+                    $viewlets[] = $action->display_viewlet();
                 }
             }
         }
@@ -245,7 +250,9 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
         $blocks = KTDocumentActionUtil::getDocumentActionsForDocument($this->document, $this->oUser, 'documentblock');
         $documentBlocks = isset($blocks[0]) ? $blocks[0] : array();
         if (!empty($documentBlocks)) {
-        	if (is_null($documentBlocks->getInfo())) {
+			$documentBlocks->setBulkAction($this->bulkActionInProgress);
+			$info = $documentBlocks->getInfo();
+        	if (is_null($info)) {
         		$documentBlocks = array();
         	}
         }
@@ -270,7 +277,6 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
             'actionBtns' => $actionBtns,
             'document_id' => $documentId,
             'document' => $this->document,
-            'documentName' => $this->document->getName(),
             'document_data' => $documentData,
             'document_types' => $documentTypes,
             'generic_fieldsets' => $genericFieldsets,
@@ -284,7 +290,8 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
             'documentBottomActions' => $documentBottomActions,
             'tagFilterScript' => "/{$tagPluginPath}filterTags.php?documentId=$documentId",
             'tags' => json_encode($tags),
-            'makeMetadataEditable' => $makeMetadataEditable
+            'makeMetadataEditable' => $makeMetadataEditable,
+            'bulkActionInProgress' => $this->bulkActionInProgress,
         );
 
         // Conditionally include live_preview

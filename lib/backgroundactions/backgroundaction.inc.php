@@ -2,6 +2,8 @@
 /**
  * $Id$
  *
+ * Utilities helpful to traversing the document repository
+ *
  * KnowledgeTree Community Edition
  * Document Management Made Simple
  * Copyright (C) 2008, 2009, 2010 KnowledgeTree Inc.
@@ -35,7 +37,9 @@
  * Contributor( s): ______________________________________
  */
 
-class BulkDocumentActions
+require_once(KT_LIB_DIR . '/memcache/ktmemcache.php');
+
+class backgroundaction
 {
 	/**
 	 * Bulk action name
@@ -58,51 +62,69 @@ class BulkDocumentActions
 	 */
 	private $targetFolderId;
 	/**
-	 * Logged in user's id
+	 * Bulk action current folder id
 	 * @var string
 	 */
-	private $userId;
+	private $currentFolderId;
 	/**
 	 * Number of documents
 	 * @var int
 	 */
-	private $numberDocuments = 0;
+	private $numDocuments = 0;
 	/**
 	 * Number of folders
 	 * @var int
 	 */
-	private $numberFolders = 0;
+	private $numFolders = 0;
 	/**
 	 * If number of documents to process exceeds threshold,
 	 * send operation to queue
 	 * @var array
 	 */
-	private $threshold = array(	'documents' => 1000,
-								'folders' => 50
+	private $threshold = array(	'move' =>	array(	'documents' => 500,
+													'folders' => 50
+												),
+								'delete' =>	array(	'documents' => 250,
+													'folders' => 25
+												),
+								'copy' =>	array(	'documents' => 100,
+													'folders' => 10
+												)
 								);
 
-	public function __construct($action, $list, $reason = '', $targetFolderId)
+	public function __construct($action, $list, $reason = '', $targetFolderId, $currentFolderId)
 	{
 		$this->action = $action;
 		$this->list = $list;
 		$this->reason = $reason;
 		$this->targetFolderId = $targetFolderId;
-		$this->numberFolders = count($this->list['folders']);
-		$this->numberDocuments = count($this->list['documents']);
+		$this->currentFolderId = $currentFolderId;
+		$this->numFolders = 0;
+		$this->numDocuments = 0;
 	}
 
 	public function checkIfNeedsBackgrounding()
 	{
 		// Check number of folders and documents
 		$folders = $this->list['folders'];
-		$folderIds = $this->list['folders'];
+		$this->numFolders = count($this->list['folders']);
+		$this->numDocuments = count($this->list['documents']);
 		while (count($folders) > 0) {
 			$folderId = array_pop($folders);
 			$this->getFolderDocuments($folderId);
 			$folders = $this->getFolderSubFolders($folderId, $folders);
-			if($this->numberDocuments > $this->threshold['documents'])
+			if($this->hitThreshold()) {
 				return true;
-			if($this->numberFolders > $this->threshold['folders'])
+			}
+		}
+
+		return $this->hitThreshold();
+
+	}
+
+	private function hitThreshold()
+	{
+		if(($this->numDocuments > $this->threshold[$this->action]['documents']) || ($this->numFolders > $this->threshold[$this->action]['folders'])) {
 				return true;
 		}
 
@@ -112,13 +134,11 @@ class BulkDocumentActions
 	private function getFolderDocuments($folderId)
 	{
 		// Get all parent folder documents
-		$query = "SELECT id,folder_id from documents WHERE folder_id = '$folderId';";
-		$results = DBUtil::getResultArray($query);
+		$query = "SELECT COUNT(id) FROM documents WHERE folder_id = '$folderId';";
+		$results = DBUtil::getOneResultKey($query, 'id');
 		if($results)
 		{
-			foreach ($results as $aResult) {
-				$this->numberDocuments++;
-			}
+			$this->numDocuments + $results['id'];
 		}
 	}
 
@@ -126,7 +146,7 @@ class BulkDocumentActions
 	{
 		// Get all parent folder sub folders
 		$whereClause = "parent_folder_ids = '{$folderId}' OR parent_folder_ids LIKE '{$folderId},%' OR parent_folder_ids LIKE '%,{$folderId},%' OR parent_folder_ids LIKE '%,{$folderId}' ";
-		$query = "SELECT id, parent_folder_ids, linked_folder_id from folders WHERE $whereClause";
+		$query = "SELECT id, parent_folder_ids, linked_folder_id FROM folders WHERE $whereClause";
 		$results = DBUtil::getResultArray($query);
 		if($results)
 		{
@@ -138,50 +158,74 @@ class BulkDocumentActions
 				else {
 					array_push($folders, $aResult['linked_folder_id']);
 				}
-				$this->numberFolders++;
+				$this->numFolders++;
 			}
 		}
 
 		return $folders;
 	}
 
-	public function setUser($userId)
+	public static function saveEvent($action, $folders, $currentFolderId, $targetFolderId)
 	{
-		$this->userId = $userId;
-	}
-
-	public function queueBulkAction()
-	{
-    	require_once(KT_LIVE_DIR . '/sqsqueue/dispatchers/bulkactionDispatcher.php');
-    	$bulkActionDispatcher = new BulkactionDispatcher();
-    	$params['action'] = $this->action;
-    	$params['files_and_folders'] = $this->list;
-    	$params['reason'] = $this->reason;
-    	$params['targetFolderId'] = $this->targetFolderId;
-    	$bulkActionDispatcher->addProcess("bulkactions", $params);
-    	$queueResponse = $bulkActionDispatcher->sendToQueue();
-    	if($queueResponse) {
-			$this->saveEvent();
-    	}
-
-    	return $queueResponse;
-	}
-
-	private function saveEvent()
-	{
-		require_once(KT_LIB_DIR . '/memcache/ktmemcache.php');
 		$memcache = KTMemcache::getKTMemcache();
 		if(!$memcache->isEnabled()) return ;
-		$userKey = "bulkaction_" . ACCOUNT_NAME . "{$this->userId}";
-		$usersBulkActions = $memcache->get($userKey);
-		if(empty($usersBulkActions))
+		$key = ACCOUNT_NAME . '_bulkaction';
+		$bulkActions = $memcache->get($key);
+		if(empty($bulkActions))
 			$folderIds = array();
 		else {
-			$folderIds = unserialize($usersBulkActions);
+			$folderIds = unserialize($bulkActions);
+		}
+		// Store current and target folder.
+		$folderIds[$action][$currentFolderId] = $currentFolderId;
+		$folderIds[$action][$targetFolderId] = $targetFolderId;
+		// Store all subfolders
+		foreach ($folders as $folderId) {
+			$folderIds[$action][$folderId] = $folderId;
+		}
+		$memcache->set($key, serialize($folderIds));
+	}
+
+	public static function isDocumentInBulkAction($document = null)
+	{
+		$folderIdsPath = '';
+		if(!is_null($document) && $document instanceof Document) {
+			$folderIdsPath = $document->getParentFolderIds();
 		}
 
-		$folderIds[$this->action][$this->targetFolderId] = $this->targetFolderId;
-		$memcache->set($userKey, serialize($folderIds));
+		return self::isBulkActionInProgress($folderIdsPath);
+	}
+
+	public static function isFolderInBulkAction($folder = null)
+	{
+		$folderIdsPath = '';
+		if(!is_null($folder) && ($folder instanceof Folder || $folder instanceof FolderProxy)) {
+			$folderIdsPath = Folder::generateFolderIDs($folder->getId());
+		}
+
+		return self::isBulkActionInProgress($folderIdsPath);
+	}
+
+	private static function isBulkActionInProgress($folderIdsPath)
+	{
+		$folderIdsPath = explode(',', $folderIdsPath);
+		$key = ACCOUNT_NAME . '_bulkaction';
+		$memcache = KTMemcache::getKTMemcache();
+		if(!$memcache->isEnabled()) return ;
+	    $bulkActions = $memcache->get($key);
+	    $bulkActions = unserialize($bulkActions);
+	    if($bulkActions) {
+		    foreach ($bulkActions as $action => $folderIds) {
+		    	foreach ($folderIds as $folderId) {
+			    	if(in_array($folderId, $folderIdsPath)) {
+			    		return $action;
+			    	}
+		    	}
+		    }
+	    }
+
+	    return false;
 	}
 }
+
 ?>

@@ -43,14 +43,14 @@
 	                {if $aBtn.status === 'disabled'}
 	                    <a><span class="{$aBtn.class} disabled">{$aBtn.name}</span></a>
 	                {else}
-	                    <a href="{$aBtn.url}" ><span class="{$aBtn.class}">{$aBtn.name}</span></a>
+	                    <a href="{$aBtn.url}" onclick="{$aBtn.onclick}" ><span class="{$aBtn.class}">{$aBtn.name}</span></a>
 	                {/if}
 	     		{/foreach}
 
 	     		{assign var=aSplit value=$context->actionBtns.split}
-				{if $aSplit != NULL}
+				{if $aSplit != NULL && $aSplit.submenu != NULL}
 					<div class="splitbutton"><span class="split"><span class="button" id="{$aSplit.class}">{$aSplit.name}</span>&#9660;</span></div>
-					
+
 						{* Display the drop down menu's on the split buttons *}
 						<ul class="splitmenu dropdown dropdown-vertical dropdown-vertical-rtl" id="more">
 							{foreach item=menuitem from=$aSplit.submenu}
@@ -71,7 +71,7 @@
 				{/if}
 				</nobr>
 			</div>
-				
+
 
     	</div>
 <form action="{$browseutil->getActionBaseUrl()}" method="post">

@@ -24,9 +24,11 @@
                     <span data-name="documentTitle" data-type='text' data-value-id="value-title" data-class="required"></span>
 					<span id="value-title">{i18n}{$document->getName()|sanitize}{/i18n}</span>
 					<span class="save-placeholder">&nbsp;</span>
-					<span title="Click to edit" class="editable-control title edit">&nbsp;</span>
+					{if !$bulkActionInProgress}
+						<span title="Click to edit" class="editable-control title edit">&nbsp;</span>
+					{/if}
 				</div>
-				{if $document->getIsCheckedOut()} 
+				{if $document->getIsCheckedOut()}
 					<span id=indicator class="status-indicator checkedout">
 				{else}
 					<span id=indicator class="status-indicator checkedout" style="display:none;">
@@ -38,12 +40,14 @@
 				<span data-name="documentFilename" data-type='text' data-value-id="value-filename" data-class="required"></span>
 					<span id="value-filename"><p>{$document->getFileName()}</p></span>
 					<span class="save-placeholder">&nbsp;</span>
-					<span title="Click to edit" class="editable-control filename edit">&nbsp;</span>
+					{if !$bulkActionInProgress}
+						<span title="Click to edit" class="editable-control filename edit">&nbsp;</span>
+					{/if}
 				</div>
                 </td>
             </tr>
             <tr id="middle_doc_info_area">
-                <!-- <td style="display:none;" width="1" valign="top" style="padding-right: 15px;"><span id="doc_thumb" style="float:left;" /></td> -->
+
 			<td height="1" valign="top" width="310">
                     <div class="doc_description">
 						{if $ratingContentEnabled}
@@ -71,7 +75,7 @@
                         <span class="doc_info" style="display: block;">
                         <table class="metadatatable">
                         	<tr>
-								<th style="width: 100px;">Version:</th><td><a href="{$rootUrl}/action.php?kt_path_info=ktcore.actions.document.versionhistory&fDocumentId={$document_id}" id="value_versionhistory">{$document->getMajorVersionNumber()}.{$document->getMinorVersionNumber()}</a></td>
+								<th style="width: 100px;">Version:</th><td><a href="{$rootUrl}/action.php?kt_path_info=ktcore.actions.document.versionhistory&fDocumentId={$document->getId()}" id="value_versionhistory">{$document->getMajorVersionNumber()}.{$document->getMinorVersionNumber()}</a></td>
 							</tr>
 							<tr>
 								<th>Last Modified by:</th><td id="value-lastmodifiedby">{$doc_data.lastModifier} on {$document->getDisplayLastModifiedDate()|date_format:"%b %e, %Y"}</td>
@@ -95,10 +99,13 @@
 							<th>File type:</th><td id="value-filetype">{$fieldsetDisplayHelper->_mimeHelper($document->getMimeTypeID())} - {$fieldsetDisplayHelper->_sizeHelper($document->getSize())} </td>
 							</tr>
 							<tr>
-								<th>Document ID:</th><td>{$document_id}</td>
+								<th>Document ID:</th><td>{$document->getId()}</td>
 							</tr>
 							<tr id="document-tags">
-							<th>Tags:</th><td><span class="document-tags"></span><span title="Click to edit" class="editable-control tags edit">&nbsp;</span></td>
+							<th>Tags:</th><td><span class="document-tags"></span>
+							{if !$bulkActionInProgress}
+								<span title="Click to edit" class="editable-control tags edit">&nbsp;</span></td>
+							{/if}
 							</tr>
 						</table>
 
@@ -115,7 +122,9 @@
 						<td>
 							<span class="descriptiveText" id='documentTypeID' data-name='documentTypeID' data-options='[{foreach from=$document_types key=aKey item=documentType}
 								["{$documentType->getName()}","{$documentType->getId()}"],{/foreach}]' data-type='select'>{$document_data.document_type->getName()}</span>
-							<span title="Click to edit" class="editable-control doctype edit">&nbsp;</span>
+							{if !$bulkActionInProgress}
+								<span title="Click to edit" class="editable-control doctype edit">&nbsp;</span>
+							{/if}
 						</td>
 					</table>
 					</div>
@@ -128,7 +137,7 @@
 							<br/>
 							<div class="slide" style="display:none">
 						{/if}
-							{$oFieldset->render($document_data)}
+							{$oFieldset->render($document_data, $bulkActionInProgress)}
 						{if $smarty.foreach.fieldsets.last &&  $smarty.foreach.fieldsets.total >= 3}
 							</div>
 						{/if}
@@ -154,7 +163,7 @@
                         </div>
                     {/if}
                 </div>
-			<div id=bottom_actions class="action_buttons below" style="display: inline-block; margin-top: 5px;"> 
+			<div id=bottom_actions class="action_buttons below" style="display: inline-block; margin-top: 5px;">
 				{$documentBottomActions}
 			</div>
 
@@ -200,7 +209,7 @@
     	}
 
     	//only allow to be editable if document not immutable!
-        kt.app.metadata.setup({/literal}{$makeMetadataEditable}, {$document_id}, {$tags}{literal});
+        kt.app.metadata.setup({/literal}{$makeMetadataEditable}, {$document->getId()}, {$tags}{literal});
     });
 </script>
 {/literal}

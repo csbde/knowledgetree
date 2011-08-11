@@ -226,6 +226,16 @@ class documentActionServices extends client_service {
     	return true;
     }
 
+    public function checkBackgroundedAction($params)
+    {
+        // Check if there's a permissions update in progress for the current folder / document
+        $folderId = !empty($params['folderId']) ? str_replace('folder_', '', $params['folderId']) : KTUtil::decodeId(substr($params['cleanId'], 2));
+        $response = KTFolderActionUtil::checkForBackgroundedAction($folderId);
+        //$response = array('check' => $check, 'message' => $message);
+        
+        $this->addResponse('result', json_encode($response));
+    }
+
     public function getParentFolderIds($params)
     {
     	$folderId = !empty($params['folderId']) ? $params['folderId'] : KTUtil::decodeId(substr($params['cleanId'], 2));
@@ -382,10 +392,10 @@ class documentActionServices extends client_service {
 
 	public function doBulkCopy($params)
 	{
-		require_once('BulkDocumentActions.php');
 		$action = $params['action'];
 
 		$targetFolderId = $params['targetFolderId'];
+		$currentFolderId = $params['currentFolderId'];
 
 		if (is_array($targetFolderId)) {
 			$targetFolderId = !empty($targetFolderId['folderId']) ? $targetFolderId['folderId'] : KTUtil::decodeId(substr($targetFolderId['cleanId'], 2));
@@ -413,15 +423,19 @@ class documentActionServices extends client_service {
     		default:
     			$reason = '';
         }
-        $bulkDocumentActions = new BulkDocumentActions($action, $organisedItemList, $reason, $targetFolderId);
-        if($bulkDocumentActions->checkIfNeedsBackgrounding()) {
-        	$bulkDocumentActions->setUser($_SESSION['userID']);
-        	$queueResponse = $bulkDocumentActions->queueBulkAction();
-	    	if($queueResponse)
+        require_once(KT_LIB_DIR . '/backgroundactions/backgroundaction.inc.php');
+        $backgroundaction = new backgroundaction($action, $organisedItemList, $reason, $targetFolderId, $currentFolderId);
+        if($backgroundaction->checkIfNeedsBackgrounding()) {
+			require_once(KT_PLUGIN_DIR . '/ktcore/KTBackgroundActions.php');
+        	$queueResponse = BulkDocumentActions::queueBulkAction($action, $organisedItemList, $reason, $targetFolderId, $currentFolderId);
+	    	if($queueResponse) {
 	        	$msg = _kt('Success. You will be redirected shortly.');
-	        else
+	    	}
+	    	else {
 	        	$msg = _kt('Failure. Could not send message.');
+	    	}
 	        $url = KTUtil::kt_clean_folder_url($targetFolderId);
+	        $msg = "Your operation is being processed. You wil receive an email on completion.";
 	        $result = array('type' => 'success', 'url' => $url, 'msg' => $msg, 'bulk' => $queueResponse);
 	        $this->addResponse('result', json_encode($result));
 
@@ -457,8 +471,6 @@ class documentActionServices extends client_service {
 
         return true;
 	}
-
-
 
 	private function formatItemList($itemList = array())
 	{

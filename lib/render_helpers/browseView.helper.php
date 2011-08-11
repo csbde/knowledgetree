@@ -7,19 +7,32 @@ require_once(KT_LIB_DIR . '/render_helpers/BrowseView.inc.php');
 require_once(KT_LIB_DIR . '/render_helpers/UserBrowseView.inc.php');
 require_once(KT_LIB_DIR . '/render_helpers/SharedUserBrowseView.inc.php');
 
+require_once(KT_LIB_DIR . '/render_helpers/BulkActionBrowse.inc.php');
+require_once(KT_LIB_DIR . '/render_helpers/SharedUserBrowseView.inc.php');
+
 /**
  * Utility class to switch between user specific browse views
  *
  */
 class BrowseViewUtil {
 
-    static function getBrowseView()
+    public static function getBrowseView($bulkActionInProgress)
     {
     	$oUser = User::get($_SESSION['userID']);
     	$userType = $oUser->getDisabled();
+    	if(!$bulkActionInProgress) {
+			return self::getBrowse($userType);
+    	}
+	    else {
+	    	return self::getBulkActionBrowse($userType, $bulkActionInProgress);
+	    }
+	}
+
+	private static function getBrowse($userType)
+	{
     	switch ($userType) {
     		case 0 :
-    			return new UserBrowseView();
+   				return new UserBrowseView();
     			break;
     		case 4 :
     			return new SharedUserBrowseView();
@@ -30,6 +43,24 @@ class BrowseViewUtil {
     	}
 	}
 
+	private static function getBulkActionBrowse($userType, $bulkActionInProgress)
+	{
+
+    	switch ($userType) {
+    		case 0 :
+    			$bulkActionBrowse = new BulkActionBrowse();
+    			break;
+    		case 4 :
+    			$bulkActionBrowse = new SharedBulkActionBrowse();
+    			break;
+    		default:
+    			$bulkActionBrowse = new BulkActionBrowse();
+    			break;
+    	}
+    	$bulkActionBrowse->setAction($bulkActionInProgress);
+
+    	return $bulkActionBrowse;
+	}
 }
 
 ?>

@@ -57,9 +57,11 @@ class KTDocumentDetailsAction extends KTDocumentAction {
 
     public $sName = 'ktcore.actions.document.displaydetails';
 
+    protected $showIfBulkActions = array('copy');
+
     function do_main() {
     	redirect(KTUtil::kt_clean_document_url($this->oDocument->getId()));
-        //redirect(generateControllerLink('viewDocument',sprintf(_kt('fDocumentId=%d'),$this->oDocument->getId())));
+
         exit(0);
     }
 
@@ -76,6 +78,8 @@ class KTDocumentTransactionHistoryAction extends KTDocumentAction {
     public $sName = 'ktcore.actions.document.transactionhistory';
     public $sIconClass = 'usage-info';
     public $sParentBtn = 'more';
+
+	protected $showIfBulkActions = array('copy');
 
     function getDisplayName() {
         return _kt('Usage Information');
@@ -357,24 +361,26 @@ class KTDocumentViewAction extends KTDocumentAction {
 	public $bShowIfReadShared = true;
 	public $btnOrder = 1;
 
-    function getDisplayName() {
+	protected $showIfBulkActions = array('copy');
+
+    public function getDisplayName() {
         return _kt('Download');
     }
 
-    function getButton() {
+    public function getButton() {
         $btn = array();
         $btn['display_text'] = _kt('Download');
         $btn['arrow_class'] = 'arrow_download';
         return $btn;
     }
 
-    function customiseInfo($aInfo) {
-        $aInfo['alert'] =  _kt('This will download a copy of the document and is not the same as Checking Out a document.  Changes to this downloaded file will not be managed in the DMS.');
-        return $aInfo;
+    public function customiseInfo($info) {
+        $info['alert'] =  _kt('This will download a copy of the document and is not the same as Checking Out a document.  Changes to this downloaded file will not be managed in the DMS.');
+        return $info;
     }
 
-    function do_main() {
-        $oStorage = KTStorageManagerUtil::getSingleton();
+    public function do_main() {
+        $storage = KTStorageManagerUtil::getSingleton();
         $aOptions = array();
         $iVersion = KTUtil::arrayGet($_REQUEST, 'version');
         session_write_close();
@@ -408,16 +414,15 @@ class KTDocumentViewAction extends KTDocumentAction {
         if ($iVersion) {
             $oVersion = KTDocumentContentVersion::get($iVersion);
             $aOptions['version'] = sprintf('%d.%d', $oVersion->getMajorVersionNumber(), $oVersion->getMinorVersionNumber());
-            $res = $oStorage->downloadVersion($this->oDocument, $iVersion);
+            $res = $storage->downloadVersion($this->oDocument, $iVersion);
         } else {
-            $res = $oStorage->download($this->oDocument);
+            $res = $storage->download($this->oDocument);
         }
 
         if ($res === false) {
             session_start();
             $this->addErrorMessage(_kt('The file you requested is not available.'));
             redirect(KTUtil::kt_clean_document_url($this->oDocument->getId()));
-            //redirect(generateControllerLink('viewDocument',sprintf(_kt('fDocumentId=%d'),$this->oDocument->getId())));
             exit(0);
         }
 
@@ -450,10 +455,10 @@ class KTDocumentDeleteAction extends JavascriptDocumentAction {
     {
     	$id = $this->oDocument->getId();
     	$name = $this->oDocument->getName();
-		
+
 		$name = str_replace("'", "&apos;", $name);
         $name = str_replace('"', '\"', $name);
-		
+
         return "javascript:{kt.app.copy.doAction(\"delete\", $id, \"$name\");}";
     }
 
@@ -856,12 +861,16 @@ class KTDocumentMoveAction extends JavascriptDocumentAction {
 }
 
 class KTDocumentCopyColumn extends TitleColumn {
+	protected $showIfBulkActions = array('copy');
 
-    function KTDocumentCopyColumn($sLabel, $sName, $oDocument) {
+    public function KTDocumentCopyColumn($sLabel, $sName, $oDocument)
+    {
         $this->oDocument = $oDocument;
         parent::TitleColumn($sLabel, $sName);
     }
-    function buildFolderLink($aDataRow) {
+
+    public function buildFolderLink($aDataRow)
+    {
         return KTUtil::addQueryString($_SERVER['PHP_SELF'], sprintf('fDocumentId=%d&fFolderId=%d', $this->oDocument->getId(), $aDataRow['folder']->getId()));
     }
 
@@ -875,6 +884,8 @@ class KTDocumentCopyAction extends JavascriptDocumentAction {
 
     public $sIconClass = 'copy';
     public $sParentBtn = 'more';
+
+    protected $showIfBulkActions = array('copy');
 
     function getDisplayName() {
         return _kt('Copy');
@@ -1147,10 +1158,10 @@ class KTDocumentArchiveAction extends JavascriptDocumentAction {
     {
     	$id = $this->oDocument->getId();
     	$name = $this->oDocument->getName();
-		
+
 		$name = str_replace("'", "&apos;", $name);
         $name = str_replace('"', '\"', $name);
-		
+
         return "javascript:{kt.app.copy.doAction(\"archive\", $id, \"$name\");}";
     }
 
@@ -1856,6 +1867,8 @@ class KTDocumentPageUrlAction extends KTDocumentAction {
 	public $sBtnPosition = 'links';
 	public $sIconClass = 'page-url';
 
+	protected $showIfBulkActions = array('copy');
+
     function getDisplayName() {
         return _kt('Get page link');
     }
@@ -1909,6 +1922,8 @@ class KTDocumentPreviewUrlAction extends KTDocumentAction {
 	public $btnOrder = 3;
 	public $sBtnPosition = 'links';
 	public $sIconClass = 'preview-url';
+
+	protected $showIfBulkActions = array('copy');
 
     function getDisplayName() {
         return _kt('Preview URL');
@@ -2328,10 +2343,10 @@ class KTDocumentCheckInAction extends JavascriptDocumentAction {
 
         // document checkin for the new storage drivers requires the document to be first uploaded
         // to the temp directory from the php upload directory or the checkin will fail
-        $oStorage = KTStorageManagerUtil::getSingleton();
+        $storage = KTStorageManagerUtil::getSingleton();
         $oKTConfig =& KTConfig::getSingleton();
-        $sTempFilename = $oStorage->tempnam($oKTConfig->get("urls/tmpDirectory"), 'kt_storecontents');
-        $oStorage->uploadTmpFile($_FILES['filename']['tmp_name'], $sTempFilename);
+        $sTempFilename = $storage->tempnam($oKTConfig->get("urls/tmpDirectory"), 'kt_storecontents');
+        $storage->uploadTmpFile($_FILES['filename']['tmp_name'], $sTempFilename);
 
         $_FILES['filename']['tmp_name'] = $sTempFilename;
 
@@ -2364,6 +2379,8 @@ class KTDocumentCancelCheckOutAction extends JavascriptDocumentAction {
 	public $bShowIfWriteShared = true;
     public $sIconClass = 'cancel-checkout';
     public $sParentBtn = 'ktcore.actions.document.checkin';
+
+    protected $showIfBulkActions = array('copy');
 
 	public function do_reason() {
 		echo parent::do_reason();

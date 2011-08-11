@@ -194,6 +194,7 @@ class KTPage {
                         'thirdpartyjs/jquery/plugins/jstree/jquery.cookie.js' => $files,
                         'thirdpartyjs/jquery/plugins/jstree/jquery.jstree.js' => $files,
                         'resources/js/newui/documents/kt.app.ratingcontent.js' => $files,
+                        'resources/js/newui/new_features/kt.app.newfeatures.js' => $overviews,
                       );
 
         $oConfig = KTConfig::getSingleton();
@@ -211,6 +212,7 @@ class KTPage {
             /* REWORK INTO SINGLE STYLE SHEET */
             'resources/css/newui/dropdown_styles.css',
             'resources/css/newui/dropdown.vertical.css',
+            'resources/css/newui/newfeatures.css',
         );
 
         // load area specific files

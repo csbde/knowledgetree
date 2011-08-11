@@ -701,41 +701,47 @@ class KTBulkFolderAction extends KTBulkAction {
 // util class for bulk actions
 class KTBulkActionUtil {
 
-    function getBulkActionInfo($slot = 'bulkaction') {
-        $oRegistry =& KTActionRegistry::getSingleton();
-        return $oRegistry->getActions($slot);
+    function getBulkActionInfo($slot = 'bulkaction') 
+    {
+        $registry = KTActionRegistry::getSingleton();
+        return $registry->getActions($slot);
     }
 
-    function getAllBulkActions($slot = 'bulkaction') {
-        $aObjects = array();
+    function getAllBulkActions($slot = 'bulkaction') 
+    {
+        $objects = array();
+        $registry = KTPluginRegistry::getSingleton();
 
-        foreach (KTBulkActionUtil::getBulkActionInfo($slot) as $aAction) {
-            list($sClassName, $sPath, $sName, $sPlugin) = $aAction;
-            $oRegistry =& KTPluginRegistry::getSingleton();
-            $oPlugin =& $oRegistry->getPlugin($sPlugin);
-            if (!empty($sPath)) {
-                require_once($sPath);
+        $listBulkActions = KTBulkActionUtil::getBulkActionInfo($slot);
+        foreach ($listBulkActions as $action) {
+            list($className, $path, $name, $pluginNamespace) = $action;
+            $plugin = $registry->getPlugin($pluginNamespace);
+            if (!empty($path)) {
+                require_once($path);
             }
-            $aObjects[] = new $sClassName(null, $oPlugin);
+            $objects[] = new $className(null, $plugin);
         }
-        return $aObjects;
+        return $objects;
     }
 
-    function getBulkActionsByNames($aNames, $slot = 'bulkaction', $oUser = null) {
-        $aObjects = array();
-        foreach (KTBulkActionUtil::getBulkActionInfo($slot) as $aAction) {
-            list($sClassName, $sPath, $sName, $sPlugin) = $aAction;
-            $oRegistry =& KTPluginRegistry::getSingleton();
-            $oPlugin =& $oRegistry->getPlugin($sPlugin);
-            if (!in_array($sName, $aNames)) {
+    function getBulkActionsByNames($nameList, $slot = 'bulkaction', $user = null) 
+    {
+        $objects = array();
+        $registry = KTPluginRegistry::getSingleton();
+        
+        $listBulkActions = KTBulkActionUtil::getBulkActionInfo($slot);
+        foreach ($listBulkActions as $action) {
+            list($className, $path, $name, $pluginNamespace) = $action;
+            $plugin = $registry->getPlugin($pluginNamespace);
+            if (!in_array($name, $nameList)) {
                 continue;
             }
-            if (!empty($sPath)) {
-                require_once($sPath);
+            if (!empty($path)) {
+                require_once($path);
             }
-            $aObjects[] = new $sClassName(null, $oUser, $oPlugin);
+            $objects[] = new $className(null, $user, $plugin);
         }
-        return $aObjects;
+        return $objects;
     }
 
 }

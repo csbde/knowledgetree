@@ -58,11 +58,15 @@ class KTDocumentAction extends KTStandardDispatcher {
     public $_sDisablePermission;
     public $bAllowInAdminMode = false;
     public $sHelpPage = 'ktcore/browse.html';
-
     public $sSection = 'view_details';
+
     /** Shared user mutators to deal with bypassing permissions */
 	public $bShowIfReadShared = false;
 	public $bShowIfWriteShared = false;
+
+	/** Handle bulk action lock */
+	protected $showIfBulkActions = array();
+	protected $bulkActionInProgress = '';
 
     /**
  	 * The _bMutator variable determines whether the action described by the class is considered a mutator.
@@ -75,17 +79,17 @@ class KTDocumentAction extends KTStandardDispatcher {
      * true if you want the action prevented for immutable documents.
  	 *
  	 * @access public
- 	 * @var boolean
+ 	 * @public boolean
  	 */
-    var $_bMutator = false;
-    var $_bMutationAllowedByAdmin = true;
+    public $_bMutator = false;
+    public $_bMutationAllowedByAdmin = true;
 
-    var $sIconClass = '';
-    var $sParentBtn = false;
-    var $sBtnPosition = 'above';
-    var $btnOrder = 5;
+    public $sIconClass = '';
+    public $sParentBtn = false;
+    public $sBtnPosition = 'above';
+    public $btnOrder = 5;
 
-    function KTDocumentAction($oDocument = null, $oUser = null, $oPlugin = null) {
+    public function KTDocumentAction($oDocument = null, $oUser = null, $oPlugin = null) {
         $this->oDocument =& $oDocument;
         $this->oUser =& $oUser;
         $this->oPlugin =& $oPlugin;
@@ -98,15 +102,15 @@ class KTDocumentAction extends KTStandardDispatcher {
         parent::KTStandardDispatcher();
     }
 
-    function setDocument(&$oDocument) {
+    public function setDocument(&$oDocument) {
         $this->oDocument =& $oDocument;
     }
 
-    function setUser(&$oUser) {
+    public function setUser(&$oUser) {
         $this->oUser =& $oUser;
     }
 
-    function _show() {
+    public function _show() {
     	// If this is a shared user the object permissions are different.
     	if (SharedUserUtil::isSharedUser()) {
     		return $this->shareduser_show();
@@ -160,7 +164,7 @@ class KTDocumentAction extends KTStandardDispatcher {
             || Permission::isUnitAdministratorForFolder($this->oUser, $this->oDocument->getFolderId());
     }
 
-    function getURL() {
+    public function getURL() {
         $oKTConfig =& KTConfig::getSingleton();
         $sExt = '.php';
         if (KTUtil::arrayGet($_SERVER, 'kt_no_extensions')) {
@@ -173,12 +177,17 @@ class KTDocumentAction extends KTStandardDispatcher {
         }
     }
 
-    function getOnClick()
+    public function getOnClick()
     {
         return '';
     }
 
-    function getInfo() {
+    public function getInfo() {
+    	if(!empty($this->bulkActionInProgress)) {
+    		if(!in_array($this->bulkActionInProgress, $this->showIfBulkActions)) {
+    			return '';
+    		}
+    	}
         $check = $this->_show();
         if ($check === false) {
             $check = 'disabled';
@@ -211,29 +220,29 @@ class KTDocumentAction extends KTStandardDispatcher {
         return $aInfo;
     }
 
-    function getName() {
+    public function getName() {
         return $this->sName;
     }
 
-    function getDisplayName() {
+    public function getDisplayName() {
         // Should be overridden by the i18nised display name
         // This is here solely for backwards compatibility
         return $this->sDisplayName;
     }
 
-    function getDescription() {
+    public function getDescription() {
         return $this->sDescription;
     }
 
-    function getButton(){
+    public function getButton(){
         return false;
     }
 
-    function customiseInfo($aInfo) {
+    public function customiseInfo($aInfo) {
         return $aInfo;
     }
 
-    function check() {
+    public function check() {
         $this->oDocument =& $this->oValidator->validateDocument($_REQUEST['fDocumentId']);
 
         if (!$this->_show()) { return false; }
@@ -261,7 +270,7 @@ class KTDocumentAction extends KTStandardDispatcher {
         return true;
     }
 
-    function do_main() {
+    public function do_main() {
         return _kt('Dispatcher component of action not implemented.');
     }
 
@@ -270,7 +279,7 @@ class KTDocumentAction extends KTStandardDispatcher {
      *
      * @return unknown
      */
-    function shareduser_show()
+    public function shareduser_show()
     {
 		// Shared user would not have admin mode
 		// Shared user would not be admin
@@ -298,7 +307,7 @@ class KTDocumentAction extends KTStandardDispatcher {
      * Set the shared object permission
      *
      */
-    function getPermission()
+    public function getPermission()
     {
 		$iUserId = $this->oUser->getID();
 		$iDocumentId = $this->oDocument->getID();
@@ -306,7 +315,7 @@ class KTDocumentAction extends KTStandardDispatcher {
 		return SharedContent::getPermissions($iUserId, $iDocumentId, null, 'document');
     }
 
-    function userHasDocumentReadPermission($oDocument)
+    public function userHasDocumentReadPermission($oDocument)
     {
     	if(SharedUserUtil::isSharedUser())
     	{
@@ -332,6 +341,10 @@ class KTDocumentAction extends KTStandardDispatcher {
 
         return $oTemplate->render($aTemplateData);
     }
+
+    public function setBulkAction($bulkActionInProgress) {
+    	$this->bulkActionInProgress = $bulkActionInProgress;
+    }
 }
 
 class JavascriptDocumentAction extends KTDocumentAction
@@ -339,47 +352,47 @@ class JavascriptDocumentAction extends KTDocumentAction
 	/**
 	 * This is an array of js files to be included for this action
 	 *
-	 * @var array
+	 * @public array
 	 */
-	var $js_paths = array();
+	public $js_paths = array();
 	/**
 	 * This is custom javascript that should be included
 	 *
-	 * @var array
+	 * @public array
 	 */
-	var $js = array();
+	public $js = array();
 	/**
-	 * Indicates if a custom function should be provided, or if the function is part of an existing js file.
+	 * Indicates if a custom public function should be provided, or if the public function is part of an existing js file.
 	 * If true
 	 *
-	 * @var boolean
+	 * @public boolean
 	 */
-	var $function_provided_by_action = true;
+	public $function_provided_by_action = true;
 
 	/**
-	 * Set the function name if you have a custom name you want to provide.
+	 * Set the public function name if you have a custom name you want to provide.
 	 *
-	 * @var string
+	 * @public string
 	 */
-	var $function_name = null;
+	public $function_name = null;
 
-	 function JavascriptDocumentAction($oDocument = null, $oUser = null, $oPlugin = null)
+	 public function JavascriptDocumentAction($oDocument = null, $oUser = null, $oPlugin = null)
 	 {
 	 	parent::KTDocumentAction($oDocument, $oUser, $oPlugin);
 	 	$this->js_initialise();
 	 }
 
-	function js_initialise()
+	public function js_initialise()
 	{
 		// this will be overridden
 	}
 
-	function js_include($js)
+	public function js_include($js)
 	{
 		$this->js[] = $js;
 	}
 
-	function js_include_file($path)
+	public function js_include_file($path)
 	{
 		global $AjaxDocumentJSPaths;
 
@@ -395,7 +408,7 @@ class JavascriptDocumentAction extends KTDocumentAction
 		}
 	}
 
-	function customiseInfo($aInfo)
+	public function customiseInfo($aInfo)
 	{
 		$js = '';
 		foreach($this->js_paths as $path)
@@ -419,7 +432,7 @@ class JavascriptDocumentAction extends KTDocumentAction
         return $aInfo;
     }
 
-    function getScript()
+    public function getScript()
     {
     	if ($this->function_provided_by_action === false)
     	{
@@ -428,12 +441,12 @@ class JavascriptDocumentAction extends KTDocumentAction
     	return "function " . $this->getScriptActivation() . '{'.$this->getFunctionScript().'}';
     }
 
-	function getFunctionScript()
+	public function getFunctionScript()
 	{
 		return 'alert(\''. $this->getDisplayName()  .' not implemented!\');';
 	}
 
-    function getScriptActivation()
+    public function getScriptActivation()
     {
     	if (!is_null($this->function_name))
     	{
@@ -447,12 +460,12 @@ class JavascriptDocumentAction extends KTDocumentAction
 }
 
 class KTDocumentActionUtil {
-    function getDocumentActionInfo($slot = 'documentaction') {
+    public function getDocumentActionInfo($slot = 'documentaction') {
         $oRegistry =& KTActionRegistry::getSingleton();
         return $oRegistry->getActions($slot);
     }
 
-    static public function &getDocumentActionsForDocument(&$oDocument, $oUser, $slot = 'documentaction') {
+    public static function &getDocumentActionsForDocument(&$oDocument, $oUser, $slot = 'documentaction') {
         $aObjects = array();
         $actions = KTDocumentActionUtil::getDocumentActionInfo($slot);
         foreach ($actions as $aAction) {
@@ -467,7 +480,7 @@ class KTDocumentActionUtil {
         return $aObjects;
     }
 
-    function getAllDocumentActions($slot = 'documentaction') {
+    public function getAllDocumentActions($slot = 'documentaction') {
         $aObjects = array();
         $oDocument = null;
         $oUser = null;
@@ -483,7 +496,7 @@ class KTDocumentActionUtil {
         return $aObjects;
     }
 
-    function getDocumentActionsByNames($aNames, $slot = 'documentaction', $oDocument = null, $oUser = null) {
+    public function getDocumentActionsByNames($aNames, $slot = 'documentaction', $oDocument = null, $oUser = null) {
         $aObjects = array();
         foreach (KTDocumentActionUtil::getDocumentActionInfo($slot) as $aAction) {
             list($sClassName, $sPath, $sName, $sPlugin) = $aAction;
