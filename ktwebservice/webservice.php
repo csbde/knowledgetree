@@ -1276,7 +1276,7 @@ class KTWebService {
 
     function get_document_detail_by_title($session_id, $folder_id, $title, $detail='')
     {
-        return $this->get_document_detail_by_name($session_id, $folder_id,  $title, 'T', $detail);
+        return $this->get_document_detail_by_name($session_id, $folder_id, $title, 'T', $detail);
     }
 
     /**
@@ -1404,7 +1404,7 @@ class KTWebService {
         return new SOAP_Value('return', "{urn:$this->namespace}kt_document_shortcuts", $response);
     }
 
-    function add_document_with_key($session_id, $folder_id,  $title, $filename, $documenttype, $tempfilename, $unique_file_id = null)
+    function add_document_with_key($session_id, $folder_id, $title, $filename, $documenttype, $tempfilename, $unique_file_id = null)
     {
         if (empty($tempfilename) && !empty($unique_file_id)) {
             $upload_manager = new KTUploadManager();
@@ -1418,7 +1418,7 @@ class KTWebService {
             }
         }
 
-        return $this->add_document($session_id, $folder_id,  $title, $filename, $documenttype, $tempfilename);
+        return $this->add_document($session_id, $folder_id, $title, $filename, $documenttype, $tempfilename);
     }
 
     /**
@@ -1432,7 +1432,7 @@ class KTWebService {
      * @param string $tempfilename
      * @return kt_document_detail. status_code can be KTWS_ERR_INVALID_SESSION, KTWS_ERR_INVALID_FOLDER, KTWS_ERR_INVALID_DOCUMENT or KTWS_SUCCESS
      */
-    function add_document($session_id, $folder_id,  $title, $filename, $documenttype, $tempfilename)
+    function add_document($session_id, $folder_id, $title, $filename, $documenttype, $tempfilename)
     {
         $this->debug("add_document('$session_id', $folder_id, '$title', '$filename', '$documenttype', '$tempfilename')");
         $kt = &$this->get_ktapi($session_id );
@@ -1466,7 +1466,7 @@ class KTWebService {
         $document = &$folder->add_document($title, $filename, $documenttype, $tempfilename);
         if (PEAR::isError($document))
         {
-            $status = ($document instanceof KTAPI_DocumentTypeError) ?KTWS_ERR_INVALID_DOCUMENT_TYPE:KTWS_ERR_INVALID_DOCUMENT;
+            $status = ($document instanceof KTAPI_DocumentTypeError) ? KTWS_ERR_INVALID_DOCUMENT_TYPE : KTWS_ERR_INVALID_DOCUMENT;
             $response = KTWebService::_status($status, $document);
             $this->debug("add_document - cannot add document - "  . $document->getMessage(), $session_id);
             return new SOAP_Value('return', "{urn:$this->namespace}kt_document_detail", $response);
@@ -1482,7 +1482,7 @@ class KTWebService {
         return new SOAP_Value('return', "{urn:$this->namespace}kt_document_detail", $detail);
     }
 
-    function add_small_document_with_metadata($session_id, $folder_id,  $title, $filename, $documenttype, $base64, $metadata, $sysdata)
+    function add_small_document_with_metadata($session_id, $folder_id, $title, $filename, $documenttype, $base64, $metadata, $sysdata)
     {
         $add_result = $this->add_small_document($session_id, $folder_id, $title, $filename, $documenttype, $base64);
 
@@ -1522,7 +1522,7 @@ class KTWebService {
         return $update_result;
     }
 
-    function add_document_with_key_with_metadata($session_id, $folder_id,  $title, $filename, $documenttype, $tempfilename, $metadata, $sysdata, $unique_file_id = null)
+    function add_document_with_key_with_metadata($session_id, $folder_id, $title, $filename, $documenttype, $tempfilename, $metadata, $sysdata, $unique_file_id = null)
     {
         if (empty($tempfilename) && !empty($unique_file_id)) {
             $upload_manager = new KTUploadManager();
@@ -1536,10 +1536,10 @@ class KTWebService {
             }
         }
 
-        return $this->add_document_with_metadata($session_id, $folder_id,  $title, $filename, $documenttype, $tempfilename, $metadata, $sysdata);
+        return $this->add_document_with_metadata($session_id, $folder_id, $title, $filename, $documenttype, $tempfilename, $metadata, $sysdata);
     }
 
-    function add_document_with_metadata($session_id, $folder_id,  $title, $filename, $documenttype, $tempfilename, $metadata, $sysdata)
+    function add_document_with_metadata($session_id, $folder_id, $title, $filename, $documenttype, $tempfilename, $metadata, $sysdata)
     {
         $add_result = $this->add_document($session_id, $folder_id, $title, $filename, $documenttype, $tempfilename);
 
@@ -1621,6 +1621,17 @@ class KTWebService {
     /**
      * Adds a document to the repository.
      *
+     * Replaces white space in base64 encoding with +.
+     *
+     * Warning: Base64 with space instead of plus is not compatible with the base64 specification
+     *          and is not a recognized variant.  Replacing the spaces with + without being sure
+     *          of the need is not recommended.  Use this function ONLY if you are sure that your
+     *          source is giving you base64 with + replaced by space.
+     *
+     *          Correct functioning is NOT guaranteed.
+     *          See http://www.php.net/manual/en/function.base64-decode.php for details.
+     *          (Post by: twm at twmacinta dot com 10-Jul-2008 03:38)
+     *
      * @param string $session_id
      * @param int $folder_id
      * @param string $title
@@ -1629,18 +1640,34 @@ class KTWebService {
      * @param string $base64
      * @return kt_document_detail. status_code can be KTWS_ERR_INVALID_SESSION, KTWS_ERR_INVALID_FOLDER, KTWS_ERR_INVALID_DOCUMENT or KTWS_SUCCESS
      */
-    function add_small_document($session_id, $folder_id,  $title, $filename, $documenttype, $base64)
+    function add_small_document_special($session_id, $folder_id, $title, $filename, $documenttype, $base64)
+    {
+        $base64 = str_replace(' ', '+', $base64);
+        return $this->add_small_document($session_id, $folder_id, $title, $filename, $documenttype, $base64);
+    }
+
+    /**
+     * Adds a document to the repository.
+     *
+     * @param string $session_id
+     * @param int $folder_id
+     * @param string $title
+     * @param string $filename
+     * @param string $documenttype
+     * @param string $base64
+     * @return kt_document_detail. status_code can be KTWS_ERR_INVALID_SESSION, KTWS_ERR_INVALID_FOLDER, KTWS_ERR_INVALID_DOCUMENT or KTWS_SUCCESS
+     */
+    function add_small_document($session_id, $folder_id, $title, $filename, $documenttype, $base64)
     {
         $this->debug("add_small_document('$session_id', $folder_id, '$title', '$filename', '$documenttype', '*** base64 content ***')");
+
         $kt = &$this->get_ktapi($session_id );
-        if (is_array($kt))
-        {
+        if (is_array($kt)) {
             return new SOAP_Value('return', "{urn:$this->namespace}kt_document_detail", $kt);
         }
 
         $folder = &$kt->get_folder_by_id($folder_id);
-        if (PEAR::isError($folder))
-        {
+        if (PEAR::isError($folder)) {
             $response = KTWebService::_status(KTWS_ERR_INVALID_FOLDER, $folder);
             $this->debug("add_small_document - cannot get folderid $folder_id - "  . $folder->getMessage(), $session_id);
             return new SOAP_Value('return', "{urn:$this->namespace}kt_document_detail", $response);
@@ -1648,8 +1675,7 @@ class KTWebService {
 
         $upload_manager = new KTUploadManager();
         $tempfilename = $upload_manager->store_base64_file($base64);
-        if (PEAR::isError($tempfilename))
-        {
+        if (PEAR::isError($tempfilename)) {
             $reason = $tempfilename->getMessage();
             $response = KTWebService::_status(KTWS_ERR_INVALID_DOCUMENT, 'Cannot write to temp file: ' . $tempfilename . ". Reason: $reason");
             $this->debug("add_small_document - cannot write $tempfilename. Reason: $reason", $session_id);
@@ -1662,8 +1688,7 @@ class KTWebService {
 
         // add the document
         $document = &$folder->add_document($title, $filename, $documenttype, $tempfilename);
-        if (PEAR::isError($document))
-        {
+        if (PEAR::isError($document)) {
             $status = ($document instanceof KTAPI_DocumentTypeError) ?KTWS_ERR_INVALID_DOCUMENT_TYPE:KTWS_ERR_INVALID_DOCUMENT;
             $response = KTWebService::_status($status, $document);
 
@@ -5342,7 +5367,6 @@ class KTWebService {
             array('in' => array('session_id' => 'string', 'folder_id' => 'int', 'title' => 'string', 'filename' => 'string', 'documentype' =>'string', 'base64' =>'string' ),
              'out' => array( 'return' => "{urn:$this->namespace}kt_document_detail" ),
              'alias' => 'add_small_document'
-
             );
 
          if ($this->version >= 2)
@@ -5475,11 +5499,23 @@ class KTWebService {
               'alias' => 'download_small_document'
             );
 
-            if ($this->version >= 3)
-            {
+            if ($this->version >= 3) {
                 $this->__dispatch_map['download_document']['in'] = array('session_id' => 'string', 'document_id' => 'int', 'version' => 'string' );
                 $this->__dispatch_map['download_small_document']['in'] = array('session_id' => 'string', 'document_id' => 'int', 'version' => 'string' );
                 $this->__dispatch_map['download_base64_document']['in'] = array('session_id' => 'string', 'document_id' => 'int', 'version' => 'string' );
+
+                // add_small_document_special
+                $this->__dispatch_map['add_small_document_special'] =
+                   array('in' => array('session_id' => 'string', 'folder_id' => 'int', 'title' => 'string', 'filename' => 'string', 'documentype' =>'string', 'base64' =>'string' ),
+                    'out' => array( 'return' => "{urn:$this->namespace}kt_document_detail" ),
+                );
+
+                // add_base64_document_special
+                $this->__dispatch_map['add_base64_document_special'] =
+                   array('in' => array('session_id' => 'string', 'folder_id' => 'int', 'title' => 'string', 'filename' => 'string', 'documentype' =>'string', 'base64' =>'string' ),
+                    'out' => array( 'return' => "{urn:$this->namespace}kt_document_detail" ),
+                    'alias' => 'add_small_document_special'
+                );
             }
 
             // delete_document
