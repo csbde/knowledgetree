@@ -44,13 +44,14 @@ class KTNewFeatureNotificationPlugin extends KTPlugin {
 	public $iVersion = 0;
 	public $autoRegister = true;
 	public $showInAdmin = false;
+	public $createSQL = true;
 
 	public function __construct($sFilename = null)
 	{
 		$res = parent::KTPlugin($sFilename);
 		$this->sFriendlyName = _kt('New Features Notfications');
-		$this->sSQLDir = dirname(__FILE__) . DIRECTORY_SEPARATOR. 'sql' . DIRECTORY_SEPARATOR;
-		$this->dir = dirname(__FILE__);
+		$this->dir = dirname(__FILE__) . DIRECTORY_SEPARATOR;
+		$this->sSQLDir = $this->dir . 'sql' . DIRECTORY_SEPARATOR;
 
 		return $res;
 	}

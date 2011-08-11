@@ -81,7 +81,7 @@ class backgroundaction
 	 * send operation to queue
 	 * @var array
 	 */
-	private $threshold = array(	'move' =>	array(	'documents' => 500,
+	private $threshold = array(	'move' =>	array(	'documents' => 0,
 													'folders' => 50
 												),
 								'delete' =>	array(	'documents' => 250,
