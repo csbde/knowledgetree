@@ -59,7 +59,7 @@ class GraphAnalyticsPage extends KTStandardDispatcher {
 	    global $default;
 
 	    $templating =& KTTemplating::getSingleton();
-	    $template = $templating->loadTemplate('graphspage');
+	    $template = $templating->loadTemplate('graphs_viewlet');
         $ktAnalytics = new GraphicalAnalytics();
 		global $main;
 	    $templateData = array(

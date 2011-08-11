@@ -2015,7 +2015,7 @@ tr.dyncond_selector td {
 
 
 /* Graphs and Tables */
-div.graph { width: 250px; height: 200px; }
+div.graph { width: 230px; height: 200px; }
 
 td.docnowrap { white-space: nowrap; overflow: hidden; width: 200px;}
 
