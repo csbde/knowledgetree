@@ -59,6 +59,13 @@ kt.app.document_actions = new function() {
 
 	this.checkout_actions = function(documentId, type)
     {
+    	// check for background task preventing the action
+    	var result = kt.app.blockActions.checkForBackgroundedTasks(type);
+    	
+    	if (result) {
+    	    return false;
+    	}
+        
 		self.documentId = documentId;
 		self.type = type;
 
@@ -371,6 +378,13 @@ kt.app.document_actions = new function() {
 
     this.changeOwner = function(documentId) {
 
+    	// check for background task preventing the action
+    	var result = kt.app.blockActions.checkForBackgroundedTasks('ownershipchange');
+    	
+    	if (result) {
+    	    return false;
+    	}
+        
 		namespace = 'ktajax.actions.document.workflow';
 		namespace = 'ktcore.actions.document.ownershipchange';
 		baseUrl = 'action.php?kt_path_info=' + namespace + '&';

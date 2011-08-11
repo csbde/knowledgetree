@@ -124,6 +124,11 @@ class KTFolderAction extends KTStandardDispatcher {
         }
     }
 
+    public function getOnClick()
+    {
+        return '';
+    }
+    
     public function getInfo()
     {
     	if(!empty($this->bulkActionInProgress)) {
@@ -141,6 +146,7 @@ class KTFolderAction extends KTStandardDispatcher {
             'name' => $this->getDisplayName(),
             'ns' => $this->sName,
             'url' => $this->getURL(),
+            'onclick' => $this->getOnClick(),
             'class' => $this->cssClass,
             'parent' => $this->parentBtn,
             'status' => $status
@@ -398,7 +404,8 @@ class KTFolderActionUtil {
     {
         $objects = array();
 
-        foreach (KTFolderActionUtil::getFolderActions($slot) as $action) {
+        $folderActions = KTFolderActionUtil::getFolderActions($slot);
+        foreach ($folderActions as $action) {
             list($class, $path, $plugin) = $action;
             $pluginRegistry =& KTPluginRegistry::getSingleton();
             $plugin =& $pluginRegistry->getPlugin($plugin);
@@ -430,7 +437,56 @@ class KTFolderActionUtil {
         return $aObjects;
     }
 
-
+    public static function checkForBackgroundedAction($folderId = '', $action = '')
+    {
+        if (!empty($action)) {
+            // "document" action refers to the zoho plugin
+            $blockedActions = array('document', 'addDocument', 'addFolder', 'rename', 'roles', 'copy', 'move', 'delete', 'archive', 'checkin', 'checkout');
+            
+            $action = explode('.', $action);
+            $action = array_pop($action);
+            
+            if (!in_array($action, $blockedActions)) {
+                return false;
+            }
+        }
+        
+        // todo: make neat 
+        $redirect = '';
+        if (empty($folderId)) {
+            $folderId = $_REQUEST['fFolderId'];
+            $redirect = KTUtil::kt_clean_folder_url($folderId);
+            
+            if (empty($folderId)) {
+                $documentId = $_REQUEST['fDocumentId'];
+                
+                if (!empty($documentId)) {
+                    $document = Document::get($documentId);
+                    $folderId = $document->getFolderId();
+                    $redirect = KTUtil::kt_clean_document_url($documentId);
+                } 
+                else {
+                    $folderId = 1;
+                }
+            }
+        }
+        
+        // todo: refactor to check bulk actions ...
+        include_once(KT_LIB_DIR . '/permissions/BackgroundPermissions.php');
+        $accountName = (defined('ACCOUNT_NAME')) ? ACCOUNT_NAME : '';
+        
+        $backgroundPerms = new BackgroundPermissions($folderId, $accountName);
+        $check = $backgroundPerms->checkIfFolderAffected();
+        $message = '';
+        
+        if ($check) {
+            $message = 'This action cannot be performed as a permissions update is currently in progress. Please try again later.';
+        }
+        
+        $response = array('check' => $check, 'message' => $message, 'redirect' => $redirect);
+        
+        return $response;
+    }
 }
 
 ?>

@@ -82,6 +82,15 @@ class KTActionDispatcher extends KTStandardDispatcher {
             $this->errorPage(sprintf(_kt('No such action exists in %s'), APP_NAME));
         }
 
+        // check for a bulk action or permissions update that may affect this action request
+        $response = KTFolderActionUtil::checkForBackgroundedAction(null, $action);
+        
+        if ($response['check']) {
+            $this->addErrorMessage($response['message']);
+            redirect($response['redirect']);
+            exit();
+        }
+        
         $filename = $actionInfo[1];
         if (!empty($filename)) {
             require_once($filename);

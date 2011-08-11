@@ -33,35 +33,29 @@
  * must display the words "Powered by KnowledgeTree" and retain the original
  * copyright notice.
  * Contributor( s): ______________________________________
- *
  */
-require_once(KT_LIB_DIR . '/plugins/plugin.inc.php');
-require_once(KT_LIB_DIR . '/plugins/pluginregistry.inc.php');
-require_once(KT_LIB_DIR . '/templating/templating.inc.php');
 
-class KTNewFeatureNotificationPlugin extends KTPlugin {
-	public $sNamespace = 'new.feature.notification.plugin';
-	public $iVersion = 0;
-	public $autoRegister = true;
-	public $showInAdmin = false;
-	public $createSQL = true;
-
-	public function __construct($sFilename = null)
+class BulkDocumentActions
+{
+	public static function queueBulkAction($action, $list, $reason, $targetFolderId, $currentFolderId)
 	{
-		$res = parent::KTPlugin($sFilename);
-		$this->sFriendlyName = _kt('New Features Notfications');
-		$this->dir = dirname(__FILE__) . DIRECTORY_SEPARATOR;
-		$this->sSQLDir = $this->dir . 'sql' . DIRECTORY_SEPARATOR;
+    	require_once(KT_LIVE_DIR . '/sqsqueue/dispatchers/BulkactionDispatcher.php');
+    	$bulkActionDispatcher = new BulkactionDispatcher();
+    	$params['action'] = $action;
+    	$params['files_and_folders'] = $list;
+    	$params['reason'] = $reason;
+    	$params['targetFolderId'] = $targetFolderId;
+    	$params['currentFolderId'] = $currentFolderId;
+    	$bulkActionDispatcher->addProcess("bulkactions", $params);
+    	$queueResponse = $bulkActionDispatcher->sendToQueue();
+    	if($queueResponse) {
+    		require_once(KT_LIB_DIR . '/backgroundactions/backgroundaction.inc.php');
+			backgroundaction::saveEvent($action, $list, $currentFolderId, $targetFolderId);
+    	}
 
-		return $res;
+    	return $queueResponse;
 	}
 
-	public function setup() {
 
-	}
 }
-
-$oPluginRegistry = KTPluginRegistry::getSingleton();
-$oPluginRegistry->registerPlugin('KTNewFeatureNotificationPlugin', 'new.feature.notification.plugin', __FILE__);
-
 ?>

@@ -84,7 +84,11 @@ class KTAuthenticationProvider extends KTStandardDispatcher {
 
     public function handleOutput($output)
     {
-        print $output;
+		if (in_array($this->action_prefix, $this->defaultOutput)) {
+			return parent::handleOutput($output);
+		}
+
+        return print $output;
     }
 
     function &getSource() {

@@ -2,7 +2,7 @@
 <!-- FILE: kt3/fieldsets/simple.smarty -->
 	<div class="detail-fieldset" rel='{literal}{{/literal}"documentID":"{$document->getId()}"{literal}}{/literal}'>
 	    <h3 title='{$description}'>{$fieldset->getName()}
-	    {if $bulkActionInProgress == ''}
+	    {if !$bulkActionInProgress}
 	    	<span title="Click to edit" class="editable-control metadata edit">&nbsp;</span>
 	    {/if}
 	    </h3>

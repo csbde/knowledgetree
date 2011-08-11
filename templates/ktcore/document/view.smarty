@@ -24,7 +24,7 @@
                     <span data-name="documentTitle" data-type='text' data-value-id="value-title" data-class="required"></span>
 					<span id="value-title">{i18n}{$document->getName()|sanitize}{/i18n}</span>
 					<span class="save-placeholder">&nbsp;</span>
-					{if $bulkActionInProgress == ''}
+					{if !$bulkActionInProgress}
 						<span title="Click to edit" class="editable-control title edit">&nbsp;</span>
 					{/if}
 				</div>
@@ -40,16 +40,38 @@
 				<span data-name="documentFilename" data-type='text' data-value-id="value-filename" data-class="required"></span>
 					<span id="value-filename"><p>{$document->getFileName()}</p></span>
 					<span class="save-placeholder">&nbsp;</span>
-					{if $bulkActionInProgress == ''}
+					{if !$bulkActionInProgress}
 						<span title="Click to edit" class="editable-control filename edit">&nbsp;</span>
 					{/if}
 				</div>
                 </td>
             </tr>
             <tr id="middle_doc_info_area">
-                <!-- <td style="display:none;" width="1" valign="top" style="padding-right: 15px;"><span id="doc_thumb" style="float:left;" /></td> -->
+
 			<td height="1" valign="top" width="310">
                     <div class="doc_description">
+						{if $ratingContentEnabled}
+							<div id="documentLikeStatus">
+								{if $userLikesDocument}
+									<span class="like_status liked"><a href="javascript:;" onclick="kt.app.ratingcontent.unlikeDocument({$document->getId()}, false);">Like</a></span>
+								{else}
+									<span class="like_status"><a href="javascript:;" onclick="kt.app.ratingcontent.likeDocument({$document->getId()}, false);">Like</a></span>
+								{/if}
+								
+								<span class="like_count" style="vertical-align:top; margin-left: 2px;">
+									{if $numDocumentLikes == 1}
+										{i18n}1 person likes this{/i18n}
+									{else}
+										{if $userLikesDocument}
+											{i18n}You and{/i18n} {$numDocumentLikes-1} {i18n}people likes this{/i18n} 
+										{else} 
+											{$numDocumentLikes} {i18n}people like this{/i18n} 
+										{/if}
+									{/if}
+								</span>
+							</div>
+						{/if}
+						
                         <span class="doc_info" style="display: block;">
                         <table class="metadatatable">
                         	<tr>
@@ -81,7 +103,7 @@
 							</tr>
 							<tr id="document-tags">
 							<th>Tags:</th><td><span class="document-tags"></span>
-							{if $bulkActionInProgress == ''}
+							{if !$bulkActionInProgress}
 								<span title="Click to edit" class="editable-control tags edit">&nbsp;</span></td>
 							{/if}
 							</tr>
@@ -100,7 +122,7 @@
 						<td>
 							<span class="descriptiveText" id='documentTypeID' data-name='documentTypeID' data-options='[{foreach from=$document_types key=aKey item=documentType}
 								["{$documentType->getName()}","{$documentType->getId()}"],{/foreach}]' data-type='select'>{$document_data.document_type->getName()}</span>
-							{if $bulkActionInProgress == ''}
+							{if !$bulkActionInProgress}
 								<span title="Click to edit" class="editable-control doctype edit">&nbsp;</span>
 							{/if}
 						</td>

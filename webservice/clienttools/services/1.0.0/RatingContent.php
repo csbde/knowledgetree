@@ -33,35 +33,51 @@
  * must display the words "Powered by KnowledgeTree" and retain the original
  * copyright notice.
  * Contributor( s): ______________________________________
- *
  */
-require_once(KT_LIB_DIR . '/plugins/plugin.inc.php');
-require_once(KT_LIB_DIR . '/plugins/pluginregistry.inc.php');
-require_once(KT_LIB_DIR . '/templating/templating.inc.php');
 
-class KTNewFeatureNotificationPlugin extends KTPlugin {
-	public $sNamespace = 'new.feature.notification.plugin';
-	public $iVersion = 0;
-	public $autoRegister = true;
-	public $showInAdmin = false;
-	public $createSQL = true;
+require_once(KT_PLUGIN_DIR . '/RatingContent/KTRatingContent.php');
 
-	public function __construct($sFilename = null)
+class RatingContent extends client_service {
+
+	public function likeDocument($params)
 	{
-		$res = parent::KTPlugin($sFilename);
-		$this->sFriendlyName = _kt('New Features Notfications');
-		$this->dir = dirname(__FILE__) . DIRECTORY_SEPARATOR;
-		$this->sSQLDir = $this->dir . 'sql' . DIRECTORY_SEPARATOR;
-
-		return $res;
+		$ratingContent = new KTRatingContent();
+		
+		$newNum = $ratingContent->likeDocument($params['documentId'], $_SESSION['userID']);
+		
+    	$this->addResponse('newNumLikes', $newNum);
+		$this->addResponse('success', 'true');
+		$this->addResponse('userLikesDocument', 'true');
+		
+        return true;
 	}
-
-	public function setup() {
-
+	
+	public function unlikeDocument($params)
+	{
+		$ratingContent = new KTRatingContent();
+		
+		$newNum = $ratingContent->unlikeDocument($params['documentId'], $_SESSION['userID']);
+		
+    	$this->addResponse('newNumLikes', $newNum);
+		$this->addResponse('success', 'true');
+		$this->addResponse('userLikesDocument', 'false');
+		
+        return true;
+	}
+	
+	public function testCollection()
+	{
+		$ratingContent = new KTRatingContent();
+		
+		$results = $ratingContent->getLikesInCollection(array(11, 17, 20, 25, 34));
+		$results2 = $ratingContent->getUserLikesInCollection($_SESSION['userID'], array(11, 25, 34));
+		
+		$this->addResponse('results', $results);
+		$this->addResponse('results2', $results2);
+		$this->addResponse('success', 'true');
+		
+        return true;
+		
 	}
 }
-
-$oPluginRegistry = KTPluginRegistry::getSingleton();
-$oPluginRegistry->registerPlugin('KTNewFeatureNotificationPlugin', 'new.feature.notification.plugin', __FILE__);
-
 ?>

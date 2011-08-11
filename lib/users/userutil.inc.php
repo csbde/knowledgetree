@@ -41,9 +41,9 @@ require_once(KT_LIB_DIR . '/util/ktutil.inc');
 
 class KTUserUtil {
 
-    static private $objectTypeMap = array('F' => 'folder', 'D' => 'document');  // map object identifiers to full object names
+    private static $objectTypeMap = array('F' => 'folder', 'D' => 'document');  // map object identifiers to full object names
 
-    static public function createUser($username, $name, $password = null, $email_address = null, $email_notifications = false, $mobile_number = null, $max_sessions = 3, $source_id = null, $details = null, $details2 = null, $disabled_flag = 0)
+    public static function createUser($username, $name, $password = null, $email_address = null, $email_notifications = false, $mobile_number = null, $max_sessions = 3, $source_id = null, $details = null, $details2 = null, $disabled_flag = 0)
     {
         global $default;
 
@@ -73,7 +73,10 @@ class KTUserUtil {
         if (PEAR::isError($user) || ($user == false)) {
             $error = ($user === false) ? '' : $user->getMessage();
             $default->log->error('Couldn\'t create user: '. $error);
-            return PEAR::raiseError(_kt("failed to create user."));
+			if ($error == '') {
+				$error = "Failed to create user.";
+			}
+            return PEAR::raiseError(_kt($error));
         }
 
         // run triggers on user creation
@@ -93,7 +96,7 @@ class KTUserUtil {
         return $user;
     }
 
-    static public function getUserField($userId, $fieldName = 'name')
+    public static function getUserField($userId, $fieldName = 'name')
     {
     	if (!is_array($userId)) { $userId = array($userId); }
     	$userId = array_unique($userId, SORT_NUMERIC);
@@ -119,7 +122,7 @@ class KTUserUtil {
      * @param string $userType
      * @return array The lists of newly invited users, failed invitations and already existing users
      */
-    static public function inviteUsersByEmail($addressList, $groupId = null, $userType = null, $shareContent = null)
+    public static function inviteUsersByEmail($addressList, $groupId = null, $userType = null, $shareContent = null)
     {
         global $default;
 
@@ -133,15 +136,18 @@ class KTUserUtil {
         $failedUsers = array();
         $groupName = '';
     	$group = false;
-	$message = '';
-	$objectTypeName = null;
-	$objectName = null;
+		$message = '';
+		$objectTypeName = null;
+		$objectName = null;
     	$inSystemList = self::checkUniqueEmail($addressList);
+
+    	// store email list before processing
+    	$invitedList = self::getEmailList($addressList) ;
 
     	// loop through any addresses that currently exist and unset them in the invitee list
     	$addressList = array_flip($addressList);
     	foreach ($inSystemList as $item) {
-   	    unset($addressList[$item['email']]);
+   	    	unset($addressList[$item['email']]);
     	    $existingUsers[] = $item;
     	}
     	$addressList = array_flip($addressList);
@@ -165,6 +171,7 @@ class KTUserUtil {
     	// 0 = live; 1 = disabled; 2 = deleted; 3 = invited; 4 = shared
     	$userTypeMap = array('live' => 0, 'disabled' => 1, 'deleted' => 2, 'invited' => 3, 'shared' => 4);
     	foreach ($addressList as $email) {
+    		$i++;
             if (empty($email)) {
                 continue;
             }
@@ -191,6 +198,7 @@ class KTUserUtil {
             if ($userType == 'shared') {
 				self::addSharedContent($user->getId(), $shareContent['object_id'], $shareContent['object_type'], $shareContent['permission']);
             }
+
 
             $invitedUsers[] = $invitedUser;
     	}
@@ -273,7 +281,7 @@ class KTUserUtil {
     	    $s = ($response['invited'] == 1) ? '' : 's';
     	    if ($shareContent['object_type'] == 'D') {
     	        $document = Document::get($shareContent['object_id']);
-                $documentTransaction = new DocumentTransaction($document, "Document shared with {$response['invited']} user$s", 'ktcore.transactions.share');
+                $documentTransaction = new DocumentTransaction($document, "Document shared with $invitedList", 'ktcore.transactions.share');
                 $documentTransaction->create();
     	    }
     	    else if ($shareContent['object_type'] == 'F') {
@@ -291,6 +299,25 @@ class KTUserUtil {
     	return $response;
     }
 
+    private static function getEmailList($addressList)
+    {
+    	// Get list of addresses shared with.
+    	$invitedList = '';
+    	$numEmails = count($addressList);
+    	$i = 0;
+    	foreach ($addressList as $email) {
+			$invitedList .= $email;
+            if($numEmails == $i) {
+            	$invitedList .= ', ';
+            }
+            else {
+            	$invitedList .= '.';
+            }
+    	}
+
+    	return $invitedList;
+    }
+
     /**
      * Check permissions on shared objects.
      *
@@ -299,7 +326,7 @@ class KTUserUtil {
      * @param array $shareContent
      * @return $response
      */
-    static private function checkPermissions($response, $existingUsers, $shareContent)
+    private static function checkPermissions($response, $existingUsers, $shareContent)
     {
     	// Set warning to false
     	$noPermsUsers = array();
@@ -376,7 +403,7 @@ class KTUserUtil {
     	return $response;
     }
 
-    static public function addSharedContent($user_id, $objectId, $objectTypeId, $permission)
+    public static function addSharedContent($user_id, $objectId, $objectTypeId, $permission)
     {
         // Add shared content entry.
         require_once(KT_LIB_DIR . '/render_helpers/sharedContent.inc');
@@ -402,7 +429,7 @@ class KTUserUtil {
      * @param int $iInvited
      * @return int
      */
-    static public function checkUserLicenses($iInvited, $iAvailable)
+    public static function checkUserLicenses($iInvited, $iAvailable)
     {
         if ($iAvailable <= 0) {
             return 1;
@@ -422,7 +449,7 @@ class KTUserUtil {
      * @param array $emailList Array of email addresses: format $list[] = array('id' => $id, 'email' => $email)
      * @return bool
      */
-    static public function sendInvitations($emailList, $userType, $objectTypeName = null, $objectName = null)
+    public static function sendInvitations($emailList, $userType, $objectTypeName = null, $objectName = null)
     {
         $sender = self::getSender();
         $list = array();
@@ -463,14 +490,14 @@ class KTUserUtil {
 		}
     }
 
-    static public function createSharedLink($item, $objectTypeName)
+    public static function createSharedLink($item, $objectTypeName)
     {
     	// The first shared object will always show in browse view landing.
     	// No need to redirect to it
         return self::createUserLink($item); // . '_' . $item['id'] . '_' . $objectTypeName;
     }
 
-    static public function createUserLink($item)
+    public static function createUserLink($item)
     {
     	$url = KTUtil::kt_url() . '/users/key/';
         // new user id generation
@@ -488,7 +515,7 @@ class KTUserUtil {
      * @param array $list - email parameters
      * @return boolean - true on success, false on failure
      */
-    static public function sendSharedInvite($list)
+    public static function sendSharedInvite($list)
     {
         if (ACCOUNT_ROUTING_ENABLED)
         {
@@ -504,7 +531,7 @@ class KTUserUtil {
      * @param array $list - email parameters
      * @return boolean - true on success, false on failure
      */
-    static public function sendUserInvite($list)
+    public static function sendUserInvite($list)
     {
         if (ACCOUNT_ROUTING_ENABLED)
         {
@@ -520,7 +547,7 @@ class KTUserUtil {
      * @param array $emailList Array of email addresses: format $list[] = array('id' => $id, 'email' => $email)
      * @return bool
      */
-    static public function sendNotifications($emailList, $objectId, $objectTypeName, $objectName, $message = '')
+    public static function sendNotifications($emailList, $objectId, $objectTypeName, $objectName, $message = '')
     {
     	global $default;
 
@@ -571,7 +598,7 @@ class KTUserUtil {
      * @param int $objectId - the id of folder or document
      * @return string $link - a link to content
      */
-    static public function createContentLink($objectTypeName, $objectId)
+    public static function createContentLink($objectTypeName, $objectId)
     {
     	$server = KTUtil::kt_url();
     	if (is_null($objectTypeName) || ($objectTypeName == 'document'))
@@ -595,7 +622,7 @@ class KTUserUtil {
      * @param array $list
      * @return boolean
      */
-    static private function dispatchQueueEvent($list, $subject, $action, $content, $emailFrom = null)
+    private static function dispatchQueueEvent($list, $subject, $action, $content, $emailFrom = null)
     {
         if (empty($emailFrom)) {
             global $default;
@@ -647,7 +674,7 @@ class KTUserUtil {
      * @param array $addresses
      * @return array
      */
-    static public function checkUniqueEmail($addresses)
+    public static function checkUniqueEmail($addresses)
     {
         if (empty($addresses)) {
             return false;
@@ -679,7 +706,7 @@ class KTUserUtil {
      * @param int $objectTypeId - an 'F' for folder and a 'D' for document
      * @return string $name
      */
-    static private function getObjectName($id, $objectTypeId)
+    private static function getObjectName($id, $objectTypeId)
     {
         $name = null;
 

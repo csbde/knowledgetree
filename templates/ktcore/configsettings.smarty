@@ -6,7 +6,7 @@
     {* <!-- Display the group name and description --> *}
     {foreach from=$groupList item=groupItem}
         {assign var=group value=$groupItem.name}
-            
+
         </span></h3>
         <span class='descriptiveText'></span>
             <div id='{$groupItem.id}' style='visibility: visible;'>
@@ -16,9 +16,9 @@
 
                     <div class="settings-field" style='padding-bottom: 15px;' {if $settings.description}title="{$settings.description}"{/if}>
                         <p class="display-name">{$settings.display_name}</p>
-                        <div class="settings-option">
-{$context->renderInput($settings.id, $settings.type, $settings.value, $settings.default_value, $settings.options)}</div>
-                    </div>
+                        <div class="settings-option" style="{$context->getStyle($settings.options)}">
+							{$context->renderInput($settings.id, $settings.type, $settings.value, $settings.default_value, $settings.options)}</div>
+                    	</div>
 
                 {/foreach}
 

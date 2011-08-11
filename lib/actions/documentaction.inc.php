@@ -438,7 +438,7 @@ class JavascriptDocumentAction extends KTDocumentAction
     	{
     		return '';
     	}
-    	return "public function " . $this->getScriptActivation() . '{'.$this->getFunctionScript().'}';
+    	return "function " . $this->getScriptActivation() . '{'.$this->getFunctionScript().'}';
     }
 
 	public function getFunctionScript()

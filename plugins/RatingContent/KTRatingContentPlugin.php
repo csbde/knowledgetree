@@ -39,8 +39,8 @@ require_once(KT_LIB_DIR . '/plugins/plugin.inc.php');
 require_once(KT_LIB_DIR . '/plugins/pluginregistry.inc.php');
 require_once(KT_LIB_DIR . '/templating/templating.inc.php');
 
-class KTNewFeatureNotificationPlugin extends KTPlugin {
-	public $sNamespace = 'new.feature.notification.plugin';
+class KTRatingContentPlugin extends KTPlugin {
+	public $sNamespace = 'actionableinsights.ratingcontent.plugin';
 	public $iVersion = 0;
 	public $autoRegister = true;
 	public $showInAdmin = false;
@@ -49,7 +49,7 @@ class KTNewFeatureNotificationPlugin extends KTPlugin {
 	public function __construct($sFilename = null)
 	{
 		$res = parent::KTPlugin($sFilename);
-		$this->sFriendlyName = _kt('New Features Notfications');
+		$this->sFriendlyName = _kt('Actionable Insights Rating Content');
 		$this->dir = dirname(__FILE__) . DIRECTORY_SEPARATOR;
 		$this->sSQLDir = $this->dir . 'sql' . DIRECTORY_SEPARATOR;
 
@@ -57,11 +57,13 @@ class KTNewFeatureNotificationPlugin extends KTPlugin {
 	}
 
 	public function setup() {
+		$dir = dirname(__FILE__) . DIRECTORY_SEPARATOR;
+		$dir = str_replace(KT_DIR, '', $dir);
 
 	}
 }
 
 $oPluginRegistry = KTPluginRegistry::getSingleton();
-$oPluginRegistry->registerPlugin('KTNewFeatureNotificationPlugin', 'new.feature.notification.plugin', __FILE__);
+$oPluginRegistry->registerPlugin('KTRatingContentPlugin', 'actionableinsights.ratingcontent.plugin', __FILE__);
 
 ?>
