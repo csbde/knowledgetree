@@ -35,49 +35,27 @@
  * Contributor( s): ______________________________________
  */
 
-require_once(KT_PLUGIN_DIR . '/RatingContent/KTRatingContent.php');
+class BulkDocumentActions
+{
+	public static function queueBulkAction($action, $list, $reason, $targetFolderId, $currentFolderId)
+	{
+    	require_once(KT_LIVE_DIR . '/sqsqueue/dispatchers/BulkactionDispatcher.php');
+    	$bulkActionDispatcher = new BulkactionDispatcher();
+    	$params['action'] = $action;
+    	$params['files_and_folders'] = $list;
+    	$params['reason'] = $reason;
+    	$params['targetFolderId'] = $targetFolderId;
+    	$params['currentFolderId'] = $currentFolderId;
+    	$bulkActionDispatcher->addProcess("bulkactions", $params);
+    	$queueResponse = $bulkActionDispatcher->sendToQueue();
+    	if($queueResponse) {
+    		require_once(KT_LIB_DIR . '/backgroundactions/backgroundaction.inc.php');
+			backgroundaction::saveEvent($action, $list, $currentFolderId, $targetFolderId);
+    	}
 
-class RatingContent extends client_service {
+    	return $queueResponse;
+	}
 
-	public function likeDocument($params)
-	{
-		$ratingContent = new KTRatingContent();
-		
-		$newNum = $ratingContent->likeDocument($params['documentId'], $_SESSION['userID']);
-		
-    	$this->addResponse('newNumLikes', $newNum);
-		$this->addResponse('success', 'true');
-		$this->addResponse('userLikesDocument', 'true');
-		
-        return true;
-	}
-	
-	public function unlikeDocument($params)
-	{
-		$ratingContent = new KTRatingContent();
-		
-		$newNum = $ratingContent->unlikeDocument($params['documentId'], $_SESSION['userID']);
-		
-    	$this->addResponse('newNumLikes', $newNum);
-		$this->addResponse('success', 'true');
-		$this->addResponse('userLikesDocument', 'false');
-		
-        return true;
-	}
-	
-	public function testCollection()
-	{
-		$ratingContent = new KTRatingContent();
-		
-		$results = $ratingContent->getLikesInCollection(array(11, 17, 20, 25, 34));
-		$results2 = $ratingContent->getUserLikesInCollection($_SESSION['userID'], array(11, 25, 34));
-		
-		$this->addResponse('results', $results);
-		$this->addResponse('results2', $results2);
-		$this->addResponse('success', 'true');
-		
-        return true;
-		
-	}
+
 }
 ?>

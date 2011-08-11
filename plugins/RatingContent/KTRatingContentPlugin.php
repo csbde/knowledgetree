@@ -52,6 +52,7 @@ class KTRatingContentPlugin extends KTPlugin {
 		$this->sFriendlyName = _kt('Actionable Insights Rating Content');
 		$this->dir = dirname(__FILE__) . DIRECTORY_SEPARATOR;
 		$this->sSQLDir = $this->dir . 'sql' . DIRECTORY_SEPARATOR;
+
 		return $res;
 	}
 

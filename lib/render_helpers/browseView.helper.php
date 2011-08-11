@@ -16,15 +16,15 @@ require_once(KT_LIB_DIR . '/render_helpers/SharedUserBrowseView.inc.php');
  */
 class BrowseViewUtil {
 
-    public static function getBrowseView($bulkActionInProgress = '')
+    public static function getBrowseView($bulkActionInProgress)
     {
     	$oUser = User::get($_SESSION['userID']);
     	$userType = $oUser->getDisabled();
-    	if($bulkActionInProgress == '') {
+    	if(!$bulkActionInProgress) {
 			return self::getBrowse($userType);
     	}
 	    else {
-	    	return self::getBulkActionBrowse($bulkActionInProgress);
+	    	return self::getBulkActionBrowse($userType, $bulkActionInProgress);
 	    }
 	}
 
@@ -43,10 +43,10 @@ class BrowseViewUtil {
     	}
 	}
 
-	private static function getBulkActionBrowse($bulkActionInProgress)
+	private static function getBulkActionBrowse($userType, $bulkActionInProgress)
 	{
 
-    	switch ($bulkActionInProgress) {
+    	switch ($userType) {
     		case 0 :
     			$bulkActionBrowse = new BulkActionBrowse();
     			break;

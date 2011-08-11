@@ -574,7 +574,7 @@ class KTPage {
                 $this->componentLabel = _kt('Document Details');
                 $this->componentClass = 'document_details';
                 break;
-
+                
             case 'applications':
                 $this->componentLabel = _kt('Applications');
                 $this->componentClass = 'applications';
@@ -589,7 +589,7 @@ class KTPage {
                 $this->componentLabel = _kt('Preferences');
                 $this->componentClass = 'preferences';
                 break;
-
+                
             case 'dashboard':
                 $this->componentLabel = _kt('Dashboard');
                 $this->componentClass = 'dashboard';
@@ -853,7 +853,7 @@ class KTPage {
 		} else {
 		   $aTuple['url'] = false;
 		}
-
+        
         // Id for use with JavaScript
         if ($aActionTuple['id']) {
             $aTuple['id'] = $aActionTuple['id'];
