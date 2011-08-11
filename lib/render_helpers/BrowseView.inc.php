@@ -29,7 +29,14 @@ class BrowseView {
         } else {
             $this->zohoEnabled = false;
         }
-
+		
+		if (KTPluginUtil::pluginIsActive('actionableinsights.ratingcontent.plugin')) {
+            $this->ratingContentEnabled = true;
+            require_once(KT_PLUGIN_DIR . '/RatingContent/KTRatingContent.php');
+        } else {
+            $this->ratingContentEnabled = false;
+        }
+		
         // Include new browse view css
         $page = $GLOBALS['main'];
         $page->requireCSSResource('resources/css/newui/browseView.css');
@@ -325,6 +332,14 @@ class BrowseView {
         $ret['documents'] = ktvar::sortArrayMatrixByKeyValue($ret['documents'], $sortField, $asc);
         $ret['folders'] = ktvar::sortArrayMatrixByKeyValue($ret['folders'], $sortField, $asc);
         }*/
+		
+		
+		
+		// Add Like Count and Status to Document if it is enabled
+		if ($this->ratingContentEnabled) {
+			$KTRatingContent = new KTRatingContent();
+			$KTRatingContent->getLikesInCollection($ret['documents'], $user_id);
+		}
 
         $this->updateSession($folderId);
 
@@ -622,6 +637,20 @@ class BrowseView {
                 }
             }
         }
+		
+		$item['like_status'] = '';
+		if ($this->ratingContentEnabled) {
+			if ($item['user_likes_document']) {
+				$item['like_status'] = '<span class="like_status liked"><a href="javascript:;" onclick="kt.app.ratingcontent.unlikeDocument('.$item['id'].');">'.$item['like_count'].'</a></span>';
+			} else {
+				if ($item['like_count'] == 0) {
+					$item['like_status'] = '<span class="like_status"><a href="javascript:;" onclick="kt.app.ratingcontent.likeDocument('.$item['id'].');">Like</a></span>';
+				} else {
+					$item['like_status'] = '<span class="like_status"><a href="javascript:;" onclick="kt.app.ratingcontent.likeDocument('.$item['id'].');">'.$item['like_count'].'</a></span>';
+				}
+			}
+			
+        }
 
         $item['isfinalize_document'] = ($item['actions.finalize_document']) ? 0 : 1;
         // Sanitize document title
@@ -726,7 +755,7 @@ class BrowseView {
                                 <span class="item"> Owner: <span class="user docowner">[owned_by]</span></span><span class="item">Created: <span class="date">[created_date]</span> by <span class="user">[created_by]</span></span><span class="item docupdatedinfo">Updated: <span class="date">[modified_date]</span> by <span class="user">[modified_by]</span></span><span class="item">File size: <span class="user filesize">[filesize]</span></span>
                             </div>
                         </td>
-                        <td>
+                        <td style="width: 99px;ZZ">
                             ' . $this->getDocumentActionMenu($share_separator) . '
                         </td>
                     </tr>
@@ -748,7 +777,7 @@ class BrowseView {
 
     protected function getDocumentActionMenu($share_separator = null)
     {
-        return '<ul class="doc actionMenu">
+        return '[like_status]<ul class="doc actionMenu">
                                 <!-- li class="actionIcon comments"></li -->
                                 <li class="actionIcon actions">
                                     <ul>
