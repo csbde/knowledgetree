@@ -49,17 +49,19 @@ require_once(KT_LIB_DIR . '/templating/kt3template.inc.php');
 require_once(KT_LIB_DIR . '/dispatcher.inc.php');
 require_once(KT_LIB_DIR . '/dashboard/DashletDisables.inc.php');
 require_once(KT_LIB_DIR . '/foldermanagement/Folder.inc');
+require_once(KT_LIB_DIR . '/actions/dashboardaction.inc.php');
 
 $sectionName = 'dashboard';
 
 class DashboardDispatcher extends KTStandardDispatcher {
 
-	public $sSection = 'dashboard';
+    public $sSection = 'dashboard';
     public $notifications = array();
     public $sHelpPage = 'ktcore/dashboard.html';
-	public $aCannotView = array(4);
+    public $aCannotView = array(4);
 
-    function DashboardDispatcher() {
+    public function DashboardDispatcher()
+    {
         $this->aBreadcrumbs = array(
             array('action' => 'dashboard', 'name' => _kt('Dashboard')),
         );
@@ -67,7 +69,8 @@ class DashboardDispatcher extends KTStandardDispatcher {
         return parent::KTStandardDispatcher();
     }
 
-    function do_main() {
+    public function do_main()
+    {
         $this->oPage->setShowPortlets(false);
         // retrieve action items for the user.
         // FIXME what is the userid?
@@ -103,23 +106,8 @@ class DashboardDispatcher extends KTStandardDispatcher {
             $i %= 2;
         }
 
-        // javascript - broken input focus
-        // using this code causes focus problems in the Go To Document dashlet:
-        // while the input can be focused, it requires clicking the text to the LEFT
-        // of the input, which is not expected nor obvious nor user friendly
-        /*
-        $this->oPage->requireJSResource('thirdpartyjs/extjs/adapter/yui/yui-utilities.js');
-        $this->oPage->requireJSResource('resources/js/DDList.js');
-        */
-
-        // javascript - working input focus - restoring yui fixes the focus problem
-        // yahoo
         $this->oPage->requireJSResource('thirdpartyjs/jquery/jquery_noconflict.js');
-        $this->oPage->requireJSResource('thirdpartyjs/yui/yahoo/yahoo.js');
-        $this->oPage->requireJSResource('thirdpartyjs/yui/event/event.js');
-        $this->oPage->requireJSResource('thirdpartyjs/yui/dom/dom.js');
-        $this->oPage->requireJSResource('thirdpartyjs/yui/dragdrop/dragdrop.js');
-        $this->oPage->requireJSResource('resources/js/DDList.js');
+        $this->oPage->requireJSResource('resources/js/newui/dashboard/moreSidebarItems.js');
 
         $this->oUser->refreshDashboadState();
 
@@ -136,7 +124,6 @@ class DashboardDispatcher extends KTStandardDispatcher {
 
         $dashboardJavascript .= ';';
         $this->oPage->requireJSStandalone($dashboardJavascript);
-        $this->oPage->requireJSResource('resources/js/dashboard.js');
 
         $ktOlarkPopup = null;
         // temporarily disabled
@@ -151,42 +138,51 @@ class DashboardDispatcher extends KTStandardDispatcher {
             unset($_SESSION['isFirstLogin']);
         }
 
+        $sidebars = KTDashboardActionUtil::getActionsForDashboard($this->oUser, 'maindashsidebar');
+		$dashboardViewlets = KTDashboardActionUtil::getAllDashboardActions('dashboardviewlet');
+		$orderedKeys = KTDashboardActionUtil::sortActions($dashboardViewlets);
+
         // render
-        $oTemplating =& KTTemplating::getSingleton();
-        $oTemplate = $oTemplating->loadTemplate('kt3/dashboard');
-        $aTemplateData = array(
+        $templating =& KTTemplating::getSingleton();
+        $template = $templating->loadTemplate('kt3/dashboard');
+        $templateData = array(
               'context' => $this,
               'dashlets_left' => $aDashletsLeft,
               'dashlets_right' => $aDashletsRight,
-              'ktOlarkPopup' => $ktOlarkPopup
+              'ktOlarkPopup' => $ktOlarkPopup,
+              'dashboardViewlets' => $orderedKeys['ordered'],
+              'keys' => $orderedKeys['keys'],
+              'sidebars' => $sidebars,
         );
 
-		// TODO : Is this ok?
-		if (file_exists(KT_DIR.DIRECTORY_SEPARATOR . 'var' . DIRECTORY_SEPARATOR . 'bin' . DIRECTORY_SEPARATOR . 'firstlogin.lock')) {
-			$this->runFirstLoginWizard($oTemplate, $aTemplateData);
-		}
+        // TODO : Is this ok?
+        if (file_exists(KT_DIR . DIRECTORY_SEPARATOR . 'var' . DIRECTORY_SEPARATOR . 'bin' . DIRECTORY_SEPARATOR . 'firstlogin.lock')) {
+            $this->runFirstLoginWizard($template, $templateData);
+        }
 
-        return $oTemplate->render($aTemplateData);
+        return $template->render($templateData);
     }
 
     //
-    function runFirstLoginWizard($oTemplate, $aTemplateData) {
-    	$this->oPage->requireCSSResource('setup/wizard/resources/css/modal.css');
-    	$this->oPage->requireJSResource('setup/wizard/resources/js/jquery-1.4.2.min.js');
-    	//$this->oPage->requireJSResource('thirdpartyjs/jquery/jquery-1.3.2.min.js');
-    	$this->oPage->requireJSResource('thirdpartyjs/jquery/jquery_noconflict.js');
-    	$this->oPage->requireJSResource('setup/wizard/resources/js/firstlogin.js');
+    public function runFirstLoginWizard($template, $templateData)
+    {
+        $this->oPage->requireCSSResource('setup/wizard/resources/css/modal.css');
+        $this->oPage->requireJSResource('setup/wizard/resources/js/jquery-1.4.2.min.js');
+        $this->oPage->requireJSResource('thirdpartyjs/jquery/jquery_noconflict.js');
+        $this->oPage->requireJSResource('setup/wizard/resources/js/firstlogin.js');
     }
 
     // return some kind of ID for each dashlet
     // currently uses the class name
-    function _getDashletId($oDashlet) {
+    public function _getDashletId($oDashlet)
+    {
         return get_class($oDashlet);
     }
 
     // disable a dashlet.
     // FIXME this very slightly violates the separation of concerns, but its not that flagrant.
-    function do_disableDashlet() {
+    public function do_disableDashlet()
+    {
         $sNamespace = KTUtil::arrayGet($_REQUEST, 'fNamespace');
         $iUserId = $this->oUser->getId();
 
@@ -194,8 +190,6 @@ class DashboardDispatcher extends KTStandardDispatcher {
             $this->errorRedirectToMain('No dashlet specified.');
             exit(0);
         }
-
-        // do the "delete"
 
         $this->startTransaction();
         $aParams = array('sNamespace' => $sNamespace, 'iUserId' => $iUserId);
@@ -208,16 +202,16 @@ class DashboardDispatcher extends KTStandardDispatcher {
         $this->successRedirectToMain('Dashlet disabled.');
     }
 
-    function json_saveDashboardState() {
-        $sState = KTUtil::arrayGet($_REQUEST, 'state', array('error' => true));
-        $this->oUser->setDashboardState($sState);
+    public function json_saveDashboardState()
+    {
+        $state = KTUtil::arrayGet($_REQUEST, 'state', array('error' => true));
+        $this->oUser->setDashboardState($state);
         return array('success' => true);
     }
 
 }
 
-$oDispatcher = new DashboardDispatcher();
-$oDispatcher->dispatch();
+$dispatcher = new DashboardDispatcher();
+$dispatcher->dispatch();
 
 ?>
-

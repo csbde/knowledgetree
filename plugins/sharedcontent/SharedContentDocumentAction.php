@@ -51,18 +51,11 @@ class SharedContentDocumentAction extends KTDocumentAction {
 
     public function getDisplayName()
     {
-    	// Check if we are in the document view and return a link,
-    	// otherwise return the display name only.
     	if (is_null($this->oDocument)) {
     	    return _kt('Sharing');
     	}
     	else {
     	    return _kt('Share');
-
-    	    /*
-    	    $onclick = "javascript:{kt.app.sharewithusers.shareContentWindow(\"{$this->oDocument->getId()}\", \"D\", \"{$_SESSION['userID']}\");}";
-    	    return "<a href='#' onclick='{$onclick}' >". _kt('Share') .'</a>';
-    	    */
     	}
     }
 

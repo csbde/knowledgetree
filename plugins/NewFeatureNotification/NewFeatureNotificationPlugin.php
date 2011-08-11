@@ -35,28 +35,33 @@
  * Contributor( s): ______________________________________
  *
  */
-
 require_once(KT_LIB_DIR . '/plugins/plugin.inc.php');
 require_once(KT_LIB_DIR . '/plugins/pluginregistry.inc.php');
+require_once(KT_LIB_DIR . '/templating/templating.inc.php');
 
-class BrowseableDashletPlugin extends KTPlugin {
-    var $sNamespace = "nbm.browseable.plugin";
+class NewFeatureNotificationPlugin extends KTPlugin {
+	public $sNamespace = 'new.feature.notification.plugin';
+	public $iVersion = 0;
+	public $autoRegister = true;
+	public $showInAdmin = false;
+	public $createSQL = true;
 
-    function BrowseableDashletPlugin($sFilename = null) {
-        $res = parent::KTPlugin($sFilename);
-        $this->sFriendlyName = _kt('Orphaned Folders Plugin');
-        return $res;
-    }
+	public function __construct($sFilename = null)
+	{
+		$res = parent::KTPlugin($sFilename);
+		$this->sFriendlyName = _kt('New Features Notfications');
+		$this->dir = dirname(__FILE__) . DIRECTORY_SEPARATOR;
+		$this->sSQLDir = $this->dir . 'sql' . DIRECTORY_SEPARATOR;
 
-    function setup() {
-        $this->registerDashlet('BrowseableFolderDashlet', 'nbm.browseable.dashlet', 'BrowseableDashlet.php');
+		return $res;
+	}
 
-        require_once(KT_LIB_DIR . "/templating/templating.inc.php");
-        $oTemplating =& KTTemplating::getSingleton();
-        $oTemplating->addLocation('browseabledashlet', '/plugins/browseabledashlet/templates');
-    }
+	public function setup() {
+
+	}
 }
 
-$oPluginRegistry =& KTPluginRegistry::getSingleton();
-$oPluginRegistry->registerPlugin('BrowseableDashletPlugin', 'nbm.browseable.plugin', __FILE__);
+$oPluginRegistry = KTPluginRegistry::getSingleton();
+$oPluginRegistry->registerPlugin('NewFeatureNotificationPlugin', 'new.feature.notification.plugin', __FILE__);
+
 ?>

@@ -37,7 +37,7 @@
 
 require_once(KT_LIB_DIR . '/plugins/pluginutil.inc.php');
 if (KTPluginUtil::pluginIsActive('new.feature.notification.plugin')) {
-	require_once(KT_PLUGIN_DIR . '/NewFeatureNotification/KTNewFeatures.php');
+	require_once(KT_PLUGIN_DIR . '/NewFeatureNotification/NewFeatures.php');
 }
 
 class NewFeaturesNotification extends client_service {
@@ -45,20 +45,20 @@ class NewFeaturesNotification extends client_service {
 	public function getUsersNewFeatures($params)
 	{
 		if (KTPluginUtil::pluginIsActive('new.feature.notification.plugin')) {
-			$newFeatures = new KTNewFeatures();
-			
+			$newFeatures = new NewFeatures();
+
 			if (!isset($params['pathname'])) {
 				$params['pathname'] = '';
 			}
-			
+
 			$response = $newFeatures->getUsersNewFeatures($params['pathname']);
 			$this->addResponse('features', $response);
 			$this->addResponse('success', 'true');
-			
+
 			return true;
 		} else {
 			$this->addResponse('success', 'true');
-			
+
 			return true;
 		}
 	}

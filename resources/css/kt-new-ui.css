@@ -254,11 +254,8 @@ textarea {
 	width: auto;
 }
 
-#sidebar_item .recently-viewed-folders ul {
-	background: url(../../thirdparty/icon-theme/16x16/mimetypes/x-directory-normal.png) no-repeat;
-	margin: 5px;
-	list-style-image: none;
-}
+#sidebar_item .recently-viewed-folders ul { background: url(../../thirdparty/icon-theme/16x16/mimetypes/x-directory-normal.png) no-repeat; margin: 5px; list-style-image: none; }
+
 /*-------------------- Breadcrumbs -----------------*/
 #breadcrumbs {
 	background: #EEE;
@@ -273,7 +270,7 @@ textarea {
 	-moz-border-radius: 2px;
 	-webkit-border-radius: 2px;
 	border-radius: 2px;
-	
+
 	clear: both;
 
 }
@@ -312,7 +309,7 @@ textarea {
 }
 #breadcrumbs .icon:hover {
 	opacity: 0.7;
-	
+
 	/* The next two properties is for IE */
 	filter: alpha(opacity = 70);
 	zoom: 1;
@@ -643,7 +640,7 @@ ul.floatleft li.notification {
 .action_buttons .action .disabled {
 	opacity: 0.5;
 	cursor: default;
-	
+
 	/* The next two properties is for IE */
 	filter: alpha(opacity = 50);
 	zoom: 1;
@@ -751,10 +748,10 @@ div.form_actions {
     line-height: 25px;
 }
 #content .form_actions a:last-child {
-	
+
 }
 .form_actions.standalone {
-	margin: 5px 0px; 
+	margin: 5px 0px;
 	float: none;
 	text-align: left;
 	display: block;
@@ -777,8 +774,8 @@ div.form_actions {
 #content .form_actions.dropdown input {
 	margin: -1px !important;
 }
-.x-window .form_actions input, .x-window .form_actions a, 
-#content .form_actions input, #content .form_actions a { 
+.x-window .form_actions input, .x-window .form_actions a,
+#content .form_actions input, #content .form_actions a {
 	background: -webkit-gradient(linear, left top, left bottom, from(#fff), to(#e8e8e8)) !important;
 	background: -moz-linear-gradient(top,#fff,#e8e8e8)!important;
 	background: -ms-linear-gradient(top,#fff,#e8e8e8)!important;
@@ -796,10 +793,10 @@ div.form_actions {
 	text-decoration: none;
 	font-family: "Helvetica", "Arial", sans-serif;
 	vertical-align: top;
-	text-shadow: 0px 1px 0px white; 
+	text-shadow: 0px 1px 0px white;
 }
-.x-window .form_actions input.ul_actions_cancel_link, 
-.x-window .form_actions a.ul_actions_cancel_link, 
+.x-window .form_actions input.ul_actions_cancel_link,
+.x-window .form_actions a.ul_actions_cancel_link,
 .x-window .form_actions a.form_cancel,
 #content .form_actions input.form_cancel, #content .form_actions a.form_cancel {
 	background: none!important;
@@ -824,12 +821,12 @@ div.form_actions {
 }
 #content .form_actions input:active,
 #content .form_actions a:active {
-	box-shadow: inset 0px 0px 5px #aaa; 
-	-webkit-box-shadow: inset 0px 0px 5px #aaa; 
-	-moz-box-shadow: inset 0px 0px 5px #aaa; 
+	box-shadow: inset 0px 0px 5px #aaa;
+	-webkit-box-shadow: inset 0px 0px 5px #aaa;
+	-moz-box-shadow: inset 0px 0px 5px #aaa;
 }
 
-#content .form_actions div.roundleft, 
+#content .form_actions div.roundleft,
 #content .form_actions div.roundright2 {
     display: none;
 }
@@ -1019,7 +1016,7 @@ thead {
 	bottom: 0px;
 	left: 50%;
 	margin-left: -480px;
-	
+
 }
 #footer a {
 	color: #2f6594;
@@ -1142,10 +1139,10 @@ div#uploadProgress .progress {
 	/*background: url('../graphics/newui/notice_red.png') no-repeat top right !important;*/
 }
 .upload-breadcrumb {
-	display: block; 
-	margin-top: 10px; 
-	background: whitesmoke; 
-	border: 1px solid #CCC; 
+	display: block;
+	margin-top: 10px;
+	background: whitesmoke;
+	border: 1px solid #CCC;
 	border-radius: 3px;
 	-webkit-border-radius: 3px;
 	-moz-border-radius: 3px;
@@ -1165,9 +1162,9 @@ div#uploadProgress .progress {
 	padding-left: 13px;
 }
 #changepathlink {
-	display:inline-block; 
-	width: 13px; 
-	height: 12px; 
+	display:inline-block;
+	width: 13px;
+	height: 12px;
 	float: left;
 	margin: 9px 5px 5px 2px;
 	background: url(/resources/graphics/plus.gif) no-repeat 0px 0px;
@@ -1182,7 +1179,7 @@ div#uploadProgress .progress {
 }
 div#folderpathchooser ul#currentPathStuff li:nth-child(even) {
 	background-color: #E3EEF4;
-} 
+}
 
 
 #subscriptionResponse {
@@ -1210,7 +1207,7 @@ div.widgetRow {
 	margin: 1px;
 	clear: both;
 	/*outline: 1px solid black;*/
-	
+
 }
 
 /* There can be many widgetItems in a row. */
@@ -1357,7 +1354,7 @@ label span.required
 
 #content .settings-item a.header:hover {
 	text-decoration: none;
-	background-color: #efefef; 
+	background-color: #efefef;
 }
 .settings-item.expanded a.header{
 	padding: 5px 30px;
@@ -1477,7 +1474,7 @@ label span.required
 	padding: 2px 2px;
 	display: inline-block;
 	border: 1px solid #2F6594;
-	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#609bd1', endColorstr='#2f6694');	
+	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#609bd1', endColorstr='#2f6694');
 	background: -webkit-gradient(linear, left top, left bottom, from(#609bd1), to(#2f6694));
 	background: -moz-linear-gradient(top, #609bd1, #2f6694);
 	font-size: 8px;
@@ -1642,7 +1639,7 @@ http://devgrow.com/iphone-style-switches/
 }
 #chart_div {
 	min-width: 200px;
-	min-height: 150px; 
+	min-height: 150px;
 }
 
 
@@ -1696,7 +1693,7 @@ http://devgrow.com/iphone-style-switches/
 	border-bottom: 1px solid #DDD;
 	margin-bottom: 5px;
 	font-size: 13px;
-} 
+}
 #content .settings-content fieldset {
 	border: 0px;
 	padding: 0px;
@@ -1716,7 +1713,7 @@ http://devgrow.com/iphone-style-switches/
 	clear: both;
 	display: block;
 	overflow: hidden;
-	margin-bottom: 10px; 
+	margin-bottom: 10px;
 	color: #333;
 	font-size: 12px;
 	background: whitesmoke;

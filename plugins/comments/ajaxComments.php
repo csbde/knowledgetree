@@ -63,7 +63,7 @@ class AjaxCommentsDispatcher extends KTStandardDispatcher {
         $comment = KTUtil::arrayGet($_REQUEST, 'comment');
         $documentId = KTUtil::arrayGet($_REQUEST, 'documentId');
 
-        Comments::add_comment($documentId, $comment);
+        Comments::addComment($documentId, $comment);
 
         // For Testing
         //sleep(5);

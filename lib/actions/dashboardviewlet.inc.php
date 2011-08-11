@@ -1,4 +1,5 @@
 <?php
+
 /**
  * $Id$
  *
@@ -35,36 +36,33 @@
  * Contributor( s): ______________________________________
  *
  */
-require_once(KT_LIB_DIR . '/plugins/plugin.inc.php');
-require_once(KT_LIB_DIR . '/plugins/pluginregistry.inc.php');
-require_once(KT_LIB_DIR . '/templating/templating.inc.php');
 
-class KTGraphicalAnalyticsPlugin extends KTPlugin {
-	public $sNamespace = 'actionableinsights.graphicalanalytics.plugin';
-	public $iVersion = 0;
-	public $autoRegister = true;
-	public $showInAdmin = false;
-	public $createSQL = true;
+require_once(KT_LIB_DIR . '/actions/dashboardaction.inc.php');
 
-	public function __construct($sFilename = null)
-	{
-		$res = parent::KTPlugin($sFilename);
-		$this->sFriendlyName = _kt('Actionable Insights Graphical Analytics');
-		$this->dir = dirname(__FILE__) . DIRECTORY_SEPARATOR;
-		$this->sSQLDir = $this->dir . 'sql' . DIRECTORY_SEPARATOR;
-		return $res;
-	}
+class KTDashboardViewlet extends KTDashboardAction {
+    public $sName;
+    public $sDescription;
 
-	public function setup() {
-		$dir = dirname(__FILE__) . DIRECTORY_SEPARATOR;
-		$dir = str_replace(KT_DIR, '', $dir);
-		
-        $templating =& KTTemplating::getSingleton();
-        $templating->addLocation('graphicalanalytics', '/plugins/GraphicalAnalytics/templates', 'actionableinsights.graphicalanalytics.plugin');
-	}
+    public $_sShowPermission = 'ktcore.permissions.read';
+	public $order = 1;
+
+	/**
+	 * Get the class name of the item
+	 *
+	 */
+	public function getCSSName() {}
+
+	/**
+	 * Get the ordering of the item
+	 *
+	 * @return int
+	 */
+	public function getOrder() { return $this->order; }
+
+    // the only major distinction of the viewlet vs. the action is the
+    // displayViewlet() method.
+    public function displayViewlet() { return ''; }
+
 }
-
-$oPluginRegistry = KTPluginRegistry::getSingleton();
-$oPluginRegistry->registerPlugin('KTGraphicalAnalyticsPlugin', 'actionableinsights.graphicalanalytics.plugin', __FILE__);
 
 ?>

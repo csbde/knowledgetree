@@ -810,7 +810,7 @@ class KTPermissionUtil {
      * Inherits permission object from parent, throwing away our own
      * permission object.
      */
-    function inheritPermissionObject(&$documentOrFolder, $options = null) 
+    function inheritPermissionObject(&$documentOrFolder, $options = null)
     {
         global $default;
         $documentOrFolder->cacheGlobal = array();
@@ -819,9 +819,9 @@ class KTPermissionUtil {
         if (empty($evenIfNotOwner) && !KTPermissionUtil::isPermissionOwner($documentOrFolder)) {
             return PEAR::raiseError(_kt("Document or Folder doesn't own its permission object"));
         }
-        
+
         $permissionObjectId = $documentOrFolder->getPermissionObjectID();
-        
+
         $parentId = $documentOrFolder->getParentID();
         $parentFolder = Folder::get($parentId);
         $parentPermissionObjectId = $parentFolder->getPermissionObjectID();
@@ -850,10 +850,10 @@ class KTPermissionUtil {
         $folderId = $documentOrFolder->getID();
         $parentFolderIds = Folder::generateFolderIDs($folderId);
         $parentFolderIds .= '%';
-        
+
         $params = array($parentPermissionObjectId, $permissionObjectId, $parentFolderIds);
-        $query = "UPDATE $default->folders_table 
-                SET permission_object_id = ? 
+        $query = "UPDATE $default->folders_table
+                SET permission_object_id = ?
                 WHERE permission_object_id = ? AND parent_folder_ids LIKE ?";
         DBUtil::runQuery(array($query, $params));
 
@@ -861,15 +861,15 @@ class KTPermissionUtil {
 
         // Update all documents in the folder and in the sub-folders
         $params[] = $folderId;
-        $query = "UPDATE $default->documents_table 
-                SET permission_object_id = ? 
+        $query = "UPDATE $default->documents_table
+                SET permission_object_id = ?
                 WHERE permission_object_id = ? AND (parent_folder_ids LIKE ? OR folder_id = ?)";
         DBUtil::runQuery(array($query, $params));
 
         Document::clearAllCaches();
 
         //return KTPermissionUtil::updatePermissionLookupForPO($oNewPO);
-        
+
         return self::updatePermissionLookupForObject($parentPermissionObjectId, $folderId);
     }
     // }}}
@@ -932,18 +932,18 @@ class KTPermissionUtil {
             'ip' => Session::getClientIP(),
             'parentid' => $parentFolderId
         ));
-        
+
         if (PEAR::isError($transaction) || ($transaction === false)) {
         	global $default;
         	$msg = (PEAR::isError($transaction)) ? $transaction->getMessage() : 'transaction insert failed';
         	$default->log->error('Permissions: inherit failed - ' . $msg);
-        
-        	return false;	
+
+        	return false;
         }
-        
+
         return true;
     }
-    
+
     public static function updatePermissionObject($folder, $permissionObjectId, $selectedPermissions, $userId)
     {
     	$folderId = $folder->getId();

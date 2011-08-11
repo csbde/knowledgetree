@@ -386,8 +386,8 @@ class Document {
      *
      * @return Array array of Documents objects, false otherwise.
      */
-    public static function getList($sWhereClause = null) {
-        $aOptions = array('ids' => true);
+    public static function getList($sWhereClause = null, $aOptions = array()) {
+        $aOptions['ids'] = true;
         $aIds = KTDocumentCore::getList($sWhereClause, $aOptions);
         $aList = array();
         foreach($aIds as $iId) {

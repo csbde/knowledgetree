@@ -751,22 +751,23 @@ class KTGraphicalAnalytics {
             && ((int)$_SESSION['adminmode'])
             && Permission::adminIsInAdminMode();
     }
-	
+
 	public function getMimeIcon($mimeId)
 	{
 		$iconFile = 'resources/mimetypes/' . KTMime::getIconPath($mimeId) . '.gif';
-		
-		
+
+
         if (file_exists(KT_DIR . '/' . $iconFile)) {
 			return '<img src="/'.$iconFile.'" />';
 		} else {
 			return '&nbsp;';
 		}
 	}
-	
+
 	public function cleanUrl($documentId)
 	{
 		return KTUtil::kt_clean_document_url($documentId);
 	}
 
 }
+?>

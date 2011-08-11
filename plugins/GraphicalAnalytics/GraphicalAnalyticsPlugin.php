@@ -39,8 +39,8 @@ require_once(KT_LIB_DIR . '/plugins/plugin.inc.php');
 require_once(KT_LIB_DIR . '/plugins/pluginregistry.inc.php');
 require_once(KT_LIB_DIR . '/templating/templating.inc.php');
 
-class KTNewFeatureNotificationPlugin extends KTPlugin {
-	public $sNamespace = 'new.feature.notification.plugin';
+class GraphicalAnalyticsPlugin extends KTPlugin {
+	public $sNamespace = 'actionableinsights.graphicalanalytics.plugin';
 	public $iVersion = 0;
 	public $autoRegister = true;
 	public $showInAdmin = false;
@@ -49,19 +49,21 @@ class KTNewFeatureNotificationPlugin extends KTPlugin {
 	public function __construct($sFilename = null)
 	{
 		$res = parent::KTPlugin($sFilename);
-		$this->sFriendlyName = _kt('New Features Notfications');
+		$this->sFriendlyName = _kt('Actionable Insights Graphical Analytics');
 		$this->dir = dirname(__FILE__) . DIRECTORY_SEPARATOR;
 		$this->sSQLDir = $this->dir . 'sql' . DIRECTORY_SEPARATOR;
 
 		return $res;
 	}
 
-	public function setup() {
-
+	public function setup()
+	{
+        $templating =& KTTemplating::getSingleton();
+        $templating->addLocation('graphicalanalytics', $this->dir . 'templates', 'actionableinsights.graphicalanalytics.plugin');
 	}
 }
 
 $oPluginRegistry = KTPluginRegistry::getSingleton();
-$oPluginRegistry->registerPlugin('KTNewFeatureNotificationPlugin', 'new.feature.notification.plugin', __FILE__);
+$oPluginRegistry->registerPlugin('GraphicalAnalyticsPlugin', 'actionableinsights.graphicalanalytics.plugin', __FILE__);
 
 ?>

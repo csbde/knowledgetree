@@ -42,30 +42,34 @@ require_once(KT_LIB_DIR . '/templating/kt3template.inc.php');
 require_once(KT_LIB_DIR . '/dispatcher.inc.php');
 require_once(KT_LIB_DIR . '/util/ktutil.inc');
 
-
-
-require_once('KTGraphicalAnalytics.php');
+require_once('GraphicalAnalytics.php');
 
 class GraphAnalyticsPage extends KTStandardDispatcher {
-    
-    
+
+
     function __construct()
 	{
 		$this->permissions = array();
 	    //$this->aBreadcrumbs = array(array('action' => 'browse', 'name' => _kt('Browse')));
 	    return parent::KTStandardDispatcher();
 	}
-    
+
     public function do_main()
 	{
 	    global $default;
-        
+
 	    $templating =& KTTemplating::getSingleton();
 	    $template = $templating->loadTemplate('graphspage');
+<<<<<<< HEAD
 	    $template = $templating->loadTemplate('graphs_viewlet');
         
         $ktAnalytics = new KTGraphicalAnalytics();
         
+=======
+
+        $ktAnalytics = new GraphicalAnalytics();
+
+>>>>>>> sprint-9
 		global $main;
 	    $templateData = array(
 	           'context' => $this,
@@ -78,10 +82,10 @@ class GraphAnalyticsPage extends KTStandardDispatcher {
 	           'mostViewedDocuments' => $ktAnalytics->getMostViewedDocumentsDashlet(),
 			   
         );
-        
+
 	    return $template->render($templateData);
 	}
-    
+
 }
 
 $oDispatcher = new GraphAnalyticsPage();

@@ -133,7 +133,6 @@ class PermissionCache
         }
 
         $permId = (isset($this->permMap[$permission])) ? $this->permMap[$permission] : false;
-
         if (!is_numeric($permId)) {
             return false;
         }
@@ -219,10 +218,10 @@ class PermissionCache
         }
 
         // Unset memcached permissions
-        if($invalidateMemcache) {
+        if ($invalidateMemcache) {
             unset($_SESSION['Permissions_Cache'][$userId]);
 
-            if($this->memcache !== false) {
+            if ($this->memcache !== false) {
                 $this->memcache->clearUserPermissions($userId);
             }
         }
@@ -236,8 +235,7 @@ class PermissionCache
      */
     private function getCachedDescriptors($userId)
     {
-        $sql = "SELECT descriptor_id FROM {$this->table}
-                WHERE user_id = {$userId}";
+        $sql = "SELECT descriptor_id FROM {$this->table} WHERE user_id = {$userId}";
         $result = DBUtil::getResultArrayKey($sql, 'descriptor_id');
 
         if (!is_array($result)) {
@@ -429,8 +427,8 @@ class PermissionCache
         // Get the users permissions from session
         $permissions = isset($_SESSION['Permissions_Cache'][$userId]) ? $_SESSION['Permissions_Cache'][$userId] : false;
 
-        if($permissions !== false && !empty($permissions)){
-            if(isset($permissions[$lookupId][$permId]) && $permissions[$lookupId][$permId]){
+        if ($permissions !== false && !empty($permissions)){
+            if (isset($permissions[$lookupId][$permId]) && $permissions[$lookupId][$permId]){
                 return true;
             }
             return $this->checkSystemRoles($permId, $lookupId, $userId);
@@ -440,7 +438,7 @@ class PermissionCache
         if ($this->memcache !== false) {
             $permissions = $this->memcache->getUserPermissions($userId);
 
-            if($permissions !== false && !empty($permissions)){
+            if ($permissions !== false && !empty($permissions)){
                 $_SESSION['Permissions_Cache'][$userId] = $permissions;
 
                 if (isset($permissions[$lookupId][$permId]) && $permissions[$lookupId][$permId]) {
@@ -457,7 +455,6 @@ class PermissionCache
                 WHERE p.permission_descriptor_id = c.descriptor_id AND user_id = {$userId}";
 
         $result = DBUtil::getResultArray($sql);
-
         if (PEAR::isError($result) || empty($result)) {
             $_SESSION['Permissions_Cache'][$userId] = array();
             return $this->checkSystemRoles($permId, $lookupId, $userId);
@@ -566,7 +563,7 @@ class PermissionMemCache
      * @var int
      */
     private $expiration;
-    
+
     private $memcache;
 
     /**

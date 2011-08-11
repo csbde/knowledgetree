@@ -702,19 +702,20 @@ class KTAPI_Folder extends KTAPI_FolderItem {
         	$permission = $queryOptions['permission'];
         }
 
-        $res = KTSearchUtil::permissionToSQL($user, $permission, 'F');
-        if (PEAR::isError($res)) {
-            return $res;
-        }
-
-        list($permissionString, $permissionParams, $permissionJoin) = $res;
-
-        if (isset($_SESSION['adminmode']) && ($_SESSION['adminmode']+0)) {
+        if (isset($_SESSION['adminmode']) && ((int)$_SESSION['adminmode'])) {
             if (Permission::adminIsInAdminMode() || Permission::isUnitAdministratorForFolder($user, $this->folder)) {
                 $permissionString = true;
                 $permissionParams = array();
                 $permissionJoin = '';
             }
+        }
+        else {
+            $res = KTSearchUtil::permissionToSQL($user, $permission, 'F');
+            if (PEAR::isError($res)) {
+                return $res;
+            }
+
+            list($permissionString, $permissionParams, $permissionJoin) = $res;
         }
 
         $where = "WHERE $permissionString AND F.parent_id = ?";
@@ -771,23 +772,24 @@ class KTAPI_Folder extends KTAPI_FolderItem {
     {
         $documentContents = array();
 
-        $res = KTSearchUtil::permissionToSQL($user, KTAPI_PERMISSION_READ, 'D');
-        if (PEAR::isError($res)) {
-            return $res;
-        }
-
-        list($permissionString, $permissionParams, $permissionJoin) = $res;
-
-        if (isset($_SESSION['adminmode']) && ($_SESSION['adminmode']+0)) {
+        if (isset($_SESSION['adminmode']) && ((int)$_SESSION['adminmode'])) {
             if (Permission::adminIsInAdminMode() || Permission::isUnitAdministratorForFolder($user, $this->folder)) {
                 $permissionString = true;
                 $permissionParams = array();
                 $permissionJoin = '';
             }
         }
+        else {
+            $res = KTSearchUtil::permissionToSQL($user, KTAPI_PERMISSION_READ, 'D');
+            if (PEAR::isError($res)) {
+                return $res;
+            }
+
+            list($permissionString, $permissionParams, $permissionJoin) = $res;
+        }
 
         $contentVersionJoin = 'INNER JOIN document_metadata_version DMV ON DMV.id = D.metadata_version_id
-			                   INNER JOIN document_content_version DCV ON DCV.id = DMV.content_version_id ';
+                                INNER JOIN document_content_version DCV ON DCV.id = DMV.content_version_id ';
         $where = "WHERE D.status_id = 1 AND $permissionString AND D.folder_id = ?";
         $queryOptions['orderby'] = 'DMV.name';
         $optionString = DBUtil::getDbOptions($queryOptions);

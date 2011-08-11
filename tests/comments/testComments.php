@@ -82,7 +82,7 @@ class CommentsTestCase extends KTUnitTestCase {
     public function testComments()
     {
         // Get the current list of comments
-        $comments = Comments::get_comments($this->doc_id);
+        $comments = Comments::getDocumentComments($this->doc_id);
         $this->assertTrue(is_array($comments));
 
         // Check the number of comments (in case system is not clean)
@@ -90,7 +90,7 @@ class CommentsTestCase extends KTUnitTestCase {
 
         // Create a new comment
         $comment1 = 'Testing comments 1';
-        $res = Comments::add_comment($this->doc_id, $comment1);
+        $res = Comments::addComment($this->doc_id, $comment1);
         $this->assertTrue($res);
 
         // ensure a different date created.
@@ -98,11 +98,11 @@ class CommentsTestCase extends KTUnitTestCase {
 
         // Create a second comment
         $comment2 = 'Testing comments 2';
-        $res = Comments::add_comment($this->doc_id, $comment2);
+        $res = Comments::addComment($this->doc_id, $comment2);
         $this->assertTrue($res);
 
         // Get newly created comments
-        $comments = Comments::get_comments($this->doc_id);
+        $comments = Comments::getDocumentComments($this->doc_id);
         $this->assertTrue(is_array($comments));
 
         $new_num = count($comments);
@@ -113,10 +113,10 @@ class CommentsTestCase extends KTUnitTestCase {
         $this->assertEqual($comments[0]['comment'], $comment2);
 
         // delete comments
-        Comments::delete_comment($comments[0]['id']);
-        Comments::delete_comment($comments[1]['id']);
+        Comments::deleteComment($comments[0]['id']);
+        Comments::deleteComment($comments[1]['id']);
 
-        $comments = Comments::get_comments($this->doc_id);
+        $comments = Comments::getDocumentComments($this->doc_id);
         $this->assertTrue(is_array($comments));
 
         // Check the number of comments is the same as the original

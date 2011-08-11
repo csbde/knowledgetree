@@ -23,7 +23,7 @@
 require_once(KT_LIB_DIR . '/security/Permission.inc');
 require_once(KT_LIB_DIR . '/database/dbutil.inc');
 
-class KTNewFeatures {
+class NewFeatures {
 
 	private $messageIds = array();
 	protected $area_table = 'new_features_areas';
@@ -45,26 +45,26 @@ class KTNewFeatures {
 
 		return $unseenFeatures;
 	}
-	
+
 	private function determinePageLocation($location)
 	{
 		if (preg_match('/settings\.php/', $location)) {
 			return 'settings';
 		}
-		
+
 		if (preg_match('/dashboard\.php/', $location)) {
 			return 'dashboard';
 		}
-		
+
 		// Not in use??
 		if (preg_match('/action\.php/', $location)) {
 			return 'action';
 		}
-		
+
 		if (preg_match('%/01\d*%', $location)) {
 			return 'view_details';
 		}
-		
+
 		return 'browse';
 	}
 
@@ -99,7 +99,7 @@ class KTNewFeatures {
 			else {
 				$in .= $feature['mid'] . ',';
 			}
-			
+
 			$i++;
 		}
 		$in .= ')';
@@ -112,26 +112,26 @@ class KTNewFeatures {
 	private function unSeenFeatures($features, $seenFeatures)
 	{
 		$unSeenFeatures = array();
-		
+
 		// If all features have not been seen yet
 		if(empty($seenFeatures)) {
-			
+
 			// Only return the first three
 			return array_slice($features, 0, 3);
 		}
 		else {
-			
+
 			$seenIds = array();
-			
+
 			foreach ($seenFeatures as $seenFeature)
 			{
 				$seenIds[] = $seenFeature['message_id'];
 			}
-			
+
 			$counter = 0;
-			
+
 			foreach ($features as $unSeenFeatureItem) {
-				
+
 				if(!in_array($unSeenFeatureItem['mid'], $seenIds) && $counter < 3) {
 					$unSeenFeatures[] = $unSeenFeatureItem;
 					$counter++;

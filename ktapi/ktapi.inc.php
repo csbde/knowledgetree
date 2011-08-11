@@ -4150,7 +4150,7 @@ class KTAPI {
                         'parent_id'=>null
                     );
                 }
-                
+
                 $metadata[$i]['fields'][$j]['selection'] = $new;
             }
         }
@@ -5287,38 +5287,33 @@ class KTAPI {
      */
     public function get_comments($document_id, $order = 'DESC')
     {
-    	//$GLOBALS['default']->log->debug("KTAPI get_comments $document_id $order");
+        $response = array('status_code' => null, 'message' => null, 'results' => null);
 
-    	$response = array('status_code' => null, 'message' => null, 'results' => null);
+        if ($this->comments_enabled()) {
+            try {
+                $comments = Comments::getDocumentComments($document_id, $order);
+                foreach ($comments as $key => $comment) {
+                    // set correct return value types for SOAP webservice
+                    $comments[$key]['id'] = (int) $comment['id'];
+                    $comments[$key]['user_id'] = (int) $comment['user_id'];
+                    $comments[$key]['version'] = (int) $comment['version'];
+                    // Filter values not relevant to comments but relevant to
+                    // web page feed in which comments appear.
+                    unset($comments[$key]['action']);
+                    unset($comments[$key]['version']);
+                    unset($comments[$key]['email']);
+                }
 
-    	if ($this->comments_enabled()) {
-    		try {
-		        $comments = Comments::get_comments($document_id, $order);
-		        //$GLOBALS['default']->log->debug("COMMENTS_API get comments " . print_r($comments, true));
+                $response['status_code'] = 0;
+                $response['results'] = $comments;
+            }
+            catch (Exception $e) {
+                $response['status_code'] = 1;
+                $response['message'] = $e->getMessage();
+            }
+        }
 
-		        foreach ($comments as $key => $comment) {
-		            // set correct return value types for SOAP webservice
-		            $comments[$key]['id'] = (int) $comment['id'];
-		            $comments[$key]['user_id'] = (int) $comment['user_id'];
-		            $comments[$key]['version'] = (int) $comment['version'];
-		            // filter values not relevant to comments but relevant to web page feed
-		            // in which comments appear.
-		            unset($comments[$key]['action']);
-		            unset($comments[$key]['version']);
-		            unset($comments[$key]['email']);
-		        }
-
-		        $response['status_code'] = 0;
-		        $response['results'] = $comments;
-    		}
-    		catch (Exception $e) {
-    			//$GLOBALS['default']->log->error("COMMENTS_API get comments error {$e->getMessage()}");
-		        $response['status_code'] = 1;
-		        $response['message'] = $e->getMessage();
-    		}
-    	}
-
-    	return $response;
+        return $response;
     }
 
     /**
@@ -5329,24 +5324,21 @@ class KTAPI {
      */
     public function add_comment($document_id, $comment)
     {
-    	//$GLOBALS['default']->log->debug("KTAPI add_comment $document_id $comment");
+        $response = array('status_code' => null, 'message' => null, 'results' => null);
 
-    	$response = array('status_code' => null, 'message' => null, 'results' => null);
+        if ($this->comments_enabled()) {
+            try {
+                $result = Comments::addComment($document_id, $comment);
+                $response['status_code'] = 0;
+                $response['results'] = $result;
+            }
+            catch (Exception $e) {
+                $response['status_code'] = 1;
+                $response['message'] = $e->getMessage();
+            }
+        }
 
-    	if ($this->comments_enabled()) {
-    		try {
-    			$result = Comments::add_comment($document_id, $comment);
-    			$response['status_code'] = 0;
-		        $response['results'] = $result;
-    		}
-    		catch (Exception $e) {
-    			//$GLOBALS['default']->log->error("COMMENTS_API add comment error {$e->getMessage()}");
-    			$response['status_code'] = 1;
-		        $response['message'] = $e->getMessage();
-    		}
-    	}
-
-    	return $response;
+        return $response;
     }
 
 	/**

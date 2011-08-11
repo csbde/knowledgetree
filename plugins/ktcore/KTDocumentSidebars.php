@@ -62,7 +62,7 @@ class KTDocumentSidebar extends KTDocumentViewlet {
         	if($info != null) {
         		$order = $sidebar->getOrder();
         		// Sidebars cannot overwrite each other.
-	        	if(isset($ordered[$sidebar->getOrder()])) {
+	        	if(isset($ordered[$order])) {
 	        		$order++;
 	        		$ordered[$order] = $sidebar;
 	        	} else {
@@ -87,7 +87,7 @@ class KTDocumentSidebar extends KTDocumentViewlet {
 	}
 
 	public function do_refreshSidebar() {
-		echo $this->display_viewlet();
+		echo $this->displayViewlet();
 		exit(0);
 	}
 }
@@ -108,7 +108,7 @@ class KTWorkflowSidebar extends KTDocumentSidebar {
         return true;
     }
 
-	public function display_viewlet() {
+	public function displayViewlet() {
 		$oTemplating = KTTemplating::getSingleton();
 		$oTemplate = $oTemplating->loadTemplate('ktcore/document/sidebars/workflow');
         if (is_null($oTemplate)) { return ''; }

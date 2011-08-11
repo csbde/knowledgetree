@@ -94,19 +94,27 @@ class KTCorePlugin extends KTPlugin {
         $this->registerAction('documentaction', 'KTDocumentDownloadUrlAction', 'ktcore.actions.document.downloadurl', 'KTDocumentActions.php');
         $this->registerAction('documentaction', 'KTDocumentPreviewUrlAction', 'ktcore.actions.document.previewurl', 'KTDocumentActions.php');
 
-        // Folder Sidebar
+        // Sidebars
+        // Dashboard
+        $this->registerAction('maindashsidebar', 'KTDashboardSidebar', 'ktcore.sidebars.dashboard', 'KTDashboardSidebars.php');
+        $this->registerAction('dashboardsidebar', 'KTCheckoutSidebar', 'ktcore.sidebars.dashboard.checkout', 'KTDashboardSidebars.php');
+        // This should not be here, but it does not register in the plugin itself
+        // TODO : Move into quicklinks plugin QuicklinksPlugin.php
+        $this->registerAction('dashboardsidebar', 'QuicklinksSidebar', 'bd.Quicklinks.dashboard.quicklinks', 'KTDashboardSidebars.php');
+        // Folders
         $this->registerAction('mainfoldersidebar', 'KTFolderSidebar', 'ktcore.sidebars.folder', 'KTFolderSidebars.php');
-
-        // Document Sidebar
+        // Documents
         $this->registerAction('maindocsidebar', 'KTDocumentSidebar', 'ktcore.sidebars.document', 'KTDocumentSidebars.php');
         $this->registerAction('documentsidebar', 'KTWorkflowSidebar', 'ktcore.sidebar.workflow', 'KTDocumentSidebars.php');
 
         $this->registerAction('documentaction', 'KTDocumentAssistAction', 'ktcore.actions.document.assist', 'KTAssist.php');
-        // $this->registerAction('folderaction', 'KTDocumentAssistAction', 'ktcore.actions.folder.assist', 'KTAssist.php');
 
         // Viewlets
         $this->registerAction('documentviewlet', 'KTWorkflowViewlet', 'ktcore.viewlets.document.workflow', 'KTDocumentViewlets.php');
         $this->registerAction('documentviewlet', 'KTInlineEditViewlet', 'ktcore.viewlets.document.inline.edit', 'KTDocumentViewlets.php');
+		// Dashboard
+		$this->registerAction('dashboardviewlet', 'KTDashboardActivityFeedViewlet', 'ktcore.viewlet.dashboard.activityfeed', 'KTDashboardViewlets.php');
+		$this->registerAction('dashboardviewlet', 'KTGraphicalAnalyticsViewlet', 'ktcore.viewlet.dashboard.analytics', 'KTDashboardViewlets.php');
 
         // Blocks
         $this->registerAction('documentblock', 'KTDocumentStatusBlock', 'ktcore.blocks.document.status', 'KTDocumentBlocks.php');
@@ -132,7 +140,6 @@ class KTCorePlugin extends KTPlugin {
         // Dashlets
         $this->registerDashlet('KTInfoDashlet', 'ktcore.dashlet.info', 'KTDashlets.php');
         $this->registerDashlet('KTNotificationDashlet', 'ktcore.dashlet.notifications', 'KTDashlets.php');
-        $this->registerDashlet('KTCheckoutDashlet', 'ktcore.dashlet.checkout', 'KTDashlets.php');
 
         if ($restrictedEnv !== true) {
             $this->registerDashlet('KTMailServerDashlet', 'ktcore.dashlet.mail_server', 'KTDashlets.php');
@@ -386,7 +393,7 @@ class KTCorePlugin extends KTPlugin {
 	        $this->registerAdminPage('uiconfigpage', 'UIConfigPageDispatcher', 'sysConfig',
 	            _kt('User Interface'), _kt('View and modify settings on Browse View actions, OEM name, automatic refresh, search results restrictions, custom logo details, paths to dot binary, graphics, and log directory, and whether to enable/disable condensed UI, \'open\' from downloads, sort metadata, and skinning.'),
 	            'admin/configSettings.php', null);
-	
+
 	        $this->registerAdminPage('clientconfigpage', 'ClientSettingsConfigPageDispatcher', 'clientTools',
 	            _kt('Client Tools'), _kt('View and change settings for the KnowledgeTree Tools Server, Client Tools Policies, WebDAV, and the OpenOffice.org service.'),
 	            'admin/configSettings.php', null);
@@ -402,20 +409,20 @@ class KTCorePlugin extends KTPlugin {
 	        $this->registerAdminPage('i18nconfigpage', 'i18nConfigPageDispatcher', 'sysConfig',
 	            _kt('Internationalisation Settings'), _kt('View and modify the default language.'),
 	            'admin/configSettings.php', null);
-	            
+
 	        $this->registerAdminPage('explorercpconfigpage', 'ExplorerConfigPageDispatcher', 'clientTools',
 	            _kt('Explorer CP'), _kt('View and change settings for the Explorer CP.'),
 	            'admin/configSettings.php', null);
-	        
+
             $this->registerAdminPage('webservicesconfig', 'WebservicesConfigPageDispatcher', 'clientTools',
                 _kt('Web Services'), _kt('View and change settings for the KnowledgeTree Web Services.'),
-                'admin/configSettings.php', null);    
+                'admin/configSettings.php', null);
         }
-            
+
         $this->registerAdminPage('KTWebDAVSettings', 'KtWebdavConfigPageDispatcher', 'clientTools',
             _kt('WebDAV'), _kt('View and change settings for WebDAV.'),
             'admin/configSettings.php', null);
-            
+
         $this->registerAdminPage('session', 'SessionConfigPageDispatcher', 'security',
             _kt('Session Management'), _kt('View and modify session settings for KnowledgeTree.'),
             'admin/configSettings.php', null);

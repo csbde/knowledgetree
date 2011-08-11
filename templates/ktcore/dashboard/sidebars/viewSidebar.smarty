@@ -1,6 +1,6 @@
 {foreach item=key from=$keys}
 	<div id="sidebar_item" class={$sidebars[$key]->getCSSName()}>
-	{assign var="content" value=$sidebars[$key]->displayViewlet()}
+	{assign var="content" value=$sidebars[$key]->displayViewlet($location)}
 	{$content}
 	</div>
 {/foreach}

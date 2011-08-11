@@ -140,17 +140,17 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
             $this->aBreadcrumbs = kt_array_merge($this->aBreadcrumbs, KTBrowseUtil::breadcrumbsForDocument($this->document, $options, $symLinkFolderId));
         }
 
-		$oViewUtil = new ViewActionsUtil($this->bulkActionInProgress);
-		$oViewUtil->initActions($this->document, $this->oUser);
-        $oViewUtil->createButtons();
-		$documentTopActions = $oViewUtil->renderActions('top');
-        $documentBottomActions = $oViewUtil->renderActions('bottom');
+        $viewUtil = new ViewActionsUtil($this->bulkActionInProgress);
+        $viewUtil->initActions($this->document, $this->oUser);
+        $viewUtil->createButtons();
+        $documentTopActions = $viewUtil->renderActions('top');
+        $documentBottomActions = $viewUtil->renderActions('bottom');
 
         $documentData['document'] = $this->document;
         $documentData['document_type'] =& DocumentType::get($this->document->getDocumentTypeID());
         $isValidDoctype = true;
 
-        $documentTypes = & DocumentType::getList('disabled=0');
+        $documentTypes =& DocumentType::getList('disabled=0');
 
         if (PEAR::isError($documentData['document_type'])) {
             $this->oPage->addError(_kt('The document you requested has an invalid <strong>document type</strong>.  Unfortunately, this means that we cannot effectively display it.'));
@@ -188,7 +188,6 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
             }
             else {
                 $displayClass = $fieldsetDisplayReg->getHandler($fieldset->getNamespace());
-
                 array_push($fieldsets, new $displayClass($fieldset));
             }
         }
@@ -201,15 +200,14 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
             }
         }
 
-        // viewlets
         $viewlets = array();
         $viewletActions = KTDocumentActionUtil::getDocumentActionsForDocument($this->document, $this->oUser, 'documentviewlet');
         foreach ($viewletActions as $action) {
             $info = $action->getInfo();
             if (!is_null($info)) {
                 if (($info['ns'] == 'ktcore.viewlet.document.activityfeed') || ($info['ns'] == 'thumbnail.viewlets')) {
-                	// use the action, since we display_viewlet() later.
-                    $viewlets[] = $action->display_viewlet();
+                    // use the action, since we displayViewlet() later.
+                    $viewlets[] = $action->displayViewlet();
                 }
             }
         }
@@ -229,16 +227,19 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
                 require_once($path . 'instaViewLinkAction.php');
                 $livePreviewAction = new instaViewLinkAction($this->document, $this->oUser, null);
                 $livePreview = $livePreviewAction->do_main();
-            } catch(Exception $e) {}
+            }
+            catch(Exception $e) {
+                // Should really do something here, swallowing exceptions = bad.
+            }
         }
-        
+
         if (KTPluginUtil::pluginIsActive('actionableinsights.ratingcontent.plugin')) {
             $ratingContentEnabled = true;
             require_once(KT_PLUGIN_DIR . '/RatingContent/KTRatingContent.php');
         } else {
             $ratingContentEnabled = false;
         }
-        
+
         $ownerUser = KTUserUtil::getUserField($this->document->getOwnerID(), 'name');
         $creatorUser = KTUserUtil::getUserField($this->document->getCreatorID(), 'name');
         $lastModifierUser = KTUserUtil::getUserField($this->document->getModifiedUserId(), 'name');
@@ -250,11 +251,11 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
         $blocks = KTDocumentActionUtil::getDocumentActionsForDocument($this->document, $this->oUser, 'documentblock');
         $documentBlocks = isset($blocks[0]) ? $blocks[0] : array();
         if (!empty($documentBlocks)) {
-			$documentBlocks->setBulkAction($this->bulkActionInProgress);
-			$info = $documentBlocks->getInfo();
-        	if (is_null($info)) {
-        		$documentBlocks = array();
-        	}
+            $documentBlocks->setBulkAction($this->bulkActionInProgress);
+            $info = $documentBlocks->getInfo();
+            if (is_null($info)) {
+                $documentBlocks = array();
+            }
         }
         $sidebars = KTDocumentActionUtil::getDocumentActionsForDocument($this->document, $this->oUser, 'maindocsidebar');
         $documentSidebars = isset($sidebars[0]) ? $sidebars[0] : array();
@@ -298,12 +299,12 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
         if ($livePreview) {
             $templateData['live_preview'] = $livePreview;
         }
-        
+
         $templateData['ratingContentEnabled'] = FALSE;
-        
+
         if ($ratingContentEnabled) {
             $KTRatingContent = new KTRatingContent();
-            
+
             $templateData['ratingContentEnabled'] = TRUE;
 			$templateData['userLikesDocument'] = $KTRatingContent->doesUserLikeDocument($this->oUser->getId(), $documentId);
 			$templateData['numDocumentLikes'] = $KTRatingContent->getNumDocumentLikes($documentId);
