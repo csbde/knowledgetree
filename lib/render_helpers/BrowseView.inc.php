@@ -19,7 +19,7 @@ class BrowseView {
     //      the value may be overridden by the javascript, but this value is always a fallback.
     private $limit = 3;
     private $folderId;
-    public $showSelection = true;
+	public $showSelection = true;
 
     public function __construct()
     {
@@ -29,14 +29,14 @@ class BrowseView {
         } else {
             $this->zohoEnabled = false;
         }
-
-        if (KTPluginUtil::pluginIsActive('actionableinsights.ratingcontent.plugin')) {
+		
+		if (KTPluginUtil::pluginIsActive('actionableinsights.ratingcontent.plugin')) {
             $this->ratingContentEnabled = true;
             require_once(KT_PLUGIN_DIR . '/RatingContent/KTRatingContent.php');
         } else {
             $this->ratingContentEnabled = false;
         }
-
+		
         // Include new browse view css
         $page = $GLOBALS['main'];
         $page->requireCSSResource('resources/css/newui/browseView.css');
@@ -203,7 +203,7 @@ class BrowseView {
         $folderContentItems = $this->getFolderContent($folderId, $totalItems);
         $folderView = $this->buildFolderView($folderId, $folderContentItems, $permissions);
         $response['folderContents'] = join($folderView);
-        $response['documentCount'] = count($folderContentItems['documents']);
+		$response['documentCount'] = count($folderContentItems['documents']);
         // Adding Fragments for drag & drop client side processing
         $response['fragments'] = '';
         $response['fragments'] = '';
@@ -332,14 +332,14 @@ class BrowseView {
         $ret['documents'] = ktvar::sortArrayMatrixByKeyValue($ret['documents'], $sortField, $asc);
         $ret['folders'] = ktvar::sortArrayMatrixByKeyValue($ret['folders'], $sortField, $asc);
         }*/
-
-
-
-        // Add Like Count and Status to Document if it is enabled
-        if ($this->ratingContentEnabled) {
-            $KTRatingContent = new KTRatingContent();
-            $KTRatingContent->getLikesInCollection($ret['documents'], $user_id);
-        }
+		
+		
+		
+		// Add Like Count and Status to Document if it is enabled
+		if ($this->ratingContentEnabled) {
+			$KTRatingContent = new KTRatingContent();
+			$KTRatingContent->getLikesInCollection($ret['documents'], $user_id);
+		}
 
         $this->updateSession($folderId);
 
@@ -368,9 +368,9 @@ class BrowseView {
 
         if (!$permissions['editable']) {
 
-            if ($permissions['folderDetails']) {
-                $folderMessage = '<h2>There\'s nothing in this folder yet!</h2>';
-            }
+        	if ($permissions['folderDetails']) {
+        		$folderMessage = '<h2>There\'s nothing in this folder yet!</h2>';
+        	}
 
             if ($folderMessage == '') {
                 $folderMessage = '<h2>You don\'t have permissions to view the contents of this folder!</h2>';
@@ -463,7 +463,7 @@ class BrowseView {
 
         foreach ($items as $item) {
             $parts[$item->getName()] = '<input type="'.$item->getBtnType().'" name="submit[' . $item->getName() . ']" value="' . $item->getDisplayName() . '"
-                onclick="'.$item->getOnClick().'" />';
+            	onclick="'.$item->getOnClick().'" />';
         }
 
         // Unset the bulk actions dependent on the users permissions
@@ -513,15 +513,13 @@ class BrowseView {
         if ($item['icon_exists']) {
             $item['mimeicon'] = str_replace('\\', '/', $GLOBALS['default']->rootUrl . '/' . $iconFile);
             $item['mimeicon'] = 'background-image: url(' . $item['mimeicon'] . ')';
-        }
-        else {
+        } else {
             $item['mimeicon'] = '';
         }
 
         if ($item['hidecheckbox']) {
             $item['hidecheckbox'] = ' class="not_supported"';
-        }
-        else {
+        } else {
             $item['hidecheckbox'] = '';
         }
 
@@ -547,6 +545,7 @@ class BrowseView {
         $isRealDocument = false;
         if (get_class($oDocument) == 'Document') {
             $isRealDocument = true;
+            
             if ($hasWrite) {
                 $item['actions.checkout'] = $item['checked_out_date'] ? $ns : '';
                 $hasCheckedOut = ($_SESSION['userID'] == $item['checked_out_by_id']);
@@ -583,12 +582,12 @@ class BrowseView {
             $item['actions.share_document'] = $ns;
             if ($isCheckedOut || $item['actions.finalize_document']) {
                 $this->oUser = is_null($this->oUser) ? User::get($user_id) : $this->oUser;
-
+                
                 if ($isRealDocument && KTPermissionUtil::userHasPermissionOnItem($this->oUser, 'ktcore.permissions.write', $oDocument)) {
                     $item['actions.share_document'] = '';
                 }
             }
-            $item['separatorE'] = $ns;
+            $item['separatorE']=$ns;
         }
 
         // Check if the thumbnail exists
@@ -613,8 +612,7 @@ class BrowseView {
                 if ($oStorage->file_exists($thumbnailCheck)) {
                     $oDocument->setHasRendition(2);
                     $check = true;
-                }
-                else {
+                } else {
                     $oDocument->setHasRendition(0);
                 }
 
@@ -634,22 +632,24 @@ class BrowseView {
             if (Zoho::resolve_type($oDocument)) {
                 if ($item['actions.checkout'] != $ns) {
                     $item['allowdoczohoedit'] = '<li class="action_zoho_document"><a href="javascript:;" onclick="zohoEdit(\'' . $item['id'] . '\')">Edit Document Online</a></li>';
-                }
-                else {
+                } else {
                     $item['allowdoczohoedit'] = '<li class="action_zoho_document not_supported"><a href="javascript:;" onclick="zohoEdit(\'' . $item['id'] . '\')">Edit Document Online</a></li>';
                 }
             }
         }
-
-        $item['like_status'] = '';
-        if ($this->ratingContentEnabled) {
-            if ($item['user_likes_document']) {
-                $item['like_status'] = '<span class="like_status"><a href="javascript:;" onclick="kt.app.ratingcontent.unlikeDocument('.$item['id'].');"><img src="resources/graphics/newui/document_liked.png" /></a></span>';
-            }
-            else {
-                $item['like_status'] = '<span class="like_status"><a href="javascript:;" onclick="kt.app.ratingcontent.likeDocument('.$item['id'].');"><img src="resources/graphics/newui/document_notliked.png" /></a></span>';
-            }
-
+		
+		$item['like_status'] = '';
+		if ($this->ratingContentEnabled) {
+			if ($item['user_likes_document']) {
+				$item['like_status'] = '<span class="like_status liked"><a href="javascript:;" onclick="kt.app.ratingcontent.unlikeDocument('.$item['id'].');">'.$item['like_count'].'</a></span>';
+			} else {
+				if ($item['like_count'] == 0) {
+					$item['like_status'] = '<span class="like_status"><a href="javascript:;" onclick="kt.app.ratingcontent.likeDocument('.$item['id'].');">Like</a></span>';
+				} else {
+					$item['like_status'] = '<span class="like_status"><a href="javascript:;" onclick="kt.app.ratingcontent.likeDocument('.$item['id'].');">'.$item['like_count'].'</a></span>';
+				}
+			}
+			
         }
 
         $item['isfinalize_document'] = ($item['actions.finalize_document']) ? 0 : 1;
@@ -679,17 +679,15 @@ class BrowseView {
         }
 
         $selection = '';
-        if ($this->showSelection) {
-            $selection = '<td width="1" class="checkbox"><input name="selection_d[]" type="checkbox" value="[id]" [hidecheckbox] /></td>';
-        }
+		if ($this->showSelection) {
+			$selection = '<td width="1" class="checkbox"><input name="selection_d[]" type="checkbox" value="[id]" [hidecheckbox] /></td>';
+		}
 
         $tpl = $this->getDocumentTemplate(1, $selection, $share_separator, '<span class="shortcut[is_shortcut]">
                                     <span>This is a shortcut to the file.</span>
                                 </span>');
 
-        if ($empty) {
-            return '<span class="fragment document" style="display:none;">' . $tpl . '</span>';
-        }
+        if ($empty) { return '<span class="fragment document" style="display:none;">' . $tpl . '</span>'; }
 
         return ktVar::parseString($tpl, $item);
     }
@@ -722,9 +720,9 @@ class BrowseView {
             $item['link'] = KTUtil::buildUrl('browse.php', array('fFolderId'=> $item['id']));
         }
         $selection = '';
-        if ($this->showSelection) {
-            $selection = '<td width="1" class="checkbox"><input name="selection_f[]" type="checkbox" value="[id]" /></td>';
-        }
+		if ($this->showSelection) {
+			$selection = '<td width="1" class="checkbox"><input name="selection_f[]" type="checkbox" value="[id]" /></td>';
+		}
         $tpl = $this->getFolderTemplate(true, $selection, '<span class="shortcut[is_shortcut]"><span>This is a shortcut to the folder.</span></span>');
 
         if ($empty) { return '<span class="fragment folder" style="display:none;">' . $tpl . '</span>'; }
@@ -752,12 +750,12 @@ class BrowseView {
                             </div>
                         </td>
                         <td class="doc summary_cell fdebug">
-                            <div class="title"><a class="clearLink" href="[document_link]" style="">[title]</a> [like_status]</div>
+                            <div class="title"><a class="clearLink" href="[document_link]" style="">[title]</a></div>
                             <div class="detail">
                                 <span class="item"> Owner: <span class="user docowner">[owned_by]</span></span><span class="item">Created: <span class="date">[created_date]</span> by <span class="user">[created_by]</span></span><span class="item docupdatedinfo">Updated: <span class="date">[modified_date]</span> by <span class="user">[modified_by]</span></span><span class="item">File size: <span class="user filesize">[filesize]</span></span>
                             </div>
                         </td>
-                        <td>
+                        <td style="width: 99px;ZZ">
                             ' . $this->getDocumentActionMenu($share_separator) . '
                         </td>
                     </tr>
@@ -779,7 +777,7 @@ class BrowseView {
 
     protected function getDocumentActionMenu($share_separator = null)
     {
-        return '<ul class="doc actionMenu">
+        return '[like_status]<ul class="doc actionMenu">
                                 <!-- li class="actionIcon comments"></li -->
                                 <li class="actionIcon actions">
                                     <ul>
