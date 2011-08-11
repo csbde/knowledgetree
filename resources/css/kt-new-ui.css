@@ -2015,3 +2015,46 @@ tr.dyncond_selector td {
 .paginationContainer .paginate > li.highlight { background-color: #497faa; color: white; text-shadow: 0px -1px 0px #2F6594; }
 .paginationContainer .paginate > li.highlight:hover { background-color: #6598bf; }
 .paginationContainer .paginate > li:hover { background-color: #fbfbfb; -webkit-box-shadow: 0px 0px 2px #626262; -moz-box-shadow: 0px 0px 2px #626262; box-shadow: 0px 0px 2px #626262; }
+
+
+/*like */
+#documentLikeStatus {
+	margin-bottom: 10px;
+}
+.like_status {
+	display: inline-block;
+	background: url(../graphics/newui/document_notliked.png) no-repeat;
+	width: 46px;
+	height: 22px;
+	text-align: center;
+	font-size: 11px;
+	line-height: 22px;
+}
+.like_status.liked {
+	background: url(../graphics/newui/document_liked.png) no-repeat;
+}
+.like_status:hover{
+	background-color: #E4E4E4;
+	border-radius: 3px;
+	-webkit-border-radius: 3px;
+	-moz-border-radius: 3px;
+}
+.like_status.liked:hover{
+	background-color: #bedce5;
+}
+#content .like_status a {
+	display: block;
+	color: #AAA;
+	padding-left: 16px;
+	text-shadow: 0px 1px 0px white;
+}
+#content .like_status a:hover {
+	text-decoration: none;
+}
+#content .like_status.liked a {
+	font-size: 11px;
+	line-height: 22px;
+	color: #2f6594;	
+	padding-left: 14px;
+	font-weight: bold;
+}
