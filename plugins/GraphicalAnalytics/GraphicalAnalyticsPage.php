@@ -59,19 +59,31 @@ class GraphAnalyticsPage extends KTStandardDispatcher {
 	    global $default;
 
 	    $templating =& KTTemplating::getSingleton();
-	    $template = $templating->loadTemplate('graphs_viewlet');
+	    $template = $templating->loadTemplate('graphspage');
         $ktAnalytics = new GraphicalAnalytics();
 		global $main;
 	    $templateData = array(
 	           'context' => $this,
-
+			   
+			   // Dashlets
 			   'userAccessPerWeek' => $ktAnalytics->getUserAccessPerWeekDashlet(),
 			   'uploadsPerWeek' => $ktAnalytics->getUploadsPerWeekDashlet(),
 			   'documentRating' => $ktAnalytics->getDocumentsByRatingTemplate(TRUE), // TRUE for Dashlet
 			   'topFiveDocuments' => $ktAnalytics->getTop5DocumentsDashlet(),
 	           'topFiveUsers' => $ktAnalytics->getTop5UsersDashlet(),
 	           'mostViewedDocuments' => $ktAnalytics->getMostViewedDocumentsDashlet(),
-
+			   
+			   // For the Page
+			   'top10Documents' => $ktAnalytics->getTop10DocumentsTemplate(),
+			   'documentsByRating' => $ktAnalytics->getDocumentsByRatingTemplate(),
+			   'top10Users' => $ktAnalytics->getTop10UsersTemplate(),
+			   'uploadsPerWeek' => $ktAnalytics->getUploadsPerWeekTemplate(),
+			   'userAccessPerWeek' => $ktAnalytics->getUserAccessPerWeekTemplate(),
+			   'transactionPerWeek' => $ktAnalytics->getTransactionOverWeekTemplate(),
+			   'viewsVsComments' => $ktAnalytics->getViewsVsCommentsOverWeekTemplate(),
+			   'commentsPerWeek' => $ktAnalytics->getDocumentCommentsPerWeekTemplate(),
+			   'likesPerWeek' => $ktAnalytics->getDocumentLikesPerWeekTemplate(),
+			   
         );
 
 	    return $template->render($templateData);

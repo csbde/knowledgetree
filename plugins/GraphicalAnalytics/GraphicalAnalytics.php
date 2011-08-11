@@ -256,7 +256,7 @@ class GraphicalAnalytics {
 	{
 		$templateData = array();
 
-		$templateData['transactions'] = $this->getTransactionOverWeekData($this->getTransactionViewsSql());
+		$templateData['transactions'] = $this->getTransactionOverWeekData($this->KTGraphicalAnalyticsSql->getTransactionViewsSql());
 		$templateData['document_views'] = $this->generateDocViewsGraphData($this->getDocumentViewsOverWeek());
 
 		return $this->loadTemplate($templateData, 'transactions_vs_comments_week');
@@ -270,7 +270,7 @@ class GraphicalAnalytics {
 		$templateData = array();
 
 		$templateData['comments'] = $this->getDocumentCommentsPerWeekData();
-		$templateData['document_views'] = $this->generateDocViewsGraphData($this->getDocumentViewsOverWeek());
+		$templateData['document_views'] = $this->generateDocViewsGraphData($this->KTGraphicalAnalyticsSql->getDocumentViewsOverWeek());
 		$templateData['document_likes'] = $this->getDocumentLikesPerWeekData();
 
 		return $this->loadTemplate($templateData, 'views_vs_comments_week');
