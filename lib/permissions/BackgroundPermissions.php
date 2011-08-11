@@ -164,6 +164,10 @@ class BackgroundPermissions {
     {
         $folder = Folder::get($this->folderId);
         
+        if (PEAR::isError($folder)) {
+            return false;
+        }
+        
         $permissionObjectId = $folder->getPermissionObjectID();
         $permissionObject = KTPermissionObject::get($permissionObjectId);
         $inheritedFolder = KTPermissionUtil::findRootObjectForPermissionObject($permissionObject);
