@@ -12,7 +12,7 @@
                 defaultSeriesType: 'column'
             },
             title: {
-                text: 'Document Ratings'
+                text: null
             },
             xAxis: {
                 categories: [{/literal}{$pointScale}{literal}],

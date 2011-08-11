@@ -432,8 +432,6 @@ div.viewletworkflow {
 }
 
 .activityfeed .icon{
-/*  width: 48px;  */
-/*  height: 48px; */
 /*  margin-right: 15px; */
 /*  margin-bottom: 30px; */
 /*	border: 1px solid #A10000;*/
@@ -441,6 +439,8 @@ div.viewletworkflow {
     display: block;
     clear: none;
     padding-left: 10px;
+    min-width: 23px;
+	min-height: 32px;
 }
 
 .activityfeed .comment .icon {

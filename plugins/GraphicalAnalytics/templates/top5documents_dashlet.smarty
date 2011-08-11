@@ -1,11 +1,11 @@
 <h3>Top Rated Documents</h3>
 
-<div style="overflow:hidden; width:250px;">
-<table>
+<div style="overflow:hidden;">
+<table class="tabular">
     <tbody>
         {foreach from=$data item=document}
-        <tr>
-            <td width="20">{$context->getMimeIcon($document.mime_id)}</td><td class="docnowrap"><a href="{$context->cleanUrl($document.document_id)}">{$document.filename}</a></td>
+        <tr class="{cycle values=odd,even name=topdocs}">
+            <td class="icon">{$context->getMimeIcon($document.mime_id)}</td><td class="line"><a href="{$context->cleanUrl($document.document_id)}">{$document.name}</a></td>
         </tr>
         {/foreach}
     </tbody>

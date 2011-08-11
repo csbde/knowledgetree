@@ -2,24 +2,24 @@
 
 <table width="100%">
     <tr>
-        <td width="33%" valign="top">
+        <td width="33%" valign="top" class="graph-viewlet">
             {$userAccessPerWeek}
         </td>
-        <td width="33%" valign="top">
+        <td width="33%" valign="top" class="graph-viewlet">
             {$uploadsPerWeek}
         </td>
-        <td width="33%" valign="top">
+        <td width="33%" valign="top" class="graph-viewlet">
             {$documentRating}
         </td>
     </tr>
     <tr>
-        <td width="33%" valign="top">
+        <td width="33%" valign="top" class="graph-viewlet">
             {$topFiveDocuments}
         </td>
-        <td width="33%" valign="top">
+        <td width="33%" valign="top" class="graph-viewlet">
             {$topFiveUsers}
         </td>
-        <td width="33%" valign="top">
+        <td width="33%" valign="top" class="graph-viewlet">
             {$mostViewedDocuments}
         </td>
     </tr>

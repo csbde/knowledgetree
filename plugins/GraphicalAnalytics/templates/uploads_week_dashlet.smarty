@@ -14,7 +14,7 @@
                 defaultSeriesType: 'line'
             },
             title: {
-                text: 'Uploads per Week'
+                text: null
             },
 
             

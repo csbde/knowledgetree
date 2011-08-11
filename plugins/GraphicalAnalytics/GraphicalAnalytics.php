@@ -33,7 +33,7 @@ class GraphicalAnalytics {
 	public function getTop10Documents($limit = 10)
     {
 		$sql = '
-		SELECT merged_table.document_id, document_content_version.filename, SUM(documentscore) AS documentscore, mime_id FROM
+		SELECT merged_table.document_id, document_metadata_version.name, SUM(documentscore) AS documentscore, mime_id FROM
 		(
 
 			(
@@ -115,7 +115,7 @@ class GraphicalAnalytics {
 
 		$sql = '
 		SELECT merged_twice.documentscore as scoregroup, COUNT(merged_twice.documentscore) as numitems FROM (
-			SELECT merged_table.document_id, document_content_version.filename, SUM(documentscore), ROUND((SUM(documentscore))/'.$divider.') AS documentscore FROM
+			SELECT merged_table.document_id, document_metadata_version.name, SUM(documentscore), ROUND((SUM(documentscore))/'.$divider.') AS documentscore FROM
 			(
 
 				(
@@ -350,7 +350,7 @@ class GraphicalAnalytics {
 	public function getMostViewedDocuments()
     {
         $sql = '
-		SELECT document_transactions.document_id, COUNT( document_transactions.document_id ) AS count, document_content_version.filename, mime_id
+		SELECT document_transactions.document_id, COUNT( document_transactions.document_id ) AS count, document_metadata_version.name, mime_id
 		FROM document_transactions
 		INNER JOIN documents ON (document_transactions.document_id = documents.id)
 		INNER JOIN document_metadata_version ON (documents.metadata_version_id = document_metadata_version.id)
