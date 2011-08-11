@@ -41,7 +41,7 @@ require_once(KT_LIB_DIR . '/util/ktutil.inc');
 
 require_once(KT_DIR . '/plugins/ktcore/KTDocumentViewlets.php');
 
-require_once(KT_PLUGIN_DIR . '/GraphicalAnalytics/GraphicalAnalyticsTemplates.php');
+require_once(KT_PLUGIN_DIR . '/GraphicalAnalytics/GraphicalAnalytics.php');
 
 class KTDashboardActivityFeedViewlet extends KTDashboardViewlet {
 
@@ -172,16 +172,17 @@ class KTGraphicalAnalyticsViewlet extends KTDashboardViewlet
 
 	public function displayViewlet()
 	{
-		$ktAnalytics = new GraphicalAnalyticsTemplates();
+		$ktAnalytics = new GraphicalAnalytics();
 
 	    $templateData = array(
 	           'context' => $this,
-	           'topTenUsers' => $ktAnalytics->getTop10UsersTemplate(),
-	           'topTenDocuments' => $ktAnalytics->getTop10DocumentsTemplate(),
-	           'documentViews' => $ktAnalytics->getDocumentViewsOverWeekTemplate(),
-	           //'transactionsPerWeek' => $ktAnalytics->getTransactionOverWeekTemplate(),
-	           'commentsPerWeek' => $ktAnalytics->getDocumentCommentsPerWeekTemplate(),
-	           'commentsVsViewsPerWeek' => $ktAnalytics->getViewsVsCommentsOverWeekTemplate(),
+			   'userAccessPerWeek' => $ktAnalytics->getUserAccessPerWeekDashlet(),
+			   'uploadsPerWeek' => $ktAnalytics->getUploadsPerWeekDashlet(),
+			   'documentRating' => $ktAnalytics->getDocumentsByRatingTemplate(TRUE), // TRUE for Dashlet
+			   'topFiveDocuments' => $ktAnalytics->getTop5DocumentsDashlet(),
+	           'topFiveUsers' => $ktAnalytics->getTop5UsersDashlet(),
+	           'mostViewedDocuments' => $ktAnalytics->getMostViewedDocumentsDashlet(),
+
         );
 
         $templating = KTTemplating::getSingleton();
