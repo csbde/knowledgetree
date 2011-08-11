@@ -47,6 +47,7 @@ class RatingContent extends client_service {
 		
     	$this->addResponse('newNumLikes', $newNum);
 		$this->addResponse('success', 'true');
+		$this->addResponse('userLikesDocument', 'true');
 		
         return true;
 	}
@@ -59,6 +60,7 @@ class RatingContent extends client_service {
 		
     	$this->addResponse('newNumLikes', $newNum);
 		$this->addResponse('success', 'true');
+		$this->addResponse('userLikesDocument', 'false');
 		
         return true;
 	}

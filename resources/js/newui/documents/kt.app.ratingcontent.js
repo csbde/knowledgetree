@@ -55,12 +55,19 @@ kt.app.ratingcontent = new function() {
 			if (self.action == 'likeDocument') {
 				str = '<a href="javascript:;" onclick="kt.app.ratingcontent.unlikeDocument('+self.documentId+');">'+(response.data.newNumLikes)+'</a>';
 			} else {
-				str = '<a href="javascript:;" onclick="kt.app.ratingcontent.likeDocument('+self.documentId+');">Like</a>';
+				
+				if (response.data.newNumLikes == 0) {
+					likeStr = 'Like';
+				} else {
+					likeStr = response.data.newNumLikes;
+				}
+				
+				str = '<a href="javascript:;" onclick="kt.app.ratingcontent.likeDocument('+self.documentId+');">'+likeStr+'</a>';
 			}
 			
 			// Update with some animation
 			jQuery('#docItem_'+self.documentId+' span.like_status').fadeOut('fast',function() {
-					jQuery(this).html(str);
+					jQuery(this).html(str).toggleClass('liked');
 				}).fadeIn();
 		}
 	}
@@ -74,15 +81,31 @@ kt.app.ratingcontent = new function() {
 				str = '<a href="javascript:;" onclick="kt.app.ratingcontent.likeDocument('+self.documentId+', false);">Like</a>';
 			}
 			
-			if (response.data.newNumLikes == 1) {
-				countStr = '1 person likes this';
+			if (self.action == 'likeDocument') {
+				
+				switch(response.data.newNumLikes)
+				{
+					case 1:
+						countStr = 'You like this';
+						break;
+					case 2:
+						countStr = 'You and one person likes this';
+						break;
+					default:
+						countStr = 'You and '+(response.data.newNumLikes-1)+' people like this';
+						break
+				}
 			} else {
-				countStr = ''+(response.data.newNumLikes)+' people like this';
+				if (response.data.newNumLikes == 1) {
+					countStr = '1 person likes this';
+				} else {
+					countStr = ''+(response.data.newNumLikes)+' people like this';
+				}
 			}
 			
 			// Update with some animation
 			jQuery('#documentLikeStatus span.like_status').fadeOut('fast',function() {
-					jQuery(this).html(str);
+					jQuery(this).html(str).toggleClass('liked');
 				}).fadeIn();
 			
 			jQuery('#documentLikeStatus span.like_count').html(countStr);
