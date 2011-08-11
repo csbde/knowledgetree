@@ -23,6 +23,8 @@
 require_once(KT_LIB_DIR . '/security/Permission.inc');
 require_once(KT_LIB_DIR . '/database/dbutil.inc');
 require_once(KT_LIB_DIR . '/templating/templating.inc.php');
+require_once(KT_LIB_DIR . '/util/ktutil.inc');
+require_once(KT_LIB_DIR . '/plugins/pluginutil.inc.php');
 
 class KTGraphicalAnalytics {
 
@@ -31,7 +33,7 @@ class KTGraphicalAnalytics {
 	public function getTop10Documents($limit = 10)
     {
 		$sql = '
-		SELECT merged_table.document_id, document_content_version.filename, SUM(documentscore) AS documentscore FROM
+		SELECT merged_table.document_id, document_content_version.filename, SUM(documentscore) AS documentscore, mime_id FROM
 		(
 
 			(
@@ -97,7 +99,7 @@ class KTGraphicalAnalytics {
 
 	public function getTop5DocumentsDashlet()
 	{
-		return $this->loadTemplate(array('data'=>$this->getTop10Documents(5)), 'top5documents_dashlet');
+		return $this->loadTemplate(array('context'=> $this, 'data'=>$this->getTop10Documents(5)), 'top5documents_dashlet');
 	}
 
 /******************************************************************************************************************/
@@ -348,7 +350,7 @@ class KTGraphicalAnalytics {
 	public function getMostViewedDocuments()
     {
         $sql = '
-		SELECT document_transactions.document_id, COUNT( document_transactions.document_id ) AS count, document_content_version.filename
+		SELECT document_transactions.document_id, COUNT( document_transactions.document_id ) AS count, document_content_version.filename, mime_id
 		FROM document_transactions
 		INNER JOIN documents ON (document_transactions.document_id = documents.id)
 		INNER JOIN document_metadata_version ON (documents.metadata_version_id = document_metadata_version.id)
@@ -364,7 +366,7 @@ class KTGraphicalAnalytics {
 
 	public function getMostViewedDocumentsDashlet()
 	{
-		$templateData = array('data'=>$this->getMostViewedDocuments());
+		$templateData = array('data'=>$this->getMostViewedDocuments(), 'context'=>$this);
 
 		return $this->loadTemplate($templateData, 'most_viewed_documents');
 	}
@@ -749,5 +751,22 @@ class KTGraphicalAnalytics {
             && ((int)$_SESSION['adminmode'])
             && Permission::adminIsInAdminMode();
     }
+	
+	public function getMimeIcon($mimeId)
+	{
+		$iconFile = 'resources/mimetypes/' . KTMime::getIconPath($mimeId) . '.gif';
+		
+		
+        if (file_exists(KT_DIR . '/' . $iconFile)) {
+			return '<img src="/'.$iconFile.'" />';
+		} else {
+			return '&nbsp;';
+		}
+	}
+	
+	public function cleanUrl($documentId)
+	{
+		return KTUtil::kt_clean_document_url($documentId);
+	}
 
 }

@@ -28,8 +28,8 @@
             },
             tooltip: {
                 formatter: function() {
-                    return ''+
-                         this.series.name +': '+ this.y +' ..';
+                    return this.y +' Documents';
+                        //this.series.name +': '+ this.y +' ..';
                 }
             },
             plotOptions: {

@@ -35,8 +35,7 @@
             },
             tooltip: {
                 formatter: function() {
-                    return ''+
-                         this.series.name +': '+ this.y +' ..';
+                    return this.y +' Users';
                 }
             },
             plotOptions: {
