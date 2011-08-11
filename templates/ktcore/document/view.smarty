@@ -50,6 +50,28 @@
 
 			<td height="1" valign="top" width="310">
                     <div class="doc_description">
+						{if $ratingContentEnabled}
+							<div id="documentLikeStatus">
+								{if $userLikesDocument}
+									<span class="like_status liked"><a href="javascript:;" onclick="kt.app.ratingcontent.unlikeDocument({$document->getId()}, false);">Like</a></span>
+								{else}
+									<span class="like_status"><a href="javascript:;" onclick="kt.app.ratingcontent.likeDocument({$document->getId()}, false);">Like</a></span>
+								{/if}
+								
+								<span class="like_count" style="vertical-align:top; margin-left: 2px;">
+									{if $numDocumentLikes == 1}
+										{i18n}1 person likes this{/i18n}
+									{else}
+										{if $userLikesDocument}
+											{i18n}You and{/i18n} {$numDocumentLikes-1} {i18n}people likes this{/i18n} 
+										{else} 
+											{$numDocumentLikes} {i18n}people like this{/i18n} 
+										{/if}
+									{/if}
+								</span>
+							</div>
+						{/if}
+						
                         <span class="doc_info" style="display: block;">
                         <table class="metadatatable">
                         	<tr>
