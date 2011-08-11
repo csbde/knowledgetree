@@ -45,7 +45,7 @@ require_once(KT_LIB_DIR . "/documentmanagement/documentutil.inc.php");
 require_once(KT_LIB_DIR . "/metadata/fieldsetregistry.inc.php");
 require_once(KT_LIB_DIR . "/util/sanitize.inc");
 
-class KTFolderAddDocumentAction extends KTFolderAction {
+class KTFolderAddDocumentAction extends JavascriptFolderAction {
     public $sName = 'ktcore.actions.folder.addDocument';
     public $_sShowPermission = "ktcore.permissions.write";
     public $oDocumentType = null;
@@ -61,7 +61,12 @@ class KTFolderAddDocumentAction extends KTFolderAction {
 
     public function getURL()
     {
-        return 'javascript:kt.app.upload.showUploadWindow();';
+        return 'javascript:;';
+    }
+    
+    public function getOnClick()
+    {
+        return 'kt.app.upload.showUploadWindow();';
     }
 
     public function getButton() {

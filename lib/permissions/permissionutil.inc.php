@@ -697,35 +697,41 @@ class KTPermissionUtil {
      * preparation for the object to have different permissions from its
      * parent.
      */
-    function copyPermissionObject(&$oDocumentOrFolder) {
+    function copyPermissionObject(&$documentOrFolder) 
+    {
         global $default;
-        $oOrigPO = KTPermissionObject::get($oDocumentOrFolder->getPermissionObjectID());
-        $aOrigPAs =& KTPermissionAssignment::getByObjectMulti($oOrigPO);
-        $oNewPO = KTPermissionObject::createFromArray(array());
-        foreach ($aOrigPAs as $oOrigPA) {
-            $oNewPA = KTPermissionAssignment::createFromArray(array(
-                'permissionid' => $oOrigPA->getPermissionID(),
-                'permissionobjectid' => $oNewPO->getID(),
-                'permissiondescriptorid' => $oOrigPA->getPermissionDescriptorID(),
+        
+        $permissionObjectId = $documentOrFolder->getPermissionObjectID();
+        $permissionObject = KTPermissionObject::get($permissionObjectId);
+        $permissionAssignments =& KTPermissionAssignment::getByObjectMulti($permissionObject);
+        $newPermissionObject = KTPermissionObject::createFromArray(array());
+        
+        foreach ($permissionAssignments as $permissionAssignment) {
+            $newPermissionAssignment = KTPermissionAssignment::createFromArray(array(
+                'permissionid' => $permissionAssignment->getPermissionID(),
+                'permissionobjectid' => $newPermissionObject->getID(),
+                'permissiondescriptorid' => $permissionAssignment->getPermissionDescriptorID(),
             ));
         }
-        $oDocumentOrFolder->setPermissionObjectID($oNewPO->getID());
-        $oDocumentOrFolder->update();
+        
+        $documentOrFolder->setPermissionObjectID($newPermissionObject->getID());
+        $documentOrFolder->update();
 
         // copy any dynamic conditions
-        $aDPO = KTPermissionDynamicCondition::getByPermissionObject($oOrigPO);
-        foreach ($aDPO as $oOrigDC) {
-            $oNewDC = KTPermissionDynamicCondition::createFromArray(array(
-                'permissionobjectid' => $oNewPO->getId(),
-                'groupid' => $oOrigDC->getGroupId(),
-                'conditionid' => $oOrigDC->getConditionId(),
+        $dynamicConditions = KTPermissionDynamicCondition::getByPermissionObject($permissionObject);
+        foreach ($dynamicConditions as $dynamicCondition) {
+            $newDynamicCondition = KTPermissionDynamicCondition::createFromArray(array(
+                'permissionobjectid' => $newPermissionObject->getId(),
+                'groupid' => $dynamicCondition->getGroupId(),
+                'conditionid' => $dynamicCondition->getConditionId(),
             ));
 
-            $oNewDC->saveAssignment($oOrigDC->getAssignment());
+            $newDynamicCondition->saveAssignment($dynamicCondition->getAssignment());
         }
 
-        if (!($oDocumentOrFolder instanceof Folder)) {
-            KTPermissionUtil::updatePermissionLookup($oDocumentOrFolder);
+        // Update the permission lookup for a document
+        if (!($documentOrFolder instanceof Folder)) {
+            KTPermissionUtil::updatePermissionLookup($documentOrFolder);
             return;
         }
 
@@ -736,28 +742,36 @@ class KTPermissionUtil {
         // they have their own permission object management, and thus
         // this folder has no effect on their permissions.
 
-        $iFolderID = $oDocumentOrFolder->getID();
-        $sFolderIDs = Folder::generateFolderIDs($iFolderID);
-        $sFolderIDs .= '%';
-        $sQuery = "UPDATE $default->folders_table SET
-            permission_object_id = ? WHERE permission_object_id = ? AND
-            parent_folder_ids LIKE ?";
-        $aParams = array($oNewPO->getID(), $oOrigPO->getID(), $sFolderIDs);
-        DBUtil::runQuery(array($sQuery, $aParams));
+        $folderId = $documentOrFolder->getID();
+        $parentFolderIds = $documentOrFolder->getParentFolderIDs();
+        Folder::generateFolderIDs($folderId);
+        $parentFolderIds .= ',' . $folderId;
+        $parentFolderIds1 = $parentFolderIds . ',%';
+        $parentFolderIds2 = $parentFolderIds . '%';
+        
+        $params = array($newPermissionObject->getID(), $permissionObject->getID(), $folderId, $parentFolderIds);
+        $query = "UPDATE $default->folders_table 
+                SET permission_object_id = ? 
+                WHERE permission_object_id = ? AND (parent_id = ? OR parent_folder_ids LIKE ?)";
+        DBUtil::runQuery(array($query, $params));
 
         Folder::clearAllCaches();
 
-        $sQuery = "UPDATE $default->documents_table SET
-            permission_object_id = ? WHERE permission_object_id = ? AND
-            (parent_folder_ids LIKE ? OR folder_id = ?)";
-        $aParams[] = $iFolderID;
-        DBUtil::runQuery(array($sQuery, $aParams));
+        $params[] = $parentFolderIds2;
+        $query = "UPDATE $default->documents_table 
+                SET permission_object_id = ? 
+                WHERE permission_object_id = ? AND (folder_id = ? OR parent_folder_ids LIKE ? OR parent_folder_ids LIKE ?)";
+        DBUtil::runQuery(array($query, $params));
 
         Document::clearAllCaches();
 
+        /* *** Removing the update permission lookups *** */
+        // The lookups should not have changed during a copy of the permission object. They will only change on an update or inherit.
+        return true;
+        
         // All objects using this PO must be new and must need their
         // lookups updated...
-        return KTPermissionUtil::updatePermissionLookupForPO($oNewPO);
+        //return KTPermissionUtil::updatePermissionLookupForPO($newPermissionObject);
     }
     // }}}
 
