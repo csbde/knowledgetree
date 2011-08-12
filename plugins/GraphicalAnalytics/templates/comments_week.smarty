@@ -1,34 +1,14 @@
 <h3>Comments per Week</h3>
 
-<div style="width: 25%; float: left">
-<table>
-    <thead>
-        <th>Week</th>
-        <th>Number of Comments</th>
-    </thead>
-    <tbody>
-        {foreach from=$data.comments item=week}
-        <tr>
-            <th>{if $week.week_number==0}This Week{else}{$week.week_number} week ago{/if}</th>
-            <td>{$week.count}</td>
-        </tr>
-        {/foreach}
-    </tbody>
-</table>
-</div>
-<div style="width: 70%; float: left">
-    <div id="comments_per_week"></div>
-</div>
-
-<br clear="both" />
+<div id="comments_per_week"></div>
 
 
 
 {literal}
 <script type="text/javascript">
-    var documentViewChart;
+    var commentsPerWeekChart;
     jQuery(document).ready(function() {
-        documentViewChart = new Highcharts.Chart({
+        commentsPerWeekChart = new Highcharts.Chart({
             chart: {
                 renderTo: 'comments_per_week',
                 defaultSeriesType: 'column'

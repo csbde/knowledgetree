@@ -1,6 +1,6 @@
 <h3>Most Viewed Documents</h3>
 
-<div style="overflow:hidden; width:250px;">
+<div style="overflow:hidden; width:230px;">
 <table>
     <tbody>
         {foreach from=$data item=document}
