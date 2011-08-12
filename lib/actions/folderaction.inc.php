@@ -406,15 +406,15 @@ class KTFolderActionUtil {
 
         $folderActions = KTFolderActionUtil::getFolderActions($slot);
         foreach ($folderActions as $action) {
-            list($class, $path, $plugin) = $action;
-            $pluginRegistry =& KTPluginRegistry::getSingleton();
-            $plugin =& $pluginRegistry->getPlugin($plugin);
+            list($class, $path, $namespace, $pluginName) = $action;
+            $pluginRegistry = KTPluginRegistry::getSingleton();
+            $plugin = $pluginRegistry->getPlugin($pluginName);
 
             if (!empty($path)) {
                 require_once($path);
-            }
 
-            $objects[] = new $class($folder, $user, $plugin);
+                $objects[] = new $class($folder, $user, $plugin);
+            }
         }
 
         return $objects;
@@ -422,19 +422,22 @@ class KTFolderActionUtil {
 
     public function &getFolderInfoActionsForFolder($oFolder, $oUser)
     {
-        $aObjects = array();
+        $objects = array();
 
-        foreach (KTFolderActionUtil::getFolderInfoActions() as $aAction) {
-            list($sClassName, $sPath, $sPlugin) = $aAction;
-            $oRegistry =& KTPluginRegistry::getSingleton();
-            $oPlugin =& $oRegistry->getPlugin($sPlugin);
-            if (!empty($sPath)) {
-                require_once($sPath);
+        $folderInfoActions = KTFolderActionUtil::getFolderInfoActions();
+        foreach ($folderInfoActions as $action) {
+            list($className, $path, $namespace, $pluginName) = $action;
+            $registry = KTPluginRegistry::getSingleton();
+            $plugin = $registry->getPlugin($pluginName);
+            
+            if (!empty($path)) {
+                require_once($path);
+                
+                $objects[] =new $className($oFolder, $oUser, $plugin);
             }
-            $aObjects[] =new $sClassName($oFolder, $oUser, $oPlugin);
         }
 
-        return $aObjects;
+        return $objects;
     }
 
     public static function checkForBackgroundedAction($folderId = '', $action = '')

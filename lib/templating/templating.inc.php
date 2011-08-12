@@ -50,11 +50,11 @@ class KTTemplating {
     // {{{ KTTemplating
     function KTTemplating() {
         $this->aTemplateRegistry = array(
-            "smarty" => "KTSmartyTemplate",
+            'smarty' => 'KTSmartyTemplate'
         );
 
         $this->aLocationRegistry = array(
-            "core" => "templates",
+            'core' => KT_DIR . '/templates'
         );
     }
     // }}}
@@ -66,34 +66,53 @@ class KTTemplating {
     }
     // }}}
 
-    // {{{ _findTemplate
-    function _findTemplate($templatename) {
-        $aPossibilities = array();
-
-        foreach ($this->aLocationRegistry as $loc => $path) {
-            if (KTUtil::isAbsolutePath($path)) {
-                $fulldirectory = $path . "/";
-                foreach (array_keys($this->aTemplateRegistry) as $suffix) {
-                    $fullpath = $fulldirectory . $templatename . "." .  $suffix;
-                    if (file_exists($fullpath)) {
-                        $aPossibilities[$loc] = array($suffix, $fullpath);
-                    }
-                }
+    private function loadTemplateHelpers()
+    {
+        if (count($this->aLocationRegistry) > 1) {
+            return ;
+        }
+        
+        $helpers = KTPluginUtil::loadPluginHelpers('locations');
+        
+        foreach ($helpers as $helper) {
+            extract($helper);
+            $params = explode('|', $object);
+            
+            $path = $params[1];
+            if (strpos($path, KT_DIR) === false) {
+                $path = KT_DIR . '/' . $path;
             }
-            $fulldirectory = KT_DIR . "/" . $path . "/";
-            foreach (array_keys($this->aTemplateRegistry) as $suffix) {
-                $fullpath = $fulldirectory . $templatename . "." .  $suffix;
-                if (file_exists($fullpath)) {
-                    $aPossibilities[$loc] = array($suffix, $fullpath);
+            
+            $this->addLocation2($params[0], $path);
+        }
+        
+    }
+    
+    // {{{ _findTemplate
+    function _findTemplate($templateName) 
+    {
+        $this->loadTemplateHelpers();
+        
+        $possibilities = array();
+
+        foreach ($this->aLocationRegistry as $location => $path) {
+            
+            $path .= '/';
+            
+            $templateTypes = array_keys($this->aTemplateRegistry);
+            foreach ($templateTypes as $suffix) {
+                $fullPath = $path . $templateName . '.' .  $suffix;
+                if (file_exists($fullPath)) {
+                    $possibilities[$location] = array($suffix, $fullPath);
                 }
             }
         }
 
-        if (count($aPossibilities) === 0) {
+        if (count($possibilities) === 0) {
             return PEAR::raiseError(_kt("No template found"));
         }
 
-        return $this->_chooseTemplate($templatename, $aPossibilities);
+        return $this->_chooseTemplate($templateName, $possibilities);
     }
     // }}}
 
@@ -190,11 +209,11 @@ class KTTemplating {
     /**
      * Add the template location to the location registry
      *
-     * @param unknown_type $descr
-     * @param unknown_type $loc
+     * @param string $description
+     * @param string $location
      */
-    function addLocation2 ($descr, $loc) {
-        $this->aLocationRegistry[$descr] = $loc;
+    function addLocation2 ($description, $location) {
+        $this->aLocationRegistry[$description] = $location;
     }
 
     // {{{ getSingleton

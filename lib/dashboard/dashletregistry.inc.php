@@ -54,6 +54,25 @@ class KTDashletRegistry {
         $this->nsnames[$nsname] = array($name, $filename, $nsname, $sPlugin);
     }
 
+    private function loadDashletHelpers()
+    {
+        if (!empty($this->nsnames)) {
+            return ;
+        }
+        
+        $helpers = KTPluginUtil::loadPluginHelpers('dashlet');
+        
+        foreach ($helpers as $helper) {
+            extract($helper);
+            $params = explode('|', $object);
+            
+            if (isset($params[2])) {
+                $params[2] = KTPluginUtil::getFullPath($params[2]);
+            }
+            call_user_func_array(array($this, 'registerDashlet'), $params);
+        }
+    }
+    
     /**
      * Get any dashlets added since the user's last login
      *
@@ -107,9 +126,12 @@ class KTDashletRegistry {
     }
 
     // FIXME we might want to do the pruning now, but I'm unsure how to handle the preconditions.
-    function getDashlets($user) {
+    function getDashlets($user) 
+    {
+        $this->loadDashletHelpers();
+           
         $dashlets = array();
-        $pluginRegistry =& KTPluginRegistry::getSingleton();
+        $pluginRegistry = KTPluginRegistry::getSingleton();
         
         // probably not the _best_ way to do things.
         foreach ($this->nsnames as $portlet) {
@@ -118,7 +140,7 @@ class KTDashletRegistry {
             $pluginName = $portlet[3];
 
             require_once($filename);
-            $plugin =& $pluginRegistry->getPlugin($pluginName);
+            $plugin = $pluginRegistry->getPlugin($pluginName);
 
             $dashlet = new $name;
             $dashlet->setPlugin($plugin);
