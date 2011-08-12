@@ -2015,10 +2015,43 @@ tr.dyncond_selector td {
 
 
 /* Graphs and Tables */
-div.graph { width: 250px; height: 200px; }
+div.graph { width: 225px; height: 160px; }
 
-td.docnowrap { white-space: nowrap; overflow: hidden; width: 200px;}
+td.line { word-break: break-word; overflow: hidden; width: 100%;}
 
+.graph-viewlet {
+	border: 1px solid #CCC;
+	border-radius: 3px;
+	-moz-border-radius: 3px;
+	-webkit-border-radius: 3px;
+	width: 234px!important;
+	display: block;
+	float: left;
+	margin: 5px;
+	font-size: 12px;
+	color: #333;
+}
+.graph-viewlet h3 {
+	background: whiteSmoke;
+	padding: 5px 5px;
+	border-bottom: 1px solid #CCC;
+	border-radius: 3px 3px 0px 0px;
+	-moz-border-radius: 3px 3px 0px 0px;
+	-webkit-border-radius: 3px 3px 0px 0px;
+	text-align: center;
+	color: #333;
+	text-shadow: 0px 1px 0px white;
+}
+.graph-viewlet .tabular {
+	border-spacing: 0px;
+}
+.graph-viewlet .tabular tr.odd {
+	background: #EAF2F7;
+}
+.graph-viewlet .tabular .icon {
+	padding: 5px;
+	vertical-align: top;
+}
 
 /*like */
 #documentLikeStatus {

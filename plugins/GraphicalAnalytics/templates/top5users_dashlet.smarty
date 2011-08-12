@@ -1,10 +1,10 @@
 <h3>Top Rated Users</h3>
-<div style="overflow:hidden; width:250px;">
-    <table>
+<div style="overflow:hidden;">
+    <table class="tabular" style="width: 100%;">
         <tbody>
             {foreach from=$data item=user}
-            <tr>
-                <td>{$user.name}</td>
+            <tr class="{cycle values=odd,even name=topusers}">
+                <td style="padding: 3px 5px;">{$user.name}</td>
             </tr>
             {/foreach}
         </tbody>

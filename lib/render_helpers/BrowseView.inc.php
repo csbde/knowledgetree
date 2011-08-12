@@ -454,7 +454,7 @@ class BrowseView {
         $canRead = Permission::userHasFolderReadPermission($folder);
         // Check if user has no permission to folder.
         if (!$canDelete && !$canWrite && !$canRead) { return ''; }
-        $tpl = '<table class="browseView bulkActionMenu" cellspacing="0" cellpadding="0"><tr><td>
+        $tpl = '<div class="notification_like"></div><table class="browseView bulkActionMenu" cellspacing="0" cellpadding="0"><tr><td>
         <input type="checkbox" class="select_all" />
         <input type="hidden" value="" name="sListCode"><input type="hidden" value="bulkaction" name="action">
         <input type="hidden" value="browse" name="fReturnAction"><input type="hidden" value="1" name="fReturnData">';
