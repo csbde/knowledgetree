@@ -90,18 +90,21 @@ class KTInterceptorRegistry {
 
     function &getInterceptor($nsname, $config = null) 
     {
-        $info = $this->_aInterceptorsInfo[$nsname];
+        $info = $this->getInterceptorInfo($nsname);
         $class = $info[0];
         $path = $info[2];
         
-        if ($path) {
-            if (file_exists($path)) {
-                require_once($path);
-            }
-        }
-        
         if (!class_exists($class)) {
-            return PEAR::raiseError(sprintf(_kt('Can\'t find interceptor: %s'), $nsname));
+        
+            if ($path) {
+                if (file_exists($path)) {
+                    require_once($path);
+                }
+            }
+            
+            if (!class_exists($class)) {
+                return PEAR::raiseError(sprintf(_kt('Can\'t find interceptor: %s'), $nsname));
+            }
         }
         
         $interceptor =new $class;
