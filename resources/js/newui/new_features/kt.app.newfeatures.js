@@ -39,6 +39,9 @@ kt.app.newfeatures = new function() {
 				jQuery('#wrapper').prepend(message);
 			}
 		}
+		jQuery('.helperTextOverlay a').click(function(){
+			jQuery(this).parent().hide();
+		});
 		jQuery(this).parent().hide();
 	}
 
