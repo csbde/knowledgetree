@@ -1,6 +1,6 @@
 <h2>Graphs Viewlet Demo</h2>
 
-<table width="100%">
+<table width="100%" style="margin-left: -5px;">
     <tr>
         <td width="33%" valign="top" class="graph-viewlet">
             {$userAccessPerWeek}

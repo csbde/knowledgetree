@@ -4,9 +4,9 @@
 
 {literal}
 <script type="text/javascript">
-    var documentViewChart;
+    var documentRatingsChart;
     jQuery(document).ready(function() {
-        documentViewChart = new Highcharts.Chart({
+        documentRatingsChart = new Highcharts.Chart({
             chart: {
                 renderTo: 'document_ratings_dashlet',
                 defaultSeriesType: 'column'
