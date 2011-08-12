@@ -71,8 +71,6 @@ require_once(KT_PLUGIN_DIR . '/ktstandard/KTSubscriptions.php');
 
 require_once(KT_LIB_DIR . '/memcache/ktmemcache.php');
 
-require_once(KT_LIB_DIR . '/backgroundactions/backgroundaction.inc.php');
-
 $sectionName = 'browse';
 
 class BrowseDispatcher extends KTStandardDispatcher {
