@@ -232,7 +232,7 @@ class documentActionServices extends client_service {
         $folderId = !empty($params['folderId']) ? str_replace('folder_', '', $params['folderId']) : KTUtil::decodeId(substr($params['cleanId'], 2));
         $response = KTFolderActionUtil::checkForBackgroundedAction($folderId);
         //$response = array('check' => $check, 'message' => $message);
-        
+
         $this->addResponse('result', json_encode($response));
     }
 
@@ -435,7 +435,7 @@ class documentActionServices extends client_service {
 	        	$msg = _kt('Failure. Could not send message.');
 	    	}
 	        $url = KTUtil::kt_clean_folder_url($targetFolderId);
-	        $msg = "Your operation is being processed. You wil receive an email on completion.";
+	        $msg = "Your operation is being processed. You will receive an email on completion.";
 	        $result = array('type' => 'success', 'url' => $url, 'msg' => $msg, 'bulk' => $queueResponse);
 	        $this->addResponse('result', json_encode($result));
 

@@ -1,34 +1,15 @@
 <h3>Likes per Week</h3>
 
-<div style="width: 25%; float: left">
-<table>
-    <thead>
-        <th>Week</th>
-        <th>Number of Likes</th>
-    </thead>
-    <tbody>
-        {foreach from=$data.likesArray item=week}
-        <tr>
-            <th>{if $week.week_number==0}This Week{else}{$week.week_number} week ago{/if}</th>
-            <td>{$week.count}</td>
-        </tr>
-        {/foreach}
-    </tbody>
-</table>
-</div>
-<div style="width: 70%; float: left">
-    <div id="likes_per_week"></div>
-</div>
 
-<br clear="both" />
+<div id="likes_per_week"></div>
 
 
 
 {literal}
 <script type="text/javascript">
-    var documentViewChart;
+    var likePerWeekChart;
     jQuery(document).ready(function() {
-        documentViewChart = new Highcharts.Chart({
+        likePerWeekChart = new Highcharts.Chart({
             chart: {
                 renderTo: 'likes_per_week',
                 defaultSeriesType: 'column'
