@@ -127,12 +127,8 @@ class BrowseDispatcher extends KTStandardDispatcher {
 	public function do_main()
 	{
 	    global $default;
-		$this->bulkActionInProgress = backgroundaction::isFolderInBulkAction($this->oFolder);
-	    $bulkActions = '';
-	    if(!$this->bulkActionInProgress) {
-		    /* New ktapi based method */
-	        $bulkActions = KTBulkActionUtil::getAllBulkActions();
-	    }
+	    /* New ktapi based method */
+        $bulkActions = KTBulkActionUtil::getAllBulkActions();
         $sidebars = KTFolderActionUtil::getFolderActionsForFolder($this->oFolder, $this->oUser, 'mainfoldersidebar');
         $folderSidebars = isset($sidebars[0]) ? $sidebars[0] : array();
 	    if (ACCOUNT_ROUTING_ENABLED && $default->tier == 'trial') {
@@ -154,16 +150,12 @@ class BrowseDispatcher extends KTStandardDispatcher {
 	           'folderSidebars' => $folderSidebars,
 	    );
 
-	    if($this->bulkActionInProgress) {
-	    	$templateData['notifyBulkAction'] = $this->getBulkNotification();
-	    }
-
 	    // NOTE Don't quite know why this is in here. Someone reports that it is there for search browsing which seem to be disabled.
 	    if ($this->oFolder) {
 	        $this->showBtns();
     		$folderId = $this->oFolder->getId();
 
-	        $renderHelper = BrowseViewUtil::getBrowseView($this->bulkActionInProgress);
+	        $renderHelper = BrowseViewUtil::getBrowseView();
 	        $renderData = $renderHelper->renderBrowseFolder($folderId, $bulkActions, $this->oFolder, $this->permissions);
 	        if($renderData['documentCount'] > 0)
 	        	$this->loadDocumentJS();
@@ -196,7 +188,6 @@ class BrowseDispatcher extends KTStandardDispatcher {
 		$submenu = array();
 		$actions = KTFolderActionUtil::getFolderActionsForFolder($this->oFolder, $this->oUser);
 		foreach ($actions as $oAction) {
-			$oAction->setBulkAction($this->bulkActionInProgress);
             $info = $oAction->getInfo();
             // Skip if action is disabled
             if (is_null($info)) { continue; }

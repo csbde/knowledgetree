@@ -34,7 +34,7 @@
 		<div class="breadcrumbBtns">
 			<div class="breadcrumbsNotify">
 				{if $notifyBulkAction}
-					<span class="notifyAction"> {$notifyBulkAction} </span>
+					<p class='alert warning' id='action-error'>{i18n}{$notifyBulkAction} Please try again later.{/i18n}</p>
 				{/if}
 			</div>
 			<div class="breadcrumbActionBtns">
@@ -71,16 +71,17 @@
 				{/if}
 				</nobr>
 			</div>
-
-
     	</div>
+
+    	<br/>
+
 <form action="{$browseutil->getActionBaseUrl()}" method="post">
 
 {if ($isEditable)}
 
-{if ($context->oFolder)}
-<input type="hidden" name="fFolderId" value="{$context->oFolder->getId()}" />
-{/if}
+	{if ($context->oFolder)}
+	<input type="hidden" name="fFolderId" value="{$context->oFolder->getId()}" />
+	{/if}
 
 {/if}
 

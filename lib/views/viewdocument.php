@@ -102,8 +102,6 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
             return $this->do_error();
         }
 
-		$this->bulkActionInProgress = backgroundaction::isDocumentInBulkAction($this->document);
-
         $documentId = $this->document->getId();
         $documentData['document_id'] = $documentId;
 
@@ -140,7 +138,7 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
             $this->aBreadcrumbs = kt_array_merge($this->aBreadcrumbs, KTBrowseUtil::breadcrumbsForDocument($this->document, $options, $symLinkFolderId));
         }
 
-        $viewUtil = new ViewActionsUtil($this->bulkActionInProgress);
+        $viewUtil = new ViewActionsUtil();
         $viewUtil->initActions($this->document, $this->oUser);
         $viewUtil->createButtons();
         $documentTopActions = $viewUtil->renderActions('top');
@@ -251,7 +249,6 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
         $blocks = KTDocumentActionUtil::getDocumentActionsForDocument($this->document, $this->oUser, 'documentblock');
         $documentBlocks = isset($blocks[0]) ? $blocks[0] : array();
         if (!empty($documentBlocks)) {
-            $documentBlocks->setBulkAction($this->bulkActionInProgress);
             $info = $documentBlocks->getInfo();
             if (is_null($info)) {
                 $documentBlocks = array();
@@ -292,7 +289,6 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
             'tagFilterScript' => "/{$tagPluginPath}filterTags.php?documentId=$documentId",
             'tags' => json_encode($tags),
             'makeMetadataEditable' => $makeMetadataEditable,
-            'bulkActionInProgress' => $this->bulkActionInProgress,
         );
 
         // Conditionally include live_preview

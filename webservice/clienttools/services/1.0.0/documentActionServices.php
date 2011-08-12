@@ -231,7 +231,16 @@ class documentActionServices extends client_service {
         // Check if there's a permissions update in progress for the current folder / document
         $folderId = !empty($params['folderId']) ? str_replace('folder_', '', $params['folderId']) : KTUtil::decodeId(substr($params['cleanId'], 2));
         $response = KTFolderActionUtil::checkForBackgroundedAction($folderId);
-        //$response = array('check' => $check, 'message' => $message);
+        // If not, check for any other actions are running in the background.(move, copy, delete)
+        if(!$response['check']) {
+	        require_once(KT_LIB_DIR . '/backgroundactions/backgroundaction.inc.php');
+	        $action = backgroundaction::isFolderInBulkAction($folderId);
+	        if($action != '') {
+		        $response['check'] = true;
+				$response['message'] = backgroundaction::getMessage($action);
+				$this->addResponse('result', json_encode($response));
+	        }
+        }
 
         $this->addResponse('result', json_encode($response));
     }

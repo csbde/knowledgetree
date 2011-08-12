@@ -383,120 +383,94 @@ class GenericFieldsetDisplay extends KTFieldsetDisplay {
 // The generic object
 class SimpleFieldsetDisplay extends KTFieldsetDisplay {
 
-    function render($aDocumentData, $bulkActionInProgress = '') {
+    function render($aDocumentData) {
         // we do a fair bit of fetching, etc. in here.
         $document = $aDocumentData['document'];
-
         // we need to extract the fields.
         $fields =& $this->fieldset->getFields();
+		$fieldsresult = array();
 
-        //$result = array('fieldset' => $fieldset->getName(),
-        	//'description' => $fieldset->getDescription());
+		foreach ($fields as $field)
+		{
+		    $value = '';
 
-		 $fieldsresult = array();
+			$fieldvalue = DocumentFieldLink::getByDocumentAndField($document, $field);
+		    if (!is_null($fieldvalue) && (!PEAR::isError($fieldvalue)))
+		    {
+		    	$value = $fieldvalue->getValue();
+		    }
 
-		 foreach ($fields as $field)
-		 {
-		 	//$GLOBALS['default']->log->debug('SimpleFieldsetDisplay field '.print_r($field, true));
+		    // Old
+		    //$controltype = 'string';
+		    // Replace with true
+		    $controltype = strtolower($field->getDataType());
 
-                $value = '';
+		    //$GLOBALS['default']->log->debug("SimpleFieldsetDisplay field controltype $controltype");
 
-				$fieldvalue = DocumentFieldLink::getByDocumentAndField($document, $field);
-                if (!is_null($fieldvalue) && (!PEAR::isError($fieldvalue)))
-                {
-                	$value = $fieldvalue->getValue();
-                }
+		    if ($field->getHasLookup())
+		    {
+		    	$controltype = 'lookup';
+		        if ($field->getHasLookupTree())
+		        {
+		        	$controltype = 'tree';
+		        }
+		    }
 
-                // Old
-                //$controltype = 'string';
-                // Replace with true
-                $controltype = strtolower($field->getDataType());
+		    // Options - Required for Custom Properties
+		    $options = array();
 
-                //$GLOBALS['default']->log->debug("SimpleFieldsetDisplay field controltype $controltype");
+		    if ($field->getInetLookupType() == 'multiwithcheckboxes' || $field->getInetLookupType() == 'multiwithlist') {
+		        $controltype = 'multiselect';
+		    }
 
-                if ($field->getHasLookup())
-                {
-                	$controltype = 'lookup';
-                    if ($field->getHasLookupTree())
-                    {
-                    	$controltype = 'tree';
-                    }
-                }
+		    //$GLOBALS['default']->log->debug("SimpleFieldsetDisplay field controltype2 $controltype");
 
-                // Options - Required for Custom Properties
-                $options = array();
+		    switch ($controltype)
+		    {
+		    	case 'lookup':
+		    		$selection = KTAPI::get_metadata_lookup($field->getId());
+		    		break;
+		    	case 'tree':
+		    		$selection = KTAPI::get_metadata_tree($field->getId());
 
-                if ($field->getInetLookupType() == 'multiwithcheckboxes' || $field->getInetLookupType() == 'multiwithlist') {
-                    $controltype = 'multiselect';
-                }
+					//we need to get rid of values that we do not need else the JSON object we create will be incorrect!
+					SimpleFieldsetDisplay::recursive_unset($selection, array('treeid', 'parentid', 'fieldid'));
 
-                //$GLOBALS['default']->log->debug("SimpleFieldsetDisplay field controltype2 $controltype");
-
-                switch ($controltype)
-                {
-                	case 'lookup':
-                		$selection = KTAPI::get_metadata_lookup($field->getId());
-                		break;
-                	case 'tree':
-                		$selection = KTAPI::get_metadata_tree($field->getId());
-
-						//we need to get rid of values that we do not need else the JSON object we create will be incorrect!
-						SimpleFieldsetDisplay::recursive_unset($selection, array('treeid', 'parentid', 'fieldid'));
-
-						//now convert to JSON
-						$selection = json_encode($selection);
-                		break;
-                    case 'large text':
-                        $options = array(
-                                'ishtml' => $field->getIsHTML(),
-                                'maxlength' => $field->getMaxLength()
-                            );
-                        $selection= array();
-                        break;
-                    case 'multiselect':
-                        $selection = KTAPI::get_metadata_lookup($field->getId());
-                        $options = array(
-                                'type' => $field->getInetLookupType()
-                            );
-                        break;
-                	default:
-                		$selection= array();
-                }
+					//now convert to JSON
+					$selection = json_encode($selection);
+		    		break;
+		        case 'large text':
+		            $options = array(
+		                    'ishtml' => $field->getIsHTML(),
+		                    'maxlength' => $field->getMaxLength()
+		                );
+		            $selection= array();
+		            break;
+		        case 'multiselect':
+		            $selection = KTAPI::get_metadata_lookup($field->getId());
+		            $options = array(
+		                    'type' => $field->getInetLookupType()
+		                );
+		            break;
+		    	default:
+		    		$selection= array();
+		    }
 
 
-                $fieldsresult[] = array(
-                	'fieldid' => $field->getId(),
-                	'name' => $field->getName(),
-                	'required' => $field->getIsMandatory(),
-                    'value' => $value == '' ? 'no value' : $value,
-                    'blankvalue' => $value=='' ? '1' : '0',
-                    'description' => $field->getDescription(),
-                    'control_type' => $controltype,
-                    'selection' => $selection,
-                    'options' => $options,
-                );
+		    $fieldsresult[] = array(
+		    	'fieldid' => $field->getId(),
+		    	'name' => $field->getName(),
+		    	'required' => $field->getIsMandatory(),
+		        'value' => $value == '' ? 'no value' : $value,
+		        'blankvalue' => $value=='' ? '1' : '0',
+		        'description' => $field->getDescription(),
+		        'control_type' => $controltype,
+		        'selection' => $selection,
+		        'options' => $options,
+		    );
 
-            }
-            //$GLOBALS['default']->log->debug('SimpleFieldsetDisplay fieldsresult '.print_r($fieldsresult, true));
-            $fieldset_values = $fieldsresult;
-
-        /*// we now grab that subset of items which fit in here.
-        // FIXME link value -> lookup where appropriate.
-        // FIXME probably need to be more careful about the _type_ of field here.
-        $fieldset_values = array();
-        foreach ($fields as $oField) {
-            $val = KTUtil::arrayGet($aDocumentData['field_values'], $oField->getId(), null);
-            $fieldset_values[] = array('field' => $oField, 'value' => $val, );
-        }
-
-        // Alphabetise the metadata fields within a fieldset if set in config
-        $oKTConfig =& KTConfig::getSingleton();
-        $use_sort = $oKTConfig->get('ui/metadata_sort', false);
-
-        if($use_sort){
-            usort($fieldset_values, 'compareFieldSetField');
-        }*/
-
+		}
+        $fieldset_values = $fieldsresult;
 
         $oTemplating =& KTTemplating::getSingleton();
         $oTemplate = $oTemplating->loadTemplate('kt3/fieldsets/simple');
@@ -507,7 +481,6 @@ class SimpleFieldsetDisplay extends KTFieldsetDisplay {
             'fieldset' => $this->fieldset,
             'fieldset_values' => $fieldset_values,
             'description' => $this->fieldset->getDescription(),
-            'bulkActionInProgress' => $bulkActionInProgress,
         );
         return $oTemplate->render($aTemplateData);
     }
