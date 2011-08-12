@@ -38,6 +38,7 @@
 
 require_once(KT_LIB_DIR . '/plugins/pluginentity.inc.php');
 require_once(KT_LIB_DIR . '/plugins/pluginregistry.inc.php');
+require_once(KT_LIB_DIR . '/memcache/ktmemcache.php');
 
 class KTPluginResourceRegistry {
 
@@ -73,90 +74,21 @@ class KTPluginResourceRegistry {
 
 class KTPluginUtil {
 
-    const CACHE_FILENAME = 'kt_plugins.cache';
-
-    /**
-     * Store the plugin cache in the cache directory.
-     * @deprecated
-     */
-    static function savePluginCache($array)
-    {
-        $config = KTConfig::getSingleton();
-        $cachePlugins = $config->get('cache/cachePlugins', false);
-        if (!$cachePlugins) {
-            return false;
-        }
-
-        $cacheDir = $config->get('cache/cacheDirectory');
-        $written = file_put_contents($cacheDir . '/' . KTPluginUtil::CACHE_FILENAME , serialize($array));
-
-        if (!$written) {
-            global $default;
-
-            $default->log->warn('savePluginCache - The cache did not write anything.');
-
-            // try unlink a zero size file - just in case
-            @unlink($cacheFile);
-        }
-    }
-
-    /**
-     * Remove the plugin cache.
-     * @deprecated
-     */
-    static function removePluginCache()
-    {
-        $config = KTConfig::getSingleton();
-        $cachePlugins = $config->get('cache/cachePlugins', false);
-        if (!$cachePlugins) {
-            return false;
-        }
-
-        $cacheDir = $config->get('cache/cacheDirectory');
-        $cacheFile = $cacheDir  . '/' . KTPluginUtil::CACHE_FILENAME;
-        @unlink($cacheFile);
-    }
-
-    /**
-     * Reads the plugin cache file. This must still be unserialised.
-     * @deprecated
-     * @return mixed Returns false on failure, or the serialised cache.
-     */
-    static function readPluginCache()
-    {
-        $config = KTConfig::getSingleton();
-        $cachePlugins = $config->get('cache/cachePlugins', false);
-        if (!$cachePlugins) {
-            return false;
-        }
-
-        $cacheDir = $config->get('cache/cacheDirectory');
-        $cacheFile = $cacheDir  . '/' . KTPluginUtil::CACHE_FILENAME;
-        if (!is_file($cacheFile)) {
-            return false;
-        }
-
-        $cache = file_get_contents($cacheFile);
-
-        // we check for an empty cache in case there was a problem. We rather try and reload everything otherwise.
-        if (strlen($cache) == 0) {
-            return false;
-        }
-
-        if (!class_exists('KTPluginEntityProxy')) {
-            KTEntityUtil::_proxyCreate('KTPluginEntity', 'KTPluginEntityProxy');
-        }
-
-        return unserialize($cache);
-    }
-
+    private $pluginsSession = 'plugin-list';
+    private static $disabledPlugins = array();
+    
     /**
      * Load the plugins for the current page
      *
      * @param unknown_type $sType
      */
-    static function loadPlugins ($sType)
+    static public function loadPlugins ()
     {
+        // Get enabled plugins, load each plugin
+        $disabledPlugins = self::loadCachedPlugins();
+        self::$disabledPlugins = $disabledPlugins;
+        return true;
+        
         // Check the current page - can be extended.
         // Currently we only distinguish between the dashboard and everything else.
         if ($sType != 'dashboard') {
@@ -166,56 +98,16 @@ class KTPluginUtil {
         $aPlugins = array();
         $aPluginHelpers = array();
         $aDisabled = array();
-
+        
         // Get the list of enabled plugins
-        $query = "SELECT h.classname, h.pathname, h.plugin FROM plugin_helper h
-            INNER JOIN plugins p ON (p.namespace = h.plugin)
-           WHERE p.disabled = 0 AND h.classtype='plugin' ORDER BY p.orderby";
-        $aPluginHelpers = DBUtil::getResultArray($query);
-
-        if (PEAR::isError($aPluginHelpers)) {
-            global $default;
-            $default->log->error('Error in pluginutil: '.$aPluginHelpers->getMessage());
-            return $aPluginHelpers;
-        }
-
         // Check that there are plugins and if not, register them
-        if (empty($aPluginHelpers) || (isset($_POST['_force_plugin_truncate']))) {
-            DBUtil::startTransaction();
-            KTPluginUtil::registerPlugins();
-            DBUtil::commit();
-
-            $query = "SELECT h.classname, h.pathname, h.plugin FROM plugin_helper h
-               INNER JOIN plugins p ON (p.namespace = h.plugin)
-               WHERE p.disabled = 0 AND h.classtype='plugin' ORDER BY p.orderby";
-            $aPluginHelpers = DBUtil::getResultArray($query);
-        }
-
         // Create plugin objects
-        foreach ($aPluginHelpers as $aItem) {
-            $classname = $aItem['classname'];
-            $path = $aItem['pathname'];
-
-            if (!empty($path)) {
-                if ((strpos($path, KT_DIR) === false)) {
-                    $path = KT_DIR . '/' . $path;
-                }
-
-                if (file_exists($path)) {
-                    require_once($path);
-
-                    $oPlugin = new $classname($path);
-                    if ($oPlugin->load()) {
-                       $aPlugins[] = $oPlugin;
-                    }
-                    else {
-                        $aDisabled[] = "'{$aItem['plugin']}'";
-                    }
-                }
-            }
-        }
-
+        // load plugin helpers into global space
+        // Load the template locations - ignore disabled plugins
+        // Allow for templates that don't correctly link to the plugin
+        
         $sDisabled = implode(',', $aDisabled);
+        $sDisabled = '';
 
         // load plugin helpers into global space
         $query = 'SELECT h.* FROM plugin_helper h
@@ -247,7 +139,54 @@ class KTPluginUtil {
 
         return true;
     }
+    
+    static private function loadCachedPlugins()
+    {
+        $pluginsList = $_SESSION['plugin-list'];
+        
+        if (empty($pluginsList)) {
+            $pluginCache = PluginCache::getPluginCache();
+            $pluginsList = $pluginCache->getPlugins();
+            $_SESSION['plugin-list'] = $pluginsList;
+        }
+        
+        foreach ($pluginsList['enabled'] as $priority => $list) {
+            
+            foreach ($list as $plugin) {
+            
+                $classname = $plugin['classname'];
+                $path = $plugin['pathname'];
+                
+                if (class_exists($classname)) {
+                    continue;
+                }
+    
+                if (!empty($path)) {
+                    if ((strpos($path, KT_DIR) === false)) {
+                        $path = KT_DIR . '/' . $path;
+                    }
+    
+                    if (file_exists($path)) {
+                        require_once($path);
+    
+                        $pluginObject = new $classname($path);
+                        $pluginObject->load();
+                    }
+                }
+            }
+        }
+        
+        return $pluginsList['disabled'];
+    }
 
+    static public function loadPluginHelpers($classtype)
+    {
+        $pluginCache = PluginCache::getPluginCache();
+        $helpers = $pluginCache->getPluginHelpersByType($classtype);
+        
+        return $helpers;
+    }
+    
     /**
      * Load the plugins into the global space
      *
@@ -536,7 +475,7 @@ class KTPluginUtil {
     }
 
     /* Get the priority of the plugin */
-    function getPluginPriority($sFile)
+    function getPluginPriority($file)
     {
         $defaultPriority = 10;
         $priority = array(
@@ -546,7 +485,7 @@ class KTPluginUtil {
         );
 
         foreach($priority as $pattern => $priority) {
-            if (ereg($pattern, $sFile)) {
+            if (ereg($pattern, $file)) {
                 return $priority;
             }
         }
@@ -767,7 +706,7 @@ class KTPluginUtil {
     static function pluginIsActive($sNamespace)
     {
 
-        $oReg =& KTPluginRegistry::getSingleton();
+        $oReg = KTPluginRegistry::getSingleton();
         $plugin = $oReg->getPlugin($sNamespace);
 
         if (is_null($plugin) || PEAR::isError($plugin)) { return false; }  // no such plugin
@@ -781,6 +720,282 @@ class KTPluginUtil {
         }
     }
 
+    static function getPluginFiles(&$files, $directory = '')
+    {
+        $directory or $directory = KT_DIR . '/plugins' . $directory;
+        
+        $newfiles = glob($directory . '/*Plugin.php');
+        $files = array_merge($files, $newfiles);
+        
+        $dirs = glob($directory . '/*', GLOB_ONLYDIR);
+        
+        foreach ($dirs as $dir) {
+            self::getPluginFiles($files, $dir);
+        }
+        return ;
+    }
+    
+    static function updatePlugins()
+    {
+        $files = array();
+        self::getPluginFiles($files);
+        
+        
+        // Session variable informs the plugin to register itself - prevents them being registered on every page load
+        $_SESSION['plugins_registerplugins'] = true;
+        foreach ($files as $file) {
+            require_once($file);
+        }
+        $_SESSION['plugins_registerplugins'] = false;
+        
+        DBUtil::startTransaction();
+        
+        $pluginRegistry = KTPluginRegistry::getSingleton();
+        $registeredPlugins = $pluginRegistry->getPlugins();
+        foreach ($registeredPlugins as $plugin) {
+            $result = $plugin->register();
+            
+            if (PEAR::isError($result)) {
+                $default->log->debug('Register of plugin failed: ' . $result->getMessage());
+            }
+        }
+        
+        DBUtil::commit();
+
+        $pluginList = KTPluginEntity::getList();
+        foreach ($pluginList as $plugin) {
+            $path = $plugin->getPath();
+            if (!KTUtil::isAbsolutePath($path)) {
+                $path = sprintf("%s/%s", KT_DIR, $path);
+            }
+            
+            if (!in_array($path, $files)) {
+                $plugin->setUnavailable(true);
+                $plugin->setDisabled(true);
+                $res = $plugin->update();
+            } 
+            else if ($plugin->getUnavailable()) {
+                $plugin->setUnavailable(false);
+                $plugin->setDisabled(false);
+                $res = $plugin->update();
+            }
+        }
+
+
+        KTPluginEntity::clearAllCaches();
+        KTPluginUtil::_deleteSmartyFiles();
+        require_once(KT_LIB_DIR . '/cache/cache.inc.php');
+        $cache = KTCache::getSingleton();
+        $cache->deleteAllCaches();
+    }
+    
+}
+
+/**
+ * Provides access to the plugins and their helpers (triggers, etc).
+ * Everything is stored in Memcache.
+ * If Memcache is not available then the plugin_helper table is used.
+ */
+class PluginCache {
+
+    private static $pluginCache;
+    private $memcache;
+    private $pluginHelperCacheKey;
+    private $pluginHelperDynamicKey;
+    private $pluginsCacheKey;
+    
+    private function __construct()
+    {
+        $this->memcache = KTMemcache::getKTMemcache();
+
+        if ($this->memcache->isEnabled() === false) {
+            $this->memcache = false;
+            
+            global $default;
+            $default->log->info('Plugin Cache: Memcache not enabled - using DB');
+        }
+
+        $this->pluginHelperCacheKey = 'plugin-helper-cache';
+        $this->pluginHelperDynamicKey = 'plugin-helper-dynamic';
+        $this->pluginsCacheKey = 'plugins-cache';
+        if (defined('ACCOUNT_NAME')) {
+            $this->pluginHelperDynamicKey = ACCOUNT_NAME . '-' . $this->pluginHelperDynamicKey;
+            $this->pluginsCacheKey = ACCOUNT_NAME . '-' . $this->pluginsCacheKey;
+        }
+    }
+    
+    public static function getPluginCache()
+    {
+        if (empty(self::$pluginCache)) {
+            self::$pluginCache = new PluginCache();
+        }
+
+        return self::$pluginCache;
+    }
+    
+    public function getPlugins()
+    {
+        if ($this->memcache === false) {
+            return $this->getPluginsFromDB();
+        }
+        
+        $pluginList = $this->memcache->get($this->pluginsCacheKey);
+        
+        if (!$pluginList) {
+            $helpers = $this->getPluginHelpersByType('plugin');
+            
+            if (!$helpers) {
+                KTPluginUtil::updatePlugins();
+                $helpers = $this->getPluginHelpersByType('plugin');
+            }
+            
+            $pluginList = $this->updatePluginsCache($helpers);
+        }
+        
+        return $pluginList;
+    }
+    
+    private function updatePluginsCache($helpers)
+    {
+        global $default;
+        $default->log->info('Plugin Cache: updating cached plugin list');
+        
+        $query = "SELECT * FROM plugins p ORDER BY p.orderby";
+        $plugins = DBUtil::getResultArray($query);
+        
+        if (PEAR::isError($plugins)) {
+            $default->log->error('Plugin Cache: '.$plugins->getMessage());
+            return $plugins;
+        }
+        
+        $loaded = array('enabled' => array(), 'disabled' => array());
+        
+        foreach ($plugins as $plugin) {
+            
+            $object = $helpers[$plugin['namespace']];
+            
+            if ($plugin['disabled'] == 1 || $plugin['unavailable'] == 1) {
+                $loaded['disabled'][$plugin['orderby']][] = $object;
+            }
+            else {
+                $loaded['enabled'][$plugin['orderby']][] = $object;
+            }
+        }
+        
+        $this->memcache->set($this->pluginsCacheKey, $loaded);
+        
+        return $loaded;
+    }
+    
+    private function getPluginsFromDB()
+    {
+        global $default;
+        $default->log->info('Plugin Cache: using the DB');
+        
+        $query = "SELECT h.classname, h.pathname, h.plugin FROM plugin_helper h
+            INNER JOIN plugins p ON (p.namespace = h.plugin)
+           WHERE p.disabled = 0 AND h.classtype='plugin' ORDER BY p.orderby";
+        $plugins = DBUtil::getResultArray($query);
+
+        if (PEAR::isError($plugins)) {
+            $default->log->error('Plugin Cache: '.$plugins->getMessage());
+            return $plugins;
+        }
+
+        // Check that there are plugins and if not, register them
+        if (empty($plugins) || (isset($_POST['_force_plugin_truncate']))) {
+            $default->log->error('Plugin Cache: updating DB plugins');
+            
+            KTPluginUtil::updatePlugins();
+
+            $query = "SELECT h.classname, h.pathname, h.plugin FROM plugin_helper h
+               INNER JOIN plugins p ON (p.namespace = h.plugin)
+               WHERE p.disabled = 0 AND h.classtype='plugin' ORDER BY p.orderby";
+            $plugins = DBUtil::getResultArray($query);
+        }
+        
+        return $plugins;
+    }
+    
+    public function getPluginHelpersByType($classtype)
+    {
+        $helpers = $this->memcache->get($this->pluginHelperDynamicKey);
+        
+        if (!$helpers) {
+            KTPluginUtil::updatePlugins();
+            $helpers = $this->memcache->get($this->pluginHelperDynamicKey);
+        }
+            
+        return $helpers[$classtype];
+    }
+    
+    public function addPluginHelper($options)
+    {
+        if ($this->memcache === false) {
+            return $this->addDBHelper($options);
+        }
+        
+        $helpers = $this->memcache->get($this->pluginHelperDynamicKey);
+        
+        extract($options);
+        $helpers[$classtype][$namespace] = $options;
+        $helpers = $this->memcache->set($this->pluginHelperDynamicKey, $helpers);
+        
+        return true;
+    }
+    
+    public function removePluginHelper($namespace, $classtype)
+    {
+        if ($this->memcache === false) {
+            return $this->removeDBHelper($namespace, $classtype);
+        }
+        
+        $helpers = $this->memcache->get($this->pluginHelperDynamicKey);
+        
+        unset($helpers[$classtype][$namespace]);
+        $helpers = $this->memcache->set($this->pluginHelperDynamicKey, $helpers);
+        
+        return true;
+    }
+    
+    private function addDBHelper($options)
+    {
+        extract($options);
+        
+        $sql = "SELECT id FROM plugin_helper WHERE namespace = '{$namespace}' AND classtype = '{$classtype}'";
+        $res = DBUtil::getOneResult($sql);
+
+        // if record exists - ignore it.
+        if (!empty($res)) {
+            return true;
+        }
+
+        $values = array();
+        $values['namespace'] = $namespace;
+        $values['plugin'] = $plugin;
+        $values['classname'] = $classname;
+        $values['pathname'] = $pathname;
+        $values['object'] = $object;
+        $values['viewtype'] = $viewtype;
+        $values['classtype'] = $classtype;
+
+        // Insert into DB
+        $res = DBUtil::autoInsert('plugin_helper', $values);
+        if (PEAR::isError($res)) {
+            return $res;
+        }
+        return true;
+    }
+    
+    private function removeDBHelper($namespace, $classtype)
+    {
+        $where = array();
+        $where['namespace'] = $namespace;
+        $where['classtype'] = $classtype;
+        $res = DBUtil::whereDelete('plugin_helper', $where);
+        return $res;
+    }
+    
 }
 
 ?>
