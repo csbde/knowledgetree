@@ -61,13 +61,17 @@
 								<span class="like_count" style="vertical-align:top; margin-left: 2px;">
 									{if $numDocumentLikes == 1}
 										{if $userLikesDocument}
-											{i18n}You and 0 others like this{/i18n}
+											{i18n}You like this{/i18n}
 										{else}
-											{i18n}1 person likes this{/i18n}
+											{i18n}One person likes this{/i18n}
 										{/if}
 									{else}
 										{if $userLikesDocument}
-											{i18n}You and{/i18n} {$numDocumentLikes-1} {i18n}people likes this{/i18n} 
+											{if $numDocumentLikes == 2}
+												{i18n}You and one other person likes this{/i18n}
+											{else}
+												{i18n}You and{/i18n} {$numDocumentLikes-1} {i18n}people like this{/i18n}
+											{/if}
 										{else} 
 											{$numDocumentLikes} {i18n}people like this{/i18n} 
 										{/if}
