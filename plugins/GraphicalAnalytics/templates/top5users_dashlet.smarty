@@ -4,7 +4,8 @@
         <tbody>
             {foreach from=$data item=user}
             <tr class="{cycle values=odd,even name=topusers}">
-                <td style="padding: 3px 5px;">{$user.name}</td>
+                <td style="padding: 3px 5px;"><img src="{if $smarty.server.HTTPS eq "1"}https{else}http{/if}://www.gravatar.com/avatar/{md5Hash string=$user.email}?s=16&d=mm" /></td>
+                <td style="padding: 3px 5px;">{$user.name|truncate:30}</td>
             </tr>
             {/foreach}
         </tbody>
