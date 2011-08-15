@@ -1,25 +1,42 @@
 <?php
-/*
- * $Id: $
+/**
+ * $Id$
  *
- * The contents of this file are subject to the KnowledgeTree
- * Commercial Editions On-Premise License ("License");
- * You may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * http://www.knowledgetree.com/about/legal/
- * The terms of this license may change from time to time and the latest
- * license will be published from time to time at the above Internet address.
+ * KnowledgeTree Community Edition
+ * Document Management Made Simple
+ * Copyright (C) 2008, 2009, 2010 KnowledgeTree Inc.
  *
- * This edition of the KnowledgeTree software
- * is NOT licensed to you under Open Source terms.
- * You may not redistribute this source code.
- * For more information please see the License above.
  *
- * (c) 2008, 2009, 2010 KnowledgeTree Inc.
- * All Rights Reserved.
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License version 3 as published by the
+ * Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+ * details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ * You can contact KnowledgeTree Inc., PO Box 7775 #87847, San Francisco,
+ * California 94120-7775, or email info@knowledgetree.com.
+ *
+ * The interactive user interfaces in modified source and object code versions
+ * of this program must display Appropriate Legal Notices, as required under
+ * Section 5 of the GNU General Public License version 3.
+ *
+ * In accordance with Section 7(b) of the GNU General Public License version 3,
+ * these Appropriate Legal Notices must retain the display of the "Powered by
+ * KnowledgeTree" logo and retain the original copyright notice. If the display of the
+ * logo is not reasonably feasible for technical reasons, the Appropriate Legal Notices
+ * must display the words "Powered by KnowledgeTree" and retain the original
+ * copyright notice.
+ * Contributor( s): ______________________________________
  *
  */
 
+require_once('NewFeatureCache.php');
 require_once(KT_LIB_DIR . '/security/Permission.inc');
 require_once(KT_LIB_DIR . '/database/dbutil.inc');
 
@@ -33,13 +50,27 @@ class NewFeatures {
 	public function getUsersNewFeatures($location)
 	{
 		global $default;
+		$userId = $_SESSION['userID'];
 
-		$userID = $_SESSION['userID'];
+		NewFeatureCache::init();
+
 		$section = $this->determinePageLocation($location);
-		$isAdmin = Permission::userIsSystemAdministrator($userID);
+		$isAdmin = Permission::userIsSystemAdministrator($userId);
 		$ktVersion = $default->systemVersion;
-		$features = $this->getFeatures($userID, $section, $isAdmin, $ktVersion);
-		$seenFeatures = $this->seenFeatures($features);
+		$cachedVersion = NewFeatureCache::getCachedVersion($userId);
+
+		if($cachedVersion == $ktVersion) {
+			$features = NewFeatureCache::getCached($userId, 'all');
+			$seenFeatures = NewFeatureCache::getCached($userId, 'seen');
+		}
+		else {
+			$features = $this->getFeatures($userId, $section, $isAdmin, $ktVersion);
+			$seenFeatures = $this->seenFeatures($features);
+			NewFeatureCache::saveToCache($features, $userId, 'all');
+			NewFeatureCache::saveToCache($seenFeatures, $userId, 'seen');
+			NewFeatureCache::saveVersion($userId, $ktVersion);
+		}
+
 		$unseenFeatures = $this->unSeenFeatures($features, $seenFeatures);
 		$this->saveSeenFeatures($unseenFeatures);
 
@@ -68,7 +99,7 @@ class NewFeatures {
 		return 'browse';
 	}
 
-	private function getFeatures($userID, $section, $isAdmin, $ktVersion)
+	private function getFeatures($userId, $section, $isAdmin, $ktVersion)
 	{
 		$query = 'SELECT a.id as aid, a.name as aname, m.id as mid, m.message as mmessage, m.div as mdiv, m.area_id as marea_id, m.type as mtype, m.version as mversion FROM ' . $this->area_table . ' as a, ' . $this->messages_table . ' as m WHERE a.name = \'' .$section . '\' AND a.id = m.area_id AND (m.version = \'' . $ktVersion . '\' OR m.version = \'all\')';
 		if($isAdmin)
@@ -87,8 +118,8 @@ class NewFeatures {
 		if (empty($features)) {
 			return array();
 		}
-		$userID = $_SESSION['userID'];
-		$query = 'SELECT * FROM ' . $this->users_table . ' WHERE user_id = \'' . $userID .'\' AND message_id ';
+		$userId = $_SESSION['userID'];
+		$query = 'SELECT * FROM ' . $this->users_table . ' WHERE user_id = \'' . $userId .'\' AND message_id ';
 		$i = 1;
 		$numResults = count($features);
 		$in = 'IN (';
@@ -115,7 +146,6 @@ class NewFeatures {
 
 		// If all features have not been seen yet
 		if(empty($seenFeatures)) {
-
 			// Only return the first three
 			return array_slice($features, 0, 3);
 		}
@@ -149,17 +179,17 @@ class NewFeatures {
 		}
 		$results = array();
 		$addEntry = false;
-		$userID = $_SESSION['userID'];
+		$userId = $_SESSION['userID'];
 		$i = 1;
 		$numResults = count($seenFeatures);
 		$query = 'INSERT into ' . $this->users_table . ' (`user_id`, `message_id`) VALUES ';
 		foreach ($seenFeatures as $seenFeature) {
-			if(!$this->seenEntryExists($userID, $seenFeature['mid'])) {
+			if(!$this->seenEntryExists($userId, $seenFeature['mid'])) {
 				if($i == $numResults) {
-					$query .= '(' . $userID . ', ' . $seenFeature['mid'] . ');';
+					$query .= '(' . $userId . ', ' . $seenFeature['mid'] . ');';
 				}
 				else {
-					$query .= '(' . $userID . ', ' . $seenFeature['mid'] . '),';
+					$query .= '(' . $userId . ', ' . $seenFeature['mid'] . '),';
 				}
 				$addEntry = true;
 			}
@@ -172,9 +202,9 @@ class NewFeatures {
 		return true;
 	}
 
-	private function seenEntryExists($userID, $messageID)
+	private function seenEntryExists($userId, $messageID)
 	{
-		$query = "SELECT * FROM {$this->users_table} WHERE user_id = '$userID' AND message_id = '$messageID'";
+		$query = "SELECT * FROM {$this->users_table} WHERE user_id = '$userId' AND message_id = '$messageID'";
 		$results = DBUtil::getResultArray($query);
 
 		return (count($results) > 0);
