@@ -230,7 +230,7 @@ class KTGraphicalAnalyticsSql {
 	{
 		// Needs to consider likes and comments
 		$sql = '
-        SELECT user_id, username, users.name,
+        SELECT user_id, username, users.name, users.email,
 		SUM(IF ((ABS(TIMESTAMPDIFF(WEEK,NOW(),datetime)) = 0), score, score/ABS(TIMESTAMPDIFF(WEEK,NOW(),datetime)))) AS userscore
 		FROM document_transactions
 		INNER JOIN graphicalanalysis_scoring ON (transaction_namespace = namespace)

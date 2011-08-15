@@ -1,4 +1,4 @@
-<h2>Graphs Viewlet Demo</h2>
+<h2>Analytics</h2>
 
 <table width="100%" style="margin-left: -5px;">
     <tr>
@@ -10,6 +10,11 @@
         </td>
         <td width="33%" valign="top" class="graph-viewlet">
             {$documentRating}
+        </td>
+    </tr>
+    <tr>
+        <td  colspan="3">
+            <p align="right"><a href="/plugins/GraphicalAnalytics/GraphicalAnalyticsPage.php">More Analytics</a></p>
         </td>
     </tr>
     <tr>
@@ -25,7 +30,3 @@
     </tr>
 </table>
 
-<p><a href="/plugins/GraphicalAnalytics/GraphicalAnalyticsPage.php">More Analytics</a></p>
-
-<br>
-<br>
