@@ -76,6 +76,8 @@ class KTDocumentStatusBlock extends KTDocumentViewlet {
 	{
 		$this->oPage->requireCSSResource('resources/css/newui/documents/blocks/blockActions.css');
 		$this->oPage->requireJSResource('resources/js/newui/documents/blocks/subscriptionsBlock.js');
+        $pluginPath = alertUtil::getPluginPath();
+        $this->oPage->requireJSResource($pluginPath . '/resources/blocks/alertsActions.js');
 		$workflowState = $alertState = $subscribeState = 'disabled';
         // Check if document has workflows
         if ($this->hasWorkflow()) { $workflowState = 'enabled'; }

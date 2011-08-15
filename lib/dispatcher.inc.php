@@ -371,8 +371,6 @@ class KTStandardDispatcher extends KTDispatcher {
     public $bJSONMode = false;
     public $aCannotView = array();
 
-    protected $bulkActionInProgress;
-
     public function KTStandardDispatcher()
     {
         if (empty($GLOBALS['main'])) {
