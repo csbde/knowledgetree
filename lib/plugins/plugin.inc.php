@@ -664,7 +664,9 @@ class KTPlugin {
                 ));
             }
             /* ** Quick fix for optimisation. Reread must run plugin setup. ** */
-            $this->setup();
+            if (!$oEntity->getDisabled() && !$oEntity->getUnavailable()) {
+                $this->setup();
+            }
             return $oEntity;
         }
         if (PEAR::isError($oEntity) && !($oEntity instanceof KTEntityNoObjects)) {
@@ -698,7 +700,9 @@ class KTPlugin {
         }
 
         /* ** Quick fix for optimisation. Reread must run plugin setup. ** */
-        $this->setup();
+        if (!$disabled) {
+            $this->setup();
+        }
         return true;
     }
 

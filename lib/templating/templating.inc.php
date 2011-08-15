@@ -149,7 +149,7 @@ class KTTemplating {
      * @param unknown_type $loc
      */
     function addLocation ($descr, $loc, $sPluginNamespace = NULL) {
-        $this->aLocationRegistry[$descr] = $loc;
+        //$this->aLocationRegistry[$descr] = $loc;
 
         if(!empty($sPluginNamespace)){
             $sPlugin = $sPluginNamespace;
