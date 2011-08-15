@@ -58,10 +58,6 @@ class KTFolderAction extends KTStandardDispatcher {
 	public $bShowIfReadShared = false;
 	public $bShowIfWriteShared = false;
 
-	/** Handle bulk action lock */
-	protected $showIfBulkActions = array();
-	protected $bulkActionInProgress = '';
-
     public function KTFolderAction($oFolder = null, $oUser = null, $oPlugin = null)
     {
         parent::KTStandardDispatcher();
@@ -128,14 +124,9 @@ class KTFolderAction extends KTStandardDispatcher {
     {
         return '';
     }
-    
+
     public function getInfo()
     {
-    	if(!empty($this->bulkActionInProgress)) {
-    		if(!in_array($this->bulkActionInProgress, $this->showIfBulkActions)) {
-    			return '';
-    		}
-    	}
         $status = '';
         if ($this->_show() === false) {
             $status = 'disabled';
@@ -263,10 +254,6 @@ class KTFolderAction extends KTStandardDispatcher {
 		$iFolderId = $this->oFolder->getID();
 		$iParentId = $this->oFolder->getParentID();
 		return SharedContent::getPermissions($iUserId, $iFolderId, $iParentId, 'folder');
-    }
-
-    public function setBulkAction($bulkActionInProgress) {
-    	$this->bulkActionInProgress = $bulkActionInProgress;
     }
 
 }
@@ -442,50 +429,67 @@ class KTFolderActionUtil {
         if (!empty($action)) {
             // "document" action refers to the zoho plugin
             $blockedActions = array('document', 'addDocument', 'addFolder', 'rename', 'roles', 'copy', 'move', 'delete', 'archive', 'checkin', 'checkout');
-            
+
             $action = explode('.', $action);
             $action = array_pop($action);
-            
+
             if (!in_array($action, $blockedActions)) {
                 return false;
             }
         }
-        
-        // todo: make neat 
+
+        // todo: make neat
         $redirect = '';
         if (empty($folderId)) {
             $folderId = $_REQUEST['fFolderId'];
             $redirect = KTUtil::kt_clean_folder_url($folderId);
-            
+
             if (empty($folderId)) {
                 $documentId = $_REQUEST['fDocumentId'];
-                
+
                 if (!empty($documentId)) {
                     $document = Document::get($documentId);
                     $folderId = $document->getFolderId();
                     $redirect = KTUtil::kt_clean_document_url($documentId);
-                } 
+                }
                 else {
                     $folderId = 1;
                 }
             }
         }
-        
+
         // todo: refactor to check bulk actions ...
         include_once(KT_LIB_DIR . '/permissions/BackgroundPermissions.php');
         $accountName = (defined('ACCOUNT_NAME')) ? ACCOUNT_NAME : '';
-        
+
         $backgroundPerms = new BackgroundPermissions($folderId, $accountName);
         $check = $backgroundPerms->checkIfFolderAffected();
         $message = '';
-        
+
         if ($check) {
             $message = 'This action cannot be performed as a permissions update is currently in progress. Please try again later.';
         }
-        
+        else {
+        	return self::checkBulkBackgroundActions($folderId, $redirect);
+        }
+
         $response = array('check' => $check, 'message' => $message, 'redirect' => $redirect);
-        
+
         return $response;
+    }
+
+    public static function checkBulkBackgroundActions($folderId, $redirect)
+    {
+        require_once(KT_LIB_DIR . '/backgroundactions/backgroundaction.inc.php');
+        $message = '';
+        $check = false;
+        $action = backgroundaction::isFolderInBulkAction($folderId);
+        if($action != '') {
+	        $check = true;
+			$message = backgroundaction::getMessage($action);
+        }
+
+		return array('check' => $check, 'message' => $message, 'redirect' => $redirect);
     }
 }
 

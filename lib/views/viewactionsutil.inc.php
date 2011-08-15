@@ -40,12 +40,10 @@ class ViewActionsUtil
 {
 	protected $actions;
 	protected $list;
-	protected $bulkActionInProgress = '';
 	protected $hasMoreActions;
 
-	public function __construct($bulkActionInProgress = '') {
+	public function __construct() {
 		$this->hasMoreActions = false;
-		$this->bulkActionInProgress = $bulkActionInProgress;
 	}
 
 	/**
@@ -75,7 +73,6 @@ class ViewActionsUtil
         $this->list[$btn['btn_position']][$btn['ns']] = $btn;
 
         foreach ($this->actions as $oAction) {
-        	$oAction->setBulkAction($this->bulkActionInProgress);
             $info = $oAction->getInfo();
 
             // Skip if action is disabled
