@@ -64,11 +64,6 @@ class KTDashboardAction extends KTStandardDispatcher {
 
 	public function getInfo()
 	{
-    	if(!empty($this->bulkActionInProgress)) {
-    		if(!in_array($this->bulkActionInProgress, $this->showIfBulkActions)) {
-    			return '';
-    		}
-    	}
         $check = $this->_show();
         if ($check === false) {
             $check = 'disabled';
