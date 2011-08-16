@@ -138,7 +138,7 @@ class DashboardDispatcher extends KTStandardDispatcher {
             unset($_SESSION['isFirstLogin']);
         }
 
-        $sidebars = KTDashboardActionUtil::getActionsForDashboard($this->oUser, 'maindashsidebar');
+        $sidebars = KTDashboardActionUtil::getActionForDashboard($this->oUser, 'maindashsidebar');
         $dashboardViewlets = KTDashboardActionUtil::getAllDashboardActions('dashboardviewlet');
         $orderedKeys = KTDashboardActionUtil::sortActions($dashboardViewlets);
 

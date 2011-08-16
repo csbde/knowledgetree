@@ -69,14 +69,14 @@ class KTDashboardAction extends KTStandardDispatcher {
             $check = 'disabled';
         }
 
-        $aInfo = array(
+        $info = array(
             'description' => $this->sDescription,
             'name' => $this->getDisplayName(),
             'ns' => $this->sName,
         );
 
-        $aInfo = $this->customiseInfo($aInfo);
-        return $aInfo;
+        $info = $this->customiseInfo($info);
+        return $info;
     }
 
     public function getName()
@@ -101,13 +101,15 @@ class KTDashboardAction extends KTStandardDispatcher {
         return false;
     }
 
-    public function customiseInfo($aInfo)
+    public function customiseInfo($info)
     {
-        return $aInfo;
+        return $info;
     }
+
 }
 
 class KTDashboardActionUtil {
+
     public static function getDashboardActionInfo($slot = 'dashboardsidebar')
     {
         $registry = KTActionRegistry::getSingleton();
@@ -127,7 +129,14 @@ class KTDashboardActionUtil {
             }
             $objects[] = new $className($user, $plugin);
         }
-        if(count($objects) == 1) {
+
+        return $objects;
+    }
+
+    public static function getActionForDashboard($user, $slot = 'dashboardsidebar')
+    {
+        $objects = KTDashboardActionUtil::getActionsForDashboard($user, $slot);
+        if (count($objects) == 1) {
             return $objects[0];
         }
         else {
@@ -148,6 +157,7 @@ class KTDashboardActionUtil {
             }
             $objects[] = new $className($user, $plugin);
         }
+
         return $objects;
     }
 
@@ -174,12 +184,13 @@ class KTDashboardActionUtil {
         $ordered = $keys = array();
         foreach ($actions as $action) {
             $info = $action->getInfo();
-            if($info != null) {
+            if ($info != null) {
                 $order = $action->getOrder();
-                if(isset($ordered[$order])) {
+                if (isset($ordered[$order])) {
                     $order++;
                     $ordered[$order] = $action;
-                } else {
+                }
+                else {
                     $ordered[$order] = $action;
                 }
                 $keys[$order] = $order;
@@ -189,6 +200,7 @@ class KTDashboardActionUtil {
 
         return array('ordered' => $ordered, 'keys'=> $keys);
     }
+
 }
 
 ?>

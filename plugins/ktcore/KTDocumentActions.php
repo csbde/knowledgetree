@@ -1950,24 +1950,30 @@ class KTDocumentPreviewUrlAction extends KTDocumentAction {
     public $sBtnPosition = 'links';
     public $sIconClass = 'preview-url';
 
-    function getDisplayName() {
+    public function getDisplayName()
+    {
         return _kt('Preview URL');
     }
 
-    function getInfo() {
+    public function getInfo()
+    {
         return null;
     }
 
-    function getURL() {
+    public function getURL()
+    {
         return '#';
     }
 
-    function getOnClick(){
+    public function getOnClick()
+    {
         $onclick = '';
         return $onclick;
     }
 
-    function do_main() {
+    public function do_main()
+    {
+
     }
 
 }
@@ -2405,24 +2411,29 @@ class KTDocumentCancelCheckOutAction extends JavascriptDocumentAction {
     public $sIconClass = 'cancel-checkout';
     public $sParentBtn = 'ktcore.actions.document.checkin';
 
-    public function do_reason() {
+    public function do_reason()
+    {
         echo parent::do_reason();
         exit(0);
     }
 
-    public function getReasonDescriptiveText() {
+    public function getReasonDescriptiveText()
+    {
         return 'If you do not want to have this document be checked-out, click cancel checkout.';
     }
 
-    public function getReasonAction() {
+    public function getReasonAction()
+    {
         return 'checkin';
     }
 
-    public function getDisplayName() {
+    public function getDisplayName()
+    {
         return _kt('Cancel Check-out');
     }
 
-    public function _show() {
+    public function _show()
+    {
         $check = parent::_show();
         if($check === false) {
             return 'disabled';
@@ -2430,7 +2441,8 @@ class KTDocumentCancelCheckOutAction extends JavascriptDocumentAction {
         return $check;
     }
 
-    public function getInfo() {
+    public function getInfo()
+    {
         if (!$this->oDocument->getIsCheckedOut()) {
             return null;
         }

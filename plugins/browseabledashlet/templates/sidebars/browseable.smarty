@@ -1,0 +1,26 @@
+{if empty($folders)}
+	<span>{i18n}You have no orphaned folders.{/i18n}</span>
+{else}
+	{assign var='count' value='0'}
+	<ul class="alerts_sidebar" style="font-size: 11px;">
+		{foreach from=$folders item=folder}
+			{if $count < $folderMaxDisplay}
+		    	<li class="{cycle values=odd,even}">
+		    {else}
+		    	<li class="hidden_items ofolders {cycle values=odd,even}">
+		    {/if}
+				<a class="contenttype_href" {capture assign=fid}{$folder->getId()}{/capture} href="{url file="browse.php" fFolderId=$fid}">{$folder->getName()|sanitize|mb_truncate:34:"..."}</a>
+			</li>
+		{assign var="count" value=$count+1}
+		{/foreach}
+	</ul>
+{/if}
+
+{if $folderCount > $folderMaxDisplay}
+	<span class=more_items>
+		<span class="more_summary_ofolders"> {$folderMaxDisplay} of {$folderCount} folders. </span>
+		<a class="more_text_ofolders" href="javascript:{ldelim}moreSidebar.toggleMore('ofolders');{rdelim}">More</a>
+	</span>
+	<br/>
+{/if}
+
