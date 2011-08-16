@@ -837,17 +837,16 @@ class PluginCache {
     {
         if (!$this->validatePlugins()) {
             unset($_SESSION['plugin-list']);
+            unset($_SESSION['plugin-helper-list']);
         }
         
         if (isset($_SESSION['plugin-list']) && !empty($_SESSION['plugin-list'])) {
             return $_SESSION['plugin-list'];
         }
         
-        if ($this->memcache === false) {
-            return $this->getPluginsFromDB();
+        if ($this->memcache !== false) {
+            $pluginList = $this->memcache->get($this->namespace . '-' . $this->pluginsCacheKey);
         }
-        
-        $pluginList = $this->memcache->get($this->namespace . '-' . $this->pluginsCacheKey);
         
         if (!$pluginList) {
             $helpers = $this->getPluginHelpersByType('plugin');
@@ -857,14 +856,22 @@ class PluginCache {
                 $helpers = $this->getPluginHelpersByType('plugin');
             }
             
-            $pluginList = $this->updatePluginsCache($helpers);
+            $pluginList = $this->getPluginsList($helpers);
+            
+            if ($this->memcache !== false) {
+                $this->memcache->set($this->namespace . '-' . $this->pluginsCacheKey, $loaded);
+            }
+            
         }
         
         $_SESSION['plugin-list'] = $pluginList;
         
         return $pluginList;
     }
-      
+     
+    /**
+     * @deprecated 
+     */
     private function getPluginsFromDB()
     {
         global $default;
@@ -927,14 +934,25 @@ class PluginCache {
      */
     public function invalidatePlugins()
     {
-        $this->setNamespace();
-        $this->clearPluginHelpers();
+        if ($this->memcache === false) {
+            $this->clearDBHelpers();
+        }
+        else {
+            $this->setNamespace();
+            $this->clearPluginHelpers();
+        }
+        
         unset($_SESSION['plugin-namespace']);
         unset($_SESSION['plugin-list']);
+        unset($_SESSION['plugin-helper-list']);
     }
 
     private function getNamespace()
     {
+        if ($this->memcache === false) {
+            return $this->namespaceKey;
+        }
+        
         $namespace = $this->memcache->get($this->namespaceKey);
 
         // If the key doesn't exist or has expired then set a new one.
@@ -961,7 +979,7 @@ class PluginCache {
         $this->namespace = $namespace;
     }
 
-    private function updatePluginsCache($helpers)
+    private function getPluginsList($helpers)
     {
         global $default;
         $default->log->info('Plugin Cache: updating cached plugin list');
@@ -988,31 +1006,33 @@ class PluginCache {
             }
         }
         
-        $this->memcache->set($this->namespace . '-' . $this->pluginsCacheKey, $loaded);
-        
         return $loaded;
     }
     
     private function updatePlugins()
     {
-        $lock = $this->memcache->get($this->lockedCacheKey);
+        $lock = $this->updateLock('get');
         
         if ($lock == 'in-progress') {
+            global $default;
+            $default->log->info('Plugins: lock in place, waiting for update to complete.');
+            
             $cnt = 0;
             while ($lock == 'in-progress' && $cnt < 15) {
                 sleep(2);
                 $cnt++;
-                $lock = $this->memcache->get($this->lockedCacheKey);
+                $lock = $this->updateLock('get');
             }
             
             if ($lock == 'in-progress') {
+                $default->log->warn('Plugins: lock still in place after 30 seconds, exiting.');
                 return false;
             }
             
             return true;
         }
         
-        $this->memcache->set($this->lockedCacheKey, 'in-progress');
+        $this->updateLock('set');
 
         $this->invalidatePlugins();
         
@@ -1020,11 +1040,53 @@ class PluginCache {
 
         $this->removeDisabledPluginHelpers();
         
-        $this->memcache->delete($this->lockedCacheKey);
+        $this->updateLock('delete');
+    }
+    
+    private function updateLock($getOrSet = 'get') 
+    {
+        if ($this->memcache === false) {
+            return $this->updateDBLock($getOrSet);
+        }
+        
+        switch ($getOrSet) {
+            case 'set':
+                $this->memcache->set($this->lockedCacheKey, 'in-progress');
+                break;
+            case 'delete':
+                $this->memcache->delete($this->lockedCacheKey);
+                break;
+            case 'get':
+            default:
+                return $this->memcache->get($this->lockedCacheKey);
+        }
+        
+        return true;
+    }
+    
+    private function updateDBLock($getOrSet = 'get')
+    {
+        switch ($getOrSet) {
+            case 'set':
+                KTUtil::setSystemSetting($this->lockedCacheKey, 'in-progress');
+                break;
+            case 'delete':
+                KTUtil::setSystemSetting($this->lockedCacheKey, false);
+                break;
+            case 'get':
+            default:
+                return KTUtil::getSystemSetting($this->lockedCacheKey, false);
+        }
+        
+        return true;
     }
     
     private function removeDisabledPluginHelpers()
     {
+        if ($this->memcache === false) {
+            return ;
+        }
+        
         $pluginsList = $this->getPlugins();
         $helpers = $this->getPluginHelpers();
 
@@ -1056,7 +1118,38 @@ class PluginCache {
     
     private function getPluginHelpers()
     {
-        $helpers = $this->memcache->get($this->namespace . '-' . $this->pluginHelperDynamicKey);
+        if (isset($_SESSION['plugin-helper-list']) && !empty($_SESSION['plugin-helper-list'])) {
+            return $_SESSION['plugin-helper-list'];
+        }
+        
+        if ($this->memcache === false) {
+            $helpers = $this->getDBHelpers();
+        }
+        else {
+            $helpers = $this->memcache->get($this->namespace . '-' . $this->pluginHelperDynamicKey);
+        }
+        
+        $_SESSION['plugin-helper-list'] = $helpers;
+        
+        return $helpers;
+    }
+    
+    private function getDBHelpers()
+    {
+        $sql = 'SELECT h.* FROM plugin_helper h, plugins p WHERE h.plugin = p.namespace AND p.disabled = 0 AND p.unavailable = 0';
+        
+        $result = DBUtil::getResultArray($sql);
+        
+        if (PEAR::isError($result) || empty($result)) {
+            return false;
+        }
+        
+        $helpers = array();
+        
+        foreach ($result as $item) {
+            $helpers[$item['classtype']][$item['namespace']] = $item;
+        }
+        
         return $helpers;
     }
     
@@ -1137,6 +1230,11 @@ class PluginCache {
         return $res;
     }
     
+    private function clearDBHelpers()
+    {
+        $sql = 'DELETE FROM plugin_helper';
+        DBUtil::runQuery($sql);
+    }
 }
 
 ?>
