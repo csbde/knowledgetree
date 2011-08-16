@@ -55,7 +55,7 @@ class KTGraphicalAnalyticsSql {
 
 		) merged_table
 
-		INNER JOIN documents D ON (merged_table.document_id = D.id)
+		INNER JOIN documents D ON (merged_table.document_id = D.id AND D.status_id != 3)
 		INNER JOIN document_metadata_version ON (D.metadata_version_id = document_metadata_version.id)
 		INNER JOIN document_content_version ON (document_metadata_version.content_version_id = document_content_version.id)
 
@@ -126,7 +126,7 @@ class KTGraphicalAnalyticsSql {
 
 			) merged_table
 
-			INNER JOIN documents D ON (merged_table.document_id = D.id)
+			INNER JOIN documents D ON (merged_table.document_id = D.id AND D.status_id != 3)
 			INNER JOIN document_metadata_version ON (D.metadata_version_id = document_metadata_version.id)
 			INNER JOIN document_content_version ON (document_metadata_version.content_version_id = document_content_version.id)
 
@@ -268,7 +268,7 @@ class KTGraphicalAnalyticsSql {
         $sql = '
 		SELECT document_transactions.document_id, COUNT( document_transactions.document_id ) AS count, document_content_version.filename, mime_id
 		FROM document_transactions
-		INNER JOIN documents ON (document_transactions.document_id = documents.id)
+		INNER JOIN documents ON (document_transactions.document_id = documents.id AND documents.status_id != 3)
 		INNER JOIN document_metadata_version ON (documents.metadata_version_id = document_metadata_version.id)
 		INNER JOIN document_content_version ON (document_metadata_version.content_version_id = document_content_version.id)
 		WHERE transaction_namespace = "ktcore.transactions.view"
