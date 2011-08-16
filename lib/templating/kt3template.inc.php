@@ -213,6 +213,7 @@ class KTPage {
             'resources/css/newui/dropdown_styles.css',
             'resources/css/newui/dropdown.vertical.css',
             'resources/css/newui/newfeatures.css',
+            'plugins/NewFeatureNotification/resources/css/new_features.css',
         );
 
         // load area specific files

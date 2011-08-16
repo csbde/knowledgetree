@@ -738,6 +738,11 @@ class KTFolderPermissionsAction extends KTFolderAction {
 
     private function checkIfNeedsBackgrounding($permissionObjectId)
     {
+        // Requires memcache to be enabled
+        $memcache = KTMemcache::getKTMemcache();
+        if (!$memcache->isEnabled()) {
+            return false;
+        }
         
     	// Check depth of folder tree
     	$query = "SELECT count(*) AS count FROM folders WHERE permission_object_id = {$permissionObjectId}";

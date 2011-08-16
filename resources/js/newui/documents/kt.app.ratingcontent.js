@@ -53,14 +53,21 @@ kt.app.ratingcontent = new function() {
 		if (response.data.success == 'true') {
 			
 			if (self.action == 'likeDocument') {
-				str = '<a href="javascript:;" onclick="kt.app.ratingcontent.unlikeDocument('+self.documentId+');"><img src="resources/graphics/newui/document_liked.png" /></a>';
+				str = '<a href="javascript:;" title="Click to unlike" onclick="kt.app.ratingcontent.unlikeDocument('+self.documentId+');">'+(response.data.newNumLikes)+'</a>';
 			} else {
-				str = '<a href="javascript:;" onclick="kt.app.ratingcontent.likeDocument('+self.documentId+');"><img src="resources/graphics/newui/document_notliked.png" /></a>';
+				
+				if (response.data.newNumLikes == 0) {
+					likeStr = 'Like';
+				} else {
+					likeStr = response.data.newNumLikes;
+				}
+				
+				str = '<a href="javascript:;" title="Click to Like" onclick="kt.app.ratingcontent.likeDocument('+self.documentId+');">'+likeStr+'</a>';
 			}
 			
 			// Update with some animation
 			jQuery('#docItem_'+self.documentId+' span.like_status').fadeOut('fast',function() {
-					jQuery(this).html(str);
+					jQuery(this).html(str).toggleClass('liked');
 				}).fadeIn();
 		}
 	}
@@ -69,20 +76,30 @@ kt.app.ratingcontent = new function() {
 	{
 		if (response.data.success == 'true') {
 			if (self.action == 'likeDocument') {
-				str = '<a href="javascript:;" onclick="kt.app.ratingcontent.unlikeDocument('+self.documentId+', false);"><img src="resources/graphics/newui/document_liked.png" /></a>';
+				str = '<a href="javascript:;" title="Click to unlike" onclick="kt.app.ratingcontent.unlikeDocument('+self.documentId+', false);">Like</a>';
 			} else {
-				str = '<a href="javascript:;" onclick="kt.app.ratingcontent.likeDocument('+self.documentId+', false);"><img src="resources/graphics/newui/document_notliked.png" /></a>';
+				str = '<a href="javascript:;" title="Click to Like" onclick="kt.app.ratingcontent.likeDocument('+self.documentId+', false);">Like</a>';
 			}
 			
-			if (response.data.newNumLikes == 1) {
-				countStr = 'One User likes this document';
+			if (self.action == 'likeDocument') {
+				
+				if (response.data.newNumLikes == 2) {
+					countStr = 'You and one other person likes this';
+				} else {
+					countStr = 'You and '+(response.data.newNumLikes-1)+' people like this';
+				}
+				
 			} else {
-				countStr = response.data.newNumLikes+' Users like this document';
+				if (response.data.newNumLikes == 1) {
+					countStr = 'One person likes this';
+				} else {
+					countStr = ''+(response.data.newNumLikes)+' people like this';
+				}
 			}
 			
 			// Update with some animation
 			jQuery('#documentLikeStatus span.like_status').fadeOut('fast',function() {
-					jQuery(this).html(str);
+					jQuery(this).html(str).toggleClass('liked');
 				}).fadeIn();
 			
 			jQuery('#documentLikeStatus span.like_count').html(countStr);

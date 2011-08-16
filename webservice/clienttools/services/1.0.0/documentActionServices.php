@@ -49,7 +49,7 @@ class documentActionServices extends client_service {
         $classname = $params['name'];
         $classpath = $params['class'];
         $classpath = str_replace('/./', '/', $classpath);
-        if(file_exists($classpath)) {
+        if (file_exists($classpath)) {
             require_once($classpath);
             $class = new $classname();
             $class->$classaction($params);
@@ -59,7 +59,7 @@ class documentActionServices extends client_service {
     public function checkout_download($params)
     {
         $response = array();
-        if($this->checkout($params)) {
+        if ($this->checkout($params)) {
             $this->addResponse('success', 'Document checked out.');
         }
         else {
@@ -244,7 +244,17 @@ class documentActionServices extends client_service {
         // Check if there's a permissions update in progress for the current folder / document
         $folderId = !empty($params['folderId']) ? str_replace('folder_', '', $params['folderId']) : KTUtil::decodeId(substr($params['cleanId'], 2));
         $response = KTFolderActionUtil::checkForBackgroundedAction($folderId);
-        //$response = array('check' => $check, 'message' => $message);
+
+        // If not, check for any other actions are running in the background.(move, copy, delete)
+        if (!$response['check']) {
+            require_once(KT_LIB_DIR . '/backgroundactions/backgroundaction.inc.php');
+            $action = backgroundaction::isFolderInBulkAction($folderId);
+            if ($action != '') {
+                $response['check'] = true;
+                $response['message'] = backgroundaction::getMessage($action);
+                $this->addResponse('result', json_encode($response));
+            }
+        }
 
         $this->addResponse('result', json_encode($response));
     }
@@ -438,17 +448,17 @@ class documentActionServices extends client_service {
         }
         require_once(KT_LIB_DIR . '/backgroundactions/backgroundaction.inc.php');
         $backgroundaction = new backgroundaction($action, $organisedItemList, $reason, $targetFolderId, $currentFolderId);
-        if($backgroundaction->checkIfNeedsBackgrounding()) {
+        if ($backgroundaction->checkIfNeedsBackgrounding()) {
             require_once(KT_PLUGIN_DIR . '/ktcore/KTBackgroundActions.php');
             $queueResponse = BulkDocumentActions::queueBulkAction($action, $organisedItemList, $reason, $targetFolderId, $currentFolderId);
-            if($queueResponse) {
+            if ($queueResponse) {
                 $msg = _kt('Success. You will be redirected shortly.');
             }
             else {
                 $msg = _kt('Failure. Could not send message.');
             }
             $url = KTUtil::kt_clean_folder_url($targetFolderId);
-            $msg = "Your operation is being processed. You wil receive an email on completion.";
+            $msg = "Your operation is being processed. You will receive an email on completion.";
             $result = array('type' => 'success', 'url' => $url, 'msg' => $msg, 'bulk' => $queueResponse);
             $this->addResponse('result', json_encode($result));
 

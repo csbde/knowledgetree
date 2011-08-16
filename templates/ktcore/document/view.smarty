@@ -53,16 +53,28 @@
 						{if $ratingContentEnabled}
 							<div id="documentLikeStatus">
 								{if $userLikesDocument}
-									<span class="like_status"><a href="javascript:;" onclick="kt.app.ratingcontent.unlikeDocument({$document->getId()}, false);"><img src="resources/graphics/newui/document_liked.png" /></a></span>
+									<span class="like_status liked"><a href="javascript:;" title="Click to unlike" onclick="kt.app.ratingcontent.unlikeDocument({$document->getId()}, false);">Like</a></span>
 								{else}
-									<span class="like_status"><a href="javascript:;" onclick="kt.app.ratingcontent.likeDocument({$document->getId()}, false);"><img src="resources/graphics/newui/document_notliked.png" /></a></span>
+									<span class="like_status"><a href="javascript:;" title="Click to Like" onclick="kt.app.ratingcontent.likeDocument({$document->getId()}, false);">Like</a></span>
 								{/if}
 								
-								<span class="like_count">
+								<span class="like_count" style="vertical-align:top; margin-left: 2px;">
 									{if $numDocumentLikes == 1}
-										{i18n}One User likes this document{/i18n}
+										{if $userLikesDocument}
+											{i18n}You like this{/i18n}
+										{else}
+											{i18n}One person likes this{/i18n}
+										{/if}
 									{else}
-										{$numDocumentLikes} {i18n}Users like this document{/i18n}
+										{if $userLikesDocument}
+											{if $numDocumentLikes == 2}
+												{i18n}You and one other person likes this{/i18n}
+											{else}
+												{i18n}You and{/i18n} {$numDocumentLikes-1} {i18n}people like this{/i18n}
+											{/if}
+										{else} 
+											{$numDocumentLikes} {i18n}people like this{/i18n} 
+										{/if}
 									{/if}
 								</span>
 							</div>

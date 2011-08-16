@@ -84,7 +84,7 @@ class KTDashboardSidebar extends KTDashboardViewlet {
         // Sort to rewrite keys.
         sort($keys);
 		$oTemplating = KTTemplating::getSingleton();
-		$oTemplate = $oTemplating->loadTemplate('ktcore/dashlets/sidebars/viewSidebar');
+		$oTemplate = $oTemplating->loadTemplate('ktcore/dashboard/sidebars/viewSidebar');
         $aTemplateData = array(
               'context' => $this,
               'sidebars' => $ordered,
@@ -149,7 +149,7 @@ class KTCheckoutSidebar extends KTDashboardSidebar {
 							);
 		$documents = Document::getList($where, $options);
         $templating = KTTemplating::getSingleton();
-        $template = $templating->loadTemplate('ktcore/dashlets/sidebars/checkedout');
+        $template = $templating->loadTemplate('ktcore/dashboard/sidebars/checkedout');
         $templateData = array(
             'documents' => $documents,
             'browseUtil' => new KTBrowseUtil(),
@@ -180,7 +180,7 @@ class QuicklinksSidebar extends KTDashboardSidebar {
     	$quicklinks = Quicklink::getListForUser($this->oUser->getId());
 
 	    $templating = KTTemplating::getSingleton();
-	    $template = $templating->loadTemplate('ktcore/dashlets/sidebars/quicklinks');
+	    $template = $templating->loadTemplate('ktcore/dashboard/sidebars/quicklinks');
 	    $templateData = array(	'context' => $this,
 				   				'quicklinks_items' => $quicklinks,
 				   				'manage_url' => 'plugin.php?kt_path_info=bd.Quicklinks.plugin/quicklinksmanagement',

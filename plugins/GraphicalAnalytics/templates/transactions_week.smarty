@@ -1,34 +1,15 @@
 <h3>Transactions per Week</h3>
 
-<div style="width: 25%; float: left">
-<table>
-    <thead>
-        <th>Week</th>
-        <th>Number of Transactions</th>
-    </thead>
-    <tbody>
-        {foreach from=$data item=week}
-        <tr>
-            <th>{if $week.week_number==0}This Week{else}{$week.week_number} week ago{/if}</th>
-            <td>{$week.count}</td>
-        </tr>
-        {/foreach}
-    </tbody>
-</table>
-</div>
-<div style="width: 70%; float: left">
-    <div id="transactions_per_week"></div>
-</div>
+<div id="transactions_per_week"></div>
 
-<br clear="both" />
 
 
 
 {literal}
 <script type="text/javascript">
-    var documentViewChart;
+    var transactionsPerWeekChart;
     jQuery(document).ready(function() {
-        documentViewChart = new Highcharts.Chart({
+        transactionsPerWeekChart = new Highcharts.Chart({
             chart: {
                 renderTo: 'transactions_per_week',
                 defaultSeriesType: 'column'
@@ -55,7 +36,7 @@
             tooltip: {
                 formatter: function() {
                     return ''+
-                         this.series.name +': '+ this.y +' ..';
+                         this.series.name +': '+ this.y;
                 }
             },
             plotOptions: {

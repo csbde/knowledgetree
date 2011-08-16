@@ -57,8 +57,6 @@ class KTDocumentDetailsAction extends KTDocumentAction {
 
     public $sName = 'ktcore.actions.document.displaydetails';
 
-    protected $showIfBulkActions = array('copy');
-
     function do_main() {
         redirect(KTUtil::kt_clean_document_url($this->oDocument->getId()));
 
@@ -78,8 +76,6 @@ class KTDocumentTransactionHistoryAction extends KTDocumentAction {
     public $sName = 'ktcore.actions.document.transactionhistory';
     public $sIconClass = 'usage-info';
     public $sParentBtn = 'more';
-
-    protected $showIfBulkActions = array('copy');
 
     function getDisplayName() {
         return _kt('Usage Information');
@@ -360,8 +356,6 @@ class KTDocumentViewAction extends KTDocumentAction {
     public $bShowIfWriteShared = true;
     public $bShowIfReadShared = true;
     public $btnOrder = 1;
-
-    protected $showIfBulkActions = array('copy');
 
     public function getDisplayName() {
         return _kt('Download');
@@ -861,8 +855,6 @@ class KTDocumentMoveAction extends JavascriptDocumentAction {
 }
 
 class KTDocumentCopyColumn extends TitleColumn {
-    
-    protected $showIfBulkActions = array('copy');
 
     public function KTDocumentCopyColumn($sLabel, $sName, $oDocument)
     {
@@ -885,8 +877,6 @@ class KTDocumentCopyAction extends JavascriptDocumentAction {
 
     public $sIconClass = 'copy';
     public $sParentBtn = 'more';
-
-    protected $showIfBulkActions = array('copy');
 
     function getDisplayName()
     {
@@ -1906,8 +1896,6 @@ class KTDocumentPageUrlAction extends KTDocumentAction {
     public $sBtnPosition = 'links';
     public $sIconClass = 'page-url';
 
-    protected $showIfBulkActions = array('copy');
-
     function getDisplayName() {
         return _kt('Get page link');
     }
@@ -1961,8 +1949,6 @@ class KTDocumentPreviewUrlAction extends KTDocumentAction {
     public $btnOrder = 3;
     public $sBtnPosition = 'links';
     public $sIconClass = 'preview-url';
-
-    protected $showIfBulkActions = array('copy');
 
     function getDisplayName() {
         return _kt('Preview URL');
@@ -2418,8 +2404,6 @@ class KTDocumentCancelCheckOutAction extends JavascriptDocumentAction {
     public $bShowIfWriteShared = true;
     public $sIconClass = 'cancel-checkout';
     public $sParentBtn = 'ktcore.actions.document.checkin';
-
-    protected $showIfBulkActions = array('copy');
 
     public function do_reason() {
         echo parent::do_reason();

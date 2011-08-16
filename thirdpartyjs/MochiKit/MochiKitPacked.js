@@ -2980,7 +2980,7 @@ return MochiKit.Base.extend(null,_380);
 var _381=[];
 for(var i=0;i<_380.length;i++){
 var _382=_380[i];
-var _383=_382.className.split(" ");
+var _383=String(_382.className).split(" ");
 for(var j=0;j<_383.length;j++){
 if(_383[j]==_378){
 _381.push(_382);

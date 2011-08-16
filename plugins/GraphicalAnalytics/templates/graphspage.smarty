@@ -1,23 +1,54 @@
-<h2>Graphs Page</h2>
+<h2>Graphical Analytics</h2>
 
-{$topTenDocuments}
 
-<br /><br />
+<div class="graphContainer">
+    {$userAccessPerWeek}
+</div>
+<div class="graphContainer">
+    {$uploadsPerWeek}
+</div>
 
-{$topTenUsers}
+<br clear="both" />
 
-<br /><br />
+<div class="graphContainer">
+    {$documentsByRating}
+</div>
+<div class="graphContainer">
+    {$viewsVsComments}
+</div>
 
-{$documentViews}
+<br clear="both" />
 
-<br /><br />
+<div class="graphContainer">
+    {$commentsPerWeek}
+</div>
+<div class="graphContainer">
+    {$likesPerWeek}
+</div>
 
-{$transactionsPerWeek}
 
-<br /><br />
+<br clear="both" />
 
-{$commentsPerWeek}
+<!--
+<div class="graphContainer">
+    {$top10Users}
+</div>
+<div class="graphContainer">
+    {$top10Documents}
+</div>
+-->
 
-<br /><br />
+<div class="graphContainer">
+    {$transactionPerWeek}
+</div>
 
-{$commentsVsViewsPerWeek}
+
+
+
+
+
+{literal}
+<style type="text/css">
+    div.graphContainer {float: left; width: 49%}
+</style>
+{/literal}

@@ -57,21 +57,35 @@ class GraphAnalyticsPage extends KTStandardDispatcher {
     public function do_main()
 	{
 	    global $default;
+		
+		$this->oPage->title = _kt('Analytics');
 
 	    $templating =& KTTemplating::getSingleton();
 	    $template = $templating->loadTemplate('graphspage');
-
         $ktAnalytics = new GraphicalAnalytics();
-
 		global $main;
 	    $templateData = array(
 	           'context' => $this,
-	           'topTenUsers' => $ktAnalytics->getTop10UsersTemplate(),
-	           'topTenDocuments' => $ktAnalytics->getTop10DocumentsTemplate(),
-	           'documentViews' => $ktAnalytics->getDocumentViewsOverWeekTemplate(),
-	           //'transactionsPerWeek' => $ktAnalytics->getTransactionOverWeekTemplate(),
-	           'commentsPerWeek' => $ktAnalytics->getDocumentCommentsPerWeekTemplate(),
-	           'commentsVsViewsPerWeek' => $ktAnalytics->getViewsVsCommentsOverWeekTemplate(),
+			   
+			   // Dashlets
+			   'userAccessPerWeek' => $ktAnalytics->getUserAccessPerWeekDashlet(),
+			   'uploadsPerWeek' => $ktAnalytics->getUploadsPerWeekDashlet(),
+			   'documentRating' => $ktAnalytics->getDocumentsByRatingTemplate(TRUE), // TRUE for Dashlet
+			   'topFiveDocuments' => $ktAnalytics->getTop5DocumentsDashlet(),
+	           'topFiveUsers' => $ktAnalytics->getTop5UsersDashlet(),
+	           'mostViewedDocuments' => $ktAnalytics->getMostViewedDocumentsDashlet(),
+			   
+			   // For the Page
+			   'top10Documents' => $ktAnalytics->getTop10DocumentsTemplate(),
+			   'documentsByRating' => $ktAnalytics->getDocumentsByRatingTemplate(),
+			   'top10Users' => $ktAnalytics->getTop10UsersTemplate(),
+			   'uploadsPerWeek' => $ktAnalytics->getUploadsPerWeekTemplate(),
+			   'userAccessPerWeek' => $ktAnalytics->getUserAccessPerWeekTemplate(),
+			   'transactionPerWeek' => $ktAnalytics->getTransactionOverWeekTemplate(),
+			   'viewsVsComments' => $ktAnalytics->getViewsVsCommentsOverWeekTemplate(),
+			   'commentsPerWeek' => $ktAnalytics->getDocumentCommentsPerWeekTemplate(),
+			   'likesPerWeek' => $ktAnalytics->getDocumentLikesPerWeekTemplate(),
+			   
         );
 
 	    return $template->render($templateData);

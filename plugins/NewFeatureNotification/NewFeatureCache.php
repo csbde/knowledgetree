@@ -33,51 +33,44 @@
  * must display the words "Powered by KnowledgeTree" and retain the original
  * copyright notice.
  * Contributor( s): ______________________________________
+ *
  */
 
-require_once(KT_PLUGIN_DIR . '/RatingContent/KTRatingContent.php');
+require_once(KT_LIB_DIR . '/memcache/ktmemcache.php');
 
-class RatingContent extends client_service {
+class NewFeatureCache {
+	private static $memcache;
 
-	public function likeDocument($params)
+	public static function init()
 	{
-		$ratingContent = new KTRatingContent();
-		
-		$newNum = $ratingContent->likeDocument($params['documentId'], $_SESSION['userID']);
-		
-    	$this->addResponse('newNumLikes', $newNum);
-		$this->addResponse('success', 'true');
-		$this->addResponse('userLikesDocument', 'true');
-		
-        return true;
+		self::$memcache = KTMemcache::getKTMemcache();
+		return self::$memcache;
 	}
-	
-	public function unlikeDocument($params)
+
+	public static function getCached($userId, $type)
 	{
-		$ratingContent = new KTRatingContent();
-		
-		$newNum = $ratingContent->unlikeDocument($params['documentId'], $_SESSION['userID']);
-		
-    	$this->addResponse('newNumLikes', $newNum);
-		$this->addResponse('success', 'true');
-		$this->addResponse('userLikesDocument', 'false');
-		
-        return true;
+		$key = ACCOUNT_NAME . '_' . $userId . '_' . $type .'_features';
+		return unserialize(self::$memcache->get($key));
 	}
-	
-	public function testCollection()
+
+	public static function saveToCache($features, $userId, $type)
 	{
-		$ratingContent = new KTRatingContent();
-		
-		$results = $ratingContent->getLikesInCollection(array(11, 17, 20, 25, 34));
-		$results2 = $ratingContent->getUserLikesInCollection($_SESSION['userID'], array(11, 25, 34));
-		
-		$this->addResponse('results', $results);
-		$this->addResponse('results2', $results2);
-		$this->addResponse('success', 'true');
-		
-        return true;
-		
+		$key = ACCOUNT_NAME . '_' . $userId . '_' . $type .'_features';
+		return self::$memcache->set($key, serialize($features));
+	}
+
+	public static function saveVersion($userId, $version)
+	{
+		$key = ACCOUNT_NAME . '_' . $userId . '_features';
+		return self::$memcache->set($key, $version);
+	}
+
+	public static function getCachedVersion($userId)
+	{
+		$key = ACCOUNT_NAME . '_' . $userId . '_features';
+		return self::$memcache->get($key);
 	}
 }
+
+
 ?>
