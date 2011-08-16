@@ -58,6 +58,11 @@ class BackgroundPermissions {
     public function updatePermissions()
     {
         $info = $this->getInfoFromMemcache();
+        
+        if ($info === false) {
+            return false;
+        }
+        
         $type = $info['type'];
         
         switch ($type) {
@@ -134,20 +139,31 @@ class BackgroundPermissions {
     private function getInfoFromMemcache()
     {
         $memcache = KTMemcache::getKTMemcache();
-        $info = $memcache->get($this->memcacheKey);
+        $info = false;
+        
+        if ($memcache->isEnabled()) {
+            $info = $memcache->get($this->memcacheKey);
+        }
+        
         return $info;
     }
     
     private function clearMemcacheInfo()
     {
         $memcache = KTMemcache::getKTMemcache();
-        $memcache->delete($this->memcacheKey);
+        if ($memcache->isEnabled()) {
+            $memcache->delete($this->memcacheKey);
+        }
     }
     
     public function checkIfBackgrounded()
     {
         $memcache = KTMemcache::getKTMemcache();
-        $info = $memcache->get($this->memcacheKey);
+        $info = false;
+
+        if ($memcache->isEnabled()) {
+            $info = $memcache->get($this->memcacheKey);
+        }
         
         if ($info === false) {
             return false;
