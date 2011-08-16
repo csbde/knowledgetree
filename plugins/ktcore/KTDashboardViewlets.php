@@ -239,7 +239,8 @@ class KTDashboardActivityFeedViewlet extends KTDashboardViewlet {
     private function getTemplateName()
     {
         $prefix = 'ktcore/dashboard/viewlets';
-        return $this->preloaded > 0 ? "$prefix/global_activity_feed" : "$prefix/global_activity_feed_ajax";
+        return "$prefix/global_activity_feed";
+        // return $this->preloaded > 0 ? "$prefix/global_activity_feed" : "$prefix/global_activity_feed_ajax";
     }
 
     private function setMimeIcons($activityFeed)
