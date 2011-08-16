@@ -78,47 +78,59 @@ class KTDashletRegistry {
      *
      * @param object $oUser
      */
-    function getNewDashlets($oUser, $sCurrent) {
+    function getNewDashlets($user, $current) {
         $new = array();
         $inactive = array();
 
-        static $sInactive = '';
-        $sIgnore = (!empty($sInactive)) ? $sCurrent.','.$sInactive : $sCurrent;
+        static $inactiveList = '';
+        $ignore = (!empty($inactiveList)) ? $current.','.$inactiveList : $current;
 
         // Get all dashlets that haven't already been displayed to the user and are active for the user
+        $helpers = KTPluginUtil::loadPluginHelpers('dashlet');
+
+        $ignore = explode(',', $ignore);
+        
+        /*
         $query = "SELECT h.classname, h.pathname, h.plugin FROM plugin_helper h
             INNER JOIN plugins p ON (h.plugin = p.namespace)
             WHERE p.disabled = 0 AND classtype = 'dashlet' ";
 
         if(!empty($sIgnore)){
-            $query .= " AND h.classname NOT IN ($sIgnore)";
+            $query .= " AND h.classname NOT IN ($ignore)";
         }
 
         $res = DBUtil::getResultArray($query);
+        */
 
         // If the query is not empty, get the dashlets and return the new active ones
         // Add the inactive ones the list.
-        if(!PEAR::isError($res) && !empty($res)){
-            $oRegistry =& KTPluginRegistry::getSingleton();
-            foreach ($res as $item){
+        if (!empty($helpers)) {
+            $registry = KTPluginRegistry::getSingleton();
+            
+            foreach ($helpers as $item){
                 $name = $item['classname'];
+                
+                if (in_array($name, $ignore)) {
+                    continue;
+                }
+                
                 $filename = $item['pathname'];
-                $sPluginName = $item['plugin'];
+                $pluginName = $item['plugin'];
 
                 require_once($filename);
-                $oPlugin =& $oRegistry->getPlugin($sPluginName);
+                $plugin = $registry->getPlugin($pluginName);
 
-                $oDashlet = new $name;
-                $oDashlet->setPlugin($oPlugin);
-                if ($oDashlet->is_active($oUser)) {
+                $dashlet = new $name;
+                $dashlet->setPlugin($plugin);
+                if ($dashlet->is_active($user)) {
                     $new[] = $name;
                 }else{
                     $inactive[] = "'$name'";
                 }
             }
             // Add new inactive dashlets
-            $sNewInactive = implode(',', $inactive);
-            $sInactive = (!empty($sInactive)) ? $sInactive.','.$sNewInactive : $sNewInactive;
+            $newInactive = implode(',', $inactive);
+            $inactiveList = (!empty($inactiveList)) ? $inactiveList.','.$newInactive : $newInactive;
 
             return $new;
         }

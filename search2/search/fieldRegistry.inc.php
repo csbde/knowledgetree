@@ -271,13 +271,17 @@ class ExprFieldRegistry
     	// check the database for any registered plugin specific search criteria
     	$pluginSearchCriteria = null;
 
+    	$helpers = KTPluginUtil::loadPluginHelpers('search_criteria');
+    	/*
     	$result = DBUtil::getResultArray('Select h.pathname FROM plugin_helper h INNER JOIN plugins p ON (p.namespace = h.plugin) '
         	                           . 'WHERE p.disabled = 0 AND  h.classtype = "search_criteria"');
+        
     	if (PEAR::isError($result)) {
     		return;
     	}
+    	*/
 
-    	foreach ($result as $pluginSearchResult) {
+    	foreach ($helpers as $pluginSearchResult) {
             $fieldPath = KT_DIR . DIRECTORY_SEPARATOR . $pluginSearchResult['pathname'];
 
             // loop through those found and include from the plugin path
