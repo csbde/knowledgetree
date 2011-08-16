@@ -1,4 +1,4 @@
-<div class="activityfeed" style="border: 0px solid #000000" id="activityfeed_comments">
+	<div class="activityfeed" style="border: 0px solid #000000" id="activityfeed_comments">
 		<div class="activityfeed new-comment"></div>
 		{assign var='count' value='0'}
 		{foreach item=version from=$versions}
@@ -14,7 +14,7 @@
 		            	<span class="title"><a class="clearLink" href="{$version.document_link}" style="">{$version.document_name}</a></span>
 
 		                <br/>
-		                <span style="width: 0;height: 0;border-left: 10px solid transparent;border-right: 10px solid transparent;border-bottom: 13px solid #D6E6F0;top: 2px;position: relative;display: block;left: 15px;margin-top: 3px;"></span><span class="description" style="background: #D6E6F0; display:block; padding: 5px; border-radius: 3px; width: 75%;"><span class="user">{$version.name} </span><br>{$version.comment|sanitize|nl2br}</span>
+		                <span class="description"><span class="user">{$version.name} </span><br>{$version.comment|sanitize|nl2br}</span>
 		                <span class="date">{$version.datetime}</span>
 		            </div>
 		        </div>
@@ -22,7 +22,7 @@
 		    	<div class="activityfeed item {$version.type}">
 	                    <div class="doc icon" style="{$version.mimeicon}"></div>
 		            <div class="activityfeed-content">
-		                <span class="title"><a class="clearLink" href="{$version.document_link}" style="">{$version.document_name}</a><br/><br/></span>
+		                <span class="title"><a class="clearLink" href="{$version.document_link}" style="">{$version.document_name}</a><br/></span>
 		                <span class="user">{$version.name} </span>
 		                <span class="description">{$version.comment|sanitize|nl2br}</span>
 		                <span class="date">{$version.datetime}</span>
@@ -37,7 +37,7 @@
 	</div>
 	<br/>
     {if $commentsCount > $preloaded}
-    <div id="activityfeed-moreitems-{$preloaded}">
+		<div id="activityfeed-moreitems-{$preloaded}">
 		<span class=activityfeed-more>
 			<div><span class=activityfeed-more-text onclick="javascript: kt.app.activityFeed.fetchMore({$preloaded}, {$nextBatch});">more...</span></div>
 		</span>
