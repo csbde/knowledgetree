@@ -49,8 +49,7 @@ class BrowseableDashletPlugin extends KTPlugin {
     }
 
     function setup() {
-        $this->registerDashlet('BrowseableFolderDashlet', 'nbm.browseable.dashlet', 'BrowseableDashlet.php');
-
+		$this->registerAction('dashboardsidebar', 'BrowseableFolderSidebar', 'browseable.dashboard.sidebar', 'BrowseableSidebar.php');
         require_once(KT_LIB_DIR . "/templating/templating.inc.php");
         $oTemplating =& KTTemplating::getSingleton();
         $oTemplating->addLocation('browseabledashlet', '/plugins/browseabledashlet/templates');

@@ -42,9 +42,19 @@ class KTDashboardSidebar extends KTDashboardViewlet {
 	public $_sShowPermission = 'ktcore.permissions.read';
 	public $order = 1;
 	public $oUser;
+	public $title;
 
 	private $folderNamespaces 		= array(	'ktcore.sidebar.recent.folder');
 	private $documentNamespaces		= array(	'ktcore.sidebar.recent.document');
+
+	/**
+	 * Get the title of a sidebar item
+	 *
+	 */
+	public function getTitle()
+	{
+		return _kt($this->title);
+	}
 
 	/**
 	 * Get the class name of a sidebar item
@@ -121,7 +131,7 @@ class KTDashboardSidebar extends KTDashboardViewlet {
 			}
 		}
 
-//		$sidebars = array_merge($sidebars, $dashboardSidebars);
+		$sidebars = array_merge($sidebars, $dashboardSidebars);
 
 		return $sidebars;
 	}
@@ -133,6 +143,11 @@ class KTCheckoutSidebar extends KTDashboardSidebar {
 	public $order = 4;
 	public $bShowIfReadShared = true;
 	public $bShowIfWriteShared = true;
+
+	public function getTitle()
+	{
+		return _kt('My checked-out documents');
+	}
 
 	public function getCSSName()
 	{

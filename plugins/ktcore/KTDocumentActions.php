@@ -58,7 +58,7 @@ class KTDocumentDetailsAction extends KTDocumentAction {
     public $sName = 'ktcore.actions.document.displaydetails';
 
     function do_main() {
-    	redirect(KTUtil::kt_clean_document_url($this->oDocument->getId()));
+        redirect(KTUtil::kt_clean_document_url($this->oDocument->getId()));
 
         exit(0);
     }
@@ -353,9 +353,9 @@ class KTDocumentViewAction extends KTDocumentAction {
 
     public $sName = 'ktcore.actions.document.view';
     public $sIconClass = 'download';
-	public $bShowIfWriteShared = true;
-	public $bShowIfReadShared = true;
-	public $btnOrder = 1;
+    public $bShowIfWriteShared = true;
+    public $bShowIfReadShared = true;
+    public $btnOrder = 1;
 
     public function getDisplayName() {
         return _kt('Download');
@@ -381,7 +381,7 @@ class KTDocumentViewAction extends KTDocumentAction {
         $oDocumentTransaction = new DocumentTransaction($this->oDocument, _kt('Document downloaded'), 'ktcore.transactions.download', $aOptions);
         $oDocumentTransaction->create();
 
-		$oKTTriggerRegistry = KTTriggerRegistry::getSingleton();
+        $oKTTriggerRegistry = KTTriggerRegistry::getSingleton();
         $aTriggers = $oKTTriggerRegistry->getTriggers('download', 'postValidate');
         foreach ($aTriggers as $aTrigger) {
             $sTrigger = $aTrigger[0];
@@ -447,19 +447,19 @@ class KTDocumentDeleteAction extends JavascriptDocumentAction {
 
     function getOnClick()
     {
-    	$id = $this->oDocument->getId();
-    	$name = $this->oDocument->getName();
+        $id = $this->oDocument->getId();
+        $name = $this->oDocument->getName();
 
-		$name = str_replace("'", "&apos;", $name);
+        $name = str_replace("'", "&apos;", $name);
         $name = str_replace('"', '\"', $name);
 
         return "javascript:{kt.app.copy.doAction(\"delete\", $id, \"$name\");}";
     }
 
-	function getURL()
-	{
-		return '#';
-	}
+    function getURL()
+    {
+        return '#';
+    }
 
     function check() {
         $res = parent::check();
@@ -475,7 +475,7 @@ class KTDocumentDeleteAction extends JavascriptDocumentAction {
         return true;
     }
 
-	function form_confirm() {
+    function form_confirm() {
         $oForm = new KTForm;
         $oForm->setOptions(array(
             'description' => _kt('There are shortcuts linking to this document; deleting the document will automatically delete them. Would you like to continue?'),
@@ -523,7 +523,7 @@ class KTDocumentDeleteAction extends JavascriptDocumentAction {
         if ($getReason) {
             $widgets[] = array('ktcore.widgets.reason', array(
                     'label' => _kt('Note'),
-    			    'required' => ($default->enableESignatures) ? true : false,
+                    'required' => ($default->enableESignatures) ? true : false,
                     'name' => 'reason',
                 ));
             $validators[] = array('ktcore.validators.string', array(
@@ -553,9 +553,9 @@ class KTDocumentDeleteAction extends JavascriptDocumentAction {
     function do_main() {
         $this->oPage->setBreadcrumbDetails(_kt('Delete'));
 
-    	//check if we need confirmation for symblolic links linking to this document
-		if (count($this->oDocument->getSymbolicLinks())>0 && KTutil::arrayGet($_REQUEST,'postReceived') != 1) {
-        	$this->redirectTo("confirm");
+        //check if we need confirmation for symblolic links linking to this document
+        if (count($this->oDocument->getSymbolicLinks())>0 && KTutil::arrayGet($_REQUEST,'postReceived') != 1) {
+            $this->redirectTo("confirm");
         }
 
         $oTemplate =& $this->oValidator->validateTemplate('ktcore/action/delete');
@@ -569,10 +569,10 @@ class KTDocumentDeleteAction extends JavascriptDocumentAction {
     }
 
     function do_confirm() {
-    	$this->oPage->setBreadcrumbDetails(_kt('Confirm delete'));
-    	$oTemplate =& $this->oValidator->validateTemplate('ktcore/action/delete_confirm');
+        $this->oPage->setBreadcrumbDetails(_kt('Confirm delete'));
+        $oTemplate =& $this->oValidator->validateTemplate('ktcore/action/delete_confirm');
         $oForm = $this->form_confirm();
-    	$oTemplate->setData(array(
+        $oTemplate->setData(array(
             'context' => &$this,
             'form' => $oForm,
         ));
@@ -626,15 +626,15 @@ class KTDocumentMoveAction extends JavascriptDocumentAction {
 
     function getOnClick()
     {
-    	$id = $this->oDocument->getId();
-    	$parentFolderIds = $this->oDocument->getParentFolderIds();
+        $id = $this->oDocument->getId();
+        $parentFolderIds = $this->oDocument->getParentFolderIds();
         return "javascript:{kt.app.copy.doTreeAction(\"move\", $id, \"$parentFolderIds\");}";
     }
 
-	function getURL()
-	{
-		return '#';
-	}
+    function getURL()
+    {
+        return '#';
+    }
 
     function check() {
         $res = parent::check();
@@ -680,8 +680,8 @@ class KTDocumentMoveAction extends JavascriptDocumentAction {
 
         $widgets[] = array('ktcore.widgets.foldercollection', array(
                 'label' => _kt('Target Folder'),
-			    'required' => true,
-			    'name' => 'browse',
+                'required' => true,
+                'name' => 'browse',
                 'folder_id' => $this->oDocument->getFolderID()
         ));
 
@@ -708,7 +708,7 @@ class KTDocumentMoveAction extends JavascriptDocumentAction {
         if ($this->oConfig->get('actionreasons/globalReasons') || $default->enableESignatures) {
             $widgets[] = array('ktcore.widgets.reason', array(
                     'label' => _kt('Note'),
-    			    'required' => ($default->enableESignatures) ? true : false,
+                    'required' => ($default->enableESignatures) ? true : false,
                     'name' => 'reason',
             ));
         }
@@ -882,7 +882,8 @@ class KTDocumentCopyAction extends JavascriptDocumentAction {
         return _kt('Copy');
     }
 
-    function getInfo() {
+    function getInfo()
+    {
         if ($this->oDocument->getIsCheckedOut()) {
             return null;
         }
@@ -892,17 +893,18 @@ class KTDocumentCopyAction extends JavascriptDocumentAction {
 
     function getOnClick()
     {
-    	$id = $this->oDocument->getId();
-    	$parentFolderIds = $this->oDocument->getParentFolderIds();
+        $id = $this->oDocument->getId();
+        $parentFolderIds = $this->oDocument->getParentFolderIds();
         return "javascript:{kt.app.copy.doTreeAction(\"copy\", $id, \"$parentFolderIds\");}";
     }
 
-	function getURL()
-	{
-		return '#';
-	}
+    function getURL()
+    {
+        return '#';
+    }
 
-    function check() {
+    function check()
+    {
         $res = parent::check();
         if ($res !== true) {
             return $res;
@@ -921,7 +923,8 @@ class KTDocumentCopyAction extends JavascriptDocumentAction {
         return true;
     }
 
-    function form_copyselection() {
+    function form_copyselection()
+    {
         $oForm = new KTForm;
         $oForm->setOptions(array(
             'submit_label' => _kt('Copy'),
@@ -942,8 +945,8 @@ class KTDocumentCopyAction extends JavascriptDocumentAction {
         $widgets = array();
         $widgets[] = array('ktcore.widgets.foldercollection', array(
                 'label' => _kt('Target Folder'),
-			    'required' => false,
-			    'name' => 'browse',
+                'required' => false,
+                'name' => 'browse',
                 'folder_id' => $this->oDocument->getFolderID(),
             ));
 
@@ -970,7 +973,7 @@ class KTDocumentCopyAction extends JavascriptDocumentAction {
         if ($this->oConfig->get('actionreasons/globalReasons') || $default->enableESignatures) {
             $widgets[] = array('ktcore.widgets.reason', array(
                 'label' => _kt('Note'),
-				'required' => ($default->enableESignatures) ? true : false,
+                'required' => ($default->enableESignatures) ? true : false,
                 'name' => 'reason',
             ));
         }
@@ -1047,13 +1050,15 @@ class KTDocumentCopyAction extends JavascriptDocumentAction {
         return $oForm;
     }
 
-    function do_main() {
+    function do_main()
+    {
         $this->oPage->setBreadcrumbDetails(_kt('Copy'));
         $oForm = $this->form_copyselection();
         return $oForm->renderPage(_kt('Copy') . ': ' . $this->oDocument->getName());
     }
 
-    function do_copy() {
+    function do_copy()
+    {
         $oForm = $this->form_copyselection();
         $res = $oForm->validate();
         $errors = $res['errors'];
@@ -1066,7 +1071,8 @@ class KTDocumentCopyAction extends JavascriptDocumentAction {
             if ($bNameClash && isset($data['name'])) {
                 $name = $data['name'];
                 $bNameClash = KTDocumentUtil::nameExists($data['browse'], $name);
-            } else {
+            }
+            else {
                 $name = $this->oDocument->getName();
             }
 
@@ -1079,7 +1085,8 @@ class KTDocumentCopyAction extends JavascriptDocumentAction {
             if ($bFileClash && isset($data['filename'])) {
                 $filename = $data['filename'];
                 $bFileClash = KTDocumentUtil::fileExists($data['browse'], $filename);
-            } else {
+            }
+            else {
                 $filename = $this->oDocument->getFilename();
             }
 
@@ -1133,11 +1140,13 @@ class KTDocumentArchiveAction extends JavascriptDocumentAction {
     public $sIconClass = 'archive';
     public $sParentBtn = 'more';
 
-    function getDisplayName() {
+    function getDisplayName()
+    {
         return _kt('Archive');
     }
 
-    function getInfo() {
+    function getInfo()
+    {
         if ($this->oDocument->getIsCheckedOut()) {
             return null;
         }
@@ -1147,21 +1156,22 @@ class KTDocumentArchiveAction extends JavascriptDocumentAction {
 
     function getOnClick()
     {
-    	$id = $this->oDocument->getId();
-    	$name = $this->oDocument->getName();
+        $id = $this->oDocument->getId();
+        $name = $this->oDocument->getName();
 
-		$name = str_replace("'", "&apos;", $name);
+        $name = str_replace("'", "&apos;", $name);
         $name = str_replace('"', '\"', $name);
 
         return "javascript:{kt.app.copy.doAction(\"archive\", $id, \"$name\");}";
     }
 
-	function getURL()
-	{
-		return '#';
-	}
+    function getURL()
+    {
+        return '#';
+    }
 
-	function form_confirm() {
+    function form_confirm()
+    {
         $oForm = new KTForm;
         $oForm->setOptions(array(
             'description' => _kt('There are shortcuts linking to this document; archiving the document automatically will delete them. Would you like to continue?'),
@@ -1176,7 +1186,8 @@ class KTDocumentArchiveAction extends JavascriptDocumentAction {
         return $oForm;
     }
 
-    function form_main() {
+    function form_main()
+    {
         $oForm = new KTForm;
         $oForm->setOptions(array(
             'action' => 'archive',
@@ -1209,7 +1220,7 @@ class KTDocumentArchiveAction extends JavascriptDocumentAction {
         if ($this->oConfig->get('actionreasons/globalReasons') || $default->enableESignatures) {
             $widgets[] = array('ktcore.widgets.reason', array(
                     'label' => _kt('Note'),
-    			    'required' => ($default->enableESignatures) ? true : false,
+                    'required' => ($default->enableESignatures) ? true : false,
                     'name' => 'reason',
                 ));
         }
@@ -1240,10 +1251,11 @@ class KTDocumentArchiveAction extends JavascriptDocumentAction {
         return $oForm;
     }
 
-    function do_main() {
-		//if there are symbolic links linking to this document we need confirmation
-    	if (count($this->oDocument->getSymbolicLinks())>0 && KTutil::arrayGet($_REQUEST,'postReceived') != 1) {
-        	$this->redirectTo("confirm");
+    function do_main()
+    {
+        //if there are symbolic links linking to this document we need confirmation
+        if (count($this->oDocument->getSymbolicLinks())>0 && KTutil::arrayGet($_REQUEST,'postReceived') != 1) {
+            $this->redirectTo("confirm");
         }
         $this->oPage->setBreadcrumbDetails(_kt('Archive Document'));
         $oTemplate =& $this->oValidator->validateTemplate('ktcore/action/archive');
@@ -1258,11 +1270,12 @@ class KTDocumentArchiveAction extends JavascriptDocumentAction {
         return $oTemplate->render();
     }
 
-	function do_confirm() {
-    	$this->oPage->setBreadcrumbDetails(_kt('Confirm archive'));
-    	$oTemplate =& $this->oValidator->validateTemplate('ktcore/action/archive_confirm');
+    function do_confirm()
+    {
+        $this->oPage->setBreadcrumbDetails(_kt('Confirm archive'));
+        $oTemplate =& $this->oValidator->validateTemplate('ktcore/action/archive_confirm');
         $oForm = $this->form_confirm();
-    	$oTemplate->setData(array(
+        $oTemplate->setData(array(
             'context' => &$this,
             'form' => $oForm,
         ));
@@ -1270,7 +1283,8 @@ class KTDocumentArchiveAction extends JavascriptDocumentAction {
         return $oTemplate->render();
     }
 
-    function do_archive() {
+    function do_archive()
+    {
         $oForm = $this->form_main();
         $res = $oForm->validate();
         $data = $res['results'];
@@ -1296,26 +1310,30 @@ class KTDocumentArchiveAction extends JavascriptDocumentAction {
 }
 
 class KTAjaxDocumentWorkflowAction extends KTDocumentAction {
+
     public $sName = 'ktajax.actions.document.workflow';
     public $_sShowPermission = 'ktcore.permissions.read';
     public $sHelpPage = 'ktcore/user/workflow.html';
     public $sIconClass = 'manage-workflow';
     public $sParentBtn = 'more';
-	public $bShowIfWriteShared = true;
+    public $bShowIfWriteShared = true;
 
-    public function predispatch() {
+    public function predispatch()
+    {
         $this->persistParams(array('fTransitionId'));
     }
 
-    public function getDisplayName() {
-		return '';
+    public function getDisplayName()
+    {
+        return '';
     }
 
-    public function getInfo() {
-		return false;
+    public function getInfo()
+    {
+        return false;
     }
 
-	public function do_main()
+    public function do_main()
     {
         $oTemplate = $this->oValidator->validateTemplate('ktcore/workflow/blocks/documentWorkflowBlock');
         $oDocument = $this->oValidator->validateDocument($_REQUEST['fDocumentId']);
@@ -1344,9 +1362,9 @@ class KTAjaxDocumentWorkflowAction extends KTDocumentAction {
             if ($aTransitions) {
                 $aVocab = array();
                 foreach ($aTransitions as $oTransition) {
-                	if (is_null($oTransition) || PEAR::isError($oTransition)) {
-                		continue;
-                	}
+                    if (is_null($oTransition) || PEAR::isError($oTransition)) {
+                        continue;
+                    }
 
                     $aVocab[$oTransition->getId()] = $oTransition->showDescription();
                 }
@@ -1361,20 +1379,20 @@ class KTAjaxDocumentWorkflowAction extends KTDocumentAction {
         }
 
         // Add an electronic signature
-    	global $default;
-    	if ($default->enableESignatures) {
-    	    $sUrl = KTPluginUtil::getPluginPath('electronic.signatures.plugin', true);
-    	    $heading = _kt('You are attempting to modify the document workflow');
-    	    $submit['type'] = 'button';
-    	    $submit['onclick'] = "javascript: showSignatureForm('{$sUrl}', '{$heading}', 'ktcore.transactions.modify_workflow', 'document', 'start_workflow_form', 'submit', {$this->oDocument->iId});";
+        global $default;
+        if ($default->enableESignatures) {
+            $sUrl = KTPluginUtil::getPluginPath('electronic.signatures.plugin', true);
+            $heading = _kt('You are attempting to modify the document workflow');
+            $submit['type'] = 'button';
+            $submit['onclick'] = "javascript: showSignatureForm('{$sUrl}', '{$heading}', 'ktcore.transactions.modify_workflow', 'document', 'start_workflow_form', 'submit', {$this->oDocument->iId});";
 
-    	    $heading2 = _kt('You are attempting to transition the document workflow');
-    	    $submit2['onclick'] = "javascript: showSignatureForm('{$sUrl}', '{$heading2}', 'ktcore.transactions.transition_workflow', 'document', 'transition_wf_form', 'submit', {$this->oDocument->iId});";
-    	} else {
-    	    $submit['type'] = 'submit';
-    	    $submit['onclick'] = '';
-    	    $submit2['onclick'] = '';
-    	}
+            $heading2 = _kt('You are attempting to transition the document workflow');
+            $submit2['onclick'] = "javascript: showSignatureForm('{$sUrl}', '{$heading2}', 'ktcore.transactions.transition_workflow', 'document', 'transition_wf_form', 'submit', {$this->oDocument->iId});";
+        } else {
+            $submit['type'] = 'submit';
+            $submit['onclick'] = '';
+            $submit2['onclick'] = '';
+        }
 
         $aTemplateData = array(
             'oDocument' => $oDocument,
@@ -1390,10 +1408,11 @@ class KTAjaxDocumentWorkflowAction extends KTDocumentAction {
         );
 
         echo $oTemplate->render($aTemplateData);
-    	exit(0);
+        exit(0);
     }
 
-	public function do_startWorkflow() {
+    public function do_startWorkflow()
+    {
         if (!empty($_REQUEST['fWorkflowId'])) {
             $oWorkflow =& $this->oValidator->validateWorkflow($_REQUEST['fWorkflowId']);
         } else {
@@ -1409,12 +1428,14 @@ class KTAjaxDocumentWorkflowAction extends KTDocumentAction {
         $this->transitionWorkflow($message, false);
     }
 
-    public function do_performTransition() {
+    public function do_performTransition()
+    {
         $message = _kt('Transition performed');
         $this->transitionWorkflow($message);
     }
 
-    public function do_quicktransition() {
+    public function do_quicktransition()
+    {
         // make sure this gets through.
         $this->persistParams(array('fTransitionId'));
 
@@ -1425,33 +1446,35 @@ class KTAjaxDocumentWorkflowAction extends KTDocumentAction {
         $oTemplating = KTTemplating::getSingleton();
         $oTemplate = $oTemplating->loadTemplate('ktcore/workflow/blocks/quicktransition');
         $aTemplateData = array(
-        						'oTransition' => $oTransition,
-        						'oDocument' => $this->oDocument,
-        					);
+                                'oTransition' => $oTransition,
+                                'oDocument' => $this->oDocument,
+                            );
         echo $oTemplate->render($aTemplateData);
         exit(0);
     }
 
-    public function do_performquicktransition() {
+    public function do_performquicktransition()
+    {
         $message = _kt('Transition performed');
         $this->transitionWorkflow($message);
     }
 
     public function transitionWorkflow($message, $transition = true)
     {
-    	if ($transition) {
-    		$this->startTransaction();
-	    	$oTransition = $this->oValidator->validateWorkflowTransition($_REQUEST['fTransitionId']);
-	        $res = KTWorkflowUtil::performTransitionOnDocument($oTransition, $this->oDocument, $this->oUser, sanitizeForHTML($_REQUEST['fComments']));
-	        $this->commitTransaction();
-    	}
+        if ($transition) {
+            $this->startTransaction();
+            $oTransition = $this->oValidator->validateWorkflowTransition($_REQUEST['fTransitionId']);
+            $res = KTWorkflowUtil::performTransitionOnDocument($oTransition, $this->oDocument, $this->oUser, sanitizeForHTML($_REQUEST['fComments']));
+            $this->commitTransaction();
+        }
 
         if (!$this->userHasDocumentReadPermission($this->oDocument)) {
-        	$redirectUrl = KTUtil::ktLink('browse.php', '', 'fFolderId=' . $this->oDocument->getFolderID());
-        	$message .= '. ' . _kt('You no longer have permission to view this document');
-        	$response = array('success' => 1, 'permission' => 0, 'message' => $message, 'url' => $redirectUrl);
-        } else {
-        	$response = array('success' => 1, 'permission' => 1, 'message' => $message);
+            $redirectUrl = KTUtil::ktLink('browse.php', '', 'fFolderId=' . $this->oDocument->getFolderID());
+            $message .= '. ' . _kt('You no longer have permission to view this document');
+            $response = array('success' => 1, 'permission' => 0, 'message' => $message, 'url' => $redirectUrl);
+        }
+        else {
+            $response = array('success' => 1, 'permission' => 1, 'message' => $message);
         }
 
         echo json_encode($response);
@@ -1464,12 +1487,13 @@ class KTDocumentWorkflowAction extends JavascriptDocumentAction {
     public $sName = 'ktcore.actions.document.workflow';
     public $_sShowPermission = 'ktcore.permissions.read';
     public $sHelpPage = 'ktcore/user/workflow.html';
-	public $bShowIfReadShared = true;
-	public $bShowIfWriteShared = true;
+    public $bShowIfReadShared = true;
+    public $bShowIfWriteShared = true;
     public $sIconClass = 'manage-workflow';
     public $sParentBtn = 'more';
 
-    function predispatch() {
+    function predispatch()
+    {
         $this->persistParams(array('fTransitionId'));
     }
 
@@ -1482,17 +1506,18 @@ class KTDocumentWorkflowAction extends JavascriptDocumentAction {
         return _kt('Workflow');
     }
 
-	function getOnClick()
+    function getOnClick()
     {
         return "javascript:{workflows.displayAction();}";
     }
 
-	function getURL()
-	{
-		return '#';
-	}
+    function getURL()
+    {
+        return '#';
+    }
 
-    function getInfo() {
+    function getInfo()
+    {
         if ($this->oDocument->getIsCheckedOut()) {
             return null;
         }
@@ -1500,7 +1525,8 @@ class KTDocumentWorkflowAction extends JavascriptDocumentAction {
         return parent::getInfo();
     }
 
-    function do_main() {
+    function do_main()
+    {
         $this->oPage->setBreadcrumbDetails(_kt('workflow'));
         $oTemplate =& $this->oValidator->validateTemplate('ktcore/workflow/documentWorkflow');
         $oDocument =& $this->oValidator->validateDocument($_REQUEST['fDocumentId']);
@@ -1518,7 +1544,8 @@ class KTDocumentWorkflowAction extends JavascriptDocumentAction {
             $transition_fields = array();
             $bHasPerm = FALSE;
 
-        } else {
+        }
+        else {
             $aTransitions = KTWorkflowUtil::getTransitionsForDocumentUser($oDocument, $oUser);
 
             $aWorkflows = KTWorkflow::getList('start_state_id IS NOT NULL AND enabled = 1 ');
@@ -1534,9 +1561,9 @@ class KTDocumentWorkflowAction extends JavascriptDocumentAction {
             if ($aTransitions) {
                 $aVocab = array();
                 foreach ($aTransitions as $oTransition) {
-                	if (is_null($oTransition) || PEAR::isError($oTransition)) {
-                		continue;
-                	}
+                    if (is_null($oTransition) || PEAR::isError($oTransition)) {
+                        continue;
+                    }
 
                     $aVocab[$oTransition->getId()] = $oTransition->showDescription();
                 }
@@ -1551,20 +1578,20 @@ class KTDocumentWorkflowAction extends JavascriptDocumentAction {
         }
 
         // Add an electronic signature
-    	global $default;
-    	if ($default->enableESignatures) {
-    	    $sUrl = KTPluginUtil::getPluginPath('electronic.signatures.plugin', true);
-    	    $heading = _kt('You are attempting to modify the document workflow');
-    	    $submit['type'] = 'button';
-    	    $submit['onclick'] = "javascript: showSignatureForm('{$sUrl}', '{$heading}', 'ktcore.transactions.modify_workflow', 'document', 'start_workflow_form', 'submit', {$this->oDocument->iId});";
+        global $default;
+        if ($default->enableESignatures) {
+            $sUrl = KTPluginUtil::getPluginPath('electronic.signatures.plugin', true);
+            $heading = _kt('You are attempting to modify the document workflow');
+            $submit['type'] = 'button';
+            $submit['onclick'] = "javascript: showSignatureForm('{$sUrl}', '{$heading}', 'ktcore.transactions.modify_workflow', 'document', 'start_workflow_form', 'submit', {$this->oDocument->iId});";
 
-    	    $heading2 = _kt('You are attempting to transition the document workflow');
-    	    $submit2['onclick'] = "javascript: showSignatureForm('{$sUrl}', '{$heading2}', 'ktcore.transactions.transition_workflow', 'document', 'transition_wf_form', 'submit', {$this->oDocument->iId});";
-    	} else {
-    	    $submit['type'] = 'submit';
-    	    $submit['onclick'] = '';
-    	    $submit2['onclick'] = '';
-    	}
+            $heading2 = _kt('You are attempting to transition the document workflow');
+            $submit2['onclick'] = "javascript: showSignatureForm('{$sUrl}', '{$heading2}', 'ktcore.transactions.transition_workflow', 'document', 'transition_wf_form', 'submit', {$this->oDocument->iId});";
+        } else {
+            $submit['type'] = 'submit';
+            $submit['onclick'] = '';
+            $submit2['onclick'] = '';
+        }
 
         $aTemplateData = array(
             'oDocument' => $oDocument,
@@ -1582,12 +1609,14 @@ class KTDocumentWorkflowAction extends JavascriptDocumentAction {
         return $oTemplate->render($aTemplateData);
     }
 
-	function do_startWorkflow() {
-    	$method = KTUtil::arrayGet($_REQUEST, 'method');
+    function do_startWorkflow()
+    {
+        $method = KTUtil::arrayGet($_REQUEST, 'method');
         $oDocument =& $this->oValidator->validateDocument($_REQUEST['fDocumentId']);
         if (!empty($_REQUEST['fWorkflowId'])) {
             $oWorkflow =& $this->oValidator->validateWorkflow($_REQUEST['fWorkflowId']);
-        } else {
+        }
+        else {
             $oWorkflow = null;
         }
 
@@ -1600,7 +1629,8 @@ class KTDocumentWorkflowAction extends JavascriptDocumentAction {
         exit(0);
     }
 
-    function do_performTransition() {
+    function do_performTransition()
+    {
         $oDocument =& $this->oValidator->validateDocument($_REQUEST['fDocumentId']);
         $oTransition =& $this->oValidator->validateWorkflowTransition($_REQUEST['fTransitionId']);
 
@@ -1619,17 +1649,20 @@ class KTDocumentWorkflowAction extends JavascriptDocumentAction {
             $this->commitTransaction();
             $_SESSION['KTInfoMessage'][] = _kt('Transition performed') . '. ' . _kt('You no longer have permission to view this document');
             controllerRedirect('browse', sprintf('fFolderId=%d', $oDocument->getFolderId()));
-        } else {
+        }
+        else {
             $this->successRedirectToMain(_kt('Transition performed'),
             array('fDocumentId' => $oDocument->getId()));
         }
     }
 
-    function form_quicktransition() {
+    function form_quicktransition()
+    {
         $oForm = new KTForm;
         if ($this->oDocument->getIsCheckedOut()) {
             $this->addErrorMessage(_kt('The workflow cannot be changed while the document is checked out.'));
-        } else {
+        }
+        else {
             $oForm->setOptions(array(
                 'identifier' => 'ktcore.workflow.quicktransition',
                 'submit_label' => _kt('Perform Transition'),
@@ -1661,7 +1694,7 @@ class KTDocumentWorkflowAction extends JavascriptDocumentAction {
 
             $widgets[] = array('ktcore.widgets.reason', array(
                         'label' => _kt('Note'),
-		  			'required' => ($default->enableESignatures) ? true : false,
+                      'required' => ($default->enableESignatures) ? true : false,
                       'name' => 'reason',
                     ));
 
@@ -1690,7 +1723,8 @@ class KTDocumentWorkflowAction extends JavascriptDocumentAction {
         return $oForm;
     }
 
-    function do_quicktransition() {
+    function do_quicktransition()
+    {
         // make sure this gets through.
         $this->persistParams(array('fTransitionId'));
 
@@ -1701,7 +1735,8 @@ class KTDocumentWorkflowAction extends JavascriptDocumentAction {
         return $oForm->renderPage(sprintf(_kt('Perform Transition: %s'), $oTransition->getName()));
     }
 
-    function do_performquicktransition() {
+    function do_performquicktransition()
+    {
         $oForm = $this->form_quicktransition();
         $res = $oForm->validate();
 
@@ -1721,7 +1756,8 @@ class KTDocumentWorkflowAction extends JavascriptDocumentAction {
             $this->commitTransaction();
             $_SESSION['KTInfoMessage'][] = _kt('Transition performed') . '. ' . _kt('You no longer have permission to view this document');
             controllerRedirect('browse', sprintf('fFolderId=%d', $this->oDocument->getFolderId()));
-        } else {
+        }
+        else {
             $this->commitTransaction();
             $_SESSION['KTInfoMessage'][] = _kt('Transition performed');
             controllerRedirect('viewDocument', sprintf('fDocumentId=%d', $this->oDocument->getId()));
@@ -1738,38 +1774,39 @@ class KTOwnershipChangeAction extends JavascriptDocumentAction {
     public $sIconClass = 'ownership';
     public $sParentBtn = 'more';
 
-    function getDisplayName() {
+    function getDisplayName()
+    {
         return _kt('Change owner');
     }
 
-	function getInfo() {
-
-		// Set status to disabled if document is finalized
+    function getInfo()
+    {
+        // Set status to disabled if document is finalized
         if ($this->oDocument->getImmutable()) {
             $info = parent::getInfo();
-			$info['status'] = 'disabled';
-			return $info;
+            $info['status'] = 'disabled';
+            return $info;
         } else {
-			return parent::getInfo();
-		}
+            return parent::getInfo();
+        }
 
     }
 
     function getFunctionScript()
     {
-		return 'kt.app.document_actions.changeOwner(\'' . $this->oDocument->getId() . '\')';
+        return 'kt.app.document_actions.changeOwner(\'' . $this->oDocument->getId() . '\')';
     }
 
     function getOnClick()
     {
-    	$id = $this->oDocument->getId();
+        $id = $this->oDocument->getId();
         return "javascript:{kt.app.document_actions.changeOwner($id);}";
     }
 
-	function getURL()
-	{
-		return '#';
-	}
+    function getURL()
+    {
+        return '#';
+    }
 
     function form_owner() {
         $form = new KTForm;
@@ -1852,11 +1889,11 @@ class KTOwnershipChangeAction extends JavascriptDocumentAction {
 class KTDocumentPageUrlAction extends KTDocumentAction {
 
     public $sName = 'ktcore.actions.document.pageurl';
-	public $bShowIfWriteShared = true;
-	public $bShowIfReadShared = true;
-	public $btnOrder = 1;
-	public $sBtnPosition = 'links';
-	public $sIconClass = 'page-url';
+    public $bShowIfWriteShared = true;
+    public $bShowIfReadShared = true;
+    public $btnOrder = 1;
+    public $sBtnPosition = 'links';
+    public $sIconClass = 'page-url';
 
     function getDisplayName() {
         return _kt('Get page link');
@@ -1879,11 +1916,11 @@ class KTDocumentPageUrlAction extends KTDocumentAction {
 class KTDocumentDownloadUrlAction extends KTDocumentAction {
 
     public $sName = 'ktcore.actions.document.downloadurl';
-	public $bShowIfWriteShared = true;
-	public $bShowIfReadShared = true;
-	public $btnOrder = 2;
-	public $sBtnPosition = 'links';
-	public $sIconClass = 'download-url';
+    public $bShowIfWriteShared = true;
+    public $bShowIfReadShared = true;
+    public $btnOrder = 2;
+    public $sBtnPosition = 'links';
+    public $sIconClass = 'download-url';
 
     function getDisplayName() {
         return _kt('Get download link');
@@ -1906,38 +1943,44 @@ class KTDocumentDownloadUrlAction extends KTDocumentAction {
 class KTDocumentPreviewUrlAction extends KTDocumentAction {
 
     public $sName = 'ktcore.actions.document.previewurl';
-	public $bShowIfWriteShared = true;
-	public $bShowIfReadShared = true;
-	public $btnOrder = 3;
-	public $sBtnPosition = 'links';
-	public $sIconClass = 'preview-url';
+    public $bShowIfWriteShared = true;
+    public $bShowIfReadShared = true;
+    public $btnOrder = 3;
+    public $sBtnPosition = 'links';
+    public $sIconClass = 'preview-url';
 
-    function getDisplayName() {
+    public function getDisplayName()
+    {
         return _kt('Preview URL');
     }
 
-    function getInfo() {
+    public function getInfo()
+    {
         return null;
     }
 
-    function getURL() {
+    public function getURL()
+    {
         return '#';
     }
 
-    function getOnClick(){
+    public function getOnClick()
+    {
         $onclick = '';
         return $onclick;
     }
 
-    function do_main() {
+    public function do_main()
+    {
+
     }
 
 }
 
 class KTDocumentCheckOutDownloadAction extends KTDocumentCheckOutAction {
-	public $sName = 'ktcore.actions.document.checkoutdownload';
-	public $sIconClass = 'checkout';
-	public $sParentBtn = '';
+    public $sName = 'ktcore.actions.document.checkoutdownload';
+    public $sIconClass = 'checkout';
+    public $sParentBtn = '';
 
     function getDisplayName() {
         return _kt('Check-out');
@@ -1945,27 +1988,27 @@ class KTDocumentCheckOutDownloadAction extends KTDocumentCheckOutAction {
 
     function getFunctionScript()
     {
-		return 'kt.app.document_actions.checkout_actions(\'' . $this->oDocument->getId() . '\', \'checkoutdownload\')';
+        return 'kt.app.document_actions.checkout_actions(\'' . $this->oDocument->getId() . '\', \'checkoutdownload\')';
     }
 
     function customiseInfo($aInfo)
-	{
-		$js = '';
-		foreach($this->js_paths as $path)
-		{
-			$js .= "<script language=\"javascript\" src=\"$path\"></script>\n";
-		}
-		$js .= '<script language="javascript">'. "\n";
-		foreach($this->js as $js2)
-		{
-			$js .= $js2 . "\n";
-		}
-		$js .= $this->getScript() . '</script>'. "\n";
-		$js .= '<a onclick="' . $this->getScriptActivation() . '" href="#" id="checkoutdowload" class="button">' . $this->getDisplayName() . '</a>'. "\n";
-		$aInfo['js'] = $js;
+    {
+        $js = '';
+        foreach($this->js_paths as $path)
+        {
+            $js .= "<script language=\"javascript\" src=\"$path\"></script>\n";
+        }
+        $js .= '<script language="javascript">'. "\n";
+        foreach($this->js as $js2)
+        {
+            $js .= $js2 . "\n";
+        }
+        $js .= $this->getScript() . '</script>'. "\n";
+        $js .= '<a onclick="' . $this->getScriptActivation() . '" href="#" id="checkoutdowload" class="button">' . $this->getDisplayName() . '</a>'. "\n";
+        $aInfo['js'] = $js;
 
         return $aInfo;
-	}
+    }
 }
 
 class KTDocumentCheckOutAction extends JavascriptDocumentAction {
@@ -1975,9 +2018,9 @@ class KTDocumentCheckOutAction extends JavascriptDocumentAction {
     public $_bMutator = true;
     public $_bMutationAllowedByAdmin = false;
     public $sIconClass = 'checkout';
-	public $bShowIfWriteShared = true;
-	public $btnOrder = 2;
-	public $sParentBtn = 'ktcore.actions.document.checkoutdownload';
+    public $bShowIfWriteShared = true;
+    public $btnOrder = 2;
+    public $sParentBtn = 'ktcore.actions.document.checkoutdownload';
 
     function getDisplayName() {
         return _kt('Check-out Only (No Download)');
@@ -2001,7 +2044,7 @@ class KTDocumentCheckOutAction extends JavascriptDocumentAction {
 
     function getFunctionScript()
     {
-		return 'kt.app.document_actions.checkout_actions(\'' . $this->oDocument->getId() . '\', \'checkout\')';
+        return 'kt.app.document_actions.checkout_actions(\'' . $this->oDocument->getId() . '\', \'checkout\')';
     }
 
     function check() {
@@ -2025,24 +2068,24 @@ class KTDocumentCheckOutAction extends JavascriptDocumentAction {
         return true;
     }
 
-	function customiseInfo($aInfo)
-	{
-		$js = '';
-		foreach($this->js_paths as $path)
-		{
-			$js .= "<script language=\"javascript\" src=\"$path\"></script>\n";
-		}
-		$js .= '<script language="javascript">'. "\n";
-		foreach($this->js as $js2)
-		{
-			$js .= $js2 . "\n";
-		}
-		$js .= $this->getScript() . '</script>'. "\n";
-		$js .= '<a onclick="' . $this->getScriptActivation() . '" href="#" id="checkout">' . $this->getDisplayName() . '</a>'. "\n";
-		$aInfo['js'] = $js;
+    function customiseInfo($aInfo)
+    {
+        $js = '';
+        foreach($this->js_paths as $path)
+        {
+            $js .= "<script language=\"javascript\" src=\"$path\"></script>\n";
+        }
+        $js .= '<script language="javascript">'. "\n";
+        foreach($this->js as $js2)
+        {
+            $js .= $js2 . "\n";
+        }
+        $js .= $this->getScript() . '</script>'. "\n";
+        $js .= '<a onclick="' . $this->getScriptActivation() . '" href="#" id="checkout">' . $this->getDisplayName() . '</a>'. "\n";
+        $aInfo['js'] = $js;
 
         return $aInfo;
-	}
+    }
 }
 
 class KTDocumentCheckInAction extends JavascriptDocumentAction {
@@ -2050,8 +2093,8 @@ class KTDocumentCheckInAction extends JavascriptDocumentAction {
     public $sName = 'ktcore.actions.document.checkin';
     public $_sShowPermission = 'ktcore.permissions.write';
     public $sIconClass = 'checkin';
-	public $bShowIfWriteShared = true;
-	public $btnOrder = 2;
+    public $bShowIfWriteShared = true;
+    public $btnOrder = 2;
 
     function getDisplayName() {
         return _kt('Check-in');
@@ -2077,9 +2120,9 @@ class KTDocumentCheckInAction extends JavascriptDocumentAction {
         return $info;
     }
 
-	function getFunctionScript()
+    function getFunctionScript()
     {
-		return 'kt.app.document_actions.checkout_actions(\'' . $this->oDocument->getId() . '\', \'checkin\')';
+        return 'kt.app.document_actions.checkout_actions(\'' . $this->oDocument->getId() . '\', \'checkin\')';
     }
 
     function check() {
@@ -2114,39 +2157,39 @@ class KTDocumentCheckInAction extends JavascriptDocumentAction {
     }
 
     function customiseInfo($aInfo)
-	{
-		$js = '';
-		foreach($this->js_paths as $path)
-		{
-			$js .= "<script language=\"javascript\" src=\"$path\"></script>\n";
-		}
-		$js .= '<script language="javascript">'. "\n";
-		foreach($this->js as $js2)
-		{
-			$js .= $js2 . "\n";
-		}
-		$js .= $this->getScript() . '</script>'. "\n";
-		$js .= '<a onclick="' . $this->getScriptActivation() . '" href="#" id="checkin" class="button">' . $this->getDisplayName() . '</a>'. "\n";
-		$aInfo['js'] = $js;
+    {
+        $js = '';
+        foreach($this->js_paths as $path)
+        {
+            $js .= "<script language=\"javascript\" src=\"$path\"></script>\n";
+        }
+        $js .= '<script language="javascript">'. "\n";
+        foreach($this->js as $js2)
+        {
+            $js .= $js2 . "\n";
+        }
+        $js .= $this->getScript() . '</script>'. "\n";
+        $js .= '<a onclick="' . $this->getScriptActivation() . '" href="#" id="checkin" class="button">' . $this->getDisplayName() . '</a>'. "\n";
+        $aInfo['js'] = $js;
 
         return $aInfo;
-	}
+    }
 
-	function do_main() {
-		global $default;
-		$forceFilenameDescriptiveText= '';
+    function do_main() {
+        global $default;
+        $forceFilenameDescriptiveText= '';
 
         $oTemplate = $this->oValidator->validateTemplate('ktcore/action/checkin');
         // TODO : Find a better way
         $form_action = '/action.php?kt_path_info='.$this->sName.'&fDocumentId='.$this->oDocument->getId();
-		if ($default->disableForceFilenameOption) {
-			$fileDescriptiveText = sprintf(_kt('Please specify the file you wish to upload. The file must have the same name as the original: <b>%s</b>'), htmlentities($this->oDocument->getFilename(),ENT_QUOTES,'UTF-8'));
-		} else {
-			$fileDescriptiveText = sprintf(_kt('Please specify the file you wish to upload.  Unless you also indicate that you are changing its filename, this will need to be called <b>%s</b>'), htmlentities($this->oDocument->getFilename(),ENT_QUOTES,'UTF-8'));
-		}
+        if ($default->disableForceFilenameOption) {
+            $fileDescriptiveText = sprintf(_kt('Please specify the file you wish to upload. The file must have the same name as the original: <b>%s</b>'), htmlentities($this->oDocument->getFilename(),ENT_QUOTES,'UTF-8'));
+        } else {
+            $fileDescriptiveText = sprintf(_kt('Please specify the file you wish to upload.  Unless you also indicate that you are changing its filename, this will need to be called <b>%s</b>'), htmlentities($this->oDocument->getFilename(),ENT_QUOTES,'UTF-8'));
+        }
         // Add the "Force Original Filename" option if applicable
         if (!$default->disableForceFilenameOption) {
-        	$forceFilenameDescriptiveText = sprintf(_kt('If this is checked, the uploaded document must have the same filename as the original: <strong>%s</strong>'), htmlentities($this->oDocument->getFilename(),ENT_QUOTES,'UTF-8'));
+            $forceFilenameDescriptiveText = sprintf(_kt('If this is checked, the uploaded document must have the same filename as the original: <strong>%s</strong>'), htmlentities($this->oDocument->getFilename(),ENT_QUOTES,'UTF-8'));
         }
         $oTemplate->setData(array(
             'context' => &$this,
@@ -2163,10 +2206,10 @@ class KTDocumentCheckInAction extends JavascriptDocumentAction {
 
         echo $oTemplate->render();
         exit(0);
-	}
+    }
 
 /*
-	function form_main() {
+    function form_main() {
         global $default;
         $oForm = new KTForm;
         $oForm->setOptions(array(
@@ -2229,7 +2272,7 @@ class KTDocumentCheckInAction extends JavascriptDocumentAction {
         if ($this->oConfig->get('actionreasons/globalReasons') || $default->enableESignatures) {
             $aWidgets[] = array('ktcore.widgets.reason', array(
                     'label' => _kt('Note'),
-    				'required' => ($default->enableESignatures) ? true : false,
+                    'required' => ($default->enableESignatures) ? true : false,
                     'name' => 'reason',
                 ));
         }
@@ -2288,30 +2331,30 @@ class KTDocumentCheckInAction extends JavascriptDocumentAction {
     }*/
 
 
-	/****
-	 *
-	 * TOHIR WORKING OVER HERE!!
-	 *
-	 */
-	function do_checkin()
-	{
-		/*
-		require_once('FirePHPCore/FirePHP.class.php');
-		$firephp = FirePHP::getInstance(true);
-		$firephp->log('Doing checkin');
+    /****
+     *
+     * TOHIR WORKING OVER HERE!!
+     *
+     */
+    function do_checkin()
+    {
+        /*
+        require_once('FirePHPCore/FirePHP.class.php');
+        $firephp = FirePHP::getInstance(true);
+        $firephp->log('Doing checkin');
 
-		$firephp->log($_POST);
-		//$firephp->log($_FILES);
-		//$firephp->log($_REQUEST);
-		$firephp->log($this->oDocument->getFilename());
-		*/
+        $firephp->log($_POST);
+        //$firephp->log($_FILES);
+        //$firephp->log($_REQUEST);
+        $firephp->log($this->oDocument->getFilename());
+        */
 
-		// --- Checkin Here
-		$docFileName = $this->oDocument->getFilename();
-		$defaultCheckinMessage = _kt('Document Checked In.');
+        // --- Checkin Here
+        $docFileName = $this->oDocument->getFilename();
+        $defaultCheckinMessage = _kt('Document Checked In.');
         $sReason = $defaultCheckinMessage . (isset($_POST['reason']) ? "\n\n{$_POST['reason']}" : '');
 
-		$sCurrentFilename = $docFileName;
+        $sCurrentFilename = $docFileName;
         $sNewFilename = $_FILES['filename']['name'];
         $aOptions = array();
 
@@ -2324,8 +2367,8 @@ class KTDocumentCheckInAction extends JavascriptDocumentAction {
         }
 
 
-		//$firephp->log($_FILES['filename']['tmp_name']);
-		//$firephp->log('Exists: '.file_exists($_FILES['filename']['tmp_name']));
+        //$firephp->log($_FILES['filename']['tmp_name']);
+        //$firephp->log('Exists: '.file_exists($_FILES['filename']['tmp_name']));
 
 
         // document checkin for the new storage drivers requires the document to be first uploaded
@@ -2337,23 +2380,23 @@ class KTDocumentCheckInAction extends JavascriptDocumentAction {
 
         $_FILES['filename']['tmp_name'] = $sTempFilename;
 
-		$res = KTDocumentUtil::checkin($this->oDocument, $_FILES['filename']['tmp_name'], $sReason, $this->oUser, $aOptions);
+        $res = KTDocumentUtil::checkin($this->oDocument, $_FILES['filename']['tmp_name'], $sReason, $this->oUser, $aOptions);
 
-		// Show Results;
+        // Show Results;
         if (PEAR::isError($res)) {
-        	$GLOBALS['default']->log->error('Pear Error on Checkin: '.$res->getMessage());
-			echo '<script type="text/javascript">parent.postCheckinUpdate("error");</script>';
+            $GLOBALS['default']->log->error('Pear Error on Checkin: '.$res->getMessage());
+            echo '<script type="text/javascript">parent.postCheckinUpdate("error");</script>';
         } else {
-			echo '<script type="text/javascript">parent.postCheckinUpdate("success");</script>';
-		}
+            echo '<script type="text/javascript">parent.postCheckinUpdate("success");</script>';
+        }
 
-		exit();
-	}
+        exit();
+    }
 
-	/*
-	  END TOHIR
+    /*
+      END TOHIR
 
-	*/
+    */
 
 }
 
@@ -2363,28 +2406,33 @@ class KTDocumentCancelCheckOutAction extends JavascriptDocumentAction {
     public $_sShowPermission = 'ktcore.permissions.write';
     public $bAllowInAdminMode = true;
     public $bInAdminMode = null;
-	public $bShowIfWriteShared = true;
+    public $bShowIfWriteShared = true;
     public $sIconClass = 'cancel-checkout';
     public $sParentBtn = 'ktcore.actions.document.checkin';
 
-	public function do_reason() {
+	public function do_reason()
+	{
 		echo parent::do_reason();
 		exit(0);
 	}
 
-	public function getReasonDescriptiveText() {
-		return 'If you do not want to have this document be checked-out, click cancel checkout.';
-	}
-
-    public function getReasonAction() {
-    	return 'checkin';
+    public function getReasonDescriptiveText()
+    {
+        return 'If you do not want to have this document be checked-out, click cancel checkout.';
     }
 
-    public function getDisplayName() {
+    public function getReasonAction()
+    {
+        return 'checkin';
+    }
+
+    public function getDisplayName()
+    {
         return _kt('Cancel Check-out');
     }
 
-    public function _show() {
+    public function _show()
+    {
         $check = parent::_show();
         if($check === false) {
             return 'disabled';
@@ -2392,7 +2440,8 @@ class KTDocumentCancelCheckOutAction extends JavascriptDocumentAction {
         return $check;
     }
 
-    public function getInfo() {
+    public function getInfo()
+    {
         if (!$this->oDocument->getIsCheckedOut()) {
             return null;
         }
@@ -2414,9 +2463,9 @@ class KTDocumentCancelCheckOutAction extends JavascriptDocumentAction {
         return parent::getInfo();
     }
 
-	public function getFunctionScript()
+    public function getFunctionScript()
     {
-		return 'kt.app.document_actions.checkout_actions(\'' . $this->oDocument->getId() . '\', \'cancelcheckout\')';
+        return 'kt.app.document_actions.checkout_actions(\'' . $this->oDocument->getId() . '\', \'cancelcheckout\')';
     }
 
     public function check() {
@@ -2452,25 +2501,25 @@ class KTDocumentCancelCheckOutAction extends JavascriptDocumentAction {
         return true;
     }
 
-	public function customiseInfo($aInfo)
-	{
-		$js = '';
-		foreach($this->js_paths as $path)
-		{
-			$js .= "<script language=\"javascript\" src=\"$path\"></script>\n";
-		}
+    public function customiseInfo($aInfo)
+    {
+        $js = '';
+        foreach($this->js_paths as $path)
+        {
+            $js .= "<script language=\"javascript\" src=\"$path\"></script>\n";
+        }
 
-		$js .= '<script language="javascript">'. "\n";
-		foreach($this->js as $js2)
-		{
-			$js .= $js2 . "\n";
-		}
-		$js .= $this->getScript() . '</script>'. "\n";
-		$js .= '<a onclick="' . $this->getScriptActivation() . '" href="#" id="cancel-checkout">' . $this->getDisplayName() . '</a>'. "\n";
+        $js .= '<script language="javascript">'. "\n";
+        foreach($this->js as $js2)
+        {
+            $js .= $js2 . "\n";
+        }
+        $js .= $this->getScript() . '</script>'. "\n";
+        $js .= '<a onclick="' . $this->getScriptActivation() . '" href="#" id="cancel-checkout">' . $this->getDisplayName() . '</a>'. "\n";
 
-		$aInfo['js'] = $js;
+        $aInfo['js'] = $js;
 
         return $aInfo;
-	}
+    }
 }
 ?>

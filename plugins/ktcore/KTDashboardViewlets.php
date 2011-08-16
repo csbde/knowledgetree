@@ -54,13 +54,13 @@ class KTDashboardActivityFeedViewlet extends KTDashboardViewlet {
 
     public function __construct()
     {
-    	parent::__construct();
-    	$this->documentActivityFeedAction = new KTDocumentActivityFeedAction();
+        parent::__construct();
+        $this->documentActivityFeedAction = new KTDocumentActivityFeedAction();
     }
 
     public function getCSSName()
     {
-    	return 'activityfeed';
+        return 'activityfeed';
     }
 
     public function displayViewlet()
@@ -79,11 +79,11 @@ class KTDashboardActivityFeedViewlet extends KTDashboardViewlet {
         );
         $activityFeed = $this->documentActivityFeedAction->getActivityFeed($this->getAllTransactions($filter));
 
-        $comments = $this->documentActivityFeedAction->getAllComments();
+        $comments = $this->getAllComments();
         $activityFeed = array_merge($activityFeed, $comments);
         $activityFeed = $this->setMimeIcons($activityFeed);
 
-        usort($activityFeed, array($this, 'sortTable'));
+        usort($activityFeed, array($this->documentActivityFeedAction, 'sortTable'));
 
         $templating =& KTTemplating::getSingleton();
         $template = $templating->loadTemplate('ktcore/dashboard/viewlets/global_activity_feed');
@@ -113,7 +113,7 @@ class KTDashboardActivityFeedViewlet extends KTDashboardViewlet {
             documents D
             INNER JOIN document_metadata_version DMV ON DMV.id = D.metadata_version_id
             INNER JOIN document_content_version DCV ON DCV.id = DMV.content_version_id
-            {$this->documentActivityFeedAction->getPermissionsQuery()}
+            {$this->getPermissionsQuery()}
             DT.transaction_namespace != 'ktcore.transactions.view'
             {$this->buildFilterQuery($filter)}
             AND DT.document_id = D.id
@@ -122,7 +122,36 @@ class KTDashboardActivityFeedViewlet extends KTDashboardViewlet {
         return $this->documentActivityFeedAction->getTransactionResult(array($query, $permissionParams));
     }
 
-	private function buildFilterQuery($filter = array())
+    // FIXME Lots of duplication, see comments plugin.
+    public function getPermissionsQuery()
+    {
+        if ($this->inAdminMode()) {
+            return 'WHERE';
+        }
+        else {
+            $user = User::get($_SESSION['userID']);
+            $permission = KTPermission::getByName('ktcore.permissions.read');
+            $permId = $permission->getID();
+            $permissionDescriptors = KTPermissionUtil::getPermissionDescriptorsForUser($user);
+            $permissionDescriptors = empty($permissionDescriptors) ? -1 : implode(',', $permissionDescriptors);
+
+            $query = "INNER JOIN permission_lookups AS PL ON D.permission_lookup_id = PL.id
+                INNER JOIN permission_lookup_assignments AS PLA ON PL.id = PLA.permission_lookup_id
+                AND PLA.permission_id = $permId
+                WHERE PLA.permission_descriptor_id IN ($permissionDescriptors) AND";
+
+            return $query;
+        }
+    }
+
+    private function inAdminMode()
+    {
+        return isset($_SESSION['adminmode'])
+            && ((int)$_SESSION['adminmode'])
+            && Permission::adminIsInAdminMode();
+    }
+
+    private function buildFilterQuery($filter = array())
     {
         $filterQuery = '';
 
@@ -136,7 +165,23 @@ class KTDashboardActivityFeedViewlet extends KTDashboardViewlet {
         return $filterQuery;
     }
 
-	private function setMimeIcons($activityFeed)
+    public function getAllComments()
+    {
+        $comments = array();
+
+        try {
+            $comments = $this->documentActivityFeedAction->formatCommentsResult(Comments::getAllComments());
+        }
+        catch (Exception $e) {
+            global $default;
+            $default->log->error('Error getting the comments - ' . $e->getMessage());
+            $comments = array();
+        }
+
+        return $comments;
+    }
+
+    private function setMimeIcons($activityFeed)
     {
         foreach ($activityFeed as $key => $item) {
             $iconFile = 'resources/mimetypes/newui/' . KTMime::getIconPath($item['mime_id']) . '.png';
@@ -156,18 +201,19 @@ class KTDashboardActivityFeedViewlet extends KTDashboardViewlet {
 
         return $activityFeed;
     }
+
 }
 
-class KTGraphicalAnalyticsViewlet extends KTDashboardViewlet
-{
+class KTGraphicalAnalyticsViewlet extends KTDashboardViewlet {
+
     public $sName = 'ktcore.viewlet.dashboard.analytics';
     public $bShowIfReadShared = true;
     public $bShowIfWriteShared = true;
-	public $order = 1;
+    public $order = 1;
 
     public function getCSSName()
     {
-    	return 'graphicalanalytics';
+        return 'graphicalanalytics';
     }
 
 	public function displayViewlet()
@@ -189,6 +235,8 @@ class KTGraphicalAnalyticsViewlet extends KTDashboardViewlet
         $template = $templating->loadTemplate('ktcore/dashboard/viewlets/graphical_analytics');
 
         return $template->render($templateData);
-	}
+    }
+
 }
+
 ?>

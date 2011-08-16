@@ -75,8 +75,8 @@ class DashboardDispatcher extends KTStandardDispatcher {
         // retrieve action items for the user.
         // FIXME what is the userid?
 
-        $oDashletRegistry =& KTDashletRegistry::getSingleton();
-        $aDashlets = $oDashletRegistry->getDashlets($this->oUser);
+        $dashletRegistry =& KTDashletRegistry::getSingleton();
+        $dashlets = $dashletRegistry->getDashlets($this->oUser);
 
         $this->sSection = 'dashboard';
         $this->oPage->showDashboardBtn = true;
@@ -85,20 +85,20 @@ class DashboardDispatcher extends KTStandardDispatcher {
         // simplistic improvement over the standard rendering:  float half left
         // and half right.  +Involves no JS -can leave lots of white-space at the bottom.
 
-        $aDashletsLeft = array();
-        $aDashletsRight = array();
+        $dashletsLeft = array();
+        $dashletsRight = array();
 
         $i = 0;
-        foreach ($aDashlets as $oDashlet) {
-            if ((strpos(strtolower($oDashlet->sTitle), 'welcome to knowledgetree') !== false) && !empty($aDashletsLeft)) {
-                array_unshift($aDashletsLeft, $oDashlet);
+        foreach ($dashlets as $dashlet) {
+            if ((strpos(strtolower($dashlet->sTitle), 'welcome to knowledgetree') !== false) && !empty($dashletsLeft)) {
+                array_unshift($dashletsLeft, $dashlet);
             }
             else {
                 if ($i == 0) {
-                    $aDashletsLeft[] = $oDashlet;
+                    $dashletsLeft[] = $dashlet;
                 }
                 else {
-                    $aDashletsRight[] = $oDashlet;
+                    $dashletsRight[] = $dashlet;
                 }
             }
 
@@ -112,14 +112,14 @@ class DashboardDispatcher extends KTStandardDispatcher {
         $this->oUser->refreshDashboadState();
 
         // dashboard
-        $sDashboardState = $this->oUser->getDashboardState();
+        $dashboardState = $this->oUser->getDashboardState();
         $dashboardJavascript = 'var savedState = ';
-        if ($sDashboardState == null) {
+        if ($dashboardState == null) {
             $dashboardJavascript .= 'false';
-            $sDashboardState = false;
+            $dashboardState = false;
         }
         else {
-            $dashboardJavascript .= $sDashboardState;
+            $dashboardJavascript .= $dashboardState;
         }
 
         $dashboardJavascript .= ';';
@@ -138,17 +138,17 @@ class DashboardDispatcher extends KTStandardDispatcher {
             unset($_SESSION['isFirstLogin']);
         }
 
-        $sidebars = KTDashboardActionUtil::getActionsForDashboard($this->oUser, 'maindashsidebar');
-		$dashboardViewlets = KTDashboardActionUtil::getAllDashboardActions('dashboardviewlet');
-		$orderedKeys = KTDashboardActionUtil::sortActions($dashboardViewlets);
+        $sidebars = KTDashboardActionUtil::getActionForDashboard($this->oUser, 'maindashsidebar');
+        $dashboardViewlets = KTDashboardActionUtil::getAllDashboardActions('dashboardviewlet');
+        $orderedKeys = KTDashboardActionUtil::sortActions($dashboardViewlets);
 
         // render
         $templating =& KTTemplating::getSingleton();
         $template = $templating->loadTemplate('kt3/dashboard');
         $templateData = array(
               'context' => $this,
-              'dashlets_left' => $aDashletsLeft,
-              'dashlets_right' => $aDashletsRight,
+              'dashlets_left' => $dashletsLeft,
+              'dashlets_right' => $dashletsRight,
               'ktOlarkPopup' => $ktOlarkPopup,
               'dashboardViewlets' => $orderedKeys['ordered'],
               'keys' => $orderedKeys['keys'],
@@ -156,7 +156,8 @@ class DashboardDispatcher extends KTStandardDispatcher {
         );
 
         // TODO : Is this ok?
-        if (file_exists(KT_DIR . DIRECTORY_SEPARATOR . 'var' . DIRECTORY_SEPARATOR . 'bin' . DIRECTORY_SEPARATOR . 'firstlogin.lock')) {
+        $ds = DIRECTORY_SEPARATOR;
+        if (file_exists(KT_DIR . $ds . 'var' . $ds . 'bin' . $ds . 'firstlogin.lock')) {
             $this->runFirstLoginWizard($template, $templateData);
         }
 
@@ -174,9 +175,9 @@ class DashboardDispatcher extends KTStandardDispatcher {
 
     // return some kind of ID for each dashlet
     // currently uses the class name
-    public function _getDashletId($oDashlet)
+    public function _getDashletId($dashlet)
     {
-        return get_class($oDashlet);
+        return get_class($dashlet);
     }
 
     // disable a dashlet.
