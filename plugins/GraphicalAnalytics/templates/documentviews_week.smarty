@@ -55,7 +55,7 @@
             tooltip: {
                 formatter: function() {
                     return ''+
-                         this.series.name +': '+ this.y +' ..';
+                         this.series.name +': '+ this.y;
                 }
             },
             plotOptions: {
