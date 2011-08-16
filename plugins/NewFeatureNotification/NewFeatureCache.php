@@ -50,13 +50,17 @@ class NewFeatureCache {
 	public static function getCached($userId, $type)
 	{
 		$key = ACCOUNT_NAME . '_' . $userId . '_' . $type .'_features';
-		return unserialize(self::$memcache->get($key));
+		$data = self::$memcache->get($key);
+
+		return unserialize($data);
 	}
 
 	public static function saveToCache($features, $userId, $type)
 	{
 		$key = ACCOUNT_NAME . '_' . $userId . '_' . $type .'_features';
-		return self::$memcache->set($key, serialize($features));
+		$data = serialize($features);
+
+		return self::$memcache->set($key, $data);
 	}
 
 	public static function saveVersion($userId, $version)

@@ -50,6 +50,7 @@ class NewFeatures {
 	public function getUsersNewFeatures($location)
 	{
 		global $default;
+		$unseenFeatures = array();
 		$userId = $_SESSION['userID'];
 
 		NewFeatureCache::init();
@@ -62,16 +63,20 @@ class NewFeatures {
 		if($cachedVersion == $ktVersion) {
 			$features = NewFeatureCache::getCached($userId, 'all');
 			$seenFeatures = NewFeatureCache::getCached($userId, 'seen');
+			$unseenFeatures = $this->unSeenFeatures($features, $seenFeatures);
+			$updatedSeen = array_merge($seenFeatures, $unseenFeatures);
+			NewFeatureCache::saveToCache($updatedSeen, $userId, 'seen');
 		}
 		else {
+			// Get new features for user.
 			$features = $this->getFeatures($userId, $section, $isAdmin, $ktVersion);
 			$seenFeatures = $this->seenFeatures($features);
+			$unseenFeatures = $this->unSeenFeatures($features, $seenFeatures);
+			// Cache results.
 			NewFeatureCache::saveToCache($features, $userId, 'all');
-			NewFeatureCache::saveToCache($seenFeatures, $userId, 'seen');
+			NewFeatureCache::saveToCache($unseenFeatures, $userId, 'seen');
 			NewFeatureCache::saveVersion($userId, $ktVersion);
 		}
-
-		$unseenFeatures = $this->unSeenFeatures($features, $seenFeatures);
 		$this->saveSeenFeatures($unseenFeatures);
 
 		return $unseenFeatures;
@@ -115,9 +120,7 @@ class NewFeatures {
 
 	private function seenFeatures($features)
 	{
-		if (empty($features)) {
-			return array();
-		}
+		if (empty($features)) { return array(); }
 		$userId = $_SESSION['userID'];
 		$query = 'SELECT * FROM ' . $this->users_table . ' WHERE user_id = \'' . $userId .'\' AND message_id ';
 		$i = 1;
@@ -155,7 +158,9 @@ class NewFeatures {
 
 			foreach ($seenFeatures as $seenFeature)
 			{
-				$seenIds[] = $seenFeature['message_id'];
+				// Because we cache the results, it might be of two diffent queries.
+				// Check both the seen and unseen results.
+				$seenIds[] = isset($seenFeature['message_id']) ? $seenFeature['message_id'] : $seenFeature['mid'];
 			}
 
 			$counter = 0;
