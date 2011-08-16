@@ -62,8 +62,8 @@ class KTDashboardAction extends KTStandardDispatcher {
         return true;
     }
 
-	public function getInfo()
-	{
+    public function getInfo()
+    {
         $check = $this->_show();
         if ($check === false) {
             $check = 'disabled';
@@ -130,12 +130,12 @@ class KTDashboardActionUtil {
             $objects[] = new $className($user, $plugin);
         }
 
-		return $objects;
+        return $objects;
     }
 
     public static function getActionForDashboard($user, $slot = 'dashboardsidebar')
     {
-    	$objects = KTDashboardActionUtil::getActionsForDashboard($user, $slot);
+        $objects = KTDashboardActionUtil::getActionsForDashboard($user, $slot);
         if (count($objects) == 1) {
             return $objects[0];
         }

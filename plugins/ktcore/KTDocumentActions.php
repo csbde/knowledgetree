@@ -878,7 +878,8 @@ class KTDocumentCopyAction extends JavascriptDocumentAction {
     public $sIconClass = 'copy';
     public $sParentBtn = 'more';
 
-    function getDisplayName() {
+    function getDisplayName()
+    {
         return _kt('Copy');
     }
 
@@ -2410,11 +2411,11 @@ class KTDocumentCancelCheckOutAction extends JavascriptDocumentAction {
     public $sIconClass = 'cancel-checkout';
     public $sParentBtn = 'ktcore.actions.document.checkin';
 
-	public function do_reason()
-	{
-		echo parent::do_reason();
-		exit(0);
-	}
+    public function do_reason()
+    {
+        echo parent::do_reason();
+        exit(0);
+    }
 
     public function getReasonDescriptiveText()
     {
