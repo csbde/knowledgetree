@@ -29,7 +29,7 @@
             tooltip: {
                 formatter: function() {
                     return this.y +' Documents';
-                        //this.series.name +': '+ this.y +' ..';
+                        //this.series.name +': '+ this.y;
                 }
             },
             plotOptions: {
