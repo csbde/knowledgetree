@@ -47,31 +47,31 @@ class NewFeatureCache {
 		return self::$memcache;
 	}
 
-	public static function getCached($userId, $type)
+	public static function getCached($userId, $type, $section)
 	{
-		$key = ACCOUNT_NAME . '_' . $userId . '_' . $type .'_features';
+		$key = ACCOUNT_NAME . '_' . $userId . '_' . $type . '_' . $section;
 		$data = self::$memcache->get($key);
 
 		return unserialize($data);
 	}
 
-	public static function saveToCache($features, $userId, $type)
+	public static function saveToCache($content, $userId, $type, $section)
 	{
-		$key = ACCOUNT_NAME . '_' . $userId . '_' . $type .'_features';
-		$data = serialize($features);
+		$key = ACCOUNT_NAME . '_' . $userId . '_' . $type . '_' . $section;
+		$data = serialize($content);
 
 		return self::$memcache->set($key, $data);
 	}
 
 	public static function saveVersion($userId, $version)
 	{
-		$key = ACCOUNT_NAME . '_' . $userId . '_features';
+		$key = ACCOUNT_NAME . '_' . $userId . '_';
 		return self::$memcache->set($key, $version);
 	}
 
 	public static function getCachedVersion($userId)
 	{
-		$key = ACCOUNT_NAME . '_' . $userId . '_features';
+		$key = ACCOUNT_NAME . '_' . $userId;
 		return self::$memcache->get($key);
 	}
 }

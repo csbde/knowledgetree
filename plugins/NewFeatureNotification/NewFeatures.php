@@ -61,11 +61,11 @@ class NewFeatures {
 		$cachedVersion = NewFeatureCache::getCachedVersion($userId);
 
 		if($cachedVersion == $ktVersion) {
-			$features = NewFeatureCache::getCached($userId, 'all');
-			$seenFeatures = NewFeatureCache::getCached($userId, 'seen');
+			$features = NewFeatureCache::getCached($userId, 'all', $section);
+			$seenFeatures = NewFeatureCache::getCached($userId, 'seen', $section);
 			$unseenFeatures = $this->unSeenFeatures($features, $seenFeatures);
 			$updatedSeen = array_merge($seenFeatures, $unseenFeatures);
-			NewFeatureCache::saveToCache($updatedSeen, $userId, 'seen');
+			NewFeatureCache::saveToCache($updatedSeen, $userId, 'seen', $section);
 		}
 		else {
 			// Get new features for user.
@@ -73,8 +73,8 @@ class NewFeatures {
 			$seenFeatures = $this->seenFeatures($features);
 			$unseenFeatures = $this->unSeenFeatures($features, $seenFeatures);
 			// Cache results.
-			NewFeatureCache::saveToCache($features, $userId, 'all');
-			NewFeatureCache::saveToCache($unseenFeatures, $userId, 'seen');
+			NewFeatureCache::saveToCache($features, $userId, 'all', $section);
+			NewFeatureCache::saveToCache($unseenFeatures, $userId, 'seen', $section);
 			NewFeatureCache::saveVersion($userId, $ktVersion);
 		}
 		$this->saveSeenFeatures($unseenFeatures);
