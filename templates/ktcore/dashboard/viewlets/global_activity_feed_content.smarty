@@ -39,7 +39,7 @@
     {if $commentsCount > $preloaded}
     <div id="activityfeed-moreitems-{$preloaded}">
 		<span class=activityfeed-more>
-			<div><span class=activityfeed-more-text onclick="javascript: kt.app.activityFeed.toggleMore();">more...</span></div>
+			<div><span class=activityfeed-more-text onclick="javascript: kt.app.activityFeed.fetchMore({$preloaded}, {$nextBatch});">more...</span></div>
 		</span>
     </div>
     {/if}
