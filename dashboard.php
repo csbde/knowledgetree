@@ -49,6 +49,7 @@ require_once(KT_LIB_DIR . '/templating/kt3template.inc.php');
 require_once(KT_LIB_DIR . '/dispatcher.inc.php');
 require_once(KT_LIB_DIR . '/dashboard/DashletDisables.inc.php');
 require_once(KT_LIB_DIR . '/foldermanagement/Folder.inc');
+require_once(KT_LIB_DIR . '/actions/actionsutil.inc.php');
 require_once(KT_LIB_DIR . '/actions/dashboardaction.inc.php');
 
 $sectionName = 'dashboard';
@@ -140,7 +141,7 @@ class DashboardDispatcher extends KTStandardDispatcher {
 
         $sidebars = KTDashboardActionUtil::getActionForDashboard($this->oUser, 'maindashsidebar');
         $dashboardViewlets = KTDashboardActionUtil::getAllDashboardActions('dashboardviewlet');
-        $orderedKeys = KTDashboardActionUtil::sortActions($dashboardViewlets);
+        $orderedKeys = ActionsUtil::sortActions($dashboardViewlets);
 
         // render
         $templating =& KTTemplating::getSingleton();
