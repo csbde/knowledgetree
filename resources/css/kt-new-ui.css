@@ -2083,12 +2083,12 @@ td.line { word-break: break-word; overflow: hidden; width: 100%;}
 }
 .graph-viewlet .activityfeed.item.comment .description {
 	background: #D6E6F0;
-	display: block;
+	display: inline-block;
 	padding: 10px;
 	border-radius: 3px;
 	-webkit-border-radius: 3px;
 	-moz-border-radius: 3px;
-	width: 75%;
+	width: 350px !important;
 	margin-top: -5px;
 	position: relative;
 }
@@ -2113,8 +2113,17 @@ td.line { word-break: break-word; overflow: hidden; width: 100%;}
 .graph-viewlet .activityfeed .icon {
 	border: none!important;
 }
+.graph-viewlet .activityfeed.comment .user {
+	display: block;
+} 
+.graph-viewlet .activityfeed .date {
+	float: right;
+	padding-right: 20px;
+}
 .graph-viewlet .activityfeed-content {
 	margin-left: 50px!important;
+	width: 655px !important;
+	min-height: 30px !important
 }
 
 /*like */
