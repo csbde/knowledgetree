@@ -43,6 +43,8 @@ require_once(KT_LIB_DIR . '/browse/browseutil.inc.php');
 require_once(KT_LIB_DIR . '/foldermanagement/folderutil.inc.php');
 require_once(KT_LIB_DIR . '/roles/Role.inc');
 
+include_once(KT_LIB_DIR . '/permissions/BackgroundPermissions.php');
+
 class KTFolderPermissionsAction extends KTFolderAction {
 
     public $sName = 'ktcore.actions.folder.permissions';
@@ -138,22 +140,32 @@ class KTFolderPermissionsAction extends KTFolderAction {
 
         asort($roles);
 
-        $bEdit = KTPermissionUtil::userHasPermissionOnItem($this->oUser, $this->_sEditShowPermission, $this->oFolder);
-        if (KTBrowseUtil::inAdminMode($this->oUser, $this->oFolder)) {
-            $bEdit = true;
-        }
-
-        $sInherited = '';
-        $oInherited = KTPermissionUtil::findRootObjectForPermissionObject($permissionObject);
+        $inheritedFolderPath = '';
+        $allowInherit = false;
+        
         // This is fine, since a folder can only inherit permissions from a folder.
-        if ($oInherited->getId() !== $this->oFolder->getId()) {
-            $iInheritedFolderId = $oInherited->getId();
-            $sInherited = join(' > ', $oInherited->getPathArray());
+        $inheritedFolder = KTPermissionUtil::findRootObjectForPermissionObject($permissionObject);
+        $inheritedFolderId = $inheritedFolder->getId();
+        $folderId = $this->oFolder->getId();
+        
+        if ($inheritedFolderId !== $folderId) {
+        	$allowInherit = true;
+        	$inheritedFolderPath = join(' &raquo; ', $inheritedFolder->getPathArray());
         }
-        // only allow inheritance if not inherited, -and- folders is editable
-        $bInheritable = $bEdit && ($oInherited->getId() !== $this->oFolder->getId());
-        // only allow edit if the folder is editable.
-        $bEdit = $bEdit && ($oInherited->getId() == $this->oFolder->getId());
+        
+        $allowEdit = KTPermissionUtil::userHasPermissionOnItem($this->oUser, $this->_sEditShowPermission, $this->oFolder);
+        if (KTBrowseUtil::inAdminMode($this->oUser, $this->oFolder)) {
+            $allowEdit = true;
+        }
+        
+        $isUpdateInProgress = $this->checkIfBackgrounded($inheritedFolderId);
+
+        if ($allowEdit && !$isUpdateInProgress) {
+	        $allowEdit = !$allowInherit;
+        } else {
+        	$allowEdit = false;
+        	$allowInherit = false;
+        }
 
         $aConditions = array();
         $aDynConditions = KTPermissionDynamicCondition::getByPermissionObject($permissionObject);
@@ -181,7 +193,7 @@ class KTFolderPermissionsAction extends KTFolderAction {
             $aInfo['perms'] = $perms;
             $aConditions[] = $aInfo;
         }
-
+        
         $templateData = array(
             'context' => $this,
             'permissions' => $aPermissions,
@@ -192,9 +204,10 @@ class KTFolderPermissionsAction extends KTFolderAction {
             'aMapPermissionGroup' => $aMapPermissionGroup,
             'aMapPermissionRole' => $aMapPermissionRole,
             'aMapPermissionUser' => $aMapPermissionUser,
-            'edit' => $bEdit,
-            'inheritable' => $bInheritable,
-            'inherited' => $sInherited,
+            'edit' => $allowEdit,
+            'inheritable' => $allowInherit,
+            'inherited' => $inheritedFolderPath,
+            'isUpdateInProgress' => $isUpdateInProgress,
             'conditions' => $aConditions,
         );
 
@@ -269,103 +282,130 @@ class KTFolderPermissionsAction extends KTFolderAction {
         return $template->render($templateData);
     }
 
-    function _copyPermissions() {
-        $oTransaction = KTFolderTransaction::createFromArray(array(
-            'folderid' => $this->oFolder->getId(),
+    function _copyPermissions() 
+    {
+        $folderId = $this->oFolder->getId();
+        $parentFolderId = $this->oFolder->getParentID();
+        
+        $transaction = KTFolderTransaction::createFromArray(array(
+            'folderid' => $folderId,
             'comment' => _kt('Override permissions from parent'),
             'transactionNS' => 'ktcore.transactions.permissions_change',
             'userid' => $_SESSION['userID'],
             'ip' => Session::getClientIP(),
-            'parentid' => $this->oFolder->getParentID(),
+            'parentid' => $parentFolderId,
         ));
 
-        $aOptions = array(
+        $options = array(
             'defaultmessage' => _kt('Error updating permissions'),
-            'redirect_to' => array('edit', sprintf('fFolderId=%d', $this->oFolder->getId())),
+            'redirect_to' => array('edit', sprintf('fFolderId=%d', $folderId)),
         );
 
-        $this->oValidator->notErrorFalse($oTransaction, $aOptions);
+        $this->oValidator->notErrorFalse($transaction, $options);
 
         return KTPermissionUtil::copyPermissionObject($this->oFolder);
     }
 
     function do_edit() {
         $this->oPage->setBreadcrumbDetails(_kt('Viewing Permissions'));
-        $iFolderId = $this->oFolder->getId();
+        
+        $folderId = $this->oFolder->getId();
         $permissionObject = KTPermissionObject::get($this->oFolder->getPermissionObjectId());
-        $aOptions = array('redirect_to' => array('main', 'fFolderId=' .  $iFolderId));
+        $options = array('redirect_to' => array('main', 'fFolderId=' .  $folderId));
 
         if (!KTBrowseUtil::inAdminMode($this->oUser, $this->oFolder)) {
-            $this->oValidator->userHasPermissionOnItem($this->oUser, $this->_sEditShowPermission, $this->oFolder, $aOptions);
+            $this->oValidator->userHasPermissionOnItem($this->oUser, $this->_sEditShowPermission, $this->oFolder, $options);
         }
 
         // copy permissions if they were inherited
-        $oInherited = KTPermissionUtil::findRootObjectForPermissionObject($permissionObject);
-        if ($oInherited->getId() !== $iFolderId) {
+        $inheritedFolderObject = KTPermissionUtil::findRootObjectForPermissionObject($permissionObject);
+        $inheritedFolderId = $inheritedFolderObject->getId();
+        if ($inheritedFolderId !== $folderId) {
             $override = KTUtil::arrayGet($_REQUEST, 'override', false);
             if (empty($override)) {
-                $this->errorRedirectToMain(_kt('This folder does not override its permissions'), sprintf('fFolderId=%d', $iFolderId));
+                $this->errorRedirectToMain(_kt('This folder does not define its own permissions'), sprintf('fFolderId=%d', $folderId));
             }
 
             $this->startTransaction();
 
             if ($this->_copyPermissions() === false) {
                 $this->rollbackTransaction();
-                return $this->errorRedirectToMain(_kt('Could not override folder permissions'), sprintf('fFolderId=%d', $iFolderId));
+                return $this->errorRedirectToMain(_kt('Could not override folder permissions'), sprintf('fFolderId=%d', $folderId));
             }
 
             $this->commitTransaction();
 
             $permissionObject = KTPermissionObject::get($this->oFolder->getPermissionObjectId());
+            
+            
+        }
+        
+        if ($this->checkIfBackgrounded($folderId)) {
+            $this->redirectToMain('fFolderId=' . $folderId);
+            exit();
         }
 
         // permissions in JS format
-        $aPermissionsToJSON = array();
-        $aPermList = KTPermission::getList();
-        foreach($aPermList as $oP) {
-            $aPermissionsToJSON[] = array('id' => $oP->getId(), 'name' => $oP->getHumanName());
+        $permissionsToJSON = array();
+        $permissionsList = KTPermission::getList();
+        foreach($permissionsList as $permission) {
+            $permissionsToJSON[] = array('id' => $permission->getId(), 'name' => $permission->getHumanName());
         }
 
-        $oJSON = new Services_JSON;
-        $sJSONPermissions = $oJSON->encode($aPermissionsToJSON);
+        $jsonService = new Services_JSON;
+        $jsonPermissions = $jsonService->encode($permissionsToJSON);
 
         // dynamic conditions
-        $aDynamicConditions = KTPermissionDynamicCondition::getByPermissionObject($permissionObject);
+        $dynamicConditions = KTPermissionDynamicCondition::getByPermissionObject($permissionObject);
 
         // templating
         $templating =& KTTemplating::getSingleton();
         $template = $templating->loadTemplate('ktcore/folder/permissions');
 
-        $bCanInherit = ($iFolderId != 1);
+        if ($folderId != 1) {
+            $canInherit = true;
+        
+            $parentFolderId = $this->oFolder->getParentID();
+            $parentFolder = Folder::get($parentFolderId);
+            
+            $parentPermissionObject = KTPermissionObject::get($parentFolder->getPermissionObjectID());
+            $parentInheritedFolder = KTPermissionUtil::findRootObjectForPermissionObject($parentPermissionObject);
+            $parentInheritedFolderId = $parentInheritedFolder->getId();
+            
+            // Ensure an update is not in progress on the parent folder
+            if ($this->checkIfBackgrounded($parentInheritedFolderId)) {
+                $parentInProgress = true;
+            }
+        }
 
         global $default;
         if ($default->enableESignatures) {
-            $sUrl = KTPluginUtil::getPluginPath('electronic.signatures.plugin', true);
+            $url = KTPluginUtil::getPluginPath('electronic.signatures.plugin', true);
             $heading = _kt('You are attempting to modify permissions');
             $input['type'] = 'button';
-            $input['onclick'] = "javascript: showSignatureForm('{$sUrl}', '{$heading}', 'ktcore.transactions.permissions_change', 'folder', 'update_permissions_form', 'submit', {$iFolderId});";
+            $input['onclick'] = "javascript: showSignatureForm('{$url}', '{$heading}', 'ktcore.transactions.permissions_change', 'folder', 'update_permissions_form', 'submit', {$folderId});";
         }
         else {
             $input['type'] = 'submit';
             $input['onclick'] = '';
         }
 
-        $perms = $aPermList;
-        $docperms = KTPermission::getDocumentRelevantList();
+        $docPermissions = KTPermission::getDocumentRelevantList();
 
         $templateData = array(
-            'iFolderId' => $iFolderId,
+            'iFolderId' => $folderId,
             'roles' => Role::getList(),
             'groups' => Group::getList(),
             'conditions' => KTSavedSearch::getConditions(),
-            'dynamic_conditions' => $aDynamicConditions,
-            'context' => &$this,
+            'dynamic_conditions' => $dynamicConditions,
+            'context' => $this,
             'foldername' => $this->oFolder->getName(),
-            'jsonpermissions' => $sJSONPermissions,
+            'jsonpermissions' => $jsonPermissions,
             'edit' => true,
-            'permissions' => $perms,
-            'document_permissions' => $docperms,
-            'can_inherit' => $bCanInherit,
+            'permissions' => $permissionsList,
+            'document_permissions' => $docPermissions,
+            'can_inherit' => $canInherit,
+            'parentInProgress' => $parentInProgress,
             'input' => $input
         );
 
@@ -501,99 +541,112 @@ class KTFolderPermissionsAction extends KTFolderAction {
         return $aEntityList;
     }
 
-    function do_update() {
-        $aOptions = array('redirect_to' => array('main', 'fFolderId=' .  $this->oFolder->getId()));
+    function do_update() 
+    {
+    	$folderId = $this->oFolder->getId();
+    	 
+    	$options = array('redirect_to' => array('main', 'fFolderId=' .  $folderId));
         if (!KTBrowseUtil::inAdminMode($this->oUser, $this->oFolder)) {
-            $this->oValidator->userHasPermissionOnItem($this->oUser, $this->_sEditShowPermission, $this->oFolder, $aOptions);
+            $this->oValidator->userHasPermissionOnItem($this->oUser, $this->_sEditShowPermission, $this->oFolder, $options);
         }
-
-        $aFoo = $_REQUEST['foo'];
-        $aPermissions = KTPermission::getList();
+    	
+        $selectedPermissions = $_REQUEST['foo'];
+        $permissionObjectId = $this->oFolder->getPermissionObjectId();
+        
+        // Check folder against criteria for determining whether to background the task
+        if ($this->checkIfNeedsBackgrounding($permissionObjectId)) {
+        	$this->commitTransaction();
+        	$this->backgroundPermissionsUpdate($permissionObjectId, $folderId, $selectedPermissions);
+        	$this->addInfoMessage('The permissions update is in progress, you will receive an email upon completion of the update.');
+        	$this->redirectToMain('fFolderId=' . $folderId);
+        	exit();
+        }
+        
+        $result = KTPermissionUtil::updatePermissionObject($this->oFolder, $permissionObjectId, $selectedPermissions, $_SESSION['userID']);
+        
+        if ($result === false) {
+            $this->rollbackTransaction();
+            $msg = _kt('An error occurred while updating the permissions, please try again later');
+            $this->errorRedirectToMain($msg, 'fFolderId=' . $folderId);
+            exit();
+        }
 
         require_once(KT_LIB_DIR . '/documentmanagement/observers.inc.php');
-        $iObjectId = $this->oFolder->getPermissionObjectId();
-        $iFolderId = $this->oFolder->getId();
-        $permissionObject = KTPermissionObject::get($iObjectId);
-
-        foreach ($aPermissions as $oPermission) {
-            $iPermId = $oPermission->getId();
-
-            $aAllowed = KTUtil::arrayGet($aFoo, $iPermId, array());
-            $res = KTPermissionUtil::setPermissionForId($oPermission, $permissionObject, $aAllowed);
-
-            if ($res === false) {
-                $this->rollbackTransaction();
-                $this->addErrorMessage(_kt('An error occurred while updating the permissions, please try again later'));
-                $this->redirectToMain('action=edit&fFolderId=' . $this->oFolder->getId());
-                exit;
-            }
-        }
-
-        $oTransaction = KTFolderTransaction::createFromArray(array(
-            'folderid' => $iFolderId,
-            'comment' => _kt('Updated permissions'),
-            'transactionNS' => 'ktcore.transactions.permissions_change',
-            'userid' => $_SESSION['userID'],
-            'ip' => Session::getClientIP(),
-            'parentid' => $this->oFolder->getParentID(),
-        ));
-        $aOptions = array(
-            'defaultmessage' => _kt('Error updating permissions'),
-            'redirect_to' => array('edit', sprintf('fFolderId=%d', $iFolderId)),
-        );
-        $this->oValidator->notErrorFalse($oTransaction, $aOptions);
-
+        
         $observer = new JavascriptObserver($this);
         $observer->start();
-        $oChannel =& KTPermissionChannel::getSingleton();
-        $oChannel->addObserver($observer);
+        $channel = KTPermissionChannel::getSingleton();
+        $channel->addObserver($observer);
 
-        KTUtil::startTiming(__FUNCTION__);
         //KTPermissionUtil::updatePermissionLookupForPO($permissionObject);
-        $res = KTPermissionUtil::updatePermissionLookupForObject($iObjectId, $iFolderId);
-        KTUtil::logTiming(__FUNCTION__);
-        if ($res === false) {
+        $result = KTPermissionUtil::updatePermissionLookupForObject($permissionObjectId, $folderId);
+        if ($result === false) {
             $this->rollbackTransaction();
-            $this->errorRedirectTo('edit', _kt('An error occurred while updating the permissions'), 'fFolderId=' . $this->oFolder->getId());
+            $this->errorRedirectTo('edit', _kt('An error occurred while updating the permissions'), 'fFolderId=' . $folderId);
             exit;
         }
 
         $this->commitTransaction();
 
         $this->addInfoMessage(_kt('Permissions on folder updated'));
-        $observer->redirect(KTUtil::addQueryString($_SERVER['PHP_SELF'], 'action=edit&fFolderId=' . $this->oFolder->getId()));
+        $observer->redirect(KTUtil::addQueryString($_SERVER['PHP_SELF'], 'action=edit&fFolderId=' . $folderId));
         exit(0);
     }
-
+    
     function do_inheritPermissions() {
-        $aOptions = array('redirect_to' => array('main', 'fFolderId=' .  $this->oFolder->getId()));
+        $folderId = $this->oFolder->getId();
+        $options = array('redirect_to' => array('main', 'fFolderId=' . $folderId));
 
         if (!KTBrowseUtil::inAdminMode($this->oUser, $this->oFolder)) {
-            $this->oValidator->userHasPermissionOnItem($this->oUser, $this->_sEditShowPermission, $this->oFolder, $aOptions);
+            $this->oValidator->userHasPermissionOnItem($this->oUser, $this->_sEditShowPermission, $this->oFolder, $options);
+        }
+        
+        $permissionObjectId = $this->oFolder->getPermissionObjectID();
+        $parentFolderId = $this->oFolder->getParentID();
+        $parentFolder = Folder::get($parentFolderId);
+        
+        $parentPermissionObjectId = $parentFolder->getPermissionObjectID();
+        $parentPermissionObject = KTPermissionObject::get($parentPermissionObjectId);
+        $inheritedFolder = KTPermissionUtil::findRootObjectForPermissionObject($parentPermissionObject);
+        $inheritedFolderId = $inheritedFolder->getId();
+        
+        // Ensure an update is not in progress on the parent folder
+        if ($this->checkIfBackgrounded($inheritedFolderId)) {
+            $inheritedFolderName = $inheritedFolder->getName();
+            $error = _kt("The permissions cannot be inherited. An update on the folder, {$inheritedFolderName}, is currently in progress. Please try again later.");
+            $this->errorRedirectTo('edit', $error, 'fFolderId=' . $folderId);
+            
+            exit();
+        }
+        
+        // Check if the current folder or it's parent is large enough to force backgrounding
+        if ($this->checkIfNeedsBackgrounding($parentPermissionObjectId) || $this->checkIfNeedsBackgrounding($permissionObjectId)) {
+            
+        	$this->commitTransaction();
+        	$this->backgroundPermissionsUpdate($permissionObjectId, $folderId, array(), 'inherit');
+        	$this->addInfoMessage('The permissions update is in progress, you will receive an email upon completion of the update.');
+        	$this->redirectToMain('fFolderId=' . $folderId);
+        	
+        	exit();
         }
 
-        $oTransaction = KTFolderTransaction::createFromArray(array(
-            'folderid' => $this->oFolder->getId(),
-            'comment' => _kt('Inherit permissions from parent'),
-            'transactionNS' => 'ktcore.transactions.permissions_change',
-            'userid' => $_SESSION['userID'],
-            'ip' => Session::getClientIP(),
-            'parentid' => $this->oFolder->getParentID(),
-        ));
-        $aOptions = array(
-            'defaultmessage' => _kt('Error updating permissions'),
-            'redirect_to' => array('edit', sprintf('fFolderId=%d', $this->oFolder->getId())),
-        );
-        $this->oValidator->notErrorFalse($oTransaction, $aOptions);
+        $res = KTPermissionUtil::createInheritPermTransaction($folderId, $parentFolderId, $_SESSION['userID']);
+        if ($res === false) {
+            $this->rollbackTransaction();
+            $this->errorRedirectTo('main', _kt('Error, permissions could not be updated'), array('fFolderId' => $folderId));
+            
+            exit();
+        }
 
         $res = KTPermissionUtil::inheritPermissionObject($this->oFolder);
         if ($res === false) {
             $this->rollbackTransaction();
-            $this->errorRedirectTo('main', _kt('Error, permissions could not be updated'),
-                array('fFolderId' => $this->oFolder->getId()));
+            $this->errorRedirectTo('main', _kt('Error, permissions could not be updated'), array('fFolderId' => $folderId));
+            
+            exit();
         }
 
-        return $this->successRedirectTo('main', _kt('Permissions updated'), array('fFolderId' => $this->oFolder->getId()));
+        return $this->successRedirectTo('main', _kt('Permissions updated'), array('fFolderId' => $folderId));
     }
 
     function do_newDynamicPermission() {
@@ -683,6 +736,64 @@ class KTFolderPermissionsAction extends KTFolderAction {
         $this->successRedirectTo('edit', _kt('Dynamic permission removed'), 'fFolderId=' . $this->oFolder->getId());
     }
 
+    private function checkIfNeedsBackgrounding($permissionObjectId)
+    {
+        
+    	// Check depth of folder tree
+    	$query = "SELECT count(*) AS count FROM folders WHERE permission_object_id = {$permissionObjectId}";
+    	$countFolders = DBUtil::getOneResultKey($query, 'count');
+    	
+    	$query = "SELECT count(*) AS count FROM documents WHERE permission_object_id = {$permissionObjectId}";
+    	$countDocs = DBUtil::getOneResultKey($query, 'count');
+    	
+    	if ($countDocs + $countFolders < 50) {
+    		return false;
+    	}
+    	
+    	if ($countDocs > 1000) {
+    		return true;
+    	}
+    	
+    	// Check dynamic conditions
+    	$dynamicConditions = KTPermissionDynamicCondition::getByPermissionObject($permissionObjectId);
+    	$countDynamicConditions = (!PEAR::isError($dynamicConditions)) ? count($dynamicConditions) : 0;
+    	
+    	if ($countDynamicConditions > 1) {
+    		return true;
+    	}
+    	
+    	// Check workflow states
+    	$wfStates = KTWorkflowUtil::getWorkflowStatesForPermissionObject($permissionObjectId);
+    	$countWfStates = ($wfStates) ? count($wfStates) : 0;
+    	
+    	if ($countWfStates > 0) {
+    		return true;
+    	}
+    	
+    	// Check roles
+    	$roleAllocations = RoleAllocation::getAllocationsForPO($permissionObjectId);
+    	$countRoles = (!empty($roleAllocations)) ? count($roleAllocations) : 0;
+    	
+    	if ($countRoles > 0) {
+    		return true;
+    	}
+    	
+    	return false;
+    }
+    
+    private function checkIfBackgrounded($folderId)
+    {
+        $accountName = (defined('ACCOUNT_NAME')) ? ACCOUNT_NAME : '';
+        $backgroundPerms = new BackgroundPermissions($folderId, $accountName);
+        return $backgroundPerms->checkIfBackgrounded();
+    }
+    
+    private function backgroundPermissionsUpdate($permissionObjectId, $folderId, $selectedPermissions = array(), $type = 'update')
+    {
+    	$accountName = (defined('ACCOUNT_NAME')) ? ACCOUNT_NAME : '';
+        $backgroundPerms = new BackgroundPermissions($folderId, $accountName);
+        $backgroundPerms->backgroundPermissionsUpdate($permissionObjectId, $selectedPermissions, $_SESSION['userID'], $type);
+    }
 }
 
 ?>

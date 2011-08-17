@@ -12,6 +12,9 @@
 
 	</div>
 	<div class="content">
+			<div class="promotions-block">
+		<iframe class="iframe-filter" width="350" height="400" style="display:none" onload="this.style.display = 'block';" src="https://app.knowledgetree.com/iframe/login-promo?pi_list_email={$username}" scrolling="no" frameBorder="0"></iframe>
+		</div>
 		<div class="login-box">
 			<form class="login-form" action="{$smarty.server.PHP_SELF}" method="POST" name="login">
 				<input type="hidden" name="action" value="login" />

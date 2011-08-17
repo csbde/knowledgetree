@@ -159,10 +159,6 @@ class KTUserAdminDispatcher extends KTAdminDispatcher {
         }
 
         $showAll = KTUtil::arrayGet($_REQUEST, 'show_all', false);
-        $addUser = KTUtil::arrayGet($_REQUEST, 'add_user', false);
-        if ($addUser !== false) {
-            $addUser = true; // HUH?
-        }
         $editUser = KTUtil::arrayGet($_REQUEST, 'edit_user', false);
         $options = array('autocomplete' => false);
 
@@ -199,6 +195,7 @@ class KTUserAdminDispatcher extends KTAdminDispatcher {
         $addFields[] =  new KTStringWidget(_kt('Username'), sprintf(_kt('The username the user will enter to get access to %s.  e.g. jsmith'), APP_NAME), 'newusername', $username, $this->oPage, true, null, null, $options);
         $addFields[] =  new KTStringWidget(_kt('Name'), _kt('The full name of the user.  This is shown in reports and listings.  e.g. John Smith'), 'name', $name, $this->oPage, true, null, null, $options);
         $addFields[] =  new KTStringWidget(_kt('Email Address'), _kt('The email address of the user.  Notifications and alerts are mailed to this address if email notifications is set below. e.g. jsmith@acme.com'), 'email_address', $emailAddress, $this->oPage, false, null, null, $options);
+
         $addFields[] =  new KTBooleanWidget(_kt('Email Notifications'), _kt("If this is specified then the user will have notifications sent to the email address entered above.  If it isn't set, then the user will only see notifications on the Dashboard"), 'email_notifications', $emailNotification, $this->oPage, false, null, null, $options);
         $addFields[] =  new KTPasswordWidget(_kt('Password'), _kt('Specify an initial password for the user.') . $passwordAddRequirement, 'new_password', null, $this->oPage, true, null, null, $options);
         $addFields[] =  new KTPasswordWidget(_kt('Confirm Password'), _kt('Confirm the password specified above.'), 'confirm_password', null, $this->oPage, true, null, null, $options);
@@ -507,6 +504,7 @@ class KTUserAdminDispatcher extends KTAdminDispatcher {
         $this->startTransaction();
 
         $user = User::get($userId);
+        $oldUserName = $user->getUserName();
         if (PEAR::isError($user) || $user == false) {
             $this->errorRedirectToMain(_kt('Please select a user to modify first.'), sprintf('old_search=%s&do_search=1', $oldSearch));
         }
@@ -531,6 +529,10 @@ class KTUserAdminDispatcher extends KTAdminDispatcher {
         }
 
         $this->commitTransaction();
+
+        // Run triggers on user edit
+        $this->executeTriggers($user, $oldUserName, 'edit');
+
         $this->successRedirectToMain(_kt('User information updated.'), sprintf('old_search=%s&do_search=1', $oldSearch));
     }
 
@@ -948,16 +950,20 @@ class KTUserAdminDispatcher extends KTAdminDispatcher {
                 if (PEAR::isError($user)) {
                     $this->errorRedirectToMain(_kt('Error getting user object'));
                 }
-
+				$oldUserName = $user->getUserName();
                 $user->delete();
 
                 $res = $user->update();
                 if (PEAR::isError($res)) {
                     $this->errorRedirectToMain(_kt('Error updating user'));
                 }
+				// Remove user from Single Sign On, if plugin is enabled.
 
                 $enabledUsers--;
             }
+
+	        // Run triggers on user delete
+	        $this->executeTriggers('', $oldUserName, 'delete');
         }
 
         if ($_REQUEST['update_value'] == 'invite') {
@@ -978,6 +984,24 @@ class KTUserAdminDispatcher extends KTAdminDispatcher {
 
         $this->commitTransaction();
         $this->successRedirectToMain(_kt('Users updated'), 'show_all=1');
+    }
+
+    private function executeTriggers($user = '', $oldUserName = '', $action)
+    {
+        // run triggers on user delete
+        $triggerRegistry = KTTriggerRegistry::getSingleton();
+        $triggers = $triggerRegistry->getTriggers("user_$action", 'postValidate');
+
+        foreach ($triggers as $trigger) {
+            $triggerClassName = $trigger[0];
+            $triggerClass = new $triggerClassName;
+            $aInfo = array(
+                'user' => $user,
+                'oldUserName' => $oldUserName,
+            );
+            $triggerClass->setInfo($aInfo);
+            $ret = $triggerClass->postValidate();
+        }
     }
 
     public function handleOutput($output)

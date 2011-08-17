@@ -58,20 +58,8 @@ DirectoryIndex control.php index.html index.php
 Options none
 Options +ExecCGI
 Options +SymLinksIfOwnerMatch
-#AcceptPathInfo On
 
 AddOutputFilter DEFLATE text/html text/plain text/xml text/javascript application/x-javascript text/css
-# The following seems to breaking things on ZendServer - kgf
-#ExpiresActive ON
-#ExpiresByType text/html "access plus 1 day"
-#ExpiresByType text/css "access plus 1 day"
-#ExpiresByType text/javascript "access plus 7 days"
-#ExpiresByType application/x-javascript "access plus 7 days"
-#ExpiresByType image/gif "access plus 1 month"
-#ExpiresByType image/jpg "access plus 1 month"
-#ExpiresByType image/png "access plus 1 month"
-#ExpiresByType image/x-icon "access plus 1 month"
-
 #
 # If you are having uploading larger documents, adjust the 16M examples
 # below to increase the maximum file size.  This is set to a reasonable
@@ -95,35 +83,14 @@ php_value max_execution_time 0
 php_value error_reporting 5
 </IfModule>
 
-# Workaround for mod_auth when running php cgi
-<IfModule mod_rewrite.c>
-RewriteEngine on
-# RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization},L] #turned off by Tohir
-# Some history of this rules
-# look at: http://wiki.horde.org/HTTPAuthHowTo
-</IfModule>
-
-#<IfModule mod_rewrite.c>
-#RewriteEngine On
-#RewriteBase /
-## Set RewriteBase to the base directory that KnowledgeTree is viewable
-## from via the web.  So http://foo.org/ is /, and
-## http://bar.com/knowledgeTree/ is /knowledgeTree
-##RewriteBase /knowledgeTree
-#RewriteCond %{REQUEST_FILENAME} !-f
-#RewriteCond %{REQUEST_FILENAME}.php -f
-#RewriteRule !^[^/]*.php - [C]
-#RewriteRule ^([^/]*)([/].+)? $1.php [E=kt_path_info:$2,E=kt_orig_file:$1.php]
-#<IfModule mod_env.c>
-#SetEnv kt_no_extensions yes
-#</IfModule>
-#</IfModule>
-
 #Catch all 404 requests, and send them to redirect.php
 <IfModule mod_rewrite.c>
 RewriteEngine On
 RewriteBase /
-# - #
+# Redirect if google SSO authentication 
+RewriteCond %{REQUEST_FILENAME} google.php
+RewriteRule ^(google\.)php$ /plugins/ktlive/google/login/KTSSOAuthentication.php [L]
+# Tiny URLs
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteRule . /redirect.php [L]

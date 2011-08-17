@@ -10,7 +10,7 @@
 		<input class="modalField" id="checkinfilename" name="filename" size="30" type="file">
 	</div> 
 	<br>
-	<div class="field-group">
+	<div class="field-group" title="Checking in a document increments the document version number - by 1.0 if this is a major update; or, by 0.1 if this is not a major update.">
 		<label>Version Update</label>
                 <span class="field switch">
                     
@@ -31,7 +31,7 @@
         </div>-->
         <input type="hidden" id="forcefilenameVal"  name="forcefilenameVal" value="{$forceFilename}">
      {/if}	
-	<div class="action-footer" style="margin: 20px -15px -20px -20px;">
+	<div class="action-footer">
 		<div class="form_actions">
 			<a href="#" onclick="vActions.closeDisplay('checkin'); return false;" class="form_cancel">Cancel</a>
 			<input type="submit" name="form_submit" value="{i18n}Check-in{/i18n}" />

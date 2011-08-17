@@ -328,6 +328,14 @@ textarea {
 	float: right;
 	position: relative;
 }
+.breadcrumbsNotify {
+	float: left;
+	position: relative;
+}
+.breadcrumbsNotify span.notifyAction {
+	background: none repeat scroll 0 0 #F2EBAE !important;
+	border: 1px solid #FFE877 !important;
+}
 .breadCrumb ul {
 	margin: 0;
 	padding: 0;
@@ -751,6 +759,24 @@ div.form_actions {
 	text-align: left;
 	display: block;
 }
+.form_actions.dropdown {
+	background: #EEE;
+	border: 1px solid #CCC;
+	border-radius: 3px;
+	-webkit-border-radius: 3px;
+	-moz-border-radius: 3px;
+	height: 23px;
+	margin-top: 2px;
+	padding: 0px;
+}
+#content .form_actions.dropdown select {
+	background: transparent!important;
+	top: -2px !important;
+	position: relative;
+}
+#content .form_actions.dropdown input {
+	margin: -1px !important;
+}
 .x-window .form_actions input, .x-window .form_actions a, 
 #content .form_actions input, #content .form_actions a { 
 	background: -webkit-gradient(linear, left top, left bottom, from(#fff), to(#e8e8e8)) !important;
@@ -1026,6 +1052,17 @@ table.kt_collection {
 	text-align: center;
 	width: 50px;
 }
+#content .kt_collection.document-summary thead th,
+.kt_collection.scrollable th,
+.kt_collection.scrollable td{
+	word-break: normal;
+	word-break: normal;
+}
+.kt_collection.scrollable {
+	width: 100%;
+	overflow: auto;
+	display: block;
+}
 div#activationNotice {
 	background: url('../graphics/newui/notice_v2.png') no-repeat top right;
 	width: 160px;
@@ -1173,6 +1210,7 @@ div.widgetRow {
 	margin: 1px;
 	clear: both;
 	/*outline: 1px solid black;*/
+	
 }
 
 /* There can be many widgetItems in a row. */
@@ -1185,11 +1223,11 @@ div.widgetItem {
 	margin-top: 5px;
 }
 #content div.widgetItem.import-from-source select {
-	background: whiteSmoke;
 	height: 17px;
 	font-size: 11px;
 	padding: 2px;
 	color: #666;
+	max-width: 125px;
 }
 /*Alerts Modal*/
 
@@ -1237,6 +1275,23 @@ label span.required
 	height: 22px !important;
 	border-top-right-radius: 3px;
 	border-bottom-right-radius: 3px;
+}
+#content .modalField.date input{
+	box-shadow: none!important;
+	-moz-box-shadow: none!important;
+	-webkit-box-shadow: none !important;
+	border: 0px !important;
+}
+.modalField.date{
+	min-width: 120px;
+}
+.modalField.date .x-form-field-wrap .x-form-date-trigger,
+.modalField.date .x-form-field-wrap .x-form-date-trigger .x-form-trigger-over,
+.modalField.date .x-form-field-wrap .x-form-date-trigger .x-form-trigger-click {
+	background: url(../graphics/newui/icons/calendar.png) no-repeat center center;
+	border: 0px;
+	display: inline-block;
+	padding-right: 5px;
 }
 
 .modal-actions {
@@ -1328,6 +1383,9 @@ label span.required
 	margin: 5px 0px;
 	z-index: 1;
 }
+#workflowtabs .help {
+	margin-top: -2px;
+}
 .settings-section #content fieldset legend {
 	padding: 0px;
 }
@@ -1384,6 +1442,9 @@ label span.required
 .settings-item #workflow_allocation select {
 	width: 200px;
 }
+.settings-item #archived .kt_collection th.sort_on.sort_asc {
+	background: transparent!important;
+}
 .settings-section .kt_collection,
 .settings-section .kt_collection.narrow  {
 	width: 100%;
@@ -1394,6 +1455,11 @@ label span.required
 	float: right;
 	min-width: 270px;
 }
+
+.settings-section .simple-selection br{
+	clear: both;
+}
+
 .settings-section .simple-selection input[type="radio"] {
 	float: left !important;
 	margin: 4px;
@@ -1403,7 +1469,8 @@ label span.required
 	clear: left;
 
 }
-.settings-section .flag {
+.settings-section .flag,
+.x-window .flag  {
 	border-radius: 3px;
 	-moz-border-radius: 3px;
 	-webkit-border-radius: 3px;
@@ -1468,8 +1535,8 @@ label span.required
 .empty-boilerplate {
 	display: block;
 	text-align: center;
-	min-height: 100px;
-	line-height: 100px;
+	min-height: 50px;
+	line-height: 50px;
 	width: auto;
 	-webkit-box-shadow: inset 0px 0px 5px #CCC;
 	-moz-box-shadow: inset 0px 0px 5px #CCC;
@@ -1492,6 +1559,11 @@ label span.required
 	list-style: none;
 	padding: 0px;
 }
+.group .token-input-list-facebook input {
+	box-shadow: none!important;
+	-moz-box-shadow: none!important;
+	-webkit-box-shadow: none!important;
+}
 #content .tags div.token-input-dropdown-facebook {
 }
 
@@ -1506,7 +1578,7 @@ a.subscribe_actions {
 #checkins #checkinfilename {
 	padding: 5px;
 	margin-top: 5px;
-	width: 355px;
+	width: 365px;
 }
 /*
 IPhone Style Switches
@@ -1547,6 +1619,17 @@ http://devgrow.com/iphone-style-switches/
 }
 .switch label { cursor: pointer; }
 .switch input { display: none; }
+
+
+/* This CSS is needed for a fake view in IE8 - Tohir */
+.switch input {
+	border: none !important;
+	padding: 0 !important;
+	margin: 0 !important;
+	height: 0px !important;
+	width: 0px !important;
+	overflow: hidden;
+}
 
 
 #reason-field {
@@ -1623,6 +1706,7 @@ http://devgrow.com/iphone-style-switches/
 	margin: 0px 0px -5px 0px;
 }
 .settings-section #content .field,
+.workflow_transition .field,
 .settings-field {
 	border: 1px solid #CCC;
 	border-radius: 5px;
@@ -1637,6 +1721,12 @@ http://devgrow.com/iphone-style-switches/
 	font-size: 12px;
 	background: whitesmoke;
 }
+.workflow_transition {
+	margin-top: -10px;
+}
+.workflow_transition table {
+	border-spacing: 0px;
+}
 .settings-option {
 	float: right;
 }
@@ -1644,6 +1734,36 @@ http://devgrow.com/iphone-style-switches/
 	float: left;
 	font-size: 13px;
 }
+.settings-field label {
+	line-height: 20px;
+}
+.settings-field .stamp {
+	color: #f93333;
+	border-top: 2px solid #f93333;
+	border-bottom: 2px solid #f93333;
+	float: right;
+	font-family: "Courier New", Courier, monospace;
+	font-weight: bold;
+	line-height: 14px;
+	letter-spacing: 1px;
+	text-transform: uppercase;
+}
+.settings-field .stamp.end-workflow {
+	color: #007fff;
+	border-top: 2px solid #007fff;
+	border-bottom: 2px solid #007fff;
+}
+.workflow_transition .field select{
+	float: right;
+}
+.workflow_transition .field textarea{
+	display: inline-block;
+	border: 1px solid #ccc;
+	border-radius: 3px;
+	box-shadow: inset 0px 1px 1px #666;
+	padding: 2px;
+}
+
 .settings-section #content .field label {
 	float: left;
 	font-weight: normal;
@@ -1651,11 +1771,27 @@ http://devgrow.com/iphone-style-switches/
 }
 .settings-section #content .field input,
 .settings-section #content .field select,
+.settings-field select,
 .settings-section #content .field textarea {
 	position: relative;
 	float: right;
 	font-size: 12px;
-
+}
+.settings-section #content .field .date-field {
+	width: 410px;
+}
+ #content .field .date-field {
+	clear: right;
+	float: right;
+	margin: 5px 0px;
+}
+#content .field .date-field input,
+#content .field .date-field select {
+	float: none;
+}
+#content .field .date-field input[type='radio'] {
+	top: 2px;
+	margin: 2px;
 }
 .settings-section #content .field input,
 .settings-section #content .settings-field input,
@@ -1783,8 +1919,10 @@ li.ui-state-disabled a {
 	background: url(/thirdpartyjs/extjs/resources/images/default/tree/folder-open.gif) 0px 0px;
 }
 .jstree-knowledgetree > ul {
-	overflow: auto;
-	min-height: 250px;
+	display: inline-block !important;
+	background: transparent url("/thirdpartyjs/jquery/plugins/jstree/themes/knowledgetree/bg.jpg") left top repeat!important;
+	min-height: 235px;
+	min-width: 500px;
 }
 #action-error.alert.warning {
 	background: #ffeded;
@@ -1877,3 +2015,46 @@ tr.dyncond_selector td {
 .paginationContainer .paginate > li.highlight { background-color: #497faa; color: white; text-shadow: 0px -1px 0px #2F6594; }
 .paginationContainer .paginate > li.highlight:hover { background-color: #6598bf; }
 .paginationContainer .paginate > li:hover { background-color: #fbfbfb; -webkit-box-shadow: 0px 0px 2px #626262; -moz-box-shadow: 0px 0px 2px #626262; box-shadow: 0px 0px 2px #626262; }
+
+
+/*like */
+#documentLikeStatus {
+	margin-bottom: 10px;
+}
+.like_status {
+	display: inline-block;
+	background: url(../graphics/newui/document_notliked.png) no-repeat;
+	width: 46px;
+	height: 22px;
+	text-align: center;
+	font-size: 11px;
+	line-height: 22px;
+}
+.like_status.liked {
+	background: url(../graphics/newui/document_liked.png) no-repeat;
+}
+.like_status:hover{
+	background-color: #E4E4E4;
+	border-radius: 3px;
+	-webkit-border-radius: 3px;
+	-moz-border-radius: 3px;
+}
+.like_status.liked:hover{
+	background-color: #bedce5;
+}
+#content .like_status a {
+	display: block;
+	color: #AAA;
+	padding-left: 16px;
+	text-shadow: 0px 1px 0px white;
+}
+#content .like_status a:hover {
+	text-decoration: none;
+}
+#content .like_status.liked a {
+	font-size: 11px;
+	line-height: 22px;
+	color: #2f6594;	
+	padding-left: 14px;
+	font-weight: bold;
+}

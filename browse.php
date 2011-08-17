@@ -69,6 +69,10 @@ require_once(KT_LIB_DIR . '/render_helpers/browseView.helper.php');
 
 require_once(KT_PLUGIN_DIR . '/ktstandard/KTSubscriptions.php');
 
+require_once(KT_LIB_DIR . '/memcache/ktmemcache.php');
+
+require_once(KT_LIB_DIR . '/backgroundactions/backgroundaction.inc.php');
+
 $sectionName = 'browse';
 
 class BrowseDispatcher extends KTStandardDispatcher {
@@ -83,10 +87,11 @@ class BrowseDispatcher extends KTStandardDispatcher {
 	public $sHelpPage = 'ktcore/browse.html';
 	public $permissions;
 
-	function __construct()
+	public function __construct()
 	{
 		$this->permissions = array();
 	    $this->aBreadcrumbs = array(array('action' => 'browse', 'name' => _kt('Browse')));
+
 	    return parent::KTStandardDispatcher();
 	}
 
@@ -122,11 +127,14 @@ class BrowseDispatcher extends KTStandardDispatcher {
 	public function do_main()
 	{
 	    global $default;
-	    /* New ktapi based method */
-        $bulkActions = KTBulkActionUtil::getAllBulkActions();
+		$this->bulkActionInProgress = backgroundaction::isFolderInBulkAction($this->oFolder);
+	    $bulkActions = '';
+	    if(!$this->bulkActionInProgress) {
+		    /* New ktapi based method */
+	        $bulkActions = KTBulkActionUtil::getAllBulkActions();
+	    }
         $sidebars = KTFolderActionUtil::getFolderActionsForFolder($this->oFolder, $this->oUser, 'mainfoldersidebar');
         $folderSidebars = isset($sidebars[0]) ? $sidebars[0] : array();
-
 	    if (ACCOUNT_ROUTING_ENABLED && $default->tier == 'trial') {
 	        $this->includeOlark();
 	    }
@@ -146,21 +154,25 @@ class BrowseDispatcher extends KTStandardDispatcher {
 	           'folderSidebars' => $folderSidebars,
 	    );
 
+	    if($this->bulkActionInProgress) {
+	    	$templateData['notifyBulkAction'] = $this->getBulkNotification();
+	    }
+
 	    // NOTE Don't quite know why this is in here. Someone reports that it is there for search browsing which seem to be disabled.
 	    if ($this->oFolder) {
 	        $this->showBtns();
     		$folderId = $this->oFolder->getId();
 
-	        $renderHelper = BrowseViewUtil::getBrowseView();
+	        $renderHelper = BrowseViewUtil::getBrowseView($this->bulkActionInProgress);
 	        $renderData = $renderHelper->renderBrowseFolder($folderId, $bulkActions, $this->oFolder, $this->permissions);
 	        if($renderData['documentCount'] > 0)
 	        	$this->loadDocumentJS();
 	        $templateData = array_merge($templateData, $renderData);
-	    } 
+	    }
 	    else if ($this->oFolder === false) {
 	    	$this->addErrorMessage(_kt('The selected folder cannot be found, it may have been deleted.'));
 	    	$browse = '<a href = "'.KTUtil::buildUrl('browse.php') . '">' . _kt('browse') . '</a>';
-	    	
+
 	    	return $this->errorPage(_kt("Return to the main {$browse} page."));
 	    }
 
@@ -176,25 +188,26 @@ class BrowseDispatcher extends KTStandardDispatcher {
 			$this->oPage->requireCSSResource($pluginPath . '/resources/alerts.css');
 		}
 	}
-	
+
 	public function showBtns()
 	{
 		$list = array();
 		$submenu = array();
 		$actions = KTFolderActionUtil::getFolderActionsForFolder($this->oFolder, $this->oUser);
 		foreach ($actions as $oAction) {
+			$oAction->setBulkAction($this->bulkActionInProgress);
             $info = $oAction->getInfo();
             // Skip if action is disabled
             if (is_null($info)) { continue; }
             // Skip if no name provided - action may be disabled for permissions reasons
             if (empty($info['name'])) { continue; }
-            if(!empty($info['parent'])) { 
+            if(!empty($info['parent'])) {
                 $submenu[$info['parent']][] = $info;
             } else {
             	$list[] = $info;
             }
 		}
-		
+
 		// Create the More button => if additional split buttons are needed this can be extended.
 		$more = array('name' => _kt('More'), 'url' => '#', 'class' => 'more');
 		$more['submenu'] = $submenu['more'];
@@ -206,7 +219,7 @@ class BrowseDispatcher extends KTStandardDispatcher {
 
 		$this->actionBtns = $btns;
 	}
-	
+
 	/**
 	 * Fetches folder content for a paging request.
 	 * Content from this function will not be rendered and must be rendered by the calling code.
@@ -447,7 +460,7 @@ class BrowseDispatcher extends KTStandardDispatcher {
 	        } else {
 	            $this->permissions['editable'] = false;
 	        }
-	        
+
 	        $this->permissions['folderDetails'] = KTPermissionUtil::userHasPermissionOnItem($this->oUser, 'ktcore.permissions.folder_details', $oFolder);
 	    }
 	}
@@ -506,7 +519,7 @@ class BrowseDispatcher extends KTStandardDispatcher {
 	    $this->oQuery = new BrowseQuery($oFolder->getId(), $this->oUser, $aOptions);
 
 	    $this->resultURL = KTUtil::addQueryString($_SERVER['PHP_SELF'], sprintf('fFolderId=%d', $oFolder->getId()));
-	    
+
 	    return true;
 	}
 
@@ -616,6 +629,9 @@ class BrowseDispatcher extends KTStandardDispatcher {
 	    }
 	}
 
+	private function getBulkNotification() {
+   		return "Bulk {$this->bulkActionInProgress} action in progress.";
+	}
 }
 
 $oDispatcher = new BrowseDispatcher();

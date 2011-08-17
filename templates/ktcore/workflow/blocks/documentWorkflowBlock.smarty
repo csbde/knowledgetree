@@ -3,8 +3,16 @@
 <script src="/resources/js/newui/documents/blocks/workflowsBlock.js" type="text/javascript"></script>
 <script src="/resources/js/newui/buttons/formActions.js" type="text/javascript"></script>
 
+{if $bIsCheckedOut}
+	<div class=widgetRow>
+    	<div class="ktError">
+        	<span>{i18n}The workflow cannot be changed while the document is checked out.{/i18n}</span>
+   		 </div>
+	</div>
+{/if}
+
 {if !$oWorkflow}
-    <p>{i18n}Document is not currently assigned to a workflow.{/i18n}</p>
+    <p class="empty-boilerplate">{i18n}Document is not currently assigned to a workflow.{/i18n}</p>
 {else}
 
 <div class="workflow_details">
@@ -19,25 +27,24 @@
                 {if empty($transition_fields)}
                     <div>
                 {else}
-                    <div style="bottom: 50px;">
+                    <div style="bottom: 50px;" >
                 {/if}
                     <!--<label for=comment><b>{i18n}Workflow for{/i18n} :</b> </label>
                     <span> {$oDocument->getName()|sanitize} </span> -->
                     
-                    <label for=comment><b>{i18n}Workflow{/i18n} :</b> </label>
-					
-					
-                    
-                    
-					{if $aWorkflows && $bHasPerm && oWorkflow}
-						{entity_select entities=$aWorkflows name=fWorkflowId id=fWorkflowId none=true selected=$oWorkflow->getId()}
-					{else}
-						<span>{$oWorkflow->getName()}</span>
-					{/if}
-					<br />					
-					<label for=comment><b>{i18n}Current State{/i18n} :</b> </label>
-                    <span>{$oState->getName()}</span>
-                    <br />
+                    <div class="settings-field">
+                    	<label for=comment><b>{i18n}Workflow{/i18n}</b> </label>
+                    	
+						{if $aWorkflows && $bHasPerm && oWorkflow}
+							{entity_select entities=$aWorkflows name=fWorkflowId id=fWorkflowId none=true selected=$oWorkflow->getId()}
+						{else}
+							<span>{$oWorkflow->getName()}</span>
+						{/if}
+					</div>
+					<div class="settings-field">
+						<label for=comment><b>{i18n}Current State{/i18n}</b> </label>
+                    	<span class="stamp {if empty($transition_fields)}end-workflow{/if}">{$oState->getName()}</span>
+                    </div>
                 </div>
 				{if $aWorkflows && $bHasPerm && oWorkflow}
 					</form>
@@ -82,7 +89,7 @@
 									</td>
 								</tr>
 							</table>
-							<div class="action-footer">
+							<div class="action-footer" style="margin-bottom: -10px;">
 								<div class="form_actions" id="modal">
 									<a href="#" onclick="vActions.closeDisplay('workflow'); return false;" class=form_cancel style="background: none repeat scroll 0% 0% transparent;">Cancel</a>
 								    <input type="{$submit.type}" onclick="javascript: {ldelim}workflowBlock.submitForm('transition'){rdelim}; return false;" name=form_submit value="{i18n}Perform Transition{/i18n}" />
@@ -101,13 +108,10 @@
 					<input type="hidden" name="action" value="startWorkflow" />
 					<input type="hidden" name="fDocumentId" value="{$oDocument->getId()}" />
 					<input type="hidden" name="fWorkflowId" value="{$oWorkflow->getId()}" />
-					<div class="form_buttons">
+					<div class="action-footer"  style="margin-bottom: -10px;">
 						<div class="form_actions" id="modal">
-							<input type="{$submit.type}" onclick="javascript: {ldelim}workflowBlock.submitForm('transition'){rdelim}; return false;" name=form_submit value="{i18n}Restart Workflow{/i18n}" />
-							
-						</div>
-						<div class="form_cancel">
-							<a href="#" onclick="vActions.closeDisplay('workflow'); return false;" class=form_cancel style="background: none repeat scroll 0% 0% transparent; margin-right: 10px;">Cancel</a>
+							<a href="#" onclick="vActions.closeDisplay('workflow'); return false;" class="form_cancel" style="background: none repeat scroll 0% 0% transparent; margin-right: 10px;">Cancel</a>
+							<input type="{$submit.type}" onclick="javascript: {ldelim}workflowBlock.submitForm('transition'){rdelim}; return false;" name=form_submit {if $bIsCheckedOut}disabled="disabled"{/if} value="{i18n}Restart Workflow{/i18n}" />
 						</div>
 					</div>
 				</form>
@@ -124,11 +128,7 @@
 
 
 {if $bIsCheckedOut}
-<div class=widgetRow>
-    <div class=ktInfoMessage>
-        <span>{i18n}The workflow cannot be changed while the document is checked out.{/i18n}</span>
-    </div>
-</div>
+
 {else}
     {if !$oWorkflow}
       {assign var=none value=""}
@@ -142,17 +142,16 @@
             {if !$oWorkflow}
         		
 				<form action="{$smarty.server.PHP_SELF}" method=POST name="start_workflow_form">
-						<div class=widgetItem style="float:none;">
+						<div class="settings-field" style="float:none;">
 							<input type=hidden name=action value=startWorkflow />
 							<input type=hidden name=fDocumentId value="{$oDocument->getId()}" />
-							<label for=comment><b>{i18n}Choose Workflow{/i18n} : </b> </label>
+							<label for=comment>{i18n}Choose Workflow{/i18n}</label>
 							{entity_select entities=$aWorkflows name=fWorkflowId id=fWorkflowId none=$none}
 						</div>
 										
 						<div class="action-footer">
 							<div class="form_actions" id="modal">
-									<input type="{$submit.type}" onclick="javascript: {ldelim}workflowBlock.submitForm('change'){rdelim}; return false;" name=form_submit value="{i18n}Start Workflow{/i18n}" />
-									<a href="#" class="form_cancel" onclick="vActions.closeDisplay('workflow'); return false;">Cancel</a>
+									<a href="#" class="form_cancel" onclick="vActions.closeDisplay('workflow'); return false;">Cancel</a>									<input type="{$submit.type}" onclick="javascript: {ldelim}workflowBlock.submitForm('change'){rdelim}; return false;" name=form_submit value="{i18n}Start Workflow{/i18n}" />
 							</div>
 						</div>
 				</form>

@@ -73,7 +73,7 @@ class DeletedDocumentsDispatcher extends KTAdminDispatcher {
         $documents = null;
         if (!empty($name)) {
             $documents = Document::getList('status_id=' . DELETED . ' AND full_path LIKE \'%' . DBUtil::escapeSimple($name) . '%\'');
-            
+
         }
         else if ($showAll !== false) {
             $documents = Document::getList('status_id=' . DELETED);
@@ -104,7 +104,7 @@ class DeletedDocumentsDispatcher extends KTAdminDispatcher {
                 $documentsList[] = $documents[$i];
             }
         }
-        
+
         $templating =& KTTemplating::getSingleton();
         $template = $templating->loadTemplate('ktcore/document/admin/deletedlist');
         $template->setData(array(
@@ -120,7 +120,7 @@ class DeletedDocumentsDispatcher extends KTAdminDispatcher {
 
         return $template->render();
     }
-    
+
     public function do_branchConfirm()
     {
         $submit = KTUtil::arrayGet($_REQUEST, 'submit' , array());
@@ -366,8 +366,13 @@ class DeletedDocumentsDispatcher extends KTAdminDispatcher {
         if (PEAR::isError($oFolder)) {
             return _kt('Original folder no longer exists.  Document will be restored in the root folder.');
         } else {
-            $aCrumbs = KTBrowseUtil::breadcrumbsForFolder($oFolder);
-            $aParts = array();
+        	$aParts = array();
+        	if($iFolderId == 1) {
+            	$aParts = array('name'=>'Root');
+        	}
+        	else {
+        		$aCrumbs = KTBrowseUtil::breadcrumbsForFolder($oFolder);
+        	}
             foreach ($aCrumbs as $aInfo) {
                 $aParts[] = $aInfo['name'];
             }

@@ -45,9 +45,9 @@ require_once(KT_LIB_DIR . "/documentmanagement/documentutil.inc.php");
 require_once(KT_LIB_DIR . "/util/sanitize.inc");
 
 class KTFolderRenameAction extends KTFolderAction {
-    var $sName = 'ktcore.actions.folder.rename';
-    var $_sShowPermission = "ktcore.permissions.folder_rename";
-    var $cssClass = 'rename-folder';
+    public $sName = 'ktcore.actions.folder.rename';
+    public $_sShowPermission = "ktcore.permissions.folder_rename";
+    public $cssClass = 'rename-folder';
 
     function getDisplayName() {
         $folderId = $this->oFolder->getId();
@@ -59,11 +59,13 @@ class KTFolderRenameAction extends KTFolderAction {
         return _kt('Rename');
     }
 
-    function getInfo() {
+    public function getInfo()
+    {
         return parent::getInfo();
     }
 
-    function do_main() {
+    public function do_main()
+    {
     	// Use client-side validation
     	global $main;
     	$main->requireJSResource("resources/js/validation/validate_folder_name.js"); // Get the JS
@@ -95,7 +97,8 @@ class KTFolderRenameAction extends KTFolderAction {
         return $oTemplate->render();
     }
 
-    function do_rename() {
+    public function do_rename()
+    {
         $aErrorOptions = array(
             'redirect_to' => array('', sprintf('fFolderId=%d', $this->oFolder->getId())),
         );

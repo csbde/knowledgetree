@@ -3,7 +3,7 @@
 <p class="descriptiveText">{i18n}This page provides details of all activities that have been carried out on the folder.{/i18n}</p>
 
 
-    <table class="document_history" summary="{i18n}Folder History{/i18n}" cellspacing="0">
+    <table class="kt_collection" summary="{i18n}Folder History{/i18n}" cellspacing="0">
 
         <thead>
             <tr>
@@ -15,7 +15,7 @@
         </thead>
         <tbody>
           {foreach item=aTransactionRow from=$transactions}
-            <tr class="{cycle values=even,odd}">
+            <tr class="{cycle values=odd,even}">
                 <td class="username">{$aTransactionRow.user_name}</td>
                 <td class="action">{i18n}{$aTransactionRow.transaction_name}{/i18n}</td>
                 <td class="date">{$aTransactionRow.datetime}</td>

@@ -1001,7 +1001,7 @@ INSERT INTO `mime_types` VALUES
 (65,'oda','application/oda',NULL,'',NULL,NULL),
 (66,'pbm','image/x-portable-bitmap','image','',NULL,NULL),
 (67,'pdb','chemical/x-pdb',NULL,'',NULL,NULL),
-(68,'pdf','application/pdf','pdf','Acrobat PDF',NULL,NULL),
+(68,'pdf','application/pdf','pdf','PDF',NULL,NULL),
 (69,'pgm','image/x-portable-graymap','image','',NULL,NULL),
 (70,'pgn','application/x-chess-pgn',NULL,'',NULL,NULL),
 (71,'png','image/png','image','PNG Image',NULL,NULL),
@@ -1115,6 +1115,20 @@ UNLOCK TABLES;
 LOCK TABLES `news` WRITE;
 /*!40000 ALTER TABLE `news` DISABLE KEYS */;
 /*!40000 ALTER TABLE `news` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Dumping data for table `new_features_areas`
+--
+
+LOCK TABLES `new_features_areas` WRITE;
+/*!40000 ALTER TABLE `new_features_areas` DISABLE KEYS */;
+INSERT INTO `new_features_areas` (`id`, `name`) VALUES
+(1, 'dashboard'),
+(2, 'settings'),
+(3, 'browse'),
+(4, 'view_details');
+/*!40000 ALTER TABLE `new_features_areas` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --

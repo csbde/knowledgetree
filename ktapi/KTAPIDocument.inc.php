@@ -103,11 +103,11 @@ class KTAPI_Document extends KTAPI_FolderItem
 	 */
 	function &get(&$ktapi, $documentid, $iMetadataVersionId = null)
 	{
-	    if(is_null($ktapi) || !($ktapi instanceof KTAPI)){
+	    if (is_null($ktapi) || !($ktapi instanceof KTAPI)) {
 	        return PEAR::raiseError('A valid KTAPI object is needed');
 	    }
 
-	    if(!is_numeric($documentid)){
+	    if (!is_numeric($documentid)) {
 	        return PEAR::raiseError('A valid document id is required');
 	    }
 
@@ -231,7 +231,7 @@ class KTAPI_Document extends KTAPI_FolderItem
 	 * $ktapi = new KTAPI();
      * $session = $ktapi->start_system_session();
 	 * $document = $ktapi->get_document_by_id($documentid);
-     * if($document->is_checked_out()){
+     * if ($document->is_checked_out()) {
      *     $document->checkin('filename.txt', 'Reason for checkin', '/tmp/filename');
      * }
 	 * </code>
@@ -351,7 +351,7 @@ class KTAPI_Document extends KTAPI_FolderItem
 	 * $ktapi = new KTAPI();
      * $session = $ktapi->start_system_session();
 	 * $document = $ktapi->get_document_by_id($documentid);
-     * if($document->is_checked_out()){
+     * if ($document->is_checked_out()) {
      *     continue;
      * }else{
      *     $document->checkout('Reason for document checkout');
@@ -374,7 +374,7 @@ class KTAPI_Document extends KTAPI_FolderItem
 	 * $ktapi = new KTAPI();
      * $session = $ktapi->start_system_session();
 	 * $document = $ktapi->get_document_by_id($documentid);
-     * if($document->is_checked_out()){
+     * if ($document->is_checked_out()) {
      *     $document->undo_checkout('Reason for cancelling checkout');
      * }
 	 * </code>
@@ -468,7 +468,7 @@ class KTAPI_Document extends KTAPI_FolderItem
 			{
 				continue;
 			}
-			if(!KTPermissionUtil::userHasPermissionOnItem($user, $read_permission, $document))
+			if (!KTPermissionUtil::userHasPermissionOnItem($user, $read_permission, $document))
 			{
 				continue;
 			}
@@ -501,7 +501,7 @@ class KTAPI_Document extends KTAPI_FolderItem
      * $session = $ktapi->start_system_session();
 	 * $document = $ktapi->get_document_by_id($documentid);
      * $document->checkout('Reason for document checkout');
-     * if($document->is_checked_out()){
+     * if ($document->is_checked_out()) {
      *     continue;
      * }
 	 * </code>
@@ -714,7 +714,7 @@ class KTAPI_Document extends KTAPI_FolderItem
         {
         	$name = $newname;
         	$clash = KTDocumentUtil::nameExists($target_folder, $name);
-        	
+
         	if ($clash) {
         		return new PEAR_Error('A document with this title already exists in your chosen folder.  '
                                     . 'Please choose a different folder, or specify a new title for the copied document.');
@@ -728,7 +728,7 @@ class KTAPI_Document extends KTAPI_FolderItem
         {
 			$filename = $newfilename;
             $clash = KTDocumentUtil::fileExists($target_folder, $filename);
-            
+
             if ($clash) {
             	return new PEAR_Error('A document with this filename already exists in your chosen folder.  '
                                    . 'Please choose a different folder, or specify a new filename for the copied document.');
@@ -823,7 +823,7 @@ class KTAPI_Document extends KTAPI_FolderItem
 		}
 
 		$target_folder = $ktapi_target_folder->get_folder();
-		$result=  $this->can_user_access_object_requiring_permission(  $target_folder, KTAPI_PERMISSION_WRITE);
+		$result = $this->can_user_access_object_requiring_permission(  $target_folder, KTAPI_PERMISSION_WRITE);
 
 		if (PEAR::isError($result)) {
 			return $result;
@@ -839,37 +839,35 @@ class KTAPI_Document extends KTAPI_FolderItem
 		}
 
 		$fileRenamed = false;
+		$options = array();
 		$name = $this->document->getName();
 		$nameClash = KTDocumentUtil::nameExists($target_folder, $name);
-		
+
 		if ($nameClash && !is_null($newname)) {
         	$nameClash = KTDocumentUtil::nameExists($target_folder, $newname);
-        	$reason = sprintf(_kt(' Document renamed from %s to %s.'), $name, $newname) .' '. $reason;
-        	$fileRenamed = true;
         	$name = $newname;
+        	$options['name'] = $name;
 		}
-		
+
 		$filename=$this->document->getFilename();
 		$filenameClash = KTDocumentUtil::fileExists($target_folder, $filename);
 
 		if ($filenameClash && !is_null($newfilename)) {
             $filenameClash = KTDocumentUtil::fileExists($target_folder, $newfilename);
-            if (!$fileRenamed) {
-            	$reason = sprintf(_kt(' Document filename renamed from %s to %s.'), $filename, $newfilename) .' '. $reason;
-            }
             $filename = $newfilename;
+        	$options['filename'] = $filename;
         }
-		
+
         if ($nameClash) {
         	if ($filenameClash) {
         		return new PEAR_Error('A document with this title and filename already exists in your chosen folder.  '
                                 . 'Please choose a different folder, or specify a new title and filename for the moved document.');
         	}
-        	
+
         	return new PEAR_Error('A document with this title already exists in your chosen folder.  '
                                 . 'Please choose a different folder, or specify a new title for the moved document.');
         }
-        
+
         if ($filenameClash) {
         	return new PEAR_Error('A document with this filename already exists in your chosen folder.  '
                                 . 'Please choose a different folder, or specify a new filename for the moved document.');
@@ -877,24 +875,10 @@ class KTAPI_Document extends KTAPI_FolderItem
 
 		DBUtil::startTransaction();
 
-        $res = KTDocumentUtil::move($this->document, $target_folder, $user, $reason);
+        $res = KTDocumentUtil::move($this->document, $target_folder, $user, $reason, false, $options);
         if (PEAR::isError($res)) {
             DBUtil::rollback();
 			return new KTAPI_Error(KTAPI_ERROR_INTERNAL_ERROR, $res );
-        }
-
-        if (!is_null($newname)) {
-        	$this->document->setName($name);
-        }
-        if (!is_null($newfilename)) {
-        	$this->document->setFilename($filename);
-        }
-
-        $res = $this->document->update();
-
-        if (PEAR::isError($res)) {
-            DBUtil::rollback();
-			return new KTAPI_Error(KTAPI_ERROR_INTERNAL_ERROR,$res );
         }
 
         DBUtil::commit();
@@ -1088,7 +1072,7 @@ class KTAPI_Document extends KTAPI_FolderItem
 		DBUtil::startTransaction();
 		$res = KTDocumentUtil::archive($this->document, $reason);
 
-        if(PEAR::isError($res)){
+        if (PEAR::isError($res)) {
             DBUtil::rollback();
             return new KTAPI_Error(KTAPI_ERROR_INTERNAL_ERROR, $res);
         }
@@ -1215,10 +1199,10 @@ class KTAPI_Document extends KTAPI_FolderItem
      * $session = $ktapi->start_system_session();
 	 * $document = $ktapi->get_document_by_id($documentid);
 	 * $metadata = $document->get_metadata();
-	 * foreach($metadata as $fieldset){
+	 * foreach($metadata as $fieldset) {
 	 *     echo '<br><br>Fieldset: '.$fieldset['fieldset'];
 	 *
-	 *     foreach($fieldset['fields'] as $field){
+	 *     foreach($fieldset['fields'] as $field) {
 	 *         echo '<br>Field name: '.$field['name'] . ' Value: '. $field['value'];
 	 *     }
 	 * }
@@ -1438,172 +1422,159 @@ class KTAPI_Document extends KTAPI_FolderItem
 		 return $results;
 	}
 
-	/**
-	 * Gets a simple array of document metadata fields
-	 *
-	 * <code>
-	 * $ktapi = new KTAPI();
+    /**
+     * Gets a simple array of document metadata fields
+     *
+     * <code>
+     * $ktapi = new KTAPI();
      * $session = $ktapi->start_system_session();
-	 * $document = $ktapi->get_document_by_id($documentid);
-	 * $metadata = $document->get_packed_metadata();
-	 * foreach($metadata as $field){
-	 *     echo '<br><br>Fieldset: ' . $field[0]->getParentFieldset();
-	 *     echo '<br>Field name: ' .$field[0]->getName();
-	 *     echo ' Value: ' . $field[1];
-	 * }
-	 * </code>
-	 *
-	 * @author KnowledgeTree Team
-	 * @access public
-	 * @param array $metadata The full metadata fieldsets and fields
-	 * @return array An array of metadata field object and value pairs
-	 */
-	function get_packed_metadata($metadata=null)
-	{
-		global $default;
+     * $document = $ktapi->get_document_by_id($documentid);
+     * $metadata = $document->get_packed_metadata();
+     * foreach($metadata as $field) {
+     *     echo '<br><br>Fieldset: ' . $field[0]->getParentFieldset();
+     *     echo '<br>Field name: ' .$field[0]->getName();
+     *     echo ' Value: ' . $field[1];
+     * }
+     * </code>
+     *
+     * @author KnowledgeTree Team
+     * @access public
+     * @param array $metadata The full metadata fieldsets and fields
+     * @return array An array of metadata field object and value pairs
+     */
+    function get_packed_metadata($metadata = null)
+    {
+        global $default;
 
-		if (is_null($metadata))
-		{
-		    $metadata = $this->get_metadata();
-		}
+        if (is_null($metadata)) {
+            $metadata = $this->get_metadata();
+        }
 
-		 $packed = array();
+        $packed = array();
 
-		 foreach($metadata as $fieldset_metadata)
-		 {
-		 	if (is_array($fieldset_metadata))
-		 	{
-		 		$fieldsetname=$fieldset_metadata['fieldset'];
-		 		$fields=$fieldset_metadata['fields'];
-		 	}
-		 	elseif ($fieldset_metadata instanceof stdClass)  //$fieldset_metadata instanceof stdClass)
-		 	{
-		 		$fieldsetname=$fieldset_metadata->fieldset;
-		 		$fields=$fieldset_metadata->fields;
-		 	}
-		 	else
-		 	{
-		 		$default->log->debug("unexpected fieldset type");
-		 		continue;
-		 	}
+        foreach($metadata as $fieldset_metadata) {
+           if (is_array($fieldset_metadata)) {
+               $fieldsetname = $fieldset_metadata['fieldset'];
+               $fields = $fieldset_metadata['fields'];
+           }
+           else if ($fieldset_metadata instanceof stdClass) {
+               $fieldsetname = $fieldset_metadata->fieldset;
+               $fields = $fieldset_metadata->fields;
+           }
+           else {
+               $default->log->debug("unexpected fieldset type");
+               continue;
+           }
 
-		 	$fieldset = KTFieldset::getByName($fieldsetname);
-		 	if (is_null($fieldset) || PEAR::isError($fieldset) || $fieldset instanceof KTEntityNoObjects)  //$fieldset instanceof KTEntityNoObjects)
-		 	{
-		 		$default->log->debug("could not resolve fieldset: $fieldsetname for document id: $this->documentid");
-		 		// exit graciously
-		 		continue;
-		 	}
+           $fieldset = KTFieldset::getByName($fieldsetname);
+           if (is_null($fieldset) || PEAR::isError($fieldset) || $fieldset instanceof KTEntityNoObjects) {
+               $default->log->debug("could not resolve fieldset: $fieldsetname for document id: $this->documentid");
+               // exit graciously
+               continue;
+           }
 
-		 	foreach($fields as $fieldinfo)
-		 	{
-		 		if (is_array($fieldinfo))
-		 		{
-		 			$fieldname = $fieldinfo['name'];
+           foreach($fields as $fieldinfo) {
+               if (is_array($fieldinfo)) {
+                   $fieldname = $fieldinfo['name'];
+                   // if the 'blankvalue' argument was set to 1 (true) then do not use the current value;
+                   // this prevents the 'n/a' values set for blank fields on get_metadata from being saved as such
+                   // while allowing user entered values of 'n/a' to be saved
+                   $value = ($fieldinfo['value'] == 'n/a' && $fieldinfo['blankvalue']) ? '' : $fieldinfo['value'];
+               }
+               else if ($fieldinfo instanceof stdClass) {
+                   $fieldname = $fieldinfo->name;
+                   $value = $fieldinfo->value;
+               }
+               else {
+                   $default->log->debug("unexpected fieldinfo type");
+                   continue;
+               }
 
-		 			// if the 'blankvalue' argument was set to 1 (true) then do not use the current value;
-		 			// this prevents the 'n/a' values set for blank fields on get_metadata from being saved as such
-		 			// while allowing user entered values of 'n/a' to be saved
-		 			$value = ($fieldinfo['value'] == 'n/a' && $fieldinfo['blankvalue']) ? '' : $fieldinfo['value'];
-		 		}
-		 		elseif ($fieldinfo instanceof stdClass)   // $fieldinfo instanceof stdClass)
-		 		{
-		 			$fieldname = $fieldinfo->name;
-		 			$value = $fieldinfo->value;
-		 		}
-		 		else
-		 		{
-		 			$default->log->debug("unexpected fieldinfo type");
-		 			continue;
-		 		}
+               $field = DocumentField::getByFieldsetAndName($fieldset, $fieldname);
+               if (is_null($field) || PEAR::isError($field) || $field instanceof KTEntityNoObjects) {
+                   $default->log->debug("Could not resolve field: $fieldname on fieldset $fieldsetname for document id: $this->documentid");
+                   // exit graciously
+                   continue;
+               }
 
-		 		$field = DocumentField::getByFieldsetAndName($fieldset, $fieldname);
-		 		if (is_null($field) || PEAR::isError($field) || $field instanceof KTEntityNoObjects)
-		 		{
-		 			$default->log->debug("Could not resolve field: $fieldname on fieldset $fieldsetname for document id: $this->documentid");
-		 			// exit graciously
-		 			continue;
-		 		}
+               $packed[] = array($field, $value);
+           }
+        }
 
-		 		$packed[] = array($field, $value);
-		 	}
-		 }
+        return $packed;
+    }
 
-		 return $packed;
-	}
-
-	/**
-	 * This updates the metadata on the document. This includes the 'title'.
-	 *
-	 * <code>
-	 * $ktapi = new KTAPI();
+    /**
+     * This updates the metadata on the document. This includes the 'title'.
+     *
+     * <code>
+     * $ktapi = new KTAPI();
      * $session = $ktapi->start_system_session();
-	 * $document = $ktapi->get_document_by_id($documentid);
-	 * $metadata = $document->get_metadata();
-	 * foreach($metadata as $key => $fieldset){
-	 *     if($fieldset['fieldset'] == 'XYZ'){
-	 *
-	 *         foreach($fieldset['fields'] as $k => $field){
-	 *             if($field['name'] == 'ABC'){
-	 *                 $metadata[$key][fields][$k]['value'] = 'new value';
-	 *             }
-	 *         }
-	 *     }
-	 * }
-	 *
-	 * $res = $document->update_metadata($metadata);
-	 * </code>
-	 *
-	 * @author KnowledgeTree Team
-	 * @access public
-	 * @param array This is an array containing the metadata to be associated with the document.
-	 * @return void|PEAR_Error Returns nothing on success | a PEAR_Error on failure
-	 */
-	function update_metadata($metadata)
-	{
-	    global $default;
-	    if (empty($metadata))
-	    {
-	        return;
-	    }
+     * $document = $ktapi->get_document_by_id($documentid);
+     * $metadata = $document->get_metadata();
+     * foreach($metadata as $key => $fieldset) {
+     *     if ($fieldset['fieldset'] == 'XYZ') {
+     *
+     *         foreach($fieldset['fields'] as $k => $field) {
+     *             if ($field['name'] == 'ABC') {
+     *                 $metadata[$key][fields][$k]['value'] = 'new value';
+     *             }
+     *         }
+     *     }
+     * }
+     *
+     * $res = $document->update_metadata($metadata);
+     * </code>
+     *
+     * @author KnowledgeTree Team
+     * @access public
+     * @param array This is an array containing the metadata to be associated with the document.
+     * @return void|PEAR_Error Returns nothing on success | a PEAR_Error on failure
+     */
+    function update_metadata($metadata)
+    {
+        global $default;
 
-	    $packed = $this->get_packed_metadata($metadata);
+        if (empty($metadata)) {
+            return;
+        }
 
-	    DBUtil::startTransaction();
+        $packed = $this->get_packed_metadata($metadata);
 
-	    $user = $this->ktapi->get_user();
-	    $this->document->setLastModifiedDate(getCurrentDateTime());
-	    $this->document->setModifiedUserId($user->getId());
+        DBUtil::startTransaction();
 
-	    // Update the content version / document version
-	    if($default->updateContentVersion){
-	        $this->document->startNewContentVersion($user);
-	        $this->document->setMinorVersionNumber($this->document->getMinorVersionNumber()+1);
-	    }else {
-	        $this->document->startNewMetadataVersion($user);
-	    }
+        $user = $this->ktapi->get_user();
+        $this->document->setLastModifiedDate(getCurrentDateTime());
+        $this->document->setModifiedUserId($user->getId());
 
-	    $res = $this->document->update();
-	    if (PEAR::isError($res))
-	    {
-	        DBUtil::rollback();
-	        return new KTAPI_Error('Unexpected failure updating document', $res);
-	    }
+        // Update the content version / document version
+        if ($default->updateContentVersion) {
+            $this->document->startNewContentVersion($user);
+            $this->document->setMinorVersionNumber($this->document->getMinorVersionNumber()+1);
+        }
+        else {
+            $this->document->startNewMetadataVersion($user);
+        }
 
-	    $result = KTDocumentUtil::saveMetadata($this->document, $packed, array('novalidate'=>true));
+        $res = $this->document->update();
+        if (PEAR::isError($res)) {
+            DBUtil::rollback();
+            return new KTAPI_Error('Unexpected failure updating document', $res);
+        }
 
-	    if (is_null($result))
-	    {
-	        DBUtil::rollback();
-	        return new PEAR_Error(KTAPI_ERROR_INTERNAL_ERROR . ': Null result returned but not expected.');
-	    }
-	    if (PEAR::isError($result))
-	    {
-	        DBUtil::rollback();
-	        return new KTAPI_Error('Unexpected validation failure', $result);
-	    }
-	    DBUtil::commit();
+        $result = KTDocumentUtil::saveMetadata($this->document, $packed, array('novalidate' => true));
 
+        if (is_null($result)) {
+            DBUtil::rollback();
+            return new PEAR_Error(KTAPI_ERROR_INTERNAL_ERROR . ': Null result returned but not expected.');
+        }
+
+        if (PEAR::isError($result)) {
+            DBUtil::rollback();
+            return new KTAPI_Error('Unexpected validation failure', $result);
+        }
+
+        DBUtil::commit();
 
         $oKTTriggerRegistry = KTTriggerRegistry::getSingleton();
         $aTriggers = $oKTTriggerRegistry->getTriggers('edit', 'postValidate');
@@ -1634,11 +1605,11 @@ class KTAPI_Document extends KTAPI_FolderItem
         $iPermissionObjectId = $folder->getPermissionObjectID();
         $dynamicCondition = KTPermissionDynamicCondition::getByPermissionObjectId($iPermissionObjectId);
 
-        if(!PEAR::isError($dynamicCondition) && !empty($dynamicCondition)){
+        if (!PEAR::isError($dynamicCondition) && !empty($dynamicCondition)) {
             $res = KTPermissionUtil::updatePermissionLookup($this->document);
             KTPermissionUtil::clearCache();
         }
-	}
+    }
 
 	/**
 	 * This updates the system metadata on the document.
@@ -1673,7 +1644,7 @@ class KTAPI_Document extends KTAPI_FolderItem
 				$name = $rec->name;
 				$value = sanitizeForSQL($rec->value);
 			}
-			elseif(is_array($rec))
+			elseif (is_array($rec))
 			{
 				$name = $rec['name'];
 				$value = sanitizeForSQL($rec['value']);
@@ -2034,6 +2005,7 @@ class KTAPI_Document extends KTAPI_FolderItem
 	function get_permission_string($document)
 	{
 		$perms = 'R';
+
 		if (Permission::userHasDocumentWritePermission($document)) {
 			$perms .= 'W';
 
@@ -2049,10 +2021,11 @@ class KTAPI_Document extends KTAPI_FolderItem
 		if (Permission::userHasDeleteDocumentPermission($document)) {
 		    $perms .= 'D';
 		}
-		
+
 		if (Permission::userHasSecurityFolderPermission($document)) {
 		    $perms .= 'S';
 		}
+
 		return $perms;
 	}
 
@@ -2287,7 +2260,7 @@ class KTAPI_Document extends KTAPI_FolderItem
 			unset($detail['updated_by']);
 			unset($detail['updated_date']);
 		}
-		if($wsversion < 3){
+		if ($wsversion < 3) {
 			unset($detail['linked_document_id']);
 		}
 
@@ -2544,7 +2517,7 @@ class KTAPI_Document extends KTAPI_FolderItem
 	 * $ktapi = new KTAPI();
      * $session = $ktapi->start_system_session();
 	 * $document = $ktapi->get_document_by_id($documentid);
-	 * if($document->is_deleted()){
+	 * if ($document->is_deleted()) {
      *     $document->expunge();
      * }
 	 * </code>
@@ -2690,10 +2663,10 @@ class KTAPI_Document extends KTAPI_FolderItem
         $subscription = & Subscription::getByIDs($user->getId(), $document->getId(), $subscriptionType);
         $result = $subscription->delete();
 
-        if(PEAR::isError($result)){
+        if (PEAR::isError($result)) {
             return $result->getMessage();
         }
-        if($result){
+        if ($result) {
             return $result;
         }
 
@@ -2721,10 +2694,10 @@ class KTAPI_Document extends KTAPI_FolderItem
         $subscription = new Subscription($user->getId(), $document->getId(), $subscriptionType);
         $result = $subscription->create();
 
-        if(PEAR::isError($result)){
+        if (PEAR::isError($result)) {
             return $result->getMessage();
         }
-        if($result){
+        if ($result) {
             return $result;
         }
 
@@ -2751,7 +2724,7 @@ class KTAPI_Document extends KTAPI_FolderItem
 	 */
 	public function immute()
 	{
-	    if($this->is_checked_out()){
+	    if ($this->is_checked_out()) {
 	        return new PEAR_Error('Document is checked out and can\'t be finalized.');
 	    }
         $this->document->setImmutable(true);
@@ -2817,12 +2790,12 @@ class KTAPI_Document extends KTAPI_FolderItem
         $allowEmailAddresses = $config->get('email/allowEmailAddresses', false);
 
         // if attachments aren't allowed, set $attachDocument to false
-        if(!$allowAttachment) {
+        if (!$allowAttachment) {
             $attachDocument = false;
         }
 
         // If sending to external email addresses is not allowed - set array of external recipients to empty
-        if(!$allowEmailAddresses) {
+        if (!$allowEmailAddresses) {
             $emailAddrs = array();
         }
 
@@ -2840,7 +2813,7 @@ class KTAPI_Document extends KTAPI_FolderItem
             sendExternalEmails($emailAddrs, $this->documentid, $this->get_title(), $comment, $emailErrors);
         }
 
-        if(empty($userEmails)) {
+        if (empty($userEmails)) {
             return;
         }
 

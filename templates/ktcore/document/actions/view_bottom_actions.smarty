@@ -1,25 +1,27 @@
 <nobr>
-	{* Display top row action buttons *}
-    {foreach item=btn from=$actionBtns}
-        <div class="action">
-            {if $btn.menu}
-                <div class="splitbutton"><span class="button" id="{$btn.icon_class}">{$btn.name}</span><span class="split">&#9660;</span></div>
+	{if $hasMoreActions}
+		{* Display top row action buttons *}
+	    {foreach item=btn from=$actionBtns}
+	        <div class="action">
+	            {if $btn.menu}
+	                <div class="splitbutton"><span class="button" id="{$btn.icon_class}">{$btn.name}</span><span class="split">&#9660;</span></div>
 
-                {* Display the drop down menu's on the split buttons *}
-                <ul class="splitmenu" id="more">
-                    {foreach item=menuitem from=$btn.menu}
-                        {if $menuitem.status === 'disabled'}
-                            <li><span class="button disabled" id="{$menuitem.icon_class}">{$menuitem.name}</span></li>
-                        {else}
-                            <li><a id="{$menuitem.icon_class}" href="{$menuitem.url}" onclick='{$menuitem.onclick}'>{$menuitem.name}</a></li>
-                        {/if}
-                    {/foreach}
-                </ul>
-            {else}
-                <div><a class="button" id="{$btn.icon_class}" href="{$btn.url}" onclick='{$btn.onclick}'>{$btn.name}</a></div>
-            {/if}
-        </div>
-    {/foreach}
+	                {* Display the drop down menu's on the split buttons *}
+	                <ul class="splitmenu" id="more">
+	                    {foreach item=menuitem from=$btn.menu}
+	                        {if $menuitem.status === 'disabled'}
+	                            <li><span class="button disabled" id="{$menuitem.icon_class}">{$menuitem.name}</span></li>
+	                        {else}
+	                            <li><a id="{$menuitem.icon_class}" href="{$menuitem.url}" onclick='{$menuitem.onclick}'>{$menuitem.name}</a></li>
+	                        {/if}
+	                    {/foreach}
+	                </ul>
+	            {else}
+	                <div><a class="button" id="{$btn.icon_class}" href="{$btn.url}" onclick='{$btn.onclick}'>{$btn.name}</a></div>
+	            {/if}
+	        </div>
+	    {/foreach}
+	{/if}
 
     {* Display download / preview links *}
     {foreach item=btn from=$actionLinks}

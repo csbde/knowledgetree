@@ -1,5 +1,7 @@
 <?php
 
+require_once('config.inc.php');
+
 class KTInit {
 
     protected static $handlerMapping = array(
@@ -28,6 +30,7 @@ class KTInit {
         $this->configureLog($logDir, $logLevel, $userId, $dbName);
 
         $default->log = LoggerManager::getLogger('default');
+        $default->wsLog = LoggerManager::getLogger('webservice');
         $default->queryLog = LoggerManager::getLogger('sql');
         $default->timerLog = LoggerManager::getLogger('timer');
         $default->phpErrorLog = LoggerManager::getLogger('php');
@@ -50,7 +53,7 @@ class KTInit {
         $properties['log4php.appender.default.layout.conversionPattern'] = '%d{Y-m-d | H:i:s} | %p | %t | %r | %X{userid} | %X{db} | %c | %M | %m%n';
         $properties['log4php.appender.default.datePattern'] = 'Y-m-d';
         $properties['log4php.appender.default.file'] = $logDir . '/kt%s.' . KTUtil::running_user() . '.log.txt';
-
+        
         // get the log level set in the configuration settings to override the level set in ktlog.ini
         // for the default / main logging. Additional logging can be configured through the ini file
         $properties['log4php.rootLogger'] = $logLevel . ', default';
@@ -270,9 +273,8 @@ class KTInit {
         $useCache = false;
         $storeCache = true;
 
-        // If the cache needs to be cleared for debugging purposes uncomment the following lines..
-        /*$KTConfig->clearCache();
-        $useCache = false;*/
+        // If the cache needs to be cleared for debugging purposes uncomment the following line..
+        //$KTConfig->clearCache();
 
         if (!isset($_SERVER['HTTP_HOST']) || empty($_SERVER['HTTP_HOST'])) {
             // If the http_host server variable is not set then the serverName gets set to localhost
@@ -280,14 +282,10 @@ class KTInit {
             $storeCache = false;
         }
 
-        $useCache = $KTConfig->setMemCache();
-
-        if ($useCache) {
-            $useCache = $KTConfig->loadCache();
-        }
+        $useCache = $KTConfig->loadCache();
 
         if ($useCache === false) {
-            //Read in DB settings and config settings
+            // Read in DB settings and config settings
             $KTConfig->readDBConfig();
         }
 

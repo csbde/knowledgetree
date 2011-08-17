@@ -38,7 +38,7 @@ workflowsBlock.prototype.submitForm = function(action) {
 	jQuery.ajax({ url: address,	dataType: "html", type: "POST", cache: false, 
 					beforeSend: function(data) { 
 						// Display loading message
-						jQuery('#add_workflow').html('Saving...');
+						jQuery('#add_workflow').addClass('ktInfo').html('Saving...');
 					},
 					success: function(data) {
 						response = jQuery.parseJSON(data);
@@ -49,7 +49,7 @@ workflowsBlock.prototype.submitForm = function(action) {
 						}
 						
 						// Display saved message
-						jQuery('#add_workflow').html(response.message);
+						jQuery('#add_workflow').removeClass('ktInfo').html(response.message);
 						// Remove modal window
 						jQuery('#workflows-panel').remove().delay(2000);
 						// Refresh alert sidebar

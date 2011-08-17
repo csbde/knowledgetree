@@ -43,7 +43,7 @@
         </tr>
 
         <tr>
-            <td style="vertical-align: top" colspan="2">
+            <td style="vertical-align: top" colspan="2" class="group">
                 <input type="text" name="groups_roles" id="groups-roles-selector-widget"/>
             </td>
         </tr>

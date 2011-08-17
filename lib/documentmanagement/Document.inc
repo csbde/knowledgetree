@@ -50,142 +50,142 @@ require_once(KT_LIB_DIR . '/documentmanagement/documentmetadataversion.inc.php')
 
 class Document {
 
-    var $iId;
+    public $iId;
 
-    var $_oDocumentCore = null;
-    var $_oDocumentContentVersion = null;
-    var $_oDocumentMetadataVersion = null;
+    public $_oDocumentCore = null;
+    public $_oDocumentContentVersion = null;
+    public $_oDocumentMetadataVersion = null;
 
-    var $iCurrentMetadataVersionId = null;
+    public $iCurrentMetadataVersionId = null;
 
     // {{{ getters/setters
 
     // locally stored info.
 
-    function getId() { return $this->iId; }
+    public function getId() { return $this->iId; }
 
     // Document Core
 
-    function getFolderID() { return $this->_oDocumentCore->getFolderId(); }
-    function setFolderID($iNewValue) { $this->_oDocumentCore->setFolderId($iNewValue); }
+    public function getFolderID() { return $this->_oDocumentCore->getFolderId(); }
+    public function setFolderID($iNewValue) { $this->_oDocumentCore->setFolderId($iNewValue); }
 
-    function getFullPath() { return $this->_oDocumentCore->getFullPath(); }
+    public function getFullPath() { return $this->_oDocumentCore->getFullPath(); }
 
-    function getCreatorID() { return $this->_oDocumentCore->getCreatorId(); }
-    function setCreatorID($iNewValue) { $this->_oDocumentCore->setCreatorId($iNewValue); }
+    public function getCreatorID() { return $this->_oDocumentCore->getCreatorId(); }
+    public function setCreatorID($iNewValue) { $this->_oDocumentCore->setCreatorId($iNewValue); }
 
-    function getOwnerID() { return $this->_oDocumentCore->getOwnerId(); }
-    function setOwnerID($iNewValue) { $this->_oDocumentCore->setOwnerId($iNewValue); }
+    public function getOwnerID() { return $this->_oDocumentCore->getOwnerId(); }
+    public function setOwnerID($iNewValue) { $this->_oDocumentCore->setOwnerId($iNewValue); }
 
-    function getLastModifiedDate() { return $this->_oDocumentCore->getLastModifiedDate(); }
-    function setLastModifiedDate($dNewValue) { $this->_oDocumentCore->setLastModifiedDate($dNewValue); }
+    public function getLastModifiedDate() { return $this->_oDocumentCore->getLastModifiedDate(); }
+    public function setLastModifiedDate($dNewValue) { $this->_oDocumentCore->setLastModifiedDate($dNewValue); }
 
-    function getCreatedDateTime() { return $this->_oDocumentCore->getCreatedDateTime(); }
+    public function getCreatedDateTime() { return $this->_oDocumentCore->getCreatedDateTime(); }
 
-    function getIsCheckedOut() { return $this->_oDocumentCore->getIsCheckedOut(); }
-    function setIsCheckedOut($bNewValue) { $this->_oDocumentCore->setIsCheckedOut(KTUtil::anyToBool($bNewValue)); }
+    public function getIsCheckedOut() { return $this->_oDocumentCore->getIsCheckedOut(); }
+    public function setIsCheckedOut($bNewValue) { $this->_oDocumentCore->setIsCheckedOut(KTUtil::anyToBool($bNewValue)); }
 
-    function getCheckedOutUserID() { return $this->_oDocumentCore->getCheckedOutUserId(); }
-    function setCheckedOutUserID($iNewValue) { $this->_oDocumentCore->setCheckedOutUserId($iNewValue); }
+    public function getCheckedOutUserID() { return $this->_oDocumentCore->getCheckedOutUserId(); }
+    public function setCheckedOutUserID($iNewValue) { $this->_oDocumentCore->setCheckedOutUserId($iNewValue); }
 
-    function getCheckedOutDate() { return $this->_oDocumentCore->getCheckedOutDate(); }
-    function setCheckedOutDate($dNewValue) { $this->_oDocumentCore->setCheckedOutDate($dNewValue); }
+    public function getCheckedOutDate() { return $this->_oDocumentCore->getCheckedOutDate(); }
+    public function setCheckedOutDate($dNewValue) { $this->_oDocumentCore->setCheckedOutDate($dNewValue); }
 
-    function getPermissionObjectID() { return $this->_oDocumentCore->getPermissionObjectId(); }
-    function setPermissionObjectID($iNewValue) { $this->_oDocumentCore->setPermissionObjectId($iNewValue); }
+    public function getPermissionObjectID() { return $this->_oDocumentCore->getPermissionObjectId(); }
+    public function setPermissionObjectID($iNewValue) { $this->_oDocumentCore->setPermissionObjectId($iNewValue); }
 
-    function getPermissionLookupID() { return $this->_oDocumentCore->getPermissionLookupId(); }
-    function setPermissionLookupID($iNewValue) { $this->_oDocumentCore->setPermissionLookupId($iNewValue); }
+    public function getPermissionLookupID() { return $this->_oDocumentCore->getPermissionLookupId(); }
+    public function setPermissionLookupID($iNewValue) { $this->_oDocumentCore->setPermissionLookupId($iNewValue); }
 
-    function getModifiedUserId() { return $this->_oDocumentCore->getModifiedUserId(); }
-    function setModifiedUserId($iNewValue) { $this->_oDocumentCore->setModifiedUserId($iNewValue); }
+    public function getModifiedUserId() { return $this->_oDocumentCore->getModifiedUserId(); }
+    public function setModifiedUserId($iNewValue) { $this->_oDocumentCore->setModifiedUserId($iNewValue); }
 
-    function getImmutable() { return $this->_oDocumentCore->getImmutable(); }
-    function setImmutable($mValue) { $this->_oDocumentCore->setImmutable($mValue); }
+    public function getImmutable() { return $this->_oDocumentCore->getImmutable(); }
+    public function setImmutable($mValue) { $this->_oDocumentCore->setImmutable($mValue); }
 
-    function getRestoreFolderId() { return $this->_oDocumentCore->getRestoreFolderId(); }
-    function setRestoreFolderId($iValue) { $this->_oDocumentCore->setRestoreFolderId($iValue); }
+    public function getRestoreFolderId() { return $this->_oDocumentCore->getRestoreFolderId(); }
+    public function setRestoreFolderId($iValue) { $this->_oDocumentCore->setRestoreFolderId($iValue); }
 
-    function getRestoreFolderPath() { return $this->_oDocumentCore->getRestoreFolderPath(); }
-    function setRestoreFolderPath($sValue) { $this->_oDocumentCore->setRestoreFolderPath($sValue); }
+    public function getRestoreFolderPath() { return $this->_oDocumentCore->getRestoreFolderPath(); }
+    public function setRestoreFolderPath($sValue) { $this->_oDocumentCore->setRestoreFolderPath($sValue); }
 
-    function getOemNo() { return $this->_oDocumentCore->getOemNo(); }
+    public function getOemNo() { return $this->_oDocumentCore->getOemNo(); }
 
-    function getLinkedDocumentId() { return $this->_oDocumentCore->getLinkedDocumentId();}
-    function setLinkedDocumentId($iNewValue) { $this->_oDocumentCore->setLinkedDocumentId($iNewValue);}
+    public function getLinkedDocumentId() { return $this->_oDocumentCore->getLinkedDocumentId();}
+    public function setLinkedDocumentId($iNewValue) { $this->_oDocumentCore->setLinkedDocumentId($iNewValue);}
 
     // Document Metadata Items
 
-    function getDocumentTypeID() { return $this->_oDocumentMetadataVersion->getDocumentTypeId(); }
-    function setDocumentTypeID($sNewValue) { $this->_oDocumentMetadataVersion->setDocumentTypeId($sNewValue); }
+    public function getDocumentTypeID() { return $this->_oDocumentMetadataVersion->getDocumentTypeId(); }
+    public function setDocumentTypeID($sNewValue) { $this->_oDocumentMetadataVersion->setDocumentTypeId($sNewValue); }
 
-    function getName() { return $this->_oDocumentMetadataVersion->getName(); }
-    function setName($sNewValue) { $this->_oDocumentMetadataVersion->setName($sNewValue); }
+    public function getName() { return $this->_oDocumentMetadataVersion->getName(); }
+    public function setName($sNewValue) { $this->_oDocumentMetadataVersion->setName($sNewValue); }
 
-    function getDescription() { return $this->_oDocumentMetadataVersion->getDescription(); }
-    function setDescription($sNewValue) { $this->_oDocumentMetadataVersion->setDescription($sNewValue); }
+    public function getDescription() { return $this->_oDocumentMetadataVersion->getDescription(); }
+    public function setDescription($sNewValue) { $this->_oDocumentMetadataVersion->setDescription($sNewValue); }
 
-    function getStatusID() { return $this->_oDocumentCore->getStatusId(); }
-    function setStatusID($iNewValue) { $this->_oDocumentMetadataVersion->setStatusId($iNewValue); $this->_oDocumentCore->setStatusId($iNewValue); }
+    public function getStatusID() { return $this->_oDocumentCore->getStatusId(); }
+    public function setStatusID($iNewValue) { $this->_oDocumentMetadataVersion->setStatusId($iNewValue); $this->_oDocumentCore->setStatusId($iNewValue); }
 
-    function getMetadataStatusID() { return $this->_oDocumentMetadataVersion->getStatusId(); }
-    function setMetadataStatusID($iNewValue) { $this->_oDocumentMetadataVersion->setStatusId($iNewValue); }
+    public function getMetadataStatusID() { return $this->_oDocumentMetadataVersion->getStatusId(); }
+    public function setMetadataStatusID($iNewValue) { $this->_oDocumentMetadataVersion->setStatusId($iNewValue); }
 
-    function getMetadataVersion() { return $this->_oDocumentMetadataVersion->getMetadataVersion(); }
-    function setMetadataVersion($iNewValue) { $this->_oDocumentMetadataVersion->setMetadataVersion($iNewValue); }
+    public function getMetadataVersion() { return $this->_oDocumentMetadataVersion->getMetadataVersion(); }
+    public function setMetadataVersion($iNewValue) { $this->_oDocumentMetadataVersion->setMetadataVersion($iNewValue); }
 
-    function getMetadataVersionId() { return $this->_oDocumentMetadataVersion->getId(); }
-    function setMetadataVersionId($iNewValue) { $this->_oDocumentCore->setMetadataVersionId($iNewValue); }
+    public function getMetadataVersionId() { return $this->_oDocumentMetadataVersion->getId(); }
+    public function setMetadataVersionId($iNewValue) { $this->_oDocumentCore->setMetadataVersionId($iNewValue); }
 
-    function getContentVersionId() { return $this->_oDocumentMetadataVersion->getContentVersionId(); }
-    function setContentVersionId($iNewValue) { $this->_oDocumentMetadataVersion->setContentVersionId($iNewValue); }
+    public function getContentVersionId() { return $this->_oDocumentMetadataVersion->getContentVersionId(); }
+    public function setContentVersionId($iNewValue) { $this->_oDocumentMetadataVersion->setContentVersionId($iNewValue); }
 
-    function getVersionCreated() { return $this->_oDocumentMetadataVersion->getVersionCreated(); }
-    function getVersionCreatorId() { return $this->_oDocumentMetadataVersion->getVersionCreatorId(); }
+    public function getVersionCreated() { return $this->_oDocumentMetadataVersion->getVersionCreated(); }
+    public function getVersionCreatorId() { return $this->_oDocumentMetadataVersion->getVersionCreatorId(); }
 
-    function getWorkflowId() { return $this->_oDocumentMetadataVersion->getWorkflowId(); }
-    function setWorkflowId($mValue) { $this->_oDocumentMetadataVersion->setWorkflowId($mValue); }
-    function getWorkflowStateId() { return $this->_oDocumentMetadataVersion->getWorkflowStateId(); }
-    function setWorkflowStateId($mValue) { $this->_oDocumentMetadataVersion->setWorkflowStateId($mValue); }
+    public function getWorkflowId() { return $this->_oDocumentMetadataVersion->getWorkflowId(); }
+    public function setWorkflowId($mValue) { $this->_oDocumentMetadataVersion->setWorkflowId($mValue); }
+    public function getWorkflowStateId() { return $this->_oDocumentMetadataVersion->getWorkflowStateId(); }
+    public function setWorkflowStateId($mValue) { $this->_oDocumentMetadataVersion->setWorkflowStateId($mValue); }
 
     // Document Content Version
 
-    function getFileName() { return $this->_oDocumentContentVersion->getFileName(); }
-    function setFileName($sNewValue) { $this->_oDocumentContentVersion->setFileName($sNewValue); }
+    public function getFileName() { return $this->_oDocumentContentVersion->getFileName(); }
+    public function setFileName($sNewValue) { $this->_oDocumentContentVersion->setFileName($sNewValue); }
 
-    function getFileSize() { return $this->_oDocumentContentVersion->getSize(); }
-    function setFileSize($iNewValue) { $this->_oDocumentContentVersion->setSize($iNewValue); }
+    public function getFileSize() { return $this->_oDocumentContentVersion->getSize(); }
+    public function setFileSize($iNewValue) { $this->_oDocumentContentVersion->setSize($iNewValue); }
 
-    function getSize() { return $this->_oDocumentContentVersion->getSize(); }
-    function setSize($iNewValue) { $this->_oDocumentContentVersion->setSize($iNewValue); }
+    public function getSize() { return $this->_oDocumentContentVersion->getSize(); }
+    public function setSize($iNewValue) { $this->_oDocumentContentVersion->setSize($iNewValue); }
 
-    function getMimeTypeID() { return $this->_oDocumentContentVersion->getMimeTypeId(); }
-    function setMimeTypeID($iNewValue) { $this->_oDocumentContentVersion->setMimeTypeId($iNewValue); }
+    public function getMimeTypeID() { return $this->_oDocumentContentVersion->getMimeTypeId(); }
+    public function setMimeTypeID($iNewValue) { $this->_oDocumentContentVersion->setMimeTypeId($iNewValue); }
 
-    function getMajorVersionNumber() { return $this->_oDocumentContentVersion->getMajorVersionNumber(); }
-    function setMajorVersionNumber($iNewValue) { $this->_oDocumentContentVersion->setMajorVersionNumber($iNewValue); }
+    public function getMajorVersionNumber() { return $this->_oDocumentContentVersion->getMajorVersionNumber(); }
+    public function setMajorVersionNumber($iNewValue) { $this->_oDocumentContentVersion->setMajorVersionNumber($iNewValue); }
 
-    function getMinorVersionNumber() { return $this->_oDocumentContentVersion->getMinorVersionNumber(); }
-    function setMinorVersionNumber($iNewValue) { $this->_oDocumentContentVersion->setMinorVersionNumber($iNewValue); }
+    public function getMinorVersionNumber() { return $this->_oDocumentContentVersion->getMinorVersionNumber(); }
+    public function setMinorVersionNumber($iNewValue) { $this->_oDocumentContentVersion->setMinorVersionNumber($iNewValue); }
 
-    function getStoragePath() { return $this->_oDocumentContentVersion->getStoragePath(); }
-    function setStoragePath($sNewValue) { $this->_oDocumentContentVersion->setStoragePath($sNewValue); }
+    public function getStoragePath() { return $this->_oDocumentContentVersion->getStoragePath(); }
+    public function setStoragePath($sNewValue) { $this->_oDocumentContentVersion->setStoragePath($sNewValue); }
 
-    function getHasRendition() { return $this->_oDocumentContentVersion->getHasRendition(); }
-    function setHasRendition($iNewValue) { $this->_oDocumentContentVersion->setHasRendition($iNewValue); }
+    public function getHasRendition() { return $this->_oDocumentContentVersion->getHasRendition(); }
+    public function setHasRendition($iNewValue) { $this->_oDocumentContentVersion->setHasRendition($iNewValue); }
 
     // Timezone getters
-    function getDisplayCreatedDateTime() { return $this->_oDocumentCore->getDisplayCreatedDateTime(); }
-    function getDisplayLastModifiedDate() { return $this->_oDocumentCore->getDisplayLastModifiedDate(); }
-    function getDisplayCheckedOutDate() { return $this->_oDocumentCore->getDisplayCheckedOutDate(); }
-    function getDisplayVersionCreated() { return $this->_oDocumentMetadataVersion->getDisplayVersionCreated(); }
+    public function getDisplayCreatedDateTime() { return $this->_oDocumentCore->getDisplayCreatedDateTime(); }
+    public function getDisplayLastModifiedDate() { return $this->_oDocumentCore->getDisplayLastModifiedDate(); }
+    public function getDisplayCheckedOutDate() { return $this->_oDocumentCore->getDisplayCheckedOutDate(); }
+    public function getDisplayVersionCreated() { return $this->_oDocumentMetadataVersion->getDisplayVersionCreated(); }
 
     /**
      * Returns the symlink document instance
      *
      * @return Document the real document
      */
-    function getRealDocument()
+    public function getRealDocument()
     {
         return $this->_oDocumentCore->getRealDocument();
     }
@@ -195,7 +195,7 @@ class Document {
      *
      * @return boolean
      */
-    function isSymbolicLink()
+    public function isSymbolicLink()
     {
         $documentCore = KTDocumentCore::get($this->getId());
         return $documentCore->isSymbolicLink();
@@ -205,7 +205,7 @@ class Document {
      * Switches the core of this document to the core of the real doc.
      *
      */
-    function switchToRealCore()
+    public function switchToRealCore()
     {
         if ($this->isSymbolicLink())
         {
@@ -218,7 +218,7 @@ class Document {
      *
      * @return int the ID
      */
-    function getRealDocumentId()
+    public function getRealDocumentId()
     {
          $document = $this->getRealDocument();
          if (PEAR::isError($document)) { return $document; }
@@ -229,7 +229,7 @@ class Document {
      * Switches this documents core to the core of the document this document is linking to.
      *
      */
-    function switchToLinkedCore()
+    public function switchToLinkedCore()
     {
     	if ($this->isSymbolicLink())
         {
@@ -256,7 +256,7 @@ class Document {
      * Retrieves all symbolic links linking to this document
      *
      */
-    function getSymbolicLinks() {
+    public function getSymbolicLinks() {
     	$sQuery = 'SELECT * FROM documents ' .
 				'WHERE documents.linked_document_id =  '.$this->getId();
     	return DButil::getResultArray($sQuery);
@@ -269,39 +269,39 @@ class Document {
      * Allows documents to be treated like folders in terms of finding
      * their parent objects.
      */
-    function getParentID() {
+    public function getParentID() {
         return $this->getFolderID();
     }
     // }}}
 
     // {{{ getParentFolderIds
-    function getParentFolderIds() {
+    public function getParentFolderIds() {
         return $this->_oDocumentCore->getParentFolderIds();
     }
     // }}}
 
     // {{{ getVersion
     /** returns the complete version number as a string */
-    function getVersion() {
+    public function getVersion() {
         return $this->getMajorVersionNumber() . "." . $this->getMinorVersionNumber();
     }
     // }}}
 
     // {{{ isLive
     /** Returns the live status of the document */
-    function isLive() {
+    public function isLive() {
         return $this->getStatusID() == LIVE;
     }
     // }}}
 
     // {{{ isArchived
     /** Get status ID wrapper for archived status */
-    function isArchived() {
+    public function isArchived() {
         return $this->getStatusID() == ARCHIVED;
     }
     // }}}
 
-    function updateDocumentCore($bPathMove = false)
+    public function updateDocumentCore($bPathMove = false)
     {
         $res = $this->_oDocumentCore->update($bPathMove);
         if (PEAR::isError($res)) { var_dump($res); return $res; }
@@ -310,7 +310,7 @@ class Document {
     }
 
     // {{{ update
-    function update($bPathMove = false) {
+    public function update($bPathMove = false) {
         $res = $this->_oDocumentCore->update($bPathMove);
         if (PEAR::isError($res)) { var_dump($res); return $res; }
 
@@ -325,7 +325,7 @@ class Document {
     // }}}
 
     // {{{ get
-    function &get($iId, $iMetadataVersion=null) {
+    public function &get($iId, $iMetadataVersion=null) {
         if (!is_numeric($iId)) {
             return PEAR::raiseError(_kt('Non-numeric identifier'));
         }
@@ -340,7 +340,7 @@ class Document {
     // }}}
 
     // {{{ load
-	 function load($iId, $iMetadataVersionId = null) {
+	 public function load($iId, $iMetadataVersionId = null) {
         $this->iId = $iId;
         $this->_oDocumentCore = KTDocumentCore::get($iId);
         if (PEAR::isError($this->_oDocumentCore)) { return $this->_oDocumentCore; }
@@ -372,7 +372,7 @@ class Document {
     // }}}
 
     // {{{ getCurrentMetadataVersionId
-    function getCurrentMetadataVersionId() {
+    public function getCurrentMetadataVersionId() {
         return $this->iCurrentMetadataVersionId;
     }
     // }}}
@@ -386,7 +386,7 @@ class Document {
      *
      * @return Array array of Documents objects, false otherwise.
      */
-    function getList($sWhereClause = null) {
+    public static function getList($sWhereClause = null) {
         $aOptions = array('ids' => true);
         $aIds = KTDocumentCore::getList($sWhereClause, $aOptions);
         $aList = array();
@@ -404,7 +404,7 @@ class Document {
      *
      * @return string full path to document
      */
-    function getDisplayPath($bDisplayIcon = false) {
+    public function getDisplayPath($bDisplayIcon = false) {
         $sFolderPath = Folder::getFolderDisplayPath($this->getFolderID());
         // #3425 for consistency
         return ($bDisplayIcon ? $this->getIcon() : "") .
@@ -422,7 +422,7 @@ class Document {
      *
      * @return boolean true if document exists, false otherwise.
      */
-    function fileExists($sFileName, $iFolderID) {
+    public static function fileExists($sFileName, $iFolderID) {
         $sD = KTUtil::getTableName('documents');
         $sDM = KTUtil::getTableName('document_metadata_version');
         $sDC = KTUtil::getTableName('document_content_version');
@@ -439,7 +439,7 @@ class Document {
     }
     // }}}
 
-    function &getByFilenameAndFolder($sFileName, $iFolderID) {
+    public function &getByFilenameAndFolder($sFileName, $iFolderID) {
         $sD = KTUtil::getTableName('documents');
         $sDM = KTUtil::getTableName('document_metadata_version');
         $sDC = KTUtil::getTableName('document_content_version');
@@ -462,7 +462,7 @@ class Document {
      *
      * @return boolean true if document exists, false otherwise.
      */
-    function nameExists($sName, $iFolderID) {
+    public static function nameExists($sName, $iFolderID) {
         $sD = KTUtil::getTableName('documents');
         $sDM = KTUtil::getTableName('document_metadata_version');
         $sDC = KTUtil::getTableName('document_content_version');
@@ -480,7 +480,7 @@ class Document {
     }
     // }}}
 
-    function &getByNameAndFolder($sName, $iFolderID) {
+    public function &getByNameAndFolder($sName, $iFolderID) {
         $sD = KTUtil::getTableName('documents');
         $sDM = KTUtil::getTableName('document_metadata_version');
         $sDC = KTUtil::getTableName('document_content_version');
@@ -501,7 +501,7 @@ class Document {
      * @param integer primary key of document to generate path for
      * @return string full path to document
      */
-    function getDocumentDisplayPath($iDocumentID) {
+    public static function getDocumentDisplayPath($iDocumentID) {
         $oDocument = & Document::get($iDocumentID);
         return $oDocument->getDisplayPath();
     }
@@ -511,7 +511,7 @@ class Document {
     /**
      * Deletes content from document data tables
      */
-    function cleanupDocumentData($iDocumentID) {
+    public function cleanupDocumentData($iDocumentID) {
         return;
 
         // FIXME this appears to be deprecated, or at least should be
@@ -524,7 +524,7 @@ class Document {
     // }}}
 
     // {{{ getByFolderIDAndLookupID
-    function &getByFolderIDAndLookupID($iParentID, $iLookupID, $aOptions = null) {
+    public function &getByFolderIDAndLookupID($iParentID, $iLookupID, $aOptions = null) {
         $aIds = KTEntityUtil::getByDict('KTDocumentCore', array(
             'folder_id' => $iParentID,
             'permission_lookup_id' => $iLookupID,
@@ -539,7 +539,7 @@ class Document {
     // }}}
 
     // {{{ getByState
-    function &getByState($oState) {
+    public function &getByState($oState) {
         $iStateId = KTUtil::getId($oState);
 
         $sDocumentTable = KTUtil::getTableName('documents');
@@ -561,7 +561,7 @@ class Document {
     // }}}
 
     // {{{
-    function &createFromArray($aOptions) {
+    public function &createFromArray($aOptions) {
         if (KTUtil::arrayGet($aOptions, "size") === null) {
             $aOptions['size'] = 0;
         }
@@ -665,7 +665,7 @@ class Document {
     // }}}
 
     // {{{ startNewMetadataVersion
-    function startNewMetadataVersion($oUser) {
+    public function startNewMetadataVersion($oUser) {
         $iUserId = KTUtil::getId($oUser);
         // ensure metadata version is up to date
         $this->_oDocumentMetadataVersion = KTDocumentMetadataVersion::get($this->_oDocumentMetadataVersion->iId);
@@ -683,7 +683,7 @@ class Document {
     // }}}
 
     // {{{ startNewContentVersion
-    function startNewContentVersion($oUser) {
+    public function startNewContentVersion($oUser) {
         if ($this->getImmutable()) {
             return PEAR::raiseError(_kt('Cannot create new version of document: Document is immutable'));
         }
@@ -711,7 +711,7 @@ class Document {
     // }}}
 
     // {{{ getContentVersionIdFromVersion
-    function getContentVersionIdFromVersion($version)
+    public function getContentVersionIdFromVersion($version)
     {
         $aVersion = explode('.', $version);
         $major = $aVersion[0];
@@ -735,7 +735,7 @@ class Document {
     }
     // }}}
 
-    function getContentVersionStatus($version)
+    public function getContentVersionStatus($version)
     {
         $aVersion = explode('.', $version);
         $major = $aVersion[0];
@@ -764,7 +764,7 @@ class Document {
     }
 
     // {{{ getMetadataVersionIdFromVersion
-    static function getMetadataVersionIdFromVersion($doc_id, $version)
+    public static function getMetadataVersionIdFromVersion($doc_id, $version)
     {
         $query = "select id from document_metadata_version where document_id = $doc_id and metadata_version = $version";
         $result = DBUtil::getOneResultKey($query, 'id');
@@ -781,7 +781,7 @@ class Document {
     // }}}
 
     // {{{ delete
-    function delete() {
+    public function delete() {
         $this->_oDocumentCore->setMetadataVersionId(null);
         $this->_oDocumentCore->update();
 
@@ -800,7 +800,7 @@ class Document {
     }
     // }}}
 
-    function clearAllCaches() {
+    public function clearAllCaches() {
     	$GLOBALS["_OBJECTCACHE"]['Document'] = array();
         KTEntityUtil::clearAllCaches('KTDocumentCore');
         KTEntityUtil::clearAllCaches('KTDocumentContentVersion');
@@ -810,7 +810,7 @@ class Document {
     }
 
 
-    function getLastTransactionComment($sTransactionNamespace) {
+    public function getLastTransactionComment($sTransactionNamespace) {
         $sDocumentTransactionTable = KTUtil::getTableName('document_transactions');
 
         $sQuery = sprintf("SELECT comment FROM %s
@@ -828,7 +828,7 @@ class Document {
 	return $sComment;
     }
 
-    function getLastDeletionComment() {
+    public function getLastDeletionComment() {
 	$sComment = $this->getLastTransactionComment('ktcore.transactions.delete');
 	if (!$sComment) {
 	    return $sComment;
@@ -838,7 +838,7 @@ class Document {
 	return trim($aComment[1]);
     }
 
-    static function getStatusString($statusId)
+    public static function getStatusString($statusId)
     {
         $statuses = array(
                 1 => _kt('Live'),

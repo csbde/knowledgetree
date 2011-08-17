@@ -10,8 +10,8 @@ of related information.{/i18n}</p>
             <th colspan="2">{i18n}Position{/i18n}</th>
             <th>{i18n}Field Name{/i18n}</th>
             <th>{i18n}Type Description{/i18n}</th>
-            <th class="centered" style="width: 10px;">{i18n}Edit{/i18n}</th>
-            <th class="centered" style="width: 10px;">{i18n}Delete{/i18n}</th>
+            <th class="icon-column">{i18n}Edit{/i18n}</th>
+            <th class="icon-column">{i18n}Delete{/i18n}</th>
         </tr>
     </thead>
     <tbody>

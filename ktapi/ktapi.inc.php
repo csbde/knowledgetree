@@ -45,7 +45,9 @@
 */
 
 $_session_id = session_id();
-if (empty($_session_id)) session_start();
+if (empty($_session_id)) {
+    session_start();
+}
 unset($_session_id);
 
 require_once(realpath(dirname(__FILE__) . '/../config/dmsDefaults.php'));
@@ -83,41 +85,41 @@ require_once(KT_LIB_DIR . '/render_helpers/sharedContent.inc');
 */
 abstract class KTAPI_FolderItem {
 
-	/**
-	* This is a reference to the core KTAPI controller
-	*
-	* @author KnowledgeTree Team
-	* @access protected
-	* @var object $ktapi The KTAPI object
-	*/
-	protected $ktapi;
+    /**
+     * This is a reference to the core KTAPI controller
+     *
+     * @author KnowledgeTree Team
+     * @access protected
+     * @var object $ktapi The KTAPI object
+     */
+    protected $ktapi;
 
- 	/**
- 	* This checks if a user can access an object with a certain permission.
- 	*
- 	* @author KnowledgeTree Team
-	* @access public
- 	* @param object $object The object the user is trying to access
- 	* @param string $permission The permissions string
- 	* @return object $user The User object
- 	*/
-	public function &can_user_access_object_requiring_permission(&$object, $permission)
-	{
-		$user = $this->ktapi->can_user_access_object_requiring_permission($object, $permission);
-		return $user;
-	}
+    /**
+     * This checks if a user can access an object with a certain permission.
+     *
+     * @author KnowledgeTree Team
+     * @access public
+     * @param object $object The object the user is trying to access
+     * @param string $permission The permissions string
+     * @return object $user The User object
+     */
+    public function &can_user_access_object_requiring_permission(&$object, $permission)
+    {
+        $user = $this->ktapi->can_user_access_object_requiring_permission($object, $permission);
+        return $user;
+    }
 
-	public abstract function getObject();
+    public abstract function getObject();
 
-	public abstract function getRoleAllocation();
+    public abstract function getRoleAllocation();
 
-	public abstract function getPermissionAllocation();
+    public abstract function getPermissionAllocation();
 
-	public abstract function isSubscribed();
+    public abstract function isSubscribed();
 
-	public abstract function unsubscribe();
+    public abstract function unsubscribe();
 
-	public abstract function subscribe();
+    public abstract function subscribe();
 
 }
 
@@ -130,24 +132,22 @@ abstract class KTAPI_FolderItem {
 */
 class KTAPI_Error extends PEAR_Error {
 
- 	/**
- 	* This method determines if there is an error in the object itself or just a common error
- 	*
-	* @author KnowledgeTree Team
- 	* @access public
- 	* @return VOID
- 	*/
-	public function KTAPI_Error($msg, $obj = null)
-	{
-		if (PEAR::isError($obj))
-		{
-			parent::PEAR_Error($msg . ' - ' . $obj->getMessage());
-		}
-		else
-		{
-			parent::PEAR_Error($msg);
-		}
-	}
+    /**
+     * This method determines if there is an error in the object itself or just a common error
+     *
+     * @author KnowledgeTree Team
+     * @access public
+     * @return VOID
+     */
+    public function KTAPI_Error($msg, $obj = null)
+    {
+        if (PEAR::isError($obj)) {
+            parent::PEAR_Error($msg . ' - ' . $obj->getMessage());
+        }
+        else {
+            parent::PEAR_Error($msg);
+        }
+    }
 
 }
 
@@ -172,28 +172,29 @@ class KTAPI_DocumentTypeError extends KTAPI_Error {
 
 class KTAPI {
 
-	/**
-	* This is the current session.
-	*
-	* @author KnowledgeTree Team
-	* @access protected
-	* @var object $session The KTAPI_Session object
-	*/
-	protected $session = null;
-	protected $version = 3;
+    /**
+    * This is the current session.
+    *
+    * @author KnowledgeTree Team
+    * @access protected
+    * @var object $session The KTAPI_Session object
+    */
+    protected $session = null;
+    protected $version = 3;
     private $esig_enabled;
-	public $webserviceVersion;
+    public $webserviceVersion;
 
-	public function __construct($version = null)
-	{
-	    if (is_numeric($version)) {
-	        $this->version = $version;
-	    } else {
-	        $this->version = LATEST_WEBSERVICE_VERSION;
-	    }
+    public function __construct($version = null)
+    {
+        if (is_numeric($version)) {
+            $this->version = $version;
+        }
+        else {
+            $this->version = LATEST_WEBSERVICE_VERSION;
+        }
 
-	    $this->esig_enabled = $this->electronic_sig_enabled();
-	}
+        $this->esig_enabled = $this->electronic_sig_enabled();
+    }
 
     public function get($webserviceVersion = '')
     {
@@ -917,8 +918,8 @@ class KTAPI {
     */
 	public function &get_folder_by_name($foldername, $parent_id = 1)
 	{
-		$folder = KTAPI_Folder::_get_folder_by_name($this, $foldername, $parent_id);
-		return $folder;
+            $folder = KTAPI_Folder::_get_folder_by_name($this, $foldername, $parent_id);
+            return $folder;
 	}
 
 	/**
@@ -1483,8 +1484,13 @@ class KTAPI {
         $response['status_code'] = 1;
 
         if (!is_array($items)) {
-            $response['message'] = sprintf(_kt("The list of id's must be an array of format array('documents' => array(1,2), 'folders' => array(2,3)). Received: %s") , $items);
-            return $response;
+        	global $default;
+        	$items = unserialize($items);
+        	$reason = urldecode($reason);
+        	if(!is_array($items)) {
+        		$response['message'] = sprintf(_kt("The list of id's must be an array of format array('documents' => array(1,2), 'folders' => array(2,3)). Received: %s") , $items);
+            	return $response;
+        	}
         }
 
         if (empty($items)) {
@@ -3118,37 +3124,36 @@ class KTAPI {
         return $response;
     }
 
-    public function add_small_document_with_metadata($folder_id,  $title, $filename, $documenttype, $base64, $metadata, $sysdata,
-                                                     $sig_username = '', $sig_password = '', $reason = '')
+    public function add_small_document_with_metadata($folder_id, $title, $filename, $documenttype, $base64, $metadata,
+                                                     $sysdata, $sig_username = '', $sig_password = '', $reason = '')
     {
-		$add_result = $this->add_small_document($folder_id, $title, $filename, $documenttype, $base64,
+        $add_result = $this->add_small_document($folder_id, $title, $filename, $documenttype, $base64,
                                                 $sig_username, $sig_password, $reason);
 
-		if ($add_result['status_code'] != 0) {
-		    return $add_result;
-		}
+        if ($add_result['status_code'] != 0) {
+            return $add_result;
+        }
 
-		$document_id = $add_result['results']['document_id'];
+        $document_id = $add_result['results']['document_id'];
 
-		$update_result = $this->update_document_metadata($document_id, $metadata, $sysdata, $sig_username, $sig_password, $reason);
-		if ($update_result['status_code'] != 0) {
-		    $this->delete_document($document_id, 'Rollback because metadata could not be added', false);
-			return $update_result;
-		}
+        $update_result = $this->update_document_metadata($document_id, $metadata, $sysdata, $sig_username, $sig_password, $reason);
+        if ($update_result['status_code'] != 0) {
+            $this->delete_document($document_id, 'Rollback because metadata could not be added', false);
+            return $update_result;
+        }
 
-    	$document = $this->get_document_by_id($document_id);
-    	$result = $document->removeUpdateNotification();
-    	if (PEAR::isError($result))
-		{
-			// not much we can do, maybe just log!
-		}
-		$result = $document->mergeWithLastMetadataVersion();
-		if (PEAR::isError($result))
-		{
-			// not much we can do, maybe just log!
-		}
+        $document = $this->get_document_by_id($document_id);
+        $result = $document->removeUpdateNotification();
+        if (PEAR::isError($result)) {
+            // not much we can do, maybe just log!
+        }
 
-		return $update_result;
+        $result = $document->mergeWithLastMetadataVersion();
+        if (PEAR::isError($result)) {
+            // not much we can do, maybe just log!
+        }
+
+        return $update_result;
     }
 
     /**
@@ -3157,7 +3162,7 @@ class KTAPI {
     public function add_document_with_json_metadata($folder_id, $title, $filename, $documenttype, $tempfilename, $metadata, $sysdata,
                                                     $sig_username = '', $sig_password = '', $reason = '')
     {
-		$metadata = json_decode($metadata);
+    	$metadata = json_decode($metadata);
 		$sysdata = json_decode($sysdata);
 
 		return $this->add_document_with_metadata($folder_id, $title, $filename, $documenttype, $tempfilename, $metadata, $sysdata,
@@ -3233,8 +3238,8 @@ class KTAPI {
     /**
      * Adds a document to the repository.
      *
-	 * @author KnowledgeTree Team
-	 * @access public
+     * @author KnowledgeTree Team
+     * @access public
      * @param int $folder_id
      * @param string $title
      * @param string $filename
@@ -3242,50 +3247,48 @@ class KTAPI {
      * @param string $base64
      * @return kt_document_detail.
      */
-    public function add_small_document($folder_id,  $title, $filename, $documenttype, $base64,
+    public function add_small_document($folder_id, $title, $filename, $documenttype, $base64,
                                        $sig_username = '', $sig_password = '', $reason = '')
     {
-    	$folder = &$this->get_folder_by_id($folder_id);
-		if (PEAR::isError($folder))
-		{
-			$response['status_code'] = 1;
-			$response['message'] = $folder->getMessage();
-			return $response;
-		}
+        $folder = &$this->get_folder_by_id($folder_id);
+        if (PEAR::isError($folder)) {
+            $response['status_code'] = 1;
+            $response['message'] = $folder->getMessage();
+            return $response;
+        }
 
-		$upload_manager = new KTUploadManager();
-    	$tempfilename = $upload_manager->store_base64_file($base64);
-    	if (PEAR::isError($tempfilename))
-    	{
-    		$reason = $tempfilename->getMessage();
-    		$response['status_code'] = 1;
-    		$response['message'] = 'Cannot write to temp file: ' . $tempfilename . ". Reason: $reason";
-			return $response;
-    	}
+        $upload_manager = new KTUploadManager();
+        $tempfilename = $upload_manager->store_base64_file($base64);
+        if (PEAR::isError($tempfilename)) {
+            $reason = $tempfilename->getMessage();
+            $response['status_code'] = 1;
+            $response['message'] = 'Cannot write to temp file: ' . $tempfilename . ". Reason: $reason";
+            return $response;
+        }
 
-		// simulate the upload
-		$tempfilename = $upload_manager->uploaded($filename, $tempfilename, 'A');
+        // simulate the upload
+        $tempfilename = $upload_manager->uploaded($filename, $tempfilename, 'A');
 
-		// add the document
-    	$document = &$folder->add_document($title, $filename, $documenttype, $tempfilename);
-		if (PEAR::isError($document))
-		{
-    		$response['status_code'] = 1;
-    		$response['message'] = $document->getMessage();
-			return $response;
-		}
+        // add the document
+        $document = &$folder->add_document($title, $filename, $documenttype, $tempfilename);
+        if (PEAR::isError($document)) {
+            $response['status_code'] = 1;
+            $response['message'] = $document->getMessage();
+            return $response;
+        }
 
-    	$response['status_code'] = 0;
-    	$response['message'] = '';
-    	$response['results'] = $document->get_detail();
-    	return $response;
+        $response['status_code'] = 0;
+        $response['message'] = '';
+        $response['results'] = $document->get_detail();
+
+        return $response;
     }
 
     /**
      * Does a document checkin.
      *
-	 * @author KnowledgeTree Team
-	 * @access public
+     * @author KnowledgeTree Team
+     * @access public
      * @param int $folder_id
      * @param string $title
      * @param string $filename
@@ -4114,91 +4117,87 @@ class KTAPI {
     /**
      * Returns the metadata on a document.
      *
-	 * @author KnowledgeTree Team
-	 * @access public
+     * @author KnowledgeTree Team
+     * @access public
      * @param int $document_id
      * @return array
      */
-	public function get_document_metadata($document_id)
-	{
-    	$document = &$this->get_document_by_id($document_id);
-		if (PEAR::isError($document))
-    	{
-    		$response['status_code'] = 1;
-    		$response['message'] = $document->getMessage();
-			return $response;
-    	}
+    public function get_document_metadata($document_id)
+    {
+        $document = &$this->get_document_by_id($document_id);
+        if (PEAR::isError($document)) {
+            $response['status_code'] = 1;
+            $response['message'] = $document->getMessage();
+            return $response;
+        }
 
-    	$metadata = $document->get_metadata();
+        $metadata = $document->get_metadata();
 
-		$num_metadata=count($metadata);
-		for($i=0;$i<$num_metadata;$i++)
-		{
-			$num_fields = count($metadata[$i]['fields']);
-			for($j=0;$j<$num_fields;$j++)
-			{
-				$selection=$metadata[$i]['fields'][$j]['selection'];
-				$new = array();
+        $num_metadata = count($metadata);
+        for($i = 0; $i < $num_metadata; $i++) {
+            $num_fields = count($metadata[$i]['fields']);
+            for($j = 0; $j < $num_fields; $j++) {
+                $selection = $metadata[$i]['fields'][$j]['selection'];
+                $new = array();
 
-				foreach ($selection as $item)
-				{
-					$new[] = array(
-						'id'=>null,
-						'name' => $item,
-						'value' => $item,
-						'parent_id'=>null
-					);
-				}
-				$metadata[$i]['fields'][$j]['selection'] = $new;
-			}
-		}
+                foreach ($selection as $item) {
+                    $new[] = array(
+                        'id'=>null,
+                        'name' => $item,
+                        'value' => $item,
+                        'parent_id'=>null
+                    );
+                }
+                
+                $metadata[$i]['fields'][$j]['selection'] = $new;
+            }
+        }
 
-		$response['status_code'] = 0;
-		$response['result'] = $metadata;
-    	return $response;
-	}
+        $response['status_code'] = 0;
+        $response['result'] = $metadata;
+        return $response;
+    }
 
-	/**
-	 * Updates document metadata.
-	 *
-	 * @author KnowledgeTree Team
-	 * @access public
-	 * @param int $document_id
-	 * @param array $metadata
-	 * @return array
-	 */
-	public function update_document_metadata($document_id, $metadata, $sysdata = null, $sig_username = '', $sig_password = '', $reason = '')
-	{
+    /**
+     * Updates document metadata.
+     *
+     * @author KnowledgeTree Team
+     * @access public
+     * @param int $document_id
+     * @param array $metadata
+     * @return array
+     */
+    public function update_document_metadata($document_id, $metadata, $sysdata = null, $sig_username = '', $sig_password = '', $reason = '')
+    {
         $response = $this->_check_electronic_signature($document_id, $sig_username, $sig_password, $reason, $reason,
                                                       'ktcore.transactions.metadata_update');
-        if ($response['status_code'] == 1) return $response;
+        if ($response['status_code'] == 1) {
+            return $response;
+        }
 
-    	$document = &$this->get_document_by_id($document_id);
-		if (PEAR::isError($document))
-    	{
-    		$response['status_code'] = 1;
-    		$response['message'] = $document->getMessage();
-			return $response;
-    	}
+        $document = &$this->get_document_by_id($document_id);
+        if (PEAR::isError($document)) {
+            $response['status_code'] = 1;
+            $response['message'] = $document->getMessage();
+            return $response;
+        }
 
-    	$result = $document->update_metadata($metadata);
-    	if (PEAR::isError($result))
-    	{
-    		$response['status_code'] = 1;
-    		$response['message'] = $result->getMessage();
-			return $response;
-    	}
+        $result = $document->update_metadata($metadata);
+        if (PEAR::isError($result)) {
+            $response['status_code'] = 1;
+            $response['message'] = $result->getMessage();
+            return $response;
+        }
 
-    	$result = $document->update_sysdata($sysdata);
-    	if (PEAR::isError($result))
-    	{
-    		$response['status_code'] = 1;
-    		$response['message'] = $result->getMessage();
-			return $response;
-    	}
+        $result = $document->update_sysdata($sysdata);
+        if (PEAR::isError($result)) {
+            $response['status_code'] = 1;
+            $response['message'] = $result->getMessage();
+            return $response;
+        }
 
-    	return $this->get_document_detail($document_id, 'M');
-	}
+        return $this->get_document_detail($document_id, 'M');
+    }
 
 	/**
 	 * Returns a list of available transitions on a give document with a workflow.
@@ -4542,36 +4541,36 @@ class KTAPI {
 		return $response;
 	}
 
-	/**
-	 * This is the search interface
-	 *
-	 * @author KnowledgeTree Team
-	 * @access public
-	 * @param string $query
-	 * @param string $options
-	* @return array $response The formatted response array
-	 */
-	public function search($query, $options)
-	{
-    	$response['status_code'] = 1;
-		$response['results'] = array();
+    /**
+     * This is the search interface
+     *
+     * @author KnowledgeTree Team
+     * @access public
+     * @param string $query
+     * @param string $options
+     * @return array $response The formatted response array
+     */
+    public function search($query, $options)
+    {
+        $response['status_code'] = 1;
+        $response['results'] = array();
 
-		$results = processSearchExpression($query);
-		if (PEAR::isError($results))
-		{
-			$response['message'] = _kt('Could not process query.')  . $results->getMessage();
-			return $response;
-		}
+        $results = processSearchExpression($query);
+        if (PEAR::isError($results)) {
+            $response['message'] = _kt('Could not process query.')  . $results->getMessage();
+            return $response;
+        }
 
-		$response['message'] = '';
-		if (empty($results)) {
-    		$response['message'] = _kt('Your search did not return any results');
-		}
-		$response['status_code'] = 0;
-		$response['results'] = $results;
+        $response['message'] = '';
+        if (empty($results)) {
+            $response['message'] = _kt('Your search did not return any results');
+        }
 
-		return $response;
-	}
+        $response['status_code'] = 0;
+        $response['results'] = $results;
+
+        return $response;
+    }
 
 	/**
 	* Method to create a saved search
@@ -5458,7 +5457,7 @@ class KTAPI {
 
 	public function get_folder_total_size($include_folder_ids, $exclude_folder_ids)
 	{
-		$GLOBALS['default']->log->debug('KTAPI get_folder_total_size '.print_r($include_folder_ids, true).' '.print_r($exclude_folder_ids, true));
+		//$GLOBALS['default']->log->debug('KTAPI get_folder_total_size '.print_r($include_folder_ids, true).' '.print_r($exclude_folder_ids, true));
 
 		$size = array('total_files' => 0, 'total_size' => 0);
 
@@ -5473,8 +5472,8 @@ class KTAPI {
 				$size['total_files'] += $parent_size['total_files'];
 				$size['total_size'] += $parent_size['total_size'];
 
-				$GLOBALS['default']->log->debug("KTAPI get_folder_total_size parent result $folder_id ".print_r($parent_size, true));
-				$GLOBALS['default']->log->debug('KTAPI get_folder_total_size parent result carried over '.print_r($size, true));
+				//$GLOBALS['default']->log->debug("KTAPI get_folder_total_size parent result $folder_id ".print_r($parent_size, true));
+				//$GLOBALS['default']->log->debug('KTAPI get_folder_total_size parent result carried over '.print_r($size, true));
 			}
 			else
 			{
@@ -5487,11 +5486,11 @@ class KTAPI {
 
 			$children_ids = $folder->get_children_ids();
 
-			$GLOBALS['default']->log->debug('KTAPI get_folder_total_size children_ids '.print_r($children_ids, true));
+			//$GLOBALS['default']->log->debug('KTAPI get_folder_total_size children_ids '.print_r($children_ids, true));
 
 			foreach ($children_ids as $child_id)
 			{
-				$GLOBALS['default']->log->debug("KTAPI get_folder_total_size check if $child_id is in excluded list ".print_r($exclude_folder_ids, true));
+				//$GLOBALS['default']->log->debug("KTAPI get_folder_total_size check if $child_id is in excluded list ".print_r($exclude_folder_ids, true));
 
 				//only use that child if it wasn't excluded!
 				if (!in_array($child_id, $exclude_folder_ids))
@@ -5505,7 +5504,7 @@ class KTAPI {
 						$size['total_files'] += $child_size['total_files'];
 						$size['total_size'] += $child_size['total_size'];
 
-						$GLOBALS['default']->log->debug("KTAPI get_folder_total_size child $child_id ".print_r($child_size, true));
+						//$GLOBALS['default']->log->debug("KTAPI get_folder_total_size child $child_id ".print_r($child_size, true));
 					}
 					else
 					{
@@ -5514,7 +5513,7 @@ class KTAPI {
 				}
 			}
 
-			$GLOBALS['default']->log->debug('KTAPI get_folder_total_size result '.print_r($size, true));
+			//$GLOBALS['default']->log->debug('KTAPI get_folder_total_size result '.print_r($size, true));
 		}
 
 		$config = KTConfig::getSingleton();
@@ -5540,7 +5539,7 @@ class KTAPI {
 			$response['message'] = '';
 		}
 
-		$GLOBALS['default']->log->debug('KTAPI get_folder_total_size response '.print_r($response, true));
+		//$GLOBALS['default']->log->debug('KTAPI get_folder_total_size response '.print_r($response, true));
 
 		return $response;
 	}
@@ -5593,7 +5592,7 @@ class KTAPI {
      */
 	public function get_folder_changes($folder_ids, $timestamp, $depth = 1, $what = 'DF')
 	{
-		$GLOBALS['default']->log->debug("KTAPI get_folder_changes ".print_r($folder_ids, true)." $timestamp $depth '$what'");
+		//$GLOBALS['default']->log->debug("KTAPI get_folder_changes ".print_r($folder_ids, true)." $timestamp $depth '$what'");
 
 		$results = array();
 		$changes = array();

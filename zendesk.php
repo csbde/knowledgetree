@@ -33,11 +33,11 @@ class ZendDeskDispatcher extends KTStandardDispatcher {
 	private $token;
 	private $urlPrefix;
 	private $user;
-	
+
 	public function __construct()
 	{
 		parent::KTStandardDispatcher();
-		
+
 		if(!isset($_SESSION['userID'])) {
 			return ;
 		}
@@ -46,17 +46,17 @@ class ZendDeskDispatcher extends KTStandardDispatcher {
 		$this->fullname = $this->user->getUserName();
 		$this->email = $this->user->getEmail();
 		$this->email = ($this->email != '')? $this->email : $this->name . '@knowledgetree.com';
-		$this->externalId = $_SESSION['userID'];
+		$this->externalId = ACCOUNT_NAME . '_' . $_SESSION['userID'];
 		$this->urlPrefix = 'knowledgetree';
-		
+
 		$oConfig = KTConfig::getSingleton();
 		$this->token = $oConfig->get('tokens/zendesk', false);
 	}
-	
+
     public function do_main() {
     	return $this->renderZendDeskRedirect();
     }
-    
+
 	/**
      * This method will manually redirect the user to the zend desk page.
      */
@@ -64,9 +64,9 @@ class ZendDeskDispatcher extends KTStandardDispatcher {
     	header('Location: ' . $this->getAuthenticationUrl());
     	exit;
     }
-    
+
     /**
-     * Build url 
+     * Build redirect url
      */
     private function getAuthenticationUrl() {
     	global $default;
@@ -79,7 +79,7 @@ class ZendDeskDispatcher extends KTStandardDispatcher {
 		$accessPoint .= 'timestamp=' . $timestamp . '&';
 		$accessPoint .= 'hash=' . md5($message);
     	$default->log->info(__CLASS__ . " : " . __FUNCTION__ . " : $accessPoint");
-    	
+
     	return $accessPoint;
     }
 }

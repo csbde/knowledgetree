@@ -498,6 +498,8 @@ kt.app.metadata = new function()
 	 	var span = null;
 		
 	 	var classType = '';
+		
+	 	var valueClass = '';
 	 	
 		switch(field.control_type)
 		{
@@ -545,6 +547,8 @@ kt.app.metadata = new function()
 				{
 					type = 'metadata-htmleditor';
 					var dataType = 'htmleditor';
+				} else {
+					valueClass = ' class="textareaVal" ';
 				}
 				
 				span = jQuery('<span>')
@@ -621,7 +625,7 @@ kt.app.metadata = new function()
 			break;
 		}
 		
-		var valueSpan = jQuery('<span id="value-'+field.fieldid+'">no value</span>');
+		var valueSpan = jQuery('<span id="value-'+field.fieldid+'" '+valueClass+'>no value</span>');
 		
 		span.append(valueSpan);
 		
@@ -750,7 +754,7 @@ kt.app.metadata = new function()
 					if(field.options.ishtml)
 					{
 						//strip all html tags
-						jQuery('#value-'+field.fieldid).text(field.value.replace(/<\/?[a-z][a-z0-9]*[^<>]*>/ig, ""));
+						jQuery('#value-'+field.fieldid).html(field.value);    //.replace(/<\/?[a-z][a-z0-9]*[^<>]*>/ig, ""));
 					}
 					else
 					{

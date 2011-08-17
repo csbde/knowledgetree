@@ -45,33 +45,38 @@ require_once(KT_LIB_DIR . "/documentmanagement/documentutil.inc.php");
 require_once(KT_LIB_DIR . "/metadata/fieldsetregistry.inc.php");
 require_once(KT_LIB_DIR . "/util/sanitize.inc");
 
-class KTFolderAddDocumentAction extends KTFolderAction {
-    var $sName = 'ktcore.actions.folder.addDocument';
-    var $_sShowPermission = "ktcore.permissions.write";
-    var $oDocumentType = null;
-	var $cssClass = 'upload';
-	var $parentBtn = '';
+class KTFolderAddDocumentAction extends JavascriptFolderAction {
+    public $sName = 'ktcore.actions.folder.addDocument';
+    public $_sShowPermission = "ktcore.permissions.write";
+    public $oDocumentType = null;
+	public $cssClass = 'upload';
+	public $parentBtn = '';
 
 	// Settings for shared user permissions
-	var $bShowIfWriteShared = true;
+	public $bShowIfWriteShared = true;
 
-    function getDisplayName() {
+    public function getDisplayName() {
         return _kt('Upload');
     }
 
-    function getURL()
+    public function getURL()
     {
-        return 'javascript:kt.app.upload.showUploadWindow();';
+        return 'javascript:;';
+    }
+    
+    public function getOnClick()
+    {
+        return 'kt.app.upload.showUploadWindow();';
     }
 
-    function getButton() {
+    public function getButton() {
         $btn = array();
         $btn['display_text'] = _kt('Upload');
         $btn['arrow_class'] = 'arrow_upload';
         return $btn;
     }
 
-    function check() {
+    public function check() {
         $res = parent::check();
         if (empty($res)) {
             return $res;
@@ -89,7 +94,7 @@ class KTFolderAddDocumentAction extends KTFolderAction {
         return true;
     }
 
-    function form_initialdata() {
+    public function form_initialdata() {
         $oForm = new KTForm;
 
         $oForm->setOptions(array(
@@ -113,21 +118,21 @@ class KTFolderAddDocumentAction extends KTFolderAction {
 
         // Onchange gets the name of the file and inserts it as the document title.
         $sFileOnchange = "javascript:
-            var doc = document.getElementById('document_name');
+            public doc = document.getElementById('document_name');
             if (doc.value == '') {
-                var arrPath=this.value.split('/');
+                public arrPath=this.value.split('/');
                 if (arrPath.length == 1) {
-                    var arrPath=this.value.split('\\\');
+                    public arrPath=this.value.split('\\\');
                 }
-                var name=arrPath[arrPath.length-1];
-                var name=name.split('.');
-                var len = name.length;
+                public name=arrPath[arrPath.length-1];
+                public name=name.split('.');
+                public len = name.length;
                 if (len > 1) {
                     if (name[len-1].length <= 4) {
                         name.pop();
                     }
                 }
-                var title=name.join('.');
+                public title=name.join('.');
                 doc.value=title;
             }";
 
@@ -217,7 +222,7 @@ class KTFolderAddDocumentAction extends KTFolderAction {
         return $oForm;
     }
 
-    function getFieldsetsForType($iTypeId) {
+    public function getFieldsetsForType($iTypeId) {
         $typeid = KTUtil::getId($iTypeId);
         $aGenericFieldsetIds = KTFieldset::getGenericFieldsets(array('ids' => false));
         $aSpecificFieldsetIds = KTFieldset::getForDocumentType($typeid, array('ids' => false));
@@ -226,13 +231,13 @@ class KTFolderAddDocumentAction extends KTFolderAction {
         return $fieldsets;
     }
 
-    function do_main() {
+    public function do_main() {
         $this->oPage->setBreadcrumbDetails(_kt("Add a document"));
         $oForm = $this->form_initialdata();
         return $oForm->renderPage(_kt('Add a document to: ') . $this->oFolder->getName());
     }
 
-    function do_processInitialData() {
+    public function do_processInitialData() {
     	$oStorage = KTStorageManagerUtil::getSingleton();
         $oForm = $this->form_initialdata();
         $res = $oForm->validate();
@@ -261,7 +266,7 @@ class KTFolderAddDocumentAction extends KTFolderAction {
         $this->successRedirectTo('metadata', _kt("File uploaded successfully.  Please fill in the metadata below."), sprintf("fFileKey=%s", $key));
     }
 
-    function form_metadata($sess_key) {
+    public function form_metadata($sess_key) {
         $oForm = new KTForm;
         $oForm->setOptions(array(
             'identifier' => 'ktcore.document.add',
@@ -293,14 +298,14 @@ class KTFolderAddDocumentAction extends KTFolderAction {
         return $oForm;
     }
 
-    function do_metadata() {
+    public function do_metadata() {
         $this->persistParams(array('fFileKey'));
 
         $oForm = $this->form_metadata($_REQUEST['fFileKey']);
         return $oForm->render();
     }
 
-    function do_finalise() {
+    public function do_finalise() {
         $this->persistParams(array('fFileKey'));
         $sess_key = $_REQUEST['fFileKey'];
         $oForm = $this->form_metadata($sess_key);
