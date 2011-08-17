@@ -1,11 +1,7 @@
 /*notification*/
 #rating-content {
-	background: url(../../../../resources/graphics/feature_notifications/rating_content_like.png) no-repeat;
-	width: 140px;
-	height: 140px;
-	display: block;
-	position: absolute;
 	top: 50px;
 	left: 350px;
-	color: transparent;
+	padding: 15px 23px 10px 20px;
+	font-size: 16px;
 }

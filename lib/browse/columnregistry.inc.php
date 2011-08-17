@@ -51,49 +51,103 @@ class KTColumnRegistry {
     }
     // }}}
 
-    function registerColumn($sName, $sNamespace, $sClass, $sFile) {
-        $this->columns[$sNamespace] = array(
-            'name' => $sName,
-            'namespace' => $sNamespace,
-            'class' => $sClass,
-            'file' => $sFile
+    function registerColumn($name, $namespace, $class, $file) 
+    {
+        $this->columns[$namespace] = array(
+            'name' => $name,
+            'namespace' => $namespace,
+            'class' => $class,
+            'file' => $file
         );
     }
 
-    function getViewName($sNamespace) { return KTUtil::arrayGet($this->views, $sNamespace); }
-    function getViews() { return $this->views; }
-    function getColumns() { return $this->columns; }
-    function registerView($sName, $sNamespace) { $this->views[$sNamespace] = $sName; }
-
-    function getColumnInfo($sNamespace) {
-        return  KTUtil::arrayGet($this->columns, $sNamespace, null);
+    private function loadColumnHelpers()
+    {
+        if (!empty($this->columns)) {
+            return ;
+        }
+        
+        $helpers = KTPluginUtil::loadPluginHelpers('column');
+        
+        foreach ($helpers as $helper) {
+            extract($helper);
+            $params = explode('|', $object);
+            
+            if (isset($params[3])) {
+                $params[3] = KTPluginUtil::getFullPath($params[3]);
+            }
+            $params[0] = _kt($params[0]);
+            call_user_func_array(array($this, 'registerColumn'), $params);
+        }
+        
+        $helpers = KTPluginUtil::loadPluginHelpers('view');
+        
+        foreach ($helpers as $helper) {
+            extract($helper);
+            $params = explode('|', $object);
+            
+            $params[0] = _kt($params[0]);
+            call_user_func_array(array($this, 'registerView'), $params);
+        }
+    }
+    
+    function getViewName($namespace) 
+    { 
+        return KTUtil::arrayGet($this->views, $namespace); 
+    }
+    
+    function getViews() 
+    { 
+        return $this->views; 
+    }
+    
+    function getColumns() 
+    { 
+        $this->loadColumnHelpers();
+        return $this->columns; 
+    }
+    
+    function registerView($name, $namespace)
+    { 
+        $this->views[$namespace] = $name; 
     }
 
-    function getColumn($sNamespace) {
-        $aInfo = $this->getColumnInfo($sNamespace);
-        if (empty($aInfo)) {
-            return PEAR::raiseError(sprintf(_kt("No such column: %s"), $sNamespace));
-        }
-
-        require_once($aInfo['file']);
-
-        return new $aInfo['class'];
+    function getColumnInfo($namespace)
+    {
+        return  KTUtil::arrayGet($this->columns, $namespace, null);
     }
 
-    function getColumnsForView($sViewNamespace) {
-        $view_entry = KTUtil::arrayGet($this->views, $sViewNamespace);
-        if (is_null($view_entry)) {
-            return PEAR::raiseError(sprintf(_kt("No such view: %s"), $sViewNamespace));
+    function getColumn($namespace)
+    {
+        $this->loadColumnHelpers();
+        
+        $info = $this->getColumnInfo($namespace);
+        if (empty($info)) {
+            return PEAR::raiseError(sprintf(_kt("No such column: %s"), $namespace));
         }
 
-        $view_column_entries = KTColumnEntry::getByView($sViewNamespace);
-        if (PEAR::isError($view_column_entries)) {
-            return $view_column_entries;
+        require_once($info['file']);
+
+        return new $info['class'];
+    }
+
+    function getColumnsForView($viewNamespace)
+    {
+        $this->loadColumnHelpers();
+        
+        $viewEntry = KTUtil::arrayGet($this->views, $viewNamespace);
+        if (is_null($viewEntry)) {
+            return PEAR::raiseError(sprintf(_kt("No such view: %s"), $viewNamespace));
         }
 
-        $view_columns = array();
-        foreach ($view_column_entries as $oEntry) {
-            $res = $this->getColumn($oEntry->getColumnNamespace());
+        $viewColumnEntries = KTColumnEntry::getByView($viewNamespace);
+        if (PEAR::isError($viewColumnEntries)) {
+            return $viewColumnEntries;
+        }
+
+        $viewColumns = array();
+        foreach ($viewColumnEntries as $entry) {
+            $res = $this->getColumn($entry->getColumnNamespace());
             if (PEAR::isError($res))
             {
             	// this was returning before, but the function calling this is just doing
@@ -101,15 +155,15 @@ class KTColumnRegistry {
             	// if this is an unexpected column, lets just skip it for now.
             	continue;
             }
-            $aOptions = $oEntry->getConfigArray();
-            $aOptions['column_id'] = $oEntry->getId();
-            $aOptions['required_in_view'] = $oEntry->getRequired();
-            $res->setOptions($aOptions);
+            $options = $entry->getConfigArray();
+            $options['column_id'] = $entry->getId();
+            $options['required_in_view'] = $entry->getRequired();
+            $res->setOptions($options);
 
-            $view_columns[] = $res;
+            $viewColumns[] = $res;
         }
 
-        return $view_columns;
+        return $viewColumns;
     }
 }
 
