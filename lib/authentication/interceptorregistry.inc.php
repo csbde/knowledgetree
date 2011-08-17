@@ -57,80 +57,121 @@ class KTInterceptorRegistry {
 		return  $GLOBALS['_KT_PLUGIN']['oKTInterceptorRegistry'];
     }
 
-    function registerInterceptor($class, $nsname, $path = '', $sPlugin = null) {
-        $this->_aInterceptorsInfo[$nsname] = array($class, $nsname, $path, $sPlugin);
+    function registerInterceptor($class, $nsname, $path = '', $plugin = null) 
+    {
+        $this->_aInterceptorsInfo[$nsname] = array($class, $nsname, $path, $plugin);
     }
 
-    function getInterceptorInfo($nsname) {
+    private function loadInterceptorHelpers()
+    {
+        if (!empty($this->_aInterceptorsInfo)) {
+            return ;
+        }
+        
+        $helpers = KTPluginUtil::loadPluginHelpers('interceptor');
+        
+        foreach ($helpers as $helper) {
+            extract($helper);
+            $params = explode('|', $object);
+            
+            if (isset($params[2])) {
+                $params[2] = KTPluginUtil::getFullPath($params[2]);
+            }
+            call_user_func_array(array($this, 'registerInterceptor'), $params);
+        }
+    }
+    
+    function getInterceptorInfo($nsname) 
+    {
+        $this->loadInterceptorHelpers();
+        
         return $this->_aInterceptorsInfo[$nsname];
     }
 
-    function &getInterceptor($nsname, $config = null) {
-        $aInfo = $this->_aInterceptorsInfo[$nsname];
-        $sClass = $aInfo[0];
-        $sPath = $aInfo[2];
-        if ($sPath) {
-            if (file_exists($sPath)) {
-                require_once($sPath);
+    function &getInterceptor($nsname, $config = null) 
+    {
+        $info = $this->getInterceptorInfo($nsname);
+        $class = $info[0];
+        $path = $info[2];
+        
+        if (!class_exists($class)) {
+        
+            if ($path) {
+                if (file_exists($path)) {
+                    require_once($path);
+                }
+            }
+            
+            if (!class_exists($class)) {
+                return PEAR::raiseError(sprintf(_kt('Can\'t find interceptor: %s'), $nsname));
             }
         }
-        if (!class_exists($sClass)) {
-            return PEAR::raiseError(sprintf(_kt('Can\'t find interceptor: %s'), $nsname));
-        }
-        $oInterceptor =new $sClass;
+        
+        $interceptor =new $class;
         if ($config) {
-            $oInterceptor->configure($config);
+            $interceptor->configure($config);
         }
-        return $oInterceptor;
+        return $interceptor;
     }
 
-    function &getInterceptorFromInstance($oInstance) {
-        return $this->getInterceptor($oInstance->getInterceptorNamespace(), $oInstance->getConfig());
+    function &getInterceptorFromInstance($instance) 
+    {
+        return $this->getInterceptor($instance->getInterceptorNamespace(), $instance->getConfig());
     }
 
-    function &getConfiguredInstances() {
-        $aInterceptorInstances = $this->_getInterceptorInstances();
-        $aReturn = array();
-        foreach ($aInterceptorInstances as $oInstance) {
-            $oInterceptor = $this->getInterceptorFromInstance($oInstance);
-            if (PEAR::isError($oInterceptor)) {
+    function &getConfiguredInstances() 
+    {
+        $interceptorInstances = $this->_getInterceptorInstances();
+        $return = array();
+        foreach ($interceptorInstances as $instance) {
+            $interceptor = $this->getInterceptorFromInstance($instance);
+            if (PEAR::isError($interceptor)) {
                 continue;
             }
-            $aReturn[] = $oInterceptor;
+            $return[] = $interceptor;
         }
-        return $aReturn;
+        return $return;
     }
 
-    function checkInterceptorsForAuthenticated() {
-        $oRegistry =& KTInterceptorRegistry::getSingleton();
-        $aInterceptors = $oRegistry->getConfiguredInstances();
-        $aErrors = array();
-        foreach ($aInterceptors as $oInterceptor) {
-            $oUser = $oInterceptor->authenticated();
-            if (PEAR::isError($oUser)) {
-                $aErrors[] = $oUser;
+    function checkInterceptorsForAuthenticated() 
+    {
+        $registry = KTInterceptorRegistry::getSingleton();
+        $interceptors = $registry->getConfiguredInstances();
+        
+        $errors = array();
+        foreach ($interceptors as $interceptor) {
+            $user = $interceptor->authenticated();
+            if (PEAR::isError($user)) {
+                $errors[] = $user;
                 continue;
             }
-            if ($oUser) {
-                return $oUser;
+            
+            if ($user) {
+                return $user;
             }
         }
-        if (count($aErrors)) {
-            return $aErrors;
+        
+        if (count($errors)) {
+            return $errors;
         }
+        
         return false;
     }
 
-    function _getInterceptorInstances() {
+    function _getInterceptorInstances() 
+    {
         return KTInterceptorInstance::getInterceptorInstances();
     }
 
-    function checkInterceptorsForTakeOver() {
-        $oRegistry =& KTInterceptorRegistry::getSingleton();
-        $aInterceptors = $oRegistry->getConfiguredInstances();
-        foreach ($aInterceptors as $oInterceptor) {
-            $oInterceptor->takeOver();
+    function checkInterceptorsForTakeOver() 
+    {
+        $registry = KTInterceptorRegistry::getSingleton();
+        $interceptors = $registry->getConfiguredInstances();
+        
+        foreach ($interceptors as $interceptor) {
+            $interceptor->takeOver();
         }
+        
         return false;
     }
 }

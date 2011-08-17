@@ -371,41 +371,26 @@ class KTPlugin {
      * @param unknown_type $object
      * @param unknown_type $type
      */
-    public function registerPluginHelper($sNamespace, $sClassName, $path, $object, $view, $type) {
-
-        $sql = "SELECT id FROM plugin_helper WHERE namespace = '{$sNamespace}' AND classtype = '{$type}'";
-        $res = DBUtil::getOneResult($sql);
-
-        // if record exists - ignore it.
-        if (!empty($res)) {
-            return true;
-        }
-
-        $aValues = array();
-        $aValues['namespace'] = $sNamespace;
-        $aValues['plugin'] = (!empty($this->sNamespace)) ? $this->sNamespace : $sNamespace;
-        $aValues['classname'] = $sClassName;
-        $aValues['pathname'] = $path;
-        $aValues['object'] = $object;
-        $aValues['viewtype'] = $view;
-        $aValues['classtype'] = $type;
-
-        // Insert into DB
-        $res = DBUtil::autoInsert('plugin_helper', $aValues);
-        if (PEAR::isError($res)) {
-            return $res;
-        }
-
-        return true;
+    function registerPluginHelper($namespace, $className, $path, $object, $view, $type) 
+    {
+        $options = array(
+            'namespace' => $namespace,
+            'plugin' => (!empty($this->sNamespace)) ? $this->sNamespace : $namespace,
+            'classname' => $className,
+            'pathname' => $path,
+            'object' => $object,
+            'viewtype' => $view,
+            'classtype' => $type
+        );
+        
+        $pluginCache = PluginCache::getPluginCache();
+        return $pluginCache->addPluginHelper($options);
     }
 
-    public function deRegisterPluginHelper($sNamespace, $sClass)
+    function deRegisterPluginHelper($namespace, $class) 
     {
-        $aWhere['namespace'] = $sNamespace;
-        $aWhere['classtype'] = $sClass;
-        $res = DBUtil::whereDelete('plugin_helper', $aWhere);
-
-        return $res;
+        $pluginCache = PluginCache::getPluginCache();
+        return $pluginCache->removePluginHelper($namespace, $class);
     }
 
     public function _fixFilename($sFilename)
@@ -679,7 +664,9 @@ class KTPlugin {
                 ));
             }
             /* ** Quick fix for optimisation. Reread must run plugin setup. ** */
-            $this->setup();
+            if (!$oEntity->getDisabled() && !$oEntity->getUnavailable()) {
+                $this->setup();
+            }
             return $oEntity;
         }
         if (PEAR::isError($oEntity) && !($oEntity instanceof KTEntityNoObjects)) {
@@ -713,7 +700,9 @@ class KTPlugin {
         }
 
         /* ** Quick fix for optimisation. Reread must run plugin setup. ** */
-        $this->setup();
+        if (!$disabled) {
+            $this->setup();
+        }
         return true;
     }
 

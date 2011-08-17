@@ -62,10 +62,10 @@ class KTDashboardActivityFeedViewlet extends KTDashboardViewlet {
         $this->documentActivityFeedAction = new KTDocumentActivityFeedAction();
     }
 
-    public function setLimits($start = 0, $preloaded = 0)
+    public function setLimits($preloaded = 0, $start = 0)
     {
-        $this->start = $start;
         $this->preloaded = $preloaded;
+        $this->start = $start;
     }
 
     public function getCSSName()
@@ -79,25 +79,16 @@ class KTDashboardActivityFeedViewlet extends KTDashboardViewlet {
         //       The mime icon stuff for instance can be abstracted to
         //       a third file and used both here and in the browse view.
 
-        $filter = array(
-            'ktcore.transactions.create',
-            'ktcore.transactions.delete',
-            'ktcore.transactions.check_in'
-        );
-        $activityFeed = $this->documentActivityFeedAction->getActivityFeed($this->getAllTransactions($filter));
+        $transactions = $this->getTransactions();
+        $comments = $this->getComments();
 
-        $comments = $this->getAllComments();
-        $activityFeed = array_merge($activityFeed, $comments);
+        $activityFeed = array_merge($transactions, $comments);
         $activityFeed = $this->setMimeIcons($activityFeed);
 
         usort($activityFeed, array($this->documentActivityFeedAction, 'sortTable'));
 
-        $transactionCount = $this->getTransactionCount($filter);
-        $commentCount = $this->getCommentCount();
-
         $templating =& KTTemplating::getSingleton();
-        $template = $templating->loadTemplate($this->getTemplateName());
-
+        $template = $templating->loadTemplate('ktcore/dashboard/viewlets/global_activity_feed_content');
         $templateData = array(
             'context' => $this,
             'documentId' => $documentId,
@@ -108,7 +99,35 @@ class KTDashboardActivityFeedViewlet extends KTDashboardViewlet {
             'nextBatch' => $this->start + $this->limit
         );
 
+        $activityFeedContent = $template->render($templateData);
+
+        if ($this->preloaded > 0) {
+            return $activityFeedContent;
+        }
+
+        $template = $templating->loadTemplate('ktcore/dashboard/viewlets/global_activity_feed');
+        $templateData = array('activityFeed' => $activityFeedContent);
+
         return $template->render($templateData);
+    }
+
+    private function getTransactions()
+    {
+        $transactions = array();
+
+        $filter = array(
+            'ktcore.transactions.create',
+            'ktcore.transactions.delete',
+            'ktcore.transactions.check_in'
+        );
+
+        $transactionCount = $this->getTransactionCount($filter);
+
+        if ($transactionCount > 0) {
+            $transactions = $this->documentActivityFeedAction->getActivityFeed($this->getAllTransactions($filter));
+        }
+
+        return $transactions;
     }
 
     private function getTransactionCount($filter = array())
@@ -155,7 +174,7 @@ class KTDashboardActivityFeedViewlet extends KTDashboardViewlet {
             {$this->buildFilterQuery($filter)}
             AND DT.document_id = D.id
             ORDER BY DT.id DESC
-            LIMIT $start, {$this->limit}";
+            LIMIT {$this->start}, {$this->limit}";
 
         return $this->documentActivityFeedAction->getTransactionResult(array($query));
     }
@@ -201,6 +220,18 @@ class KTDashboardActivityFeedViewlet extends KTDashboardViewlet {
         }
 
         return $filterQuery;
+    }
+
+    private function getComments()
+    {
+        $comments = array();
+
+        $commentCount = $this->getCommentCount();
+        if ($commentCount > 0) {
+            $comments = $this->getAllComments();
+        }
+
+        return $comments;
     }
 
     private function getCommentCount()

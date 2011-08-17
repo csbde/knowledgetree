@@ -197,6 +197,7 @@ class KTWorkflowAssociationHandler {
     function moveTrigger($oDocument) { return KTWorkflowUtil::getWorkflowForDocument($oDocument); }
     function copyTrigger($oDocument) { return KTWorkflowUtil::getWorkflowForDocument($oDocument); }
 
+    function setAssociation() {}
 }
 
 $pluginRegistry =& KTPluginRegistry::getSingleton();

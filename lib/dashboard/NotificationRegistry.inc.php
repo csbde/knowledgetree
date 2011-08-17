@@ -52,17 +52,41 @@ class KTNotificationRegistry {
     // pass in:
     //   nsname (e.g. ktcore/subscription)
     //   classname (e.g. KTSubscriptionNotification)
-    function registerNotificationHandler($nsname, $className, $path = "") {
+    function registerNotificationHandler($nsname, $className, $path = '')
+    {
         $this->notification_types[$nsname] = $className;
         $this->notification_types_path[$nsname] = $path;
     }
 
+    private function loadNotificationHelpers()
+    {
+        if (!empty($this->notification_types)) {
+            return ;
+        }
+        
+        $helpers = KTPluginUtil::loadPluginHelpers('notification_handler');
+        
+        foreach ($helpers as $helper) {
+            extract($helper);
+            $params = explode('|', $object);
+            
+            if (isset($params[2])) {
+                $params[2] = KTPluginUtil::getFullPath($params[2]);
+            }
+            call_user_func_array(array($this, 'registerNotificationHandler'), $params);
+        }
+    }
+    
     // FIXME insert into notification instances {PERF}
 
-    function getHandler($nsname) {
+    function getHandler($nsname) 
+    {
+        $this->loadNotificationHelpers();
+        
         if (!array_key_exists($nsname, $this->notification_types)) {
             return null;
-        } else {
+        } 
+        else {
             if (array_key_exists($nsname, $this->notification_types_path)) {
                 $path = $this->notification_types_path[$nsname];
                 if ($path) {
