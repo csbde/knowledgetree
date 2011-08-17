@@ -59,24 +59,24 @@ class KTDashboardAction extends KTStandardDispatcher {
 
     public function _show()
     {
-    	return true;
+        return true;
     }
 
-	public function getInfo()
-	{
+    public function getInfo()
+    {
         $check = $this->_show();
         if ($check === false) {
             $check = 'disabled';
         }
 
-        $aInfo = array(
+        $info = array(
             'description' => $this->sDescription,
             'name' => $this->getDisplayName(),
             'ns' => $this->sName,
         );
 
-        $aInfo = $this->customiseInfo($aInfo);
-        return $aInfo;
+        $info = $this->customiseInfo($info);
+        return $info;
     }
 
     public function getName()
@@ -101,13 +101,15 @@ class KTDashboardAction extends KTStandardDispatcher {
         return false;
     }
 
-    public function customiseInfo($aInfo)
+    public function customiseInfo($info)
     {
-        return $aInfo;
+        return $info;
     }
+
 }
 
 class KTDashboardActionUtil {
+
     public static function getDashboardActionInfo($slot = 'dashboardsidebar')
     {
         $registry = KTActionRegistry::getSingleton();
@@ -127,11 +129,18 @@ class KTDashboardActionUtil {
             }
             $objects[] = new $className($user, $plugin);
         }
-        if(count($objects) == 1) {
-        	return $objects[0];
+
+        return $objects;
+    }
+
+    public static function getActionForDashboard($user, $slot = 'dashboardsidebar')
+    {
+        $objects = KTDashboardActionUtil::getActionsForDashboard($user, $slot);
+        if (count($objects) == 1) {
+            return $objects[0];
         }
         else {
-        	return $objects;
+            return $objects;
         }
     }
 
@@ -148,6 +157,7 @@ class KTDashboardActionUtil {
             }
             $objects[] = new $className($user, $plugin);
         }
+
         return $objects;
     }
 
@@ -171,24 +181,26 @@ class KTDashboardActionUtil {
 
     public static function sortActions($actions)
     {
-		$ordered = $keys = array();
+        $ordered = $keys = array();
         foreach ($actions as $action) {
-        	$info = $action->getInfo();
-        	if($info != null) {
-        		$order = $action->getOrder();
-	        	if(isset($ordered[$order])) {
-	        		$order++;
-	        		$ordered[$order] = $action;
-	        	} else {
-	        		$ordered[$order] = $action;
-	        	}
-	        	$keys[$order] = $order;
-        	}
+            $info = $action->getInfo();
+            if ($info != null) {
+                $order = $action->getOrder();
+                if (isset($ordered[$order])) {
+                    $order++;
+                    $ordered[$order] = $action;
+                }
+                else {
+                    $ordered[$order] = $action;
+                }
+                $keys[$order] = $order;
+            }
         }
-		sort($keys);
+        sort($keys);
 
         return array('ordered' => $ordered, 'keys'=> $keys);
     }
+
 }
 
 ?>

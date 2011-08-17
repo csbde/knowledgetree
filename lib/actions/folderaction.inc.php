@@ -407,6 +407,17 @@ class KTFolderActionUtil {
         return $objects;
     }
 
+    public static function getFolderActionForFolder($folder, $user, $slot = 'folderaction')
+    {
+    	$objects = KTFolderActionUtil::getFolderActionsForFolder($folder, $user, $slot);
+        if (count($objects) == 1) {
+            return $objects[0];
+        }
+        else {
+            return $objects;
+        }
+    }
+
     public function &getFolderInfoActionsForFolder($oFolder, $oUser)
     {
         $aObjects = array();

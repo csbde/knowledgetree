@@ -82,7 +82,23 @@ class Comments {
         return $formattedList;
     }
 
-    public static function getAllComments($order = 'DESC')
+    public static function getCommentCount()
+    {
+        $sql = "SELECT count(c.id) as comments
+            FROM document_comments c
+            INNER JOIN users u on u.id = c.user_id,
+            documents D
+            INNER JOIN document_metadata_version DMV ON DMV.id = D.metadata_version_id
+            INNER JOIN document_content_version DCV ON DCV.id = DMV.content_version_id
+            " . self::getPermissionsQuery() . "
+            c.document_id = D.id";
+
+        $result = DBUtil::getOneResult($sql);
+
+        return $result['comments'];
+    }
+
+    public static function getAllComments($order = 'DESC', $limit = array(0, 10))
     {
         $sql = "SELECT D.id AS document_id, DMV.name as document_name,
             DCV.mime_id,
@@ -95,7 +111,8 @@ class Comments {
             INNER JOIN document_content_version DCV ON DCV.id = DMV.content_version_id
             " . self::getPermissionsQuery() . "
             c.document_id = D.id
-            ORDER BY date_created $order";
+            ORDER BY date_created $order
+            LIMIT {$limit[0]}, {$limit[1]}";
 
         $list = DBUtil::getResultArray($sql);
 

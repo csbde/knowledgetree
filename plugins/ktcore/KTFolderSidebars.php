@@ -42,6 +42,16 @@ class KTFolderSidebar extends KTFolderViewlet {
     public $sName = 'ktcore.sidebars.folder';
 	public $_sShowPermission = 'ktcore.permissions.read';
 	public $order = 1;
+	public $title;
+
+	/**
+	 * Get the title of a sidebar item
+	 *
+	 */
+	public function getTitle()
+	{
+		return _kt($this->title);
+	}
 
 	/**
 	 * Get the class name of a sidebar item

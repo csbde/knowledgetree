@@ -1,47 +1,47 @@
-if(typeof(kt.app)=='undefined')kt.app={};
-kt.app.activityFeed = new function()
-{
-	this.toggleFeed = function(input, classesToToggle, maxItemsToShow)
-	{
-		input.toggleClass('suppress-feed');
-		
-		jQuery.each(classesToToggle, function (index, classToToggle)
-		{
-			var elementToToggle = jQuery('.'+classToToggle);
-			if(elementToToggle.hasClass('new'))
-			{
-				elementToToggle.removeClass('new').addClass('hidden');
-			}
-			
-			elementToToggle.toggleClass('hidden');
-		});
-		
-		kt.app.activityFeed.rearrangeVisibleItems(maxItemsToShow);		
-	}
-	
-	this.toggleMore = function()
-	{
-		var slider = jQuery('.activityfeed.items.hidden');
-	
-		if (slider.is(":visible"))
-		{
-			jQuery('.activityfeed-more-text').html('more...');
-		}
-		else
-		{
-			jQuery('.activityfeed-more-text').html('less...');
-		}
-		
-		slider.slideToggle('slow', function() {
-			// Animation complete
-			
-		});
-	}
-	
-	this.postComment = function(documentID, comment, maxItemsToShow)
-	{		
-		var savingCommentMessage = '<img src="thirdpartyjs/extjs/resources/images/default/tree/loading.gif"> Saving Comment';
-        var commentSavedMessage = 'Comment Saved. <a href="javascript:jQuery("#commentsarea").show();jQuery("#commentssaveajax").hide();">Add New Comment';
+if (typeof(kt.app) == 'undefined') {
+    kt.app = {};
+}
+
+kt.app.activityFeed = new function() {
+
+    this.toggleFeed = function(input, classesToToggle, maxItemsToShow)
+    {
+        input.toggleClass('suppress-feed');
+
+        jQuery.each(classesToToggle, function (index, classToToggle) {
+            var elementToToggle = jQuery('.' + classToToggle);
+            if (elementToToggle.hasClass('new')) {
+                elementToToggle.removeClass('new').addClass('hidden');
+            }
+            elementToToggle.toggleClass('hidden');
+        });
+
+        kt.app.activityFeed.rearrangeVisibleItems(maxItemsToShow);
+    }
+
+    this.toggleMore = function()
+    {
+        var slider = jQuery('.activityfeed.items.hidden');
+
+        if (slider.is(":visible")) {
+            jQuery('.activityfeed-more-text').html('more...');
+        }
+        else {
+            jQuery('.activityfeed-more-text').html('less...');
+        }
+
+        slider.slideToggle('slow', function() {
+            // Animation complete
+
+        });
+    }
+
+    this.postComment = function(documentID, comment, maxItemsToShow)
+    {
+        var imgSource = 'thirdpartyjs/extjs/resources/images/default/tree/loading.gif';
+        var savingCommentMessage = '<img src="' + imgSource + '"> Saving Comment';
+        var commentLink = '<a href="javascript:jQuery("#commentsarea").show(); jQuery("#commentssaveajax").hide();">';
+        var commentSavedMessage = 'Comment Saved. ' + commentLink + 'Add New Comment';
 
         var newCommentAdded = false;
 
@@ -50,7 +50,11 @@ kt.app.activityFeed = new function()
             jQuery("#commentsarea").hide();
             jQuery("#commentssaveajax").html(savingCommentMessage).show();
 
-            jQuery.post("plugins/comments/ajaxComments.php", { action: 'postComment', comment: comment, documentId: documentID },
+            jQuery.post("plugins/comments/ajaxComments.php", {
+                    action: 'postComment',
+                    comment: comment,
+                    documentId: documentID
+                },
                 function(data) {
                     jQuery("#commentssaveajax").html(commentSavedMessage);
                     jQuery("#commentsbox").val('').height('30px');
@@ -59,19 +63,12 @@ kt.app.activityFeed = new function()
                     jQuery("#commentssaveajax").hide();
 
                     jQuery("div.activityfeed.new-comment").after(data);
-
                     jQuery("div.activityfeed.item.new.comment").slideDown('slow');
-                    
-                    jQuery("div.activityfeed.item.new.comment")./*removeClass('new').*/doTimeout(4000, function(){
-                    	jQuery(this).css('background-color','white');
-                    	
-                    	/*if (jQuery('.toggle-user-feed').hasClass('suppress-feed'))
-                    	{
-                    		jQuery(this).addClass('hidden');
-                    	}*/
-                    	
+
+                    jQuery("div.activityfeed.item.new.comment").doTimeout(4000, function() {
+                        jQuery(this).css('background-color','white');
                     });
-                    
+
                     kt.app.activityFeed.rearrangeVisibleItems(maxItemsToShow);
                 }
             );
@@ -109,6 +106,15 @@ kt.app.activityFeed = new function()
 
             kt.app.activityFeed.toggleMore();
         }
+    }
+
+    this.fetchMore = function(preloaded, start)
+    {
+        var params = {preloaded: preloaded, start: start};
+        var synchronous = false;
+        var func = 'dashboardService.extendActivityFeed';
+        var response = ktjapi.retrieve(func, params);
+        jQuery('#activityfeed-moreitems-' + preloaded).html(response.data.success);
     }
 
 }

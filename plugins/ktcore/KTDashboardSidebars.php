@@ -38,13 +38,23 @@
 require_once(KT_LIB_DIR . "/actions/dashboardviewlet.inc.php");
 
 class KTDashboardSidebar extends KTDashboardViewlet {
-    public $sName = 'ktcore.sidebars.dashboard';
+    public $sName = 'ktcore.dashboard.sidebars';
 	public $_sShowPermission = 'ktcore.permissions.read';
 	public $order = 1;
 	public $oUser;
+	public $title;
 
 	private $folderNamespaces 		= array(	'ktcore.sidebar.recent.folder');
 	private $documentNamespaces		= array(	'ktcore.sidebar.recent.document');
+
+	/**
+	 * Get the title of a sidebar item
+	 *
+	 */
+	public function getTitle()
+	{
+		return _kt($this->title);
+	}
 
 	/**
 	 * Get the class name of a sidebar item
@@ -127,13 +137,17 @@ class KTDashboardSidebar extends KTDashboardViewlet {
 	}
 }
 
-// Replace the old checked-out docs.
 class KTCheckoutSidebar extends KTDashboardSidebar {
-	public $sName = 'ktcore.sidebars.dashboard.checkout';
+	public $sName = 'checkout.dashboard.sidebar';
 	public $_sShowPermission = 'ktcore.permissions.read';
 	public $order = 4;
 	public $bShowIfReadShared = true;
 	public $bShowIfWriteShared = true;
+
+	public function getTitle()
+	{
+		return _kt('My checked-out documents');
+	}
 
 	public function getCSSName()
 	{
@@ -159,37 +173,6 @@ class KTCheckoutSidebar extends KTDashboardSidebar {
     }
 }
 
-class QuicklinksSidebar extends KTDashboardSidebar {
-    public $sName = 'ktcore.sidebars.dashboard.quicklinks';
-	public $_sShowPermission = 'ktcore.permissions.read';
-	public $order = 4;
-	public $bShowIfReadShared = true;
-	public $bShowIfWriteShared = true;
-	private $quicklinksMaxDisplay = 5;
 
-   	public function getCSSName()
-	{
-		return 'quicklinks-documents';
-	}
-
-    public function displayViewlet() {
-    	// TODO : Move to quicklinks plugin.
-    	$quicklinks = KT_PLUGIN_DIR . '/commercial/network/quicklinks/Quicklink.inc.php';
-    	if(!file_exists($quicklinks)) return '';
-		require_once($quicklinks);
-    	$quicklinks = Quicklink::getListForUser($this->oUser->getId());
-
-	    $templating = KTTemplating::getSingleton();
-	    $template = $templating->loadTemplate('ktcore/dashboard/sidebars/quicklinks');
-	    $templateData = array(	'context' => $this,
-				   				'quicklinks_items' => $quicklinks,
-				   				'manage_url' => 'plugin.php?kt_path_info=bd.Quicklinks.plugin/quicklinksmanagement',
-				   				'quicklinksMaxDisplay' => $this->quicklinksMaxDisplay,
-				   				'quicklinksCount' => count($quicklinks),
-				   				);
-
-        return $template->render($templateData);
-    }
-}
 
 ?>

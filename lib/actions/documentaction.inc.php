@@ -448,12 +448,14 @@ class JavascriptDocumentAction extends KTDocumentAction
 }
 
 class KTDocumentActionUtil {
-    public function getDocumentActionInfo($slot = 'documentaction') {
+    public function getDocumentActionInfo($slot = 'documentaction')
+    {
         $oRegistry =& KTActionRegistry::getSingleton();
         return $oRegistry->getActions($slot);
     }
 
-    public static function &getDocumentActionsForDocument(&$oDocument, $oUser, $slot = 'documentaction') {
+    public static function &getDocumentActionsForDocument(&$oDocument, $oUser, $slot = 'documentaction')
+    {
         $aObjects = array();
         $actions = KTDocumentActionUtil::getDocumentActionInfo($slot);
         foreach ($actions as $aAction) {
@@ -468,7 +470,19 @@ class KTDocumentActionUtil {
         return $aObjects;
     }
 
-    public function getAllDocumentActions($slot = 'documentaction') {
+    public static function getDocumentActionForDocument($document, $user, $slot = 'documentaction')
+    {
+    	$objects = KTDocumentActionUtil::getDocumentActionsForDocument($document, $user, $slot);
+        if (count($objects) == 1) {
+            return $objects[0];
+        }
+        else {
+            return $objects;
+        }
+    }
+
+    public function getAllDocumentActions($slot = 'documentaction')
+    {
         $aObjects = array();
         $oDocument = null;
         $oUser = null;
@@ -484,7 +498,8 @@ class KTDocumentActionUtil {
         return $aObjects;
     }
 
-    public function getDocumentActionsByNames($aNames, $slot = 'documentaction', $oDocument = null, $oUser = null) {
+    public function getDocumentActionsByNames($aNames, $slot = 'documentaction', $oDocument = null, $oUser = null)
+    {
         $aObjects = array();
         foreach (KTDocumentActionUtil::getDocumentActionInfo($slot) as $aAction) {
             list($sClassName, $sPath, $sName, $sPlugin) = $aAction;
