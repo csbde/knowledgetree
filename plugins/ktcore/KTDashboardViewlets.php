@@ -268,7 +268,8 @@ class KTDashboardActivityFeedViewlet extends KTDashboardViewlet {
 
         foreach($result as $key => $item) {
             if (!empty($item['transaction_namespace']) && empty($item['transaction_name'])) {
-                $item['transaction_name'] = $this->_getActionNameForNamespace($item['transaction_namespace']);
+                $name = $this->documentActivityFeedAction->_getActionNameForNamespace($item['transaction_namespace']);
+                $item['transaction_name'] = $name;
             }
 
             $activityFeed[] = array(

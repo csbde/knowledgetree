@@ -199,9 +199,10 @@ class KTDocumentActivityFeedAction extends KTDocumentViewlet {
     {
         // Set the namespaces where not in the transactions lookup
         $activityFeed = array();
-        foreach($transactions as $key => $transaction) {
+        foreach($transactions as $transaction) {
             if (empty($transaction['transaction_name'])) {
-                $transactions[$key]['transaction_name'] = $this->_getActionNameForNamespace($transaction['transaction_namespace']);
+                $name = $this->_getActionNameForNamespace($transaction['transaction_namespace']);
+                $transaction['transaction_name'] = $name;
             }
 
             $activityFeed[] = array(
@@ -312,7 +313,7 @@ class KTDocumentActivityFeedAction extends KTDocumentViewlet {
         return $date1 < $date2 ? 1 : -1;
     }
 
-    function _getActionNameForNamespace($namespace)
+    public function _getActionNameForNamespace($namespace)
     {
         $names = split('\.', $namespace);
         $name = array_pop($names);
