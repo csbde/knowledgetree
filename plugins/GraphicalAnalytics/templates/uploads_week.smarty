@@ -22,7 +22,7 @@
             xAxis: {
                 categories: [{/literal}{$weeks}{literal}],
                 title: {
-                    text: null
+                    text: 'Weeks'
                 }
             },
             yAxis: {
@@ -35,13 +35,20 @@
             tooltip: {
                 formatter: function() {
                     return ''+
-                         this.series.name +': '+ this.y +' ..';
+                         this.series.name +': '+ this.y;
                 }
             },
             plotOptions: {
                 bar: {
                     dataLabels: {
                         enabled: true
+                    }
+                },
+                series: {
+                    events: {
+                        legendItemClick: function(event) {
+                            return false;
+                        }
                     }
                 }
             },

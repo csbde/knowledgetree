@@ -52,25 +52,28 @@ class KTFolderWorkflowAssociationPlugin extends KTPlugin {
         return $res;
     }
 
-    function setup() {
+    function setup() 
+    {
         $this->registerTrigger('workflow', 'objectModification', 'FolderWorkflowAssociator',
             'ktstandard.triggers.workflowassociation.folder.handler');
-        }
+            
+        $this->setupAssociation();
+    }
 
     /**
      * Method to setup the plugin on rendering it
      *
      * @return unknown
      */
-    function run_setup() {
+    public function setupAssociation() 
+    {
         $sQuery = 'SELECT selection_ns FROM ' . KTUtil::getTableName('trigger_selection');
         $sQuery .= ' WHERE event_ns = ?';
         $aParams = array('ktstandard.workflowassociation.handler');
         $res = DBUtil::getOneResultKey(array($sQuery, $aParams), 'selection_ns');
 
         if ($res == 'ktstandard.triggers.workflowassociation.folder.handler') {
-            $this->registerAction('folderaction', 'FolderWorkflowAssignmentFolderAction',
-                'ktstandard.workflowassociation.folder.action');
+            $this->registerAction('folderaction', 'FolderWorkflowAssignmentFolderAction', 'ktstandard.workflowassociation.folder.action', __FILE__);
         }else{
             $this->deRegisterPluginHelper('ktstandard.workflowassociation.folder.action', 'action');
         }
@@ -107,6 +110,12 @@ class FolderWorkflowAssociator extends KTWorkflowAssociationHandler {
             return KTWorkflowUtil::getWorkflowForDocument($oDocument); // don't remove if moved out.
         }
         return KTWorkflow::get($res);
+    }
+    
+    public function setAssociation()
+    {
+        $plugin = new KTFolderWorkflowAssociationPlugin();
+        $plugin->setupAssociation();
     }
 }
 
@@ -184,8 +193,7 @@ class FolderWorkflowAssignmentFolderAction extends KTFolderAction {
 }
 
 
-$oPluginRegistry =& KTPluginRegistry::getSingleton();
-$oPluginRegistry->registerPlugin('KTFolderWorkflowAssociationPlugin', 'ktstandard.workflowassociation.folder.plugin', __FILE__);
-
+$pluginRegistry = KTPluginRegistry::getSingleton();
+$pluginRegistry->registerPlugin('KTFolderWorkflowAssociationPlugin', 'ktstandard.workflowassociation.folder.plugin', __FILE__);
 
 ?>

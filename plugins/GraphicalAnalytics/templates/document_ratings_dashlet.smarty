@@ -29,13 +29,20 @@
             tooltip: {
                 formatter: function() {
                     return this.y +' Documents';
-                        //this.series.name +': '+ this.y +' ..';
+                        //this.series.name +': '+ this.y;
                 }
             },
             plotOptions: {
                 bar: {
                     dataLabels: {
                         enabled: true
+                    }
+                },
+                series: {
+                    events: {
+                        legendItemClick: function(event) {
+                            return false;
+                        }
                     }
                 }
             },

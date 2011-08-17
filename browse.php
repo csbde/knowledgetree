@@ -127,8 +127,7 @@ class BrowseDispatcher extends KTStandardDispatcher {
 	    global $default;
 	    /* New ktapi based method */
         $bulkActions = KTBulkActionUtil::getAllBulkActions();
-        $sidebars = KTFolderActionUtil::getFolderActionsForFolder($this->oFolder, $this->oUser, 'mainfoldersidebar');
-        $folderSidebars = isset($sidebars[0]) ? $sidebars[0] : array();
+        $folderSidebars = KTFolderActionUtil::getFolderActionForFolder($this->oFolder, $this->oUser, 'mainfoldersidebar');
 	    if (ACCOUNT_ROUTING_ENABLED && $default->tier == 'trial') {
 	        $this->includeOlark();
 	    }

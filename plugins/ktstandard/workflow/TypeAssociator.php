@@ -57,6 +57,8 @@ class KTDocTypeWorkflowAssociationPlugin extends KTPlugin {
         $this->registerTrigger('workflow', 'objectModification', 'DocumentTypeWorkflowAssociator',
             'ktstandard.triggers.workflowassociation.documenttype.handler');
         $this->registeri18n('knowledgeTree', KT_DIR . '/i18n');
+        
+        $this->setupAssociation();
     }
 
     /**
@@ -64,7 +66,7 @@ class KTDocTypeWorkflowAssociationPlugin extends KTPlugin {
      *
      * @return unknown
      */
-    function run_setup()
+    public function setupAssociation()
     {
         $query = 'SELECT selection_ns FROM ' . KTUtil::getTableName('trigger_selection');
         $query .= ' WHERE event_ns = ?';
@@ -128,6 +130,11 @@ class DocumentTypeWorkflowAssociator extends KTWorkflowAssociationHandler {
         return KTWorkflow::get($res);
     }
 
+    public function setAssociation()
+    {
+        $plugin = new KTDocTypeWorkflowAssociationPlugin();
+        $plugin->setupAssociation();
+    }
 }
 
 class WorkflowTypeAllocationDispatcher extends KTAdminDispatcher {

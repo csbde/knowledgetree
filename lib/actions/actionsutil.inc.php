@@ -36,45 +36,29 @@
  *
  */
 
-require_once(KT_LIB_DIR . '/memcache/ktmemcache.php');
+class ActionsUtil
+{
+    public static function sortActions($actions)
+    {
+        $ordered = $keys = array();
+        foreach ($actions as $action) {
+            $order = $action->getOrder();
+            if (isset($ordered[$order])) {
+        		while (isset($ordered[$order])) {
+        			$order++;
+        		}
+                $ordered[$order] = $action;
+            }
+            else {
+                $ordered[$order] = $action;
+            }
+            $keys[$order] = $order;
+        }
+        // Sort to rewrite keys.
+        sort($keys);
 
-class NewFeatureCache {
-	private static $memcache;
-
-	public static function init()
-	{
-		self::$memcache = KTMemcache::getKTMemcache();
-		return self::$memcache;
-	}
-
-	public static function getCached($userId, $type, $section)
-	{
-		$key = ACCOUNT_NAME . '_' . $userId . '_' . $type . '_' . $section;
-		$data = self::$memcache->get($key);
-
-		return unserialize($data);
-	}
-
-	public static function saveToCache($content, $userId, $type, $section)
-	{
-		$key = ACCOUNT_NAME . '_' . $userId . '_' . $type . '_' . $section;
-		$data = serialize($content);
-
-		return self::$memcache->set($key, $data);
-	}
-
-	public static function saveVersion($userId, $version)
-	{
-		$key = ACCOUNT_NAME . '_' . $userId . '_';
-		return self::$memcache->set($key, $version);
-	}
-
-	public static function getCachedVersion($userId)
-	{
-		$key = ACCOUNT_NAME . '_' . $userId;
-		return self::$memcache->get($key);
-	}
+        return array('ordered' => $ordered, 'keys'=> $keys);
+    }
 }
-
 
 ?>

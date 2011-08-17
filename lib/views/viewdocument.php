@@ -246,8 +246,7 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
 
         $this->recordView();
 
-        $blocks = KTDocumentActionUtil::getDocumentActionsForDocument($this->document, $this->oUser, 'documentblock');
-        $documentBlocks = isset($blocks[0]) ? $blocks[0] : array();
+        $documentBlocks = KTDocumentActionUtil::getDocumentActionForDocument($this->document, $this->oUser, 'documentblock');
         if (!empty($documentBlocks)) {
             $info = $documentBlocks->getInfo();
             if (is_null($info)) {

@@ -2024,7 +2024,7 @@ td.line { word-break: break-word; overflow: hidden; width: 100%;}
 	border-radius: 3px;
 	-moz-border-radius: 3px;
 	-webkit-border-radius: 3px;
-	width: 234px!important;
+	width: 233px!important;
 	display: block;
 	float: left;
 	margin: 5px;
@@ -2051,6 +2051,70 @@ td.line { word-break: break-word; overflow: hidden; width: 100%;}
 .graph-viewlet .tabular .icon {
 	padding: 5px;
 	vertical-align: top;
+}
+.graph-viewlet  .views {
+	display: inline-block;
+	float: right;
+	margin: 3px;
+	background: #2F6594;
+	color: white;
+	border-radius: 15px;
+	-moz-border-radius: 15px;
+	-webkit-border-radius: 15px;
+	padding: 0px 5px;
+	line-height: 15px;
+	font-size: 10px;
+	min-width: 10px;
+	text-align: center;
+	-webkit-user-select: none;
+	-moz-user-select: none;
+}
+.activityfeed .graph-viewlet  {
+	width: 724px !important;
+	margin-left: 2px;
+	margin-right: -20px;
+}
+.activityfeed .graph-viewlet h3 {
+	text-align: left;
+}
+.graph-viewlet .activityfeed.item {
+	padding-left: 20px;
+	width: 705px!important
+}
+.graph-viewlet .activityfeed.item.comment .description {
+	background: #D6E6F0;
+	display: block;
+	padding: 10px;
+	border-radius: 3px;
+	-webkit-border-radius: 3px;
+	-moz-border-radius: 3px;
+	width: 75%;
+	margin-top: -5px;
+	position: relative;
+}
+.graph-viewlet .activityfeed.item.comment .description:before {
+	content:"";
+	width: 0;
+	height: 0;
+	border-left: 10px solid transparent;
+	border-right: 10px solid transparent;
+	border-bottom: 15px solid #D6E6F0;
+	top: -10px;
+	position: absolute;
+	display: block;
+	left: 5px;	
+}
+.graph-viewlet .activityfeed-content .title {
+	font-size: 13px;
+	font-weight: bold;
+	margin-bottom: 5px;
+	display: block;
+}
+.graph-viewlet .activityfeed .icon {
+	border: none!important;
+}
+.graph-viewlet .activityfeed-content {
+	margin-left: 50px!important;
 }
 
 /*like */
