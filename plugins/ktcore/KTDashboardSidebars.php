@@ -35,6 +35,7 @@
  * Contributor( s): ______________________________________
  *
  */
+require_once(KT_LIB_DIR . '/actions/actionsutil.inc.php');
 require_once(KT_LIB_DIR . "/actions/dashboardviewlet.inc.php");
 
 class KTDashboardSidebar extends KTDashboardViewlet {
@@ -77,28 +78,13 @@ class KTDashboardSidebar extends KTDashboardViewlet {
 	public function getSideBars()
 	{
 		$sidebars = $this->getDashboardSidebars();
-		$ordered = $keys = array();
-        foreach ($sidebars as $sidebar) {
-        	// Skip info check
-    		$order = $sidebar->getOrder();
-    		// Sidebars cannot overwrite each other.
-        	if(isset($ordered[$order])) {
-        		$order++;
-        		$ordered[$order] = $sidebar;
-        	}
-        	else {
-        		$ordered[$order] = $sidebar;
-        	}
-        	$keys[$order] = $order;
-        }
-        // Sort to rewrite keys.
-        sort($keys);
+		$orderedKeys = ActionsUtil::sortActions($sidebars);
 		$oTemplating = KTTemplating::getSingleton();
 		$oTemplate = $oTemplating->loadTemplate('ktcore/dashboard/sidebars/viewSidebar');
         $aTemplateData = array(
               'context' => $this,
-              'sidebars' => $ordered,
-              'keys' => $keys,
+              'sidebars' => $orderedKeys['ordered'],
+              'keys' => $orderedKeys['keys'],
               'location' => 'dashboard',
         );
 
