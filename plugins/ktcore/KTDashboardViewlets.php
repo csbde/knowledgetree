@@ -50,6 +50,7 @@ class KTDashboardActivityFeedViewlet extends KTDashboardViewlet {
     private $limit = 10;
     private $displayMax = 20;
     private $preloaded = 0;
+    private $totalItems = 0;
 
     public $sName = 'ktcore.viewlet.dashboard.activityfeed';
     public $bShowIfReadShared = true;
@@ -94,7 +95,7 @@ class KTDashboardActivityFeedViewlet extends KTDashboardViewlet {
             'documentId' => $documentId,
             'versions' => $activityFeed,
             'displayMax' => $this->displayMax,
-            'commentsCount' => $transactionCount + $commentCount,
+            'commentsCount' => $this->totalItems,
             'preloaded' => $this->preloaded + count($activityFeed),
             'nextBatch' => $this->start + $this->limit
         );
@@ -124,6 +125,7 @@ class KTDashboardActivityFeedViewlet extends KTDashboardViewlet {
         $transactionCount = $this->getTransactionCount($filter);
 
         if ($transactionCount > 0) {
+            $this->totalItems += $transactionCount;
             $transactions = $this->documentActivityFeedAction->getActivityFeed($this->getAllTransactions($filter));
         }
 
@@ -228,6 +230,7 @@ class KTDashboardActivityFeedViewlet extends KTDashboardViewlet {
 
         $commentCount = $this->getCommentCount();
         if ($commentCount > 0) {
+            $this->totalItems += $commentCount;
             $comments = $this->getAllComments();
         }
 
