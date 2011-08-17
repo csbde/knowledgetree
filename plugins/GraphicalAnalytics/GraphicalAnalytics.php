@@ -312,17 +312,19 @@ class GraphicalAnalytics {
 			} else {
 				$num = 0;
 			}
+			
+			$weeks[] = $i;
 
 			$uploadsCounter[] = $num;
 			$uploadsArray[] = array('week_number'=>$i, 'count'=>$num, 'week_str'=>$this->formatWeekStr($i));
 		}
 
-		//$weeks = '"'.implode('", "', $weeks).'"';
-		$weeks = $this->generateWeeksStr(10);
+		$weeks = '"'.implode('", "', $weeks).'"';
+		$weeksStr = $this->generateWeeksStr(10);
 		
 		$uploadsCounter = implode(', ', $uploadsCounter);
 
-		return array('weeks'=>$weeks, 'uploadsCounter'=>$uploadsCounter, 'uploadsArray'=>$uploadsArray);
+		return array('weeks'=>$weeksStr, 'weeksCounter'=>$weeks, 'uploadsCounter'=>$uploadsCounter, 'uploadsArray'=>$uploadsArray);
 	}
 
 	/******************************************************************************************************************/
@@ -357,17 +359,19 @@ class GraphicalAnalytics {
 			} else {
 				$num = 0;
 			}
+			
+			$weeks[] = $i;
 
 			$accessCounter[] = $num;
 			$accessArray[] = array('week_number'=>$i, 'count'=>$num, 'week_str'=>$this->formatWeekStr($i));
 		}
 
-		//$weeks = '"'.implode('", "', $weeks).'"';
-		$weeks = $this->generateWeeksStr(10);
+		$weeks = '"'.implode('", "', $weeks).'"';
+		$weeksStr = $this->generateWeeksStr(10);
 		
 		$accessCounter = implode(', ', $accessCounter);
 
-		return array('weeks'=>$weeks, 'accessCounter'=>$accessCounter, 'accessArray'=>$accessArray);
+		return array('weeks'=>$weeksStr, 'weeksCounter'=>$weeks, 'accessCounter'=>$accessCounter, 'accessArray'=>$accessArray);
 	}
 
 	/******************************************************************************************************************/
