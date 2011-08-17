@@ -40,16 +40,19 @@ require_once(KT_LIB_DIR . '/plugins/plugin.inc.php');
 require_once(KT_LIB_DIR . '/plugins/pluginregistry.inc.php');
 
 class BrowseablePlugin extends KTPlugin {
-    var $sNamespace = "nbm.browseable.plugin";
+    public $sNamespace = "nbm.browseable.plugin";
+	public $dir = '';
 
-    function BrowseablePlugin($sFilename = null) {
+    public function BrowseablePlugin($sFilename = null) {
         $res = parent::KTPlugin($sFilename);
         $this->sFriendlyName = _kt('Orphaned Folders Plugin');
+        $this->dir = dirname(__FILE__) . DIRECTORY_SEPARATOR;
+
         return $res;
     }
 
-    function setup() {
-		$this->registerAction('dashboardsidebar', 'BrowseableFolderSidebar', 'browseable.dashboard.sidebar', 'BrowseableSidebar.php');
+    public function setup() {
+		$this->registerAction('dashboardsidebar', 'BrowseableFolderSidebar', 'browseable.dashboard.sidebar', $this->dir . 'BrowseableSidebar.php');
         require_once(KT_LIB_DIR . "/templating/templating.inc.php");
         $oTemplating =& KTTemplating::getSingleton();
         $oTemplating->addLocation('browseabledashlet', '/plugins/browseabledashlet/templates');
