@@ -807,7 +807,6 @@ class PluginCache {
             global $default;
             $default->log->info('Plugin Cache: Memcache not enabled - using DB');
         }
-
         
         // Create the key for the namespace using the account name
         $this->namespaceKey = 'plugins-key';
@@ -833,11 +832,16 @@ class PluginCache {
         return self::$pluginCache;
     }
   
+    public function clearPluginSession()
+    {
+        unset($_SESSION['plugin-list']);
+        unset($_SESSION['plugin-helper-list']);
+    }
+    
     public function getPlugins()
     {
         if (!$this->validatePlugins()) {
-            unset($_SESSION['plugin-list']);
-            unset($_SESSION['plugin-helper-list']);
+            $this->clearPluginSession();
         }
         
         if (isset($_SESSION['plugin-list']) && !empty($_SESSION['plugin-list'])) {
@@ -851,7 +855,7 @@ class PluginCache {
         if (!$pluginList) {
             $helpers = $this->getPluginHelpersByType('plugin');
             
-            if (!$helpers) {
+            if (!$helpers || count($helpers) <= 1) {
                 $this->updatePlugins();
                 $helpers = $this->getPluginHelpersByType('plugin');
             }
@@ -943,8 +947,7 @@ class PluginCache {
         }
         
         unset($_SESSION['plugin-namespace']);
-        unset($_SESSION['plugin-list']);
-        unset($_SESSION['plugin-helper-list']);
+        $this->clearPluginSession();
     }
 
     private function getNamespace()
@@ -1039,6 +1042,7 @@ class PluginCache {
         KTPluginUtil::updatePlugins();
 
         $this->removeDisabledPluginHelpers();
+        $this->clearPluginSession();
         
         $this->updateLock('delete');
     }
@@ -1087,7 +1091,10 @@ class PluginCache {
             return ;
         }
         
-        $pluginsList = $this->getPlugins();
+        unset($_SESSION['plugin-helper-list']);
+        
+        $helpers = $this->getPluginHelpersByType('plugin');
+        $pluginList = $this->getPluginsList($helpers);
         $helpers = $this->getPluginHelpers();
 
         // Unset all helpers for disabled plugins
@@ -1174,6 +1181,7 @@ class PluginCache {
         extract($options);
         $helpers[$classtype][$namespace] = $options;
         $this->setPluginHelpers($helpers);
+        $_SESSION['plugin-helper-list'] = $helpers;
         
         return true;
     }
@@ -1188,6 +1196,7 @@ class PluginCache {
         
         unset($helpers[$classtype][$namespace]);
         $helpers = $this->setPluginHelpers($helpers);
+        $_SESSION['plugin-helper-list'] = $helpers;
         
         return true;
     }
