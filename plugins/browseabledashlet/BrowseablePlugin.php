@@ -39,10 +39,10 @@
 require_once(KT_LIB_DIR . '/plugins/plugin.inc.php');
 require_once(KT_LIB_DIR . '/plugins/pluginregistry.inc.php');
 
-class BrowseableDashletPlugin extends KTPlugin {
+class BrowseablePlugin extends KTPlugin {
     var $sNamespace = "nbm.browseable.plugin";
 
-    function BrowseableDashletPlugin($sFilename = null) {
+    function BrowseablePlugin($sFilename = null) {
         $res = parent::KTPlugin($sFilename);
         $this->sFriendlyName = _kt('Orphaned Folders Plugin');
         return $res;
@@ -57,5 +57,5 @@ class BrowseableDashletPlugin extends KTPlugin {
 }
 
 $oPluginRegistry =& KTPluginRegistry::getSingleton();
-$oPluginRegistry->registerPlugin('BrowseableDashletPlugin', 'nbm.browseable.plugin', __FILE__);
+$oPluginRegistry->registerPlugin('BrowseablePlugin', 'nbm.browseable.plugin', __FILE__);
 ?>
