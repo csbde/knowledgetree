@@ -33,48 +33,22 @@
  * must display the words "Powered by KnowledgeTree" and retain the original
  * copyright notice.
  * Contributor( s): ______________________________________
- *
  */
 
-require_once(KT_LIB_DIR . '/memcache/ktmemcache.php');
+require_once(KT_DIR . '/plugins/ktcore/KTDashboardViewlets.php');
 
-class NewFeatureCache {
-	private static $memcache;
+class dashboardService extends client_service {
 
-	public static function init()
-	{
-		self::$memcache = KTMemcache::getKTMemcache();
-		return self::$memcache;
-	}
+    public function extendActivityFeed($params)
+    {
+        $viewlet = new KTDashboardActivityFeedViewlet();
+        $viewlet->setLimits($params['preloaded'], $params['start']);
+        $result = $viewlet->displayViewlet();
 
-	public static function getCached($userId, $type, $section)
-	{
-		$key = ACCOUNT_NAME . '_' . $userId . '_' . $type . '_' . $section;
-		$data = self::$memcache->get($key);
+        $this->addResponse('success', $result);
 
-		return unserialize($data);
-	}
+        return true;
+    }
 
-	public static function saveToCache($content, $userId, $type, $section)
-	{
-		$key = ACCOUNT_NAME . '_' . $userId . '_' . $type . '_' . $section;
-		$data = serialize($content);
-
-		return self::$memcache->set($key, $data);
-	}
-
-	public static function saveVersion($userId, $version)
-	{
-		$key = ACCOUNT_NAME . '_' . $userId . '_';
-		return self::$memcache->set($key, $version);
-	}
-
-	public static function getCachedVersion($userId)
-	{
-		$key = ACCOUNT_NAME . '_' . $userId;
-		return self::$memcache->get($key);
-	}
 }
-
-
 ?>

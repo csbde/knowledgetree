@@ -45,6 +45,16 @@ class KTDocumentSidebar extends KTDocumentViewlet {
     public $sName = 'ktcore.sidebars.document';
 	public $_sShowPermission = 'ktcore.permissions.read';
 	public $order = 1;
+	public $title;
+
+	/**
+	 * Get the title of a sidebar item
+	 *
+	 */
+	public function getTitle()
+	{
+		return _kt($this->title);
+	}
 
 	public function getCSSName() {}
 	public function getOrder() { return $this->order; }
@@ -97,6 +107,11 @@ class KTWorkflowSidebar extends KTDocumentSidebar {
 	public $_sShowPermission = 'ktcore.permissions.read';
 	public $order = 5;
 	public $bShowIfWriteShared = true;
+
+	public function getTitle()
+	{
+		return _kt('Workflow Transitions');
+	}
 
 	public function getCSSName() { return 'workflow_transitions'; }
 

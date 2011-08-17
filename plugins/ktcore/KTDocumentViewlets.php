@@ -281,7 +281,7 @@ class KTDocumentActivityFeedAction extends KTDocumentViewlet {
 
     // FIXME Some of these values are not in the detail view query.
     //       Warnings will be squashed, but should be dealt with properly.
-    private function formatCommentsResult($result)
+    public function formatCommentsResult($result)
     {
         $comments = array();
 
@@ -310,51 +310,6 @@ class KTDocumentActivityFeedAction extends KTDocumentViewlet {
         $date2 = new DateTime($b['actual_datetime']);
 
         return $date1 < $date2 ? 1 : -1;
-    }
-
-    // FIXME Lots of duplication, see comments plugin.
-    public function getPermissionsQuery()
-    {
-        if ($this->inAdminMode()) {
-            return 'WHERE';
-        }
-        else {
-            $user = User::get($_SESSION['userID']);
-            $permission = KTPermission::getByName('ktcore.permissions.read');
-            $permId = $permission->getID();
-            $permissionDescriptors = KTPermissionUtil::getPermissionDescriptorsForUser($user);
-            $permissionDescriptors = empty($permissionDescriptors) ? -1 : implode(',', $permissionDescriptors);
-
-            $query = "INNER JOIN permission_lookups AS PL ON D.permission_lookup_id = PL.id
-                INNER JOIN permission_lookup_assignments AS PLA ON PL.id = PLA.permission_lookup_id
-                AND PLA.permission_id = $permId
-                WHERE PLA.permission_descriptor_id IN ($permissionDescriptors) AND";
-
-            return $query;
-        }
-    }
-
-    private function inAdminMode()
-    {
-        return isset($_SESSION['adminmode'])
-            && ((int)$_SESSION['adminmode'])
-            && Permission::adminIsInAdminMode();
-    }
-
-    public function getAllComments()
-    {
-        $comments = array();
-
-        try {
-            $comments = $this->formatCommentsResult(Comments::getAllComments());
-        }
-        catch (Exception $e) {
-            global $default;
-            $default->log->error('Error getting the comments - ' . $e->getMessage());
-            $comments = array();
-        }
-
-        return $comments;
     }
 
     function _getActionNameForNamespace($namespace)

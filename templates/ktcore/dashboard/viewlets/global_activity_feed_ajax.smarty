@@ -1,0 +1,36 @@
+{assign var='count' value='0'}
+{foreach item=version from=$versions}
+    {if $count == $displayMax}
+        <div class="activityfeed items hidden">
+    {/if}
+    {if $version.type=='version'}
+        <span class="activityfeed item version metaflag">{$version.version}</span>
+    {else}
+        <div class="activityfeed item {$version.type}">
+                <div class="doc icon" style="{$version.mimeicon}"></div>
+            <div class="activityfeed-content">
+                <span class="title"><a class="clearLink" href="{$version.document_link}" style="">{$version.document_name}</a><br/><br/></span>
+                <span class="user">{$version.name}</span>
+                <span class="description">{$version.comment|sanitize|nl2br}</span>
+                <span class="date">{$version.datetime}</span>
+            </div>
+        </div>
+    {/if}
+    {assign var="count" value=$count+1}
+{/foreach}
+{if $commentsCount > $preloaded}
+    </div>
+{/if}
+
+<br/>
+{if $commentsCount > $preloaded}
+    <div id="activityfeed-moreitems-{$preloaded}">
+        <span class=activityfeed-more>
+            <div>
+                <span class=activityfeed-more-text onclick="javascript: kt.app.activityFeed.fetchMore({$preloaded}, {$nextBatch});">
+                    load more...
+                </span>
+            </div>
+        </span>
+    </div>
+{/if}

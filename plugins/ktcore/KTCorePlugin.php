@@ -96,9 +96,8 @@ class KTCorePlugin extends KTPlugin {
 
         // Sidebars
         // Dashboard
-        $this->registerAction('maindashsidebar', 'KTDashboardSidebar', 'ktcore.sidebars.dashboard', 'KTDashboardSidebars.php');
-        $this->registerAction('dashboardsidebar', 'KTCheckoutSidebar', 'ktcore.sidebars.dashboard.checkout', 'KTDashboardSidebars.php');
-
+        $this->registerAction('maindashsidebar', 'KTDashboardSidebar', 'ktcore.dashboard.sidebar', 'KTDashboardSidebars.php');
+        $this->registerAction('dashboardsidebar', 'KTCheckoutSidebar', 'checkout.dashboard.sidebar', 'KTDashboardSidebars.php');
         // Folders
         $this->registerAction('mainfoldersidebar', 'KTFolderSidebar', 'ktcore.sidebars.folder', 'KTFolderSidebars.php');
         // Documents

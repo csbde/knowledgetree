@@ -1,4 +1,4 @@
-<h3>Views Vs Comments per Week</h3>
+<h3>Views, Comments and Likes per Week</h3>
 
 
 <div id="views_vs_comments_per_week"></div>
@@ -13,15 +13,15 @@
                 defaultSeriesType: 'column'
             },
             title: {
-                text: 'Views Vs Comments per Week '
+                text: 'Views, Comments and Likes per Week'
             },
             subtitle: {
-                text: 'How many documents were viewed per week for the last 10 weeks'
+                text: 'How many documents were viewed, liked, commented on per week'
             },
             xAxis: {
                 categories: [{/literal}{$comments.weeks}{literal}],
                 title: {
-                    text: null
+                    text: 'Weeks'
                 }
             },
             yAxis: {
@@ -34,7 +34,7 @@
             tooltip: {
                 formatter: function() {
                     return ''+
-                         this.series.name +': '+ this.y +' ..';
+                         this.series.name +': '+ this.y;
                 }
             },
             plotOptions: {
