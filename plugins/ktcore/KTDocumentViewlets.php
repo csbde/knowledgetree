@@ -197,7 +197,6 @@ class KTDocumentActivityFeedAction extends KTDocumentViewlet {
     //       Warnings will be squashed, but should be dealt with properly.
     public function getActivityFeed($transactions)
     {
-        // Set the namespaces where not in the transactions lookup
         $activityFeed = array();
         foreach($transactions as $transaction) {
             if (empty($transaction['transaction_name'])) {
