@@ -179,28 +179,6 @@ class KTDashboardActionUtil {
         return $objects;
     }
 
-    public static function sortActions($actions)
-    {
-        $ordered = $keys = array();
-        foreach ($actions as $action) {
-            $info = $action->getInfo();
-            if ($info != null) {
-                $order = $action->getOrder();
-                if (isset($ordered[$order])) {
-                    $order++;
-                    $ordered[$order] = $action;
-                }
-                else {
-                    $ordered[$order] = $action;
-                }
-                $keys[$order] = $order;
-            }
-        }
-        sort($keys);
-
-        return array('ordered' => $ordered, 'keys'=> $keys);
-    }
-
 }
 
 ?>
