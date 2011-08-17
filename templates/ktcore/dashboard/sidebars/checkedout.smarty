@@ -2,7 +2,7 @@
 	<ul style="font-size: 11px;">
 	{foreach from=$documents item=oEntry}
     	{capture assign=sLink}{$browseUtil->getUrlForDocument($oEntry)}{/capture}
-		<li class="{cycle values=odd,even}">
+		<li>
 			<a class="contenttype_href" href="{$sLink}">{$oEntry->getName()|mb_truncate:25:"...":true|sanitize}</a>
 		</li>
 	{/foreach}

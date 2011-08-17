@@ -5,7 +5,7 @@
 	<ul class="alerts_sidebar" style="font-size: 11px;">
 		{foreach from=$folders item=folder}
 			{if $count < $folderMaxDisplay}
-		    	<li class="{cycle values=odd,even}">
+		    	<li>
 		    {else}
 		    	<li class="hidden_items ofolders {cycle values=odd,even}">
 		    {/if}
