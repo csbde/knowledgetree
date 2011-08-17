@@ -180,15 +180,7 @@ require_once(KT_LIB_DIR . '/session/control.inc');
 require_once(KT_LIB_DIR . '/plugins/pluginutil.inc.php');
 
 if ($checkup !== true) {
-	// Replace function later
-	/* ** Get the page being loaded and load the plugins specific to the page ** */
-        // NOTE This is not being used within the function and should probably be completely removed.
-	$scriptName = $GLOBALS['_SERVER']['SCRIPT_NAME'];
-	$script = basename($scriptName);
-	$pos = strpos($script, '.');
-	$scriptExtension = substr($script, 0, $pos);
-
-	$res = KTPluginUtil::loadPlugins($scriptExtension);
+	$res = KTPluginUtil::loadPlugins();
 	if (PEAR::isError($res)) {
 	    // If the plugins aren't loaded, there was a DB error, possibly a DB connection error.
 	    $KTInit->showDBError($res);

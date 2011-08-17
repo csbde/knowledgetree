@@ -54,8 +54,29 @@ class KTPageRegistry {
         $this->resources[$path] = array($path, $className, $filename);
     }
 
+    private function loadPageHelpers()
+    {
+        if (!empty($this->resources)) {
+            return ;
+        }
+        
+        $helpers = KTPluginUtil::loadPluginHelpers('page');
+        
+        foreach ($helpers as $helper) {
+            extract($helper);
+            $params = explode('|', $object);
+            
+            if (isset($params[2])) {
+                $params[2] = KTPluginUtil::getFullPath($params[2]);
+            }
+            call_user_func_array(array($this, 'registerPage'), $params);
+        }
+    }
+    
     public function getPage($path)
     {
+        $this->loadPageHelpers();
+        
         $info = KTUtil::arrayGet($this->resources, $path);
         if (empty($info)) {
             return null;

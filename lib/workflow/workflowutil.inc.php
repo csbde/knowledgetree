@@ -884,28 +884,54 @@ class KTWorkflowTriggerRegistry {
 		return $GLOBALS['_KT_PLUGIN']['oKTWorkflowTriggerRegistry'];
     }
 
-    function registerWorkflowTrigger($sNamespace, $sClassname, $sPath) {
-        $this->triggers[$sNamespace] = array('class' => $sClassname, 'path' => $sPath);
+    function registerWorkflowTrigger($namespace, $classname, $path) 
+    {
+        $this->triggers[$namespace] = array('class' => $classname, 'path' => $path);
     }
 
-    function getWorkflowTrigger($sNamespace) {
-        $aInfo = KTUtil::arrayGet($this->triggers, $sNamespace, null);
+    private function loadTriggerHelpers()
+    {
+        if (!empty($this->triggers)) {
+            return ;
+        }
+        
+        $helpers = KTPluginUtil::loadPluginHelpers('workflow_trigger');
+        
+        foreach ($helpers as $helper) {
+            extract($helper);
+            $params = explode('|', $object);
+            
+            if (isset($params[2])) {
+                $params[2] = KTPluginUtil::getFullPath($params[2]);
+            }
+            call_user_func_array(array($this, 'registerWorkflowTrigger'), $params);
+        }
+    }
+    
+    function getWorkflowTrigger($namespace) 
+    {
+        $this->loadTriggerHelpers();
+        
+        $info = KTUtil::arrayGet($this->triggers, $namespace, null);
         if (is_null($aInfo)) {
-            return PEAR::raiseError(sprintf(_kt("Unable to find workflow trigger: %s"), $sNamespace));
+            return PEAR::raiseError(sprintf(_kt("Unable to find workflow trigger: %s"), $namespace));
         }
 
-        require_once($aInfo['path']);
+        require_once($info['path']);
 
-        return new $aInfo['class'];
+        return new $info['class'];
     }
 
     // get a keyed list of workflow triggers
 
-    function listWorkflowTriggers() {
+    function listWorkflowTriggers() 
+    {
+        $this->loadTriggerHelpers();
+        
         $triggerlist = array();
-        foreach ($this->triggers as $sNamespace => $aTrigInfo) {
-            $oTriggerObj = $this->getWorkflowTrigger($sNamespace);
-            $triggerlist[$sNamespace] = $oTriggerObj->getInfo();
+        foreach ($this->triggers as $namespace => $triggerInfo) {
+            $trigger = $this->getWorkflowTrigger($namespace);
+            $triggerlist[$namespace] = $trigger->getInfo();
         }
         // FIXME do we want to order this alphabetically?
         return $triggerlist;

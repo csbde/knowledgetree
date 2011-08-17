@@ -60,51 +60,82 @@ class KTPortletRegistry {
         $this->nsnames[$nsname] = array($name, $path, $nsname, $sPlugin);
     }
 
-    function getPortletsForPage($aBreadcrumbs) {
-        $aPortlets = array();
-        foreach ($aBreadcrumbs as $aBreadcrumb) {
-            $action = KTUtil::arrayGet($aBreadcrumb, 'action');
+    private function loadPortletHelpers()
+    {
+        if (!empty($this->nsnames)) {
+            return ;
+        }
+        
+        $helpers = KTPluginUtil::loadPluginHelpers('portlet');
+        
+        foreach ($helpers as $helper) {
+            extract($helper);
+            $params = explode('|', $object);
+            
+            $location = unserialize($params[0]);
+            if ($location != false) {
+               $params[0] = $location;
+            }
+            if (isset($params[3])) {
+                $params[3] = KTPluginUtil::getFullPath($params[3]);
+            }
+            
+            call_user_func_array(array($this, 'registerPortlet'), $params);
+        }
+    }
+    
+    function getPortletsForPage($breadcrumbs) 
+    {
+        $this->loadPortletHelpers();
+        
+        $portlets = array();
+        foreach ($breadcrumbs as $breadcrumb) {
+            $action = KTUtil::arrayGet($breadcrumb, 'action');
             if (empty($action)) {
                 continue;
             }
-            $aThisPortlets = $this->getPortlet($action);
-            if (empty($aThisPortlets)) {
+            
+            $actionPortlets = $this->getPortlet($action);
+            if (empty($actionPortlets)) {
                 continue;
             }
-            foreach ($aThisPortlets as $aPortlet) {
-                $aPortlets[] = $aPortlet;
+            foreach ($actionPortlets as $portlet) {
+                $portlets[] = $portlet;
             }
         }
 
-        $aReturn = array();
-        $aDone = array();
+        $return = array();
+        $done = array();
 
-        foreach ($aPortlets as $aPortlet) {
-            if (in_array($aPortlet, $aDone)) {
+        foreach ($portlets as $portlet) {
+            if (in_array($portlet, $done)) {
                 continue;
             }
-            $aDone[] = $aPortlet;
+            $done[] = $portlet;
 
-            $sPortletClass = $aPortlet[0];
-            $sPortletFile = $aPortlet[1];
-            $sPluginName = $aPortlet[3];
-            $oRegistry =& KTPluginRegistry::getSingleton();
-            $oPlugin =& $oRegistry->getPlugin($sPluginName);
-            if (file_exists($sPortletFile)) {
-                require_once($sPortletFile);
+            $portletClass = $portlet[0];
+            $portletFile = $portlet[1];
+            $pluginName = $portlet[3];
+            $registry = KTPluginRegistry::getSingleton();
+            $plugin = $registry->getPlugin($pluginName);
+            
+            if (file_exists($portletFile)) {
+                require_once($portletFile);
             }
-            $oPortlet =new $sPortletClass;
-            $oPortlet->setPlugin($oPlugin);
-            array_push($aReturn, $oPortlet);
+            $portletObj =new $portletClass;
+            $portletObj->setPlugin($plugin);
+            array_push($return, $portletObj);
         }
-        return $aReturn;
+        return $return;
     }
 
-    function getPortlet($slot) {
+    function getPortlet($slot) 
+    {
         return $this->actions[$slot];
     }
 
-    function getPortletByNsname($nsname) {
+    function getPortletByNsname($nsname) 
+    {
         return $this->nsnames[$nsname];
     }
 }

@@ -113,6 +113,8 @@ class DocumentProcessor
     private function loadProcessors()
     {
         // Get list of registered processors (plugins)
+        $helpers = KTPluginUtil::loadPluginHelpers('processor');
+        /*
         $query = 'SELECT h.* FROM plugin_helper h
             INNER JOIN plugins p ON (p.namespace = h.plugin)
         	WHERE p.disabled = 0 AND h.classtype = "processor"';
@@ -121,17 +123,20 @@ class DocumentProcessor
 
         if(PEAR::isError($results)){
             global $default;
-            $default->log->error('documentProcessor: error loading processors').' - '.$results->getMessage();
+            $default->log->error('documentProcessor: error loading processors - '.$results->getMessage());
             return false;
         }
+        */
 
-        if(empty($results)){
+        if(empty($helpers)){
+            global $default;
+            $default->log->error('documentProcessor: no processors available');
             return false;
         }
 
         $processors = array();
 
-        foreach ($results as $item){
+        foreach ($helpers as $item){
             $path = KTUtil::isAbsolutePath($item['pathname']) ? $item['pathname'] : KT_DIR . DIRECTORY_SEPARATOR . $item['pathname'];
 
             require_once($path);
