@@ -33,29 +33,49 @@
  * must display the words "Powered by KnowledgeTree" and retain the original
  * copyright notice.
  * Contributor( s): ______________________________________
+ *
  */
 
-class BulkDocumentActions
-{
-	public static function queueBulkAction($action, $list, $reason, $targetFolderId, $currentFolderId)
-	{
-    	require_once(KT_LIVE_DIR . '/sqsqueue/dispatchers/BulkactionDispatcher.php');
-    	$bulkActionDispatcher = new BulkactionDispatcher();
-    	$params['action'] = $action;
-    	$params['files_and_folders'] = $list;
-    	$params['reason'] = $reason;
-    	$params['targetFolderId'] = $targetFolderId;
-    	$params['currentFolderId'] = $currentFolderId;
-    	$bulkActionDispatcher->addProcess("bulkactions", $params);
-    	$queueResponse = $bulkActionDispatcher->sendToQueue();
-    	if($queueResponse) {
-    		require_once(KT_LIB_DIR . '/backgroundactions/backgroundaction.inc.php');
-			backgroundaction::saveEvent($action, $list, $currentFolderId, $targetFolderId);
-    	}
+// TODO : Abstract background task
+$accountName = $argv[1];
+$action = $argv[2];
+$list = unserialize($argv[3]);
+$reason = unserialize($argv[4]);
+$targetFolderId = $argv[5];
+$currentFolderId = $argv[6];
 
-    	return $queueResponse;
-	}
+$folderId = $argv[1];
+$accountName = isset($argv[2]) ? $argv[2] : '';
 
-
+if (!empty($accountName)) {
+	define('ACCOUNT_ROUTING_ENABLED', true);
+	define('ACCOUNT_NAME', $accountName);
 }
+
+$dir = dirname(__FILE__);
+require_once($dir . '/../../../config/dmsDefaults.php');
+require_once(KT_LIB_DIR . '/backgroundactions/BackgroundAction.inc.php');
+
+// set errors and time out after dmsDefaults to prevent being overridden
+set_time_limit(0);
+error_reporting(E_ERROR | E_CORE_ERROR);
+
+$backgroundAction = new BackgroundAction($folderId, $accountName);
+
+register_shutdown_function(array($backgroundAction, 'handleShutdown'));
+
+if (function_exists('pcntl_signal')) {
+
+	declare(ticks=1);
+
+	pcntl_signal(SIGHUP, array($backgroundAction, 'handleInterrupt'));
+    pcntl_signal(SIGINT, array($backgroundAction, 'handleInterrupt'));
+    pcntl_signal(SIGQUIT, array($backgroundAction, 'handleInterrupt'));
+    pcntl_signal(SIGABRT, array($backgroundAction, 'handleInterrupt'));
+    pcntl_signal(SIGTERM, array($backgroundAction, 'handleInterrupt'));
+}
+
+$backgroundAction->execute();
+
+exit(0);
 ?>

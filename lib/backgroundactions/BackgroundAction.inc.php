@@ -39,46 +39,19 @@
 
 require_once(KT_LIB_DIR . '/memcache/ktmemcache.php');
 
-class backgroundaction
+class BackgroundAction
 {
-	/**
-	 * Bulk action name
-	 * @var string
-	 */
+	public $accountName;
 	private $action;
-	/**
-	 * Array list of document and folder ids
-	 * @var string
-	 */
 	private $list;
-	/**
-	 * Bulk action reason
-	 * @var string
-	 */
 	private $reason;
-	/**
-	 * Bulk action target folder id
-	 * @var string
-	 */
 	private $targetFolderId;
-	/**
-	 * Bulk action current folder id
-	 * @var string
-	 */
 	private $currentFolderId;
-	/**
-	 * Number of documents
-	 * @var int
-	 */
 	private $numDocuments = 0;
-	/**
-	 * Number of folders
-	 * @var int
-	 */
 	private $numFolders = 0;
 	/**
 	 * If number of documents to process exceeds threshold,
-	 * send operation to queue
+	 * background operation
 	 * @var array
 	 */
 	private $threshold = array(	'move' =>	array(	'documents' => 500,
@@ -87,13 +60,14 @@ class backgroundaction
 								'delete' =>	array(	'documents' => 250,
 													'folders' => 25
 												),
-								'copy' =>	array(	'documents' => 100,
+								'copy' =>	array(	'documents' => 0,
 													'folders' => 10
 												)
 								);
 
 	public function __construct($action, $list, $reason = '', $targetFolderId, $currentFolderId)
 	{
+		$this->accountName = ACCOUNT_NAME;
 		$this->action = $action;
 		$this->list = $list;
 		$this->reason = $reason;
@@ -179,9 +153,41 @@ class backgroundaction
 		return self::isBulkActionInProgress($folderIdsPath);
 	}
 
+    public function background()
+    {
+        global $default;
+    	$phpPath = $default->php;
+    	$this->storeInMemcache();
+    	$script =  KT_DIR . '/plugins/ktcore/backgroundTasks/BulkActionTask.php';
+    	$arguments = "{$this->accountName} {$this->action} {$this->targetFolderId} {$this->currentFolderId}";
+    	$command = "{$phpPath} {$script} {$arguments} > /dev/null &";
+
+    	KTUtil::pexec($command);
+    }
+
+    public function execute()
+    {
+    	// TODO : Should I redo, or just call ktapi.
+		$this->getFromMemcache();
+
+    }
+
+    private function storeInMemcache()
+    {
+    	$key = ACCOUNT_NAME . '_bulkaction';
+
+    }
+
+    private function getFromMemcache()
+    {
+    	$key = ACCOUNT_NAME . '_bulkaction';
+
+    }
+
 	private function hitThreshold()
 	{
-		if(($this->numDocuments > $this->threshold[$this->action]['documents']) || ($this->numFolders > $this->threshold[$this->action]['folders'])) {
+		if(($this->numDocuments > $this->threshold[$this->action]['documents']) ||
+			($this->numFolders > $this->threshold[$this->action]['folders'])) {
 				return true;
 		}
 
