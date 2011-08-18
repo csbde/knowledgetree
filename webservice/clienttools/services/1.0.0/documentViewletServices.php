@@ -39,97 +39,107 @@ require_once(KT_LIB_DIR . '/actions/documentaction.inc.php');
 require_once(KT_LIB_DIR . '/documentmanagement/documentutil.inc.php');
 
 class documentViewletServices extends client_service {
-	
-	public function run_action($params) {
-		$classaction = $params['action'];
-		$classname = $params['name'];
-		$classpath = $params['class'];
-		$classpath = str_replace('/./', '/', $classpath);
-		if(file_exists($classpath)) {
-			require_once($classpath);
-			$class = new $classname();
-			$class->$classaction($params);
-		}
-		
-	}
-	
-    public function comments($params) {
-    	$action = array();
-		$documentId = $params['documentId'];
-		$document = Document::get($documentId);
-		$user = User::get($_SESSION['userID']);
-    	$action[] = 'ktcore.viewlet.document.activityfeed';
-    	$actions = KTDocumentActionUtil::getDocumentActionsByNames($action, 'documentviewlet', $document, $user);
-    	if(count($actions) > 0) {
-			$commentsAction = $actions[0];
-			if($commentsAction instanceof KTDocumentActivityFeedAction)
-				$comments = $commentsAction->ajax_get_viewlet();
-				$this->addResponse('success', $comments);
-    	}
-    	
-    	return true;
+
+    public function run_action($params)
+    {
+        $classaction = $params['action'];
+        $classname = $params['name'];
+        $classpath = $params['class'];
+        $classpath = str_replace('/./', '/', $classpath);
+        if (file_exists($classpath)) {
+            require_once($classpath);
+            $class = new $classname();
+            $class->$classaction($params);
+        }
+
     }
-	
-	public function versionAndFileName($params) {
-		$documentId = $params['documentId'];
-		$document = Document::get($documentId);
-		
-		// Error Check, only return if it is a Document Object
-		if (get_class($document) == 'Document') {
-			$this->addResponse('filename', $document->getFileName());
-			$this->addResponse('filesize', KTUtil::filesizeToString($document->getFileSize(), 'KB'));
-			
-			require_once(KT_LIB_DIR . '/widgets/fieldsetDisplay.inc.php');
-			$fieldsetDisplayHelper = new KTFieldsetDisplay();
-			$this->addResponse('filetype', $fieldsetDisplayHelper->_mimeHelper($document->getMimeTypeID()).' - '.$fieldsetDisplayHelper->_sizeHelper($document->getSize()));
-			
-			$this->addResponse('version', $document->getVersion());
-			$this->addResponse('lastupdateddate', $document->getLastModifiedDate());
-			
-			$oModifier = User::get($document->getModifiedUserId());
-			
-			$this->addResponse('lastupdatedby', $oModifier->getName());
-			$this->addResponse('lastupdatedstring', $oModifier->getName().' on '.date('Y-m-d H:i', strtotime($document->getDisplayLastModifiedDate())));
-			
-			$checkedOutUserId = $document->getCheckedOutUserID();
-			
-			if (!empty($checkedOutUserId)) {
-				$oCheckoutUser = User::get($document->getCheckedOutUserID());
-				$this->addResponse('checkoutuser', $oCheckoutUser->getName());
-			}
-			
-			$docOwnerUserId = $document->getOwnerID();
-			
-			if (!empty($docOwnerUserId)) {
-				$docOwnerName = User::get($document->getOwnerID());
-				$this->addResponse('docowner', $docOwnerName->getName());
-			}
-			
-		}
-    	
-    	return true;
+
+    public function comments($params)
+    {
+        $action = array();
+        $documentId = $params['documentId'];
+        $document = Document::get($documentId);
+        $user = User::get($_SESSION['userID']);
+        $action[] = 'ktcore.viewlet.document.activityfeed';
+        $actions = KTDocumentActionUtil::getDocumentActionsByNames($action, 'documentviewlet', $document, $user);
+        if (count($actions) > 0) {
+            $commentsAction = $actions[0];
+            if ($commentsAction instanceof KTDocumentActivityFeedAction) {
+                $comments = $commentsAction->ajax_get_viewlet();
+            }
+
+            // NOTE There were no {} around the call to $commentsAction,
+            //      so this response was always happening before even if it failed the if... condition.
+            // TODO Confirm whether it should always happen!
+            $this->addResponse('success', $comments);
+        }
+
+        return true;
     }
-	
-	public function getInstaView($params) {
-		$documentId = $params['documentId'];
-		$document = Document::get($documentId);
-		$user = User::get($_SESSION['userID']);
-		
-		if (KTPluginUtil::pluginIsActive('instaview.processor.plugin')) {
+
+    public function versionAndFileName($params)
+    {
+        $documentId = $params['documentId'];
+        $document = Document::get($documentId);
+
+        // Error Check, only return if it is a Document Object
+        if (get_class($document) == 'Document') {
+            $this->addResponse('filename', $document->getFileName());
+            $this->addResponse('filesize', KTUtil::filesizeToString($document->getFileSize(), 'KB'));
+
+            require_once(KT_LIB_DIR . '/widgets/fieldsetDisplay.inc.php');
+            $fieldsetDisplayHelper = new KTFieldsetDisplay();
+            $this->addResponse('filetype', $fieldsetDisplayHelper->_mimeHelper($document->getMimeTypeID()).' - '.$fieldsetDisplayHelper->_sizeHelper($document->getSize()));
+
+            $this->addResponse('version', $document->getVersion());
+            $this->addResponse('lastupdateddate', $document->getLastModifiedDate());
+
+            $oModifier = User::get($document->getModifiedUserId());
+
+            $this->addResponse('lastupdatedby', $oModifier->getName());
+            $this->addResponse('lastupdatedstring', $oModifier->getName().' on '.date('Y-m-d H:i', strtotime($document->getDisplayLastModifiedDate())));
+
+            $checkedOutUserId = $document->getCheckedOutUserID();
+
+            if (!empty($checkedOutUserId)) {
+                $oCheckoutUser = User::get($document->getCheckedOutUserID());
+                $this->addResponse('checkoutuser', $oCheckoutUser->getName());
+            }
+
+            $docOwnerUserId = $document->getOwnerID();
+
+            if (!empty($docOwnerUserId)) {
+                $docOwnerName = User::get($document->getOwnerID());
+                $this->addResponse('docowner', $docOwnerName->getName());
+            }
+
+        }
+
+        return true;
+    }
+
+    public function getInstaView($params)
+    {
+        $documentId = $params['documentId'];
+        $document = Document::get($documentId);
+        $user = User::get($_SESSION['userID']);
+
+        if (KTPluginUtil::pluginIsActive('instaview.processor.plugin')) {
             $path = KTPluginUtil::getPluginPath ('instaview.processor.plugin');
             try {
                 require_once($path . 'instaViewLinkAction.php');
                 $livePreviewAction = new instaViewLinkAction($document, $user, null);
                 $livePreview = $livePreviewAction->do_main();
             } catch(Exception $e) {}
-        } else {
-			$livePreview = '';
-		}
-		
-		$this->addResponse('previewCode', $livePreview);
-		
-		return TRUE;
-	}
-    
+        }
+        else {
+            $livePreview = '';
+        }
+
+        $this->addResponse('previewCode', $livePreview);
+
+        return true;
+    }
+
 }
 ?>

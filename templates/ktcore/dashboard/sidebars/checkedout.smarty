@@ -1,0 +1,12 @@
+{if $documents}
+	<ul style="font-size: 11px;">
+	{foreach from=$documents item=oEntry}
+    	{capture assign=sLink}{$browseUtil->getUrlForDocument($oEntry)}{/capture}
+		<li>
+			<a class="contenttype_href" href="{$sLink}">{$oEntry->getName()|mb_truncate:25:"...":true|sanitize}</a>
+		</li>
+	{/foreach}
+	</ul>
+{else}
+<span style="font-style:11px;">{i18n}There are no checked-out documents.{/i18n}</span>
+{/if}

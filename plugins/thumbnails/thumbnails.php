@@ -259,7 +259,7 @@ class ThumbnailViewlet extends KTDocumentViewlet {
     var $bShowIfReadShared = true;
     var $bShowIfWriteShared = true;
 
-    public function display_viewlet() {
+    public function displayViewlet() {
         // Get the document id
         $documentId = $this->oDocument->getId();
         if (!is_numeric($documentId)) {

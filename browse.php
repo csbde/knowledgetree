@@ -71,8 +71,6 @@ require_once(KT_PLUGIN_DIR . '/ktstandard/KTSubscriptions.php');
 
 require_once(KT_LIB_DIR . '/memcache/ktmemcache.php');
 
-require_once(KT_LIB_DIR . '/backgroundactions/backgroundaction.inc.php');
-
 $sectionName = 'browse';
 
 class BrowseDispatcher extends KTStandardDispatcher {
@@ -127,14 +125,9 @@ class BrowseDispatcher extends KTStandardDispatcher {
 	public function do_main()
 	{
 	    global $default;
-		$this->bulkActionInProgress = backgroundaction::isFolderInBulkAction($this->oFolder);
-	    $bulkActions = '';
-	    if(!$this->bulkActionInProgress) {
-		    /* New ktapi based method */
-	        $bulkActions = KTBulkActionUtil::getAllBulkActions();
-	    }
-        $sidebars = KTFolderActionUtil::getFolderActionsForFolder($this->oFolder, $this->oUser, 'mainfoldersidebar');
-        $folderSidebars = isset($sidebars[0]) ? $sidebars[0] : array();
+	    /* New ktapi based method */
+        $bulkActions = KTBulkActionUtil::getAllBulkActions();
+        $folderSidebars = KTFolderActionUtil::getFolderActionForFolder($this->oFolder, $this->oUser, 'mainfoldersidebar');
 	    if (ACCOUNT_ROUTING_ENABLED && $default->tier == 'trial') {
 	        $this->includeOlark();
 	    }
@@ -154,16 +147,12 @@ class BrowseDispatcher extends KTStandardDispatcher {
 	           'folderSidebars' => $folderSidebars,
 	    );
 
-	    if($this->bulkActionInProgress) {
-	    	$templateData['notifyBulkAction'] = $this->getBulkNotification();
-	    }
-
 	    // NOTE Don't quite know why this is in here. Someone reports that it is there for search browsing which seem to be disabled.
 	    if ($this->oFolder) {
 	        $this->showBtns();
     		$folderId = $this->oFolder->getId();
 
-	        $renderHelper = BrowseViewUtil::getBrowseView($this->bulkActionInProgress);
+	        $renderHelper = BrowseViewUtil::getBrowseView();
 	        $renderData = $renderHelper->renderBrowseFolder($folderId, $bulkActions, $this->oFolder, $this->permissions);
 	        if($renderData['documentCount'] > 0)
 	        	$this->loadDocumentJS();
@@ -180,6 +169,7 @@ class BrowseDispatcher extends KTStandardDispatcher {
 	}
 
 	public function loadDocumentJS() {
+		// TODO : Check if plugin is available.
 		$alertUtilPath = KT_PLUGIN_DIR . '/commercial/alerts/alertUtil.inc.php';
 		if(file_exists($alertUtilPath)) {
 			require_once($alertUtilPath);
@@ -195,7 +185,6 @@ class BrowseDispatcher extends KTStandardDispatcher {
 		$submenu = array();
 		$actions = KTFolderActionUtil::getFolderActionsForFolder($this->oFolder, $this->oUser);
 		foreach ($actions as $oAction) {
-			$oAction->setBulkAction($this->bulkActionInProgress);
             $info = $oAction->getInfo();
             // Skip if action is disabled
             if (is_null($info)) { continue; }

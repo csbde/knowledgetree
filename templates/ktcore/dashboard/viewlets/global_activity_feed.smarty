@@ -1,0 +1,14 @@
+<div class="graph-viewlet">
+<h3>Activity Feed</h3>
+<div id="activityfeed-container" style="margin-top:1em;"></div>
+<script type="text/javascript" src="resources/js/jquery.autoresize.min.js"></script>
+<div id="viewlet-activityfeed">
+    {$activityFeed}
+</div>
+{literal}
+<script type="text/javascript">
+    jQuery(document).ready(function() {
+        jQuery("#commentsbox").autoResize({extraSpace:10});
+    });
+</script>
+{/literal}

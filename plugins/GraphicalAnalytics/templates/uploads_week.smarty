@@ -1,0 +1,80 @@
+<h3>Uploads per Week</h3>
+
+<div id="uploads_per_week"></div>
+
+
+
+{literal}
+<script type="text/javascript">
+    var uploadsPerWeekChart;
+    jQuery(document).ready(function() {
+        uploadsPerWeekChart = new Highcharts.Chart({
+            chart: {
+                renderTo: 'uploads_per_week',
+                defaultSeriesType: 'line'
+            },
+            title: {
+                text: 'Uploads per Week'
+            },
+            subtitle: {
+                text: 'How many documents were uploaded per week for the last 10 weeks'
+            },
+            xAxis: {
+                categories: [{/literal}{$weeks}{literal}],
+                title: {
+                    text: 'Weeks'
+                }
+            },
+            yAxis: {
+                min: 0,
+                title: {
+                    text: 'Document Uploads',
+                    align: 'high'
+                }
+            },
+            tooltip: {
+                formatter: function() {
+                    return ''+
+                         this.series.name +': '+ this.y;
+                }
+            },
+            plotOptions: {
+                bar: {
+                    dataLabels: {
+                        enabled: true
+                    }
+                },
+                series: {
+                    events: {
+                        legendItemClick: function(event) {
+                            return false;
+                        }
+                    }
+                }
+            },
+            legend: {
+                layout: 'vertical',
+                align: 'right',
+                verticalAlign: 'top',
+                x: -100,
+                y: 100,
+                floating: true,
+                borderWidth: 1,
+                backgroundColor: '#FFFFFF',
+                shadow: true
+            },
+            credits: {
+                enabled: false
+            },
+            series: [{
+                name: 'Document Uploads',
+                data: [{/literal}{$uploadsCounter}{literal}]
+            }
+            ]
+        });
+        
+        
+    });
+        
+</script>
+{/literal}

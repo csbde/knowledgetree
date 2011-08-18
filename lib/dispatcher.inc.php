@@ -371,8 +371,6 @@ class KTStandardDispatcher extends KTDispatcher {
     public $bJSONMode = false;
     public $aCannotView = array();
 
-    protected $bulkActionInProgress;
-
     public function KTStandardDispatcher()
     {
         if (empty($GLOBALS['main'])) {
@@ -579,7 +577,7 @@ class KTStandardDispatcher extends KTDispatcher {
         $output = '<div id="action-error" class="alert warning">';
         $output .= $errorMessage;
         $output .= '</div>';
-        
+
         if ($exception) {
             // $output .= $exception->toString();
         }
@@ -656,6 +654,7 @@ class KTStandardDispatcher extends KTDispatcher {
     public function json_main() {
         return array('type'=>'error', 'value'=>'Not implemented');
     }
+
 }
 
 class KTAdminDispatcher extends KTStandardDispatcher {

@@ -35,33 +35,46 @@
  * Contributor( s): ______________________________________
  *
  */
-require_once(KT_LIB_DIR . '/plugins/plugin.inc.php');
-require_once(KT_LIB_DIR . '/plugins/pluginregistry.inc.php');
+
+require_once(KT_PLUGIN_DIR . '/ktcore/KTDashboardSidebars.php');
 require_once(KT_LIB_DIR . '/templating/templating.inc.php');
 
-class KTNewFeatureNotificationPlugin extends KTPlugin {
-	public $sNamespace = 'new.feature.notification.plugin';
-	public $iVersion = 0;
-	public $autoRegister = true;
-	public $showInAdmin = false;
-	public $createSQL = true;
+class BrowseableFolderSidebar extends KTDashboardSidebar {
+    public $sName = 'browseable.dashboard.sidebar';
+	public $_sShowPermission = 'ktcore.permissions.read';
+	public $order = 5;
+	public $bShowIfReadShared = true;
+	public $bShowIfWriteShared = true;
 
-	public function __construct($sFilename = null)
+	public function getTitle()
 	{
-		$res = parent::KTPlugin($sFilename);
-		$this->sFriendlyName = _kt('New Features Notfications');
-		$this->dir = dirname(__FILE__) . DIRECTORY_SEPARATOR;
-		$this->sSQLDir = $this->dir . 'sql' . DIRECTORY_SEPARATOR;
-
-		return $res;
+		return _kt('Orphaned Folders');
 	}
 
-	public function setup() {
-
+   	public function getCSSName()
+	{
+		return 'browseable';
 	}
+
+    public function displayViewlet()
+    {
+		$templating = KTTemplating::getSingleton();
+        $template = $templating->loadTemplate('sidebars/browseable');
+
+        $folders = KTBrowseUtil::getBrowseableFolders($this->oUser);
+        if (PEAR::isError($folders)) {
+            // just hide it.
+            $aFolders = array();
+        }
+
+        $templateData = array(
+            'folders' => $folders,
+            'folderMaxDisplay' => 5,
+            'folderCount' => count($folders),
+        );
+        return $template->render($templateData);
+    }
+
 }
-
-$oPluginRegistry = KTPluginRegistry::getSingleton();
-$oPluginRegistry->registerPlugin('KTNewFeatureNotificationPlugin', 'new.feature.notification.plugin', __FILE__);
 
 ?>

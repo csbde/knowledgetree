@@ -46,9 +46,9 @@ class KTDocumentViewlet extends KTDocumentAction {
     public $_sShowPermission = 'ktcore.permissions.read';
 
     // the only major distinction of the viewlet vs. the action is the
-    // display_viewlet() method.
+    // displayViewlet() method.
 
-    public function display_viewlet()
+    public function displayViewlet()
     {
         return '';
     }

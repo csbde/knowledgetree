@@ -44,22 +44,22 @@ require_once(KT_DIR . '/plugins/comments/comments.php');
 class KTWorkflowViewlet extends KTDocumentViewlet {
 
     public $sName = 'ktcore.viewlets.document.workflow';
-	public $_sShowPermission = 'ktcore.permissions.write';
+    public $_sShowPermission = 'ktcore.permissions.write';
     public $bShowIfWriteShared = true;
 
     public function getInfo() {
         if ($this->_show() === false) {
             return null;
         }
-        
+
         return true;
     }
-    
-    function display_viewlet()
+
+    function displayViewlet()
     {
-        $oKTTemplating =& KTTemplating::getSingleton();
-        $oTemplate =& $oKTTemplating->loadTemplate('ktcore/document/viewlets/workflow');
-        if (is_null($oTemplate)) { return ''; }
+        $templating =& KTTemplating::getSingleton();
+        $template =& $templating->loadTemplate('ktcore/document/viewlets/workflow');
+        if (is_null($template)) { return ''; }
 
         $oWorkflowState = KTWorkflowState::get($this->oDocument->getWorkflowStateId());
         if (PEAR::isError($oWorkflowState)) { return ''; }
@@ -77,7 +77,7 @@ class KTWorkflowViewlet extends KTDocumentViewlet {
         }
         else {
             foreach ($aTransitions as $oTransition) {
-            	if (is_null($oTransition) || PEAR::isError($oTransition)) { continue; }
+                if (is_null($oTransition) || PEAR::isError($oTransition)) { continue; }
 
                 $aDisplayTransitions[] = array(
                     'url' => KTUtil::ktLink('action.php', 'ktcore.actions.document.workflow', array('fDocumentId' => $iId, 'action' => 'quicktransition', 'fTransitionId' => $oTransition->getId())),
@@ -86,42 +86,42 @@ class KTWorkflowViewlet extends KTDocumentViewlet {
             }
         }
 
-		//Retreive the comment for the previous transition
-		$aCommentQuery = array(
+        //Retreive the comment for the previous transition
+        $aCommentQuery = array(
             "SELECT comment FROM document_transactions
             where transaction_namespace='ktcore.transactions.workflow_state_transition'
             AND document_id = ?
             ORDER BY id DESC LIMIT 1;"
-		);
-		$aCommentQuery[] = array($iId);
+        );
+        $aCommentQuery[] = array($iId);
 
-		$aTransitionComments = DBUtil::getResultArray($aCommentQuery);
-		$oLatestTransitionComment = null;
+        $aTransitionComments = DBUtil::getResultArray($aCommentQuery);
+        $oLatestTransitionComment = null;
 
-		if (!empty($aTransitionComments)) {
-			$aRow = $aTransitionComments[0];
-			$oLatestTransitionComment = $aRow['comment'];
-			$iCommentPosition = strpos($oLatestTransitionComment,':'); //comment found after first colon in string
+        if (!empty($aTransitionComments)) {
+            $aRow = $aTransitionComments[0];
+            $oLatestTransitionComment = $aRow['comment'];
+            $iCommentPosition = strpos($oLatestTransitionComment,':'); //comment found after first colon in string
 
-			 // if comment found
-			if ($iCommentPosition > 0) {
-				$oLatestTransitionComment = substr($oLatestTransitionComment, $iCommentPosition+2, (strlen($oLatestTransitionComment)-$iCommentPosition));
-			}
-			// else first state in workflow
-			else {
-				$oLatestTransitionComment = null;
-			}
-		}
+             // if comment found
+            if ($iCommentPosition > 0) {
+                $oLatestTransitionComment = substr($oLatestTransitionComment, $iCommentPosition+2, (strlen($oLatestTransitionComment)-$iCommentPosition));
+            }
+            // else first state in workflow
+            else {
+                $oLatestTransitionComment = null;
+            }
+        }
 
-        $oTemplate->setData(array(
+        $template->setData(array(
             'context' => $this,
             'bIsCheckedOut' => $bIsCheckedOut,
             'transitions' => $aDisplayTransitions,
             'state_name' => $oWorkflowState->getName(),
-			'comment' => $oLatestTransitionComment,
+            'comment' => $oLatestTransitionComment,
         ));
 
-        return $oTemplate->render();
+        return $template->render();
     }
 
 }
@@ -132,74 +132,124 @@ class KTDocumentActivityFeedAction extends KTDocumentViewlet {
     public $sName = 'ktcore.viewlet.document.activityfeed';
     public $bShowIfReadShared = true;
     public $bShowIfWriteShared = true;
-	private $displayMax = 10;
+    private $displayMax = 10;
 
-	function ajax_get_viewlet() {
-		return $this->display_viewlet(true);
-	}
-	
-    function display_viewlet($onlyComments = false)
+    public function ajax_get_viewlet()
     {
-        $iDocumentId = $this->oDocument->getId();
-        $mainArray = array();
+        return $this->displayViewlet(true);
+    }
 
-        /* *** Get the document transactions *** */
-        $sQuery = 'SELECT DTT.name AS transaction_name, DT.transaction_namespace, U.name AS user_name, U.email as email,
+    public function displayViewlet($onlyComments = false)
+    {
+        $documentId = $this->oDocument->getId();
+
+        $activityFeed = $this->getActivityFeed($this->getDocumentTransactions($documentId));
+        $versions = $this->getVersions($this->getMetadataVersions($documentId));
+        $comments = $this->getDocumentComments($documentId);
+        $activityFeed = array_merge($activityFeed, $versions, $comments);
+
+        usort($activityFeed, array($this, 'sortTable'));
+
+        $templating =& KTTemplating::getSingleton();
+        $template = $templating->loadTemplate('ktcore/document/viewlets/activity_feed');
+
+        $templateData = array(
+              'context' => $this,
+              'documentId' => $documentId,
+              'versions' => $activityFeed,
+              'displayMax' => $this->displayMax,
+              'commentsCount' => count($activityFeed),
+              'onlyComments' => $onlyComments,
+        );
+
+        return $template->render($templateData);
+    }
+
+    private function getDocumentTransactions($documentId)
+    {
+        $query = 'SELECT DTT.name AS transaction_name, DT.transaction_namespace, U.name AS user_name, U.email as email,
             DT.version AS version, DT.comment AS comment, DT.datetime AS datetime
             FROM ' . KTUtil::getTableName('document_transactions') . ' AS DT
             INNER JOIN ' . KTUtil::getTableName('users') . ' AS U ON DT.user_id = U.id
             LEFT JOIN ' . KTUtil::getTableName('transaction_types') . ' AS DTT ON DTT.namespace = DT.transaction_namespace
-            WHERE DT.document_id = ? AND DT.transaction_namespace NOT LIKE \'ktcore.transactions.view\'
+            WHERE DT.document_id = ' . $documentId . '
+            AND DT.transaction_namespace != \'ktcore.transactions.view\'
             ORDER BY DT.id DESC';
-            //  ORDER BY DT.datetime DESC => replaced the order by so that they come out in the order they were added, reversed.
-        $aParams = array($iDocumentId);
+            // AND DT.transaction_namespace NOT LIKE \'ktcore.transactions.view\' - Not sure why this was a LIKE query.
+            // ORDER BY DT.datetime DESC => replaced the order by so that they come out in the order they were added, reversed.
 
-        $aTransactions = array();
-        $res = DBUtil::getResultArray(array($sQuery, $aParams));
+        return $this->getTransactionResult($query);
+    }
+
+    public function getTransactionResult($query)
+    {
+        $res = DBUtil::getResultArray($query);
         if (PEAR::isError($res)) {
             global $default;
             $default->log->error('Error getting the transactions - ' . $res->getMessage());
             $res = array();
         }
-        $aTransactions = $res;
 
+        return $res;
+    }
+
+    // FIXME Some of these values are not in the detail view query.
+    //       Warnings will be squashed, but should be dealt with properly.
+    public function getActivityFeed($transactions)
+    {
         // Set the namespaces where not in the transactions lookup
-        foreach($aTransactions as $key => $transaction) {
+        $activityFeed = array();
+        foreach($transactions as $key => $transaction) {
             if (empty($transaction['transaction_name'])) {
-                $aTransactions[$key]['transaction_name'] = $this->_getActionNameForNamespace($transaction['transaction_namespace']);
+                $transactions[$key]['transaction_name'] = $this->_getActionNameForNamespace($transaction['transaction_namespace']);
             }
 
-            $mainArray[] = array(
+            $activityFeed[] = array(
+                'document_name' => $transaction['document_name'],
+                'document_link' => KTUtil::buildUrl('view.php', array('fDocumentId' => $transaction['document_id'])),
+                'mime_id' => $transaction['mime_id'],
                 'name' => $transaction['user_name'],
                 'email' => md5(strtolower($transaction['email'])),
                 'transaction_name' => $transaction['transaction_name'],
                 'datetime' => getDateTimeDifference($transaction['datetime']),
                 'actual_datetime' => $transaction['datetime'],
                 'version' => $transaction['version'],
-                'comment' => $transaction['comment'],
+                'comment' => trim($transaction['comment']),
                 'type' => 'transaction'
             );
         }
 
-        /* *** Get the document versions *** */
-    	$aMetadataVersions = KTDocumentMetadataVersion::getByDocumentContent($iDocumentId);
-    	if (PEAR::isError($aMetadataVersions)) {
+        return $activityFeed;
+    }
+
+    private function getMetadataVersions($documentId)
+    {
+        $metadataVersions = KTDocumentMetadataVersion::getByDocumentContent($documentId);
+        if (PEAR::isError($metadataVersions)) {
             global $default;
-            $default->log->error('Error getting the versions - ' . $aMetadataVersions->getMessage());
-            $aMetadataVersions = array();
+            $default->log->error('Error getting the versions - ' . $metadataVersions->getMessage());
+            $metadataVersions = array();
         }
 
-        $aVersions = array();
+        return $metadataVersions;
+    }
+
+    private function getVersions($metadataVersions)
+    {
+        $versions = array();
         $prevContentVersion = 0;
-        foreach ($aMetadataVersions as $version) {
-             // For each content version there can be multiple metadata versions
-             // Allow the earliest metadata version to override the later ones
-             $contentVersion = $version['content_version_id'];
-             if ($contentVersion == $prevContentVersion) { continue; }
 
-             $prevContentVersion = $contentVersion;
+        foreach ($metadataVersions as $version) {
+            // For each content version there can be multiple metadata versions
+            // Allow the earliest metadata version to override the later ones
+            $contentVersion = $version['content_version_id'];
+            if ($contentVersion == $prevContentVersion) {
+                continue;
+            }
 
-             $aVersions[] = array(
+            $prevContentVersion = $contentVersion;
+
+            $versions[] = array(
                 'name' => $version['name'],
                 'transaction_name' => _kt('New Document Version'),
                 'datetime' => datetimeutil::getLocaleDate($version['datetime']),
@@ -210,24 +260,15 @@ class KTDocumentActivityFeedAction extends KTDocumentViewlet {
             );
         }
 
-        $aVersions = array_reverse($aVersions);
-        $mainArray = array_merge($mainArray, $aVersions);
-		$comments = array();
-        /* *** Get the document comments *** */
+        return array_reverse($versions);
+    }
+
+    private function getDocumentComments($documentId = null)
+    {
+        $comments = array();
+
         try {
-            $comments = Comments::get_comments($iDocumentId);
-            foreach ($comments as $comment) {
-                $mainArray[] = array(
-                    'name' => $comment['user_name'],
-                    'email' => md5(strtolower($comment['email'])),
-                    'transaction_name' => _kt('Comment'),
-                    'datetime' => getDateTimeDifference($comment['date']),
-                    'actual_datetime' => $comment['date'],
-                    'version' => '',
-                    'comment' => $comment['comment'],
-                    'type' => 'comment'
-                );
-            }
+            $comments = $this->formatCommentsResult(Comments::getDocumentComments($documentId));
         }
         catch (Exception $e) {
             global $default;
@@ -235,25 +276,32 @@ class KTDocumentActivityFeedAction extends KTDocumentViewlet {
             $comments = array();
         }
 
-		// Sort by Date
-        usort($mainArray, array($this, 'sortTable'));
+        return $comments;
+    }
 
-		// Reverse so that top most is on top
-		//$mainArray = array_reverse($mainArray);
+    // FIXME Some of these values are not in the detail view query.
+    //       Warnings will be squashed, but should be dealt with properly.
+    public function formatCommentsResult($result)
+    {
+        $comments = array();
 
-		$oKTTemplating =& KTTemplating::getSingleton();
-        $oTemplate = $oKTTemplating->loadTemplate('ktcore/document/viewlets/activity_feed');
+        foreach ($result as $comment) {
+            $comments[] = array(
+                'document_name' => $comment['document_name'],
+                'document_link' => KTUtil::buildUrl('view.php', array('fDocumentId' => $comment['document_id'])),
+                'mime_id' => $comment['mime_id'],
+                'name' => $comment['user_name'],
+                'email' => md5(strtolower($comment['email'])),
+                'transaction_name' => _kt('Comment'),
+                'datetime' => getDateTimeDifference($comment['date']),
+                'actual_datetime' => $comment['date'],
+                'version' => '',
+                'comment' => $comment['comment'],
+                'type' => 'comment'
+            );
+        }
 
-        $aTemplateData = array(
-              'context' => $this,
-              'documentId' => $iDocumentId,
-              'versions' => $mainArray,
-              'displayMax' => $this->displayMax,
-              'commentsCount' => count($mainArray),
-              'onlyComments' => $onlyComments,
-        );
-
-        return $oTemplate->render($aTemplateData);
+        return $comments;
     }
 
     function sortTable($a, $b)
@@ -264,12 +312,12 @@ class KTDocumentActivityFeedAction extends KTDocumentViewlet {
         return $date1 < $date2 ? 1 : -1;
     }
 
-    function _getActionNameForNamespace($sNamespace)
+    function _getActionNameForNamespace($namespace)
     {
-        $aNames = split('\.', $sNamespace);
-        $sName = array_pop($aNames);
-        $sName = str_replace('_', ' ', $sName);
-        $sName = ucwords($sName);
+        $names = split('\.', $namespace);
+        $name = array_pop($names);
+        $name = str_replace('_', ' ', $name);
+        $name = ucwords($name);
 
         return $sName;
     }
@@ -277,17 +325,21 @@ class KTDocumentActivityFeedAction extends KTDocumentViewlet {
     function getUserForId($iUserId)
     {
         $user = User::get($iUserId);
-        if (PEAR::isError($user) || ($user == false)) { return _kt('User no longer exists'); }
+        if (PEAR::isError($user) || ($user == false)) {
+            return _kt('User no longer exists');
+        }
 
         return $user->getName();
     }
 
-	function getEmailForId($iUserId)
-	{
-        $u = User::get($iUserId);
-        if (PEAR::isError($u) || ($u == false)) { return _kt('User no longer exists'); }
+    function getEmailForId($iUserId)
+    {
+        $user = User::get($iUserId);
+        if (PEAR::isError($user) || ($user == false)) {
+            return _kt('User no longer exists');
+        }
 
-        return $u->getEmail();
+        return $user->getEmail();
     }
 
 }
@@ -295,31 +347,31 @@ class KTDocumentActivityFeedAction extends KTDocumentViewlet {
 class KTInlineEditViewlet extends KTDocumentViewlet {
 
     public $sName = 'ktcore.viewlets.document.inline.edit';
-	public $_sShowPermission = 'ktcore.permissions.write';
+    public $_sShowPermission = 'ktcore.permissions.write';
     public $bShowIfReadShared = true;
     public $bShowIfWriteShared = true;
 
-    function display_viewlet()
+    public function displayViewlet()
     {
-        $oKTTemplating =& KTTemplating::getSingleton();
-        $oTemplate =& $oKTTemplating->loadTemplate("ktcore/document/viewlets/inline_edit");
-        if (is_null($oTemplate)) { return ""; }
-		// Get document fieldsets
-		$fieldsets = array();
+        $templating =& KTTemplating::getSingleton();
+        $template =& $templating->loadTemplate("ktcore/document/viewlets/inline_edit");
+        if (is_null($template)) { return ""; }
+        // Get document fieldsets
+        $fieldsets = array();
         $fieldsetDisplayReg = KTFieldsetDisplayRegistry::getSingleton();
-        $aDocFieldsets = KTMetadataUtil::fieldsetsForDocument($this->oDocument);
-        foreach ($aDocFieldsets as $oFieldset) {
-            $displayClass = $fieldsetDisplayReg->getHandler($oFieldset->getNamespace());
-            array_push($fieldsets, new $displayClass($oFieldset));
+        $docFieldsets = KTMetadataUtil::fieldsetsForDocument($this->oDocument);
+        foreach ($docFieldsets as $fieldset) {
+            $displayClass = $fieldsetDisplayReg->getHandler($fieldset->getNamespace());
+            array_push($fieldsets, new $displayClass($fieldset));
         }
 
-        $oTemplate->setData(array(
+        $template->setData(array(
             'context' => $this,
             'document' => $this->oDocument,
             'fieldsetDisplayHelper' => new KTFieldsetDisplay(),
         ));
 
-        return $oTemplate->render();
+        return $template->render();
     }
 
 }

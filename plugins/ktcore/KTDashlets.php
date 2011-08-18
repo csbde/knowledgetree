@@ -5,7 +5,7 @@
  * KnowledgeTree Community Edition
  * Document Management Made Simple
  * Copyright (C) 2008, 2009, 2010 KnowledgeTree Inc.
- * 
+ *
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License version 3 as published by the
@@ -143,12 +143,11 @@ class KTNotificationDashlet extends KTBaseDashlet {
     function is_active($oUser) {
         $this->oUser = $oUser;
         $notifications = KTNotification::getList(array('user_id = ?', $this->oUser->getId()));
-        if (empty($notifications)) { return false; }
+//        if (empty($notifications)) { return false; }
         return true;
     }
 
     function render() {
-
         $notifications = KTNotification::getList(array('user_id = ?', $this->oUser->getId()));
         $num_notifications = count($notifications);
 
@@ -175,49 +174,6 @@ class KTNotificationDashlet extends KTBaseDashlet {
     }
 }
 
-
-
-// replace the old checked-out docs.
-class KTCheckoutDashlet extends KTBaseDashlet {
-
-    var $oUser;
-
-    function KTCheckoutDashlet() {
-        $this->sTitle = _kt('Your Checked-out Documents');
-    }
-
-    function is_active($oUser) {
-
-    	$this->oUser = $oUser;
-        $this->checked_out_documents = Document::getList(array('checked_out_user_id = ?', $this->oUser->getId()));
-
-        global $default;
-    	$oConfig =& KTConfig::getSingleton();
-    	if($oConfig->get('dashboard/alwaysShowYCOD')) return true;
-
-        return (!empty($this->checked_out_documents));
-    }
-
-    function getDocumentLink($oDocument) {
-    	return KTUtil::kt_clean_document_url($oDocument->getId());
-        //return generateControllerLink('viewDocument', 'fDocumentId=' . $oDocument->getId());
-    }
-
-    function render() {
-
-
-        $oTemplating =& KTTemplating::getSingleton();
-        $oTemplate = $oTemplating->loadTemplate('ktcore/dashlets/checkedout');
-        $aTemplateData = array(
-            'context' => $this,
-            'documents' => $this->checked_out_documents,
-        );
-        return $oTemplate->render($aTemplateData);
-    }
-}
-
-
-// replace the old checked-out docs.
 class KTIndexerStatusDashlet extends KTBaseDashlet {
 
     var $aTriggerSet;

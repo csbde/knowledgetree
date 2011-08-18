@@ -38,19 +38,19 @@
  */
 class Redirector {
 
-	/**
-	 * Constructor
-	 */
-	public function __construct($uri)
+    /**
+     * Constructor
+     */
+    public function __construct($uri)
     {
         $this->uri = $this->cleanUri($uri);
-		$this->foundDestination = false;
+        $this->foundDestination = false;
     }
 
     function run()
     {
-		// First check for some special cases
-		switch ($this->uri) {
+        // First check for some special cases
+        switch ($this->uri) {
             case 'dashboard': $this->finalizeRun('dashboard.php'); break;
             case 'admin': $this->finalizeRun('settings.php'); break;
             case 'preferences': $this->finalizeRun('preferences.php'); break;
@@ -63,123 +63,123 @@ class Redirector {
             $this->finalizeRun('auth.php');
         }
 
-		if (!$this->foundDestination) {
-			// Only proceed if it is a document or a folder
-			if ($this->isDocumentOrFolder($this->uri)) {
-				// Needs further work if catering for actions
-				// See discussion doc
+        if (!$this->foundDestination) {
+            // Only proceed if it is a document or a folder
+            if ($this->isDocumentOrFolder($this->uri)) {
+                // Needs further work if catering for actions
+                // See discussion doc
 
-				// If Folder
-				if (substr($this->uri, 0, 2) == '00') {
-					$_REQUEST['fFolderId'] = base_convert(substr($this->uri, 2), 36, 10);
-					$this->finalizeRun('browse.php');
+                // If Folder
+                if (substr($this->uri, 0, 2) == '00') {
+                    $_REQUEST['fFolderId'] = base_convert(substr($this->uri, 2), 36, 10);
+                    $this->finalizeRun('browse.php');
 
-				// Else Document
-				} else {
-					$_REQUEST['fDocumentId'] = base_convert(substr($this->uri, 2), 36, 10);
-					$this->finalizeRun('view.php');
-				}
-			}
-		}
+                // Else Document
+                } else {
+                    $_REQUEST['fDocumentId'] = base_convert(substr($this->uri, 2), 36, 10);
+                    $this->finalizeRun('view.php');
+                }
+            }
+        }
 
-		if (!$this->foundDestination) {
-		    $aUri = explode('/', $this->uri);
-		    switch($aUri[0]) {
-		        case 'users':
-		            // not ideal but it works
-		            $file = '/plugins/ktcore/authentication/newuserlogin.php';
-		            $query = isset($aUri[1]) ? $aUri[1] : 'key';
-		            $query .= isset($aUri[2]) ? ('=' . $aUri[2]) : '';
-		            $this->redirectPage($file, $query);
-		            break;
-		    }
-		}
+        if (!$this->foundDestination) {
+            $aUri = explode('/', $this->uri);
+            switch($aUri[0]) {
+                case 'users':
+                    // not ideal but it works
+                    $file = '/plugins/ktcore/authentication/newuserlogin.php';
+                    $query = isset($aUri[1]) ? $aUri[1] : 'key';
+                    $query .= isset($aUri[2]) ? ('=' . $aUri[2]) : '';
+                    $this->redirectPage($file, $query);
+                    break;
+            }
+        }
 
-		if (!$this->foundDestination) {
-			header('HTTP/1.0 404 Not Found');
-			$this->finalizeRun('dashboard.php');
-		}
+        if (!$this->foundDestination) {
+            header('HTTP/1.0 404 Not Found');
+            $this->finalizeRun('dashboard.php');
+        }
     }
 
-	/**
-	 * Method to check if the URL points to a folder or document
-	 * @param string $uri URI
-	 * @return boolean
-	 */
-	private function isDocumentOrFolder($uri)
-	{
-		$firstPart = substr($uri, 0, 2);
+    /**
+     * Method to check if the URL points to a folder or document
+     * @param string $uri URI
+     * @return boolean
+     */
+    private function isDocumentOrFolder($uri)
+    {
+        $firstPart = substr($uri, 0, 2);
 
-		if ($firstPart == '00' || $firstPart == '01') {
-			return true;
-		} else {
-			return false;
-		}
-	}
+        if ($firstPart == '00' || $firstPart == '01') {
+            return true;
+        } else {
+            return false;
+        }
+    }
 
-	/**
-	 * Method to perform some cleanup URI
-	 * @param string $uri URI
-	 * @return string
-	 */
+    /**
+     * Method to perform some cleanup URI
+     * @param string $uri URI
+     * @return string
+     */
     private function cleanUri($uri)
-	{
-		// This is a check that no pages end with a slash at end - for SEO
-		if (substr($uri, -1, 1) == '/') {
-			if ($uri == '/') {
-				// Do nothing
-			} else {
-				// Check that there is no question mark
-				if (strpos($uri, '?') === false) {
-					// Redirect to location minus last slash
-					header('Location:'.substr($uri, 0, -1));
-				}
-			}
-		}
+    {
+        // This is a check that no pages end with a slash at end - for SEO
+        if (substr($uri, -1, 1) == '/') {
+            if ($uri == '/') {
+                // Do nothing
+            } else {
+                // Check that there is no question mark
+                if (strpos($uri, '?') === false) {
+                    // Redirect to location minus last slash
+                    header('Location:'.substr($uri, 0, -1));
+                }
+            }
+        }
 
-		// Remove Query String
-		$uri = preg_replace('/(\?.*)/i', '', $uri);
-		// Remove the first slash
-		$uri = substr($uri, 1);
+        // Remove Query String
+        $uri = preg_replace('/(\?.*)/i', '', $uri);
+        // Remove the first slash
+        $uri = substr($uri, 1);
 
-		return $uri;
-	}
+        return $uri;
+    }
 
-	/**
-	 * Method to finish up the redirector
-	 * Loads the appropriate file, and sets the flag to true
-	 *
-	 * @param string $uri URI
-	 */
-	private function finalizeRun($file)
-	{
-		$this->foundDestination = true;
+    /**
+     * Method to finish up the redirector
+     * Loads the appropriate file, and sets the flag to true
+     *
+     * @param string $uri URI
+     */
+    private function finalizeRun($file)
+    {
+        $this->foundDestination = true;
 
-		// Adjust Current Server Variables to reflect new path
-		$_SERVER['SCRIPT_NAME'] = '/' . $file;
-		$_SERVER['REQUEST_URI'] = '/' . $file;
-		$_SERVER['PHP_SELF'] = '/' . $file;
+        // Adjust Current Server Variables to reflect new path
+        $_SERVER['SCRIPT_NAME'] = '/' . $file;
+        $_SERVER['REQUEST_URI'] = '/' . $file;
+        $_SERVER['PHP_SELF'] = '/' . $file;
 
-		require_once($file);
-	}
+        require_once($file);
+    }
 
-	/**
-	 * Method to redirect to the given uri with the given query string
-	 *
-	 * @param unknown_type $file
-	 * @param unknown_type $query
-	 */
-	private function redirectPage($file, $query = '')
-	{
-	    $this->foundDestination = true;
+    /**
+     * Method to redirect to the given uri with the given query string
+     *
+     * @param unknown_type $file
+     * @param unknown_type $query
+     */
+    private function redirectPage($file, $query = '')
+    {
+        $this->foundDestination = true;
 
-	    if (!empty($query)) {
-	        $file = $file . '?' . $query;
-	    }
+        if (!empty($query)) {
+            $file = $file . '?' . $query;
+        }
 
-	    header('Location: ' . $file);
-	    exit;
-	}
+        header('Location: ' . $file);
+        exit;
+    }
 
 }
 

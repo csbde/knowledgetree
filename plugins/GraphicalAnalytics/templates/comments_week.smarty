@@ -1,0 +1,80 @@
+<h3>Comments per Week</h3>
+
+<div id="comments_per_week"></div>
+
+
+
+{literal}
+<script type="text/javascript">
+    var commentsPerWeekChart;
+    jQuery(document).ready(function() {
+        commentsPerWeekChart = new Highcharts.Chart({
+            chart: {
+                renderTo: 'comments_per_week',
+                defaultSeriesType: 'column'
+            },
+            title: {
+                text: 'Comments per Week'
+            },
+            subtitle: {
+                text: 'How many documents were commented on per week for the last 10 weeks'
+            },
+            xAxis: {
+                categories: [{/literal}{$data.weeks}{literal}],
+                title: {
+                    text: 'Weeks'
+                }
+            },
+            yAxis: {
+                min: 0,
+                title: {
+                    text: 'Document Comments',
+                    align: 'high'
+                }
+            },
+            tooltip: {
+                formatter: function() {
+                    return ''+
+                         this.series.name +': '+ this.y;
+                }
+            },
+            plotOptions: {
+                bar: {
+                    dataLabels: {
+                        enabled: true
+                    }
+                },
+                series: {
+                    events: {
+                        legendItemClick: function(event) {
+                            return false;
+                        }
+                    }
+                }
+            },
+            legend: {
+                layout: 'vertical',
+                align: 'right',
+                verticalAlign: 'top',
+                x: -100,
+                y: 100,
+                floating: true,
+                borderWidth: 1,
+                backgroundColor: '#FFFFFF',
+                shadow: true
+            },
+            credits: {
+                enabled: false
+            },
+            series: [{
+                name: 'Document Comments',
+                data: [{/literal}{$data.counter}{literal}]
+            }
+            ]
+        });
+        
+        
+    });
+        
+</script>
+{/literal}

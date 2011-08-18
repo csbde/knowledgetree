@@ -1,0 +1,66 @@
+<h3>Document Ratings</h3>
+
+<div id="document_ratings_dashlet" class="graph"></div>
+
+{literal}
+<script type="text/javascript">
+    var documentRatingsChart;
+    jQuery(document).ready(function() {
+        documentRatingsChart = new Highcharts.Chart({
+            chart: {
+                renderTo: 'document_ratings_dashlet',
+                defaultSeriesType: 'column'
+            },
+            title: {
+                text: null
+            },
+            xAxis: {
+                categories: [{/literal}{$pointScale}{literal}],
+                title: {
+                    text: null
+                }
+            },
+            yAxis: {
+                min: 0,
+                title: {
+                    text: null
+                }
+            },
+            tooltip: {
+                formatter: function() {
+                    return this.y +' Documents';
+                        //this.series.name +': '+ this.y;
+                }
+            },
+            plotOptions: {
+                bar: {
+                    dataLabels: {
+                        enabled: true
+                    }
+                },
+                series: {
+                    events: {
+                        legendItemClick: function(event) {
+                            return false;
+                        }
+                    }
+                }
+            },
+            legend: {
+                enabled: false
+            },
+            credits: {
+                enabled: false
+            },
+            series: [{
+                name: 'Document Rating',
+                data: [{/literal}{$score}{literal}]
+            }
+            ]
+        });
+        
+        
+    });
+        
+</script>
+{/literal}

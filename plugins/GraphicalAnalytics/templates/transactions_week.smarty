@@ -1,0 +1,81 @@
+<h3>Transactions per Week</h3>
+
+<div id="transactions_per_week"></div>
+
+
+
+
+{literal}
+<script type="text/javascript">
+    var transactionsPerWeekChart;
+    jQuery(document).ready(function() {
+        transactionsPerWeekChart = new Highcharts.Chart({
+            chart: {
+                renderTo: 'transactions_per_week',
+                defaultSeriesType: 'column'
+            },
+            title: {
+                text: 'Transactions per Week'
+            },
+            subtitle: {
+                text: 'How many documents were viewed per week for the last 10 weeks'
+            },
+            xAxis: {
+                categories: [{/literal}{$graphdata.weeks}{literal}],
+                title: {
+                    text: null
+                }
+            },
+            yAxis: {
+                min: 0,
+                title: {
+                    text: 'Document Views',
+                    align: 'high'
+                }
+            },
+            tooltip: {
+                formatter: function() {
+                    return ''+
+                         this.series.name +': '+ this.y;
+                }
+            },
+            plotOptions: {
+                bar: {
+                    dataLabels: {
+                        enabled: true
+                    }
+                },
+                series: {
+                    events: {
+                        legendItemClick: function(event) {
+                            return false;
+                        }
+                    }
+                }
+            },
+            legend: {
+                layout: 'vertical',
+                align: 'right',
+                verticalAlign: 'top',
+                x: -100,
+                y: 100,
+                floating: true,
+                borderWidth: 1,
+                backgroundColor: '#FFFFFF',
+                shadow: true
+            },
+            credits: {
+                enabled: false
+            },
+            series: [{
+                name: 'Document Views',
+                data: [{/literal}{$graphdata.score}{literal}]
+            }
+            ]
+        });
+        
+        
+    });
+        
+</script>
+{/literal}

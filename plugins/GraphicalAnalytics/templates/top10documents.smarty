@@ -1,0 +1,16 @@
+<h3>Top Ten Documents</h3>
+
+<table>
+    <thead>
+        <th>Document</th>
+        <th>Points</th>
+    </thead>
+    <tbody>
+        {foreach from=$data item=document}
+        <tr>
+            <td>{$document.filename}</td>
+            <td>{$document.documentscore|round}</td>
+        </tr>
+        {/foreach}
+    </tbody>
+</table>

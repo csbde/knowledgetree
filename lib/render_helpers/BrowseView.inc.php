@@ -641,12 +641,12 @@ class BrowseView {
 		$item['like_status'] = '';
 		if ($this->ratingContentEnabled) {
 			if ($item['user_likes_document']) {
-				$item['like_status'] = '<span class="like_status liked"><a href="javascript:;" onclick="kt.app.ratingcontent.unlikeDocument('.$item['id'].');">'.$item['like_count'].'</a></span>';
+				$item['like_status'] = '<span class="like_status liked"><a href="javascript:;" title="Click to unlike" onclick="kt.app.ratingcontent.unlikeDocument('.$item['id'].');">'.$item['like_count'].'</a></span>';
 			} else {
 				if ($item['like_count'] == 0) {
-					$item['like_status'] = '<span class="like_status"><a href="javascript:;" onclick="kt.app.ratingcontent.likeDocument('.$item['id'].');">Like</a></span>';
+					$item['like_status'] = '<span class="like_status"><a href="javascript:;" title="Click to Like" onclick="kt.app.ratingcontent.likeDocument('.$item['id'].');">Like</a></span>';
 				} else {
-					$item['like_status'] = '<span class="like_status"><a href="javascript:;" onclick="kt.app.ratingcontent.likeDocument('.$item['id'].');">'.$item['like_count'].'</a></span>';
+					$item['like_status'] = '<span class="like_status"><a href="javascript:;" title="Click to Like" onclick="kt.app.ratingcontent.likeDocument('.$item['id'].');">'.$item['like_count'].'</a></span>';
 				}
 			}
 			

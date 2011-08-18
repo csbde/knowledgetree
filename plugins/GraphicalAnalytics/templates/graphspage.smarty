@@ -1,0 +1,54 @@
+<h2>Graphical Analytics</h2>
+
+
+<div class="graphContainer">
+    {$userAccessPerWeek}
+</div>
+<div class="graphContainer">
+    {$uploadsPerWeek}
+</div>
+
+<br clear="both" />
+
+<div class="graphContainer">
+    {$documentsByRating}
+</div>
+<div class="graphContainer">
+    {$viewsVsComments}
+</div>
+
+<br clear="both" />
+
+<div class="graphContainer">
+    {$commentsPerWeek}
+</div>
+<div class="graphContainer">
+    {$likesPerWeek}
+</div>
+
+
+<br clear="both" />
+
+<!--
+<div class="graphContainer">
+    {$top10Users}
+</div>
+<div class="graphContainer">
+    {$top10Documents}
+</div>
+-->
+
+<div class="graphContainer">
+    {$transactionPerWeek}
+</div>
+
+
+
+
+
+
+{literal}
+<style type="text/css">
+    div.graphContainer {float: left; width: 49%}
+</style>
+{/literal}

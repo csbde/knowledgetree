@@ -1,0 +1,73 @@
+<h3>User Access per Week</h3>
+
+<div id="useraccess_per_week_dashlet" class="graph"></div>
+
+
+
+{literal}
+<script type="text/javascript">
+    var userAccessWeekChart;
+    jQuery(document).ready(function() {
+        userAccessWeekChart = new Highcharts.Chart({
+            chart: {
+                renderTo: 'useraccess_per_week_dashlet',
+                defaultSeriesType: 'line'
+            },
+            title: {
+                text: null
+            },/*
+            subtitle: {
+                text: 'How many users accessed the system'
+            },*/
+            
+            xAxis: {
+                categories: [{/literal}{$weeksCounter}{literal}],
+                title: {
+                    text: null
+                }
+            },
+            yAxis: {
+                min: 0,
+                title: {
+                    text: null,//'User Access',
+                    align: 'high'
+                }
+            },
+            tooltip: {
+                formatter: function() {
+                    return this.y +' Users';
+                }
+            },
+            plotOptions: {
+                bar: {
+                    dataLabels: {
+                        enabled: true
+                    }
+                },
+                series: {
+                    events: {
+                        legendItemClick: function(event) {
+                            return false;
+                        }
+                    }
+                }
+            },
+            
+            legend: {
+                enabled: false
+            },
+            credits: {
+                enabled: false
+            },
+            series: [{
+                name: 'Users',
+                data: [{/literal}{$accessCounter}{literal}]
+            }
+            ]
+        });
+        
+        
+    });
+        
+</script>
+{/literal}

@@ -54,52 +54,83 @@ class KTDashletRegistry {
         $this->nsnames[$nsname] = array($name, $filename, $nsname, $sPlugin);
     }
 
+    private function loadDashletHelpers()
+    {
+        if (!empty($this->nsnames)) {
+            return ;
+        }
+        
+        $helpers = KTPluginUtil::loadPluginHelpers('dashlet');
+        
+        foreach ($helpers as $helper) {
+            extract($helper);
+            $params = explode('|', $object);
+            
+            if (isset($params[2])) {
+                $params[2] = KTPluginUtil::getFullPath($params[2]);
+            }
+            call_user_func_array(array($this, 'registerDashlet'), $params);
+        }
+    }
+    
     /**
      * Get any dashlets added since the user's last login
      *
      * @param object $oUser
      */
-    function getNewDashlets($oUser, $sCurrent) {
+    function getNewDashlets($user, $current) {
         $new = array();
         $inactive = array();
 
-        static $sInactive = '';
-        $sIgnore = (!empty($sInactive)) ? $sCurrent.','.$sInactive : $sCurrent;
+        static $inactiveList = '';
+        $ignore = (!empty($inactiveList)) ? $current.','.$inactiveList : $current;
 
         // Get all dashlets that haven't already been displayed to the user and are active for the user
+        $helpers = KTPluginUtil::loadPluginHelpers('dashlet');
+
+        $ignore = explode(',', $ignore);
+        
+        /*
         $query = "SELECT h.classname, h.pathname, h.plugin FROM plugin_helper h
             INNER JOIN plugins p ON (h.plugin = p.namespace)
             WHERE p.disabled = 0 AND classtype = 'dashlet' ";
 
         if(!empty($sIgnore)){
-            $query .= " AND h.classname NOT IN ($sIgnore)";
+            $query .= " AND h.classname NOT IN ($ignore)";
         }
 
         $res = DBUtil::getResultArray($query);
+        */
 
         // If the query is not empty, get the dashlets and return the new active ones
         // Add the inactive ones the list.
-        if(!PEAR::isError($res) && !empty($res)){
-            $oRegistry =& KTPluginRegistry::getSingleton();
-            foreach ($res as $item){
+        if (!empty($helpers)) {
+            $registry = KTPluginRegistry::getSingleton();
+            
+            foreach ($helpers as $item){
                 $name = $item['classname'];
+                
+                if (in_array($name, $ignore)) {
+                    continue;
+                }
+                
                 $filename = $item['pathname'];
-                $sPluginName = $item['plugin'];
+                $pluginName = $item['plugin'];
 
                 require_once($filename);
-                $oPlugin =& $oRegistry->getPlugin($sPluginName);
+                $plugin = $registry->getPlugin($pluginName);
 
-                $oDashlet = new $name;
-                $oDashlet->setPlugin($oPlugin);
-                if ($oDashlet->is_active($oUser)) {
+                $dashlet = new $name;
+                $dashlet->setPlugin($plugin);
+                if ($dashlet->is_active($user)) {
                     $new[] = $name;
                 }else{
                     $inactive[] = "'$name'";
                 }
             }
             // Add new inactive dashlets
-            $sNewInactive = implode(',', $inactive);
-            $sInactive = (!empty($sInactive)) ? $sInactive.','.$sNewInactive : $sNewInactive;
+            $newInactive = implode(',', $inactive);
+            $inactiveList = (!empty($inactiveList)) ? $inactiveList.','.$newInactive : $newInactive;
 
             return $new;
         }
@@ -107,9 +138,12 @@ class KTDashletRegistry {
     }
 
     // FIXME we might want to do the pruning now, but I'm unsure how to handle the preconditions.
-    function getDashlets($user) {
+    function getDashlets($user) 
+    {
+        $this->loadDashletHelpers();
+           
         $dashlets = array();
-        $pluginRegistry =& KTPluginRegistry::getSingleton();
+        $pluginRegistry = KTPluginRegistry::getSingleton();
         
         // probably not the _best_ way to do things.
         foreach ($this->nsnames as $portlet) {
@@ -118,7 +152,7 @@ class KTDashletRegistry {
             $pluginName = $portlet[3];
 
             require_once($filename);
-            $plugin =& $pluginRegistry->getPlugin($pluginName);
+            $plugin = $pluginRegistry->getPlugin($pluginName);
 
             $dashlet = new $name;
             $dashlet->setPlugin($plugin);

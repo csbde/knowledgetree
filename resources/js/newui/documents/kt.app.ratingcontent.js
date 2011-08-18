@@ -53,7 +53,7 @@ kt.app.ratingcontent = new function() {
 		if (response.data.success == 'true') {
 			
 			if (self.action == 'likeDocument') {
-				str = '<a href="javascript:;" onclick="kt.app.ratingcontent.unlikeDocument('+self.documentId+');">'+(response.data.newNumLikes)+'</a>';
+				str = '<a href="javascript:;" title="Click to unlike" onclick="kt.app.ratingcontent.unlikeDocument('+self.documentId+');">'+(response.data.newNumLikes)+'</a>';
 			} else {
 				
 				if (response.data.newNumLikes == 0) {
@@ -62,7 +62,7 @@ kt.app.ratingcontent = new function() {
 					likeStr = response.data.newNumLikes;
 				}
 				
-				str = '<a href="javascript:;" onclick="kt.app.ratingcontent.likeDocument('+self.documentId+');">'+likeStr+'</a>';
+				str = '<a href="javascript:;" title="Click to Like" onclick="kt.app.ratingcontent.likeDocument('+self.documentId+');">'+likeStr+'</a>';
 			}
 			
 			// Update with some animation
@@ -76,28 +76,22 @@ kt.app.ratingcontent = new function() {
 	{
 		if (response.data.success == 'true') {
 			if (self.action == 'likeDocument') {
-				str = '<a href="javascript:;" onclick="kt.app.ratingcontent.unlikeDocument('+self.documentId+', false);">Like</a>';
+				str = '<a href="javascript:;" title="Click to unlike" onclick="kt.app.ratingcontent.unlikeDocument('+self.documentId+', false);">Like</a>';
 			} else {
-				str = '<a href="javascript:;" onclick="kt.app.ratingcontent.likeDocument('+self.documentId+', false);">Like</a>';
+				str = '<a href="javascript:;" title="Click to Like" onclick="kt.app.ratingcontent.likeDocument('+self.documentId+', false);">Like</a>';
 			}
 			
 			if (self.action == 'likeDocument') {
 				
-				switch(response.data.newNumLikes)
-				{
-					case 1:
-						countStr = 'You like this';
-						break;
-					case 2:
-						countStr = 'You and one person likes this';
-						break;
-					default:
-						countStr = 'You and '+(response.data.newNumLikes-1)+' people like this';
-						break
+				if (response.data.newNumLikes == 2) {
+					countStr = 'You and one other person likes this';
+				} else {
+					countStr = 'You and '+(response.data.newNumLikes-1)+' people like this';
 				}
+				
 			} else {
 				if (response.data.newNumLikes == 1) {
-					countStr = '1 person likes this';
+					countStr = 'One person likes this';
 				} else {
 					countStr = ''+(response.data.newNumLikes)+' people like this';
 				}

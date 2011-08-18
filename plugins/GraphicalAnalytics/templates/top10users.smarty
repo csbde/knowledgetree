@@ -1,0 +1,16 @@
+<h3>Top Ten Contributors</h3>
+
+<table>
+    <thead>
+        <th>User</th>
+        <th>Points</th>
+    </thead>
+    <tbody>
+        {foreach from=$data item=user}
+        <tr>
+            <td>{$user.name}</td>
+            <td>{$user.userscore|round}</td>
+        </tr>
+        {/foreach}
+    </tbody>
+</table>

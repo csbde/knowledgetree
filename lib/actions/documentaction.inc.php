@@ -64,10 +64,6 @@ class KTDocumentAction extends KTStandardDispatcher {
 	public $bShowIfReadShared = false;
 	public $bShowIfWriteShared = false;
 
-	/** Handle bulk action lock */
-	protected $showIfBulkActions = array();
-	protected $bulkActionInProgress = '';
-
     /**
  	 * The _bMutator variable determines whether the action described by the class is considered a mutator.
      * Mutators may not act on Immutable documents unless overridden in the code
@@ -183,11 +179,6 @@ class KTDocumentAction extends KTStandardDispatcher {
     }
 
     public function getInfo() {
-    	if(!empty($this->bulkActionInProgress)) {
-    		if(!in_array($this->bulkActionInProgress, $this->showIfBulkActions)) {
-    			return '';
-    		}
-    	}
         $check = $this->_show();
         if ($check === false) {
             $check = 'disabled';
@@ -342,9 +333,6 @@ class KTDocumentAction extends KTStandardDispatcher {
         return $oTemplate->render($aTemplateData);
     }
 
-    public function setBulkAction($bulkActionInProgress) {
-    	$this->bulkActionInProgress = $bulkActionInProgress;
-    }
 }
 
 class JavascriptDocumentAction extends KTDocumentAction
@@ -460,12 +448,14 @@ class JavascriptDocumentAction extends KTDocumentAction
 }
 
 class KTDocumentActionUtil {
-    public function getDocumentActionInfo($slot = 'documentaction') {
+    public function getDocumentActionInfo($slot = 'documentaction')
+    {
         $oRegistry =& KTActionRegistry::getSingleton();
         return $oRegistry->getActions($slot);
     }
 
-    public static function &getDocumentActionsForDocument(&$oDocument, $oUser, $slot = 'documentaction') {
+    public static function &getDocumentActionsForDocument(&$oDocument, $oUser, $slot = 'documentaction')
+    {
         $aObjects = array();
         $actions = KTDocumentActionUtil::getDocumentActionInfo($slot);
         foreach ($actions as $aAction) {
@@ -480,7 +470,19 @@ class KTDocumentActionUtil {
         return $aObjects;
     }
 
-    public function getAllDocumentActions($slot = 'documentaction') {
+    public static function getDocumentActionForDocument($document, $user, $slot = 'documentaction')
+    {
+    	$objects = KTDocumentActionUtil::getDocumentActionsForDocument($document, $user, $slot);
+        if (count($objects) == 1) {
+            return $objects[0];
+        }
+        else {
+            return $objects;
+        }
+    }
+
+    public function getAllDocumentActions($slot = 'documentaction')
+    {
         $aObjects = array();
         $oDocument = null;
         $oUser = null;
@@ -496,7 +498,8 @@ class KTDocumentActionUtil {
         return $aObjects;
     }
 
-    public function getDocumentActionsByNames($aNames, $slot = 'documentaction', $oDocument = null, $oUser = null) {
+    public function getDocumentActionsByNames($aNames, $slot = 'documentaction', $oDocument = null, $oUser = null)
+    {
         $aObjects = array();
         foreach (KTDocumentActionUtil::getDocumentActionInfo($slot) as $aAction) {
             list($sClassName, $sPath, $sName, $sPlugin) = $aAction;

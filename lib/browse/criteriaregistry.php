@@ -48,68 +48,95 @@ class KTCriteriaRegistry {
     }
 
 
-    function _buildGenericCriteria() {
-        $aFields =& DocumentField::getList();
-        foreach($aFields as $oField) {
-            $sNamespace = $oField->getNamespace();
-            $oFieldset =& KTFieldset::get($oField->getParentFieldset());
-            if ($oFieldset->getName() == 'Tag Cloud')
-            {
+    function _buildGenericCriteria() 
+    {
+        $this->loadCriteriaHelpers();
+        
+        $fields = DocumentField::getList();
+        foreach($fields as $field) {
+            $namespace = $field->getNamespace();
+            $fieldset =& KTFieldset::get($field->getParentFieldset());
+            if ($fieldset->getName() == 'Tag Cloud') {
                 continue;
             }
 
-            //if(is_null($oFieldset->userinfo)){continue;}
-            $aInitialize = array(sprintf("%s: %s", $oFieldset->getName(), $oField->getName()), 'id', 'id', $oField->getId(), $sNamespace);
-            $this->registerCriterion('GenericMetadataCriterion', $sNamespace, null, $aInitialize);
+            $initialize = array(sprintf("%s: %s", $fieldset->getName(), $field->getName()), 'id', 'id', $field->getId(), $namespace);
+            $this->registerCriterion('GenericMetadataCriterion', $namespace, null, $initialize);
         }
 
         $this->_bGenericRegistered = true;
     }
 
-    function registerCriterion($sClassName, $sNamespace = null, $sFilename = null, $aInitialize = null) {
-        $this->_aCriteriaDetails[$sNamespace] = array($sClassName, $sNamespace, $sFilename, $aInitialize);
+    function registerCriterion($className, $namespace = null, $filename = null, $initialize = null) 
+    {
+        $this->_aCriteriaDetails[$namespace] = array($className, $namespace, $filename, $initialize);
     }
 
-    function &getCriterion($sNamespace) {
-        if(!$this->_bGenericRegistered) {
+    private function loadCriteriaHelpers()
+    {
+        if (!empty($this->_aCriteriaDetails)) {
+            return ;
+        }
+        
+        $helpers = KTPluginUtil::loadPluginHelpers('criterion');
+        
+        foreach ($helpers as $helper) {
+            extract($helper);
+            $params = explode('|', $object);
+            
+            $init = unserialize($params[3]);
+            if ($init != false) {
+               $params[3] = $init;
+            }
+            
+            if (isset($params[2])) {
+                $params[2] = KTPluginUtil::getFullPath($params[2]);
+            }
+            call_user_func_array(array($this, 'registerCriterion'), $params);
+        }
+    }
+    
+    function &getCriterion($namespace) 
+    {
+        if (!$this->_bGenericRegistered) {
             $this->_buildGenericCriteria();
         }
-
-        if (array_key_exists($sNamespace, $this->_aCriteria)) {
-            return $this->_aCriteria[$sNamespace];
+        
+        if (array_key_exists($namespace, $this->_aCriteria)) {
+            return $this->_aCriteria[$namespace];
         }
-
-        $aDetails = KTUtil::arrayGet($this->_aCriteriaDetails, $sNamespace);
-        if (empty($aDetails)) {
+        
+        $details = KTUtil::arrayGet($this->_aCriteriaDetails, $namespace);
+        if (empty($details)) {
             return null;
         }
-        $sFilename = $aDetails[2];
-        if (!empty($sFilename)) {
-            require_once($sFilename);
+        
+        $filename = $details[2];
+        if (!empty($filename)) {
+            require_once($filename);
         }
-        $sClassName = $aDetails[0];
-        $oCriterion =new $sClassName();
-
-
-    if(is_array($aDetails[3])) {
-        call_user_func_array(array(&$oCriterion, 'initialize'), $aDetails[3]);
-    }
-
-
-        $this->_aCriteria[$sNamespace] =& $oCriterion;
-        return $oCriterion;
-    }
-
-    function &getCriteria() {
-    if(!$this->_bGenericRegistered) {
-        $this->_buildGenericCriteria();
-    }
-        $aRet = array();
-
-        foreach (array_keys($this->_aCriteriaDetails) as $sCriteriaName) {
-            $aRet[$sCriteriaName] =& $this->getCriterion($sCriteriaName);
+        $className = $details[0];
+        $criterion =new $className();
+        
+        if (is_array($details[3])) {
+            call_user_func_array(array(&$criterion, 'initialize'), $details[3]);
         }
-        return $aRet;
+        
+        $this->_aCriteria[$namespace] =& $criterion;
+        return $criterion;
+    }
+
+    function &getCriteria() 
+    {
+        if (!$this->_bGenericRegistered) {
+            $this->_buildGenericCriteria();
+        }
+        $ret = array();
+        
+        foreach (array_keys($this->_aCriteriaDetails) as $criteriaName) {
+            $ret[$criteriaName] =& $this->getCriterion($criteriaName);
+        }
+        return $ret;
     }
 
 }

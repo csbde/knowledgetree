@@ -104,6 +104,7 @@ class WorkflowAllocationSelection extends KTAdminDispatcher {
             $params = array('ktstandard.workflowassociation.handler');
             DBUtil::runQuery(array($query, $params));
             
+            $this->updateTriggerHandlers($triggers);
             $this->successRedirectToMain(_kt('Handler removed.'));
         }
         else {
@@ -124,9 +125,27 @@ class WorkflowAllocationSelection extends KTAdminDispatcher {
             $params = array($selectionNamespace);
 
             DBUtil::runQuery(array($query, $params));
-
+            
+            $this->updateTriggerHandlers($triggers);
             $this->successRedirectToMain(_kt('Handler set.'));
         }
+    }
+    
+    private function updateTriggerHandlers($triggers)
+    {
+        foreach ($triggers as $trigger) {
+            $class = $trigger[0];
+            
+            if (!class_exists($class)) {
+                include_once($trigger[1]);
+            }
+            
+            $handler = new $class();
+            $handler->setAssociation();
+        }
+        
+        $pluginCache = PluginCache::getPluginCache();
+        $pluginCache->clearPluginSession();
     }
 
     public function handleOutput($output)

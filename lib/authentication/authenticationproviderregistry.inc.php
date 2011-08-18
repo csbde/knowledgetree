@@ -61,7 +61,8 @@ class KTAuthenticationProviderRegistry {
     var $_aAuthenticationProvidersInfo = array();
     var $_aAuthenticationProviders = array();
 
-    static function &getSingleton () {
+    static function &getSingleton () 
+    {
         if (!KTUtil::arrayGet($GLOBALS['_KT_PLUGIN'], 'oKTAuthenticationProviderRegistry')) {
             $GLOBALS['_KT_PLUGIN']['oKTAuthenticationProviderRegistry'] = new KTAuthenticationProviderRegistry;
         }
@@ -69,35 +70,67 @@ class KTAuthenticationProviderRegistry {
     }
 
 
-    function registerAuthenticationProvider($name, $class, $nsname, $path = '', $sPlugin = null) {
-        $this->_aAuthenticationProvidersInfo[$nsname] = array($name, $class, $nsname, $path, $sPlugin);
+    function registerAuthenticationProvider($name, $class, $nsname, $path = '', $plugin = null) 
+    {
+        $this->_aAuthenticationProvidersInfo[$nsname] = array($name, $class, $nsname, $path, $plugin);
     }
 
-    function getAuthenticationProviderInfo($nsname) {
+    private function loadAuthHelpers()
+    {
+        if (!empty($this->_aAuthenticationProvidersInfo)) {
+            return ;
+        }
+        
+        $helpers = KTPluginUtil::loadPluginHelpers('authentication_provider');
+        
+        foreach ($helpers as $helper) {
+            extract($helper);
+            $params = explode('|', $object);
+            
+            if (isset($params[3])) {
+                $params[3] = KTPluginUtil::getFullPath($params[3]);
+            }
+            $params[0] = _kt($params[0]);
+            call_user_func_array(array($this, 'registerAuthenticationProvider'), $params);
+        }
+    }
+    
+    function getAuthenticationProviderInfo($nsname) 
+    {
+        $this->loadAuthHelpers();
         return $this->_aAuthenticationProviderInfo[$nsname];
     }
 
-    function &getAuthenticationProvider($nsname) {
-        $oProvider =& KTUtil::arrayGet($this->_aAuthenticationProviders, $nsname);
-        if ($oProvider) {
-            return $oProvider;
+    function &getAuthenticationProvider($nsname) 
+    {
+        $this->loadAuthHelpers();
+        
+        $provider = KTUtil::arrayGet($this->_aAuthenticationProviders, $nsname);
+        if ($provider) {
+            return $provider;
         }
-        $aInfo = $this->_aAuthenticationProvidersInfo[$nsname];
-        $sClass = $aInfo[1];
-        $sPath = $aInfo[3];
-        if ($sPath) {
-            $sPath = (KTUtil::isAbsolutePath($sPath)) ? $sPath : KT_DIR .'/'. $sPath;
-            include_once($sPath);
+        
+        $info = $this->_aAuthenticationProvidersInfo[$nsname];
+        $class = $info[1];
+        $path = $info[3];
+        if ($path) {
+            $path = (KTUtil::isAbsolutePath($path)) ? $path : KT_DIR .'/'. $path;
+            include_once($path);
         }
-        if(!class_exists($sClass)){
-            return PEAR::raiseError(sprintf(_kt('Authentication provider class does not exist. %s '), $sClass));
+        
+        if(!class_exists($class)){
+            return PEAR::raiseError(sprintf(_kt('Authentication provider class does not exist. %s '), $class));
         }
-        $oProvider = new $sClass;
-        $this->_aAuthenticationProviders[$nsname] =& $oProvider;
-        return $oProvider;
+        
+        $provider = new $class;
+        $this->_aAuthenticationProviders[$nsname] =& $provider;
+        
+        return $provider;
     }
 
-    function getAuthenticationProvidersInfo() {
+    function getAuthenticationProvidersInfo() 
+    {
+        $this->loadAuthHelpers();
         return array_values($this->_aAuthenticationProvidersInfo);
     }
 }

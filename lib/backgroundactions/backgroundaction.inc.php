@@ -81,7 +81,7 @@ class backgroundaction
 	 * send operation to queue
 	 * @var array
 	 */
-	private $threshold = array(	'move' =>	array(	'documents' => 0,
+	private $threshold = array(	'move' =>	array(	'documents' => 500,
 													'folders' => 50
 												),
 								'delete' =>	array(	'documents' => 250,
@@ -120,6 +120,63 @@ class backgroundaction
 
 		return $this->hitThreshold();
 
+	}
+
+	public static function getMessage($action)
+	{
+		return "Bulk $action in progress. Please try again later.";
+	}
+
+	public static function saveEvent($action, $folders, $currentFolderId, $targetFolderId)
+	{
+		$memcache = KTMemcache::getKTMemcache();
+		if(!$memcache->isEnabled()) return ;
+		$key = ACCOUNT_NAME . '_bulkaction';
+		$bulkActions = $memcache->get($key);
+		if(empty($bulkActions))
+			$folderIds = array();
+		else {
+			$folderIds = unserialize($bulkActions);
+		}
+		// Store current and target folder.
+		$folderIds[$action][$currentFolderId] = $currentFolderId;
+		$folderIds[$action][$targetFolderId] = $targetFolderId;
+		// Store all subfolders
+		foreach ($folders as $folderId) {
+			$folderIds[$action][$folderId] = $folderId;
+		}
+		$memcache->set($key, serialize($folderIds));
+	}
+
+	public static function isDocumentInBulkAction($document = null)
+	{
+		$folderIdsPath = '';
+		if($document instanceof Document) {
+			$folderIdsPath = $document->getParentFolderIds();
+		}
+		else {
+			if(!is_null($document)) {
+				$document = Document::get($document);
+				$folderIdsPath = $document->getParentFolderIds();
+			}
+		}
+
+		return self::isBulkActionInProgress($folderIdsPath);
+	}
+
+	public static function isFolderInBulkAction($folder = null)
+	{
+		$folderIdsPath = '';
+		if($folder instanceof Folder || $folder instanceof FolderProxy) {
+			$folderIdsPath = Folder::generateFolderIDs($folder->getId());
+		}
+		else {
+			if(!is_null($folder)) {
+				$folderIdsPath = Folder::generateFolderIDs($folder);
+			}
+		}
+
+		return self::isBulkActionInProgress($folderIdsPath);
 	}
 
 	private function hitThreshold()
@@ -165,47 +222,6 @@ class backgroundaction
 		return $folders;
 	}
 
-	public static function saveEvent($action, $folders, $currentFolderId, $targetFolderId)
-	{
-		$memcache = KTMemcache::getKTMemcache();
-		if(!$memcache->isEnabled()) return ;
-		$key = ACCOUNT_NAME . '_bulkaction';
-		$bulkActions = $memcache->get($key);
-		if(empty($bulkActions))
-			$folderIds = array();
-		else {
-			$folderIds = unserialize($bulkActions);
-		}
-		// Store current and target folder.
-		$folderIds[$action][$currentFolderId] = $currentFolderId;
-		$folderIds[$action][$targetFolderId] = $targetFolderId;
-		// Store all subfolders
-		foreach ($folders as $folderId) {
-			$folderIds[$action][$folderId] = $folderId;
-		}
-		$memcache->set($key, serialize($folderIds));
-	}
-
-	public static function isDocumentInBulkAction($document = null)
-	{
-		$folderIdsPath = '';
-		if(!is_null($document) && $document instanceof Document) {
-			$folderIdsPath = $document->getParentFolderIds();
-		}
-
-		return self::isBulkActionInProgress($folderIdsPath);
-	}
-
-	public static function isFolderInBulkAction($folder = null)
-	{
-		$folderIdsPath = '';
-		if(!is_null($folder) && ($folder instanceof Folder || $folder instanceof FolderProxy)) {
-			$folderIdsPath = Folder::generateFolderIDs($folder->getId());
-		}
-
-		return self::isBulkActionInProgress($folderIdsPath);
-	}
-
 	private static function isBulkActionInProgress($folderIdsPath)
 	{
 		$folderIdsPath = explode(',', $folderIdsPath);
@@ -226,6 +242,8 @@ class backgroundaction
 
 	    return false;
 	}
+
+
 }
 
 ?>

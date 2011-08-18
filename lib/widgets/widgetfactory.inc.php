@@ -54,7 +54,8 @@ class KTWidgetFactory {
         return $GLOBALS['_KT_PLUGIN']['oKTWidgetFactory'];
     }
 
-    function registerWidget($classname, $namespace,  $filename = null) {
+    function registerWidget($classname, $namespace,  $filename = null) 
+    {
         $this->widgets[$namespace] = array(
             'ns' => $namespace,
             'class' => $classname,
@@ -62,7 +63,29 @@ class KTWidgetFactory {
         );
     }
 
-    function &getWidgetByNamespace($namespace) {
+    private function loadWidgetHelpers()
+    {
+        if (!empty($this->widgets)) {
+            return ;
+        }
+        
+        $helpers = KTPluginUtil::loadPluginHelpers('widget');
+        
+        foreach ($helpers as $helper) {
+            extract($helper);
+            $params = explode('|', $object);
+            
+            if (isset($params[2])) {
+                $params[2] = KTPluginUtil::getFullPath($params[2]);
+            }
+            call_user_func_array(array($this, 'registerWidget'), $params);
+        }
+    }
+    
+    function &getWidgetByNamespace($namespace)
+    {
+        $this->loadWidgetHelpers();
+        
         $info = KTUtil::arrayGet($this->widgets, $namespace);
         if (empty($info)) {
             return PEAR::raiseError(sprintf(_kt('No such widget: %s'), $namespace));
@@ -78,7 +101,8 @@ class KTWidgetFactory {
     // this is overridden to either take a namespace or an instantiated
     // class.  Doing it this way allows for a consistent approach to building
     // forms including custom widgets.
-    function &get($namespaceOrObject, $config = null) {
+    function &get($namespaceOrObject, $config = null) 
+    {
         if (is_string($namespaceOrObject)) {
             $widget =& $this->getWidgetByNamespace($namespaceOrObject);
         } else {
