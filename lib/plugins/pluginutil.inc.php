@@ -865,11 +865,10 @@ class PluginCache {
             if ($this->memcache !== false) {
                 $this->memcache->set($this->namespace . '-' . $this->pluginsCacheKey, $pluginList);
             }
-
+            
+            $_SESSION['plugin-list'] = $pluginList;
         }
-
-        $_SESSION['plugin-list'] = $pluginList;
-
+        
         return $pluginList;
     }
 
@@ -1055,7 +1054,8 @@ class PluginCache {
 
         switch ($getOrSet) {
             case 'set':
-                $this->memcache->set($this->lockedCacheKey, 'in-progress');
+                $expiry = 60*5; // 5 minutes is more than enough time.
+                $this->memcache->set($this->lockedCacheKey, 'in-progress', $expiry);
                 break;
             case 'delete':
                 $this->memcache->delete($this->lockedCacheKey);
