@@ -107,7 +107,7 @@ class KTRatingContent {
 
 	public function getUserLikesInCollectionQuery($userId, $documentIds)
 	{
-		if ($userId == NULL) {
+		if ($userId == NULL || empty($documentIds)) {
 			return array();
 		}
 
