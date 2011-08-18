@@ -171,7 +171,7 @@ class KTGraphicalAnalyticsSql {
 
 	}
 
-	public function getPointsOverWeeks()
+	public function getPointsOverWeeks($weeksLimit=10)
     {
 		$sql = '
 		SELECT merged_table.document_id, document_content_version.filename, SUM(documentscore) AS documentscore FROM
@@ -205,7 +205,7 @@ class KTGraphicalAnalyticsSql {
 		GROUP BY document_id
 
 		ORDER BY documentscore DESC
-		LIMIT 0, 10';
+		LIMIT 0, '.$weeksLimit;
 
 		if ($this->ratingContentEnabled) {
 
@@ -230,7 +230,7 @@ class KTGraphicalAnalyticsSql {
     }
 	
 
-	public function getTop10Users($limit = 10)
+	public function getTopUsers($limit = 10)
 	{
 		// Needs to consider likes and comments
 		$sql = '
@@ -248,7 +248,7 @@ class KTGraphicalAnalyticsSql {
 	}
 
 
-	public function getDocumentViewsOverWeek()
+	public function getDocumentViewsOverWeek($weeksLimit=10)
     {
         $permissionsQuery = $this->getPermissionsQuery();
         $sql = '
@@ -261,8 +261,7 @@ class KTGraphicalAnalyticsSql {
                 AND DT.document_id = D.id
 		GROUP BY week_number
 		ORDER BY week_number
-		LIMIT 0, 10
-        ';
+		LIMIT 0, '.$weeksLimit;
 
         return DBUtil::getResultArray($sql);
     }
@@ -285,7 +284,7 @@ class KTGraphicalAnalyticsSql {
     }
 
 
-	public function getUploadsPerWeekSql()
+	public function getUploadsPerWeekSql($weeksLimit=10)
     {
         $permissionsQuery = $this->getPermissionsQuery();
         $sql = '
@@ -299,14 +298,13 @@ class KTGraphicalAnalyticsSql {
                 AND DT.document_id = D.id
 		GROUP BY week_number
 		ORDER BY week_number
-		LIMIT 0, 10
-        ';
+		LIMIT 0, '.$weeksLimit;
 
         return DBUtil::getResultArray($sql);
     }
 
 
-	public function getUserAccessPerWeekSql()
+	public function getUserAccessPerWeekSql($weeksLimit=10)
     {
 		// Decide whether to use document_transactions OR user_history
 		$sql = '
@@ -314,7 +312,7 @@ class KTGraphicalAnalyticsSql {
 		(
 			SELECT DISTINCT CONCAT(ABS(TIMESTAMPDIFF(WEEK, NOW(), datetime)), "_", user_id) AS uniqueDateUser,
 				ABS( TIMESTAMPDIFF( WEEK, NOW(), datetime ) ) AS week_number FROM user_history
-			WHERE ABS( TIMESTAMPDIFF( WEEK, NOW( ) , datetime ) ) < 10
+			WHERE ABS( TIMESTAMPDIFF( WEEK, NOW( ) , datetime ) ) < '.$weeksLimit.'
 		) alias
 		GROUP BY week_number
 		ORDER BY week_number
@@ -324,7 +322,7 @@ class KTGraphicalAnalyticsSql {
     }
 
 
-	public function getTransactionViewsSql()
+	public function getTransactionViewsSql($weeksLimit=10)
     {
         $permissionsQuery = $this->getPermissionsQuery();
         $sql = '
@@ -336,14 +334,13 @@ class KTGraphicalAnalyticsSql {
                 DT.document_id = D.id
 		GROUP BY week_number
 		ORDER BY week_number
-		LIMIT 0 , 10
-        ';
+		LIMIT 0 , '.$weeksLimit;
 
         return DBUtil::getResultArray($sql);
     }
 
 
-	public function getDocumentCommentsSql()
+	public function getDocumentCommentsSql($weeksLimit=10)
     {
         $permissionsQuery = $this->getPermissionsQuery();
         $sql = '
@@ -357,14 +354,13 @@ class KTGraphicalAnalyticsSql {
                 AND c.document_id = D.id
 		GROUP BY week_number
 		ORDER BY week_number
-		LIMIT 10
-        ';
+		LIMIT '.$weeksLimit;
 
         return DBUtil::getResultArray($sql);
     }
 
 
-	public function getDocumentLikesSql()
+	public function getDocumentLikesSql($weeksLimit=10)
     {
         if ($this->ratingContentEnabled) {
 			$sql = '
@@ -373,8 +369,7 @@ class KTGraphicalAnalyticsSql {
 			WHERE ABS(TIMESTAMPDIFF(WEEK,NOW(),date_time)) < 10
 			GROUP BY week_number
 			ORDER BY week_number
-			LIMIT 10
-			';
+			LIMIT '.$weeksLimit;
 	
 			return DBUtil::getResultArray($sql);
 		} else {
