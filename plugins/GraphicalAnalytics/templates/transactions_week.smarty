@@ -68,7 +68,7 @@
                 enabled: false
             },
             series: [{
-                name: 'Document Views',
+                name: 'Transactions',
                 data: [{/literal}{$graphdata.score}{literal}]
             }
             ]
