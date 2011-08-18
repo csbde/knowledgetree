@@ -388,6 +388,80 @@ class GraphicalAnalytics {
 
 
 	/******************************************************************************************************************/
+	
+	
+	public function getTransactionTypesPerWeekTemplate()
+	{
+		$transactions = array(
+			'ktcore.transactions.check_in',
+			'ktcore.transactions.check_out',
+			'ktcore.transactions.force_checkin',
+		);
+		
+		$templateData = array(
+			'data'=>$this->getTransactionTypesPerWeekWeekData($transactions, $this->numWeeksPage),
+			'graphTitle' => 'Check-ins vs Check-outs vs Forced Check-ins',
+			'graphSubTitle' => 'Comparing Checkin vs Checkouts',
+			'uniqueDivId' => 'checkins_vs_checkouts',
+		);
+		
+		return $this->loadTemplate($templateData, 'transaction_types_week');
+	}
+
+
+
+	private function getTransactionTypesPerWeekWeekData($transactions, $limit=10)
+	{
+		$data = $this->KTGraphicalAnalyticsSql->getTransactionTypeCount($transactions, $limit);
+		$labelsData = $this->KTGraphicalAnalyticsSql->getTransactionLabels($transactions);
+
+		$prepArray = array();
+		
+		$labelsArray = array();
+		
+		foreach ($labelsData as $label)
+		{
+			$labelsArray[$label['namespace']] = $label['name'];
+		}
+		
+		// Create empty arrays
+		foreach ($transactions as $type)
+		{
+			$newArray = array();
+			
+			for ($i=0;$i<$limit;$i++)
+			{
+				$newArray['week_'.$i] = 0;
+			}
+			
+			$prepArray[$type] = $newArray;
+		}
+		
+		// Update empty arrays with correct values
+		foreach ($data as $rec)
+		{
+			$prepArray[$rec['transaction_namespace']]['week_'.$rec['week']] = $rec['count'];
+		}
+		
+		$seriesStr = '';
+		$comma = '';
+		
+		foreach ($prepArray as $type => $values)
+		{
+			$seriesStr .= $comma."{ name: '";
+			
+			$seriesStr .= array_key_exists($type, $labelsArray) ? $labelsArray[$type] : $type;
+			
+			$seriesStr .= "', data: [".implode(",", $values)."]}";
+			$comma = ',';
+		}
+		
+		$weekStr = $this->generateWeeksStr($limit);
+		
+		return array('weeksStr'=>$weekStr, 'seriesStr'=>$seriesStr);
+	}
+	
+	/******************************************************************************************************************/
 
 
 	private function loadTemplate($templateData, $template)

@@ -39,7 +39,7 @@
 -->
 
 <div class="graphContainer">
-    {$transactionPerWeek}
+    {$checkInsVsCheckouts}
 </div>
 
 

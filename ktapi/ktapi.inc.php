@@ -3285,6 +3285,38 @@ class KTAPI {
     }
 
     /**
+     * Adds a document to the repository.
+     *
+     * Replaces white space in base64 encoding with +.
+     *
+     * Warning: Base64 with space instead of plus is not compatible with the base64 specification
+     *          and is not a recognized variant.  Replacing the spaces with + without being sure
+     *          of the need is not recommended.  Use this function ONLY if you are sure that your
+     *          source is giving you base64 with + replaced by space.
+     *
+     *          Correct functioning is NOT guaranteed.
+     *          See http://www.php.net/manual/en/function.base64-decode.php for details.
+     *          (Post by: twm at twmacinta dot com 10-Jul-2008 03:38)
+     *
+     * @author KnowledgeTree Team
+     * @access public
+     * @param int $folder_id
+     * @param string $title
+     * @param string $filename
+     * @param string $documenttype
+     * @param string $base64
+     * @return kt_document_detail.
+     */
+    public function add_small_document_special($folder_id, $title, $filename, $documenttype, $base64,
+                                               $sig_username = '', $sig_password = '', $reason = '')
+    {
+        $base64 = str_replace(' ', '+', $base64);
+        return $this->add_small_document($folder_id, $title, $filename, $documenttype, $base64,
+                                         $sig_username = '', $sig_password = '', $reason = '');
+    }
+
+
+    /**
      * Does a document checkin.
      *
      * @author KnowledgeTree Team
