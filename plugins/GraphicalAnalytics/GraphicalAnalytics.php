@@ -388,6 +388,133 @@ class GraphicalAnalytics {
 
 
 	/******************************************************************************************************************/
+	
+	public function getTransactionTypesPerWeekDashlet()
+	{
+		$transactions = array(
+			'ktcore.transactions.check_out',
+			'ktcore.transactions.check_in',
+			'ktcore.transactions.force_checkin',
+		);
+		
+		$templateData = array(
+			'data'=>$this->getTransactionTypesPerWeekWeekData($transactions, 3),
+			'graphTitle' => 'Check-outs vs Check-ins',
+			'graphSubTitle' => 'Comparing Check-outs vs Check-ins',
+			'uniqueDivId' => 'checkins_vs_checkouts',
+		);
+		
+		return $this->loadTemplate($templateData, 'transaction_types_week_dashlet');
+	}
+	
+	public function getTransactionTypesPerWeekTemplate()
+	{
+		$transactions = array(
+			'ktcore.transactions.check_out',
+			'ktcore.transactions.check_in',
+			'ktcore.transactions.force_checkin',
+		);
+		
+		$templateData = array(
+			'data'=>$this->getTransactionTypesPerWeekWeekData($transactions, $this->numWeeksPage),
+			'graphTitle' => 'Check-outs vs Check-ins',
+			'graphSubTitle' => 'Comparing Check-outs vs Check-ins vs Forced Check-ins',
+			'uniqueDivId' => 'checkins_vs_checkouts',
+		);
+		
+		return $this->loadTemplate($templateData, 'transaction_types_week');
+	}
+	
+	public function getSharingPerWeekTemplate()
+	{
+		$transactions = array(
+			'ktcore.transactions.share',
+			'ktcore.transactions.email_link',
+			'ktcore.transactions.email_attachment',
+		);
+		
+		$templateData = array(
+			'data'=>$this->getTransactionTypesPerWeekWeekData($transactions, $this->numWeeksPage),
+			'graphTitle' => 'Sharing and Emailing Documents',
+			'graphSubTitle' => ' ',
+			'uniqueDivId' => 'sharing_emailing',
+		);
+		
+		return $this->loadTemplate($templateData, 'transaction_types_week');
+	}
+	
+	public function getSubscriptionsAndAlertsTemplate()
+	{
+		$transactions = array(
+			'ktcore.transactions.share',
+			'ktcore.transactions.email_link',
+			'ktcore.transactions.email_attachment',
+		);
+		
+		$templateData = array(
+			'data'=>$this->getTransactionTypesPerWeekWeekData($transactions, $this->numWeeksPage),
+			'graphTitle' => 'Subscriptions and Alerts',
+			'graphSubTitle' => ' ',
+			'uniqueDivId' => 'subscriptions_alerts',
+		);
+		
+		return $this->loadTemplate($templateData, 'transaction_types_week');
+	}
+
+
+
+	private function getTransactionTypesPerWeekWeekData($transactions, $limit=10)
+	{
+		$data = $this->KTGraphicalAnalyticsSql->getTransactionTypeCount($transactions, $limit);
+		$labelsData = $this->KTGraphicalAnalyticsSql->getTransactionLabels($transactions);
+
+		$prepArray = array();
+		
+		$labelsArray = array();
+		
+		foreach ($labelsData as $label)
+		{
+			$labelsArray[$label['namespace']] = $label['name'];
+		}
+		
+		// Create empty arrays
+		foreach ($transactions as $type)
+		{
+			$newArray = array();
+			
+			for ($i=0;$i<$limit;$i++)
+			{
+				$newArray['week_'.$i] = 0;
+			}
+			
+			$prepArray[$type] = $newArray;
+		}
+		
+		// Update empty arrays with correct values
+		foreach ($data as $rec)
+		{
+			$prepArray[$rec['transaction_namespace']]['week_'.$rec['week']] = $rec['count'];
+		}
+		
+		$seriesStr = '';
+		$comma = '';
+		
+		foreach ($prepArray as $type => $values)
+		{
+			$seriesStr .= $comma."{ name: '";
+			
+			$seriesStr .= array_key_exists($type, $labelsArray) ? $labelsArray[$type] : $type;
+			
+			$seriesStr .= "', data: [".implode(",", $values)."]}";
+			$comma = ',';
+		}
+		
+		$weekStr = $this->generateWeeksStr($limit);
+		
+		return array('weeksStr'=>$weekStr, 'seriesStr'=>$seriesStr);
+	}
+	
+	/******************************************************************************************************************/
 
 
 	private function loadTemplate($templateData, $template)
@@ -416,7 +543,7 @@ class GraphicalAnalytics {
 
 	public function getMimeIcon($mimeId)
 	{
-		$iconFile = 'resources/mimetypes/' . KTMime::getIconPath($mimeId) . '.gif';
+		$iconFile = 'resources/mimetypes/' . KTMime::getIconPath($mimeId) . '.png';
 
 
         if (file_exists(KT_DIR . '/' . $iconFile)) {

@@ -41,7 +41,7 @@ class KTGraphicalAnalyticsSql {
 	public function getTop10Documents($limit = 10)
     {
 		$sql = '
-		SELECT merged_table.document_id, document_content_version.filename, SUM(documentscore) AS documentscore, mime_id FROM
+		SELECT merged_table.document_id, document_metadata_version.name as title, document_content_version.filename, SUM(documentscore) AS documentscore, mime_id FROM
 		(
 
 			(
@@ -268,13 +268,16 @@ class KTGraphicalAnalyticsSql {
 
 	public function getMostViewedDocuments()
     {
-        $sql = '
-		SELECT document_transactions.document_id, COUNT( document_transactions.document_id ) AS count, document_content_version.filename, mime_id
+        $permissionsQuery = $this->getPermissionsQuery();
+		
+		$sql = '
+		SELECT document_transactions.document_id, document_metadata_version.name as title, COUNT( document_transactions.document_id ) AS count, document_content_version.filename, mime_id
 		FROM document_transactions
-		INNER JOIN documents ON (document_transactions.document_id = documents.id AND documents.status_id != 3 AND documents.status_id != 4)
-		INNER JOIN document_metadata_version ON (documents.metadata_version_id = document_metadata_version.id)
+		INNER JOIN documents D ON (document_transactions.document_id = D.id AND D.status_id != 3 AND D.status_id != 4)
+		INNER JOIN document_metadata_version ON (D.metadata_version_id = document_metadata_version.id)
 		INNER JOIN document_content_version ON (document_metadata_version.content_version_id = document_content_version.id)
-		WHERE transaction_namespace = "ktcore.transactions.view"
+		' . (empty($permissionsQuery) ? 'WHERE' : "$permissionsQuery AND") . '
+		transaction_namespace = "ktcore.transactions.view"
 		GROUP BY document_transactions.document_id
 		ORDER BY count DESC
 		LIMIT 0, 5
@@ -376,6 +379,40 @@ class KTGraphicalAnalyticsSql {
 			return array();
 		}
     }
+	
+	public function getTransactionTypeCount($transactions, $limit=10)
+	{
+		if (!is_array($transactions) || count($transactions) == 0) {
+			$transactions = array('ktcore.transactions.view', 'ktcore.transactions.check_out', 'ktcore.transactions.download');
+		}
+		
+		$transactions = "'".implode("', '", $transactions)."'";
+		
+		$sql = "SELECT name, transaction_namespace,
+		CONCAT( transaction_namespace, '_', ABS( TIMESTAMPDIFF( WEEK, NOW( ) , datetime ) ) ) AS transaction_week,
+		ABS( TIMESTAMPDIFF( WEEK, NOW() , datetime ) ) AS week, count( * ) AS count
+		FROM document_transactions
+		INNER JOIN document_transaction_types_lookup ON ( transaction_namespace = namespace )
+		WHERE ABS( TIMESTAMPDIFF( WEEK, NOW( ) , datetime ) ) < ".$limit."
+		AND transaction_namespace IN (".$transactions.")
+		GROUP BY transaction_week
+		ORDER BY week";
+		
+		return DBUtil::getResultArray($sql);
+	}
+	
+	public function getTransactionLabels($transactions)
+	{
+		if (!is_array($transactions) || count($transactions) == 0) {
+			$transactions = array('ktcore.transactions.view', 'ktcore.transactions.check_out', 'ktcore.transactions.download');
+		}
+		
+		$transactions = "'".implode("', '", $transactions)."'";
+		
+		$sql = "SELECT * FROM document_transaction_types_lookup WHERE namespace IN (".$transactions.")";
+		
+		return DBUtil::getResultArray($sql);
+	}
 
     // FIXME More duplication of this code - abstract to single library from which it can be called.
     private function getPermissionsQuery()

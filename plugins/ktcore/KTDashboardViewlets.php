@@ -47,6 +47,7 @@ class KTDashboardActivityFeedViewlet extends KTDashboardViewlet {
     private $limit = 10;
     private $preloaded = 0;
     private $totalItems = 0;
+    private $permissionsQuery;
 
     public $sName = 'ktcore.viewlet.dashboard.activityfeed';
     public $bShowIfReadShared = true;
@@ -56,6 +57,7 @@ class KTDashboardActivityFeedViewlet extends KTDashboardViewlet {
     public function __construct($user = null, $plugin = null)
     {
         parent::__construct($user, $plugin);
+        $this->permissionsQuery = $this->getPermissionsQuery();
     }
 
     public function setLimits($preloaded = 0, $start = 0)
@@ -129,7 +131,7 @@ class KTDashboardActivityFeedViewlet extends KTDashboardViewlet {
             documents D
             INNER JOIN document_metadata_version DMV ON DMV.id = D.metadata_version_id
             INNER JOIN document_content_version DCV ON DCV.id = DMV.content_version_id
-            {$this->getPermissionsQuery()}
+            {$this->permissionsQuery}
             DT.transaction_namespace != 'ktcore.transactions.view'
             {$this->buildFilterQuery($filter)}
             AND DT.document_id = D.id";
@@ -149,7 +151,18 @@ class KTDashboardActivityFeedViewlet extends KTDashboardViewlet {
         $comments = 0;
 
         try {
-            $comments = Comments::getCommentCount();
+            $sql = "SELECT count(c.id) as comments
+                FROM document_comments c
+                INNER JOIN users u on u.id = c.user_id,
+                documents D
+                INNER JOIN document_metadata_version DMV ON DMV.id = D.metadata_version_id
+                INNER JOIN document_content_version DCV ON DCV.id = DMV.content_version_id
+                {$this->permissionsQuery}
+                c.document_id = D.id";
+
+            $result = DBUtil::getOneResult($sql);
+
+            return $result['comments'];
         }
         catch (Exception $e) {
             global $default;
@@ -162,8 +175,6 @@ class KTDashboardActivityFeedViewlet extends KTDashboardViewlet {
 
     private function queryDb($filter)
     {
-        $permissionsQuery = $this->getPermissionsQuery();
-
         $transactionQuery = "SELECT D.id as document_id, DMV.name as document_name,
             DCV.mime_id,
             DTT.name AS transaction_name, DT.transaction_namespace,
@@ -179,7 +190,7 @@ class KTDashboardActivityFeedViewlet extends KTDashboardViewlet {
             documents D
             INNER JOIN document_metadata_version DMV ON DMV.id = D.metadata_version_id
             INNER JOIN document_content_version DCV ON DCV.id = DMV.content_version_id
-            $permissionsQuery
+            {$this->permissionsQuery}
             DT.transaction_namespace != 'ktcore.transactions.view'
             {$this->buildFilterQuery($filter)}
             AND DT.document_id = D.id";
@@ -196,7 +207,7 @@ class KTDashboardActivityFeedViewlet extends KTDashboardViewlet {
             documents D
             INNER JOIN document_metadata_version DMV ON DMV.id = D.metadata_version_id
             INNER JOIN document_content_version DCV ON DCV.id = DMV.content_version_id
-            $permissionsQuery
+            {$this->permissionsQuery}
             c.document_id = D.id";
 
         $unionQuery = "($transactionQuery) UNION ALL ($commentQuery)
@@ -335,13 +346,18 @@ class KTGraphicalAnalyticsViewlet extends KTDashboardViewlet {
 
         $templateData = array(
                'context' => $this,
+			   
                'commentsVsViews' => $ktAnalytics->getViewsVsCommentsOverWeekDashlet(),
-               'userAccessPerWeek' => $ktAnalytics->getUserAccessPerWeekDashlet(),
-               'uploadsPerWeek' => $ktAnalytics->getUploadsPerWeekDashlet(),
+			   'uploadsPerWeek' => $ktAnalytics->getUploadsPerWeekDashlet(),
                'documentRating' => $ktAnalytics->getDocumentsByRatingTemplate(true), // true for Dashlet
+			   
                'topFiveDocuments' => $ktAnalytics->getTop5DocumentsDashlet(),
                'topFiveUsers' => $ktAnalytics->getTop5UsersDashlet(),
                'mostViewedDocuments' => $ktAnalytics->getMostViewedDocumentsDashlet(),
+			   
+               //'mostViewedDocuments' => $ktAnalytics->getTransactionTypesPerWeekDashlet(),
+			   
+			   //'userAccessPerWeek' => $ktAnalytics->getUserAccessPerWeekDashlet(),
         );
 
         $templating = KTTemplating::getSingleton();

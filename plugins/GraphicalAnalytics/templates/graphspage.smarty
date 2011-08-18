@@ -11,7 +11,7 @@
 <br clear="both" />
 
 <div class="graphContainer">
-    {$documentsByRating}
+    {$checkInsVsCheckouts}
 </div>
 <div class="graphContainer">
     {$viewsVsComments}
@@ -39,10 +39,14 @@
 -->
 
 <div class="graphContainer">
-    {$transactionPerWeek}
+    {$documentsByRating}
 </div>
 
+<div class="graphContainer">
+    {$sharing_per_week}
+</div>
 
+<br clear="both" />
 
 
 
