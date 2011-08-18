@@ -389,20 +389,73 @@ class GraphicalAnalytics {
 
 	/******************************************************************************************************************/
 	
+	public function getTransactionTypesPerWeekDashlet()
+	{
+		$transactions = array(
+			'ktcore.transactions.check_out',
+			'ktcore.transactions.check_in',
+			'ktcore.transactions.force_checkin',
+		);
+		
+		$templateData = array(
+			'data'=>$this->getTransactionTypesPerWeekWeekData($transactions, 3),
+			'graphTitle' => 'Check-outs vs Check-ins',
+			'graphSubTitle' => 'Comparing Check-outs vs Check-ins',
+			'uniqueDivId' => 'checkins_vs_checkouts',
+		);
+		
+		return $this->loadTemplate($templateData, 'transaction_types_week_dashlet');
+	}
 	
 	public function getTransactionTypesPerWeekTemplate()
 	{
 		$transactions = array(
-			'ktcore.transactions.check_in',
 			'ktcore.transactions.check_out',
+			'ktcore.transactions.check_in',
 			'ktcore.transactions.force_checkin',
 		);
 		
 		$templateData = array(
 			'data'=>$this->getTransactionTypesPerWeekWeekData($transactions, $this->numWeeksPage),
-			'graphTitle' => 'Check-ins vs Check-outs vs Forced Check-ins',
-			'graphSubTitle' => 'Comparing Checkin vs Checkouts',
+			'graphTitle' => 'Check-outs vs Check-ins',
+			'graphSubTitle' => 'Comparing Check-outs vs Check-ins vs Forced Check-ins',
 			'uniqueDivId' => 'checkins_vs_checkouts',
+		);
+		
+		return $this->loadTemplate($templateData, 'transaction_types_week');
+	}
+	
+	public function getSharingPerWeekTemplate()
+	{
+		$transactions = array(
+			'ktcore.transactions.share',
+			'ktcore.transactions.email_link',
+			'ktcore.transactions.email_attachment',
+		);
+		
+		$templateData = array(
+			'data'=>$this->getTransactionTypesPerWeekWeekData($transactions, $this->numWeeksPage),
+			'graphTitle' => 'Sharing and Emailing Documents',
+			'graphSubTitle' => ' ',
+			'uniqueDivId' => 'sharing_emailing',
+		);
+		
+		return $this->loadTemplate($templateData, 'transaction_types_week');
+	}
+	
+	public function getSubscriptionsAndAlertsTemplate()
+	{
+		$transactions = array(
+			'ktcore.transactions.share',
+			'ktcore.transactions.email_link',
+			'ktcore.transactions.email_attachment',
+		);
+		
+		$templateData = array(
+			'data'=>$this->getTransactionTypesPerWeekWeekData($transactions, $this->numWeeksPage),
+			'graphTitle' => 'Subscriptions and Alerts',
+			'graphSubTitle' => ' ',
+			'uniqueDivId' => 'subscriptions_alerts',
 		);
 		
 		return $this->loadTemplate($templateData, 'transaction_types_week');

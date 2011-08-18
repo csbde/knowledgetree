@@ -346,13 +346,18 @@ class KTGraphicalAnalyticsViewlet extends KTDashboardViewlet {
 
         $templateData = array(
                'context' => $this,
+			   
                'commentsVsViews' => $ktAnalytics->getViewsVsCommentsOverWeekDashlet(),
-               'userAccessPerWeek' => $ktAnalytics->getUserAccessPerWeekDashlet(),
-               'uploadsPerWeek' => $ktAnalytics->getUploadsPerWeekDashlet(),
+			   'uploadsPerWeek' => $ktAnalytics->getUploadsPerWeekDashlet(),
                'documentRating' => $ktAnalytics->getDocumentsByRatingTemplate(true), // true for Dashlet
+			   
                'topFiveDocuments' => $ktAnalytics->getTop5DocumentsDashlet(),
                'topFiveUsers' => $ktAnalytics->getTop5UsersDashlet(),
                'mostViewedDocuments' => $ktAnalytics->getMostViewedDocumentsDashlet(),
+			   
+               //'mostViewedDocuments' => $ktAnalytics->getTransactionTypesPerWeekDashlet(),
+			   
+			   //'userAccessPerWeek' => $ktAnalytics->getUserAccessPerWeekDashlet(),
         );
 
         $templating = KTTemplating::getSingleton();

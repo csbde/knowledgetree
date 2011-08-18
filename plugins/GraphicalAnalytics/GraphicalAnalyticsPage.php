@@ -87,6 +87,7 @@ class GraphAnalyticsPage extends KTStandardDispatcher {
 			   'likesPerWeek' => $ktAnalytics->getDocumentLikesPerWeekTemplate(),
 			   
 			   'checkInsVsCheckouts' => $ktAnalytics->getTransactionTypesPerWeekTemplate(),
+			   'sharing_per_week' => $ktAnalytics->getSharingPerWeekTemplate(),
 			   
         );
 

@@ -1,7 +1,6 @@
 <h3>{$graphTitle}</h3>
 
-
-<div id="{$uniqueDivId}"></div>
+<div id="{$uniqueDivId}" class="graph"></div>
 
 {literal}
 <script type="text/javascript">
@@ -13,22 +12,21 @@
                 defaultSeriesType: 'column'
             },
             title: {
-                text: '{/literal}{$graphTitle}{literal}'
+                text: null
             },
             subtitle: {
-                text: '{/literal}{$graphSubTitle}{literal}'
+                text: null
             },
             xAxis: {
                 categories: [{/literal}{$data.weeksStr}{literal}],
                 title: {
-                    text: 'Weeks'
+                    text: null
                 }
             },
             yAxis: {
                 min: 0,
                 title: {
-                    text: 'Number of Transactions',
-                    align: 'high'
+                    text: null
                 }
             },
             tooltip: {
@@ -70,15 +68,7 @@
                 }
             },
             legend: {
-                layout: 'vertical',
-                align: 'left',
-                verticalAlign: 'top',
-                x: 50,
-                y: 50,
-                floating: true,
-                borderWidth: 1,
-                backgroundColor: '#FFFFFF',
-                shadow: true
+                enabled: false
             },
             credits: {
                 enabled: false
