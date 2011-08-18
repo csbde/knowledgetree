@@ -37,6 +37,7 @@
  */
 
 require_once(KT_LIB_DIR . '/i18n/i18n.inc.php');
+require_once(KT_LIB_DIR . '/plugins/pluginutil.inc.php');
 
 class KTi18nRegistry {
     var $_ai18nDetails = array();
@@ -81,27 +82,79 @@ class KTi18nRegistry {
         $this->_aLanguages[$sLanguage] = $sLanguageName;
     }
 
-    function &geti18n($sDomain) {
-        $oi18n =& KTUtil::arrayGet($this->_ai18ns, $sDomain);
-        if (!empty($oi18n)) {
-            return $oi18n;
+    private function loadLanguageHelpers()
+    {
+        if (!empty($this->_aLanguages) || !empty($this->_ai18ns)) {
+            return ;
         }
-        $aDetails = KTUtil::arrayGet($this->_ai18nDetails, $sDomain);
-        if (empty($aDetails)) {
-            $oi18n =new KTi18nGeneric;
-            return $oi18n;
+        
+        $helpersLang = KTPluginUtil::loadPluginHelpers('i18nlang');
+        
+        foreach ($helpersLang as $helper) {
+            extract($helper);
+            $params = explode('|', $object);
+            
+            if (isset($params[2]) && $params[2] != 'default') {
+                $params[2] = KTPluginUtil::getFullPath($params[2]);
+            }
+            call_user_func_array(array($this, 'registeri18nLang'), $params);
         }
-        $aDirectories = KTUtil::arrayGet($this->_ai18nLangs, $sDomain);
-        $oi18n =new KTi18n($sDomain, $sDirectory='', $aDirectories);
-        $this->_ai18ns[$sDomain] =& $oi18n;
-        return $oi18n;
+        
+        $helpers = KTPluginUtil::loadPluginHelpers('i18n');
+        $helpers = array_merge($helpersLang, $helpers);
+        
+        foreach ($helpers as $helper) {
+            extract($helper);
+            $params = explode('|', $object);
+            
+            if (isset($params[2])) {
+                $params[1] = $params[2];
+                unset($params[2]);
+            } 
+            $params[1] = KTPluginUtil::getFullPath($params[1]);
+            call_user_func_array(array($this, 'registeri18n'), $params);
+        }
+        
+        $helpers = KTPluginUtil::loadPluginHelpers('language');
+        
+        foreach ($helpers as $helper) {
+            extract($helper);
+            $params = explode('|', $object);
+            
+            call_user_func_array(array($this, 'registerLanguage'), $params);
+        }
+    }
+    
+    function &geti18n($domain) 
+    {
+        $this->loadLanguageHelpers();
+        
+        $i18n =& KTUtil::arrayGet($this->_ai18ns, $domain);
+        if (!empty($i18n)) {
+            return $i18n;
+        }
+        
+        $details = KTUtil::arrayGet($this->_ai18nDetails, $domain);
+        if (empty($details)) {
+            $i18n = new KTi18nGeneric;
+            return $i18n;
+        }
+        
+        $directories = KTUtil::arrayGet($this->_ai18nLangs, $domain);
+        $i18n =new KTi18n($domain, $directory='', $directories);
+        $this->_ai18ns[$domain] =& $i18n;
+        return $i18n;
     }
 
-    function &geti18nLanguages($sDomain) {
-        return $this->_ai18nLangs[$sDomain];
+    function &geti18nLanguages($domain) 
+    {
+        $this->loadLanguageHelpers();
+        return $this->_ai18nLangs[$domain];
     }
 
-    function &getLanguages() {
+    function &getLanguages() 
+    {
+        $this->loadLanguageHelpers();
         return $this->_aLanguages;
     }
 }

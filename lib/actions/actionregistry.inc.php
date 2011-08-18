@@ -47,17 +47,44 @@ class KTActionRegistry {
 		return $GLOBALS['_KT_PLUGIN']['oKTActionRegistry'];
     }
 
-    function registerAction($slot, $name, $nsname, $path = '', $sPlugin = null) {
+    function registerAction($slot, $name, $nsname, $path = '', $plugin = null) 
+    {
         $this->actions[$slot] = KTUtil::arrayGet($this->actions, $slot, array());
-        $this->actions[$slot][$nsname] = array($name, $path, $nsname, $sPlugin);
-        $this->nsnames[$nsname] = array($name, $path, $nsname, $sPlugin);
+        $this->actions[$slot][$nsname] = array($name, $path, $nsname, $plugin);
+        $this->nsnames[$nsname] = array($name, $path, $nsname, $plugin);
     }
 
-    function getActions($slot) {
+    private function loadActionHelpers()
+    {
+        if (!empty($this->actions)) {
+            return ;
+        }
+        
+        $helpers = KTPluginUtil::loadPluginHelpers('action');
+        
+        foreach ($helpers as $ns => $helper) {
+            extract($helper);
+            $params = explode('|', $object);
+            
+            if (isset($params[3])) {
+                $params[3] = KTPluginUtil::getFullPath($params[3]);
+            }
+            
+            call_user_func_array(array($this, 'registerAction'), $params);
+        }
+    }
+    
+    function getActions($slot) 
+    {
+        $this->loadActionHelpers();
+        
         return KTUtil::arrayGet($this->actions, $slot, array());
     }
 
-    function getActionByNsname($nsname) {
+    function getActionByNsname($nsname) 
+    {
+        $this->loadActionHelpers();
+        
         return $this->nsnames[$nsname];
     }
 

@@ -71,39 +71,68 @@ class KTPluginRegistry {
         }
     }
 
-    function &getPlugin($sNamespace) {
-        if (array_key_exists($sNamespace, $this->_aPlugins)) {
-            return $this->_aPlugins[$sNamespace];
+    private function loadPluginHelpers()
+    {
+        if (!empty($this->_aPluginDetails)) {
+            return ;
         }
-        $aDetails = KTUtil::arrayGet($this->_aPluginDetails, $sNamespace);
-        if (empty($aDetails)) {
+        
+        $helpers = KTPluginUtil::loadPluginHelpers('plugin');
+        
+        foreach ($helpers as $helper) {
+            extract($helper);
+            $params = explode('|', $object);
+            
+            if (isset($params[2])) {
+                $params[2] = KTPluginUtil::getFullPath($params[2]);
+            }
+            $this->_aPluginDetails[$namespace] = array($params[0], $params[1], $params[2]);
+        }
+    }
+    
+    function &getPlugin($namespace) 
+    {
+        if (array_key_exists($namespace, $this->_aPlugins)) {
+            return $this->_aPlugins[$namespace];
+        }
+        
+        $this->loadPluginHelpers();
+        
+        $details = KTUtil::arrayGet($this->_aPluginDetails, $namespace);
+        if (empty($details)) {
                 return null;
         }
-        $sFilename = (KTUtil::isAbsolutePath($aDetails[2])) ? $aDetails[2] : KT_DIR.'/'.$aDetails[2];
-        if (!empty($sFilename)) {
-            require_once($sFilename);
+        
+        $filename = (KTUtil::isAbsolutePath($details[2])) ? $details[2] : KT_DIR.'/'.$details[2];
+        if (!empty($filename)) {
+            require_once($filename);
         }
-        $sClassName = $aDetails[0];
-        $oPlugin = new $sClassName($sFilename);
-
-        $this->_aPlugins[$sNamespace] =& $oPlugin;
-        return $oPlugin;
+        
+        $className = $details[0];
+        $plugin = new $className($filename);
+        $this->_aPlugins[$namespace] =& $plugin;
+        
+        return $plugin;
     }
 
-    function &getPlugins() {
-        $aRet = array();
-        foreach (array_keys($this->_aPluginDetails) as $sPluginName) {
-            $oPlugin =& $this->getPlugin($sPluginName);
-            $aRet[(int)$oPlugin->iOrder][] =& $oPlugin;
+    function &getPlugins() 
+    {
+        $this->loadPluginHelpers();
+        
+        $ret = array();
+        foreach (array_keys($this->_aPluginDetails) as $pluginName) {
+            $plugin =& $this->getPlugin($pluginName);
+            $ret[(int)$plugin->iOrder][] =& $plugin;
         }
-        ksort($aRet);
-        $aRes = array();
-        foreach($aRet as $iOrder => $aPlugins) {
-            foreach(array_keys($aPlugins) as $iPlugin) {
-                $aRes[] =& $aRet[$iOrder][$iPlugin];
+        
+        ksort($ret);
+        $res = array();
+        foreach($ret as $order => $pluginList) {
+            foreach(array_keys($pluginList) as $pluginId) {
+                $res[] =& $ret[$order][$pluginId];
             }
         }
-        return $aRes;
+        return $res;
     }
 }
 

@@ -84,7 +84,7 @@ class KTAdminNavigationRegistry {
 
     public function isRegistered($name)
     {
-	return KTUtil::arrayGet($this->aResources, $name);
+	   return KTUtil::arrayGet($this->aResources, $name);
     }
 
     public function registerCategory($name, $title, $description, $order)
@@ -97,26 +97,59 @@ class KTAdminNavigationRegistry {
 				    );
     }
 
+    private function loadAdminHelpers()
+    {
+        if (!empty($this->aCategories)) {
+            return ;
+        }
+        
+        $helpers = KTPluginUtil::loadPluginHelpers('admin_category');
+        
+        foreach ($helpers as $helper) {
+            extract($helper);
+            $params = explode('|', $object);
+            
+            $params[1] = _kt($params[1]);
+            $params[2] = _kt($params[2]);
+            call_user_func_array(array($this, 'registerCategory'), $params);
+        }
+       
+        $helpers = KTPluginUtil::loadPluginHelpers('admin_page');
+        
+        foreach ($helpers as $helper) {
+            extract($helper);
+            $params = explode('|', $object);
+            
+            if (isset($params[5])) {
+                $params[5] = KTPluginUtil::getFullPath($params[5]);
+            }
+            $params[3] = _kt($params[3]);
+            $params[4] = _kt($params[4]);
+            call_user_func_array(array($this, 'registerLocation'), $params);
+        }
+    }
+    
     public function getCategories()
     {
-	$this->sortCategories();
-	return $this->aCategories;
+        $this->loadAdminHelpers();
+    	$this->sortCategories();
+    	return $this->aCategories;
     }
 
     private function sortCategories()
     {
-	if ($this->sorted['categories']) {
+        if ($this->sorted['categories']) {
             return true;
         }
-
+        
         uasort($this->aCategories, 'order_compare');
-
-	$this->sorted['categories'] = true;
+        
+        $this->sorted['categories'] = true;
     }
 
     public function getCategory($category)
     {
-	return $this->aCategories[$category];
+        return $this->aCategories[$category];
     }
 
     public function getItemsForCategory($category)
@@ -140,13 +173,13 @@ class KTAdminNavigationRegistry {
     {
         $info = $this->aResources[$name];
         if (!empty($info['filepath'])) {
-	    require_once($info['filepath']);
-	}
-
+            require_once($info['filepath']);
+        }
+        
         if (!empty($info['url'])) {
            return new RedirectingDispatcher($info['url']);
         }
-
+        
         return new $info['class'];
     }
 

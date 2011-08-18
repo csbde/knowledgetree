@@ -37,6 +37,13 @@
                     dataLabels: {
                         enabled: true
                     }
+                },
+                series: {
+                    events: {
+                        legendItemClick: function(event) {
+                            return false;
+                        }
+                    }
                 }
             },
             legend: {

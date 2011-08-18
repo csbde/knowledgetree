@@ -19,7 +19,7 @@
 
             
             xAxis: {
-                categories: [{/literal}{$weeks}{literal}],
+                categories: [{/literal}{$weeksCounter}{literal}],
                 title: {
                     text: null
                 }
@@ -39,6 +39,13 @@
                 bar: {
                     dataLabels: {
                         enabled: true
+                    }
+                },
+                series: {
+                    events: {
+                        legendItemClick: function(event) {
+                            return false;
+                        }
                     }
                 }
             },
