@@ -277,6 +277,17 @@ class GraphicalAnalytics {
 
 	/******************************************************************************************************************/
 
+	public function getViewsVsCommentsOverWeekDashlet()
+	{
+		$templateData = array();
+
+		$templateData['comments'] = $this->getDocumentCommentsPerWeekData(3);
+		$templateData['document_views'] = $this->generateDocViewsGraphData($this->KTGraphicalAnalyticsSql->getDocumentViewsOverWeek(3));
+		$templateData['document_likes'] = $this->getDocumentLikesPerWeekData(3);
+
+		return $this->loadTemplate($templateData, 'views_vs_comments_week_dashlet');
+	}
+	
 	public function getViewsVsCommentsOverWeekTemplate()
 	{
 		$templateData = array();
