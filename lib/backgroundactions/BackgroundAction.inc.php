@@ -62,7 +62,7 @@ class BackgroundAction extends BackgroundProcess
 								'delete' =>	array(	'documents' => 250,
 													'folders' => 25
 												),
-								'copy' =>	array(	'documents' => 0,
+								'copy' =>	array(	'documents' => 100,
 													'folders' => 10
 												)
 								);
