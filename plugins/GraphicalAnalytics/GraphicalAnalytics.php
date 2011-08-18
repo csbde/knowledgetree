@@ -416,7 +416,7 @@ class GraphicalAnalytics {
 
 	public function getMimeIcon($mimeId)
 	{
-		$iconFile = 'resources/mimetypes/' . KTMime::getIconPath($mimeId) . '.gif';
+		$iconFile = 'resources/mimetypes/' . KTMime::getIconPath($mimeId) . '.png';
 
 
         if (file_exists(KT_DIR . '/' . $iconFile)) {
