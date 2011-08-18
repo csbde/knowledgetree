@@ -1,0 +1,107 @@
+<h3>Views, Comments and Likes per Week</h3>
+
+
+<div id="views_vs_comments_per_week_dashlet" class="graph"></div>
+
+{literal}
+<script type="text/javascript">
+    var viewsVsCommentsChart;
+    jQuery(document).ready(function() {
+        viewsVsCommentsChart = new Highcharts.Chart({
+            chart: {
+                renderTo: 'views_vs_comments_per_week_dashlet',
+                defaultSeriesType: 'bar'
+            },
+            title: {
+                text: null//'Views, Comments and Likes per Week'
+            },
+            subtitle: {
+                text: null //'How many documents were viewed, liked, commented on per week'
+            },
+            xAxis: {
+                categories: [{/literal}{$comments.weeksCounter}{literal}],
+                title: {
+                    text: null //'Weeks'
+                }
+            },
+            yAxis: {
+                min: 0,
+                title: {
+                    text: null, //'Document Views',
+                    align: 'high'
+                }
+            },
+            tooltip: {
+                formatter: function() {
+                    return ''+
+                         this.series.name +': '+ this.y;
+                }
+            },
+            plotOptions: {
+                bar: {
+                    dataLabels: {
+                        enabled: true
+                    }
+                },
+                series: {
+                    events: {
+                        legendItemClick: function(event) {
+                            var visibility = this.visible ? 'visible' : 'hidden';
+                            
+                            if (this.visible) {
+                                var visibleCount = 0;
+                                
+                                for (var c = this.chart.series.length; c--;) {
+                                    if (this.chart.series[c].visible) {
+                                        visibleCount++;
+                                    }
+                                }
+                                
+                                if (visibleCount == 1) {
+                                    return false;
+                                } else {
+                                    return true;
+                                }
+                            } else {
+                                return true;
+                            }
+                        }
+                    }
+                }
+            },
+            legend: {
+                layout: 'vertical',
+                align: 'right',
+                verticalAlign: 'top',
+                x: -100,
+                y: 100,
+                floating: true,
+                borderWidth: 1,
+                backgroundColor: '#FFFFFF',
+                shadow: true,
+                enabled: false
+            },
+            credits: {
+                enabled: false
+            },
+            series: [
+                {
+                    name: 'Document Views',
+                    data: [{/literal}{$document_views.score}{literal}]
+                },
+                {
+                    name: 'Comments',
+                    data: [{/literal}{$comments.counter}{literal}]
+                },
+                {
+                    name: 'Likes',
+                    data: [{/literal}{$document_likes.counter}{literal}]
+                }
+            ]
+        });
+        
+        
+    });
+        
+</script>
+{/literal}
