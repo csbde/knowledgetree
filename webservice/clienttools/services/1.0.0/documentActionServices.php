@@ -447,7 +447,7 @@ class documentActionServices extends client_service {
                 $reason = '';
         }
         require_once(KT_LIB_DIR . '/backgroundactions/BackgroundAction.inc.php');
-        $backgroundaction = new backgroundaction($action, $organisedItemList, $reason, $targetFolderId, $currentFolderId);
+        $backgroundaction = new BackgroundAction($action, $_SESSION['userID'], $organisedItemList, $reason, $targetFolderId, $currentFolderId);
         if ($backgroundaction->checkIfNeedsBackgrounding()) {
             $response = $backgroundaction->background();
             if ($response) {

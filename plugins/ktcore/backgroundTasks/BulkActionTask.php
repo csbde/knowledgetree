@@ -37,15 +37,18 @@
  */
 
 // TODO : Abstract background task
-$accountName = $argv[1];
-$action = $argv[2];
-$list = unserialize($argv[3]);
-$reason = unserialize($argv[4]);
-$targetFolderId = $argv[5];
-$currentFolderId = $argv[6];
+// 4 copy 1369 1004 jarrett
+//$userId = $argv[1];
+//$action = $argv[2];
+//$targetFolderId = $argv[3];
+//$currentFolderId = $argv[4];
+//$accountName = isset($argv[5]) ? $argv[5] : '';
 
-$folderId = $argv[1];
-$accountName = isset($argv[2]) ? $argv[2] : '';
+$userId = 4;
+$action = 'copy';
+$targetFolderId = '1369';
+$currentFolderId = '1004';
+$accountName = 'jarrett';
 
 if (!empty($accountName)) {
 	define('ACCOUNT_ROUTING_ENABLED', true);
@@ -60,7 +63,7 @@ require_once(KT_LIB_DIR . '/backgroundactions/BackgroundAction.inc.php');
 set_time_limit(0);
 error_reporting(E_ERROR | E_CORE_ERROR);
 
-$backgroundAction = new BackgroundAction($folderId, $accountName);
+$backgroundAction = new BackgroundAction($action, $userId, array(), '', $targetFolderId, $currentFolderId);
 
 register_shutdown_function(array($backgroundAction, 'handleShutdown'));
 
