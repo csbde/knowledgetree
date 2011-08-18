@@ -1437,6 +1437,7 @@ ul li a.action_icon {
     padding-right: 19px;
     float: left;
     padding-bottom: 2em;
+    padding-left: 2px;
     height: 100%;
     min-height: 5em;
 /*     background-color: #dfd; */
