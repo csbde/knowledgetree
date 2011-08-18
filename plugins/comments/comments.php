@@ -52,15 +52,20 @@ class Comments {
             throw new Exception('Document ID must be numeric', 1);
         }
 
+        $list = DBUtil::getResultArray(self::buildCommentQuery($documentId, $order));
+
+        return self::formatCommentResult($list);
+    }
+
+    private static function buildCommentQuery($documentId = null, $order = 'DESC')
+    {
         $sql = "SELECT c.id, c.user_id, c.comment, c.date_created AS date, u.name AS user_name, u.username AS user_username, u.email
                 FROM document_comments c
                 INNER JOIN users u on u.id = c.user_id
-                WHERE document_id = $documentId
-                ORDER BY date_created $order";
+                " . (empty($documentId) ? '' : "WHERE document_id = {$documentId}") . "
+                ORDER BY date_created {$order}";
 
-        $list = DBUtil::getResultArray($sql);
-
-        return self::formatCommentResult($list);
+        return $sql;
     }
 
     private static function formatCommentResult($list)
@@ -82,70 +87,10 @@ class Comments {
         return $formattedList;
     }
 
-    public static function getCommentCount()
+    public static function getAllComments($order = 'DESC')
     {
-        $sql = "SELECT count(c.id) as comments
-            FROM document_comments c
-            INNER JOIN users u on u.id = c.user_id,
-            documents D
-            INNER JOIN document_metadata_version DMV ON DMV.id = D.metadata_version_id
-            INNER JOIN document_content_version DCV ON DCV.id = DMV.content_version_id
-            " . self::getPermissionsQuery() . "
-            c.document_id = D.id";
-
-        $result = DBUtil::getOneResult($sql);
-
-        return $result['comments'];
-    }
-
-    public static function getAllComments($order = 'DESC', $limit = array(0, 10))
-    {
-        $sql = "SELECT D.id AS document_id, DMV.name as document_name,
-            DCV.mime_id,
-            c.id, c.user_id, c.comment, c.date_created AS date,
-            u.name AS user_name, u.username AS user_username, u.email
-            FROM document_comments c
-            INNER JOIN users u on u.id = c.user_id,
-            documents D
-            INNER JOIN document_metadata_version DMV ON DMV.id = D.metadata_version_id
-            INNER JOIN document_content_version DCV ON DCV.id = DMV.content_version_id
-            " . self::getPermissionsQuery() . "
-            c.document_id = D.id
-            ORDER BY date_created $order
-            LIMIT {$limit[0]}, {$limit[1]}";
-
-        $list = DBUtil::getResultArray($sql);
-
+        $list = DBUtil::getResultArray(self::buildCommentQuery(null, $order));
         return self::formatCommentResult($list);
-    }
-
-    // FIXME Lots of duplication here, see KTDocumentViewlets.
-    private static function getPermissionsQuery()
-    {
-        if (self::inAdminMode()) {
-            return 'WHERE';
-        }
-        else {
-            $user = User::get($_SESSION['userID']);
-            $permission = KTPermission::getByName('ktcore.permissions.read');
-            $permId = $permission->getID();
-            $permissionDescriptors = KTPermissionUtil::getPermissionDescriptorsForUser($user);
-            $permissionDescriptors = empty($permissionDescriptors) ? -1 : implode(',', $permissionDescriptors);
-
-            $query = "INNER JOIN permission_lookups AS PL ON D.permission_lookup_id = PL.id
-                INNER JOIN permission_lookup_assignments AS PLA ON PL.id = PLA.permission_lookup_id
-                AND PLA.permission_id = $permId
-                WHERE PLA.permission_descriptor_id IN ($permissionDescriptors) AND";
-
-            return $query;
-        }
-    }
-
-    private static function inAdminMode()
-    {
-        return isset($_SESSION['adminmode'])
-            && ((int)$_SESSION['adminmode'])
-            && Permission::adminIsInAdminMode();
     }
 
     /**
