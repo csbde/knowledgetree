@@ -148,17 +148,23 @@ class KTTemplating {
      * @param unknown_type $descr
      * @param unknown_type $loc
      */
-    function addLocation ($descr, $loc, $sPluginNamespace = NULL) {
-        //$this->aLocationRegistry[$descr] = $loc;
+    function addLocation ($description, $location, $pluginNamespace = NULL) {
+        //$this->aLocationRegistry[$description] = $location;
 
-        if(!empty($sPluginNamespace)){
-            $sPlugin = $sPluginNamespace;
+        if(!empty($pluginNamespace)){
+            $plugin = $pluginNamespace;
         }else{
-            $sPlugin = $this->getPluginName();
-            $sPlugin = (!empty($sPlugin)) ? $sPlugin : $descr;
+            $plugin = $this->getPluginName();
+            $plugin = (!empty($plugin)) ? $plugin : $description;
         }
+        
+        // Workaround for those plugins using /plugins/path - the fixFilename sets these to empty strings.
+        if (strpos($location, '/plugins') === 0) {
+            $location = substr($location, 1);
+        }
+        $location = KTPlugin::_fixFilename($location);
 
-        KTPlugin::registerPluginHelper($sPlugin, $sPlugin, $loc, $descr.'|'.$loc, 'general', 'locations');
+        KTPlugin::registerPluginHelper($plugin, $plugin, $location, $description.'|'.$location, 'general', 'locations');
     }
     // }}}
 
