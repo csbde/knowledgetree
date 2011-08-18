@@ -623,10 +623,14 @@ class KTPlugin {
 
         if (!empty($this->sFriendlyName)) { $friendly_name = $this->sFriendlyName; }
         if (!PEAR::isError($oEntity)) {
+            
+            $default->log->debug('PLUGINS: Register plugin ' . $this->sFriendlyName);
 
             // check for upgrade.
             $iEndVersion = 0; // dest.
             if ($this->iVersion != $oEntity->getVersion()) {
+                $default->log->debug("PLUGINS: Upgrading from version {$oEntity->getVersion()} to version {$this->iVersion}");
+                
                 // capture the filname version.
                 // remember to -start- the upgrade from the "next" version
                 $iEndVersion = $this->upgradePlugin($oEntity->getVersion()+1, $this->iVersion);
