@@ -36,8 +36,19 @@
  *
  */
 
-$folderId = $argv[1];
-$accountName = isset($argv[2]) ? $argv[2] : '';
+// TODO : Abstract background task
+// 4 copy 1369 1004 jarrett
+//$userId = $argv[1];
+//$action = $argv[2];
+//$targetFolderId = $argv[3];
+//$currentFolderId = $argv[4];
+//$accountName = isset($argv[5]) ? $argv[5] : '';
+
+$userId = 4;
+$action = 'copy';
+$targetFolderId = '1369';
+$currentFolderId = '1004';
+$accountName = 'jarrett';
 
 if (!empty($accountName)) {
 	define('ACCOUNT_ROUTING_ENABLED', true);
@@ -46,28 +57,28 @@ if (!empty($accountName)) {
 
 $dir = dirname(__FILE__);
 require_once($dir . '/../../../config/dmsDefaults.php');
-require_once(KT_LIB_DIR . '/permissions/BackgroundPermissions.php');
+require_once(KT_LIB_DIR . '/backgroundactions/BackgroundAction.inc.php');
 
 // set errors and time out after dmsDefaults to prevent being overridden
 set_time_limit(0);
 error_reporting(E_ERROR | E_CORE_ERROR);
 
-$updateTask = new BackgroundPermissions($folderId, $accountName);
+$backgroundAction = new BackgroundAction($action, $userId, array(), '', $targetFolderId, $currentFolderId);
 
-register_shutdown_function(array($updateTask, 'handleShutdown'));
+register_shutdown_function(array($backgroundAction, 'handleShutdown'));
 
 if (function_exists('pcntl_signal')) {
 
 	declare(ticks=1);
 
-	pcntl_signal(SIGHUP, array($updateTask, 'handleInterrupt'));
-    pcntl_signal(SIGINT, array($updateTask, 'handleInterrupt'));
-    pcntl_signal(SIGQUIT, array($updateTask, 'handleInterrupt'));
-    pcntl_signal(SIGABRT, array($updateTask, 'handleInterrupt'));
-    pcntl_signal(SIGTERM, array($updateTask, 'handleInterrupt'));
+	pcntl_signal(SIGHUP, array($backgroundAction, 'handleInterrupt'));
+    pcntl_signal(SIGINT, array($backgroundAction, 'handleInterrupt'));
+    pcntl_signal(SIGQUIT, array($backgroundAction, 'handleInterrupt'));
+    pcntl_signal(SIGABRT, array($backgroundAction, 'handleInterrupt'));
+    pcntl_signal(SIGTERM, array($backgroundAction, 'handleInterrupt'));
 }
 
-$updateTask->updatePermissions();
+$backgroundAction->execute();
 
 exit(0);
 ?>
