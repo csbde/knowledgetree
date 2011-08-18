@@ -1,4 +1,5 @@
 <?php
+
 /**
  * $Id$
  *
@@ -39,7 +40,7 @@
  */
 
 if (defined('DMS_DEFAULTS_INCLUDED')) {
-	return;
+    return;
 }
 
 define('DMS_DEFAULTS_INCLUDED', 1);
@@ -54,11 +55,11 @@ if (!($default instanceof stdClass)) {
 }
 
 if (!session_id()) {
-	session_start();
+    session_start();
 }
 
 if (function_exists('apd_set_pprof_trace')) {
-	apd_set_pprof_trace();
+    apd_set_pprof_trace();
 }
 
 // Default settings differ, we need some of these, so force the matter.
@@ -76,44 +77,41 @@ unset($microtime_simple);
 
 // If not defined, set KT_DIR based on my usual location in the tree
 if (!defined('KT_DIR')) {
-	$rootLoc = realpath(dirname(__FILE__) . '/..');
-	if (substr(PHP_OS, 0, 3) == 'WIN') {
-		$rootLoc = str_replace('\\', '/', $rootLoc);
-	}
-	define('KT_DIR', $rootLoc);
+    $rootLoc = realpath(dirname(__FILE__) . '/..');
+    if (substr(PHP_OS, 0, 3) == 'WIN') {
+        $rootLoc = str_replace('\\', '/', $rootLoc);
+    }
+    define('KT_DIR', $rootLoc);
 }
 
 if (!defined('KT_PLUGIN_DIR'))
-	define('KT_PLUGIN_DIR', KT_DIR . '/plugins');
+    define('KT_PLUGIN_DIR', KT_DIR . '/plugins');
 
 if (!defined('KT_LIB_DIR')) {
-	define('KT_LIB_DIR', KT_DIR . '/lib');
+    define('KT_LIB_DIR', KT_DIR . '/lib');
 }
 
 // If not defined, set KT_STACK_DIR based on my usual location in the tree
 // TODO: This needs to use a config.ini entry if available
 if (!defined('KT_STACK_DIR')) {
-	$stackLoc = realpath(dirname(__FILE__) . '/../..');
-	if (substr(PHP_OS, 0, 3) == 'WIN') {
-		$stackLoc = str_replace('\\', '/', $stackLoc);
-	}
-	define('KT_STACK_DIR', $stackLoc);
+    $stackLoc = realpath(dirname(__FILE__) . '/../..');
+    if (substr(PHP_OS, 0, 3) == 'WIN') {
+        $stackLoc = str_replace('\\', '/', $stackLoc);
+    }
+    define('KT_STACK_DIR', $stackLoc);
 }
 
 // TODO Remove this, we should not be supporting legacy PHP systems.
 // PATH_SEPARATOR added in PHP 4.3.0
 if (!defined('PATH_SEPARATOR')) {
-	if (substr(PHP_OS, 0, 3) == 'WIN') {
-		define('PATH_SEPARATOR', ';');
-	} else {
-		define('PATH_SEPARATOR', ':');
-	}
+    $separator = substr(PHP_OS, 0, 3) == 'WIN' ? ';' : ':';
+    define('PATH_SEPARATOR', $separator);
 }
 
 require_once(KT_LIB_DIR . '/validation/customerror.php');
 
 function prependPath($path) {
-	ini_set('include_path', $path . PATH_SEPARATOR . ini_get('include_path'));
+    ini_set('include_path', $path . PATH_SEPARATOR . ini_get('include_path'));
 }
 
 prependPath(KT_DIR . '/thirdparty/ZendFramework/library');
@@ -140,13 +138,13 @@ $KTInit->setupI18n();
 define('KTLOG_CACHE', false);
 
 if (isset($GLOBALS['kt_test'])) {
-	$KTInit->initTesting();
+    $KTInit->initTesting();
 }
 
 $KTConfig = KTConfig::getSingleton();
 
 if ($KTConfig->get('CustomErrorMessages/customerrormessages') == 'on') {
-	$KTInit->catchFatalErrors();
+    $KTInit->catchFatalErrors();
 }
 
 $KTInit->setupServerVariables();
@@ -180,27 +178,28 @@ require_once(KT_LIB_DIR . '/session/control.inc');
 require_once(KT_LIB_DIR . '/plugins/pluginutil.inc.php');
 
 if ($checkup !== true) {
-	$res = KTPluginUtil::loadPlugins();
-	if (PEAR::isError($res)) {
-	    // If the plugins aren't loaded, there was a DB error, possibly a DB connection error.
-	    $KTInit->showDBError($res);
-	}
+    $res = KTPluginUtil::loadPlugins();
+    if (PEAR::isError($res)) {
+        // If the plugins aren't loaded, there was a DB error, possibly a DB connection error.
+        $KTInit->showDBError($res);
+    }
 
-	// License specific check.
-	if (KTPluginUtil::pluginIsActive('ktdms.wintools')) {
-		$path = KTPluginUtil::getPluginPath('ktdms.wintools');
-		require_once($path . 'baobabkeyutil.inc.php');
-		$name = BaobabKeyUtil::getName();
-		if ($name) {
-			$default->versionName = sprintf('%s %s', $default->versionName, $name);
-		}
-	} else {
-		$default->versionName = $default->versionName . ' ' . _kt('(Community Edition)');
-	}
+    // License specific check.
+    if (KTPluginUtil::pluginIsActive('ktdms.wintools')) {
+        $path = KTPluginUtil::getPluginPath('ktdms.wintools');
+        require_once($path . 'baobabkeyutil.inc.php');
+        $name = BaobabKeyUtil::getName();
+        if ($name) {
+            $default->versionName = sprintf('%s %s', $default->versionName, $name);
+        }
+    }
+    else {
+        $default->versionName = $default->versionName . ' ' . _kt('(Community Edition)');
+    }
 }
 
 if (!extension_loaded('mbstring')) {
-	require_once(KT_LIB_DIR . '/mbstring.inc.php');
+    require_once(KT_LIB_DIR . '/mbstring.inc.php');
 }
 
 require_once(KT_LIB_DIR . '/templating/kt3template.inc.php');
