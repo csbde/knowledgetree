@@ -87,12 +87,6 @@ class Comments {
         return $formattedList;
     }
 
-    public static function getAllComments($order = 'DESC')
-    {
-        $list = DBUtil::getResultArray(self::buildCommentQuery(null, $order));
-        return self::formatCommentResult($list);
-    }
-
     /**
      * Add a comment on a document
      *
