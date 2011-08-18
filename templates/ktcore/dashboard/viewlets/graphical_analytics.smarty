@@ -3,7 +3,7 @@
 <table width="100%" style="margin-left: -5px;">
     <tr>
         <td width="33%" valign="top" class="graph-viewlet">
-            {$userAccessPerWeek}
+            {$commentsVsViews}
         </td>
         <td width="33%" valign="top" class="graph-viewlet">
             {$uploadsPerWeek}
