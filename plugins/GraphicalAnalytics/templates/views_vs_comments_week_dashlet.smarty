@@ -10,7 +10,7 @@
         viewsVsCommentsChart = new Highcharts.Chart({
             chart: {
                 renderTo: 'views_vs_comments_per_week_dashlet',
-                defaultSeriesType: 'bar'
+                defaultSeriesType: 'column'
             },
             title: {
                 text: null//'Views, Comments and Likes per Week'

@@ -39,13 +39,10 @@
 require_once(KT_LIB_DIR . '/actions/dashboardviewlet.inc.php');
 require_once(KT_LIB_DIR . '/util/ktutil.inc');
 
-require_once(KT_DIR . '/plugins/ktcore/KTDocumentViewlets.php');
-
 require_once(KT_PLUGIN_DIR . '/GraphicalAnalytics/GraphicalAnalytics.php');
 
 class KTDashboardActivityFeedViewlet extends KTDashboardViewlet {
 
-    private $documentActivityFeedAction;
     private $start = 0;
     private $limit = 10;
     private $preloaded = 0;
@@ -59,7 +56,6 @@ class KTDashboardActivityFeedViewlet extends KTDashboardViewlet {
     public function __construct($user = null, $plugin = null)
     {
         parent::__construct($user, $plugin);
-        $this->documentActivityFeedAction = new KTDocumentActivityFeedAction();
     }
 
     public function setLimits($preloaded = 0, $start = 0)
@@ -88,7 +84,6 @@ class KTDashboardActivityFeedViewlet extends KTDashboardViewlet {
 
         $activityFeed = $this->getFeedContent();
         $activityFeed = $this->setMimeIcons($activityFeed);
-        //usort($activityFeed, array($this->documentActivityFeedAction, 'sortTable'));
 
         $templating =& KTTemplating::getSingleton();
         $template = $templating->loadTemplate('ktcore/dashboard/viewlets/global_activity_feed_content');
@@ -266,7 +261,7 @@ class KTDashboardActivityFeedViewlet extends KTDashboardViewlet {
 
         foreach($result as $key => $item) {
             if (!empty($item['transaction_namespace']) && empty($item['transaction_name'])) {
-                $name = $this->documentActivityFeedAction->_getActionNameForNamespace($item['transaction_namespace']);
+                $name = $this->getActionNameForNamespace($item['transaction_namespace']);
                 $item['transaction_name'] = $name;
             }
 
@@ -286,66 +281,6 @@ class KTDashboardActivityFeedViewlet extends KTDashboardViewlet {
         }
 
         return $activityFeed;
-    }
-
-    private function getTransactions()
-    {
-        $transactions = $this->documentActivityFeedAction->getActivityFeed($this->getAllTransactions($filter));
-        return $transactions;
-    }
-
-    private function getAllTransactions($filter = array(), $start = 0)
-    {
-        $query = "SELECT D.id as document_id, DMV.name as document_name,
-            DCV.mime_id,
-            DTT.name AS transaction_name, DT.transaction_namespace,
-            U.name AS user_name, U.email as email,
-            DT.version AS version, DT.comment AS comment, DT.datetime AS datetime
-            FROM " . KTUtil::getTableName('document_transactions') . " AS DT
-            INNER JOIN " . KTUtil::getTableName('users') . " AS U ON DT.user_id = U.id
-            LEFT JOIN " . KTUtil::getTableName('transaction_types') . "
-            AS DTT ON DTT.namespace = DT.transaction_namespace,
-            documents D
-            INNER JOIN document_metadata_version DMV ON DMV.id = D.metadata_version_id
-            INNER JOIN document_content_version DCV ON DCV.id = DMV.content_version_id
-            {$this->getPermissionsQuery()}
-            DT.transaction_namespace != 'ktcore.transactions.view'
-            {$this->buildFilterQuery($filter)}
-            AND DT.document_id = D.id
-            ORDER BY DT.id DESC
-            LIMIT {$this->start}, {$this->limit}";
-
-        return $this->documentActivityFeedAction->getTransactionResult(array($query));
-    }
-
-    private function getComments()
-    {
-        $comments = $this->getAllComments();
-        return $comments;
-    }
-
-    private function getAllComments()
-    {
-        $comments = array();
-
-        try {
-            $result = Comments::getAllComments('DESC', array($this->start, $this->limit));
-            $comments = $this->documentActivityFeedAction->formatCommentsResult($result);
-        }
-        catch (Exception $e) {
-            global $default;
-            $default->log->error('Error getting the comments - ' . $e->getMessage());
-            $comments = array();
-        }
-
-        return $comments;
-    }
-
-    private function getTemplateName()
-    {
-        $prefix = 'ktcore/dashboard/viewlets';
-        return "$prefix/global_activity_feed";
-        // return $this->preloaded > 0 ? "$prefix/global_activity_feed" : "$prefix/global_activity_feed_ajax";
     }
 
     private function setMimeIcons($activityFeed)
@@ -369,6 +304,17 @@ class KTDashboardActivityFeedViewlet extends KTDashboardViewlet {
         return $activityFeed;
     }
 
+    // Duplicated - see KTDocumentViewlets
+    private function getActionNameForNamespace($namespace)
+    {
+        $names = split('\.', $namespace);
+        $name = array_pop($names);
+        $name = str_replace('_', ' ', $name);
+        $name = ucwords($name);
+
+        return $sName;
+    }
+
 }
 
 class KTGraphicalAnalyticsViewlet extends KTDashboardViewlet {
@@ -389,6 +335,7 @@ class KTGraphicalAnalyticsViewlet extends KTDashboardViewlet {
 
         $templateData = array(
                'context' => $this,
+               'commentsVsViews' => $ktAnalytics->getViewsVsCommentsOverWeekDashlet(),
                'userAccessPerWeek' => $ktAnalytics->getUserAccessPerWeekDashlet(),
                'uploadsPerWeek' => $ktAnalytics->getUploadsPerWeekDashlet(),
                'documentRating' => $ktAnalytics->getDocumentsByRatingTemplate(true), // true for Dashlet

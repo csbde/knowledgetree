@@ -37,18 +37,12 @@
  */
 
 // TODO : Abstract background task
-// 4 copy 1369 1004 jarrett
-//$userId = $argv[1];
-//$action = $argv[2];
-//$targetFolderId = $argv[3];
-//$currentFolderId = $argv[4];
-//$accountName = isset($argv[5]) ? $argv[5] : '';
 
-$userId = 4;
-$action = 'copy';
-$targetFolderId = '1369';
-$currentFolderId = '1004';
-$accountName = 'jarrett';
+$userId = $argv[1];
+$action = $argv[2];
+$targetFolderId = $argv[3];
+$currentFolderId = $argv[4];
+$accountName = isset($argv[5]) ? $argv[5] : '';
 
 if (!empty($accountName)) {
 	define('ACCOUNT_ROUTING_ENABLED', true);
@@ -64,6 +58,7 @@ set_time_limit(0);
 error_reporting(E_ERROR | E_CORE_ERROR);
 
 $backgroundAction = new BackgroundAction($action, $userId, array(), '', $targetFolderId, $currentFolderId);
+$backgroundAction->setAccount($accountName);
 
 register_shutdown_function(array($backgroundAction, 'handleShutdown'));
 

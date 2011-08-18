@@ -449,6 +449,7 @@ class documentActionServices extends client_service {
         require_once(KT_LIB_DIR . '/backgroundactions/BackgroundAction.inc.php');
         $backgroundaction = new BackgroundAction($action, $_SESSION['userID'], $organisedItemList, $reason, $targetFolderId, $currentFolderId);
         if ($backgroundaction->checkIfNeedsBackgrounding()) {
+        	$backgroundaction->setAccount(ACCOUNT_NAME);
             $response = $backgroundaction->background();
             if ($response) {
                 $msg = _kt('Success. You will be redirected shortly.');
