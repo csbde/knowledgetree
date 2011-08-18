@@ -2,6 +2,7 @@
 /**
  * $Id$
  *
+ *
  * KnowledgeTree Community Edition
  * Document Management Made Simple
  * Copyright (C) 2008, 2009, 2010 KnowledgeTree Inc.
@@ -34,28 +35,31 @@
  * copyright notice.
  * Contributor( s): ______________________________________
  */
+require_once(KT_LIB_DIR . '/memcache/ktmemcache.php');
 
-class BulkDocumentActions
+class BackgroundProcess
 {
-	public static function queueBulkAction($action, $list, $reason, $targetFolderId, $currentFolderId)
-	{
-    	require_once(KT_LIVE_DIR . '/sqsqueue/dispatchers/BulkactionDispatcher.php');
-    	$bulkActionDispatcher = new BulkactionDispatcher();
-    	$params['action'] = $action;
-    	$params['files_and_folders'] = $list;
-    	$params['reason'] = $reason;
-    	$params['targetFolderId'] = $targetFolderId;
-    	$params['currentFolderId'] = $currentFolderId;
-    	$bulkActionDispatcher->addProcess("bulkactions", $params);
-    	$queueResponse = $bulkActionDispatcher->sendToQueue();
-    	if($queueResponse) {
-    		require_once(KT_LIB_DIR . '/backgroundactions/backgroundaction.inc.php');
-			backgroundaction::saveEvent($action, $list, $currentFolderId, $targetFolderId);
-    	}
 
-    	return $queueResponse;
+	public function background()
+	{
+
 	}
 
+	public function execute()
+	{
+
+	}
+
+	public function isActionInProgress()
+	{
+
+	}
+
+	public function clearMemcacheInfo()
+	{
+
+	}
 
 }
+
 ?>
