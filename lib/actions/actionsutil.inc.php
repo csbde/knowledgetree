@@ -42,17 +42,20 @@ class ActionsUtil
     {
         $ordered = $keys = array();
         foreach ($actions as $action) {
-            $order = $action->getOrder();
-            if (isset($ordered[$order])) {
-        		while (isset($ordered[$order])) {
-        			$order++;
-        		}
-                $ordered[$order] = $action;
-            }
-            else {
-                $ordered[$order] = $action;
-            }
-            $keys[$order] = $order;
+        	$info = $action->getInfo();
+        	if($info) {
+	            $order = $action->getOrder();
+	            if (isset($ordered[$order])) {
+	        		while (isset($ordered[$order])) {
+	        			$order++;
+	        		}
+	                $ordered[$order] = $action;
+	            }
+	            else {
+	                $ordered[$order] = $action;
+	            }
+	            $keys[$order] = $order;
+        	}
         }
         // Sort to rewrite keys.
         sort($keys);
