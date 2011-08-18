@@ -75,6 +75,13 @@ class KTDashboardActivityFeedViewlet extends KTDashboardViewlet {
 
     public function displayViewlet()
     {
+        $templating =& KTTemplating::getSingleton();
+        $template = $templating->loadTemplate('ktcore/dashboard/viewlets/global_activity_feed');
+        return $template->render($templateData);
+    }
+
+    public function loadViewletContent()
+    {
         // FIXME There is some duplication here.
         //       The mime icon stuff for instance can be abstracted to
         //       a third file and used both here and in the browse view.
@@ -98,15 +105,6 @@ class KTDashboardActivityFeedViewlet extends KTDashboardViewlet {
             'preloaded' => $this->preloaded + count($activityFeed),
             'nextBatch' => $this->start + $this->limit
         );
-
-        $activityFeedContent = $template->render($templateData);
-
-        if ($this->preloaded > 0) {
-            return $activityFeedContent;
-        }
-
-        $template = $templating->loadTemplate('ktcore/dashboard/viewlets/global_activity_feed');
-        $templateData = array('activityFeed' => $activityFeedContent);
 
         return $template->render($templateData);
     }
@@ -316,7 +314,7 @@ class KTGraphicalAnalyticsViewlet extends KTDashboardViewlet {
         $templateData = array(
                'context' => $this,
                //'commentsVsViews' => $ktAnalytics->getViewsVsCommentsOverWeekDashlet(),
-			   
+
                'userAccessPerWeek' => $ktAnalytics->getUserAccessPerWeekDashlet(),
                'uploadsPerWeek' => $ktAnalytics->getUploadsPerWeekDashlet(),
                'documentRating' => $ktAnalytics->getDocumentsByRatingTemplate(true), // true for Dashlet

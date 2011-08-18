@@ -31,7 +31,7 @@
     <div id="activityfeed-moreitems-{$preloaded}">
         <span class=activityfeed-more>
             <div>
-                <span class=activityfeed-more-text onclick="javascript: kt.app.activityFeed.fetchMore({$preloaded}, {$nextBatch});">more...</span>
+                <span class=activityfeed-more-text onclick="javascript: kt.app.activityFeed.fetchFeedContent({$preloaded}, {$nextBatch});">more...</span>
             </div>
         </span>
     </div>

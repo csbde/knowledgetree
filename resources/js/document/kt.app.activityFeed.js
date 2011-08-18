@@ -108,13 +108,19 @@ kt.app.activityFeed = new function() {
         }
     }
 
-    this.fetchMore = function(preloaded, start)
+    this.fetchFeedContent = function(preloaded, start, divId)
     {
+        if (typeof(divId) == 'undefined') {
+            divId = 'activityfeed-moreitems-' + preloaded;
+        }
+
+        jQuery('#' + divId).html('loading...');
+
         var params = {preloaded: preloaded, start: start};
         var synchronous = false;
-        var func = 'dashboardService.extendActivityFeed';
+        var func = 'dashboardService.loadActivityFeed';
         var response = ktjapi.retrieve(func, params);
-        jQuery('#activityfeed-moreitems-' + preloaded).html(response.data.success);
+        jQuery('#' + divId).html(response.data.success);
     }
 
 }
