@@ -2198,7 +2198,7 @@ div.helperTextOverlay {
    /*margin:1em 0 3em;*/
    color: #4C80A7;
    
-   font-family: "Handwriting", "Segoe Print";
+   font-family: "Segoe Print", "Handwriting";
    font-weight: bold;
    
    -webkit-transform: rotate(-4deg); 
