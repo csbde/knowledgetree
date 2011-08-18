@@ -2190,7 +2190,6 @@ div.helperTextOverlay * {
 
 div.helperTextOverlay {
    
-   font-family: DeliciousRoman, Helvetica, Arial, sans-serif;
 
    background:url('../graphics/feature_notifications/newfeature_background.png') no-repeat;
    
@@ -2199,7 +2198,7 @@ div.helperTextOverlay {
    /*margin:1em 0 3em;*/
    color: #4C80A7;
    
-   font-family: "Handwriting";
+   font-family: "Handwriting", "Segoe Print";
    font-weight: bold;
    
    -webkit-transform: rotate(-4deg); 
