@@ -315,7 +315,7 @@ class KTGraphicalAnalyticsViewlet extends KTDashboardViewlet {
 
         $templateData = array(
                'context' => $this,
-               //'commentsVsViews' => $ktAnalytics->getViewsVsCommentsOverWeekDashlet(),
+               'commentsVsViews' => $ktAnalytics->getViewsVsCommentsOverWeekDashlet(),
 			   
                'userAccessPerWeek' => $ktAnalytics->getUserAccessPerWeekDashlet(),
                'uploadsPerWeek' => $ktAnalytics->getUploadsPerWeekDashlet(),
