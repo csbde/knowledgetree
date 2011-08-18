@@ -38,6 +38,7 @@
 
 require_once(KT_LIB_DIR . "/actions/documentviewlet.inc.php");
 require_once(KT_LIB_DIR . "/workflow/workflowutil.inc.php");
+require_once(KT_LIB_DIR . '/actions/actionsutil.inc.php');
 require_once(KT_LIB_DIR . '/actions/documentaction.inc.php');
 require_once(KT_PLUGIN_DIR . '/commercial/alerts/alertUtil.inc.php');
 
@@ -45,6 +46,16 @@ class KTDocumentSidebar extends KTDocumentViewlet {
     public $sName = 'ktcore.sidebars.document';
 	public $_sShowPermission = 'ktcore.permissions.read';
 	public $order = 1;
+	public $title;
+
+	/**
+	 * Get the title of a sidebar item
+	 *
+	 */
+	public function getTitle()
+	{
+		return _kt($this->title);
+	}
 
 	public function getCSSName() {}
 	public function getOrder() { return $this->order; }
@@ -56,31 +67,14 @@ class KTDocumentSidebar extends KTDocumentViewlet {
 	 */
 	public function getDocSideBars() {
 		$sidebars = KTDocumentActionUtil::getDocumentActionsForDocument($this->oDocument, $this->oUser, 'documentsidebar');
-		$ordered = $keys = array();
-        foreach ($sidebars as $sidebar) {
-        	$info = $sidebar->getInfo();
-        	if($info != null) {
-        		$order = $sidebar->getOrder();
-        		// Sidebars cannot overwrite each other.
-	        	if(isset($ordered[$order])) {
-	        		$order++;
-	        		$ordered[$order] = $sidebar;
-	        	} else {
-	        		$ordered[$order] = $sidebar;
-	        	}
-        		$keys[$order] = $order;
-        	}
-        }
-
-        // Sort to rewrite keys.
-        sort($keys);
+		$orderedKeys = ActionsUtil::sortActions($sidebars);
 
         $templating = KTTemplating::getSingleton();
 		$template = $templating->loadTemplate('ktcore/document/sidebars/viewSidebar');
         $templateData = array(
               'context' => $this,
-              'sidebars' => $ordered,
-              'keys' => $keys,
+              'sidebars' => $orderedKeys['ordered'],
+              'keys' => $orderedKeys['keys'],
         );
 
         return $template->render($templateData);
@@ -97,6 +91,11 @@ class KTWorkflowSidebar extends KTDocumentSidebar {
 	public $_sShowPermission = 'ktcore.permissions.read';
 	public $order = 5;
 	public $bShowIfWriteShared = true;
+
+	public function getTitle()
+	{
+		return _kt('Workflow Transitions');
+	}
 
 	public function getCSSName() { return 'workflow_transitions'; }
 

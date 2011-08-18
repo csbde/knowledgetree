@@ -36,12 +36,23 @@
  *
  */
 
+require_once(KT_LIB_DIR . '/actions/actionsutil.inc.php');
 require_once(KT_LIB_DIR . "/actions/folderviewlet.inc.php");
 
 class KTFolderSidebar extends KTFolderViewlet {
     public $sName = 'ktcore.sidebars.folder';
 	public $_sShowPermission = 'ktcore.permissions.read';
 	public $order = 1;
+	public $title;
+
+	/**
+	 * Get the title of a sidebar item
+	 *
+	 */
+	public function getTitle()
+	{
+		return _kt($this->title);
+	}
 
 	/**
 	 * Get the class name of a sidebar item
@@ -64,29 +75,14 @@ class KTFolderSidebar extends KTFolderViewlet {
 	public function getFolderSideBars()
 	{
 		$sidebars = KTFolderActionUtil::getFolderActionsForFolder($this->oFolder, $this->oUser, 'foldersidebar');
-		$ordered = $keys = array();
-        foreach ($sidebars as $sidebar) {
-        	$info = $sidebar->getInfo();
-        	if($info != null) {
-        		$order = $sidebar->getOrder();
-        		// Sidebars cannot overwrite each other.
-	        	if(isset($ordered[$order])) {
-	        		$order++;
-	        		$ordered[$order] = $sidebar;
-	        	} else {
-	        		$ordered[$order] = $sidebar;
-	        	}
-	        	$keys[$order] = $order;
-        	}
-        }
-        // Sort to rewrite keys.
-        sort($keys);
+		$orderedKeys = ActionsUtil::sortActions($sidebars);
+
 		$oTemplating = KTTemplating::getSingleton();
 		$oTemplate = $oTemplating->loadTemplate('ktcore/folder/sidebars/viewSidebar');
         $aTemplateData = array(
               'context' => $this,
-              'sidebars' => $ordered,
-              'keys' => $keys,
+              'sidebars' => $orderedKeys['ordered'],
+              'keys' => $orderedKeys['keys'],
         );
 
         return $oTemplate->render($aTemplateData);

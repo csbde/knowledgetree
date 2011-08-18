@@ -27,6 +27,16 @@ require_once(KT_LIB_DIR . '/plugins/pluginutil.inc.php');
 class KTGraphicalAnalyticsSql {
 
 	private $table;
+	private $commentScore = 4;
+	private $ratingScore = 2;
+	private $ratingContentEnable = FALSE;
+	
+	public function __construct()
+	{
+		if (KTPluginUtil::pluginIsActive('actionableinsights.ratingcontent.plugin')) {
+            $this->ratingContentEnabled = true;
+		}
+	}
 
 	public function getTop10Documents($limit = 10)
     {
@@ -55,7 +65,7 @@ class KTGraphicalAnalyticsSql {
 
 		) merged_table
 
-		INNER JOIN documents D ON (merged_table.document_id = D.id AND D.status_id != 3)
+		INNER JOIN documents D ON (merged_table.document_id = D.id AND D.status_id != 3 AND D.status_id != 4)
 		INNER JOIN document_metadata_version ON (D.metadata_version_id = document_metadata_version.id)
 		INNER JOIN document_content_version ON (document_metadata_version.content_version_id = document_content_version.id)
 
@@ -66,9 +76,7 @@ class KTGraphicalAnalyticsSql {
 		ORDER BY documentscore DESC
 		LIMIT 0, ' . $limit;
 
-		$ratingContentEnable = false; // Fix Up
-
-		if ($ratingContentEnable) {
+		if ($this->ratingContentEnabled) {
 			$sql = str_replace('[-CONTENT-RATING-]',
 			'
 			UNION ALL
@@ -84,8 +92,8 @@ class KTGraphicalAnalyticsSql {
 			$sql = str_replace('[-CONTENT-RATING-]', '', $sql);
 		}
 
-		$sql = str_replace('[-COMMENT-SCORE-]', '4', $sql);
-		$sql = str_replace('[-RATING-SCORE-]', '2', $sql);
+		$sql = str_replace('[-COMMENT-SCORE-]', $this->commentScore, $sql);
+		$sql = str_replace('[-RATING-SCORE-]', $this->ratingScore, $sql);
 
         return DBUtil::getResultArray($sql);
     }
@@ -126,7 +134,7 @@ class KTGraphicalAnalyticsSql {
 
 			) merged_table
 
-			INNER JOIN documents D ON (merged_table.document_id = D.id AND D.status_id != 3)
+			INNER JOIN documents D ON (merged_table.document_id = D.id AND D.status_id != 3 AND D.status_id != 4)
 			INNER JOIN document_metadata_version ON (D.metadata_version_id = document_metadata_version.id)
 			INNER JOIN document_content_version ON (document_metadata_version.content_version_id = document_content_version.id)
 
@@ -140,9 +148,7 @@ class KTGraphicalAnalyticsSql {
 		ORDER BY documentscore DESC
 		';
 
-		$ratingContentEnable = false; // Fix Up
-
-		if ($ratingContentEnable) {
+		if ($this->ratingContentEnabled) {
 
 			$sql = str_replace('[-CONTENT-RATING-]',
 			'
@@ -158,8 +164,8 @@ class KTGraphicalAnalyticsSql {
 			$sql = str_replace('[-CONTENT-RATING-]', '', $sql);
 		}
 
-		$sql = str_replace('[-COMMENT-SCORE-]', '4', $sql);
-		$sql = str_replace('[-RATING-SCORE-]', '2', $sql);
+		$sql = str_replace('[-COMMENT-SCORE-]', $this->commentScore, $sql);
+		$sql = str_replace('[-RATING-SCORE-]', $this->ratingScore, $sql);
 
         return DBUtil::getResultArray($sql);
 
@@ -201,9 +207,7 @@ class KTGraphicalAnalyticsSql {
 		ORDER BY documentscore DESC
 		LIMIT 0, 10';
 
-		$ratingContentEnable = false; // Fix Up
-
-		if ($ratingContentEnable) {
+		if ($this->ratingContentEnabled) {
 
 			$sql = str_replace('[-CONTENT-RATING-]',
 			'
@@ -219,8 +223,8 @@ class KTGraphicalAnalyticsSql {
 			$sql = str_replace('[-CONTENT-RATING-]', '', $sql);
 		}
 
-		$sql = str_replace('[-COMMENT-SCORE-]', '4', $sql);
-		$sql = str_replace('[-RATING-SCORE-]', '2', $sql);
+		$sql = str_replace('[-COMMENT-SCORE-]', $this->commentScore, $sql);
+		$sql = str_replace('[-RATING-SCORE-]', $this->ratingScore, $sql);
 
         return DBUtil::getResultArray($sql);
     }
@@ -268,7 +272,7 @@ class KTGraphicalAnalyticsSql {
         $sql = '
 		SELECT document_transactions.document_id, COUNT( document_transactions.document_id ) AS count, document_content_version.filename, mime_id
 		FROM document_transactions
-		INNER JOIN documents ON (document_transactions.document_id = documents.id AND documents.status_id != 3)
+		INNER JOIN documents ON (document_transactions.document_id = documents.id AND documents.status_id != 3 AND documents.status_id != 4)
 		INNER JOIN document_metadata_version ON (documents.metadata_version_id = document_metadata_version.id)
 		INNER JOIN document_content_version ON (document_metadata_version.content_version_id = document_content_version.id)
 		WHERE transaction_namespace = "ktcore.transactions.view"
@@ -362,16 +366,20 @@ class KTGraphicalAnalyticsSql {
 
 	public function getDocumentLikesSql()
     {
-        $sql = '
-		SELECT COUNT(document_id) as like_count, ABS(TIMESTAMPDIFF(WEEK,NOW(),date_time)) AS week_number
-		FROM ratingcontent_document
-		WHERE ABS(TIMESTAMPDIFF(WEEK,NOW(),date_time)) < 10
-		GROUP BY week_number
-		ORDER BY week_number
-		LIMIT 10
-        ';
-
-        return DBUtil::getResultArray($sql);
+        if ($this->ratingContentEnabled) {
+			$sql = '
+			SELECT COUNT(document_id) as like_count, ABS(TIMESTAMPDIFF(WEEK,NOW(),date_time)) AS week_number
+			FROM ratingcontent_document
+			WHERE ABS(TIMESTAMPDIFF(WEEK,NOW(),date_time)) < 10
+			GROUP BY week_number
+			ORDER BY week_number
+			LIMIT 10
+			';
+	
+			return DBUtil::getResultArray($sql);
+		} else {
+			return array();
+		}
     }
 
     // FIXME More duplication of this code - abstract to single library from which it can be called.

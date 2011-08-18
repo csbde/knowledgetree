@@ -53,47 +53,72 @@ class KTValidatorFactory {
     	return $singleton;
     }
 
-    function registerValidator($sClassname, $sNamespace,  $sFilename = null) {
-        $this->validators[$sNamespace] = array(
-            'ns' => $sNamespace,
-            'class' => $sClassname,
-            'file' => $sFilename,
+    function registerValidator($classname, $namespace,  $filename = null)
+    {
+        $this->validators[$namespace] = array(
+            'ns' => $namespace,
+            'class' => $classname,
+            'file' => $filename,
         );
     }
 
-    function &getValidatorByNamespace($sNamespace) {
-        $aInfo = KTUtil::arrayGet($this->validators, $sNamespace);
-        if (empty($aInfo)) {
-            return PEAR::raiseError(sprintf(_kt('No such validator: %s'), $sNamespace));
+    private function loadValidatorHelpers()
+    {
+        if (!empty($this->validators)) {
+            return ;
         }
-        if (!empty($aInfo['file'])) {
-            require_once($aInfo['file']);
+        
+        $helpers = KTPluginUtil::loadPluginHelpers('validator');
+        
+        foreach ($helpers as $helper) {
+            extract($helper);
+            $params = explode('|', $object);
+            
+            if (isset($params[2])) {
+                $params[2] = KTPluginUtil::getFullPath($params[2]);
+            }
+            call_user_func_array(array($this, 'registerValidator'), $params);
+        }
+    }
+    
+    function &getValidatorByNamespace($namespace) 
+    {
+        $this->loadValidatorHelpers();
+        
+        $info = KTUtil::arrayGet($this->validators, $namespace);
+        if (empty($info)) {
+            return PEAR::raiseError(sprintf(_kt('No such validator: %s'), $namespace));
+        }
+        
+        if (!empty($info['file'])) {
+            require_once($info['file']);
         }
 
-        return new $aInfo['class'];
+        return new $info['class'];
     }
 
     // this is overridden to either take a namespace or an instantiated
     // class.  Doing it this way allows for a consistent approach to building
     // forms including custom widgets.
-    function &get($namespaceOrObject, $aConfig = null) {
+    function &get($namespaceOrObject, $config = null) 
+    {
         if (is_string($namespaceOrObject)) {
-            $oValidator =& $this->getValidatorByNamespace($namespaceOrObject);
+            $validator =& $this->getValidatorByNamespace($namespaceOrObject);
         } else {
-            $oValidator = $namespaceOrObject;
+            $validator = $namespaceOrObject;
         }
 
-        if (PEAR::isError($oValidator)) {
-            return $oValidator;
+        if (PEAR::isError($validator)) {
+            return $validator;
         }
 
-        $aConfig = (array) $aConfig; // always an array
-        $res = $oValidator->configure($aConfig);
+        $config = (array) $config; // always an array
+        $res = $validator->configure($config);
         if (PEAR::isError($res)) {
             return $res;
         }
 
-        return $oValidator;
+        return $validator;
     }
 }
 

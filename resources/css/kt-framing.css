@@ -1325,7 +1325,15 @@ The text will be hidden for screen view.  The generic fahrner-ish approach comes
 /* this is sometimes used separately to get the auto-delete help. */
 .ktDelete { }
 
-
+ul li a.action_icon {
+    cursor: pointer;
+    float: right;
+    height: 16px;
+    position: relative;
+    top: 5px;
+    width: 16px;
+    padding-right: 10px;
+}
 
 /* upload / download buttons */
 

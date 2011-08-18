@@ -240,23 +240,47 @@ class KTHelpRegistry {
 	}
 
 
-    function registerHelp($sPluginName, $sLang, $sBaseDir) {
-        $lang_map = KTUtil::arrayGet($this->plugin_lang_map, $sPluginName, array());
-        $lang_map[$sLang] = $sBaseDir;
-        $this->plugin_lang_map[$sPluginName] = $lang_map;
+    function registerHelp($pluginName, $lang, $baseDir) 
+    {
+        $langMap = KTUtil::arrayGet($this->plugin_lang_map, $pluginName, array());
+        $langMap[$lang] = $baseDir;
+        $this->plugin_lang_map[$pluginName] = $langMap;
     }
 
-    function getBaseDir($sPluginName, $sLangCode) {
-        $lang_map = KTUtil::arrayGet($this->plugin_lang_map, $sPluginName);
+    private function loadHelpHelpers()
+    {
+        if (!empty($this->plugin_lang_map)) {
+            return ;
+        }
+        
+        $helpers = KTPluginUtil::loadPluginHelpers('help_language');
+        
+        foreach ($helpers as $helper) {
+            extract($helper);
+            $params = explode('|', $object);
+            
+            if (isset($params[2])) {
+                $params[2] = KTPluginUtil::getFullPath($params[2]);
+            }
+            call_user_func_array(array($this, 'registerHelp'), $params);
+        }
+    }
+    
+    function getBaseDir($pluginName, $langCode) 
+    {
+        $this->loadHelpHelpers();
+        $langMap = KTUtil::arrayGet($this->plugin_lang_map, $pluginName);
 
-        if (is_null($lang_map)) {
+        if (is_null($langMap)) {
             return PEAR::raiseError(_kt("There is no help available in your language for this plugin"));
         }
-        $sBaseDir = KTUtil::arrayGet($lang_map, $sLangCode);
-        if (is_null($sBaseDir)) {
+        
+        $baseDir = KTUtil::arrayGet($langMap, $langCode);
+        if (is_null($baseDir)) {
             return PEAR::raiseError(_kt("There is no help available in your language for this plugin"));
         }
-        return $sBaseDir;
+        
+        return $baseDir;
     }
 }
 

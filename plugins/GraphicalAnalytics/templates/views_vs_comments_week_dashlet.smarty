@@ -1,7 +1,7 @@
 <h3>Views, Comments and Likes per Week</h3>
 
 
-<div id="views_vs_comments_per_week"></div>
+<div id="views_vs_comments_per_week_dashlet" class="graph"></div>
 
 {literal}
 <script type="text/javascript">
@@ -9,25 +9,25 @@
     jQuery(document).ready(function() {
         viewsVsCommentsChart = new Highcharts.Chart({
             chart: {
-                renderTo: 'views_vs_comments_per_week',
-                defaultSeriesType: 'column'
+                renderTo: 'views_vs_comments_per_week_dashlet',
+                defaultSeriesType: 'bar'
             },
             title: {
-                text: 'Views, Comments and Likes per Week'
+                text: null//'Views, Comments and Likes per Week'
             },
             subtitle: {
-                text: 'How many documents were viewed, liked, commented on per week'
+                text: null //'How many documents were viewed, liked, commented on per week'
             },
             xAxis: {
-                categories: [{/literal}{$comments.weeks}{literal}],
+                categories: [{/literal}{$comments.weeksCounter}{literal}],
                 title: {
-                    text: 'Weeks'
+                    text: null //'Weeks'
                 }
             },
             yAxis: {
                 min: 0,
                 title: {
-                    text: 'Document Views',
+                    text: null, //'Document Views',
                     align: 'high'
                 }
             },
@@ -78,7 +78,8 @@
                 floating: true,
                 borderWidth: 1,
                 backgroundColor: '#FFFFFF',
-                shadow: true
+                shadow: true,
+                enabled: false
             },
             credits: {
                 enabled: false

@@ -57,6 +57,8 @@ class GraphAnalyticsPage extends KTStandardDispatcher {
     public function do_main()
 	{
 	    global $default;
+		
+		$this->oPage->title = _kt('Analytics');
 
 	    $templating =& KTTemplating::getSingleton();
 	    $template = $templating->loadTemplate('graphspage');

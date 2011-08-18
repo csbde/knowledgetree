@@ -1,11 +1,12 @@
 {if $documents}
-	<h2> My checked-out documents </h2>
 	<ul style="font-size: 11px;">
 	{foreach from=$documents item=oEntry}
     	{capture assign=sLink}{$browseUtil->getUrlForDocument($oEntry)}{/capture}
-		<li class="{cycle values=odd,even}">
+		<li>
 			<a class="contenttype_href" href="{$sLink}">{$oEntry->getName()|mb_truncate:25:"...":true|sanitize}</a>
 		</li>
 	{/foreach}
 	</ul>
+{else}
+<span style="font-style:11px;">{i18n}There are no checked-out documents.{/i18n}</span>
 {/if}

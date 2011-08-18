@@ -312,15 +312,19 @@ class GraphicalAnalytics {
 			} else {
 				$num = 0;
 			}
+			
+			$weeks[] = $i;
 
 			$uploadsCounter[] = $num;
 			$uploadsArray[] = array('week_number'=>$i, 'count'=>$num, 'week_str'=>$this->formatWeekStr($i));
 		}
 
 		$weeks = '"'.implode('", "', $weeks).'"';
+		$weeksStr = $this->generateWeeksStr(10);
+		
 		$uploadsCounter = implode(', ', $uploadsCounter);
 
-		return array('weeks'=>$weeks, 'uploadsCounter'=>$uploadsCounter, 'uploadsArray'=>$uploadsArray);
+		return array('weeks'=>$weeksStr, 'weeksCounter'=>$weeks, 'uploadsCounter'=>$uploadsCounter, 'uploadsArray'=>$uploadsArray);
 	}
 
 	/******************************************************************************************************************/
@@ -355,15 +359,19 @@ class GraphicalAnalytics {
 			} else {
 				$num = 0;
 			}
+			
+			$weeks[] = $i;
 
 			$accessCounter[] = $num;
 			$accessArray[] = array('week_number'=>$i, 'count'=>$num, 'week_str'=>$this->formatWeekStr($i));
 		}
 
 		$weeks = '"'.implode('", "', $weeks).'"';
+		$weeksStr = $this->generateWeeksStr(10);
+		
 		$accessCounter = implode(', ', $accessCounter);
 
-		return array('weeks'=>$weeks, 'accessCounter'=>$accessCounter, 'accessArray'=>$accessArray);
+		return array('weeks'=>$weeksStr, 'weeksCounter'=>$weeks, 'accessCounter'=>$accessCounter, 'accessArray'=>$accessArray);
 	}
 
 	/******************************************************************************************************************/
@@ -395,7 +403,9 @@ class GraphicalAnalytics {
 			$score[] = $item['count'];
 		}
 
-		$weeks = '"'.implode('", "', $weeks).'"';
+		//$weeks = '"'.implode('", "', $weeks).'"';
+		$weeks = $this->generateWeeksStr(10);
+		
 		$score = implode(', ', $score);
 
 		return array('weeks'=>$weeks, 'score'=>$score);
@@ -463,7 +473,9 @@ class GraphicalAnalytics {
 			$commentsArray[] = array('week_number'=>$i, 'count'=>$num);
 		}
 
-		$weeks = '"'.implode('", "', $weeks).'"';
+		//$weeks = '"'.implode('", "', $weeks).'"';
+		$weeks = $this->generateWeeksStr(10);
+		
 		$commentsCounter = implode(', ', $commentsCounter);
 
 		return array('weeks'=>$weeks, 'counter'=>$commentsCounter, 'comments'=>$commentsArray);
@@ -505,7 +517,9 @@ class GraphicalAnalytics {
 			$likesArray[] = array('week_number'=>$i, 'count'=>$num);
 		}
 
-		$weeks = '"'.implode('", "', $weeks).'"';
+		//$weeks = '"'.implode('", "', $weeks).'"';
+		$weeks = $this->generateWeeksStr(10);
+		
 		$likesCounter = implode(', ', $likesCounter);
 
 		return array('weeks'=>$weeks, 'counter'=>$likesCounter, 'likesArray'=>$likesArray);
@@ -547,13 +561,34 @@ class GraphicalAnalytics {
         if (file_exists(KT_DIR . '/' . $iconFile)) {
 			return '<img src="/'.$iconFile.'" />';
 		} else {
-			return '&nbsp;';
+			
+			$iconFile = 'resources/mimetypes/generic.png';
+			
+			return '<img src="/'.$iconFile.'" />';
 		}
 	}
 
 	public function cleanUrl($documentId)
 	{
 		return KTUtil::kt_clean_document_url($documentId);
+	}
+	
+	private function generateWeeksStr($weeks=10)
+	{
+		$weekStr = array();
+		
+		for ($i=0; $i<$weeks;$i++) {
+			switch ($i)
+			{
+				case 0: $str = 'This Week'; break;
+				case 1: $str = 'Last Week'; break;
+				default: $str = $i.' Weeks Ago'; break;
+			}
+			
+			$weekStr[] = $str;
+		}
+		
+		return '"'.implode('", "', $weekStr).'"';
 	}
 
 }
