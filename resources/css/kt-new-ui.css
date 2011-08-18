@@ -4,6 +4,13 @@ body {
 	/*background: url('../graphics/newui/watermark.jpg') no-repeat top center;*/
 	font-family: Helvetica, "Arial", sans-serif !important;
 }
+@font-face {
+   font-family: "Handwriting";
+   font-style: normal;
+   font-weight: normal;
+   src: url("/resources/css/newui/newfeatures/handwriting-Print.woff") format("woff"), url("/resources/css/newui/newfeatures/handwriting-Print.ttf") format("truetype"), url("/resources/css/newui/newfeatures/handwriting-Print.svg") format("svg");
+}
+
 #wrapper, #footer {
 	width: 960px;
 	margin: 0 auto;
@@ -2161,12 +2168,7 @@ td.line { word-break: break-word; overflow: hidden; width: 100%;}
 
 /*New Features Sticky */
 
-@font-face {
-   font-family: "Handwriting";
-   font-style: normal;
-   font-weight: normal;
-   src: url("/resources/css/newui/newfeatures/handwriting-Print.woff") format("woff"), url("/resources/css/newui/newfeatures/handwriting-Print.ttf") format("truetype"), url("/resources/css/newui/newfeatures/handwriting-Print.svg") format("svg");
-}
+
 
 div.helperTextOverlay * {
    
