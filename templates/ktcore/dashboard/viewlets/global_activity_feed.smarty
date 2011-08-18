@@ -1,4 +1,4 @@
-<div class="graph-viewlet">
+<div class="graph-viewlet" style="margin-left: -1px;">
 <h3>Activity Feed</h3>
 <div id="activityfeed-container" style="margin-top:1em;"></div>
 <script type="text/javascript" src="resources/js/jquery.autoresize.min.js"></script>
