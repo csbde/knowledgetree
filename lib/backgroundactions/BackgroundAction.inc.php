@@ -62,7 +62,7 @@ class BackgroundAction extends BackgroundProcess
 								'delete' =>	array(	'documents' => 250,
 													'folders' => 25
 												),
-								'copy' =>	array(	'documents' => 100,
+								'copy' =>	array(	'documents' => 0,
 													'folders' => 10
 												)
 								);
@@ -96,16 +96,11 @@ class BackgroundAction extends BackgroundProcess
 
 	}
 
-	public static function getMessage($action)
-	{
-		return "A Batch $action is in progress. Please try again later.";
-	}
-
 	public function saveEvent()
 	{
 		$memcache = KTMemcache::getKTMemcache();
 		if(!$memcache->isEnabled()) return ;
-		$key = ACCOUNT_NAME . '_bulkaction';
+		$key = $this->account . '_bulkaction';
 		$bulkActions = $memcache->get($key);
 		if(empty($bulkActions))
 			$folderIds = array();
@@ -120,6 +115,63 @@ class BackgroundAction extends BackgroundProcess
 			$folderIds[$this->action][$folderId] = $folderId;
 		}
 		$memcache->set($key, serialize($folderIds));
+	}
+
+    public function background()
+    {
+        global $default;
+    	$phpPath = $default->php;
+    	$this->storeInMemcache();
+    	$this->saveEvent();
+    	$script =  KT_DIR . '/plugins/ktcore/backgroundTasks/BulkActionTask.php';
+    	$arguments = "{$this->userId} {$this->action} {$this->targetFolderId} {$this->currentFolderId} " . $this->account;
+    	$command = "{$phpPath} {$script} {$arguments} > /dev/null &";
+
+    	KTUtil::pexec($command);
+    }
+
+    public function execute()
+    {
+    	$message = '';
+    	$success = false;
+		$cached = $this->getFromMemcache();
+		$this->list = unserialize($cached['list']);
+		$this->reason = unserialize($cached['reason']);
+		$ktapi = new KTAPI(3);
+		$user = User::get($this->userId);
+		$session = $ktapi->start_system_session($user->getUsername());
+		$response = $ktapi->performBulkAction($this->action, $this->list, $this->reason, $this->targetFolderId);
+		if($response) {
+			if($response['status_code'] == 0) {
+				$success = true;
+			} else {
+				$message = $response['message'];
+			}
+		}
+		$this->clearMemcacheInfo();
+		$this->sendNotification($success, $user, $message);
+    }
+
+    public function clearMemcacheInfo()
+    {
+	    $memcache = KTMemcache::getKTMemcache();
+	    if(!$memcache->isEnabled()) return ;
+	    $key = $this->account . '_bulkaction';
+	    $bulkActions = $memcache->get($key);
+	    $bulkActions = unserialize($bulkActions);
+	    if(isset($bulkActions[$this->action][$this->currentFolderId])) {
+	    	unset($bulkActions[$this->action][$this->currentFolderId]);
+	    	$memcache->set($key, serialize($bulkActions));
+	    }
+	    if(isset($bulkActions[$this->action][$this->targetFolderId])) {
+	    	unset($bulkActions[$this->action][$this->targetFolderId]);
+	    	$memcache->set($key, serialize($bulkActions));
+	    }
+    }
+
+	public static function getMessage($action)
+	{
+		return "A Batch $action is in progress. Please try again later.";
 	}
 
 	public static function isDocumentInBulkAction($document = null)
@@ -153,65 +205,13 @@ class BackgroundAction extends BackgroundProcess
 		return self::isBulkActionInProgress($folderIdsPath);
 	}
 
-    public function background()
-    {
-        global $default;
-    	$phpPath = $default->php;
-    	$this->storeInMemcache();
-    	$this->saveEvent();
-    	$script =  KT_DIR . '/plugins/ktcore/backgroundTasks/BulkActionTask.php';
-    	$arguments = "{$this->userId} {$this->action} {$this->targetFolderId} {$this->currentFolderId} " . ACCOUNT_NAME;
-    	$command = "{$phpPath} {$script} {$arguments} > /dev/null &";
-
-    	KTUtil::pexec($command);
-    }
-
-    public function execute()
-    {
-    	$message = '';
-    	$success = false;
-		$cached = $this->getFromMemcache();
-		$this->list = unserialize($cached['list']);
-		$this->reason = unserialize($cached['reason']);
-		$ktapi = new KTAPI(3);
-		$user = User::get($this->userId);
-		$session = $ktapi->start_system_session($user->getUsername());
-		$response = $ktapi->performBulkAction($this->action, $this->list, $this->reason, $this->targetFolderId);
-		if($response) {
-			if($response['status_code'] == 0) {
-				$success = true;
-			} else {
-				$message = $response['message'];
-			}
-		}
-		$this->clearMemcacheInfo();
-		$this->sendNotification($success, $user, $message);
-    }
-
-    public function clearMemcacheInfo()
-    {
-	    $memcache = KTMemcache::getKTMemcache();
-	    if(!$memcache->isEnabled()) return ;
-	    $key = ACCOUNT_NAME . '_bulkaction';
-	    $bulkActions = $memcache->get($key);
-	    $bulkActions = unserialize($bulkActions);
-	    if(isset($bulkActions[$this->action][$this->currentFolderId])) {
-	    	unset($bulkActions[$this->action][$this->currentFolderId]);
-	    	$memcache->set($key, serialize($bulkActions));
-	    }
-	    if(isset($bulkActions[$this->action][$this->targetFolderId])) {
-	    	unset($bulkActions[$this->action][$this->targetFolderId]);
-	    	$memcache->set($key, serialize($bulkActions));
-	    }
-    }
-
     private function storeInMemcache()
     {
     	$memcache = KTMemcache::getKTMemcache();
     	if(!$memcache->isEnabled()) return ;
-    	$key = ACCOUNT_NAME . '_' . $this->userId . '_bulkaction_list_' . $this->targetFolderId;
+    	$key = $this->account . '_' . $this->userId . '_bulkaction_list_' . $this->targetFolderId;
 		$memcache->set($key, serialize($this->list));
-		$key = ACCOUNT_NAME . '_' . $this->userId . '_bulkaction_reason_' . $this->targetFolderId;
+		$key = $this->account . '_' . $this->userId . '_bulkaction_reason_' . $this->targetFolderId;
 		$memcache->set($key, serialize($this->reason));
     }
 
@@ -219,9 +219,9 @@ class BackgroundAction extends BackgroundProcess
     {
     	$memcache = KTMemcache::getKTMemcache();
     	if(!$memcache->isEnabled()) return ;
-    	$key = ACCOUNT_NAME . '_' . $this->userId . '_bulkaction_list_' . $this->targetFolderId;
+    	$key = $this->account . '_' . $this->userId . '_bulkaction_list_' . $this->targetFolderId;
     	$cached['list'] = $memcache->get($key);
-		$key = ACCOUNT_NAME . '_' . $this->userId . '_bulkaction_reason_' . $this->targetFolderId;
+		$key = $this->account . '_' . $this->userId . '_bulkaction_reason_' . $this->targetFolderId;
 		$cached['reason'] = $memcache->get($key);
 
 		return $cached;
@@ -271,27 +271,6 @@ class BackgroundAction extends BackgroundProcess
 		return $folders;
 	}
 
-	private static function isBulkActionInProgress($folderIdsPath)
-	{
-		$memcache = KTMemcache::getKTMemcache();
-		if(!$memcache->isEnabled()) return ;
-		$folderIdsPath = explode(',', $folderIdsPath);
-		$key = ACCOUNT_NAME . '_bulkaction';
-	    $bulkActions = $memcache->get($key);
-	    $bulkActions = unserialize($bulkActions);
-	    if($bulkActions) {
-		    foreach ($bulkActions as $action => $folderIds) {
-		    	foreach ($folderIds as $folderId) {
-			    	if(in_array($folderId, $folderIdsPath)) {
-			    		return $action;
-			    	}
-		    	}
-		    }
-	    }
-
-	    return false;
-	}
-
 	private function sendNotification($success = true, $user, $customMessage = '')
     {
         global $default;
@@ -329,6 +308,27 @@ class BackgroundAction extends BackgroundProcess
         $email = new Email();
         $email->send($emailAddress, $subject, $message);
     }
+
+	private static function isBulkActionInProgress($folderIdsPath)
+	{
+		$memcache = KTMemcache::getKTMemcache();
+		if(!$memcache->isEnabled()) return ;
+		$folderIdsPath = explode(',', $folderIdsPath);
+		$key = ACCOUNT_NAME . '_bulkaction';
+	    $bulkActions = $memcache->get($key);
+	    $bulkActions = unserialize($bulkActions);
+	    if($bulkActions) {
+		    foreach ($bulkActions as $action => $folderIds) {
+		    	foreach ($folderIds as $folderId) {
+			    	if(in_array($folderId, $folderIdsPath)) {
+			    		return $action;
+			    	}
+		    	}
+		    }
+	    }
+
+	    return false;
+	}
 }
 
 ?>

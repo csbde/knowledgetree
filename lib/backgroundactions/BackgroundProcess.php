@@ -39,6 +39,7 @@ require_once(KT_LIB_DIR . '/memcache/ktmemcache.php');
 
 class BackgroundProcess
 {
+	protected $account = '';
 
 	public function background()
 	{
@@ -60,6 +61,10 @@ class BackgroundProcess
 
 	}
 
+	public function setAccount($account)
+	{
+		$this->account = $account;
+	}
 }
 
 ?>
