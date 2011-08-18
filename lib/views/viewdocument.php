@@ -35,7 +35,7 @@
  */
 
 require_once('viewactionsutil.inc.php');
-require_once(KT_LIB_DIR . '/backgroundactions/backgroundaction.inc.php');
+require_once(KT_LIB_DIR . '/backgroundactions/BackgroundAction.inc.php');
 
 class ViewDocumentDispatcher extends KTStandardDispatcher {
 

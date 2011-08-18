@@ -1,60 +1,51 @@
 <?php
 
-// NOTE not used for KTLive
-
 require_once('../../config/dmsDefaults.php');
+
+function documentNotAccessible($document)
+{
+    return $document->getStatusID() == ARCHIVED
+        || $document->getStatusID() == DELETED
+        || !Permission::userHasDocumentReadPermission($document);
+}
 
 // Check the session, ensure the user is logged in
 $session = new Session();
 $sessionStatus = $session->verify();
 
-if(PEAR::isError($sessionStatus)){
+if (PEAR::isError($sessionStatus)) {
     echo $sessionStatus->getMessage();
     exit;
 }
 
-if(!$sessionStatus){
+if (!$sessionStatus) {
     exit;
 }
 
 // Get the document
 $documentId = $_GET['documentId'];
-$oDocument = Document::get($documentId);
+$document = Document::get($documentId);
 
-if (PEAR::isError($oDocument)) {
+if (PEAR::isError($document) || documentNotAccessible($document)) {
     exit;
 }
 
-// Check the document is available and the user has permission to view it
-if ($oDocument->getStatusID() == ARCHIVED) {
-    exit;
-} else if ($oDocument->getStatusID() == DELETED) {
-    exit;
-}else if (!Permission::userHasDocumentReadPermission($oDocument)) {
+$storageManager = KTStorageManagerUtil::getSingleton();
+$thumbnailCheck = $default->varDirectory . '/thumbnails/' . $documentId . '.jpg';
+if (!$storageManager->file_exists($thumbnailCheck)) {
     exit;
 }
 
-// Get and render the thumbnail
-$oStorage = KTStorageManagerUtil::getSingleton();
-// Check for the thumbnail
-$varDir = $default->varDirectory;
-$thumbnailCheck = $varDir . '/thumbnails/'.$documentId.'.jpg';
-
-// Check for the thumbnail
-if(!$oStorage->file_exists($thumbnailCheck)){
-    exit;
-}
-
-// Use correct slashes for windows
 if (strpos(PHP_OS, 'WIN') !== false) {
-	$thumbnailCheck = str_replace('/', '\\', $thumbnailCheck);
+    $thumbnailCheck = str_replace('/', '\\', $thumbnailCheck);
 }
 
-$fileSize = $oStorage->fileSize($thumbnailCheck);
+$fileSize = $storageManager->fileSize($thumbnailCheck);
 
 header("Content-Type: image/jpeg");
 header("Content-Length: {$fileSize}");
 
-echo $oStorage->file_get_contents($thumbnailCheck);
+echo $storageManager->file_get_contents($thumbnailCheck);
 exit;
+
 ?>

@@ -21,7 +21,7 @@
             },*/
             
             xAxis: {
-                categories: [{/literal}{$weeks}{literal}],
+                categories: [{/literal}{$weeksCounter}{literal}],
                 title: {
                     text: null
                 }

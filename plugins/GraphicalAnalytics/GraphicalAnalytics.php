@@ -30,68 +30,9 @@ require_once('KTGraphicalAnalyticsSql.php');
 class GraphicalAnalytics {
 
 	private $table;
-
-	public function getTop10Documents($limit = 10)
-    {
-		$sql = '
-		SELECT merged_table.document_id, document_content_version.filename, SUM(documentscore) AS documentscore, mime_id FROM
-		(
-
-			(
-				SELECT document_id,
-				SUM(IF ((ABS(TIMESTAMPDIFF(WEEK,NOW(),datetime)) = 0), score, score/ABS(TIMESTAMPDIFF(WEEK,NOW(),datetime)))) AS documentscore
-				FROM document_transactions
-				INNER JOIN graphicalanalysis_scoring ON (transaction_namespace = namespace)
-				GROUP BY document_id
-			)
-
-			UNION ALL
-
-			(
-				SELECT document_id,
-				SUM(IF ((ABS(TIMESTAMPDIFF(WEEK,NOW(),date_created)) != 0), [-COMMENT-SCORE-]/ABS(TIMESTAMPDIFF(WEEK,NOW(),date_created)), [-COMMENT-SCORE-])) AS documentscore
-				FROM document_comments
-				GROUP BY document_id
-			)
-
-			[-CONTENT-RATING-]
-
-		) merged_table
-
-		INNER JOIN documents D ON (merged_table.document_id = D.id)
-		INNER JOIN document_metadata_version ON (D.metadata_version_id = document_metadata_version.id)
-		INNER JOIN document_content_version ON (document_metadata_version.content_version_id = document_content_version.id)
-
-                ' . $this->getPermissionsQuery() . '
-
-		GROUP BY document_id
-
-		ORDER BY documentscore DESC
-		LIMIT 0, ' . $limit;
-
-		$ratingContentEnable = false; // Fix Up
-
-		if ($ratingContentEnable) {
-			$sql = str_replace('[-CONTENT-RATING-]',
-			'
-			UNION ALL
-
-			(
-				SELECT document_id,
-				SUM(IF ((ABS(TIMESTAMPDIFF(WEEK,NOW(),date_time )) != 0), [-RATING-SCORE-]/ABS(TIMESTAMPDIFF(WEEK,NOW(),date_time )), [-RATING-SCORE-])) AS documentscore
-				FROM ratingcontent_document
-				GROUP BY document_id
-			) ', $sql);
-		}
-                else {
-			$sql = str_replace('[-CONTENT-RATING-]', '', $sql);
-		}
-
-		$sql = str_replace('[-COMMENT-SCORE-]', '4', $sql);
-		$sql = str_replace('[-RATING-SCORE-]', '2', $sql);
-
-        return DBUtil::getResultArray($sql);
-    }
+	
+	private $numWeeksPage = 7;
+	private $numWeeksDashlet = 3;
 	
 	public function __construct()
 	{
@@ -109,80 +50,6 @@ class GraphicalAnalytics {
 	}
 
 /******************************************************************************************************************/
-
-	public function getDocumentsByRating()
-	{
-		$topDoc = $this->getTop10Documents();
-
-		$topDoc = $topDoc[0]['documentscore'];
-
-		$topDoc = round($topDoc, -1); // Round to the nearest 10th.
-		$divider = $topDoc / 4; // We need to divide by this value to get things into groups of five
-
-		$sql = '
-		SELECT merged_twice.documentscore as scoregroup, COUNT(merged_twice.documentscore) as numitems FROM (
-			SELECT merged_table.document_id, document_content_version.filename, SUM(documentscore), ROUND((SUM(documentscore))/'.$divider.') AS documentscore FROM
-			(
-
-				(
-					SELECT document_id,
-					SUM(IF ((ABS(TIMESTAMPDIFF(WEEK,NOW(),datetime)) = 0), score, score/ABS(TIMESTAMPDIFF(WEEK,NOW(),datetime)))) AS documentscore
-					FROM document_transactions
-					INNER JOIN graphicalanalysis_scoring ON (transaction_namespace = namespace)
-					GROUP BY document_id
-				)
-
-				UNION ALL
-
-				(
-					SELECT document_id,
-					SUM(IF ((ABS(TIMESTAMPDIFF(WEEK,NOW(),date_created)) != 0), [-COMMENT-SCORE-]/ABS(TIMESTAMPDIFF(WEEK,NOW(),date_created)), [-COMMENT-SCORE-])) AS documentscore
-					FROM document_comments
-					GROUP BY document_id
-				)
-
-				[-CONTENT-RATING-]
-
-			) merged_table
-
-			INNER JOIN documents D ON (merged_table.document_id = D.id)
-			INNER JOIN document_metadata_version ON (D.metadata_version_id = document_metadata_version.id)
-			INNER JOIN document_content_version ON (document_metadata_version.content_version_id = document_content_version.id)
-
-                        ' . $this->getPermissionsQuery() . '
-
-			GROUP BY document_id
-
-			ORDER BY documentscore DESC
-		) merged_twice
-		GROUP BY documentscore
-		ORDER BY documentscore DESC
-		';
-
-		$ratingContentEnable = false; // Fix Up
-
-		if ($ratingContentEnable) {
-
-			$sql = str_replace('[-CONTENT-RATING-]',
-			'
-			UNION ALL
-
-			(
-				SELECT document_id,
-				SUM(IF ((ABS(TIMESTAMPDIFF(WEEK,NOW(),date_time )) != 0), [-RATING-SCORE-]/ABS(TIMESTAMPDIFF(WEEK,NOW(),date_time )), [-RATING-SCORE-])) AS documentscore
-				FROM ratingcontent_document
-				GROUP BY document_id
-			) ', $sql);
-		} else {
-			$sql = str_replace('[-CONTENT-RATING-]', '', $sql);
-		}
-
-		$sql = str_replace('[-COMMENT-SCORE-]', '4', $sql);
-		$sql = str_replace('[-RATING-SCORE-]', '2', $sql);
-
-        return DBUtil::getResultArray($sql);
-
-	}
 
 	public function getDocumentsByRatingTemplate($dashlet = false)
 	{
@@ -211,19 +78,19 @@ class GraphicalAnalytics {
 
 	public function getTop10UsersTemplate()
 	{
-		return $this->loadTemplate(array('data'=>$this->KTGraphicalAnalyticsSql->getTop10Users()), 'top10users');
+		return $this->loadTemplate(array('data'=>$this->KTGraphicalAnalyticsSql->getTopUsers()), 'top10users');
 	}
 
 	public function getTop5UsersDashlet()
 	{
-		return $this->loadTemplate(array('data'=>$this->KTGraphicalAnalyticsSql->getTop10Users(5)), 'top5users_dashlet');
+		return $this->loadTemplate(array('data'=>$this->KTGraphicalAnalyticsSql->getTopUsers(5)), 'top5users_dashlet');
 	}
 
 	/******************************************************************************************************************/
 
 	public function getDocumentViewsOverWeekTemplate()
 	{
-		$templateData = array('data'=>$this->KTGraphicalAnalyticsSql->getDocumentViewsOverWeek());
+		$templateData = array('data'=>$this->KTGraphicalAnalyticsSql->getDocumentViewsOverWeek($this->numWeeksPage));
 
 		$templateData['graphdata'] = $this->generateDocViewsGraphData($templateData['data']);
 
@@ -256,23 +123,6 @@ class GraphicalAnalytics {
 
 	/******************************************************************************************************************/
 
-	public function getMostViewedDocuments()
-    {
-        $sql = '
-		SELECT document_transactions.document_id, COUNT( document_transactions.document_id ) AS count, document_content_version.filename, mime_id
-		FROM document_transactions
-		INNER JOIN documents ON (document_transactions.document_id = documents.id)
-		INNER JOIN document_metadata_version ON (documents.metadata_version_id = document_metadata_version.id)
-		INNER JOIN document_content_version ON (document_metadata_version.content_version_id = document_content_version.id)
-		WHERE transaction_namespace = "ktcore.transactions.view"
-		GROUP BY document_transactions.document_id
-		ORDER BY count DESC
-		LIMIT 0, 5
-        ';
-
-        return DBUtil::getResultArray($sql);
-    }
-
 	public function getMostViewedDocumentsDashlet()
 	{
 		$templateData = array('data'=>$this->KTGraphicalAnalyticsSql->getMostViewedDocuments(), 'context'=>$this);
@@ -285,17 +135,17 @@ class GraphicalAnalytics {
 
 	public function getUploadsPerWeekTemplate()
 	{
-		return $this->loadTemplate($this->generateUploadsPerWeekGraphData(), 'uploads_week');
+		return $this->loadTemplate($this->generateUploadsPerWeekGraphData($this->numWeeksPage), 'uploads_week');
 	}
 
 	public function getUploadsPerWeekDashlet()
 	{
-		return $this->loadTemplate($this->generateUploadsPerWeekGraphData(), 'uploads_week_dashlet');
+		return $this->loadTemplate($this->generateUploadsPerWeekGraphData(5), 'uploads_week_dashlet');
 	}
 
-	private function generateUploadsPerWeekGraphData()
+	private function generateUploadsPerWeekGraphData($limit=10)
 	{
-		$data = $this->KTGraphicalAnalyticsSql->getUploadsPerWeekSql();
+		$data = $this->KTGraphicalAnalyticsSql->getUploadsPerWeekSql($limit);
 
 		$rowCounter = 0;
 
@@ -303,7 +153,7 @@ class GraphicalAnalytics {
 		$uploadsCounter = array();
 		$uploadsArray = array();
 
-		for ($i=0; $i<10;$i++) {
+		for ($i=0; $i<$limit;$i++) {
 			$week = $this->formatWeekStr($i);
 
 			if ($data[$rowCounter]['week_number'] == $i) {
@@ -312,17 +162,19 @@ class GraphicalAnalytics {
 			} else {
 				$num = 0;
 			}
+			
+			$weeks[] = $i;
 
 			$uploadsCounter[] = $num;
 			$uploadsArray[] = array('week_number'=>$i, 'count'=>$num, 'week_str'=>$this->formatWeekStr($i));
 		}
 
-		//$weeks = '"'.implode('", "', $weeks).'"';
-		$weeks = $this->generateWeeksStr(10);
+		$weeks = '"'.implode('", "', $weeks).'"';
+		$weeksStr = $this->generateWeeksStr($limit);
 		
 		$uploadsCounter = implode(', ', $uploadsCounter);
 
-		return array('weeks'=>$weeks, 'uploadsCounter'=>$uploadsCounter, 'uploadsArray'=>$uploadsArray);
+		return array('weeks'=>$weeksStr, 'weeksCounter'=>$weeks, 'uploadsCounter'=>$uploadsCounter, 'uploadsArray'=>$uploadsArray);
 	}
 
 	/******************************************************************************************************************/
@@ -330,17 +182,17 @@ class GraphicalAnalytics {
 
 	public function getUserAccessPerWeekTemplate()
 	{
-		return $this->loadTemplate($this->generateUserAccessPerWeekGraphData(), 'user_access_week');
+		return $this->loadTemplate($this->generateUserAccessPerWeekGraphData($this->numWeeksPage), 'user_access_week');
 	}
 
 	public function getUserAccessPerWeekDashlet()
 	{
-		return $this->loadTemplate($this->generateUserAccessPerWeekGraphData(), 'user_access_week_dashlet');
+		return $this->loadTemplate($this->generateUserAccessPerWeekGraphData(5), 'user_access_week_dashlet');
 	}
 
-	private function generateUserAccessPerWeekGraphData()
+	private function generateUserAccessPerWeekGraphData($limit=10)
 	{
-		$data = $this->KTGraphicalAnalyticsSql->getUserAccessPerWeekSql();
+		$data = $this->KTGraphicalAnalyticsSql->getUserAccessPerWeekSql($limit);
 
 		$rowCounter = 0;
 
@@ -348,7 +200,7 @@ class GraphicalAnalytics {
 		$accessCounter = array();
 		$accessArray = array();
 
-		for ($i=0; $i<10;$i++) {
+		for ($i=0; $i<$limit;$i++) {
 			$week = $this->formatWeekStr($i);
 
 			if ($data[$rowCounter]['week_number'] == $i) {
@@ -357,31 +209,33 @@ class GraphicalAnalytics {
 			} else {
 				$num = 0;
 			}
+			
+			$weeks[] = $i;
 
 			$accessCounter[] = $num;
 			$accessArray[] = array('week_number'=>$i, 'count'=>$num, 'week_str'=>$this->formatWeekStr($i));
 		}
 
-		//$weeks = '"'.implode('", "', $weeks).'"';
-		$weeks = $this->generateWeeksStr(10);
+		$weeks = '"'.implode('", "', $weeks).'"';
+		$weeksStr = $this->generateWeeksStr($limit);
 		
 		$accessCounter = implode(', ', $accessCounter);
 
-		return array('weeks'=>$weeks, 'accessCounter'=>$accessCounter, 'accessArray'=>$accessArray);
+		return array('weeks'=>$weeksStr, 'weeksCounter'=>$weeks, 'accessCounter'=>$accessCounter, 'accessArray'=>$accessArray);
 	}
 
 	/******************************************************************************************************************/
 
 	public function getTransactionOverWeekTemplate()
 	{
-		$templateData = array('data'=>$this->KTGraphicalAnalyticsSql->getTransactionViewsSql());
+		$templateData = array('data'=>$this->KTGraphicalAnalyticsSql->getTransactionViewsSql($this->numWeeksPage));
 
-		$templateData['graphdata'] = $this->getTransactionOverWeekData($templateData['data']);
+		$templateData['graphdata'] = $this->getTransactionOverWeekData($templateData['data'], $this->numWeeksPage);
 
 		return $this->loadTemplate($templateData, 'transactions_week');
 	}
 
-	private function getTransactionOverWeekData($data)
+	private function getTransactionOverWeekData($data, $limit=10)
 	{
 		$weeks = array();
 		$score = array();
@@ -400,7 +254,7 @@ class GraphicalAnalytics {
 		}
 
 		//$weeks = '"'.implode('", "', $weeks).'"';
-		$weeks = $this->generateWeeksStr(10);
+		$weeks = $this->generateWeeksStr($limit);
 		
 		$score = implode(', ', $score);
 
@@ -423,13 +277,24 @@ class GraphicalAnalytics {
 
 	/******************************************************************************************************************/
 
+	public function getViewsVsCommentsOverWeekDashlet()
+	{
+		$templateData = array();
+
+		$templateData['comments'] = $this->getDocumentCommentsPerWeekData(3);
+		$templateData['document_views'] = $this->generateDocViewsGraphData($this->KTGraphicalAnalyticsSql->getDocumentViewsOverWeek(3));
+		$templateData['document_likes'] = $this->getDocumentLikesPerWeekData(3);
+
+		return $this->loadTemplate($templateData, 'views_vs_comments_week_dashlet');
+	}
+	
 	public function getViewsVsCommentsOverWeekTemplate()
 	{
 		$templateData = array();
 
-		$templateData['comments'] = $this->getDocumentCommentsPerWeekData();
-		$templateData['document_views'] = $this->generateDocViewsGraphData($this->KTGraphicalAnalyticsSql->getDocumentViewsOverWeek());
-		$templateData['document_likes'] = $this->getDocumentLikesPerWeekData();
+		$templateData['comments'] = $this->getDocumentCommentsPerWeekData($this->numWeeksPage);
+		$templateData['document_views'] = $this->generateDocViewsGraphData($this->KTGraphicalAnalyticsSql->getDocumentViewsOverWeek($this->numWeeksPage));
+		$templateData['document_likes'] = $this->getDocumentLikesPerWeekData($this->numWeeksPage);
 
 		return $this->loadTemplate($templateData, 'views_vs_comments_week');
 	}
@@ -438,16 +303,16 @@ class GraphicalAnalytics {
 
 	public function getDocumentCommentsPerWeekTemplate()
 	{
-		$templateData = array('data'=>$this->getDocumentCommentsPerWeekData());
+		$templateData = array('data'=>$this->getDocumentCommentsPerWeekData($this->numWeeksPage));
 
 		return $this->loadTemplate($templateData, 'comments_week');
 	}
 
 
 
-	private function getDocumentCommentsPerWeekData()
+	private function getDocumentCommentsPerWeekData($limit=10)
 	{
-		$data = $this->KTGraphicalAnalyticsSql->getDocumentCommentsSql();
+		$data = $this->KTGraphicalAnalyticsSql->getDocumentCommentsSql($limit);
 
 		$rowCounter = 0;
 
@@ -455,7 +320,7 @@ class GraphicalAnalytics {
 		$commentsCounter = array();
 		$commentsArray = array();
 
-		for ($i=0; $i<10;$i++) {
+		for ($i=0; $i<$limit;$i++) {
 			$week = $this->formatWeekStr($i);
 
 			if ($data[$rowCounter]['week_number'] == $i) {
@@ -470,7 +335,7 @@ class GraphicalAnalytics {
 		}
 
 		//$weeks = '"'.implode('", "', $weeks).'"';
-		$weeks = $this->generateWeeksStr(10);
+		$weeks = $this->generateWeeksStr($limit);
 		
 		$commentsCounter = implode(', ', $commentsCounter);
 
@@ -482,16 +347,16 @@ class GraphicalAnalytics {
 
 	public function getDocumentLikesPerWeekTemplate()
 	{
-		$templateData = array('data'=>$this->getDocumentLikesPerWeekData());
+		$templateData = array('data'=>$this->getDocumentLikesPerWeekData($this->numWeeksPage));
 
 		return $this->loadTemplate($templateData, 'likes_week');
 	}
 
 
 
-	private function getDocumentLikesPerWeekData()
+	private function getDocumentLikesPerWeekData($limit=10)
 	{
-		$data = $this->KTGraphicalAnalyticsSql->getDocumentLikesSql();
+		$data = $this->KTGraphicalAnalyticsSql->getDocumentLikesSql($limit);
 
 		$rowCounter = 0;
 
@@ -499,7 +364,7 @@ class GraphicalAnalytics {
 		$likesCounter = array();
 		$likesArray = array();
 
-		for ($i=0; $i<10;$i++) {
+		for ($i=0; $i<$limit;$i++) {
 			$week = $this->formatWeekStr($i);
 
 			if ($data[$rowCounter]['week_number'] == $i) {
@@ -514,7 +379,7 @@ class GraphicalAnalytics {
 		}
 
 		//$weeks = '"'.implode('", "', $weeks).'"';
-		$weeks = $this->generateWeeksStr(10);
+		$weeks = $this->generateWeeksStr($limit);
 		
 		$likesCounter = implode(', ', $likesCounter);
 
@@ -557,7 +422,10 @@ class GraphicalAnalytics {
         if (file_exists(KT_DIR . '/' . $iconFile)) {
 			return '<img src="/'.$iconFile.'" />';
 		} else {
-			return '&nbsp;';
+			
+			$iconFile = 'resources/mimetypes/generic.png';
+			
+			return '<img src="/'.$iconFile.'" />';
 		}
 	}
 

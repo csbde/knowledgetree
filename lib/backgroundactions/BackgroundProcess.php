@@ -2,6 +2,7 @@
 /**
  * $Id$
  *
+ *
  * KnowledgeTree Community Edition
  * Document Management Made Simple
  * Copyright (C) 2008, 2009, 2010 KnowledgeTree Inc.
@@ -33,41 +34,37 @@
  * must display the words "Powered by KnowledgeTree" and retain the original
  * copyright notice.
  * Contributor( s): ______________________________________
- *
  */
+require_once(KT_LIB_DIR . '/memcache/ktmemcache.php');
 
-$folderId = $argv[1];
-$accountName = isset($argv[2]) ? $argv[2] : '';
+class BackgroundProcess
+{
+	protected $account = '';
 
-if (!empty($accountName)) {
-	define('ACCOUNT_ROUTING_ENABLED', true);
-	define('ACCOUNT_NAME', $accountName);
+	public function background()
+	{
+
+	}
+
+	public function execute()
+	{
+
+	}
+
+	public function isActionInProgress()
+	{
+
+	}
+
+	public function clearMemcacheInfo()
+	{
+
+	}
+
+	public function setAccount($account)
+	{
+		$this->account = $account;
+	}
 }
 
-$dir = dirname(__FILE__);
-require_once($dir . '/../../../config/dmsDefaults.php');
-require_once(KT_LIB_DIR . '/permissions/BackgroundPermissions.php');
-
-// set errors and time out after dmsDefaults to prevent being overridden
-set_time_limit(0);
-error_reporting(E_ERROR | E_CORE_ERROR);
-
-$updateTask = new BackgroundPermissions($folderId, $accountName);
-
-register_shutdown_function(array($updateTask, 'handleShutdown'));
-
-if (function_exists('pcntl_signal')) {
-
-	declare(ticks=1);
-
-	pcntl_signal(SIGHUP, array($updateTask, 'handleInterrupt'));
-    pcntl_signal(SIGINT, array($updateTask, 'handleInterrupt'));
-    pcntl_signal(SIGQUIT, array($updateTask, 'handleInterrupt'));
-    pcntl_signal(SIGABRT, array($updateTask, 'handleInterrupt'));
-    pcntl_signal(SIGTERM, array($updateTask, 'handleInterrupt'));
-}
-
-$updateTask->updatePermissions();
-
-exit(0);
 ?>

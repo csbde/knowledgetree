@@ -247,7 +247,7 @@ class documentActionServices extends client_service {
 
         // If not, check for any other actions are running in the background.(move, copy, delete)
         if (!$response['check']) {
-            require_once(KT_LIB_DIR . '/backgroundactions/backgroundaction.inc.php');
+            require_once(KT_LIB_DIR . '/backgroundactions/BackgroundAction.inc.php');
             $action = backgroundaction::isFolderInBulkAction($folderId);
             if ($action != '') {
                 $response['check'] = true;
@@ -446,16 +446,16 @@ class documentActionServices extends client_service {
             default:
                 $reason = '';
         }
-        require_once(KT_LIB_DIR . '/backgroundactions/backgroundaction.inc.php');
-        $backgroundaction = new backgroundaction($action, $organisedItemList, $reason, $targetFolderId, $currentFolderId);
+        require_once(KT_LIB_DIR . '/backgroundactions/BackgroundAction.inc.php');
+        $backgroundaction = new BackgroundAction($action, $_SESSION['userID'], $organisedItemList, $reason, $targetFolderId, $currentFolderId);
         if ($backgroundaction->checkIfNeedsBackgrounding()) {
-            require_once(KT_PLUGIN_DIR . '/ktcore/KTBackgroundActions.php');
-            $queueResponse = BulkDocumentActions::queueBulkAction($action, $organisedItemList, $reason, $targetFolderId, $currentFolderId);
-            if ($queueResponse) {
+        	$backgroundaction->setAccount(ACCOUNT_NAME);
+            $response = $backgroundaction->background();
+            if ($response) {
                 $msg = _kt('Success. You will be redirected shortly.');
             }
             else {
-                $msg = _kt('Failure. Could not send message.');
+                $msg = _kt('Failure. Could not initialize process.');
             }
             $url = KTUtil::kt_clean_folder_url($targetFolderId);
             $msg = "Your operation is being processed. You will receive an email on completion.";
