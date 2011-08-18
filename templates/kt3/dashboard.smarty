@@ -1,6 +1,6 @@
 <script type="text/javascript" src="/resources/js/document/kt.app.activityFeed.js"></script>
 
-<table style="border-spacing: 0px;">
+<table style="border-spacing: 0px; margin-bottom: 10px;">
 	<td width="745" valign="top">
 		{foreach item=key from=$keys}
 			<div id="dashboard-viewlets" class="{$dashboardViewlets[$key]->getCSSName()}">
