@@ -561,7 +561,10 @@ class GraphicalAnalytics {
         if (file_exists(KT_DIR . '/' . $iconFile)) {
 			return '<img src="/'.$iconFile.'" />';
 		} else {
-			return '&nbsp;';
+			
+			$iconFile = 'resources/mimetypes/generic.png';
+			
+			return '<img src="/'.$iconFile.'" />';
 		}
 	}
 
