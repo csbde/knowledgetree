@@ -2093,6 +2093,14 @@ td.line { word-break: break-word; overflow: hidden; width: 100%;}
 	padding-left: 20px;
 	width: 705px!important
 }
+.graph-viewlet .activityfeed.item:last-child {
+	border-bottom: 0px;
+	padding-bottom: 0px;
+}
+.graph-viewlet #activityfeed-moreitems-10 .activityfeed.item:first-child {
+	border-top: 1px solid #DDD;
+	padding-top: 10px;
+}
 .graph-viewlet .activityfeed.item.comment .description {
 	background: #D6E6F0;
 	display: inline-block;
@@ -2136,6 +2144,11 @@ td.line { word-break: break-word; overflow: hidden; width: 100%;}
 	margin-left: 50px!important;
 	width: 655px !important;
 	min-height: 30px !important
+}
+.graph-viewlet .activityfeed-more {
+	display: block;
+	width: 724px;
+	height: 35px;
 }
 
 /*like */
