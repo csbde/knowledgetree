@@ -863,7 +863,7 @@ class PluginCache {
             $pluginList = $this->getPluginsList($helpers);
             
             if ($this->memcache !== false) {
-                $this->memcache->set($this->namespace . '-' . $this->pluginsCacheKey, $loaded);
+                $this->memcache->set($this->namespace . '-' . $this->pluginsCacheKey, $pluginList);
             }
             
         }
