@@ -19,8 +19,8 @@
 
 <div class="action-footer">
 	<div class="form_actions">
+		<span id="action-spinner" class="action-spinner spin" style="visibility: hidden; width: 16px; height: 16px;"><img src="../../../../resources/graphics/newui/loading.gif" alt="loading" width="16" height="16" /></span>
 	    <a class="ul_actions_cancel_link" href="javascript: kt.app.copy.closeConfirmWindow();">Cancel</a>
         <input id="select-btn" class="ul_actions_btns" type="button" value="Continue" onClick="kt.app.copy.save();" />
-        <span id="action-spinner" class="action-spinner spin" style="visibility: hidden; width: 16px; height: 16px;">&nbsp;</span>
 	</div>
 </div>
