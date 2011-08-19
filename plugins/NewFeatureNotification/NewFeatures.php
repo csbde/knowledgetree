@@ -36,7 +36,7 @@
  *
  */
 
-require_once('NewFeatureCache.php');
+//require_once('NewFeatureCache.php');
 require_once(KT_LIB_DIR . '/security/Permission.inc');
 require_once(KT_LIB_DIR . '/database/dbutil.inc');
 
@@ -53,30 +53,30 @@ class NewFeatures {
 		$unseenFeatures = array();
 		$userId = $_SESSION['userID'];
 
-		NewFeatureCache::init();
+		//NewFeatureCache::init();
 
 		$section = $this->determinePageLocation($location);
 		$isAdmin = Permission::userIsSystemAdministrator($userId);
-		$ktVersion = $default->systemVersion;
-		$cachedVersion = NewFeatureCache::getCachedVersion($userId);
+		//$ktVersion = $default->systemVersion;
+		//$cachedVersion = NewFeatureCache::getCachedVersion($userId);
 
-		if($cachedVersion == $ktVersion) {
+		/*if($cachedVersion == $ktVersion) {
 			$features = NewFeatureCache::getCached($userId, 'all', $section);
 			$seenFeatures = NewFeatureCache::getCached($userId, 'seen', $section);
 			$unseenFeatures = $this->unSeenFeatures($features, $seenFeatures);
 			$updatedSeen = array_merge($seenFeatures, $unseenFeatures);
 			NewFeatureCache::saveToCache($updatedSeen, $userId, 'seen', $section);
 		}
-		else {
+		else {*/
 			// Get new features for user.
 			$features = $this->getFeatures($userId, $section, $isAdmin, $ktVersion);
 			$seenFeatures = $this->seenFeatures($features);
 			$unseenFeatures = $this->unSeenFeatures($features, $seenFeatures);
 			// Cache results.
-			NewFeatureCache::saveToCache($features, $userId, 'all', $section);
+			/*NewFeatureCache::saveToCache($features, $userId, 'all', $section);
 			NewFeatureCache::saveToCache($unseenFeatures, $userId, 'seen', $section);
-			NewFeatureCache::saveVersion($userId, $ktVersion);
-		}
+			NewFeatureCache::saveVersion($userId, $ktVersion);*/
+		//}
 		$this->saveSeenFeatures($unseenFeatures);
 
 		return $unseenFeatures;
@@ -201,7 +201,7 @@ class NewFeatures {
 			$i++;
 		}
 		if($addEntry) {
-			DBUtil::runQuery($query);
+			//DBUtil::runQuery($query);
 		}
 
 		return true;

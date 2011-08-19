@@ -261,8 +261,13 @@ textarea {
 	width: auto;
 }
 
-#sidebar_item .recently-viewed-folders ul { background: url(../../thirdparty/icon-theme/16x16/mimetypes/x-directory-normal.png) no-repeat; margin: 5px; list-style-image: none; }
+#sidebar_item.recently-viewed-folders ul { background: url(../../thirdparty/icon-theme/16x16/mimetypes/x-directory-normal.png) no-repeat; margin: 5px; list-style-image: none; }
 
+#sidebar_item .empty-boilerplate {
+	padding: 0px;
+	margin: 10px;
+	font-size: 11px;
+}
 /*-------------------- Breadcrumbs -----------------*/
 #breadcrumbs {
 	background: #EEE;
@@ -519,11 +524,6 @@ ul#more.splitmenu li.dir div.left_action ul a {
 	padding-left: 25px;
 
 }
-
-
-
-
-
 
 
 
