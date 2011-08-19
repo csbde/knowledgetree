@@ -845,7 +845,7 @@ class PluginCache {
         }
 
         if (isset($_SESSION['plugin-list']) && !empty($_SESSION['plugin-list'])) {
-            //return $_SESSION['plugin-list'];
+            return $_SESSION['plugin-list'];
         }
 
         if ($this->memcache !== false) {
@@ -1013,6 +1013,8 @@ class PluginCache {
 
     private function updatePlugins()
     {
+        global $default;
+            
         $lock = $this->updateLock('get');
 
         if ($lock == 'in-progress') {
@@ -1034,6 +1036,8 @@ class PluginCache {
             return true;
         }
 
+        $default->log->info('Plugins: Updating plugins');
+        
         $this->updateLock('set');
 
         $this->invalidatePlugins();
@@ -1091,7 +1095,7 @@ class PluginCache {
             return ;
         }
 
-        unset($_SESSION['plugin-helper-list']);
+        //unset($_SESSION['plugin-helper-list']);
 
         $helpers = $this->getPluginHelpersByType('plugin');
         $pluginList = $this->getPluginsList($helpers);
@@ -1116,8 +1120,11 @@ class PluginCache {
         $helpers = $this->getPluginHelpers();
 
         if (!$helpers) {
-            $this->updatePlugins();
-            $helpers = $this->getPluginHelpers();
+            // Doing a clear session here should force an update of the plugins on the next getPlugins
+            // If we try to update here, it could get stuck in an infinite loop since there are a number
+            // of places within the update which call this function.
+            $this->clearPluginSession();
+            return array();
         }
 
         return $helpers[$classtype];
@@ -1125,18 +1132,19 @@ class PluginCache {
 
     private function getPluginHelpers()
     {
-        if (isset($_SESSION['plugin-helper-list']) && !empty($_SESSION['plugin-helper-list'])) {
-            //return $_SESSION['plugin-helper-list'];
+        // Sessions are stored in memcache which can only hold 1MB of data - the plugin helpers take around 150KB so
+        // leaving them out unless memcache is not in use.
+        if ($this->memcache === false && isset($_SESSION['plugin-helper-list']) && !empty($_SESSION['plugin-helper-list'])) {
+            return $_SESSION['plugin-helper-list'];
         }
 
         if ($this->memcache === false) {
             $helpers = $this->getDBHelpers();
+            $_SESSION['plugin-helper-list'] = $helpers;
         }
         else {
             $helpers = $this->memcache->get($this->namespace . '-' . $this->pluginHelperDynamicKey);
         }
-
-        $_SESSION['plugin-helper-list'] = $helpers;
 
         return $helpers;
     }
@@ -1181,7 +1189,7 @@ class PluginCache {
         extract($options);
         $helpers[$classtype][$namespace] = $options;
         $this->setPluginHelpers($helpers);
-        $_SESSION['plugin-helper-list'] = $helpers;
+        //$_SESSION['plugin-helper-list'] = $helpers;
 
         return true;
     }
@@ -1196,7 +1204,7 @@ class PluginCache {
 
         unset($helpers[$classtype][$namespace]);
         $helpers = $this->setPluginHelpers($helpers);
-        $_SESSION['plugin-helper-list'] = $helpers;
+        //$_SESSION['plugin-helper-list'] = $helpers;
 
         return true;
     }
