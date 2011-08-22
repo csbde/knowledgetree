@@ -46,7 +46,7 @@ require_once('GraphicalAnalytics.php');
 
 class GraphAnalyticsPage extends KTStandardDispatcher {
 
-//	public $tierCantView = array('starter', 'professional', 'company', 'team');
+	public $tierCantView = array('starter', 'professional', 'company', 'team');
 
     function __construct()
 	{
