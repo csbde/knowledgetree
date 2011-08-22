@@ -201,7 +201,7 @@ class KTDashboardActivityFeedViewlet extends KTDashboardViewlet {
             c.comment,
             c.date_created AS date_field,
             u.name AS user_name, u.username AS user_username, u.email,
-	    null as version
+        null as version
             FROM document_comments c
             INNER JOIN users u on u.id = c.user_id,
             documents D
@@ -345,19 +345,15 @@ class KTGraphicalAnalyticsViewlet extends KTDashboardViewlet {
         $ktAnalytics = new GraphicalAnalytics();
 
         $templateData = array(
-               'context' => $this,
-			   
-               'commentsVsViews' => $ktAnalytics->getViewsVsCommentsOverWeekDashlet(),
-			   'uploadsPerWeek' => $ktAnalytics->getUploadsPerWeekDashlet(),
-               'documentRating' => $ktAnalytics->getDocumentsByRatingTemplate(true), // true for Dashlet
-			   
-               'topFiveDocuments' => $ktAnalytics->getTop5DocumentsDashlet(),
-               'topFiveUsers' => $ktAnalytics->getTop5UsersDashlet(),
-               'mostViewedDocuments' => $ktAnalytics->getMostViewedDocumentsDashlet(),
-			   
-               //'mostViewedDocuments' => $ktAnalytics->getTransactionTypesPerWeekDashlet(),
-			   
-			   //'userAccessPerWeek' => $ktAnalytics->getUserAccessPerWeekDashlet(),
+            'context' => $this,
+            'commentsVsViews' => $ktAnalytics->getViewsVsCommentsOverWeekDashlet(),
+            'uploadsPerWeek' => $ktAnalytics->getUploadsPerWeekDashlet(),
+            'documentRating' => $ktAnalytics->getDocumentsByRatingTemplate(true), // true for Dashlet
+            'topFiveDocuments' => $ktAnalytics->getTop5DocumentsDashlet(),
+            'topFiveUsers' => $ktAnalytics->getTop5UsersDashlet(),
+            'mostViewedDocuments' => $ktAnalytics->getMostViewedDocumentsDashlet(),
+            //'mostViewedDocuments' => $ktAnalytics->getTransactionTypesPerWeekDashlet(),
+            //'userAccessPerWeek' => $ktAnalytics->getUserAccessPerWeekDashlet(),
         );
 
         $templating = KTTemplating::getSingleton();

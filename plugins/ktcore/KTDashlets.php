@@ -1,4 +1,5 @@
 <?php
+
 /**
  * $Id$
  *
@@ -44,134 +45,142 @@ require_once(KT_LIB_DIR . '/security/Permission.inc');
 require_once(KT_LIB_DIR . '/help/help.inc.php');
 require_once(KT_LIB_DIR . '/help/helpreplacement.inc.php');
 
-// ultra simple skeleton for the admin tutorial
 class KTInfoDashlet extends KTBaseDashlet {
+
     var $aHelpInfo;
     var $canEdit = false;
     var $helpLocation = 'ktcore/welcome.html';
     var $help_id;
 
-    function KTInfoDashlet() {
+    function KTInfoDashlet()
+    {
         global $default;
         $this->sTitle = sprintf(_kt('Welcome to %s'), APP_NAME);
         $versionName = substr($default->versionName, -17);
 
-        if($versionName != 'Community Edition')
-        {
-        	$this->helpLocation = 'ktcore/welcomeCommercial.html';
+        if ($versionName != 'Community Edition') {
+            $this->helpLocation = 'ktcore/welcomeCommercial.html';
         }
 
-	    //This check is for non english language packs which might not have
-	    //a commercial welcome page.
-	    $oHelpCheck = KTHelp::getHelpInfo($this->helpLocation);
-	    if(PEAR::isError($oHelpCheck))
-        {
-        	$this->helpLocation = 'ktcore/welcome.html';
+        //This check is for non english language packs which might not have
+        //a commercial welcome page.
+        $helpCheck = KTHelp::getHelpInfo($this->helpLocation);
+        if (PEAR::isError($helpCheck)) {
+            $this->helpLocation = 'ktcore/welcome.html';
         }
     }
 
-    function is_active($oUser) {
+    function is_active($oUser)
+    {
         // FIXME help is a little too mixed.
-        $aHelpInfo = array();
-        $can_edit = Permission::userIsSystemAdministrator($_SESSION['userID']);
+        $helpInfo = array();
+        $canEdit = Permission::userIsSystemAdministrator($_SESSION['userID']);
 
         $help_path = KTHelp::_getLocationInfo($this->helpLocation, null, true);
 
         //var_dump($help_path);
 
         if (PEAR::isError($help_path) || empty($help_path['external'])) {
-            if ($can_edit) {
+            if ($canEdit) {
                 // give it a go.
-                $aHelpInfo = KTHelp::getHelpInfo($this->helpLocation);
-                if (PEAR::isError($aHelpInfo)) {
+                $helpInfo = KTHelp::getHelpInfo($this->helpLocation);
+                if (PEAR::isError($helpInfo)) {
                     // otherwise, fail out.
-                    $aHelpInfo = array(
+                    $helpInfo = array(
                         'title' => _kt('Welcome message'),
                         'body' => _kt('Since you are a system administrator, you can see this message. Please click "edit" below here to create some welcome content, since there is no welcome content available in your language.'),
                     );
                 }
-            } else {
+            }
+            else {
                 return false;
             }
-        } else {
+        }
+        else {
             // We now check for substitute help files.  try to generate an error.\
             // This function can return a PEAR Error object, we will need to check it
-            $aHelpInfo = KTHelp::getHelpInfo($this->helpLocation);
-            if(PEAR::isError($aHelpInfo))
-            {
-            	return false;
+            $helpInfo = KTHelp::getHelpInfo($this->helpLocation);
+            if (PEAR::isError($helpInfo)) {
+                return false;
             }
         }
 
         // NORMAL users never see edit-option.
-        if (!$can_edit) {
-            if (empty($aHelpInfo)) {
-                return false;
-            }
+        if (!$canEdit && empty($helpInfo)) {
+            return false;
         }
 
-        $this->aHelpInfo = $aHelpInfo;
-        $this->canEdit = $can_edit;
+        $this->aHelpInfo = $helpInfo;
+        $this->canEdit = $canEdit;
         $this->sTitle = str_replace('#APP_NAME#', APP_NAME, $this->aHelpInfo['title']);
 
         return true;
     }
 
-    function render() {
-        $oTemplating =& KTTemplating::getSingleton();
-        $oTemplate = $oTemplating->loadTemplate('ktcore/dashlets/kt3release');
+    function render()
+    {
+        $templating =& KTTemplating::getSingleton();
+        $template = $templating->loadTemplate('ktcore/dashlets/kt3release');
 
-        $aTemplateData = array(
+        $templateData = array(
             'title' => str_replace('#APP_NAME#', APP_NAME, $this->aHelpInfo['title']),
             'body' => str_replace('#APP_NAME#', APP_NAME, $this->aHelpInfo['body']),
             'can_edit' => $this->canEdit,
             'target_name' => $this->helpLocation,
             'help_id' => $this->aHelpInfo['help_id'],
         );
-        return $oTemplate->render($aTemplateData);
+
+        return $template->render($templateData);
     }
+
 }
 
 
 class KTNotificationDashlet extends KTBaseDashlet {
+
     var $oUser;
 
-    function KTNotificationDashlet() {
+    function KTNotificationDashlet()
+    {
         $this->sTitle = _kt('Items that require your attention');
     }
 
-    function is_active($oUser) {
+    function is_active($oUser)
+    {
         $this->oUser = $oUser;
         $notifications = KTNotification::getList(array('user_id = ?', $this->oUser->getId()));
-//        if (empty($notifications)) { return false; }
+
         return true;
     }
 
-    function render() {
+    function render()
+    {
         $notifications = KTNotification::getList(array('user_id = ?', $this->oUser->getId()));
         $num_notifications = count($notifications);
 
-        $_MAX_NOTIFICATIONS = 5;
+        $maxNotifications = 5;
 
         // FIXME in lieu of pagination, we slice.
-        if ($num_notifications > $_MAX_NOTIFICATIONS) {
-            $notifications = array_slice($notifications, 0, $_MAX_NOTIFICATIONS);
+        if ($num_notifications > $maxNotifications) {
+            $notifications = array_slice($notifications, 0, $maxNotifications);
         }
 
-        $oPluginRegistry =& KTPluginRegistry::getSingleton();
-        $oPlugin =& $oPluginRegistry->getPlugin('ktcore.plugin');
-        $link = $oPlugin->getPagePath('notifications');
+        $pluginRegistry =& KTPluginRegistry::getSingleton();
+        $plugin =& $pluginRegistry->getPlugin('ktcore.plugin');
+        $link = $plugin->getPagePath('notifications');
 
-        $oTemplating =& KTTemplating::getSingleton();
-        $oTemplate = $oTemplating->loadTemplate('ktcore/dashlets/notifications');
-        $aTemplateData = array(
+        $templating =& KTTemplating::getSingleton();
+        $template = $templating->loadTemplate('ktcore/dashlets/notifications');
+        $templateData = array(
             'notifications' => $notifications,
             'notification_count' => $num_notifications,
             'visible_count' => count($notifications),
             'link_all' => $link,
         );
-        return $oTemplate->render($aTemplateData);
+
+        return $template->render($templateData);
     }
+
 }
 
 class KTIndexerStatusDashlet extends KTBaseDashlet {
@@ -179,11 +188,13 @@ class KTIndexerStatusDashlet extends KTBaseDashlet {
     var $aTriggerSet;
     var $noTransforms;
 
-    function KTIndexerStatusDashlet() {
+    function KTIndexerStatusDashlet()
+    {
         $this->sTitle = _kt('Indexer Status');
     }
 
-    function is_active($oUser) {
+    function is_active($oUser)
+    {
         if (!Permission::userIsSystemAdministrator($oUser)) {
             return false;
         }
@@ -195,9 +206,11 @@ class KTIndexerStatusDashlet extends KTBaseDashlet {
         $oKTTriggerRegistry = KTTriggerRegistry::getSingleton();
         $aTriggers = $oKTTriggerRegistry->getTriggers('content', 'transform');
         $aTriggerSet = array();
+
         if (empty($aTriggers)) {
             $noTransforms = true;
-        } else {
+        }
+        else {
             foreach ($aTriggers as $aTrigger) {
                 $sTrigger = $aTrigger[0];
                 if ($aTrigger[1]) {
@@ -222,56 +235,63 @@ class KTIndexerStatusDashlet extends KTBaseDashlet {
                 $aTriggerSet[] = array('types' => $aTypesStr, 'diagnostic' => $sDiagnostic);
             }
         }
+
         $this->aTriggerSet = $aTriggerSet;
         $this->noTransforms = $noTransforms;
 
         return ($noTransforms || !empty($aTriggerSet)); // no diags and have some transforms.
     }
 
-    function render() {
-
-
-        $oTemplating =& KTTemplating::getSingleton();
-        $oTemplate = $oTemplating->loadTemplate('ktcore/dashlets/indexer_status');
-        $aTemplateData = array(
+    function render()
+    {
+        $templating =& KTTemplating::getSingleton();
+        $template = $templating->loadTemplate('ktcore/dashlets/indexer_status');
+        $templateData = array(
             'context' => $this,
             'no_transforms' => $this->noTransforms,
             'transforms' => $this->aTriggerSet,
         );
-        return $oTemplate->render($aTemplateData);
+
+        return $template->render($templateData);
     }
+
 }
 
 // replace the old checked-out docs.
 class KTMailServerDashlet extends KTBaseDashlet {
+
     var $sClass = 'ktError';
 
-    function KTMailServerDashlet() {
+    function KTMailServerDashlet()
+    {
         $this->sTitle = _kt('Mail Server Status');
     }
 
-    function is_active($oUser) {
+    function is_active($oUser)
+    {
         $oConfig =& KTConfig::getSingleton();
         $sEmailServer = $oConfig->get('email/emailServer');
-        if ($sEmailServer == 'none') {
+
+        if ($sEmailServer == 'none' || empty($sEmailServer)) {
             return true;
         }
-        if (empty($sEmailServer)) {
-            return true;
-        }
+
         return false;
     }
 
-    function render() {
-        $oTemplating =& KTTemplating::getSingleton();
-        $oTemplate = $oTemplating->loadTemplate('ktcore/dashlets/mailserver');
+    function render()
+    {
+        $templating =& KTTemplating::getSingleton();
+        $template = $templating->loadTemplate('ktcore/dashlets/mailserver');
         $admin = Permission::userIsSystemAdministrator($_SESSION['userID']);
-        $aTemplateData = array(
+        $templateData = array(
             'context' => $this,
             'admin' => $admin,
         );
-        return $oTemplate->render($aTemplateData);
+
+        return $template->render($templateData);
     }
+
 }
 
 ?>

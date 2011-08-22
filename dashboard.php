@@ -112,7 +112,6 @@ class DashboardDispatcher extends KTStandardDispatcher {
 
         $this->oUser->refreshDashboadState();
 
-        // dashboard
         $dashboardState = $this->oUser->getDashboardState();
         $dashboardJavascript = 'var savedState = ';
         if ($dashboardState == null) {
