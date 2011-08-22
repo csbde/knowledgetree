@@ -95,20 +95,18 @@ class KTTriggerRegistry {
             return array();
         }
 
-        foreach($ret as $trigger) {
+        foreach ($ret as $key => $trigger) {
             if (!class_exists($trigger[0])) {
-                $path = (KTUtil::isAbsolutePath($trigger[1])) ? $trigger[1] : KT_DIR.'/'.$trigger[1];
-                if(!file_exists($path)) {
-                	global $default;
-                    $default->log->error(sprintf(_kt('Cannot locate trigger file \'%s\' for action \'%s\' slot \'%s\'.'), $trigger[0], $action, $slot));
+                $path = (KTUtil::isAbsolutePath($trigger[1])) ? $trigger[1] : KT_DIR . '/' . $trigger[1];
+                if (is_file($path)) {
+                    require_once($path);
                 }
 
                 if (!class_exists($trigger[0])) {
+                    unset($ret[$key]);
                     global $default;
                     $default->log->error(sprintf(_kt('Cannot locate trigger class \'%s\' for action \'%s\' slot \'%s\'.'), $trigger[0], $action, $slot));
                 }
-
-                require_once($path);
             }
         }
 
