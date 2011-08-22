@@ -55,7 +55,8 @@ class GraphicalAnalytics {
 	{
 		$data = $this->KTGraphicalAnalyticsSql->getDocumentsByRating();
 
-		$pointScale = array('1 Star', '2 Stars', '3 Stars', '4 Stars', '5 Stars');
+		//$pointScale = array('1 Star', '2 Stars', '3 Stars', '4 Stars', '5 Stars');
+		$pointScale = array('1', '2', '3', '4', '5');
 		$score = array('point_1' => 0, 'point_2' => 0, 'point_3' => 0, 'point_4' => 0, 'point_5' => 0);
 
 		foreach ($data as $item)
