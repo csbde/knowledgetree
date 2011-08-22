@@ -112,7 +112,7 @@ class KTFolderAction extends KTStandardDispatcher {
         if (KTUtil::arrayGet($_SERVER, 'kt_no_extensions')) {
             $sExt = '';
         }
-
+        
         if ($oKTConfig->get('KnowledgeTree/pathInfoSupport')) {
             return sprintf('%s/action%s/%s?fFolderId=%d', $GLOBALS['KTRootUrl'], $sExt, $this->sName, $this->oFolder->getID());
         } else {

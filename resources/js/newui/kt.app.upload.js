@@ -444,7 +444,7 @@ kt.app.upload = new function() {
         progress.text('Adding files ...');
         progress.css('display', 'block');
         progress.css('visibility', 'visible');
-        progress.append('<img src="/resources/graphics/newui/large-loading.gif" style="float: right;"/>');
+        progress.append('<img src="/resources/graphics/newui/large-loading-dark.gif" style="float: right;"/>');
     }
 
     this.updateProgress = function(message, isError)
