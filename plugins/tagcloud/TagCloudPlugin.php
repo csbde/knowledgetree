@@ -60,6 +60,10 @@ class TagCloudPlugin extends KTPlugin {
     {
         $res = parent::KTPlugin($filename);
         $this->sFriendlyName = _kt('Tag Cloud Plugin');
+
+        $dir = $this->_fixFilename(__FILE__);
+        $this->pluginDir = dirname($dir) . DIRECTORY_SEPARATOR;
+
         return $res;
     }
 
@@ -95,7 +99,7 @@ class TagCloudPlugin extends KTPlugin {
         }
 
         $templating =& KTTemplating::getSingleton();
-        $templating->addLocation('Tag Cloud Plugin', '/plugins/tagcloud/templates');
+        $templating->addLocation('Tag Cloud Plugin', $this->pluginDir . 'templates');
     }
 
     /**
