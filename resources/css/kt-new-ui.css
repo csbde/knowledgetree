@@ -261,8 +261,13 @@ textarea {
 	width: auto;
 }
 
-#sidebar_item .recently-viewed-folders ul { background: url(../../thirdparty/icon-theme/16x16/mimetypes/x-directory-normal.png) no-repeat; margin: 5px; list-style-image: none; }
+#sidebar_item.recently-viewed-folders ul { background: url(../../thirdparty/icon-theme/16x16/mimetypes/x-directory-normal.png) no-repeat; margin: 5px; list-style-image: none; line-height: 17px; }
 
+#sidebar_item .empty-boilerplate {
+	padding: 0px;
+	margin: 10px;
+	font-size: 11px;
+}
 /*-------------------- Breadcrumbs -----------------*/
 #breadcrumbs {
 	background: #EEE;
@@ -519,11 +524,6 @@ ul#more.splitmenu li.dir div.left_action ul a {
 	padding-left: 25px;
 
 }
-
-
-
-
-
 
 
 
@@ -2026,24 +2026,30 @@ div.graph { width: 225px; height: 160px; }
 
 td.line { word-break: break-word; overflow: hidden; width: 100%;}
 
-.graph-viewlet {
+.graph-viewlet,
+.graphContainer {
 	border: 1px solid #CCC;
 	border-radius: 3px;
 	-moz-border-radius: 3px;
 	-webkit-border-radius: 3px;
-	width: 233px!important;
 	display: block;
 	float: left;
 	margin: 5px;
 	font-size: 12px;
 	color: #333;
 }
-
+.graph-viewlet {
+	width: 233px!important;
+}
+.graphContainer {
+	width: 472px;
+	float: left;
+}
 .graph-viewlet .graph{
 	margin-left: 2px;
 	margin-top: 2px;
 }
-.graph-viewlet h3 {
+.graph-viewlet h3{
 	background: whiteSmoke;
 	padding: 5px 5px;
 	border-bottom: 1px solid #CCC;
@@ -2053,6 +2059,9 @@ td.line { word-break: break-word; overflow: hidden; width: 100%;}
 	text-align: center;
 	color: #333;
 	text-shadow: 0px 1px 0px white;
+}
+.graphContainer h3 {
+	display: none;
 }
 .graph-viewlet .tabular {
 	border-spacing: 0px;

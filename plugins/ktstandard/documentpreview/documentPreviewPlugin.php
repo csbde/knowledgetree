@@ -122,10 +122,6 @@ class DocumentPreviewPlugin extends KTPlugin {
 
     function setup() {
         $this->registerColumn(_kt('Property Preview'), 'ktcore.columns.preview', 'PreviewColumn', 'documentPreviewPlugin.php');
-
-        require_once(KT_LIB_DIR . '/templating/templating.inc.php');
-        $oTemplating =& KTTemplating::getSingleton();
-        $oTemplating->addLocation('documentpreview', '/plugins/ktstandard/documentpreview/templates', 'ktstandard.preview.plugin');
     }
 }
 

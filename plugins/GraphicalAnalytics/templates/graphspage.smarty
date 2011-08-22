@@ -1,6 +1,7 @@
+<div style="margin: -2px;">
 <h2>Graphical Analytics</h2>
 
-
+<div style="margin: -3px;">
 <div class="graphContainer">
     {$userAccessPerWeek}
 </div>
@@ -47,12 +48,5 @@
 </div>
 
 <br clear="both" />
-
-
-
-
-{literal}
-<style type="text/css">
-    div.graphContainer {float: left; width: 49%}
-</style>
-{/literal}
+</div>
+</div>

@@ -132,7 +132,7 @@ class KTCheckoutSidebar extends KTDashboardSidebar {
 
 	public function getTitle()
 	{
-		return _kt('My checked-out documents');
+		return _kt('My Checked-out Documents');
 	}
 
 	public function getCSSName()

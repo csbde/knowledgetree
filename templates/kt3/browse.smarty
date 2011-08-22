@@ -73,8 +73,6 @@
 			</div>
     	</div>
 
-    	<br/>
-
 <form action="{$browseutil->getActionBaseUrl()}" method="post">
 
 {if ($isEditable)}
