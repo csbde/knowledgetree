@@ -174,7 +174,7 @@ class BackgroundAction extends BackgroundProcess
 		return "A Batch $action is in progress. Please try again later.";
 	}
 
-	public static function isDocumentInBulkAction($document = null)
+	private static function isDocumentInBulkAction($document = null)
 	{
 		$folderIdsPath = '';
 		if($document instanceof Document) {
@@ -187,10 +187,10 @@ class BackgroundAction extends BackgroundProcess
 			}
 		}
 
-		return self::isBulkActionInProgress($folderIdsPath);
+		return $folderIdsPath;
 	}
 
-	public static function isFolderInBulkAction($folder = null)
+	private static function isFolderInBulkAction($folder = null)
 	{
 		$folderIdsPath = '';
 		if($folder instanceof Folder || $folder instanceof FolderProxy) {
@@ -202,7 +202,7 @@ class BackgroundAction extends BackgroundProcess
 			}
 		}
 
-		return self::isBulkActionInProgress($folderIdsPath);
+		return $folderIdsPath;
 	}
 
     private function storeInMemcache()
@@ -286,8 +286,8 @@ class BackgroundAction extends BackgroundProcess
         $folder = Folder::get($this->targetFolderId);
         $folderName = $folder->getName();
 
-        $folderLink = KTUtil::kt_clean_folder_url($this->targetFolderId);
-
+        $server = ($this->account != '') ? $this->account . '.knowledgetree.com' : KTUtil::getServerName();
+        $folderLink = $server . KTUtil::buildUrl('browse.php', array('fFolderId'=>$this->targetFolderId));
         $message = _kt("Dear {$name},") . '<br/><br/>';
 
         $link = "<a href='$folderLink'>{$folderName}</a>";
@@ -309,8 +309,20 @@ class BackgroundAction extends BackgroundProcess
         $email->send($emailAddress, $subject, $message);
     }
 
-	private static function isBulkActionInProgress($folderIdsPath)
+	public static function isActionInProgress($folderOrDocument, $type = 'folder')
 	{
+		$folderIdsPath = array();
+		switch ($type) {
+			case 'folder':
+				$folderIdsPath = self::isFolderInBulkAction($folderOrDocument);
+				break;
+			case 'document':
+				$folderIdsPath = self::isDocumentInBulkAction($folderOrDocument);
+				break;
+			default:
+				break;
+		}
+
 		$memcache = KTMemcache::getKTMemcache();
 		if(!$memcache->isEnabled()) return ;
 		$folderIdsPath = explode(',', $folderIdsPath);
@@ -329,6 +341,18 @@ class BackgroundAction extends BackgroundProcess
 
 	    return false;
 	}
+
+    public function taskKilled($error = '')
+    {
+        global $default;
+        $default->log->error(__CLASS__ . ": Backgrounded process stopped - {$error}");
+
+        $this->finishUpdate($success, time());
+
+        if ($this->inTransaction) {
+            $this->setTransaction('rollback');
+        }
+    }
 }
 
 ?>
