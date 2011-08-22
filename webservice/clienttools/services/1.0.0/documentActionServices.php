@@ -248,7 +248,7 @@ class documentActionServices extends client_service {
         // If not, check for any other actions are running in the background.(move, copy, delete)
         if (!$response['check']) {
             require_once(KT_LIB_DIR . '/backgroundactions/BackgroundAction.inc.php');
-            $action = backgroundaction::isFolderInBulkAction($folderId);
+            $action = backgroundaction::isActionInProgress($folderId);
             if ($action != '') {
                 $response['check'] = true;
                 $response['message'] = backgroundaction::getMessage($action);

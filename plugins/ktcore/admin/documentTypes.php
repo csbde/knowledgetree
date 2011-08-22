@@ -51,7 +51,7 @@ require_once(KT_LIB_DIR . "/util/sanitize.inc");
 class KTDocumentTypeDispatcher extends KTAdminDispatcher {
 
     public $sHelpPage = 'ktcore/admin/document types.html';
-	public $aCannotView = array('starter', 'professional');
+	public $tierCantView = array('starter', 'professional');
 
    // Breadcrumbs base - added to in methods
     function do_main ()

@@ -270,6 +270,7 @@ class KTPage {
 
         // Breadcrumbs
         $js[] = 'resources/js/jquery.breadcrumbs.js';
+		$js[] = 'resources/js/newui/breadcrumbs.js';
 
         // TODO check these for section
         $js[] = 'thirdpartyjs/jquery/ui/minified/jquery.tools.min.js';
