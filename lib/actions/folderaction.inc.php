@@ -112,7 +112,7 @@ class KTFolderAction extends KTStandardDispatcher {
         if (KTUtil::arrayGet($_SERVER, 'kt_no_extensions')) {
             $sExt = '';
         }
-        
+
         if ($oKTConfig->get('KnowledgeTree/pathInfoSupport')) {
             return sprintf('%s/action%s/%s?fFolderId=%d', $GLOBALS['KTRootUrl'], $sExt, $this->sName, $this->oFolder->getID());
         } else {
@@ -497,7 +497,7 @@ class KTFolderActionUtil {
         require_once(KT_LIB_DIR . '/backgroundactions/BackgroundAction.inc.php');
         $message = '';
         $check = false;
-        $action = backgroundaction::isFolderInBulkAction($folderId);
+        $action = backgroundaction::isActionInProgress($folderId);
         if($action != '') {
 	        $check = true;
 			$message = backgroundaction::getMessage($action);
