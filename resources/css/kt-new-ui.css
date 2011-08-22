@@ -2263,3 +2263,28 @@ div.helperTextOverlay a:hover {
    color: transparent;
    height: 133px;
 }
+
+#graph-not-available {
+	background: url(../graphics/blurred_graph_bg.jpg);
+	width: 960px;
+	height:  800px;
+	display: block;
+	overflow: hidden;
+}
+#graph-not-available .blurb{
+	display: block;
+	margin: 0px auto;
+	position: relative;
+	width: 345px;
+	vertical-align: middle;
+	top: 25%;
+	background: -webkit-gradient(linear,0% 40%,0% 70%,from(#f5f5f5),to(#f1f1f1));
+	border: 1px solid #CCC;
+	padding: 20px;
+	border-radius: 3px;
+	text-align: center;
+	color: #333;
+	font-weight: bold;
+	box-shadow: 0px 1px 0px #333;
+	text-shadow: 0px 1px 0px white;
+}
