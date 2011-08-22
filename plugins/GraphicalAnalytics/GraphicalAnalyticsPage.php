@@ -98,8 +98,7 @@ class GraphAnalyticsPage extends KTStandardDispatcher {
     {
     	global $default;
         $this->aBreadcrumbs = array(
-            array('action' => 'settings', 'name' => _kt('Settings')),
-            array('action' => 'more_analytics', 'name' => _kt('More Analytics')),
+            array('action' => 'dashboard', 'name' => _kt('Dashboard')),
         );
 
 	    $templating = KTTemplating::getSingleton();
