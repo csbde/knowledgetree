@@ -97,19 +97,19 @@ class GraphAnalyticsPage extends KTStandardDispatcher {
     public function planDenied()
     {
     	global $default;
-	    $templating =& KTTemplating::getSingleton();
+        $this->aBreadcrumbs = array(
+            array('action' => 'settings', 'name' => _kt('Settings')),
+            array('action' => 'more_analytics', 'name' => _kt('More Analytics')),
+        );
+
+	    $templating = KTTemplating::getSingleton();
 	    $template = $templating->loadTemplate('tier');
+	    $this->oPage->setBreadcrumbs($this->aBreadcrumbs);
         // Page title
         $this->oPage->title = _kt('Blocked');
         // Don't sanitize the info, as we would like to display a link
         $this->oPage->allowHTML = true;
-        // Empty content
-        $this->oPage->setPageContents('<div></div>');
-        // Remove all js
-        $this->oPage->js_resources = array();
-        $this->oPage->js_standalone = array();
         $this->oPage->setUser($this->oUser);
-        $this->oPage->hideSection();
         $this->oPage->contents = $template->render();
         $this->oPage->render();
 
