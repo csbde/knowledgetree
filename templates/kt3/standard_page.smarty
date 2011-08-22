@@ -67,22 +67,6 @@
     <!--[if IE 7]>
         <style type="text/css" media="all">@import url({$rootUrl}/resources/css/kt-ie-7.css);</style>
     <![endif]-->
-
-    <script type="text/javascript">
-    {literal}
-        jQuery(document).ready(function()
-        {
-            jQuery("#breadcrumb").jBreadCrumb({
-                timeExpansionAnimation: 200,
-                timeCompressionAnimation: 1000,
-                timeInitialCollapse: 100,
-                beginingElementsToLeaveOpen: 1,
-                endElementsToLeaveOpen: 3,
-                previewWidth: 10
-            });
-        })
-    {/literal}
-    </script>
 </head>
 <body {if (!$page->show_portlets)}class="noportlets {$page->componentClass|lower}-section"{/if} class="{$page->componentClass|lower}-section" {if $page->onload}onload="{$page->getBodyOnload()}"{/if} >
 
@@ -177,7 +161,7 @@
 				{/if}
 
 				<div class="floatClear"></div>
-				
+
 				{*
 				<ul class="floatleft">
 					<li class="roundleft"></li> <!-- block for left round corner -->
@@ -225,7 +209,7 @@
 				</div>
 			</div>
 			*}
-			
+
 			{if (!$page->hide_section)}
 			    <div id="breadcrumbs">
 					<table width="960px">
@@ -331,7 +315,7 @@
 						</div>
 					</div>
 				{/if}
-				
+
 
 				<!-- Content added here. -->
 				{$page->contents}

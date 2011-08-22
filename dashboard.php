@@ -59,7 +59,7 @@ class DashboardDispatcher extends KTStandardDispatcher {
     public $sSection = 'dashboard';
     public $notifications = array();
     public $sHelpPage = 'ktcore/dashboard.html';
-    public $aCannotView = array(4);
+    public $tierCantView = array(4);
 
     public function DashboardDispatcher()
     {

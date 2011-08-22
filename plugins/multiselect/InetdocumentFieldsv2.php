@@ -48,7 +48,7 @@ class InetDocumentFieldDispatcher extends KTAdminDispatcher {
     public $bAutomaticTransaction = true;
     public $bHaveConditional = null;
     public $sHelpPage = 'ktcore/admin/document fieldsets.html';
-    public $aCannotView = array('starter', 'professional');
+    public $tierCantView = array('starter', 'professional');
 
     /**
      *
@@ -277,17 +277,17 @@ class InetDocumentFieldDispatcher extends KTAdminDispatcher {
 		if ($oFieldset->getIsGeneric()) {
 		    return _kt('All types use this generic fieldset.');
 		}
-	
+
 		$types = $oFieldset->getAssociatedTypes();
 		if (PEAR::isError($types)) {
 		    $default->log->debug('Fieldsets admin: Error retrieving list of associated document types.');
 		    return _kt('Error retrieving list of types.');
 		}
-	
+
 		if (empty($types)) {
 		    return _kt('None');
 		}
-	
+
 		$aNames = array();
 		foreach ($types as $oType) {
 		    if (!PEAR::isError($oType)) {
@@ -296,16 +296,16 @@ class InetDocumentFieldDispatcher extends KTAdminDispatcher {
 			$default->log->debug('Fieldsets admin: Document type gives error: '.$oType->getMessage());
 		    }
 		}
-	
+
 		$list = implode(', ', $aNames);
 		$length = mb_strlen($list);
-	
+
 		if ($length < 50) {
 		    return $list;
 		}
-	
+
 		$default->log->debug('Fieldsets admin: wrapping the list of doc types from length '.$length);
-	
+
 		// Wrap the list to 50 characters per line
 		$wrapList = '';
 		$cut = 0;
@@ -316,7 +316,7 @@ class InetDocumentFieldDispatcher extends KTAdminDispatcher {
 		    $list = mb_strcut($list, $cut);
 		    $length = mb_strlen($list);
 		}
-	
+
 		return $wrapList . $list;
     }
 
@@ -343,7 +343,7 @@ class InetDocumentFieldDispatcher extends KTAdminDispatcher {
 		    if (KTPluginUtil::pluginIsActive('inet.multiselect.lookupvalue.plugin')) {
 				require_once(KT_DIR.'/plugins/multiselect/inetbasic.inc.php');
 				$oSubDispatcher = new InetBasicFieldsetManagementDispatcher();
-		    } 
+		    }
 		    else {
 				require_once(KT_DIR.'/plugins/ktcore/admin/fieldsets/basic.inc.php');
 				$oSubDispatcher = new BasicFieldsetManagementDispatcher();
