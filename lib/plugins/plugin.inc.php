@@ -393,25 +393,28 @@ class KTPlugin {
         return $pluginCache->removePluginHelper($namespace, $class);
     }
 
-    public function _fixFilename($sFilename)
+    public function _fixFilename($filename)
     {
-        if (empty($sFilename)) {
-            $sFilename = $this->sFilename;
+        if (empty($filename)) {
+            $filename = $this->sFilename;
         }
 
-        if (!KTUtil::isAbsolutePath($sFilename)) {
-            if ($this->sFilename) {
-                $sDirPath = dirname($this->sFilename);
-                $sFilename = sprintf("%s/%s", $sDirPath, $sFilename);
+        if (!KTUtil::isAbsolutePath($filename)) {
+            if (!empty($this->sFilename)) {
+                $dirPath = dirname($this->sFilename);
+                $filename = sprintf("%s/%s", $dirPath, $filename);
+            }
+            else {
+                $filename = sprintf("%s/%s", KT_DIR, $filename);
             }
         }
 
-        $sKtDir = str_replace('\\', '/', KT_DIR);
-        $sFilename = realpath($sFilename);
-        $sFilename = str_replace('\\', '/', $sFilename);
-        $sFilename = str_replace($sKtDir.'/', '', $sFilename);
+        $ktDir = str_replace('\\', '/', KT_DIR);
+        $filename = realpath($filename);
+        $filename = str_replace('\\', '/', $filename);
+        $filename = str_replace($ktDir.'/', '', $filename);
 
-        return $sFilename;
+        return $filename;
     }
 
     public function isRegistered()

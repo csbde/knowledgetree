@@ -95,7 +95,7 @@ class KTTriggerRegistry {
             return array();
         }
 
-        foreach ($ret as $trigger) {
+        foreach ($ret as $key => $trigger) {
             if (!class_exists($trigger[0])) {
                 $path = (KTUtil::isAbsolutePath($trigger[1])) ? $trigger[1] : KT_DIR . '/' . $trigger[1];
                 if (is_file($path)) {
@@ -103,6 +103,7 @@ class KTTriggerRegistry {
                 }
 
                 if (!class_exists($trigger[0])) {
+                    unset($ret[$key]);
                     global $default;
                     $default->log->error(sprintf(_kt('Cannot locate trigger class \'%s\' for action \'%s\' slot \'%s\'.'), $trigger[0], $action, $slot));
                 }

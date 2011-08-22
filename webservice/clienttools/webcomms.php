@@ -6,8 +6,8 @@ error_reporting(E_ERROR);
 // FIXME Should we not turn this off for production?
 define('COMMS_DEBUG', true);
 // Be careful altering this inside the services area - it should never be set to 0 as that could cause runaway processes
-//define('COMMS_TIMEOUT', 60 * 3);
-//set_time_limit(COMMS_TIMEOUT);
+define('COMMS_TIMEOUT', 60 * 3);
+set_time_limit(COMMS_TIMEOUT);
 
 /**
  * Intercept Errors and Exceptions and provide a json response in return.
