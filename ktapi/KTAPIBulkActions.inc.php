@@ -5,7 +5,7 @@
  * KnowledgeTree Community Edition
  * Document Management Made Simple
  * Copyright (C) 2008, 2009, 2010 KnowledgeTree Inc.
- * 
+ *
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License version 3 as published by the
@@ -50,8 +50,8 @@
  * @package KTAPI
  * @version 0.9
  */
-class KTAPI_BulkActions
-{
+class KTAPI_BulkActions {
+
     /**
      * Instance of the KTAPI object
      *
@@ -62,9 +62,9 @@ class KTAPI_BulkActions
     /**
      * Constructs the bulk actions object
      *
-	 * @author KnowledgeTree Team
-	 * @access public
-	 * @param KTAPI $ktapi Instance of the KTAPI object
+     * @author KnowledgeTree Team
+     * @access public
+     * @param KTAPI $ktapi Instance of the KTAPI object
      */
     public function __construct(&$ktapi)
     {
@@ -76,33 +76,33 @@ class KTAPI_BulkActions
      * If any documents or folders fail to copy, an array is returned containing the document/folder object and the failure message.
      *
      * <code>
-	 * $ktapi = new KTAPI();
+     * $ktapi = new KTAPI();
      * $session = $ktapi->start_system_session();
-	 * $document = $ktapi->get_document_by_id($documentid);
-	 *
-	 * $root = $ktapi->get_root_folder();
+     * $document = $ktapi->get_document_by_id($documentid);
+     *
+     * $root = $ktapi->get_root_folder();
      * $newFolder = $root->add_folder("New target folder");
-     * if(PEAR::isError($newFolder)) return;
+     * if (PEAR::isError($newFolder)) return;
      *
      * $aItems = array($document);
      * $bulk = new KTAPI_BulkActions($ktapi);
      * $res = $bulk->copy($aItems, $newFolder, 'Bulk copy');
      *
      * // if documents / folders failed
-     * if(!empty($res)) {
+     * if (!empty($res)) {
      *     // display reason for documents failure
-     *     foreach($res['docs'] as $failedDoc){
+     *     foreach($res['docs'] as $failedDoc) {
      *         echo '<br>' . $failedDoc['object']->get_title() . ' - reason: '.$failedDoc['reason'];
      *     }
      *     // display reason for folders failure
-     *     foreach($res['folders'] as $failedDoc){
+     *     foreach($res['folders'] as $failedDoc) {
      *         echo '<br>' . $failedFolder['object']->get_folder_name() . ' - reason: '.$failedFolder['reason'];
      *     }
      * }
      * </code>
      *
-	 * @author KnowledgeTree Team
-	 * @access public
+     * @author KnowledgeTree Team
+     * @access public
      * @param array $items The folders and/or documents
      * @param KTAPI_Folder $target_folder The target folder object
      * @param string $reason The reason for performing the copy
@@ -110,34 +110,35 @@ class KTAPI_BulkActions
      */
     function copy($items, &$target_folder, $reason)
     {
-        if(empty($items)) return;
+        if (empty($items)) {
+            return;
+        }
 //        assert(!is_null($target_folder));
-//		assert($target_folder instanceof KTAPI_FOLDER);
+//        assert($target_folder instanceof KTAPI_FOLDER);
 
-		if(!is_array($items)){
-		    $items = array($items);
-		}
+        if (!is_array($items)) {
+            $items = array($items);
+        }
 
         // Check user has write permission on target folder
         $result = $this->ktapi->can_user_access_object_requiring_permission($target_folder->get_folder(), KTAPI_PERMISSION_WRITE);
 
-		if (PEAR::isError($result))
-		{
-			return $result;
-		}
+        if (PEAR::isError($result))
+        {
+            return $result;
+        }
 
         // Copy the document or folder
         // Items that fail are returned in an array with the reason for failure.
 
         $failed = array();
-        foreach ($items as $item){
+        foreach ($items as $item) {
 //            assert($item instanceof KTAPI_Document || $item instanceof KTAPI_Folder);
 
             $docOrFolder = ($item instanceof KTAPI_Document) ? 'docs' : 'folders';
 
             $res = $item->copy($target_folder, $reason);
-
-            if(PEAR::isError($res)){
+            if (PEAR::isError($res)) {
                 $failed[$docOrFolder][] = array('object' => $item, 'reason' => $res->getMessage());
                 continue;
             }
@@ -150,33 +151,33 @@ class KTAPI_BulkActions
      * Bulk moves a list of folders and/or documents into the target folder
      *
      * <code>
-	 * $ktapi = new KTAPI();
+     * $ktapi = new KTAPI();
      * $session = $ktapi->start_system_session();
-	 * $document = $ktapi->get_document_by_id($documentid);
-	 *
-	 * $root = $ktapi->get_root_folder();
+     * $document = $ktapi->get_document_by_id($documentid);
+     *
+     * $root = $ktapi->get_root_folder();
      * $newFolder = $root->add_folder("New target folder");
-     * if(PEAR::isError($newFolder)) return;
+     * if (PEAR::isError($newFolder)) return;
      *
      * $aItems = array($document);
      * $bulk = new KTAPI_BulkActions($ktapi)
      * $res = $bulk->move($aItems, $newFolder, 'Bulk move');
      *
      * // if documents / folders failed
-     * if(!empty($res)) {
+     * if (!empty($res)) {
      *     // display reason for documents failure
-     *     foreach($res['docs'] as $failedDoc){
+     *     foreach($res['docs'] as $failedDoc) {
      *         echo '<br>' . $failedDoc['object']->get_title() . ' - reason: '.$failedDoc['reason'];
      *     }
      *     // display reason for folders failure
-     *     foreach($res['folders'] as $failedDoc){
+     *     foreach($res['folders'] as $failedDoc) {
      *         echo '<br>' . $failedFolder['object']->get_folder_name() . ' - reason: '.$failedFolder['reason'];
      *     }
      * }
      * </code>
      *
-	 * @author KnowledgeTree Team
-	 * @access public
+     * @author KnowledgeTree Team
+     * @access public
      * @param array $items The folders and/or documents
      * @param KTAPI_Folder $target_folder The target folder object
      * @param string $reason The reason for performing the move
@@ -184,34 +185,31 @@ class KTAPI_BulkActions
      */
     function move($items, &$target_folder, $reason)
     {
-        if(empty($items)) return;
-//        assert(!is_null($target_folder));
-//		assert($target_folder instanceof KTAPI_FOLDER);
+        if (empty($items)) {
+            return;
+        }
 
-		if(!is_array($items)){
-		    $items = array($items);
-		}
+        if (!is_array($items)) {
+            $items = array($items);
+        }
 
         // Check user has write permission on target folder
         $result = $this->ktapi->can_user_access_object_requiring_permission($target_folder->get_folder(), KTAPI_PERMISSION_WRITE);
 
-		if (PEAR::isError($result))
-		{
-			return $result;
-		}
+        if (PEAR::isError($result)) {
+            return $result;
+        }
 
         // Move the document or folder
         // Items that fail are returned in an array with the reason for failure.
 
         $failed = array();
-        foreach ($items as $item){
-//            assert($item instanceof KTAPI_Document || $item instanceof KTAPI_Folder);
+        foreach ($items as $item) {
 
             $docOrFolder = ($item instanceof KTAPI_Document) ? 'docs' : 'folders';
 
             $res = $item->move($target_folder, $reason);
-
-            if(PEAR::isError($res)){
+            if (PEAR::isError($res)) {
                 $failed[$docOrFolder][] = array('object' => $item, 'reason' => $res->getMessage());
                 continue;
             }
@@ -224,61 +222,62 @@ class KTAPI_BulkActions
      * Performs a bulk checkout on a list of folders and/or documents
      *
      * <code>
-	 * $ktapi = new KTAPI();
+     * $ktapi = new KTAPI();
      * $session = $ktapi->start_system_session();
-	 * $document = $ktapi->get_document_by_id($documentid);
-	 * $folder = $ktapi->get_folder_by_name('New test folder');
-	 *
+     * $document = $ktapi->get_document_by_id($documentid);
+     * $folder = $ktapi->get_folder_by_name('New test folder');
+     *
      * $aItems = array($document, $folder);
      * $bulk = new KTAPI_BulkActions($ktapi)
      * $res = $bulk->checkout($aItems, 'Bulk archive');
      *
      * // if documents / folders failed
-     * if(!empty($res)) {
+     * if (!empty($res)) {
      *     // display reason for documents failure
-     *     foreach($res['docs'] as $failedDoc){
+     *     foreach($res['docs'] as $failedDoc) {
      *         echo '<br>' . $failedDoc['object']->get_title() . ' - reason: '.$failedDoc['reason'];
      *     }
      *     // display reason for folders failure
-     *     foreach($res['folders'] as $failedDoc){
+     *     foreach($res['folders'] as $failedDoc) {
      *         echo '<br>' . $failedFolder['object']->get_folder_name() . ' - reason: '.$failedFolder['reason'];
      *     }
      * }
      * </code>
      *
-	 * @author KnowledgeTree Team
-	 * @access public
+     * @author KnowledgeTree Team
+     * @access public
      * @param array $items The folders and/or documents
      * @param string $reason The reason for performing the checkout
      * @return void|PEAR_Error Nothing with download set to false | PEAR_Error on failure
      */
     function checkout($items, $reason)
     {
-        if(empty($items)) return;
+        if (empty($items)) {
+            return;
+        }
 
-		if(!is_array($items)){
-		    $items = array($items);
-		}
+        if (!is_array($items)) {
+            $items = array($items);
+        }
 
         // Checkout the document or folder
         // Items that fail are returned in an array with the reason for failure.
 
         $failed = array();
-        foreach ($items as $item){
+        foreach ($items as $item) {
             // Documents
-            if($item instanceof KTAPI_Document){
+            if ($item instanceof KTAPI_Document) {
                 $res = $item->checkout($reason);
-
-                if(PEAR::isError($res)){
+                if (PEAR::isError($res)) {
                     $failed['docs'][] = array('object' => $item, 'reason' => $res->getMessage());
                     continue;
                 }
-            }else if($item instanceof KTAPI_Folder){
+            }
+            else if ($item instanceof KTAPI_Folder) {
                 // Folders - need to recurse in
                 DBUtil::startTransaction();
                 $res = $this->recurseFolder($item, $reason, 'checkout');
-
-                if(PEAR::isError($res)){
+                if (PEAR::isError($res)) {
                     DBUtil::rollback();
                     $failed['folders'][] = array('object' => $item, 'reason' => $res->getMessage());
                     continue;
@@ -293,39 +292,40 @@ class KTAPI_BulkActions
     /**
      * Performs a bulk cancel checkout on a list of folders and/or documents
      *
-	 * @author KnowledgeTree Team
-	 * @access public
+     * @author KnowledgeTree Team
+     * @access public
      * @param array $items The folders and/or documents
      * @param string $reason The reason for cancelling the checkout
      * @return void|PEAR_Error Nothing with download set to false | PEAR_Error on failure
      */
     function undo_checkout($items, $reason)
     {
-        if(empty($items)) return;
+        if (empty($items)) {
+            return;
+        }
 
-		if(!is_array($items)){
-		    $items = array($items);
-		}
+        if (!is_array($items)) {
+            $items = array($items);
+        }
 
         // Cancel checkout on the document or folder contents
         // Items that fail are returned in an array with the reason for failure.
 
         $failed = array();
-        foreach ($items as $item){
+        foreach ($items as $item) {
             // Documents
-            if($item instanceof KTAPI_Document){
+            if ($item instanceof KTAPI_Document) {
                 $res = $item->undo_checkout($reason);
-
-                if(PEAR::isError($res)){
+                if (PEAR::isError($res)) {
                     $failed['docs'][] = array('object' => $item, 'reason' => $res->getMessage());
                     continue;
                 }
-            }else if($item instanceof KTAPI_Folder){
+            }
+            else if ($item instanceof KTAPI_Folder) {
                 // Folders - need to recurse in
                 DBUtil::startTransaction();
                 $res = $this->recurseFolder($item, $reason, 'undo_checkout');
-
-                if(PEAR::isError($res)){
+                if (PEAR::isError($res)) {
                     DBUtil::rollback();
                     $failed['folders'][] = array('object' => $item, 'reason' => $res->getMessage());
                     continue;
@@ -340,38 +340,39 @@ class KTAPI_BulkActions
     /**
      * Bulk immutes a list of documents
      *
-	 * @author KnowledgeTree Team
-	 * @access public
+     * @author KnowledgeTree Team
+     * @access public
      * @param array $items The folders and/or documents
      * @return void|PEAR_Error Nothing on success | PEAR_Error on failure
      */
     function immute($items)
     {
-        if(empty($items)) return;
+        if (empty($items)) {
+            return;
+        }
 
-		if(!is_array($items)){
-		    $items = array($items);
-		}
+        if (!is_array($items)) {
+            $items = array($items);
+        }
 
         // Immute the documents
         // Items that fail are returned in an array with the reason for failure.
 
         $failed = array();
-        foreach ($items as $item){
+        foreach ($items as $item) {
             // Documents
-            if($item instanceof KTAPI_Document){
+            if ($item instanceof KTAPI_Document) {
                 $res = $item->immute();
-
-                if(PEAR::isError($res)){
+                if (PEAR::isError($res)) {
                     $failed['docs'][] = array('object' => $item, 'reason' => $res->getMessage());
                     continue;
                 }
-            }else if($item instanceof KTAPI_Folder){
+            }
+            else if ($item instanceof KTAPI_Folder) {
                 // Folders - need to recurse in
                 DBUtil::startTransaction();
                 $res = $this->recurseFolder($item, null, 'immute');
-
-                if(PEAR::isError($res)){
+                if (PEAR::isError($res)) {
                     DBUtil::rollback();
                     $failed['folders'][] = array('object' => $item, 'reason' => $res->getMessage());
                     continue;
@@ -387,47 +388,49 @@ class KTAPI_BulkActions
      * Bulk deletes a list of folders and/or documents
      *
      * <code>
-	 * $ktapi = new KTAPI();
+     * $ktapi = new KTAPI();
      * $session = $ktapi->start_system_session();
-	 * $document = $ktapi->get_document_by_id($documentid);
-	 * $folder = $ktapi->get_folder_by_name('New test folder');
-	 *
+     * $document = $ktapi->get_document_by_id($documentid);
+     * $folder = $ktapi->get_folder_by_name('New test folder');
+     *
      * $aItems = array($document, $folder);
      * $bulk = new KTAPI_BulkActions($ktapi)
      * $res = $bulk->delete($aItems, 'Bulk delete');
      *
      * // if documents / folders failed
-     * if(!empty($res)) {
+     * if (!empty($res)) {
      *     // display reason for documents failure
-     *     foreach($res['docs'] as $failedDoc){
+     *     foreach($res['docs'] as $failedDoc) {
      *         echo '<br>' . $failedDoc['object']->get_title() . ' - reason: '.$failedDoc['reason'];
      *     }
      *     // display reason for folders failure
-     *     foreach($res['folders'] as $failedDoc){
+     *     foreach($res['folders'] as $failedDoc) {
      *         echo '<br>' . $failedFolder['object']->get_folder_name() . ' - reason: '.$failedFolder['reason'];
      *     }
      * }
      * </code>
      *
-	 * @author KnowledgeTree Team
-	 * @access public
+     * @author KnowledgeTree Team
+     * @access public
      * @param array $items The folders and/or documents
      * @param string $reason The reason for performing the deletion
      * @return void|PEAR_Error Nothing on success | PEAR_Error on failure
      */
     function delete($items, $reason)
     {
-        if(empty($items)) return;
+        if (empty($items)) {
+            return;
+        }
 
-		if(!is_array($items)){
-		    $items = array($items);
-		}
+        if (!is_array($items)) {
+            $items = array($items);
+        }
 
         // Delete the document or folder
         // Items that fail are returned in an array with the reason for failure.
 
         $failed = array();
-        foreach ($items as $item){
+        foreach ($items as $item) {
             assert($item instanceof KTAPI_Document || $item instanceof KTAPI_Folder);
 
             $docOrFolder = ($item instanceof KTAPI_Document) ? 'docs' : 'folders';
@@ -435,12 +438,12 @@ class KTAPI_BulkActions
             $error = '';
             if ($docOrFolder == 'folders' || KTDocumentUtil::canBeDeleted($item->getObject(), $error)) {
                 $res = $item->delete($reason);
-    
-                if(PEAR::isError($res)){
+                if (PEAR::isError($res)) {
                     $failed[$docOrFolder][] = array('object' => $item, 'reason' => $res->getMessage());
                     continue;
                 }
-            } else {
+            }
+            else {
                 $failed[$docOrFolder][] = array('object' => $item, 'reason' => $error->getMessage());
             }
         }
@@ -452,61 +455,62 @@ class KTAPI_BulkActions
      * Bulk archives a list of folders and/or documents
      *
      * <code>
-	 * $ktapi = new KTAPI();
+     * $ktapi = new KTAPI();
      * $session = $ktapi->start_system_session();
-	 * $document = $ktapi->get_document_by_id($documentid);
-	 * $folder = $ktapi->get_folder_by_name('New test folder');
-	 *
+     * $document = $ktapi->get_document_by_id($documentid);
+     * $folder = $ktapi->get_folder_by_name('New test folder');
+     *
      * $aItems = array($document, $folder);
      * $bulk = new KTAPI_BulkActions($ktapi)
      * $res = $bulk->archive($aItems, 'Bulk archive');
      *
      * // if documents / folders failed
-     * if(!empty($res)) {
+     * if (!empty($res)) {
      *     // display reason for documents failure
-     *     foreach($res['docs'] as $failedDoc){
+     *     foreach($res['docs'] as $failedDoc) {
      *         echo '<br>' . $failedDoc['object']->get_title() . ' - reason: '.$failedDoc['reason'];
      *     }
      *     // display reason for folders failure
-     *     foreach($res['folders'] as $failedDoc){
+     *     foreach($res['folders'] as $failedDoc) {
      *         echo '<br>' . $failedFolder['object']->get_folder_name() . ' - reason: '.$failedFolder['reason'];
      *     }
      * }
      * </code>
      *
-	 * @author KnowledgeTree Team
-	 * @access public
+     * @author KnowledgeTree Team
+     * @access public
      * @param array $items The folders and/or documents
      * @param string $reason The reason for performing the archival
      * @return void|PEAR_Error Nothing on success | PEAR_Error on failure
      */
     function archive($items, $reason)
     {
-        if(empty($items)) return;
+        if (empty($items)) {
+            return;
+        }
 
-		if(!is_array($items)){
-		    $items = array($items);
-		}
+        if (!is_array($items)) {
+            $items = array($items);
+        }
 
         // Archive the document or folder
         // Items that fail are returned in an array with the reason for failure.
 
         $failed = array();
-        foreach ($items as $item){
+        foreach ($items as $item) {
             // Documents
-            if($item instanceof KTAPI_Document){
+            if ($item instanceof KTAPI_Document) {
                 $res = $item->archive($reason);
-
-                if(PEAR::isError($res)){
+                if (PEAR::isError($res)) {
                     $failed['docs'][] = array('object' => $item, 'reason' => $res->getMessage());
                     continue;
                 }
-            }else if($item instanceof KTAPI_Folder){
+            }
+            else if ($item instanceof KTAPI_Folder) {
                 // Folders - need to recurse in
                 DBUtil::startTransaction();
                 $res = $this->recurseFolder($item, $reason, 'archive');
-
-                if(PEAR::isError($res)){
+                if (PEAR::isError($res)) {
                     DBUtil::rollback();
                     $failed['folders'][] = array('object' => $item, 'reason' => $res->getMessage());
                     continue;
@@ -521,8 +525,8 @@ class KTAPI_BulkActions
     /**
      * Recursive function to perform a given action on a folder and contained documents.
      *
-	 * @author KnowledgeTree Team
-	 * @access private
+     * @author KnowledgeTree Team
+     * @access private
      * @param KTAPI_Folder $folder The instance of the folder object being archived
      * @param string $reason The reason for archiving
      * @param string $action The action to be performed on the documents
@@ -530,18 +534,17 @@ class KTAPI_BulkActions
      */
     private function recurseFolder($folder, $reason = '', $action = 'archive')
     {
-        if(!($folder instanceof KTAPI_Folder)){
+        if (!($folder instanceof KTAPI_Folder)) {
             return PEAR::raiseError('Object is not an instance of KTAPI_Folder');
         }
 
         // Archive contained documents
         $listDocs = $folder->get_listing(1, 'D');
-        if(!empty($listDocs)) {
-
-            foreach ($listDocs as $docInfo){
+        if (!empty($listDocs)) {
+            foreach ($listDocs as $docInfo) {
                 $doc = $this->ktapi->get_document_by_id($docInfo['id']);
 
-                switch ($action){
+                switch ($action) {
                     case 'archive':
                         $res = $doc->archive($reason);
                         break;
@@ -559,8 +562,7 @@ class KTAPI_BulkActions
                         break;
                 }
 
-
-                if(PEAR::isError($res)){
+                if (PEAR::isError($res)) {
                     return $res;
                 }
             }
@@ -568,16 +570,17 @@ class KTAPI_BulkActions
 
         // Archive contained folders
         $listFolders = $folder->get_listing(1, 'F');
-        if(!empty($listFolders)) {
-            foreach ($listFolders as $folderItem){
+        if (!empty($listFolders)) {
+            foreach ($listFolders as $folderItem) {
                 $res = $this->archiveFolder($folderItem, $reason);
-
-                if(PEAR::isError($res)){
+                if (PEAR::isError($res)) {
                     return $res;
                 }
             }
         }
+
         return;
     }
+
 }
 ?>

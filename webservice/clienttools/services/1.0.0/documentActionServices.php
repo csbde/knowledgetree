@@ -413,6 +413,7 @@ class documentActionServices extends client_service {
         return $fields;
     }
 
+    // FIXME This function should not be called doBulkCopy if used for multiple actions.
     public function doBulkCopy($params)
     {
         $action = $params['action'];
@@ -446,10 +447,12 @@ class documentActionServices extends client_service {
             default:
                 $reason = '';
         }
+
         require_once(KT_LIB_DIR . '/backgroundactions/BackgroundAction.inc.php');
         $backgroundaction = new BackgroundAction($action, $_SESSION['userID'], $organisedItemList, $reason, $targetFolderId, $currentFolderId);
+
         if ($backgroundaction->checkIfNeedsBackgrounding()) {
-        	$backgroundaction->setAccount(ACCOUNT_NAME);
+            $backgroundaction->setAccount(ACCOUNT_NAME);
             $response = $backgroundaction->background();
             if ($response) {
                 $msg = _kt('Success. You will be redirected shortly.');
@@ -457,6 +460,7 @@ class documentActionServices extends client_service {
             else {
                 $msg = _kt('Failure. Could not initialize process.');
             }
+            
             $url = KTUtil::kt_clean_folder_url($targetFolderId);
             $msg = "Your operation is being processed. You will receive an email on completion.";
             $result = array('type' => 'success', 'url' => $url, 'msg' => $msg, 'bulk' => $queueResponse);
@@ -464,13 +468,13 @@ class documentActionServices extends client_service {
 
             return true;
         }
+
         $ktapi = $this->KT;
         $actionResult = $ktapi->performBulkAction($action, $organisedItemList, $reason, $targetFolderId);
         $url = KTUtil::kt_clean_folder_url($targetFolderId);
 
         if ($actionResult['status_code'] == 1) {
             $error = $actionResult['message'];
-
             $result = array('type' => 'fatal', 'error' => $error, 'url' => $url);
             $this->addResponse('result', json_encode($result));
 
