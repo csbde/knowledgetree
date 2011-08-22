@@ -55,7 +55,8 @@ class GraphicalAnalytics {
 	{
 		$data = $this->KTGraphicalAnalyticsSql->getDocumentsByRating();
 
-		$pointScale = array('1 Star', '2 Stars', '3 Stars', '4 Stars', '5 Stars');
+		//$pointScale = array('1 Star', '2 Stars', '3 Stars', '4 Stars', '5 Stars');
+		$pointScale = array('1', '2', '3', '4', '5');
 		$score = array('point_1' => 0, 'point_2' => 0, 'point_3' => 0, 'point_4' => 0, 'point_5' => 0);
 
 		foreach ($data as $item)
@@ -156,7 +157,9 @@ class GraphicalAnalytics {
 		for ($i=0; $i<$limit;$i++) {
 			$week = $this->formatWeekStr($i);
 
-			if ($data[$rowCounter]['week_number'] == $i) {
+			if (count($data) == 0) {
+                $num = 0;
+            } else if ($data[$rowCounter]['week_number'] == $i) {
 				$num = $data[$rowCounter]['uploadcount'];
 				$rowCounter++;
 			} else {
@@ -203,7 +206,9 @@ class GraphicalAnalytics {
 		for ($i=0; $i<$limit;$i++) {
 			$week = $this->formatWeekStr($i);
 
-			if ($data[$rowCounter]['week_number'] == $i) {
+			if (count($data) == 0) {
+                $num = 0;
+            } else if ($data[$rowCounter]['week_number'] == $i) {
 				$num = $data[$rowCounter]['accessCount'];
 				$rowCounter++;
 			} else {
@@ -323,7 +328,9 @@ class GraphicalAnalytics {
 		for ($i=0; $i<$limit;$i++) {
 			$week = $this->formatWeekStr($i);
 
-			if ($data[$rowCounter]['week_number'] == $i) {
+			if (count($data) == 0) {
+                $num = 0;
+            } else if ($data[$rowCounter]['week_number'] == $i) {
 				$num = $data[$rowCounter]['comment_count'];
 				$rowCounter++;
 			} else {
@@ -367,7 +374,9 @@ class GraphicalAnalytics {
 		for ($i=0; $i<$limit;$i++) {
 			$week = $this->formatWeekStr($i);
 
-			if ($data[$rowCounter]['week_number'] == $i) {
+			if (count($data) == 0) {
+                $num = 0;
+            } else if ($data[$rowCounter]['week_number'] == $i) {
 				$num = $data[$rowCounter]['like_count'];
 				$rowCounter++;
 			} else {

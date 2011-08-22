@@ -15,7 +15,7 @@
                 text: 'Document Ratings'
             },
             subtitle: {
-                text: 'Document Rating according to Stars'
+                text: ' '//'Document Rating according to Stars'
             },
             xAxis: {
                 categories: [{/literal}{$pointScale}{literal}],
