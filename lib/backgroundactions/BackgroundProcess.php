@@ -52,7 +52,7 @@ class BackgroundProcess
 
 	}
 
-	public function isActionInProgress()
+	public static function isActionInProgress()
 	{
 
 	}
@@ -71,6 +71,25 @@ class BackgroundProcess
 	{
 
 	}
+
+	public function taskKilled($error = '')
+	{
+
+	}
+
+    public function handleShutdown()
+    {
+        $error = error_get_last();
+        if ($error['type'] === E_ERROR || $error['type'] === E_CORE_ERROR) {
+            $this->taskKilled($error['message']);
+        }
+    }
+
+    public function handleInterrupt($signal)
+    {
+        $error = 'Process interrupted';
+        $this->taskKilled($error);
+    }
 }
 
 ?>

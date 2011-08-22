@@ -74,7 +74,7 @@ class BackgroundPermissions extends BackgroundProcess {
                 break;
             default:
                 $this->userId = $info['userId'];
-                $this->taskKilled('Unknown update type');
+                $this->taskKilled('BackgroundPermissions', 'Unknown update type');
         }
     }
 
@@ -310,10 +310,10 @@ class BackgroundPermissions extends BackgroundProcess {
         $email->send($emailAddress, $subject, $message);
     }
 
-    private function taskKilled($error = '')
+    public function taskKilled($error = '')
     {
         global $default;
-        $default->log->error("Permissions: Backgrounded update stopped - {$error}");
+        $default->log->error(__CLASS__ . ": Backgrounded process stopped - {$error}");
 
         $this->finishUpdate($success, time());
 
@@ -322,19 +322,6 @@ class BackgroundPermissions extends BackgroundProcess {
         }
     }
 
-    public function handleShutdown()
-    {
-        $error = error_get_last();
-        if ($error['type'] === E_ERROR || $error['type'] === E_CORE_ERROR) {
-            $this->taskKilled($error['message']);
-        }
-    }
-
-    public function handleInterrupt($signal)
-    {
-        $error = 'Process interrupted';
-        $this->taskKilled($error);
-    }
 }
 
 ?>
