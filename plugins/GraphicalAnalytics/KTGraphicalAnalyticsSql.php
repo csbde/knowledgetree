@@ -258,11 +258,11 @@ class KTGraphicalAnalyticsSql {
                 INNER JOIN document_content_version DCV ON DCV.id = DMV.content_version_id
                 ' . (empty($permissionsQuery) ? 'WHERE' : "$permissionsQuery AND") . '
 		DT.transaction_namespace = "ktcore.transactions.view"
-                AND DT.document_id = D.id
+                AND DT.document_id = D.id AND ABS(TIMESTAMPDIFF(WEEK, NOW(), datetime)) <= '.$weeksLimit.'
 		GROUP BY week_number
-		ORDER BY week_number
+		ORDER BY week_number DESC
 		LIMIT 0, '.$weeksLimit;
-
+		
         return DBUtil::getResultArray($sql);
     }
 
@@ -297,10 +297,10 @@ class KTGraphicalAnalyticsSql {
                 INNER JOIN document_content_version DCV ON DCV.id = DMV.content_version_id
                 ' . (empty($permissionsQuery) ? 'WHERE' : "$permissionsQuery AND") . '
 		(DT.transaction_namespace = "ktcore.transactions.create" OR DT.transaction_namespace = "ktcore.transactions.check_in")
-		AND ABS(TIMESTAMPDIFF(WEEK, NOW(), datetime)) < 10
+		AND ABS(TIMESTAMPDIFF(WEEK, NOW(), datetime)) <= '.$weeksLimit.'
                 AND DT.document_id = D.id
 		GROUP BY week_number
-		ORDER BY week_number
+		ORDER BY week_number DESC
 		LIMIT 0, '.$weeksLimit;
 
         return DBUtil::getResultArray($sql);
@@ -315,10 +315,10 @@ class KTGraphicalAnalyticsSql {
 		(
 			SELECT DISTINCT CONCAT(ABS(TIMESTAMPDIFF(WEEK, NOW(), datetime)), "_", user_id) AS uniqueDateUser,
 				ABS( TIMESTAMPDIFF( WEEK, NOW(), datetime ) ) AS week_number FROM user_history
-			WHERE ABS( TIMESTAMPDIFF( WEEK, NOW( ) , datetime ) ) < '.$weeksLimit.'
+			WHERE ABS( TIMESTAMPDIFF( WEEK, NOW( ) , datetime ) ) <= '.$weeksLimit.'
 		) alias
 		GROUP BY week_number
-		ORDER BY week_number
+		ORDER BY week_number DESC
 		';
 
         return DBUtil::getResultArray($sql);
@@ -353,10 +353,10 @@ class KTGraphicalAnalyticsSql {
                 INNER JOIN document_metadata_version DMV ON DMV.id = D.metadata_version_id
                 INNER JOIN document_content_version DCV ON DCV.id = DMV.content_version_id
                 ' . (empty($permissionsQuery) ? 'WHERE' : "$permissionsQuery AND") . '
-                ABS(TIMESTAMPDIFF(WEEK,NOW(),date_created)) < 10
+                ABS(TIMESTAMPDIFF(WEEK,NOW(),date_created)) <= '.$weeksLimit.'
                 AND c.document_id = D.id
 		GROUP BY week_number
-		ORDER BY week_number
+		ORDER BY week_number DESC
 		LIMIT '.$weeksLimit;
 
         return DBUtil::getResultArray($sql);
@@ -369,9 +369,9 @@ class KTGraphicalAnalyticsSql {
 			$sql = '
 			SELECT COUNT(document_id) as like_count, ABS(TIMESTAMPDIFF(WEEK,NOW(),date_time)) AS week_number
 			FROM ratingcontent_document
-			WHERE ABS(TIMESTAMPDIFF(WEEK,NOW(),date_time)) < 10
+			WHERE ABS(TIMESTAMPDIFF(WEEK,NOW(),date_time)) <= '.$weeksLimit.'
 			GROUP BY week_number
-			ORDER BY week_number
+			ORDER BY week_number DESC
 			LIMIT '.$weeksLimit;
 	
 			return DBUtil::getResultArray($sql);
@@ -393,10 +393,10 @@ class KTGraphicalAnalyticsSql {
 		ABS( TIMESTAMPDIFF( WEEK, NOW() , datetime ) ) AS week, count( * ) AS count
 		FROM document_transactions
 		INNER JOIN document_transaction_types_lookup ON ( transaction_namespace = namespace )
-		WHERE ABS( TIMESTAMPDIFF( WEEK, NOW( ) , datetime ) ) < ".$limit."
+		WHERE ABS( TIMESTAMPDIFF( WEEK, NOW( ) , datetime ) ) <= ".$limit."
 		AND transaction_namespace IN (".$transactions.")
 		GROUP BY transaction_week
-		ORDER BY week";
+		ORDER BY week DESC";
 		
 		return DBUtil::getResultArray($sql);
 	}

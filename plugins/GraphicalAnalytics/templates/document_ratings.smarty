@@ -15,7 +15,7 @@
                 text: 'Document Ratings'
             },
             subtitle: {
-                text: ' '//'Document Rating according to Stars'
+                text: null
             },
             xAxis: {
                 categories: [{/literal}{$pointScale}{literal}],
@@ -54,8 +54,8 @@
                 layout: 'vertical',
                 align: 'right',
                 verticalAlign: 'top',
-                x: -100,
-                y: 100,
+                x: 0,
+                y: 35,
                 floating: true,
                 borderWidth: 1,
                 backgroundColor: '#FFFFFF',

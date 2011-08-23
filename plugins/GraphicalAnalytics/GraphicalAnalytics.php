@@ -98,22 +98,27 @@ class GraphicalAnalytics {
 		return $this->loadTemplate($templateData, 'documentviews_week');
 	}
 
-	private function generateDocViewsGraphData($data)
+	private function generateDocViewsGraphData($data, $limit=10)
 	{
 		$weeks = array();
 		$score = array();
+		
+		$rowCounter = 0;
+		
+		for ($i=$limit; $i>=0;$i--) {
+			$week = $this->formatWeekStr($i);
 
-		foreach($data as $item)
-		{
-			switch ($item['week_number'])
-			{
-				case 0: $str = 'This Week'; break;
-				case 1: $str = 'Last Week'; break;
-				default: $str = $item['week_number'].' Weeks Ago'; break;
+			if (count($data) == 0) {
+                $num = 0;
+            } else if ($data[$rowCounter]['week_number'] == $i) {
+				$num = $data[$rowCounter]['count'];
+				$rowCounter++;
+			} else {
+				$num = 0;
 			}
 
-			$weeks[] = $str;
-			$score[] = $item['count'];
+			$weeks[] = $i;
+			$score[] = $num;
 		}
 
 		$weeks = '"'.implode('", "', $weeks).'"';
@@ -154,7 +159,7 @@ class GraphicalAnalytics {
 		$uploadsCounter = array();
 		$uploadsArray = array();
 
-		for ($i=0; $i<$limit;$i++) {
+		for ($i=$limit; $i>=0;$i--) {
 			$week = $this->formatWeekStr($i);
 
 			if (count($data) == 0) {
@@ -173,7 +178,7 @@ class GraphicalAnalytics {
 		}
 
 		$weeks = '"'.implode('", "', $weeks).'"';
-		$weeksStr = $this->generateWeeksStr($limit);
+		$weeksStr = $this->generateWeeksStrDescending($limit);
 		
 		$uploadsCounter = implode(', ', $uploadsCounter);
 
@@ -203,7 +208,7 @@ class GraphicalAnalytics {
 		$accessCounter = array();
 		$accessArray = array();
 
-		for ($i=0; $i<$limit;$i++) {
+		for ($i=$limit; $i>=0;$i--) {
 			$week = $this->formatWeekStr($i);
 
 			if (count($data) == 0) {
@@ -222,7 +227,7 @@ class GraphicalAnalytics {
 		}
 
 		$weeks = '"'.implode('", "', $weeks).'"';
-		$weeksStr = $this->generateWeeksStr($limit);
+		$weeksStr = $this->generateWeeksStrDescending($limit);
 		
 		$accessCounter = implode(', ', $accessCounter);
 
@@ -287,7 +292,7 @@ class GraphicalAnalytics {
 		$templateData = array();
 
 		$templateData['comments'] = $this->getDocumentCommentsPerWeekData(3);
-		$templateData['document_views'] = $this->generateDocViewsGraphData($this->KTGraphicalAnalyticsSql->getDocumentViewsOverWeek(3));
+		$templateData['document_views'] = $this->generateDocViewsGraphData($this->KTGraphicalAnalyticsSql->getDocumentViewsOverWeek(3), 3);
 		$templateData['document_likes'] = $this->getDocumentLikesPerWeekData(3);
 
 		return $this->loadTemplate($templateData, 'views_vs_comments_week_dashlet');
@@ -298,7 +303,7 @@ class GraphicalAnalytics {
 		$templateData = array();
 
 		$templateData['comments'] = $this->getDocumentCommentsPerWeekData($this->numWeeksPage);
-		$templateData['document_views'] = $this->generateDocViewsGraphData($this->KTGraphicalAnalyticsSql->getDocumentViewsOverWeek($this->numWeeksPage));
+		$templateData['document_views'] = $this->generateDocViewsGraphData($this->KTGraphicalAnalyticsSql->getDocumentViewsOverWeek($this->numWeeksPage), $this->numWeeksPage);
 		$templateData['document_likes'] = $this->getDocumentLikesPerWeekData($this->numWeeksPage);
 
 		return $this->loadTemplate($templateData, 'views_vs_comments_week');
@@ -325,7 +330,7 @@ class GraphicalAnalytics {
 		$commentsCounter = array();
 		$commentsArray = array();
 
-		for ($i=0; $i<$limit;$i++) {
+		for ($i=$limit; $i>=0;$i--) {
 			$week = $this->formatWeekStr($i);
 
 			if (count($data) == 0) {
@@ -342,7 +347,7 @@ class GraphicalAnalytics {
 		}
 
 		//$weeks = '"'.implode('", "', $weeks).'"';
-		$weeks = $this->generateWeeksStr($limit);
+		$weeks = $this->generateWeeksStrDescending($limit);
 		
 		$commentsCounter = implode(', ', $commentsCounter);
 
@@ -371,7 +376,7 @@ class GraphicalAnalytics {
 		$likesCounter = array();
 		$likesArray = array();
 
-		for ($i=0; $i<$limit;$i++) {
+		for ($i=$limit; $i>=0;$i--) {
 			$week = $this->formatWeekStr($i);
 
 			if (count($data) == 0) {
@@ -388,7 +393,7 @@ class GraphicalAnalytics {
 		}
 
 		//$weeks = '"'.implode('", "', $weeks).'"';
-		$weeks = $this->generateWeeksStr($limit);
+		$weeks = $this->generateWeeksStrDescending($limit);
 		
 		$likesCounter = implode(', ', $likesCounter);
 
@@ -491,7 +496,7 @@ class GraphicalAnalytics {
 		{
 			$newArray = array();
 			
-			for ($i=0;$i<$limit;$i++)
+			for ($i=$limit;$i>=0;$i--)
 			{
 				$newArray['week_'.$i] = 0;
 			}
@@ -518,7 +523,7 @@ class GraphicalAnalytics {
 			$comma = ',';
 		}
 		
-		$weekStr = $this->generateWeeksStr($limit);
+		$weekStr = $this->generateWeeksStrDescending($limit);
 		
 		return array('weeksStr'=>$weekStr, 'seriesStr'=>$seriesStr);
 	}
@@ -575,12 +580,30 @@ class GraphicalAnalytics {
 		$weekStr = array();
 		
 		for ($i=0; $i<$weeks;$i++) {
-			switch ($i)
-			{
-				case 0: $str = 'This Week'; break;
-				case 1: $str = 'Last Week'; break;
-				default: $str = $i.' Weeks Ago'; break;
+			if ($i == 0) {
+				$str = date('W')*1;
+			} else {
+				$str = date('W', strtotime("-".$i." weeks"))*1;
 			}
+			
+			$weekStr[] = $str;
+		}
+		
+		return '"'.implode('", "', $weekStr).'"';
+	}
+	
+	private function generateWeeksStrDescending($weeks=10)
+	{
+		$weekStr = array();
+		
+		for ($i=$weeks; $i>=0;$i--) {
+			
+			if ($i == 0) {
+				$str = date('W')*1;
+			} else {
+				$str = date('W', strtotime("-".$i." weeks"))*1;
+			}
+			
 			
 			$weekStr[] = $str;
 		}

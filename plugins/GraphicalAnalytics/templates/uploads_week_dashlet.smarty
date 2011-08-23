@@ -19,9 +19,9 @@
 
             
             xAxis: {
-                categories: [{/literal}{$weeksCounter}{literal}],
+                categories: [{/literal}{$weeks}{literal}],
                 title: {
-                    text: null
+                    text: 'Week Number'
                 }
             },
             yAxis: {
