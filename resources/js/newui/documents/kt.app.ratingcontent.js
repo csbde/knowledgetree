@@ -83,7 +83,9 @@ kt.app.ratingcontent = new function() {
 			
 			if (self.action == 'likeDocument') {
 				
-				if (response.data.newNumLikes == 2) {
+				if (response.data.newNumLikes == 1) {
+					countStr = 'You like this';
+				} else if (response.data.newNumLikes == 2) {
 					countStr = 'You and one other person likes this';
 				} else {
 					countStr = 'You and '+(response.data.newNumLikes-1)+' people like this';
