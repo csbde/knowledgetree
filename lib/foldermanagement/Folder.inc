@@ -508,28 +508,29 @@ class Folder extends KTEntity {
      *
      * @return array full path of folder as an array of folderIDs
      */
-    function getFolderPathNamesAsArray($iFolderID)
+    function getFolderPathNamesAsArray($folderId)
     {
         global $default;
 
-        $oFolder = Folder::get($iFolderID);
-        $aPathArray = array();
-        if ($oFolder) {
-            if (strlen($oFolder->getFullPath()) > 0) {
-                if (strlen($oFolder->getFullPath()) > 1) {
-                    $aPathArray = explode("/",$oFolder->getFullPath());
+        $folder = Folder::get($folderId);
+        
+        $pathArray = array();
+        if ($folder && !PEAR::isError($folder)) {
+            if (strlen($folder->getFullPath()) > 0) {
+                if (strlen($folder->getFullPath()) > 1) {
+                    $pathArray = explode("/",$folder->getFullPath());
                 }
                 else {
-                    $aPathArray = array($oFolder->getFullPath());
+                    $pathArray = array($folder->getFullPath());
                 }
-                //$aPathArray[count($aPathArray)] = $oFolder->getName();
+                //$pathArray[count($pathArray)] = $folder->getName();
             }
             else {
-                $aPathArray = array($oFolder->getName());
+                $pathArray = array($folder->getName());
             }
         }
 
-        return $aPathArray;
+        return $pathArray;
     }
 
     // {{{
