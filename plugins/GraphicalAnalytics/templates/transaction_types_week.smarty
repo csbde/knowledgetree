@@ -71,10 +71,10 @@
             },
             legend: {
                 layout: 'vertical',
-                align: 'left',
+                align: 'right',
                 verticalAlign: 'top',
-                x: 50,
-                y: 50,
+                x: 0,
+                y: 35,
                 floating: true,
                 borderWidth: 1,
                 backgroundColor: '#FFFFFF',
