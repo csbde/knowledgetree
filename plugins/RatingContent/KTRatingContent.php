@@ -22,6 +22,8 @@
 
 require_once(KT_LIB_DIR . '/security/Permission.inc');
 require_once(KT_LIB_DIR . '/database/dbutil.inc');
+require_once(KT_LIB_DIR . '/documentmanagement/DocumentTransaction.inc');
+require_once(KT_LIB_DIR . '/documentmanagement/Document.inc');
 
 class KTRatingContent {
 
@@ -137,8 +139,13 @@ class KTRatingContent {
 			VALUES (' . $documentId . ', ' . $userId . ', "' . date('Y-m-d H:i:s') . '");';
 
 			DBUtil::runQuery($query);
-
-
+			
+			$document = Document::get($documentId);
+			
+			// Create the document transaction
+			$oDocumentTransaction = & new DocumentTransaction($document, 'Document liked', 'ratingcontent.transactions.like', array());
+			$oDocumentTransaction->create();
+			
 		}
 
 		return $this->getDocumentLikes($documentId);
@@ -146,9 +153,17 @@ class KTRatingContent {
 
 	public function unlikeDocument($documentId, $userId)
 	{
-		$query = "DELETE FROM {$this->table} WHERE user_id = '{$userId}' AND document_id = '{$documentId}';";
+		if ($this->likeDocumentExists($documentId, $userId)) {
+			$query = "DELETE FROM {$this->table} WHERE user_id = '{$userId}' AND document_id = '{$documentId}';";
 
-		DBUtil::runQuery($query);
+			DBUtil::runQuery($query);
+			
+			$document = Document::get($documentId);
+			
+			// Create the document transaction
+			$oDocumentTransaction = & new DocumentTransaction($document, 'Document unliked', 'ratingcontent.transactions.unlike', array());
+			$oDocumentTransaction->create();
+		}
 
 		return $this->getDocumentLikes($documentId);
 	}
