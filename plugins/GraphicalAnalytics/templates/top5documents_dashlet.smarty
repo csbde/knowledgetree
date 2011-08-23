@@ -5,7 +5,7 @@
     <tbody>
         {foreach from=$data item=document}
         <tr class="{cycle values=odd,even name=topdocs}">
-            <td class="icon">{$context->getMimeIcon($document.mime_id)}</td><td class="line"><a href="{$context->cleanUrl($document.document_id)}">{$document.title|truncate:25}</a></td>
+            <td class="icon">{$context->getMimeIcon($document.mime_id)}</td><td class="line"><a href="{$context->cleanUrl($document.document_id)}">{$document.title|truncate:25}</a></td><td><span class="views">{$document.documentscore|round}</span></td>
         </tr>
         {/foreach}
     </tbody>
