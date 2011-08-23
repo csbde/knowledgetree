@@ -1,7 +1,6 @@
-<h3>Views, Comments and Likes per Week</h3>
+<h3>{$graphTitle}</h3>
 
-
-<div id="views_vs_comments_per_week"></div>
+<div id="{$uniqueDivId}" class="graph"></div>
 
 {literal}
 <script type="text/javascript">
@@ -9,26 +8,25 @@
     jQuery(document).ready(function() {
         viewsVsCommentsChart = new Highcharts.Chart({
             chart: {
-                renderTo: 'views_vs_comments_per_week',
+                renderTo: '{/literal}{$uniqueDivId}{literal}',
                 defaultSeriesType: 'column'
             },
             title: {
-                text: 'Views, Comments and Likes per Week'
+                text: null
             },
             subtitle: {
                 text: null
             },
             xAxis: {
-                categories: [{/literal}{$comments.weeks}{literal}],
+                categories: [{/literal}{$data.weeksStr}{literal}],
                 title: {
-                    text: 'Week Number'
+                    text: null
                 }
             },
             yAxis: {
                 min: 0,
                 title: {
-                    text: 'Document Views',
-                    align: 'high'
+                    text: null
                 }
             },
             tooltip: {
@@ -70,32 +68,13 @@
                 }
             },
             legend: {
-                layout: 'vertical',
-                align: 'right',
-                verticalAlign: 'top',
-                x: 0,
-                y: 35,
-                floating: true,
-                borderWidth: 1,
-                backgroundColor: '#FFFFFF',
-                shadow: true
+                enabled: false
             },
             credits: {
                 enabled: false
             },
             series: [
-                {
-                    name: 'Document Views',
-                    data: [{/literal}{$document_views.score}{literal}]
-                },
-                {
-                    name: 'Comments',
-                    data: [{/literal}{$comments.counter}{literal}]
-                },
-                {
-                    name: 'Likes',
-                    data: [{/literal}{$document_likes.counter}{literal}]
-                }
+                {/literal}{$data.seriesStr}{literal}
             ]
         });
         

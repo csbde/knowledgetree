@@ -4,6 +4,13 @@ body {
 	/*background: url('../graphics/newui/watermark.jpg') no-repeat top center;*/
 	font-family: Helvetica, "Arial", sans-serif !important;
 }
+@font-face {
+   font-family: "Handwriting";
+   font-style: normal;
+   font-weight: normal;
+   src: url("/resources/css/newui/newfeatures/handwriting-Print.woff") format("woff"), url("/resources/css/newui/newfeatures/handwriting-Print.ttf") format("truetype"), url("/resources/css/newui/newfeatures/handwriting-Print.svg") format("svg");
+}
+
 #wrapper, #footer {
 	width: 960px;
 	margin: 0 auto;
@@ -254,8 +261,13 @@ textarea {
 	width: auto;
 }
 
-#sidebar_item .recently-viewed-folders ul { background: url(../../thirdparty/icon-theme/16x16/mimetypes/x-directory-normal.png) no-repeat; margin: 5px; list-style-image: none; }
+#sidebar_item.recently-viewed-folders ul { background: url(../../thirdparty/icon-theme/16x16/mimetypes/x-directory-normal.png) no-repeat; margin: 5px; list-style-image: none; line-height: 17px; }
 
+#sidebar_item .empty-boilerplate {
+	padding: 0px;
+	margin: 10px;
+	font-size: 11px;
+}
 /*-------------------- Breadcrumbs -----------------*/
 #breadcrumbs {
 	background: #EEE;
@@ -515,11 +527,6 @@ ul#more.splitmenu li.dir div.left_action ul a {
 
 
 
-
-
-
-
-
 /* ------------------ End --------------------*/
 
 div#topnavbar {
@@ -584,7 +591,7 @@ li.notification {
 	float: right;
 	height: 20px;
 	position: relative;
-	width: 400px;
+	width: 450px;
 	z-index: 99999;
 	padding-top: 5px;
 }
@@ -2019,24 +2026,31 @@ div.graph { width: 225px; height: 160px; }
 
 td.line { word-break: break-word; overflow: hidden; width: 100%;}
 
-.graph-viewlet {
+.graph-viewlet,
+.graphContainer {
 	border: 1px solid #CCC;
 	border-radius: 3px;
 	-moz-border-radius: 3px;
 	-webkit-border-radius: 3px;
-	width: 233px!important;
 	display: block;
 	float: left;
-	margin: 5px;
+	margin: 4px;
 	font-size: 12px;
 	color: #333;
+	padding-left: 1px;
 }
-
+.graph-viewlet {
+	width: 233px!important;
+}
+.graphContainer {
+	width: 472px;
+	float: left;
+}
 .graph-viewlet .graph{
 	margin-left: 2px;
 	margin-top: 2px;
 }
-.graph-viewlet h3 {
+.graph-viewlet h3{
 	background: whiteSmoke;
 	padding: 5px 5px;
 	border-bottom: 1px solid #CCC;
@@ -2046,6 +2060,9 @@ td.line { word-break: break-word; overflow: hidden; width: 100%;}
 	text-align: center;
 	color: #333;
 	text-shadow: 0px 1px 0px white;
+}
+.graphContainer h3 {
+	display: none;
 }
 .graph-viewlet .tabular {
 	border-spacing: 0px;
@@ -2086,14 +2103,22 @@ td.line { word-break: break-word; overflow: hidden; width: 100%;}
 	padding-left: 20px;
 	width: 705px!important
 }
+.graph-viewlet .activityfeed.item:last-child {
+	border-bottom: 0px;
+	padding-bottom: 0px;
+}
+.graph-viewlet #activityfeed-moreitems-10 .activityfeed.item:first-child {
+	border-top: 1px solid #DDD;
+	padding-top: 10px;
+}
 .graph-viewlet .activityfeed.item.comment .description {
 	background: #D6E6F0;
-	display: block;
+	display: inline-block;
 	padding: 10px;
 	border-radius: 3px;
 	-webkit-border-radius: 3px;
 	-moz-border-radius: 3px;
-	width: 75%;
+	width: 350px !important;
 	margin-top: -5px;
 	position: relative;
 }
@@ -2118,8 +2143,22 @@ td.line { word-break: break-word; overflow: hidden; width: 100%;}
 .graph-viewlet .activityfeed .icon {
 	border: none!important;
 }
+.graph-viewlet .activityfeed.comment .user {
+	display: block;
+} 
+.graph-viewlet .activityfeed .date {
+	float: right;
+	padding-right: 20px;
+}
 .graph-viewlet .activityfeed-content {
 	margin-left: 50px!important;
+	width: 655px !important;
+	min-height: 30px !important
+}
+.graph-viewlet .activityfeed-more {
+	display: block;
+	width: 724px;
+	height: 35px;
 }
 
 /*like */
@@ -2166,12 +2205,7 @@ td.line { word-break: break-word; overflow: hidden; width: 100%;}
 
 /*New Features Sticky */
 
-@font-face {
-   font-family: "Handwriting";
-   font-style: normal;
-   font-weight: normal;
-   src: url("/resources/css/newui/newfeatures/handwriting-Print.woff") format("woff"), url("/resources/css/newui/newfeatures/handwriting-Print.ttf") format("truetype"), url("/resources/css/newui/newfeatures/handwriting-Print.svg") format("svg");
-}
+
 
 div.helperTextOverlay * {
    
@@ -2179,7 +2213,6 @@ div.helperTextOverlay * {
 
 div.helperTextOverlay {
    
-   font-family: DeliciousRoman, Helvetica, Arial, sans-serif;
 
    background:url('../graphics/feature_notifications/newfeature_background.png') no-repeat;
    
@@ -2188,7 +2221,7 @@ div.helperTextOverlay {
    /*margin:1em 0 3em;*/
    color: #4C80A7;
    
-   font-family: "Handwriting";
+   font-family: "Segoe Print", "Handwriting";
    font-weight: bold;
    
    -webkit-transform: rotate(-4deg); 

@@ -36,32 +36,44 @@
  *
  */
 
-class ActionsUtil
-{
-    public static function sortActions($actions)
-    {
-        $ordered = $keys = array();
-        foreach ($actions as $action) {
-        	$info = $action->getInfo();
-        	if($info) {
-	            $order = $action->getOrder();
-	            if (isset($ordered[$order])) {
-	        		while (isset($ordered[$order])) {
-	        			$order++;
-	        		}
-	                $ordered[$order] = $action;
-	            }
-	            else {
-	                $ordered[$order] = $action;
-	            }
-	            $keys[$order] = $order;
-        	}
-        }
-        // Sort to rewrite keys.
-        sort($keys);
+// TODO : Abstract background task
 
-        return array('ordered' => $ordered, 'keys'=> $keys);
-    }
+$userId = $argv[1];
+$action = $argv[2];
+$targetFolderId = $argv[3];
+$currentFolderId = $argv[4];
+$accountName = isset($argv[5]) ? $argv[5] : '';
+
+if (!empty($accountName)) {
+	define('ACCOUNT_ROUTING_ENABLED', true);
+	define('ACCOUNT_NAME', $accountName);
 }
 
+$dir = dirname(__FILE__);
+require_once($dir . '/../../../config/dmsDefaults.php');
+require_once(KT_LIB_DIR . '/backgroundactions/BackgroundAction.inc.php');
+
+// set errors and time out after dmsDefaults to prevent being overridden
+set_time_limit(0);
+error_reporting(E_ERROR | E_CORE_ERROR);
+
+$backgroundAction = new BackgroundAction($action, $userId, array(), '', $targetFolderId, $currentFolderId);
+$backgroundAction->setAccount($accountName);
+
+register_shutdown_function(array($backgroundAction, 'handleShutdown'));
+
+if (function_exists('pcntl_signal')) {
+
+	declare(ticks=1);
+
+	pcntl_signal(SIGHUP, array($backgroundAction, 'handleInterrupt'));
+    pcntl_signal(SIGINT, array($backgroundAction, 'handleInterrupt'));
+    pcntl_signal(SIGQUIT, array($backgroundAction, 'handleInterrupt'));
+    pcntl_signal(SIGABRT, array($backgroundAction, 'handleInterrupt'));
+    pcntl_signal(SIGTERM, array($backgroundAction, 'handleInterrupt'));
+}
+
+$backgroundAction->execute();
+
+exit(0);
 ?>

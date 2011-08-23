@@ -35,10 +35,10 @@
 * Contributor( s): ______________________________________
 *
 */
+// TODO : Abstract and refactor with backgrounding process
+require_once(KT_LIB_DIR . '/backgroundactions/BackgroundProcess.php');
 
-require_once(KT_LIB_DIR . '/memcache/ktmemcache.php');
-
-class BackgroundPermissions {
+class BackgroundPermissions extends BackgroundProcess {
 
     private $folderId;
     private $userId;
@@ -47,24 +47,24 @@ class BackgroundPermissions {
     private $memcacheKey;
     private $duration;
     private $inTransaction = false;
-    
+
     public function __construct($folderId, $accountName)
     {
         $this->folderId = $folderId;
         $this->accountName = $accountName;
         $this->memcacheKey = $this->actionNameSpace . '|' . $this->folderId . '|' . $this->accountName;
     }
-    
+
     public function updatePermissions()
     {
         $info = $this->getInfoFromMemcache();
-        
+
         if ($info === false) {
             return false;
         }
-        
+
         $type = $info['type'];
-        
+
         switch ($type) {
             case 'inherit':
                 $this->runInherit($info);
@@ -74,30 +74,30 @@ class BackgroundPermissions {
                 break;
             default:
                 $this->userId = $info['userId'];
-                $this->taskKilled('Unknown update type');
+                $this->taskKilled('BackgroundPermissions', 'Unknown update type');
         }
     }
-    
+
     private function runUpdate($info)
     {
         $startTime = $this->getTime();
         $this->setTransaction('start');
-        
+
         $this->userId = $info['userId'];
         $permissionObjectId = $info['permissionObjectId'];
         $selectedPermissions = $info['selectedPermissions'];
-        
+
         $folder = Folder::get($this->folderId);
         $success = KTPermissionUtil::updatePermissionObject($folder, $permissionObjectId, $selectedPermissions, $this->userId);
-        
+
         if ($success === false) {
             $this->setTransaction('rollback');
             $this->finishUpdate($success, $startTime);
             return ;
         }
-        
+
         $success = KTPermissionUtil::updatePermissionLookupForObject($permissionObjectId, $this->folderId);
-        
+
         if ($success === false) {
             $this->setTransaction('rollback');
             $this->finishUpdate($success, $startTime);
@@ -106,56 +106,56 @@ class BackgroundPermissions {
         $this->setTransaction('end');
         $this->finishUpdate(true, $startTime);
     }
-    
+
     private function runInherit($info)
     {
         $startTime = $this->getTime();
         $this->setTransaction('start');
-        
+
         $this->userId = $info['userId'];
         $folder = Folder::get($this->folderId);
         $parentFolderId = $folder->getParentID();
-        
+
         $success = KTPermissionUtil::createInheritPermTransaction($this->folderId, $parentFolderId, $this->userId);
-        
+
         if ($success === false) {
         	$this->setTransaction('rollback');
             $this->finishUpdate($success, $startTime);
             return ;
         }
-        
+
         $success = KTPermissionUtil::inheritPermissionObject($folder);
-        
+
         if ($success === false) {
             $this->setTransaction('rollback');
             $this->finishUpdate($success, $startTime);
             return ;
         }
-        
+
         $this->setTransaction('end');
         $this->finishUpdate(true, $startTime);
     }
-    
+
     private function getInfoFromMemcache()
     {
         $memcache = KTMemcache::getKTMemcache();
         $info = false;
-        
+
         if ($memcache->isEnabled()) {
             $info = $memcache->get($this->memcacheKey);
         }
-        
+
         return $info;
     }
-    
-    private function clearMemcacheInfo()
+
+    public function clearMemcacheInfo()
     {
         $memcache = KTMemcache::getKTMemcache();
         if ($memcache->isEnabled()) {
             $memcache->delete($this->memcacheKey);
         }
     }
-    
+
     public function checkIfBackgrounded()
     {
         $memcache = KTMemcache::getKTMemcache();
@@ -164,60 +164,60 @@ class BackgroundPermissions {
         if ($memcache->isEnabled()) {
             $info = $memcache->get($this->memcacheKey);
         }
-        
+
         if ($info === false) {
             return false;
         }
-        
+
         if (!empty($info)) {
             return true;
         }
-        
+
         return false;
     }
-    
+
     public function checkIfFolderAffected()
     {
         $folder = Folder::get($this->folderId);
-        
+
         if (PEAR::isError($folder)) {
             return false;
         }
-        
+
         $permissionObjectId = $folder->getPermissionObjectID();
         $permissionObject = KTPermissionObject::get($permissionObjectId);
         $inheritedFolder = KTPermissionUtil::findRootObjectForPermissionObject($permissionObject);
         $inheritedFolderId = $inheritedFolder->getID();
-        
+
         $memcacheKey = $this->actionNameSpace . '|' . $inheritedFolderId . '|' . $this->accountName;
-        
+
         $memcache = KTMemcache::getKTMemcache();
         $info = $memcache->get($memcacheKey);
-        
+
         if ($info === false) {
             return false;
         }
-        
+
         if (!empty($info)) {
             return true;
         }
-        
+
         return false;
     }
-    
+
     public function backgroundPermissionsUpdate($permissionObjectId, $selectedPermissions, $userId, $type)
     {
         $this->setAsBackgrounded($permissionObjectId, $selectedPermissions, $userId, $type);
-    
-        global $default;	
+
+        global $default;
     	$phpPath = $default->php;
     	$script =  KT_DIR . '/plugins/ktcore/folder/updatePermissionsTask.php';
     	$arguments = "{$this->folderId} {$this->accountName}";
     	$command = "{$phpPath} {$script} {$arguments} > /dev/null &";
-    	
+
     	KTUtil::pexec($command);
     }
-    
+
     private function setAsBackgrounded($permissionObjectId, $selectedPermissions, $userId, $type)
     {
         $info = array();
@@ -226,22 +226,22 @@ class BackgroundPermissions {
         $info['selectedPermissions'] = $selectedPermissions;
         $info['userId'] = $userId;
         $info['type'] = $type;
-        
+
         $expiry = 60*60*5;  // 5 hour expiry on the permissions task - too high? too low?
-        
+
         $memcache = KTMemcache::getKTMemcache();
         $memcache->set($this->memcacheKey, $info, $expiry);
     }
-    
+
     private function finishUpdate($success, $startTime)
     {
         $endTime = $this->getTime();
         $this->duration = round($endTime - $startTime, 2);
-        
+
         $this->clearMemcacheInfo();
         $this->sendNotification($success);
     }
-    
+
     private function setTransaction($status = 'start')
     {
         switch($status) {
@@ -249,92 +249,79 @@ class BackgroundPermissions {
                 DBUtil::commit();
                 $this->inTransaction = false;
             break;
-            
+
             case 'rollback':
                 DBUtil::rollback();
                 $this->inTransaction = false;
             break;
-            
+
             case 'start':
             default:
                 DBUtil::startTransaction();
                 $this->inTransaction = true;
         }
     }
-        
+
     private function getTime()
     {
         $microtime_simple = explode(' ', microtime());
         $time = (float)$microtime_simple[1] + (float)$microtime_simple[0];
-        
+
         return $time;
     }
-    
+
     private function sendNotification($success = true)
     {
         global $default;
-        
+
         $user = User::get($this->userId);
-        
+
         if (PEAR::isError($user)) {
             $default->log->error('Permissions: Error getting user - ' . $user->getMessage());
             return;
         }
-        
+
         $name = $user->getName();
         $emailAddress = $user->getEmail();
-        
+
         $folder = Folder::get($this->folderId);
         $folderName = $folder->getName();
-        
+
         $folderLink = KTUtil::ktLink('action.php', $this->actionNameSpace, 'fFolderId=' . $this->folderId);
-        
+
         $message = _kt("Dear {$name},") . '<br/><br/>';
-        
+
         $link = "<a href='$folderLink'>{$folderName}</a>";
-        
+
         if ($success) {
             $subject = _kt('Permissions Update Completed Successfully.');
             $message .= _kt("Your request has completed successfully and the permissions have been updated on the folder {$link}. ");
-            
+
             $default->log->info("Permissions: Update completed in {$this->duration} seconds");
-        } 
+        }
         else {
             $subject = _kt('Permissions Update Failed.');
             $message .= _kt("Your request to update the permissions on the folder {$link} has failed. ");
-            
+
             $default->log->error("Permissions: Update failed");
         }
-        
+
         $email = new Email();
         $email->send($emailAddress, $subject, $message);
     }
-    
-    private function taskKilled($error = '')
+
+    public function taskKilled($error = '')
     {
         global $default;
-        $default->log->error("Permissions: Backgrounded update stopped - {$error}");
-        
+        $default->log->error(__CLASS__ . ": Backgrounded process stopped - {$error}");
+
         $this->finishUpdate($success, time());
-        
+
         if ($this->inTransaction) {
             $this->setTransaction('rollback');
         }
     }
-    
-    public function handleShutdown()
-    {
-        $error = error_get_last();
-        if ($error['type'] === E_ERROR || $error['type'] === E_CORE_ERROR) {
-            $this->taskKilled($error['message']);
-        }
-    }
-    
-    public function handleInterrupt($signal)
-    {
-        $error = 'Process interrupted';
-        $this->taskKilled($error);
-    }
+
 }
 
 ?>

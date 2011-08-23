@@ -212,7 +212,6 @@ class KTPage {
             /* REWORK INTO SINGLE STYLE SHEET */
             'resources/css/newui/dropdown_styles.css',
             'resources/css/newui/dropdown.vertical.css',
-            'resources/css/newui/newfeatures.css',
             'plugins/NewFeatureNotification/resources/css/new_features.css',
         );
 
@@ -271,6 +270,7 @@ class KTPage {
 
         // Breadcrumbs
         $js[] = 'resources/js/jquery.breadcrumbs.js';
+		$js[] = 'resources/js/newui/breadcrumbs.js';
 
         // TODO check these for section
         $js[] = 'thirdpartyjs/jquery/ui/minified/jquery.tools.min.js';
@@ -701,6 +701,8 @@ class KTPage {
                     $this->userMenu['inviteuser'] = array('label' => _kt('Invite Users'), 'url' => '#');
                     $this->userMenu['inviteuser']['onclick'] = 'javascript:kt.app.inviteusers.showInviteWindow();';
                 }
+                
+                $this->userMenu['settings'] = array('label' => _kt('Settings'), 'url' => $sBaseUrl.'/settings.php');
             }
 
         	if ($oConfig->get('user_prefs/restrictPreferences', false) && !$isAdmin) {

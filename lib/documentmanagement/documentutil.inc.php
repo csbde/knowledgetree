@@ -246,17 +246,17 @@ class KTDocumentUtil {
             //send an email to the owner of the shortcut
             if ($ownerUser->getEmail() != null && $ownerUser->getEmailNotification() == true) {
                 $data = array(
-                            'user_name' => $this->oUser->getName(),
-                            'url' => KTUtil::ktLink(KTBrowseUtil::getUrlForDocument($shortcutDocument)),
-                            'title' => $shortcutDocument->getName()
-                        );
+                    'user_name' => $this->oUser->getName(),
+                    'url' => KTUtil::ktLink(KTBrowseUtil::getUrlForDocument($shortcutDocument)),
+                    'title' => $shortcutDocument->getName()
+                );
                 $emailTemplate = new EmailTemplate('kt3/notifications/notification.SymbolicLinkArchived', $data);
-                $email = new EmailAlert($ownerUser->getEmail(), _kt("KnowledgeTree Notification"), $emailTemplate->getBody());
+                $email = new EmailAlert($ownerUser->getEmail(), _kt('KnowledgeTree Notification'), $emailTemplate->getBody());
                 $email->send();
             }
         }
 
-        $documentTransaction = & new DocumentTransaction($document, sprintf(_kt('Document archived: %s'), $reason), 'ktcore.transactions.update');
+        $documentTransaction = new DocumentTransaction($document, sprintf(_kt('Document archived: %s'), $reason), 'ktcore.transactions.update');
         $documentTransaction->create();
 
         $KTTriggerRegistry = KTTriggerRegistry::getSingleton();
@@ -283,6 +283,115 @@ class KTDocumentUtil {
         return true;
     }
 
+    public static function &add($folder, $filename, $user, $options, $bulkAction = false)
+    {
+        $GLOBALS['_IN_ADD'] = true;
+        $ret = KTDocumentUtil::_in_add($folder, $filename, $user, $options, $bulkAction);
+        unset($GLOBALS['_IN_ADD']);
+        return $ret;
+    }
+
+
+
+    public static function &_in_add($folder, $filename, $user, $options, $bulkAction = false)
+    {
+        $originalOptions = $options;
+
+        $filename = KTDocumentUtil::getUniqueFilename($folder, $filename);
+        $name = KTUtil::arrayGet($options, 'description', $filename);
+        $name = KTDocumentUtil::getUniqueDocumentName($folder, $name);
+        $options['description'] = $name;
+
+        $uploadChannel = KTUploadChannel::getSingleton();
+        $uploadChannel->sendMessage(new KTUploadNewFile($filename));
+
+        DBUtil::startTransaction();
+
+        $document = KTDocumentUtil::_add($folder, $filename, $user, $options);
+
+        $uploadChannel->sendMessage(new KTUploadGenericMessage(_kt('Document created')));
+        if (PEAR::isError($document)) {
+            return $document;
+        }
+
+        $uploadChannel->sendMessage(new KTUploadGenericMessage(_kt('Scanning file')));
+        $KTTriggerRegistry = KTTriggerRegistry::getSingleton();
+        $triggers = $KTTriggerRegistry->getTriggers('content', 'scan');
+        foreach ($triggers as $trigger) {
+            $triggerName = $trigger[0];
+            $trigger = new $triggerName;
+            $trigger->setDocument($document);
+            // $uploadChannel->sendMessage(new KTUploadGenericMessage(sprintf(_kt("    (trigger %s)"), $triggerName)));
+            $ret = $trigger->scan();
+            if (PEAR::isError($ret)) {
+                $document->delete();
+                return $ret;
+            }
+        }
+
+        DBUtil::commit();
+
+        $document->clearAllCaches();
+
+        // NEW SEARCH
+        Indexer::index($document, 'A', $options);
+
+        $uploadChannel->sendMessage(new KTUploadGenericMessage(_kt('Creating transaction')));
+        $options = array('user' => $user);
+
+        //create the document transaction record
+        $documentTransaction = new DocumentTransaction($document, _kt('Document created'), 'ktcore.transactions.create', $options);
+        $res = $documentTransaction->create();
+        if (PEAR::isError($res)) {
+            $document->delete();
+            return $res;
+        }
+
+        $uploadChannel->sendMessage(new KTUploadGenericMessage(_kt('Sending subscriptions')));
+        // TODO : better way of checking if its a bulk upload
+        if (!$bulkAction) {
+            // fire subscription alerts for the checked in document
+            $subscriptionEvent = new SubscriptionEvent();
+            $folder = Folder::get($document->getFolderID());
+            $subscriptionEvent->AddDocument($document, $folder);
+        }
+
+        $KTTriggerRegistry = KTTriggerRegistry::getSingleton();
+        $triggers = $KTTriggerRegistry->getTriggers('add', 'postValidate');
+
+        foreach ($triggers as $trigger) {
+            $triggerName = $trigger[0];
+            $trigger = new $triggerName;
+            $info = array(
+                'document' => $document,
+                'aOptions' => $originalOptions,
+            );
+            $trigger->setInfo($info);
+            $ret = $trigger->postValidate();
+
+        }
+
+        // update document object with additional fields / data from the triggers
+        $document = Document::get($document->iId);
+
+        $uploadChannel->sendMessage(new KTUploadGenericMessage(_kt('Checking permissions...')));
+
+        // Check if there are any dynamic conditions / permissions that need to be updated on the document
+        // If there are dynamic conditions then update the permissions on the document
+        // The dynamic condition test fails unless the document exists in the DB therefore update permissions after committing the transaction.
+        include_once(KT_LIB_DIR.'/permissions/permissiondynamiccondition.inc.php');
+        $permissionObjectId = $folder->getPermissionObjectID();
+        $dynamicCondition = KTPermissionDynamicCondition::getByPermissionObjectId($permissionObjectId);
+
+        if (!PEAR::isError($dynamicCondition) && !empty($dynamicCondition)) {
+            $res = KTPermissionUtil::updatePermissionLookup($document);
+        }
+
+        $uploadChannel->sendMessage(new KTUploadGenericMessage(_kt('All done...')));
+
+        return $document;
+    }
+
     public static function &_add($folder, $filename, $user, $options)
     {
         global $default;
@@ -298,12 +407,12 @@ class KTDocumentUtil {
             $description = (isset($fileInfo['filename']) && !empty($fileInfo['filename'])) ? $fileInfo['filename'] : $filename;
         }
 
-        $uploadChannel =& KTUploadChannel::getSingleton();
+        $uploadChannel = KTUploadChannel::getSingleton();
 
         $documentTypeId = $documentType ? KTUtil::getId($documentType) : 1;
 
         $uploadChannel->sendMessage(new KTUploadGenericMessage(_kt('Creating database entry')));
-        $document =& Document::createFromArray(array(
+        $document = Document::createFromArray(array(
             'name' => $description,
             'description' => $description,
             'filename' => $filename,
@@ -337,8 +446,8 @@ class KTDocumentUtil {
             }
         }
 
-        // setIncomplete and storeContents may change the document's status or
-        // storage_path, so now is the time to update
+        // setIncomplete and storeContents may change the document's
+        // status or storage_path, so now is the time to update.
         $res = $document->update();
 
         if (PEAR::isError($res) || ($res == false)) {
@@ -383,8 +492,8 @@ class KTDocumentUtil {
         }
 
         //check for permissions
-        $writePermission =& KTPermission::getByName("ktcore.permissions.write");
-        $readPermission =& KTPermission::getByName("ktcore.permissions.read");
+        $writePermission = KTPermission::getByName("ktcore.permissions.write");
+        $readPermission = KTPermission::getByName("ktcore.permissions.read");
         if (KTBrowseUtil::inAdminMode($user, $targetFolder)) {
             if (!KTPermissionUtil::userHasPermissionOnItem($user, $writePermission, $targetFolder)) {
                 return PEAR::raiseError(_kt('You\'re not authorized to create shortcuts'));
@@ -467,14 +576,11 @@ class KTDocumentUtil {
         DBUtil::runQuery(array($sql, array($document->getId())));
     }
 
-    // Overwrite the document
     public static function overwrite($document, $filename, $tempFileName, $user, $options)
     {
-        //$document, $filename, $checkInComment, $user, $options = false
         $storageManager = KTStorageManagerUtil::getSingleton();
         $fileSize = $storageManager->fileSize($tempFileName);
 
-        // Check that document is not checked out
         if ($document->getIsCheckedOut()) {
             return PEAR::raiseError(_kt('Document is checkout and cannot be overwritten'));
         }
@@ -490,7 +596,6 @@ class KTDocumentUtil {
 
         $originalFilename = $document->getFileName();
 
-        // change file name
         if ($originalFilename != $filename) {
             if (strlen($filename)) {
                 global $default;
@@ -522,8 +627,8 @@ class KTDocumentUtil {
 
     public static function validateMetadata(&$document, $metadata)
     {
-        $fieldsets =& KTFieldset::getGenericFieldsets();
-        $fieldsets =& kt_array_merge($fieldsets, KTFieldset::getForDocumentType($document->getDocumentTypeId()));
+        $fieldsets = KTFieldset::getGenericFieldsets();
+        $fieldsets = kt_array_merge($fieldsets, KTFieldset::getForDocumentType($document->getDocumentTypeId()));
         $simpleMetadata = array();
         foreach ($metadata as $singleMetadatum) {
             list($field, $value) = $singleMetadatum;
@@ -535,7 +640,7 @@ class KTDocumentUtil {
 
         $failed = array();
         foreach ($fieldsets as $fieldset) {
-            $fields =& $fieldset->getFields();
+            $fields = $fieldset->getFields();
             $fieldValues = array();
             $isRealConditional = ($fieldset->getIsConditional() && KTMetadataUtil::validateCompleteness($fieldset));
             foreach ($fields as $field) {
@@ -625,8 +730,8 @@ class KTDocumentUtil {
     // Will produce a best effort match to a valid date format.
     public static function sanitizeMetadata($document, $metadata)
     {
-        $fieldsets =& KTFieldset::getGenericFieldsets();
-        $fieldsets =& kt_array_merge($fieldsets, KTFieldset::getForDocumentType($document->getDocumentTypeId()));
+        $fieldsets = KTFieldset::getGenericFieldsets();
+        $fieldsets = kt_array_merge($fieldsets, KTFieldset::getForDocumentType($document->getDocumentTypeId()));
         $simpleMetadata = array();
         foreach ($metadata as $singleMetadatum) {
             list($field, $value) = $singleMetadatum;
@@ -638,7 +743,7 @@ class KTDocumentUtil {
 
         $metadataPack = array();
         foreach ($fieldsets as $fieldset) {
-            $fields =& $fieldset->getFields();
+            $fields = $fieldset->getFields();
             $fieldValues = array();
             foreach ($fields as $field) {
                 $id = $field->getId();
@@ -795,25 +900,6 @@ class KTDocumentUtil {
         }
     }
 
-    /*
-     * Document Add
-     * Author      :   KnowledgeTree Team
-     * Modified    :   28/04/09
-     *
-     * @params     :   KTFolderUtil $folder
-     *                 string $filename
-     *                 KTUser $user
-     *                 array $options
-     *                 boolean $bulkAction
-     */
-    public static function &add($folder, $filename, $user, $options, $bulkAction = false)
-    {
-        $GLOBALS['_IN_ADD'] = true;
-        $ret = KTDocumentUtil::_in_add($folder, $filename, $user, $options, $bulkAction);
-        unset($GLOBALS['_IN_ADD']);
-        return $ret;
-    }
-
     public static function getUniqueFilename($folder, $filename)
     {
         // this is just a quick refactoring. We should look at a more optimal way of doing this as there are
@@ -840,117 +926,7 @@ class KTDocumentUtil {
         return $filename;
     }
 
-    /**
-    * Document Add
-    *
-    * @author KnowledgeTree Team
-    * @access public
-    * @param KTFolderUtil $folder
-    * @param string $filename
-    * @param KTUser $user
-    * @param array $options
-    * @param boolean $bulkAction
-    *
-    * @return Document $document
-    */
-    public static function &_in_add($folder, $filename, $user, $options, $bulkAction = false)
-    {
-        $originalOptions = $options;
-
-        $filename = KTDocumentUtil::getUniqueFilename($folder, $filename);
-        $name = KTUtil::arrayGet($options, 'description', $filename);
-        $name = KTDocumentUtil::getUniqueDocumentName($folder, $name);
-        $options['description'] = $name;
-
-        $uploadChannel =& KTUploadChannel::getSingleton();
-        $uploadChannel->sendMessage(new KTUploadNewFile($filename));
-        DBUtil::startTransaction();
-        $document =& KTDocumentUtil::_add($folder, $filename, $user, $options);
-
-        $uploadChannel->sendMessage(new KTUploadGenericMessage(_kt('Document created')));
-        if (PEAR::isError($document)) {
-            return $document;
-        }
-
-        $uploadChannel->sendMessage(new KTUploadGenericMessage(_kt('Scanning file')));
-        $KTTriggerRegistry = KTTriggerRegistry::getSingleton();
-        $triggers = $KTTriggerRegistry->getTriggers('content', 'scan');
-        foreach ($triggers as $trigger) {
-            $triggerName = $trigger[0];
-            $trigger = new $triggerName;
-            $trigger->setDocument($document);
-            // $uploadChannel->sendMessage(new KTUploadGenericMessage(sprintf(_kt("    (trigger %s)"), $triggerName)));
-            $ret = $trigger->scan();
-            if (PEAR::isError($ret)) {
-                $document->delete();
-                return $ret;
-            }
-        }
-
-        DBUtil::commit();
-
-        $document->clearAllCaches();
-
-        // NEW SEARCH
-        Indexer::index($document, 'A', $options);
-
-        $uploadChannel->sendMessage(new KTUploadGenericMessage(_kt('Creating transaction')));
-        $options = array('user' => $user);
-
-        //create the document transaction record
-        $documentTransaction = new DocumentTransaction($document, _kt('Document created'), 'ktcore.transactions.create', $options);
-        $res = $documentTransaction->create();
-        if (PEAR::isError($res)) {
-            $document->delete();
-            return $res;
-        }
-
-        $uploadChannel->sendMessage(new KTUploadGenericMessage(_kt('Sending subscriptions')));
-        // TODO : better way of checking if its a bulk upload
-        if (!$bulkAction) {
-            // fire subscription alerts for the checked in document
-            $subscriptionEvent = new SubscriptionEvent();
-            $folder = Folder::get($document->getFolderID());
-            $subscriptionEvent->AddDocument($document, $folder);
-        }
-
-        $KTTriggerRegistry = KTTriggerRegistry::getSingleton();
-        $triggers = $KTTriggerRegistry->getTriggers('add', 'postValidate');
-
-        foreach ($triggers as $trigger) {
-            $triggerName = $trigger[0];
-            $trigger = new $triggerName;
-            $info = array(
-                'document' => $document,
-                'aOptions' => $originalOptions,
-            );
-            $trigger->setInfo($info);
-            $ret = $trigger->postValidate();
-
-        }
-
-        // update document object with additional fields / data from the triggers
-        $document = Document::get($document->iId);
-
-        $uploadChannel->sendMessage(new KTUploadGenericMessage(_kt('Checking permissions...')));
-
-        // Check if there are any dynamic conditions / permissions that need to be updated on the document
-        // If there are dynamic conditions then update the permissions on the document
-        // The dynamic condition test fails unless the document exists in the DB therefore update permissions after committing the transaction.
-        include_once(KT_LIB_DIR.'/permissions/permissiondynamiccondition.inc.php');
-        $permissionObjectId = $folder->getPermissionObjectID();
-        $dynamicCondition = KTPermissionDynamicCondition::getByPermissionObjectId($permissionObjectId);
-
-        if (!PEAR::isError($dynamicCondition) && !empty($dynamicCondition)) {
-            $res = KTPermissionUtil::updatePermissionLookup($document);
-        }
-
-        $uploadChannel->sendMessage(new KTUploadGenericMessage(_kt('All done...')));
-
-        return $document;
-    }
-
-    public static function incrementNameCollissionNumbering($docFilename, $skipExtension = false)
+    public static function incrementNameCollisionNumbering($docFilename, $skipExtension = false)
     {
         $dot = strpos($docFilename, '.');
         if ($skipExtension || $dot === false) {
@@ -984,12 +960,12 @@ class KTDocumentUtil {
 
     public static function generateNewDocumentFilename($docFilename)
     {
-        return self::incrementNameCollissionNumbering($docFilename, false);
+        return self::incrementNameCollisionNumbering($docFilename, false);
     }
 
     public static function generateNewDocumentName($sDocName)
     {
-        return self::incrementNameCollissionNumbering($sDocName, true);
+        return self::incrementNameCollisionNumbering($sDocName, true);
 
     }
 
@@ -1028,7 +1004,7 @@ class KTDocumentUtil {
         }
 
         $canMove = KTUtil::arrayGet($options, 'move');
-        $KTConfig =& KTConfig::getSingleton();
+        $KTConfig = KTConfig::getSingleton();
         $basedir = $KTConfig->get('urls/tmpDirectory');
 
         $filename = (isset($options['temp_file'])) ? $options['temp_file'] : '';
@@ -1092,7 +1068,7 @@ class KTDocumentUtil {
             return KTDocumentUtil::deleteSymbolicLink($document);
         }
 
-        $document =& KTUtil::getObject('Document', $document);
+        $document = KTUtil::getObject('Document', $document);
         if (is_null($destFolderId)) {
             $destFolderId = $document->getFolderID();
         }
@@ -1173,8 +1149,6 @@ class KTDocumentUtil {
                 $email->send();
             }
         }
-
-        //$GLOBALS['default']->log->debug('Document transaction folder id '.$document->getFolderID().' or '.$originalFolder->getId());
 
         $documentTransaction = new DocumentTransaction($document, _kt('Document deleted: ') . $reason, 'ktcore.transactions.delete');
         $documentTransaction->create();
@@ -1321,7 +1295,7 @@ class KTDocumentUtil {
         // we unset the id as a new one will be created on insert
         unset($metadataRow['id']);
 
-        // set the name for the document, possibly using name collission
+        // set the name for the document, possibly using name collision
         if (empty($destinationDocName)) {
             $metadataRow['name'] = KTDocumentUtil::getUniqueDocumentName($destinationFolder, $metadataRow['name']);
         }
@@ -1338,7 +1312,7 @@ class KTDocumentUtil {
         // we unset the id as a new one will be created on insert
         unset($contentRow['id']);
 
-        // set the filename for the document, possibly using name collission
+        // set the filename for the document, possibly using name collision
         if (empty($destinationDocName)) {
             $contentRow['filename'] = KTDocumentUtil::getUniqueFilename($destinationFolder, $contentRow['filename']);
         }
@@ -1652,8 +1626,8 @@ class KTDocumentUtil {
         global $default;
         $storageManager = KTStorageManagerUtil::getSingleton();
 
-        $document =& KTUtil::getObject('Document', $document);
-        $version =& KTDocumentMetadataVersion::get($versionId);
+        $document = KTUtil::getObject('Document', $document);
+        $version = KTDocumentMetadataVersion::get($versionId);
 
         if (empty($reason)) {
             return PEAR::raiseError(_kt('Deletion requires a reason'));
@@ -1714,7 +1688,7 @@ class KTDocumentUtil {
         $storageManager = KTStorageManagerUtil::getSingleton();
         //get the path to the document on the server
         //$docRoot = $default->documentRoot;
-        $config =& KTConfig::getSingleton();
+        $config = KTConfig::getSingleton();
         $docRoot  = $config->get('urls/documentRoot');
         //get the path to the document on the server
         $path = $docRoot . '/' . $document->getStoragePath();

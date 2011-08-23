@@ -1,14 +1,13 @@
-<div class="graph-viewlet">
+<div class="graph-viewlet" style="margin-left: -1px;">
 <h3>Activity Feed</h3>
 <div id="activityfeed-container" style="margin-top:1em;"></div>
 <script type="text/javascript" src="resources/js/jquery.autoresize.min.js"></script>
-<div id="viewlet-activityfeed">
-    {$activityFeed}
-</div>
+<div id="viewlet-activityfeed"></div>
+
 {literal}
 <script type="text/javascript">
     jQuery(document).ready(function() {
-        jQuery("#commentsbox").autoResize({extraSpace:10});
+        kt.app.activityFeed.fetchFeedContent(0, 0, 'activityfeed-container');
     });
 </script>
 {/literal}

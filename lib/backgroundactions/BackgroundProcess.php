@@ -2,6 +2,7 @@
 /**
  * $Id$
  *
+ *
  * KnowledgeTree Community Edition
  * Document Management Made Simple
  * Copyright (C) 2008, 2009, 2010 KnowledgeTree Inc.
@@ -34,28 +35,61 @@
  * copyright notice.
  * Contributor( s): ______________________________________
  */
+require_once(KT_LIB_DIR . '/memcache/ktmemcache.php');
 
-class BulkDocumentActions
+class BackgroundProcess
 {
-	public static function queueBulkAction($action, $list, $reason, $targetFolderId, $currentFolderId)
-	{
-    	require_once(KT_LIVE_DIR . '/sqsqueue/dispatchers/BulkactionDispatcher.php');
-    	$bulkActionDispatcher = new BulkactionDispatcher();
-    	$params['action'] = $action;
-    	$params['files_and_folders'] = $list;
-    	$params['reason'] = $reason;
-    	$params['targetFolderId'] = $targetFolderId;
-    	$params['currentFolderId'] = $currentFolderId;
-    	$bulkActionDispatcher->addProcess("bulkactions", $params);
-    	$queueResponse = $bulkActionDispatcher->sendToQueue();
-    	if($queueResponse) {
-    		require_once(KT_LIB_DIR . '/backgroundactions/backgroundaction.inc.php');
-			backgroundaction::saveEvent($action, $list, $currentFolderId, $targetFolderId);
-    	}
+	protected $account = '';
+	protected $scriptPath = '';
 
-    	return $queueResponse;
+	public function background()
+	{
+
 	}
 
+	public function execute()
+	{
 
+	}
+
+	public static function isActionInProgress()
+	{
+
+	}
+
+	public function clearMemcacheInfo()
+	{
+
+	}
+
+	public function setAccount($account)
+	{
+		$this->account = $account;
+	}
+
+	public function setScriptPath()
+	{
+
+	}
+
+	public function taskKilled($error = '')
+	{
+
+	}
+
+    public function handleShutdown()
+    {
+        $error = error_get_last();
+        if ($error['type'] === E_ERROR || $error['type'] === E_CORE_ERROR) {
+            $this->taskKilled($error['message']);
+        }
+    }
+
+    public function handleInterrupt($signal)
+    {
+        $error = 'Process interrupted';
+        $this->taskKilled($error);
+    }
 }
+
 ?>

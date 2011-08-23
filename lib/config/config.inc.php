@@ -1,4 +1,5 @@
 <?php
+
 /**
  * $Id$
  *
@@ -43,6 +44,7 @@ require_once(KT_LIB_DIR. '/database/dbutil.inc');
 require_once(KT_LIB_DIR . '/memcache/ktmemcache.php');
 
 class KTConfig {
+
     var $conf = array();
     var $aSectionFile;
     var $flat = array();
@@ -59,14 +61,12 @@ class KTConfig {
     public static function getCacheFilename()
     {
         if (ACCOUNT_ROUTING_ENABLED) {
-        	
             return ACCOUNT_NAME . '-configcache';
         }
 
         $pathFile = KT_DIR .  '/config/cache-path';
 
         if (!file_exists($pathFile)) {
-        	
             return false;
         }
 
@@ -84,7 +84,7 @@ class KTConfig {
     {
     	$this->confPath = '/etc/kt/kt.cnf';
         $ktConfPath = KT_PLUGIN_DIR . '/ktlive/config/kt-path';
-        
+
         if (file_exists($ktConfPath)) {
         	$newConfPath = trim(file_get_contents($ktConfPath));
         	$this->confPath = (file_exists($newConfPath)) ? $newConfPath : $this->confPath;
@@ -92,7 +92,7 @@ class KTConfig {
 
         $root = $this->parseConfig($this->confPath);
         if ($root == false) {
-        	
+
             return false;
         }
 
@@ -107,7 +107,7 @@ class KTConfig {
                 }
             }
         }
-        
+
         return true;
     }
 
@@ -137,7 +137,7 @@ class KTConfig {
     {
         $filename = $this->getCacheFilename();
         if ($filename === false) {
-        	
+
             return false;
         }
 
@@ -146,11 +146,11 @@ class KTConfig {
         if ($memcache->isEnabled()) {
             $config_str = $memcache->get($filename);
         }
-        
+
         //$config_str = file_get_contents($filename);
 
         if (empty($config_str)) {
-        	
+
             return false;
         }
 
@@ -161,7 +161,7 @@ class KTConfig {
         $this->expanding = (isset($config_cache['expanding'])) ? $config_cache['expanding'] : array();
 
         if (empty($this->flatns)) {
-        	
+
             return false;
         }
 
@@ -185,7 +185,7 @@ class KTConfig {
         $memcache = KTMemcache::getKTMemcache();
     	if ($memcache->isEnabled()) {
             $memcache->set($filename, $config_cache);
-            
+
             return true;
         }
 
@@ -206,10 +206,10 @@ class KTConfig {
         $memcache = KTMemcache::getKTMemcache();
         if ($memcache->isEnabled()) {
         	$memcache->delete($filename);
-        	
+
         	return true;
         }
-        
+
         return false;
 
         //if ($filename !== false && file_exists($filename)) {
@@ -469,12 +469,13 @@ class KTConfig {
                 $can_edit = 1;
             }
 
-	    $configId = DBUtil::autoInsert('config_settings', array('item' => $var ,'value' => $value, 'group_name' => $groupName, 'can_edit' => $can_edit));
+	    $configId = DBUtil::autoInsert('config_settings', array('item' => $var ,'value' => $value, 'group_name' => $groupName, 'can_edit' => $can_edit, 'default_value' => ''));
             if (PEAR::isError($configId)) {
                 $default->log->error(sprintf(_kt("Couldn't insert config value:%s"), $configId->getMessage()));
                 return false;
             }
-        } else {
+        }
+        else {
             $fieldValues = array('value' => $value);
             if (is_numeric($can_edit)) {
                 $fieldValues['can_edit'] = $can_edit;
@@ -558,6 +559,5 @@ class KTConfig {
     	return $singleton;
     }
 }
-
 
 ?>

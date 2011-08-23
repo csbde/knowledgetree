@@ -1,46 +1,38 @@
-	<div class="activityfeed" style="border: 0px solid #000000" id="activityfeed_comments">
-		<div class="activityfeed new-comment"></div>
-		{assign var='count' value='0'}
-		{foreach item=version from=$versions}
-		    {if $count == $displayMax}
-		    	<div class="activityfeed items hidden">
-		    {/if}
-		    {if $version.type=='version'}
-		        <span class="activityfeed item version metaflag">{$version.version}</span>
-		    {elseif  $version.type=='comment'}
-		    	<div class="activityfeed item {$version.type}">
-	                    <div class="doc icon" style="{$version.mimeicon}"></div>
-		            <div class="activityfeed-content">
-		            	<span class="title"><a class="clearLink" href="{$version.document_link}" style="">{$version.document_name}</a></span>
-
-		                <br/>
-		                <span class="description"><span class="user">{$version.name} </span><br>{$version.comment|sanitize|nl2br}</span>
-		                <span class="date">{$version.datetime}</span>
-		            </div>
-		        </div>
-		     {else}
-		    	<div class="activityfeed item {$version.type}">
-	                    <div class="doc icon" style="{$version.mimeicon}"></div>
-		            <div class="activityfeed-content">
-		                <span class="title"><a class="clearLink" href="{$version.document_link}" style="">{$version.document_name}</a><br/></span>
-		                <span class="user">{$version.name} </span>
-		                <span class="description">{$version.comment|sanitize|nl2br}</span>
-		                <span class="date">{$version.datetime}</span>
-		            </div>
-		        </div>
-		    {/if}
-		    {assign var="count" value=$count+1}
-		{/foreach}
-		{if $commentsCount > $preloaded}
-			</div>
-		{/if}
-	</div>
-	<br/>
-    {if $commentsCount > $preloaded}
-		<div id="activityfeed-moreitems-{$preloaded}">
-		<span class=activityfeed-more>
-			<div><span class=activityfeed-more-text onclick="javascript: kt.app.activityFeed.fetchMore({$preloaded}, {$nextBatch});">more...</span></div>
-		</span>
-    </div>
-    {/if}
+<div class="activityfeed" style="border: 0px solid #000000" id="activityfeed_comments">
+    {assign var='count' value='0'}
+    {foreach item=version from=$versions}
+        {if $version.type=='version'}
+            <span class="activityfeed item version metaflag">{$version.version}</span>
+        {elseif  $version.type=='comment'}
+            <div class="activityfeed item {$version.type}">
+                <div class="doc icon" style="{$version.mimeicon}"></div>
+                <div class="activityfeed-content">
+                    <span class="title"><a class="clearLink" href="{$version.document_link}" style="">{$version.document_name} </a></span>
+                    <br/> <span class="date">{$version.datetime}</span>
+                    <span class="description"><div style="float:left; margin: 2px 5px 0px 0px;"><img src="{if $smarty.server.HTTPS eq "1"}https{else}http{/if}://www.gravatar.com/avatar/{md5Hash string=$version.email}?s=24&d=mm" style="width: 24px;" /></div><span class="user">{$version.name}</span><span>{$version.comment|sanitize|nl2br}</span></span>
+                </div>
+            </div>
+         {else}
+            <div class="activityfeed item {$version.type}">
+                <div class="doc icon" style="{$version.mimeicon}"></div>
+                <div class="activityfeed-content">
+                 	<span class="date">{$version.datetime}</span>
+                    <span class="title"><a class="clearLink" href="{$version.document_link}" style="">{$version.document_name}</a><br/></span>
+                    <span class="user">{$version.name}</span>
+                    <span class="description">{$version.comment|sanitize|nl2br}</span>
+                </div>
+            </div>
+        {/if}
+        {assign var="count" value=$count+1}
+    {/foreach}
 </div>
+<br/>
+{if $commentsCount > $preloaded}
+    <div id="activityfeed-moreitems-{$preloaded}">
+        <span class=activityfeed-more>
+            <div>
+                <span class=activityfeed-more-text onclick="javascript: kt.app.activityFeed.fetchFeedContent({$preloaded}, {$nextBatch});">more...</span>
+            </div>
+        </span>
+    </div>
+{/if}

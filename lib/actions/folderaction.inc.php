@@ -427,10 +427,10 @@ class KTFolderActionUtil {
             list($className, $path, $namespace, $pluginName) = $action;
             $registry = KTPluginRegistry::getSingleton();
             $plugin = $registry->getPlugin($pluginName);
-            
+
             if (!empty($path)) {
                 require_once($path);
-                
+
                 $objects[] =new $className($oFolder, $oUser, $plugin);
             }
         }
@@ -494,10 +494,10 @@ class KTFolderActionUtil {
 
     public static function checkBulkBackgroundActions($folderId, $redirect)
     {
-        require_once(KT_LIB_DIR . '/backgroundactions/backgroundaction.inc.php');
+        require_once(KT_LIB_DIR . '/backgroundactions/BackgroundAction.inc.php');
         $message = '';
         $check = false;
-        $action = backgroundaction::isFolderInBulkAction($folderId);
+        $action = backgroundaction::isActionInProgress($folderId);
         if($action != '') {
 	        $check = true;
 			$message = backgroundaction::getMessage($action);

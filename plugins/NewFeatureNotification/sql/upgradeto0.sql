@@ -59,4 +59,4 @@ CREATE TABLE IF NOT EXISTS `new_features_users` (
 --
 -- First notification message in `new_features_messages`
 --
-INSERT INTO `new_features_messages` (`message`, `div`, `area_id`, `type`, `version`) VALUES ('You can now rate documents in KnowledgeTree by clicking \"like\"', 'rating-content', 3, 'all', '3.7.1.3');
+INSERT INTO `new_features_messages` (`message`, `div`, `area_id`, `type`, `version`) VALUES ('You can now rate documents in KnowledgeTree by clicking \"like\"', 'rating-content', 3, 'all', '3.7.1.2');

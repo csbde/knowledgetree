@@ -41,7 +41,7 @@ class KTGraphicalAnalyticsSql {
 	public function getTop10Documents($limit = 10)
     {
 		$sql = '
-		SELECT merged_table.document_id, document_content_version.filename, SUM(documentscore) AS documentscore, mime_id FROM
+		SELECT merged_table.document_id, document_metadata_version.name as title, document_content_version.filename, SUM(documentscore) AS documentscore, mime_id FROM
 		(
 
 			(
@@ -171,7 +171,7 @@ class KTGraphicalAnalyticsSql {
 
 	}
 
-	public function getPointsOverWeeks()
+	public function getPointsOverWeeks($weeksLimit=10)
     {
 		$sql = '
 		SELECT merged_table.document_id, document_content_version.filename, SUM(documentscore) AS documentscore FROM
@@ -205,7 +205,7 @@ class KTGraphicalAnalyticsSql {
 		GROUP BY document_id
 
 		ORDER BY documentscore DESC
-		LIMIT 0, 10';
+		LIMIT 0, '.$weeksLimit;
 
 		if ($this->ratingContentEnabled) {
 
@@ -230,7 +230,7 @@ class KTGraphicalAnalyticsSql {
     }
 	
 
-	public function getTop10Users($limit = 10)
+	public function getTopUsers($limit = 10)
 	{
 		// Needs to consider likes and comments
 		$sql = '
@@ -248,7 +248,7 @@ class KTGraphicalAnalyticsSql {
 	}
 
 
-	public function getDocumentViewsOverWeek()
+	public function getDocumentViewsOverWeek($weeksLimit=10)
     {
         $permissionsQuery = $this->getPermissionsQuery();
         $sql = '
@@ -258,24 +258,26 @@ class KTGraphicalAnalyticsSql {
                 INNER JOIN document_content_version DCV ON DCV.id = DMV.content_version_id
                 ' . (empty($permissionsQuery) ? 'WHERE' : "$permissionsQuery AND") . '
 		DT.transaction_namespace = "ktcore.transactions.view"
-                AND DT.document_id = D.id
+                AND DT.document_id = D.id AND ABS(TIMESTAMPDIFF(WEEK, NOW(), datetime)) <= '.$weeksLimit.'
 		GROUP BY week_number
-		ORDER BY week_number
-		LIMIT 0, 10
-        ';
-
+		ORDER BY week_number DESC
+		LIMIT 0, '.$weeksLimit;
+		
         return DBUtil::getResultArray($sql);
     }
 
 	public function getMostViewedDocuments()
     {
-        $sql = '
-		SELECT document_transactions.document_id, COUNT( document_transactions.document_id ) AS count, document_content_version.filename, mime_id
+        $permissionsQuery = $this->getPermissionsQuery();
+		
+		$sql = '
+		SELECT document_transactions.document_id, document_metadata_version.name as title, COUNT( document_transactions.document_id ) AS count, document_content_version.filename, mime_id
 		FROM document_transactions
-		INNER JOIN documents ON (document_transactions.document_id = documents.id AND documents.status_id != 3 AND documents.status_id != 4)
-		INNER JOIN document_metadata_version ON (documents.metadata_version_id = document_metadata_version.id)
+		INNER JOIN documents D ON (document_transactions.document_id = D.id AND D.status_id != 3 AND D.status_id != 4)
+		INNER JOIN document_metadata_version ON (D.metadata_version_id = document_metadata_version.id)
 		INNER JOIN document_content_version ON (document_metadata_version.content_version_id = document_content_version.id)
-		WHERE transaction_namespace = "ktcore.transactions.view"
+		' . (empty($permissionsQuery) ? 'WHERE' : "$permissionsQuery AND") . '
+		transaction_namespace = "ktcore.transactions.view"
 		GROUP BY document_transactions.document_id
 		ORDER BY count DESC
 		LIMIT 0, 5
@@ -285,7 +287,7 @@ class KTGraphicalAnalyticsSql {
     }
 
 
-	public function getUploadsPerWeekSql()
+	public function getUploadsPerWeekSql($weeksLimit=10)
     {
         $permissionsQuery = $this->getPermissionsQuery();
         $sql = '
@@ -295,18 +297,17 @@ class KTGraphicalAnalyticsSql {
                 INNER JOIN document_content_version DCV ON DCV.id = DMV.content_version_id
                 ' . (empty($permissionsQuery) ? 'WHERE' : "$permissionsQuery AND") . '
 		(DT.transaction_namespace = "ktcore.transactions.create" OR DT.transaction_namespace = "ktcore.transactions.check_in")
-		AND ABS(TIMESTAMPDIFF(WEEK, NOW(), datetime)) < 10
+		AND ABS(TIMESTAMPDIFF(WEEK, NOW(), datetime)) <= '.$weeksLimit.'
                 AND DT.document_id = D.id
 		GROUP BY week_number
-		ORDER BY week_number
-		LIMIT 0, 10
-        ';
+		ORDER BY week_number DESC
+		LIMIT 0, '.$weeksLimit;
 
         return DBUtil::getResultArray($sql);
     }
 
 
-	public function getUserAccessPerWeekSql()
+	public function getUserAccessPerWeekSql($weeksLimit=10)
     {
 		// Decide whether to use document_transactions OR user_history
 		$sql = '
@@ -314,17 +315,17 @@ class KTGraphicalAnalyticsSql {
 		(
 			SELECT DISTINCT CONCAT(ABS(TIMESTAMPDIFF(WEEK, NOW(), datetime)), "_", user_id) AS uniqueDateUser,
 				ABS( TIMESTAMPDIFF( WEEK, NOW(), datetime ) ) AS week_number FROM user_history
-			WHERE ABS( TIMESTAMPDIFF( WEEK, NOW( ) , datetime ) ) < 10
+			WHERE ABS( TIMESTAMPDIFF( WEEK, NOW( ) , datetime ) ) <= '.$weeksLimit.'
 		) alias
 		GROUP BY week_number
-		ORDER BY week_number
+		ORDER BY week_number DESC
 		';
 
         return DBUtil::getResultArray($sql);
     }
 
 
-	public function getTransactionViewsSql()
+	public function getTransactionViewsSql($weeksLimit=10)
     {
         $permissionsQuery = $this->getPermissionsQuery();
         $sql = '
@@ -336,14 +337,13 @@ class KTGraphicalAnalyticsSql {
                 DT.document_id = D.id
 		GROUP BY week_number
 		ORDER BY week_number
-		LIMIT 0 , 10
-        ';
+		LIMIT 0 , '.$weeksLimit;
 
         return DBUtil::getResultArray($sql);
     }
 
 
-	public function getDocumentCommentsSql()
+	public function getDocumentCommentsSql($weeksLimit=10)
     {
         $permissionsQuery = $this->getPermissionsQuery();
         $sql = '
@@ -353,34 +353,66 @@ class KTGraphicalAnalyticsSql {
                 INNER JOIN document_metadata_version DMV ON DMV.id = D.metadata_version_id
                 INNER JOIN document_content_version DCV ON DCV.id = DMV.content_version_id
                 ' . (empty($permissionsQuery) ? 'WHERE' : "$permissionsQuery AND") . '
-                ABS(TIMESTAMPDIFF(WEEK,NOW(),date_created)) < 10
+                ABS(TIMESTAMPDIFF(WEEK,NOW(),date_created)) <= '.$weeksLimit.'
                 AND c.document_id = D.id
 		GROUP BY week_number
-		ORDER BY week_number
-		LIMIT 10
-        ';
+		ORDER BY week_number DESC
+		LIMIT '.$weeksLimit;
 
         return DBUtil::getResultArray($sql);
     }
 
 
-	public function getDocumentLikesSql()
+	public function getDocumentLikesSql($weeksLimit=10)
     {
         if ($this->ratingContentEnabled) {
 			$sql = '
 			SELECT COUNT(document_id) as like_count, ABS(TIMESTAMPDIFF(WEEK,NOW(),date_time)) AS week_number
 			FROM ratingcontent_document
-			WHERE ABS(TIMESTAMPDIFF(WEEK,NOW(),date_time)) < 10
+			WHERE ABS(TIMESTAMPDIFF(WEEK,NOW(),date_time)) <= '.$weeksLimit.'
 			GROUP BY week_number
-			ORDER BY week_number
-			LIMIT 10
-			';
+			ORDER BY week_number DESC
+			LIMIT '.$weeksLimit;
 	
 			return DBUtil::getResultArray($sql);
 		} else {
 			return array();
 		}
     }
+	
+	public function getTransactionTypeCount($transactions, $limit=10)
+	{
+		if (!is_array($transactions) || count($transactions) == 0) {
+			$transactions = array('ktcore.transactions.view', 'ktcore.transactions.check_out', 'ktcore.transactions.download');
+		}
+		
+		$transactions = "'".implode("', '", $transactions)."'";
+		
+		$sql = "SELECT name, transaction_namespace,
+		CONCAT( transaction_namespace, '_', ABS( TIMESTAMPDIFF( WEEK, NOW( ) , datetime ) ) ) AS transaction_week,
+		ABS( TIMESTAMPDIFF( WEEK, NOW() , datetime ) ) AS week, count( * ) AS count
+		FROM document_transactions
+		INNER JOIN document_transaction_types_lookup ON ( transaction_namespace = namespace )
+		WHERE ABS( TIMESTAMPDIFF( WEEK, NOW( ) , datetime ) ) <= ".$limit."
+		AND transaction_namespace IN (".$transactions.")
+		GROUP BY transaction_week
+		ORDER BY week DESC";
+		
+		return DBUtil::getResultArray($sql);
+	}
+	
+	public function getTransactionLabels($transactions)
+	{
+		if (!is_array($transactions) || count($transactions) == 0) {
+			$transactions = array('ktcore.transactions.view', 'ktcore.transactions.check_out', 'ktcore.transactions.download');
+		}
+		
+		$transactions = "'".implode("', '", $transactions)."'";
+		
+		$sql = "SELECT * FROM document_transaction_types_lookup WHERE namespace IN (".$transactions.")";
+		
+		return DBUtil::getResultArray($sql);
+	}
 
     // FIXME More duplication of this code - abstract to single library from which it can be called.
     private function getPermissionsQuery()

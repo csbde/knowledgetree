@@ -369,7 +369,7 @@ class KTStandardDispatcher extends KTDispatcher {
     public $oPage = false;
     public $sHelpPage = null;
     public $bJSONMode = false;
-    public $aCannotView = array();
+    public $tierCantView = array();
 
     public function KTStandardDispatcher()
     {
@@ -412,11 +412,8 @@ class KTStandardDispatcher extends KTDispatcher {
 
     public function planDenied()
     {
-        // handle anonymous specially.
-        if ($this->oUser->getId() == -2) {
-            redirect(KTUtil::ktLink('login.php','',sprintf('redirect=%s&errorMessage=%s', urlencode($_SERVER['REQUEST_URI']), urlencode(_kt('You must be logged in to perform this action'))))); exit(0);
-        }
-        global $default;
+    	global $default;
+    	$this->oPage->title = _kt('Blocked');
 
         $msg = _kt('You are on the ' . $default->plan . ' plan which does not have this functionality - ');
         $msg .= '<a href="/settings.php?kt_path_info=accountInformation/systemQuotas" title="Upgrade"> Upgrade </a>';
@@ -426,9 +423,13 @@ class KTStandardDispatcher extends KTDispatcher {
         $this->oPage->addInfo($msg);
         // Empty content
         $this->oPage->setPageContents('<div></div>');
+        // Remove all js
+        $this->oPage->js_resources = array();
+        $this->oPage->js_standalone = array();
         $this->oPage->setUser($this->oUser);
         $this->oPage->hideSection();
         $this->oPage->render();
+
         exit(0);
     }
 
@@ -539,15 +540,15 @@ class KTStandardDispatcher extends KTDispatcher {
 
     protected function checkViewAccess()
     {
-        if (!empty($this->aCannotView)) {
+        if (!empty($this->tierCantView)) {
+        	$this->checkAnonymous();
             global $default;
-            if (in_array($default->plan, $this->aCannotView)) {
+            if (in_array($default->plan, $this->tierCantView)) {
                 $this->planDenied();
-                exit(0);
             }
 
             $this->oUser = User::get($_SESSION['userID']);
-            if (in_array($this->oUser->getDisabled(), $this->aCannotView)) {
+            if (in_array($this->oUser->getDisabled(), $this->tierCantView)) {
                 $this->permissionDenied();
             }
         }

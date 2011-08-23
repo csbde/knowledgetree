@@ -10,7 +10,7 @@
         viewsVsCommentsChart = new Highcharts.Chart({
             chart: {
                 renderTo: 'views_vs_comments_per_week_dashlet',
-                defaultSeriesType: 'bar'
+                defaultSeriesType: 'column'
             },
             title: {
                 text: null//'Views, Comments and Likes per Week'
@@ -19,9 +19,9 @@
                 text: null //'How many documents were viewed, liked, commented on per week'
             },
             xAxis: {
-                categories: [{/literal}{$comments.weeksCounter}{literal}],
+                categories: [{/literal}{$comments.weeks}{literal}],
                 title: {
-                    text: null //'Weeks'
+                    text: 'Week Number'
                 }
             },
             yAxis: {
@@ -73,8 +73,8 @@
                 layout: 'vertical',
                 align: 'right',
                 verticalAlign: 'top',
-                x: -100,
-                y: 100,
+                x: 0,
+                y: 35,
                 floating: true,
                 borderWidth: 1,
                 backgroundColor: '#FFFFFF',

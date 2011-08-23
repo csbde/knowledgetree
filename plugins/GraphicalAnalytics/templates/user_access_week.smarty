@@ -17,12 +17,12 @@
                 text: 'Users per Week'
             },
             subtitle: {
-                text: 'How many users accessed the system'
+                text: null
             },
             xAxis: {
                 categories: [{/literal}{$weeks}{literal}],
                 title: {
-                    text: 'Weeks'
+                    text: 'Week Number'
                 }
             },
             yAxis: {
@@ -56,8 +56,8 @@
                 layout: 'vertical',
                 align: 'right',
                 verticalAlign: 'top',
-                x: -100,
-                y: 100,
+                x: 0,
+                y: 35,
                 floating: true,
                 borderWidth: 1,
                 backgroundColor: '#FFFFFF',

@@ -1484,13 +1484,13 @@ class KTAPI {
         $response['status_code'] = 1;
 
         if (!is_array($items)) {
-        	global $default;
-        	$items = unserialize($items);
-        	$reason = urldecode($reason);
-        	if(!is_array($items)) {
-        		$response['message'] = sprintf(_kt("The list of id's must be an array of format array('documents' => array(1,2), 'folders' => array(2,3)). Received: %s") , $items);
-            	return $response;
-        	}
+            global $default;
+            $items = unserialize($items);
+            $reason = urldecode($reason);
+            if(!is_array($items)) {
+                $response['message'] = sprintf(_kt("The list of id's must be an array of format array('documents' => array(1,2), 'folders' => array(2,3)). Received: %s") , $items);
+                return $response;
+            }
         }
 
         if (empty($items)) {
@@ -1547,22 +1547,22 @@ class KTAPI {
 
         // Get target folder object if required
         switch($action) {
-        	case 'move':
-        	case 'copy':
-        		if (!is_numeric($target_folder_id) || empty($target_folder_id)) {
-	                $response['message'] = _kt('No target folder has been specified.');
-	                return $response;
-	            }
-	            $target = $this->get_folder_by_id($target_folder_id);
-	            $result = $ktapi_bulkactions->$action($objects, $target, $reason);
-        		break;
+            case 'move':
+            case 'copy':
+                if (!is_numeric($target_folder_id) || empty($target_folder_id)) {
+                    $response['message'] = _kt('No target folder has been specified.');
+                    return $response;
+                }
+                $target = $this->get_folder_by_id($target_folder_id);
+                $result = $ktapi_bulkactions->$action($objects, $target, $reason);
+                break;
 
-        	case 'immute':
-        		$result = $ktapi_bulkactions->$action($objects);
-        		break;
+            case 'immute':
+                $result = $ktapi_bulkactions->$action($objects);
+                break;
 
-    		default:
-    			$result = $ktapi_bulkactions->$action($objects, $reason);
+            default:
+                $result = $ktapi_bulkactions->$action($objects, $reason);
         }
 
         if (PEAR::isError($result)) {
@@ -1584,9 +1584,9 @@ class KTAPI {
             }
         }
 
-        // For a successful action
         $response['status_code'] = 0;
         $response['results'] = $result;
+
         return $response;
     }
 
@@ -2137,8 +2137,8 @@ class KTAPI {
     /**
      * Creates a new anonymous session.
      *
-	 * @author KnowledgeTree Team
-	 * @access public
+     * @author KnowledgeTree Team
+     * @access public
      * @param string $ip The users IP address
      * @return array Response 'results' contain the session id | 'message' contains the error message on failure
      */
@@ -3283,6 +3283,38 @@ class KTAPI {
 
         return $response;
     }
+
+    /**
+     * Adds a document to the repository.
+     *
+     * Replaces white space in base64 encoding with +.
+     *
+     * Warning: Base64 with space instead of plus is not compatible with the base64 specification
+     *          and is not a recognized variant.  Replacing the spaces with + without being sure
+     *          of the need is not recommended.  Use this function ONLY if you are sure that your
+     *          source is giving you base64 with + replaced by space.
+     *
+     *          Correct functioning is NOT guaranteed.
+     *          See http://www.php.net/manual/en/function.base64-decode.php for details.
+     *          (Post by: twm at twmacinta dot com 10-Jul-2008 03:38)
+     *
+     * @author KnowledgeTree Team
+     * @access public
+     * @param int $folder_id
+     * @param string $title
+     * @param string $filename
+     * @param string $documenttype
+     * @param string $base64
+     * @return kt_document_detail.
+     */
+    public function add_small_document_special($folder_id, $title, $filename, $documenttype, $base64,
+                                               $sig_username = '', $sig_password = '', $reason = '')
+    {
+        $base64 = str_replace(' ', '+', $base64);
+        return $this->add_small_document($folder_id, $title, $filename, $documenttype, $base64,
+                                         $sig_username = '', $sig_password = '', $reason = '');
+    }
+
 
     /**
      * Does a document checkin.

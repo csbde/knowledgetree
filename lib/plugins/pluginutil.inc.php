@@ -84,7 +84,7 @@ class KTPluginUtil {
         // Get enabled plugins, load each plugin
         self::loadCachedPlugins();
         return true;
-        
+
         // Check the current page - can be extended.
         // Currently we only distinguish between the dashboard and everything else.
         if ($sType != 'dashboard') {
@@ -94,14 +94,14 @@ class KTPluginUtil {
         $aPlugins = array();
         $aPluginHelpers = array();
         $aDisabled = array();
-        
+
         // Get the list of enabled plugins
         // Check that there are plugins and if not, register them
         // Create plugin objects
         // load plugin helpers into global space
         // Load the template locations - ignore disabled plugins
         // Allow for templates that don't correctly link to the plugin
-        
+
         $sDisabled = implode(',', $aDisabled);
         $sDisabled = '';
 
@@ -135,31 +135,31 @@ class KTPluginUtil {
 
         return true;
     }
-    
+
     static private function loadCachedPlugins()
     {
         $pluginCache = PluginCache::getPluginCache();
         $pluginsList = $pluginCache->getPlugins();
-        
+
         foreach ($pluginsList['enabled'] as $priority => $list) {
-            
+
             foreach ($list as $plugin) {
-            
+
                 $classname = $plugin['classname'];
                 $path = $plugin['pathname'];
-                
+
                 if (class_exists($classname)) {
                     continue;
                 }
-    
+
                 if (!empty($path)) {
                     if ((strpos($path, KT_DIR) === false)) {
                         $path = KT_DIR . '/' . $path;
                     }
-    
+
                     if (file_exists($path)) {
                         require_once($path);
-    
+
                         $pluginObject = new $classname($path);
                         $pluginObject->load();
                     }
@@ -172,10 +172,10 @@ class KTPluginUtil {
     {
         $pluginCache = PluginCache::getPluginCache();
         $helpers = $pluginCache->getPluginHelpersByType($classtype);
-        
+
         return $helpers;
     }
-    
+
     /**
      * Load the plugins into the global space
      *
@@ -712,43 +712,43 @@ class KTPluginUtil {
     static function getPluginFiles(&$files, $directory = '')
     {
         $directory or $directory = KT_DIR . '/plugins' . $directory;
-        
+
         $newfiles = glob($directory . '/*Plugin.php');
         $files = array_merge($files, $newfiles);
-        
+
         $dirs = glob($directory . '/*', GLOB_ONLYDIR);
-        
+
         foreach ($dirs as $dir) {
             self::getPluginFiles($files, $dir);
         }
         return ;
     }
-    
+
     static function updatePlugins()
     {
         $files = array();
         self::getPluginFiles($files);
-        
-        
+
+
         // Session variable informs the plugin to register itself - prevents them being registered on every page load
         $_SESSION['plugins_registerplugins'] = true;
         foreach ($files as $file) {
             require_once($file);
         }
         $_SESSION['plugins_registerplugins'] = false;
-        
+
         DBUtil::startTransaction();
-        
+
         $pluginRegistry = KTPluginRegistry::getSingleton();
         $registeredPlugins = $pluginRegistry->getPlugins();
         foreach ($registeredPlugins as $plugin) {
             $result = $plugin->register();
-            
+
             if (PEAR::isError($result)) {
                 $default->log->debug('Register of plugin failed: ' . $result->getMessage());
             }
         }
-        
+
         DBUtil::commit();
 
         $pluginList = KTPluginEntity::getList();
@@ -757,13 +757,13 @@ class KTPluginUtil {
             if (!KTUtil::isAbsolutePath($path)) {
                 $path = sprintf("%s/%s", KT_DIR, $path);
             }
-            
+
             // file_exists is slower but should only evaluate when not in the array.
             if (!in_array($path, $files) && !file_exists($path)) {
                 $plugin->setUnavailable(true);
                 $plugin->setDisabled(true);
                 $res = $plugin->update();
-            } 
+            }
             else if ($plugin->getUnavailable()) {
                 $plugin->setUnavailable(false);
                 $plugin->setDisabled(false);
@@ -778,7 +778,7 @@ class KTPluginUtil {
         $cache = KTCache::getSingleton();
         $cache->deleteAllCaches();
     }
-    
+
 }
 
 /**
@@ -796,18 +796,18 @@ class PluginCache {
     private $pluginHelperDynamicKey;
     private $pluginsCacheKey;
     private $lockedCacheKey;
-    
+
     private function __construct()
     {
         $this->memcache = KTMemcache::getKTMemcache();
 
         if ($this->memcache->isEnabled() === false) {
             $this->memcache = false;
-            
+
             global $default;
             $default->log->info('Plugin Cache: Memcache not enabled - using DB');
         }
-        
+
         // Create the key for the namespace using the account name
         $this->namespaceKey = 'plugins-key';
         $this->lockedCacheKey = 'cache-lock';
@@ -816,13 +816,13 @@ class PluginCache {
             $this->lockedCacheKey = ACCOUNT_NAME . '-' . $this->lockedCacheKey;
         }
         $this->namespace = $this->getNamespace();
-        
+
         // Create all keys
         $this->pluginHelperCacheKey = 'plugin-helper-cache';
         $this->pluginHelperDynamicKey = 'plugin-helper-dynamic';
         $this->pluginsCacheKey = 'plugins-cache';
     }
-    
+
     public static function getPluginCache()
     {
         if (empty(self::$pluginCache)) {
@@ -831,56 +831,55 @@ class PluginCache {
 
         return self::$pluginCache;
     }
-  
+
     public function clearPluginSession()
     {
         unset($_SESSION['plugin-list']);
         unset($_SESSION['plugin-helper-list']);
     }
-    
+
     public function getPlugins()
     {
         if (!$this->validatePlugins()) {
             $this->clearPluginSession();
         }
-        
+
         if (isset($_SESSION['plugin-list']) && !empty($_SESSION['plugin-list'])) {
             return $_SESSION['plugin-list'];
         }
-        
+
         if ($this->memcache !== false) {
             $pluginList = $this->memcache->get($this->namespace . '-' . $this->pluginsCacheKey);
         }
-        
+
         if (!$pluginList) {
             $helpers = $this->getPluginHelpersByType('plugin');
-            
+
             if (!$helpers || count($helpers) <= 1) {
                 $this->updatePlugins();
                 $helpers = $this->getPluginHelpersByType('plugin');
             }
-            
+
             $pluginList = $this->getPluginsList($helpers);
-            
+
             if ($this->memcache !== false) {
                 $this->memcache->set($this->namespace . '-' . $this->pluginsCacheKey, $pluginList);
             }
             
+            $_SESSION['plugin-list'] = $pluginList;
         }
-        
-        $_SESSION['plugin-list'] = $pluginList;
         
         return $pluginList;
     }
-     
+
     /**
-     * @deprecated 
+     * @deprecated
      */
     private function getPluginsFromDB()
     {
         global $default;
         $default->log->info('Plugin Cache: using the DB');
-        
+
         $query = "SELECT h.classname, h.pathname, h.plugin FROM plugin_helper h
             INNER JOIN plugins p ON (p.namespace = h.plugin)
            WHERE p.disabled = 0 AND h.classtype='plugin' ORDER BY p.orderby";
@@ -894,7 +893,7 @@ class PluginCache {
         // Check that there are plugins and if not, register them
         if (empty($plugins) || (isset($_POST['_force_plugin_truncate']))) {
             $default->log->error('Plugin Cache: updating DB plugins');
-            
+
             KTPluginUtil::updatePlugins();
 
             $query = "SELECT h.classname, h.pathname, h.plugin FROM plugin_helper h
@@ -902,10 +901,10 @@ class PluginCache {
                WHERE p.disabled = 0 AND h.classtype='plugin' ORDER BY p.orderby";
             $plugins = DBUtil::getResultArray($query);
         }
-        
+
         return $plugins;
     }
-    
+
     /**
      * Check whether the memcache plugins have been updated.
      * Store the plugins namespace in session to ensure that an update will be propogated.
@@ -945,7 +944,7 @@ class PluginCache {
             $this->setNamespace();
             $this->clearPluginHelpers();
         }
-        
+
         unset($_SESSION['plugin-namespace']);
         $this->clearPluginSession();
     }
@@ -955,7 +954,7 @@ class PluginCache {
         if ($this->memcache === false) {
             return $this->namespaceKey;
         }
-        
+
         $namespace = $this->memcache->get($this->namespaceKey);
 
         // If the key doesn't exist or has expired then set a new one.
@@ -986,21 +985,21 @@ class PluginCache {
     {
         global $default;
         $default->log->info('Plugin Cache: updating cached plugin list');
-        
+
         $query = "SELECT * FROM plugins p ORDER BY p.orderby";
         $plugins = DBUtil::getResultArray($query);
-        
+
         if (PEAR::isError($plugins)) {
             $default->log->error('Plugin Cache: '.$plugins->getMessage());
             return $plugins;
         }
-        
+
         $loaded = array('enabled' => array(), 'disabled' => array());
-        
+
         foreach ($plugins as $plugin) {
-            
+
             $object = $helpers[$plugin['namespace']];
-            
+
             if ($plugin['disabled'] == 1 || $plugin['unavailable'] == 1) {
                 $loaded['disabled'][$plugin['orderby']][] = $object;
             }
@@ -1008,54 +1007,59 @@ class PluginCache {
                 $loaded['enabled'][$plugin['orderby']][] = $object;
             }
         }
-        
+
         return $loaded;
     }
-    
+
     private function updatePlugins()
     {
+        global $default;
+            
         $lock = $this->updateLock('get');
-        
+
         if ($lock == 'in-progress') {
             global $default;
             $default->log->info('Plugins: lock in place, waiting for update to complete.');
-            
+
             $cnt = 0;
             while ($lock == 'in-progress' && $cnt < 15) {
                 sleep(2);
                 $cnt++;
                 $lock = $this->updateLock('get');
             }
-            
+
             if ($lock == 'in-progress') {
                 $default->log->warn('Plugins: lock still in place after 30 seconds, exiting.');
                 return false;
             }
-            
+
             return true;
         }
+
+        $default->log->info('Plugins: Updating plugins');
         
         $this->updateLock('set');
 
         $this->invalidatePlugins();
-        
+
         KTPluginUtil::updatePlugins();
 
         $this->removeDisabledPluginHelpers();
         $this->clearPluginSession();
-        
+
         $this->updateLock('delete');
     }
-    
-    private function updateLock($getOrSet = 'get') 
+
+    private function updateLock($getOrSet = 'get')
     {
         if ($this->memcache === false) {
             return $this->updateDBLock($getOrSet);
         }
-        
+
         switch ($getOrSet) {
             case 'set':
-                $this->memcache->set($this->lockedCacheKey, 'in-progress');
+                $expiry = 60*5; // 5 minutes is more than enough time.
+                $this->memcache->set($this->lockedCacheKey, 'in-progress', $expiry);
                 break;
             case 'delete':
                 $this->memcache->delete($this->lockedCacheKey);
@@ -1064,10 +1068,10 @@ class PluginCache {
             default:
                 return $this->memcache->get($this->lockedCacheKey);
         }
-        
+
         return true;
     }
-    
+
     private function updateDBLock($getOrSet = 'get')
     {
         switch ($getOrSet) {
@@ -1081,130 +1085,134 @@ class PluginCache {
             default:
                 return KTUtil::getSystemSetting($this->lockedCacheKey, false);
         }
-        
+
         return true;
     }
-    
+
     private function removeDisabledPluginHelpers()
     {
         if ($this->memcache === false) {
             return ;
         }
-        
-        unset($_SESSION['plugin-helper-list']);
-        
+
+        //unset($_SESSION['plugin-helper-list']);
+
         $helpers = $this->getPluginHelpersByType('plugin');
         $pluginList = $this->getPluginsList($helpers);
         $helpers = $this->getPluginHelpers();
 
         // Unset all helpers for disabled plugins
         foreach ($pluginsList['disabled'] as $plugins) {
-            
+
             foreach ($plugins as $plugin) {
-            
+
                 foreach ($helpers as $classtype => $list) {
                     unset($helpers[$classtype][$plugin['namespace']]);
                 }
             }
         }
-        
+
         $this->setPluginHelpers($helpers);
     }
-    
+
     public function getPluginHelpersByType($classtype)
     {
         $helpers = $this->getPluginHelpers();
-        
+
         if (!$helpers) {
-            $this->updatePlugins();
-            $helpers = $this->getPluginHelpers();
+            // Doing a clear session here should force an update of the plugins on the next getPlugins
+            // If we try to update here, it could get stuck in an infinite loop since there are a number
+            // of places within the update which call this function.
+            $this->clearPluginSession();
+            return array();
         }
-            
+
         return $helpers[$classtype];
     }
-    
+
     private function getPluginHelpers()
     {
-        if (isset($_SESSION['plugin-helper-list']) && !empty($_SESSION['plugin-helper-list'])) {
+        // Sessions are stored in memcache which can only hold 1MB of data - the plugin helpers take around 150KB so
+        // leaving them out unless memcache is not in use.
+        if ($this->memcache === false && isset($_SESSION['plugin-helper-list']) && !empty($_SESSION['plugin-helper-list'])) {
             return $_SESSION['plugin-helper-list'];
         }
-        
+
         if ($this->memcache === false) {
             $helpers = $this->getDBHelpers();
+            $_SESSION['plugin-helper-list'] = $helpers;
         }
         else {
             $helpers = $this->memcache->get($this->namespace . '-' . $this->pluginHelperDynamicKey);
         }
-        
-        $_SESSION['plugin-helper-list'] = $helpers;
-        
+
         return $helpers;
     }
-    
+
     private function getDBHelpers()
     {
         $sql = 'SELECT h.* FROM plugin_helper h, plugins p WHERE h.plugin = p.namespace AND p.disabled = 0 AND p.unavailable = 0';
-        
+
         $result = DBUtil::getResultArray($sql);
-        
+
         if (PEAR::isError($result) || empty($result)) {
             return false;
         }
-        
+
         $helpers = array();
-        
+
         foreach ($result as $item) {
             $helpers[$item['classtype']][$item['namespace']] = $item;
         }
-        
+
         return $helpers;
     }
-    
+
     private function setPluginHelpers($helpers)
     {
         $this->memcache->set($this->namespace . '-' . $this->pluginHelperDynamicKey, $helpers);
     }
-    
+
     private function clearPluginHelpers()
     {
         $this->memcache->delete($this->namespace . '-' . $this->pluginHelperDynamicKey);
     }
-    
+
     public function addPluginHelper($options)
     {
         if ($this->memcache === false) {
             return $this->addDBHelper($options);
         }
-        
+
         $helpers = $this->getPluginHelpers();
-        
+
         extract($options);
         $helpers[$classtype][$namespace] = $options;
         $this->setPluginHelpers($helpers);
-        $_SESSION['plugin-helper-list'] = $helpers;
-        
+        //$_SESSION['plugin-helper-list'] = $helpers;
+
         return true;
     }
-    
+
     public function removePluginHelper($namespace, $classtype)
     {
         if ($this->memcache === false) {
             return $this->removeDBHelper($namespace, $classtype);
         }
-        
+
         $helpers = $this->getPluginHelpers();
-        
+
         unset($helpers[$classtype][$namespace]);
         $helpers = $this->setPluginHelpers($helpers);
-        $_SESSION['plugin-helper-list'] = $helpers;
-        
+        //$_SESSION['plugin-helper-list'] = $helpers;
+
         return true;
     }
-    
+
     private function addDBHelper($options)
     {
         extract($options);
-        
+
         $sql = "SELECT id FROM plugin_helper WHERE namespace = '{$namespace}' AND classtype = '{$classtype}'";
         $res = DBUtil::getOneResult($sql);
 
@@ -1229,7 +1237,7 @@ class PluginCache {
         }
         return true;
     }
-    
+
     private function removeDBHelper($namespace, $classtype)
     {
         $where = array();
@@ -1238,7 +1246,7 @@ class PluginCache {
         $res = DBUtil::whereDelete('plugin_helper', $where);
         return $res;
     }
-    
+
     private function clearDBHelpers()
     {
         $sql = 'DELETE FROM plugin_helper';

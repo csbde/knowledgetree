@@ -39,11 +39,11 @@ require_once(KT_DIR . '/plugins/ktcore/KTDashboardViewlets.php');
 
 class dashboardService extends client_service {
 
-    public function extendActivityFeed($params)
+    public function loadActivityFeed($params)
     {
         $viewlet = new KTDashboardActivityFeedViewlet();
         $viewlet->setLimits($params['preloaded'], $params['start']);
-        $result = $viewlet->displayViewlet();
+        $result = $viewlet->loadViewletContent();
 
         $this->addResponse('success', $result);
 

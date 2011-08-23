@@ -367,6 +367,7 @@ kt.app.upload = new function() {
 								user_id: responseJSON.success.user_id,
 								item_type: responseJSON.success.item_type,
 								thumbnail: '',
+								like_status: '',
 								thumbnailclass: 'nopreview'
 							};
 
@@ -444,7 +445,7 @@ kt.app.upload = new function() {
         progress.text('Adding files ...');
         progress.css('display', 'block');
         progress.css('visibility', 'visible');
-        progress.append('<img src="/resources/graphics/newui/large-loading.gif" style="float: right;"/>');
+        progress.append('<img src="/resources/graphics/newui/large-loading-dark.gif" style="float: right;"/>');
     }
 
     this.updateProgress = function(message, isError)

@@ -54,7 +54,7 @@ require_once(KT_LIB_DIR . '/authentication/builtinauthenticationprovider.inc.php
 class KTGroupAdminDispatcher extends KTAdminDispatcher {
 
     public $sHelpPage = 'ktcore/admin/manage groups.html';
-    public $aCannotView = array('starter', 'professional');
+    public $tierCantView = array('starter', 'professional');
 
     function predispatch()
     {

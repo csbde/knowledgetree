@@ -7,32 +7,32 @@
  * KnowledgeTree Community Edition
  * Document Management Made Simple
  * Copyright (C) 2008, 2009, 2010 KnowledgeTree Inc.
- * 
- * 
+ *
+ *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License version 3 as published by the
  * Free Software Foundation.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
  * details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- * 
- * You can contact KnowledgeTree Inc., PO Box 7775 #87847, San Francisco, 
+ *
+ * You can contact KnowledgeTree Inc., PO Box 7775 #87847, San Francisco,
  * California 94120-7775, or email info@knowledgetree.com.
- * 
+ *
  * The interactive user interfaces in modified source and object code versions
  * of this program must display Appropriate Legal Notices, as required under
  * Section 5 of the GNU General Public License version 3.
- * 
+ *
  * In accordance with Section 7(b) of the GNU General Public License version 3,
  * these Appropriate Legal Notices must retain the display of the "Powered by
- * KnowledgeTree" logo and retain the original copyright notice. If the display of the 
+ * KnowledgeTree" logo and retain the original copyright notice. If the display of the
  * logo is not reasonably feasible for technical reasons, the Appropriate Legal Notices
- * must display the words "Powered by KnowledgeTree" and retain the original 
+ * must display the words "Powered by KnowledgeTree" and retain the original
  * copyright notice.
  * Contributor( s): ______________________________________
  */
@@ -71,34 +71,34 @@ class KTTemplating {
         if (count($this->aLocationRegistry) > 1) {
             return ;
         }
-        
+
         $helpers = KTPluginUtil::loadPluginHelpers('locations');
-        
+
         foreach ($helpers as $helper) {
             extract($helper);
             $params = explode('|', $object);
-            
-            $path = $params[1];
+
+            $path = str_replace('\\', '/', $params[1]);
             if (strpos($path, KT_DIR) === false) {
                 $path = KT_DIR . '/' . $path;
             }
-            
+
             $this->addLocation2($params[0], $path);
         }
-        
+
     }
-    
+
     // {{{ _findTemplate
-    function _findTemplate($templateName) 
+    function _findTemplate($templateName)
     {
         $this->loadTemplateHelpers();
-        
+
         $possibilities = array();
 
         foreach ($this->aLocationRegistry as $location => $path) {
-            
+
             $path .= '/';
-            
+
             $templateTypes = array_keys($this->aTemplateRegistry);
             foreach ($templateTypes as $suffix) {
                 $fullPath = $path . $templateName . '.' .  $suffix;
@@ -148,17 +148,23 @@ class KTTemplating {
      * @param unknown_type $descr
      * @param unknown_type $loc
      */
-    function addLocation ($descr, $loc, $sPluginNamespace = NULL) {
-        //$this->aLocationRegistry[$descr] = $loc;
+    function addLocation ($description, $location, $pluginNamespace = NULL) {
+        //$this->aLocationRegistry[$description] = $location;
 
-        if(!empty($sPluginNamespace)){
-            $sPlugin = $sPluginNamespace;
+        if(!empty($pluginNamespace)){
+            $plugin = $pluginNamespace;
         }else{
-            $sPlugin = $this->getPluginName();
-            $sPlugin = (!empty($sPlugin)) ? $sPlugin : $descr;
+            $plugin = $this->getPluginName();
+            $plugin = (!empty($plugin)) ? $plugin : $description;
         }
+        
+        // Workaround for those plugins using /plugins/path - the fixFilename sets these to empty strings.
+        if (strpos($location, '/plugins') === 0) {
+            $location = substr($location, 1);
+        }
+        $location = KTPlugin::_fixFilename($location);
 
-        KTPlugin::registerPluginHelper($sPlugin, $sPlugin, $loc, $descr.'|'.$loc, 'general', 'locations');
+        KTPlugin::registerPluginHelper($plugin, $plugin, $location, $description.'|'.$location, 'general', 'locations');
     }
     // }}}
 

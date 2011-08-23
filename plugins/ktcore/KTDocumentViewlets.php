@@ -181,7 +181,7 @@ class KTDocumentActivityFeedAction extends KTDocumentViewlet {
         return $this->getTransactionResult($query);
     }
 
-    public function getTransactionResult($query)
+    private function getTransactionResult($query)
     {
         $res = DBUtil::getResultArray($query);
         if (PEAR::isError($res)) {
@@ -193,21 +193,16 @@ class KTDocumentActivityFeedAction extends KTDocumentViewlet {
         return $res;
     }
 
-    // FIXME Some of these values are not in the detail view query.
-    //       Warnings will be squashed, but should be dealt with properly.
-    public function getActivityFeed($transactions)
+    private function getActivityFeed($transactions)
     {
-        // Set the namespaces where not in the transactions lookup
         $activityFeed = array();
-        foreach($transactions as $key => $transaction) {
+        foreach($transactions as $transaction) {
             if (empty($transaction['transaction_name'])) {
-                $transactions[$key]['transaction_name'] = $this->_getActionNameForNamespace($transaction['transaction_namespace']);
+                $name = $this->_getActionNameForNamespace($transaction['transaction_namespace']);
+                $transaction['transaction_name'] = $name;
             }
 
             $activityFeed[] = array(
-                'document_name' => $transaction['document_name'],
-                'document_link' => KTUtil::buildUrl('view.php', array('fDocumentId' => $transaction['document_id'])),
-                'mime_id' => $transaction['mime_id'],
                 'name' => $transaction['user_name'],
                 'email' => md5(strtolower($transaction['email'])),
                 'transaction_name' => $transaction['transaction_name'],
@@ -279,17 +274,12 @@ class KTDocumentActivityFeedAction extends KTDocumentViewlet {
         return $comments;
     }
 
-    // FIXME Some of these values are not in the detail view query.
-    //       Warnings will be squashed, but should be dealt with properly.
-    public function formatCommentsResult($result)
+    private function formatCommentsResult($result)
     {
         $comments = array();
 
         foreach ($result as $comment) {
             $comments[] = array(
-                'document_name' => $comment['document_name'],
-                'document_link' => KTUtil::buildUrl('view.php', array('fDocumentId' => $comment['document_id'])),
-                'mime_id' => $comment['mime_id'],
                 'name' => $comment['user_name'],
                 'email' => md5(strtolower($comment['email'])),
                 'transaction_name' => _kt('Comment'),
@@ -312,7 +302,7 @@ class KTDocumentActivityFeedAction extends KTDocumentViewlet {
         return $date1 < $date2 ? 1 : -1;
     }
 
-    function _getActionNameForNamespace($namespace)
+    public function _getActionNameForNamespace($namespace)
     {
         $names = split('\.', $namespace);
         $name = array_pop($names);

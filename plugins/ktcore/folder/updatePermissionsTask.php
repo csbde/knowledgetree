@@ -59,7 +59,7 @@ register_shutdown_function(array($updateTask, 'handleShutdown'));
 if (function_exists('pcntl_signal')) {
 
 	declare(ticks=1);
-	
+
 	pcntl_signal(SIGHUP, array($updateTask, 'handleInterrupt'));
     pcntl_signal(SIGINT, array($updateTask, 'handleInterrupt'));
     pcntl_signal(SIGQUIT, array($updateTask, 'handleInterrupt'));
