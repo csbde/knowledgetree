@@ -65,24 +65,24 @@ class KTTriggerRegistry {
         if (!empty($this->triggers)) {
             return ;
         }
-        
+
         $helpers = KTPluginUtil::loadPluginHelpers('trigger');
-        
+
         foreach ($helpers as $helper) {
             extract($helper);
             $params = explode('|', $object);
-            
+
             if (isset($params[4])) {
                 $params[4] = KTPluginUtil::getFullPath($params[4]);
             }
             call_user_func_array(array($this, 'registerTrigger'), $params);
         }
     }
-    
+
     function getTriggers($action, $slot)
     {
         $this->loadTriggerHelpers();
-        
+
         $ret = array();
 
         if (array_key_exists($action, $this->triggers)) {
@@ -95,12 +95,15 @@ class KTTriggerRegistry {
             return array();
         }
 
-        foreach($ret as $trigger) {
+        foreach ($ret as $key => $trigger) {
             if (!class_exists($trigger[0])) {
-                $path = (KTUtil::isAbsolutePath($trigger[1])) ? $trigger[1] : KT_DIR.'/'.$trigger[1];
-                require_once($path);
-                
+                $path = (KTUtil::isAbsolutePath($trigger[1])) ? $trigger[1] : KT_DIR . '/' . $trigger[1];
+                if (is_file($path)) {
+                    require_once($path);
+                }
+
                 if (!class_exists($trigger[0])) {
+                    unset($ret[$key]);
                     global $default;
                     $default->log->error(sprintf(_kt('Cannot locate trigger class \'%s\' for action \'%s\' slot \'%s\'.'), $trigger[0], $action, $slot));
                 }

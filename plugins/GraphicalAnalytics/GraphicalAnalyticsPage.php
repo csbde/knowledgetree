@@ -46,6 +46,7 @@ require_once('GraphicalAnalytics.php');
 
 class GraphAnalyticsPage extends KTStandardDispatcher {
 
+//	public $tierCantView = array('starter', 'professional', 'company', 'team');
 
     function __construct()
 	{
@@ -56,17 +57,16 @@ class GraphAnalyticsPage extends KTStandardDispatcher {
 
     public function do_main()
 	{
-	    global $default;
-		
+		global $main;
 		$this->oPage->title = _kt('Analytics');
 
 	    $templating =& KTTemplating::getSingleton();
 	    $template = $templating->loadTemplate('graphspage');
         $ktAnalytics = new GraphicalAnalytics();
-		global $main;
+
 	    $templateData = array(
 	           'context' => $this,
-			   
+
 			   // Dashlets
 			   'userAccessPerWeek' => $ktAnalytics->getUserAccessPerWeekDashlet(),
 			   'uploadsPerWeek' => $ktAnalytics->getUploadsPerWeekDashlet(),
@@ -74,7 +74,7 @@ class GraphAnalyticsPage extends KTStandardDispatcher {
 			   'topFiveDocuments' => $ktAnalytics->getTop5DocumentsDashlet(),
 	           'topFiveUsers' => $ktAnalytics->getTop5UsersDashlet(),
 	           'mostViewedDocuments' => $ktAnalytics->getMostViewedDocumentsDashlet(),
-			   
+
 			   // For the Page
 			   'top10Documents' => $ktAnalytics->getTop10DocumentsTemplate(),
 			   'documentsByRating' => $ktAnalytics->getDocumentsByRatingTemplate(),
@@ -85,14 +85,36 @@ class GraphAnalyticsPage extends KTStandardDispatcher {
 			   'viewsVsComments' => $ktAnalytics->getViewsVsCommentsOverWeekTemplate(),
 			   'commentsPerWeek' => $ktAnalytics->getDocumentCommentsPerWeekTemplate(),
 			   'likesPerWeek' => $ktAnalytics->getDocumentLikesPerWeekTemplate(),
-			   
+
 			   'checkInsVsCheckouts' => $ktAnalytics->getTransactionTypesPerWeekTemplate(),
 			   'sharing_per_week' => $ktAnalytics->getSharingPerWeekTemplate(),
-			   
+
         );
 
 	    return $template->render($templateData);
 	}
+
+    public function planDenied()
+    {
+    	global $default;
+	    $templating =& KTTemplating::getSingleton();
+	    $template = $templating->loadTemplate('tier');
+        // Page title
+        $this->oPage->title = _kt('Blocked');
+        // Don't sanitize the info, as we would like to display a link
+        $this->oPage->allowHTML = true;
+        // Empty content
+        $this->oPage->setPageContents('<div></div>');
+        // Remove all js
+        $this->oPage->js_resources = array();
+        $this->oPage->js_standalone = array();
+        $this->oPage->setUser($this->oUser);
+        $this->oPage->hideSection();
+        $this->oPage->contents = $template->render();
+        $this->oPage->render();
+
+        exit(0);
+    }
 
 }
 

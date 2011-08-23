@@ -1484,13 +1484,13 @@ class KTAPI {
         $response['status_code'] = 1;
 
         if (!is_array($items)) {
-        	global $default;
-        	$items = unserialize($items);
-        	$reason = urldecode($reason);
-        	if(!is_array($items)) {
-        		$response['message'] = sprintf(_kt("The list of id's must be an array of format array('documents' => array(1,2), 'folders' => array(2,3)). Received: %s") , $items);
-            	return $response;
-        	}
+            global $default;
+            $items = unserialize($items);
+            $reason = urldecode($reason);
+            if(!is_array($items)) {
+                $response['message'] = sprintf(_kt("The list of id's must be an array of format array('documents' => array(1,2), 'folders' => array(2,3)). Received: %s") , $items);
+                return $response;
+            }
         }
 
         if (empty($items)) {
@@ -1547,22 +1547,22 @@ class KTAPI {
 
         // Get target folder object if required
         switch($action) {
-        	case 'move':
-        	case 'copy':
-        		if (!is_numeric($target_folder_id) || empty($target_folder_id)) {
-	                $response['message'] = _kt('No target folder has been specified.');
-	                return $response;
-	            }
-	            $target = $this->get_folder_by_id($target_folder_id);
-	            $result = $ktapi_bulkactions->$action($objects, $target, $reason);
-        		break;
+            case 'move':
+            case 'copy':
+                if (!is_numeric($target_folder_id) || empty($target_folder_id)) {
+                    $response['message'] = _kt('No target folder has been specified.');
+                    return $response;
+                }
+                $target = $this->get_folder_by_id($target_folder_id);
+                $result = $ktapi_bulkactions->$action($objects, $target, $reason);
+                break;
 
-        	case 'immute':
-        		$result = $ktapi_bulkactions->$action($objects);
-        		break;
+            case 'immute':
+                $result = $ktapi_bulkactions->$action($objects);
+                break;
 
-    		default:
-    			$result = $ktapi_bulkactions->$action($objects, $reason);
+            default:
+                $result = $ktapi_bulkactions->$action($objects, $reason);
         }
 
         if (PEAR::isError($result)) {
@@ -1584,9 +1584,9 @@ class KTAPI {
             }
         }
 
-        // For a successful action
         $response['status_code'] = 0;
         $response['results'] = $result;
+
         return $response;
     }
 
@@ -2137,8 +2137,8 @@ class KTAPI {
     /**
      * Creates a new anonymous session.
      *
-	 * @author KnowledgeTree Team
-	 * @access public
+     * @author KnowledgeTree Team
+     * @access public
      * @param string $ip The users IP address
      * @return array Response 'results' contain the session id | 'message' contains the error message on failure
      */

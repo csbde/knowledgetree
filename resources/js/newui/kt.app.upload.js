@@ -367,6 +367,7 @@ kt.app.upload = new function() {
 								user_id: responseJSON.success.user_id,
 								item_type: responseJSON.success.item_type,
 								thumbnail: '',
+								like_status: '',
 								thumbnailclass: 'nopreview'
 							};
 

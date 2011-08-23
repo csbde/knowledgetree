@@ -67,7 +67,7 @@ class Session {
         }
 
         if ($oUser->getDisabled() == 1) {
-        	$error = _kt('Your account has been disabled. Please contact a <a href="http://www.knowledgetree.com/contact-us">KnowledgeTree support representative</a> for your region.');
+        	$error = _kt('Your account has been disabled. Please contact your System Administrator.');
         	$_SESSION['errormessage']['login'] = $error;
             return PEAR::raiseError($error);
         }
