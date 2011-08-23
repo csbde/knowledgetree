@@ -701,6 +701,8 @@ class KTPage {
                     $this->userMenu['inviteuser'] = array('label' => _kt('Invite Users'), 'url' => '#');
                     $this->userMenu['inviteuser']['onclick'] = 'javascript:kt.app.inviteusers.showInviteWindow();';
                 }
+                
+                $this->userMenu['settings'] = array('label' => _kt('Settings'), 'url' => $sBaseUrl.'/settings.php');
             }
 
         	if ($oConfig->get('user_prefs/restrictPreferences', false) && !$isAdmin) {
