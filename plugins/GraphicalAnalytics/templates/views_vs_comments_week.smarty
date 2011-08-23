@@ -16,12 +16,12 @@
                 text: 'Views, Comments and Likes per Week'
             },
             subtitle: {
-                text: 'How many documents were viewed, liked, commented on per week'
+                text: null
             },
             xAxis: {
                 categories: [{/literal}{$comments.weeks}{literal}],
                 title: {
-                    text: 'Weeks'
+                    text: 'Week Number'
                 }
             },
             yAxis: {

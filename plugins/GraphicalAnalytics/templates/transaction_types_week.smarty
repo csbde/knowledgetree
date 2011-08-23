@@ -16,12 +16,12 @@
                 text: '{/literal}{$graphTitle}{literal}'
             },
             subtitle: {
-                text: '{/literal}{$graphSubTitle}{literal}'
+                text: null
             },
             xAxis: {
                 categories: [{/literal}{$data.weeksStr}{literal}],
                 title: {
-                    text: 'Weeks'
+                    text: 'Week Number'
                 }
             },
             yAxis: {

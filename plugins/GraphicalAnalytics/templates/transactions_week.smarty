@@ -18,7 +18,7 @@
                 text: 'Transactions per Week'
             },
             subtitle: {
-                text: 'How many documents were viewed per week for the last 10 weeks'
+                text: null
             },
             xAxis: {
                 categories: [{/literal}{$graphdata.weeks}{literal}],
